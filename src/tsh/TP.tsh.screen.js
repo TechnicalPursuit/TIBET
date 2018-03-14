@@ -105,7 +105,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('screen',
+TP.shell.TSH.addHelpTopic('screen',
     TP.tsh.screen.Type.getMethod('tshExecute'),
     'Sets the canvas being viewed to a screen.',
     ':screen <screen_number>',

@@ -54,7 +54,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('deploy',
+TP.shell.TSH.addHelpTopic('deploy',
     TP.tsh.deploy.Type.getMethod('tshExecute'),
     'Deploys a release of a TIBET application.',
     ':deploy',

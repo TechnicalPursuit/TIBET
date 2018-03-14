@@ -47,7 +47,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('echo',
+TP.shell.TSH.addHelpTopic('echo',
     TP.tsh.echo.Type.getMethod('tshExecute'),
     'Echoes the arguments provided for debugging.',
     ':echo',

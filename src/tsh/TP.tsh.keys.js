@@ -95,7 +95,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('keys',
+TP.shell.TSH.addHelpTopic('keys',
     TP.tsh.keys.Type.getMethod('tshExecute'),
     'Lists keyboard shortcuts for the Sherpa toolset.',
     ':keys',

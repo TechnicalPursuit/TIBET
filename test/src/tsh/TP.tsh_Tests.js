@@ -12,7 +12,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Expansion Core',
+TP.shell.TSH.Type.describe('Expansion Core',
 function() {
 
     var inputVal,
@@ -434,7 +434,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell command options expansion',
+TP.shell.TSH.Type.describe('Shell command options expansion',
 function() {
 
     var inputVal,
@@ -533,7 +533,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell JavaScript literals',
+TP.shell.TSH.Type.describe('Shell JavaScript literals',
 function() {
 
     var inputVal,
@@ -1291,7 +1291,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell JavaScript variables',
+TP.shell.TSH.Type.describe('Shell JavaScript variables',
 function() {
 
     var inputVal,
@@ -2433,7 +2433,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell variables',
+TP.shell.TSH.Type.describe('Shell variables',
 function() {
 
     var inputVal,
@@ -4433,7 +4433,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell TIBET URN, JS URI, TIBET URL',
+TP.shell.TSH.Type.describe('Shell TIBET URN, JS URI, TIBET URL',
 function() {
 
     var inputVal,
@@ -5207,7 +5207,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell HTTP URL',
+TP.shell.TSH.Type.describe('Shell HTTP URL',
 function() {
 
     var shellDriver,
@@ -5617,7 +5617,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell JSONP URL',
+TP.shell.TSH.Type.describe('Shell JSONP URL',
 function() {
 
     var shellDriver,
@@ -5670,7 +5670,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell LOCALDB URL',
+TP.shell.TSH.Type.describe('Shell LOCALDB URL',
 function() {
 
     var shellDriver,
@@ -6016,7 +6016,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell POUCHDB URL',
+TP.shell.TSH.Type.describe('Shell POUCHDB URL',
 function() {
 
     var shellDriver,
@@ -6415,7 +6415,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell Piping',
+TP.shell.TSH.Type.describe('Shell Piping',
 function() {
 
     var inputVal,

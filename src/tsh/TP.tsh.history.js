@@ -217,7 +217,7 @@ function(aString, aRequest, aShell, expand) {
      * @param {String} aString The history reference to replace.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @param {TP.core.Shell} aShell The shell handling processing and holding
+     * @param {TP.shell.Shell} aShell The shell handling processing and holding
      *     the history list.
      * @returns {String} The history replacement.
      */
@@ -517,7 +517,7 @@ function(aString, aRequest, aShell, expand) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('history',
+TP.shell.TSH.addHelpTopic('history',
     TP.tsh.history.Type.getMethod('cmdRunContent'),
     'Displays a list of recent commands.',
     ':history [--hid] [--edit]',

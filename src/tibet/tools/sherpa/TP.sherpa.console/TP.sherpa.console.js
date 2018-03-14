@@ -775,7 +775,7 @@ function() {
 
     var tsh;
 
-    tsh = TP.core.TSH.getDefaultInstance();
+    tsh = TP.shell.TSH.getDefaultInstance();
 
     TP.sherpa.ConsoleService.construct(
         null,

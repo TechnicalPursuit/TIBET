@@ -70,7 +70,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('open',
+TP.shell.TSH.addHelpTopic('open',
     TP.tsh.open.Type.getMethod('tshExecute'),
     'Opens a URI in a window/canvas.',
     ':open',

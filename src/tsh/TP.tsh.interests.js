@@ -60,7 +60,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('interests',
+TP.shell.TSH.addHelpTopic('interests',
     TP.tsh.interests.Type.getMethod('tshExecute'),
     'Displays the system signal interest map.',
     ':interests',

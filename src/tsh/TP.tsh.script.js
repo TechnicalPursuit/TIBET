@@ -551,7 +551,7 @@ function(source, shell, sibling, request) {
      *     the TP.tsh.eval type for processing specific to "runtime" processing
      *     of shell input.
      * @param {String|Array} source The input source to translate.
-     * @param {TP.core.Shell} shell The shell instance handling the request
+     * @param {TP.shell.Shell} shell The shell instance handling the request
      *     we're processing text for.
      * @param {TP.core.Node} sibling The previous sibling, which may contain
      *     pipe information.
@@ -2560,7 +2560,7 @@ function(src, shell, request) {
      *     and closing tags, TSH here document syntax is processed, subshell
      *     content is handled, and more.
      * @param {String} src The source text to process/convert.
-     * @param {TP.core.Shell} shell The shell instance requesting processing.
+     * @param {TP.shell.Shell} shell The shell instance requesting processing.
      * @param {TP.sig.Request} request The request being processed.
      * @returns {String} The processed/converted content.
      */

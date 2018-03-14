@@ -76,7 +76,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('dump',
+TP.shell.TSH.addHelpTopic('dump',
     TP.tsh.dump.Type.getMethod('tshExecute'),
     'Dumps a detailed version of stdout to stdout.',
     ':dump <target>',

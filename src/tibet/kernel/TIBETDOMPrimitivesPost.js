@@ -14010,7 +14010,7 @@ function(aNode, phaseList, outerElem) {
     }
 
     //  The default phase list is non-cached page processing list.
-    phases = TP.ifInvalid(phaseList, TP.core.TSH.NOCACHE_PHASES);
+    phases = TP.ifInvalid(phaseList, TP.shell.TSH.NOCACHE_PHASES);
 
     //  Once we have an element of any kind, loop upward until we a) find a
     //  tibet:phase, b) find the outerElem (if any), or c) run out of
@@ -14085,7 +14085,7 @@ function(aNode, phaseList, outerElem) {
     }
 
     //  The default phase list is non-cached page processing list.
-    phases = TP.ifInvalid(phaseList, TP.core.TSH.NOCACHE_PHASES);
+    phases = TP.ifInvalid(phaseList, TP.shell.TSH.NOCACHE_PHASES);
 
     //  Once we have an element of any kind, loop upward until we a) find a
     //  tibet:phase, b) find the outerElem (if any), or c) run out of
@@ -14208,7 +14208,7 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
     }
 
     //  default phase list to NOCACHE phases when missing.
-    phaseList = TP.ifInvalid(targetPhaseList, TP.core.TSH.NOCACHE_PHASES);
+    phaseList = TP.ifInvalid(targetPhaseList, TP.shell.TSH.NOCACHE_PHASES);
 
     //  Note that execution is a "hard-coded phase" so it will never be in
     //  the phase list. We have to test specifically for that.

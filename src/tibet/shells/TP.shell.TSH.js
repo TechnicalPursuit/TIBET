@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.TSH}
+ * @type {TP.shell.TSH}
  * @summary TIBET's primary shell, used for content processing, script
  *     execution, and interactive development via the TIBET console.
  * @description When working in the client we found it invaluable to have an
@@ -211,20 +211,20 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.defineSubtype('TSH');
+TP.shell.Shell.defineSubtype('shell.TSH');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
 //  command and content escaping prefixes
-TP.core.TSH.Type.defineConstant('ACTION_PREFIX', ':');
-TP.core.TSH.Type.defineConstant('ESCAPE_PREFIX', '*');
+TP.shell.TSH.Type.defineConstant('ACTION_PREFIX', ':');
+TP.shell.TSH.Type.defineConstant('ESCAPE_PREFIX', '*');
 
 //  how we split text buffers for subcommand processing
-TP.core.TSH.Type.defineConstant('COMMAND_SPLIT_REGEX',
+TP.shell.TSH.Type.defineConstant('COMMAND_SPLIT_REGEX',
     /\n([-a-zA-Z_0-9]*?):([-a-zA-Z_0-9]*?)($|\s)/g);
-TP.core.TSH.Type.defineConstant('COMMAND_START_REGEX',
+TP.shell.TSH.Type.defineConstant('COMMAND_START_REGEX',
     /^([-a-zA-Z_0-9]*?):([-a-zA-Z_0-9]*?)($|\s)/);
 
 //  ------------------------------------------------------------------------
@@ -233,7 +233,7 @@ TP.core.TSH.Type.defineConstant('COMMAND_START_REGEX',
 
 //  'starter' snippet list used for new accounts. a list of pairs:
 //  ([[command, user text], ...])
-TP.core.TSH.Type.defineAttribute(
+TP.shell.TSH.Type.defineAttribute(
                 'STARTER_SNIPPETS',
                 TP.ac(
                         TP.ac(':help', 'Help'),
@@ -250,7 +250,7 @@ TP.core.TSH.Type.defineAttribute(
 //  always done to any inbound content to ensure XML-compliant command text.
 //  Execute is optionally done with user-generated command input after
 //  all other phases have been run.
-TP.core.TSH.Type.defineConstant(
+TP.shell.TSH.Type.defineConstant(
     'AWAKEN_PHASES',
     TP.ac('AwakenDOM',          //  xi:includes, CSS @imports, etc.
             'AwakenEvents',     //  ev: namespace. NOTE others can generate
@@ -261,7 +261,7 @@ TP.core.TSH.Type.defineConstant(
                                 //  late
         ));
 
-TP.core.TSH.Type.defineConstant(
+TP.shell.TSH.Type.defineConstant(
     'CACHE_PHASES',
     TP.ac('Includes',           //  xi:includes, CSS @imports, etc.
             'Instructions',     //  ?tibet, ?xsl-stylesheet, etc.
@@ -281,18 +281,18 @@ TP.core.TSH.Type.defineConstant(
             'Optimize',         //  do performance-related indexing etc.
             'Finalize'));       //  complete (ready for HTML DOM etc)
 
-TP.core.TSH.Type.defineConstant(
+TP.shell.TSH.Type.defineConstant(
     'COMPILE_PHASES',
     TP.ac('Includes',           //  xi:includes, CSS @imports, etc.
             'Instructions',     //  ?tibet, ?xsl-stylesheet, etc.
             'Precompile',       //  conversion to compilable form
             'Compile'));        //  tag/macro expansion (ACT)
 
-TP.core.TSH.Type.defineConstant(
+TP.shell.TSH.Type.defineConstant(
     'EXECUTE_PHASES',
     TP.ac());                   //  rely on built-in Execute only
 
-TP.core.TSH.Type.defineConstant(
+TP.shell.TSH.Type.defineConstant(
     'NOCACHE_PHASES',
     TP.ac('Includes',           //  xi:includes, CSS @imports, etc.
             'Instructions',     //  ?tibet, ?xsl-stylesheet, etc.
@@ -305,7 +305,7 @@ TP.core.TSH.Type.defineConstant(
             'Optimize',         //  do performance-related indexing etc.
             'Finalize'));       //  formerly known as "prepped"
 
-TP.core.TSH.Type.defineConstant(
+TP.shell.TSH.Type.defineConstant(
     'REVIVE_PHASES',
     TP.ac('Resolve',            //  move non-DTD content out of html:head
                                 //  etc.
@@ -313,58 +313,58 @@ TP.core.TSH.Type.defineConstant(
             'Optimize',         //  do performance-related indexing etc.
             'Finalize'));       //  formerly known as "prepped"
 
-TP.core.TSH.set('commandPrefix', 'tsh');
+TP.shell.TSH.set('commandPrefix', 'tsh');
 
     //  set up observations for TP.sig.ShellRequests
-TP.core.TSH.register();
+TP.shell.TSH.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  the current execution context, a window or frame whose eval will be used
-TP.core.TSH.Inst.defineAttribute('context');
+TP.shell.TSH.Inst.defineAttribute('context');
 
 //  index-accessible list of currently watched variables
-TP.core.TSH.Inst.defineAttribute('watchArray', TP.ac());
+TP.shell.TSH.Inst.defineAttribute('watchArray', TP.ac());
 
 //  key-accessible collection of variable/attribute observations
-TP.core.TSH.Inst.defineAttribute('watchHash', TP.hc());
+TP.shell.TSH.Inst.defineAttribute('watchHash', TP.hc());
 
-TP.core.TSH.Inst.defineAttribute('commandXMLNS', 'tsh:');
+TP.shell.TSH.Inst.defineAttribute('commandXMLNS', 'tsh:');
 
 //  the XPath visualization controller object
-TP.core.TSH.Inst.defineAttribute('xpathVizController');
+TP.shell.TSH.Inst.defineAttribute('xpathVizController');
 
 //  whether a test is currently in process
-TP.core.TSH.Inst.defineAttribute('testing', false);
+TP.shell.TSH.Inst.defineAttribute('testing', false);
 
 //  current test count
-TP.core.TSH.Inst.defineAttribute('testCount', 0);
+TP.shell.TSH.Inst.defineAttribute('testCount', 0);
 
 //  what's the ID of the current test
-TP.core.TSH.Inst.defineAttribute('testID');
+TP.shell.TSH.Inst.defineAttribute('testID');
 
 //  was the last test successful?
-TP.core.TSH.Inst.defineAttribute('testOk', true);
+TP.shell.TSH.Inst.defineAttribute('testOk', true);
 
 //  should the test been run in verbose mode?
-TP.core.TSH.Inst.defineAttribute('testVerbose', false);
+TP.shell.TSH.Inst.defineAttribute('testVerbose', false);
 
 //  additional information presented when a shell of this type starts up
-TP.core.TSH.Inst.defineAttribute('introduction', null);
+TP.shell.TSH.Inst.defineAttribute('introduction', null);
 
 //  whether or not we're watching changes to remote resources
-TP.core.TSH.Inst.defineAttribute('remoteWatch');
+TP.shell.TSH.Inst.defineAttribute('remoteWatch');
 
 //  a TP.core.Socket object used to communicate with the TDS
-TP.core.TSH.Inst.defineAttribute('cliSocket');
+TP.shell.TSH.Inst.defineAttribute('cliSocket');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('init',
+TP.shell.TSH.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
@@ -374,7 +374,7 @@ function(aResourceID, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing an optional "parentShell" key used to define a parent for
      *     the newly constructed shell instance.
-     * @returns {TP.core.TSH} A new instance.
+     * @returns {TP.shell.TSH} A new instance.
      */
 
     var name;
@@ -398,7 +398,7 @@ function(aResourceID, aRequest) {
 //  STARTUP/LOGIN/LOGOUT
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('getAnnouncement',
+TP.shell.TSH.Inst.defineMethod('getAnnouncement',
 function() {
 
     /**
@@ -420,7 +420,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('isLoginShell',
+TP.shell.TSH.Inst.defineMethod('isLoginShell',
 function(aRequest) {
 
     /**
@@ -445,19 +445,19 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('login',
+TP.shell.TSH.Inst.defineMethod('login',
 function(aRequest) {
 
     /**
      * @method login
      * @summary Performs any login sequence necessary for the receiver. The
-     *     TP.core.TSH relies on the current TP.sys.getEffectiveUser() value as
+     *     TP.shell.TSH relies on the current TP.sys.getEffectiveUser() value as
      *     the starting point for the login sequence. When that data is empty
      *     the current 'username' cookie for the application is used to define a
      *     default username whose profile should load.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
-     * @returns {TP.core.TSH} The receiver.
+     * @returns {TP.shell.TSH} The receiver.
      */
 
     var request,
@@ -599,13 +599,13 @@ function(aRequest) {
             //  reporting via an output request
             /* eslint-disable no-extra-parens */
             if (TP.notValid(usernameResult) ||
-                usernameResult.getSize() < TP.core.Shell.MIN_USERNAME_LEN) {
+                usernameResult.getSize() < TP.shell.Shell.MIN_USERNAME_LEN) {
                 shell.isRunning(false);
             /* eslint-enable no-extra-parens */
 
                 invalidUsernameReq = TP.sig.UserOutputRequest.construct(
                             TP.hc('output', 'Invalid username. Must be ' +
-                                            TP.core.Shell.MIN_USERNAME_LEN +
+                                            TP.shell.Shell.MIN_USERNAME_LEN +
                                             ' chars or more.',
                                     'async', true));
 
@@ -688,7 +688,7 @@ function(aRequest) {
 //  REQUEST HANDLING
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('handle',
+TP.shell.TSH.Inst.defineMethod('handle',
 function(aRequest) {
 
     /**
@@ -737,7 +737,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineHandler('ShellRequest',
+TP.shell.TSH.Inst.defineHandler('ShellRequest',
 function(aRequest) {
 
     /**
@@ -748,7 +748,7 @@ function(aRequest) {
      * @returns {TP.sig.ShellResponse} A response to the request.
      */
 
-    //  all requests handled by the TP.core.TSH get a PID or 'process id'
+    //  all requests handled by the TP.shell.TSH get a PID or 'process id'
     //  which can be used by responders as a threadID which can be leveraged
     //  to keep output from related requests together if desired
     aRequest.atPut('PID', this.getNextPID());
@@ -758,7 +758,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineHandler('ShellRequestCompleted',
+TP.shell.TSH.Inst.defineHandler('ShellRequestCompleted',
 function(aSignal) {
 
     /**
@@ -795,7 +795,7 @@ function(aSignal) {
 //  EXECUTION
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('shouldComputeCosts',
+TP.shell.TSH.Inst.defineMethod('shouldComputeCosts',
 function(aFlag) {
 
     /**
@@ -816,7 +816,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('translateSymbol',
+TP.shell.TSH.Inst.defineMethod('translateSymbol',
 function(aString) {
 
     /**
@@ -1009,7 +1009,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('execute',
+TP.shell.TSH.Inst.defineMethod('execute',
 function(aRequest) {
 
     /**
@@ -1020,7 +1020,7 @@ function(aRequest) {
      *     processed.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
-     * @returns {Constant} A TP.core.Shell control constant.
+     * @returns {Constant} A TP.shell.Shell control constant.
      */
 
     var src,
@@ -1426,7 +1426,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('$runPhase',
+TP.shell.TSH.Inst.defineMethod('$runPhase',
 function(aRequest) {
 
     /**
@@ -1458,7 +1458,7 @@ function(aRequest) {
     }
 
     TP.ifTrace() && TP.sys.cfg('log.tsh_phases') ?
-        TP.trace(Date.now() + ' TP.core.TSH ' + phase) : 0;
+        TP.trace(Date.now() + ' TP.shell.TSH ' + phase) : 0;
 
     //  the node we should process should be found in cmdNode. it can change
     //  between phases as replacement documents/nodes are built etc, but it
@@ -1472,7 +1472,7 @@ function(aRequest) {
     //  capture a root document we can use for detachment detection
     rootDoc = TP.nodeGetDocument(node);
 
-    //  All phase methods for the TP.core.TSH are prefixed as such.
+    //  All phase methods for the TP.shell.TSH are prefixed as such.
     funcName = 'tsh' + phase;
 
     //  traverse the entire DOM of the current cmdRoot, processing each
@@ -1521,7 +1521,7 @@ function(aRequest) {
                             TP.$VERBOSE &&
                             TP.sys.cfg('log.tsh_phases') &&
                             TP.sys.cfg('log.tsh_phase_skips') ?
-                                TP.trace('TP.core.TSH ' + phase +
+                                TP.trace('TP.shell.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
                                             TP.nodeAsString(child,
@@ -1557,7 +1557,7 @@ function(aRequest) {
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_nodes') ?
-                            TP.trace(Date.now() + ' TP.core.TSH ' + phase +
+                            TP.trace(Date.now() + ' TP.shell.TSH ' + phase +
                                 ' ctrl: ' + TP.name(type) +
                                 ' ' +
                                 TP.nodeAsString(child, false, true)) : 0;
@@ -1672,7 +1672,7 @@ function(aRequest) {
                     //  sure that the child is still contained in the node
                     //  to trap potentially bad transform logic
                     if (TP.nodeIsDetached(child, rootDoc)) {
-                        message = 'TP.core.TSH ' + phase +
+                        message = 'TP.shell.TSH ' + phase +
                                     ' node detached: ' +
                                     TP.nodeAsString(child, false);
                         TP.error(message);
@@ -1685,7 +1685,7 @@ function(aRequest) {
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_skips') ?
-                            TP.trace('TP.core.TSH ' + phase +
+                            TP.trace('TP.shell.TSH ' + phase +
                                 ' skipping: ' +
                                 TP.name(type) + ' ' +
                                 TP.nodeAsString(child,
@@ -1732,7 +1732,7 @@ function(aRequest) {
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_nodes') ?
-                            TP.trace(Date.now() + ' TP.core.TSH ' + phase +
+                            TP.trace(Date.now() + ' TP.shell.TSH ' + phase +
                                 ' ctrl: ' + TP.name(type) +
                                 ' ' +
                                 TP.nodeAsString(child,
@@ -1796,7 +1796,7 @@ function(aRequest) {
                     //  sure that the child is still contained in the node
                     //  to trap potentially bad transform logic
                     if (TP.nodeIsDetached(child, rootDoc)) {
-                        message = 'TP.core.TSH ' + phase +
+                        message = 'TP.shell.TSH ' + phase +
                                     ' node detached: ' +
                                     TP.nodeAsString(child, false);
                         TP.error(message);
@@ -1809,7 +1809,7 @@ function(aRequest) {
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_skips') ?
-                            TP.trace('TP.core.TSH ' + phase +
+                            TP.trace('TP.shell.TSH ' + phase +
                                 ' skipping: ' +
                                 TP.name(type) + ' ' +
                                 TP.nodeAsString(child,
@@ -1826,7 +1826,7 @@ function(aRequest) {
 //  DATA BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeLog',
+TP.shell.TSH.Inst.defineMethod('executeLog',
 function(aRequest) {
 
     /**
@@ -1842,15 +1842,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('log',
-    TP.core.TSH.Inst.getMethod('executeLog'),
+TP.shell.TSH.addHelpTopic('log',
+    TP.shell.TSH.Inst.getMethod('executeLog'),
     'Generates a listing of a particular log.',
     ':log',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeLogin',
+TP.shell.TSH.Inst.defineMethod('executeLogin',
 function(aRequest) {
 
     /**
@@ -1878,15 +1878,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('login',
-    TP.core.TSH.Inst.getMethod('executeLogin'),
+TP.shell.TSH.addHelpTopic('login',
+    TP.shell.TSH.Inst.getMethod('executeLogin'),
     'Logs in to a specific user profile.',
     ':login',
     '');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeLogout',
+TP.shell.TSH.Inst.defineMethod('executeLogout',
 function(aRequest) {
 
     /**
@@ -1914,15 +1914,15 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic('logout',
-    TP.core.TSH.Inst.getMethod('executeLogout'),
+TP.shell.TSH.addHelpTopic('logout',
+    TP.shell.TSH.Inst.getMethod('executeLogout'),
     'Logs out of a specific user profile.',
     ':logout',
     '');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeSort',
+TP.shell.TSH.Inst.defineMethod('executeSort',
 function(aRequest) {
 
     /**
@@ -1938,15 +1938,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('sort',
-    TP.core.TSH.Inst.getMethod('executeSort'),
+TP.shell.TSH.addHelpTopic('sort',
+    TP.shell.TSH.Inst.getMethod('executeSort'),
     'Sorts stdin and writes it to stdout.',
     ':sort',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeUniq',
+TP.shell.TSH.Inst.defineMethod('executeUniq',
 function(aRequest) {
 
     /**
@@ -1962,8 +1962,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('uniq',
-    TP.core.TSH.Inst.getMethod('executeUniq'),
+TP.shell.TSH.addHelpTopic('uniq',
+    TP.shell.TSH.Inst.getMethod('executeUniq'),
     'Uniques stdin and writes it to stdout.',
     ':uniq',
     'Coming soon.');
@@ -1972,7 +1972,7 @@ TP.core.TSH.addHelpTopic('uniq',
 //  DEBUGGING BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeBreak',
+TP.shell.TSH.Inst.defineMethod('executeBreak',
 function(aRequest) {
 
     /**
@@ -1988,15 +1988,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('break',
-    TP.core.TSH.Inst.getMethod('executeBreak'),
+TP.shell.TSH.addHelpTopic('break',
+    TP.shell.TSH.Inst.getMethod('executeBreak'),
     'Sets a debugger breakpoint.',
     ':break',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeExpect',
+TP.shell.TSH.Inst.defineMethod('executeExpect',
 function(aRequest) {
 
     /**
@@ -2012,15 +2012,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('expect',
-    TP.core.TSH.Inst.getMethod('executeExpect'),
+TP.shell.TSH.addHelpTopic('expect',
+    TP.shell.TSH.Inst.getMethod('executeExpect'),
     'Sets an expectation to be verified.',
     ':expect',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeWatch',
+TP.shell.TSH.Inst.defineMethod('executeWatch',
 function(aRequest) {
 
     /**
@@ -2036,8 +2036,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('watch',
-    TP.core.TSH.Inst.getMethod('executeWatch'),
+TP.shell.TSH.addHelpTopic('watch',
+    TP.shell.TSH.Inst.getMethod('executeWatch'),
     'Sets a value watch expression to be monitored.',
     ':watch',
     'Coming soon.');
@@ -2046,7 +2046,7 @@ TP.core.TSH.addHelpTopic('watch',
 //  JOB BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeJob',
+TP.shell.TSH.Inst.defineMethod('executeJob',
 function(aRequest) {
 
     /**
@@ -2062,15 +2062,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('job',
-    TP.core.TSH.Inst.getMethod('executeJob'),
+TP.shell.TSH.addHelpTopic('job',
+    TP.shell.TSH.Inst.getMethod('executeJob'),
     'Generates a table of active "processes".',
     ':job',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeKill',
+TP.shell.TSH.Inst.defineMethod('executeKill',
 function(aRequest) {
 
     /**
@@ -2086,8 +2086,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('kill',
-    TP.core.TSH.Inst.getMethod('executeKill'),
+TP.shell.TSH.addHelpTopic('kill',
+    TP.shell.TSH.Inst.getMethod('executeKill'),
     'Kill an active TIBET "job" instance.',
     ':kill',
     'Coming soon.');
@@ -2096,7 +2096,7 @@ TP.core.TSH.addHelpTopic('kill',
 //  FORMATTING BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeMan',
+TP.shell.TSH.Inst.defineMethod('executeMan',
 function(aRequest) {
 
     /**
@@ -2112,15 +2112,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('man',
-    TP.core.TSH.Inst.getMethod('executeMan'),
+TP.shell.TSH.addHelpTopic('man',
+    TP.shell.TSH.Inst.getMethod('executeMan'),
     'Produces a man page for the target object.',
     ':man',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeResource',
+TP.shell.TSH.Inst.defineMethod('executeResource',
 function(aRequest) {
 
     /**
@@ -2213,8 +2213,8 @@ function(aRequest) {
     return aRequest.complete(arr);
 });
 
-TP.core.TSH.addHelpTopic('resource',
-    TP.core.TSH.Inst.getMethod('executeResource'),
+TP.shell.TSH.addHelpTopic('resource',
+    TP.shell.TSH.Inst.getMethod('executeResource'),
     'Produce a list of computed resource URIs for the application.',
     ':resource',
     '');
@@ -2223,7 +2223,7 @@ TP.core.TSH.addHelpTopic('resource',
 //  LOADING BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeSource',
+TP.shell.TSH.Inst.defineMethod('executeSource',
 function(aRequest) {
 
     /**
@@ -2348,8 +2348,8 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic('source',
-    TP.core.TSH.Inst.getMethod('executeSource'),
+TP.shell.TSH.addHelpTopic('source',
+    TP.shell.TSH.Inst.getMethod('executeSource'),
     'Reloads the source file for an object/type.',
     ':source [target]',
     '');
@@ -2358,7 +2358,7 @@ TP.core.TSH.addHelpTopic('source',
 //  REFLECTION BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeBuiltins',
+TP.shell.TSH.Inst.defineMethod('executeBuiltins',
 function(aRequest) {
 
     /**
@@ -2374,15 +2374,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('builtins',
-    TP.core.TSH.Inst.getMethod('executeBuiltins'),
+TP.shell.TSH.addHelpTopic('builtins',
+    TP.shell.TSH.Inst.getMethod('executeBuiltins'),
     'Lists the available built-in functions.',
     ':builtins',
     'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeGlobals',
+TP.shell.TSH.Inst.defineMethod('executeGlobals',
 function(aRequest) {
 
     /**
@@ -2415,8 +2415,8 @@ function(aRequest) {
     aRequest.complete(keys);
 });
 
-TP.core.TSH.addHelpTopic('globals',
-    TP.core.TSH.Inst.getMethod('executeGlobals'),
+TP.shell.TSH.addHelpTopic('globals',
+    TP.shell.TSH.Inst.getMethod('executeGlobals'),
     'Display global variables, functions, etc.',
     ':globals',
     '');
@@ -2425,7 +2425,7 @@ TP.core.TSH.addHelpTopic('globals',
 //  TIMING BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeSleep',
+TP.shell.TSH.Inst.defineMethod('executeSleep',
 function(aRequest) {
 
     /**
@@ -2459,15 +2459,15 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic('sleep',
-    TP.core.TSH.Inst.getMethod('executeSleep'),
+TP.shell.TSH.addHelpTopic('sleep',
+    TP.shell.TSH.Inst.getMethod('executeSleep'),
     'Pauses and waits a specified amount of time.',
     ':sleep',
     '');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeWait',
+TP.shell.TSH.Inst.defineMethod('executeWait',
 function(aRequest) {
 
     /**
@@ -2485,8 +2485,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic('wait',
-    TP.core.TSH.Inst.getMethod('executeWait'),
+TP.shell.TSH.addHelpTopic('wait',
+    TP.shell.TSH.Inst.getMethod('executeWait'),
     'Pauses execution until a signal is received.',
     ':wait',
     'Coming soon.');
@@ -2495,7 +2495,7 @@ TP.core.TSH.addHelpTopic('wait',
 //  TIBET COMMAND INTERFACE
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeCli',
+TP.shell.TSH.Inst.defineMethod('executeCli',
 function(aRequest) {
 
     /**
@@ -2529,7 +2529,7 @@ function(aRequest) {
 
     noSocket = this.getArgument(aRequest, 'tsh:nosocket');
 
-    shell = TP.core.TSH.getDefaultInstance();
+    shell = TP.shell.TSH.getDefaultInstance();
 
     //  ---
     //  Assemble the command string. We use the same "url format" in all cases.
@@ -2838,8 +2838,8 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic('cli',
-    TP.core.TSH.Inst.getMethod('executeCli'),
+TP.shell.TSH.addHelpTopic('cli',
+    TP.shell.TSH.Inst.getMethod('executeCli'),
     'Runs a tibet CLI call. Requires active TDS.',
     ':cli',
     '');

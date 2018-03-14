@@ -16,17 +16,17 @@
 //  Shell Primitives
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('shell',
+TP.definePrimitive('shellExec',
 function(aRequest) {
 
     /**
-     * @method shell
+     * @method shellExec
      * @summary A wrapper for constructing and firing a TP.sig.ShellRequest.
      *     This is often used in UI event handlers to avoid complex
      *     TP.dispatch() logic for triggering script execution. NOTE that this
      *     command makes use of the current TP.core.User instance to provide
-     *     profile information, if any. This ties the TP.shell() command into
-     *     TIBET's user-interface permission machinery.
+     *     profile information, if any. This ties the TP.shellExec() command
+     *     into TIBET's user-interface permission machinery.
      * @param {String|TP.sig.Request|TP.core.Hash} aRequest The String of TSH
      *     content to execute or a request containing proper shell parameters.
      *     Those include:
@@ -99,18 +99,18 @@ function(aRequest) {
     if (TP.isEmpty(shellID)) {
 
         //  By default, we run stuff against the TSH.
-        shell = TP.core.TSH.getDefaultInstance();
+        shell = TP.shell.TSH.getDefaultInstance();
 
     } else if (TP.isString(shellID)) {
 
         shell = TP.core.Resource.getResourceById(shellID);
-        if (!TP.isKindOf(shell, 'TP.core.Shell')) {
+        if (!TP.isKindOf(shell, 'TP.shell.Shell')) {
             TP.raise(this, 'TP.sig.InvalidParameter',
                 'Shell ID must be a valid string or shell instance.');
             return;
         }
 
-    } else if (TP.isKindOf(shellID, 'TP.core.Shell')) {
+    } else if (TP.isKindOf(shellID, 'TP.shell.Shell')) {
         shell = shellID;
     } else {
         TP.raise(this, 'TP.sig.InvalidParameter',
@@ -293,40 +293,40 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.Shell
+//  TP.shell.Shell
 //  ------------------------------------------------------------------------
 
-TP.core.Service.defineSubtype('Shell');
+TP.core.Service.defineSubtype('shell.Shell');
 
 //  The core shell type is abstract.
-TP.core.Shell.isAbstract(true);
+TP.shell.Shell.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Local Attributes
 //  ------------------------------------------------------------------------
 
 //  container for help information
-TP.core.Shell.defineAttribute('helpTopics');
+TP.shell.Shell.defineAttribute('helpTopics');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
 //  rough limits on how many entries we'll maintain in core data structures
-TP.core.Shell.Type.defineConstant('HISTORY_MAX', 250);
+TP.shell.Shell.Type.defineConstant('HISTORY_MAX', 250);
 
 //  the limit of the number of positional arguments
-TP.core.Shell.Type.defineConstant('POSITIONAL_MAX', 25);
+TP.shell.Shell.Type.defineConstant('POSITIONAL_MAX', 25);
 
-TP.core.Shell.Type.defineConstant('MIN_USERNAME_LEN', 2);
-TP.core.Shell.Type.defineConstant('MIN_PASSWORD_LEN', 2);
+TP.shell.Shell.Type.defineConstant('MIN_USERNAME_LEN', 2);
+TP.shell.Shell.Type.defineConstant('MIN_PASSWORD_LEN', 2);
 
-TP.core.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
+TP.shell.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
     TP.rc('(xmlns|xmlns:\\w+|class|tibet:tag|tag|tsh:argv|argv)'));
 
 //  'starter' snippet list used for new accounts. a list of pairs:
 //  ([[command, user text], ...])
-TP.core.Shell.Type.defineAttribute(
+TP.shell.Shell.Type.defineAttribute(
                 'STARTER_SNIPPETS',
                 TP.ac(
                         TP.ac(':clear', 'Clear'),
@@ -340,20 +340,20 @@ TP.core.Shell.Type.defineAttribute(
 
 //  TP.sig.ShellRequests are the service triggers, activating shell
 //  processing
-TP.core.Shell.Type.defineAttribute(
+TP.shell.Shell.Type.defineAttribute(
     'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.ShellRequest')));
 
 //  the default namespace prefix for unprefixed commands in this shell.
-TP.core.Shell.Type.defineAttribute('commandPrefix', '');
+TP.shell.Shell.Type.defineAttribute('commandPrefix', '');
 
 //  any TIBET update info that was obtained on system startup.
-TP.core.Shell.Type.defineAttribute('updateInfo');
+TP.shell.Shell.Type.defineAttribute('updateInfo');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Type.defineMethod('initialize',
+TP.shell.Shell.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -386,7 +386,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Type.defineHandler('UpdateAvailable',
+TP.shell.Shell.Type.defineHandler('UpdateAvailable',
 function(aSignal) {
 
     /**
@@ -394,7 +394,7 @@ function(aSignal) {
      * @summary Handles when an 'TP.sig.UpdateAvailable' signal is thrown.
      * @param {TP.sig.UpdateAvailable} aSignal The signal that caused this
      *     handler to execute.
-     * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
+     * @returns {TP.lang.RootObject.<TP.shell.Shell>} The TP.shell.Shell type
      *     object.
      */
 
@@ -439,7 +439,7 @@ function(aSignal) {
 //  HELP TOPICS
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Type.defineMethod('addHelpTopic',
+TP.shell.Shell.Type.defineMethod('addHelpTopic',
 function(command, method, abstract, usage, description) {
 
     /**
@@ -451,7 +451,7 @@ function(command, method, abstract, usage, description) {
      * @param {String} abstract The abstract of the command. Should be a single
      *     line of text maximum.
      * @param {Function} method The method object that implements the command.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var topics;
@@ -464,11 +464,11 @@ function(command, method, abstract, usage, description) {
         TP.warn('Empty usage or abstract string for help topic: ' + command);
     }
 
-    topics = TP.core.Shell.get('helpTopics');
+    topics = TP.shell.Shell.get('helpTopics');
     if (TP.notValid(topics)) {
         topics = TP.hc();
         topics.setSortFunction(TP.sort.CASE_INSENSITIVE);
-        TP.core.Shell.$set('helpTopics', topics);
+        TP.shell.Shell.$set('helpTopics', topics);
     }
 
     //  tuck usage/abstract onto method itself. we'll retreive from there.
@@ -490,56 +490,56 @@ function(command, method, abstract, usage, description) {
 
 //  whether or not we just loaded the profile. Used as a flag between
 //  initProfile() and saveProfile()
-TP.core.Shell.Inst.defineAttribute('$justLoadedProfile');
+TP.shell.Shell.Inst.defineAttribute('$justLoadedProfile');
 
 //  the current list of aliases for this shell
-TP.core.Shell.Inst.defineAttribute('aliases');
+TP.shell.Shell.Inst.defineAttribute('aliases');
 
 //  the default namespace prefix for unprefixed commands
-TP.core.Shell.Inst.defineAttribute('commandPrefix');
+TP.shell.Shell.Inst.defineAttribute('commandPrefix');
 
 //  the current prompt string. this is built from the command prefix
-TP.core.Shell.Inst.defineAttribute('commandPrompt');
+TP.shell.Shell.Inst.defineAttribute('commandPrompt');
 
 //  the object used as a variable scope for processing local variables
 //  within the shell.
-TP.core.Shell.Inst.defineAttribute('executionInstance');
+TP.shell.Shell.Inst.defineAttribute('executionInstance');
 
 //  history list support
-TP.core.Shell.Inst.defineAttribute('history');
-TP.core.Shell.Inst.defineAttribute('historyIndex', 0);
+TP.shell.Shell.Inst.defineAttribute('history');
+TP.shell.Shell.Inst.defineAttribute('historyIndex', 0);
 
-TP.core.Shell.Inst.defineAttribute('nextPID', 0);
+TP.shell.Shell.Inst.defineAttribute('nextPID', 0);
 
 //  whether the shell is currently running (has started)
-TP.core.Shell.Inst.defineAttribute('running', false);
+TP.shell.Shell.Inst.defineAttribute('running', false);
 
 //  an optional initial request which triggered instance creation
-TP.core.Shell.Inst.defineAttribute('request');
+TP.shell.Shell.Inst.defineAttribute('request');
 
 //  slots for the previous and current request's which are/have been
 //  executed
-TP.core.Shell.Inst.defineAttribute('current');
-TP.core.Shell.Inst.defineAttribute('previous');
+TP.shell.Shell.Inst.defineAttribute('current');
+TP.shell.Shell.Inst.defineAttribute('previous');
 
 //  the current username (profile name) for the shell
-TP.core.Shell.Inst.defineAttribute('username');
+TP.shell.Shell.Inst.defineAttribute('username');
 
 //  the shell's path stack, a set of paths which have been previously
 //  manipulated via a path operation such as pushd or popd
-TP.core.Shell.Inst.defineAttribute('pathStack');
+TP.shell.Shell.Inst.defineAttribute('pathStack');
 
 //  the announcement used when a shell of this type starts up
-TP.core.Shell.Inst.defineAttribute('announcement', null);
+TP.shell.Shell.Inst.defineAttribute('announcement', null);
 
 //  additional information presented when a shell of this type starts up
-TP.core.Shell.Inst.defineAttribute('introduction', null);
+TP.shell.Shell.Inst.defineAttribute('introduction', null);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('init',
+TP.shell.Shell.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
@@ -550,7 +550,7 @@ function(aResourceID, aRequest) {
      * @param {String} aResourceID The standard service identifier.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing shell parameters etc.
-     * @returns {TP.core.Shell} A new instance.
+     * @returns {TP.shell.Shell} A new instance.
      */
 
     this.callNextMethod();
@@ -582,7 +582,7 @@ function(aResourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getCommandMethod',
+TP.shell.Shell.Inst.defineMethod('getCommandMethod',
 function(aCommandName) {
 
     /**
@@ -675,7 +675,7 @@ function(aCommandName) {
     //  shell types have some built-in methods modeled this way.
 
     //  TODO: Iterate over the currently installed shells
-    shells = TP.ac(TP.core.TSH);
+    shells = TP.ac(TP.shell.TSH);
     for (i = 0; i < shells.getSize(); i++) {
         method = shells.at(i).Inst.getMethod(
                                     'execute' + TP.makeStartUpper(cmdName));
@@ -693,7 +693,7 @@ function(aCommandName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('$getEqualityValue',
+TP.shell.Shell.Inst.defineMethod('$getEqualityValue',
 function() {
 
     /**
@@ -708,7 +708,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getNextPID',
+TP.shell.Shell.Inst.defineMethod('getNextPID',
 function() {
 
     /**
@@ -728,7 +728,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getPrefix',
+TP.shell.Shell.Inst.defineMethod('getPrefix',
 function() {
 
     /**
@@ -744,7 +744,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getPrompt',
+TP.shell.Shell.Inst.defineMethod('getPrompt',
 function() {
 
     /**
@@ -759,7 +759,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('setPrefix',
+TP.shell.Shell.Inst.defineMethod('setPrefix',
 function(aPrefix) {
 
     /**
@@ -767,7 +767,7 @@ function(aPrefix) {
      * @summary Sets the default command prefix for any unprefixed commands.
      * @param {String} aPrefix The namespace prefix. This should typically be in
      *     lower case (tsh, yak, etc).
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var prefix;
@@ -780,7 +780,7 @@ function(aPrefix) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('setPrompt',
+TP.shell.Shell.Inst.defineMethod('setPrompt',
 function(aPromptString) {
 
     /**
@@ -788,7 +788,7 @@ function(aPromptString) {
      * @summary Sets the prompt string, a string which will be transformed and
      *     used by this shell to signify command input.
      * @param {String} aPromptString The prompt.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     this.$set('commandPrompt', aPromptString);
@@ -800,7 +800,7 @@ function(aPromptString) {
 //  STARTUP/LOGIN/LOGOUT
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('announce',
+TP.shell.Shell.Inst.defineMethod('announce',
 function(aRequest) {
 
     /**
@@ -835,7 +835,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineHandler('AppShutdown',
+TP.shell.Shell.Inst.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**
@@ -843,7 +843,7 @@ function(aSignal) {
      * @summary Handles when an 'TP.sig.AppShutdown' signal is thrown.
      * @param {TP.sig.AppShutdown} aSignal The signal that caused this
      *     handler to execute.
-     * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
+     * @returns {TP.lang.RootObject.<TP.shell.Shell>} The TP.shell.Shell type
      *     object.
      */
 
@@ -854,7 +854,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('isLoginShell',
+TP.shell.Shell.Inst.defineMethod('isLoginShell',
 function() {
 
     /**
@@ -869,7 +869,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('isRunning',
+TP.shell.Shell.Inst.defineMethod('isRunning',
 function(aFlag) {
 
     /**
@@ -888,7 +888,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('login',
+TP.shell.Shell.Inst.defineMethod('login',
 function(aRequest) {
 
     /**
@@ -898,7 +898,7 @@ function(aRequest) {
      *     provide target-specific login/profile management features.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     TP.override();
@@ -908,7 +908,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('logout',
+TP.shell.Shell.Inst.defineMethod('logout',
 function(aRequest) {
 
     /**
@@ -920,7 +920,7 @@ function(aRequest) {
      *     set data should be discarded, the default is false.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     //  can't log out of a non-login shell
@@ -947,7 +947,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('start',
+TP.shell.Shell.Inst.defineMethod('start',
 function(aRequest) {
 
     /**
@@ -978,7 +978,7 @@ function(aRequest) {
 //  PROFILE
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('initProfile',
+TP.shell.Shell.Inst.defineMethod('initProfile',
 function() {
 
     /**
@@ -1144,7 +1144,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('saveProfile',
+TP.shell.Shell.Inst.defineMethod('saveProfile',
 function() {
 
     /**
@@ -1157,6 +1157,7 @@ function() {
         historyEntries,
         snippetEntries,
         bookmarkEntries,
+        editorTabEntries,
 //        screenEntries,
 
         userData,
@@ -1211,6 +1212,16 @@ function() {
         }
 
         //  ---
+        //  Console Editor Tabs
+        //  ---
+
+        editorTabEntries =
+            TP.uc('urn:tibet:sherpa_editortabs').getResource().get('result');
+        if (TP.isEmpty(editorTabEntries)) {
+            editorTabEntries = TP.ac();
+        }
+
+        //  ---
         //  Screens
         //  ---
 /*
@@ -1228,7 +1239,8 @@ function() {
         userData = TP.hc(
                     'history', historyEntries,
                     'snippets', snippetEntries,
-                    'bookmarks', bookmarkEntries); // ,
+                    'bookmarks', bookmarkEntries,
+                    'editortabs', editorTabEntries);
                     // 'screens', screenEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
@@ -1242,7 +1254,7 @@ function() {
 //  ALIASES
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getAlias',
+TP.shell.Shell.Inst.defineMethod('getAlias',
 function(aName) {
 
     /**
@@ -1281,7 +1293,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('setAlias',
+TP.shell.Shell.Inst.defineMethod('setAlias',
 function(aName, aValue) {
 
     /**
@@ -1290,7 +1302,7 @@ function(aName, aValue) {
      * @param {String} aName The alias name to set.
      * @param {String} aValue The string value to set. No object resolution is
      *     done on alias values so this will be used literally.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var value;
@@ -1308,14 +1320,14 @@ function(aName, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('unsetAlias',
+TP.shell.Shell.Inst.defineMethod('unsetAlias',
 function(aName) {
 
     /**
      * @method unsetAlias
      * @summary Removes an alias definition from the receiver.
      * @param {String} aName The alias name to remove.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     this.get('aliases').removeKey(aName);
@@ -1327,7 +1339,7 @@ function(aName) {
 //  HISTORY
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('addHistory',
+TP.shell.Shell.Inst.defineMethod('addHistory',
 function(aRequest) {
 
     /**
@@ -1414,7 +1426,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('decrementHistoryIndex',
+TP.shell.Shell.Inst.defineMethod('decrementHistoryIndex',
 function() {
 
     /**
@@ -1445,7 +1457,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getHistory',
+TP.shell.Shell.Inst.defineMethod('getHistory',
 function(anIndex, afterExpansion) {
 
     /**
@@ -1558,7 +1570,7 @@ function(anIndex, afterExpansion) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('incrementHistoryIndex',
+TP.shell.Shell.Inst.defineMethod('incrementHistoryIndex',
 function() {
 
     /**
@@ -1592,7 +1604,7 @@ function() {
 //  VARIABLES
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getVariable',
+TP.shell.Shell.Inst.defineMethod('getVariable',
 function(aName) {
 
     /**
@@ -1635,7 +1647,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('setVariable',
+TP.shell.Shell.Inst.defineMethod('setVariable',
 function(aName, aValue) {
 
     /**
@@ -1650,7 +1662,7 @@ function(aName, aValue) {
      * @param {String} aValue The string value to set. Note that when evaluated
      *     as part of command input this may still resolve to an object, but no
      *     resolution is done at the time of variable definition.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var name;
@@ -1669,14 +1681,14 @@ function(aName, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('unsetVariable',
+TP.shell.Shell.Inst.defineMethod('unsetVariable',
 function(aName) {
 
     /**
      * @method unsetVariable
      * @summary Removes a variable definition from the receiver.
      * @param {String} aName The variable name to remove.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var name;
@@ -1696,7 +1708,7 @@ function(aName) {
 //  REQUEST HANDLING
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineHandler('ShellRequest',
+TP.shell.Shell.Inst.defineHandler('ShellRequest',
 function(aRequest) {
 
     /**
@@ -1705,7 +1717,7 @@ function(aRequest) {
      *     TP.sig.ShellRequest instances are the typical way commands are
      *     provided to the shell for processing.
      * @param {TP.sig.ShellRequest} aRequest The request to respond to.
-     * @returns {TP.core.ShellResponse} A response to the request.
+     * @returns {TP.shell.ShellResponse} A response to the request.
      */
 
     var response,
@@ -1787,7 +1799,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineHandler('UserInput',
+TP.shell.Shell.Inst.defineHandler('UserInput',
 function(aSignal) {
 
     /**
@@ -1847,7 +1859,7 @@ function(aSignal) {
 //  STDIO
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('attachSTDIO',
+TP.shell.Shell.Inst.defineMethod('attachSTDIO',
 function(aProvider) {
 
     /**
@@ -1856,7 +1868,7 @@ function(aProvider) {
      *     object which implements those hooks for reuse.
      * @param {Object} aProvider An object implementing stdin, stdout, and
      *     stderr hook functions.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     if (!TP.canInvokeInterface(
@@ -1904,14 +1916,14 @@ function(aProvider) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('detachSTDIO',
+TP.shell.Shell.Inst.defineMethod('detachSTDIO',
 function() {
 
     /**
      * @method detachSTDIO
      * @summary Detaches the receiver's stdio hooks from a STDIO provider,
      *     reverting them to their original settings.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     if (TP.notValid(this.$origStdin)) {
@@ -1928,7 +1940,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('notify',
+TP.shell.Shell.Inst.defineMethod('notify',
 function(anObject, aRequest) {
 
     /**
@@ -1941,7 +1953,7 @@ function(anObject, aRequest) {
      * @param {Object} anObject The object to output.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for 'cmdNotifier', 'cmdAsIs', 'messageType', etc.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var message;
@@ -1973,7 +1985,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('stderr',
+TP.shell.Shell.Inst.defineMethod('stderr',
 function(anError, aRequest) {
 
     /**
@@ -1984,7 +1996,7 @@ function(anError, aRequest) {
      * @param {String} anError The error to output.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var req;
@@ -2012,7 +2024,7 @@ function(anError, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('stdin',
+TP.shell.Shell.Inst.defineMethod('stdin',
 function(aQuery, aDefault, aRequest) {
 
     /**
@@ -2050,7 +2062,7 @@ function(aQuery, aDefault, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('stdout',
+TP.shell.Shell.Inst.defineMethod('stdout',
 function(anObject, aRequest) {
 
     /**
@@ -2061,7 +2073,7 @@ function(anObject, aRequest) {
      * @param {Object} anObject The object to output.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var req;
@@ -2093,7 +2105,7 @@ Methods relating to path expansion and path stack operation.
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('addPath',
+TP.shell.Shell.Inst.defineMethod('addPath',
 function(aPath) {
 
     /**
@@ -2103,7 +2115,7 @@ function(aPath) {
      *     expanded when added so all paths in the stack are absolute paths once
      *     the add has completed.
      * @param {String} aPath The path description to add.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var path,
@@ -2157,13 +2169,13 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('clearPaths',
+TP.shell.Shell.Inst.defineMethod('clearPaths',
 function() {
 
     /**
      * @method clearPaths
      * @summary Empties the path stack.
-     * @returns {TP.core.Shell} The receiver.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     this.get('pathStack').empty();
@@ -2173,7 +2185,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('execute',
+TP.shell.Shell.Inst.defineMethod('execute',
 function(aRequest) {
 
     /**
@@ -2192,7 +2204,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('expandPath',
+TP.shell.Shell.Inst.defineMethod('expandPath',
 function(aPath) {
 
     /**
@@ -2311,7 +2323,7 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getPath',
+TP.shell.Shell.Inst.defineMethod('getPath',
 function(anIndex) {
 
     /**
@@ -2347,7 +2359,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getLastPath',
+TP.shell.Shell.Inst.defineMethod('getLastPath',
 function() {
 
     /**
@@ -2361,7 +2373,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('removePath',
+TP.shell.Shell.Inst.defineMethod('removePath',
 function(anIndex) {
 
     /**
@@ -2399,7 +2411,7 @@ function(anIndex) {
 //  OBJECT RESOLUTION
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getExecutionContext',
+TP.shell.Shell.Inst.defineMethod('getExecutionContext',
 function(aRequest) {
 
     /**
@@ -2445,7 +2457,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getExecutionInstance',
+TP.shell.Shell.Inst.defineMethod('getExecutionInstance',
 function(aRequest) {
 
     /**
@@ -2514,7 +2526,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('resolveObjectReference',
+TP.shell.Shell.Inst.defineMethod('resolveObjectReference',
 function(anObjectSpec, aRequest, forArguments) {
 
     /**
@@ -2697,7 +2709,7 @@ function(anObjectSpec, aRequest, forArguments) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('resolveVariableSubstitutions',
+TP.shell.Shell.Inst.defineMethod('resolveVariableSubstitutions',
 function(aString) {
 
     /**
@@ -2752,7 +2764,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('setExecutionContext',
+TP.shell.Shell.Inst.defineMethod('setExecutionContext',
 function(aWindow) {
 
     /**
@@ -2797,7 +2809,7 @@ function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('updateCommandNode',
+TP.shell.Shell.Inst.defineMethod('updateCommandNode',
 function(aRequest, shouldReport) {
 
     /**
@@ -2834,7 +2846,7 @@ function(aRequest, shouldReport) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('updateExecutionInstance',
+TP.shell.Shell.Inst.defineMethod('updateExecutionInstance',
 function(aRequest) {
 
     /**
@@ -2889,7 +2901,7 @@ function(aRequest) {
 //  REQUEST SUGARS
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getArgument',
+TP.shell.Shell.Inst.defineMethod('getArgument',
 function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
 
     /**
@@ -2993,7 +3005,7 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getArguments',
+TP.shell.Shell.Inst.defineMethod('getArguments',
 function(aRequest, forms) {
 
     /**
@@ -3277,7 +3289,7 @@ function(aRequest, forms) {
                     index++;
                 }
 
-            } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(name)) {
+            } else if (!TP.shell.Shell.INVALID_ARGUMENT_MATCHER.test(name)) {
                 val = value;
                 expandedVal = null;
 
@@ -3393,7 +3405,7 @@ function(aRequest, forms) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('hasTrueArgument',
+TP.shell.Shell.Inst.defineMethod('hasTrueArgument',
 function(aRequest, anArgument) {
 
     /**
@@ -3414,7 +3426,7 @@ function(aRequest, anArgument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('hasArguments',
+TP.shell.Shell.Inst.defineMethod('hasArguments',
 function(aRequest) {
 
     /**
@@ -3438,7 +3450,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getParam',
+TP.shell.Shell.Inst.defineMethod('getParam',
 function(aRequest, parameterName) {
 
     /**
@@ -3459,7 +3471,7 @@ function(aRequest, parameterName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('getParams',
+TP.shell.Shell.Inst.defineMethod('getParams',
 function(aRequest) {
 
     /**
@@ -3570,7 +3582,7 @@ function(aRequest) {
 //  COMMON BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeAbout',
+TP.shell.Shell.Inst.defineMethod('executeAbout',
 function(aRequest) {
 
     /**
@@ -3588,15 +3600,15 @@ function(aRequest) {
     return aRequest.complete(str);
 });
 
-TP.core.Shell.addHelpTopic('about',
-    TP.core.Shell.Inst.getMethod('executeAbout'),
+TP.shell.Shell.addHelpTopic('about',
+    TP.shell.Shell.Inst.getMethod('executeAbout'),
     'Outputs a simple identification string.',
     ':about',
     'Identifies the current TIBET environment.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeAlias',
+TP.shell.Shell.Inst.defineMethod('executeAlias',
 function(aRequest) {
 
     /**
@@ -3665,8 +3677,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic('alias',
-    TP.core.Shell.Inst.getMethod('executeAlias'),
+TP.shell.Shell.addHelpTopic('alias',
+    TP.shell.Shell.Inst.getMethod('executeAlias'),
     'Define or display a command alias.',
     ':alias [name] [value]',
     'Displays all aliases, a single alias or creates/deletes an alias (to' +
@@ -3674,7 +3686,7 @@ TP.core.Shell.addHelpTopic('alias',
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeClear',
+TP.shell.Shell.Inst.defineMethod('executeClear',
 function(aRequest) {
 
     /**
@@ -3697,15 +3709,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic('clear',
-    TP.core.Shell.Inst.getMethod('executeClear'),
+TP.shell.Shell.addHelpTopic('clear',
+    TP.shell.Shell.Inst.getMethod('executeClear'),
     'Clears the console output.',
     ':clear',
     'Clears the entire console output region.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeConfig',
+TP.shell.Shell.Inst.defineMethod('executeConfig',
 function(aRequest) {
 
     /**
@@ -3764,8 +3776,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic('config',
-    TP.core.Shell.Inst.getMethod('executeConfig'),
+TP.shell.Shell.addHelpTopic('config',
+    TP.shell.Shell.Inst.getMethod('executeConfig'),
     'Generates a list of TIBET configuration values.',
     ':config [name[=value]]',
     'Shows the names and values for all configuration values if no arguments' +
@@ -3774,7 +3786,7 @@ TP.core.Shell.addHelpTopic('config',
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeHelp',
+TP.shell.Shell.Inst.defineMethod('executeHelp',
 function(aRequest) {
 
     /**
@@ -3791,7 +3803,7 @@ function(aRequest) {
         output;
 
     //  Grab all of the help topics that were grabbed as the commands loaded
-    topics = TP.core.Shell.get('helpTopics');
+    topics = TP.shell.Shell.get('helpTopics');
     result = TP.hc();
 
     topics.perform(
@@ -3870,15 +3882,15 @@ function(aRequest) {
     return aRequest.complete(output);
 });
 
-TP.core.Shell.addHelpTopic('help',
-    TP.core.Shell.Inst.getMethod('executeHelp'),
+TP.shell.Shell.addHelpTopic('help',
+    TP.shell.Shell.Inst.getMethod('executeHelp'),
     'Outputs a list of available commands.',
     ':Help',
     '');
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeSave',
+TP.shell.Shell.Inst.defineMethod('executeSave',
 function(aRequest) {
 
     /**
@@ -3894,15 +3906,15 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic('save',
-    TP.core.Shell.Inst.getMethod('executeSave'),
+TP.shell.Shell.addHelpTopic('save',
+    TP.shell.Shell.Inst.getMethod('executeSave'),
     'Saves current user profile settings to the persistent store.',
     ':save',
     'Saves the currect user profile settings to the browser\'s local storage.');
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('executeSet',
+TP.shell.Shell.Inst.defineMethod('executeSet',
 function(aRequest) {
 
     /**
@@ -3953,8 +3965,8 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic('set',
-    TP.core.Shell.Inst.getMethod('executeSet'),
+TP.shell.Shell.addHelpTopic('set',
+    TP.shell.Shell.Inst.getMethod('executeSet'),
     'Sets a shell variable to a specified value or clears it.',
     ':set [name] [value]',
     'Shows the names and values for all shell variables if no arguments are' +

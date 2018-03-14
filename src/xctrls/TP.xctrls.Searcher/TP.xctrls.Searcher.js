@@ -164,11 +164,11 @@ function() {
     this.set('$tshExecutionInstanceMatcher',
                 TP.xctrls.KeyedSourceMatcher.construct(
                     'TSH_CONTEXT',
-                    TP.core.TSH.getDefaultInstance().
+                    TP.shell.TSH.getDefaultInstance().
                                         getExecutionInstance()));
 
     tshCommands = TP.ac();
-    TP.core.Shell.get('helpTopics').perform(
+    TP.shell.Shell.get('helpTopics').perform(
         function(kvPair) {
             tshCommands.push(kvPair.first());
         });
@@ -842,7 +842,7 @@ function(aValue) {
                         TP,
                         APP,
                         CSS,
-                        TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                        TP.shell.TSH.getDefaultInstance().getExecutionInstance()
                     );
 
     //  Compute the matchers to use using a variety of techniques, including

@@ -769,20 +769,20 @@ function() {
      //               'DrawerClosedDidChange');
 
     this.set('$tshHistoryMatcher',
-                TP.core.TSHHistoryMatcher.construct(
+                TP.shell.TSHHistoryMatcher.construct(
                     'TSH_HISTORY'));
 
     this.set('$tshExecutionInstanceMatcher',
                 TP.core.KeyedSourceMatcher.construct(
                     'TSH_CONTEXT',
-                    TP.core.TSH.getDefaultInstance().
+                    TP.shell.TSH.getDefaultInstance().
                                         getExecutionInstance()));
 
     this.set('$tshCommandsMatcher',
                 TP.core.ListMatcher.construct(
                     'TSH_COMMANDS',
                     TP.ac(
-                        //  Core TP.core.Shell commands
+                        //  Core TP.shell.Shell commands
                         'about',
                         'alias',
                         'clear',
@@ -931,7 +931,7 @@ function(inputContent) {
 
                 topLevelObjects = TP.ac(
                     TP.global,
-                    TP.core.TSH.getDefaultInstance().getExecutionInstance(),
+                    TP.shell.TSH.getDefaultInstance().getExecutionInstance(),
                     TP,
                     APP,
                     CSS

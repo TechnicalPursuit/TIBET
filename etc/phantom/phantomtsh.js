@@ -329,8 +329,9 @@
     //  ---
 
     /**
-     * Executes the TIBET shell script provided using the TP.shell() primitive.
-     * The PhantomTSH.page.onCallback routine is invoked with the result JSON.
+     * Executes the TIBET shell script provided using the TP.shellExec()
+     * primitive. The PhantomTSH.page.onCallback routine is invoked with the
+     * result JSON.
      * @param {String} tshInput The TSH command line to execute.
      * @param {Boolean} pauseBeforeExec Whether or not to pause (using a
      *     'debugger' statement) before beginning execution of the shell script.
@@ -432,7 +433,7 @@
             /* eslint-enable no-debugger */
         }
 
-        TP.shell(TP.hc(
+        TP.shellExec(TP.hc(
             'cmdSrc', tshInput,         // the TSH input to run
             'cmdEcho', false,           // don't echo the request
             'cmdHistory', false,        // don't create a history entry

@@ -204,7 +204,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('package',
+TP.shell.TSH.addHelpTopic('package',
     TP.tsh.package.Type.getMethod('tshExecute'),
     'List package assets either as asset paths or nodes.',
     //  TODO: This line should be uncommented when '--fix' capability is

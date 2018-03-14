@@ -5458,8 +5458,8 @@ TP.boot.$phantomReporter = function(entry) {
     //  Ignore attempts to log the entry to the console more than once.
     if (entry && entry.usedConsole) {
         //  TODO: this may not be needed. Found a "flush" issue in the code
-        //  specific to the TP.shell() command's failure hook that may fix it
-        //  in which case we can remove this line.
+        //  specific to the TP.shellExec() command's failure hook that may fix
+        //  it in which case we can remove this line.
         /* eslint-disable no-console */
         console.log('');    //  force a flush of the console.
         /* eslint-enable no-console */

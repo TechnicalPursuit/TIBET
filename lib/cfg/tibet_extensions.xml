@@ -55,11 +55,11 @@
     <script src="./shells/TP.sig.ShellResponse.js"/>
     <script src="./shells/TP.sig.ShellRequest.js"/>
 
-    <script src="./shells/TP.core.Shell.js"/>
+    <script src="./shells/TP.shell.Shell.js"/>
     <script src="./shells/ShellExtensions.js"/>
 
-    <script src="./shells/TP.core.TSH.js"/>
-    <script src="./shells/TP.core.YAK.js"/>
+    <script src="./shells/TP.shell.TSH.js"/>
+    <script src="./shells/TP.shell.YAK.js"/>
 
     <!--script src="./shells/001_CreateTPShellRequest.js"/-->
 </config>

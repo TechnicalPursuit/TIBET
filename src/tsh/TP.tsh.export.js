@@ -108,7 +108,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('export',
+TP.shell.TSH.addHelpTopic('export',
     TP.tsh.export.Type.getMethod('tshExecute'),
     'Writes a previous command to a target URL.',
     ':export --href <exporturl> [--hid <hidnum>]',

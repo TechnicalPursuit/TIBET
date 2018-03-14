@@ -60,7 +60,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('colors',
+TP.shell.TSH.addHelpTopic('colors',
     TP.tsh.colors.Type.getMethod('tshExecute'),
     'Generates a table of the 216 websafe colors.',
     ':colors',

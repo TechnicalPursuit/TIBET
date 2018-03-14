@@ -2349,7 +2349,7 @@ function(targetPhase, targetPhaseList) {
      * @param {String} targetPhase A TIBET content "process phase" constant such
      *     as 'Compile'.
      * @param {Array} targetPhaseList An optional list of phases to search for
-     *     the target phase. The default is TP.core.TSH.NOCACHE.
+     *     the target phase. The default is TP.shell.TSH.NOCACHE.
      * @returns {Boolean} True if the phase has been reached.
      */
 

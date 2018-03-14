@@ -60,7 +60,7 @@ function(test, shellInput, valueTestFunction) {
             //  for undefined values here.
             TP.sys.setcfg('tsh.ignore_eval_errors', true);
 
-            TP.shell(TP.hc(
+            TP.shellExec(TP.hc(
                 'cmdSrc', shellInput,
                 'cmdEcho', false,
                 'cmdHistory', false,

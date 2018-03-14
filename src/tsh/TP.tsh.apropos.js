@@ -291,7 +291,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('apropos',
+TP.shell.TSH.addHelpTopic('apropos',
     TP.tsh.apropos.Type.getMethod('tshExecute'),
     'List methods related to a topic.',
     ':apropos <terms> [--comments] [--limit=N] [--no-ignorecase]',

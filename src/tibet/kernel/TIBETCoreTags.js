@@ -1342,7 +1342,7 @@ function(aSignal) {
 
     request = this.constructActRequest(aSignal);
 
-    shell = TP.core.TSH.getDefaultInstance();
+    shell = TP.shell.TSH.getDefaultInstance();
     shell[TP.composeHandlerName('ShellRequest')](request);
 
     return;

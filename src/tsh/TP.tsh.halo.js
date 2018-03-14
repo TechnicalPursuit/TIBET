@@ -85,7 +85,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('halo',
+TP.shell.TSH.addHelpTopic('halo',
     TP.tsh.halo.Type.getMethod('tshExecute'),
     'Focuses the halo on the node resolved by the supplied argument',
     ':halo <target>',

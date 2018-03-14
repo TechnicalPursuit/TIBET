@@ -65,7 +65,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('tidy',
+TP.shell.TSH.addHelpTopic('tidy',
     TP.tsh.tidy.Type.getMethod('tshExecute'),
     'Runs a URI through the HTML Tidy service.',
     ':tidy <target>',

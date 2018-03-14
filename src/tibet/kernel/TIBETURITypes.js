@@ -6278,7 +6278,7 @@ function(targetPhase, targetPhaseList) {
      * @param {Constant} targetPhase A TIBET content "process phase" string such
      *     as 'Compile'.
      * @param {Array} targetPhaseList An array of phase names. The default is
-     *     TP.core.TSH.NOCACHE.
+     *     TP.shell.TSH.NOCACHE.
      * @returns {Boolean} Whether or not the content of the receiver has reached
      *     the supplied phase in its processing.
      */

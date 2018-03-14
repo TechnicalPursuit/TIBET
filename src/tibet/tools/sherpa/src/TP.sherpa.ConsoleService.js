@@ -31,7 +31,7 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('$multiResults');
 //  number here will cause horizontal scrolling.
 TP.sherpa.ConsoleService.Inst.defineAttribute('width', 80);
 
-//  the underlying TP.core.Shell instance serving as the model for this console
+//  the underlying TP.shell.Shell instance serving as the model for this console
 TP.sherpa.ConsoleService.Inst.defineAttribute('model');
 
 //  are we currently blocking on input from the user
@@ -1318,7 +1318,7 @@ function() {
     /**
      * @method getModel
      * @summary Returns the model which this view is displaying IO for.
-     * @returns {TP.core.Shell} The shell instance serving out output.
+     * @returns {TP.shell.Shell} The shell instance serving out output.
      */
 
     return this.$get('model');
@@ -1410,7 +1410,7 @@ function(aModel) {
     /**
      * @method setModel
      * @summary Sets the model (shell) the console is interacting with.
-     * @param {TP.core.Shell} aModel The model instance.
+     * @param {TP.shell.Shell} aModel The model instance.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 

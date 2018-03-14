@@ -65,7 +65,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('xpath',
+TP.shell.TSH.addHelpTopic('xpath',
     TP.tsh.xpath.Type.getMethod('tshExecute'),
     'Executes an XPath expression against a node.',
     ':xpath',

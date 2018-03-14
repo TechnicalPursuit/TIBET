@@ -89,7 +89,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('pull',
+TP.shell.TSH.addHelpTopic('pull',
     TP.tsh.pull.Type.getMethod('tshExecute'),
     'Pulls pending remote file system changes into the running system.' +
         ' Requires TDS.',

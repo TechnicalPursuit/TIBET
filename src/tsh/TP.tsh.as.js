@@ -124,7 +124,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 //
-TP.core.TSH.addHelpTopic('as',
+TP.shell.TSH.addHelpTopic('as',
     TP.tsh.as.Type.getMethod('tshExecute'),
     'Transforms stdin and writes it to stdout.',
     ':as',

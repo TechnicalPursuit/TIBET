@@ -282,7 +282,7 @@ function() {
                     var script;
 
                     script = TP.sys.cfg('karma.script', ':test');
-                    TP.shell(script);
+                    TP.shellExec(script);
                 });
 
         TP.sys.getApplication().pushController(controller);

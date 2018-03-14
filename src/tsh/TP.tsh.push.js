@@ -113,7 +113,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('push',
+TP.shell.TSH.addHelpTopic('push',
     TP.tsh.push.Type.getMethod('tshExecute'),
     'Pushes pending changes in the running system to the remote file system.' +
         ' Requires TDS.',

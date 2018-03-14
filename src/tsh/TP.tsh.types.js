@@ -79,7 +79,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('types',
+TP.shell.TSH.addHelpTopic('types',
     TP.tsh.types.Type.getMethod('tshExecute'),
     'Outputs a list of available system types.',
     ':types',

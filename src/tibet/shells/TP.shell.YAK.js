@@ -9,17 +9,17 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.YAK(tm)}
- * @summary A TP.core.Shell specific to handling XMPP (Jabber) communication.
+ * @type {TP.shell.YAK(tm)}
+ * @summary A TP.shell.Shell specific to handling XMPP (Jabber) communication.
  *     The default "execution" in this shell is to send the input to the
  *     currently targeted JID.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.defineSubtype('YAK');
+TP.shell.Shell.defineSubtype('shell.YAK');
 
-TP.core.YAK.set('commandPrefix', 'yak');
+TP.shell.YAK.set('commandPrefix', 'yak');
 
 TP.w3.Xmlns.registerNSInfo('urn:yak',
         TP.hc('uri', 'urn:yak', 'prefix', 'yak'));
@@ -31,53 +31,53 @@ TP.w3.Xmlns.registerNSInfo('urn:yak',
 //  whether to display the raw XMPP traffic. note that this is separate from
 //  the TP.sys.shouldLogIO() setting, which may also cause you to see
 //  portions of the XMPP traffic on the wire.
-TP.core.YAK.Inst.defineAttribute('debug', true);
+TP.shell.YAK.Inst.defineAttribute('debug', true);
 
 //  the last inbound message packet, used for :reply processing
-TP.core.YAK.Inst.defineAttribute('lastNode');
+TP.shell.YAK.Inst.defineAttribute('lastNode');
 
 //  collection containing secure jids and their keys
-TP.core.YAK.Inst.defineAttribute('secureJIDs');
+TP.shell.YAK.Inst.defineAttribute('secureJIDs');
 
 //  the server uri we last asked to connect to
-TP.core.YAK.Inst.defineAttribute('serverURI');
+TP.shell.YAK.Inst.defineAttribute('serverURI');
 
 //  the last server name we tried to connect to
-TP.core.YAK.Inst.defineAttribute('serverName');
+TP.shell.YAK.Inst.defineAttribute('serverName');
 
 //  the ID of the service this instance uses, typically this is set to the
 //  receiver's resource ID plus 'Service'
-TP.core.YAK.Inst.defineAttribute('serviceID');
+TP.shell.YAK.Inst.defineAttribute('serviceID');
 
 //  the currently targeted JID for our output traffic
-TP.core.YAK.Inst.defineAttribute('targetJID');
+TP.shell.YAK.Inst.defineAttribute('targetJID');
 
 //  the last user JID we used when logging in
-TP.core.YAK.Inst.defineAttribute('userJID');
+TP.shell.YAK.Inst.defineAttribute('userJID');
 
 //  additional information presented when a shell of this type starts up
-TP.core.YAK.Inst.defineAttribute('introduction',
+TP.shell.YAK.Inst.defineAttribute('introduction',
     TP.join('Shift-Return to send. Shift-Up/Down for history. ',
             'Shift-Delete to clear. Shift-Esc to cancel.<br/><br/>',
             'Type ',
 
-            '<a class="help_table_link" href="#" onclick="TP.shell(',
+            '<a class="help_table_link" href="#" onclick="TP.shellExec(',
                 '\':help\', false, false, false, \'', '`getID()`', '\'); ',
                 'return false;">?</a> or ',
 
-            '<a class="help_table_link" href="#" onclick="TP.shell(',
+            '<a class="help_table_link" href="#" onclick="TP.shellExec(',
                 '\':help\', false, false, false, \'', '`getID()`', '\'); ',
                 'return false;">:help</a> for help, ',
 
-            '<a class="help_table_link" href="#" onclick="TP.shell(',
+            '<a class="help_table_link" href="#" onclick="TP.shellExec(',
                 '\':history\', false, false, false, \'', '`getID()`', '\'); ',
                 'return false;">#?</a> or ',
 
-            '<a class="help_table_link" href="#" onclick="TP.shell(',
+            '<a class="help_table_link" href="#" onclick="TP.shellExec(',
                 '\':history\', false, false, false, \'', '`getID()`', '\'); ',
                 'return false;">:history</a> for history; use ',
 
-            '<a class="help_table_link" href="#" onclick="TP.shell(',
+            '<a class="help_table_link" href="#" onclick="TP.shellExec(',
                 '\':to \', false, false, false, \'', '`getID()`', '\'); ',
                 'return false;">:to</a> to target a specific JID.',
 
@@ -87,7 +87,7 @@ TP.core.YAK.Inst.defineAttribute('introduction',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('init',
+TP.shell.YAK.Inst.defineMethod('init',
 function(resourceID) {
 
     /**
@@ -95,7 +95,7 @@ function(resourceID) {
      * @summary Initializes a new instance.
      * @param {String} resourceID A unique resource identifier for this shell
      *     instance.
-     * @returns {TP.core.YAK} A new instance.
+     * @returns {TP.shell.YAK} A new instance.
      */
 
     //  pass the adjusted resource ID to the supertype constructor
@@ -112,7 +112,7 @@ function(resourceID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('canSend',
+TP.shell.YAK.Inst.defineMethod('canSend',
 function() {
 
     /**
@@ -139,7 +139,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('displayDebugData',
+TP.shell.YAK.Inst.defineMethod('displayDebugData',
 function(aMessage) {
 
     /**
@@ -185,7 +185,7 @@ function(aMessage) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('getAnnouncement',
+TP.shell.YAK.Inst.defineMethod('getAnnouncement',
 function() {
 
     /**
@@ -207,7 +207,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('getServiceID',
+TP.shell.YAK.Inst.defineMethod('getServiceID',
 function() {
 
     /**
@@ -217,20 +217,20 @@ function() {
      * @returns {String} The service ID.
      */
 
-    //  used to be hard-coded to 'TP.core.YAKService'
+    //  used to be hard-coded to 'TP.shell.YAKService'
     return this.getID() + 'Service';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('setTargetJID',
+TP.shell.YAK.Inst.defineMethod('setTargetJID',
 function(aJID) {
 
     /**
      * @method setTargetJID
      * @summary Sets the default JID to target with unqualified sends.
      * @param {TP.xmpp.JID} aJID The JID to target.
-     * @returns {TP.core.YAK} The receiver.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     this.$set('targetJID', aJID);
@@ -245,17 +245,17 @@ function(aJID) {
 //  STARTUP/LOGIN/LOGOUT
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('login',
+TP.shell.YAK.Inst.defineMethod('login',
 function(aRequest) {
 
     /**
      * @method login
      * @summary Performs any login sequence necessary for the receiver. The
-     *     TP.core.YAK initiates a query sequence to get proper values for a
+     *     TP.shell.YAK initiates a query sequence to get proper values for a
      *     server uri, server name, jid, and password.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
      *     this activity.
-     * @returns {TP.core.YAK} The receiver.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var shell,
@@ -359,7 +359,7 @@ function(aRequest) {
 
                     if (TP.notValid(response) ||
                         response.getSize() <
-                                 TP.core.Shell.MIN_PASSWORD_LEN) {
+                                 TP.shell.Shell.MIN_PASSWORD_LEN) {
                         return false;
                     }
 
@@ -423,7 +423,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('loginCompletion',
+TP.shell.YAK.Inst.defineMethod('loginCompletion',
 function(aUserInputSeries) {
 
     /**
@@ -434,7 +434,7 @@ function(aUserInputSeries) {
      *     complete the login process.
      * @param {TP.sig.UserInputSeries} aUserInputSeries An input request
      *     containing all the necessary data.
-     * @returns {TP.core.YAK} The receiver.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var ndx,
@@ -533,7 +533,7 @@ function(aUserInputSeries) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('logout',
+TP.shell.YAK.Inst.defineMethod('logout',
 function(aRequest) {
 
     /**
@@ -541,7 +541,7 @@ function(aRequest) {
      * @summary Logs out of the current session, closing the connection.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
      *     this activity.
-     * @returns {TP.core.YAK} The receiver.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var yakService;
@@ -580,7 +580,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('register',
+TP.shell.YAK.Inst.defineMethod('register',
 function(aRequest) {
 
     /**
@@ -773,7 +773,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('registerCompletion',
+TP.shell.YAK.Inst.defineMethod('registerCompletion',
 function(aRegistrationNode) {
 
     /**
@@ -783,7 +783,7 @@ function(aRegistrationNode) {
      *     series provided.
      * @param {TP.xmpp.Node} aRegistrationNode The node containing the
      *     registration information.
-     * @returns {TP.core.YAK} The receiver.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var shell,
@@ -835,7 +835,7 @@ function(aRegistrationNode) {
 
                     if (TP.notValid(response) ||
                         response.getSize() <
-                             TP.core.Shell.MIN_PASSWORD_LEN) {
+                             TP.shell.Shell.MIN_PASSWORD_LEN) {
                         return false;
                     }
 
@@ -959,7 +959,7 @@ function(aRegistrationNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('start',
+TP.shell.YAK.Inst.defineMethod('start',
 function(aRequest) {
 
     /**
@@ -1042,7 +1042,7 @@ function(aRequest) {
 //  EXECUTION
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('echoRequest',
+TP.shell.YAK.Inst.defineMethod('echoRequest',
 function(aRequest) {
 
     /**
@@ -1104,7 +1104,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('execute',
+TP.shell.YAK.Inst.defineMethod('execute',
 function(aRequest) {
 
     var response;
@@ -1125,10 +1125,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.YAK BUILT-INS
+//  TP.shell.YAK BUILT-INS
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeAvailable',
+TP.shell.YAK.Inst.defineMethod('executeAvailable',
 function(aRequest) {
 
     /**
@@ -1167,7 +1167,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeAway',
+TP.shell.YAK.Inst.defineMethod('executeAway',
 function(aRequest) {
 
     /**
@@ -1206,7 +1206,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeDebug',
+TP.shell.YAK.Inst.defineMethod('executeDebug',
 function(aRequest) {
 
     /**
@@ -1238,7 +1238,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeRegister',
+TP.shell.YAK.Inst.defineMethod('executeRegister',
 function(aRequest) {
 
     /**
@@ -1256,7 +1256,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeRoster',
+TP.shell.YAK.Inst.defineMethod('executeRoster',
 function(aRequest) {
 
     /**
@@ -1284,7 +1284,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeSecure',
+TP.shell.YAK.Inst.defineMethod('executeSecure',
 function(aRequest) {
 
     /**
@@ -1333,7 +1333,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeSend',
+TP.shell.YAK.Inst.defineMethod('executeSend',
 function(aRequest) {
 
     /**
@@ -1377,7 +1377,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeStatus',
+TP.shell.YAK.Inst.defineMethod('executeStatus',
 function(aRequest) {
 
     /**
@@ -1427,7 +1427,7 @@ function(aRequest) {
 
         str.push('<tr><td>',
                     '<a href="#" onclick="',
-                        'TP.shell(',
+                        'TP.shellExec(',
                         '\':to ', keys.at(i), '\'',
                         ', false, false, false,',
                         '\'', this.getID(), '\'',
@@ -1458,7 +1458,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeSubscribe',
+TP.shell.YAK.Inst.defineMethod('executeSubscribe',
 function(aRequest) {
 
     /**
@@ -1497,7 +1497,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeTo',
+TP.shell.YAK.Inst.defineMethod('executeTo',
 function(aRequest) {
 
     /**
@@ -1579,7 +1579,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeUnavailable',
+TP.shell.YAK.Inst.defineMethod('executeUnavailable',
 function(aRequest) {
 
     /**
@@ -1596,7 +1596,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeUnsecure',
+TP.shell.YAK.Inst.defineMethod('executeUnsecure',
 function(aRequest) {
 
     /**
@@ -1626,7 +1626,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('executeUnsubscribe',
+TP.shell.YAK.Inst.defineMethod('executeUnsubscribe',
 function(aRequest) {
 
     /**
@@ -1666,7 +1666,7 @@ function(aRequest) {
 //  INBOUND TRAFFIC
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineHandler('XMPPInput',
+TP.shell.YAK.Inst.defineHandler('XMPPInput',
 function(aSignal) {
 
     /**

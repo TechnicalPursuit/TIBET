@@ -72,7 +72,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('entity',
+TP.shell.TSH.addHelpTopic('entity',
     TP.tsh.entity.Type.getMethod('tshExecute'),
     'Generates a table of XML entity codes.',
     ':entity [<entity_name_or_number>]',

@@ -229,7 +229,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('snippet',
+TP.shell.TSH.addHelpTopic('snippet',
     TP.tsh.snippet.Type.getMethod('tshExecute'),
     'Allows addition and removal of commonly used snippets of TSH.',
     ':snippet [<snippet> [<description>]] [--hid=N] [--remove=N]',
