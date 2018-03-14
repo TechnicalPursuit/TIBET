@@ -1586,7 +1586,7 @@ function() {
     //  If the Sherpa isn't open, then any logging messages were not produced by
     //  user input, so it's ok to coalesce logging messages no matter what our
     //  current display mode setting.
-    if (!TP.core.Sherpa.isOpen()) {
+    if (!TP.sherpa.IDE.isOpen()) {
         return true;
     }
 

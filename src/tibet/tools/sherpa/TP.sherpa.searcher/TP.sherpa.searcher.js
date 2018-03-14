@@ -922,7 +922,7 @@ function(inputContent) {
 
         matchers = TP.ac();
 
-        info = TP.core.Sherpa.tokenizeForMatches(inputContent);
+        info = TP.sherpa.IDE.tokenizeForMatches(inputContent);
         tokenizedFragment = info.at('fragment');
 
         switch (info.at('context')) {

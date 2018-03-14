@@ -19,9 +19,9 @@ TP.sys.addFeatureTest('sherpa',
 function() {
 
     //  NB: For the system to be considered to have the 'sherpa' feature, it has
-    //  to both have the 'TP.core.Sherpa' type loaded *and* have the Sherpa
+    //  to both have the 'TP.sherpa.IDE' type loaded *and* have the Sherpa
     //  enabled for opening. The Sherpa HUD doesn't necessarily have to be open.
-    return TP.isType(TP.sys.getTypeByName('TP.core.Sherpa')) &&
+    return TP.isType(TP.sys.getTypeByName('TP.sherpa.IDE')) &&
             TP.sys.cfg('sherpa.enabled') === true;
 });
 

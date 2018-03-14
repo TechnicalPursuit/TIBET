@@ -13,7 +13,7 @@
 
         <p>This content is found in your application's "app tag" template:</p>
         \{{:if TP.has.sherpa}}
-        <p>Edit the xhtml template in <a href="#" onclick="TP.core.Sherpa.hasStarted() ? TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':inspect ~app_tags/APP.{{appname}}.app/APP.{{appname}}.app.xhtml') : 0; return false">public/src/tags/APP.{{appname}}.app</a> to get started.</p>
+        <p>Edit the xhtml template in <a href="#" onclick="TP.sherpa.IDE.hasStarted() ? TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':inspect ~app_tags/APP.{{appname}}.app/APP.{{appname}}.app.xhtml') : 0; return false">public/src/tags/APP.{{appname}}.app</a> to get started.</p>
         \{{:else}}
         <p>Edit the xhtml template in <code>public/src/tags/APP.{{appname}}.app</code> to get started.</p>
         \{{/:if}}

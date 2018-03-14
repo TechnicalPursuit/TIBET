@@ -1328,7 +1328,7 @@ function(aNode, aProcessor) {
                 //  If the Sherpa is loaded and has been configured to
                 //  automatically define missing tags, then we do so.
                 if (TP.sys.hasFeature('sherpa')) {
-                    TP.core.Sherpa.replaceWithUnknownElementProxy(node);
+                    TP.sherpa.IDE.replaceWithUnknownElementProxy(node);
                 }
             }
 

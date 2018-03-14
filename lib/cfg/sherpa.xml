@@ -9,7 +9,7 @@
 
     <script src="./src/TP.tibet.sherpa.js"/>
 
-    <script src="./src/TP.core.Sherpa.js"/>
+    <script src="./src/TP.sherpa.IDE.js"/>
 
     <script src="./src/TP.sherpa.ConsoleService.js"/>
 

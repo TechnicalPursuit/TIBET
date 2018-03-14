@@ -153,7 +153,7 @@ function(aTPElement) {
             tname = TP.tname(item);
 
             //  NB: We filter out the Sherpa here
-            if (tname !== 'TP.core.Sherpa') {
+            if (tname !== 'TP.sherpa.IDE') {
                 info.push(
                     TP.ac(TP.lid(item, true), TP.tname(item), 'controller'));
             }

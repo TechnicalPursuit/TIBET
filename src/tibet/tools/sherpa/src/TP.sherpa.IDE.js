@@ -9,26 +9,26 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.Sherpa}
+ * @type {TP.sherpa.IDE}
  */
 
 //  ============================================================================
-//  TP.core.Sherpa
+//  TP.sherpa.IDE
 //  ============================================================================
 
-TP.lang.Object.defineSubtype('core.Sherpa');
+TP.lang.Object.defineSubtype('sherpa.IDE');
 
 //  ----------------------------------------------------------------------------
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Type.defineMethod('initialize',
+TP.sherpa.IDE.Type.defineMethod('initialize',
 function() {
 
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var toggleKey;
@@ -62,7 +62,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Type.defineMethod('hasStarted',
+TP.sherpa.IDE.Type.defineMethod('hasStarted',
 function() {
 
     /**
@@ -81,7 +81,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Type.defineMethod('isOpen',
+TP.sherpa.IDE.Type.defineMethod('isOpen',
 function() {
 
     /**
@@ -103,7 +103,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Type.defineMethod('replaceWithUnknownElementProxy',
+TP.sherpa.IDE.Type.defineMethod('replaceWithUnknownElementProxy',
 function(anElement) {
 
     /**
@@ -114,7 +114,7 @@ function(anElement) {
      *     element) that represents an element type that is not yet known to the
      *     system.
      * @param {Element} anElement The element to replace.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var newTagContent,
@@ -147,33 +147,33 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 //  the view window (i.e. the window containing the sherpa)
-TP.core.Sherpa.Inst.defineAttribute('vWin');
+TP.sherpa.IDE.Inst.defineAttribute('vWin');
 
 //  whether or not our setup is complete
-TP.core.Sherpa.Inst.defineAttribute('setupComplete');
+TP.sherpa.IDE.Inst.defineAttribute('setupComplete');
 
 //  whether or not the Sherpa should process mutations to the DOM of the
 //  current UI canvas and update the source DOM that is represented there.
-TP.core.Sherpa.Inst.defineAttribute('shouldProcessDOMMutations');
+TP.sherpa.IDE.Inst.defineAttribute('shouldProcessDOMMutations');
 
 //  a timeout that will cause the 'shouldProcessDOMMutations' flag to be reset
 //  to false. This is needed because the Mutation Observer machinery that we use
 //  to manage changes to the source DOM is an asynchronous mechanism and the
 //  shouldProcessDOMMutations flag is used by this machinery to determine
 //  whether or not to update the source DOM of the current UI canvas.
-TP.core.Sherpa.Inst.defineAttribute('$shouldProcessTimeout');
+TP.sherpa.IDE.Inst.defineAttribute('$shouldProcessTimeout');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('init',
+TP.sherpa.IDE.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var uiBootIFrameElem,
@@ -227,7 +227,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('asTP_sherpa_pp',
+TP.sherpa.IDE.Inst.defineMethod('asTP_sherpa_pp',
 function() {
 
     /**
@@ -243,7 +243,102 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('finishSetup',
+TP.sherpa.IDE.Inst.defineMethod('createConsoleEditorTab',
+function(sourceURI) {
+
+    /**
+     * @method createConsoleTab
+     * @summary Handles when the user has clicked the 'detach' arrow button to
+     *     detach ourself into a Sherpa console tab.
+     * @param {TP.sig.ResourceApply} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var inspector,
+
+        sourceLoc,
+
+        tabValue,
+        tabName,
+
+        newPanel,
+
+        editorLID,
+
+        panelContentElem,
+        uriEditorTPElem,
+        elem,
+
+        toolbarContent,
+        tdcDrawer;
+
+    inspector = TP.byId('SherpaInspector', this.get('vWin'));
+
+    sourceLoc = sourceURI.getLocation();
+
+    // var sourceLoc = 'http://127.0.0.1:1407/TIBET-INF/boot/styles/tibet.css';
+
+    //  The value will be our source location, which is unique.
+    tabValue = sourceLoc;
+
+    //  The name is the URL end location.
+    tabName = sourceLoc.slice(sourceLoc.lastIndexOf('/') + 1);
+
+    //  Ask the inspector to create a new console tab with that value and name.
+    //  This will return the new panel that we can add content to it.
+    newPanel = inspector.createNewConsoleTab(tabValue, tabName);
+
+    newPanel.setAttribute('tibet:nomutationtracking', 'true');
+
+    //  Compute a unique ID for the editor, based on the number of tabs that are
+    //  already in the console tab view.
+    editorLID = 'editor_' + (inspector.getConsoleTabCount() - 1);
+
+    //  Grab the 'xctrls:content' element from it.
+    panelContentElem = newPanel.get('contentElement').getNativeNode();
+
+    uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
+                            'template',
+                            TP.ietf.mime.XHTML);
+
+    uriEditorTPElem = uriEditorTPElem.clone();
+
+    uriEditorTPElem.setAttribute('id', editorLID);
+
+    elem = uriEditorTPElem.getNativeNode();
+
+    //  Add a class of 'tabbed' and move ourself into place in our panel
+    //  content.
+    TP.elementAddClass(elem, 'tabbed');
+    uriEditorTPElem = TP.wrap(panelContentElem).setContent(uriEditorTPElem);
+
+    toolbarContent = TP.sherpa.uriEditorToolbarContent.getResourceElement(
+                            'template',
+                            TP.ietf.mime.XHTML);
+
+    toolbarContent = toolbarContent.clone();
+
+    elem = TP.unwrap(toolbarContent);
+    TP.elementSetAttribute(elem, 'tibet:ctrl', editorLID, true);
+
+    TP.elementAddClass(elem, 'tabbed');
+    TP.nodeAppendChild(panelContentElem, elem, false);
+
+    //  Signal TDC drawer to open
+    tdcDrawer = TP.byCSSPath('#south', TP.sys.getUIRoot(), true);
+    if (TP.isValid(tdcDrawer)) {
+        TP.signal(tdcDrawer, 'UIOpen');
+    }
+
+    uriEditorTPElem.set('value', sourceURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('finishSetup',
 function(finalizationFunc) {
 
     /**
@@ -252,7 +347,7 @@ function(finalizationFunc) {
      *     Sherpa's tools and configuring its drawers.
      * @param {Function} finalizationFunc The Function to execute when the setup
      *     is truly finished.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var viewDoc,
@@ -354,7 +449,7 @@ function(finalizationFunc) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('getToolsLayer',
+TP.sherpa.IDE.Inst.defineMethod('getToolsLayer',
 function() {
 
     /**
@@ -384,7 +479,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('getToolsLayerOffsetFromScreen',
+TP.sherpa.IDE.Inst.defineMethod('getToolsLayerOffsetFromScreen',
 function(aScreenTPElement) {
 
     /**
@@ -462,7 +557,7 @@ function(aScreenTPElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('ConsoleCommand',
+TP.sherpa.IDE.Inst.defineHandler('ConsoleCommand',
 function(aSignal) {
 
     /**
@@ -470,7 +565,7 @@ function(aSignal) {
      * @summary Handles signals that trigger console command execution.
      * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var consoleService,
@@ -494,7 +589,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('RemoteConsoleCommand',
+TP.sherpa.IDE.Inst.defineHandler('RemoteConsoleCommand',
 function(aSignal) {
 
     /**
@@ -502,7 +597,7 @@ function(aSignal) {
      * @summary Handles signals that trigger remote console command execution.
      * @param {TP.sig.RemoteConsoleCommand} aSignal The TIBET signal which
      *     triggered this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var consoleService,
@@ -622,7 +717,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('AssistObject',
+TP.sherpa.IDE.Inst.defineHandler('AssistObject',
 function(aSignal) {
 
     /**
@@ -633,7 +728,7 @@ function(aSignal) {
      *     dialog box.
      * @param {TP.sig.AssistObject} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var targetObj,
@@ -682,7 +777,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('DocumentLoaded',
+TP.sherpa.IDE.Inst.defineHandler('DocumentLoaded',
 function(aSignal) {
 
     /**
@@ -693,7 +788,7 @@ function(aSignal) {
      *     direct observers.
      * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var world,
@@ -732,7 +827,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('DocumentUnloaded',
+TP.sherpa.IDE.Inst.defineHandler('DocumentUnloaded',
 function(aSignal) {
 
     /**
@@ -740,7 +835,7 @@ function(aSignal) {
      * @summary Handles when the document in the current UI canvas unloads.
      * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var world,
@@ -768,7 +863,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('EditObject',
+TP.sherpa.IDE.Inst.defineHandler('EditObject',
 function(aSignal) {
 
     /**
@@ -777,7 +872,7 @@ function(aSignal) {
      *     capabilities.
      * @param {TP.sig.EditObject} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var northDrawer;
@@ -796,7 +891,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('InspectObject',
+TP.sherpa.IDE.Inst.defineHandler('InspectObject',
 function(aSignal) {
 
     /**
@@ -805,7 +900,7 @@ function(aSignal) {
      *     capabilities.
      * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var northDrawer,
@@ -848,7 +943,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('MutationStyleChange',
+TP.sherpa.IDE.Inst.defineHandler('MutationStyleChange',
 function(aSignal) {
 
     /**
@@ -857,7 +952,7 @@ function(aSignal) {
      *     canvas that the Sherpa is working with.
      * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
      *     triggered this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var mutatedRule,
@@ -1035,7 +1130,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('TypeLoaded',
+TP.sherpa.IDE.Inst.defineHandler('TypeLoaded',
 function(aSignal) {
 
     /**
@@ -1043,7 +1138,7 @@ function(aSignal) {
      * @summary Handles signals that are triggered when a new type is loaded.
      * @param {TP.sig.TypeLoaded} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var newType,
@@ -1068,7 +1163,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('RouteExit',
+TP.sherpa.IDE.Inst.defineHandler('RouteExit',
 function(aSignal) {
 
     /**
@@ -1080,7 +1175,7 @@ function(aSignal) {
      *     direct observers.
      * @param {TP.sig.RouteExit} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var sherpaDoc,
@@ -1103,7 +1198,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('SherpaNotify',
+TP.sherpa.IDE.Inst.defineHandler('SherpaNotify',
 function(aSignal) {
 
     /**
@@ -1112,7 +1207,7 @@ function(aSignal) {
      *     any.
      * @param {TP.sig.SherpaNotify} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var notifier,
@@ -1156,7 +1251,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('ToggleSherpa',
+TP.sherpa.IDE.Inst.defineHandler('ToggleSherpa',
 function(aSignal) {
 
     /**
@@ -1165,7 +1260,7 @@ function(aSignal) {
      *     toggled.
      * @param {TP.sig.ToggleSherpa} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     this.toggle();
@@ -1175,7 +1270,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('makeCustomTagFrom',
+TP.sherpa.IDE.Inst.defineMethod('makeCustomTagFrom',
 function(aTPElem) {
 
     /**
@@ -1184,7 +1279,7 @@ function(aTPElem) {
      *     invoke the 'type assistant' with the 'templatedtag' DNA selected.
      * @param {TP.core.Element} aTPElem The element content to make a custom tag
      *     from.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var newTagName,
@@ -1371,7 +1466,7 @@ function(aTPElem) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('makeTile',
+TP.sherpa.IDE.Inst.defineMethod('makeTile',
 function(anID, headerText, tileParent) {
 
     /**
@@ -1432,7 +1527,7 @@ function(anID, headerText, tileParent) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('processUICanvasMutationRecords',
+TP.sherpa.IDE.Inst.defineMethod('processUICanvasMutationRecords',
 function(mutationRecords) {
 
     /**
@@ -1441,7 +1536,7 @@ function(mutationRecords) {
      *     the document currently rendered as the UI canvas.
      * @param {MutationRecord[]} mutationRecords The Array of MutationRecords
      *     that we are being asked to process.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var len,
@@ -1730,7 +1825,7 @@ function(mutationRecords) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('saveElementSerialization',
+TP.sherpa.IDE.Inst.defineMethod('saveElementSerialization',
 function(storageSerialization, successFunc, failFunc) {
 
     /**
@@ -1744,7 +1839,7 @@ function(storageSerialization, successFunc, failFunc) {
      *     process succeeds.
      * @param {Function} failFunc The Function to execute if the saving process
      *     fails.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var stores;
@@ -1811,13 +1906,13 @@ function(storageSerialization, successFunc, failFunc) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setup',
+TP.sherpa.IDE.Inst.defineMethod('setup',
 function() {
 
     /**
      * @method setup
-     * @summary Perform the initial setup for the TP.core.Sherpa object.
-     * @returns {TP.core.sherpa} The receiver.
+     * @summary Perform the initial setup for the TP.sherpa.IDE object.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var win,
@@ -2046,7 +2141,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setShouldProcessDOMMutations',
+TP.sherpa.IDE.Inst.defineMethod('setShouldProcessDOMMutations',
 function(shouldProcess) {
 
     /**
@@ -2061,7 +2156,7 @@ function(shouldProcess) {
      * @param {Boolean} shouldProcess Whether or not the receiver should process
      *     mutations to the source DOM of the currently displayed DOM in the UI
      *     canvas fails.
-     * @returns {TP.core.Sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var shouldProcessTimeout;
@@ -2097,7 +2192,7 @@ function(shouldProcess) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupAdjuster',
+TP.sherpa.IDE.Inst.defineMethod('setupAdjuster',
 function() {
 
     /**
@@ -2105,7 +2200,7 @@ function() {
      * @summary Sets up the Sherpa's 'style adjuster' component. The Sherpa's
      *     style adjuster provides a GUI to adjust the current halo target's
      *     cascaded style.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var adjusterTPElem;
@@ -2120,14 +2215,14 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupBuilderObserver',
+TP.sherpa.IDE.Inst.defineMethod('setupBuilderObserver',
 function() {
 
     /**
      * @method setupBuilderObserver
      * @summary Sets up a managed Mutation Observer that handles insertions and
      *     deletions as GUI is built using various parts of the Sherpa.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var observerConfig,
@@ -2502,7 +2597,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupConsole',
+TP.sherpa.IDE.Inst.defineMethod('setupConsole',
 function() {
 
     /**
@@ -2510,7 +2605,7 @@ function() {
      * @summary Sets up the Sherpa's 'console' component. The Sherpa's console
      *     provides a command line interface to the underlying TIBET Shell
      *     (TSH).
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var viewDoc,
@@ -2594,7 +2689,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupContextMenu',
+TP.sherpa.IDE.Inst.defineMethod('setupContextMenu',
 function() {
 
     /**
@@ -2602,7 +2697,7 @@ function() {
      * @summary Sets up the Sherpa's 'context menu' component. The Sherpa's
      *     context menu provides a way to issue commands to the system via the
      *     'right button' click.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var viewDoc,
@@ -2630,7 +2725,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupHalo',
+TP.sherpa.IDE.Inst.defineMethod('setupHalo',
 function() {
 
     /**
@@ -2638,7 +2733,7 @@ function() {
      * @summary Sets up the Sherpa's 'halo' component. The halo is the component
      *     that overlays elements in the GUI and controls which element is the
      *     current focus of manipulation activities.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var haloTPElem,
@@ -2658,7 +2753,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupHUD',
+TP.sherpa.IDE.Inst.defineMethod('setupHUD',
 function() {
 
     /**
@@ -2667,7 +2762,7 @@ function() {
      *     that controls the drawers that encompass the user's application
      *     canvas. These drawers contain controls that the user uses to
      *     manipulate their applocation.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var hudTPElem;
@@ -2680,7 +2775,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupInspector',
+TP.sherpa.IDE.Inst.defineMethod('setupInspector',
 function() {
 
     /**
@@ -2688,7 +2783,7 @@ function() {
      * @summary Sets up the Sherpa's 'inspector' component. The inspector is the
      *     component that allows a user to browse 'under the covers' using a
      *     multi-bay, hierarchical approach.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var inspectorTPElem;
@@ -2701,7 +2796,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupOutliner',
+TP.sherpa.IDE.Inst.defineMethod('setupOutliner',
 function() {
 
     /**
@@ -2709,7 +2804,7 @@ function() {
      * @summary Sets up the Sherpa's 'outliner' component. The outliner is the
      *     component that allows a user to visualize and manipulate the
      *     underlying DOM structure of their application.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     //  The outliner doesn't have a visual 'tag' representation, so we manually
@@ -2722,7 +2817,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupSearcher',
+TP.sherpa.IDE.Inst.defineMethod('setupSearcher',
 function() {
 
     /*
@@ -2740,7 +2835,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupThumbnail',
+TP.sherpa.IDE.Inst.defineMethod('setupThumbnail',
 function() {
 
     /*
@@ -2752,14 +2847,14 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupWorkbench',
+TP.sherpa.IDE.Inst.defineMethod('setupWorkbench',
 function() {
 
     /**
      * @method setupWorkbench
      * @summary Sets up the Sherpa's 'workbench' component. The workbench is the
      *     component that contains the inspector and its attendant toolbars.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var workbenchTPElem;
@@ -2772,7 +2867,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupWorld',
+TP.sherpa.IDE.Inst.defineMethod('setupWorld',
 function() {
 
     /**
@@ -2781,7 +2876,7 @@ function() {
      *     component that holds a collection of 'screens' used by the Sherpa to
      *     load different parts of the user's application GUI into and allows
      *     the author to easily switch between them.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var viewDoc,
@@ -2881,7 +2976,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('sherpaSetupComplete',
+TP.sherpa.IDE.Inst.defineMethod('sherpaSetupComplete',
 function() {
 
     /**
@@ -2889,7 +2984,7 @@ function() {
      * @summary Completes the setting up of the Sherpa. This is called once all
      *     of the Sherpa's drawers have loaded with their content and have
      *     animated in. It is called only once, however.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var viewWin,
@@ -2934,13 +3029,13 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('toggle',
+TP.sherpa.IDE.Inst.defineMethod('toggle',
 function() {
 
     /**
      * @method toggle
      * @summary Toggles the Sherpa's HUD open and closed.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     //  If the Sherpa's setup is complete, then we just toggle the HUD and exit.
@@ -2958,7 +3053,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('updateUICanvasSource',
+TP.sherpa.IDE.Inst.defineMethod('updateUICanvasSource',
 function(mutatedNodes, mutationAncestor, operation, attributeName,
          attributeValue, oldAttributeValue, shouldSignal) {
 
@@ -2981,7 +3076,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
      *     is changing (if this is an 'attributes' mutation and the operation is
      *     TP.UPDATE or TP.DELETE).
      * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
-     * @returns {TP.core.sherpa} The receiver.
+     * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var isAttrChange,
