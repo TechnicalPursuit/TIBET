@@ -177,16 +177,16 @@ function() {
 
         'TP.w3.DocType',                        /^TP\.w3\.DocType\$(\w+)$/,
 
-        'TP.core.Point',                        /^TP\.core\.Point\$(\w+)$/,
-        'TP.core.Rect',                         /^TP\.core\.Rect\$(\w+)$/,
-        'TP.core.Matrix',                       /^TP\.core\.Matrix\$(\w+)$/,
-        'TP.core.Color',                        /^TP\.core\.Color\$(\w+)$/,
+        'TP.gui.Point',                         /^TP\.gui\.Point\$(\w+)$/,
+        'TP.gui.Rect',                          /^TP\.gui\.Rect\$(\w+)$/,
+        'TP.gui.Matrix',                        /^TP\.gui\.Matrix\$(\w+)$/,
+        'TP.gui.Color',                         /^TP\.gui\.Color\$(\w+)$/,
 
-        'TP.core.LinearGradient',               /^TP\.core\.LinearGradient\$(\w+)$/,
-        'TP.core.RadialGradient',               /^TP\.core\.RadialGradient\$(\w+)$/,
+        'TP.gui.LinearGradient',                /^TP\.gui\.LinearGradient\$(\w+)$/,
+        'TP.gui.RadialGradient',                /^TP\.gui\.RadialGradient\$(\w+)$/,
 
-        'TP.core.Pattern',                      /^TP\.core\.Pattern\$(\w+)$/,
-        'TP.core.Path',                         /^TP\.core\.SVGPath\$(\w+)$/,
+        'TP.gui.Pattern',                       /^TP\.gui\.Pattern\$(\w+)$/,
+        'TP.gui.Path',                          /^TP\.gui\.SVGPath\$(\w+)$/,
 
         'TP.core.Job',                          /^TP\.core\.Job\$(\w+)$/,
         'TP.core.Browser_TYPE',                 'TP.core.Browser',
@@ -376,16 +376,16 @@ function() {
 
         'TP.w3.DocType',                        /^TP\.w3\.DocType\$(\w+)$/,
 
-        'TP.core.Point',                        /^TP\.core\.Point\$(\w+)$/,
-        'TP.core.Rect',                         /^TP\.core\.Rect\$(\w+)$/,
-        'TP.core.Matrix',                       /^TP\.core\.Matrix\$(\w+)$/,
-        'TP.core.Color',                        /^TP\.core\.Color\$(\w+)$/,
+        'TP.gui.Point',                         /^TP\.gui\.Point\$(\w+)$/,
+        'TP.gui.Rect',                          /^TP\.gui\.Rect\$(\w+)$/,
+        'TP.gui.Matrix',                        /^TP\.gui\.Matrix\$(\w+)$/,
+        'TP.gui.Color',                         /^TP\.gui\.Color\$(\w+)$/,
 
-        'TP.core.LinearGradient',               /^TP\.core\.LinearGradient\$(\w+)$/,
-        'TP.core.RadialGradient',               /^TP\.core\.RadialGradient\$(\w+)$/,
+        'TP.gui.LinearGradient',                /^TP\.gui\.LinearGradient\$(\w+)$/,
+        'TP.gui.RadialGradient',                /^TP\.gui\.RadialGradient\$(\w+)$/,
 
-        'TP.core.Pattern',                      /^TP\.core\.Pattern\$(\w+)$/,
-        'TP.core.Path',                         /^TP\.core\.SVGPath\$(\w+)$/,
+        'TP.gui.Pattern',                       /^TP\.gui\.Pattern\$(\w+)$/,
+        'TP.gui.Path',                          /^TP\.gui\.SVGPath\$(\w+)$/,
 
         'TP.core.Job',                          /^TP\.core\.Job\$(\w+)$/,
         'TP.core.Browser_TYPE',                 'TP.core.Browser',
@@ -577,16 +577,16 @@ function() {
 
         'TP.w3.DocType',                        false,
 
-        'TP.core.Point',                        false,
-        'TP.core.Rect',                         false,
-        'TP.core.Matrix',                       false,
-        'TP.core.Color',                        false,
+        'TP.gui.Point',                         false,
+        'TP.gui.Rect',                          false,
+        'TP.gui.Matrix',                        false,
+        'TP.gui.Color',                         false,
 
-        'TP.core.LinearGradient',               false,
-        'TP.core.RadialGradient',               false,
+        'TP.gui.LinearGradient',                false,
+        'TP.gui.RadialGradient',                false,
 
-        'TP.core.Pattern',                      false,
-        'TP.core.Path',                         false,
+        'TP.gui.Pattern',                       false,
+        'TP.gui.Path',                          false,
 
         'TP.core.Job',                          false,
         'TP.core.Browser_TYPE',                 true,
@@ -757,16 +757,16 @@ function() {
 
         'TP.w3.DocType',                        false,
 
-        'TP.core.Point',                        false,
-        'TP.core.Rect',                         false,
-        'TP.core.Matrix',                       false,
-        'TP.core.Color',                        false,
+        'TP.gui.Point',                         false,
+        'TP.gui.Rect',                          false,
+        'TP.gui.Matrix',                        false,
+        'TP.gui.Color',                         false,
 
-        'TP.core.LinearGradient',               false,
-        'TP.core.RadialGradient',               false,
+        'TP.gui.LinearGradient',                false,
+        'TP.gui.RadialGradient',                false,
 
-        'TP.core.Pattern',                      false,
-        'TP.core.Path',                         false,
+        'TP.gui.Pattern',                       false,
+        'TP.gui.Path',                          false,
 
         'TP.core.Job',                          false,
         'TP.core.Browser_TYPE',                 false,

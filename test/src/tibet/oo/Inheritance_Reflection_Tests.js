@@ -321,9 +321,9 @@ function() {
     delete TP.core.Node.testTypeLocalAttribute1;
     delete Array.testTypeLocalAttribute1;
 
-    delete TP.core.Point.Inst.testSharedInstAttribute1;
+    delete TP.gui.Point.Inst.testSharedInstAttribute1;
     delete Array.getInstPrototype().testSharedInstAttribute1;
-    delete TP.core.Point.Inst.testInstAttribute1;
+    delete TP.gui.Point.Inst.testInstAttribute1;
     delete Array.getInstPrototype().testInstAttribute1;
 });
 
@@ -3599,7 +3599,7 @@ function() {
         //  Derive the key set in a method & manner independent of
         //  'getInterface' to provide a proper 'control'.
 
-        obj = TP.core.Point.construct(20, 40);
+        obj = TP.gui.Point.construct(20, 40);
         pointInstProto = obj.getInstPrototype();
         tpObjInstProto = TP.lang.Object.getInstPrototype();
 
@@ -4167,11 +4167,11 @@ function() {
 
         //  Instance-level shared attribute
 
-        TP.core.Point.Inst.defineAttribute('testSharedInstAttribute1');
-        TP.core.Point.Inst.set('testSharedInstAttribute1',
+        TP.gui.Point.Inst.defineAttribute('testSharedInstAttribute1');
+        TP.gui.Point.Inst.set('testSharedInstAttribute1',
                                 'testSharedInstAttVal1');
 
-        obj = TP.core.Point.construct(20, 30);
+        obj = TP.gui.Point.construct(20, 30);
 
         val = obj.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
@@ -4183,7 +4183,7 @@ function() {
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
-        obj2 = TP.core.Point.construct(20, 30);
+        obj2 = TP.gui.Point.construct(20, 30);
 
         val = obj2.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
@@ -4199,8 +4199,8 @@ function() {
 
         //  Instance-level attribute
 
-        TP.core.Point.Inst.defineAttribute('testInstAttribute1');
-        obj = TP.core.Point.construct(20, 30);
+        TP.gui.Point.Inst.defineAttribute('testInstAttribute1');
+        obj = TP.gui.Point.construct(20, 30);
 
         obj.set('testInstAttribute1', 'testInstAttVal1');
 
@@ -4475,15 +4475,15 @@ function() {
 
         //  ---
 
-        TP.core.Point.Inst.defineMethod(
+        TP.gui.Point.Inst.defineMethod(
             'testInstMethod1',
             function() {
                 return true;
             });
-        obj = TP.core.Point.getInstPrototype().testInstMethod1;
+        obj = TP.gui.Point.getInstPrototype().testInstMethod1;
 
         val = obj[TP.OWNER];
-        correctVal = TP.core.Point;
+        correctVal = TP.gui.Point;
 
         test.assert.isIdenticalTo(
             val,
@@ -4503,7 +4503,7 @@ function() {
                     ' not: ', val, '.'));
 
         val = obj[TP.DISPLAY];
-        correctVal = 'TP.core.Point.Inst.testInstMethod1';
+        correctVal = 'TP.gui.Point.Inst.testInstMethod1';
 
         test.assert.isEqualTo(
             val,
@@ -4514,7 +4514,7 @@ function() {
 
         //  ---
 
-        inst = TP.core.Point.construct(20, 30);
+        inst = TP.gui.Point.construct(20, 30);
 
         inst.defineMethod('testLocalMethod1',
                             function() {

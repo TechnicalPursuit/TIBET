@@ -2686,9 +2686,9 @@ function() {
 
     /**
      * @method getClientPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     window containing the source element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     window.
      */
 
@@ -2762,13 +2762,13 @@ function(wantsTransformed) {
 
     /**
      * @method getGlobalPoint
-     * @summary Returns the X/Y TP.core.Point of the signal as a global
+     * @summary Returns the X/Y TP.gui.Point of the signal as a global
      *     position. The global position is the signal's mouse position
      *     relative to its overall *top level* window.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     overall top level window.
      */
 
@@ -2856,9 +2856,9 @@ function() {
 
     /**
      * @method getOffsetPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     containing source element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     containing element.
      */
 
@@ -2922,9 +2922,9 @@ function() {
 
     /**
      * @method getPagePoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     page containing the source element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     overall page.
      */
 
@@ -2988,9 +2988,9 @@ function() {
 
     /**
      * @method getScreenPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     video screen
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     video screen.
      */
 
@@ -3014,10 +3014,10 @@ function() {
 
     /**
      * @method getTransformedPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     target element while taking into account any CSS transformations to
      *     that element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     target element, including any CSS transformations.
      */
 

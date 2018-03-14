@@ -386,37 +386,37 @@ function(aRequest) {
         '-//W3C//DTD XHTML 1.0 Strict//EN',
         'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd');
 
-    //  Instance of TP.core.Point
-    tibetPointVal = TP.core.Point.construct(20, 30);
-    //  Instance of TP.core.Rect
-    tibetRectVal = TP.core.Rect.construct(0, 0, 100, 100);
-    //  Instance of TP.core.Matrix
-    tibetMatrixVal = TP.core.Matrix.construct();
-    //  Instance of TP.core.Color
-    tibetColorVal = TP.core.Color.construct(0, 255, 255);
+    //  Instance of TP.gui.Point
+    tibetPointVal = TP.gui.Point.construct(20, 30);
+    //  Instance of TP.gui.Rect
+    tibetRectVal = TP.gui.Rect.construct(0, 0, 100, 100);
+    //  Instance of TP.gui.Matrix
+    tibetMatrixVal = TP.gui.Matrix.construct();
+    //  Instance of TP.gui.Color
+    tibetColorVal = TP.gui.Color.construct(0, 255, 255);
 
-    //  Instance of TP.core.LinearGradient
-    tibetLinearGradientVal = TP.core.LinearGradient.construct();
+    //  Instance of TP.gui.LinearGradient
+    tibetLinearGradientVal = TP.gui.LinearGradient.construct();
     tibetLinearGradientVal.set('angle', 45);
     tibetLinearGradientVal.addColorStop('10%', TP.cc(0, 0, 255, 0.5));
     tibetLinearGradientVal.addColorStop('50%', TP.cc(0, 255, 255, 1.0));
 
-    //  Instance of TP.core.RadialGradient
-    tibetRadialGradientVal = TP.core.RadialGradient.construct();
+    //  Instance of TP.gui.RadialGradient
+    tibetRadialGradientVal = TP.gui.RadialGradient.construct();
     tibetRadialGradientVal.addColorStop('10%', TP.cc(0, 0, 255, 0.5));
     tibetRadialGradientVal.addColorStop('50%', TP.cc(0, 255, 255, 1.0));
 
-    //  Instance of TP.core.Pattern
-    tibetPatternVal = TP.core.Pattern.construct().
+    //  Instance of TP.gui.Pattern
+    tibetPatternVal = TP.gui.Pattern.construct().
                         set('x', 20).
                         set('y', 20).
                         set('width', 100).
                         set('height', 100);
 
-    //  Instance of TP.core.SVGPath
-    tibetPath = TP.core.SVGPath.construct();
-    tibetPath.addSegment(TP.core.SVGPath.MOVE_TO_ABS, TP.ac(10, 10));
-    tibetPath.addSegment(TP.core.SVGPath.MOVE_TO_ABS, TP.ac(20, 20));
+    //  Instance of TP.gui.SVGPath
+    tibetPath = TP.gui.SVGPath.construct();
+    tibetPath.addSegment(TP.gui.SVGPath.MOVE_TO_ABS, TP.ac(10, 10));
+    tibetPath.addSegment(TP.gui.SVGPath.MOVE_TO_ABS, TP.ac(20, 20));
 
     //  Instance of TP.core.Job
     tibetJob = TP.core.Job.construct(TP.hc());
@@ -514,15 +514,15 @@ function(aRequest) {
 
     'TP.w3.DocType',            tibetDocTypeVal,        //  TP.w3.DocType
 
-    'TP.core.Point',            tibetPointVal,          //  TP.core.Point
-    'TP.core.Rect',             tibetRectVal,           //  TP.core.Rect
-    'TP.core.Matrix',           tibetMatrixVal,         //  TP.core.Matrix
-    'TP.core.Color',            tibetColorVal,          //  TP.core.Color
+    'TP.gui.Point',             tibetPointVal,          //  TP.gui.Point
+    'TP.gui.Rect',              tibetRectVal,           //  TP.gui.Rect
+    'TP.gui.Matrix',            tibetMatrixVal,         //  TP.gui.Matrix
+    'TP.gui.Color',             tibetColorVal,          //  TP.gui.Color
 
-    'TP.core.LinearGradient',   tibetLinearGradientVal, //  TP.core.LinearGradient
-    'TP.core.RadialGradient',   tibetRadialGradientVal, //  TP.core.RadialGradient
-    'TP.core.Pattern',          tibetPatternVal,        //  TP.core.Pattern
-    'TP.core.Path',             tibetPath,              //  TP.core.Path
+    'TP.gui.LinearGradient',    tibetLinearGradientVal, //  TP.gui.LinearGradient
+    'TP.gui.RadialGradient',    tibetRadialGradientVal, //  TP.gui.RadialGradient
+    'TP.gui.Pattern',           tibetPatternVal,        //  TP.gui.Pattern
+    'TP.gui.Path',              tibetPath,              //  TP.gui.Path
 
     'TP.core.Job',              tibetJob,               //  TP.core.Job
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
@@ -756,18 +756,18 @@ function(aRequest) {
 
     tibetDocTypeVal = TP.ac(TP.w3.DocType, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPointVal = TP.ac(TP.core.Point, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetRectVal = TP.ac(TP.core.Rect, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetMatrixVal = TP.ac(TP.core.Matrix, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetColorVal = TP.ac(TP.core.Color, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPointVal = TP.ac(TP.gui.Point, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetRectVal = TP.ac(TP.gui.Rect, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetMatrixVal = TP.ac(TP.gui.Matrix, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetColorVal = TP.ac(TP.gui.Color, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetLinearGradientVal = TP.ac(TP.core.LinearGradient, TP.core.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetLinearGradientVal = TP.ac(TP.gui.LinearGradient, TP.gui.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetRadialGradientVal = TP.ac(TP.core.RadialGradient, TP.core.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetRadialGradientVal = TP.ac(TP.gui.RadialGradient, TP.gui.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPatternVal = TP.ac(TP.core.Pattern, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPatternVal = TP.ac(TP.gui.Pattern, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPath = TP.ac(TP.core.SVGPath, TP.core.Path, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPath = TP.ac(TP.gui.SVGPath, TP.gui.Path, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetJob = TP.ac(TP.core.Job, TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -860,15 +860,15 @@ function(aRequest) {
 
     'TP.w3.DocType',            tibetDocTypeVal,        //  TP.w3.DocType
 
-    'TP.core.Point',            tibetPointVal,          //  TP.core.Point
-    'TP.core.Rect',             tibetRectVal,           //  TP.core.Rect
-    'TP.core.Matrix',           tibetMatrixVal,         //  TP.core.Matrix
-    'TP.core.Color',            tibetColorVal,          //  TP.core.Color
+    'TP.gui.Point',             tibetPointVal,          //  TP.gui.Point
+    'TP.gui.Rect',              tibetRectVal,           //  TP.gui.Rect
+    'TP.gui.Matrix',            tibetMatrixVal,         //  TP.gui.Matrix
+    'TP.gui.Color',             tibetColorVal,          //  TP.gui.Color
 
-    'TP.core.LinearGradient',   tibetLinearGradientVal, //  TP.core.LinearGradient
-    'TP.core.RadialGradient',   tibetRadialGradientVal, //  TP.core.RadialGradient
-    'TP.core.Pattern',          tibetPatternVal,        //  TP.core.Pattern
-    'TP.core.Path',             tibetPath,              //  TP.core.Path
+    'TP.gui.LinearGradient',    tibetLinearGradientVal, //  TP.gui.LinearGradient
+    'TP.gui.RadialGradient',    tibetRadialGradientVal, //  TP.gui.RadialGradient
+    'TP.gui.Pattern',           tibetPatternVal,        //  TP.gui.Pattern
+    'TP.gui.Path',              tibetPath,              //  TP.gui.Path
 
     'TP.core.Job',              tibetJob,               //  TP.core.Job
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
@@ -1069,16 +1069,16 @@ function(aRequest) {
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
-        'TP.core.Point',                        TP.IDENTITY,
-        'TP.core.Rect',                         TP.IDENTITY,
-        'TP.core.Matrix',                       TP.IDENTITY,
-        'TP.core.Color',                        TP.IDENTITY,
+        'TP.gui.Point',                         TP.IDENTITY,
+        'TP.gui.Rect',                          TP.IDENTITY,
+        'TP.gui.Matrix',                        TP.IDENTITY,
+        'TP.gui.Color',                         TP.IDENTITY,
 
-        'TP.core.LinearGradient',               TP.IDENTITY,
-        'TP.core.RadialGradient',               TP.IDENTITY,
+        'TP.gui.LinearGradient',                TP.IDENTITY,
+        'TP.gui.RadialGradient',                TP.IDENTITY,
 
-        'TP.core.Pattern',                      TP.IDENTITY,
-        'TP.core.Path',                         TP.IDENTITY,
+        'TP.gui.Pattern',                       TP.IDENTITY,
+        'TP.gui.Path',                          TP.IDENTITY,
 
         'TP.core.Job',                          TP.IDENTITY,
         'TP.core.Browser_TYPE',                 TP.IDENTITY,
@@ -1190,16 +1190,16 @@ function(aRequest) {
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
-        'TP.core.Point',                        TP.IDENTITY,
-        'TP.core.Rect',                         TP.IDENTITY,
-        'TP.core.Matrix',                       TP.IDENTITY,
-        'TP.core.Color',                        TP.IDENTITY,
+        'TP.gui.Point',                         TP.IDENTITY,
+        'TP.gui.Rect',                          TP.IDENTITY,
+        'TP.gui.Matrix',                        TP.IDENTITY,
+        'TP.gui.Color',                         TP.IDENTITY,
 
-        'TP.core.LinearGradient',               TP.IDENTITY,
-        'TP.core.RadialGradient',               TP.IDENTITY,
+        'TP.gui.LinearGradient',                TP.IDENTITY,
+        'TP.gui.RadialGradient',                TP.IDENTITY,
 
-        'TP.core.Pattern',                      TP.IDENTITY,
-        'TP.core.Path',                         TP.IDENTITY,
+        'TP.gui.Pattern',                       TP.IDENTITY,
+        'TP.gui.Path',                          TP.IDENTITY,
 
         'TP.core.Job',                          TP.IDENTITY,
         'TP.core.Browser_TYPE',                 TP.IDENTITY,
@@ -1311,16 +1311,16 @@ function(aRequest) {
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
-        'TP.core.Point',                        TP.IDENTITY,
-        'TP.core.Rect',                         TP.IDENTITY,
-        'TP.core.Matrix',                       TP.IDENTITY,
-        'TP.core.Color',                        TP.IDENTITY,
+        'TP.gui.Point',                         TP.IDENTITY,
+        'TP.gui.Rect',                          TP.IDENTITY,
+        'TP.gui.Matrix',                        TP.IDENTITY,
+        'TP.gui.Color',                         TP.IDENTITY,
 
-        'TP.core.LinearGradient',               TP.IDENTITY,
-        'TP.core.RadialGradient',               TP.IDENTITY,
+        'TP.gui.LinearGradient',                TP.IDENTITY,
+        'TP.gui.RadialGradient',                TP.IDENTITY,
 
-        'TP.core.Pattern',                      TP.IDENTITY,
-        'TP.core.Path',                         TP.IDENTITY,
+        'TP.gui.Pattern',                       TP.IDENTITY,
+        'TP.gui.Path',                          TP.IDENTITY,
 
         'TP.core.Job',                          TP.IDENTITY,
         'TP.core.Browser_TYPE',                 TP.IDENTITY,

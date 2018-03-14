@@ -668,7 +668,7 @@ function(mouseLocation, mouseButton) {
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until run() is called).
-     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -703,8 +703,8 @@ function(mouseLocation, mouseButton) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
-    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
-        //  Otherwise, if a TP.core.Point has been supplied then we set the
+    } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
+        //  Otherwise, if a TP.gui.Point has been supplied then we set the
         //  target to TP.CURRENT, which tells the sequence performing routine to
         //  use whatever the currently focused element is at the time it is
         //  executing the sequence.
@@ -732,7 +732,7 @@ function(mouseLocation, mouseButton) {
         eventName = 'click';
     }
 
-    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  If we got a valid TP.gui.Point supplied as the mouse location, then we
     //  go ahead and supply it as the argument for this step in the sequence.
     //  Otherwise, it will have to be computed from the target in the sequence
     //  performing routine.
@@ -806,7 +806,7 @@ function(mouseLocation, mouseButton) {
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'run()' method is
      *     called).
-     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -841,8 +841,8 @@ function(mouseLocation, mouseButton) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
-    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
-        //  Otherwise, if a TP.core.Point has been supplied then we set the
+    } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
+        //  Otherwise, if a TP.gui.Point has been supplied then we set the
         //  target to TP.CURRENT, which tells the sequence performing routine to
         //  use whatever the currently focused element is at the time it is
         //  executing the sequence.
@@ -875,7 +875,7 @@ function(mouseLocation, mouseButton) {
 
     eventName = 'dblclick';
 
-    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  If we got a valid TP.gui.Point supplied as the mouse location, then we
     //  go ahead and supply it as the argument for this step in the sequence.
     //  Otherwise, it will have to be computed from the target in the sequence
     //  performing routine.
@@ -1143,7 +1143,7 @@ function(mouseLocation, mouseButton) {
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'run()' method is
      *     called).
-     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -1178,8 +1178,8 @@ function(mouseLocation, mouseButton) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
-    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
-        //  Otherwise, if a TP.core.Point has been supplied then we set the
+    } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
+        //  Otherwise, if a TP.gui.Point has been supplied then we set the
         //  target to TP.CURRENT, which tells the sequence performing routine to
         //  use whatever the currently focused element is at the time it is
         //  executing the sequence.
@@ -1212,7 +1212,7 @@ function(mouseLocation, mouseButton) {
 
     eventName = 'mousedown';
 
-    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  If we got a valid TP.gui.Point supplied as the mouse location, then we
     //  go ahead and supply it as the argument for this step in the sequence.
     //  Otherwise, it will have to be computed from the target in the sequence
     //  performing routine.
@@ -1246,7 +1246,7 @@ function(mouseLocation, mouseButton) {
      *     that is currently focused *when the sequence that this method belongs
      *     to is executed* (which won't happen until the 'run()' method is
      *     called).
-     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     * @param {Element|TP.core.AccessPath|TP.gui.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
      *     used with the currently focused element or as a mouse button
@@ -1281,8 +1281,8 @@ function(mouseLocation, mouseButton) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
         target = mouseLocation;
-    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
-        //  Otherwise, if a TP.core.Point has been supplied then we set the
+    } else if (TP.isKindOf(mouseLocation, TP.gui.Point)) {
+        //  Otherwise, if a TP.gui.Point has been supplied then we set the
         //  target to TP.CURRENT, which tells the sequence performing routine to
         //  use whatever the currently focused element is at the time it is
         //  executing the sequence.
@@ -1315,7 +1315,7 @@ function(mouseLocation, mouseButton) {
 
     eventName = 'mouseup';
 
-    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  If we got a valid TP.gui.Point supplied as the mouse location, then we
     //  go ahead and supply it as the argument for this step in the sequence.
     //  Otherwise, it will have to be computed from the target in the sequence
     //  performing routine.

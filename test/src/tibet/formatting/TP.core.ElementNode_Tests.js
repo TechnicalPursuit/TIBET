@@ -52,7 +52,7 @@ function() {
 
                 TP.lang.Object.defineSubtype('TP.test.ColorDisplayConverter');
                 TP.test.ColorDisplayConverter.Type.defineMethod(
-                                        'fromTP_core_Color',
+                                        'fromTP_gui_Color',
                                         function(aValue, params) {
                                             switch (TP.str(aValue)) {
                                                 case TP.str(TP.cc('red')):

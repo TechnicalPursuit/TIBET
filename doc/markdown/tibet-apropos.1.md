@@ -104,7 +104,7 @@ improve the chances you will find appropriate suggestions in the result list.
     #
     # by comment
     #
-    TP.core.MultiTransition.Inst.step (1)
+    TP.gui.MultiTransition.Inst.step (1)
     TP.xctrls.clipbox.Inst.setDisplayValue (1)
     TP.elementWrapToContent (1)
 

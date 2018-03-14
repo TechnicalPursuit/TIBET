@@ -469,13 +469,13 @@ function() {
 
                 tpElem = TP.wrap(elem);
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         tpElem.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('blue'));
+                    TP.gui.Color.fromString('blue'));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 });

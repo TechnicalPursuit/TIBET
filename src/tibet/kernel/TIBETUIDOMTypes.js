@@ -2786,13 +2786,13 @@ function(wantsTransformed) {
 
     /**
      * @method getGlobalPoint
-     * @summary Returns the receiver's global position as a TP.core.Point. The
+     * @summary Returns the receiver's global position as a TP.gui.Point. The
      *     global position is the element's position relative to its overall
      *     *top level* window.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Point} The receiver's global position.
+     * @returns {TP.gui.Point} The receiver's global position.
      */
 
     var coords;
@@ -2813,12 +2813,12 @@ function(wantsTransformed) {
     /**
      * @method getGlobalRect
      * @summary Returns the receiver's global position and size as a
-     *     TP.core.Rect. The global position is the element's position relative
+     *     TP.gui.Rect. The global position is the element's position relative
      *     to its overall *top level* window.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Rect} The receiver's global position and size.
+     * @returns {TP.gui.Rect} The receiver's global position and size.
      */
 
     var coords;
@@ -3076,13 +3076,13 @@ function(wantsTransformed) {
 
     /**
      * @method getOffsetPoint
-     * @summary Returns the receiver's offset position as a TP.core.Point. The
+     * @summary Returns the receiver's offset position as a TP.gui.Point. The
      *     offset position is the element's position relative to its offset
      *     parent.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Point} The receiver's offset position.
+     * @returns {TP.gui.Point} The receiver's offset position.
      */
 
     var coords;
@@ -3102,12 +3102,12 @@ function(wantsTransformed) {
     /**
      * @method getOffsetRect
      * @summary Returns the receiver's offset position and size as a
-     *     TP.core.Rect. The offset position is the element's position relative
+     *     TP.gui.Rect. The offset position is the element's position relative
      *     to its offset parent.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Rect} The receiver's offset position and size.
+     * @returns {TP.gui.Rect} The receiver's offset position and size.
      */
 
     var coords;
@@ -3126,12 +3126,12 @@ function(wantsTransformed) {
 
     /**
      * @method getPagePoint
-     * @summary Returns the receiver's page position as a TP.core.Point. The
+     * @summary Returns the receiver's page position as a TP.gui.Point. The
      *     page position is the element's position relative to its overall page.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Point} The receiver's page position.
+     * @returns {TP.gui.Point} The receiver's page position.
      */
 
     var coords;
@@ -3152,12 +3152,12 @@ function(wantsTransformed) {
     /**
      * @method getPageRect
      * @summary Returns the receiver's page position and size as a
-     *     TP.core.Rect. The page position is the element's position relative to
+     *     TP.gui.Rect. The page position is the element's position relative to
      *     its overall page.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Rect} The receiver's page position and size.
+     * @returns {TP.gui.Rect} The receiver's page position and size.
      */
 
     var coords;
@@ -3344,8 +3344,8 @@ function() {
     /**
      * @method getScrollOffsetPoint
      * @summary Returns the receiver's scroll offset position (i.e. scrollLeft &
-     *     scrollTop) as a TP.core.Point.
-     * @returns {TP.core.Point} The receiver's scroll offset position.
+     *     scrollTop) as a TP.gui.Point.
+     * @returns {TP.gui.Point} The receiver's scroll offset position.
      */
 
     var elem;
@@ -4378,7 +4378,7 @@ function(aPointOrObject) {
      *     left style properties. This method expects that these values are
      *     provided *relative to the top-level window containing the receiver*
      *     and that the receiver is positioned in some fashion.
-     * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
+     * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -4401,7 +4401,7 @@ function(aPointOrObject) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
-    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
         xVal = aPointOrObject.getX();
         yVal = aPointOrObject.getY();
     } else if (TP.isHash(aPointOrObject)) {
@@ -4446,7 +4446,7 @@ function(aRectOrObject) {
      *     provided *relative to the top-level window containing the receiver*
      *     and that the receiver is positioned in some fashion. It also sets the
      *     width and height according to the data supplied.
-     * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
+     * @param {TP.gui.Rect|TP.core.Hash|Array} aRectOrObject A TP.gui.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
@@ -4472,7 +4472,7 @@ function(aRectOrObject) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
-    if (TP.isKindOf(aRectOrObject, TP.core.Rect)) {
+    if (TP.isKindOf(aRectOrObject, TP.gui.Rect)) {
         xVal = aRectOrObject.getX();
         yVal = aRectOrObject.getY();
         widthVal = aRectOrObject.getWidth();
@@ -4527,7 +4527,7 @@ function(aPointOrObject) {
      *     left style properties. This method expects that these values are
      *     provided *relative to the offset parent of the receiver* and that the
      *     receiver is positioned in some fashion.
-     * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
+     * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -4537,7 +4537,7 @@ function(aPointOrObject) {
 
     styleObj = TP.elementGetStyleObj(this.getNativeNode());
 
-    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
         styleObj.left = aPointOrObject.getX() + 'px';
         styleObj.top = aPointOrObject.getY() + 'px';
     } else if (TP.isHash(aPointOrObject)) {
@@ -4566,7 +4566,7 @@ function(aRectOrObject) {
      *     provided *relative to the offset parent of the receiver* and that the
      *     receiver is positioned in some fashion. It also sets the width and
      *     height according to the data supplied.
-     * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
+     * @param {TP.gui.Rect|TP.core.Hash|Array} aRectOrObject A TP.gui.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
@@ -4577,7 +4577,7 @@ function(aRectOrObject) {
 
     styleObj = TP.elementGetStyleObj(this.getNativeNode());
 
-    if (TP.isKindOf(aRectOrObject, TP.core.Rect)) {
+    if (TP.isKindOf(aRectOrObject, TP.gui.Rect)) {
         styleObj.left = aRectOrObject.getX() + 'px';
         styleObj.top = aRectOrObject.getY() + 'px';
         styleObj.width = aRectOrObject.getWidth() + 'px';
@@ -4613,7 +4613,7 @@ function(aPointOrObject) {
      *     left style properties. This method expects that these values are
      *     provided *relative to the whole page of the receiver* and that the
      *     receiver is positioned in some fashion.
-     * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
+     * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.core.UIElementNode} The receiver.
@@ -4626,7 +4626,7 @@ function(aPointOrObject) {
         offsets,
         styleObj;
 
-    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
         xVal = aPointOrObject.getX();
         yVal = aPointOrObject.getY();
     } else if (TP.isHash(aPointOrObject)) {
@@ -4666,7 +4666,7 @@ function(aRectOrObject) {
      *     provided *relative to the whole page of the receiver* and that the
      *     receiver is positioned in some fashion. It also sets the width and
      *     height according to the data supplied.
-     * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
+     * @param {TP.gui.Rect|TP.core.Hash|Array} aRectOrObject A TP.gui.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
@@ -4682,7 +4682,7 @@ function(aRectOrObject) {
 
     styleObj = TP.elementGetStyleObj(this.getNativeNode());
 
-    if (TP.isKindOf(aRectOrObject, TP.core.Rect)) {
+    if (TP.isKindOf(aRectOrObject, TP.gui.Rect)) {
         xVal = aRectOrObject.getX();
         yVal = aRectOrObject.getY();
         styleObj.width = aRectOrObject.getWidth() + 'px';
@@ -4727,8 +4727,8 @@ function(aPointOrObject) {
      *     style property. This method expects that this value is provided
      *     *relative to the whole page of the receiver* and that the receiver is
      *     positioned in some fashion.
-     * @param {TP.core.Point|TP.core.Hash|Array|Number} aPointOrObject A
-     *     TP.core.Point to use or an object that has an 'x' slot or an Array
+     * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.gui.Point to use or an object that has an 'x' slot or an Array
      *     that has x in the first position or a Number.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4739,7 +4739,7 @@ function(aPointOrObject) {
         offsets,
         styleObj;
 
-    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
         xVal = aPointOrObject.getX();
     } else if (TP.isHash(aPointOrObject)) {
         xVal = aPointOrObject.at('x');
@@ -4775,8 +4775,8 @@ function(aPointOrObject) {
      *     style property. This method expects that this value is provided
      *     *relative to the whole page of the receiver* and that the receiver is
      *     positioned in some fashion.
-     * @param {TP.core.Point|TP.core.Hash|Array|Number} aPointOrObject A
-     *     TP.core.Point to use or an object that has an 'y' slot or an Array
+     * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.gui.Point to use or an object that has an 'y' slot or an Array
      *     that has y in the first position or a Number.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4787,7 +4787,7 @@ function(aPointOrObject) {
         offsets,
         styleObj;
 
-    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
         yVal = aPointOrObject.getY();
     } else if (TP.isHash(aPointOrObject)) {
         yVal = aPointOrObject.at('y');

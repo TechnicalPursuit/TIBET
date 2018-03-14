@@ -304,10 +304,10 @@ function(aHalo) {
      * @method getHaloRect
      * @summary Returns the rectangle that the halo can use to display itself
      *     when it has the receiver selected. At this level, this method returns
-     *     an empty TP.core.Rect.
+     *     an empty TP.gui.Rect.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
      *     to use to display itself.
-     * @returns {TP.core.Rect} The rectangle that the halo will use to display
+     * @returns {TP.gui.Rect} The rectangle that the halo will use to display
      *     itself.
      */
 
@@ -1406,7 +1406,7 @@ function(aHalo) {
      *     when it has the receiver selected.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
      *     to use to display itself.
-     * @returns {TP.core.Rect} The rectangle that the halo will use to display
+     * @returns {TP.gui.Rect} The rectangle that the halo will use to display
      *     itself.
      */
 

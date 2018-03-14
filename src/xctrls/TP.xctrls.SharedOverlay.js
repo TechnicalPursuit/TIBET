@@ -418,13 +418,13 @@ function(anOverlayPoint, anAvoidPoint) {
      * @method getPositioningPoint
      * @summary Computes and returns the point used to position the overlay
      *     using the supplied point (which should be the initial point).
-     * @param {TP.core.Point} anOverlayPoint The initial point to use to
+     * @param {TP.gui.Point} anOverlayPoint The initial point to use to
      *     position the overlay. NOTE: This point should be in *global*
      *     coordinates.
-     * @param {TP.core.Point} [anAvoidPoint] A point to 'avoid' when computing
+     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
      *     the positioning point. The system will shift the overlay around,
      *     trying to avoid this point.
-     * @returns {TP.core.Point} The point (in global coordinates) to position
+     * @returns {TP.gui.Point} The point (in global coordinates) to position
      *     the overlay at.
      */
 
@@ -813,9 +813,9 @@ function(anOverlayPoint, anAvoidPoint) {
     /**
      * @method positionUsing
      * @summary Positions the overlay using the supplied point.
-     * @param {TP.core.Point} anOverlayPoint The point to use to position the
+     * @param {TP.gui.Point} anOverlayPoint The point to use to position the
      *     overlay. NOTE: This point should be in *global* coordinates.
-     * @param {TP.core.Point} [anAvoidPoint] A point to 'avoid' when computing
+     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
      *     the positioning point. The system will shift the overlay around,
      *     trying to avoid this point.
      * @returns {TP.xctrls.SharedOverlay} The receiver.

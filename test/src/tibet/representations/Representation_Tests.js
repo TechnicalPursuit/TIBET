@@ -135,16 +135,16 @@ function() {
 
         'TP.w3.DocType',                        /^TP\.w3\.DocType\$(\w+)$/,
 
-        'TP.core.Point',                        /^TP\.core\.Point\$(\w+)$/,
-        'TP.core.Rect',                         /^TP\.core\.Rect\$(\w+)$/,
-        'TP.core.Matrix',                       /^TP\.core\.Matrix\$(\w+)$/,
-        'TP.core.Color',                        /^TP\.core\.Color\$(\w+)$/,
+        'TP.gui.Point',                         /^TP\.gui\.Point\$(\w+)$/,
+        'TP.gui.Rect',                          /^TP\.gui\.Rect\$(\w+)$/,
+        'TP.gui.Matrix',                        /^TP\.gui\.Matrix\$(\w+)$/,
+        'TP.gui.Color',                         /^TP\.gui\.Color\$(\w+)$/,
 
-        'TP.core.LinearGradient',               /^TP\.core\.LinearGradient\$(\w+)$/,
-        'TP.core.RadialGradient',               /^TP\.core\.RadialGradient\$(\w+)$/,
+        'TP.gui.LinearGradient',                /^TP\.gui\.LinearGradient\$(\w+)$/,
+        'TP.gui.RadialGradient',                /^TP\.gui\.RadialGradient\$(\w+)$/,
 
-        'TP.core.Pattern',                      /^TP\.core\.Pattern\$(\w+)$/,
-        'TP.core.Path',                         /^TP\.core\.SVGPath\$(\w+)$/,
+        'TP.gui.Pattern',                       /^TP\.gui\.Pattern\$(\w+)$/,
+        'TP.gui.Path',                          /^TP\.gui\.SVGPath\$(\w+)$/,
 
         'TP.core.Job',                          /^TP\.core\.Job\$(\w+)$/,
         'TP.core.Browser_TYPE',                 'TP.core.Browser',
@@ -325,16 +325,16 @@ function() {
 
         'TP.w3.DocType',                        'TP.w3.DocType',
 
-        'TP.core.Point',                        'TP.core.Point',
-        'TP.core.Rect',                         'TP.core.Rect',
-        'TP.core.Matrix',                       'TP.core.Matrix',
-        'TP.core.Color',                        'TP.core.Color',
+        'TP.gui.Point',                         'TP.gui.Point',
+        'TP.gui.Rect',                          'TP.gui.Rect',
+        'TP.gui.Matrix',                        'TP.gui.Matrix',
+        'TP.gui.Color',                         'TP.gui.Color',
 
-        'TP.core.LinearGradient',               'TP.core.LinearGradient',
-        'TP.core.RadialGradient',               'TP.core.RadialGradient',
+        'TP.gui.LinearGradient',                'TP.gui.LinearGradient',
+        'TP.gui.RadialGradient',                'TP.gui.RadialGradient',
 
-        'TP.core.Pattern',                      'TP.core.Pattern',
-        'TP.core.Path',                         'TP.core.SVGPath',
+        'TP.gui.Pattern',                       'TP.gui.Pattern',
+        'TP.gui.Path',                          'TP.gui.SVGPath',
 
         'TP.core.Job',                          'TP.core.Job',
         'TP.core.Browser_TYPE',                 'TP.meta.core.Browser',
@@ -513,16 +513,16 @@ function() {
 
         'TP.w3.DocType',                        '[object Object]',
 
-        'TP.core.Point',                        '[object Object]',
-        'TP.core.Rect',                         '[object Object]',
-        'TP.core.Matrix',                       '[object Object]',
-        'TP.core.Color',                        '[object Object]',
+        'TP.gui.Point',                         '[object Object]',
+        'TP.gui.Rect',                          '[object Object]',
+        'TP.gui.Matrix',                        '[object Object]',
+        'TP.gui.Color',                         '[object Object]',
 
-        'TP.core.LinearGradient',               '[object Object]',
-        'TP.core.RadialGradient',               '[object Object]',
+        'TP.gui.LinearGradient',                '[object Object]',
+        'TP.gui.RadialGradient',                '[object Object]',
 
-        'TP.core.Pattern',                      '[object Object]',
-        'TP.core.Path',                         '[object Object]',
+        'TP.gui.Pattern',                       '[object Object]',
+        'TP.gui.Path',                          '[object Object]',
 
         'TP.core.Job',                          '[object Object]',
         'TP.core.Browser_TYPE',                 '[object Object]',
@@ -710,15 +710,15 @@ function() {
 
         'TP.w3.DocType',            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
 
-        'TP.core.Point',            '(20, 30)',
-        'TP.core.Rect',             '(0, 0, 100, 100)',
-        'TP.core.Matrix',           '{xx: 1, xy: 0, yx: 0, yy: 1, dx: 0, dy: 0}',
-        'TP.core.Color',            'rgba(0, 255, 255, 1)',
+        'TP.gui.Point',             '(20, 30)',
+        'TP.gui.Rect',              '(0, 0, 100, 100)',
+        'TP.gui.Matrix',            '{xx: 1, xy: 0, yx: 0, yy: 1, dx: 0, dy: 0}',
+        'TP.gui.Color',             'rgba(0, 255, 255, 1)',
 
-        'TP.core.LinearGradient',   'gradient-linear(45, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))',
-        'TP.core.RadialGradient',   'gradient-radial(50% 50%, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))',
-        'TP.core.Pattern',          'pattern(url(), 20, 20, 100, 100)',
-        'TP.core.Path',             'M 10,10 M 20,20',
+        'TP.gui.LinearGradient',    'gradient-linear(45, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))',
+        'TP.gui.RadialGradient',    'gradient-radial(50% 50%, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))',
+        'TP.gui.Pattern',           'pattern(url(), 20, 20, 100, 100)',
+        'TP.gui.Path',              'M 10,10 M 20,20',
 
         'TP.core.Job',              /PID([\s\S]+)/,
         'TP.core.Browser_TYPE',     'browser',
@@ -907,15 +907,15 @@ function() {
 
         'TP.w3.DocType',            '[TP.w3.DocType :: (<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">)]',
 
-        'TP.core.Point',            '[TP.core.Point :: (20, 30)]',
-        'TP.core.Rect',             '[TP.core.Rect :: (0, 0, 100, 100)]',
-        'TP.core.Matrix',           '[TP.core.Matrix :: {xx: 1, xy: 0, yx: 0, yy: 1, dx: 0, dy: 0}]',
-        'TP.core.Color',            '[TP.core.Color :: rgba(0, 255, 255, 1)]',
+        'TP.gui.Point',             '[TP.gui.Point :: (20, 30)]',
+        'TP.gui.Rect',              '[TP.gui.Rect :: (0, 0, 100, 100)]',
+        'TP.gui.Matrix',            '[TP.gui.Matrix :: {xx: 1, xy: 0, yx: 0, yy: 1, dx: 0, dy: 0}]',
+        'TP.gui.Color',             '[TP.gui.Color :: rgba(0, 255, 255, 1)]',
 
-        'TP.core.LinearGradient',   '[TP.core.LinearGradient :: gradient-linear(45, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))]',
-        'TP.core.RadialGradient',   '[TP.core.RadialGradient :: gradient-radial(50% 50%, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))]',
-        'TP.core.Pattern',          '[TP.core.Pattern :: pattern(url(), 20, 20, 100, 100)]',
-        'TP.core.Path',             '[TP.core.SVGPath :: M 10,10 M 20,20]',
+        'TP.gui.LinearGradient',    '[TP.gui.LinearGradient :: gradient-linear(45, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))]',
+        'TP.gui.RadialGradient',    '[TP.gui.RadialGradient :: gradient-radial(50% 50%, 10% rgba(0, 0, 255, 0.5) 50% rgba(0, 255, 255, 1))]',
+        'TP.gui.Pattern',           '[TP.gui.Pattern :: pattern(url(), 20, 20, 100, 100)]',
+        'TP.gui.Path',              '[TP.gui.SVGPath :: M 10,10 M 20,20]',
 
         'TP.core.Job',              /^\[TP.core.Job :: \(([\s\S]*)PID([\s\S]+)\)\]$/,
         'TP.core.Browser_TYPE',     '[TP.meta.core.Browser :: browser]',
@@ -1101,15 +1101,15 @@ function() {
 
         'TP.w3.DocType',            '<span class="TP_w3_DocType TP_w3_DocType"><span data-name="doctypename">html</span><span data-name="publicID">-//W3C//DTD XHTML 1.0 Strict//EN</span><span data-name="systemID">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</span></span>',
 
-        'TP.core.Point',            '<span class="TP_core_Point"><span data-name="x">20</span><span data-name="y">30</span></span>',
-        'TP.core.Rect',             '<span class="TP_core_Rect"><span data-name="x">0</span><span data-name="y">0</span><span data-name="width">100</span><span data-name="height">100</span></span>',
-        'TP.core.Matrix',           '<span class="TP_core_Matrix"><span data-name="xx">1</span><span data-name="xy">0</span><span data-name="yx">0</span><span data-name="yy">1</span><span data-name="dx">0</span><span data-name="dy">0</span></span>',
-        'TP.core.Color',            '<span class="TP_core_Color"><span data-name="r">0</span><span data-name="g">255</span><span data-name="b">255</span><span data-name="a">1</span></span>',
+        'TP.gui.Point',             '<span class="TP_gui_Point"><span data-name="x">20</span><span data-name="y">30</span></span>',
+        'TP.gui.Rect',              '<span class="TP_gui_Rect"><span data-name="x">0</span><span data-name="y">0</span><span data-name="width">100</span><span data-name="height">100</span></span>',
+        'TP.gui.Matrix',            '<span class="TP_gui_Matrix"><span data-name="xx">1</span><span data-name="xy">0</span><span data-name="yx">0</span><span data-name="yy">1</span><span data-name="dx">0</span><span data-name="dy">0</span></span>',
+        'TP.gui.Color',             '<span class="TP_gui_Color"><span data-name="r">0</span><span data-name="g">255</span><span data-name="b">255</span><span data-name="a">1</span></span>',
 
-        'TP.core.LinearGradient',   '<span class="TP_core_LinearGradient"><span data-name="angle">45</span><span data-name="stop"><span data-name="value">10%</span><span data-name="color"><span class="TP_core_Color"><span data-name="r">0</span><span data-name="g">0</span><span data-name="b">255</span><span data-name="a">0.5</span></span></span></span><span data-name="stop"><span data-name="value">50%</span><span data-name="color"><span class="TP_core_Color"><span data-name="r">0</span><span data-name="g">255</span><span data-name="b">255</span><span data-name="a">1</span></span></span></span></span>',
-        'TP.core.RadialGradient',   '<span class="TP_core_RadialGradient"><span data-name="cx">50%</span><span data-name="cy">50%</span><span data-name="stop"><span data-name="value">10%</span><span data-name="color"><span class="TP_core_Color"><span data-name="r">0</span><span data-name="g">0</span><span data-name="b">255</span><span data-name="a">0.5</span></span></span></span><span data-name="stop"><span data-name="value">50%</span><span data-name="color"><span class="TP_core_Color"><span data-name="r">0</span><span data-name="g">255</span><span data-name="b">255</span><span data-name="a">1</span></span></span></span></span>',
-        'TP.core.Pattern',          '<span class="TP_core_Pattern"><span data-name="x">20</span><span data-name="y">20</span><span data-name="width">100</span><span data-name="height">100</span><span data-name="url">undefined</span></span>',
-        'TP.core.Path',             '<span class="TP_core_Pattern"><span class="Array"><span data-name="0">M</span><span data-name="1"><span class="Array"><span data-name="0">10</span><span data-name="1">10</span></span></span><span data-name="2">M</span><span data-name="3"><span class="Array"><span data-name="0">20</span><span data-name="1">20</span></span></span></span></span>',
+        'TP.gui.LinearGradient',    '<span class="TP_gui_LinearGradient"><span data-name="angle">45</span><span data-name="stop"><span data-name="value">10%</span><span data-name="color"><span class="TP_gui_Color"><span data-name="r">0</span><span data-name="g">0</span><span data-name="b">255</span><span data-name="a">0.5</span></span></span></span><span data-name="stop"><span data-name="value">50%</span><span data-name="color"><span class="TP_gui_Color"><span data-name="r">0</span><span data-name="g">255</span><span data-name="b">255</span><span data-name="a">1</span></span></span></span></span>',
+        'TP.gui.RadialGradient',    '<span class="TP_gui_RadialGradient"><span data-name="cx">50%</span><span data-name="cy">50%</span><span data-name="stop"><span data-name="value">10%</span><span data-name="color"><span class="TP_gui_Color"><span data-name="r">0</span><span data-name="g">0</span><span data-name="b">255</span><span data-name="a">0.5</span></span></span></span><span data-name="stop"><span data-name="value">50%</span><span data-name="color"><span class="TP_gui_Color"><span data-name="r">0</span><span data-name="g">255</span><span data-name="b">255</span><span data-name="a">1</span></span></span></span></span>',
+        'TP.gui.Pattern',           '<span class="TP_gui_Pattern"><span data-name="x">20</span><span data-name="y">20</span><span data-name="width">100</span><span data-name="height">100</span><span data-name="url">undefined</span></span>',
+        'TP.gui.Path',              '<span class="TP_gui_Pattern"><span class="Array"><span data-name="0">M</span><span data-name="1"><span class="Array"><span data-name="0">10</span><span data-name="1">10</span></span></span><span data-name="2">M</span><span data-name="3"><span class="Array"><span data-name="0">20</span><span data-name="1">20</span></span></span></span></span>',
 
         'TP.core.Job',              /<span class="TP_lang_Object TP_core_Job"><span([\s\S]+)<\/span><\/span>$/,
         'TP.core.Browser_TYPE',     'browser',
@@ -1296,15 +1296,15 @@ function() {
 
         'TP.w3.DocType',            '<instance type="TP.w3.DocType"><doctypename>html</doctypename><publicID>-//W3C//DTD XHTML 1.0 Strict//EN</publicID><systemID>http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</systemID></instance>',
 
-        'TP.core.Point',            '<instance type="TP.core.Point" x="20" y="30"/>',
-        'TP.core.Rect',             '<instance type="TP.core.Rect" x="0" y="0" width="100" height="100"/>',
-        'TP.core.Matrix',           '<instance type="TP.core.Matrix" xx="1" xy="0" yx="0" yy="1" dx="0" dy="0"/>',
-        'TP.core.Color',            '<instance type="TP.core.Color" r="0" g="255" b="255" a="1"/>',
+        'TP.gui.Point',             '<instance type="TP.gui.Point" x="20" y="30"/>',
+        'TP.gui.Rect',              '<instance type="TP.gui.Rect" x="0" y="0" width="100" height="100"/>',
+        'TP.gui.Matrix',            '<instance type="TP.gui.Matrix" xx="1" xy="0" yx="0" yy="1" dx="0" dy="0"/>',
+        'TP.gui.Color',             '<instance type="TP.gui.Color" r="0" g="255" b="255" a="1"/>',
 
-        'TP.core.LinearGradient',   '<instance type="TP.core.LinearGradient" angle="45"><stop><value>10%</value><color><instance type="TP.core.Color" r="0" g="0" b="255" a="0.5"/></color></stop><stop><value>50%</value><color><instance type="TP.core.Color" r="0" g="255" b="255" a="1"/></color></stop></instance>',
-        'TP.core.RadialGradient',   '<instance type="TP.core.RadialGradient" cx="50%" cy="50%"><stop><value>10%</value><color><instance type="TP.core.Color" r="0" g="0" b="255" a="0.5"/></color></stop><stop><value>50%</value><color><instance type="TP.core.Color" r="0" g="255" b="255" a="1"/></color></stop></instance>',
-        'TP.core.Pattern',          '<instance type="TP.core.Pattern" x="20" y="20" width="100" height="100"><url>null</url></instance>',
-        'TP.core.Path',             '<instance type="TP.core.SVGPath">M 10,10 M 20,20</instance>',
+        'TP.gui.LinearGradient',    '<instance type="TP.gui.LinearGradient" angle="45"><stop><value>10%</value><color><instance type="TP.gui.Color" r="0" g="0" b="255" a="0.5"/></color></stop><stop><value>50%</value><color><instance type="TP.gui.Color" r="0" g="255" b="255" a="1"/></color></stop></instance>',
+        'TP.gui.RadialGradient',    '<instance type="TP.gui.RadialGradient" cx="50%" cy="50%"><stop><value>10%</value><color><instance type="TP.gui.Color" r="0" g="0" b="255" a="0.5"/></color></stop><stop><value>50%</value><color><instance type="TP.gui.Color" r="0" g="255" b="255" a="1"/></color></stop></instance>',
+        'TP.gui.Pattern',           '<instance type="TP.gui.Pattern" x="20" y="20" width="100" height="100"><url>null</url></instance>',
+        'TP.gui.Path',              '<instance type="TP.gui.SVGPath">M 10,10 M 20,20</instance>',
 
         'TP.core.Job',              /^([\s\S]*)<PID>(\d+)<\/PID>([\s\S]+)$/,
         'TP.core.Browser_TYPE',     'browser',
@@ -1492,15 +1492,15 @@ function() {
 
         'TP.w3.DocType',            '<dl class="pretty TP_w3_DocType"><dt>Type name</dt><dd class="pretty typename">TP.w3.DocType</dd><dt class="pretty key">DOCTYPE:</dt><dd class="pretty value">html</dd><dt class="pretty key">PUBLIC:</dt><dd class="pretty value">-//W3C//DTD XHTML 1.0 Strict//EN</dd><dt class="pretty key">SYSTEM:</dt><dd class="pretty value">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</dd></dl>',
 
-        'TP.core.Point',            '<dl class="pretty TP_core_Point"><dt>Type name</dt><dd class="pretty typename">TP.core.Point</dd><dt class="pretty key">x</dt><dd class="pretty value">20</dd><dt class="pretty key">y</dt><dd class="pretty value">30</dd></dl>',
-        'TP.core.Rect',             '<dl class="pretty TP_core_Rect"><dt>Type name</dt><dd class="pretty typename">TP.core.Rect</dd><dt class="pretty key">x</dt><dd class="pretty value">0</dd><dt class="pretty key">y</dt><dd class="pretty value">0</dd><dt class="pretty key">width</dt><dd class="pretty value">100</dd><dt class="pretty key">height</dt><dd class="pretty value">100</dd></dl>',
-        'TP.core.Matrix',           '<dl class="pretty TP_core_Matrix"><dt>Type name</dt><dd class="pretty typename">TP.core.Matrix</dd><dt class="pretty key">xx</dt><dd class="pretty value">1</dd><dt class="pretty key">xy</dt><dd class="pretty value">0</dd><dt class="pretty key">yx</dt><dd class="pretty value">0</dd><dt class="pretty key">yy</dt><dd class="pretty value">1</dd><dt class="pretty key">dx</dt><dd class="pretty value">0</dd><dt class="pretty key">dy</dt><dd class="pretty value">0</dd></dl>',
-        'TP.core.Color',            '<dl class="pretty TP_core_Color"><dt>Type name</dt><dd class="pretty typename">TP.core.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl>',
+        'TP.gui.Point',             '<dl class="pretty TP_gui_Point"><dt>Type name</dt><dd class="pretty typename">TP.gui.Point</dd><dt class="pretty key">x</dt><dd class="pretty value">20</dd><dt class="pretty key">y</dt><dd class="pretty value">30</dd></dl>',
+        'TP.gui.Rect',              '<dl class="pretty TP_gui_Rect"><dt>Type name</dt><dd class="pretty typename">TP.gui.Rect</dd><dt class="pretty key">x</dt><dd class="pretty value">0</dd><dt class="pretty key">y</dt><dd class="pretty value">0</dd><dt class="pretty key">width</dt><dd class="pretty value">100</dd><dt class="pretty key">height</dt><dd class="pretty value">100</dd></dl>',
+        'TP.gui.Matrix',            '<dl class="pretty TP_gui_Matrix"><dt>Type name</dt><dd class="pretty typename">TP.gui.Matrix</dd><dt class="pretty key">xx</dt><dd class="pretty value">1</dd><dt class="pretty key">xy</dt><dd class="pretty value">0</dd><dt class="pretty key">yx</dt><dd class="pretty value">0</dd><dt class="pretty key">yy</dt><dd class="pretty value">1</dd><dt class="pretty key">dx</dt><dd class="pretty value">0</dd><dt class="pretty key">dy</dt><dd class="pretty value">0</dd></dl>',
+        'TP.gui.Color',             '<dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl>',
 
-        'TP.core.LinearGradient',   '<dl class="pretty TP_core_LinearGradient"><dt>Type name</dt><dd class="pretty typename">TP.core.LinearGradient</dd><dt class="pretty key">angle</dt><dd class="pretty value">45</dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">10%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_core_Color"><dt>Type name</dt><dd class="pretty typename">TP.core.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">0</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">0.5</dd></dl></dd></dl></dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">50%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_core_Color"><dt>Type name</dt><dd class="pretty typename">TP.core.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl></dd></dl></dd></dl>',
-        'TP.core.RadialGradient',   '<dl class="pretty TP_core_RadialGradient"><dt>Type name</dt><dd class="pretty typename">TP.core.RadialGradient</dd><dt class="pretty key">cx</dt><dd class="pretty value">50%</dd><dt class="pretty key">cy</dt><dd class="pretty value">50%</dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">10%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_core_Color"><dt>Type name</dt><dd class="pretty typename">TP.core.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">0</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">0.5</dd></dl></dd></dl></dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">50%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_core_Color"><dt>Type name</dt><dd class="pretty typename">TP.core.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl></dd></dl></dd></dl>',
-        'TP.core.Pattern',          '<dl class="pretty TP_core_Pattern"><dt>Type name</dt><dd class="pretty typename">TP.core.Pattern</dd><dt class="pretty key">x</dt><dd class="pretty value">20</dd><dt class="pretty key">y</dt><dd class="pretty value">20</dd><dt class="pretty key">width</dt><dd class="pretty value">100</dd><dt class="pretty key">height</dt><dd class="pretty value">100</dd><dt class="pretty key">url</dt><dd class="pretty value">null</dd></dl>',
-        'TP.core.Path',             '<dl class="pretty TP_core_SVGPath"><dt>Type name</dt><dd class="pretty typename">TP.core.SVGPath</dd><dt class="pretty key">Segments</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>M 10,10 M 20,20</dd></dl></dd></dl>',
+        'TP.gui.LinearGradient',    '<dl class="pretty TP_gui_LinearGradient"><dt>Type name</dt><dd class="pretty typename">TP.gui.LinearGradient</dd><dt class="pretty key">angle</dt><dd class="pretty value">45</dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">10%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">0</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">0.5</dd></dl></dd></dl></dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">50%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl></dd></dl></dd></dl>',
+        'TP.gui.RadialGradient',    '<dl class="pretty TP_gui_RadialGradient"><dt>Type name</dt><dd class="pretty typename">TP.gui.RadialGradient</dd><dt class="pretty key">cx</dt><dd class="pretty value">50%</dd><dt class="pretty key">cy</dt><dd class="pretty value">50%</dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">10%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">0</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">0.5</dd></dl></dd></dl></dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">50%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl></dd></dl></dd></dl>',
+        'TP.gui.Pattern',           '<dl class="pretty TP_gui_Pattern"><dt>Type name</dt><dd class="pretty typename">TP.gui.Pattern</dd><dt class="pretty key">x</dt><dd class="pretty value">20</dd><dt class="pretty key">y</dt><dd class="pretty value">20</dd><dt class="pretty key">width</dt><dd class="pretty value">100</dd><dt class="pretty key">height</dt><dd class="pretty value">100</dd><dt class="pretty key">url</dt><dd class="pretty value">null</dd></dl>',
+        'TP.gui.Path',              '<dl class="pretty TP_gui_SVGPath"><dt>Type name</dt><dd class="pretty typename">TP.gui.SVGPath</dd><dt class="pretty key">Segments</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>M 10,10 M 20,20</dd></dl></dd></dl>',
 
         'TP.core.Job',              /^<dl class="pretty TP_core_Job"><dt>Type name<\/dt><dd class="pretty typename">TP.core.Job<\/dd>([\s\S]+)<dt class="pretty key">PID<\/dt>([\s\S]+)<\/dl>$/,
         'TP.core.Browser_TYPE',     'browser',
@@ -1691,15 +1691,15 @@ function() {
 
         'TP.w3.DocType',            '{"type":"TP.w3.DocType","data":{"DOCTYPE":"html","PUBLIC":"-//W3C//DTD XHTML 1.0 Strict//EN","SYSTEM":"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"}}',
 
-        'TP.core.Point',            '{"type":"TP.core.Point","data":{"x":"20","y":"30"}}',
-        'TP.core.Rect',             '{"type":"TP.core.Rect","data":{"x":"0","y":"0","width":"100","height":"100"}}',
-        'TP.core.Matrix',           '{"type":"TP.core.Matrix","data":{"xx":"1","xy":"0","yx":"0","yy":"1","dx":"0","dy":"0"}}',
-        'TP.core.Color',            '{"type":"TP.core.Color","data":{"r":"0","g":"255","b":"255","a":"1"}}',
+        'TP.gui.Point',             '{"type":"TP.gui.Point","data":{"x":"20","y":"30"}}',
+        'TP.gui.Rect',              '{"type":"TP.gui.Rect","data":{"x":"0","y":"0","width":"100","height":"100"}}',
+        'TP.gui.Matrix',            '{"type":"TP.gui.Matrix","data":{"xx":"1","xy":"0","yx":"0","yy":"1","dx":"0","dy":"0"}}',
+        'TP.gui.Color',             '{"type":"TP.gui.Color","data":{"r":"0","g":"255","b":"255","a":"1"}}',
 
-        'TP.core.LinearGradient',   '{"type":"TP.core.LinearGradient","data":{"angle":"45","stops":[{"value":"10%","color":{"type":"TP.core.Color","data":{"r":"0","g":"0","b":"255","a":"0.5"}}},{"value":"50%","color":{"type":"TP.core.Color","data":{"r":"0","g":"255","b":"255","a":"1"}}}]}}',
-        'TP.core.RadialGradient',   '{"type":"TP.core.RadialGradient","data":{"cx":"50%","cy":"50%","stops":[{"value":"10%","color":{"type":"TP.core.Color","data":{"r":"0","g":"0","b":"255","a":"0.5"}}},{"value":"50%","color":{"type":"TP.core.Color","data":{"r":"0","g":"255","b":"255","a":"1"}}}]}}',
-        'TP.core.Pattern',          '{"type":"TP.core.Pattern","data":{"x":"20","y":"20","width":"100","height":"100","url":"null"}}',
-        'TP.core.Path',             '{"type":"TP.core.SVGPath","data":{"segments":["M",[10,10],"M",[20,20]]}}',
+        'TP.gui.LinearGradient',    '{"type":"TP.gui.LinearGradient","data":{"angle":"45","stops":[{"value":"10%","color":{"type":"TP.gui.Color","data":{"r":"0","g":"0","b":"255","a":"0.5"}}},{"value":"50%","color":{"type":"TP.gui.Color","data":{"r":"0","g":"255","b":"255","a":"1"}}}]}}',
+        'TP.gui.RadialGradient',    '{"type":"TP.gui.RadialGradient","data":{"cx":"50%","cy":"50%","stops":[{"value":"10%","color":{"type":"TP.gui.Color","data":{"r":"0","g":"0","b":"255","a":"0.5"}}},{"value":"50%","color":{"type":"TP.gui.Color","data":{"r":"0","g":"255","b":"255","a":"1"}}}]}}',
+        'TP.gui.Pattern',           '{"type":"TP.gui.Pattern","data":{"x":"20","y":"20","width":"100","height":"100","url":"null"}}',
+        'TP.gui.Path',              '{"type":"TP.gui.SVGPath","data":{"segments":["M",[10,10],"M",[20,20]]}}',
 
         'TP.core.Job',              /^{"type":"TP.core.Job","data":([\s\S]+)"PID":(\d+)([\s\S]+)}$/,
         'TP.core.Browser_TYPE',     '{"type":"TP.lang.RootObject","data":{"name":"TP.core.Browser","supertypes":["TP.lang.Object","TP.lang.RootObject","Object"]}}',

@@ -364,7 +364,7 @@ function(aDragResponder, aSignal, xyPoint) {
         return;
     }
 
-    if (!TP.isKindOf(clampRect, TP.core.Rect)) {
+    if (!TP.isKindOf(clampRect, TP.gui.Rect)) {
         if (TP.isElement(clampRect)) {
             clampRect = TP.wrap(clampRect);
         }
@@ -372,10 +372,10 @@ function(aDragResponder, aSignal, xyPoint) {
         if (TP.isKindOf(clampRect, TP.core.UIElementNode)) {
             clampRect = clampRect.getPageRect();
         } else {
-            clampRect = TP.core.Rect.construct(clampRect);
+            clampRect = TP.gui.Rect.construct(clampRect);
         }
 
-        if (!TP.isKindOf(clampRect, TP.core.Rect)) {
+        if (!TP.isKindOf(clampRect, TP.gui.Rect)) {
             clampRect = null;
         }
 
@@ -739,7 +739,7 @@ function() {
         /* eslint-enable no-extra-parens */
     }
 
-    //  Create a TP.core.Point and use it for the offset point.
+    //  Create a TP.gui.Point and use it for the offset point.
     this.set('$offsetPoint', TP.pc(offsetX, offsetY));
 
     return this;
@@ -756,7 +756,7 @@ function(runModifiers) {
      *     modifiers' on the point data).
      * @param {Boolean} runModifiers Whether or not to run the 'data modifiers'
      *     (i.e. Functions that alter the current point). Defaults to true.
-     * @returns {TP.core.Point} The responder's current point.
+     * @returns {TP.gui.Point} The responder's current point.
      */
 
     var xyPoint,
@@ -766,7 +766,7 @@ function(runModifiers) {
 
         frameOffsetPoint;
 
-    //  Grab the TP.core.Point representing the current point and the current
+    //  Grab the TP.gui.Point representing the current point and the current
     //  signal (which will probably be some sort of DOMDrag signal)
     xyPoint = this.$get('currentPoint');
     currentSignal = this.get('currentSignal');
@@ -777,7 +777,7 @@ function(runModifiers) {
 
     //  If the existing 'current drag window' doesn't match the signal's window,
     //  then we need to compute the offsets from the signal's window to the
-    //  window of the action element and store those away in a TP.core.Point
+    //  window of the action element and store those away in a TP.gui.Point
     //  which is the 'frame offset point'.
     if (this.get('actionWindow') !==
         (eventWin = TP.eventGetWindow(currentSignal.getEvent()))) {
@@ -790,7 +790,7 @@ function(runModifiers) {
         this.set('actionWindow', eventWin);
     } else {
         //  Grab the current 'frame offset' point. Initially, this will be a
-        //  TP.core.Point of 0,0 but may have been modified if the mouse pointer
+        //  TP.gui.Point of 0,0 but may have been modified if the mouse pointer
         //  is over an iframe.
         frameOffsetPoint = this.get('$frameOffsetPoint');
     }
@@ -862,7 +862,7 @@ function(aSignal, aPoint) {
      * @summary Executes all of the registered 'data modifiers' (such as the
      *     constraint functions that are type constants on this type).
      * @param {TP.sig.DOMDragMove} aSignal The current DOMDragMove signal.
-     * @param {TP.core.Point} aPoint Optional point data to modify.
+     * @param {TP.gui.Point} aPoint Optional point data to modify.
      * @returns {TP.dnd.DragResponder} The receiver.
      */
 
@@ -2081,7 +2081,7 @@ function() {
             break;
     }
 
-    //  Create a TP.core.Point and use it for the offset point.
+    //  Create a TP.gui.Point and use it for the offset point.
     this.set('$offsetPoint', TP.pc(offsetX, offsetY));
 
     return this;
