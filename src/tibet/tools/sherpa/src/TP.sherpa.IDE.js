@@ -2088,9 +2088,9 @@ function() {
                         TP.cssElementGetStyleSheet(framingStyleElement),
                         'body').first();
 
-    //  Install a custom function on the TP.core.DragResponder type that can be
+    //  Install a custom function on the TP.dnd.DragResponder type that can be
     //  referenced in the markup.
-    TP.core.DragResponder.Type.defineConstant(
+    TP.dnd.DragResponder.Type.defineConstant(
         'ALTER_SHERPA_CUSTOM_PROPERTY',
         function(anElement, styleObj, computedVals, infoAttrs) {
 
