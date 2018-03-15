@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /*
- * Tests of TP.core.Locale and friends.
+ * Tests of TP.i18n.Locale and friends.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.describe('registerStrings',
+TP.i18n.Locale.describe('registerStrings',
 function() {
 
     var strings;
@@ -37,12 +37,12 @@ function() {
     };
 
     this.beforeEach(function() {
-        TP.core.Locale.set('strings', null);
-        TP.core.Locale.activate();
+        TP.i18n.Locale.set('strings', null);
+        TP.i18n.Locale.activate();
     });
 
     this.it('Can register strings for multiple locales', function(test, options) {
-        TP.core.Locale.registerStrings(strings);
+        TP.i18n.Locale.registerStrings(strings);
 
         this.assert.isEqualTo(TP.sys.getLocale('en').localizeString('HELLO'),
             'Hello');
@@ -91,14 +91,14 @@ function() {
     });
 
     this.it('Can translate strings by default locale', function(test, options) {
-        TP.core.Locale.registerStrings(strings);
+        TP.i18n.Locale.registerStrings(strings);
 
         this.assert.isEqualTo(TP.sys.getLocale().localizeString('HELLO'),
             'Sup');
     });
 
     this.it('Can switch default locale at runtime', function(test, options) {
-        TP.core.Locale.registerStrings(strings);
+        TP.i18n.Locale.registerStrings(strings);
         TP.sys.setLocale('fr');
 
         this.assert.isEqualTo(TP.sys.getLocale().localizeString('HELLO'),
@@ -106,7 +106,7 @@ function() {
     });
 
     this.it('Can translate strings via TP.msg namespace', function(test, options) {
-        TP.core.Locale.registerStrings(strings);
+        TP.i18n.Locale.registerStrings(strings);
         TP.sys.setLocale('en-us');
 
         this.assert.isEqualTo(TP.msg.HELLO, 'Sup');

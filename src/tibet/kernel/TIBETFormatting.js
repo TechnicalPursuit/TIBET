@@ -12,7 +12,7 @@
 The types and methods in this file support data formatting, particularly
 producing string representations for various input/output requirements.
 
-NOTE: The functionality here is integrated with TP.core.Locale support to enable
+NOTE: The functionality here is integrated with TP.i18n.Locale support to enable
 formatters to be driven by the current locale.
 */
 

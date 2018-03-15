@@ -244,11 +244,11 @@
 </config>
 
 <config id="xml">
-    <script src="xml/lang/de/TP.core.DELocale.js"/>
-    <script src="xml/lang/en/TP.core.ENLocale.js"/>
-    <script src="xml/lang/en_gb/TP.core.ENGBLocale.js"/>
-    <script src="xml/lang/en_us/TP.core.ENUSLocale.js"/>
-    <script src="xml/lang/fr/TP.core.FRLocale.js"/>
+    <script src="xml/lang/de/TP.i18n.DELocale.js"/>
+    <script src="xml/lang/en/TP.i18n.ENLocale.js"/>
+    <script src="xml/lang/en_gb/TP.i18n.ENGBLocale.js"/>
+    <script src="xml/lang/en_us/TP.i18n.ENUSLocale.js"/>
+    <script src="xml/lang/fr/TP.i18n.FRLocale.js"/>
 </config>
 
 <config id="xmpp">

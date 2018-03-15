@@ -9,42 +9,42 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.DELocale}
- * @summary TP.core.DELocale provides support for the German language and
+ * @type {TP.i18n.DELocale}
+ * @summary TP.i18n.DELocale provides support for the German language and
  *     related localizations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.defineSubtype('DELocale');
+TP.i18n.Locale.defineSubtype('DELocale');
 
-TP.core.DELocale.Type.defineAttribute('langCode', 'de');
+TP.i18n.DELocale.Type.defineAttribute('langCode', 'de');
 
-TP.core.DELocale.Type.defineAttribute('falseStrings',
+TP.i18n.DELocale.Type.defineAttribute('falseStrings',
     TP.ac('0', '', 'nein', 'Nein', 'NEIN', 'n', 'N',
         'f', 'F', 'falsch', 'Falsch', 'FALSCH'));
 
-TP.core.DELocale.Type.defineAttribute('longMonthNames',
+TP.i18n.DELocale.Type.defineAttribute('longMonthNames',
     TP.ac('Januar', 'Februar', 'Marz', 'April', 'Mai', 'Juni', 'Juli',
         'August', 'September', 'Oktober', 'November', 'Dezember'));
 
-TP.core.DELocale.Type.defineAttribute('shortMonthNames',
+TP.i18n.DELocale.Type.defineAttribute('shortMonthNames',
     TP.ac('Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul',
         'Aug', 'Sep', 'Okt', 'Nov', 'Dez'));
 
-TP.core.DELocale.Type.defineAttribute('longWeekdayNames',
+TP.i18n.DELocale.Type.defineAttribute('longWeekdayNames',
     TP.ac('Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag',
         'Frietag', 'Samstag'));
 
 //  TODO:   probably wrong, translation help appreciated :)
-TP.core.DELocale.Type.defineAttribute('shortWeekdayNames',
+TP.i18n.DELocale.Type.defineAttribute('shortWeekdayNames',
     TP.ac('Son', 'Mon', 'Die', 'Mit', 'Don', 'Fri', 'Sam'));
 
-TP.core.DELocale.Type.defineAttribute('thousandsSeparator', '.');
-TP.core.DELocale.Type.defineAttribute('decimalPoint', ',');
+TP.i18n.DELocale.Type.defineAttribute('thousandsSeparator', '.');
+TP.i18n.DELocale.Type.defineAttribute('decimalPoint', ',');
 
 //  TODO:   rework the locale registration process so this isn't necessary.
-TP.core.Locale.registerLocale(TP.core.DELocale);
+TP.i18n.Locale.registerLocale(TP.i18n.DELocale);
 
 //  ------------------------------------------------------------------------
 //  end

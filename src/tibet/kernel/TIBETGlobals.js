@@ -2196,7 +2196,7 @@ TP.RETURN_TOSTRING = function() {
 //  ------------------------------------------------------------------------
 
 //  Define a placeholder for string constant lookup. The idea is that each
-//  TP.core.Locale can place sprintf-capable (or constant) strings here upon
+//  TP.i18n.Locale can place sprintf-capable (or constant) strings here upon
 //  activation so code can simply refer to TP.msg.{{STRING_NAME}} in code.
 TP.msg = {};
 

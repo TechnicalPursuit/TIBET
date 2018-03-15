@@ -9,25 +9,18 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.FRLocale}
- * @summary TP.core.FRLocale provides support for the French language and
- *     related localizations.
+ * @type {TP.i18n.ENGBLocale}
+ * @summary TP.i18n.ENGBLocale provides support for the British English
+ *     language and related localizations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.defineSubtype('FRLocale');
+TP.i18n.ENLocale.defineSubtype('ENGBLocale');
 
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
+TP.i18n.ENGBLocale.Type.defineAttribute('countryCode', 'gb');
 
-TP.core.FRLocale.Type.defineAttribute('langCode', 'fr');
-
-TP.core.FRLocale.Type.defineAttribute('thousandsSeparator', '.');
-TP.core.FRLocale.Type.defineAttribute('decimalPoint', ',');
-
-TP.core.Locale.registerLocale(TP.core.FRLocale);
+TP.i18n.Locale.registerLocale(TP.i18n.ENGBLocale);
 
 //  ------------------------------------------------------------------------
 //  end

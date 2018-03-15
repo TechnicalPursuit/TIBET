@@ -21,7 +21,7 @@ load specific "language packs" on demand. Much of the functionality in those
 modules relies on TIBET "type clusters" which return a locale-specific subtype
 from a top-level type's construct() call.
 
-The TIBET object maintains the "current locale" while the various TP.core.Locale
+The TIBET object maintains the "current locale" while the various TP.i18n.Locale
 subtypes provide the actual functionality for localization. The language code
 for the current locale is used by "localized" types such as TP.core.PhoneNumber
 to determine the specific subtype to use.
@@ -46,20 +46,20 @@ function(iso) {
     /**
      * @method getLocale
      * @summary Return the current locale type.
-     * @returns {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
+     * @returns {TP.lang.RootObject.<TP.i18n.Locale>} A TP.i18n.Locale subtype
      *     type object.
      */
 
     var locale;
 
     if (TP.notEmpty(iso)) {
-        return TP.core.Locale.getLocaleById(iso);
+        return TP.i18n.Locale.getLocaleById(iso);
     }
 
     locale = this.$get('locale');
 
     if (TP.notValid(locale)) {
-        return TP.core.Locale;
+        return TP.i18n.Locale;
     }
 
     return locale;
@@ -74,7 +74,7 @@ function(aLocale) {
      * @method setLocale
      * @summary Sets the current locale, which is used by numerous types to
      *     provide localization support.
-     * @param {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
+     * @param {TP.lang.RootObject.<TP.i18n.Locale>} A TP.i18n.Locale subtype
      *     type object.
      */
 
@@ -86,22 +86,22 @@ function(aLocale) {
         //  possible, or US-EN when not available.
         lang = TP.sys.env('tibet.xmllang', 'en-us').toLowerCase();
 
-        locale = TP.core.Locale.getLocaleById(lang);
+        locale = TP.i18n.Locale.getLocaleById(lang);
 
         if (TP.notValid(locale)) {
-            locale = TP.core.Locale;
+            locale = TP.i18n.Locale;
         }
     } else {
         if (TP.isString(aLocale)) {
             //  this might be null, but clearing the value will cause the
             //  getLocale() routine to return the default
-            locale = TP.core.Locale.getLocaleById(aLocale);
+            locale = TP.i18n.Locale.getLocaleById(aLocale);
         } else if (TP.canInvoke(aLocale, 'localizeString')) {
             locale = aLocale;
         } else {
             this.raise('TP.sig.InvalidParameter');
 
-            locale = TP.core.Locale;
+            locale = TP.i18n.Locale;
         }
     }
 
@@ -125,7 +125,7 @@ function(aLocale) {
     /**
      * @method localize
      * @summary Returns a localized string version of the receiver.
-     * @param {TP.core.Locale|String} aLocale The locale to use for resolution.
+     * @param {TP.i18n.Locale|String} aLocale The locale to use for resolution.
      * @returns {Object} A localized version of the source object.
      */
 
@@ -139,7 +139,7 @@ function(aLocale) {
 
     //  allow passage of the locale's ID string
     if (TP.isString(locale)) {
-        localeObj = TP.core.Locale.getLocaleById(locale);
+        localeObj = TP.i18n.Locale.getLocaleById(locale);
     } else {
         localeObj = locale;
     }
@@ -158,17 +158,17 @@ function(aLocale) {
 });
 
 //  ========================================================================
-//  TP.core.Locale
+//  TP.i18n.Locale
 //  ========================================================================
 
 /**
- * @type {TP.core.Locale}
- * @summary TP.core.Locale is the supertype from which all locales inherit.
+ * @type {TP.i18n.Locale}
+ * @summary TP.i18n.Locale is the supertype from which all locales inherit.
  *     Locales are the control point for localization in TP.sys.
- * @summary TP.core.Locales are the focal point of TIBET's
+ * @summary TP.i18n.Locales are the focal point of TIBET's
  *     internationalization system. Each locale is associated with a
  *     language/country code as specified in ISO 639. Therefore, the
- *     TP.core.Locale for U.S. English is registered under the key 'en-us'. If a
+ *     TP.i18n.Locale for U.S. English is registered under the key 'en-us'. If a
  *     locale existed for French Canadian, it would be registered under 'fr-ca'.
  *
  *     The TIBET boot property 'locale' defines the default locale to load when
@@ -189,7 +189,7 @@ function(aLocale) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Locale');
+TP.lang.Object.defineSubtype('i18n.Locale');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -198,55 +198,55 @@ TP.lang.Object.defineSubtype('core.Locale');
 //  the language code for this locale. this value is typically set by the locale
 //  as part of the type's definition. we default them to empty strings to avoid
 //  getting null values when building out our ID etc.
-TP.core.Locale.Type.defineAttribute('langCode', '');
+TP.i18n.Locale.Type.defineAttribute('langCode', '');
 
 //  the country code for the locale. not set in all cases, but a good example is
 //  'us' for en-us and 'gb' for en-gb as defined by those locales.
-TP.core.Locale.Type.defineAttribute('countryCode', '');
+TP.i18n.Locale.Type.defineAttribute('countryCode', '');
 
 //  Boolean defaults
-TP.core.Locale.Type.defineAttribute('falseStrings',
+TP.i18n.Locale.Type.defineAttribute('falseStrings',
             TP.ac('0', '', 'n', 'N', 'no', 'No', 'NO', 'f', 'F',
                 'false', 'False', 'FALSE'));
 
-TP.core.Locale.Type.defineAttribute('trueStrings',
+TP.i18n.Locale.Type.defineAttribute('trueStrings',
             TP.ac('1', 'y', 'Y', 'yes', 'Yes', 'YES', 't', 'T',
                 'true', 'True', 'TRUE'));
 
 //  Date defaults
-TP.core.Locale.Type.defineAttribute('longMonthNames',
+TP.i18n.Locale.Type.defineAttribute('longMonthNames',
             TP.ac('January', 'February', 'March', 'April',
                 'May', 'June', 'July', 'August', 'September', 'October',
                 'November', 'December'));
 
-TP.core.Locale.Type.defineAttribute('longWeekdayNames',
+TP.i18n.Locale.Type.defineAttribute('longWeekdayNames',
             TP.ac('Sunday', 'Monday', 'Tuesday',
                 'Wednesday', 'Thursday', 'Friday', 'Saturday'));
 
-TP.core.Locale.Type.defineAttribute('shortMonthNames',
+TP.i18n.Locale.Type.defineAttribute('shortMonthNames',
             TP.ac('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'));
 
-TP.core.Locale.Type.defineAttribute('shortWeekdayNames',
+TP.i18n.Locale.Type.defineAttribute('shortWeekdayNames',
             TP.ac('Sun', 'Mon', 'Tue', 'Wed', 'Thu',
                 'Fri', 'Sat'));
 
-TP.core.Locale.Type.defineAttribute('dateFormat',
+TP.i18n.Locale.Type.defineAttribute('dateFormat',
     '%{yyyy}-%{mm}-%{dd}T%{hhi}:%{mmn}:%{ss}Z');    //  iso UTC
     // '%{dddd}, %{mmmm} %{dd}, %{yyyy} %{hhi}:%{mmn}:%{ss}'); //   UTC
 
 //  Number defaults
-TP.core.Locale.Type.defineAttribute('numberFormat', '#{#,###.##########}');
-TP.core.Locale.Type.defineAttribute('thousandsMatcher', /,/g);
-TP.core.Locale.Type.defineAttribute('thousandsSeparator', ',');
-TP.core.Locale.Type.defineAttribute('decimalPoint', '.');
-TP.core.Locale.Type.defineAttribute('thousandsGroupSize', 3);
+TP.i18n.Locale.Type.defineAttribute('numberFormat', '#{#,###.##########}');
+TP.i18n.Locale.Type.defineAttribute('thousandsMatcher', /,/g);
+TP.i18n.Locale.Type.defineAttribute('thousandsSeparator', ',');
+TP.i18n.Locale.Type.defineAttribute('decimalPoint', '.');
+TP.i18n.Locale.Type.defineAttribute('thousandsGroupSize', 3);
 
 //  the ISO key, which is the language code plus country code if the country
 //  code isn't empty.
-TP.core.Locale.Type.defineAttribute('langID');
+TP.i18n.Locale.Type.defineAttribute('langID');
 
-TP.core.Locale.Type.defineAttribute('locales', TP.hc());
+TP.i18n.Locale.Type.defineAttribute('locales', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Type.Local Attributes/Methods
@@ -257,15 +257,15 @@ TP.core.Locale.Type.defineAttribute('locales', TP.hc());
 //  to support usage of slices of this content as the system's TP.msg object.
 //  NOTE that this is a raw object, not a hash or other augmented object so
 //  as a result we have to use the full descriptor syntax of defineAttribute.
-TP.core.Locale.defineAttribute('strings', {});
+TP.i18n.Locale.defineAttribute('strings', {});
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.defineConstant('ROOT_ISO_KEY', 'root');
+TP.i18n.Locale.defineConstant('ROOT_ISO_KEY', 'root');
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.defineMethod('registerLocale',
+TP.i18n.Locale.defineMethod('registerLocale',
 function(aLocale, aKey) {
 
     /**
@@ -274,15 +274,15 @@ function(aLocale, aKey) {
      *     allowing it to be found quickly. Note that by using one or more calls
      *     and different keys you can map a particular locale as the handler for
      *     a number of language and country code combinations.
-     * @param {TP.meta.Locale} aLocale A TP.core.Locale subtype type object.
+     * @param {TP.meta.Locale} aLocale A TP.i18n.Locale subtype type object.
      * @param {String} aKey The language-country code key to use to register
      *     this locale.
-     * @returns {TP.meta.Locale} A TP.core.Locale subtype type object.
+     * @returns {TP.meta.Locale} A TP.i18n.Locale subtype type object.
      */
 
     var key;
 
-    if (!TP.isSubtypeOf(aLocale, TP.core.Locale)) {
+    if (!TP.isSubtypeOf(aLocale, TP.i18n.Locale)) {
         return this.raise('TP.sig.InvalidLocale', aLocale);
     }
 
@@ -291,26 +291,26 @@ function(aLocale, aKey) {
         key = aLocale.getISOKey();
     }
 
-    //  NOTE the reference to the TP.core.Locale type here rather than
+    //  NOTE the reference to the TP.i18n.Locale type here rather than
     //  "this", so we use the shared hash
-    TP.core.Locale.get('locales').atPut(key, aLocale);
+    TP.i18n.Locale.get('locales').atPut(key, aLocale);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.defineMethod('getLocaleById',
+TP.i18n.Locale.defineMethod('getLocaleById',
 function(aLocaleID) {
 
     /**
      * @method getLocaleById
-     * @summary Returns the TP.core.Locale subtype registered under the
+     * @summary Returns the TP.i18n.Locale subtype registered under the
      *     language code provided. Note that the language code should be the
      *     full four-character language code, such as en-us or fr-ca when
      *     possible, to ensure proper resolution.
      * @param {String} aLocaleID The language-country code to look up.
-     * @returns {TP.lang.RootObject.<TP.core.Locale>} A TP.core.Locale subtype
+     * @returns {TP.lang.RootObject.<TP.i18n.Locale>} A TP.i18n.Locale subtype
      *     type object.
      */
 
@@ -324,7 +324,7 @@ function(aLocaleID) {
     //  perhaps not registered, but can be found by name?
     if (TP.isType(loc = TP.sys.getTypeByName(
                 aLocaleID.strip('-').toUpperCase() + 'Locale'))) {
-        TP.core.Locale.registerLocale(loc);
+        TP.i18n.Locale.registerLocale(loc);
         return loc;
     }
 
@@ -337,7 +337,7 @@ function(aLocaleID) {
     //  perhaps not registered, but can be found for language only?
     if (TP.isType(loc = TP.sys.getTypeByName(
                 aLocaleID.split('-').first().toUpperCase() + 'Locale'))) {
-        TP.core.Locale.registerLocale(loc);
+        TP.i18n.Locale.registerLocale(loc);
         return loc;
     }
 
@@ -348,14 +348,14 @@ function(aLocaleID) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('activate',
+TP.i18n.Locale.Type.defineMethod('activate',
 function() {
 
     /**
      * @method activate
      * @summary Ensures any resources such as string table content is loaded for
      *     the receiver.
-     * @returns {TP.core.Locale} The receiver.
+     * @returns {TP.i18n.Locale} The receiver.
      */
 
     var locales,
@@ -366,7 +366,7 @@ function() {
     //  Loop over our supertypes to ensure we catch things like en for en-gb.
     locales = this.getSupertypes();
     locales.unshift(this);
-    locales = locales.slice(0, locales.indexOf(TP.core.Locale) + 1);
+    locales = locales.slice(0, locales.indexOf(TP.i18n.Locale) + 1);
     locales.reverse();
 
     locales.forEach(
@@ -387,7 +387,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getISOKey',
+TP.i18n.Locale.Type.defineMethod('getISOKey',
 function() {
 
     /**
@@ -417,7 +417,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getISOStrings',
+TP.i18n.Locale.Type.defineMethod('getISOStrings',
 function(aKey) {
 
     /**
@@ -437,14 +437,14 @@ function(aKey) {
     if (TP.notValid(iso)) {
         iso = this.getISOKey();
     }
-    iso = TP.ifEmpty(iso, TP.core.Locale.ROOT_ISO_KEY);
+    iso = TP.ifEmpty(iso, TP.i18n.Locale.ROOT_ISO_KEY);
 
     //  Check for existing string definitions for this locale/key and create it
     //  if it's not found.
-    strings = TP.core.Locale.get('strings');
+    strings = TP.i18n.Locale.get('strings');
     if (TP.notValid(strings)) {
         strings = {};
-        TP.core.Locale.set('strings', strings);
+        TP.i18n.Locale.set('strings', strings);
     }
 
     dict = strings[iso];
@@ -458,7 +458,7 @@ function(aKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('registerStrings',
+TP.i18n.Locale.Type.defineMethod('registerStrings',
 function(dictionary) {
 
     /**
@@ -503,16 +503,16 @@ function(dictionary) {
 
     //  If we're messaging the top-level locale we need to know if we're dealing
     //  with multiple ISO keys or just a key/value dictionary of strings.
-    if (this === TP.core.Locale) {
+    if (this === TP.i18n.Locale) {
         found = keys.detect(function(key) {
-            return TP.isValid(TP.core.Locale.getLocaleById(key));
+            return TP.isValid(TP.i18n.Locale.getLocaleById(key));
         });
 
         if (found) {
             keys.forEach(function(key) {
                 var locale;
 
-                locale = TP.core.Locale.getLocaleById(key);
+                locale = TP.i18n.Locale.getLocaleById(key);
                 if (TP.isValid(locale)) {
                     locale.registerStrings(data.at(key));
                 }
@@ -551,7 +551,7 @@ function(dictionary) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('localize',
+TP.i18n.Locale.Type.defineMethod('localize',
 function(anObject) {
 
     /**
@@ -559,7 +559,7 @@ function(anObject) {
      * @summary Returns a localized version of the object provided. This method
      *     serves as a top-level dispatcher which directs the object to a proper
      *     handler function by type. NOTE that no localization is attempted by
-     *     the TP.core.Locale type itself, so unless a locale is installed via
+     *     the TP.i18n.Locale type itself, so unless a locale is installed via
      *     TP.sys.setLocale() this method will return the original object.
      * @param {Object} anObject The object to localize.
      * @returns {Object} A localized version of the source object.
@@ -604,7 +604,7 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('localizeBoolean',
+TP.i18n.Locale.Type.defineMethod('localizeBoolean',
 function(aBoolean) {
 
     /**
@@ -624,7 +624,7 @@ function(aBoolean) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getFalseStrings',
+TP.i18n.Locale.Type.defineMethod('getFalseStrings',
 function() {
 
     /**
@@ -641,7 +641,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getTrueStrings',
+TP.i18n.Locale.Type.defineMethod('getTrueStrings',
 function() {
 
     /**
@@ -660,7 +660,7 @@ function() {
 //  Date Formatting
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('localizeDate',
+TP.i18n.Locale.Type.defineMethod('localizeDate',
 function(aDate) {
 
     /**
@@ -691,28 +691,28 @@ function(aDate) {
     //  TODO:   optimize this series by creating/escaping a RegExp and doing
     //          replacement. This is pure brute force and pretty slow :(
 
-    en = TP.core.Locale.getLongMonthNames();
+    en = TP.i18n.Locale.getLongMonthNames();
     names = this.getLongMonthNames();
 
     for (i = 0; i < en.length; i++) {
         str = str.replace(en.at(i), names.at(i));
     }
 
-    en = TP.core.Locale.getLongWeekdayNames();
+    en = TP.i18n.Locale.getLongWeekdayNames();
     names = this.getLongWeekdayNames();
 
     for (i = 0; i < en.length; i++) {
         str = str.replace(en.at(i), names.at(i));
     }
 
-    en = TP.core.Locale.getShortMonthNames();
+    en = TP.i18n.Locale.getShortMonthNames();
     names = this.getShortMonthNames();
 
     for (i = 0; i < en.length; i++) {
         str = str.replace(en.at(i), names.at(i));
     }
 
-    en = TP.core.Locale.getShortWeekdayNames();
+    en = TP.i18n.Locale.getShortWeekdayNames();
     names = this.getShortWeekdayNames();
 
     for (i = 0; i < en.length; i++) {
@@ -724,7 +724,7 @@ function(aDate) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getDateFormat',
+TP.i18n.Locale.Type.defineMethod('getDateFormat',
 function() {
 
     /**
@@ -739,7 +739,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getLongMonthNames',
+TP.i18n.Locale.Type.defineMethod('getLongMonthNames',
 function() {
 
     /**
@@ -756,7 +756,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getLongWeekdayNames',
+TP.i18n.Locale.Type.defineMethod('getLongWeekdayNames',
 function() {
 
     /**
@@ -773,7 +773,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getShortMonthNames',
+TP.i18n.Locale.Type.defineMethod('getShortMonthNames',
 function() {
 
     /**
@@ -790,7 +790,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getShortWeekdayNames',
+TP.i18n.Locale.Type.defineMethod('getShortWeekdayNames',
 function() {
 
     /**
@@ -809,7 +809,7 @@ function() {
 //  Number Formatting
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('localizeNumber',
+TP.i18n.Locale.Type.defineMethod('localizeNumber',
 function(aNumber) {
 
     /**
@@ -847,7 +847,7 @@ function(aNumber) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getNumberFormat',
+TP.i18n.Locale.Type.defineMethod('getNumberFormat',
 function() {
 
     /**
@@ -862,7 +862,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getThousandsMatcher',
+TP.i18n.Locale.Type.defineMethod('getThousandsMatcher',
 function() {
 
     /**
@@ -876,7 +876,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getThousandsSeparator',
+TP.i18n.Locale.Type.defineMethod('getThousandsSeparator',
 function() {
 
     /**
@@ -892,7 +892,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getDecimalPoint',
+TP.i18n.Locale.Type.defineMethod('getDecimalPoint',
 function() {
 
     /**
@@ -908,7 +908,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getThousandsGroupSize',
+TP.i18n.Locale.Type.defineMethod('getThousandsGroupSize',
 function() {
 
     /**
@@ -925,7 +925,7 @@ function() {
 //  String Formatting
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('localizeString',
+TP.i18n.Locale.Type.defineMethod('localizeString',
 function(aString) {
 
     /**
@@ -965,7 +965,7 @@ function(aString) {
 //  Boolean Parsing
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('parseBoolean',
+TP.i18n.Locale.Type.defineMethod('parseBoolean',
 function(aString) {
 
     /**
@@ -988,7 +988,7 @@ function(aString) {
 //  Date Parsing
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('parseDate',
+TP.i18n.Locale.Type.defineMethod('parseDate',
 function(aString) {
 
     /**
@@ -1014,7 +1014,7 @@ function(aString) {
 //  Number Parsing
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('parseNumber',
+TP.i18n.Locale.Type.defineMethod('parseNumber',
 function(aString) {
 
     /**
@@ -1048,7 +1048,7 @@ function(aString) {
 //  String Parsing
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('parseString',
+TP.i18n.Locale.Type.defineMethod('parseString',
 function(aString) {
 
     /**

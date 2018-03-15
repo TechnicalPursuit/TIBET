@@ -9,18 +9,20 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.ENGBLocale}
- * @summary TP.core.ENGBLocale provides support for the British English
- *     language and related localizations.
+ * @type {TP.i18n.ENLocale}
+ * @summary TP.i18n.ENLocale provides support for the English language,
+ *     regardless of any specific country. This is the default locale used when
+ *     no other locale is specified and the user's language and country codes
+ *     doesn't resolve to an alternative locale.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ENLocale.defineSubtype('ENGBLocale');
+TP.i18n.Locale.defineSubtype('ENLocale');
 
-TP.core.ENGBLocale.Type.defineAttribute('countryCode', 'gb');
+TP.i18n.ENLocale.Type.defineAttribute('langCode', 'en');
 
-TP.core.Locale.registerLocale(TP.core.ENGBLocale);
+TP.i18n.Locale.registerLocale(TP.i18n.ENLocale);
 
 //  ------------------------------------------------------------------------
 //  end

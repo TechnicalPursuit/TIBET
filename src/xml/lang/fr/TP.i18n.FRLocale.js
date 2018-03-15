@@ -9,20 +9,25 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.ENLocale}
- * @summary TP.core.ENLocale provides support for the English language,
- *     regardless of any specific country. This is the default locale used when
- *     no other locale is specified and the user's language and country codes
- *     doesn't resolve to an alternative locale.
+ * @type {TP.i18n.FRLocale}
+ * @summary TP.i18n.FRLocale provides support for the French language and
+ *     related localizations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.defineSubtype('ENLocale');
+TP.i18n.Locale.defineSubtype('FRLocale');
 
-TP.core.ENLocale.Type.defineAttribute('langCode', 'en');
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
-TP.core.Locale.registerLocale(TP.core.ENLocale);
+TP.i18n.FRLocale.Type.defineAttribute('langCode', 'fr');
+
+TP.i18n.FRLocale.Type.defineAttribute('thousandsSeparator', '.');
+TP.i18n.FRLocale.Type.defineAttribute('decimalPoint', ',');
+
+TP.i18n.Locale.registerLocale(TP.i18n.FRLocale);
 
 //  ------------------------------------------------------------------------
 //  end

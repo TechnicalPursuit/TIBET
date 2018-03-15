@@ -6494,7 +6494,7 @@ function() {
      * @method getTargetLanguage
      * @summary Returns the target 'lang', the user's targeted language
      *     setting.
-     * @description This method leverages TP.core.Locale data whenever possible,
+     * @description This method leverages TP.i18n.Locale data whenever possible,
      *     otherwise the boot property for userlang is used. When translations
      *     are performed this is the language being targeted using the current
      *     source language as the key.
@@ -6507,8 +6507,8 @@ function() {
      *     'en-us'.
      */
 
-    //  leverage the TP.core.Locale type if we've loaded it at this point
-    if (TP.isType(TP.sys.getTypeByName('TP.core.Locale'))) {
+    //  leverage the TP.i18n.Locale type if we've loaded it at this point
+    if (TP.isType(TP.sys.getTypeByName('TP.i18n.Locale'))) {
         return TP.ifInvalid(TP.sys.getLocale().getISOKey(), 'en-us');
     }
 
@@ -6555,7 +6555,7 @@ function(varargs) {
      *     version that ensures the incoming string gets a chance at being
      *     localized. All arguments used in constructing Strings using TP.sc()
      *     are subject to localization based on the current source and target
-     *     locale information. See TP.core.Locale for more information. The
+     *     locale information. See TP.i18n.Locale for more information. The
      *     simple version uses TP.msg[key] to look up any mapped values.
      * @param {Object} varargs A variable list of 0 to N values to build
      *     the String from. Multiple chunks are joined with a single space.

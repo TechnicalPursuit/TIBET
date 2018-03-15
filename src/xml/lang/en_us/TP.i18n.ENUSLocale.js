@@ -9,8 +9,8 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.ENUSLocale}
- * @summary TP.core.ENUSLocale provides support for the U.S. English language
+ * @type {TP.i18n.ENUSLocale}
+ * @summary TP.i18n.ENUSLocale provides support for the U.S. English language
  *     and related localizations. This is the default locale used when no other
  *     locale is specified and the user's language code doesn't resolve to an
  *     alternative locale.
@@ -18,11 +18,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ENLocale.defineSubtype('ENUSLocale');
+TP.i18n.ENLocale.defineSubtype('ENUSLocale');
 
-TP.core.ENUSLocale.Type.defineAttribute('countryCode', 'us');
+TP.i18n.ENUSLocale.Type.defineAttribute('countryCode', 'us');
 
-TP.core.Locale.registerLocale(TP.core.ENUSLocale);
+TP.i18n.Locale.registerLocale(TP.i18n.ENUSLocale);
 
 //  ------------------------------------------------------------------------
 //  end

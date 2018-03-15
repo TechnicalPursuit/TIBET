@@ -68,8 +68,8 @@ function(aString, sourceLocale) {
      * @summary Returns the Boolean value of the string provided, as localized
      *     for the target locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language or locale the string is now in.
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language or locale the string is now in.
      * @returns {Boolean} The localized Boolean value.
      */
 
@@ -141,7 +141,7 @@ Date.Type.defineConstant('DAYS_PER_MONTH',
                     TP.ac(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
 
 //  NOTE: These are the default names that get loaded with the Date type.
-//  If a TP.core.Locale gets loaded it will replace the functions that
+//  If a TP.i18n.Locale gets loaded it will replace the functions that
 //  get values from these arrays with ones from the locale that gets set.
 //  Therefore, DO NOT access these arrays directly. Use getDayName(),
 //  getShortDayName(), getMonthName(), getShortMonthName().
@@ -777,11 +777,11 @@ function(aString, sourceLocale) {
      *     process is to create an TP.iso.ISO8601 type which can parse and
      *     format date strings. The second is to allow you to add custom date
      *     parsers via the addParser method. And finally, we automatically
-     *     attempt to parse using the current TP.core.Locale type in effect, so
+     *     attempt to parse using the current TP.i18n.Locale type in effect, so
      *     localized input can be managed.
      * @param {String} aString The Date to be parsed.
-     * @param {TP.core.Locale|String} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in.
+     * @param {TP.i18n.Locale|String} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in.
      * @exception TP.sig.InvalidParameter
      * @returns {Date} A new Date object representing the Date encoded in the
      *     parameter.
@@ -818,7 +818,7 @@ function(aYear) {
     }
 
     //  Here, we compute the day in October when DST will end. Note that
-    //  this is valid for the U.S. only. If a TP.core.Locale gets loaded it
+    //  this is valid for the U.S. only. If a TP.i18n.Locale gets loaded it
     //  should override this method and provide the correct end day for DST
     //  (Summer) time.
 
@@ -863,7 +863,7 @@ function(aYear) {
     }
 
     //  Here, we compute the day in April when DST will start. Note that
-    //  this is valid for the U.S. only. If a TP.core.Locale gets loaded it
+    //  this is valid for the U.S. only. If a TP.i18n.Locale gets loaded it
     //  should override this method and provide the correct start day for
     //  DST (Summer) time.
 
@@ -2649,8 +2649,8 @@ function(aString, sourceLocale) {
      * @summary Returns the Date value of the string provided, as localized for
      *     the target locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language or locale the string is now in.
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language or locale the string is now in.
      * @returns {Date} The localized Date value.
      */
 
@@ -3911,8 +3911,8 @@ function(aString, sourceLocale) {
      * @summary Returns the Number value of the string provided, as localized
      *     for the target locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language or locale the string is now in.
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language or locale the string is now in.
      * @returns {Number} The localized Number value.
      */
 
@@ -4205,8 +4205,8 @@ function(aString, sourceLocale) {
      *     for the target locale. Obviously this seems a little strange, but the
      *     localization point is key here, not the type conversion aspect.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {String} The localized String value.

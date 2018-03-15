@@ -1020,8 +1020,8 @@ function(aString, sourceLocale) {
      * @summary Returns a new instance from the string provided by invoking the
      *     receiver's parse() functionality.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to 'getTargetLanguage()' which is based on the current locale's
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
@@ -1041,8 +1041,8 @@ function(aString, sourceLocale) {
      * @summary Returns a new instance from the string provided by invoking the
      *     receiver's parse() functionality.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
@@ -1135,8 +1135,8 @@ function(aString, sourceLocale) {
      * @summary Parses aString using the best method possible given the
      *     receiver's type.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to 'getTargetLanguage()' which is based on the current locale's
      *     language-country value.
      * @returns {Object} The result of the parse. This is null when the parse
@@ -1238,8 +1238,8 @@ function(aString, sourceLocale) {
      *     one of its supertypes. For example, a Date would try to find
      *     'parseDateString'.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Object} The result of the parse. This is null when the parse
@@ -7289,10 +7289,10 @@ function(aString, sourceLocale) {
      *     default constructor this method uses an array of "false strings" such
      *     as 'n', 'N', 'no', '', '0', etc. to make a determination about
      *     boolean value. The strings used are acquired from the current TIBET
-     *     TP.core.Locale type to ensure they are localized properly.
+     *     TP.i18n.Locale type to ensure they are localized properly.
      * @param {String} aString Source String value.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Boolean}
@@ -7554,11 +7554,11 @@ function(aString, sourceLocale) {
     /**
      * @method fromString
      * @summary Parses the inbound string to produce a new Number using a
-     *     combination of the current TP.core.Locale and native JavaScript
+     *     combination of the current TP.i18n.Locale and native JavaScript
      *     numeric parse routines.
      * @param {String} aString The string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Number} A new instance.

@@ -145,7 +145,7 @@
 </config>
 
 <config id="localization">
-    <script src="~lib_test/src/tibet/localization/TP.core.Locale_Tests.js" />
+    <script src="~lib_test/src/tibet/localization/TP.i18n.Locale_Tests.js" />
 </config>
 
 <config id="tokenizer">

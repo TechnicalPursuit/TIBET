@@ -969,7 +969,7 @@ function() {
         function() {
 
             //  We use this in the tests below.
-            TP.core.Locale.registerStrings(
+            TP.i18n.Locale.registerStrings(
                 {
                     HELLO: 'Hello World!'
                 });

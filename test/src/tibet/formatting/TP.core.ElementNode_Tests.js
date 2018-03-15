@@ -71,7 +71,7 @@ function() {
 
             //  Register these for our test - we probably aren't running the
             //  German locale.
-            TP.core.DELocale.registerStrings(
+            TP.i18n.DELocale.registerStrings(
                 {
                     false: 'falsch',
                     Hello: 'Hallo',
@@ -478,7 +478,7 @@ function() {
                 elem = TP.byId('textarea', windowContext);
                 test.assert.isElement(elem);
 
-                TP.core.DELocale.set('dateFormat', '%{mmmm}');
+                TP.i18n.DELocale.set('dateFormat', '%{mmmm}');
 
                 elem.set('value', Date.constructDayOne(1900));
 

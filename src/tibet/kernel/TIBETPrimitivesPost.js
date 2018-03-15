@@ -2992,8 +2992,8 @@ function(aType, aString, aLocale) {
      * @param {TP.FunctionProto|TP.lang.RootObject} aType A specific target type
      *     to produce.
      * @param {String} aString The incoming data to parse.
-     * @param {TP.core.Locale|String} aLocale A string of the proper xml:lang
-     *     format such as en, en:us, de, etc. or a valid TP.core.Locale subtype.
+     * @param {TP.i18n.Locale|String} aLocale A string of the proper xml:lang
+     *     format such as en, en:us, de, etc. or a valid TP.i18n.Locale subtype.
      * @returns {Object} An instance of aType if the parse is successful.
      */
 
