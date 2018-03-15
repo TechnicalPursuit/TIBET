@@ -34,7 +34,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('ietf.vcard');
+TP.dom.ElementNode.defineSubtype('ietf.vcard');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -589,7 +589,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('tibet:keyring');
+TP.dom.ElementNode.defineSubtype('tibet:keyring');
 
 //  ------------------------------------------------------------------------
 //  Types Attributes
@@ -1304,7 +1304,7 @@ function(aNode, aProcessor) {
 
             //  If we can't get a concrete type at all, then we just return
             //  false. Can't do anything from here.
-            if (!TP.isType(type = TP.core.Node.getConcreteType(node))) {
+            if (!TP.isType(type = TP.dom.Node.getConcreteType(node))) {
                 return false;
             }
 
@@ -1322,7 +1322,7 @@ function(aNode, aProcessor) {
             //  above.
             if (TP.notEmpty(elemKey) &&
                 elemKey !== 'processingroot' &&
-                type === TP.core.XMLElementNode &&
+                type === TP.dom.XMLElementNode &&
                 TP.sys.cfg('sherpa.autodefine_missing_tags')) {
 
                 //  If the Sherpa is loaded and has been configured to
@@ -1485,10 +1485,10 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         if (TP.isElement(node)) {
             if (!TP.isType(type = tagTypeDict.at(
                                     TP.elementComputeTIBETTypeKey(node)))) {
-                type = TP.core.Node.getConcreteType(node);
+                type = TP.dom.Node.getConcreteType(node);
             }
         } else {
-            type = TP.core.Node.getConcreteType(node);
+            type = TP.dom.Node.getConcreteType(node);
         }
 
         try {

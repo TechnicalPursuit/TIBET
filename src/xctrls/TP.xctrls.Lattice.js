@@ -20,12 +20,12 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:Lattice');
 //  don't allow instance creation
 TP.xctrls.Lattice.isAbstract(true);
 
-TP.xctrls.Lattice.addTraits(TP.core.SelectingUIElementNode);
-TP.xctrls.Lattice.addTraits(TP.core.D3VirtualList);
+TP.xctrls.Lattice.addTraits(TP.dom.SelectingUIElementNode);
+TP.xctrls.Lattice.addTraits(TP.dom.D3VirtualList);
 
-TP.xctrls.Lattice.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
-TP.xctrls.Lattice.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
-TP.xctrls.Lattice.Inst.resolveTrait('render', TP.core.D3VirtualList);
+TP.xctrls.Lattice.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
+TP.xctrls.Lattice.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);
+TP.xctrls.Lattice.Inst.resolveTrait('render', TP.dom.D3VirtualList);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -492,7 +492,7 @@ function(aValue, shouldSignal) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Lattice.Inst.defineMethod('getRowHeight',

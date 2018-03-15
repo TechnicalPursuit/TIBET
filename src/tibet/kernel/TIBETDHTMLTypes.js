@@ -369,7 +369,7 @@ function(aDragResponder, aSignal, xyPoint) {
             clampRect = TP.wrap(clampRect);
         }
 
-        if (TP.isKindOf(clampRect, TP.core.UIElementNode)) {
+        if (TP.isKindOf(clampRect, TP.dom.UIElementNode)) {
             clampRect = clampRect.getPageRect();
         } else {
             clampRect = TP.gui.Rect.construct(clampRect);
@@ -919,11 +919,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
@@ -953,7 +953,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         startPoint;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -1538,11 +1538,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
@@ -1558,7 +1558,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         containerElem;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -2777,11 +2777,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
@@ -2797,7 +2797,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         containerElem;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -3385,17 +3385,17 @@ function(aSignal) {
         dndElem;
 
     if (TP.isValid(targetTPElem =
-                    TP.core.UIElementNode.get('currentDNDTarget'))) {
+                    TP.dom.UIElementNode.get('currentDNDTarget'))) {
 
         sigPayload = TP.hc('dndSource',
-                            TP.core.UIElementNode.get('currentDNDSource'),
+                            TP.dom.UIElementNode.get('currentDNDSource'),
                             'dndTarget',
                             targetTPElem);
 
     } else {
 
         sigPayload = TP.hc('dndSource',
-                            TP.core.UIElementNode.get('currentDNDSource'));
+                            TP.dom.UIElementNode.get('currentDNDSource'));
     }
 
     if (TP.isValid(targetTPElem) && targetTPElem.willDrop()) {
@@ -3412,9 +3412,9 @@ function(aSignal) {
     //  Send a 'TP.sig.DOMDNDCompleted' signal
     this.signal('TP.sig.DOMDNDCompleted', sigPayload);
 
-    TP.core.UIElementNode.Type.set('currentDNDSource', null);
-    TP.core.UIElementNode.Type.set('currentDNDTarget', null);
-    TP.core.UIElementNode.Type.set('currentDNDItem', null);
+    TP.dom.UIElementNode.Type.set('currentDNDSource', null);
+    TP.dom.UIElementNode.Type.set('currentDNDTarget', null);
+    TP.dom.UIElementNode.Type.set('currentDNDItem', null);
 
     //  Send a 'TP.sig.DOMDNDTerminate' signal
     this.signal('TP.sig.DOMDNDTerminate');
@@ -3562,11 +3562,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
@@ -3582,7 +3582,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         containerElem;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -3616,11 +3616,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 });
 
 //  ========================================================================
-//  TP.core.UIElementNode additions
+//  TP.dom.UIElementNode additions
 //  ========================================================================
 
 /**
- * @summary Additions to the TP.core.UIElementNode type to support drag and
+ * @summary Additions to the TP.dom.UIElementNode type to support drag and
  *     drop operations.
  */
 
@@ -3628,7 +3628,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineConstant(
+TP.dom.UIElementNode.Type.defineConstant(
         'DRAG_CSS_PROPERTY_NAMES',
         TP.ac('background', 'backgroundAttachment', 'backgroundColor',
                 'backgroundImage', 'backgroundPosition', 'backgroundRepeat',
@@ -3660,15 +3660,15 @@ TP.core.UIElementNode.Type.defineConstant(
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineAttribute('currentDNDSource');
-TP.core.UIElementNode.Type.defineAttribute('currentDNDTarget');
-TP.core.UIElementNode.Type.defineAttribute('currentDNDItem');
+TP.dom.UIElementNode.Type.defineAttribute('currentDNDSource');
+TP.dom.UIElementNode.Type.defineAttribute('currentDNDTarget');
+TP.dom.UIElementNode.Type.defineAttribute('currentDNDItem');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragdown',
+TP.dom.UIElementNode.Type.defineMethod('ondragdown',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3679,7 +3679,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -3721,12 +3721,12 @@ function(aTargetElem, anEvent) {
             moveResponder.set('targetElement', aTargetElem);
 
             //  Ask the wrapped event target element for its 'drag source'
-            //  TP.core.ElementNode. If it can't find one, then it acts as it's
+            //  TP.dom.ElementNode. If it can't find one, then it acts as it's
             //  own.
             sourceTPElem = evtTargetTPElem.getDragSource();
 
-            //  Ask the drag source TP.core.ElementNode for its 'drag info'
-            //  TP.core.ElementNode
+            //  Ask the drag source TP.dom.ElementNode for its 'drag info'
+            //  TP.dom.ElementNode
             infoTPElem = sourceTPElem.getDragInfo();
 
             //  Set up the responder using the info, source and event target
@@ -3758,10 +3758,10 @@ function(aTargetElem, anEvent) {
             resizeResponder.set('targetElement', aTargetElem);
 
             //  Ask the wrapped event target element for its 'drag source'
-            //  TP.core.ElementNode
+            //  TP.dom.ElementNode
             sourceTPElem = evtTargetTPElem.getDragSource();
 
-            //  Ask the drag source for its 'drag info' TP.core.ElementNode
+            //  Ask the drag source for its 'drag info' TP.dom.ElementNode
             infoTPElem = sourceTPElem.getDragInfo();
 
             //  Set up the responder using the info, source and event target
@@ -3784,7 +3784,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Check to see if the event target will grab. If so, obtain the
-    //  drag-and-drop 'source' TP.core.ElementNode and proceed from there.
+    //  drag-and-drop 'source' TP.dom.ElementNode and proceed from there.
     if (evtTargetTPElem.willGrab() &&
         TP.isValid(sourceTPElem = evtTargetTPElem.getDNDSource())) {
         if (TP.isValid(dndResponder = TP.bySystemId('DNDService'))) {
@@ -3795,18 +3795,18 @@ function(aTargetElem, anEvent) {
                 return this;
             }
 
-            //  Ask the source for its 'drag info' TP.core.ElementNode. This
+            //  Ask the source for its 'drag info' TP.dom.ElementNode. This
             //  very well may be the sourceTPElem itself if there is no separate
             //  element pointed to by 'drag:info'.
             infoTPElem = sourceTPElem.getDNDInfo();
 
-            //  Get the 'drag item' TP.core.ElementNode. Again, this very well
+            //  Get the 'drag item' TP.dom.ElementNode. Again, this very well
             //  may be the sourceTPElem itself, but it might an 'item' within
             //  the source or some other element. It's the one we actually want
             //  to drag.
             itemTPElem = infoTPElem.getDragItem();
 
-            //  Ask the item TP.core.ElementNode if a 'DND representation
+            //  Ask the item TP.dom.ElementNode if a 'DND representation
             //  element' can be computed. If one can be, then set up the shared
             //  DND responder.
             if (TP.isElement(actionElem = itemTPElem.getDNDRepElement())) {
@@ -3864,9 +3864,9 @@ function(aTargetElem, anEvent) {
                     //  the start point will remain unchanged.
                 }
 
-                TP.core.UIElementNode.Type.set(
+                TP.dom.UIElementNode.Type.set(
                                         'currentDNDSource', sourceTPElem);
-                TP.core.UIElementNode.Type.set(
+                TP.dom.UIElementNode.Type.set(
                                         'currentDNDItem', itemTPElem);
 
                 stateMachine = dndResponder.getStateMachines().first();
@@ -3885,7 +3885,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragup',
+TP.dom.UIElementNode.Type.defineMethod('ondragup',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3897,7 +3897,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var dragStateMachine,
@@ -3940,7 +3940,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragover',
+TP.dom.UIElementNode.Type.defineMethod('ondragover',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3952,7 +3952,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -3971,7 +3971,7 @@ function(aTargetElem, anEvent) {
 
         //  Cache a reference to the 'current drag and drop target' for when the
         //  target exits.
-        TP.core.UIElementNode.Type.set('currentDNDTarget', targetTPElem);
+        TP.dom.UIElementNode.Type.set('currentDNDTarget', targetTPElem);
 
         //  Send a 'TP.sig.DOMDNDTargetOver' signal
         targetTPElem.signal('TP.sig.DOMDNDTargetOver', TP.hc('event', anEvent));
@@ -3982,7 +3982,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragout',
+TP.dom.UIElementNode.Type.defineMethod('ondragout',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3994,7 +3994,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var targetTPElem;
@@ -4004,7 +4004,7 @@ function(aTargetElem, anEvent) {
     }
 
     if (TP.notValid(targetTPElem =
-                    TP.core.UIElementNode.get('currentDNDTarget'))) {
+                    TP.dom.UIElementNode.get('currentDNDTarget'))) {
         return this;
     }
 
@@ -4012,7 +4012,7 @@ function(aTargetElem, anEvent) {
     targetTPElem.signal('TP.sig.DOMDNDTargetOut', TP.hc('event', anEvent));
 
     //  Clear out the reference to the 'current drag and drop target'
-    TP.core.UIElementNode.Type.set('currentDNDTarget', null);
+    TP.dom.UIElementNode.Type.set('currentDNDTarget', null);
 
     return this;
 });
@@ -4021,7 +4021,7 @@ function(aTargetElem, anEvent) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDragInfo',
+TP.dom.UIElementNode.Inst.defineMethod('getDragInfo',
 function() {
 
     /**
@@ -4033,7 +4033,7 @@ function() {
      * @description If the 'drag:info' attribute doesn't exist on the receiver,
      *     then the receiver itself is returned as the source for drag
      *     information.
-     * @returns {TP.core.ElementNode} The element that provides information
+     * @returns {TP.dom.ElementNode} The element that provides information
      *     about configuring the drag session.
      */
 
@@ -4065,7 +4065,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDragItem',
+TP.dom.UIElementNode.Inst.defineMethod('getDragItem',
 function() {
 
     /**
@@ -4078,7 +4078,7 @@ function() {
      *     'target', then the target of the last mouse down event is used as the
      *     drag item. If the 'drag:item' attribute doesn't exist on the
      *     receiver, then the receiver itself is returned as the drag item.
-     * @returns {TP.core.ElementNode} The element to be dragged in a drag
+     * @returns {TP.dom.ElementNode} The element to be dragged in a drag
      *     session.
      */
 
@@ -4131,7 +4131,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDragSource',
+TP.dom.UIElementNode.Inst.defineMethod('getDragSource',
 function() {
 
     /**
@@ -4141,7 +4141,7 @@ function() {
      * @description If the 'drag:mover' or 'drag:resizer' attributes exist on
      *     the receiver, then the receiver itself is returned as the dragging
      *     source.
-     * @returns {TP.core.ElementNode} The element that provides information
+     * @returns {TP.dom.ElementNode} The element that provides information
      *     about configuring the drag session.
      */
 
@@ -4170,8 +4170,8 @@ function() {
                                                 true);
             });
 
-    //  If we found a valid source TP.core.ElementNode, get its 'info'
-    //  TP.core.ElementNode and make sure that the receiver's native node is
+    //  If we found a valid source TP.dom.ElementNode, get its 'info'
+    //  TP.dom.ElementNode and make sure that the receiver's native node is
     //  part of the results returned by executing the path supplied in the
     //  'drag:item' attribute (relative to the source element).
     if (TP.isValid(sourceTPElem)) {
@@ -4196,7 +4196,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDInfo',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDInfo',
 function() {
 
     /**
@@ -4209,7 +4209,7 @@ function() {
      * @description If the 'dnd:info' attribute doesn't exist on the receiver,
      *     then the receiver itself is returned as the source for drag and drop
      *     information.
-     * @returns {TP.core.ElementNode} The element that provides information
+     * @returns {TP.dom.ElementNode} The element that provides information
      *     about configuring the drag and drop session.
      */
 
@@ -4242,7 +4242,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDRepElement',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDRepElement',
 function() {
 
     /**
@@ -4288,7 +4288,7 @@ function() {
                 dragClone,
                 TP.elementGetComputedStyleString(
                     repElem,
-                    TP.core.UIElementNode.DRAG_CSS_PROPERTY_NAMES));
+                    TP.dom.UIElementNode.DRAG_CSS_PROPERTY_NAMES));
 
     //  Remove the 'id' to make sure the clone is unique in the document.
     TP.elementRemoveAttribute(dragClone, 'id');
@@ -4302,7 +4302,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDSource',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDSource',
 function() {
 
     /**
@@ -4311,7 +4311,7 @@ function() {
      *     current drag and drop session.
      * @description If the 'drag:vend' attribute exists on the receiver, then
      *     the receiver itself is returned as the drag and drop source.
-     * @returns {TP.core.ElementNode} The element that acts as the source for a
+     * @returns {TP.dom.ElementNode} The element that acts as the source for a
      *     drag and drop session.
      */
 
@@ -4330,7 +4330,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDTarget',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDTarget',
 function() {
 
     /**
@@ -4339,7 +4339,7 @@ function() {
      *     current drag and drop session.
      * @description If the 'drag:accept' attribute exists on the receiver, then
      *     the receiver itself is returned as the drag and drop target.
-     * @returns {TP.core.ElementNode} The element that acts as the target for a
+     * @returns {TP.dom.ElementNode} The element that acts as the target for a
      *     drag and drop session.
      */
 
@@ -4361,7 +4361,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isValidTarget',
+TP.dom.UIElementNode.Inst.defineMethod('isValidTarget',
 function() {
 
     /**
@@ -4437,7 +4437,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willDrop',
+TP.dom.UIElementNode.Inst.defineMethod('willDrop',
 function() {
 
     /**
@@ -4453,7 +4453,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willGrab',
+TP.dom.UIElementNode.Inst.defineMethod('willGrab',
 function() {
 
     /**
@@ -4469,7 +4469,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willMove',
+TP.dom.UIElementNode.Inst.defineMethod('willMove',
 function() {
 
     /**
@@ -4502,8 +4502,8 @@ function() {
                                                     true);
                 });
 
-    //  If we found a valid source TP.core.ElementNode, get its 'info'
-    //  TP.core.ElementNode and make sure that the info TP.core.ElementNode has
+    //  If we found a valid source TP.dom.ElementNode, get its 'info'
+    //  TP.dom.ElementNode and make sure that the info TP.dom.ElementNode has
     //  a 'drag:mover' attribute and that the receiver's native node is part of
     //  the results returned by executing the path supplied in the 'drag:item'
     //  attribute (relative to the source element).
@@ -4528,7 +4528,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willResize',
+TP.dom.UIElementNode.Inst.defineMethod('willResize',
 function() {
 
     /**
@@ -4560,8 +4560,8 @@ function() {
                                                     true);
                 });
 
-    //  If we found a valid source TP.core.ElementNode, get its 'info'
-    //  TP.core.ElementNode and make sure that the info TP.core.ElementNode has
+    //  If we found a valid source TP.dom.ElementNode, get its 'info'
+    //  TP.dom.ElementNode and make sure that the info TP.dom.ElementNode has
     //  a 'drag:resizer' attribute and that the receiver's native node is part
     //  of the results returned by executing the path supplied in the
     //  'drag:item' attribute (relative to the source element).
@@ -5153,20 +5153,20 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.core.SelectableItemUIElementNode
+//  TP.dom.SelectableItemUIElementNode
 //  ========================================================================
 
-TP.core.UIElementNode.defineSubtype('SelectableItemUIElementNode');
+TP.dom.UIElementNode.defineSubtype('SelectableItemUIElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.SelectableItemUIElementNode.isAbstract(true);
+TP.dom.SelectableItemUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
 function() {
 
     /**
@@ -5180,7 +5180,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
 function() {
 
     /**
@@ -5196,7 +5196,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
     /**
@@ -5211,7 +5211,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
 function() {
 
     /**
@@ -5227,7 +5227,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
 function() {
 
     /**
@@ -5241,7 +5241,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
 function(aToggleValue) {
 
     /**
@@ -5250,21 +5250,21 @@ function(aToggleValue) {
      *     to display a 'checked' or 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
      *     'checked' or 'selected' state.
-     * @returns {TP.core.SelectableItemUIElementNode} The receiver.
+     * @returns {TP.dom.SelectableItemUIElementNode} The receiver.
      */
 
     return TP.override();
 });
 
 //  ========================================================================
-//  TP.core.SelectingUIElementNode
+//  TP.dom.SelectingUIElementNode
 //  ========================================================================
 
-TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
+TP.dom.UIElementNode.defineSubtype('SelectingUIElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.SelectingUIElementNode.isAbstract(true);
+TP.dom.SelectingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -5277,13 +5277,13 @@ TP.core.SelectingUIElementNode.isAbstract(true);
  * receiver to be considered 'selected'.
  * @type {TP.core.Hash}
  */
-TP.core.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
+TP.dom.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('addSelection',
 function(aValue, anAspect) {
 
     /**
@@ -5322,7 +5322,7 @@ function(aValue, anAspect) {
     if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
+                'Target TP.dom.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
@@ -5385,7 +5385,7 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
 function() {
 
     /**
@@ -5399,7 +5399,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('deselect',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -5433,13 +5433,13 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('deselectAll',
 function() {
 
     /**
      * @method deselectAll
      * @summary Clears any current selection(s).
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     * @returns {TP.dom.SelectingUIElementNode} The receiver.
      */
 
     var selectionModel,
@@ -5468,7 +5468,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
 function() {
 
     /**
@@ -5490,7 +5490,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('isSelected',
 function(aValue, anAspect) {
 
     /**
@@ -5529,7 +5529,7 @@ function(aValue, anAspect) {
     if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
+                'Target TP.dom.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
@@ -5580,7 +5580,7 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
     /**
@@ -5596,7 +5596,7 @@ function(anAspect) {
      *     that mix in this trait should implement this if necessary.
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     * @returns {TP.dom.SelectingUIElementNode} The receiver.
      */
 
     return this;
@@ -5604,7 +5604,7 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('removeSelection',
 function(aValue, anAspect) {
 
     /**
@@ -5644,7 +5644,7 @@ function(aValue, anAspect) {
     if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
+                'Target TP.dom.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
@@ -5706,7 +5706,7 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('select',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('select',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -5745,7 +5745,7 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('selectAll',
 function() {
 
     /**
@@ -5755,7 +5755,7 @@ function() {
      *     multiple selections (such as radiobuttons), this will raise an
      *     'InvalidOperation' exception.
      * @exception TP.sig.InvalidOperation
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     * @returns {TP.dom.SelectingUIElementNode} The receiver.
      */
 
     var selectionModel,
@@ -5794,24 +5794,24 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.TogglingUIElementNode
+//  TP.dom.TogglingUIElementNode
 //  ========================================================================
 
-TP.core.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
+TP.dom.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
 
 //  Add in selectable item traits - instances of this type manage themselves as
 //  selectable items.
-TP.core.TogglingUIElementNode.addTraits(TP.core.SelectableItemUIElementNode);
+TP.dom.TogglingUIElementNode.addTraits(TP.dom.SelectableItemUIElementNode);
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.TogglingUIElementNode.isAbstract(true);
+TP.dom.TogglingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('deselect',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('deselect',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -5869,7 +5869,7 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
 function(aValue) {
 
     /**
@@ -5919,7 +5919,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
@@ -5981,7 +5981,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('getValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -6038,17 +6038,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('getValueElements',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('getValueElements',
 function() {
 
     /**
      * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     * @summary Returns an Array TP.dom.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
+     *     TP.dom.UIElementNodes. By default, this method will return other
      *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     * @returns {TP.dom.UIElementNode[]} The Array of shared value items.
      */
 
     var valueTPElems,
@@ -6075,13 +6075,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
 function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -6093,7 +6093,7 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('produceValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('produceValue',
 function(aspectName, aContentObject, aRequest) {
 
     /**
@@ -6143,7 +6143,7 @@ function(aspectName, aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
     /**
@@ -6158,7 +6158,7 @@ function(anAspect) {
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
      * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -6234,7 +6234,7 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('render',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('render',
 function() {
 
     /**
@@ -6244,7 +6244,7 @@ function() {
      *     configure the receiver's 'value elements' based on the current
      *     selection model.
      * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -6339,7 +6339,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('setDisplayValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
@@ -6352,7 +6352,7 @@ function(aValue) {
      * @param {Object} aValue The value to set (select) in the receiver. For a
      *     select list this might be an array.
      * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -6461,7 +6461,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('select',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('select',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -6522,7 +6522,7 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('setValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -6536,7 +6536,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var oldValue,
@@ -6605,14 +6605,14 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('toggleValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('toggleValue',
 function(aValue) {
 
     /**
      * @method toggleValue
      * @summary Toggles the value to the inverse of its current value.
      * @param {Object} aValue The value to toggle.
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var isSelected;

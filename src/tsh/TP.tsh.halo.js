@@ -68,7 +68,7 @@ function(aRequest) {
             arg0 = TP.byId(arg0);
         }
 
-        if (TP.isKindOf(arg0, TP.core.Node)) {
+        if (TP.isKindOf(arg0, TP.dom.Node)) {
             halo = TP.byId('SherpaHalo', TP.win('UIROOT'));
             if (TP.isValid(halo)) {
 

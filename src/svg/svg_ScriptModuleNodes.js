@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:script');
+TP.dom.UIElementNode.defineSubtype('svg:script');
 
 TP.svg.script.addTraits(TP.svg.Element);
 

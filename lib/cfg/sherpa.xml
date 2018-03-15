@@ -117,7 +117,7 @@
     <!-- These may create subtypes defined in TP.sherpa.inspector.js, so we need
          to place them *after* that in the load order. -->
     <script src="./src/TIBETNativeTypes_Additions.js"/>
-    <script src="./src/TP.core.Node_Additions.js"/>
+    <script src="./src/TP.dom.Node_Additions.js"/>
     <script src="./src/TP.uri.URI_Additions.js"/>
     <script src="./src/TP.html_Additions.js"/>
     <script src="./src/TP.lang.RootObject_Additions.js"/>

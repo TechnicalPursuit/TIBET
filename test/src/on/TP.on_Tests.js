@@ -14,7 +14,7 @@
 
 //  Don't redefine this if another test has defined it.
 if (!TP.isType(TP.tmp.testElem)) {
-    TP.core.UIElementNode.defineSubtype('tmp.testElem');
+    TP.dom.UIElementNode.defineSubtype('tmp.testElem');
 }
 
 TP.tmp.testElem.Inst.defineHandler('ClickTestSignal',

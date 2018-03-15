@@ -158,7 +158,7 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -327,7 +327,7 @@ function(info) {
 
             //  If a callback Function that should be executed before we show
             //  the dialog was supplied, invoke it with the dialog
-            //  TP.core.ElementNode as the only parameter.
+            //  TP.dom.ElementNode as the only parameter.
             beforeShowCallback = info.at('beforeShow');
             if (TP.isCallable(beforeShowCallback)) {
                 beforeShowCallback(dialogTPElem);

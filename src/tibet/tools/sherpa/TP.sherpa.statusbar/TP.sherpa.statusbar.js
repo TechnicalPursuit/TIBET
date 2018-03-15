@@ -58,7 +58,7 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 

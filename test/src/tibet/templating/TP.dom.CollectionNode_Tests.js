@@ -11,10 +11,10 @@
 /* JSHint checking */
 
 //  ========================================================================
-//  TP.core.CollectionNode
+//  TP.dom.CollectionNode
 //  ========================================================================
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: templating',
 function() {
 
     var unloadURI,
@@ -382,7 +382,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating attribute propagation',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: templating attribute propagation',
 function() {
 
     var unloadURI,
@@ -558,7 +558,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating with substitutions',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: templating with substitutions',
 function() {
 
     var unloadURI,
@@ -955,7 +955,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating various system variable output',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: templating various system variable output',
 function() {
 
     var unloadURI,
@@ -1098,7 +1098,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - JS template',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: tibet:template inline element - JS template',
 function() {
 
     var unloadURI;
@@ -1190,7 +1190,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XML template',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: tibet:template inline element - XML template',
 function() {
 
     var unloadURI;
@@ -1282,7 +1282,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - XSLT template',
+TP.dom.CollectionNode.Inst.describe('TP.dom.CollectionNode: tibet:template inline element - XSLT template',
 function() {
 
     var unloadURI;

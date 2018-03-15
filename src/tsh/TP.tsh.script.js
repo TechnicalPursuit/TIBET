@@ -553,7 +553,7 @@ function(source, shell, sibling, request) {
      * @param {String|Array} source The input source to translate.
      * @param {TP.shell.Shell} shell The shell instance handling the request
      *     we're processing text for.
-     * @param {TP.core.Node} sibling The previous sibling, which may contain
+     * @param {TP.dom.Node} sibling The previous sibling, which may contain
      *     pipe information.
      * @param {TP.sig.Request} request The request being desugared.
      * @returns {String} The translated/desugared script source.

@@ -63,16 +63,16 @@ function(anObject, aRequest) {
     arr.push('<param><value>');
 
     if (TP.notValid(anObject)) {
-        arr.push(usenil ? TP.core.XMLRPCNode.NIL : '');
+        arr.push(usenil ? TP.dom.XMLRPCNode.NIL : '');
     } else {
         if (TP.canInvoke(anObject, 'as')) {
-            node = anObject.as('TP.core.XMLRPCNode', filter, usenil);
+            node = anObject.as('TP.dom.XMLRPCNode', filter, usenil);
         } else {
-            node = TP.core.XMLRPCNode.from(anObject, filter, usenil);
+            node = TP.dom.XMLRPCNode.from(anObject, filter, usenil);
         }
 
         if (TP.notValid(node)) {
-            arr.push(usenil ? TP.core.XMLRPCNode.NIL : '');
+            arr.push(usenil ? TP.dom.XMLRPCNode.NIL : '');
         } else {
             arr.push(TP.str(node));
         }

@@ -29,7 +29,7 @@ TIBET-INF/tibet/lib/cfg/tibet_testing.xml
 TIBET-INF/tibet/lib/cfg/version.xml
 TIBET-INF/tibet/lib/cfg/xmpp.xml
 
-TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.default_keybindings.js
+TIBET-INF/tibet/lib/dat/TP.dom.UIElementNode.default_keybindings.js
 TIBET-INF/tibet/lib/dat/TP.uri.URI.default_urimap.js
 TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 TIBET-INF/tibet/lib/dat/TP.dat.COUNTRYCODES.js

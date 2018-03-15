@@ -107,7 +107,7 @@ function(anElement) {
                     //  compute it.
                     if (TP.notValid(bindEntries = infoCacheDict.at(attrVal))) {
 
-                        bindEntries = TP.core.ElementNode.computeBindingInfo(
+                        bindEntries = TP.dom.ElementNode.computeBindingInfo(
                                                     boundElements[i], attrVal);
                         infoCacheDict.atPut(attrVal, bindEntries);
 
@@ -395,7 +395,7 @@ function(anElement) {
 
                         //  If the binding expression was to an Attribute node,
                         //  then we want to grab the Attribute's owner element.
-                        if (TP.isKindOf(resultObj, TP.core.AttributeNode)) {
+                        if (TP.isKindOf(resultObj, TP.dom.AttributeNode)) {
                             resultObj = resultObj.getOwnerElement();
                         }
 

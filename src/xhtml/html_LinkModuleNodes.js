@@ -24,13 +24,13 @@ TP.html.Attrs.defineSubtype('link');
 TP.html.link.Type.set('uriAttrs', TP.ac('href'));
 TP.html.link.Type.set('reloadableUriAttrs', TP.ac('href'));
 
-TP.html.link.addTraits(TP.core.EmptyElementNode);
+TP.html.link.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.link.Type.resolveTrait('uriAttrs', TP.html.link);
 
 TP.html.link.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

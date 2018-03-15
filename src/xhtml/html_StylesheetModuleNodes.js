@@ -202,11 +202,11 @@ function(aRequest) {
     typeName = TP.elementGetAttribute(elem, 'tibet:type', true);
     if (TP.notEmpty(typeName)) {
 
-        //  Grab the type and, if it's a subtype of TP.core.UIElementNode, then
+        //  Grab the type and, if it's a subtype of TP.dom.UIElementNode, then
         //  remove this Element's Document from the list of where its
         //  stylesheets are loaded.
         type = TP.sys.getTypeByName(typeName);
-        if (TP.isKindOf(type, TP.core.UIElementNode)) {
+        if (TP.isKindOf(type, TP.dom.UIElementNode)) {
             type.get('loadedStylesheetDocumentGIDs').remove(
                         TP.wrap(elem).getDocument().getGlobalID());
         }

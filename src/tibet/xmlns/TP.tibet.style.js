@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tibet.style}
- * @summary A subtype of TP.core.ElementNode that implements the ability to put
+ * @summary A subtype of TP.dom.ElementNode that implements the ability to put
  *         'static data' in the page.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet:style');
+TP.dom.UIElementNode.defineSubtype('tibet:style');
 
 TP.tibet.style.Type.set('uriAttrs', TP.ac('href'));
 TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));

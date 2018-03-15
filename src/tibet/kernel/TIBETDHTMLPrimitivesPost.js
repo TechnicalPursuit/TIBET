@@ -340,7 +340,7 @@ function(aDocument, shouldFocusPrevious) {
 
         //  TODO: Investigate why this is the case.
         if (lastDoc === aDocument) {
-            lastTPElem = TP.core.UIElementNode.popOffFocusStack();
+            lastTPElem = TP.dom.UIElementNode.popOffFocusStack();
             lastTPElem.focus();
         } else {
             //  Go ahead and just focus the last item that's on the stack.
@@ -1397,7 +1397,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         awakenContent = TP.nodeHasWindow(aDocument);
     }
 
-    //  unwrap any TP.core.Node wrapper we may have received
+    //  unwrap any TP.dom.Node wrapper we may have received
     content = TP.unwrap(theContent);
 
     //  If the content is an (X)HTML node, then we just make sure its an

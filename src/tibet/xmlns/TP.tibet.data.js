@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tibet.data}
- * @summary A subtype of TP.core.ElementNode that implements the ability to put
+ * @summary A subtype of TP.dom.ElementNode that implements the ability to put
  *         'static data' in the page.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet:data');
+TP.dom.UIElementNode.defineSubtype('tibet:data');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

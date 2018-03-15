@@ -55,7 +55,7 @@ function(anEvent) {
         textContent;
 
     //  Wrap the Event into a Signal and the event's *resolved* target into a
-    //  TP.core.ElementNode wrapper. Note that we use the resolved target here
+    //  TP.dom.ElementNode wrapper. Note that we use the resolved target here
     //  because the mouse over might have happened on something like an
     //  'xctrls:label' and we want the core control element, which will be the
     //  parent in that case.

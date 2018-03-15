@@ -17,7 +17,7 @@
 
 TP.tibet.group.defineSubtype('xctrls:itemgroup');
 
-TP.xctrls.itemgroup.addTraits(TP.core.TogglingUIElementNode);
+TP.xctrls.itemgroup.addTraits(TP.dom.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -75,12 +75,12 @@ function() {
 
     /**
      * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     * @summary Returns an Array TP.dom.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
+     *     TP.dom.UIElementNodes. By default, this method will return other
      *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     * @returns {TP.dom.UIElementNode[]} The Array of shared value items.
      */
 
     var valueTPElems;
@@ -109,7 +109,7 @@ function(aspectName) {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.

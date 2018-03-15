@@ -1268,7 +1268,7 @@ function() {
      *     target to their origin so that responder chain semantics work
      *     properly. This method allows access to the original *DOM* target of
      *     the signal.
-     * @returns {TP.core.UIElementNode} The DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The DOM target of the receiver.
      */
 
     var trigger,
@@ -1311,7 +1311,7 @@ function() {
      *     target to their origin so that responder chain semantics work
      *     properly. This method allows access to the original *resolved* *DOM*
      *     target of the signal.
-     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The resolved DOM target of the receiver.
      */
 
     var evt,
@@ -3590,7 +3590,7 @@ function() {
      * @description DND targeting signals, such as TP.sig.DOMDNDTargetOver and
      *     TP.sig.DOMDNDTargetOut capture the event that caused them to trigger.
      *     This can be very useful when wanting to refine the target.
-     * @returns {TP.core.UIElementNode} The DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The DOM target of the receiver.
      */
 
     var evt,
@@ -3626,7 +3626,7 @@ function() {
      *     target to their origin so that responder chain semantics work
      *     properly. This method allows access to the original *resolved* *DOM*
      *     target of the signal.
-     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The resolved DOM target of the receiver.
      */
 
     var evt,

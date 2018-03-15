@@ -148,7 +148,7 @@ function(newContent, aRequest) {
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 

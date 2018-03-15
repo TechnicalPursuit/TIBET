@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:linearGradient');
+TP.dom.UIElementNode.defineSubtype('svg:linearGradient');
 
 TP.svg.linearGradient.addTraits(TP.svg.Element);
 
@@ -34,7 +34,7 @@ TP.svg.linearGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:radialGradient');
+TP.dom.UIElementNode.defineSubtype('svg:radialGradient');
 
 TP.svg.radialGradient.addTraits(TP.svg.Element);
 
@@ -50,7 +50,7 @@ TP.svg.radialGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:stop');
+TP.dom.UIElementNode.defineSubtype('svg:stop');
 
 TP.svg.stop.addTraits(TP.svg.Element);
 

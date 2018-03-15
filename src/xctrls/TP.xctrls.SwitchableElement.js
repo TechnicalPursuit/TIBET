@@ -40,7 +40,7 @@ TP.xctrls.SwitchableElement.isAbstract(true);
 
 /**
  * The currently selected item.
- * @type {TP.core.UIElementNode}
+ * @type {TP.dom.UIElementNode}
  */
 
 //  TP.xctrls.switchable.Inst.defineAttribute('selectedItem');
@@ -48,7 +48,7 @@ TP.xctrls.SwitchableElement.isAbstract(true);
 /**
  * The item with a particular value (used for switching). The value will be
  * supplied as a parameter at position 0.
- * @type {TP.core.UIElementNode}
+ * @type {TP.dom.UIElementNode}
  */
 
 //  TP.xctrls.switchable.Inst.defineAttribute('itemWithValue',
@@ -153,7 +153,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var oldValue,

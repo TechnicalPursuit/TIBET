@@ -61,7 +61,7 @@ function(aTPDocument, aCurtainID) {
     curtainElem = aTPDocument.get('//*[@id="' + curtainID + '"]');
 
     //  If the 'get' expression above didn't find one, it hands back an empty
-    //  Array. Otherwise it will hand back the TP.core.ElementNode that
+    //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the curtain.
     if (TP.isEmpty(curtainElem)) {
 

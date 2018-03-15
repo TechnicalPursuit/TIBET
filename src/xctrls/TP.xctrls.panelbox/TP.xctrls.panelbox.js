@@ -208,10 +208,10 @@ function(aContentObject, aRequest) {
         //  If the request doesn't have a 'forceContentSet' flag set to true,
         //  then test the content that's already tehre.
         if (TP.notTrue(request.at('forceContentSet'))) {
-            //  If the supplied content is a TP.core.ElementNode, then compare
+            //  If the supplied content is a TP.dom.ElementNode, then compare
             //  the tag names of the existing content and the supplied content.
             //  If they're the same, then we skip setting content.
-            if (TP.isKindOf(aContentObject, TP.core.ElementNode)) {
+            if (TP.isKindOf(aContentObject, TP.dom.ElementNode)) {
                 if (aContentObject.getTagName() ===
                     firstContentChildTPElem.getTagName()) {
                     skipSettingContent = true;

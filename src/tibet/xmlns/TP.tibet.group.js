@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tibet.group}
- * @summary A subtype of TP.core.ElementNode that implements 'grouping'
+ * @summary A subtype of TP.dom.ElementNode that implements 'grouping'
  *     behavior for UI elements.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet:group');
+TP.dom.UIElementNode.defineSubtype('tibet:group');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -49,7 +49,7 @@ function(aRequest) {
         return;
     }
 
-    //  Get a handle to a TP.core.Node representing an instance of this
+    //  Get a handle to a TP.dom.Node representing an instance of this
     //  element type wrapped around elem. Note that this will both ensure a
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
@@ -97,7 +97,7 @@ function(aRequest) {
         return;
     }
 
-    //  Get a handle to a TP.core.Node representing an instance of this
+    //  Get a handle to a TP.dom.Node representing an instance of this
     //  element type wrapped around elem. Note that this will both ensure a
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
@@ -223,11 +223,11 @@ function(includesGroups) {
     /**
      * @method findFocusableElements
      * @summary Finds focusable elements under the receiver and returns an
-     *     Array of TP.core.ElementNodes of them.
+     *     Array of TP.dom.ElementNodes of them.
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
      *     elements as 'focusable' elements under the receiver. The default is
      *     false.
-     * @returns {Array} An Array of TP.core.ElementNodes under the receiver that
+     * @returns {Array} An Array of TP.dom.ElementNodes under the receiver that
      *     can be focused.
      */
 
@@ -321,7 +321,7 @@ function(includesGroups) {
     //  HTML5 tabindex rules.
     results.sort(TP.sort.TABINDEX_ORDER);
 
-    //  Wrap the results to make TP.core.ElementNodes
+    //  Wrap the results to make TP.dom.ElementNodes
     return TP.wrap(results);
 });
 
@@ -361,7 +361,7 @@ function(moveAction) {
             tpElementToFocus = focusableElements.first();
         }
 
-        TP.core.UIElementNode.set('$calculatedFocusingTPElem',
+        TP.dom.UIElementNode.set('$calculatedFocusingTPElem',
                                     tpElementToFocus);
 
         tpElementToFocus.focus();
@@ -384,7 +384,7 @@ function() {
      *     it is used as the 'context' of the query. If the receiver is empty,
      *     then the document element of the document the receiver is in is used
      *     as the context.
-     * @returns {Array} The Array of member TP.core.ElementNodes that the
+     * @returns {Array} The Array of member TP.dom.ElementNodes that the
      *     receiver designates via its query and context.
      */
 
@@ -435,7 +435,7 @@ function() {
     //  Make sure that it contains only Elements.
     results = results.select(
                 function(aTPNode) {
-                    return TP.isKindOf(aTPNode, TP.core.ElementNode);
+                    return TP.isKindOf(aTPNode, TP.dom.ElementNode);
                 });
 
     //  This will wrap all of the elements found in the results
@@ -452,7 +452,7 @@ function() {
     /**
      * @method getMemberGroups
      * @summary Returns the members of the group that are themselves groups
-     * @returns {Array} The Array of member 'tibet:group' TP.core.ElementNodes.
+     * @returns {Array} The Array of member 'tibet:group' TP.dom.ElementNodes.
      */
 
     var allMembers,

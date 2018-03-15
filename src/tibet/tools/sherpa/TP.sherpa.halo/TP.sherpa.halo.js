@@ -339,7 +339,7 @@ function(newTargetTPElem, shouldUnhide) {
      *     includes this method.
      * @description Note that this method does *not* check to see if the halo
      *     can be blurred or focused. That is left up to the caller.
-     * @param {TP.core.ElementNode} newTargetTPElem The element to focus the
+     * @param {TP.dom.ElementNode} newTargetTPElem The element to focus the
      *     halo on.
      * @param {Boolean} [shouldUnhide=false] Whether or not the halo should be
      *     shown if it's hidden. Some scenarios allow the halo to be hidden, but
@@ -352,9 +352,9 @@ function(newTargetTPElem, shouldUnhide) {
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
-    //  If we got a valid TP.core.ElementNode, then we need to go through the
+    //  If we got a valid TP.dom.ElementNode, then we need to go through the
     //  focusing process.
-    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
+    if (TP.isKindOf(newTargetTPElem, TP.dom.ElementNode)) {
 
         //  If it's the same element, then just return
         if (currentTargetTPElem === newTargetTPElem) {
@@ -521,7 +521,7 @@ function(aSignal) {
             return this;
         }
 
-        if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+        if (TP.isKindOf(newTargetTPElem, TP.dom.ElementNode) &&
             !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
             //  This will move the halo off of the old element. Note that we do
@@ -585,11 +585,11 @@ function(aSignal) {
     }
 
     currentTargetTPElem = this.get('currentTargetTPElem');
-    if (!TP.isKindOf(currentTargetTPElem, TP.core.ElementNode)) {
+    if (!TP.isKindOf(currentTargetTPElem, TP.dom.ElementNode)) {
         return this;
     }
 
-    //  Grab the signal origin (which is a TP.core.DocumentNode).
+    //  Grab the signal origin (which is a TP.dom.DocumentNode).
     sigOriginTPDoc = aSignal.getOrigin();
 
     //  Grab the current halo target's ID.
@@ -631,7 +631,7 @@ function(aSignal) {
 
             //  If we got one, then focus on it - otherwise, make sure that
             //  we're hidden.
-            if (TP.isKindOf(newTargetTPElem, TP.core.Node) &&
+            if (TP.isKindOf(newTargetTPElem, TP.dom.Node) &&
                 newTargetTPElem.haloCanFocus(this)) {
 
                 this.focusOn(newTargetTPElem);
@@ -744,9 +744,9 @@ function(aSignal) {
     this.blur();
 
     //  See if we can get a recasting target from the signal. If so, and it's a
-    //  type of TP.core.Node, then focus ourself on it.
+    //  type of TP.dom.Node, then focus ourself on it.
     recastTPNode = aSignal.at('recastTarget');
-    if (TP.isKindOf(recastTPNode, TP.core.Node)) {
+    if (TP.isKindOf(recastTPNode, TP.dom.Node)) {
         if (recastTPNode.haloCanFocus(this)) {
             this.focusOn(recastTPNode);
         } else {
@@ -1025,7 +1025,7 @@ function(aSignal) {
 
             //  We computed a new target. If it's not the same as the current
             //  target, then blur the current one and focus on the new one.
-            if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+            if (TP.isKindOf(newTargetTPElem, TP.dom.ElementNode) &&
                 !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
                 if (currentTargetTPElem.haloCanBlur(this)) {
@@ -1319,7 +1319,7 @@ function(newTargetTPElem, shouldUnhide) {
      * @summary Moves and sizes the receiver to the supplied target element or
      *     to the current target if a new target element isn't supplied (the
      *     current target's visual location might have shifted).
-     * @param {TP.core.ElementNode|undefined} [newTargetTPElem] The new target
+     * @param {TP.dom.ElementNode|undefined} [newTargetTPElem] The new target
      *     to move and resize the receiver around.
      * @param {Boolean} [shouldUnhide=false] Whether or not the halo should be
      *     shown if it's hidden. Some scenarios allow the halo to be hidden, but

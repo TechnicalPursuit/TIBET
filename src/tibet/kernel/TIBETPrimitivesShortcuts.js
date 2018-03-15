@@ -843,7 +843,7 @@ function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
      * @method addContent
-     * @summary A convenience wrapper for TP.core.Node's addContent call. The
+     * @summary A convenience wrapper for TP.dom.Node's addContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -867,7 +867,7 @@ function(elemOrId, nodeContext) {
 
     /**
      * @method getContent
-     * @summary A convenience wrapper for TP.core.Node's getContent call. The
+     * @summary A convenience wrapper for TP.dom.Node's getContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -887,7 +887,7 @@ function(elemOrId, newContent, aLocation, aRequest, nodeContext) {
 
     /**
      * @method insertContent
-     * @summary A convenience wrapper for TP.core.Node's insertContent call.
+     * @summary A convenience wrapper for TP.dom.Node's insertContent call.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -914,7 +914,7 @@ function(elemOrId, nodeContext) {
 
     /**
      * @method removeContent
-     * @summary A convenience wrapper for TP.core.CollectionNode's empty call.
+     * @summary A convenience wrapper for TP.dom.CollectionNode's empty call.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -934,7 +934,7 @@ function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
      * @method setContent
-     * @summary A convenience wrapper for TP.core.Node's setContent call. The
+     * @summary A convenience wrapper for TP.dom.Node's setContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,

@@ -1501,7 +1501,7 @@ function(anID, headerText, tileParent) {
     //  layer as the new tile's parent.
     parent = tileParent;
     if (!TP.isElement(parent) &&
-        !TP.isKindOf(parent, TP.core.ElementNode)) {
+        !TP.isKindOf(parent, TP.dom.ElementNode)) {
         parent = TP.byId('commonTileLayer', this.get('vWin'));
     }
 

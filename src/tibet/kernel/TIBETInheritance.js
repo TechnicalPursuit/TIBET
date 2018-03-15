@@ -823,7 +823,7 @@ function() {
      *     TP.core.Browser to be messaged for a new instance and for different
      *     browsers to return appropriately "localized" subtype instances such
      *     as TP.core.IEBrowser. This strategy is used extensively by
-     *     TP.core.Node and TP.uri.URI to return the proper subtypes for your
+     *     TP.dom.Node and TP.uri.URI to return the proper subtypes for your
      *     content.
      * @returns {Object}
      */
@@ -1362,7 +1362,7 @@ function(typeOrFormat, formatParams) {
      *     type/format may implement a 'from<type>' method, where <type> is the
      *     receiver's type.
      *     <code>
-     *          foo = TP.ac(1, 2 ,TP.hc('foo', 'bar')).as('TP.core.XMLRPCNode');
+     *          foo = TP.ac(1, 2 ,TP.hc('foo', 'bar')).as('TP.dom.XMLRPCNode');
      *          <samp>[object Element]</samp>
      *          TP.str(foo);
      *          <samp>... string representation of foo ...</samp>

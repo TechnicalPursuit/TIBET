@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:panel');
+TP.dom.UIElementNode.defineSubtype('xctrls:panel');
 
 TP.xctrls.panel.addTraits(TP.xctrls.Element);
 

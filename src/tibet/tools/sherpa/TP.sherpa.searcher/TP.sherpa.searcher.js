@@ -16,10 +16,10 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('searcher');
 
-TP.sherpa.searcher.addTraits(TP.core.SelectingUIElementNode);
-TP.sherpa.searcher.addTraits(TP.core.D3VirtualList);
+TP.sherpa.searcher.addTraits(TP.dom.SelectingUIElementNode);
+TP.sherpa.searcher.addTraits(TP.dom.D3VirtualList);
 
-TP.sherpa.searcher.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
+TP.sherpa.searcher.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);
 
 //  Is the command line current in search mode?
 TP.sherpa.searcher.Inst.defineAttribute('searchMode');
@@ -220,10 +220,10 @@ function() {
 
     /**
      * @method getSelectedElements
-     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
+     * @summary Returns an Array TP.dom.UIElementNodes that are 'selected'
      *     within the receiver.
-     * @returns {TP.core.UIElementNode[]} The Array of selected
-     *     TP.core.UIElementNodes.
+     * @returns {TP.dom.UIElementNode[]} The Array of selected
+     *     TP.dom.UIElementNodes.
      */
 
     //  TODO: This doesn't match reality because of the infinite scrolling and
@@ -238,12 +238,12 @@ function() {
 
     /**
      * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     * @summary Returns an Array TP.dom.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
+     *     TP.dom.UIElementNodes. By default, this method will return other
      *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     * @returns {TP.dom.UIElementNode[]} The Array of shared value items.
      */
 
     //  TODO: This doesn't match reality because of the infinite scrolling and
@@ -438,7 +438,7 @@ function(aValue, anIndex) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.searcher.Inst.defineMethod('buildNewContent',
@@ -502,7 +502,7 @@ function() {
      *     data that uses TIBET data binding to bind data to this control. This
      *     method allows the receiver to transform it's 'data binding data' into
      *     data appropriate for d3.js selections.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var theData;

@@ -1888,7 +1888,7 @@ function() {
 
     /**
      * @method getResultNode
-     * @summary Returns the receiver's result in TP.core.Node form if possible.
+     * @summary Returns the receiver's result in TP.dom.Node form if possible.
      *     When the result isn't valid XML this method returns null.
      * @returns {Node} A valid Node instance.
      */
@@ -3792,7 +3792,7 @@ function() {
 
     /**
      * @method getResultNode
-     * @summary Returns the receiver's result in TP.core.Node form if possible.
+     * @summary Returns the receiver's result in TP.dom.Node form if possible.
      *     When the result isn't valid XML this method returns null.
      * @returns {Node} A valid Node instance.
      */
@@ -6311,7 +6311,7 @@ function(aRoute) {
 
         //  NB: We want autocollapsed, but wrapped content here.
         targetTPElem = TP.byPath(routeTarget, canvas, true);
-        if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
+        if (!TP.isKindOf(targetTPElem, 'TP.dom.ElementNode')) {
             this.raise('InvalidElement',
                         'Unable to find route target: ' + routeTarget);
             return this;

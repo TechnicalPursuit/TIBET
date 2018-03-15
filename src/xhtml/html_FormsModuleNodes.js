@@ -20,20 +20,20 @@
             TP.html.form
             TP.html.keygen
             TP.html.label
-            TP.html.option (TP.core.SelectableItemUIElementNode)
+            TP.html.option (TP.dom.SelectableItemUIElementNode)
             TP.html.optgroup
             TP.html.output
 *           TP.html.Aligned
                 TP.html.legend
 *           TP.html.Focused
-                TP.html.select (TP.core.TogglingUIElementNode)
+                TP.html.select (TP.dom.TogglingUIElementNode)
                 TP.html.textarea (TP.html.textUtilities)
 *               TP.html.input
                     TP.html.inputImage
                     TP.html.inputHidden
 *                   TP.html.inputVisible
 *                       TP.html.inputClickable
-*                           TP.html.inputCheckable (TP.core.TogglingUIElementNode)
+*                           TP.html.inputCheckable (TP.dom.TogglingUIElementNode)
                                 TP.html.inputCheckbox
                                 TP.html.inputRadio
                             TP.html.button
@@ -390,7 +390,7 @@ TP.html.optgroup.Type.set('booleanAttrs', TP.ac('disabled'));
 
 TP.html.Attrs.defineSubtype('option');
 
-TP.html.option.addTraits(TP.core.SelectableItemUIElementNode);
+TP.html.option.addTraits(TP.dom.SelectableItemUIElementNode);
 
 TP.html.option.Type.set('booleanAttrs',
             TP.ac('disabled', 'defaultSelected', 'selected'));
@@ -650,7 +650,7 @@ TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('html.textUtilities');
+TP.dom.UIElementNode.defineSubtype('html.textUtilities');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
@@ -1155,7 +1155,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var oldValue,
@@ -1260,7 +1260,7 @@ TP.html.Focused.defineSubtype('input');
 //  can't construct concrete instances of this
 TP.html.input.isAbstract(true);
 
-TP.html.input.addTraits(TP.core.EmptyElementNode);
+TP.html.input.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.input.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
@@ -1268,7 +1268,7 @@ TP.html.input.Type.resolveTraits(
 
 TP.html.input.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 TP.html.input.Type.set('bidiAttrs', TP.ac('value'));
 
@@ -1573,7 +1573,7 @@ function(aspectName) {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
@@ -1591,7 +1591,7 @@ function(aspectName) {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -1685,11 +1685,11 @@ function() {
 
 //  check boxes / radio buttons
 TP.html.inputClickable.defineSubtype('inputCheckable');
-TP.html.inputCheckable.addTraits(TP.core.TogglingUIElementNode);
+TP.html.inputCheckable.addTraits(TP.dom.TogglingUIElementNode);
 
 TP.html.inputCheckable.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue', 'isScalarValued'),
-        TP.core.TogglingUIElementNode);
+        TP.dom.TogglingUIElementNode);
 
 //  can't construct concrete instances of this
 TP.html.inputCheckable.isAbstract(true);
@@ -1825,11 +1825,11 @@ function() {
 
     /**
      * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     * @summary Returns an Array TP.dom.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     *     TP.dom.UIElementNodes.
+     * @returns {TP.dom.UIElementNode[]} The Array of shared value items.
      */
 
     var elem,
@@ -2236,7 +2236,7 @@ function(aspectName) {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
@@ -2631,7 +2631,7 @@ TP.html.inputText.Inst.resolveTraits(
 
 TP.html.inputText.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -2716,7 +2716,7 @@ TP.html.inputUrl.Inst.resolveTraits(
 
 TP.html.inputUrl.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -2776,7 +2776,7 @@ TP.html.Aligned.defineSubtype('legend');
 
 TP.html.Focused.defineSubtype('select');
 
-TP.html.select.addTraits(TP.core.TogglingUIElementNode);
+TP.html.select.addTraits(TP.dom.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 
@@ -3002,11 +3002,11 @@ function() {
 
     /**
      * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     * @summary Returns an Array TP.dom.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     *     TP.dom.UIElementNodes.
+     * @returns {TP.dom.UIElementNode[]} The Array of shared value items.
      */
 
     //  For some reason, on IE, the 'options' Array doesn't work properly. It
@@ -3024,7 +3024,7 @@ function(aspectName) {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -3456,7 +3456,7 @@ function(aspectName) {
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
@@ -3474,7 +3474,7 @@ function(aspectName) {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.

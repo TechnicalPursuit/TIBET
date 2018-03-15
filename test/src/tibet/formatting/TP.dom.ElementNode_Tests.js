@@ -9,10 +9,10 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.ElementNode
+//  TP.dom.ElementNode
 //  ========================================================================
 
-TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:display attribute',
+TP.dom.ElementNode.Inst.describe('TP.dom.ElementNode: ui:display attribute',
 function() {
 
     var unloadURI,
@@ -506,7 +506,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:storage attribute',
+TP.dom.ElementNode.Inst.describe('TP.dom.ElementNode: ui:storage attribute',
 function() {
 
     var unloadURI,

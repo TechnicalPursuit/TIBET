@@ -482,7 +482,7 @@ function(aSignal) {
     dndTargetElem = aSignal.getDOMTarget();
     dndTargetTPElem = TP.wrap(dndTargetElem);
 
-    sourceTPElem = TP.core.UIElementNode.get('currentDNDSource');
+    sourceTPElem = TP.dom.UIElementNode.get('currentDNDSource');
     vendType = sourceTPElem.getAttribute('dnd:vend');
 
     switch (vendType) {

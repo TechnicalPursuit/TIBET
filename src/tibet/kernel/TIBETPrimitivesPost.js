@@ -1461,7 +1461,7 @@ function(anObject, assignIfAbsent) {
 
     assign = TP.ifInvalid(assignIfAbsent, false);
 
-    if (TP.isKindOf(anObject, TP.core.Node)) {
+    if (TP.isKindOf(anObject, TP.dom.Node)) {
         if (TP.isType(anObject)) {
             obj = anObject;
         } else {
@@ -1815,7 +1815,7 @@ function(anObject, assignIfAbsent) {
 
     assign = TP.ifInvalid(assignIfAbsent, false);
 
-    if (TP.isKindOf(anObject, TP.core.Node)) {
+    if (TP.isKindOf(anObject, TP.dom.Node)) {
         obj = TP.unwrap(anObject);
     } else {
         obj = anObject;
@@ -2209,7 +2209,7 @@ function(anElement, assignIfAbsent) {
      * @method elemGenID
      * @summary Generates a unique ID (if the element doesn't already have one)
      *     that is compliant with XML ID rules.
-     * @param {TP.core.ElementNode|Element} anElement An Element or element
+     * @param {TP.dom.ElementNode|Element} anElement An Element or element
      *     wrapper.
      * @param {Boolean} assignIfAbsent True if the element should have an ID
      *     assigned if one doesn't exist. Default is false.
@@ -2252,7 +2252,7 @@ function(anObject) {
      * @summary Returns the namespace URI of the object, if it has one. This is
      *     only relevant for nodes. The search includes both the namespaceURI
      *     property and a search for an xmlns attribute.
-     * @param {TP.core.Node|Node} anObject A Node or node wrapper.
+     * @param {TP.dom.Node|Node} anObject A Node or node wrapper.
      * @returns {String} The namespace URI.
      */
 
@@ -4659,7 +4659,7 @@ function(anObject, aType) {
 //  ------------------------------------------------------------------------
 
 /*
-TP.core.Node vs. Node, TP.core.Window vs. Window, etc.
+TP.dom.Node vs. Node, TP.core.Window vs. Window, etc.
 */
 
 //  ------------------------------------------------------------------------
@@ -4681,13 +4681,13 @@ function(anObject) {
      *          TP.unwrap(tpWin) === top;
      *          <samp>true</samp>
      *     </code>
-     * @example Obtain the native Document for a TP.core.DocumentNode:
+     * @example Obtain the native Document for a TP.dom.DocumentNode:
      *     <code>
      *          tpDoc = TP.tpnode(top.document);
      *          TP.unwrap(tpDoc) === top.document;
      *          <samp>true</samp>
      *     </code>
-     * @example Obtain the native Node for a TP.core.Node:
+     * @example Obtain the native Node for a TP.dom.Node:
      *     <code>
      *          tpNode = TP.tpnode(TP.documentGetBody(top.document));
      *          TP.unwrap(tpNode) === TP.documentGetBody(top.document);
@@ -4726,7 +4726,7 @@ function(anObject) {
         return anObject;
     }
 
-    //  TP.core.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
+    //  TP.dom.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
     //  TP.uri.URI, etc.
     if (TP.canInvoke(anObject, 'getNativeObject')) {
         return anObject.getNativeObject();
@@ -4773,11 +4773,11 @@ function(anObject) {
      * @alias wrap
      * @summary Wraps the object in a suitable TIBET encapsulation type. Most
      *     objects don't require this and simply pass through, however Node and
-     *     Window instances will be wrapped in TP.core.Node or TP.core.Window
+     *     Window instances will be wrapped in TP.dom.Node or TP.core.Window
      *     wrappers as appropriate. NOTE that passing an array or, more
      *     interestingly, a NodeList to this method will result in the contents
      *     of the list being wrapped. This is an easy way to get a set of native
-     *     nodes wrapped into an array of TP.core.Node objects for further
+     *     nodes wrapped into an array of TP.dom.Node objects for further
      *     processing.
      * @param {Object} anObject The object wrapper, or the object if no wrapper
      *     type is suitable.
@@ -4820,11 +4820,11 @@ function(anObject) {
             anObject[TP.WRAPPER].$set('node', anObject, false);
             return anObject[TP.WRAPPER];
         }
-        return TP.core.ElementNode.construct(anObject);
+        return TP.dom.ElementNode.construct(anObject);
     } else if (TP.isDocument(anObject)) {
-        return TP.core.DocumentNode.construct(anObject);
+        return TP.dom.DocumentNode.construct(anObject);
     } else if (TP.isNode(anObject)) {
-        return TP.core.Node.construct(anObject);
+        return TP.dom.Node.construct(anObject);
     }
 
     //  wrapping a list of items is a really powerful option so we can

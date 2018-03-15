@@ -25,7 +25,7 @@ for RSS as a lightweight data-feed content format for form-based workflow.
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLDocumentNode.defineSubtype('rss.RSSFeed');
+TP.dom.XMLDocumentNode.defineSubtype('rss.RSSFeed');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -40,7 +40,7 @@ function(aNode, aURI) {
      * @param {Node} aNode A native node.
      * @param {TP.uri.URI|String} aURI An optional URI from which the Node
      *     received its content.
-     * @returns {TP.core.Node} The initialized instance.
+     * @returns {TP.dom.Node} The initialized instance.
      */
 
     this.callNextMethod();
@@ -86,7 +86,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('rss.RSSElement');
+TP.dom.ElementNode.defineSubtype('rss.RSSElement');
 
 //  can't construct concrete instances of this
 TP.rss.RSSElement.isAbstract(true);
@@ -100,7 +100,7 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
+     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
      *     object.
      */
 
@@ -128,7 +128,7 @@ function(aNode) {
 
     //  Can't determine a proper subtype? Return the 'standard XML element'.
     if (!TP.isType(type) || type.isAbstract()) {
-        return TP.core.XMLElementNode;
+        return TP.dom.XMLElementNode;
     }
 
     return type;
@@ -207,12 +207,12 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
+     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
      *     object.
      */
 
     //  not something you see every day, but we need to skip past
-    //  TP.core.DocumentNode's implementation since it wants to default to 'this'
+    //  TP.dom.DocumentNode's implementation since it wants to default to 'this'
     //  as a return value which will cause recursions. so we jump up a level
     //  and run the super-supertype version this way
     return TP.lang.RootObject.getConcreteType.apply(this, arguments);
@@ -242,7 +242,7 @@ function() {
     /**
      * @method getItems
      * @summary Returns an Array of TP.rss.RSSItems. Defined this way because
-     *     'getItems' is already defined as a method on TP.core.CollectionNode
+     *     'getItems' is already defined as a method on TP.dom.CollectionNode
      *     and therefore a getter built from a type schema entry won't be built.
      * @returns {Array} An Array of TP.rss.RSSItems.
      */
@@ -601,12 +601,12 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
+     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
      *     object.
      */
 
     //  not something you see every day, but we need to skip past
-    //  TP.core.DocumentNode's implementation since it wants to default to 'this'
+    //  TP.dom.DocumentNode's implementation since it wants to default to 'this'
     //  as a return value which will cause recursions. so we jump up a level
     //  and run the super-supertype version this way
     return TP.lang.RootObject.getConcreteType.apply(this, arguments);

@@ -5640,7 +5640,7 @@ function(originSet, aSignal, aPayload, aType) {
             //  if the current element is considered to be 'opaque' for the
             //  event at it's level as it bubbles.
             if (TP.isType(originType =
-                            TP.core.ElementNode.getConcreteType(origin))) {
+                            TP.dom.ElementNode.getConcreteType(origin))) {
                 if (originType.isOpaqueBubblerFor(origin, sig)) {
                     //  If the type has returned true here, that means that
                     //  we're to stop processing this signal after this origin

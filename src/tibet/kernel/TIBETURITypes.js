@@ -1959,7 +1959,7 @@ function(anObject, resultType, collapse) {
      * @description If the data can't be converted properly this method returns
      *     undefined. If no resultType is specified then a "best fit" result is
      *     returned. The best fit result processing attempts to construct a
-     *     valid TP.core.Node, then a viable JavaScript object by parsing for
+     *     valid TP.dom.Node, then a viable JavaScript object by parsing for
      *     JSON strings, and finally just the object itself.
      * @param {Object} anObject The object to "type check".
      * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP. The default
@@ -2041,7 +2041,7 @@ function(anObject, resultType, collapse) {
                     //  and, if it resolves to a single Text node, we will try
                     //  to convert it further.
                     if (TP.notValid(obj = TP.tpnode(obj, null, false)) ||
-                        TP.isKindOf(obj, TP.core.TextNode)) {
+                        TP.isKindOf(obj, TP.dom.TextNode)) {
                         //  json?
                         if (TP.notValid(obj = TP.json2js(
                                                 saved, null, false))) {
@@ -2645,7 +2645,7 @@ function(aRequest, aResult, aResource) {
         result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
 
         //  NB: The result must be a Node or XMLContent to get wrapped into a
-        //  TP.core.Node, otherwise we just use the result itself.
+        //  TP.dom.Node, otherwise we just use the result itself.
         result = TP.isNode(result) || TP.isKindOf(result, TP.core.XMLContent) ?
                     TP.tpnode(result) :
                     result;
@@ -4339,7 +4339,7 @@ function(aDataSource, aRequest) {
                 if (TP.isDefined(aResult)) {
                     //  In case aResult returned an Array (very likely if it
                     //  ran some sort of 'getter path'), we collapse it here
-                    //  - can't transform from an Array of TP.core.Nodes.
+                    //  - can't transform from an Array of TP.dom.Nodes.
                     result = TP.collapse(aResult);
                     resource = TP.wrap(result);
                 }
@@ -5564,7 +5564,7 @@ function(newResource) {
         resource = this.$get('resource');
         if (this.hasFragment() && TP.canInvoke(resource, 'get')) {
             fragment = this.getFragment();
-            if (TP.isKindOf(resource, TP.core.Node)) {
+            if (TP.isKindOf(resource, TP.dom.Node)) {
                 fragment = fragment.startsWith('#') ?
                             fragment :
                             '#' + fragment;
@@ -5609,7 +5609,7 @@ function(aRequest) {
     /**
      * @method getNativeNode
      * @summary Returns the content node of the receiver without its normal
-     *     TP.core.Node wrapper. This value may vary from the text value of the
+     *     TP.dom.Node wrapper. This value may vary from the text value of the
      *     receiver if ACP-enhanced markup was provided to initialize the
      *     content.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -6247,7 +6247,7 @@ function(aRequest) {
                         TP.DEBUG) : 0;
 
         //  note that we pass ourselves along to establish "ownership"
-        newResult = TP.core.Node.construct(newResult);
+        newResult = TP.dom.Node.construct(newResult);
         newResult.set('uri', this);
 
         resource = this.$normalizeRequestedResource(newResult);
@@ -8963,7 +8963,7 @@ function(aRequest, filterResult) {
                         //  NB: We don't set the result's 'uri' here since
                         //  the result is the document and we probably don't
                         //  represent the document.
-                        result = TP.core.DocumentNode.construct(
+                        result = TP.dom.DocumentNode.construct(
                                                         win.document);
 
                         return this.$getResourceResult(request,
@@ -8983,7 +8983,7 @@ function(aRequest, filterResult) {
                     //  NB: We don't set the result's 'uri' here since the
                     //  result is the document and we probably don't
                     //  represent the document.
-                    result = TP.core.DocumentNode.construct(win.document);
+                    result = TP.dom.DocumentNode.construct(win.document);
 
                     return this.$getResourceResult(request,
                                                     result,
@@ -8999,7 +8999,7 @@ function(aRequest, filterResult) {
                 //  NB: We don't set the result's 'uri' here since the
                 //  result is the document and we probably don't represent
                 //  the document.
-                result = TP.core.DocumentNode.construct(win.document);
+                result = TP.dom.DocumentNode.construct(win.document);
 
                 return this.$getResourceResult(request,
                                                 result,

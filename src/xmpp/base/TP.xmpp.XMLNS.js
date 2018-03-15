@@ -173,7 +173,7 @@ TP.xmpp.XMLNS.Type.defineConstant('BINDING', 'binding');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  type registry to support TP.core.Node.getConcreteType() lookups
+//  type registry to support TP.dom.Node.getConcreteType() lookups
 TP.xmpp.XMLNS.Type.defineAttribute('$nodetypes', TP.hc());
 
 //  type registry to support constructStanza() lookups

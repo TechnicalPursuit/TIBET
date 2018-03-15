@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('xmpp.Node');
+TP.dom.ElementNode.defineSubtype('xmpp.Node');
 
 //  can't construct concrete instances of this
 TP.xmpp.Node.isAbstract(true);
@@ -138,7 +138,7 @@ function(aNode) {
         if (!TP.isType(nodeType)) {
             //  Couldn't determine a concrete type at this level. Just
             //  return the generic 'XML Element' concrete type.
-            return TP.core.XMLElementNode;
+            return TP.dom.XMLElementNode;
         }
 
         //  if the node type is abstract, ask it to further resolve to a
@@ -212,7 +212,7 @@ function() {
      * @method getErrorElement
      * @summary Returns either the native node of the receiver (if it is an
      *     'error' element) or the descendant that is an error element.
-     * @returns {TP.core.ElementNode} The error element.
+     * @returns {TP.dom.ElementNode} The error element.
      */
 
     var errorTPDescendant;

@@ -294,7 +294,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
         data = aPayload;
     }
 
-    //  commonly get nodes for encoding, but we want to unwrap TP.core.Nodes
+    //  commonly get nodes for encoding, but we want to unwrap TP.dom.Nodes
     if (TP.canInvoke(data, 'getNativeNode')) {
         data = data.getNativeNode();
     }

@@ -677,7 +677,7 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'alias', 'XHTML',
                         'extensions', 'xhtml xht',
                         'tshtag', 'html:html',
-                        'tpDocNodeType', 'TP.core.XHTMLDocumentNode'),
+                        'tpDocNodeType', 'TP.dom.XHTMLDocumentNode'),
             TP.ietf.mime.TSH,
                 TP.hc('mimetype', TP.ietf.mime.TSH,
                         'alias', 'TSH',
@@ -708,18 +708,18 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'alias', 'FLASH',
                         'extensions', 'swf fla',
                         'objectNodeType',
-                                'TP.core.FlashObjectElementNode',
+                                'TP.dom.FlashObjectElementNode',
                         'embedNodeType',
-                                'TP.core.FlashEmbedElementNode',
+                                'TP.dom.FlashEmbedElementNode',
                         'tshtag', 'html:object'),
             TP.ietf.mime.SILVERLIGHT,
                 TP.hc('mimetype', TP.ietf.mime.SILVERLIGHT,
                         'alias', 'SILVERLIGHT',
                         'extensions', 'xaml',
                         'objectNodeType',
-                                'TP.core.SilverlightObjectElementNode',
+                                'TP.dom.SilverlightObjectElementNode',
                         'embedNodeType',
-                                'TP.core.SilverlightEmbedElementNode',
+                                'TP.dom.SilverlightEmbedElementNode',
                         'tshtag', 'html:object'),
             TP.ietf.mime.SMIL,
                 TP.hc('mimetype', TP.ietf.mime.SMIL,
@@ -734,7 +734,7 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                 TP.hc('mimetype', TP.ietf.mime.XSLT,
                         'alias', 'XSLT',
                         'extensions', 'xsl xslt',
-                        'tpDocNodeType', 'TP.core.XSLDocumentNode'),
+                        'tpDocNodeType', 'TP.dom.XSLDocumentNode'),
 
             TP.ietf.mime.ATOM,
                 TP.hc('mimetype', TP.ietf.mime.ATOM,
@@ -761,7 +761,7 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                 TP.hc('mimetype', TP.ietf.mime.XML,
                         'alias', 'XML',
                         'extensions', 'xml',
-                        'tpDocNodeType', 'TP.core.XMLDocumentNode'),
+                        'tpDocNodeType', 'TP.dom.XMLDocumentNode'),
 
             TP.ietf.mime.XMPP,
                 TP.hc('mimetype', TP.ietf.mime.XMPP,
@@ -964,7 +964,7 @@ function(aContent, aURI, defaultMIME) {
             TP.DEBUG) : 0;
 
     if (TP.isValid(content = aContent)) {
-        //  often get a TP.core.Node here
+        //  often get a TP.dom.Node here
         if (TP.canInvoke(content, 'getNativeNode')) {
             node = content.getNativeNode();
         } else if (TP.isNode(content)) {
@@ -1415,7 +1415,7 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
     //      'rootElement'       ->  Any 'root' (document) element defined
     //                              for the namespace.
     //      'defaultNodeType'   ->  An optional type used to replace
-    //                              TP.core.ElementNode as the default type
+    //                              TP.dom.ElementNode as the default type
     //                              for elements this namespace.
     //      'transforms'        ->  An optional array of XSLT uris for
     //                              transforms that should be run when

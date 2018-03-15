@@ -9,14 +9,14 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.Node Additions
+//  TP.dom.Node Additions
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('haloCanBlur',
+TP.dom.Node.Inst.defineMethod('haloCanBlur',
 function(aHalo) {
 
     /**
@@ -35,7 +35,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('haloCanDelete',
+TP.dom.Node.Inst.defineMethod('haloCanDelete',
 function(aHalo) {
 
     /**
@@ -54,7 +54,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('haloCanEmpty',
+TP.dom.Node.Inst.defineMethod('haloCanEmpty',
 function(aHalo) {
 
     /**
@@ -73,7 +73,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('haloCanFocus',
+TP.dom.Node.Inst.defineMethod('haloCanFocus',
 function(aHalo) {
 
     /**
@@ -91,7 +91,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('hudCanDrop',
+TP.dom.Node.Inst.defineMethod('hudCanDrop',
 function(aHUD, droppingTPElem) {
 
     /**
@@ -112,14 +112,14 @@ function(aHUD, droppingTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('sherpaGetWorldScreen',
+TP.dom.Node.Inst.defineMethod('sherpaGetWorldScreen',
 function() {
 
     /**
      * @method sherpaGetWorldScreen
      * @summary Returns the 'world screen' element that the receiver is
      *     currently hosted in.
-     * @returns {TP.core.ElementNode} The 'world screen' element containing the
+     * @returns {TP.dom.ElementNode} The 'world screen' element containing the
      *     receiver.
      */
 
@@ -131,16 +131,16 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.ElementNode Additions
+//  TP.dom.ElementNode Additions
 //  ========================================================================
 
-TP.core.ElementNode.addTraits(TP.sherpa.ToolAPI);
+TP.dom.ElementNode.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForInspector',
+TP.dom.ElementNode.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
@@ -182,7 +182,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getDataForInspector',
+TP.dom.ElementNode.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -246,7 +246,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getEntryAt',
+TP.dom.ElementNode.Inst.defineMethod('getEntryAt',
 function(aSourceName) {
 
     /**
@@ -273,7 +273,7 @@ function(aSourceName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getHaloParent',
+TP.dom.ElementNode.Inst.defineMethod('getHaloParent',
 function(aHalo) {
 
     /**
@@ -282,7 +282,7 @@ function(aHalo) {
      *     Not all ancestors in the receiver's ancestor chain are 'haloable'.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
      *     to use to display itself.
-     * @returns {TP.core.ElementNode} The next haloable ancestor of the
+     * @returns {TP.dom.ElementNode} The next haloable ancestor of the
      *     receiver.
      */
 
@@ -297,7 +297,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getHaloRect',
+TP.dom.ElementNode.Inst.defineMethod('getHaloRect',
 function(aHalo) {
 
     /**
@@ -316,7 +316,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getNearestHaloFocusable',
+TP.dom.ElementNode.Inst.defineMethod('getNearestHaloFocusable',
 function(aHalo) {
 
     /**
@@ -327,7 +327,7 @@ function(aHalo) {
      *     are.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
      *     halo-focusable ancestor.
-     * @returns {TP.core.ElementNode} The next halo-focusable ancestor of the
+     * @returns {TP.dom.ElementNode} The next halo-focusable ancestor of the
      *     receiver.
      */
 
@@ -357,7 +357,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getNearestHaloGenerator',
+TP.dom.ElementNode.Inst.defineMethod('getNearestHaloGenerator',
 function(aHalo) {
 
     /**
@@ -369,7 +369,7 @@ function(aHalo) {
      *     content.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
      *     generator ancestor.
-     * @returns {TP.core.ElementNode} The next generator ancestor of the
+     * @returns {TP.dom.ElementNode} The next generator ancestor of the
      *     receiver.
      */
 
@@ -398,7 +398,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getNextHaloChild',
+TP.dom.ElementNode.Inst.defineMethod('getNextHaloChild',
 function(aHalo, aSignal) {
 
     /**
@@ -413,7 +413,7 @@ function(aHalo, aSignal) {
      *     halo-focusable child.
      * @param {TP.sig.Signal} aSignal The signal that initiated the search for a
      *     haloable child.
-     * @returns {TP.core.ElementNode} The next haloable child between the
+     * @returns {TP.dom.ElementNode} The next haloable child between the
      *     receiver and the target of the supplied signal.
      */
 
@@ -450,7 +450,7 @@ function(aHalo, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getPathPartsForInspector',
+TP.dom.ElementNode.Inst.defineMethod('getPathPartsForInspector',
 function(options) {
 
     /**
@@ -472,7 +472,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getUIEditorType',
+TP.dom.ElementNode.Inst.defineMethod('getUIEditorType',
 function() {
 
     /**
@@ -486,7 +486,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForAdjusterTileBody',
+TP.dom.ElementNode.Inst.defineMethod('getContentForAdjusterTileBody',
 function() {
 
     /**
@@ -500,7 +500,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForAdjusterTileFooter',
+TP.dom.ElementNode.Inst.defineMethod('getContentForAdjusterTileFooter',
 function() {
 
     /**
@@ -514,7 +514,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('haloCanBlur',
+TP.dom.ElementNode.Inst.defineMethod('haloCanBlur',
 function(aHalo) {
 
     /**
@@ -532,7 +532,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('haloCanDelete',
+TP.dom.ElementNode.Inst.defineMethod('haloCanDelete',
 function(aHalo) {
 
     /**
@@ -572,7 +572,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('haloCanEmpty',
+TP.dom.ElementNode.Inst.defineMethod('haloCanEmpty',
 function(aHalo) {
 
     /**
@@ -589,7 +589,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('haloCanFocus',
+TP.dom.ElementNode.Inst.defineMethod('haloCanFocus',
 function(aHalo) {
 
     /**
@@ -625,7 +625,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('hudCanDrop',
+TP.dom.ElementNode.Inst.defineMethod('hudCanDrop',
 function(aHUD, targetTPElem) {
 
     /**
@@ -644,7 +644,7 @@ function(aHUD, targetTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('resolveAspectForInspector',
+TP.dom.ElementNode.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
     /**
@@ -680,7 +680,7 @@ function(anAspect, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
+TP.dom.ElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
 function(insertionPointElement, insertionPosition) {
 
     /**
@@ -695,7 +695,7 @@ function(insertionPointElement, insertionPosition) {
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     return this;
@@ -703,7 +703,7 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaDidInsertTofu',
+TP.dom.ElementNode.Inst.defineMethod('sherpaDidInsertTofu',
 function(insertionPointElement, insertionPosition) {
 
     /**
@@ -718,7 +718,7 @@ function(insertionPointElement, insertionPosition) {
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     return this;
@@ -726,7 +726,7 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDLabel',
+TP.dom.ElementNode.Inst.defineMethod('getContentForDomHUDLabel',
 function() {
 
     /**
@@ -741,7 +741,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForBindsHUDTileBody',
+TP.dom.ElementNode.Inst.defineMethod('getContentForBindsHUDTileBody',
 function() {
 
     /**
@@ -759,7 +759,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTileBody',
+TP.dom.ElementNode.Inst.defineMethod('getContentForDomHUDTileBody',
 function() {
 
     /**
@@ -775,7 +775,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForDomHUDTileFooter',
+TP.dom.ElementNode.Inst.defineMethod('getContentForDomHUDTileFooter',
 function() {
 
     /**
@@ -791,7 +791,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForStylesHUDTileBody',
+TP.dom.ElementNode.Inst.defineMethod('getContentForStylesHUDTileBody',
 function() {
 
     /**
@@ -807,7 +807,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForStylesHUDTileFooter',
+TP.dom.ElementNode.Inst.defineMethod('getContentForStylesHUDTileFooter',
 function() {
 
     /**
@@ -823,7 +823,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForRespondersHUDTileBody',
+TP.dom.ElementNode.Inst.defineMethod('getContentForRespondersHUDTileBody',
 function(params) {
 
     /**
@@ -848,7 +848,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentForRespondersHUDTileFooter',
+TP.dom.ElementNode.Inst.defineMethod('getContentForRespondersHUDTileFooter',
 function() {
 
     /**
@@ -865,7 +865,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaDidCopyNodeInto',
+TP.dom.ElementNode.Inst.defineMethod('sherpaDidCopyNodeInto',
 function(insertionPointElement, insertionPosition) {
 
     /**
@@ -881,7 +881,7 @@ function(insertionPointElement, insertionPosition) {
      *     the insertion point element, that the cloned node should be
      *     reparented at. This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN,
      *     TP.BEFORE_END, TP.AFTER_END.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var haloTPElem,
@@ -920,7 +920,7 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
+TP.dom.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
 function(insertionPointElement, insertionPosition) {
 
     /**
@@ -936,7 +936,7 @@ function(insertionPointElement, insertionPosition) {
      *     the insertion point element, that the node should be reparented at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var haloTPElem,
@@ -969,7 +969,7 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaGetTextContent',
+TP.dom.ElementNode.Inst.defineMethod('sherpaGetTextContent',
 function() {
 
     /**
@@ -998,7 +998,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('sherpaSetTextContent',
+TP.dom.ElementNode.Inst.defineMethod('sherpaSetTextContent',
 function(aContent) {
 
     /**
@@ -1009,7 +1009,7 @@ function(aContent) {
      *     descendant elements, this method will do nothing.
      * @param {String} aContent The content to set the receiver's text content
      *     to.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     if (TP.notEmpty(this.getDescendantElements())) {
@@ -1390,14 +1390,14 @@ function(options) {
 });
 
 //  ========================================================================
-//  TP.core.UIElementNode Additions
+//  TP.dom.UIElementNode Additions
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getHaloRect',
+TP.dom.UIElementNode.Inst.defineMethod('getHaloRect',
 function(aHalo) {
 
     /**
@@ -1415,21 +1415,21 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getUIEditorType',
+TP.dom.UIElementNode.Inst.defineMethod('getUIEditorType',
 function() {
 
     /**
      * @method getUIEditorType
      * @summary Returns the UIEditor subtype used to edit any UI elements.
-     * @returns {TP.meta.core.UIElementNodeEditor}
+     * @returns {TP.meta.dom.UIElementNodeEditor}
      */
 
-    return TP.core.UIElementNodeEditor;
+    return TP.dom.UIElementNodeEditor;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
+TP.dom.UIElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
 function(insertionPointElement, insertionPosition) {
 
     /**
@@ -1444,7 +1444,7 @@ function(insertionPointElement, insertionPosition) {
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var inspector,
@@ -1560,7 +1560,7 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('sherpaDidInsertTofu',
+TP.dom.UIElementNode.Inst.defineMethod('sherpaDidInsertTofu',
 function(insertionPointElement, insertionPosition) {
 
     /**
@@ -1575,7 +1575,7 @@ function(insertionPointElement, insertionPosition) {
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var assistantContentTPElem,

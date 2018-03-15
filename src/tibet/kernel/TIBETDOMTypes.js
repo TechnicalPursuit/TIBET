@@ -12,7 +12,7 @@
  */
 
 //  ========================================================================
-//  TP.core.Node
+//  TP.dom.Node
 //  ========================================================================
 
 /**
@@ -23,16 +23,16 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Node');
+TP.lang.Object.defineSubtype('dom.Node');
 
 //  actual node instances returned are specialized on a number of factors
-TP.core.Node.isAbstract(true);
+TP.dom.Node.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('construct',
+TP.dom.Node.Type.defineMethod('construct',
 function(nodeSpec, varargs) {
 
     /**
@@ -47,7 +47,7 @@ function(nodeSpec, varargs) {
      *
      *     Stage 1: Obtain a source node
      *
-     *     - If nodeSpec is a TP.core.Node, it is simply returned and no
+     *     - If nodeSpec is a TP.dom.Node, it is simply returned and no
      *     further stages are processed.
      *
      *     - If nodeSpec is not valid, an attempt is made to construct a native
@@ -59,7 +59,7 @@ function(nodeSpec, varargs) {
      *     - If nodeSpec is a native node, it is kept as the source node.
      *
      *     - If nodeSpec is a TP.uri.URI or a String that can be determined to
-     *     be a URI, the resource TP.core.Node of that URI is fetched, cloned
+     *     be a URI, the resource TP.dom.Node of that URI is fetched, cloned
      *     and returned. No further stages are processed.
      *
      *     - If nodeSpec is a String that can be determined to be only markup,
@@ -95,11 +95,11 @@ function(nodeSpec, varargs) {
      *     item in the TP.core.Hash. That value is then returned.
      *
      *
-     * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
+     * @param {Node|URI|String|TP.dom.Node} nodeSpec Some suitable object to
      *     construct a source node. See type discussion above. Can also be null.
      * @param {Array} varargs Optional additional arguments for the
      *     constructor.
-     * @returns {TP.core.Node} A new instance.
+     * @returns {TP.dom.Node} A new instance.
      */
 
     var node,
@@ -172,9 +172,9 @@ function(nodeSpec, varargs) {
                             TP.hc('async', false, 'resultType', TP.WRAP));
                 template = resp.get('result');
 
-                if (TP.isKindOf(template, 'TP.core.DocumentNode')) {
+                if (TP.isKindOf(template, 'TP.dom.DocumentNode')) {
                     template.getDocumentElement().removeAttribute('id');
-                } else if (TP.isKindOf(template, 'TP.core.ElementNode')) {
+                } else if (TP.isKindOf(template, 'TP.dom.ElementNode')) {
                     template.removeAttribute('id');
                 }
             } else if (TP.isString(args)) {
@@ -220,7 +220,7 @@ function(nodeSpec, varargs) {
             }
 
             retVal = node;
-            retType = TP.core.Node.getConcreteType(node);
+            retType = TP.dom.Node.getConcreteType(node);
         } else {
             str = nodeSpec.trim();
 
@@ -274,7 +274,7 @@ function(nodeSpec, varargs) {
                 args.atPut(0, retVal);
                 return retType.construct.apply(this, args);
         }
-    } else if (TP.isKindOf(nodeSpec, 'TP.core.Node')) {
+    } else if (TP.isKindOf(nodeSpec, 'TP.dom.Node')) {
         //  it's already wrapped, return it
         return nodeSpec;
     } else {
@@ -318,10 +318,10 @@ function(nodeSpec, varargs) {
     }
 
     //  If varargs is a TP.core.Hash and inst is an instance of some subtype
-    //  of TP.core.ElementNode, then try to execute '.setAttribute()'
+    //  of TP.dom.ElementNode, then try to execute '.setAttribute()'
     //  against the new instance for each key in the hash.
     if (TP.isHash(varargs) &&
-        TP.isKindOf(inst, 'TP.core.ElementNode')) {
+        TP.isKindOf(inst, 'TP.dom.ElementNode')) {
         varargs.perform(
             function(kvPair) {
                 inst.setAttribute(kvPair.first(), kvPair.last());
@@ -340,7 +340,7 @@ function(nodeSpec, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('constructNativeNode',
+TP.dom.Node.Type.defineMethod('constructNativeNode',
 function() {
 
     /**
@@ -395,7 +395,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('fromNode',
+TP.dom.Node.Type.defineMethod('fromNode',
 function(aNode) {
 
     /**
@@ -403,7 +403,7 @@ function(aNode) {
      * @summary Constructs and returns a new instance initialized using the
      *     node provided.
      * @param {Node} aNode A native node.
-     * @returns {TP.core.Node} The newly constructed TP.core.Node.
+     * @returns {TP.dom.Node} The newly constructed TP.dom.Node.
      */
 
     return this.construct(aNode);
@@ -411,12 +411,12 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('fromString',
+TP.dom.Node.Type.defineMethod('fromString',
 function(aString, defaultNS, shouldReport) {
 
     /**
      * @method fromString
-     * @summary Parses aString and returns a TP.core.Node wrapper around the
+     * @summary Parses aString and returns a TP.dom.Node wrapper around the
      *     string's root node representation.
      * @param {String} aString The source string to be parsed.
      * @param {String|null} defaultNS What namespace should be used for the
@@ -430,7 +430,7 @@ function(aString, defaultNS, shouldReport) {
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
      * @exception TP.sig.DOMParseException
-     * @returns {TP.core.Node} The newly constructed TP.core.Node.
+     * @returns {TP.dom.Node} The newly constructed TP.dom.Node.
      */
 
     var node;
@@ -445,14 +445,14 @@ function(aString, defaultNS, shouldReport) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('fromTP_core_Node',
+TP.dom.Node.Type.defineMethod('fromTP_dom.Node',
 function(aNode) {
 
     /**
-     * @method fromTP.core.Node
-     * @summary Returns the TP.core.Node wrapper provided.
-     * @param {TP.core.Node} aNode A wrapped node.
-     * @returns {TP.core.Node} The supplied object.
+     * @method fromTP.dom.Node
+     * @summary Returns the TP.dom.Node wrapper provided.
+     * @param {TP.dom.Node} aNode A wrapped node.
+     * @returns {TP.dom.Node} The supplied object.
      */
 
     return aNode;
@@ -460,7 +460,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('fromTP_sig_Signal',
+TP.dom.Node.Type.defineMethod('fromTP_sig_Signal',
 function(aSignal) {
 
     /**
@@ -469,7 +469,7 @@ function(aSignal) {
      *     the signal provided.
      * @param {TP.sig.Signal} aSignal The signal instance to construct a handler
      *     instance for.
-     * @returns {TP.core.Node} The newly constructed TP.core.Node.
+     * @returns {TP.dom.Node} The newly constructed TP.dom.Node.
      */
 
     var inst,
@@ -495,7 +495,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('fromTP_uri.URI',
+TP.dom.Node.Type.defineMethod('fromTP_uri.URI',
 function(aURI, shouldReport) {
 
     /**
@@ -508,7 +508,7 @@ function(aURI, shouldReport) {
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
      * @exception TP.sig.DOMParseException
-     * @returns {TP.core.Node} The newly constructed TP.core.Node.
+     * @returns {TP.dom.Node} The newly constructed TP.dom.Node.
      */
 
     var resp,
@@ -518,12 +518,12 @@ function(aURI, shouldReport) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  this will return a TP.core.Node if at all possible
+    //  this will return a TP.dom.Node if at all possible
     resp = aURI.getResource(
                 TP.hc('async', false, 'resultType', TP.DOM));
     content = TP.wrap(resp.get('result'));
 
-    if (TP.isKindOf(content, TP.core.Node)) {
+    if (TP.isKindOf(content, TP.dom.Node)) {
         return content;
     }
 
@@ -532,7 +532,7 @@ function(aURI, shouldReport) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getCanonicalPrefix',
+TP.dom.Node.Type.defineMethod('getCanonicalPrefix',
 function(aNode) {
 
     /**
@@ -540,7 +540,7 @@ function(aNode) {
      * @summary Returns the canonical prefix for the namepaceURI of the node.
      *     If the node does not show itself as having a namespaceURI then the
      *     prefix returned is the empty string.
-     * @param {Node|TP.core.Node} aNode The node whose canonical prefix should
+     * @param {Node|TP.dom.Node} aNode The node whose canonical prefix should
      *     be returned.
      * @returns {String} The canonical prefix, if found.
      */
@@ -549,7 +549,7 @@ function(aNode) {
         ns,
         prefix;
 
-    //  In case aNode was a TP.core.Node.
+    //  In case aNode was a TP.dom.Node.
     node = TP.unwrap(aNode);
 
     if (TP.isDocument(node)) {
@@ -569,7 +569,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getConcreteType',
+TP.dom.Node.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
@@ -577,7 +577,7 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
+     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
      *     object.
      */
 
@@ -589,51 +589,51 @@ function(aNode) {
     switch (aNode.nodeType) {
         case Node.ELEMENT_NODE:
 
-            return TP.core.ElementNode.getConcreteType(aNode);
+            return TP.dom.ElementNode.getConcreteType(aNode);
 
         case Node.DOCUMENT_NODE:
 
-            return TP.core.DocumentNode.getConcreteType(aNode);
+            return TP.dom.DocumentNode.getConcreteType(aNode);
 
         case Node.DOCUMENT_FRAGMENT_NODE:
 
-            return TP.core.DocumentFragmentNode;
+            return TP.dom.DocumentFragmentNode;
 
         case Node.ATTRIBUTE_NODE:
 
-            return TP.core.AttributeNode.getConcreteType(aNode);
+            return TP.dom.AttributeNode.getConcreteType(aNode);
 
         case Node.TEXT_NODE:
 
-            return TP.core.TextNode;
+            return TP.dom.TextNode;
 
         case Node.CDATA_SECTION_NODE:
 
-            return TP.core.CDATASectionNode;
+            return TP.dom.CDATASectionNode;
 
         case Node.PROCESSING_INSTRUCTION_NODE:
 
-            return TP.core.ProcessingInstructionNode.getConcreteType(aNode);
+            return TP.dom.ProcessingInstructionNode.getConcreteType(aNode);
 
         case Node.ENTITY_REFERENCE_NODE:
 
-            return TP.core.EntityReferenceNode;
+            return TP.dom.EntityReferenceNode;
 
         case Node.ENTITY_NODE:
 
-            return TP.core.EntityNode;
+            return TP.dom.EntityNode;
 
         case Node.COMMENT_NODE:
 
-            return TP.core.CommentNode;
+            return TP.dom.CommentNode;
 
         case Node.DOCUMENT_TYPE_NODE:
 
-            return TP.core.DocumentTypeNode;
+            return TP.dom.DocumentTypeNode;
 
         case Node.NOTATION_NODE:
 
-            return TP.core.NotationNode;
+            return TP.dom.NotationNode;
 
         default:
             return this.raise('TP.sig.InvalidNode',
@@ -643,7 +643,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getContentLanguage',
+TP.dom.Node.Type.defineMethod('getContentLanguage',
 function(aNode) {
 
     /**
@@ -651,7 +651,7 @@ function(aNode) {
      * @summary Returns the node's xml:lang value, or the current default
      *     language if no xml:lang specification is found in the node's parent
      *     chain.
-     * @param {Node|TP.core.Node} aNode The node whose content language should
+     * @param {Node|TP.dom.Node} aNode The node whose content language should
      *     be returned.
      * @returns {String} The node's content language.
      */
@@ -659,7 +659,7 @@ function(aNode) {
     var node,
         lang;
 
-    //  In case aNode was a TP.core.Node.
+    //  In case aNode was a TP.dom.Node.
     node = TP.unwrap(aNode);
 
     if (TP.isDocument(node)) {
@@ -687,7 +687,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getContentMIMEType',
+TP.dom.Node.Type.defineMethod('getContentMIMEType',
 function(aNode) {
 
     /**
@@ -696,7 +696,7 @@ function(aNode) {
      *     can render most effectively. This information is drawn from the
      *     namespaceURI of the node in most cases. The mappings between
      *     namespace URIs and MIME types are found in the XMLNS 'info' hash.
-     * @param {Node|TP.core.Node} aNode The node whose content mime type should
+     * @param {Node|TP.dom.Node} aNode The node whose content mime type should
      *     be returned.
      * @returns {String} The node's content MIME type.
      */
@@ -705,13 +705,13 @@ function(aNode) {
         ns,
         mime;
 
-    //  In case aNode was a TP.core.Node.
+    //  In case aNode was a TP.dom.Node.
     node = TP.unwrap(aNode);
 
     //  this works off URI and root element information to try to give us a
     //  best guess
     if (TP.isDocument(node)) {
-        return TP.core.Node.getDocumentMIMEType(node);
+        return TP.dom.Node.getDocumentMIMEType(node);
     }
 
     //  if not a document we can still try to use the XMLNS data
@@ -725,14 +725,14 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getDocumentMIMEType',
+TP.dom.Node.Type.defineMethod('getDocumentMIMEType',
 function(aNode) {
 
     /**
      * @method getDocumentMIMEType
      * @summary Returns the MIME type of the document containing the node
      *     provided. This method is used to help determine which subtype of
-     *     TP.core.DocumentNode to use when creating new document wrappers but
+     *     TP.dom.DocumentNode to use when creating new document wrappers but
      *     can be useful in other contexts as well.
      * @param {Node} aNode The node whose document mime type should be returned.
      * @exception TP.sig.InvalidDocument
@@ -749,7 +749,7 @@ function(aNode) {
         mimeType,
         nodeName;
 
-    //  In case aNode was a TP.core.Node.
+    //  In case aNode was a TP.dom.Node.
     node = TP.unwrap(aNode);
 
     doc = TP.nodeGetDocument(node);
@@ -800,7 +800,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getNSURI',
+TP.dom.Node.Type.defineMethod('getNSURI',
 function() {
 
     /**
@@ -816,7 +816,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('getQueryPath',
+TP.dom.Node.Type.defineMethod('getQueryPath',
 function() {
 
     /**
@@ -834,7 +834,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('generatedNode',
+TP.dom.Node.Type.defineMethod('generatedNode',
 function(aNode) {
 
     /**
@@ -863,7 +863,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('isResponderFor',
+TP.dom.Node.Type.defineMethod('isResponderFor',
 function(aNode, aSignal) {
 
     /**
@@ -941,7 +941,7 @@ function(aNode, aSignal) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('populateSubstitutionInfo',
+TP.dom.Node.Type.defineMethod('populateSubstitutionInfo',
 function(aRequest) {
 
     /**
@@ -953,9 +953,9 @@ function(aRequest) {
      *          TP          ->  The TP root.
      *          APP         ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
-     *          $TAG        ->  The TP.core.ElementNode that contains this text
+     *          $TAG        ->  The TP.dom.ElementNode that contains this text
      *                          node.
-     *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
+     *          $TARGET     ->  The target TP.dom.DocumentNode, if any, that
      *                          the result of this processing will be rendered
      *                          into.
      *          $SOURCE     ->  The original source tag, if this is being
@@ -964,8 +964,8 @@ function(aRequest) {
      *                          Array of objects determined by the selection
      *                          manager.
      *          $*          ->  An alias for $SELECTION
-     *          $FOCUS      ->  The currently focused TP.core.ElementNode in the
-     *                          target TP.core.DocumentNode.
+     *          $FOCUS      ->  The currently focused TP.dom.ElementNode in the
+     *                          target TP.dom.DocumentNode.
      *          $@          ->  An alias for $FOCUS
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -1039,7 +1039,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('shouldWrapACPOutput',
+TP.dom.Node.Type.defineMethod('shouldWrapACPOutput',
 function() {
 
     /**
@@ -1056,7 +1056,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('tagPrecompile',
+TP.dom.Node.Type.defineMethod('tagPrecompile',
 function(aRequest) {
 
     /**
@@ -1070,8 +1070,8 @@ function(aRequest) {
      *          TP         ->  The TP root.
      *          APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
-     *          $TAG        ->  The TP.core.ElementNode that is being processed.
-     *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
+     *          $TAG        ->  The TP.dom.ElementNode that is being processed.
+     *          $TARGET     ->  The target TP.dom.DocumentNode, if any, that
      *                          the result of this processing will be rendered
      *                          into.
      *          $SOURCE     ->  The original source tag, if this is being
@@ -1080,8 +1080,8 @@ function(aRequest) {
      *                          Array of objects determined by the selection
      *                          manager.
      *          $*          ->  An alias for $SELECTION
-     *          $FOCUS      ->  The currently focused TP.core.ElementNode in the
-     *                          target TP.core.DocumentNode.
+     *          $FOCUS      ->  The currently focused TP.dom.ElementNode in the
+     *                          target TP.dom.DocumentNode.
      *          $@          ->  An alias for $FOCUS
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -1177,7 +1177,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('tagDetachDOM',
+TP.dom.Node.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -1218,30 +1218,30 @@ function(aRequest) {
 
 //  should the receiver flag changes, i.e. mark elements with 'crud'
 //  metadata in addition to or in lieu of actually altering markup
-TP.core.Node.Inst.defineAttribute('changeFlagging', false);
+TP.dom.Node.Inst.defineAttribute('changeFlagging', false);
 
 //  whether the node has been 'dirtied' or altered since loading
-TP.core.Node.Inst.defineAttribute('dirty', false);
+TP.dom.Node.Inst.defineAttribute('dirty', false);
 
 //  the wrapped node when only one node is being managed
-TP.core.Node.Inst.defineAttribute('node');
+TP.dom.Node.Inst.defineAttribute('node');
 
 //  flag for whether this instance can be reused. typically yes.
-TP.core.Node.Inst.defineAttribute('recyclable', true);
+TP.dom.Node.Inst.defineAttribute('recyclable', true);
 
 //  what phase is the node at in terms of content processing? we start at
 //  'UNPROCESSED' for new nodes
-TP.core.Node.Inst.defineAttribute('phase', 'UNPROCESSED');
+TP.dom.Node.Inst.defineAttribute('phase', 'UNPROCESSED');
 
 //  when loaded via a TP.uri.URI this will hold the URI's 'uri' string as a
 //  backlink the node can use to get to the original URI instance.
-TP.core.Node.Inst.defineAttribute('uri');
+TP.dom.Node.Inst.defineAttribute('uri');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('init',
+TP.dom.Node.Inst.defineMethod('init',
 function(aNode, aURI) {
 
     /**
@@ -1250,7 +1250,7 @@ function(aNode, aURI) {
      * @param {Node} aNode A native node.
      * @param {TP.uri.URI|String} aURI An optional URI from which the Node
      *     received its content.
-     * @returns {TP.core.Node} The initialized instance.
+     * @returns {TP.dom.Node} The initialized instance.
      */
 
     this.callNextMethod();
@@ -1266,7 +1266,7 @@ function(aNode, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('addContent',
+TP.dom.Node.Inst.defineMethod('addContent',
 function(aContentObject, aRequest) {
 
     /**
@@ -1294,7 +1294,7 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asDumpString',
+TP.dom.Node.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -1316,7 +1316,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asHTMLNode',
+TP.dom.Node.Inst.defineMethod('asHTMLNode',
 function(aDocument) {
 
     /**
@@ -1340,7 +1340,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asHTMLString',
+TP.dom.Node.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -1355,7 +1355,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asJSONSource',
+TP.dom.Node.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -1388,7 +1388,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asObject',
+TP.dom.Node.Inst.defineMethod('asObject',
 function() {
 
     /**
@@ -1408,7 +1408,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('toJSON',
+TP.dom.Node.Inst.defineMethod('toJSON',
 function() {
 
     /**
@@ -1422,7 +1422,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asPrettyString',
+TP.dom.Node.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -1451,7 +1451,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asSource',
+TP.dom.Node.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -1465,16 +1465,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asString',
+TP.dom.Node.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns a basic string representation of the receiver. For
-     *     TP.core.Nodes this is the serialized string representation of the
+     *     TP.dom.Nodes this is the serialized string representation of the
      *     native node content.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Node's String representation. The verbose
+     *     of the TP.dom.Node's String representation. The verbose
      *     representation will contain an XML declaration (if the receiver is
      *     an XML document). Both verbose and non-verbose representations will
      *     also contain all of the child content. The default is true.
@@ -1518,7 +1518,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asXHTMLNode',
+TP.dom.Node.Inst.defineMethod('asXHTMLNode',
 function() {
 
     /**
@@ -1538,7 +1538,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asXHTMLString',
+TP.dom.Node.Inst.defineMethod('asXHTMLString',
 function() {
 
     /**
@@ -1553,7 +1553,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asXMLNode',
+TP.dom.Node.Inst.defineMethod('asXMLNode',
 function(aDocument) {
 
     /**
@@ -1574,7 +1574,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('asXMLString',
+TP.dom.Node.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -1608,7 +1608,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('detach',
+TP.dom.Node.Inst.defineMethod('detach',
 function() {
 
     /**
@@ -1616,7 +1616,7 @@ function() {
      * @summary Removes the receiver from its parent.
      * @returns {Boolean} Whether or not the supplied node is equal to the
      *     receiver.
-     * @returns {TP.core.Node} The detached node.
+     * @returns {TP.dom.Node} The detached node.
      */
 
     var node;
@@ -1628,14 +1628,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('copy',
+TP.dom.Node.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Node} A copy of the receiver.
+     * @returns {TP.dom.Node} A copy of the receiver.
      */
 
     var natNode,
@@ -1650,7 +1650,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('equalTo',
+TP.dom.Node.Inst.defineMethod('equalTo',
 function(aNode) {
 
     /**
@@ -1677,7 +1677,7 @@ function(aNode) {
      *              null or have the same length and contain equal nodes *at the
      *              same index*). Note that this method normalizes these nodes
      *              to make sure that this comparison is performed accurately.
-     * @param {TP.core.Node|Node} aNode The TP.core.Node or Node to use in the
+     * @param {TP.dom.Node|Node} aNode The TP.dom.Node or Node to use in the
      *     comparison.
      * @exception TP.sig.InvalidNode
      * @returns {Boolean} Whether or not the supplied node is equal to the
@@ -1696,7 +1696,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getAncestorPositions',
+TP.dom.Node.Inst.defineMethod('getAncestorPositions',
 function(includeNode, aPrefix, joinChar) {
 
     /**
@@ -1722,7 +1722,7 @@ function(includeNode, aPrefix, joinChar) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getCanonicalPrefix',
+TP.dom.Node.Inst.defineMethod('getCanonicalPrefix',
 function() {
 
     /**
@@ -1733,12 +1733,12 @@ function() {
      * @returns {String} The prefix, if found.
      */
 
-    return TP.core.Node.getCanonicalPrefix(this);
+    return TP.dom.Node.getCanonicalPrefix(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getCanvasID',
+TP.dom.Node.Inst.defineMethod('getCanvasID',
 function() {
 
     /**
@@ -1762,7 +1762,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getContent',
+TP.dom.Node.Inst.defineMethod('getContent',
 function(aRequest) {
 
     /**
@@ -1781,7 +1781,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getContentNode',
+TP.dom.Node.Inst.defineMethod('getContentNode',
 function(aRequest) {
 
     /**
@@ -1790,7 +1790,7 @@ function(aRequest) {
      *     compatibility with other types.
      * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     return this;
@@ -1798,7 +1798,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getContentText',
+TP.dom.Node.Inst.defineMethod('getContentText',
 function(aRequest) {
 
     /**
@@ -1815,7 +1815,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getContentLanguage',
+TP.dom.Node.Inst.defineMethod('getContentLanguage',
 function() {
 
     /**
@@ -1826,12 +1826,12 @@ function() {
      * @returns {String} The receiver's content language.
      */
 
-    return TP.core.Node.getContentLanguage(this);
+    return TP.dom.Node.getContentLanguage(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getContentLanguage',
+TP.dom.Node.Inst.defineMethod('getContentLanguage',
 function() {
 
     /**
@@ -1842,12 +1842,12 @@ function() {
      * @returns {String} The receiver's content language.
      */
 
-    return TP.core.Node.getContentLanguage(this);
+    return TP.dom.Node.getContentLanguage(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getContentMIMEType',
+TP.dom.Node.Inst.defineMethod('getContentMIMEType',
 function() {
 
     /**
@@ -1859,12 +1859,12 @@ function() {
      * @returns {String} The receiver's content MIME type.
      */
 
-    return TP.core.Node.getContentMIMEType(this);
+    return TP.dom.Node.getContentMIMEType(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getDocument',
+TP.dom.Node.Inst.defineMethod('getDocument',
 function() {
 
     /**
@@ -1872,10 +1872,10 @@ function() {
      * @summary Returns the receiver's TIBET document wrapper. This method will
      *     attempt to get the uniqued version provided via TP.core.Window, which
      *     encaches its document instance to avoid duplication. If the document
-     *     isn't visible this method will return a new TP.core.DocumentNode
+     *     isn't visible this method will return a new TP.dom.DocumentNode
      *     wrapper.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.DocumentNode} The receiver's document.
+     * @returns {TP.dom.DocumentNode} The receiver's document.
      */
 
     var node,
@@ -1896,7 +1896,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getDocumentPosition',
+TP.dom.Node.Inst.defineMethod('getDocumentPosition',
 function(joinChar) {
 
     /**
@@ -1914,7 +1914,7 @@ function(joinChar) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getDocumentMIMEType',
+TP.dom.Node.Inst.defineMethod('getDocumentMIMEType',
 function() {
 
     /**
@@ -1925,12 +1925,12 @@ function() {
 
     //  we're after the real document, not the document of some clone, so
     //  we preserve changes here
-    return TP.core.Node.getDocumentMIMEType(this);
+    return TP.dom.Node.getDocumentMIMEType(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getGlobalID',
+TP.dom.Node.Inst.defineMethod('getGlobalID',
 function(assignIfAbsent) {
 
     /**
@@ -1946,7 +1946,7 @@ function(assignIfAbsent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getID',
+TP.dom.Node.Inst.defineMethod('getID',
 function() {
 
     /**
@@ -1967,7 +1967,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getIndexInParent',
+TP.dom.Node.Inst.defineMethod('getIndexInParent',
 function() {
 
     /**
@@ -1988,7 +1988,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getLocalID',
+TP.dom.Node.Inst.defineMethod('getLocalID',
 function(assignIfAbsent) {
 
     /**
@@ -2006,7 +2006,7 @@ function(assignIfAbsent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getLocalName',
+TP.dom.Node.Inst.defineMethod('getLocalName',
 function() {
 
     /**
@@ -2024,7 +2024,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getLocation',
+TP.dom.Node.Inst.defineMethod('getLocation',
 function() {
 
     /**
@@ -2046,13 +2046,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getParentNode',
+TP.dom.Node.Inst.defineMethod('getParentNode',
 function() {
 
     /**
      * @method getParentNode
-     * @summary Returns a TP.core.Node wrapping the parent node of the receiver.
-     * @returns {TP.core.Node} The parent node of the receiver.
+     * @summary Returns a TP.dom.Node wrapping the parent node of the receiver.
+     * @returns {TP.dom.Node} The parent node of the receiver.
      */
 
     return TP.wrap(this.getNativeNode().parentNode);
@@ -2060,7 +2060,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getOuterContent',
+TP.dom.Node.Inst.defineMethod('getOuterContent',
 function(aRequest) {
 
     /**
@@ -2078,7 +2078,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getMIMEType',
+TP.dom.Node.Inst.defineMethod('getMIMEType',
 function() {
 
     /**
@@ -2100,7 +2100,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getName',
+TP.dom.Node.Inst.defineMethod('getName',
 function() {
 
     /**
@@ -2114,7 +2114,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNativeDocument',
+TP.dom.Node.Inst.defineMethod('getNativeDocument',
 function() {
 
     /**
@@ -2128,7 +2128,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNativeNode',
+TP.dom.Node.Inst.defineMethod('getNativeNode',
 function() {
 
     /**
@@ -2142,13 +2142,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNativeObject',
+TP.dom.Node.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
      * @method getNativeObject
      * @summary Returns the native object that the receiver is wrapping. In the
-     *     case of TP.core.Nodes, this is the receiver's native node.
+     *     case of TP.dom.Nodes, this is the receiver's native node.
      * @returns {Node} The receiver's native object.
      */
 
@@ -2157,7 +2157,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNativeWindow',
+TP.dom.Node.Inst.defineMethod('getNativeWindow',
 function() {
 
     /**
@@ -2173,7 +2173,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNSPrefixes',
+TP.dom.Node.Inst.defineMethod('getNSPrefixes',
 function(aNamespaceURI, includeDescendants) {
 
     /**
@@ -2195,7 +2195,7 @@ function(aNamespaceURI, includeDescendants) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNSURI',
+TP.dom.Node.Inst.defineMethod('getNSURI',
 function() {
 
     /**
@@ -2211,7 +2211,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getNSURIs',
+TP.dom.Node.Inst.defineMethod('getNSURIs',
 function(includeDescendants) {
 
     /**
@@ -2227,7 +2227,7 @@ function(includeDescendants) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getProperty',
+TP.dom.Node.Inst.defineMethod('getProperty',
 function(attributeName) {
 
     /**
@@ -2263,7 +2263,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getTargetPhase',
+TP.dom.Node.Inst.defineMethod('getTargetPhase',
 function(phaseList, outerElem) {
 
     /**
@@ -2285,7 +2285,7 @@ function(phaseList, outerElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getTextContent',
+TP.dom.Node.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -2300,7 +2300,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getValue',
+TP.dom.Node.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -2316,7 +2316,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getWindow',
+TP.dom.Node.Inst.defineMethod('getWindow',
 function() {
 
     /**
@@ -2337,7 +2337,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('hasReachedPhase',
+TP.dom.Node.Inst.defineMethod('hasReachedPhase',
 function(targetPhase, targetPhaseList) {
 
     /**
@@ -2359,7 +2359,7 @@ function(targetPhase, targetPhaseList) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('hasWindow',
+TP.dom.Node.Inst.defineMethod('hasWindow',
 function() {
 
     /**
@@ -2373,7 +2373,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('identicalTo',
+TP.dom.Node.Inst.defineMethod('identicalTo',
 function(aNode) {
 
     /**
@@ -2382,8 +2382,8 @@ function(aNode) {
      *     receiver.
      * @description This method will return true if the underlying native Node
      *     of the receiver is identical to the supplied Node (or underlying
-     *     native Node if a TP.core.Node was supplied).
-     * @param {TP.core.Node|Node} aNode The TP.core.Node or Node to use in the
+     *     native Node if a TP.dom.Node was supplied).
+     * @param {TP.dom.Node|Node} aNode The TP.dom.Node or Node to use in the
      *     comparison.
      * @exception TP.sig.InvalidNode
      * @returns {Boolean} Whether or not the supplied node is identical to the
@@ -2403,7 +2403,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('isDirty',
+TP.dom.Node.Inst.defineMethod('isDirty',
 function(aFlag) {
 
     /**
@@ -2425,7 +2425,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('isDetached',
+TP.dom.Node.Inst.defineMethod('isDetached',
 function(aRootNode) {
 
     /**
@@ -2444,7 +2444,7 @@ function(aRootNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('$$isPair',
+TP.dom.Node.Inst.defineMethod('$$isPair',
 function() {
 
     /**
@@ -2459,13 +2459,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('isSingleValued',
+TP.dom.Node.Inst.defineMethod('isSingleValued',
 function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
@@ -2477,7 +2477,7 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('isScalarValued',
+TP.dom.Node.Inst.defineMethod('isScalarValued',
 function(aspectName) {
 
     /**
@@ -2513,7 +2513,7 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('produceContent',
+TP.dom.Node.Inst.defineMethod('produceContent',
 function(aContentObject, aRequest) {
 
     /**
@@ -2529,7 +2529,7 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('produceValue',
+TP.dom.Node.Inst.defineMethod('produceValue',
 function(aspectName, aContentObject, aRequest) {
 
     /**
@@ -2630,7 +2630,7 @@ function(aspectName, aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('$reduceValue',
+TP.dom.Node.Inst.defineMethod('$reduceValue',
 function(theContent, anIndex) {
 
     /**
@@ -2717,7 +2717,7 @@ function(theContent, anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('selectChain',
+TP.dom.Node.Inst.defineMethod('selectChain',
 function(aProperty) {
 
     /**
@@ -2735,7 +2735,7 @@ function(aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setContent',
+TP.dom.Node.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
     /**
@@ -2757,7 +2757,7 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setNativeNode',
+TP.dom.Node.Inst.defineMethod('setNativeNode',
 function(aNode, shouldSignal) {
 
     /**
@@ -2768,7 +2768,7 @@ function(aNode, shouldSignal) {
      *     change notification. This defaults to the return value of sending
      *     shouldSignalChange() to the receiver.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var oldNode,
@@ -2796,7 +2796,7 @@ function(aNode, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setRawContent',
+TP.dom.Node.Inst.defineMethod('setRawContent',
 function(newContent, aRequest) {
 
     /**
@@ -2809,7 +2809,7 @@ function(newContent, aRequest) {
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
      *     further parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -2818,19 +2818,19 @@ function(newContent, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setProperty',
+TP.dom.Node.Inst.defineMethod('setProperty',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @method setProperty
      * @summary Sets the value of the named attribute to attributeValue. For a
-     *     TP.core.Node this is called by set() after the attribute has been
+     *     TP.dom.Node this is called by set() after the attribute has been
      *     resolved and the value has been validated.
      * @param {String} attributeName The attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      * @fires Change
      */
 
@@ -2846,9 +2846,9 @@ function(attributeName, attributeValue, shouldSignal) {
                             shouldSignal);
     }
 
-    //  issue for TP.core.Node is that we don't want to put things on the
+    //  issue for TP.dom.Node is that we don't want to put things on the
     //  node that might disappear if the node gets transformed when those
-    //  things are defined attributes of TP.core.Node (or the subtype). So
+    //  things are defined attributes of TP.dom.Node (or the subtype). So
     //  we have to check for that case first...
     if (TP.isDefined(this.$get(attributeName))) {
         return this.$set(attributeName,
@@ -2899,7 +2899,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setTextContent',
+TP.dom.Node.Inst.defineMethod('setTextContent',
 function(aValue, shouldSignal) {
 
     /**
@@ -2917,7 +2917,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'content' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var node,
@@ -2954,7 +2954,7 @@ function(aValue, shouldSignal) {
         this.$changed('value', TP.UPDATE);
     }
 
-    //  Since, at the TP.core.Node level, setting the value is equivalent to
+    //  Since, at the TP.dom.Node level, setting the value is equivalent to
     //  setting the content, we signal that we've done that.
 
     try {
@@ -2977,7 +2977,7 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setUri',
+TP.dom.Node.Inst.defineMethod('setUri',
 function(aURI) {
 
     /**
@@ -2986,7 +2986,7 @@ function(aURI) {
      *     the source that the receiver came from.
      * @param {TP.uri.URI} aURI The URI to set as the receiver's source URI.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     if (!TP.isURIString(aURI) && !TP.isURI(aURI)) {
@@ -3000,7 +3000,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('setValue',
+TP.dom.Node.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -3011,7 +3011,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var newValue;
@@ -3025,13 +3025,13 @@ function(aValue, shouldSignal) {
 //  DNU SUPPORT
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('canResolveDNU',
+TP.dom.Node.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @method canResolveDNU
      * @summary Provides an instance that triggers the DNU machinery with an
-     *     opportunity to handle the problem itself. TP.core.Nodes look to the
+     *     opportunity to handle the problem itself. TP.dom.Nodes look to the
      *     TP.* primitives, followed by their native node in an attempt to
      *     resolve these situations.
      * @param {Object} anOrigin The object asking for help. The receiver in this
@@ -3042,7 +3042,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @exception TP.sig.InvalidNode
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
-     *     TRUE for TP.core.Node subtypes.
+     *     TRUE for TP.dom.Node subtypes.
      */
 
     var node,
@@ -3126,7 +3126,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('$$constructDNUResolver',
+TP.dom.Node.Inst.defineMethod('$$constructDNUResolver',
 function(aTarget, aMethodName, supportsInvoke) {
 
     /**
@@ -3135,7 +3135,7 @@ function(aTarget, aMethodName, supportsInvoke) {
      *     with the receiver. If this operation is successful this method will
      *     return true, supporting the canResolve method.
      * @param {String} aTarget A target string which is the receiver of the
-     *     resolving method. Normally 'TP' for a TP.core.Node.
+     *     resolving method. Normally 'TP' for a TP.dom.Node.
      * @param {String} aMethodName The name of the method to invoke on the
      *     target.
      * @param {Boolean} supportsInvoke False to force apply to be used.
@@ -3176,7 +3176,7 @@ function(aTarget, aMethodName, supportsInvoke) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('resolveDNU',
+TP.dom.Node.Inst.defineMethod('resolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
@@ -3184,7 +3184,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @summary Invoked by the main DNU machinery when the instance has
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @description Handles resolution of methods which have triggered the
-     *     inferencer. For TP.core.DocumentNodes the resolution process is used
+     *     inferencer. For TP.dom.DocumentNodes the resolution process is used
      *     in conjunction with method aspects to allow the receiver to translate
      *     method calls.
      * @param {Object} anOrigin The object asking for help.
@@ -3211,7 +3211,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 //  XPATH SUPPORT
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('evaluateXPath',
+TP.dom.Node.Inst.defineMethod('evaluateXPath',
 function(XPathExpr, resultType, logErrors) {
 
     /**
@@ -3233,7 +3233,7 @@ function(XPathExpr, resultType, logErrors) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('evaluateXPathFromNode',
+TP.dom.Node.Inst.defineMethod('evaluateXPathFromNode',
 function(XPathExpr, resultType, logErrors, aNode, flagChanges) {
 
     /**
@@ -3266,12 +3266,12 @@ function(XPathExpr, resultType, logErrors, aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('getDelegate',
+TP.dom.Node.Inst.defineMethod('getDelegate',
 function() {
 
     /**
      * @method getDelegate
-     * @summary Returns the receiver's delegate. For TP.core.Node this is the
+     * @summary Returns the receiver's delegate. For TP.dom.Node this is the
      *     receiver's native node.
      * @returns {Node} The receiver's native node.
      */
@@ -3281,7 +3281,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('clone',
+TP.dom.Node.Inst.defineMethod('clone',
 function(deep, viaString) {
 
     /**
@@ -3292,7 +3292,7 @@ function(deep, viaString) {
      * @param {Boolean} viaString If deep, this flag will cause the cloning to
      *     use string-based operations to ensure Moz doesn't mess up the
      *     document reference. Defaults to false.
-     * @returns {TP.core.Node} The resulting clone of aNode.
+     * @returns {TP.dom.Node} The resulting clone of aNode.
      */
 
     return TP.wrap(TP.nodeCloneNode(this.getNativeNode(), deep, viaString));
@@ -3302,7 +3302,7 @@ function(deep, viaString) {
 //  NODE CHANGE TRACKING
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('shouldSignalChange',
+TP.dom.Node.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
     /**
@@ -3363,28 +3363,28 @@ function(aNode) {
 
     /**
      * @method nodeGetConcreteType
-     * @summary Returns the specific TP.core.Node subtype associated with the
+     * @summary Returns the specific TP.dom.Node subtype associated with the
      *     node provided.
      * @param {Node} aNode The native node to test.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
+     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
      *     object.
      */
 
-    return TP.core.Node.getConcreteType(aNode);
+    return TP.dom.Node.getConcreteType(aNode);
 });
 
 //  ========================================================================
-//  TP.core.CollectionNode
+//  TP.dom.CollectionNode
 //  ========================================================================
 
 /**
- * @type {TP.core.CollectionNode}
+ * @type {TP.dom.CollectionNode}
  * @summary A node type providing common collection-style operations for
  *     certain node subtypes such as document and element nodes.
- * @description The TP.core.CollectionNode is an abstract supertype for nodes
+ * @description The TP.dom.CollectionNode is an abstract supertype for nodes
  *     such as document or element nodes which can support a TIBET collection
- *     API. The API methods of this type are extensive since TP.core.Node is the
+ *     API. The API methods of this type are extensive since TP.dom.Node is the
  *     primary data management structure for XForms and various web service
  *     request/response pairs. The API includes methods from:
  *
@@ -3418,33 +3418,33 @@ function(aNode) {
  *     'replaceFirst', 'replaceLast', 'reverse',
  *
  *     The methods defined above are adjusted such that they normally operate
- *     on other TP.core.Nodes, native Nodes, Nodelists, or TIBET collections
- *     containing TP.core.Nodes or Nodes. Most methods rely on XPath expressions
+ *     on other TP.dom.Nodes, native Nodes, Nodelists, or TIBET collections
+ *     containing TP.dom.Nodes or Nodes. Most methods rely on XPath expressions
  *     when locations are being defined.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.defineSubtype('core.CollectionNode');
+TP.dom.Node.defineSubtype('dom.CollectionNode');
 
 //  can't construct concrete instances of this since its really not a native
 //  node type wrapper
-TP.core.CollectionNode.isAbstract(true);
+TP.dom.CollectionNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Type.defineAttribute('namespace', null);
+TP.dom.CollectionNode.Type.defineAttribute('namespace', null);
 
 //  the node's tag name. for elements this is the tag name used when
 //  creating a new instance of the receiver without additional data. for a
 //  document this is the tag name of the document element created when no
 //  other data is available
-TP.core.CollectionNode.Type.defineAttribute('tagname', null);
+TP.dom.CollectionNode.Type.defineAttribute('tagname', null);
 
 //  a registry of 'original nodes' that were authored.
-TP.core.CollectionNode.Type.defineAttribute('originals');
+TP.dom.CollectionNode.Type.defineAttribute('originals');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -3453,15 +3453,15 @@ TP.core.CollectionNode.Type.defineAttribute('originals');
 //  Whether or not we're already in the middle of 'transforming' a piece of
 //  markup. This helps avoid endless recursions between the 'transform' method
 //  and the 'compile' method/tag processing pipeline.
-TP.core.CollectionNode.Inst.defineAttribute('$alreadyTransforming');
+TP.dom.CollectionNode.Inst.defineAttribute('$alreadyTransforming');
 
-TP.core.CollectionNode.Inst.defineAttribute('preppedReps');
+TP.dom.CollectionNode.Inst.defineAttribute('preppedReps');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Type.defineMethod('refreshInstances',
+TP.dom.CollectionNode.Type.defineMethod('refreshInstances',
 function(aDocument) {
 
     /**
@@ -3611,7 +3611,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Type.defineMethod('$tagCompileAndRegister',
+TP.dom.CollectionNode.Type.defineMethod('$tagCompileAndRegister',
 function(aRequest) {
 
     /**
@@ -3726,7 +3726,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addTIBETSrc',
+TP.dom.CollectionNode.Inst.defineMethod('addTIBETSrc',
 function(aURI, force) {
 
     /**
@@ -3739,7 +3739,7 @@ function(aURI, force) {
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var node,
@@ -3769,7 +3769,7 @@ function(aURI, force) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addXMLBase',
+TP.dom.CollectionNode.Inst.defineMethod('addXMLBase',
 function(aURI, force, aParamHash) {
 
     /**
@@ -3787,7 +3787,7 @@ function(aURI, force, aParamHash) {
      *     which should be used to control the transformation. If the 'aURI'
      *     value is null and a 'uri' slot is defined on this object, that
      *     object's String value will be used as the XML Base value.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var url,
@@ -3867,7 +3867,7 @@ function(aURI, force, aParamHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('computeAbsoluteURIFromValue',
+TP.dom.CollectionNode.Inst.defineMethod('computeAbsoluteURIFromValue',
 function(aValue) {
 
     /**
@@ -3913,7 +3913,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getContent',
+TP.dom.CollectionNode.Inst.defineMethod('getContent',
 function(aRequest) {
 
     /**
@@ -3954,7 +3954,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getContentNode',
+TP.dom.CollectionNode.Inst.defineMethod('getContentNode',
 function(aRequest) {
 
     /**
@@ -3962,13 +3962,13 @@ function(aRequest) {
      * @summary Returns the receiver's content node(s). This method is provided
      *     for API compatibility with other types.
      * @description At this level, this method returns its 'inner content' node,
-     *     which is either a TP.core.Node, if there's only one child or a
+     *     which is either a TP.dom.Node, if there's only one child or a
      *     TP.core.DocumentFragment, if there is more than one. NOTE: If a
      *     TP.core.DocumentFragment is returned, it contains a *clone* of the
      *     child nodes, not the originals.
      * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
-     * @returns {TP.core.Node|TP.core.DocumentFragment} The only child node or a
+     * @returns {TP.dom.Node|TP.core.DocumentFragment} The only child node or a
      *     TP.core.DocumentFragment containing a *clone* of all child nodes.
      */
 
@@ -3995,7 +3995,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getIndexInParent',
+TP.dom.CollectionNode.Inst.defineMethod('getIndexInParent',
 function() {
 
     /**
@@ -4011,7 +4011,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getValue',
+TP.dom.CollectionNode.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -4027,7 +4027,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('hasXMLBase',
+TP.dom.CollectionNode.Inst.defineMethod('hasXMLBase',
 function() {
 
     /**
@@ -4061,7 +4061,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setNativeNode',
+TP.dom.CollectionNode.Inst.defineMethod('setNativeNode',
 function(aNode, shouldSignal) {
 
     /**
@@ -4072,7 +4072,7 @@ function(aNode, shouldSignal) {
      *     change notification. This defaults to the return value of sending
      *     shouldSignalChange() to the receiver.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var nodes,
@@ -4150,7 +4150,7 @@ function(aNode, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('serializeForStorage',
+TP.dom.CollectionNode.Inst.defineMethod('serializeForStorage',
 function(storageInfo) {
 
     /**
@@ -4187,7 +4187,7 @@ function(storageInfo) {
      *          stores, and so they will all be stored here, each keyed by a
      *          unique key (which, by convention, will be the URI they should be
      *          saved to).
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -4352,12 +4352,12 @@ function(storageInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('transform',
+TP.dom.CollectionNode.Inst.defineMethod('transform',
 function(anObject, aParamHash) {
 
     /**
      * @method transform
-     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     * @summary Transforms the supplied Node (or TP.dom.Node) by using the
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
@@ -4485,7 +4485,7 @@ similar iteration operation to operate on node content.
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addContent',
+TP.dom.CollectionNode.Inst.defineMethod('addContent',
 function(newContent, aRequest, stdinContent) {
 
     /**
@@ -4500,7 +4500,7 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.core.Node} The result of adding content to the receiver.
+     * @returns {TP.dom.Node} The result of adding content to the receiver.
      */
 
     var request,
@@ -4553,7 +4553,7 @@ function(newContent, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addRawContent',
+TP.dom.CollectionNode.Inst.defineMethod('addRawContent',
 function(newContent, aRequest, shouldSignal) {
 
     /**
@@ -4567,7 +4567,7 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.core.Node} The result of adding content to the receiver.
+     * @returns {TP.dom.Node} The result of adding content to the receiver.
      */
 
     var node,
@@ -4650,13 +4650,13 @@ function(newContent, aRequest, shouldSignal) {
     }
 
     //  The primitive will have returned a native Node, but we need to
-    //  return a TP.core.Node.
+    //  return a TP.dom.Node.
     return TP.wrap(result);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('clearTextContent',
+TP.dom.CollectionNode.Inst.defineMethod('clearTextContent',
 function() {
 
     /**
@@ -4666,7 +4666,7 @@ function() {
      *     structure.
      * @description This method works by setting each text node to the empty
      *     String.
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -4690,7 +4690,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('contentAppendCallback',
+TP.dom.CollectionNode.Inst.defineMethod('contentAppendCallback',
 function(aNode) {
 
     /**
@@ -4707,7 +4707,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('contentInsertCallback',
+TP.dom.CollectionNode.Inst.defineMethod('contentInsertCallback',
 function(aNode) {
 
     /**
@@ -4724,7 +4724,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('contentReplaceCallback',
+TP.dom.CollectionNode.Inst.defineMethod('contentReplaceCallback',
 function(aNode) {
 
     /**
@@ -4741,7 +4741,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getContentPrimitive',
+TP.dom.CollectionNode.Inst.defineMethod('getContentPrimitive',
 function(operation) {
 
     /**
@@ -4770,7 +4770,7 @@ function(operation) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('insertContent',
+TP.dom.CollectionNode.Inst.defineMethod('insertContent',
 function(newContent, aPositionOrPath, aRequest, stdinContent) {
 
     /**
@@ -4792,7 +4792,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -4844,7 +4844,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('insertRawContent',
+TP.dom.CollectionNode.Inst.defineMethod('insertRawContent',
 function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 
     /**
@@ -4863,7 +4863,7 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.core.Node} The result of adding content to the receiver.
+     * @returns {TP.dom.Node} The result of adding content to the receiver.
      */
 
     var node,
@@ -4947,13 +4947,13 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
     }
 
     //  The primitive will have returned a native Node, but we need to
-    //  return a TP.core.Node.
+    //  return a TP.dom.Node.
     return TP.wrap(result);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('isEmpty',
+TP.dom.CollectionNode.Inst.defineMethod('isEmpty',
 function() {
 
     /**
@@ -4967,7 +4967,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('isRecasting',
+TP.dom.CollectionNode.Inst.defineMethod('isRecasting',
 function() {
 
     /**
@@ -4996,7 +4996,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('reviveContent',
+TP.dom.CollectionNode.Inst.defineMethod('reviveContent',
 function(aParamHash) {
 
     /**
@@ -5006,7 +5006,7 @@ function(aParamHash) {
      *     compiled cache representation.
      * @param {TP.core.Hash} aParamHash A set of key/value pairs which should be
      *     used to control the transformation.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     return this;
@@ -5014,7 +5014,7 @@ function(aParamHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceWith',
+TP.dom.CollectionNode.Inst.defineMethod('replaceWith',
 function(newContent, aRequest, stdinContent) {
 
     /**
@@ -5029,7 +5029,7 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -5135,7 +5135,7 @@ function(newContent, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceRawWith',
+TP.dom.CollectionNode.Inst.defineMethod('replaceRawWith',
 function(newContent, aRequest, shouldSignal) {
 
     /**
@@ -5149,7 +5149,7 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -5198,7 +5198,7 @@ function(newContent, aRequest, shouldSignal) {
     thisref = this;
 
     if (TP.isEmpty(docURI = request.at('uri')) &&
-        TP.isKindOf(newContent, TP.core.Node)) {
+        TP.isKindOf(newContent, TP.dom.Node)) {
         docURI = newContent.get('uri');
     }
     if (TP.isDocument(node) && TP.notEmpty(docURI)) {
@@ -5241,13 +5241,13 @@ function(newContent, aRequest, shouldSignal) {
     }
 
     //  The primitive will have returned a native Node, but we need to
-    //  return a TP.core.Node.
+    //  return a TP.dom.Node.
     return TP.wrap(result);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setContent',
+TP.dom.CollectionNode.Inst.defineMethod('setContent',
 function(newContent, aRequest, stdinContent) {
 
     /**
@@ -5262,7 +5262,7 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -5368,7 +5368,7 @@ function(newContent, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setRawContent',
+TP.dom.CollectionNode.Inst.defineMethod('setRawContent',
 function(newContent, aRequest, shouldSignal) {
 
     /**
@@ -5382,7 +5382,7 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -5431,7 +5431,7 @@ function(newContent, aRequest, shouldSignal) {
     thisref = this;
 
     if (TP.isEmpty(docURI = request.at('uri')) &&
-        TP.isKindOf(newContent, TP.core.Node)) {
+        TP.isKindOf(newContent, TP.dom.Node)) {
         docURI = newContent.get('uri');
     }
     if (TP.isDocument(node) && TP.notEmpty(docURI)) {
@@ -5483,7 +5483,7 @@ function(newContent, aRequest, shouldSignal) {
     }
 
     //  The primitive will have returned a native Node, but we need to
-    //  return a TP.core.Node.
+    //  return a TP.dom.Node.
     return TP.wrap(result);
 });
 
@@ -5497,7 +5497,7 @@ Operations to acquire structurally related elements from a Node.
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getAncestors',
+TP.dom.CollectionNode.Inst.defineMethod('getAncestors',
 function() {
 
     /**
@@ -5512,7 +5512,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getChildIndex',
+TP.dom.CollectionNode.Inst.defineMethod('getChildIndex',
 function(aChild) {
 
     /**
@@ -5529,7 +5529,7 @@ function(aChild) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getChildNodes',
+TP.dom.CollectionNode.Inst.defineMethod('getChildNodes',
 function() {
 
     /**
@@ -5543,7 +5543,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getChildElementAt',
+TP.dom.CollectionNode.Inst.defineMethod('getChildElementAt',
 function(anIndex) {
 
     /**
@@ -5552,7 +5552,7 @@ function(anIndex) {
      *     provided, if such a child exists. Note that the index provided is
      *     used relative to children which are Element nodes only.
      * @param {Number} anIndex The index in question.
-     * @returns {TP.core.ElementNode} The child element of the supplied Node at
+     * @returns {TP.dom.ElementNode} The child element of the supplied Node at
      *     the supplied index.
      */
 
@@ -5562,7 +5562,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getChildElements',
+TP.dom.CollectionNode.Inst.defineMethod('getChildElements',
 function() {
 
     /**
@@ -5577,7 +5577,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendants',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendants',
 function(breadthFirst) {
 
     /**
@@ -5598,7 +5598,7 @@ function(breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendantsByType',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendantsByType',
 function(aType, breadthFirst) {
 
     /**
@@ -5620,7 +5620,7 @@ function(aType, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendantElements',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendantElements',
 function(breadthFirst) {
 
     /**
@@ -5639,7 +5639,7 @@ function(breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendantElementsByAttribute',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendantElementsByAttribute',
 function(attrName, attrValue, breadthFirst) {
 
     /**
@@ -5666,7 +5666,7 @@ function(attrName, attrValue, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendantElementsByAttributePrefix',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendantElementsByAttributePrefix',
 function(attrPrefix, attrValue, breadthFirst) {
 
     /**
@@ -5694,7 +5694,7 @@ function(attrPrefix, attrValue, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendantElementsByIdOrName',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendantElementsByIdOrName',
 function(anIdOrName) {
 
     /**
@@ -5728,7 +5728,7 @@ function(anIdOrName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getDescendantElementsByName',
+TP.dom.CollectionNode.Inst.defineMethod('getDescendantElementsByName',
 function(aName) {
 
     /**
@@ -5747,7 +5747,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getElementsByClassName',
+TP.dom.CollectionNode.Inst.defineMethod('getElementsByClassName',
 function(aClassName) {
 
     /**
@@ -5766,7 +5766,7 @@ function(aClassName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getElementById',
+TP.dom.CollectionNode.Inst.defineMethod('getElementById',
 function(anID, retryWithXPath) {
 
     /**
@@ -5776,7 +5776,7 @@ function(anID, retryWithXPath) {
      * @param {String} anID The unique ID to search for.
      * @param {Boolean} retryWithXPath True will force TIBET to use an XPath
      *     search for id attributes when the native call fails.
-     * @returns {TP.core.ElementNode} A TP.core.ElementNode wrapping the node
+     * @returns {TP.dom.ElementNode} A TP.dom.ElementNode wrapping the node
      *     with the ID specified.
      */
 
@@ -5791,7 +5791,7 @@ function(anID, retryWithXPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getElementByIndex',
+TP.dom.CollectionNode.Inst.defineMethod('getElementByIndex',
 function(anIndex) {
 
     /**
@@ -5802,7 +5802,7 @@ function(anIndex) {
      *     TP.elementGetDocumentIndex(). When invoked with a non-document node
      *     the index is taken to be relative to the receiving node.
      * @param {String} anIndex The index to search for.
-     * @returns {TP.core.ElementNode} The element with the index specified.
+     * @returns {TP.dom.ElementNode} The element with the index specified.
      */
 
     return TP.todo();
@@ -5810,7 +5810,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getElementsBySelector',
+TP.dom.CollectionNode.Inst.defineMethod('getElementsBySelector',
 function(aSelectorStr) {
 
     /**
@@ -5829,7 +5829,7 @@ function(aSelectorStr) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getElementsByTagName',
+TP.dom.CollectionNode.Inst.defineMethod('getElementsByTagName',
 function(aName, aNamespaceURI) {
 
     /**
@@ -5854,7 +5854,7 @@ function(aName, aNamespaceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getSiblings',
+TP.dom.CollectionNode.Inst.defineMethod('getSiblings',
 function() {
 
     /**
@@ -5872,14 +5872,14 @@ function() {
 //  XPATH SUPPORT
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('generateXPathTo',
+TP.dom.CollectionNode.Inst.defineMethod('generateXPathTo',
 function(aNode) {
 
     /**
      * @method generateXPathTo
      * @summary Generates a 'simple' XPath expression that would access the
      *     supplied node from the receiver's native node.
-     * @param {Node|TP.core.Node} aNode The node to generate the path to.
+     * @param {Node|TP.dom.Node} aNode The node to generate the path to.
      * @exception TP.sig.InvalidNode
      * @returns {String} The generated XPath expression.
      */
@@ -5895,7 +5895,7 @@ function(aNode) {
 
     node = this.getNativeNode();
 
-    //  In case aNode was a TP.core.Node.
+    //  In case aNode was a TP.dom.Node.
     targetNode = TP.unwrap(aNode);
 
     if (!TP.isNode(targetNode)) {
@@ -5947,7 +5947,7 @@ function(aNode) {
 //  CHILD TEXT VALUES
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getChildTextContent',
+TP.dom.CollectionNode.Inst.defineMethod('getChildTextContent',
 function(aName, aNamespaceURI) {
 
     /**
@@ -5969,7 +5969,7 @@ function(aName, aNamespaceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setChildTextContent',
+TP.dom.CollectionNode.Inst.defineMethod('setChildTextContent',
 function(aString, aName, aNamespaceURI) {
 
     /**
@@ -5980,7 +5980,7 @@ function(aString, aName, aNamespaceURI) {
      * @param {String} aName The tag/element name to match.
      * @param {String} aNamespaceURI The namespace URI to search for.
      * @param {String} aString The content text to set.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     //  NOTE the localization here
@@ -5999,7 +5999,7 @@ function(aString, aName, aNamespaceURI) {
 //  ANCESTOR SEARCH
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstAncestorByAttribute',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstAncestorByAttribute',
 function(attrName, attrValue) {
 
     /**
@@ -6012,7 +6012,7 @@ function(attrName, attrValue) {
      *     control, often during event dispatch.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The optional attribute value to check.
-     * @returns {TP.core.ElementNode} An element ancestor of the node.
+     * @returns {TP.dom.ElementNode} An element ancestor of the node.
      * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
      * @exception TP.sig.InvalidName Raised when the supplied attribute name is
@@ -6028,7 +6028,7 @@ function(attrName, attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstAncestorByTagName',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstAncestorByTagName',
 function(aTagName, aNamespaceURI) {
 
     /**
@@ -6040,7 +6040,7 @@ function(aTagName, aNamespaceURI) {
      *     control, often during event dispatch.
      * @param {String} aTagName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
-     * @returns {TP.core.ElementNode} An element ancestor of the node.
+     * @returns {TP.dom.ElementNode} An element ancestor of the node.
      * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
      * @exception TP.sig.InvalidName Raised when the supplied tag name is empty.
@@ -6056,7 +6056,7 @@ function(aTagName, aNamespaceURI) {
 //  FIRST CHILD/ELEMENT SEARCH
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstElementChildByAttribute',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstElementChildByAttribute',
 function(attrName, attrValue) {
 
     /**
@@ -6066,7 +6066,7 @@ function(attrName, attrValue) {
      *     attrValue provided.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The attribute value to check.
-     * @returns {TP.core.ElementNode} An element child of the node.
+     * @returns {TP.dom.ElementNode} An element child of the node.
      */
 
     return TP.wrap(TP.nodeGetFirstElementChildByAttribute(
@@ -6077,7 +6077,7 @@ function(attrName, attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstElementChildByTagName',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstElementChildByTagName',
 function(aName, aNamespaceURI) {
 
     /**
@@ -6088,7 +6088,7 @@ function(aName, aNamespaceURI) {
      *     the outer widget is looking for specific parts of its content.
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
-     * @returns {TP.core.ElementNode} An element descendant of the node.
+     * @returns {TP.dom.ElementNode} An element descendant of the node.
      */
 
     return TP.wrap(TP.nodeGetFirstElementChildByTagName(
@@ -6099,7 +6099,7 @@ function(aName, aNamespaceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstChildByType',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstChildByType',
 function(aType) {
 
     /**
@@ -6107,7 +6107,7 @@ function(aType) {
      * @summary Returns the first child of the node which has a nodeType
      *     matching the type provided.
      * @param {Number} aType A DOM Node nodeType constant.
-     * @returns {TP.core.Node} A child of the node.
+     * @returns {TP.dom.Node} A child of the node.
      */
 
     return TP.wrap(TP.nodeGetFirstChildByType(this.getNativeNode(),
@@ -6116,14 +6116,14 @@ function(aType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstChildContentNode',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstChildContentNode',
 function() {
 
     /**
      * @method getFirstChildContentNode
      * @summary Returns the first "content" child of the receiver, the first
      *     text or CDATA child node.
-     * @returns {TP.core.TextNode|TP.core.CDATASectionNode} The first text child
+     * @returns {TP.dom.TextNode|TP.dom.CDATASectionNode} The first text child
      *     of the receiver.
      */
 
@@ -6132,7 +6132,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstChildElement',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstChildElement',
 function() {
 
     /**
@@ -6141,7 +6141,7 @@ function() {
      * @description This method is a replacement for node.firstChild which
      *     ensures that text nodes, comment nodes, and other node types don't
      *     break your code when you're assuming element nodes.
-     * @returns {TP.core.ElementNode} An element child of the node.
+     * @returns {TP.dom.ElementNode} An element child of the node.
      */
 
     return TP.wrap(TP.nodeGetFirstChildElement(this.getNativeNode()));
@@ -6149,7 +6149,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstDescendantByType',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstDescendantByType',
 function(aType) {
 
     /**
@@ -6158,7 +6158,7 @@ function(aType) {
      *     matching the type provided.
      * @param {Node} aNode The node to process.
      * @param {Number} aType A Node.nodeType constant.
-     * @returns {TP.core.Node} A descendant of the node.
+     * @returns {TP.dom.Node} A descendant of the node.
      */
 
 
@@ -6168,7 +6168,7 @@ function(aType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstElementByAttribute',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstElementByAttribute',
 function(attrName, attrValue) {
 
     /**
@@ -6178,7 +6178,7 @@ function(attrName, attrValue) {
      *     attrValue provided.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The attribute value to check.
-     * @returns {TP.core.ElementNode} An element descendant of the node.
+     * @returns {TP.dom.ElementNode} An element descendant of the node.
      */
 
     return TP.wrap(TP.nodeGetFirstElementByAttribute(this.getNativeNode(),
@@ -6188,7 +6188,7 @@ function(attrName, attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstElementByTagName',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstElementByTagName',
 function(aName, aNamespaceURI) {
 
     /**
@@ -6199,7 +6199,7 @@ function(aName, aNamespaceURI) {
      *     the outer widget is looking for specific parts of its content.
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
-     * @returns {TP.core.ElementNode} An element descendant of the node.
+     * @returns {TP.dom.ElementNode} An element descendant of the node.
      */
 
     return TP.wrap(TP.nodeGetFirstElementByTagName(this.getNativeNode(),
@@ -6209,7 +6209,7 @@ function(aName, aNamespaceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstSiblingElement',
+TP.dom.CollectionNode.Inst.defineMethod('getFirstSiblingElement',
 function(direction) {
 
     /**
@@ -6219,7 +6219,7 @@ function(direction) {
      *     only elements within a particular set of nodes.
      * @param {String} aDirection TP.NEXT or TP.PREVIOUS. The default is TP.NEXT
      *     so searching is forward.
-     * @returns {TP.core.ElementNode} The first sibling.
+     * @returns {TP.dom.ElementNode} The first sibling.
      */
 
     return TP.wrap(TP.nodeGetFirstSiblingElement(this.getNativeNode(),
@@ -6228,7 +6228,7 @@ function(direction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getNextNonChild',
+TP.dom.CollectionNode.Inst.defineMethod('getNextNonChild',
 function(nodeType) {
 
     /**
@@ -6239,7 +6239,7 @@ function(nodeType) {
      *     that the last node in document order won't return a valid node here.
      * @param {Number} nodeType A valid nodeType constant. Defaults to any node
      *     type.
-     * @returns {TP.core.Node} The next TP.core.Node in document order.
+     * @returns {TP.dom.Node} The next TP.dom.Node in document order.
      */
 
     return TP.wrap(TP.nodeGetNextNonChild(this.getNativeNode(), nodeType));
@@ -6247,7 +6247,7 @@ function(nodeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getTopAncestor',
+TP.dom.CollectionNode.Inst.defineMethod('getTopAncestor',
 function() {
 
     /**
@@ -6255,7 +6255,7 @@ function() {
      * @summary Returns the top-most node in the receiver's ancestor chain.
      *     This is typically a Document node (#document) but will be an Element
      *     or the node itself if the receiver is in a detached tree branch.
-     * @returns {TP.core.Node} The topmost TP.core.Node.
+     * @returns {TP.dom.Node} The topmost TP.dom.Node.
      */
 
     return TP.wrap(TP.nodeGetTopAncestor(this.getNativeNode()));
@@ -6265,7 +6265,7 @@ function() {
 //  NODE COLLECTION ITERATION
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('ancestorsDetect',
+TP.dom.CollectionNode.Inst.defineMethod('ancestorsDetect',
 function(aFunction) {
 
     /**
@@ -6281,7 +6281,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('ancestorMatchingCSS',
+TP.dom.CollectionNode.Inst.defineMethod('ancestorMatchingCSS',
 function(aSelector, stopAncestor) {
 
     /**
@@ -6292,7 +6292,7 @@ function(aSelector, stopAncestor) {
      * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
      *     this would be identical to the document node of the document that
      *     the receiver is contained in.
-     * @returns {?TP.core.ElementNode} The ancestor element that matches the
+     * @returns {?TP.dom.ElementNode} The ancestor element that matches the
      *     CSS.
      */
 
@@ -6303,7 +6303,7 @@ function(aSelector, stopAncestor) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('ancestorsPerform',
+TP.dom.CollectionNode.Inst.defineMethod('ancestorsPerform',
 function(aFunction) {
 
     /**
@@ -6322,7 +6322,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('ancestorsSelect',
+TP.dom.CollectionNode.Inst.defineMethod('ancestorsSelect',
 function(aFunction) {
 
     /**
@@ -6338,7 +6338,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('childElementsPerform',
+TP.dom.CollectionNode.Inst.defineMethod('childElementsPerform',
 function(aFunction) {
 
     /**
@@ -6362,7 +6362,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('childNodesPerform',
+TP.dom.CollectionNode.Inst.defineMethod('childNodesPerform',
 function(aFunction) {
 
     /**
@@ -6383,7 +6383,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('descendantsPerform',
+TP.dom.CollectionNode.Inst.defineMethod('descendantsPerform',
 function(aFunction, breadthFirst) {
 
     /**
@@ -6409,7 +6409,7 @@ function(aFunction, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('descendantElementsPerform',
+TP.dom.CollectionNode.Inst.defineMethod('descendantElementsPerform',
 function(aFunction, breadthFirst) {
 
     /**
@@ -6436,7 +6436,7 @@ function(aFunction, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('siblingsPerform',
+TP.dom.CollectionNode.Inst.defineMethod('siblingsPerform',
 function(aFunction, aSubset) {
 
     /**
@@ -6463,7 +6463,7 @@ function(aFunction, aSubset) {
 //  NODE CONTENT DETECTION
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectAncestor',
+TP.dom.CollectionNode.Inst.defineMethod('detectAncestor',
 function(aFunction) {
 
     /**
@@ -6473,7 +6473,7 @@ function(aFunction) {
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @returns {TP.core.ElementNode} An ancestor found acceptable by aFunction.
+     * @returns {TP.dom.ElementNode} An ancestor found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectAncestor(this.getNativeNode(),
@@ -6482,7 +6482,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectChildElement',
+TP.dom.CollectionNode.Inst.defineMethod('detectChildElement',
 function(aFunction) {
 
     /**
@@ -6491,7 +6491,7 @@ function(aFunction) {
      *     aFunction returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @returns {TP.core.ElementNode} A child element found acceptable by
+     * @returns {TP.dom.ElementNode} A child element found acceptable by
      *     aFunction.
      */
 
@@ -6501,7 +6501,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectChildNode',
+TP.dom.CollectionNode.Inst.defineMethod('detectChildNode',
 function(aFunction) {
 
     /**
@@ -6510,7 +6510,7 @@ function(aFunction) {
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @returns {TP.core.Node} A child node found acceptable by aFunction.
+     * @returns {TP.dom.Node} A child node found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildNode(this.getNativeNode(),
@@ -6519,7 +6519,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectDescendant',
+TP.dom.CollectionNode.Inst.defineMethod('detectDescendant',
 function(aFunction, breadthFirst) {
 
     /**
@@ -6533,7 +6533,7 @@ function(aFunction, breadthFirst) {
      *     acceptable node.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {TP.core.Node} A descendant found acceptable by aFunction.
+     * @returns {TP.dom.Node} A descendant found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectDescendant(this.getNativeNode(),
@@ -6543,7 +6543,7 @@ function(aFunction, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectDescendantElement',
+TP.dom.CollectionNode.Inst.defineMethod('detectDescendantElement',
 function(aFunction, breadthFirst) {
 
     /**
@@ -6559,7 +6559,7 @@ function(aFunction, breadthFirst) {
      *     acceptable node.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {TP.core.ElementNode} A descendant element found acceptable by
+     * @returns {TP.dom.ElementNode} A descendant element found acceptable by
      *     aFunction.
      */
 
@@ -6570,7 +6570,7 @@ function(aFunction, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectSibling',
+TP.dom.CollectionNode.Inst.defineMethod('detectSibling',
 function(aFunction, aSubset) {
 
     /**
@@ -6581,7 +6581,7 @@ function(aFunction, aSubset) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @returns {TP.core.Node} A sibling found acceptable by aFunction.
+     * @returns {TP.dom.Node} A sibling found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectSibling(this.getNativeNode(),
@@ -6593,7 +6593,7 @@ function(aFunction, aSubset) {
 //  NODE SELECTION (FILTERING)
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('selectAncestors',
+TP.dom.CollectionNode.Inst.defineMethod('selectAncestors',
 function(aFunction) {
 
     /**
@@ -6612,7 +6612,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('selectChildElements',
+TP.dom.CollectionNode.Inst.defineMethod('selectChildElements',
 function(aFunction) {
 
     /**
@@ -6621,7 +6621,7 @@ function(aFunction) {
      *     aFunction returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @returns {TP.core.Node} A child element found acceptable by aFunction.
+     * @returns {TP.dom.Node} A child element found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildElements(this.getNativeNode(),
@@ -6630,7 +6630,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('selectChildNodes',
+TP.dom.CollectionNode.Inst.defineMethod('selectChildNodes',
 function(aFunction) {
 
     /**
@@ -6648,7 +6648,7 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('selectDescendants',
+TP.dom.CollectionNode.Inst.defineMethod('selectDescendants',
 function(aFunction, breadthFirst) {
 
     /**
@@ -6672,7 +6672,7 @@ function(aFunction, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('selectDescendantElements',
+TP.dom.CollectionNode.Inst.defineMethod('selectDescendantElements',
 function(aFunction, breadthFirst) {
 
     /**
@@ -6699,7 +6699,7 @@ function(aFunction, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('selectSiblings',
+TP.dom.CollectionNode.Inst.defineMethod('selectSiblings',
 function(aFunction, aSubset) {
 
     /**
@@ -6722,7 +6722,7 @@ function(aFunction, aSubset) {
 //  NODE MODIFICATION
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('copyChildNodesTo',
+TP.dom.CollectionNode.Inst.defineMethod('copyChildNodesTo',
 function(toNode, beforeNode) {
 
     /**
@@ -6730,7 +6730,7 @@ function(toNode, beforeNode) {
      * @summary Copies children of the receiver to another node.
      * @param {Node} toNode The target node.
      * @param {Node} beforeNode Optional 'insertion point'.
-     * @returns {TP.core.Node} The first copied child node. This will be a
+     * @returns {TP.dom.Node} The first copied child node. This will be a
      *     different node than what was the first child node of the receiver, as
      *     the node will have been copied and might have been imported.
      */
@@ -6772,7 +6772,7 @@ function(toNode, beforeNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('moveChildNodesTo',
+TP.dom.CollectionNode.Inst.defineMethod('moveChildNodesTo',
 function(toNode, beforeNode) {
 
     /**
@@ -6780,7 +6780,7 @@ function(toNode, beforeNode) {
      * @summary Moves children of the receiver to another node.
      * @param {Node} toNode The target node.
      * @param {Node} beforeNode Optional 'insertion point'.
-     * @returns {TP.core.Node} The first moved child node. This will be a
+     * @returns {TP.dom.Node} The first moved child node. This will be a
      *     different node than what was the first child node of the receiver, as
      *     the node will have been copied and might have been imported.
      */
@@ -6822,7 +6822,7 @@ function(toNode, beforeNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeChildElement',
+TP.dom.CollectionNode.Inst.defineMethod('removeChildElement',
 function(anElement) {
 
     /**
@@ -6830,7 +6830,7 @@ function(anElement) {
      * @summary Removes a specific child *element*, ensuring that proper
      *     flagging and/or removal are done along with change notification.
      * @param {Element} anElement A specific child/descendant element.
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -6859,7 +6859,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeChildElementAt',
+TP.dom.CollectionNode.Inst.defineMethod('removeChildElementAt',
 function(anIndex) {
 
     /**
@@ -6868,7 +6868,7 @@ function(anIndex) {
      *     proper flagging and/or removal are done along with change
      *     notification.
      * @param {Number} anIndex The index of the child *element*
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var child;
@@ -6887,13 +6887,13 @@ function(anIndex) {
 //  TP.api.CollectionAPI
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('add',
+TP.dom.CollectionNode.Inst.defineMethod('add',
 function() {
 
     /**
      * @method add
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -6922,13 +6922,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAll',
+TP.dom.CollectionNode.Inst.defineMethod('addAll',
 function() {
 
     /**
      * @method addAll
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -6936,13 +6936,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAllIfAbsent',
+TP.dom.CollectionNode.Inst.defineMethod('addAllIfAbsent',
 function() {
 
     /**
      * @method addAllIfAbsent
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -6950,13 +6950,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addIfAbsent',
+TP.dom.CollectionNode.Inst.defineMethod('addIfAbsent',
 function() {
 
     /**
      * @method addIfAbsent
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -6964,13 +6964,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addItem',
+TP.dom.CollectionNode.Inst.defineMethod('addItem',
 function() {
 
     /**
      * @method addItem
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -6978,13 +6978,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addWithCount',
+TP.dom.CollectionNode.Inst.defineMethod('addWithCount',
 function() {
 
     /**
      * @method addWithCount
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -6992,13 +6992,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('asArray',
+TP.dom.CollectionNode.Inst.defineMethod('asArray',
 function() {
 
     /**
      * @method asArray
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7006,13 +7006,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('asHash',
+TP.dom.CollectionNode.Inst.defineMethod('asHash',
 function() {
 
     /**
      * @method asHash
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7020,13 +7020,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('asIterator',
+TP.dom.CollectionNode.Inst.defineMethod('asIterator',
 function() {
 
     /**
      * @method asIterator
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7034,29 +7034,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('asRange',
+TP.dom.CollectionNode.Inst.defineMethod('asRange',
 function() {
 
     /**
      * @method asRange
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
-//  asString                    TP.core.Node
+//  asString                    TP.dom.Node
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('collapse',
+TP.dom.CollectionNode.Inst.defineMethod('collapse',
 function() {
 
     /**
      * @method collapse
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return this;
@@ -7064,7 +7064,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('collect',
+TP.dom.CollectionNode.Inst.defineMethod('collect',
 function(aFunction, deep, breadthFirst) {
 
     /**
@@ -7097,13 +7097,13 @@ function(aFunction, deep, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('collectGet',
+TP.dom.CollectionNode.Inst.defineMethod('collectGet',
 function() {
 
     /**
      * @method collectGet
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7111,13 +7111,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('collectInvoke',
+TP.dom.CollectionNode.Inst.defineMethod('collectInvoke',
 function() {
 
     /**
      * @method collectInvoke
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7125,13 +7125,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('compact',
+TP.dom.CollectionNode.Inst.defineMethod('compact',
 function() {
 
     /**
      * @method compact
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7139,13 +7139,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('conform',
+TP.dom.CollectionNode.Inst.defineMethod('conform',
 function() {
 
     /**
      * @method conform
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7153,17 +7153,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('contains',
+TP.dom.CollectionNode.Inst.defineMethod('contains',
 function(aDescendant, aTest) {
 
     /**
      * @method contains
      * @summary Returns whether or not the receiver is an ancestor (or the
-     *     document for) aDescendant. If the receiver is a TP.core.DocumentNode,
+     *     document for) aDescendant. If the receiver is a TP.dom.DocumentNode,
      *     this method will return true if aDescendant's document is the
      *     receiver.
      * @description This method checks 'deeply' throughout the receiver's tree.
-     * @param {Node|TP.core.Node} aDescendant Whether or not the receiver
+     * @param {Node|TP.dom.Node} aDescendant Whether or not the receiver
      *     contains the supplied (TP)Node.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -7193,7 +7193,7 @@ function(aDescendant, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('containsAll',
+TP.dom.CollectionNode.Inst.defineMethod('containsAll',
 function(aCollection, aTest) {
 
     /**
@@ -7215,7 +7215,7 @@ function(aCollection, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('containsAny',
+TP.dom.CollectionNode.Inst.defineMethod('containsAny',
 function(aCollection) {
 
     /**
@@ -7238,13 +7238,13 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('containsString',
+TP.dom.CollectionNode.Inst.defineMethod('containsString',
 function() {
 
     /**
      * @method convert
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7252,13 +7252,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('convert',
+TP.dom.CollectionNode.Inst.defineMethod('convert',
 function() {
 
     /**
      * @method convert
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7266,14 +7266,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('countOf',
+TP.dom.CollectionNode.Inst.defineMethod('countOf',
 function(aNode, aTest) {
 
     /**
      * @method countOf
      * @summary Returns a count of the number of times aNode is found in the
      *     array.
-     * @param {Node|TP.core.Node} aNode The element whose value is checked
+     * @param {Node|TP.dom.Node} aNode The element whose value is checked
      *     against.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -7285,7 +7285,7 @@ function(aNode, aTest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detect',
+TP.dom.CollectionNode.Inst.defineMethod('detect',
 function(aFunction, deep, breadthFirst) {
 
     /**
@@ -7298,7 +7298,7 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {TP.core.Node} The first element detected by the supplied
+     * @returns {TP.dom.Node} The first element detected by the supplied
      *     Function.
      */
 
@@ -7318,13 +7318,13 @@ function(aFunction, deep, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectInvoke',
+TP.dom.CollectionNode.Inst.defineMethod('detectInvoke',
 function() {
 
     /**
      * @method detectInvoke
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7332,13 +7332,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectMax',
+TP.dom.CollectionNode.Inst.defineMethod('detectMax',
 function() {
 
     /**
      * @method detectMax
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7346,13 +7346,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectMin',
+TP.dom.CollectionNode.Inst.defineMethod('detectMin',
 function() {
 
     /**
      * @method detectMin
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7360,13 +7360,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('difference',
+TP.dom.CollectionNode.Inst.defineMethod('difference',
 function() {
 
     /**
      * @method difference
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7374,13 +7374,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('disjunction',
+TP.dom.CollectionNode.Inst.defineMethod('disjunction',
 function() {
 
     /**
      * @method disjunction
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7388,14 +7388,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('empty',
+TP.dom.CollectionNode.Inst.defineMethod('empty',
 function() {
 
     /**
      * @method empty
      * @summary Removes all content nodes (child nodes) from the receiver's
      *     native node, effectively emptying the node.
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node;
@@ -7421,13 +7421,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('flatten',
+TP.dom.CollectionNode.Inst.defineMethod('flatten',
 function() {
 
     /**
      * @method flatten
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7435,13 +7435,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getItems',
+TP.dom.CollectionNode.Inst.defineMethod('getItems',
 function() {
 
     /**
      * @method getItems
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7449,13 +7449,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getIterator',
+TP.dom.CollectionNode.Inst.defineMethod('getIterator',
 function() {
 
     /**
      * @method getIterator
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7463,13 +7463,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getIteratorType',
+TP.dom.CollectionNode.Inst.defineMethod('getIteratorType',
 function() {
 
     /**
      * @method getIteratorType
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7477,12 +7477,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getSize',
+TP.dom.CollectionNode.Inst.defineMethod('getSize',
 function() {
 
     /**
      * @method getSize
-     * @summary Returns the size of the receiver. For TP.core.CollectionNodes,
+     * @summary Returns the size of the receiver. For TP.dom.CollectionNodes,
      *     this is the number of *child* (not descendant) nodes that they have.
      * @returns {Number} The size of the receiver.
      */
@@ -7496,13 +7496,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getValues',
+TP.dom.CollectionNode.Inst.defineMethod('getValues',
 function() {
 
     /**
      * @method getValues
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7510,13 +7510,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('grep',
+TP.dom.CollectionNode.Inst.defineMethod('grep',
 function() {
 
     /**
      * @method grep
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7524,13 +7524,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('groupBy',
+TP.dom.CollectionNode.Inst.defineMethod('groupBy',
 function() {
 
     /**
      * @method groupBy
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7538,7 +7538,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('injectInto',
+TP.dom.CollectionNode.Inst.defineMethod('injectInto',
 function(aValue, aFunction, deep, breadthFirst) {
 
     /**
@@ -7586,13 +7586,13 @@ function(aValue, aFunction, deep, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('intersection',
+TP.dom.CollectionNode.Inst.defineMethod('intersection',
 function() {
 
     /**
      * @method intersection
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7600,13 +7600,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('isSortedCollection',
+TP.dom.CollectionNode.Inst.defineMethod('isSortedCollection',
 function() {
 
     /**
      * @method isSortedCollection
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7614,13 +7614,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('merge',
+TP.dom.CollectionNode.Inst.defineMethod('merge',
 function() {
 
     /**
      * @method merge
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7628,13 +7628,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('partition',
+TP.dom.CollectionNode.Inst.defineMethod('partition',
 function() {
 
     /**
      * @method partition
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7642,7 +7642,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('perform',
+TP.dom.CollectionNode.Inst.defineMethod('perform',
 function(aFunction, deep, breadthFirst) {
 
     /**
@@ -7654,7 +7654,7 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node;
@@ -7672,13 +7672,13 @@ function(aFunction, deep, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('performInvoke',
+TP.dom.CollectionNode.Inst.defineMethod('performInvoke',
 function() {
 
     /**
      * @method performInvoke
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7686,13 +7686,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('performSet',
+TP.dom.CollectionNode.Inst.defineMethod('performSet',
 function() {
 
     /**
      * @method performSet
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7700,13 +7700,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('performUntil',
+TP.dom.CollectionNode.Inst.defineMethod('performUntil',
 function() {
 
     /**
      * @method performUntil
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7714,13 +7714,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('performWhile',
+TP.dom.CollectionNode.Inst.defineMethod('performWhile',
 function() {
 
     /**
      * @method performWhile
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7730,7 +7730,7 @@ function() {
 //  performWith         Kernel
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('reject',
+TP.dom.CollectionNode.Inst.defineMethod('reject',
 function(aFunction, deep, breadthFirst) {
 
     /**
@@ -7746,7 +7746,7 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {Array} An Array of TP.core.Nodes that weren't rejected by the
+     * @returns {Array} An Array of TP.dom.Nodes that weren't rejected by the
      *     supplied Function.
      */
 
@@ -7764,7 +7764,7 @@ function(aFunction, deep, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('remove',
+TP.dom.CollectionNode.Inst.defineMethod('remove',
 function(attributeName) {
 
     /**
@@ -7803,13 +7803,13 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeAll',
+TP.dom.CollectionNode.Inst.defineMethod('removeAll',
 function() {
 
     /**
      * @method removeAll
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7817,13 +7817,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replace',
+TP.dom.CollectionNode.Inst.defineMethod('replace',
 function() {
 
     /**
      * @method replace
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7831,13 +7831,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceAll',
+TP.dom.CollectionNode.Inst.defineMethod('replaceAll',
 function() {
 
     /**
      * @method replaceAll
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7845,7 +7845,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('select',
+TP.dom.CollectionNode.Inst.defineMethod('select',
 function(aFunction, deep, breadthFirst) {
 
     /**
@@ -7860,7 +7860,7 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {Array} An Array of TP.core.Nodes that were selected by the
+     * @returns {Array} An Array of TP.dom.Nodes that were selected by the
      *     supplied Function.
      */
 
@@ -7880,13 +7880,13 @@ function(aFunction, deep, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('union',
+TP.dom.CollectionNode.Inst.defineMethod('union',
 function() {
 
     /**
      * @method union
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7894,13 +7894,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('unique',
+TP.dom.CollectionNode.Inst.defineMethod('unique',
 function() {
 
     /**
      * @method unique
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -7910,7 +7910,7 @@ function() {
 //  TP.api.IndexedCollectionAPI
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAt',
+TP.dom.CollectionNode.Inst.defineMethod('addAt',
 function(anObject, anIndex, aPosition) {
 
     /**
@@ -7919,7 +7919,7 @@ function(anObject, anIndex, aPosition) {
      *     provided. The position defines a "before" or "after" orientation to
      *     the insertion. The default is AfterEnd so the result is like an
      *     appendChild operation.
-     * @param {Node|TP.core.Node|Nodelist} anObject A node or nodelist
+     * @param {Node|TP.dom.Node|Nodelist} anObject A node or nodelist
      *     containing the new content.
      * @param {Number} anIndex The numerical index, corresponding to a childNode
      *     index, or an XPath which selects nodes as "pivot" points.
@@ -7928,7 +7928,7 @@ function(anObject, anIndex, aPosition) {
      *     TP.AFTER_BEGIN, TP.BEFORE_END, TP.AFTER_END. Default is TP.AFTER_END.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.IndexOutOfRange
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -7948,7 +7948,7 @@ function(anObject, anIndex, aPosition) {
     node = this.getNativeNode();
 
     if (!TP.isNode(anObject) &&
-        !TP.isKindOf(anObject, 'TP.core.Node') &&
+        !TP.isKindOf(anObject, 'TP.dom.Node') &&
         !TP.isNodeList(anObject)) {
         return this.raise('TP.sig.InvalidParameter',
                             'Must provide a Node or list of Nodes.');
@@ -8071,13 +8071,13 @@ function(anObject, anIndex, aPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAllAt',
+TP.dom.CollectionNode.Inst.defineMethod('addAllAt',
 function() {
 
     /**
      * @method addAllAt
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8085,13 +8085,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('at',
+TP.dom.CollectionNode.Inst.defineMethod('at',
 function(anIndex) {
 
     /**
      * @method at
      * @summary Returns the content at the index provided. A synonym for get().
-     *     For TP.core.CollectionNodes, the 'index' is an attribute name.
+     *     For TP.dom.CollectionNodes, the 'index' is an attribute name.
      * @returns {String|Object} The value of the desired index/attribute.
      */
 
@@ -8100,13 +8100,13 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atAll',
+TP.dom.CollectionNode.Inst.defineMethod('atAll',
 function() {
 
     /**
      * @method atAll
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8114,13 +8114,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atAllPut',
+TP.dom.CollectionNode.Inst.defineMethod('atAllPut',
 function() {
 
     /**
      * @method atAllPut
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8128,13 +8128,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atIfInvalid',
+TP.dom.CollectionNode.Inst.defineMethod('atIfInvalid',
 function() {
 
     /**
      * @method atIfInvalid
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8142,13 +8142,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atIfNull',
+TP.dom.CollectionNode.Inst.defineMethod('atIfNull',
 function() {
 
     /**
      * @method atIfNull
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8156,13 +8156,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atIfUndefined',
+TP.dom.CollectionNode.Inst.defineMethod('atIfUndefined',
 function() {
 
     /**
      * @method atIfUndefined
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8170,13 +8170,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atPut',
+TP.dom.CollectionNode.Inst.defineMethod('atPut',
 function() {
 
     /**
      * @method atPut
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8184,13 +8184,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('atPutIfAbsent',
+TP.dom.CollectionNode.Inst.defineMethod('atPutIfAbsent',
 function() {
 
     /**
      * @method atPutIfAbsent
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8198,13 +8198,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('containsKey',
+TP.dom.CollectionNode.Inst.defineMethod('containsKey',
 function() {
 
     /**
      * @method containsKey
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8212,13 +8212,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('containsValue',
+TP.dom.CollectionNode.Inst.defineMethod('containsValue',
 function() {
 
     /**
      * @method containsValue
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8226,13 +8226,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('detectKeyAt',
+TP.dom.CollectionNode.Inst.defineMethod('detectKeyAt',
 function() {
 
     /**
      * @method detectKeyAt
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8240,13 +8240,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getKeys',
+TP.dom.CollectionNode.Inst.defineMethod('getKeys',
 function() {
 
     /**
      * @method getKeys
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return this.callNextMethod();
@@ -8254,13 +8254,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getKVPairs',
+TP.dom.CollectionNode.Inst.defineMethod('getKVPairs',
 function() {
 
     /**
      * @method getKVPairs
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8268,13 +8268,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getPairs',
+TP.dom.CollectionNode.Inst.defineMethod('getPairs',
 function() {
 
     /**
      * @method getPairs
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8282,13 +8282,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getPosition',
+TP.dom.CollectionNode.Inst.defineMethod('getPosition',
 function() {
 
     /**
      * @method getPosition
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8296,13 +8296,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getPositions',
+TP.dom.CollectionNode.Inst.defineMethod('getPositions',
 function() {
 
     /**
      * @method getPositions
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8310,13 +8310,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('grepKeys',
+TP.dom.CollectionNode.Inst.defineMethod('grepKeys',
 function() {
 
     /**
      * @method grepKeys
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8324,13 +8324,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('performOver',
+TP.dom.CollectionNode.Inst.defineMethod('performOver',
 function() {
 
     /**
      * @method performOver
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8338,7 +8338,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeAt',
+TP.dom.CollectionNode.Inst.defineMethod('removeAt',
 function(anIndex) {
 
     /**
@@ -8349,7 +8349,7 @@ function(anIndex) {
      * @param {Number|String} anIndex An integer index, or an XPath which
      *     selects nodes for removal.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -8398,13 +8398,13 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeAtAll',
+TP.dom.CollectionNode.Inst.defineMethod('removeAtAll',
 function() {
 
     /**
      * @method removeAtAll
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8412,13 +8412,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeKey',
+TP.dom.CollectionNode.Inst.defineMethod('removeKey',
 function() {
 
     /**
      * @method removeKey
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8426,13 +8426,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeKeys',
+TP.dom.CollectionNode.Inst.defineMethod('removeKeys',
 function() {
 
     /**
      * @method removeKeys
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8440,13 +8440,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('transpose',
+TP.dom.CollectionNode.Inst.defineMethod('transpose',
 function() {
 
     /**
      * @method transpose
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8456,13 +8456,13 @@ function() {
 //  TP.api.OrderedCollectionAPI
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAfter',
+TP.dom.CollectionNode.Inst.defineMethod('addAfter',
 function() {
 
     /**
      * @method addAfter
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8470,13 +8470,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAllAfter',
+TP.dom.CollectionNode.Inst.defineMethod('addAllAfter',
 function() {
 
     /**
      * @method addAllAfter
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8484,13 +8484,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAllBefore',
+TP.dom.CollectionNode.Inst.defineMethod('addAllBefore',
 function() {
 
     /**
      * @method addAllBefore
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8498,13 +8498,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAllFirst',
+TP.dom.CollectionNode.Inst.defineMethod('addAllFirst',
 function() {
 
     /**
      * @method addAllFirst
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8512,13 +8512,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addAllLast',
+TP.dom.CollectionNode.Inst.defineMethod('addAllLast',
 function() {
 
     /**
      * @method addAllLast
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8526,13 +8526,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addBefore',
+TP.dom.CollectionNode.Inst.defineMethod('addBefore',
 function() {
 
     /**
      * @method addBefore
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8540,13 +8540,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addFirst',
+TP.dom.CollectionNode.Inst.defineMethod('addFirst',
 function() {
 
     /**
      * @method addFirst
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8554,13 +8554,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('addLast',
+TP.dom.CollectionNode.Inst.defineMethod('addLast',
 function() {
 
     /**
      * @method addLast
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8568,13 +8568,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('after',
+TP.dom.CollectionNode.Inst.defineMethod('after',
 function() {
 
     /**
      * @method after
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8582,13 +8582,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('before',
+TP.dom.CollectionNode.Inst.defineMethod('before',
 function() {
 
     /**
      * @method before
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8596,7 +8596,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('first',
+TP.dom.CollectionNode.Inst.defineMethod('first',
 function(aNumber) {
 
     /**
@@ -8605,7 +8605,7 @@ function(aNumber) {
      *     receiver where N defaults to 1.
      * @param {Number} aNumber The number of elements to return. When N is
      *     greater than 1 the return value is a new array.
-     * @returns {Object} The first N elements (TP.core.Nodes) in this node.
+     * @returns {Object} The first N elements (TP.dom.Nodes) in this node.
      */
 
     var node,
@@ -8623,13 +8623,13 @@ function(aNumber) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getLastPosition',
+TP.dom.CollectionNode.Inst.defineMethod('getLastPosition',
 function() {
 
     /**
      * @method getLastPosition
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8637,7 +8637,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('last',
+TP.dom.CollectionNode.Inst.defineMethod('last',
 function(aNumber) {
 
     /**
@@ -8646,7 +8646,7 @@ function(aNumber) {
      *     receiver where N defaults to 1.
      * @param {Number} aNumber The number of elements to return. When N is
      *     greater than 1 the return value is a new array.
-     * @returns {Object} The last N elements (TP.core.Nodes) in this node.
+     * @returns {Object} The last N elements (TP.dom.Nodes) in this node.
      */
 
     var node,
@@ -8664,13 +8664,13 @@ function(aNumber) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('orderedBy',
+TP.dom.CollectionNode.Inst.defineMethod('orderedBy',
 function() {
 
     /**
      * @method orderedBy
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8678,13 +8678,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeFirst',
+TP.dom.CollectionNode.Inst.defineMethod('removeFirst',
 function() {
 
     /**
      * @method removeFirst
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8692,13 +8692,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeLast',
+TP.dom.CollectionNode.Inst.defineMethod('removeLast',
 function() {
 
     /**
      * @method removeLast
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8706,13 +8706,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceFirst',
+TP.dom.CollectionNode.Inst.defineMethod('replaceFirst',
 function() {
 
     /**
      * @method replaceFirst
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8720,13 +8720,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceLast',
+TP.dom.CollectionNode.Inst.defineMethod('replaceLast',
 function() {
 
     /**
      * @method replaceLast
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8734,13 +8734,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('reverse',
+TP.dom.CollectionNode.Inst.defineMethod('reverse',
 function() {
 
     /**
      * @method reverse
      * @summary
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     return TP.todo();
@@ -8750,7 +8750,7 @@ function() {
 //  Content Processing
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('awaken',
+TP.dom.CollectionNode.Inst.defineMethod('awaken',
 function() {
 
     /**
@@ -8758,7 +8758,7 @@ function() {
      * @summary This method invokes the 'awaken' functionality of the tag
      *     processing system, to provide 'post-render' awakening of various
      *     features such as events and CSS styles.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var node,
@@ -8785,7 +8785,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('compile',
+TP.dom.CollectionNode.Inst.defineMethod('compile',
 function(aRequest, replaceNode, alternateNode) {
 
     /**
@@ -8807,7 +8807,7 @@ function(aRequest, replaceNode, alternateNode) {
      * @param {Node} [alternateNode] An alternate node to use in place of the
      *     native node of the receiver when compiling. This parameter is
      *     optional.
-     * @returns {TP.core.CollectionNode} The receiver or a new object if the
+     * @returns {TP.dom.CollectionNode} The receiver or a new object if the
      *     tag content compiles to a different kind of tag than the receiver.
      */
 
@@ -8959,7 +8959,7 @@ function(aRequest, replaceNode, alternateNode) {
         //  newly produced node.
         TP.nodeReplaceChild(node, newNode, node.documentElement, false);
 
-    } else if ((type = TP.core.Node.getConcreteType(newNode)) ===
+    } else if ((type = TP.dom.Node.getConcreteType(newNode)) ===
                                                             this.getType()) {
 
         //  if our processing produced a new native node of the same type as our
@@ -8983,7 +8983,7 @@ function(aRequest, replaceNode, alternateNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('deaden',
+TP.dom.CollectionNode.Inst.defineMethod('deaden',
 function() {
 
     /**
@@ -8992,7 +8992,7 @@ function() {
      *     processing system, to provide 'post-render' deadening of various
      *     features such as events and CSS styles.
      * @description You don't normally call this - in fact, it's rarely invoked.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var node,
@@ -9019,7 +9019,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('processTP_sig_Request',
+TP.dom.CollectionNode.Inst.defineMethod('processTP_sig_Request',
 function(aRequest) {
 
     /**
@@ -9046,7 +9046,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('$escapeCSSConstructs',
+TP.dom.CollectionNode.Inst.defineMethod('$escapeCSSConstructs',
 function() {
 
     /**
@@ -9073,14 +9073,14 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DocumentFragmentNode
+//  TP.dom.DocumentFragmentNode
 //  ========================================================================
 
-TP.core.CollectionNode.defineSubtype('DocumentFragmentNode');
+TP.dom.CollectionNode.defineSubtype('DocumentFragmentNode');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('addTIBETSrc',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('addTIBETSrc',
 function(aURI, force) {
 
     /**
@@ -9094,7 +9094,7 @@ function(aURI, force) {
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     return this;
@@ -9102,7 +9102,7 @@ function(aURI, force) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('addXMLBase',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('addXMLBase',
 function(aURI, force, aParamHash) {
 
     /**
@@ -9121,7 +9121,7 @@ function(aURI, force, aParamHash) {
      *     which should be used to control the transformation. If the 'aURI'
      *     value is null and a 'uri' slot is defined on this object, that
      *     object's String value will be used as the XML Base value.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     return this;
@@ -9129,7 +9129,7 @@ function(aURI, force, aParamHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('asSource',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -9143,7 +9143,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('getAttribute',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('getAttribute',
 function(attributeName) {
 
     /**
@@ -9159,7 +9159,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('getAttributes',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('getAttributes',
 function(attributeName, stripPrefixes) {
 
     /**
@@ -9183,7 +9183,7 @@ function(attributeName, stripPrefixes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('getTemplateName',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('getTemplateName',
 function() {
 
     /**
@@ -9198,7 +9198,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('hasAttribute',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('hasAttribute',
 function(attributeName) {
 
     /**
@@ -9219,7 +9219,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('hasXMLBase',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('hasXMLBase',
 function() {
 
     /**
@@ -9236,7 +9236,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('removeAttribute',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('removeAttribute',
 function(attributeName) {
 
     /**
@@ -9254,7 +9254,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('setAttribute',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('setAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -9273,7 +9273,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('setAttributes',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('setAttributes',
 function(attributeHash) {
 
     /**
@@ -9292,7 +9292,7 @@ function(attributeHash) {
 //  Content Processing
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('awaken',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('awaken',
 function() {
 
     /**
@@ -9300,7 +9300,7 @@ function() {
      * @summary This method invokes the 'awaken' functionality of the tag
      *     processing system, to provide 'post-render' awakening of various
      *     features such as events and CSS styles.
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     //  DocumentFragments aren't responsible for awakening their content - for
@@ -9313,7 +9313,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('compile',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('compile',
 function(aRequest) {
 
     /**
@@ -9322,7 +9322,7 @@ function(aRequest) {
      *     processing system, to provide conversion from authored markup into
      *     markup that can be understood by the platform.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.CollectionNode} The receiver or a new object if the
+     * @returns {TP.dom.CollectionNode} The receiver or a new object if the
      *     tag content compiles to a different kind of tag than the receiver.
      */
 
@@ -9388,7 +9388,7 @@ function(aRequest) {
 //  XPATH SUPPORT
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentFragmentNode.Inst.defineMethod('generateXPathTo',
+TP.dom.DocumentFragmentNode.Inst.defineMethod('generateXPathTo',
 function(aNode) {
 
     /**
@@ -9396,7 +9396,7 @@ function(aNode) {
      * @summary Generates a 'simple' XPath expression that would access the
      *     supplied node from the receiver's native node.
      * @description At this level, this method is a no-op.
-     * @param {Node|TP.core.Node} aNode The node to generate the path to.
+     * @param {Node|TP.dom.Node} aNode The node to generate the path to.
      * @returns {String} The generated XPath expression.
      */
 
@@ -9404,13 +9404,13 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.ElementNode
+//  TP.dom.ElementNode
 //  ========================================================================
 
-TP.core.CollectionNode.defineSubtype('ElementNode');
+TP.dom.CollectionNode.defineSubtype('ElementNode');
 
 //  allow for subtypes to be created based on namespace and localname
-TP.core.ElementNode.isAbstract(true);
+TP.dom.ElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -9419,33 +9419,33 @@ TP.core.ElementNode.isAbstract(true);
 //  The attributes for this element type that are considered to 'boolean
 //  attributes' that either exist or don't exist - this matters especially to
 //  HTML (but not XHTML ;-) ).
-TP.core.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
+TP.dom.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
 
 //  A cache of computed URI keys. This dictionary is used to avoid recomputing
 //  the resource URI values for various keys. Note that the keys here mirror
 //  those you'd normally see in TP.sys.cfg with respect to paths.
-TP.core.ElementNode.Type.defineAttribute('computedKeys', TP.hc());
+TP.dom.ElementNode.Type.defineAttribute('computedKeys', TP.hc());
 
 //  The attributes for this element type that are considered to 'URI
 //  attributes' that need XML Base/virtual URI resolution.
-TP.core.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
+TP.dom.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
 
 //  The attributes for this element type that are URI attributes that are also
 //  'reloadable' - that is, if the system is configured to reload URIs and the
 //  server that the resource loads from can send change notifications about URI
 //  changes, this type will be messaged when the resource pointed to by one of
 //  these URI attributes changes.
-TP.core.ElementNode.Type.defineAttribute('reloadableUriAttrs', TP.ac());
+TP.dom.ElementNode.Type.defineAttribute('reloadableUriAttrs', TP.ac());
 
 //  the node's template. this will be used when instances are constructed
 //  with a TP.core.Hash incoming value
-TP.core.ElementNode.Type.defineAttribute('template');
+TP.dom.ElementNode.Type.defineAttribute('template');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('computeResourceExtension',
+TP.dom.ElementNode.Type.defineMethod('computeResourceExtension',
 function(resource, mimeType) {
 
     /**
@@ -9510,7 +9510,7 @@ function(resource, mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('computeResourceURI',
+TP.dom.ElementNode.Type.defineMethod('computeResourceURI',
 function(resource, mimeType, fallback) {
 
     /**
@@ -9606,7 +9606,7 @@ function(resource, mimeType, fallback) {
 
     cachekey = 'path.' + name + '.' + res;
 
-    computed = TP.core.ElementNode.get('computedKeys');
+    computed = TP.dom.ElementNode.get('computedKeys');
     value = computed.at(cachekey);
     if (TP.notEmpty(value)) {
         return value;
@@ -9718,7 +9718,7 @@ function(resource, mimeType, fallback) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('constructContentObject',
+TP.dom.ElementNode.Type.defineMethod('constructContentObject',
 function(content, aURI) {
 
     /**
@@ -9745,7 +9745,7 @@ function(content, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('fromBoolean',
+TP.dom.ElementNode.Type.defineMethod('fromBoolean',
 function(anObject, aRequest) {
 
     /**
@@ -9766,7 +9766,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('fromDate',
+TP.dom.ElementNode.Type.defineMethod('fromDate',
 function(anObject, aRequest) {
 
     /**
@@ -9800,7 +9800,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('fromNumber',
+TP.dom.ElementNode.Type.defineMethod('fromNumber',
 function(anObject, aRequest) {
 
     /**
@@ -9821,7 +9821,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('fromObject',
+TP.dom.ElementNode.Type.defineMethod('fromObject',
 function(anObject, aRequest) {
 
     /**
@@ -10063,7 +10063,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('fromString',
+TP.dom.ElementNode.Type.defineMethod('fromString',
 function(anObject, aRequest) {
 
     /**
@@ -10101,7 +10101,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('generateMarkup',
+TP.dom.ElementNode.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
     /**
@@ -10178,7 +10178,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('generateMarkupContent',
+TP.dom.ElementNode.Type.defineMethod('generateMarkupContent',
 function() {
 
     /**
@@ -10207,7 +10207,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getCanonicalName',
+TP.dom.ElementNode.Type.defineMethod('getCanonicalName',
 function() {
 
     /**
@@ -10224,7 +10224,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getConcreteType',
+TP.dom.ElementNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
@@ -10248,7 +10248,7 @@ function(aNode) {
      *     'info' hash to see if there is a 'defaultNodeType' name registered
      *     under that namespace and attempts to obtain a matching type.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.core.ElementNode>} A TP.core.ElementNode
+     * @returns {TP.lang.RootObject.<TP.dom.ElementNode>} A TP.dom.ElementNode
      *     subtype type object.
      */
 
@@ -10263,7 +10263,7 @@ function(aNode) {
 
         defaultType;
 
-    //  If the proper TP.core.Node subtype has been cached on the supplied
+    //  If the proper TP.dom.Node subtype has been cached on the supplied
     //  node, then just return it.
     if (TP.isValid(type = aNode[TP.NODE_TYPE])) {
         return type;
@@ -10468,16 +10468,16 @@ function(aNode) {
         //  NOTE that we don't cache TP.NODE_TYPE here to leave open the
         //  possibility that we're still loading functionality and may find
         //  a better match on subsequent attempts
-        return TP.core.HTMLElementNode;
+        return TP.dom.HTMLElementNode;
     } else {
         //  TODO Should be checking for XHTML nodes as well.
-        return TP.core.XMLElementNode;
+        return TP.dom.XMLElementNode;
     }
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getItemTagName',
+TP.dom.ElementNode.Type.defineMethod('getItemTagName',
 function(anObject, formatArgs) {
 
     /**
@@ -10496,7 +10496,7 @@ function(anObject, formatArgs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getKeybindingsURI',
+TP.dom.ElementNode.Type.defineMethod('getKeybindingsURI',
 function(mimeType) {
 
     /**
@@ -10535,7 +10535,7 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getNamespaceType',
+TP.dom.ElementNode.Type.defineMethod('getNamespaceType',
 function(mimeType) {
 
     /**
@@ -10543,7 +10543,7 @@ function(mimeType) {
      * @summary Returns the 'namespace' for the receiver. The canonical form of
      *     the name of the namespace type is the namespace root (i.e. 'TP'),
      *     followed by the namespace (i.e. 'html'), followed by 'XMLNS'.
-     * @returns {TP.meta.core.ElementNode} The type object representing the
+     * @returns {TP.meta.dom.ElementNode} The type object representing the
      *     receiver's namespace type.
      */
 
@@ -10566,7 +10566,7 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getDependencies',
+TP.dom.ElementNode.Type.defineMethod('getDependencies',
 function() {
 
     /**
@@ -10604,7 +10604,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getQueryPath',
+TP.dom.ElementNode.Type.defineMethod('getQueryPath',
 function(wantsDeep, wantsCompiled, wantsDisabled) {
 
     /**
@@ -10671,7 +10671,7 @@ function(wantsDeep, wantsCompiled, wantsDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getResourceElement',
+TP.dom.ElementNode.Type.defineMethod('getResourceElement',
 function(resource, mimeType, setupFunc) {
 
     /**
@@ -10686,7 +10686,7 @@ function(resource, mimeType, setupFunc) {
      * @param {Function} [setupFunc] An optional set up function for the
      *     resource element that will be executed before it is wrapped for
      *     return.
-     * @returns {TP.core.ElementNode} The wrapped element containing the
+     * @returns {TP.dom.ElementNode} The wrapped element containing the
      *     content.
      */
 
@@ -10756,7 +10756,7 @@ function(resource, mimeType, setupFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getResourceTypeName',
+TP.dom.ElementNode.Type.defineMethod('getResourceTypeName',
 function() {
 
     /**
@@ -10772,7 +10772,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getResourceURI',
+TP.dom.ElementNode.Type.defineMethod('getResourceURI',
 function(resource, mimeType, fallback) {
 
     /**
@@ -10812,7 +10812,7 @@ function(resource, mimeType, fallback) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getStyleExtension',
+TP.dom.ElementNode.Type.defineMethod('getStyleExtension',
 function() {
 
     /**
@@ -10851,7 +10851,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getXMLObserver',
+TP.dom.ElementNode.Type.defineMethod('getXMLObserver',
 function(aSignal) {
 
     /**
@@ -10890,7 +10890,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('guessContentTypeAndLocation',
+TP.dom.ElementNode.Type.defineMethod('guessContentTypeAndLocation',
 function(anElement) {
 
     /**
@@ -10901,9 +10901,9 @@ function(anElement) {
      *     location, if the receiver has external content. It then populates
      *     that information on the TP.SRC_LOCATION property and 'tibet:mime'
      *     attribute.
-     * @param {Element|TP.core.ElementNode} anElement The element to guess the
+     * @param {Element|TP.dom.ElementNode} anElement The element to guess the
      *     type and location for.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -10915,7 +10915,7 @@ function(anElement) {
         uri,
         mimeTypes;
 
-    //  Make sure that we were supplied a real Element (or TP.core.ElementNode)
+    //  Make sure that we were supplied a real Element (or TP.dom.ElementNode)
     if (!TP.isElement(elem = TP.unwrap(anElement))) {
         //  TODO: Raise an exception
         return this;
@@ -10971,7 +10971,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineHandler('Signal',
+TP.dom.ElementNode.Type.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -11005,7 +11005,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('isBlockLevel',
+TP.dom.ElementNode.Type.defineMethod('isBlockLevel',
 function() {
 
     /**
@@ -11022,7 +11022,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('isOpaqueBubblerFor',
+TP.dom.ElementNode.Type.defineMethod('isOpaqueBubblerFor',
 function(anElement, aSignal) {
 
     /**
@@ -11090,7 +11090,7 @@ function(anElement, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('isOpaqueCapturerFor',
+TP.dom.ElementNode.Type.defineMethod('isOpaqueCapturerFor',
 function(anElement, aSignal) {
 
     /**
@@ -11158,7 +11158,7 @@ function(anElement, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('mutationAddedNodes',
+TP.dom.ElementNode.Type.defineMethod('mutationAddedNodes',
 function(anElement, nodesAdded) {
 
     /**
@@ -11174,7 +11174,7 @@ function(anElement, nodesAdded) {
      *     signal.
      * @param {Array} nodesAdded The nodes added to the receiver.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var processor,
@@ -11276,7 +11276,7 @@ function(anElement, nodesAdded) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('mutationRemovedNodes',
+TP.dom.ElementNode.Type.defineMethod('mutationRemovedNodes',
 function(anElement, nodesRemoved) {
 
     /**
@@ -11292,7 +11292,7 @@ function(anElement, nodesRemoved) {
      *     signal.
      * @param {Array} nodesRemoved  The nodes removed from the receiver.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var processor,
@@ -11436,7 +11436,7 @@ function(anElement, nodesRemoved) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('shouldAutoWrapItems',
+TP.dom.ElementNode.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
     /**
@@ -11458,7 +11458,7 @@ function(anObject, formatArgs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tshExecute',
+TP.dom.ElementNode.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
@@ -11605,7 +11605,7 @@ function(aNode) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagAttachBinds',
+TP.dom.ElementNode.Type.defineMethod('tagAttachBinds',
 function(aRequest) {
 
     /**
@@ -11631,7 +11631,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagAttachComplete',
+TP.dom.ElementNode.Type.defineMethod('tagAttachComplete',
 function(aRequest) {
 
     /**
@@ -11693,7 +11693,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
+TP.dom.ElementNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -11766,7 +11766,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagAttachEvents',
+TP.dom.ElementNode.Type.defineMethod('tagAttachEvents',
 function(aRequest) {
 
     /**
@@ -11792,7 +11792,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagAttachSignals',
+TP.dom.ElementNode.Type.defineMethod('tagAttachSignals',
 function(aRequest) {
 
     /**
@@ -11818,7 +11818,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagDetachBinds',
+TP.dom.ElementNode.Type.defineMethod('tagDetachBinds',
 function(aRequest) {
 
     /**
@@ -11844,7 +11844,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagDetachComplete',
+TP.dom.ElementNode.Type.defineMethod('tagDetachComplete',
 function(aRequest) {
 
     /**
@@ -11905,7 +11905,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagDetachDOM',
+TP.dom.ElementNode.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -11989,7 +11989,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagDetachEvents',
+TP.dom.ElementNode.Type.defineMethod('tagDetachEvents',
 function(aRequest) {
 
     /**
@@ -12015,7 +12015,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagDetachSignals',
+TP.dom.ElementNode.Type.defineMethod('tagDetachSignals',
 function(aRequest) {
 
     /**
@@ -12041,7 +12041,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tagResolve',
+TP.dom.ElementNode.Type.defineMethod('tagResolve',
 function(aRequest) {
 
     /**
@@ -12108,13 +12108,13 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 //  An Array of attributes that we're suspending from setting temporarily.
-TP.core.ElementNode.Inst.defineAttribute('$suspendedAttributes');
+TP.dom.ElementNode.Inst.defineAttribute('$suspendedAttributes');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('addAttributeValue',
+TP.dom.ElementNode.Inst.defineMethod('addAttributeValue',
 function(attributeName, attributeValue, checkAttrNSURI) {
 
     /**
@@ -12129,7 +12129,7 @@ function(attributeName, attributeValue, checkAttrNSURI) {
      *     more rigorous in its checks for prefixed attributes, looking via
      *     internal TIBET mechanisms in addition to the standard platform
      *     mechanism. The default is false (to keep things faster).
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode,
@@ -12169,14 +12169,14 @@ function(attributeName, attributeValue, checkAttrNSURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('addClass',
+TP.dom.ElementNode.Inst.defineMethod('addClass',
 function(className) {
 
     /**
      * @method addClass
      * @summary Adds the named class to the receiving element.
      * @param {String} className The class to add.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode,
@@ -12207,7 +12207,7 @@ function(className) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('addObserver',
+TP.dom.ElementNode.Inst.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -12218,7 +12218,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
      * @description Note that we implement this method because, in order to have
-     *     TP.core.ElementNodes as event sources, they *must* have an assigned,
+     *     TP.dom.ElementNodes as event sources, they *must* have an assigned,
      *     globally-unique, ID. By implementing this method, we ensure they have
      *     that before they're registered in the signaling system as signal
      *     sources.
@@ -12244,7 +12244,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('asSource',
+TP.dom.ElementNode.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -12258,7 +12258,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('computeAttrMethodName',
+TP.dom.ElementNode.Inst.defineMethod('computeAttrMethodName',
 function(aPrefix, anAttributeName) {
 
     /**
@@ -12302,7 +12302,7 @@ function(aPrefix, anAttributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('defineBinding',
+TP.dom.ElementNode.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
          sourceFacetName, transformationFunc) {
 
@@ -12341,7 +12341,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('destroyBinding',
+TP.dom.ElementNode.Inst.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
          sourceFacetName) {
 
@@ -12376,14 +12376,14 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('get',
+TP.dom.ElementNode.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
      * @method get
      * @summary Returns the value, if any, of the attribute provided. Note
-     *     however that special parsing rules apply to TP.core.Node types.
-     * @description TP.core.Nodes, particularly TP.core.ElementNode nodes, can
+     *     however that special parsing rules apply to TP.dom.Node types.
+     * @description TP.dom.Nodes, particularly TP.dom.ElementNode nodes, can
      *     process complex paths consistent with a variety of standards. The
      *     parsing of these paths is handled by the TP.nodeEvaluatePath()
      *     primitive when any non-JS identifier characters are found in the
@@ -12509,7 +12509,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$getAttribute',
+TP.dom.ElementNode.Inst.defineMethod('$getAttribute',
 function(attributeName) {
 
     /**
@@ -12535,7 +12535,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getAttribute',
+TP.dom.ElementNode.Inst.defineMethod('getAttribute',
 function(attributeName) {
 
     /**
@@ -12565,7 +12565,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getAttributes',
+TP.dom.ElementNode.Inst.defineMethod('getAttributes',
 function(attributeName, stripPrefixes) {
 
     /**
@@ -12592,7 +12592,7 @@ function(attributeName, stripPrefixes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getCanonicalName',
+TP.dom.ElementNode.Inst.defineMethod('getCanonicalName',
 function() {
 
     /**
@@ -12607,7 +12607,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getClass',
+TP.dom.ElementNode.Inst.defineMethod('getClass',
 function() {
 
     /**
@@ -12625,7 +12625,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getContentPrimitive',
+TP.dom.ElementNode.Inst.defineMethod('getContentPrimitive',
 function(operation) {
 
     /**
@@ -12656,7 +12656,7 @@ function(operation) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getChangeAction',
+TP.dom.ElementNode.Inst.defineMethod('getChangeAction',
 function(locationPath) {
 
     /**
@@ -12682,7 +12682,7 @@ function(locationPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getFullName',
+TP.dom.ElementNode.Inst.defineMethod('getFullName',
 function() {
 
     /**
@@ -12697,7 +12697,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getID',
+TP.dom.ElementNode.Inst.defineMethod('getID',
 function() {
 
     /**
@@ -12721,7 +12721,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getLocalName',
+TP.dom.ElementNode.Inst.defineMethod('getLocalName',
 function() {
 
     /**
@@ -12735,7 +12735,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getTagName',
+TP.dom.ElementNode.Inst.defineMethod('getTagName',
 function() {
 
     /**
@@ -12754,7 +12754,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getTemplateName',
+TP.dom.ElementNode.Inst.defineMethod('getTemplateName',
 function() {
 
     /**
@@ -12779,7 +12779,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getTextContent',
+TP.dom.ElementNode.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -12815,7 +12815,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getTextNodesMatching',
+TP.dom.ElementNode.Inst.defineMethod('getTextNodesMatching',
 function(aMatchFunction) {
 
     /**
@@ -12837,7 +12837,7 @@ function(aMatchFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineHandler('ValueChange',
+TP.dom.ElementNode.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -12928,14 +12928,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('hasClass',
+TP.dom.ElementNode.Inst.defineMethod('hasClass',
 function(className) {
 
     /**
      * @method hasClass
      * @summary Tests to see if the receiving element has the named class.
      * @param {String} className The class to test.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode;
@@ -12947,7 +12947,7 @@ function(className) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('hasAttribute',
+TP.dom.ElementNode.Inst.defineMethod('hasAttribute',
 function(attributeName) {
 
     /**
@@ -12971,13 +12971,13 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('isSingleValued',
+TP.dom.ElementNode.Inst.defineMethod('isSingleValued',
 function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
@@ -13007,13 +13007,13 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('isScalarValued',
+TP.dom.ElementNode.Inst.defineMethod('isScalarValued',
 function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -13046,7 +13046,7 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('produceValue',
+TP.dom.ElementNode.Inst.defineMethod('produceValue',
 function(aspectName, aContentObject, aRequest) {
 
     /**
@@ -13082,14 +13082,14 @@ function(aspectName, aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('removeClass',
+TP.dom.ElementNode.Inst.defineMethod('removeClass',
 function(className) {
 
     /**
      * @method removeClass
      * @summary Removes the named class from the receiving element.
      * @param {String} className The class to remove, if found.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode,
@@ -13120,7 +13120,7 @@ function(className) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$removeAttribute',
+TP.dom.ElementNode.Inst.defineMethod('$removeAttribute',
 function(attributeName, shouldSignal) {
 
     /**
@@ -13186,7 +13186,7 @@ function(attributeName, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('removeAttribute',
+TP.dom.ElementNode.Inst.defineMethod('removeAttribute',
 function(attributeName) {
 
     /**
@@ -13211,14 +13211,14 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('render',
+TP.dom.ElementNode.Inst.defineMethod('render',
 function() {
 
     /**
      * @method render
      * @summary Renders the receiver. At this type level, this method does
      *     nothing.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  Signal to observers that this control has rendered.
@@ -13229,7 +13229,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('replaceClass',
+TP.dom.ElementNode.Inst.defineMethod('replaceClass',
 function(oldClass, newClass) {
 
     /**
@@ -13237,7 +13237,7 @@ function(oldClass, newClass) {
      * @summary A convenience wrapper for TP.elementReplaceClass.
      * @param {String} oldClass The class value to find.
      * @param {String} newClass The class value to set.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode,
@@ -13268,7 +13268,7 @@ function(oldClass, newClass) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('resume',
+TP.dom.ElementNode.Inst.defineMethod('resume',
 function(aSignal) {
 
     /**
@@ -13290,7 +13290,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('resumeSettingOf',
+TP.dom.ElementNode.Inst.defineMethod('resumeSettingOf',
 function(attributeName) {
 
     /**
@@ -13298,7 +13298,7 @@ function(attributeName) {
      * @summary Removes a previous suspension of setting of the supplied
      *     attribute name by the suspendSettingOf method.
      * @param {String} attributeName The attribute name to resume.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var suspendedAttrs;
@@ -13315,7 +13315,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('serializeCloseTag',
+TP.dom.ElementNode.Inst.defineMethod('serializeCloseTag',
 function(storageInfo) {
 
     /**
@@ -13366,7 +13366,7 @@ function(storageInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('serializeOpenTag',
+TP.dom.ElementNode.Inst.defineMethod('serializeOpenTag',
 function(storageInfo) {
 
     /**
@@ -13708,7 +13708,7 @@ function(storageInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('set',
+TP.dom.ElementNode.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
@@ -13724,7 +13724,7 @@ function(attributeName, attributeValue, shouldSignal) {
      *     latter will be used by this object to look up a 'child' slot on this
      *     object. When a non-path attribute name is provided and it resolves
      *     via aspect mapping to a path this process is also invoked. All other
-     *     attributes are set on the TP.core.Node itself just as with other
+     *     attributes are set on the TP.dom.Node itself just as with other
      *     TIBET instances.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
@@ -13826,14 +13826,14 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setClass',
+TP.dom.ElementNode.Inst.defineMethod('setClass',
 function(className) {
 
     /**
      * @method setClass
      * @summary A convenience wrapper for TP.elementSetClass.
      * @param {String} className The class value to set.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode,
@@ -13864,7 +13864,7 @@ function(className) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setID',
+TP.dom.ElementNode.Inst.defineMethod('setID',
 function(anID) {
 
     /**
@@ -13918,7 +13918,7 @@ function(anID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setPhase',
+TP.dom.ElementNode.Inst.defineMethod('setPhase',
 function(aPhase) {
 
     /**
@@ -13927,7 +13927,7 @@ function(aPhase) {
      *     attribute is also placed on the content itself to mark it for
      *     inspection by other routines.
      * @param {String} aPhase A content-processing phase value.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     //  don't forget to do the real work ;)
@@ -13951,7 +13951,7 @@ function(aPhase) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$setAttribute',
+TP.dom.ElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
@@ -14119,7 +14119,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setAttribute',
+TP.dom.ElementNode.Inst.defineMethod('setAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -14157,7 +14157,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setAttributes',
+TP.dom.ElementNode.Inst.defineMethod('setAttributes',
 function(attributeHash) {
 
     /**
@@ -14176,7 +14176,7 @@ function(attributeHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setValue',
+TP.dom.ElementNode.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -14193,7 +14193,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var flag,
@@ -14228,7 +14228,7 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('suspendSettingOf',
+TP.dom.ElementNode.Inst.defineMethod('suspendSettingOf',
 function(attributeName) {
 
     /**
@@ -14236,7 +14236,7 @@ function(attributeName) {
      * @summary Suspends the setting of the supplied attribute name. Setting can
      *     be resumed by using the resumeSettingOf method.
      * @param {String} attributeName The attribute name to suspend.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var suspendedAttrs;
@@ -14257,7 +14257,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('toggleClass',
+TP.dom.ElementNode.Inst.defineMethod('toggleClass',
 function(className) {
 
     /**
@@ -14266,7 +14266,7 @@ function(className) {
      *     if the class is present it is removed, and if it's not present it
      *     will be added.
      * @param {String} className The class value to toggle.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var natNode,
@@ -14306,20 +14306,20 @@ function(className) {
 /**
  * @Methods in this section provide support for tracking state changes on the
  *     markup by flagging the elements involved with special attributes. These
- *     values are then observed in other parts of TP.core.Node's processing
+ *     values are then observed in other parts of TP.dom.Node's processing
  *     machinery.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('shouldFlagChanges',
+TP.dom.ElementNode.Inst.defineMethod('shouldFlagChanges',
 function(aFlag) {
 
     /**
      * @method shouldFlagChanges
      * @summary A combined setter/getter for the change flagging flag for the
      *     receiver.
-     * @description When a TP.core.ElementNode instance is flagging changes the
+     * @description When a TP.dom.ElementNode instance is flagging changes the
      *     alterations it makes to a DOM structure are flagged in the form of
      *     'tibet:crud' attributes. Note in particular that deletes don't
      *     actually occur when change flagging is on, items are simply flagged
@@ -14352,7 +14352,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('suspend',
+TP.dom.ElementNode.Inst.defineMethod('suspend',
 function(aSignal) {
 
     /**
@@ -14375,7 +14375,7 @@ function(aSignal) {
 //  Event Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('dispatch',
+TP.dom.ElementNode.Inst.defineMethod('dispatch',
 function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
     /**
@@ -14453,7 +14453,7 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getEventIds',
+TP.dom.ElementNode.Inst.defineMethod('getEventIds',
 function() {
 
     /**
@@ -14473,7 +14473,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('observe',
+TP.dom.ElementNode.Inst.defineMethod('observe',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -14517,7 +14517,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
  *     formatter in the list.
  *
  *     The type validation process here is general purpose in the sense that
- *     since both model and UI elements ultimately have TP.core.Node wrappers
+ *     since both model and UI elements ultimately have TP.dom.Node wrappers
  *     they can both benefit from type checks. There are two mechanisms for
  *     validation: XMLSchema and TIBET-specific types. Both offer advantages and
  *     disadvantages but the nice thing is you can mix them in the same
@@ -14533,7 +14533,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$formatValue',
+TP.dom.ElementNode.Inst.defineMethod('$formatValue',
 function(aValue, formats) {
 
     /**
@@ -14655,7 +14655,7 @@ function(aValue, formats) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$validateValue',
+TP.dom.ElementNode.Inst.defineMethod('$validateValue',
 function(aValue) {
 
     /**
@@ -14761,7 +14761,7 @@ function(aValue) {
 });
 
 //  ========================================================================
-//  TP.core.HTMLElementNode
+//  TP.dom.HTMLElementNode
 //  ========================================================================
 
 
@@ -14769,15 +14769,15 @@ function(aValue) {
  * @summary A placeholder used only when an HTML DOM element doesn't locate a
  *     viable wrapper type.
  */
-TP.core.ElementNode.defineSubtype('HTMLElementNode');
+TP.dom.ElementNode.defineSubtype('HTMLElementNode');
 
 //  actual HTML Element instances returned are specialized on a number of
 //  factors
-TP.core.HTMLElementNode.isAbstract(true);
+TP.dom.HTMLElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLElementNode.Inst.defineMethod('getContentPrimitive',
+TP.dom.HTMLElementNode.Inst.defineMethod('getContentPrimitive',
 function(operation) {
 
     /**
@@ -14807,7 +14807,7 @@ function(operation) {
 });
 
 //  ========================================================================
-//  TP.core.XMLElementNode
+//  TP.dom.XMLElementNode
 //  ========================================================================
 
 
@@ -14815,11 +14815,11 @@ function(operation) {
  * @summary A placeholder used only when an XML DOM element doesn't locate a
  *     viable wrapper type.
  */
-TP.core.ElementNode.defineSubtype('XMLElementNode');
+TP.dom.ElementNode.defineSubtype('XMLElementNode');
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLElementNode.Inst.defineMethod('getContentPrimitive',
+TP.dom.XMLElementNode.Inst.defineMethod('getContentPrimitive',
 function(operation) {
 
     /**
@@ -14849,27 +14849,27 @@ function(operation) {
 });
 
 //  ========================================================================
-//  TP.core.AttributeNode
+//  TP.dom.AttributeNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('AttributeNode');
+TP.dom.Node.defineSubtype('AttributeNode');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeNode.Type.defineMethod('getConcreteType',
+TP.dom.AttributeNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
      * @method getConcreteType
      * @summary Returns a viable attribue node type for aNode.
      * @description If a specific type isn't found the return value is
-     *     TP.core.AttributeNode itself. The lookup process calculates a type
+     *     TP.dom.AttributeNode itself. The lookup process calculates a type
      *     name by acquiring the attribute's 'full name' (it's prefix + local
      *     name), and looking up a type based on that.
-     * @returns {TP.lang.RootObject.<TP.core.AttributeNode>} A
-     *     TP.core.AttributeNode subtype type object.
+     * @returns {TP.lang.RootObject.<TP.dom.AttributeNode>} A
+     *     TP.dom.AttributeNode subtype type object.
      */
 
     var name,
@@ -14879,23 +14879,23 @@ function(aNode) {
 
     type = TP.sys.getTypeByName(name);
 
-    //  Make sure that we got a subtype of TP.core.AttributeNode. Sometimes the
+    //  Make sure that we got a subtype of TP.dom.AttributeNode. Sometimes the
     //  value of an attribute will have the same value as a custom tag name and
     //  we don't want that in this case.
     if (TP.isType(type) &&
-        TP.isSubtypeOf(type, TP.core.AttributeNode) &&
+        TP.isSubtypeOf(type, TP.dom.AttributeNode) &&
         !type.isAbstract()) {
         return type;
     }
 
-    return TP.core.AttributeNode;
+    return TP.dom.AttributeNode;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeNode.Inst.defineMethod('getLocalName',
+TP.dom.AttributeNode.Inst.defineMethod('getLocalName',
 function() {
 
     /**
@@ -14909,13 +14909,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeNode.Inst.defineMethod('getOwnerElement',
+TP.dom.AttributeNode.Inst.defineMethod('getOwnerElement',
 function() {
 
     /**
      * @method getOwnerElement
-     * @summary Returns the receiver's owner element as a TP.core.ElementNode.
-     * @returns {TP.core.ElementNode} The owner element of the receiver.
+     * @summary Returns the receiver's owner element as a TP.dom.ElementNode.
+     * @returns {TP.dom.ElementNode} The owner element of the receiver.
      */
 
     return TP.wrap(TP.attributeGetOwnerElement(this.getNativeNode()));
@@ -14923,7 +14923,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeNode.Inst.defineMethod('getTextContent',
+TP.dom.AttributeNode.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -14941,7 +14941,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeNode.Inst.defineMethod('setValue',
+TP.dom.AttributeNode.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -14952,7 +14952,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var newValue;
@@ -14966,16 +14966,16 @@ function(aValue, shouldSignal) {
 });
 
 //  ========================================================================
-//  TP.core.TextNode
+//  TP.dom.TextNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('TextNode');
+TP.dom.Node.defineSubtype('TextNode');
 
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.TextNode.Type.defineMethod('tagAttachBinds',
+TP.dom.TextNode.Type.defineMethod('tagAttachBinds',
 function(aRequest) {
 
     /**
@@ -15062,7 +15062,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TextNode.Inst.defineMethod('getTextContent',
+TP.dom.TextNode.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -15079,14 +15079,14 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.CDATASectionNode
+//  TP.dom.CDATASectionNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('CDATASectionNode');
+TP.dom.Node.defineSubtype('CDATASectionNode');
 
 //  ------------------------------------------------------------------------
 
-TP.core.CDATASectionNode.Inst.defineMethod('getTextContent',
+TP.dom.CDATASectionNode.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -15103,48 +15103,48 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.EntityReferenceNode
+//  TP.dom.EntityReferenceNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('EntityReferenceNode');
+TP.dom.Node.defineSubtype('EntityReferenceNode');
 
 //  ========================================================================
-//  TP.core.EntityNode
+//  TP.dom.EntityNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('EntityNode');
+TP.dom.Node.defineSubtype('EntityNode');
 
 //  ========================================================================
-//  TP.core.ProcessingInstructionNode
+//  TP.dom.ProcessingInstructionNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('ProcessingInstructionNode');
+TP.dom.Node.defineSubtype('ProcessingInstructionNode');
 
-//  actual TP.core.ProcessingInstructionNode instances returned are
+//  actual TP.dom.ProcessingInstructionNode instances returned are
 //  specialized on a number of factors
-TP.core.ProcessingInstructionNode.isAbstract(true);
+TP.dom.ProcessingInstructionNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ProcessingInstructionNode.Type.defineMethod('getConcreteType',
+TP.dom.ProcessingInstructionNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
      * @method getConcreteType
      * @summary Returns a viable processing instruction node type for aNode.
      * @description If a specific type isn't found the return value is
-     *     either TP.core.HTMLProcessingInstruction or
-     *     TP.core.XMLProcessingInstruction depending on whether the node's
+     *     either TP.dom.HTMLProcessingInstructionNode or
+     *     TP.dom.XMLProcessingInstructionNode depending on whether the node's
      *     owner document is HTML or XML. The lookup process first calculates
      *     a type name by acquiring the PI's name, title casing that name,
      *     making its first character be uppercase, and stripping it of
      *     punctuation. It then uses that name with a suffix of 'PINode'. For
      *     example, a PI of the form '<?tibet-stylesheet?>' will search for
-     *     TP.core.TibetStylesheetPINode.
-     * @returns {TP.lang.RootObject.<TP.core.ProcessingInstructionNode>} A
-     *     TP.core.ProcessingInstructionNode subtype type object.
+     *     TP.dom.TibetStylesheetPINode.
+     * @returns {TP.lang.RootObject.<TP.dom.ProcessingInstructionNode>} A
+     *     TP.dom.ProcessingInstructionNode subtype type object.
      */
 
     var name,
@@ -15155,22 +15155,22 @@ function(aNode) {
 
     //  TODO: This is a hardcoded namespace -- probably need a version of
     //  getTypeByName() that can do a 'deep' search across namespaces.
-    type = TP.sys.getTypeByName('TP.core.' + name + 'PINode');
+    type = TP.sys.getTypeByName('TP.dom.' + name + 'PINode');
 
-    //  Make sure that we got a subtype of TP.core.ProcessingInstructionNode.
+    //  Make sure that we got a subtype of TP.dom.ProcessingInstructionNode.
     //  Sometimes the value of a processing instruction will have the same value
     //  as a custom tag name and we don't want that in this case.
     if (TP.isType(type) &&
-        TP.isSubtypeOf(type, TP.core.ProcessingInstructionNode) &&
+        TP.isSubtypeOf(type, TP.dom.ProcessingInstructionNode) &&
         !type.isAbstract()) {
         return type;
     }
 
     //  default is to wrap based on XML vs. HTML
     if (TP.isHTMLNode(aNode)) {
-        return TP.core.HTMLProcessingInstruction;
+        return TP.dom.HTMLProcessingInstructionNode;
     } else {
-        return TP.core.XMLProcessingInstruction;
+        return TP.dom.XMLProcessingInstructionNode;
     }
 });
 
@@ -15178,7 +15178,7 @@ function(aNode) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ProcessingInstructionNode.Inst.defineMethod('getTextContent',
+TP.dom.ProcessingInstructionNode.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -15195,13 +15195,13 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.TibetStylesheetPINode
+//  TP.dom.TibetStylesheetPINode
 //  ========================================================================
 
-TP.core.ProcessingInstructionNode.defineSubtype('TibetStylesheetPINode');
+TP.dom.ProcessingInstructionNode.defineSubtype('TibetStylesheetPINode');
 
 //  A RegExp that matches 'href' entries with processing instructions
-TP.core.TibetStylesheetPINode.Type.defineConstant(
+TP.dom.TibetStylesheetPINode.Type.defineConstant(
                         'HREF_REGEX',
                         TP.rc('.*href=[\'"](.*)[\'"]'));
 
@@ -15209,7 +15209,7 @@ TP.core.TibetStylesheetPINode.Type.defineConstant(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TibetStylesheetPINode.Type.defineMethod('tagInstructions',
+TP.dom.TibetStylesheetPINode.Type.defineMethod('tagInstructions',
 function(aRequest) {
 
     /**
@@ -15295,7 +15295,7 @@ function(aRequest) {
     url = TP.uc(TP.uriResolvePaths(sheetPath, hrefValue));
 
     //  Grab the content (TP) node of the stylesheet. If its a
-    //  TP.core.XSLDocumentNode, run the transformation process using it.
+    //  TP.dom.XSLDocumentNode, run the transformation process using it.
     resp = url.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
     styleTPDoc = resp.get('result');
 
@@ -15323,8 +15323,8 @@ function(aRequest) {
         return;
     }
 
-    //  If we got an XSLT TP.core.Node, do the transform and get the result.
-    if (TP.isKindOf(styleTPDoc, 'TP.core.XSLDocumentNode')) {
+    //  If we got an XSLT TP.dom.Node, do the transform and get the result.
+    if (TP.isKindOf(styleTPDoc, 'TP.dom.XSLDocumentNode')) {
         resultNode = TP.node(
                         TP.unwrap(styleTPDoc.transform(rootElem, aRequest)));
     } else {
@@ -15353,26 +15353,26 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.HTMLProcessingInstruction
+//  TP.dom.HTMLProcessingInstructionNode
 //  ========================================================================
 
-TP.core.ProcessingInstructionNode.defineSubtype('HTMLProcessingInstruction');
+TP.dom.ProcessingInstructionNode.defineSubtype('HTMLProcessingInstructionNode');
 
 //  ========================================================================
-//  TP.core.XMLProcessingInstruction
+//  TP.dom.XMLProcessingInstructionNode
 //  ========================================================================
 
-TP.core.ProcessingInstructionNode.defineSubtype('XMLProcessingInstruction');
+TP.dom.ProcessingInstructionNode.defineSubtype('XMLProcessingInstructionNode');
 
 //  ========================================================================
-//  TP.core.CommentNode
+//  TP.dom.CommentNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('CommentNode');
+TP.dom.Node.defineSubtype('CommentNode');
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommentNode.Inst.defineMethod('getTextContent',
+TP.dom.CommentNode.Inst.defineMethod('getTextContent',
 function() {
 
     /**
@@ -15389,19 +15389,19 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DocumentNode
+//  TP.dom.DocumentNode
 //  ========================================================================
 
-TP.core.CollectionNode.defineSubtype('DocumentNode');
+TP.dom.CollectionNode.defineSubtype('DocumentNode');
 
 //  abstract because we specialize document node types by mime type
-TP.core.DocumentNode.isAbstract(true);
+TP.dom.DocumentNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Type.defineMethod('getConcreteType',
+TP.dom.DocumentNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
@@ -15409,8 +15409,8 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided. In this case
      *     the node is always some form of Document node (type 9).
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.core.DocumentNode>} A
-     *     TP.core.DocumentNode subtype type object.
+     * @returns {TP.lang.RootObject.<TP.dom.DocumentNode>} A
+     *     TP.dom.DocumentNode subtype type object.
      */
 
     var mime,
@@ -15421,7 +15421,7 @@ function(aNode) {
 
     //  get the mime type and see if we have a type for that mime type, that
     //  way we can manage documents like xslts etc. using custom subtypes
-    mime = TP.core.Node.getContentMIMEType(aNode);
+    mime = TP.dom.Node.getContentMIMEType(aNode);
     if (TP.isString(mime)) {
         //  two choices here, there may be a 'tpDocNodeType' registered, or
         //  we may just work from naming convention
@@ -15437,7 +15437,7 @@ function(aNode) {
 
     //  next choice is to work from document prefix (the canonical prefix
     //  for the document element's namespace URI)
-    prefix = TP.core.Node.getCanonicalPrefix(aNode);
+    prefix = TP.dom.Node.getCanonicalPrefix(aNode);
     if (TP.notEmpty(prefix)) {
         prefix = prefix.toUpperCase();
         name = prefix + 'DocumentNode';
@@ -15450,11 +15450,11 @@ function(aNode) {
 
     //  default is to wrap based on XML vs. HTML
     if (TP.isHTMLDocument(aNode)) {
-        return TP.core.HTMLDocumentNode;
+        return TP.dom.HTMLDocumentNode;
     } else if (TP.isXHTMLDocument(aNode)) {
-        return TP.core.XHTMLDocumentNode;
+        return TP.dom.XHTMLDocumentNode;
     } else {
-        return TP.core.XMLDocumentNode;
+        return TP.dom.XMLDocumentNode;
     }
 });
 
@@ -15462,7 +15462,7 @@ function(aNode) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('addObserver',
+TP.dom.DocumentNode.Inst.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -15473,7 +15473,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
      * @description Note that we implement this method because, in order to have
-     *     TP.core.DocumentNodes as event sources, they *must* have an assigned,
+     *     TP.dom.DocumentNodes as event sources, they *must* have an assigned,
      *     globally-unique, ID. By implementing this method, we ensure they have
      *     that before they're registered in the signaling system as signal
      *     sources.
@@ -15499,7 +15499,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('asSource',
+TP.dom.DocumentNode.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -15513,15 +15513,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('get',
+TP.dom.DocumentNode.Inst.defineMethod('get',
 function(attributeName) {
 
     /**
      * @method get
      * @summary Returns the value, if any, of the attribute provided. NOTE
-     *     however that special parsing rules apply to TP.core.Node types with
+     *     however that special parsing rules apply to TP.dom.Node types with
      *     respect to the nature of the attribute name provided.
-     * @description TP.core.Nodes, particularly TP.core.ElementNode nodes, can
+     * @description TP.dom.Nodes, particularly TP.dom.ElementNode nodes, can
      *     process complex paths consistent with XPointer and XPath syntax.
      *     These sometimes overlapping syntax options are handled in the order
      *     presented here. First a check is done to see if the path appears to
@@ -15632,14 +15632,14 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getDocument',
+TP.dom.DocumentNode.Inst.defineMethod('getDocument',
 function() {
 
     /**
      * @method getDocument
-     * @summary Returns a TP.core.DocumentNode representing the receiver's
-     *     document. For TP.core.DocumentNode this returns the receiver itself.
-     * @returns {TP.core.DocumentNode} The document of the receiver.
+     * @summary Returns a TP.dom.DocumentNode representing the receiver's
+     *     document. For TP.dom.DocumentNode this returns the receiver itself.
+     * @returns {TP.dom.DocumentNode} The document of the receiver.
      */
 
     return this;
@@ -15647,13 +15647,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getDocumentElement',
+TP.dom.DocumentNode.Inst.defineMethod('getDocumentElement',
 function() {
 
     /**
      * @method getDocumentElement
-     * @summary Returns the receiver's root element as a TP.core.ElementNode.
-     * @returns {TP.core.ElementNode} The root element of the receiver.
+     * @summary Returns the receiver's root element as a TP.dom.ElementNode.
+     * @returns {TP.dom.ElementNode} The root element of the receiver.
      */
 
     return TP.wrap(this.getNativeDocument().documentElement);
@@ -15661,24 +15661,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getDocumentElementType',
+TP.dom.DocumentNode.Inst.defineMethod('getDocumentElementType',
 function() {
 
     /**
      * @method getDocumentElementType
      * @summary Returns the Type object that TIBET would use to wrap the
-     *     receiver's root element as a TP.core.ElementNode.
-     * @returns {TP.lang.RootObject.<TP.core.ElementNode>} A TP.core.ElementNode
+     *     receiver's root element as a TP.dom.ElementNode.
+     * @returns {TP.lang.RootObject.<TP.dom.ElementNode>} A TP.dom.ElementNode
      *     subtype type object.
      */
 
-    return TP.core.ElementNode.getConcreteType(
+    return TP.dom.ElementNode.getConcreteType(
                         this.getNativeDocument().documentElement);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getID',
+TP.dom.DocumentNode.Inst.defineMethod('getID',
 function() {
 
     /**
@@ -15702,7 +15702,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getLocalName',
+TP.dom.DocumentNode.Inst.defineMethod('getLocalName',
 function() {
 
     /**
@@ -15717,7 +15717,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getLocation',
+TP.dom.DocumentNode.Inst.defineMethod('getLocation',
 function() {
 
     /**
@@ -15738,7 +15738,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getNativeDocument',
+TP.dom.DocumentNode.Inst.defineMethod('getNativeDocument',
 function() {
 
     /**
@@ -15747,13 +15747,13 @@ function() {
      * @returns {Document} The receiver's native document.
      */
 
-    //  For TP.core.DocumentNodes, the document *is* their native node.
+    //  For TP.dom.DocumentNodes, the document *is* their native node.
     return this.getNativeNode();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getNativeDocumentElement',
+TP.dom.DocumentNode.Inst.defineMethod('getNativeDocumentElement',
 function() {
 
     /**
@@ -15767,16 +15767,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getRoot',
+TP.dom.DocumentNode.Inst.defineMethod('getRoot',
 function() {
 
     /**
      * @method getRoot
-     * @summary Returns the TP.core.ElementNode that represents the root
+     * @summary Returns the TP.dom.ElementNode that represents the root
      *     element in this document. For HTML/XHTML documents this would be the
      *     <html> element. For an SVG document it would be the <svg> element.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.ElementNode} The root element of the receiver.
+     * @returns {TP.dom.ElementNode} The root element of the receiver.
      */
 
     return TP.wrap(TP.documentGetRoot(this.getNativeNode()));
@@ -15784,7 +15784,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getTheme',
+TP.dom.DocumentNode.Inst.defineMethod('getTheme',
 function(fallback) {
 
     /**
@@ -15807,7 +15807,7 @@ function(fallback) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getTitle',
+TP.dom.DocumentNode.Inst.defineMethod('getTitle',
 function() {
 
     /**
@@ -15822,7 +15822,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('getValue',
+TP.dom.DocumentNode.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -15848,7 +15848,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineHandler('ValueChange',
+TP.dom.DocumentNode.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -15890,7 +15890,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('serializeForStorage',
+TP.dom.DocumentNode.Inst.defineMethod('serializeForStorage',
 function(storageInfo) {
 
     /**
@@ -15926,7 +15926,7 @@ function(storageInfo) {
      *          stores, and so they will all be stored here, each keyed by a
      *          unique key (which, by convention, will be the URI they should be
      *          saved to).
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var result;
@@ -15946,7 +15946,7 @@ function(storageInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('setID',
+TP.dom.DocumentNode.Inst.defineMethod('setID',
 function(anID) {
 
     /**
@@ -15973,7 +15973,7 @@ function(anID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('setPhase',
+TP.dom.DocumentNode.Inst.defineMethod('setPhase',
 function(aPhase) {
 
     /**
@@ -15982,7 +15982,7 @@ function(aPhase) {
      *     attribute is also placed on the content itself to mark it for
      *     inspection by other routines such as hasReachedPhase.
      * @param {String} aPhase A content-processing phase value.
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var elem;
@@ -16005,7 +16005,7 @@ function(aPhase) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('setRawContent',
+TP.dom.DocumentNode.Inst.defineMethod('setRawContent',
 function(newContent, aRequest, shouldSignal) {
 
     /**
@@ -16019,7 +16019,7 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -16082,7 +16082,7 @@ function(newContent, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('setTheme',
+TP.dom.DocumentNode.Inst.defineMethod('setTheme',
 function(themeName) {
 
     /**
@@ -16092,7 +16092,7 @@ function(themeName) {
      *     will have the 'lib' theme added to it for theming 'backstop'
      *     purposes.
      * @param {String} themeName The theme name to set for the receiver.
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     TP.documentSetTheme(this.getNativeNode(), themeName);
@@ -16102,14 +16102,14 @@ function(themeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('setTitle',
+TP.dom.DocumentNode.Inst.defineMethod('setTitle',
 function(titleText) {
 
     /**
      * @method setTitle
      * @summary Sets the receiver's 'title' content.
      * @param {String} titleText The value to use as the title content.
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     TP.documentSetTitleContent(this.getNativeNode(), titleText);
@@ -16119,7 +16119,7 @@ function(titleText) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('setValue',
+TP.dom.DocumentNode.Inst.defineMethod('setValue',
 function(aValue, signalFlag) {
 
     /**
@@ -16133,7 +16133,7 @@ function(aValue, signalFlag) {
      * @param {Boolean} signalFlag Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var tpElem;
@@ -16152,14 +16152,14 @@ function(aValue, signalFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('shouldFlagChanges',
+TP.dom.DocumentNode.Inst.defineMethod('shouldFlagChanges',
 function(aFlag) {
 
     /**
      * @method shouldFlagChanges
      * @summary A combined setter/getter for the change flagging flag for the
      *     receiver.
-     * @description When the document element of a TP.core.DocumentNode instance
+     * @description When the document element of a TP.dom.DocumentNode instance
      *     is flagging changes the alterations it makes to a DOM structure are
      *     flagged in the form of 'tibet:crud' attributes. Note in particular
      *     that deletes don't actually occur when change flagging is on, items
@@ -16172,7 +16172,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('shouldSignalChange',
+TP.dom.DocumentNode.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
     /**
@@ -16200,12 +16200,12 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('transform',
+TP.dom.DocumentNode.Inst.defineMethod('transform',
 function(anObject, aParamHash) {
 
     /**
      * @method transform
-     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     * @summary Transforms the supplied Node (or TP.dom.Node) by using the
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
@@ -16236,33 +16236,33 @@ TP.backstop(
             'createCDATASection',
             'createEntityReference',
             'createProcessingInstruction'),
-    TP.core.DocumentNode.getInstPrototype());
+    TP.dom.DocumentNode.getInstPrototype());
 
 //  ========================================================================
 //  TP.core.Document (alias)
 //  ========================================================================
 
-TP.core.Document = TP.core.DocumentNode;
+TP.core.Document = TP.dom.DocumentNode;
 TP.sys.addCustomType('TP.core.Document', TP.core.Document);
 
 //  ========================================================================
-//  TP.core.HTMLDocumentNode
+//  TP.dom.HTMLDocumentNode
 //  ========================================================================
 
 /**
- * @type {TP.core.HTMLDocumentNode}
+ * @type {TP.dom.HTMLDocumentNode}
  * @summary Generic HTML document wrapper.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.defineSubtype('HTMLDocumentNode');
+TP.dom.DocumentNode.defineSubtype('HTMLDocumentNode');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('close',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('close',
 function() {
 
     /**
@@ -16301,12 +16301,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('getBody',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('getBody',
 function() {
 
     /**
      * @method getBody
-     * @summary Returns the TP.core.ElementNode that represents the 'body'
+     * @summary Returns the TP.dom.ElementNode that represents the 'body'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
      * @returns {TP.html.body} The 'body' element of the receiver.
@@ -16317,7 +16317,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('getContentPrimitive',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('getContentPrimitive',
 function(operation) {
 
     /**
@@ -16346,18 +16346,18 @@ function(operation) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('getFocusedElement',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('getFocusedElement',
 function(orActiveElement) {
 
     /**
      * @method getFocusedElement
-     * @summary Returns the TP.core.ElementNode that represents the currently
+     * @summary Returns the TP.dom.ElementNode that represents the currently
      *     focused (i.e. 'active') element in this document.
      * @param {Boolean} [orActiveElement=true] Whether or not to return the
      *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
      *     available. The default is true.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.ElementNode} The currently focused element.
+     * @returns {TP.dom.ElementNode} The currently focused element.
      */
 
     return TP.wrap(TP.documentGetFocusedElement(
@@ -16366,12 +16366,12 @@ function(orActiveElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('getHead',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('getHead',
 function() {
 
     /**
      * @method getHead
-     * @summary Returns the TP.core.ElementNode that represents the 'head'
+     * @summary Returns the TP.dom.ElementNode that represents the 'head'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
      * @returns {TP.html.head} The 'head' element of the receiver.
@@ -16382,7 +16382,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('getNativeWindow',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('getNativeWindow',
 function() {
 
     /**
@@ -16397,7 +16397,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineHandler('DOMClose',
+TP.dom.HTMLDocumentNode.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**
@@ -16419,7 +16419,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('open',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('open',
 function(mimeType) {
 
     /**
@@ -16427,7 +16427,7 @@ function(mimeType) {
      * @summary Opens the document for writing.
      * @param {The} mimeType MIME type used when opening the native document.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var doc,
@@ -16452,7 +16452,7 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('write',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('write',
 function(theContent, setupFunction) {
 
     /**
@@ -16464,7 +16464,7 @@ function(theContent, setupFunction) {
      * @param {Function} setupFunction The setup function to execute as part of
      *     the document's 'onload' processing.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var doc,
@@ -16524,7 +16524,7 @@ function(theContent, setupFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('writeln',
+TP.dom.HTMLDocumentNode.Inst.defineMethod('writeln',
 function(content, setupFunction) {
 
     /**
@@ -16535,7 +16535,7 @@ function(content, setupFunction) {
      * @param {Function} setupFunction The setup function to execute as part of
      *     the document's 'onload' processing.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var doc,
@@ -16566,23 +16566,23 @@ function(content, setupFunction) {
 });
 
 //  ========================================================================
-//  TP.core.XMLDocumentNode
+//  TP.dom.XMLDocumentNode
 //  ========================================================================
 
 /**
- * @type {TP.core.XMLDocumentNode}
+ * @type {TP.dom.XMLDocumentNode}
  * @summary Generic XML document wrapper.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.defineSubtype('XMLDocumentNode');
+TP.dom.DocumentNode.defineSubtype('XMLDocumentNode');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLDocumentNode.Inst.defineMethod('getContentPrimitive',
+TP.dom.XMLDocumentNode.Inst.defineMethod('getContentPrimitive',
 function(operation) {
 
     /**
@@ -16610,26 +16610,26 @@ function(operation) {
 });
 
 //  ========================================================================
-//  TP.core.XHTMLDocumentNode
+//  TP.dom.XHTMLDocumentNode
 //  ========================================================================
 
 /**
- * @type {TP.core.XHTMLDocumentNode}
+ * @type {TP.dom.XHTMLDocumentNode}
  * @summary XHTML document wrapper.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLDocumentNode.defineSubtype('XHTMLDocumentNode');
+TP.dom.XMLDocumentNode.defineSubtype('XHTMLDocumentNode');
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineMethod('getBody',
+TP.dom.XHTMLDocumentNode.Inst.defineMethod('getBody',
 function() {
 
     /**
      * @method getBody
-     * @summary Returns the TP.core.ElementNode that represents the 'body'
+     * @summary Returns the TP.dom.ElementNode that represents the 'body'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
      * @returns {TP.html.body} The 'body' element of the receiver.
@@ -16646,18 +16646,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineMethod('getFocusedElement',
+TP.dom.XHTMLDocumentNode.Inst.defineMethod('getFocusedElement',
 function(orActiveElement) {
 
     /**
      * @method getFocusedElement
-     * @summary Returns the TP.core.ElementNode that represents the currently
+     * @summary Returns the TP.dom.ElementNode that represents the currently
      *     focused (i.e. 'active') element in this document.
      * @param {Boolean} [orActiveElement=true] Whether or not to return the
      *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
      *     available. The default is true.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.ElementNode} The currently focused element.
+     * @returns {TP.dom.ElementNode} The currently focused element.
      */
 
     var doc;
@@ -16671,12 +16671,12 @@ function(orActiveElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineMethod('getHead',
+TP.dom.XHTMLDocumentNode.Inst.defineMethod('getHead',
 function() {
 
     /**
      * @method getHead
-     * @summary Returns the TP.core.ElementNode that represents the 'head'
+     * @summary Returns the TP.dom.ElementNode that represents the 'head'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
      * @returns {TP.html.head} The 'head' element of the receiver.
@@ -16693,7 +16693,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineMethod('getNativeWindow',
+TP.dom.XHTMLDocumentNode.Inst.defineMethod('getNativeWindow',
 function() {
 
     /**
@@ -16714,7 +16714,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineHandler('DOMClose',
+TP.dom.XHTMLDocumentNode.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**
@@ -16732,28 +16732,28 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.core.XSLDocumentNode
+//  TP.dom.XSLDocumentNode
 //  ========================================================================
 
 /**
- * @type {TP.core.XSLDocumentNode}
+ * @type {TP.dom.XSLDocumentNode}
  * @summary A type specific to XSL documents.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLDocumentNode.defineSubtype('XSLDocumentNode');
+TP.dom.XMLDocumentNode.defineSubtype('XSLDocumentNode');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XSLDocumentNode.Inst.defineMethod('transform',
+TP.dom.XSLDocumentNode.Inst.defineMethod('transform',
 function(anObject, aParamHash) {
 
     /**
      * @method transform
-     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     * @summary Transforms the supplied Node (or TP.dom.Node) by using the
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
@@ -16815,22 +16815,22 @@ function(anObject, aParamHash) {
 });
 
 //  ========================================================================
-//  TP.core.DocumentTypeNode
+//  TP.dom.DocumentTypeNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('DocumentTypeNode');
+TP.dom.Node.defineSubtype('DocumentTypeNode');
 
 //  ========================================================================
-//  TP.core.NotationNode
+//  TP.dom.NotationNode
 //  ========================================================================
 
-TP.core.Node.defineSubtype('NotationNode');
+TP.dom.Node.defineSubtype('NotationNode');
 
 //  ========================================================================
 //  XSLT ELEMENTS
 //  ========================================================================
 
-TP.core.ElementNode.defineSubtype('xsl.Element');
+TP.dom.ElementNode.defineSubtype('xsl.Element');
 
 //  actual XSL Element instances returned are specialized on a number of
 //  factors
@@ -16862,7 +16862,7 @@ TP.xsl.include.Type.set('uriAttrs', TP.ac('href'));
 //  XINCLUDE PROCESSING
 //  ========================================================================
 
-TP.core.ElementNode.defineSubtype('xi.Element');
+TP.dom.ElementNode.defineSubtype('xi.Element');
 
 //  actual XI Element instances returned are specialized on a number of
 //  factors
@@ -17141,11 +17141,11 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.TemplatedNode
+//  TP.dom.TemplatedNode
 //  ========================================================================
 
 /**
- * @type {TP.core.TemplatedNode}
+ * @type {TP.dom.TemplatedNode}
  * @summary A trait type which allows the target type to have sugared access to
  *     a tsh:template during compilation. The result is that the tag can
  *     leverage a src="" attribute, child content, or other means to make the
@@ -17156,11 +17156,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('core.TemplatedNode');
+TP.dom.ElementNode.defineSubtype('dom.TemplatedNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.
-TP.core.TemplatedNode.isAbstract(true);
+TP.dom.TemplatedNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -17168,7 +17168,7 @@ TP.core.TemplatedNode.isAbstract(true);
 
 //  Whether or not the node wants a 'tsh:template' wrapper (necessary for
 //  dynamic templating, etc.)
-TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
+TP.dom.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -17178,7 +17178,7 @@ TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedNode.Type.defineMethod('tagCompile',
+TP.dom.TemplatedNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -17309,26 +17309,26 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.EmbeddedTemplateNode
+//  TP.dom.EmbeddedTemplateNode
 //  ========================================================================
 
 /**
- * @type {TP.core.EmbeddedTemplateNode}
+ * @type {TP.dom.EmbeddedTemplateNode}
  * @summary A trait type which allows the target type to have embedded elements
  *     of tsh:template under it.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.EmbeddedTemplateNode');
+TP.lang.Object.defineSubtype('dom.EmbeddedTemplateNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.
-TP.core.EmbeddedTemplateNode.isAbstract(true);
+TP.dom.EmbeddedTemplateNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.EmbeddedTemplateNode.Type.defineMethod('tagAttachDOM',
+TP.dom.EmbeddedTemplateNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -17390,26 +17390,26 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.EmptyElementNode
+//  TP.dom.EmptyElementNode
 //  ========================================================================
 
 /**
- * @type {TP.core.EmptyElementNode}
+ * @type {TP.dom.EmptyElementNode}
  * @summary A trait type which allows the target type to be defined as 'empty'
  *     for purposes of setting content, etc.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('core.EmptyElementNode');
+TP.dom.ElementNode.defineSubtype('dom.EmptyElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.
-TP.core.EmptyElementNode.isAbstract(true);
+TP.dom.EmptyElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.EmptyElementNode.Inst.defineMethod('getContent',
+TP.dom.EmptyElementNode.Inst.defineMethod('getContent',
 function(aRequest) {
 
     /**
@@ -17428,7 +17428,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.EmptyElementNode.Inst.defineMethod('setContent',
+TP.dom.EmptyElementNode.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
     /**
@@ -17451,7 +17451,7 @@ function(aContentObject, aRequest) {
 //  ========================================================================
 
 /**
- * @type {TP.core.XMLRPCNode}
+ * @type {TP.dom.XMLRPCNode}
  * @summary A type capable of serializing data into XMLRPC format and of
  *     reconstituting XMLRPC-formatted XML nodes into JavaScript objects. This
  *     type is used as the primary "internal" TIBET data conversion type since
@@ -17460,20 +17460,20 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.XMLRPCNode');
+TP.lang.Object.defineSubtype('dom.XMLRPCNode');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  the value to use if nil support is turned on
-TP.core.XMLRPCNode.Type.defineConstant('NIL', '<nil/>');
+TP.dom.XMLRPCNode.Type.defineConstant('NIL', '<nil/>');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromArray',
+TP.dom.XMLRPCNode.Type.defineMethod('fromArray',
 function(anObj, filter, useNil) {
 
     /**
@@ -17529,16 +17529,16 @@ function(anObj, filter, useNil) {
             nullVal = TP.nodeAppendChild(valueElem, nullVal);
         } else {
             //  Otherwise, the value is valid so ask it for its
-            //  TP.core.XMLRPCNode representation.
+            //  TP.dom.XMLRPCNode representation.
             try {
                 TP.nodeAppendChild(valueElem,
-                                    theValue.as('TP.core.XMLRPCNode'));
+                                    theValue.as('TP.dom.XMLRPCNode'));
             } catch (e) {
                 if (TP.notValid(str = TP.str(e))) {
                     str = '!!! SERIALIZATION ERROR !!!';
                 }
 
-                TP.nodeAppendChild(valueElem, str.as('TP.core.XMLRPCNode'));
+                TP.nodeAppendChild(valueElem, str.as('TP.dom.XMLRPCNode'));
             }
         }
 
@@ -17555,7 +17555,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromBoolean',
+TP.dom.XMLRPCNode.Type.defineMethod('fromBoolean',
 function(anObj, filter, useNil) {
 
     /**
@@ -17586,7 +17586,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromDate',
+TP.dom.XMLRPCNode.Type.defineMethod('fromDate',
 function(anObj, filter, useNil) {
 
     /**
@@ -17618,7 +17618,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromNumber',
+TP.dom.XMLRPCNode.Type.defineMethod('fromNumber',
 function(anObj, filter, useNil) {
 
     /**
@@ -17652,7 +17652,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromObject',
+TP.dom.XMLRPCNode.Type.defineMethod('fromObject',
 function(anObj, filter, useNil) {
 
     /**
@@ -17736,16 +17736,16 @@ function(anObj, filter, useNil) {
             TP.nodeAppendChild(valueElem, nullVal);
         } else {
             //  Otherwise, the value is valid so ask it for its
-            //  TP.core.XMLRPCNode representation.
+            //  TP.dom.XMLRPCNode representation.
             try {
                 TP.nodeAppendChild(valueElem,
-                                    theValue.as('TP.core.XMLRPCNode'));
+                                    theValue.as('TP.dom.XMLRPCNode'));
             } catch (e) {
                 if (TP.notValid(str = TP.str(e))) {
                     str = '!!! SERIALIZATION ERROR !!!';
                 }
 
-                TP.nodeAppendChild(valueElem, str.as('TP.core.XMLRPCNode'));
+                TP.nodeAppendChild(valueElem, str.as('TP.dom.XMLRPCNode'));
             }
         }
 
@@ -17759,7 +17759,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromString',
+TP.dom.XMLRPCNode.Type.defineMethod('fromString',
 function(anObj, filter, useNil) {
 
     /**
@@ -17790,7 +17790,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('fromTP_core_Hash',
+TP.dom.XMLRPCNode.Type.defineMethod('fromTP_core_Hash',
 function(anObj, filter, useNil) {
 
     /**
@@ -17810,7 +17810,7 @@ function(anObj, filter, useNil) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCNode.Type.defineMethod('objectFromNode',
+TP.dom.XMLRPCNode.Type.defineMethod('objectFromNode',
 function(aNode) {
 
     /**
@@ -17876,7 +17876,7 @@ function(aNode) {
                 return inst;
             } else {
                 //  no nested data tag
-                return this.raise('InvalidTP.core.XMLRPCNode',
+                return this.raise('InvalidTP.dom.XMLRPCNode',
                                     node);
             }
 
@@ -17966,7 +17966,7 @@ function(aNode) {
 
         default:
 
-            return this.raise('InvalidTP.core.XMLRPCNode', node);
+            return this.raise('InvalidTP.dom.XMLRPCNode', node);
     }
 });
 

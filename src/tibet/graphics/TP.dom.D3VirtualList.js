@@ -9,8 +9,8 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.D3VirtualList}
- * @summary A subtype of the TP.core.D3Tag trait type that is used to add
+ * @type {TP.dom.D3VirtualList}
+ * @summary A subtype of the TP.dom.D3Tag trait type that is used to add
  *     'virtual scrolling behavior to any type that implements a scrolling list.
  * @description This code is a heavily adapted version of the d3.js virtual
  *     scrolling routine found here:
@@ -21,31 +21,31 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.defineSubtype('D3VirtualList');
+TP.dom.D3Tag.defineSubtype('D3VirtualList');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.D3VirtualList.isAbstract(true);
+TP.dom.D3VirtualList.isAbstract(true);
 
 //  We don't need to order instances of these types.
-TP.core.D3VirtualList.Type.set('shouldOrder', false);
+TP.dom.D3VirtualList.Type.set('shouldOrder', false);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineAttribute('$virtualScroller');
+TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
 
-TP.core.D3VirtualList.Inst.defineAttribute('$startOffset');
-TP.core.D3VirtualList.Inst.defineAttribute('$endOffset');
-TP.core.D3VirtualList.Inst.defineAttribute('$totalRows');
-TP.core.D3VirtualList.Inst.defineAttribute('$dataSize');
+TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
+TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
+TP.dom.D3VirtualList.Inst.defineAttribute('$totalRows');
+TP.dom.D3VirtualList.Inst.defineAttribute('$dataSize');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Type.defineMethod('tagAttachDOM',
+TP.dom.D3VirtualList.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -77,7 +77,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Type.defineMethod('tagDetachDOM',
+TP.dom.D3VirtualList.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -112,7 +112,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('adjustIterationIndex',
+TP.dom.D3VirtualList.Inst.defineMethod('adjustIterationIndex',
 function(anIndex) {
 
     /**
@@ -130,7 +130,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('computeHeight',
+TP.dom.D3VirtualList.Inst.defineMethod('computeHeight',
 function() {
 
     /**
@@ -205,7 +205,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('computeGeneratedRowCount',
+TP.dom.D3VirtualList.Inst.defineMethod('computeGeneratedRowCount',
 function() {
 
     /**
@@ -251,7 +251,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getRowAttrSelectionInfo',
+TP.dom.D3VirtualList.Inst.defineMethod('getRowAttrSelectionInfo',
 function() {
 
     /**
@@ -268,7 +268,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getRowHeight',
+TP.dom.D3VirtualList.Inst.defineMethod('getRowHeight',
 function() {
 
     /**
@@ -285,7 +285,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getRowBorderHeight',
+TP.dom.D3VirtualList.Inst.defineMethod('getRowBorderHeight',
 function() {
 
     /**
@@ -300,7 +300,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getPageSize',
+TP.dom.D3VirtualList.Inst.defineMethod('getPageSize',
 function() {
 
     /**
@@ -324,7 +324,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getScrollingContainer',
+TP.dom.D3VirtualList.Inst.defineMethod('getScrollingContainer',
 function() {
 
     /**
@@ -340,7 +340,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getStartIndex',
+TP.dom.D3VirtualList.Inst.defineMethod('getStartIndex',
 function() {
 
     /**
@@ -371,14 +371,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('getStartAndEndVisualRows',
+TP.dom.D3VirtualList.Inst.defineMethod('getStartAndEndVisualRows',
 function() {
 
     /**
      * @method getStartAndEndVisualRows
      * @summary Returns the elements that represent the actual *visible* first
      *     and last rows.
-     * @returns {TP.core.UIElementNode[]} An Array pair where the first item is
+     * @returns {TP.dom.UIElementNode[]} An Array pair where the first item is
      *     the first *visual* element and the last item is the last *visual*
      *     element.
      */
@@ -445,7 +445,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('isReadyToRender',
+TP.dom.D3VirtualList.Inst.defineMethod('isReadyToRender',
 function() {
 
     /**
@@ -461,13 +461,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('render',
+TP.dom.D3VirtualList.Inst.defineMethod('render',
 function() {
 
     /**
      * @method render
      * @summary Renders the receiver.
-     * @returns {TP.core.D3VirtualList} The receiver.
+     * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
     var selectionData,
@@ -532,13 +532,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('setup',
+TP.dom.D3VirtualList.Inst.defineMethod('setup',
 function() {
 
     /**
      * @method setup
      * @summary Perform the initial setup for the receiver.
-     * @returns {TP.core.D3VirtualList} The receiver.
+     * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
     var scrollingContent,
@@ -591,7 +591,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3VirtualList.Inst.defineMethod('teardown',
+TP.dom.D3VirtualList.Inst.defineMethod('teardown',
 function() {
 
     /**

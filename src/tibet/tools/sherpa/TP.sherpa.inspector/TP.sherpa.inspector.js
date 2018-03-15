@@ -289,7 +289,7 @@ function(anItem) {
         return anItem[TP.DISPLAY];
     }
 
-    if (TP.isElement(anItem) || TP.isKindOf(anItem, TP.core.ElementNode)) {
+    if (TP.isElement(anItem) || TP.isKindOf(anItem, TP.dom.ElementNode)) {
         return TP.name(anItem) + ' - #' + TP.lid(anItem);
     }
 
@@ -2095,7 +2095,7 @@ function(aBayNum) {
      *     number.
      * @param {Number} [aBayNum] The bay number to retrieve the content for. If
      *     this is not supplied, the "last" bay's content is retrieved.
-     * @returns {TP.core.ElementNode} The content element under the inspector
+     * @returns {TP.dom.ElementNode} The content element under the inspector
      *     item representing the bay at the supplied bay number.
      */
 

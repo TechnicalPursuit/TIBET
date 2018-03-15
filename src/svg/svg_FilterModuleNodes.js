@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:filter');
+TP.dom.UIElementNode.defineSubtype('svg:filter');
 
 TP.svg.filter.addTraits(TP.svg.Element);
 
@@ -34,7 +34,7 @@ TP.svg.filter.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feBlend');
+TP.dom.UIElementNode.defineSubtype('svg:feBlend');
 
 TP.svg.feBlend.addTraits(TP.svg.Element);
 
@@ -48,7 +48,7 @@ TP.svg.feBlend.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feColorMatrix');
+TP.dom.UIElementNode.defineSubtype('svg:feColorMatrix');
 
 TP.svg.feColorMatrix.addTraits(TP.svg.Element);
 
@@ -62,7 +62,7 @@ TP.svg.feColorMatrix.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feComponentTransfer');
+TP.dom.UIElementNode.defineSubtype('svg:feComponentTransfer');
 
 TP.svg.feComponentTransfer.addTraits(TP.svg.Element);
 
@@ -76,7 +76,7 @@ TP.svg.feComponentTransfer.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feComposite');
+TP.dom.UIElementNode.defineSubtype('svg:feComposite');
 
 TP.svg.feComposite.addTraits(TP.svg.Element);
 
@@ -90,7 +90,7 @@ TP.svg.feComposite.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feConvolveMatrix');
+TP.dom.UIElementNode.defineSubtype('svg:feConvolveMatrix');
 
 TP.svg.feConvolveMatrix.addTraits(TP.svg.Element);
 
@@ -104,7 +104,7 @@ TP.svg.feConvolveMatrix.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feDiffuseLighting');
+TP.dom.UIElementNode.defineSubtype('svg:feDiffuseLighting');
 
 TP.svg.feDiffuseLighting.addTraits(TP.svg.Element);
 
@@ -118,7 +118,7 @@ TP.svg.feDiffuseLighting.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feDisplacementMap');
+TP.dom.UIElementNode.defineSubtype('svg:feDisplacementMap');
 
 TP.svg.feDisplacementMap.addTraits(TP.svg.Element);
 
@@ -132,7 +132,7 @@ TP.svg.feDisplacementMap.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feFlood');
+TP.dom.UIElementNode.defineSubtype('svg:feFlood');
 
 TP.svg.feFlood.addTraits(TP.svg.Element);
 
@@ -146,7 +146,7 @@ TP.svg.feFlood.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feGaussianBlur');
+TP.dom.UIElementNode.defineSubtype('svg:feGaussianBlur');
 
 TP.svg.feGaussianBlur.addTraits(TP.svg.Element);
 
@@ -160,7 +160,7 @@ TP.svg.feGaussianBlur.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feImage');
+TP.dom.UIElementNode.defineSubtype('svg:feImage');
 
 TP.svg.feImage.addTraits(TP.svg.Element);
 
@@ -174,7 +174,7 @@ TP.svg.feImage.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feMerge');
+TP.dom.UIElementNode.defineSubtype('svg:feMerge');
 
 TP.svg.feMerge.addTraits(TP.svg.Element);
 
@@ -188,7 +188,7 @@ TP.svg.feMerge.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feMergeNode');
+TP.dom.UIElementNode.defineSubtype('svg:feMergeNode');
 
 TP.svg.feMergeNode.addTraits(TP.svg.Element);
 
@@ -202,7 +202,7 @@ TP.svg.feMergeNode.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feMorphology');
+TP.dom.UIElementNode.defineSubtype('svg:feMorphology');
 
 TP.svg.feMorphology.addTraits(TP.svg.Element);
 
@@ -216,7 +216,7 @@ TP.svg.feMorphology.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feOffset');
+TP.dom.UIElementNode.defineSubtype('svg:feOffset');
 
 TP.svg.feOffset.addTraits(TP.svg.Element);
 
@@ -230,7 +230,7 @@ TP.svg.feOffset.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feSpecularLighting');
+TP.dom.UIElementNode.defineSubtype('svg:feSpecularLighting');
 
 TP.svg.feSpecularLighting.addTraits(TP.svg.Element);
 
@@ -244,7 +244,7 @@ TP.svg.feSpecularLighting.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feTile');
+TP.dom.UIElementNode.defineSubtype('svg:feTile');
 
 TP.svg.feTile.addTraits(TP.svg.Element);
 
@@ -258,7 +258,7 @@ TP.svg.feTile.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feTurbulence');
+TP.dom.UIElementNode.defineSubtype('svg:feTurbulence');
 
 TP.svg.feTurbulence.addTraits(TP.svg.Element);
 
@@ -272,7 +272,7 @@ TP.svg.feTurbulence.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feDistantLight');
+TP.dom.UIElementNode.defineSubtype('svg:feDistantLight');
 
 TP.svg.feDistantLight.addTraits(TP.svg.Element);
 
@@ -286,7 +286,7 @@ TP.svg.feDistantLight.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:fePointLight');
+TP.dom.UIElementNode.defineSubtype('svg:fePointLight');
 
 TP.svg.fePointLight.addTraits(TP.svg.Element);
 
@@ -300,7 +300,7 @@ TP.svg.fePointLight.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feSpotLight');
+TP.dom.UIElementNode.defineSubtype('svg:feSpotLight');
 
 TP.svg.feSpotLight.addTraits(TP.svg.Element);
 
@@ -314,7 +314,7 @@ TP.svg.feSpotLight.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feFuncR');
+TP.dom.UIElementNode.defineSubtype('svg:feFuncR');
 
 TP.svg.feFuncR.addTraits(TP.svg.Element);
 
@@ -328,7 +328,7 @@ TP.svg.feFuncR.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feFuncG');
+TP.dom.UIElementNode.defineSubtype('svg:feFuncG');
 
 TP.svg.feFuncG.addTraits(TP.svg.Element);
 
@@ -342,7 +342,7 @@ TP.svg.feFuncG.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feFuncB');
+TP.dom.UIElementNode.defineSubtype('svg:feFuncB');
 
 TP.svg.feFuncB.addTraits(TP.svg.Element);
 
@@ -356,7 +356,7 @@ TP.svg.feFuncB.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:feFuncA');
+TP.dom.UIElementNode.defineSubtype('svg:feFuncA');
 
 TP.svg.feFuncA.addTraits(TP.svg.Element);
 

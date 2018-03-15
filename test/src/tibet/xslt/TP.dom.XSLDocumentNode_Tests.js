@@ -12,7 +12,7 @@
 //  XSLDocumentNode
 //  ========================================================================
 
-TP.core.XSLDocumentNode.Type.describe('TP.core.XSLDocumentNode Type processing',
+TP.dom.XSLDocumentNode.Type.describe('TP.dom.XSLDocumentNode Type processing',
 function() {
 
     this.it('simple XSL transformation', function(test, options) {
@@ -79,7 +79,7 @@ function() {
                 //  nodes, so we get that here.
 
                 data = TP.ac(1, 2, 3, 4, 5, 6);
-                elem = data.as('TP.core.XMLRPCNode');
+                elem = data.as('TP.dom.XMLRPCNode');
 
                 str = tpXSLTDoc.transform(elem);
                 result = TP.elem(str);
@@ -124,7 +124,7 @@ function() {
                 //  'standard XML representation' and then use that.
 
                 data = TP.ac(1, 2, 3, 4, 5, 6);
-                elem = data.as('TP.core.XMLRPCNode');
+                elem = data.as('TP.dom.XMLRPCNode');
 
                 //  NB: These should match <xsl:param> elements in the XSLT
                 xslParams = TP.hc('numCols', 3);

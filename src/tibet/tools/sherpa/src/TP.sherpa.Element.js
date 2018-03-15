@@ -14,13 +14,13 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa.Element');
+TP.dom.UIElementNode.defineSubtype('sherpa.Element');
 
-TP.sherpa.Element.addTraits(TP.core.NonNativeUIElementNode);
+TP.sherpa.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.sherpa.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
+        TP.dom.UIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

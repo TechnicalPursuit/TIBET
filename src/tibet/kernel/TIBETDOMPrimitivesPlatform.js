@@ -183,7 +183,7 @@ TP.hc(
             //  attribute local name is in the list of bidirectional attributes.
             //  If it is, use 'io' as the binding attribute local name. If not,
             //  use 'in'.
-            ownerType = TP.core.ElementNode.getConcreteType(ownerElem);
+            ownerType = TP.dom.ElementNode.getConcreteType(ownerElem);
             ioAttrs = ownerType.get('bidiAttrs');
             bindAttrLocalName =
                         ioAttrs.indexOf(srcAttr.localName) !== TP.NOT_FOUND ?

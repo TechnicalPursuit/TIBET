@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:font');
+TP.dom.UIElementNode.defineSubtype('svg:font');
 
 TP.svg.font.addTraits(TP.svg.Element);
 
@@ -32,7 +32,7 @@ TP.svg.font.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:font_face');
+TP.dom.UIElementNode.defineSubtype('svg:font_face');
 
 TP.svg.font_face.addTraits(TP.svg.Element);
 
@@ -51,7 +51,7 @@ TP.svg.font_face.set('localName', 'font-face');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:glyph');
+TP.dom.UIElementNode.defineSubtype('svg:glyph');
 
 TP.svg.glyph.addTraits(TP.svg.Element);
 
@@ -65,7 +65,7 @@ TP.svg.glyph.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:missing_glyph');
+TP.dom.UIElementNode.defineSubtype('svg:missing_glyph');
 
 TP.svg.missing_glyph.addTraits(TP.svg.Element);
 
@@ -83,7 +83,7 @@ TP.svg.missing_glyph.set('localName', 'missing-glyph');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:hkern');
+TP.dom.UIElementNode.defineSubtype('svg:hkern');
 
 TP.svg.hkern.addTraits(TP.svg.Element);
 
@@ -97,7 +97,7 @@ TP.svg.hkern.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:vkern');
+TP.dom.UIElementNode.defineSubtype('svg:vkern');
 
 TP.svg.vkern.addTraits(TP.svg.Element);
 
@@ -111,7 +111,7 @@ TP.svg.vkern.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:font_face_src');
+TP.dom.UIElementNode.defineSubtype('svg:font_face_src');
 
 TP.svg.font_face_src.addTraits(TP.svg.Element);
 
@@ -129,7 +129,7 @@ TP.svg.font_face_src.set('localName', 'font-face-src');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:font_face_uri');
+TP.dom.UIElementNode.defineSubtype('svg:font_face_uri');
 
 TP.svg.font_face_uri.addTraits(TP.svg.Element);
 
@@ -147,7 +147,7 @@ TP.svg.font_face_uri.set('localName', 'font-face-uri');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:font_face_format');
+TP.dom.UIElementNode.defineSubtype('svg:font_face_format');
 
 TP.svg.font_face_format.addTraits(TP.svg.Element);
 
@@ -165,7 +165,7 @@ TP.svg.font_face_format.set('localName', 'font-face-format');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:font_face_name');
+TP.dom.UIElementNode.defineSubtype('svg:font_face_name');
 
 TP.svg.font_face_name.addTraits(TP.svg.Element);
 
@@ -183,7 +183,7 @@ TP.svg.font_face_name.set('localName', 'font-face-name');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:definition_src');
+TP.dom.UIElementNode.defineSubtype('svg:definition_src');
 
 TP.svg.definition_src.addTraits(TP.svg.Element);
 

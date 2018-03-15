@@ -112,7 +112,7 @@
 </config>
 
 <config id="templating">
-    <script src="~lib_test/src/tibet/templating/TP.core.CollectionNode_Tests.js" />
+    <script src="~lib_test/src/tibet/templating/TP.dom.CollectionNode_Tests.js" />
 
     <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello1_templatetest.js" />
     <script src="~lib_test/src/tibet/templating/src/TP.tmp.hello2_templatetest.js" />
@@ -140,7 +140,7 @@
 </config>
 
 <config id="focusing">
-    <script src="~lib_test/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+    <script src="~lib_test/src/tibet/focusing/TP.dom.UIElementNode_Tests.js" />
     <script src="~lib_test/src/tibet/focusing/TP.html.Element_Tests.js" />
 </config>
 
@@ -159,7 +159,7 @@
 <config id="formatting">
     <script src="~lib_test/src/tibet/formatting/String_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/TP.lang.Object_Tests.js" />
-    <script src="~lib_test/src/tibet/formatting/TP.core.ElementNode_Tests.js" />
+    <script src="~lib_test/src/tibet/formatting/TP.dom.ElementNode_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/TP.templateParser_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/XML_JSON_Conversion_Tests.js" />
 </config>
@@ -255,7 +255,7 @@
 </config>
 
 <config id="xslt">
-    <script src="~lib_test/src/tibet/xslt/TP.core.XSLDocumentNode_Tests.js" />
+    <script src="~lib_test/src/tibet/xslt/TP.dom.XSLDocumentNode_Tests.js" />
 </config>
 
 </package>

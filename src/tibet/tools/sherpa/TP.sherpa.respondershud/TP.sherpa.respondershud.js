@@ -101,7 +101,7 @@ function(aTPElement) {
     /**
      * @method focusOnTarget
      * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
      *     receiver on.
      * @returns {TP.sherpa.respondershud} The receiver.
      */
@@ -277,7 +277,7 @@ function(aSignal) {
     newTargetTPElem = TP.bySystemId(peerID);
 
     //  If its a Node, then it was valid and it was found. Focus the halo.
-    if (TP.isKindOf(newTargetTPElem, TP.core.Node) &&
+    if (TP.isKindOf(newTargetTPElem, TP.dom.Node) &&
         !TP.isType(newTargetTPElem)) {
         halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
@@ -742,7 +742,7 @@ function(aType) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.respondershud.Inst.defineMethod('buildNewContent',

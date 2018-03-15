@@ -14,14 +14,14 @@
 
 //  Don't redefine this if another test has defined it.
 if (!TP.isType(TP.tmp.testElem)) {
-    TP.core.UIElementNode.defineSubtype('tmp.testElem');
+    TP.dom.UIElementNode.defineSubtype('tmp.testElem');
 }
 
 //  ========================================================================
-//  TP.core.UIElementNode
+//  TP.dom.UIElementNode
 //  ========================================================================
 
-TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focusing',
+TP.dom.UIElementNode.Inst.describe('TP.dom.UIElementNode: focusing',
 function() {
 
     var unloadURI,
@@ -2280,7 +2280,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
+TP.dom.UIElementNode.Inst.describe('TP.dom.UIElementNode: focus stack',
 function() {
 
     var unloadURI,

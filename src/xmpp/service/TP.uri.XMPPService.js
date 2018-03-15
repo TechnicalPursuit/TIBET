@@ -2053,7 +2053,7 @@ function(aSignal) {
     //  names
     remoteSubscriptions = theUser.get('remoteSubscriptions');
 
-    //  The request was successful. Grab the results from the TP.core.Node
+    //  The request was successful. Grab the results from the TP.dom.Node
     //  at 'node' in the payload.
     if (TP.isValid(subscriptionResults = aSignal.getPayload().at('node'))) {
         if (TP.notEmpty(subscriptionNames =

@@ -89,11 +89,11 @@ TP.html.blockquote.Type.set('uriAttrs', TP.ac('cite'));
 
 TP.html.CoreAttrs.defineSubtype('br');
 
-TP.html.br.addTraits(TP.core.EmptyElementNode);
+TP.html.br.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.br.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ========================================================================
 //  TP.html.cite

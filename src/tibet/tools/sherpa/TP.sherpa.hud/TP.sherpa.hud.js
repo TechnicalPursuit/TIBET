@@ -16,9 +16,9 @@
 
 TP.sherpa.Element.defineSubtype('hud');
 
-TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
+TP.sherpa.hud.addTraits(TP.dom.TemplatedNode);
 
-TP.sherpa.hud.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.sherpa.hud.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
 
 TP.sherpa.hud.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
@@ -407,7 +407,7 @@ function(aSignal) {
 //  TP.sherpa.huddrawer
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:huddrawer');
+TP.dom.UIElementNode.defineSubtype('sherpa:huddrawer');
 
 //  ------------------------------------------------------------------------
 //  end

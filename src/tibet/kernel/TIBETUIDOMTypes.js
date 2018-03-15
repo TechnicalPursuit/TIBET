@@ -9,76 +9,76 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.UIElementNode}
- * @summary TP.core.UIElementNode is the common supertype for all UI node
+ * @type {TP.dom.UIElementNode}
+ * @summary TP.dom.UIElementNode is the common supertype for all UI node
  *     types. In particular, this includes the entire html: tree and most of
  *     the xctrls: namespace, which constitute the majority of UI nodes in
  *     TIBET.
  */
 
 //  ========================================================================
-//  TP.core.UIElementNode
+//  TP.dom.UIElementNode
 //  ========================================================================
 
-TP.core.ElementNode.defineSubtype('UIElementNode');
+TP.dom.ElementNode.defineSubtype('UIElementNode');
 
 //  need a node of a specific subtype, almost always a node in a specific
 //  namespace such as html:
-TP.core.UIElementNode.isAbstract(true);
+TP.dom.UIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  The map of keys to signals for any keybindings for this type.
-TP.core.UIElementNode.Type.defineAttribute('keybindings');
+TP.dom.UIElementNode.Type.defineAttribute('keybindings');
 
 //  Whether or not resources like style are inlined
-TP.core.UIElementNode.Type.defineAttribute('resourcesInlined');
+TP.dom.UIElementNode.Type.defineAttribute('resourcesInlined');
 
 //  The Array of loaded stylesheet element GIDs
-TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
+TP.dom.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 
 //  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
 //  bubble outside of themselves. This prevents whole chunks of GUI from being
 //  inadvertently disabled such that they can never be enabled again.
-TP.core.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
+TP.dom.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
         TP.ac('TP.sig.UIDisabled', 'TP.sig.UIEnabled'));
 
 //  The attributes that are toggleable on this type and subtypes. By default,
 //  no states are toggleable.
-TP.core.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
+TP.dom.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
 
 //  Note how these properties are TYPE_LOCAL, by design.
 
-//  The TP.core.UIElementNode that focus is moving to, based on TIBET
+//  The TP.dom.UIElementNode that focus is moving to, based on TIBET
 //  calculations.
-TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
+TP.dom.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
 
 //  The Element that the system is trying to move the focus to because we're
 //  manually focusing on an Element, but which TIBET will do its best to prevent
 //  in favor of the TIBET-calculated element (i.e. focus/blur events are not
 //  cancellable - sigh).
-TP.core.UIElementNode.defineAttribute('$manuallyFocusingElement');
-TP.core.UIElementNode.defineAttribute('$manuallyBlurringElement');
+TP.dom.UIElementNode.defineAttribute('$manuallyFocusingElement');
+TP.dom.UIElementNode.defineAttribute('$manuallyBlurringElement');
 
 //  The currently calculated focus context
-TP.core.UIElementNode.defineAttribute('$calculatedFocusContext');
+TP.dom.UIElementNode.defineAttribute('$calculatedFocusContext');
 
 //  Whether or not focus is shifting because of a mouse click/down/up
-TP.core.UIElementNode.defineAttribute('$focusingViaMouseEvent');
+TP.dom.UIElementNode.defineAttribute('$focusingViaMouseEvent');
 
 //  The element that was the last activated.
-TP.core.UIElementNode.defineAttribute('$lastActiveElement');
+TP.dom.UIElementNode.defineAttribute('$lastActiveElement');
 
 //  Whether or not we're switching focus contexts in an asynchronous fashion.
-TP.core.UIElementNode.defineAttribute('$asyncSwitchingContexts');
+TP.dom.UIElementNode.defineAttribute('$asyncSwitchingContexts');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('$addStylesheetResource',
+TP.dom.UIElementNode.Type.defineMethod('$addStylesheetResource',
 function(aDocument, ourID, sheetElemID, aStyleURI) {
 
     /**
@@ -311,7 +311,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('addStylesheetTo',
+TP.dom.UIElementNode.Type.defineMethod('addStylesheetTo',
 function(aDocument) {
 
     /**
@@ -539,7 +539,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('canHandleKey',
+TP.dom.UIElementNode.Type.defineMethod('canHandleKey',
 function(aSignal) {
 
     /**
@@ -590,7 +590,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getCompilationAttrs',
+TP.dom.UIElementNode.Type.defineMethod('getCompilationAttrs',
 function(aRequest) {
 
     /**
@@ -640,7 +640,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getKeybinding',
+TP.dom.UIElementNode.Type.defineMethod('getKeybinding',
 function(keyname) {
 
     /**
@@ -673,7 +673,7 @@ function(keyname) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getKeybindings',
+TP.dom.UIElementNode.Type.defineMethod('getKeybindings',
 function() {
 
     /**
@@ -693,7 +693,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('isOpaqueCapturerFor',
+TP.dom.UIElementNode.Type.defineMethod('isOpaqueCapturerFor',
 function(anElement, aSignal) {
 
     /**
@@ -727,7 +727,7 @@ function(anElement, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getLoadedStylesheetDocumentGIDs',
+TP.dom.UIElementNode.Type.defineMethod('getLoadedStylesheetDocumentGIDs',
 function() {
 
     /**
@@ -753,7 +753,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
+TP.dom.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
     /**
@@ -773,7 +773,7 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusComputation',
+TP.dom.UIElementNode.Type.defineMethod('isResponderForUIFocusComputation',
 function(aNode, aSignal) {
 
     /**
@@ -793,7 +793,7 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('mutationAddedFilteredNodes',
+TP.dom.UIElementNode.Type.defineMethod('mutationAddedFilteredNodes',
 function(addedNodes, queryInfo) {
 
     /**
@@ -804,7 +804,7 @@ function(addedNodes, queryInfo) {
      *     then filtered by our query.
      * @param {TP.core.Hash} queryInfo Information that was registered for this
      *     query when it was originally set up.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var queryStr,
@@ -847,7 +847,7 @@ function(addedNodes, queryInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('$notifyInstancesThatStylesheetLoaded',
+TP.dom.UIElementNode.Type.defineMethod('$notifyInstancesThatStylesheetLoaded',
 function(styleTPElem) {
 
     /**
@@ -856,7 +856,7 @@ function(styleTPElem) {
      *     (probably) rely on to render is available.
      * @param {TP.html.style} styleTPElem The stylesheet element that got
      *     loaded.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var body,
@@ -895,7 +895,7 @@ function(styleTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('$notifyInstancesWhenStylesheetLoaded',
+TP.dom.UIElementNode.Type.defineMethod('$notifyInstancesWhenStylesheetLoaded',
 function(styleTPElemToObserve) {
 
     /**
@@ -905,7 +905,7 @@ function(styleTPElemToObserve) {
      *     (probably) rely on to render is available.
      * @param {TP.html.style} styleTPElemToObserve The stylesheet element to
      *     observe for when it is loaded.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var loadedHandler;
@@ -941,7 +941,7 @@ function(styleTPElemToObserve) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('onblur',
+TP.dom.UIElementNode.Type.defineMethod('onblur',
 function(aTargetElem, anEvent) {
 
     /**
@@ -952,7 +952,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var manuallyBlurringElement,
@@ -973,12 +973,12 @@ function(aTargetElem, anEvent) {
     */
 
     manuallyBlurringElement =
-        TP.core.UIElementNode.get('$manuallyBlurringElement');
+        TP.dom.UIElementNode.get('$manuallyBlurringElement');
 
     if (TP.isElement(manuallyBlurringElement)) {
 
         //  Reset this to null for the next pass.
-        TP.core.UIElementNode.set('$manuallyBlurringElement', null);
+        TP.dom.UIElementNode.set('$manuallyBlurringElement', null);
 
         return this;
     }
@@ -993,7 +993,7 @@ function(aTargetElem, anEvent) {
     //  See the 'onfocus' and other focus calculation machinery methods for more
     //  information.
     manuallyFocusingElement =
-        TP.core.UIElementNode.get('$manuallyFocusingElement');
+        TP.dom.UIElementNode.get('$manuallyFocusingElement');
 
     if (TP.isValid(manuallyFocusingElement)) {
 
@@ -1028,7 +1028,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('onfocus',
+TP.dom.UIElementNode.Type.defineMethod('onfocus',
 function(aTargetElem, anEvent) {
 
     /**
@@ -1039,7 +1039,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var focusedElem,
@@ -1068,36 +1068,36 @@ function(aTargetElem, anEvent) {
     //  Because focus/blur events are not cancellable, this will be called even
     //  though we don't want it, but we can prevent having any TIBET-level UI*
     //  signals from being dispatched.
-    if (TP.isValid(TP.core.UIElementNode.get('$manuallyFocusingElement'))) {
+    if (TP.isValid(TP.dom.UIElementNode.get('$manuallyFocusingElement'))) {
         //  Reset this to null for the next pass.
-        TP.core.UIElementNode.set('$manuallyFocusingElement', null);
+        TP.dom.UIElementNode.set('$manuallyFocusingElement', null);
 
         return this;
     }
 
-    //  If there is a calculated TIBET focusing TP.core.ElementNode, and its
+    //  If there is a calculated TIBET focusing TP.dom.ElementNode, and its
     //  native node isn't the target element, then configure 'manually focusing
     //  element' to be the target element, and force the calculated one to
     //  focus. Note that we return here. That will avoid any extraneous TIBET
     //  signaling of UI* signals. These will be signaled when the 'focus()' call
     //  here comes back through this mechanism and the calculated one *will* be
     //  the same as the target.
-    focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    focusingTPElem = TP.dom.UIElementNode.get('$calculatedFocusingTPElem');
 
     if (TP.isValid(focusingTPElem)) {
 
         if (focusingTPElem.getNativeNode() !== aTargetElem) {
 
-            oldMFE = TP.core.UIElementNode.get('$manuallyFocusingElement');
-            TP.core.UIElementNode.set('$manuallyFocusingElement', aTargetElem);
+            oldMFE = TP.dom.UIElementNode.get('$manuallyFocusingElement');
+            TP.dom.UIElementNode.set('$manuallyFocusingElement', aTargetElem);
 
             focusingTPElem.focus();
 
-            TP.core.UIElementNode.set('$manuallyFocusingElement', oldMFE);
+            TP.dom.UIElementNode.set('$manuallyFocusingElement', oldMFE);
         }
 
         //  Reset this to null for the next pass.
-        TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
 
         //  Whether or not this was the calculated element, we return here - the
         //  rest of the machinery will take care of things.
@@ -1121,7 +1121,7 @@ function(aTargetElem, anEvent) {
     //  some sort, then we just return. Otherwise, the focusing machinery gets
     //  invoked all over again.
     if (aTargetElem === TP.nodeGetDocument(aTargetElem).activeElement &&
-        TP.notTrue(TP.core.UIElementNode.get('$focusingViaMouseEvent'))) {
+        TP.notTrue(TP.dom.UIElementNode.get('$focusingViaMouseEvent'))) {
         return this;
     }
 
@@ -1143,7 +1143,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('onkeydown',
+TP.dom.UIElementNode.Type.defineMethod('onkeydown',
 function(aTargetElem, anEvent) {
 
     /**
@@ -1154,7 +1154,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var focusedTPElem,
@@ -1206,7 +1206,7 @@ function(aTargetElem, anEvent) {
 
             //  Cache a reference to the target element that we sent the
             //  'TP.sig.UIActivate' signal from.
-            TP.core.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
+            TP.dom.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
 
             if (activateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
@@ -1274,7 +1274,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('onkeyup',
+TP.dom.UIElementNode.Type.defineMethod('onkeyup',
 function(aTargetElem, anEvent) {
 
     /**
@@ -1285,7 +1285,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -1327,7 +1327,7 @@ function(aTargetElem, anEvent) {
     //      - the currently focused element
     //      - the target element supplied to this method
     evtTargetTPElem = TP.ifInvalid(
-                        TP.core.UIElementNode.get('$lastActiveElement'),
+                        TP.dom.UIElementNode.get('$lastActiveElement'),
                         focusedTPElem);
     if (TP.notValid(evtTargetTPElem)) {
         evtTargetTPElem = TP.wrap(aTargetElem);
@@ -1405,14 +1405,14 @@ function(aTargetElem, anEvent) {
     }
 
     //  Make sure to null out the last active element for the 'next run'.
-    TP.core.UIElementNode.set('$lastActiveElement', null);
+    TP.dom.UIElementNode.set('$lastActiveElement', null);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('onmousedown',
+TP.dom.UIElementNode.Type.defineMethod('onmousedown',
 function(aTargetElem, anEvent) {
 
     /**
@@ -1423,7 +1423,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -1450,7 +1450,7 @@ function(aTargetElem, anEvent) {
 
     //  Cache a reference to the target element that we sent the
     //  'TP.sig.UIActivate' signal from.
-    TP.core.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
+    TP.dom.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
 
     if (activateSignal.shouldPrevent()) {
         //  Since the activation signal was cancelled, we cancel the native
@@ -1462,19 +1462,19 @@ function(aTargetElem, anEvent) {
     //  does after it computes a 'successor element to focus' - in this case,
     //  that successor element is the element that is our target.
     if (evtTargetTPElem.canFocus()) {
-        TP.core.UIElementNode.set('$calculatedFocusingTPElem', evtTargetTPElem);
+        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', evtTargetTPElem);
     }
 
     //  Set the flag to let the rest of the focusing machinery know that this is
     //  happening due to a mouse event.
-    TP.core.UIElementNode.set('$focusingViaMouseEvent', true);
+    TP.dom.UIElementNode.set('$focusingViaMouseEvent', true);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('onmouseup',
+TP.dom.UIElementNode.Type.defineMethod('onmouseup',
 function(aTargetElem, anEvent) {
 
     /**
@@ -1485,7 +1485,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -1506,7 +1506,7 @@ function(aTargetElem, anEvent) {
     //  look at (in order):
     //      - the last active element
     //      - the target element supplied to this method
-    evtTargetTPElem = TP.core.UIElementNode.get('$lastActiveElement');
+    evtTargetTPElem = TP.dom.UIElementNode.get('$lastActiveElement');
     if (TP.notValid(evtTargetTPElem)) {
         evtTargetTPElem = TP.wrap(aTargetElem);
     }
@@ -1527,20 +1527,20 @@ function(aTargetElem, anEvent) {
     }
 
     //  Make sure to null out the last active element for the 'next run'.
-    TP.core.UIElementNode.set('$lastActiveElement', null);
+    TP.dom.UIElementNode.set('$lastActiveElement', null);
 
-    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
 
     //  Reset the flag that let's the rest of the focusing machinery know that
     //  this is happening due to a mouse event to false.
-    TP.core.UIElementNode.set('$focusingViaMouseEvent', false);
+    TP.dom.UIElementNode.set('$focusingViaMouseEvent', false);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('popOffFocusStack',
+TP.dom.UIElementNode.Type.defineMethod('popOffFocusStack',
 function() {
 
     /**
@@ -1580,7 +1580,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('pushOnFocusStack',
+TP.dom.UIElementNode.Type.defineMethod('pushOnFocusStack',
 function(aTPElem) {
 
     /**
@@ -1623,7 +1623,7 @@ function(aTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('registerKeybinding',
+TP.dom.UIElementNode.Type.defineMethod('registerKeybinding',
 function(keyname, signal) {
 
     /**
@@ -1655,7 +1655,7 @@ function(keyname, signal) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('tagCompile',
+TP.dom.UIElementNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -1729,7 +1729,7 @@ function(aRequest) {
 //  TSH Execution Content
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('cmdRunContent',
+TP.dom.UIElementNode.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
@@ -1775,7 +1775,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('act',
+TP.dom.UIElementNode.Inst.defineMethod('act',
 function(aSignal) {
 
     /**
@@ -1784,7 +1784,7 @@ function(aSignal) {
      *     is a noop.
      * @param {TP.sig.Signal} aSignal The signal (typically a request) which
      *     triggered this activity.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     return this;
@@ -1792,7 +1792,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('acceptFocusedResponder',
+TP.dom.UIElementNode.Inst.defineMethod('acceptFocusedResponder',
 function() {
 
     /**
@@ -1811,9 +1811,9 @@ function() {
     //  than the one we're processing focused responder status for. So we reject
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
-    focusTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    focusTPElem = TP.dom.UIElementNode.get('$calculatedFocusingTPElem');
 
-    if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
+    if (TP.isKindOf(focusTPElem, TP.dom.UIElementNode) &&
         !focusTPElem.identicalTo(this)) {
 
         return false;
@@ -1824,13 +1824,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('becomeFocusedResponder',
+TP.dom.UIElementNode.Inst.defineMethod('becomeFocusedResponder',
 function() {
 
     /**
      * @method becomeFocusedResponder
      * @summary Tells the receiver that it is now the 'focused responder'.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  Push ourself and signal 'TP.sig.UIDidPushFocus'
@@ -1842,7 +1842,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('canFocus',
+TP.dom.UIElementNode.Inst.defineMethod('canFocus',
 function() {
 
     /**
@@ -1858,14 +1858,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('computeSuccessorFocusElement',
+TP.dom.UIElementNode.Inst.defineMethod('computeSuccessorFocusElement',
 function(focusedTPElem, moveAction) {
 
     /**
      * @method computeSuccessorFocusElement
      * @summary Computes the 'successor' focus element using the currently
      *     focused element (if there is one) and the move action.
-     * @param {TP.core.ElementNode} focusedTPElem The currently focused element.
+     * @param {TP.dom.ElementNode} focusedTPElem The currently focused element.
      *     This may be null if no element is currently focused.
      * @param {Constant} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
@@ -1879,7 +1879,7 @@ function(focusedTPElem, moveAction) {
      *         TP.FIRST_IN_PREVIOUS_GROUP
      *         TP.FOLLOWING
      *         TP.PRECEDING
-     * @returns {TP.core.ElementNode} The element that is the successor focus
+     * @returns {TP.dom.ElementNode} The element that is the successor focus
      *     element.
      */
 
@@ -2500,7 +2500,7 @@ function(focusedTPElem, moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('dispatchResponderSignalFromAttr',
+TP.dom.UIElementNode.Inst.defineMethod('dispatchResponderSignalFromAttr',
 function(aSignalName, aTriggerSignal) {
 
     /**
@@ -2516,7 +2516,7 @@ function(aSignalName, aTriggerSignal) {
      * @param {TP.sig.Signal} aTriggerSignal The signal that triggered the
      *     machinery to get to this point. This is usually some kind of signal
      *     wrapping a native GUI Event.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var originElem,
@@ -2553,17 +2553,17 @@ function(aSignalName, aTriggerSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('findFocusableElements',
+TP.dom.UIElementNode.Inst.defineMethod('findFocusableElements',
 function(includesGroups) {
 
     /**
      * @method findFocusableElements
      * @summary Finds focusable elements under the receiver and returns an
-     *     Array of TP.core.ElementNodes of them.
+     *     Array of TP.dom.ElementNodes of them.
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
      *     elements as 'focusable' elements under the receiver. The default is
      *     false.
-     * @returns {Array} An Array of TP.core.ElementNodes under the receiver that
+     * @returns {Array} An Array of TP.dom.ElementNodes under the receiver that
      *     can be focused.
      */
 
@@ -2646,13 +2646,13 @@ function(includesGroups) {
     //  HTML5 tabindex rules.
     results.sort(TP.sort.TABINDEX_ORDER);
 
-    //  Wrap the results to make TP.core.ElementNodes
+    //  Wrap the results to make TP.dom.ElementNodes
     return TP.wrap(results);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getComputedStyleProperty',
+TP.dom.UIElementNode.Inst.defineMethod('getComputedStyleProperty',
 function(aProperty, inPixels) {
 
     /**
@@ -2684,7 +2684,7 @@ function(aProperty, inPixels) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDisplayValue',
+TP.dom.UIElementNode.Inst.defineMethod('getDisplayValue',
 function(anAttribute) {
 
     /**
@@ -2700,16 +2700,16 @@ function(anAttribute) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getFocusContextElement',
+TP.dom.UIElementNode.Inst.defineMethod('getFocusContextElement',
 function() {
 
     /**
      * @method getFocusContextElement
-     * @summary Returns the TP.core.UIElementNode that forms the receiver's
+     * @summary Returns the TP.dom.UIElementNode that forms the receiver's
      *     'focus context'. This is normally the document's 'body' element, but
      *     it can be any ancestor element with the 'tibet:focuscontext'
      *     attribute.
-     * @returns {TP.core.UIElementNode} The TP.core.UIElementNode acting as the
+     * @returns {TP.dom.UIElementNode} The TP.dom.UIElementNode acting as the
      *      'focus context' element of the receiver.
      */
 
@@ -2725,19 +2725,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getFocusedElement',
+TP.dom.UIElementNode.Inst.defineMethod('getFocusedElement',
 function(includeBody) {
 
     /**
      * @method getFocusedElement
-     * @summary Returns the TP.core.UIElementNode representing the element in
+     * @summary Returns the TP.dom.UIElementNode representing the element in
      *     the document that currently has focus.
      * @param {Boolean} includeBody Whether or not to include the 'body' element
      *     if another element can't be found. HTML5 says that the 'body' will
      *     be the 'active' element if another element can't be found, but
      *     sometimes callers don't want that. This defaults to true.
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.core.UIElementNode} The TP.core.UIElementNode that currently
+     * @returns {TP.dom.UIElementNode} The TP.dom.UIElementNode that currently
      *     has focus in the document.
      */
 
@@ -2767,7 +2767,7 @@ function(includeBody) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getHeight',
+TP.dom.UIElementNode.Inst.defineMethod('getHeight',
 function() {
 
     /**
@@ -2781,7 +2781,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getGlobalPoint',
+TP.dom.UIElementNode.Inst.defineMethod('getGlobalPoint',
 function(wantsTransformed) {
 
     /**
@@ -2807,7 +2807,7 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getGlobalRect',
+TP.dom.UIElementNode.Inst.defineMethod('getGlobalRect',
 function(wantsTransformed) {
 
     /**
@@ -2833,7 +2833,7 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getGroupChainNames',
+TP.dom.UIElementNode.Inst.defineMethod('getGroupChainNames',
 function() {
 
     /**
@@ -2883,7 +2883,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getGroupName',
+TP.dom.UIElementNode.Inst.defineMethod('getGroupName',
 function() {
 
     /**
@@ -2904,15 +2904,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getGroupElements',
+TP.dom.UIElementNode.Inst.defineMethod('getGroupElements',
 function() {
 
     /**
      * @method getGroupElements
-     * @summary Returns an Array containing other TP.core.UIElementNodes that
+     * @summary Returns an Array containing other TP.dom.UIElementNodes that
      *     are members of the same group as the receiver.
-     * @returns {TP.core.UIElementNode[]} The array of other
-     *     TP.core.UIElementNodes belonging to the same group as the receiver.
+     * @returns {TP.dom.UIElementNode[]} The array of other
+     *     TP.dom.UIElementNodes belonging to the same group as the receiver.
      */
 
     var groupID,
@@ -2933,7 +2933,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getNextGroupName',
+TP.dom.UIElementNode.Inst.defineMethod('getNextGroupName',
 function(startGroupName, alwaysWrap, wantsNested) {
 
     /**
@@ -3022,7 +3022,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
             return null;
         }
     } else {
-        //  Grab the parent group's TP.core.ElementNode and its member
+        //  Grab the parent group's TP.dom.ElementNode and its member
         //  groups.
         parentGroupTPElem = TP.byId(parentGroupName, win);
         memberGroupTPElems = parentGroupTPElem.getMemberGroups();
@@ -3056,13 +3056,13 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getOffsetParent',
+TP.dom.UIElementNode.Inst.defineMethod('getOffsetParent',
 function() {
 
     /**
      * @method getOffsetParent
      * @summary Returns the receiver's 'offset parent'.
-     * @returns {TP.core.UIElementNode} The receiver's 'offset parent' in the
+     * @returns {TP.dom.UIElementNode} The receiver's 'offset parent' in the
      *     DOM.
      */
 
@@ -3071,7 +3071,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getOffsetPoint',
+TP.dom.UIElementNode.Inst.defineMethod('getOffsetPoint',
 function(wantsTransformed) {
 
     /**
@@ -3096,7 +3096,7 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getOffsetRect',
+TP.dom.UIElementNode.Inst.defineMethod('getOffsetRect',
 function(wantsTransformed) {
 
     /**
@@ -3121,7 +3121,7 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getPagePoint',
+TP.dom.UIElementNode.Inst.defineMethod('getPagePoint',
 function(wantsTransformed) {
 
     /**
@@ -3146,7 +3146,7 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getPageRect',
+TP.dom.UIElementNode.Inst.defineMethod('getPageRect',
 function(wantsTransformed) {
 
     /**
@@ -3172,7 +3172,7 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getParentGroupName',
+TP.dom.UIElementNode.Inst.defineMethod('getParentGroupName',
 function(startGroupName) {
 
     /**
@@ -3214,7 +3214,7 @@ function(startGroupName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getPreviousGroupName',
+TP.dom.UIElementNode.Inst.defineMethod('getPreviousGroupName',
 function(startGroupName, alwaysWrap, wantsNested) {
 
     /**
@@ -3304,7 +3304,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
             return null;
         }
     } else {
-        //  Grab the parent group's TP.core.ElementNode and its member
+        //  Grab the parent group's TP.dom.ElementNode and its member
         //  groups.
         parentGroupTPElem = TP.byId(parentGroupName, win);
         memberGroupTPElems = parentGroupTPElem.getMemberGroups();
@@ -3338,7 +3338,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getScrollOffsetPoint',
+TP.dom.UIElementNode.Inst.defineMethod('getScrollOffsetPoint',
 function() {
 
     /**
@@ -3357,7 +3357,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getStyleProperty',
+TP.dom.UIElementNode.Inst.defineMethod('getStyleProperty',
 function(aProperty) {
 
     /**
@@ -3375,7 +3375,7 @@ function(aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getSubmitName',
+TP.dom.UIElementNode.Inst.defineMethod('getSubmitName',
 function() {
 
     /**
@@ -3397,7 +3397,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getStylesheetForStyleResource',
+TP.dom.UIElementNode.Inst.defineMethod('getStylesheetForStyleResource',
 function() {
 
     /**
@@ -3452,7 +3452,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getWidth',
+TP.dom.UIElementNode.Inst.defineMethod('getWidth',
 function() {
 
     /**
@@ -3466,7 +3466,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getWidthAndHeight',
+TP.dom.UIElementNode.Inst.defineMethod('getWidthAndHeight',
 function() {
 
     /**
@@ -3481,7 +3481,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('hasFocus',
+TP.dom.UIElementNode.Inst.defineMethod('hasFocus',
 function(includeDescendants) {
 
     /**
@@ -3508,7 +3508,7 @@ function(includeDescendants) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('hide',
+TP.dom.UIElementNode.Inst.defineMethod('hide',
 function(preserveSpace) {
 
     /**
@@ -3516,7 +3516,7 @@ function(preserveSpace) {
      * @summary Hides the receiver's node.
      * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
      *     taken up by the element in its document. The default is false.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementHide(this.getNativeNode(), preserveSpace);
@@ -3526,7 +3526,7 @@ function(preserveSpace) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('ignoreKeybindingsDirectly',
+TP.dom.UIElementNode.Inst.defineMethod('ignoreKeybindingsDirectly',
 function() {
 
     /**
@@ -3535,7 +3535,7 @@ function() {
      *     (normally those that use OBSERVER_FIRING) that are thrown from keys
      *     that are bound using the receiver's key bindings. This is normally
      *     used in a 'temporary mode' for a GUI element.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var keySignalHandler;
@@ -3556,7 +3556,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isDisabled',
+TP.dom.UIElementNode.Inst.defineMethod('isDisabled',
 function() {
 
     /**
@@ -3572,7 +3572,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isDisplayed',
+TP.dom.UIElementNode.Inst.defineMethod('isDisplayed',
 function() {
 
     /**
@@ -3593,7 +3593,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
+TP.dom.UIElementNode.Inst.defineMethod('isOverflowing',
 function(direction) {
 
     /**
@@ -3636,7 +3636,7 @@ function(direction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isReadyToRender',
+TP.dom.UIElementNode.Inst.defineMethod('isReadyToRender',
 function() {
 
     /**
@@ -3665,7 +3665,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isVisible',
+TP.dom.UIElementNode.Inst.defineMethod('isVisible',
 function(partial, direction, wantsTransformed) {
 
     /**
@@ -3693,7 +3693,7 @@ function(partial, direction, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('observeKeybindingsDirectly',
+TP.dom.UIElementNode.Inst.defineMethod('observeKeybindingsDirectly',
 function() {
 
     /**
@@ -3702,7 +3702,7 @@ function() {
      *     OBSERVER_FIRING) that are thrown from keys that are bound using the
      *     receiver's key bindings. This is normally used in a 'temporary mode'
      *     for a GUI element.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var keySignalHandler;
@@ -3755,7 +3755,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('moveFocus',
+TP.dom.UIElementNode.Inst.defineMethod('moveFocus',
 function(moveAction) {
 
     /**
@@ -3774,7 +3774,7 @@ function(moveAction) {
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
      *          TP.PRECEDING
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var currentTPElem,
@@ -3787,7 +3787,7 @@ function(moveAction) {
 
     //  If there was a real currently focused element, then we move away from it
     //  to the desired element.
-    if (TP.isKindOf(currentTPElem, TP.core.UIElementNode)) {
+    if (TP.isKindOf(currentTPElem, TP.dom.UIElementNode)) {
         //  Now, compute the 'successor' element to focus based on the move
         //  action, the event and the currently focused element (which is
         //  ourself since the signal was fired at us). This could be null if
@@ -3804,9 +3804,9 @@ function(moveAction) {
     //  If there's a real successor element, then focus it. This will cause the
     //  standard focusing behavior to take over which should cause
     //  UIFocus/UIDidFocus to be signaled, etc. etc.
-    if (TP.isKindOf(successorTPElem, TP.core.UIElementNode)) {
+    if (TP.isKindOf(successorTPElem, TP.dom.UIElementNode)) {
 
-        TP.core.UIElementNode.set('$calculatedFocusingTPElem', successorTPElem);
+        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', successorTPElem);
 
         //  We do this to match the native focusing behavior that haven't been
         //  sent through this computation routine (i.e. clicks, etc.)
@@ -3821,7 +3821,7 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('removeAttrDisabled',
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrDisabled',
 function() {
 
     /**
@@ -3837,13 +3837,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('removeTransform',
+TP.dom.UIElementNode.Inst.defineMethod('removeTransform',
 function() {
 
     /**
      * @method removeTransform
      * @summary Removes any CSS transform set on the receiver.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementRemoveTransform(this.getNativeNode());
@@ -3853,14 +3853,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('resignFocusedResponder',
+TP.dom.UIElementNode.Inst.defineMethod('resignFocusedResponder',
 function() {
 
     /**
      * @method resignFocusedResponder
      * @summary Tells the receiver that it is no longer the 'focused
      *     responder'.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var newFocusTPElem,
@@ -3875,21 +3875,21 @@ function() {
 
     //  The element that the focus is moving to. This might be null if we aren't
     //  being told to resign focus because of the TIBET focus manager.
-    newFocusTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    newFocusTPElem = TP.dom.UIElementNode.get('$calculatedFocusingTPElem');
 
     //  Now, we should clear the $calculatedFocusingTPElem property so that
     //  focusing on the new element will succeed. We'll adjust this below as
     //  necessary in case we don't want the focusing to happen on the 'current
     //  new element' that the system thinks it wants to focus on, but another
     //  element of our own choosing.
-    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
 
     //  If the system has this flag on, that must mean that a component with a
     //  different focus context will be taking focus, but in an asynchronous
     //  fashion. Therefore, we do *not* want to proceed with manipulating the
     //  focus stack. We want to leave the current element on there.
-    if (TP.core.UIElementNode.get('$asyncSwitchingContexts')) {
-        TP.core.UIElementNode.set('$asyncSwitchingContexts', false);
+    if (TP.dom.UIElementNode.get('$asyncSwitchingContexts')) {
+        TP.dom.UIElementNode.set('$asyncSwitchingContexts', false);
         return this;
     }
 
@@ -3907,9 +3907,9 @@ function() {
     //  TIBET wants us to focus. Since the focusing element is becoming the
     //  focused responder, this context will be considered to be the 'new'
     //  context.
-    newFocusContext = TP.core.UIElementNode.get('$calculatedFocusContext');
+    newFocusContext = TP.dom.UIElementNode.get('$calculatedFocusContext');
     if (TP.notValid(newFocusContext)) {
-        if (TP.isKindOf(newFocusTPElem, TP.core.UIElementNode)) {
+        if (TP.isKindOf(newFocusTPElem, TP.dom.UIElementNode)) {
             newFocusContext = newFocusTPElem.getFocusContextElement();
         }
     }
@@ -3978,7 +3978,7 @@ function() {
             //  be cancelled) and then the 'focus' call below will try to focus
             //  this element *after it is forked* (allowing the stack to
             //  unwind). See 'acceptFocusedResponder' for more information.
-            TP.core.UIElementNode.set(
+            TP.dom.UIElementNode.set(
                     '$calculatedFocusingTPElem', tpElementToFocus);
         }
     }
@@ -3991,7 +3991,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('scrollBy',
+TP.dom.UIElementNode.Inst.defineMethod('scrollBy',
 function(direction, incrementValue, cssProperty) {
 
     /**
@@ -4014,7 +4014,7 @@ function(direction, incrementValue, cssProperty) {
      *     compute a pixel value from the supplied incrementValue. This is only
      *     required if a percentage value is given, but is desired to produce
      *     the most accurate results.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -4073,7 +4073,7 @@ function(direction, incrementValue, cssProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('scrollTo',
+TP.dom.UIElementNode.Inst.defineMethod('scrollTo',
 function(direction, scrollValue, cssProperty) {
 
     /**
@@ -4100,7 +4100,7 @@ function(direction, scrollValue, cssProperty) {
      *     required if a percentage value is given, but is desired to produce
      *     the most accurate results. This parameter will not be used unless
      *     TP.HORIZONTAL or TP.VERTICAL is used.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -4141,13 +4141,13 @@ function(direction, scrollValue, cssProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
+TP.dom.UIElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @method $setAttribute
      * @summary Sets the value of the named attribute. This version overrides
-     *     the one inherited from TP.core.ElementNode to not bother with
+     *     the one inherited from TP.dom.ElementNode to not bother with
      *     snapshotting changes to a transactionally consistent DOM, since this
      *     object's native node is an on-screen control.
      * @param {String} attributeName The attribute name to set.
@@ -4259,7 +4259,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setDisplayValue',
+TP.dom.UIElementNode.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
@@ -4270,7 +4270,7 @@ function(aValue) {
      *     this method directly, instead call setValue() and it will ensure
      *     proper display formatting.
      * @param {Object} aValue The value to set.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     return TP.override();
@@ -4278,7 +4278,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('$setFacet',
+TP.dom.UIElementNode.Inst.defineMethod('$setFacet',
 function(aspectName, facetName, facetValue, shouldSignal) {
 
     /**
@@ -4328,7 +4328,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setGroupElement',
+TP.dom.UIElementNode.Inst.defineMethod('setGroupElement',
 function(aTPElem) {
 
     /**
@@ -4338,7 +4338,7 @@ function(aTPElem) {
      * @param {tibet:group|null} aTPElem The element to use as the grouping
      *     element for the receiver. If this parameter is null, then the
      *     receiver will be disassociated from any group.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (TP.isValid(aTPElem)) {
@@ -4352,7 +4352,7 @@ function(aTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setHeight',
+TP.dom.UIElementNode.Inst.defineMethod('setHeight',
 function(aHeight) {
 
     /**
@@ -4369,7 +4369,7 @@ function(aHeight) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setGlobalPosition',
+TP.dom.UIElementNode.Inst.defineMethod('setGlobalPosition',
 function(aPointOrObject) {
 
     /**
@@ -4381,7 +4381,7 @@ function(aPointOrObject) {
      * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -4436,7 +4436,7 @@ function(aPointOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setGlobalPositionAndSize',
+TP.dom.UIElementNode.Inst.defineMethod('setGlobalPositionAndSize',
 function(aRectOrObject) {
 
     /**
@@ -4450,7 +4450,7 @@ function(aRectOrObject) {
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -4518,7 +4518,7 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setOffsetPosition',
+TP.dom.UIElementNode.Inst.defineMethod('setOffsetPosition',
 function(aPointOrObject) {
 
     /**
@@ -4530,7 +4530,7 @@ function(aPointOrObject) {
      * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var styleObj;
@@ -4556,7 +4556,7 @@ function(aPointOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setOffsetPositionAndSize',
+TP.dom.UIElementNode.Inst.defineMethod('setOffsetPositionAndSize',
 function(aRectOrObject) {
 
     /**
@@ -4570,7 +4570,7 @@ function(aRectOrObject) {
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var styleObj;
@@ -4604,7 +4604,7 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setPagePosition',
+TP.dom.UIElementNode.Inst.defineMethod('setPagePosition',
 function(aPointOrObject) {
 
     /**
@@ -4616,7 +4616,7 @@ function(aPointOrObject) {
      * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var xVal,
@@ -4656,7 +4656,7 @@ function(aPointOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setPagePositionAndSize',
+TP.dom.UIElementNode.Inst.defineMethod('setPagePositionAndSize',
 function(aRectOrObject) {
 
     /**
@@ -4670,7 +4670,7 @@ function(aRectOrObject) {
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var xVal,
@@ -4718,7 +4718,7 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setPageX',
+TP.dom.UIElementNode.Inst.defineMethod('setPageX',
 function(aPointOrObject) {
 
     /**
@@ -4730,7 +4730,7 @@ function(aPointOrObject) {
      * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
      *     TP.gui.Point to use or an object that has an 'x' slot or an Array
      *     that has x in the first position or a Number.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var xVal,
@@ -4766,7 +4766,7 @@ function(aPointOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setPageY',
+TP.dom.UIElementNode.Inst.defineMethod('setPageY',
 function(aPointOrObject) {
 
     /**
@@ -4778,7 +4778,7 @@ function(aPointOrObject) {
      * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
      *     TP.gui.Point to use or an object that has an 'y' slot or an Array
      *     that has y in the first position or a Number.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var yVal,
@@ -4814,7 +4814,7 @@ function(aPointOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setStyleProperty',
+TP.dom.UIElementNode.Inst.defineMethod('setStyleProperty',
 function(aProperty, aPropertyValue) {
 
     /**
@@ -4824,7 +4824,7 @@ function(aProperty, aPropertyValue) {
      * @param {String} aProperty The name of the style property to set.
      * @param {String|Number} aPropertyValue The value to set the style property
      *     to.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementSetStyleProperty(this.getNativeNode(), aProperty, aPropertyValue);
@@ -4834,7 +4834,7 @@ function(aProperty, aPropertyValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setTransform',
+TP.dom.UIElementNode.Inst.defineMethod('setTransform',
 function(aTransformStr) {
 
     /**
@@ -4844,7 +4844,7 @@ function(aTransformStr) {
      *     CSS Transform specification).
      * @param {String} aTransformStr The value to set on the receiver as its CSS
      *     Transform.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementSetTransform(this.getNativeNode(), aTransformStr);
@@ -4854,7 +4854,7 @@ function(aTransformStr) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setTransformOrigin',
+TP.dom.UIElementNode.Inst.defineMethod('setTransformOrigin',
 function(xValue, yValue, zValue) {
 
     /**
@@ -4871,7 +4871,7 @@ function(xValue, yValue, zValue) {
      *     origin to.
      * @param {Number|String} [zValue] The 'Z value' to set the transformation
      *     origin to. Note that this *cannot* be a keyword or percentage.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementSetTransformOrigin(this.getNativeNode(), xValue, yValue, zValue);
@@ -4881,7 +4881,7 @@ function(xValue, yValue, zValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setWidth',
+TP.dom.UIElementNode.Inst.defineMethod('setWidth',
 function(aWidth) {
 
     /**
@@ -4898,13 +4898,13 @@ function(aWidth) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('show',
+TP.dom.UIElementNode.Inst.defineMethod('show',
 function() {
 
     /**
      * @method show
      * @summary Show's the receiver's node.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementShow(this.getNativeNode());
@@ -4914,7 +4914,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('signalUsingFacetAndValue',
+TP.dom.UIElementNode.Inst.defineMethod('signalUsingFacetAndValue',
 function(facetName, facetValue) {
 
     /**
@@ -4989,7 +4989,7 @@ function(facetName, facetValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('smartScrollIntoView',
+TP.dom.UIElementNode.Inst.defineMethod('smartScrollIntoView',
 function(direction, wantsTransformed) {
 
     /**
@@ -5001,7 +5001,7 @@ function(direction, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to use 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -5058,7 +5058,7 @@ function(direction, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('stylesheetReady',
+TP.dom.UIElementNode.Inst.defineMethod('stylesheetReady',
 function(aStyleTPElem) {
 
     /**
@@ -5073,7 +5073,7 @@ function(aStyleTPElem) {
      *     themed environment.
      * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
      *     ready.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     return this;
@@ -5081,7 +5081,7 @@ function(aStyleTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('yieldFocusedResponder',
+TP.dom.UIElementNode.Inst.defineMethod('yieldFocusedResponder',
 function(focusingElement) {
 
     /**
@@ -5090,7 +5090,7 @@ function(focusingElement) {
      * @description At this level, this type just returns true, but subtypes may
      *     run various checks for valid values, etc. and return false if those
      *     checks don't pass.
-     * @param {TP.core.UIElementNode} focusingElement The element that the focus
+     * @param {TP.dom.UIElementNode} focusingElement The element that the focus
      *     is moving to. This might be null if we aren't being asked to yield
      *     focus because of the TIBET focus manager.
      * @returns {Boolean} Whether or not the receiver should yield focused
@@ -5102,7 +5102,7 @@ function(focusingElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('toggleDisplay',
+TP.dom.UIElementNode.Inst.defineMethod('toggleDisplay',
 function() {
 
     /**
@@ -5110,7 +5110,7 @@ function() {
      * @summary Toggles the 'display' of the receiver from 'node' to it's
      *     default display state or vice-versa, depending on the current
      *     visibility state.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem;
@@ -5128,7 +5128,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('toggleVisibility',
+TP.dom.UIElementNode.Inst.defineMethod('toggleVisibility',
 function() {
 
     /**
@@ -5136,7 +5136,7 @@ function() {
      * @summary Toggles the 'visibility' of the receiver from 'hidden' to
      *     'visible' or vice-versa, depending on the current visibility state.
      * @exception TP.sig.InvalidStyleDeclaration
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -5169,7 +5169,7 @@ function() {
 //  LOCAL CSS TRANSFORMS
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('addLocalTransform',
+TP.dom.UIElementNode.Inst.defineMethod('addLocalTransform',
 function(transformType, varargs) {
 
     /**
@@ -5183,7 +5183,7 @@ function(transformType, varargs) {
      *     TP.TRANSLATE.
      * @param {Array} varargs One or more additional arguments to provide to
      *     configure the transform.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var localTransforms;
@@ -5215,7 +5215,7 @@ function(transformType, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('generateCSSValueFromTransformRecord',
+TP.dom.UIElementNode.Inst.defineMethod('generateCSSValueFromTransformRecord',
 function(aTransformRecord) {
 
     /**
@@ -5287,7 +5287,7 @@ function(aTransformRecord) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getLocalTransformValue',
+TP.dom.UIElementNode.Inst.defineMethod('getLocalTransformValue',
 function(transformType, transformIndex) {
 
     /**
@@ -5357,13 +5357,13 @@ function(transformType, transformIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('removeAllLocalTransforms',
+TP.dom.UIElementNode.Inst.defineMethod('removeAllLocalTransforms',
 function() {
 
     /**
      * @method removeAllLocalTransforms
      * @summary Removes all of the local transforms from the receiver.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     return this.removeLocalTransform(TP.ANY, TP.ALL);
@@ -5371,7 +5371,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('removeLocalTransform',
+TP.dom.UIElementNode.Inst.defineMethod('removeLocalTransform',
 function(transformType, transformIndex) {
 
     /**
@@ -5385,7 +5385,7 @@ function(transformType, transformIndex) {
      *     of the specified type) is assumed. This argument can also have a
      *     value of TP.ALL, in which case all transforms of the specified type
      *     will be removed.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var localTransforms,
@@ -5452,7 +5452,7 @@ function(transformType, transformIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('rotate',
+TP.dom.UIElementNode.Inst.defineMethod('rotate',
 function(degrees) {
 
     /**
@@ -5461,7 +5461,7 @@ function(degrees) {
      *     transformation'.
      * @param {Number} degrees The amount in degrees to rotate the receiver
      *     by.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.addLocalTransform(TP.ROTATE, degrees);
@@ -5471,7 +5471,7 @@ function(degrees) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('scale',
+TP.dom.UIElementNode.Inst.defineMethod('scale',
 function(x, y) {
 
     /**
@@ -5481,7 +5481,7 @@ function(x, y) {
      *     defaulted to the 'x' value.
      * @param {Number} x The amount to scale the receiver along the X axis.
      * @param {Number} y The amount to scale the receiver along the Y axis.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var yVal;
@@ -5496,7 +5496,7 @@ function(x, y) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setLocalTransform',
+TP.dom.UIElementNode.Inst.defineMethod('setLocalTransform',
 function(transformType, transformIndex, varargs) {
 
     /**
@@ -5511,7 +5511,7 @@ function(transformType, transformIndex, varargs) {
      *     transform of the specified type) is assumed.
      * @param {Array} varargs One or more additional arguments to provide to
      *     configure the transform.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var localTransforms,
@@ -5576,7 +5576,7 @@ function(transformType, transformIndex, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setTransformFromLocalTransforms',
+TP.dom.UIElementNode.Inst.defineMethod('setTransformFromLocalTransforms',
 function() {
 
     /**
@@ -5584,7 +5584,7 @@ function() {
      * @summary Sets the receiver's CSS3 'transforms' style property to the
      *     local transforms that have been populated on the receiver by adding
      *     them.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var localTransforms,
@@ -5625,7 +5625,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('skew',
+TP.dom.UIElementNode.Inst.defineMethod('skew',
 function(x, y) {
 
     /**
@@ -5637,7 +5637,7 @@ function(x, y) {
      *     axis.
      * @param {Number} y The amount in degrees to skew the receiver along the Y
      *     axis.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var yVal;
@@ -5652,7 +5652,7 @@ function(x, y) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('translate',
+TP.dom.UIElementNode.Inst.defineMethod('translate',
 function(x, y) {
 
     /**
@@ -5664,7 +5664,7 @@ function(x, y) {
      *     the X axis.
      * @param {Number} y The amount in pixels to translate the receiver along
      *     the Y axis.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var yVal;
@@ -5692,7 +5692,7 @@ together.
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('$isInState',
+TP.dom.UIElementNode.Inst.defineMethod('$isInState',
 function(stateAttribute, stateFlag, shouldSignal) {
 
     /**
@@ -5737,7 +5737,7 @@ function(stateAttribute, stateFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrActive',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrActive',
 function() {
 
     /**
@@ -5751,7 +5751,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrBusy',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrBusy',
 function() {
 
     /**
@@ -5765,7 +5765,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrClosed',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrClosed',
 function() {
 
     /**
@@ -5779,7 +5779,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrDisabled',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrDisabled',
 function() {
 
     /**
@@ -5793,7 +5793,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrFocused',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrFocused',
 function() {
 
     /**
@@ -5807,7 +5807,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrHidden',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrHidden',
 function() {
 
     /**
@@ -5821,7 +5821,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrInvalid',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrInvalid',
 function() {
 
     /**
@@ -5835,7 +5835,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrOutOfRange',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrOutOfRange',
 function() {
 
     /**
@@ -5849,7 +5849,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrReadonly',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrReadonly',
 function() {
 
     /**
@@ -5863,7 +5863,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrRequired',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrRequired',
 function() {
 
     /**
@@ -5877,7 +5877,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getAttrSelected',
+TP.dom.UIElementNode.Inst.defineMethod('getAttrSelected',
 function() {
 
     /**
@@ -5891,7 +5891,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrActive',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrActive',
 function(beActive) {
 
     /**
@@ -5915,7 +5915,7 @@ function(beActive) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrBusy',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrBusy',
 function(beBusy, busyMsg) {
 
     /**
@@ -5943,7 +5943,7 @@ function(beBusy, busyMsg) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrClosed',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrClosed',
 function(beClosed) {
 
     /**
@@ -5967,7 +5967,7 @@ function(beClosed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrCollapsed',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrCollapsed',
 function(beCollapsed) {
 
     /**
@@ -5991,7 +5991,7 @@ function(beCollapsed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrDisabled',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
     /**
@@ -6022,7 +6022,7 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrFocused',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrFocused',
 function(beFocused) {
 
     /**
@@ -6038,7 +6038,7 @@ function(beFocused) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrHidden',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
@@ -6062,7 +6062,7 @@ function(beHidden) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrInvalid',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrInvalid',
 function(beInvalid) {
 
     /**
@@ -6078,7 +6078,7 @@ function(beInvalid) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrOfOutRange',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrOfOutRange',
 function(beOutOfRange) {
 
     /**
@@ -6094,7 +6094,7 @@ function(beOutOfRange) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrReadonly',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrReadonly',
 function(beReadonly) {
 
     /**
@@ -6110,7 +6110,7 @@ function(beReadonly) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrRequired',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrRequired',
 function(beRequired) {
 
     /**
@@ -6126,7 +6126,7 @@ function(beRequired) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttrSelected',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrSelected',
 function(beSelected) {
 
     /**
@@ -6142,7 +6142,7 @@ function(beSelected) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('toggle',
+TP.dom.UIElementNode.Inst.defineMethod('toggle',
 function(stateName) {
 
     /**
@@ -6177,7 +6177,7 @@ function(stateName) {
 //  DISPLAY SUPPORT
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('asyncActivatingFocusContext',
+TP.dom.UIElementNode.Inst.defineMethod('asyncActivatingFocusContext',
 function() {
 
     /**
@@ -6186,23 +6186,23 @@ function() {
      *     different focus context than the currently focused element will want
      *     to focus, but do so in an asynchronous fashion. Therefore, we need to
      *     manage the focus stack in a slightly different fashion.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
-    TP.core.UIElementNode.set('$asyncSwitchingContexts', true);
+    TP.dom.UIElementNode.set('$asyncSwitchingContexts', true);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('blur',
+TP.dom.UIElementNode.Inst.defineMethod('blur',
 function() {
 
     /**
      * @method blur
      * @summary Blurs the receiver for keyboard input.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var node,
@@ -6221,12 +6221,12 @@ function() {
     //  this node is focused, whether by this mechanism or some other user
     //  interaction.
 
-    oldMBE = TP.core.UIElementNode.get('$manuallyBlurringElement');
-    TP.core.UIElementNode.set('$manuallyBlurringElement', node);
+    oldMBE = TP.dom.UIElementNode.get('$manuallyBlurringElement');
+    TP.dom.UIElementNode.set('$manuallyBlurringElement', node);
 
     node.blur();
 
-    TP.core.UIElementNode.set('$manuallyBlurringElement', oldMBE);
+    TP.dom.UIElementNode.set('$manuallyBlurringElement', oldMBE);
 
     this.signal('TP.sig.UIBlur');
 
@@ -6235,14 +6235,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('blurFocusedDescendantElement',
+TP.dom.UIElementNode.Inst.defineMethod('blurFocusedDescendantElement',
 function() {
 
     /**
      * @method blurFocusedDescendantElement
      * @summary Blurs the currently focused element if it is a descendant of the
      *     receiver.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var node;
@@ -6256,7 +6256,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('focus',
+TP.dom.UIElementNode.Inst.defineMethod('focus',
 function(moveAction) {
 
     /**
@@ -6274,7 +6274,7 @@ function(moveAction) {
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
      *          TP.PRECEDING.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var node,
@@ -6296,7 +6296,7 @@ function(moveAction) {
 
     //  Make sure that we reset the 'async switching contexts' flag that might
     //  have been set to let us know about an asynchronous focusing situation.
-    TP.core.UIElementNode.set('$asyncSwitchingContexts', false);
+    TP.dom.UIElementNode.set('$asyncSwitchingContexts', false);
 
     //  If the element is disabled, then just bail here - no sense in going any
     //  further.
@@ -6318,54 +6318,54 @@ function(moveAction) {
     focusedElem = TP.documentGetFocusedElement(node.ownerDocument);
 
     //  If that's not identical to our native node, then calculate a focusing
-    //  context (either from any set calculated focusing TP.core.ElementNode or
+    //  context (either from any set calculated focusing TP.dom.ElementNode or
     //  from ourself) and blur the currently focused element. This will cause
     //  focus stack management to occur.
     if (focusedElem !== node) {
 
         calculatedTPElem =
-            TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+            TP.dom.UIElementNode.get('$calculatedFocusingTPElem');
         if (TP.isValid(calculatedTPElem)) {
             calculatedFocusContext = calculatedTPElem.getFocusContextElement();
         } else {
             calculatedFocusContext = this.getFocusContextElement();
         }
 
-        TP.core.UIElementNode.set('$calculatedFocusContext',
+        TP.dom.UIElementNode.set('$calculatedFocusContext',
                                     calculatedFocusContext);
 
         TP.wrap(focusedElem).blur();
-        TP.core.UIElementNode.set('$calculatedFocusContext', null);
+        TP.dom.UIElementNode.set('$calculatedFocusContext', null);
     }
 
     //  Grab whatever TIBET is trying to focus. If it's real, set 'node' to it.
-    calculatedTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    calculatedTPElem = TP.dom.UIElementNode.get('$calculatedFocusingTPElem');
     if (TP.isValid(calculatedTPElem)) {
         node = calculatedTPElem.getNativeNode();
     }
 
     //  Go ahead and call the native 'focus' routine (and set the 'manually
     //  focusing element' trap to avoid recursion).
-    oldMFE = TP.core.UIElementNode.get('$manuallyFocusingElement');
-    TP.core.UIElementNode.set('$manuallyFocusingElement', node);
+    oldMFE = TP.dom.UIElementNode.get('$manuallyFocusingElement');
+    TP.dom.UIElementNode.set('$manuallyFocusingElement', node);
 
     node.focus();
 
-    TP.core.UIElementNode.set('$manuallyFocusingElement', oldMFE);
+    TP.dom.UIElementNode.set('$manuallyFocusingElement', oldMFE);
 
     //  Signal that the node focused.
     TP.wrap(node).signal('TP.sig.UIFocus');
 
     //  We've done what TIBET asked and we've focused the element - set this to
     //  null.
-    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod(
+TP.dom.UIElementNode.Inst.defineMethod(
 'focusAutofocusedOrFirstFocusableDescendant',
 function() {
 
@@ -6374,7 +6374,7 @@ function() {
      * @summary Focuses either any descendant that has an 'autofocus' attribute
      *     or the first focusable descendant if an autofocusable descendant
      *     cannot be found.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var focusedAutofocus,
@@ -6399,14 +6399,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('select',
+TP.dom.UIElementNode.Inst.defineMethod('select',
 function() {
 
     /**
      * @method select
      * @summary Selects the receiver for keyboard input (this also focuses the
      *     receiver).
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var node;
@@ -6431,14 +6431,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setSelected',
+TP.dom.UIElementNode.Inst.defineMethod('setSelected',
 function(aFlag) {
 
     /**
      * @method setSelected
      * @summary Set whether or not the receiver is selected.
      * @param {Boolean} aFlag Whether or not the receiver should be selected.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.setAttrSelected(aFlag);
@@ -6448,7 +6448,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('toggleSelectedItem',
+TP.dom.UIElementNode.Inst.defineMethod('toggleSelectedItem',
 function(oldItem, newItem) {
 
     /**
@@ -6457,7 +6457,7 @@ function(oldItem, newItem) {
      *     selected.
      * @param {Element} oldItem The old element to deselect.
      * @param {Element} newItem The new element to select.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var item,
@@ -6497,14 +6497,14 @@ other processing that keeps its normal UI from being displayed.
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('displayAlert',
+TP.dom.UIElementNode.Inst.defineMethod('displayAlert',
 function(content) {
 
     /**
      * @method displayAlert
      * @summary Displays alert content for the receiver, if any.
      * @param {String} content The alert content to be displayed.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  At this level, we do nothing. Override this method to take action.
@@ -6514,14 +6514,14 @@ function(content) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('displayBusy',
+TP.dom.UIElementNode.Inst.defineMethod('displayBusy',
 function(content) {
 
     /**
      * @method displayBusy
      * @summary Displays busy content for the receiver, if any.
      * @param {String} [content=""] The busy content to be displayed.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementShowBusyMessage(this.getNativeNode(), content);
@@ -6531,14 +6531,14 @@ function(content) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('displayHelp',
+TP.dom.UIElementNode.Inst.defineMethod('displayHelp',
 function(content) {
 
     /**
      * @method displayHelp
      * @summary Displays help content for the receiver, if any.
      * @param {String} content The help content to be displayed.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  At this level, we do nothing. Override this method to take action.
@@ -6548,14 +6548,14 @@ function(content) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('displayHint',
+TP.dom.UIElementNode.Inst.defineMethod('displayHint',
 function(content) {
 
     /**
      * @method displayHint
      * @summary Displays hint content for the receiver, if any.
      * @param {String} content The hint content to be displayed.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  At this level, we do nothing. Override this method to take action.
@@ -6565,13 +6565,13 @@ function(content) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('hideAlert',
+TP.dom.UIElementNode.Inst.defineMethod('hideAlert',
 function() {
 
     /**
      * @method hideAlert
      * @summary Hides alert content for the receiver, if any.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  At this level, we do nothing.
@@ -6581,13 +6581,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('hideBusy',
+TP.dom.UIElementNode.Inst.defineMethod('hideBusy',
 function() {
 
     /**
      * @method hideBusy
      * @summary Hides busy content for the receiver, if any.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     TP.elementHideBusyMessage(this.getNativeNode());
@@ -6597,13 +6597,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('hideHelp',
+TP.dom.UIElementNode.Inst.defineMethod('hideHelp',
 function() {
 
     /**
      * @method hideHelp
      * @summary Hides help content for the receiver, if any.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  At this level, we do nothing.
@@ -6613,13 +6613,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('hideHint',
+TP.dom.UIElementNode.Inst.defineMethod('hideHint',
 function() {
 
     /**
      * @method hideHint
      * @summary Hides hint content for the receiver, if any.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  At this level, we do nothing.
@@ -6631,7 +6631,7 @@ function() {
 //  Focus Computation Handlers
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusFirst',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusFirst',
 function(aSignal) {
 
     /**
@@ -6651,7 +6651,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusLast',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusLast',
 function(aSignal) {
 
     /**
@@ -6671,7 +6671,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusNext',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusNext',
 function(aSignal) {
 
     /**
@@ -6691,7 +6691,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusPrevious',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusPrevious',
 function(aSignal) {
 
     /**
@@ -6711,7 +6711,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusFollowing',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusFollowing',
 function(aSignal) {
 
     /**
@@ -6731,7 +6731,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusPreceding',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusPreceding',
 function(aSignal) {
 
     /**
@@ -6751,7 +6751,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusFirstInGroup',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusFirstInGroup',
 function(aSignal) {
 
     /**
@@ -6771,7 +6771,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusLastInGroup',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusLastInGroup',
 function(aSignal) {
 
     /**
@@ -6791,7 +6791,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusFirstInPreviousGroup',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusFirstInPreviousGroup',
 function(aSignal) {
 
     /**
@@ -6811,7 +6811,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusFirstInNextGroup',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusFirstInNextGroup',
 function(aSignal) {
 
     /**
@@ -6833,7 +6833,7 @@ function(aSignal) {
 //  Action Event Handlers
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIActivate',
+TP.dom.UIElementNode.Inst.defineHandler('UIActivate',
 function(aSignal) {
 
     /**
@@ -6856,7 +6856,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIAlert',
+TP.dom.UIElementNode.Inst.defineHandler('UIAlert',
 function(aSignal) {
 
     /**
@@ -6887,7 +6887,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIBlur',
+TP.dom.UIElementNode.Inst.defineHandler('UIBlur',
 function(aSignal) {
 
     /**
@@ -6905,7 +6905,7 @@ function(aSignal) {
     //  next. If we're blurring but not coming through the TIBET focus manager,
     //  this will be null.
 
-    focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    focusingTPElem = TP.dom.UIElementNode.get('$calculatedFocusingTPElem');
 
     if (!this.shouldPerformUIHandler(aSignal) ||
         !this.yieldFocusedResponder(focusingTPElem)) {
@@ -6936,7 +6936,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIBlurred',
+TP.dom.UIElementNode.Inst.defineHandler('UIBlurred',
 function(aSignal) {
 
     /**
@@ -6963,7 +6963,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIBusy',
+TP.dom.UIElementNode.Inst.defineHandler('UIBusy',
 function(aSignal) {
 
     /**
@@ -6989,7 +6989,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIClose',
+TP.dom.UIElementNode.Inst.defineHandler('UIClose',
 function(aSignal) {
 
     /**
@@ -7013,7 +7013,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UICollapse',
+TP.dom.UIElementNode.Inst.defineHandler('UICollapse',
 function(aSignal) {
 
     /**
@@ -7037,7 +7037,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDeactivate',
+TP.dom.UIElementNode.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
     /**
@@ -7060,7 +7060,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDelete',
+TP.dom.UIElementNode.Inst.defineHandler('UIDelete',
 function(aSignal) {
 
     /**
@@ -7079,7 +7079,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDeselect',
+TP.dom.UIElementNode.Inst.defineHandler('UIDeselect',
 function(aSignal) {
 
     /**
@@ -7116,7 +7116,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDidBlur',
+TP.dom.UIElementNode.Inst.defineHandler('UIDidBlur',
 function(aSignal) {
 
     /**
@@ -7135,7 +7135,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDidFocus',
+TP.dom.UIElementNode.Inst.defineHandler('UIDidFocus',
 function(aSignal) {
 
     /**
@@ -7154,7 +7154,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDidPopFocus',
+TP.dom.UIElementNode.Inst.defineHandler('UIDidPopFocus',
 function(aSignal) {
 
     /**
@@ -7179,7 +7179,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDidPushFocus',
+TP.dom.UIElementNode.Inst.defineHandler('UIDidPushFocus',
 function(aSignal) {
 
     /**
@@ -7204,7 +7204,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDisabled',
+TP.dom.UIElementNode.Inst.defineHandler('UIDisabled',
 function(aSignal) {
 
     /**
@@ -7228,7 +7228,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIDuplicate',
+TP.dom.UIElementNode.Inst.defineHandler('UIDuplicate',
 function(aSignal) {
 
     /**
@@ -7247,7 +7247,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIEnabled',
+TP.dom.UIElementNode.Inst.defineHandler('UIEnabled',
 function(aSignal) {
 
     /**
@@ -7271,7 +7271,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIExpand',
+TP.dom.UIElementNode.Inst.defineHandler('UIExpand',
 function(aSignal) {
 
     /**
@@ -7295,7 +7295,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocus',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocus',
 function(aSignal) {
 
     /**
@@ -7334,7 +7334,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocusAndSelect',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocusAndSelect',
 function(aSignal) {
 
     /**
@@ -7363,7 +7363,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIFocused',
+TP.dom.UIElementNode.Inst.defineHandler('UIFocused',
 function(aSignal) {
 
     /**
@@ -7390,7 +7390,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIHelp',
+TP.dom.UIElementNode.Inst.defineHandler('UIHelp',
 function(aSignal) {
 
     /**
@@ -7421,7 +7421,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIHide',
+TP.dom.UIElementNode.Inst.defineHandler('UIHide',
 function(aSignal) {
 
     /**
@@ -7445,7 +7445,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIHint',
+TP.dom.UIElementNode.Inst.defineHandler('UIHint',
 function(aSignal) {
 
     /**
@@ -7476,7 +7476,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIIdle',
+TP.dom.UIElementNode.Inst.defineHandler('UIIdle',
 function(aSignal) {
 
     /**
@@ -7500,7 +7500,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIInRange',
+TP.dom.UIElementNode.Inst.defineHandler('UIInRange',
 function(aSignal) {
 
     /**
@@ -7524,7 +7524,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIInsert',
+TP.dom.UIElementNode.Inst.defineHandler('UIInsert',
 function(aSignal) {
 
     /**
@@ -7543,7 +7543,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIInvalid',
+TP.dom.UIElementNode.Inst.defineHandler('UIInvalid',
 function(aSignal) {
 
     /**
@@ -7567,7 +7567,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIOpen',
+TP.dom.UIElementNode.Inst.defineHandler('UIOpen',
 function(aSignal) {
 
     /**
@@ -7591,7 +7591,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIOptional',
+TP.dom.UIElementNode.Inst.defineHandler('UIOptional',
 function(aSignal) {
 
     /**
@@ -7615,7 +7615,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIOutOfRange',
+TP.dom.UIElementNode.Inst.defineHandler('UIOutOfRange',
 function(aSignal) {
 
     /**
@@ -7639,7 +7639,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIReadonly',
+TP.dom.UIElementNode.Inst.defineHandler('UIReadonly',
 function(aSignal) {
 
     /**
@@ -7663,7 +7663,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIReadwrite',
+TP.dom.UIElementNode.Inst.defineHandler('UIReadwrite',
 function(aSignal) {
 
     /**
@@ -7687,7 +7687,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIRequired',
+TP.dom.UIElementNode.Inst.defineHandler('UIRequired',
 function(aSignal) {
 
     /**
@@ -7711,7 +7711,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIScroll',
+TP.dom.UIElementNode.Inst.defineHandler('UIScroll',
 function(aSignal) {
 
     /**
@@ -7730,7 +7730,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UISelect',
+TP.dom.UIElementNode.Inst.defineHandler('UISelect',
 function(aSignal) {
 
     /**
@@ -7767,7 +7767,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIShow',
+TP.dom.UIElementNode.Inst.defineHandler('UIShow',
 function(aSignal) {
 
     /**
@@ -7791,7 +7791,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIToggle',
+TP.dom.UIElementNode.Inst.defineHandler('UIToggle',
 function(aSignal) {
 
     /**
@@ -7834,7 +7834,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIValid',
+TP.dom.UIElementNode.Inst.defineHandler('UIValid',
 function(aSignal) {
 
     /**
@@ -7858,7 +7858,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIValueChange',
+TP.dom.UIElementNode.Inst.defineHandler('UIValueChange',
 function(aSignal) {
 
     /**
@@ -7880,7 +7880,7 @@ function(aSignal) {
 //  Signaling Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('configureSignalFromAttributes',
+TP.dom.UIElementNode.Inst.defineMethod('configureSignalFromAttributes',
 function(aSignal) {
 
     /**
@@ -7893,7 +7893,7 @@ function(aSignal) {
      *     processing.
      * @param {TP.sig.ResponderSignal} aSignal The signal to configure from any
      *     present 'ev:' attributes on the receiver.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldStopSignal(aSignal)) {
@@ -7909,7 +7909,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('shouldCaptureSignal',
+TP.dom.UIElementNode.Inst.defineMethod('shouldCaptureSignal',
 function(aSignal) {
 
     /**
@@ -7945,7 +7945,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('shouldPerformUIHandler',
+TP.dom.UIElementNode.Inst.defineMethod('shouldPerformUIHandler',
 function(aSignal) {
 
     /**
@@ -7967,7 +7967,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('shouldPreventSignal',
+TP.dom.UIElementNode.Inst.defineMethod('shouldPreventSignal',
 function(aSignal) {
 
     /**
@@ -8002,7 +8002,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('shouldStopSignal',
+TP.dom.UIElementNode.Inst.defineMethod('shouldStopSignal',
 function(aSignal) {
 
     /**
@@ -8037,7 +8037,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('signal',
+TP.dom.UIElementNode.Inst.defineMethod('signal',
 function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
@@ -8101,7 +8101,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('signalAfterRepaint',
+TP.dom.UIElementNode.Inst.defineMethod('signalAfterRepaint',
 function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
@@ -8143,11 +8143,11 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 });
 
 //  ========================================================================
-//  TP.core.NonNativeUIElementNode
+//  TP.dom.NonNativeUIElementNode
 //  ========================================================================
 
 /**
- * @type {TP.core.NonNativeUIElementNode}
+ * @type {TP.dom.NonNativeUIElementNode}
  * @summary A type that represents 'non-native' (to a User Agent) element nodes
  *     that need various things like stylesheets to be attached to a hosting DOM
  *     so that they can be rendered properly. This type is normally 'traited in'
@@ -8156,15 +8156,15 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('core.NonNativeUIElementNode');
+TP.dom.ElementNode.defineSubtype('dom.NonNativeUIElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.NonNativeUIElementNode.isAbstract(true);
+TP.dom.NonNativeUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.NonNativeUIElementNode.Type.defineMethod('tagAttachStyle',
+TP.dom.NonNativeUIElementNode.Type.defineMethod('tagAttachStyle',
 function(aRequest) {
 
     /**

@@ -78,7 +78,7 @@ function() {
 
     /**
      * @method getContentNode
-     * @summary Returns the native node of the TP.core.DocumentNode wrapping
+     * @summary Returns the native node of the TP.dom.DocumentNode wrapping
      *     the receiver's document object.
      * @returns {TP.core.Document}
      */
@@ -188,7 +188,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
-     *     TRUE for TP.core.Node subtypes.
+     *     TRUE for TP.dom.Node subtypes.
      */
 
     var win,
@@ -328,7 +328,7 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -343,7 +343,7 @@ function(aContentObject, aRequest) {
  * @type {TP.core.Window}
  * @summary TP.core.Window is a top-level type for wrapping windows and frames.
  * @description In TIBET you typically operate with documents and elements via
- *     the TP.core.Node hierarchy. The TP.core.Window hierarchy is intended to
+ *     the TP.dom.Node hierarchy. The TP.core.Window hierarchy is intended to
  *     provide functional support for window-level operations. When creating a
  *     TP.core.Window the specific subtype vended back on construct().
  *
@@ -410,7 +410,7 @@ function(anObject) {
         }
 
         return TP.core.Window.construct(win);
-    } else if (TP.isKindOf(anObject, TP.core.Node)) {
+    } else if (TP.isKindOf(anObject, TP.dom.Node)) {
         return anObject.getWindow();
     }
 
@@ -1676,7 +1676,7 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 

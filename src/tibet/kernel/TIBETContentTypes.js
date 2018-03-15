@@ -200,7 +200,7 @@ function(content, aURI) {
      * @returns {TP.core.Content} A viable subtype for enclosing the content.
      */
 
-    if (TP.isNode(content) || TP.isKindOf(content, TP.core.Node)) {
+    if (TP.isNode(content) || TP.isKindOf(content, TP.dom.Node)) {
         return TP.core.XMLContent;
     }
 
@@ -2632,7 +2632,7 @@ function(data, aURI) {
 
     contentData = data;
 
-    if (TP.isKindOf(contentData, TP.core.Node)) {
+    if (TP.isKindOf(contentData, TP.dom.Node)) {
         contentData = contentData.getNativeNode();
     }
 
@@ -2826,7 +2826,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
             return this;
         }
 
-        //  Make sure that we have a TP.core.CollectionNode
+        //  Make sure that we have a TP.dom.CollectionNode
 
         //  NB: We assume 'async' of false here.
         targetCollection = targetURI.getResource(
@@ -3065,7 +3065,7 @@ function() {
 
     xmlData = this.get('data');
 
-    if (TP.isKindOf(xmlData, TP.core.Node)) {
+    if (TP.isKindOf(xmlData, TP.dom.Node)) {
         xmlData = xmlData.getNativeNode();
     }
 
@@ -3113,7 +3113,7 @@ function(aCollectionURI, aDeleteIndex) {
 
         batchID;
 
-    //  Make sure that we have a TP.core.CollectionNode
+    //  Make sure that we have a TP.dom.CollectionNode
 
     //  NB: We assume 'async' of false here.
     targetCollection = aCollectionURI.getResource(
@@ -3329,7 +3329,7 @@ function(anObject, aParamHash) {
 
     /**
      * @method transform
-     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     * @summary Transforms the supplied Node (or TP.dom.Node) by using the
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
@@ -3348,7 +3348,7 @@ function(anObject, aParamHash) {
 
     xmlData = this.get('data');
 
-    if (TP.isKindOf(xmlData, TP.core.Node)) {
+    if (TP.isKindOf(xmlData, TP.dom.Node)) {
         return xmlData.transform(anObject, aParamHash);
     }
 
@@ -5818,7 +5818,7 @@ function(targetObj, varargs) {
 
     //  See if the JSONContent object already has corresponding XML content. If
     //  not, create it.
-    if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
+    if (!TP.isKindOf(tpXMLDoc, TP.dom.XMLDocumentNode)) {
 
         //  Some sleight-of-hand to get our target content object to hold XML
         //  rather than JSON, but pretend to outside observers like it's holding
@@ -5836,7 +5836,7 @@ function(targetObj, varargs) {
         if (TP.isString(currentJSONData = target.$get('data'))) {
             currentJSONData = TP.json2js(currentJSONData, false);
         } else if (TP.isValid(currentJSONData) &&
-                !TP.isKindOf(currentJSONData, TP.core.Node)) {
+                !TP.isKindOf(currentJSONData, TP.dom.Node)) {
             currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
         }
 
@@ -5952,7 +5952,7 @@ function(targetObj, varargs) {
                 };
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
-                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
+                if (TP.isKindOf(tpValueDoc, TP.dom.DocumentNode)) {
                     //  Locally program a reference to ourself on the generated
                     //  XML TP.core.Document.
                     tpValueDoc.defineAttribute('$$realData');
@@ -6438,7 +6438,7 @@ function(targetObj, varargs) {
 
                 tpValueDoc = this.$get('data');
 
-                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
+                if (TP.isKindOf(tpValueDoc, TP.dom.DocumentNode)) {
                     return tpValueDoc.clone(true, true);
                 }
             });
@@ -9425,7 +9425,7 @@ function(targetObj, varargs) {
     }
 
     //  This kind of path only works against XML
-    if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
+    if (!TP.isNode(target) && !TP.isKindOf(target, TP.dom.Node)) {
         if (TP.isWindow(target) || TP.isKindOf(target, TP.core.Window)) {
             target = TP.unwrap(target).document;
             if (!TP.isXMLDocument(target)) {
@@ -9642,7 +9642,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     //  This kind of path only works against XML
-    if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
+    if (!TP.isNode(target) && !TP.isKindOf(target, TP.dom.Node)) {
         if (TP.isWindow(target) || TP.isKindOf(target, TP.core.Window)) {
             target = TP.wrap(TP.unwrap(target).document);
         } else {
@@ -9823,7 +9823,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         if (TP.notValid(value)) {
             TP.nodeEmptyContent(content);
         } else {
-            //  leverage TP.core.Node wrappers to manage update intelligently
+            //  leverage TP.dom.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(content);
             tpcontent.setRawContent(value);
         }
@@ -9898,7 +9898,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             if (TP.notValid(value)) {
                 TP.nodeEmptyContent(contentnode);
             } else {
-                //  leverage TP.core.Node wrappers to manage update
+                //  leverage TP.dom.Node wrappers to manage update
                 //  intelligently
                 tpcontent = TP.wrap(contentnode);
                 tpcontent.setRawContent(value);
@@ -11115,8 +11115,8 @@ function(aTPNode, resultType, logErrors, flagChanges) {
     /**
      * @method exec
      * @summary 'Executes' the XPath by evaluating it against the supplied
-     *     TP.core.Node.
-     * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
+     *     TP.dom.Node.
+     * @param {TP.dom.Node} aTPNode The TP.dom.Node to execute the receiver
      *     against.
      * @param {Number} resultType The type of result desired, either TP.NODESET
      *     or TP.FIRST_NODE.
@@ -11124,10 +11124,10 @@ function(aTPNode, resultType, logErrors, flagChanges) {
      *     particularly during operations such as String localization which can
      *     cause recusion issues.
      * @param {Boolean} flagChanges True if any newly created nodes should be
-     *     flagged. Defaults to the value set by the TP.core.Node being
+     *     flagged. Defaults to the value set by the TP.dom.Node being
      *     processed.
      * @returns {Object} The result of evaluating the receiver against the
-     *     supplied TP.core.Node. Will be one of: String, Number, Boolean or
+     *     supplied TP.dom.Node. Will be one of: String, Number, Boolean or
      *     Array (of Nodes).
      */
 
@@ -11164,7 +11164,7 @@ function(aNode, resultType, logErrors, flagChanges) {
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
      * @returns {Object} The result of evaluating the receiver against the
-     *     supplied TP.core.Node. Will be one of: String, Number, Boolean or
+     *     supplied TP.dom.Node. Will be one of: String, Number, Boolean or
      *     Array (of Nodes).
      */
 
@@ -11189,7 +11189,7 @@ function(aNode, resultType, logErrors, flagChanges) {
         TP.isXMLDocument(TP.nodeGetDocument(aNode)) &&
         !flag) {
         //  Note here how we use the primitive call. If we used
-        //  TP.core.Node's evaluateXPath(), we'd likely recurse because we
+        //  TP.dom.Node's evaluateXPath(), we'd likely recurse because we
         //  are most likely being called from there.
         return TP.nodeEvaluateXPath(aNode, path, resultType, logErrors);
     }
@@ -11255,7 +11255,7 @@ function(aTPNode, shouldSignal) {
      * @summary Removes all nodes under the receiver which match the XPath
      *     provided. This method is typically called via remove when an XPath
      *     is provided as the attributeName.
-     * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
+     * @param {TP.dom.Node} aTPNode The TP.dom.Node to execute the receiver
      *     against.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
@@ -11545,9 +11545,9 @@ function(aNode) {
      * @method getReferencedNodes
      * @summary Returns an Array of the Nodes that are referenced by this
      *     path, using aNode as the 'context node' (e.g. starting point).
-     * @param {Node|TP.core.Node} aNode The Node to execute the receiver
+     * @param {Node|TP.dom.Node} aNode The Node to execute the receiver
      *     against.
-     * @returns {Array} The array of TP.core.Nodes referenced by the receiver.
+     * @returns {Array} The array of TP.dom.Nodes referenced by the receiver.
      */
 
     var context,
@@ -11581,7 +11581,7 @@ function(aNode) {
     //  Grab the non-native context and parser objects and configure them
     //  in preparation for executing the path at each referenced location
 
-    //  Make sure to TP.unwrap() aNode - it might have been a TP.core.Node.
+    //  Make sure to TP.unwrap() aNode - it might have been a TP.dom.Node.
     context.expressionContextNode = TP.unwrap(aNode);
 
     parser = this.getType().getParser();

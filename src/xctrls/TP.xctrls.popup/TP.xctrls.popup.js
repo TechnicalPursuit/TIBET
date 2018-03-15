@@ -247,7 +247,7 @@ function(openSignal, popupContent) {
      *     this popup to show.
      * @param {String|Element|DocumentFragment} [popupContent] The optional
      *     content to place inside of the popup element.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 

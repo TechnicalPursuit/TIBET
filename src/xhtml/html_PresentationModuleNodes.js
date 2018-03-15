@@ -124,13 +124,13 @@ TP.html.Aligned.defineSubtype('hr');
 
 TP.html.hr.Type.set('booleanAttrs', TP.ac('noShade'));
 
-TP.html.hr.addTraits(TP.core.EmptyElementNode);
+TP.html.hr.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.hr.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.hr.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ========================================================================
 //  TP.html.i

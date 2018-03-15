@@ -123,7 +123,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -229,7 +229,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -336,7 +336,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -438,7 +438,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -544,7 +544,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -655,7 +655,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -879,7 +879,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),
@@ -990,7 +990,7 @@ function() {
                                 TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
-                                aResult, TP.core.XHTMLDocumentNode);
+                                aResult, TP.dom.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
                                     aResult.get('html|body'),

@@ -652,10 +652,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.Node Methods
+//  TP.dom.Node Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('cmdAddContent',
+TP.dom.Node.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -693,7 +693,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('cmdGetContent',
+TP.dom.Node.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -724,7 +724,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('cmdSetContent',
+TP.dom.Node.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -761,10 +761,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.XSLDocumentNode Methods
+//  TP.dom.XSLDocumentNode Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XSLDocumentNode.Type.defineMethod('cmdTransformInput',
+TP.dom.XSLDocumentNode.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -1380,7 +1380,7 @@ function(aRequest) {
     //  stdin is always an Array, so we want the first item.
     result = input.at(0);
 
-    if (TP.isKindOf(result, TP.core.XHTMLDocumentNode)) {
+    if (TP.isKindOf(result, TP.dom.XHTMLDocumentNode)) {
         maybeURI = result.get('uri');
     } else if (TP.isKindOf(result, TP.core.Content)) {
         maybeURI = result.get('sourceURI');

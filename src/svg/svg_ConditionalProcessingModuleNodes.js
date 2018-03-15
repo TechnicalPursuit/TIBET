@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:switch');
+TP.dom.UIElementNode.defineSubtype('svg:switch');
 
 //  Some JS parsers are stricter than others about reserved words, so we
 //  have to use the 'slot name' version of the type name.

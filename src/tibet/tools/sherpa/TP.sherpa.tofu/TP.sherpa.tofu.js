@@ -162,7 +162,7 @@ function(aSignal) {
                         ':type --assist' +
                                 ' --name=\'' + newTagName + '\'' +
                                 ' --dna=\'templatedtag\'' +
-                                ' --roottype=\'TP.core.ElementNode\''
+                                ' --roottype=\'TP.dom.ElementNode\''
                 ));
 
     return this;

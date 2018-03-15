@@ -25,7 +25,7 @@ function() {
     var tagType;
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.nochange'))) {
-        tagType = TP.core.ElementNode.defineSubtype('test.nochange');
+        tagType = TP.dom.ElementNode.defineSubtype('test.nochange');
         tagType.Type.defineMethod('allNodesTransform', function(aRequest) {
             //  This method does nothing on this tag type
         });
@@ -43,7 +43,7 @@ function() {
     var tagType;
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.attrchange'))) {
-        tagType = TP.core.ElementNode.defineSubtype('test.attrchange');
+        tagType = TP.dom.ElementNode.defineSubtype('test.attrchange');
         tagType.Type.defineMethod(
             'allNodesTransform',
             function(aRequest) {
@@ -67,7 +67,7 @@ function() {
     var tagType;
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.moreattrchange'))) {
-        tagType = TP.core.ElementNode.defineSubtype('test.moreattrchange');
+        tagType = TP.dom.ElementNode.defineSubtype('test.moreattrchange');
         tagType.Type.defineMethod(
             'allNodesTransform',
             function(aRequest) {
@@ -95,7 +95,7 @@ function() {
     var tagType;
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.contentchange'))) {
-        tagType = TP.core.ElementNode.defineSubtype('test.contentchange');
+        tagType = TP.dom.ElementNode.defineSubtype('test.contentchange');
         tagType.Type.defineMethod(
             'allNodesTransform',
             function(aRequest) {
@@ -124,7 +124,7 @@ function() {
     var tagType;
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.morecontentchange'))) {
-        tagType = TP.core.ElementNode.defineSubtype('test.morecontentchange');
+        tagType = TP.dom.ElementNode.defineSubtype('test.morecontentchange');
         tagType.Type.defineMethod(
             'allNodesTransform',
             function(aRequest) {

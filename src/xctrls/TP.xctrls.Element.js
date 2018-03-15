@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls.Element');
+TP.dom.UIElementNode.defineSubtype('xctrls.Element');
 
 //  This type is intended to be used as either a trait type or supertype of
 //  concrete types, so we don't allow instance creation
@@ -26,11 +26,11 @@ TP.xctrls.Element.isAbstract(true);
 //  other markup language we support (XHTML, SVG, XMPP), this is ok. Therefore,
 //  we don't mark it as abstract.
 
-TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
+TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.xctrls.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
+        TP.dom.UIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

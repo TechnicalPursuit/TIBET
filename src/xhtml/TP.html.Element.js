@@ -17,7 +17,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('html.Element');
+TP.dom.UIElementNode.defineSubtype('html.Element');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation

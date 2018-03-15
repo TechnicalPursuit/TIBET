@@ -16,7 +16,7 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('breadcrumb');
 
-TP.sherpa.breadcrumb.addTraits(TP.core.D3Tag);
+TP.sherpa.breadcrumb.addTraits(TP.dom.D3Tag);
 
 TP.sherpa.breadcrumb.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
@@ -65,7 +65,7 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.breadcrumb.Inst.defineMethod('buildNewContent',

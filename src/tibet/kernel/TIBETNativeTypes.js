@@ -5358,7 +5358,7 @@ function(aRequest) {
     request = TP.request(aRequest);
 
     //  if the string represents markup then we work from that perspective
-    if (TP.isValid(doc = TP.core.Node.from(this))) {
+    if (TP.isValid(doc = TP.dom.Node.from(this))) {
         node = doc.getDocumentElement();
         return TP.process(node, request);
     }

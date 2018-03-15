@@ -144,14 +144,14 @@ function(anObject) {
         }
 
         //  Make sure that if the tagName resolves to a type, that that type is
-        //  a subtype of TP.core.ElementNode
+        //  a subtype of TP.dom.ElementNode
         tagType = TP.sys.getTypeByName(tagName);
 
         if (TP.isType(tagType)) {
 
-            //  If the resolved type is not a subtype of TP.core.ElementNode,
+            //  If the resolved type is not a subtype of TP.dom.ElementNode,
             //  then it's an error. Warn the user and return.
-            if (!TP.isSubtypeOf(tagType, TP.core.ElementNode)) {
+            if (!TP.isSubtypeOf(tagType, TP.dom.ElementNode)) {
                 TP.alert('Type matching tag: ' +
                             tagName +
                             ' is not an Element.' +
@@ -495,7 +495,7 @@ function(anObj) {
                     });
     typeData = typeData.filter(
                     function(aType) {
-                        return TP.isKindOf(aType, TP.core.ElementNode);
+                        return TP.isKindOf(aType, TP.dom.ElementNode);
                     });
     typeData = typeData.collect(
                     function(aType) {

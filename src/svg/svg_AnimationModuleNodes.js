@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:animate');
+TP.dom.UIElementNode.defineSubtype('svg:animate');
 
 TP.svg.animate.addTraits(TP.svg.Element);
 
@@ -34,7 +34,7 @@ TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:set');
+TP.dom.UIElementNode.defineSubtype('svg:set');
 
 TP.svg.set.addTraits(TP.svg.Element);
 
@@ -50,7 +50,7 @@ TP.svg.set.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:animateMotion');
+TP.dom.UIElementNode.defineSubtype('svg:animateMotion');
 
 TP.svg.animateMotion.addTraits(TP.svg.Element);
 
@@ -66,7 +66,7 @@ TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:animateTransform');
+TP.dom.UIElementNode.defineSubtype('svg:animateTransform');
 
 TP.svg.animateTransform.addTraits(TP.svg.Element);
 
@@ -82,7 +82,7 @@ TP.svg.animateTransform.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:animateColor');
+TP.dom.UIElementNode.defineSubtype('svg:animateColor');
 
 TP.svg.animateColor.addTraits(TP.svg.Element);
 
@@ -96,7 +96,7 @@ TP.svg.animateColor.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:mpath');
+TP.dom.UIElementNode.defineSubtype('svg:mpath');
 
 TP.svg.mpath.addTraits(TP.svg.Element);
 

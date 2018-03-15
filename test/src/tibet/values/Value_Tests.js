@@ -136,25 +136,25 @@ function() {
         'Event',                                /^MouseEvent\$(\w+)$/,
         'XHR',                                  /^XMLHttpRequest\$(\w+)$/,
 
-        'TIBETType',                            'TP.core.Node',
+        'TIBETType',                            'TP.dom.Node',
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
         'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
         'TP.core.Window',                       TP.sys.cfg('tibet.top_win_name'),
-        'TP.core.HTMLDocumentNode',             'document',
-        'TP.core.HTMLElementNode',              'body',
+        'TP.dom.HTMLDocumentNode',              'document',
+        'TP.dom.HTMLElementNode',               'body',
 
-        'TP.core.XMLDocumentNode',              'document',
-        'TP.core.XMLElementNode',               /foo_(\w+)$/,
+        'TP.dom.XMLDocumentNode',               'document',
+        'TP.dom.XMLElementNode',                /foo_(\w+)$/,
 
-        'TP.core.DocumentFragmentNode',         '#document-fragment',
-        'TP.core.AttributeNode',                '#xpath1(./@foo)',
-        'TP.core.TextNode',                     '#xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.CDATASectionNode',             '#xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.ProcessingInstructionNode',    '#xpath1(./processing-instruction(\'foo\'))',
-        'TP.core.CommentNode',                  '#xpath1(./comment()[1])',
+        'TP.dom.DocumentFragmentNode',          '#document-fragment',
+        'TP.dom.AttributeNode',                 '#xpath1(./@foo)',
+        'TP.dom.TextNode',                      '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.dom.CDATASectionNode',              '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.dom.ProcessingInstructionNode',     '#xpath1(./processing-instruction(\'foo\'))',
+        'TP.dom.CommentNode',                   '#xpath1(./comment()[1])',
 
         'TP.path.SimpleTIBETPath',              /^TP\.path\.SimpleTIBETPath\$(\w+)$/,
         'TP.path.ComplexTIBETPath',             /^TP\.path\.ComplexTIBETPath\$(\w+)$/,
@@ -335,25 +335,25 @@ function() {
         'Event',                                /^MouseEvent\$(\w+)$/,
         'XHR',                                  /^XMLHttpRequest\$(\w+)$/,
 
-        'TIBETType',                            'TP.core.Node',
+        'TIBETType',                            'TP.dom.Node',
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
         'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
         'TP.core.Window',                       winGID,
-        'TP.core.HTMLDocumentNode',             'tibet://' + winGID + '/' + docLoc + '#document',
-        'TP.core.HTMLElementNode',              'tibet://' + winGID + '/' + docLoc + '#body',
+        'TP.dom.HTMLDocumentNode',              'tibet://' + winGID + '/' + docLoc + '#document',
+        'TP.dom.HTMLElementNode',               'tibet://' + winGID + '/' + docLoc + '#body',
 
-        'TP.core.XMLDocumentNode',              TP.id(testData.at('XMLDocument')),
-        'TP.core.XMLElementNode',               TP.id(testData.at('XMLElement')),
+        'TP.dom.XMLDocumentNode',               TP.id(testData.at('XMLDocument')),
+        'TP.dom.XMLElementNode',                TP.id(testData.at('XMLElement')),
 
-        'TP.core.DocumentFragmentNode',         '#document-fragment',
-        'TP.core.AttributeNode',                '#xpath1(./@foo)',
-        'TP.core.TextNode',                     '#xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.CDATASectionNode',             '#xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.ProcessingInstructionNode',    '#xpath1(./processing-instruction(\'foo\'))',
-        'TP.core.CommentNode',                  '#xpath1(./comment()[1])',
+        'TP.dom.DocumentFragmentNode',          '#document-fragment',
+        'TP.dom.AttributeNode',                 '#xpath1(./@foo)',
+        'TP.dom.TextNode',                      '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.dom.CDATASectionNode',              '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.dom.ProcessingInstructionNode',     '#xpath1(./processing-instruction(\'foo\'))',
+        'TP.dom.CommentNode',                   '#xpath1(./comment()[1])',
 
         'TP.path.SimpleTIBETPath',              /^TP\.path\.SimpleTIBETPath\$(\w+)$/,
         'TP.path.ComplexTIBETPath',             /^TP\.path\.ComplexTIBETPath\$(\w+)$/,
@@ -425,7 +425,7 @@ function() {
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
             if (TP.ac(
                 'HTMLDocument', 'HTMLElement',
-                'TP.core.HTMLDocumentNode', 'TP.core.HTMLElementNode').indexOf(
+                'TP.dom.HTMLDocumentNode', 'TP.dom.HTMLElementNode').indexOf(
                     testKey) !== -1) {
                 continue;
             }
@@ -543,18 +543,18 @@ function() {
         'TP.sig.Exception',                     false,
 
         'TP.core.Window',                       false,
-        'TP.core.HTMLDocumentNode',             false,
-        'TP.core.HTMLElementNode',              false,
+        'TP.dom.HTMLDocumentNode',              false,
+        'TP.dom.HTMLElementNode',               false,
 
-        'TP.core.XMLDocumentNode',              false,
-        'TP.core.XMLElementNode',               false,
+        'TP.dom.XMLDocumentNode',               false,
+        'TP.dom.XMLElementNode',                false,
 
-        'TP.core.DocumentFragmentNode',         false,
-        'TP.core.AttributeNode',                false,
-        'TP.core.TextNode',                     false,
-        'TP.core.CDATASectionNode',             false,
-        'TP.core.ProcessingInstructionNode',    false,
-        'TP.core.CommentNode',                  false,
+        'TP.dom.DocumentFragmentNode',          false,
+        'TP.dom.AttributeNode',                 false,
+        'TP.dom.TextNode',                      false,
+        'TP.dom.CDATASectionNode',              false,
+        'TP.dom.ProcessingInstructionNode',     false,
+        'TP.dom.CommentNode',                   false,
 
         'TP.path.SimpleTIBETPath',              false,
         'TP.path.ComplexTIBETPath',             false,
@@ -565,15 +565,15 @@ function() {
         'TP.sig.Request',                       false,
         'TP.sig.Response',                      false,
 
-        'TP.uri.TIBETURN',                     false,
-        'TP.uri.HTTPURL',                      false,
-        'TP.uri.FileURL',                      false,
+        'TP.uri.TIBETURN',                      false,
+        'TP.uri.HTTPURL',                       false,
+        'TP.uri.FileURL',                       false,
         /* eslint-disable no-script-url */
-        'TP.uri.JSURI',                        false,
+        'TP.uri.JSURI',                         false,
         /* eslint-enable no-script-url */
-        'TP.uri.WSURL',                        false,
-        'TP.uri.TIBETURL',                     false,
-        'TP.uri.CookieURL',                    false,
+        'TP.uri.WSURL',                         false,
+        'TP.uri.TIBETURL',                      false,
+        'TP.uri.CookieURL',                     false,
 
         'TP.w3.DocType',                        false,
 
@@ -723,18 +723,18 @@ function() {
         'TP.sig.Exception',                     false,
 
         'TP.core.Window',                       false,
-        'TP.core.HTMLDocumentNode',             false,
-        'TP.core.HTMLElementNode',              false,
+        'TP.dom.HTMLDocumentNode',              false,
+        'TP.dom.HTMLElementNode',               false,
 
-        'TP.core.XMLDocumentNode',              false,
-        'TP.core.XMLElementNode',               false,
+        'TP.dom.XMLDocumentNode',               false,
+        'TP.dom.XMLElementNode',                false,
 
-        'TP.core.DocumentFragmentNode',         false,
-        'TP.core.AttributeNode',                false,
-        'TP.core.TextNode',                     false,
-        'TP.core.CDATASectionNode',             false,
-        'TP.core.ProcessingInstructionNode',    false,
-        'TP.core.CommentNode',                  false,
+        'TP.dom.DocumentFragmentNode',          false,
+        'TP.dom.AttributeNode',                 false,
+        'TP.dom.TextNode',                      false,
+        'TP.dom.CDATASectionNode',              false,
+        'TP.dom.ProcessingInstructionNode',     false,
+        'TP.dom.CommentNode',                   false,
 
         'TP.path.SimpleTIBETPath',              false,
         'TP.path.ComplexTIBETPath',             false,
@@ -745,15 +745,15 @@ function() {
         'TP.sig.Request',                       false,
         'TP.sig.Response',                      false,
 
-        'TP.uri.TIBETURN',                     false,
-        'TP.uri.HTTPURL',                      false,
-        'TP.uri.FileURL',                      false,
+        'TP.uri.TIBETURN',                      false,
+        'TP.uri.HTTPURL',                       false,
+        'TP.uri.FileURL',                       false,
         /* eslint-disable no-script-url */
-        'TP.uri.JSURI',                        false,
+        'TP.uri.JSURI',                         false,
         /* eslint-enable no-script-url */
-        'TP.uri.WSURL',                        false,
-        'TP.uri.TIBETURL',                     false,
-        'TP.uri.CookieURL',                    false,
+        'TP.uri.WSURL',                         false,
+        'TP.uri.TIBETURL',                      false,
+        'TP.uri.CookieURL',                     false,
 
         'TP.w3.DocType',                        false,
 

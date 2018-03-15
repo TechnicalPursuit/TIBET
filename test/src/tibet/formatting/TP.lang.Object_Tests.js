@@ -191,7 +191,7 @@ function() {
         //  'as' substitution - type conversion
         //  ---
 
-        testElem = TP.ac(1, 2, TP.hc('foo', 'bar')).as('TP.core.XMLRPCNode');
+        testElem = TP.ac(1, 2, TP.hc('foo', 'bar')).as('TP.dom.XMLRPCNode');
 
         //  Need to generate an ID for elements for reporting purposes.
         TP.elemGenID(testElem, true);
@@ -842,7 +842,7 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
 
         //  ---
-        //  $TAG is the TP.core.ElementNode that is supplied to the template.
+        //  $TAG is the TP.dom.ElementNode that is supplied to the template.
         //  Note that in the case of nested templates, $TAG shifts to be
         //  whatever markup is being processed at that time. To access the
         //  original, authored markup that started the templating process, use

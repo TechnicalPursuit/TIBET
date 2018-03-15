@@ -1494,11 +1494,11 @@ function(aRequest) {
                 cmdRoot,
                 message;
 
-            //  we leverage TP.core.Node subtypes to manage
+            //  we leverage TP.dom.Node subtypes to manage
             //  type/tag-specific logic in a coherent fashion, so get a
             //  viable type. Tags we can't seem to find a type for are
             //  skipped by simply returning from the block.
-            type = TP.core.Node.getConcreteType(child);
+            type = TP.dom.Node.getConcreteType(child);
             if (TP.notValid(type)) {
                 //  TODO: Return message to say 'I don't know about this type --
                 //  please teach me about it' (hide behind flag for development
@@ -1712,11 +1712,11 @@ function(aRequest) {
                 return;
             }
 
-            //  we leverage TP.core.Node subtypes to manage
+            //  we leverage TP.dom.Node subtypes to manage
             //  type/tag-specific logic in a coherent fashion, so get a
             //  viable type. Tags we can't seem to find a type for are
             //  skipped by simply returning from the block.
-            type = TP.core.Node.getConcreteType(child);
+            type = TP.dom.Node.getConcreteType(child);
             if (TP.notValid(type)) {
                 return;
             }

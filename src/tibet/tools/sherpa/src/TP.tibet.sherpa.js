@@ -14,7 +14,7 @@
 
 //  ----------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet:sherpa');
+TP.dom.UIElementNode.defineSubtype('tibet:sherpa');
 
 //  ----------------------------------------------------------------------------
 //  Type Methods

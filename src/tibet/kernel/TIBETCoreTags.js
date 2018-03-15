@@ -36,13 +36,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('TP.tag.CustomTag');
+TP.dom.UIElementNode.defineSubtype('TP.tag.CustomTag');
 
-TP.tag.CustomTag.addTraits(TP.core.NonNativeUIElementNode);
+TP.tag.CustomTag.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.tag.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
+        TP.dom.UIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -196,9 +196,9 @@ TP.tag.CustomTag.defineSubtype('TP.tag.TemplatedTag');
 //  ------------------------------------------------------------------------
 
 //  Mix in templating behavior, resolving compile in favor of templating.
-TP.tag.TemplatedTag.addTraits(TP.core.TemplatedNode);
+TP.tag.TemplatedTag.addTraits(TP.dom.TemplatedNode);
 
-TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
 
 TP.tag.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
 
@@ -218,7 +218,7 @@ function(nodeSpec, varargs) {
      *     may have been provided or a String could have been provided. By far
      *     the most common usage is construction of a wrapper around an existing
      *     node.
-     * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
+     * @param {Node|URI|String|TP.dom.Node} nodeSpec Some suitable object to
      *     construct a source node. See type discussion above. Can also be null.
      * @param {Array} varargs Optional additional arguments for the
      *     constructor.
@@ -1611,24 +1611,24 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.PipeSegmentElementNode
+//  TP.dom.PipeSegmentElementNode
 //  ========================================================================
 
 /**
- * @type {TP.core.PipeSegmentElementNode}
+ * @type {TP.dom.PipeSegmentElementNode}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.tag.ActionTag.defineSubtype('core.PipeSegmentElementNode');
+TP.tag.ActionTag.defineSubtype('dom.PipeSegmentElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.PipeSegmentElementNode.isAbstract(true);
+TP.dom.PipeSegmentElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('cmdFilterInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -1644,7 +1644,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('cmdTransformInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -1660,7 +1660,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('filterInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('filterInput',
 function(anInput, cmdNode, aRequest) {
 
     /**
@@ -1684,7 +1684,7 @@ function(anInput, cmdNode, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('getDefaultAction',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('getDefaultAction',
 function(aRequest) {
 
     /**
@@ -1712,7 +1712,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('processInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('processInput',
 function(aRequest, functionName) {
 
     /**
@@ -1840,7 +1840,7 @@ function(aRequest, functionName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('shouldFailOnEmptyInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('shouldFailOnEmptyInput',
 function() {
 
     /**
@@ -1856,7 +1856,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('transformInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('transformInput',
 function(anInput, cmdNode, aRequest) {
 
     /**
@@ -1879,7 +1879,7 @@ function(anInput, cmdNode, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('tshExecute',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**

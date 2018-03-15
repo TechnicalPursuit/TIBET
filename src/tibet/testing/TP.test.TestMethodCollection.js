@@ -1342,7 +1342,7 @@ function(anObject, anAttributeName, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.ElementNode.
+    //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.elementHasAttribute(obj, anAttributeName),
@@ -1362,7 +1362,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.AttributeNode.
+    //  Just in case we got handed a TP.dom.AttributeNode.
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isAttributeNode(obj),
@@ -1407,7 +1407,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.CommentNode.
+    //  Just in case we got handed a TP.dom.CommentNode.
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isCommentNode(obj),
@@ -1426,7 +1426,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.CDATASectionNode.
+    //  Just in case we got handed a TP.dom.CDATASectionNode.
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isCDATASectionNode(obj),
@@ -1464,7 +1464,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.DocumentNode
+    //  Just in case we got handed a TP.dom.DocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isDocument(obj),
@@ -1483,7 +1483,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.ElementNode.
+    //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isElement(obj),
@@ -1502,7 +1502,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.DocumentFragmentNode.
+    //  Just in case we got handed a TP.dom.DocumentFragmentNode.
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isFragment(obj),
@@ -1531,7 +1531,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.HTMLDocumentNode
+    //  Just in case we got handed a TP.dom.HTMLDocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isHTMLDocument(obj),
@@ -1724,7 +1724,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.XMLDocumentNode
+    //  Just in case we got handed a TP.dom.XMLDocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isXHTMLDocument(obj),
@@ -1772,7 +1772,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.HTMLDocumentNode
+    //  Just in case we got handed a TP.dom.HTMLDocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
             TP.isXMLDocument(obj),
@@ -2296,7 +2296,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.ElementNode.
+    //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
 
     isElem = TP.isElement(obj);
@@ -2325,7 +2325,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.ElementNode.
+    //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
 
     isElem = TP.isElement(obj);
@@ -2580,7 +2580,7 @@ function(anObject, aProperty, aValue, aComment) {
         return false;
     }
 
-    //  Just in case we got handed a TP.core.ElementNode.
+    //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
     val = TP.elementGetComputedStyleProperty(obj, aProperty);
 

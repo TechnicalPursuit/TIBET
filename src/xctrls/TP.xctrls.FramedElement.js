@@ -104,7 +104,7 @@ function(aRequest) {
         return;
     }
 
-    //  Get a handle to a TP.core.ElementNode representing an instance of this
+    //  Get a handle to a TP.dom.ElementNode representing an instance of this
     //  element type wrapped around elem.
     elemTPNode = TP.tpnode(elem);
 
@@ -179,11 +179,11 @@ function(aNode, aURI) {
 
     this.callNextMethod();
 
-    //  Grab a TP.core.ElementNode reference to the iframe that we built.
+    //  Grab a TP.dom.ElementNode reference to the iframe that we built.
     iFrame = this.getDocument().getElementById(
                             this.getAttribute('id') + '_frame');
 
-    if (TP.isKindOf(iFrame, 'TP.core.ElementNode')) {
+    if (TP.isKindOf(iFrame, 'TP.dom.ElementNode')) {
         this.set('tpIFrame', iFrame);
     }
 

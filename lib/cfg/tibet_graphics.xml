@@ -37,8 +37,8 @@
         ]]>
     </script>
 
-    <script src="~lib/src/tibet/graphics/TP.core.D3Tag.js"/>
-    <script src="~lib/src/tibet/graphics/TP.core.D3VirtualList.js"/>
+    <script src="~lib/src/tibet/graphics/TP.dom.D3Tag.js"/>
+    <script src="~lib/src/tibet/graphics/TP.dom.D3VirtualList.js"/>
 </config>
 
 </package>

@@ -58,7 +58,7 @@ function(aSignal, triggerTPDocument) {
 
     /**
      * @method getTriggerElement
-     * @summary Returns the TP.core.ElementNode that is acting as the
+     * @summary Returns the TP.dom.ElementNode that is acting as the
      *     'triggering' element for the overlay. This can be one of three
      *     values:
      *     - The element matching a 'triggerPath' supplied in aSignal
@@ -69,7 +69,7 @@ function(aSignal, triggerTPDocument) {
      *     this method.
      * @param {TP.core.Document} triggerTPDocument The TP.core.Document that the
      *     triggering element is contained in.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode that caused the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode that caused the
      *     overlay to trigger.
      */
 

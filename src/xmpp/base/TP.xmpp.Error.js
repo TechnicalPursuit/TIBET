@@ -72,7 +72,7 @@ function() {
      * @method getErrorElement
      * @summary Returns the native node of the receiver since this type is, by
      *     defintion, an error
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     return this;
@@ -146,7 +146,7 @@ function(aStanza) {
 
     condition = this.get('errorCondition');
 
-    //  if we have an 'error condition' TP.core.Node, let it determine the
+    //  if we have an 'error condition' TP.dom.Node, let it determine the
     //  signal name
     if (TP.isValid(condition)) {
         //  This will turn an error condition element name such as

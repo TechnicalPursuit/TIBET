@@ -246,7 +246,7 @@ function(aSourceName) {
 
     if (TP.isString(result) ||
         TP.isNode(result) ||
-        TP.isKindOf(result, TP.core.Node)) {
+        TP.isKindOf(result, TP.dom.Node)) {
 
         return this.getEntryAt(aSourceName);
     }

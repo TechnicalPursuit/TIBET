@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('xs.simpleType');
+TP.dom.ElementNode.defineSubtype('xs.simpleType');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

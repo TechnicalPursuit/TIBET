@@ -46,7 +46,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var listTPElem,
@@ -464,7 +464,7 @@ function(aspectName) {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -1117,7 +1117,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('buildNewContent',
@@ -1388,7 +1388,7 @@ function() {
      *     to generate content under the receiver. This template can include
      *     data binding expressions that will be used, along with the receiver's
      *     data, to generate that content.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode to use as the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
      *     template for the receiver.
      */
 
@@ -1450,7 +1450,7 @@ function(content) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selectedValues,
@@ -1483,7 +1483,7 @@ function(content) {
                  * @summary Computes the 'successor' focus element using the
                  *     currently focused element (if there is one) and the
                  *     move action.
-                 * @param {TP.core.ElementNode} focusedTPElem The currently
+                 * @param {TP.dom.ElementNode} focusedTPElem The currently
                  *     focused element. This may be null if no element is
                  *     currently focused.
                  * @param {Constant} moveAction The type of 'move' that the
@@ -1499,7 +1499,7 @@ function(content) {
                  *         TP.FIRST_IN_PREVIOUS_GROUP
                  *         TP.FOLLOWING
                  *         TP.PRECEDING
-                 * @returns {TP.core.ElementNode} The element that is the
+                 * @returns {TP.dom.ElementNode} The element that is the
                  *         successor focus element.
                  */
 
@@ -1600,7 +1600,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selectedValues,

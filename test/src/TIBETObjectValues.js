@@ -288,7 +288,7 @@ function(aRequest) {
     xhrVal = new XMLHttpRequest();
 
     //  TIBET Type
-    tibetTypeVal = TP.sys.getTypeByName('TP.core.Node');
+    tibetTypeVal = TP.sys.getTypeByName('TP.dom.Node');
 
     //  Instance of TP.lang.Object
     tibetObjectVal = TP.lang.Object.construct();
@@ -315,30 +315,30 @@ function(aRequest) {
 
     //  Instance of TP.core.Window
     tibetWindowVal = TP.core.Window.construct(windowVal);
-    //  Instance of TP.core.HTMLDocumentNode
+    //  Instance of TP.dom.HTMLDocumentNode
     tibetHTMLDocVal = TP.core.Document.construct(htmlDocumentVal);
-    //  Instance of TP.core.HTMLElementNode
-    tibetHTMLElemVal = TP.core.HTMLElementNode.construct(htmlElementVal);
+    //  Instance of TP.dom.HTMLElementNode
+    tibetHTMLElemVal = TP.dom.HTMLElementNode.construct(htmlElementVal);
 
-    //  Instance of TP.core.XMLDocumentNode
+    //  Instance of TP.dom.XMLDocumentNode
     tibetXMLDocVal = TP.core.Document.construct(xmlDocumentVal);
-    //  Instance of TP.core.XMLElementNode
-    tibetXMLElemVal = TP.core.XMLElementNode.construct(xmlElementVal);
+    //  Instance of TP.dom.XMLElementNode
+    tibetXMLElemVal = TP.dom.XMLElementNode.construct(xmlElementVal);
 
-    //  Instance of TP.core.DocumentFragmentNode
-    tibetDocFragNodeVal = TP.core.DocumentFragmentNode.construct(
+    //  Instance of TP.dom.DocumentFragmentNode
+    tibetDocFragNodeVal = TP.dom.DocumentFragmentNode.construct(
         documentFragmentNodeVal);
-    //  Instance of TP.core.AttributeNode
-    tibetAttributeNodeVal = TP.core.AttributeNode.construct(attrNodeVal);
-    //  Instance of TP.core.TextNode
-    tibetTextNodeVal = TP.core.TextNode.construct(textNodeVal);
-    //  Instance of TP.core.CDATASectionNode
-    tibetCDATASectionNodeVal = TP.core.CDATASectionNode.construct(
+    //  Instance of TP.dom.AttributeNode
+    tibetAttributeNodeVal = TP.dom.AttributeNode.construct(attrNodeVal);
+    //  Instance of TP.dom.TextNode
+    tibetTextNodeVal = TP.dom.TextNode.construct(textNodeVal);
+    //  Instance of TP.dom.CDATASectionNode
+    tibetCDATASectionNodeVal = TP.dom.CDATASectionNode.construct(
         cdataSectionNodeVal);
-    //  Instance of TP.core.ProcessingInstructionNode
-    tibetPINodeVal = TP.core.ProcessingInstructionNode.construct(piNodeVal);
-    //  Instance of TP.core.CommentNode
-    tibetCommentNodeVal = TP.core.CommentNode.construct(commentNodeVal);
+    //  Instance of TP.dom.ProcessingInstructionNode
+    tibetPINodeVal = TP.dom.ProcessingInstructionNode.construct(piNodeVal);
+    //  Instance of TP.dom.CommentNode
+    tibetCommentNodeVal = TP.dom.CommentNode.construct(commentNodeVal);
 
     //  Instance of TP.path.SimpleTIBETPath
     tibetSimpleTIBETPathVal = TP.path.SimpleTIBETPath.construct('foo');
@@ -482,18 +482,18 @@ function(aRequest) {
     'TP.sig.Exception',         tibetExceptionVal,      //  TP.sig.Exception
 
     'TP.core.Window',           tibetWindowVal,         //  TP.core.Window
-    'TP.core.HTMLDocumentNode', tibetHTMLDocVal,        //  TP.core.HTMLDocumentNode
-    'TP.core.HTMLElementNode',  tibetHTMLElemVal,       //  TP.core.HTMLElementNode
+    'TP.dom.HTMLDocumentNode',  tibetHTMLDocVal,        //  TP.dom.HTMLDocumentNode
+    'TP.dom.HTMLElementNode',   tibetHTMLElemVal,       //  TP.dom.HTMLElementNode
 
-    'TP.core.XMLDocumentNode',  tibetXMLDocVal,         //  TP.core.XMLDocumentNode
-    'TP.core.XMLElementNode',   tibetXMLElemVal,        //  TP.core.XMLElementNode
+    'TP.dom.XMLDocumentNode',   tibetXMLDocVal,         //  TP.dom.XMLDocumentNode
+    'TP.dom.XMLElementNode',    tibetXMLElemVal,        //  TP.dom.XMLElementNode
 
-    'TP.core.DocumentFragmentNode', tibetDocFragNodeVal,    //  TP.core.DocumentFragmentNode
-    'TP.core.AttributeNode',    tibetAttributeNodeVal,      //  TP.core.AttributeNode
-    'TP.core.TextNode',         tibetTextNodeVal,           //  TP.core.TextNode
-    'TP.core.CDATASectionNode', tibetCDATASectionNodeVal,   //  TP.core.CDATASectionNode
-    'TP.core.ProcessingInstructionNode',    tibetPINodeVal, //  TP.core.ProcessingInstructionNode
-    'TP.core.CommentNode',      tibetCommentNodeVal,        //  TP.core.CommentNode
+    'TP.dom.DocumentFragmentNode', tibetDocFragNodeVal,     //  TP.dom.DocumentFragmentNode
+    'TP.dom.AttributeNode',     tibetAttributeNodeVal,      //  TP.dom.AttributeNode
+    'TP.dom.TextNode',          tibetTextNodeVal,           //  TP.dom.TextNode
+    'TP.dom.CDATASectionNode',  tibetCDATASectionNodeVal,   //  TP.dom.CDATASectionNode
+    'TP.dom.ProcessingInstructionNode',    tibetPINodeVal,  //  TP.dom.ProcessingInstructionNode
+    'TP.dom.CommentNode',       tibetCommentNodeVal,        //  TP.dom.CommentNode
 
     'TP.path.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.path.SimpleTIBETPath
     'TP.path.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.path.SimpleTIBETPath
@@ -712,7 +712,7 @@ function(aRequest) {
     eventVal = TP.ac(MouseEvent, UIEvent, Object);
     xhrVal = TP.ac(XMLHttpRequest, Object);
 
-    tibetTypeVal = TP.ac(TP.meta.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTypeVal = TP.ac(TP.meta.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetObjectVal = TP.ac(TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -723,18 +723,18 @@ function(aRequest) {
     tibetExceptionVal = TP.ac(TP.sig.Exception, TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetWindowVal = TP.ac(TP.core.Window, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetHTMLDocVal = TP.ac(TP.core.HTMLDocumentNode, TP.core.DocumentNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetHTMLElemVal = TP.ac(TP.html.body, TP.html.Attrs, TP.core.UIElementNode, TP.core.ElementNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHTMLDocVal = TP.ac(TP.dom.HTMLDocumentNode, TP.dom.DocumentNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHTMLElemVal = TP.ac(TP.html.body, TP.html.Attrs, TP.dom.UIElementNode, TP.dom.ElementNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetXMLDocVal = TP.ac(TP.core.XMLDocumentNode, TP.core.DocumentNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetXMLElemVal = TP.ac(TP.core.XMLElementNode, TP.core.ElementNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXMLDocVal = TP.ac(TP.dom.XMLDocumentNode, TP.dom.DocumentNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXMLElemVal = TP.ac(TP.dom.XMLElementNode, TP.dom.ElementNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetDocFragNodeVal = TP.ac(TP.core.DocumentFragmentNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetAttributeNodeVal = TP.ac(TP.core.AttributeNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetTextNodeVal = TP.ac(TP.core.TextNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetCDATASectionNodeVal = TP.ac(TP.core.CDATASectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetPINodeVal = TP.ac(TP.core.XMLProcessingInstruction, TP.core.ProcessingInstructionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetCommentNodeVal = TP.ac(TP.core.CommentNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetDocFragNodeVal = TP.ac(TP.dom.DocumentFragmentNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetAttributeNodeVal = TP.ac(TP.dom.AttributeNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTextNodeVal = TP.ac(TP.dom.TextNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetCDATASectionNodeVal = TP.ac(TP.dom.CDATASectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPINodeVal = TP.ac(TP.dom.XMLProcessingInstructionNode, TP.dom.ProcessingInstructionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetCommentNodeVal = TP.ac(TP.dom.CommentNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetSimpleTIBETPathVal = TP.ac(TP.path.SimpleTIBETPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
     tibetComplexTIBETPathVal = TP.ac(TP.path.ComplexTIBETPath, TP.path.SimpleTIBETPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
@@ -828,18 +828,18 @@ function(aRequest) {
     'TP.sig.Exception',         tibetExceptionVal,      //  TP.sig.Exception
 
     'TP.core.Window',           tibetWindowVal,         //  TP.core.Window
-    'TP.core.HTMLDocumentNode', tibetHTMLDocVal,        //  TP.core.HTMLDocumentNode
-    'TP.core.HTMLElementNode',  tibetHTMLElemVal,       //  TP.core.HTMLElementNode
+    'TP.dom.HTMLDocumentNode',  tibetHTMLDocVal,        //  TP.dom.HTMLDocumentNode
+    'TP.dom.HTMLElementNode',   tibetHTMLElemVal,       //  TP.dom.HTMLElementNode
 
-    'TP.core.XMLDocumentNode',  tibetXMLDocVal,         //  TP.core.XMLDocumentNode
-    'TP.core.XMLElementNode',   tibetXMLElemVal,        //  TP.core.XMLElementNode
+    'TP.dom.XMLDocumentNode',   tibetXMLDocVal,         //  TP.dom.XMLDocumentNode
+    'TP.dom.XMLElementNode',    tibetXMLElemVal,        //  TP.dom.XMLElementNode
 
-    'TP.core.DocumentFragmentNode', tibetDocFragNodeVal,    //  TP.core.DocumentFragmentNode
-    'TP.core.AttributeNode',    tibetAttributeNodeVal,      //  TP.core.AttributeNode
-    'TP.core.TextNode',         tibetTextNodeVal,           //  TP.core.TextNode
-    'TP.core.CDATASectionNode', tibetCDATASectionNodeVal,   //  TP.core.CDATASectionNode
-    'TP.core.ProcessingInstructionNode',    tibetPINodeVal, //  TP.core.ProcessingInstructionNode
-    'TP.core.CommentNode',      tibetCommentNodeVal,        //  TP.core.CommentNode
+    'TP.dom.DocumentFragmentNode', tibetDocFragNodeVal,     //  TP.dom.DocumentFragmentNode
+    'TP.dom.AttributeNode',     tibetAttributeNodeVal,      //  TP.dom.AttributeNode
+    'TP.dom.TextNode',          tibetTextNodeVal,           //  TP.dom.TextNode
+    'TP.dom.CDATASectionNode',  tibetCDATASectionNodeVal,   //  TP.dom.CDATASectionNode
+    'TP.dom.ProcessingInstructionNode',    tibetPINodeVal,  //  TP.dom.ProcessingInstructionNode
+    'TP.dom.CommentNode',       tibetCommentNodeVal,        //  TP.dom.CommentNode
 
     'TP.path.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.path.SimpleTIBETPath
     'TP.path.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.path.SimpleTIBETPath
@@ -1006,18 +1006,18 @@ function(aRequest) {
         'IFrameWindow',                         'TP.core.Window',
 
         // 'Node',                                 'Node',
-        'HTMLDocument',                         'TP.core.HTMLDocumentNode',
+        'HTMLDocument',                         'TP.dom.HTMLDocumentNode',
         'HTMLElement',                          'TP.html.body',
 
-        'XMLDocument',                          'TP.core.XMLDocumentNode',
-        'XMLElement',                           'TP.core.XMLElementNode',
+        'XMLDocument',                          'TP.dom.XMLDocumentNode',
+        'XMLElement',                           'TP.dom.XMLElementNode',
 
-        'AttributeNode',                        'TP.core.AttributeNode',
-        'TextNode',                             'TP.core.TextNode',
-        'CDATASectionNode',                     'TP.core.CDATASectionNode',
-        'PINode',                               'TP.core.ProcessingInstructionNode',
-        'CommentNode',                          'TP.core.CommentNode',
-        'DocumentFragmentNode',                 'TP.core.DocumentFragmentNode',
+        'AttributeNode',                        'TP.dom.AttributeNode',
+        'TextNode',                             'TP.dom.TextNode',
+        'CDATASectionNode',                     'TP.dom.CDATASectionNode',
+        'PINode',                               'TP.dom.ProcessingInstructionNode',
+        'CommentNode',                          'TP.dom.CommentNode',
+        'DocumentFragmentNode',                 'TP.dom.DocumentFragmentNode',
 
         'NodeList',                             'Array',        //  contents wrapped
         'NamedNodeMap',                         'TP.core.Hash', //  contents wrapped
@@ -1037,18 +1037,18 @@ function(aRequest) {
         'TP.sig.Exception',                     TP.IDENTITY,
 
         'TP.core.Window',                       TP.IDENTITY,
-        'TP.core.HTMLDocumentNode',             TP.IDENTITY,
-        'TP.core.HTMLElementNode',              TP.IDENTITY,
+        'TP.dom.HTMLDocumentNode',              TP.IDENTITY,
+        'TP.dom.HTMLElementNode',               TP.IDENTITY,
 
-        'TP.core.XMLDocumentNode',              TP.IDENTITY,
-        'TP.core.XMLElementNode',               TP.IDENTITY,
+        'TP.dom.XMLDocumentNode',               TP.IDENTITY,
+        'TP.dom.XMLElementNode',                TP.IDENTITY,
 
-        'TP.core.DocumentFragmentNode',         TP.IDENTITY,
-        'TP.core.AttributeNode',                TP.IDENTITY,
-        'TP.core.TextNode',                     TP.IDENTITY,
-        'TP.core.CDATASectionNode',             TP.IDENTITY,
-        'TP.core.ProcessingInstructionNode',    TP.IDENTITY,
-        'TP.core.CommentNode',                  TP.IDENTITY,
+        'TP.dom.DocumentFragmentNode',          TP.IDENTITY,
+        'TP.dom.AttributeNode',                 TP.IDENTITY,
+        'TP.dom.TextNode',                      TP.IDENTITY,
+        'TP.dom.CDATASectionNode',              TP.IDENTITY,
+        'TP.dom.ProcessingInstructionNode',     TP.IDENTITY,
+        'TP.dom.CommentNode',                   TP.IDENTITY,
 
         'TP.path.SimpleTIBETPath',              TP.IDENTITY,
         'TP.path.ComplexTIBETPath',             TP.IDENTITY,
@@ -1158,18 +1158,18 @@ function(aRequest) {
         'TP.sig.Exception',                     TP.IDENTITY,
 
         'TP.core.Window',                       'DOMWindow',
-        'TP.core.HTMLDocumentNode',             'HTMLDocument',
-        'TP.core.HTMLElementNode',              'HTMLBodyElement',
+        'TP.dom.HTMLDocumentNode',              'HTMLDocument',
+        'TP.dom.HTMLElementNode',               'HTMLBodyElement',
 
-        'TP.core.XMLDocumentNode',              'XMLDocument',
-        'TP.core.XMLElementNode',               'Element',
+        'TP.dom.XMLDocumentNode',               'XMLDocument',
+        'TP.dom.XMLElementNode',                'Element',
 
-        'TP.core.DocumentFragmentNode',         'DocumentFragment',
-        'TP.core.AttributeNode',                'Attr',
-        'TP.core.TextNode',                     'Text',
-        'TP.core.CDATASectionNode',             'CDATASection',
-        'TP.core.ProcessingInstructionNode',    'ProcessingInstruction',
-        'TP.core.CommentNode',                  'Comment',
+        'TP.dom.DocumentFragmentNode',          'DocumentFragment',
+        'TP.dom.AttributeNode',                 'Attr',
+        'TP.dom.TextNode',                      'Text',
+        'TP.dom.CDATASectionNode',              'CDATASection',
+        'TP.dom.ProcessingInstructionNode',     'ProcessingInstruction',
+        'TP.dom.CommentNode',                   'Comment',
 
         'TP.path.SimpleTIBETPath',              TP.IDENTITY,
         'TP.path.ComplexTIBETPath',             TP.IDENTITY,
@@ -1279,18 +1279,18 @@ function(aRequest) {
         'TP.sig.Exception',                     TP.IDENTITY,
 
         'TP.core.Window',                       TP.IDENTITY,
-        'TP.core.HTMLDocumentNode',             /([\s\S]+)/,
-        'TP.core.HTMLElementNode',              /([\s\S]+)/,
+        'TP.dom.HTMLDocumentNode',              /([\s\S]+)/,
+        'TP.dom.HTMLElementNode',               /([\s\S]+)/,
 
-        'TP.core.XMLDocumentNode',              'Hi there<boo><goo/></boo><moo/>',
-        'TP.core.XMLElementNode',               'bar',
+        'TP.dom.XMLDocumentNode',               'Hi there<boo><goo/></boo><moo/>',
+        'TP.dom.XMLElementNode',                'bar',
 
-        'TP.core.DocumentFragmentNode',         /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
-        'TP.core.AttributeNode',                'bar',
-        'TP.core.TextNode',                     'foo',
-        'TP.core.CDATASectionNode',             'foo',
-        'TP.core.ProcessingInstructionNode',    'bar',
-        'TP.core.CommentNode',                  'foo',
+        'TP.dom.DocumentFragmentNode',          /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'TP.dom.AttributeNode',                 'bar',
+        'TP.dom.TextNode',                      'foo',
+        'TP.dom.CDATASectionNode',              'foo',
+        'TP.dom.ProcessingInstructionNode',     'bar',
+        'TP.dom.CommentNode',                   'foo',
 
         'TP.path.SimpleTIBETPath',              TP.IDENTITY,
         'TP.path.ComplexTIBETPath',             TP.IDENTITY,

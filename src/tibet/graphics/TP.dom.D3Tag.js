@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.D3Tag}
+ * @type {TP.dom.D3Tag}
  * @summary A trait which mixes in common functionality for d3-based UI
  *     components. Data-driven controls such as lists, tables, menus, as well as
  *     more typical d3 components such as graphs and charts can leverage this
@@ -18,17 +18,17 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('D3Tag');
+TP.dom.ElementNode.defineSubtype('D3Tag');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.D3Tag.isAbstract(true);
+TP.dom.D3Tag.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Type.defineMethod('initialize',
+TP.dom.D3Tag.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -50,7 +50,7 @@ function() {
  * data. The default is true.
  * @type {Boolean}
  */
-TP.core.D3Tag.Type.defineAttribute('shouldOrder');
+TP.dom.D3Tag.Type.defineAttribute('shouldOrder');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -60,56 +60,56 @@ TP.core.D3Tag.Type.defineAttribute('shouldOrder');
  * The registry of templating expressions used by the rendering methods.
  * @type {TP.core.hash}
  */
-TP.core.D3Tag.Inst.defineAttribute('$templateExprRegistry');
+TP.dom.D3Tag.Inst.defineAttribute('$templateExprRegistry');
 
 /**
  * Whether or not to render. The default is true.
  * @type {Boolean}
  */
-TP.core.D3Tag.Inst.defineAttribute('shouldRender');
+TP.dom.D3Tag.Inst.defineAttribute('shouldRender');
 
 /**
  * The data-bound update selection set for d3.js.
  * @type {TP.extern.d3.selection}
  */
-TP.core.D3Tag.Inst.defineAttribute('updateSelection');
+TP.dom.D3Tag.Inst.defineAttribute('updateSelection');
 
 /**
  * The data set to render, via d3.js, into the receiver.
  * @type {Object}
  */
-TP.core.D3Tag.Inst.defineAttribute('data');
+TP.dom.D3Tag.Inst.defineAttribute('data');
 
 /**
  * The container selection for the element for d3.js.
  * @type {TP.extern.d3.selection}
  */
-TP.core.D3Tag.Inst.defineAttribute('containerSelection');
+TP.dom.D3Tag.Inst.defineAttribute('containerSelection');
 
 /**
  * The element used as the 'selection container' (i.e. the update selection will
  * be created on this selection root).
  * @type {Element}
  */
-TP.core.D3Tag.Inst.defineAttribute('selectionContainer');
+TP.dom.D3Tag.Inst.defineAttribute('selectionContainer');
 
 /**
  * Whether or not we have a template.
  * @type {Boolean}
  */
-TP.core.D3Tag.Inst.defineAttribute('$hasTemplate');
+TP.dom.D3Tag.Inst.defineAttribute('$hasTemplate');
 
 /**
  * The template in compiled form.
  * @type {Element}
  */
-TP.core.D3Tag.Inst.defineAttribute('$compiledTemplateContent');
+TP.dom.D3Tag.Inst.defineAttribute('$compiledTemplateContent');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('adjustIterationIndex',
+TP.dom.D3Tag.Inst.defineMethod('adjustIterationIndex',
 function(anIndex) {
 
     /**
@@ -126,7 +126,7 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('buildNewContent',
+TP.dom.D3Tag.Inst.defineMethod('buildNewContent',
 function(enterSelection) {
 
     /**
@@ -144,7 +144,7 @@ function(enterSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('buildNewContentFromTemplate',
+TP.dom.D3Tag.Inst.defineMethod('buildNewContentFromTemplate',
 function(enterSelection) {
 
     /**
@@ -254,7 +254,7 @@ function(enterSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('computeSelectionData',
+TP.dom.D3Tag.Inst.defineMethod('computeSelectionData',
 function() {
 
     /**
@@ -274,14 +274,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('constructTemplateFromInline',
+TP.dom.D3Tag.Inst.defineMethod('constructTemplateFromInline',
 function() {
 
     /**
      * @method constructTemplateFromInline
      * @summary Constructs the template used by the receiver to generate
      *     content, if provided by the author.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var templateContentTPElem,
@@ -311,7 +311,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3Data',
+TP.dom.D3Tag.Inst.defineMethod('d3Data',
 function(rootUpdateSelection) {
 
     /**
@@ -320,7 +320,7 @@ function(rootUpdateSelection) {
      *     the '.data()' method of a d3.js selection.
      * @param {TP.extern.d3.selection} rootUpdateSelection The d3.js update
      *     selection representing the 'root' that is managed by the receiver.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var data,
@@ -352,7 +352,7 @@ function(rootUpdateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3Enter',
+TP.dom.D3Tag.Inst.defineMethod('d3Enter',
 function(updateSelection) {
 
     /**
@@ -365,7 +365,7 @@ function(updateSelection) {
      *     selection that new content should be appended to. If this is not
      *     supplied, then an enter selection computed from the receiver's update
      *     selection will be used.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selection;
@@ -398,7 +398,7 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3EnterTransition',
+TP.dom.D3Tag.Inst.defineMethod('d3EnterTransition',
 function() {
 
     /**
@@ -406,7 +406,7 @@ function() {
      * @summary Provides any 'transition' for the receiver's d3.js 'enter
      *     selection'. This allows for a visual effect when new content is
      *     'entering' the drawing 'stage'.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     return this;
@@ -414,7 +414,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3Exit',
+TP.dom.D3Tag.Inst.defineMethod('d3Exit',
 function(exitSelection) {
 
     /**
@@ -425,7 +425,7 @@ function(exitSelection) {
      * @param {TP.extern.d3.selection} [exitSelection] The d3.js update
      *     selection that existing content should be removed from. If this is
      *     not supplied, then the receiver's update selection will be used.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selection;
@@ -446,7 +446,7 @@ function(exitSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3ExitTransition',
+TP.dom.D3Tag.Inst.defineMethod('d3ExitTransition',
 function() {
 
     /**
@@ -454,7 +454,7 @@ function() {
      * @summary Provides any 'transition' for the receiver's d3.js 'exit
      *     selection'. This allows for a visual effect when old content is
      *     'exiting' the drawing 'stage'.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     return this;
@@ -462,7 +462,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3Select',
+TP.dom.D3Tag.Inst.defineMethod('d3Select',
 function() {
 
     /**
@@ -481,7 +481,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3SelectContainer',
+TP.dom.D3Tag.Inst.defineMethod('d3SelectContainer',
 function() {
 
     /**
@@ -489,7 +489,7 @@ function() {
      * @summary Using the receiver's 'selectionContainer', this method performs a
      *     d3.js 'select' to select the root Element under which all of the
      *     receiver's content that will be redrawn with d3.js can be found.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     //  Note how we pass 'false' here to not trigger change notification.
@@ -503,7 +503,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3Update',
+TP.dom.D3Tag.Inst.defineMethod('d3Update',
 function(updateSelection) {
 
     /**
@@ -516,7 +516,7 @@ function(updateSelection) {
      * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
      *     selection that existing content should be altered in. If this is not
      *     supplied, then the receiver's update selection will be used.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selection;
@@ -548,7 +548,7 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('d3UpdateTransition',
+TP.dom.D3Tag.Inst.defineMethod('d3UpdateTransition',
 function() {
 
     /**
@@ -556,7 +556,7 @@ function() {
      * @summary Provides any 'transition' for the receiver's d3.js 'update
      *     selection'. This allows for a visual effect when existing content is
      *     being updated on the drawing 'stage'.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     return this;
@@ -564,7 +564,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('finishBuildingNewContent',
+TP.dom.D3Tag.Inst.defineMethod('finishBuildingNewContent',
 function(selection) {
 
     /**
@@ -574,7 +574,7 @@ function(selection) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     return this;
@@ -582,7 +582,7 @@ function(selection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('finishUpdatingExistingContent',
+TP.dom.D3Tag.Inst.defineMethod('finishUpdatingExistingContent',
 function(selection) {
 
     /**
@@ -593,7 +593,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     return this;
@@ -601,7 +601,7 @@ function(selection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('getKeyFunction',
+TP.dom.D3Tag.Inst.defineMethod('getKeyFunction',
 function() {
 
     /**
@@ -623,7 +623,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('getRootUpdateSelection',
+TP.dom.D3Tag.Inst.defineMethod('getRootUpdateSelection',
 function(containerSelection) {
 
     /**
@@ -642,7 +642,7 @@ function(containerSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('getSelectionContainer',
+TP.dom.D3Tag.Inst.defineMethod('getSelectionContainer',
 function() {
 
     /**
@@ -659,7 +659,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('getTemplate',
+TP.dom.D3Tag.Inst.defineMethod('getTemplate',
 function() {
 
     /**
@@ -668,7 +668,7 @@ function() {
      *     to generate content under the receiver. This template can include
      *     data binding expressions that will be used, along with the receiver's
      *     data, to generate that content.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode to use as the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
      *     template for the receiver.
      */
 
@@ -677,7 +677,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('hasTemplate',
+TP.dom.D3Tag.Inst.defineMethod('hasTemplate',
 function() {
 
     /**
@@ -729,7 +729,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('makeContainerSelection',
+TP.dom.D3Tag.Inst.defineMethod('makeContainerSelection',
 function() {
 
     /**
@@ -743,13 +743,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('render',
+TP.dom.D3Tag.Inst.defineMethod('render',
 function() {
 
     /**
      * @method render
      * @summary Renders the receiver.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var rootUpdateSelection;
@@ -803,7 +803,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('removeOldContent',
+TP.dom.D3Tag.Inst.defineMethod('removeOldContent',
 function(exitSelection) {
 
     /**
@@ -812,7 +812,7 @@ function(exitSelection) {
      *     content in the supplied d3.js 'exit selection'.
      * @param {TP.extern.d3.selection} exitSelection The d3.js exit selection
      *     that existing content should be altered in.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     exitSelection.remove();
@@ -822,7 +822,7 @@ function(exitSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('updateExistingContent',
+TP.dom.D3Tag.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
     /**
@@ -839,7 +839,7 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('updateExistingContentFromTemplate',
+TP.dom.D3Tag.Inst.defineMethod('updateExistingContentFromTemplate',
 function(updateSelection) {
 
     /**
@@ -891,7 +891,7 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('updateRepeatingItemContent',
+TP.dom.D3Tag.Inst.defineMethod('updateRepeatingItemContent',
 function(itemElement, datum, index, groupIndex, allData, registry) {
 
     /**
@@ -914,7 +914,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
      *     whole expression mapped to an Array of the individual data expressions
      *     inside and to a transformation Function that would've been generated
      *     if necessary.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var elems,
@@ -1012,7 +1012,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('setValue',
+TP.dom.D3Tag.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -1022,7 +1022,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. For this type,
      *     this flag is ignored.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     //  Note how we pass 'false' here to not trigger change notification.

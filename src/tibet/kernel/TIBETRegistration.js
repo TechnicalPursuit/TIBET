@@ -64,7 +64,7 @@ function(anID, regOnly, nodeContext) {
      *     to use for resolution when no other reference is found. Default is
      *     the current canvas.
      * @returns {Object} Typically a TIBET object (meaning nodes are wrapped in
-     *     TP.core.Node instances etc) to maintain encapsulation for as long as
+     *     TP.dom.Node instances etc) to maintain encapsulation for as long as
      *     possible.
      */
 
@@ -256,7 +256,7 @@ function(anID, regOnly, nodeContext) {
 
             if (TP.isNode(inst)) {
                 //  try to force types to come in for creation
-                if (TP.isType(type = TP.core.Node.getConcreteType(inst))) {
+                if (TP.isType(type = TP.dom.Node.getConcreteType(inst))) {
                     return type.construct(inst);
                 }
             } else if (TP.isWindow(inst)) {
@@ -388,7 +388,7 @@ function(anID, regOnly, nodeContext) {
 
     //  not the document, perhaps an element in the document
     if (TP.isElement(inst = TP.nodeGetElementById(win.document, id))) {
-        if (TP.isType(type = TP.core.Node.getConcreteType(inst))) {
+        if (TP.isType(type = TP.dom.Node.getConcreteType(inst))) {
             return type.construct(inst);
         }
     } else {

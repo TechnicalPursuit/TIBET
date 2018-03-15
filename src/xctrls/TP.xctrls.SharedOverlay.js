@@ -73,7 +73,7 @@ function(aTPDocument, anOverlayID) {
     overlayTPElem = aTPDocument.get('//*[@id="' + overlayID + '"]');
 
     //  If the 'get' expression above didn't find one, it hands back an empty
-    //  Array. Otherwise it will hand back the TP.core.ElementNode that
+    //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the overlay.
     if (TP.isEmpty(overlayTPElem)) {
 
@@ -101,7 +101,7 @@ function(aSignal, triggerTPDocument) {
 
     /**
      * @method getTriggerElement
-     * @summary Returns the TP.core.ElementNode that is acting as the
+     * @summary Returns the TP.dom.ElementNode that is acting as the
      *     'triggering' element for the overlay. This can be one of three
      *     values:
      *     - The element matching a 'triggerPath' supplied in aSignal
@@ -112,7 +112,7 @@ function(aSignal, triggerTPDocument) {
      *     this method.
      * @param {TP.core.Document} triggerTPDocument The TP.core.Document that the
      *     triggering element is contained in.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode that caused the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode that caused the
      *     overlay to trigger.
      */
 
@@ -273,7 +273,7 @@ function(aSignal) {
      *     display the overlay content.
      * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.ElementNode} The wrapped Element that will be used to
+     * @returns {TP.dom.ElementNode} The wrapped Element that will be used to
      *     display the overlay content.
      */
 
@@ -604,7 +604,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
      *     content to place inside of the overlay element.
      * @param {Function} [afterLoadHandler] The optional function to invoke
      *     after the content has loaded (and refreshed from its data). This
-     *     Function should take a single parameter, a TP.core.ElementNode that
+     *     Function should take a single parameter, a TP.dom.ElementNode that
      *     will represent the final content.
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
@@ -658,10 +658,10 @@ function(contentInfo, overlayContent, afterLoadHandler) {
             var elem;
 
             //  If the URI pointed to a type and that type is a subtype
-            //  of TP.core.ElementNode, then create an Element using the
+            //  of TP.dom.ElementNode, then create an Element using the
             //  canonical name
             if (TP.isType(result) &&
-                TP.isSubtypeOf(result, TP.core.ElementNode)) {
+                TP.isSubtypeOf(result, TP.dom.ElementNode)) {
                 elem = TP.elem('<' + result.getCanonicalName() + '/>');
             } else {
                 elem = TP.elem(result.get('data'));
@@ -882,7 +882,7 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
