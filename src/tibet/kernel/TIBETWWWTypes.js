@@ -749,7 +749,7 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'alias', 'RSS',
                         'extensions', 'rss xml',
                         'handler', 'TPRSSContent',
-                        'tpDocNodeType', 'TP.core.RSSFeed'),
+                        'tpDocNodeType', 'TP.rss.RSSFeed'),
 
             TP.ietf.mime.SOAP,
                 TP.hc('mimetype', TP.ietf.mime.SOAP,
@@ -1507,7 +1507,7 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
                             'mimetype', TP.ietf.mime.RSS,
                             'prefix', 'rss',
                             'rootElement', 'rss',
-                            'defaultNodeType', 'TP.core.RSSElement'),
+                            'defaultNodeType', 'TP.rss.RSSElement'),
             TP.w3.Xmlns.SHERPA,
                     TP.hc('uri', TP.w3.Xmlns.SHERPA,
                             'mimetype', TP.ietf.mime.XML,

@@ -27,7 +27,7 @@
 </config>
 
 <config id="content">
-    <script src="./content/TP.core.RSSTypes.js"/>
+    <script src="./content/TP.rss.RSSTypes.js"/>
 </config>
 
 <config id="crypto">

@@ -14,24 +14,24 @@ for RSS as a lightweight data-feed content format for form-based workflow.
 */
 
 //  ========================================================================
-//  TP.core.RSSFeed
+//  TP.rss.RSSFeed
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSFeed}
+ * @type {TP.rss.RSSFeed}
  * @summary Represents a single RSS feed. This type is an abstract type
  *     intended to support construction of version-specific subtypes.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLDocumentNode.defineSubtype('RSSFeed');
+TP.core.XMLDocumentNode.defineSubtype('rss.RSSFeed');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RSSFeed.Inst.defineMethod('init',
+TP.rss.RSSFeed.Inst.defineMethod('init',
 function(aNode, aURI) {
 
     /**
@@ -63,37 +63,37 @@ function(aNode, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSFeed.Inst.defineMethod('getChannelElement',
+TP.rss.RSSFeed.Inst.defineMethod('getChannelElement',
 function() {
 
     /**
      * @method getChannelElement
      * @summary Returns the element containing the data associated with this
      *     channel.
-     * @returns {TP.core.RSSChannel} The channel element.
+     * @returns {TP.rss.RSSChannel} The channel element.
      */
 
     return this.getElementsByTagName('channel').first();
 });
 
 //  ========================================================================
-//  TP.core.RSSElement
+//  TP.rss.RSSElement
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSElement}
+ * @type {TP.rss.RSSElement}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('RSSElement');
+TP.core.ElementNode.defineSubtype('rss.RSSElement');
 
 //  can't construct concrete instances of this
-TP.core.RSSElement.isAbstract(true);
+TP.rss.RSSElement.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSElement.Type.defineMethod('getConcreteType',
+TP.rss.RSSElement.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
@@ -113,16 +113,16 @@ function(aNode) {
     if (localName.toLowerCase() === 'category') {
         if (TP.elementGetLocalName(aNode.parentNode).toLowerCase() ===
                                                                 'channel') {
-            return TP.core.RSSChannelCategory;
+            return TP.rss.RSSChannelCategory;
         }
 
         if (TP.elementGetLocalName(aNode.parentNode).toLowerCase() ===
                                                                 'item') {
-            return TP.core.RSSItemCategory;
+            return TP.rss.RSSItemCategory;
         }
     }
 
-    typeName = 'TP.core.RSS' + localName.asTitleCase();
+    typeName = 'TP.rss.RSS' + localName.asTitleCase();
 
     type = TP.sys.getTypeByName(typeName);
 
@@ -135,33 +135,33 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.RSSChannel
+//  TP.rss.RSSChannel
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSChannel}
+ * @type {TP.rss.RSSChannel}
  * @summary Represents a single RSS channel. This type is an abstract type
  *     intended to support construction of version-specific subtypes.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSElement.defineSubtype('RSSChannel');
+TP.rss.RSSElement.defineSubtype('RSSChannel');
 
 //  we'll rely on subtypes to manage version differences
-TP.core.RSSChannel.isAbstract(true);
+TP.rss.RSSChannel.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannel.Type.defineAttribute('channelVersion');
+TP.rss.RSSChannel.Type.defineAttribute('channelVersion');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannel.Type.defineMethod('canConstruct',
+TP.rss.RSSChannel.Type.defineMethod('canConstruct',
 function(aChannelElement) {
 
     /**
@@ -200,7 +200,7 @@ function(aChannelElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannel.Type.defineMethod('getConcreteType',
+TP.rss.RSSChannel.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
@@ -222,7 +222,7 @@ function(aNode) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannel.Inst.defineMethod('getVersion',
+TP.rss.RSSChannel.Inst.defineMethod('getVersion',
 function() {
 
     /**
@@ -236,35 +236,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannel.Inst.defineMethod('getItems',
+TP.rss.RSSChannel.Inst.defineMethod('getItems',
 function() {
 
     /**
      * @method getItems
-     * @summary Returns an Array of TP.core.RSSItems. Defined this way because
+     * @summary Returns an Array of TP.rss.RSSItems. Defined this way because
      *     'getItems' is already defined as a method on TP.core.CollectionNode
      *     and therefore a getter built from a type schema entry won't be built.
-     * @returns {Array} An Array of TP.core.RSSItems.
+     * @returns {Array} An Array of TP.rss.RSSItems.
      */
 
     return this.getElementsByTagName('item');
 });
 
 //  ========================================================================
-//  TP.core.RSS091Channel
+//  TP.rss.RSS091Channel
 //  ========================================================================
 
 /**
- * @type {TP.core.RSS091Channel}
- * @summary A subtype of TP.core.RSSChannel that represents a Version 0.91 RSS
+ * @type {TP.rss.RSS091Channel}
+ * @summary A subtype of TP.rss.RSSChannel that represents a Version 0.91 RSS
  *     Channel.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannel.defineSubtype('RSS091Channel');
+TP.rss.RSSChannel.defineSubtype('RSS091Channel');
 
-TP.core.RSS091Channel.set('channelVersion', '0.91');
+TP.rss.RSS091Channel.set('channelVersion', '0.91');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -273,85 +273,85 @@ TP.core.RSS091Channel.set('channelVersion', '0.91');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'title', TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'link', TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'description', TP.xpc('./$def:description', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'language', TP.xpc('./$def:language', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'copyright', TP.xpc('./$def:copyright', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'managingEditor', TP.xpc('./$def:managingEditor', TP.hc('shouldCollapse',
             true, 'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'webMaster', TP.xpc('./$def:webMaster', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'pubDate', TP.xpc('./$def:pubDate', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'lastBuildDate', TP.xpc('./$def:lastBuildDate', TP.hc('shouldCollapse',
             true, 'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'docs', TP.xpc('./$def:docs', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'rating', TP.xpc('./$def:rating', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'skipDays', TP.xpc('./$def:skipDays/$def:day', TP.hc('shouldCollapse',
             false, 'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'skipHours', TP.xpc('./$def:skipHours/$def:hour', TP.hc('shouldCollapse',
             false, 'extractWith', 'value')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'items', TP.xpc('./$def:item', TP.hc('shouldCollapse', false, 'packageWith',
-            'TP.core.RSSItem')));
+            'TP.rss.RSSItem')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'image', TP.xpc('./$def:image', TP.hc('shouldCollapse', true, 'packageWith',
-            'TP.core.RSSImage')));
+            'TP.rss.RSSImage')));
 
-TP.core.RSS091Channel.Inst.defineAttribute(
+TP.rss.RSS091Channel.Inst.defineAttribute(
     'textInput', TP.xpc('./$def:textInput', TP.hc('shouldCollapse', true,
-            'packageWith', 'TP.core.RSSTextInput')));
+            'packageWith', 'TP.rss.RSSTextInput')));
 
 //  ========================================================================
-//  TP.core.RSS092Channel
+//  TP.rss.RSS092Channel
 //  ========================================================================
 
 /**
- * @type {TP.core.RSS092Channel}
+ * @type {TP.rss.RSS092Channel}
  * @summary A subtype of a Version 0.91 RSS Channel that represents a Version
  *     0.92 RSS Channel.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSS091Channel.defineSubtype('RSS092Channel');
+TP.rss.RSS091Channel.defineSubtype('RSS092Channel');
 
-TP.core.RSS092Channel.set('channelVersion', '0.92');
+TP.rss.RSS092Channel.set('channelVersion', '0.92');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -360,25 +360,25 @@ TP.core.RSS092Channel.set('channelVersion', '0.92');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSS092Channel.Inst.defineAttribute(
+TP.rss.RSS092Channel.Inst.defineAttribute(
     'cloud', TP.xpc('./$def:cloud', TP.hc('shouldCollapse', true, 'packageWith',
-            'TP.core.RSSCloud')));
+            'TP.rss.RSSCloud')));
 
 //  ========================================================================
-//  TP.core.RSS20Channel
+//  TP.rss.RSS20Channel
 //  ========================================================================
 
 /**
- * @type {TP.core.RSS20Channel}
+ * @type {TP.rss.RSS20Channel}
  * @summary A subtype of a Version 0.92 RSS Channel that represents a Version
  *     2.0 RSS Channel.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSS092Channel.defineSubtype('RSS20Channel');
+TP.rss.RSS092Channel.defineSubtype('RSS20Channel');
 
-TP.core.RSS20Channel.set('channelVersion', '2.0');
+TP.rss.RSS20Channel.set('channelVersion', '2.0');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -387,71 +387,71 @@ TP.core.RSS20Channel.set('channelVersion', '2.0');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSS20Channel.Inst.defineAttribute(
+TP.rss.RSS20Channel.Inst.defineAttribute(
     'generator', TP.xpc('./$def:generator', TP.hc('shouldCollapse', true,
         'extractWith', 'value')));
 
-TP.core.RSS20Channel.Inst.defineAttribute(
+TP.rss.RSS20Channel.Inst.defineAttribute(
     'ttl', TP.xpc('./$def:ttl', TP.hc('shouldCollapse', true, 'extractWith',
         'value')));
 
-TP.core.RSS20Channel.Inst.defineAttribute(
+TP.rss.RSS20Channel.Inst.defineAttribute(
     'category', TP.xpc('./$def:category', TP.hc('shouldCollapse', true,
-        'packageWith', 'TP.core.RSSChannelCategory')));
+        'packageWith', 'TP.rss.RSSChannelCategory')));
 
 //  ------------------------------------------------------------------------
 //  RSS Channel Subelements
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.core.RSSChannelSubelement
+//  TP.rss.RSSChannelSubelement
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSChannelSubelement}
+ * @type {TP.rss.RSSChannelSubelement}
  * @summary Represents a sub-element of an RSS channel element.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSElement.defineSubtype('RSSChannelSubelement');
+TP.rss.RSSElement.defineSubtype('RSSChannelSubelement');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannelSubelement.Inst.defineMethod('getChannel',
+TP.rss.RSSChannelSubelement.Inst.defineMethod('getChannel',
 function() {
 
     /**
      * @method getChannel
      * @summary Returns the channel we are associated with.
-     * @returns {TP.core.RSSChannel} The channel we are associated with.
+     * @returns {TP.rss.RSSChannel} The channel we are associated with.
      */
 
     return this.getDocument().getChannelElement();
 });
 
 //  ========================================================================
-//  TP.core.RSSChannelCategory
+//  TP.rss.RSSChannelCategory
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSChannelCategory}
+ * @type {TP.rss.RSSChannelCategory}
  * @summary Represents an RSS 0.92 / 2.0 item category element embedded in a
  *     channel element.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannelSubelement.defineSubtype('RSSChannelCategory');
+TP.rss.RSSChannelSubelement.defineSubtype('RSSChannelCategory');
 
 //  ========================================================================
-//  TP.core.RSSCloud
+//  TP.rss.RSSCloud
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSCloud}
+ * @type {TP.rss.RSSCloud}
  * @summary Represents an RSS cloud node. RSS cloud nodes are a new element in
  *     RSS 0.92 that define a Web service that can be used to be notified about
  *     updates to the channel.
@@ -459,45 +459,45 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSChannelCategory');
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannelSubelement.defineSubtype('RSSCloud');
+TP.rss.RSSChannelSubelement.defineSubtype('RSSCloud');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSCloud.Inst.defineAttribute(
+TP.rss.RSSCloud.Inst.defineAttribute(
     'domain', TP.xpc('./@domain', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSCloud.Inst.defineAttribute(
+TP.rss.RSSCloud.Inst.defineAttribute(
     'port', TP.xpc('./@port', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSCloud.Inst.defineAttribute(
+TP.rss.RSSCloud.Inst.defineAttribute(
     'path', TP.xpc('./@path', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSCloud.Inst.defineAttribute(
+TP.rss.RSSCloud.Inst.defineAttribute(
     'registerProcedure', TP.xpc('./@registerProcedure', TP.hc('shouldCollapse',
             true, 'extractWith', 'value')));
 
-TP.core.RSSCloud.Inst.defineAttribute(
+TP.rss.RSSCloud.Inst.defineAttribute(
     'protocol', TP.xpc('./@protocol', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
 //  ========================================================================
-//  TP.core.RSSImage
+//  TP.rss.RSSImage
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSImage}
+ * @type {TP.rss.RSSImage}
  * @summary Represents an RSS image element (that is, the icon representing the
  *     channel).
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannelSubelement.defineSubtype('RSSImage');
+TP.rss.RSSChannelSubelement.defineSubtype('RSSImage');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -506,57 +506,57 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSImage');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSSImage.Inst.defineAttribute(
+TP.rss.RSSImage.Inst.defineAttribute(
     'title', TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSImage.Inst.defineAttribute(
+TP.rss.RSSImage.Inst.defineAttribute(
     'url', TP.xpc('./$def:url', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSImage.Inst.defineAttribute(
+TP.rss.RSSImage.Inst.defineAttribute(
     'link', TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSImage.Inst.defineAttribute(
+TP.rss.RSSImage.Inst.defineAttribute(
     'width', TP.xpc('./$def:width', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSImage.Inst.defineAttribute(
+TP.rss.RSSImage.Inst.defineAttribute(
     'height', TP.xpc('./$def:height', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSSImage.Inst.defineAttribute(
+TP.rss.RSSImage.Inst.defineAttribute(
     'description', TP.xpc('./$def:description', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
 //  ========================================================================
-//  TP.core.RSSItem
+//  TP.rss.RSSItem
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSItem}
+ * @type {TP.rss.RSSItem}
  * @summary Represents an RSS item in an abstract form. Specific subtypes are
  *     used to manage the differences between RSS versions.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannelSubelement.defineSubtype('RSSItem');
+TP.rss.RSSChannelSubelement.defineSubtype('RSSItem');
 
-TP.core.RSSItem.isAbstract(true);
+TP.rss.RSSItem.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItem.Type.defineAttribute('itemVersion');
+TP.rss.RSSItem.Type.defineAttribute('itemVersion');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItem.Type.defineMethod('canConstruct',
+TP.rss.RSSItem.Type.defineMethod('canConstruct',
 function(anItemElement) {
 
     /**
@@ -594,7 +594,7 @@ function(anItemElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItem.Type.defineMethod('getConcreteType',
+TP.rss.RSSItem.Type.defineMethod('getConcreteType',
 function(aNode) {
 
     /**
@@ -616,7 +616,7 @@ function(aNode) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItem.Inst.defineMethod('getVersion',
+TP.rss.RSSItem.Inst.defineMethod('getVersion',
 function() {
 
     /**
@@ -629,21 +629,21 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.RSS091Item
+//  TP.rss.RSS091Item
 //  ========================================================================
 
 /**
- * @type {TP.core.RSS091Item}
- * @summary A subtype of TP.core.RSSItem that represents a version 0.91 RSS
+ * @type {TP.rss.RSS091Item}
+ * @summary A subtype of TP.rss.RSSItem that represents a version 0.91 RSS
  *     item. It provides getter properties for the standard 3 properties of a
  *     0.91 item - title, link and description.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItem.defineSubtype('RSS091Item');
+TP.rss.RSSItem.defineSubtype('RSS091Item');
 
-TP.core.RSS091Item.set('itemVersion', '0.91');
+TP.rss.RSS091Item.set('itemVersion', '0.91');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -652,24 +652,24 @@ TP.core.RSS091Item.set('itemVersion', '0.91');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSS091Item.Inst.defineAttribute(
+TP.rss.RSS091Item.Inst.defineAttribute(
     'title', TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSS091Item.Inst.defineAttribute(
+TP.rss.RSS091Item.Inst.defineAttribute(
     'link', TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSS091Item.Inst.defineAttribute(
+TP.rss.RSS091Item.Inst.defineAttribute(
     'description', TP.xpc('./$def:description', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
 //  ========================================================================
-//  TP.core.RSS092Item
+//  TP.rss.RSS092Item
 //  ========================================================================
 
 /**
- * @type {TP.core.RSS092Item}
+ * @type {TP.rss.RSS092Item}
  * @summary A subtype of a Version 0.91 RSS Item that represents a Version 0.92
  *     RSS Item. It provides getter properties for the additional 3 properties
  *     of a 0.92 item - category, enclosure and source.
@@ -677,9 +677,9 @@ TP.core.RSS091Item.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSS091Item.defineSubtype('RSS092Item');
+TP.rss.RSS091Item.defineSubtype('RSS092Item');
 
-TP.core.RSS092Item.set('itemVersion', '0.92');
+TP.rss.RSS092Item.set('itemVersion', '0.92');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -688,24 +688,24 @@ TP.core.RSS092Item.set('itemVersion', '0.92');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSS092Item.Inst.defineAttribute(
+TP.rss.RSS092Item.Inst.defineAttribute(
     'category', TP.xpc('./$def:category', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS092Item.Inst.defineAttribute(
+TP.rss.RSS092Item.Inst.defineAttribute(
     'enclosure', TP.xpc('./$def:enclosure', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS092Item.Inst.defineAttribute(
+TP.rss.RSS092Item.Inst.defineAttribute(
     'source', TP.xpc('./$def:source', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
 //  ========================================================================
-//  TP.core.RSS20Item
+//  TP.rss.RSS20Item
 //  ========================================================================
 
 /**
- * @type {TP.core.RSS20Item}
+ * @type {TP.rss.RSS20Item}
  * @summary A subtype of RSS Item that represents a Version 2.0 RSS Item. It
  *     provides getter functionality for the additional properties of a 2.0
  *     item: comments, author, pubDate, and guid.
@@ -713,9 +713,9 @@ TP.core.RSS092Item.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSS092Item.defineSubtype('RSS20Item');
+TP.rss.RSS092Item.defineSubtype('RSS20Item');
 
-TP.core.RSS20Item.set('itemVersion', '2.0');
+TP.rss.RSS20Item.set('itemVersion', '2.0');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -724,35 +724,35 @@ TP.core.RSS20Item.set('itemVersion', '2.0');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSS20Item.Inst.defineAttribute(
+TP.rss.RSS20Item.Inst.defineAttribute(
     'comments', TP.xpc('./$def:comments', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS20Item.Inst.defineAttribute(
+TP.rss.RSS20Item.Inst.defineAttribute(
     'author', TP.xpc('./$def:author', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS20Item.Inst.defineAttribute(
+TP.rss.RSS20Item.Inst.defineAttribute(
     'pubDate', TP.xpc('./$def:pubDate', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSS20Item.Inst.defineAttribute(
+TP.rss.RSS20Item.Inst.defineAttribute(
     'guid', TP.xpc('./$def:guid', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
 //  ========================================================================
-//  TP.core.RSSTextInput
+//  TP.rss.RSSTextInput
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSTextInput}
+ * @type {TP.rss.RSSTextInput}
  * @summary Represents an RSS textinput element. This element is usually
  *     ignored by user agents.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSChannelSubelement.defineSubtype('RSSTextInput');
+TP.rss.RSSChannelSubelement.defineSubtype('RSSTextInput');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -761,19 +761,19 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSTextInput');
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.core.RSSTextInput.Inst.defineAttribute(
+TP.rss.RSSTextInput.Inst.defineAttribute(
     'title', TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSTextInput.Inst.defineAttribute(
+TP.rss.RSSTextInput.Inst.defineAttribute(
     'name', TP.xpc('./$def:name', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSTextInput.Inst.defineAttribute(
+TP.rss.RSSTextInput.Inst.defineAttribute(
     'link', TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSTextInput.Inst.defineAttribute(
+TP.rss.RSSTextInput.Inst.defineAttribute(
     'description', TP.xpc('./$def:description', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
@@ -782,24 +782,24 @@ TP.core.RSSTextInput.Inst.defineAttribute(
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.core.RSSItemSubelement
+//  TP.rss.RSSItemSubelement
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSItemSubelement}
+ * @type {TP.rss.RSSItemSubelement}
  * @summary Represents a sub-element of an RSS item element.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSElement.defineSubtype('RSSItemSubelement');
+TP.rss.RSSElement.defineSubtype('RSSItemSubelement');
 
 //  ========================================================================
-//  TP.core.RSSEnclosure
+//  TP.rss.RSSEnclosure
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSEnclosure}
+ * @type {TP.rss.RSSEnclosure}
  * @summary Represents an RSS 0.92 / 2.0 enclosure element. An enclosure is a
  *     new element in RSS 0.92 that defines a url, length and type for
  *     out-of-band data that goes with the item, such as some sort of binary
@@ -808,74 +808,74 @@ TP.core.RSSElement.defineSubtype('RSSItemSubelement');
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItemSubelement.defineSubtype('RSSEnclosure');
+TP.rss.RSSItemSubelement.defineSubtype('RSSEnclosure');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSEnclosure.Inst.defineAttribute(
+TP.rss.RSSEnclosure.Inst.defineAttribute(
     'length', TP.xpc('./@length', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
-TP.core.RSSEnclosure.Inst.defineAttribute(
+TP.rss.RSSEnclosure.Inst.defineAttribute(
     'enclosureType', TP.xpc('./@type', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
-TP.core.RSSEnclosure.Inst.defineAttribute(
+TP.rss.RSSEnclosure.Inst.defineAttribute(
     'url', TP.xpc('./@url', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
 //  ========================================================================
-//  TP.core.RSSGUID
+//  TP.rss.RSSGUID
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSGUID}
+ * @type {TP.rss.RSSGUID}
  * @summary Represents an RSS 2.0 GUID element. A GUID is a new element in RSS
  *     2.0 that is a globally unique identifier for the item.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItemSubelement.defineSubtype('RSSGUID');
+TP.rss.RSSItemSubelement.defineSubtype('RSSGUID');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSGUID.Inst.defineAttribute(
+TP.rss.RSSGUID.Inst.defineAttribute(
     'isPermaLink', TP.xpc('./@isPermaLink', TP.hc('shouldCollapse', true,
             'extractWith', 'value')));
 
 //  ========================================================================
-//  TP.core.RSSItemCategory
+//  TP.rss.RSSItemCategory
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSItemCategory}
+ * @type {TP.rss.RSSItemCategory}
  * @summary Represents an RSS 0.92 / 2.0 item category element embedded in an
  *     item element.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItemSubelement.defineSubtype('RSSItemCategory');
+TP.rss.RSSItemSubelement.defineSubtype('RSSItemCategory');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItemCategory.Inst.defineAttribute(
+TP.rss.RSSItemCategory.Inst.defineAttribute(
     'domain', TP.xpc('./@domain', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
 //  ========================================================================
-//  TP.core.RSSSource
+//  TP.rss.RSSSource
 //  ========================================================================
 
 /**
- * @type {TP.core.RSSSource}
+ * @type {TP.rss.RSSSource}
  * @summary Represents an RSS 0.92 / 2.0 source element. A source is a new
  *     element in RSS 0.92 that defines a url for RSS channel that the item came
  *     from as derived from its title.
@@ -883,13 +883,13 @@ TP.core.RSSItemCategory.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItemSubelement.defineSubtype('RSSSource');
+TP.rss.RSSItemSubelement.defineSubtype('RSSSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RSSItemSubelement.Inst.defineAttribute(
+TP.rss.RSSItemSubelement.Inst.defineAttribute(
     'path', TP.xpc('./@url', TP.hc('shouldCollapse', true, 'extractWith',
             'value')));
 
