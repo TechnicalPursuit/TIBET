@@ -165,15 +165,15 @@ function() {
         'TP.sig.Request',                       /^TP\.sig\.Request\$(\w+)$/,
         'TP.sig.Response',                      /^TP\.sig\.Response\$(\w+)$/,
 
-        'TP.core.TIBETURN',                     'urn:tibet:foo',
-        'TP.core.HTTPURL',                      'http://www.blah.com',
-        'TP.core.FileURL',                      'file:///goo.txt',
+        'TP.uri.TIBETURN',                     'urn:tibet:foo',
+        'TP.uri.HTTPURL',                      'http://www.blah.com',
+        'TP.uri.FileURL',                      'file:///goo.txt',
         /* eslint-disable no-script-url */
-        'TP.core.JSURI',                        'javascript:alert("hi")',
+        'TP.uri.JSURI',                        'javascript:alert("hi")',
         /* eslint-enable no-script-url */
-        'TP.core.WSURL',                        'ws://ws.blah.com',
-        'TP.core.TIBETURL',                     'tibet://top/file:///goo.txt',
-        'TP.core.CookieURL',                    'cookie://blah=foo',
+        'TP.uri.WSURL',                        'ws://ws.blah.com',
+        'TP.uri.TIBETURL',                     'tibet://top/file:///goo.txt',
+        'TP.uri.CookieURL',                    'cookie://blah=foo',
 
         'TP.w3.DocType',                        /^TP\.w3\.DocType\$(\w+)$/,
 
@@ -364,15 +364,15 @@ function() {
         'TP.sig.Request',                       /^TP\.sig\.Request\$(\w+)$/,
         'TP.sig.Response',                      /^TP\.sig\.Response\$(\w+)$/,
 
-        'TP.core.TIBETURN',                     'urn:tibet:foo',
-        'TP.core.HTTPURL',                      'http://www.blah.com',
-        'TP.core.FileURL',                      'file:///goo.txt',
+        'TP.uri.TIBETURN',                     'urn:tibet:foo',
+        'TP.uri.HTTPURL',                      'http://www.blah.com',
+        'TP.uri.FileURL',                      'file:///goo.txt',
         /* eslint-disable no-script-url */
-        'TP.core.JSURI',                        'javascript:alert("hi")',
+        'TP.uri.JSURI',                        'javascript:alert("hi")',
         /* eslint-enable no-script-url */
-        'TP.core.WSURL',                        'ws://ws.blah.com',
-        'TP.core.TIBETURL',                     'tibet://top/file:///goo.txt',
-        'TP.core.CookieURL',                    'cookie://blah=foo',
+        'TP.uri.WSURL',                        'ws://ws.blah.com',
+        'TP.uri.TIBETURL',                     'tibet://top/file:///goo.txt',
+        'TP.uri.CookieURL',                    'cookie://blah=foo',
 
         'TP.w3.DocType',                        /^TP\.w3\.DocType\$(\w+)$/,
 
@@ -565,15 +565,15 @@ function() {
         'TP.sig.Request',                       false,
         'TP.sig.Response',                      false,
 
-        'TP.core.TIBETURN',                     false,
-        'TP.core.HTTPURL',                      false,
-        'TP.core.FileURL',                      false,
+        'TP.uri.TIBETURN',                     false,
+        'TP.uri.HTTPURL',                      false,
+        'TP.uri.FileURL',                      false,
         /* eslint-disable no-script-url */
-        'TP.core.JSURI',                        false,
+        'TP.uri.JSURI',                        false,
         /* eslint-enable no-script-url */
-        'TP.core.WSURL',                        false,
-        'TP.core.TIBETURL',                     false,
-        'TP.core.CookieURL',                    false,
+        'TP.uri.WSURL',                        false,
+        'TP.uri.TIBETURL',                     false,
+        'TP.uri.CookieURL',                    false,
 
         'TP.w3.DocType',                        false,
 
@@ -745,15 +745,15 @@ function() {
         'TP.sig.Request',                       false,
         'TP.sig.Response',                      false,
 
-        'TP.core.TIBETURN',                     false,
-        'TP.core.HTTPURL',                      false,
-        'TP.core.FileURL',                      false,
+        'TP.uri.TIBETURN',                     false,
+        'TP.uri.HTTPURL',                      false,
+        'TP.uri.FileURL',                      false,
         /* eslint-disable no-script-url */
-        'TP.core.JSURI',                        false,
+        'TP.uri.JSURI',                        false,
         /* eslint-enable no-script-url */
-        'TP.core.WSURL',                        false,
-        'TP.core.TIBETURL',                     false,
-        'TP.core.CookieURL',                    false,
+        'TP.uri.WSURL',                        false,
+        'TP.uri.TIBETURL',                     false,
+        'TP.uri.CookieURL',                    false,
 
         'TP.w3.DocType',                        false,
 

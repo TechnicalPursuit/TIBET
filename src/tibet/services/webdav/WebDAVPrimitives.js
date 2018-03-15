@@ -753,7 +753,7 @@ function(targetUrl, aRequest) {
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
 
-    //  convert any TP.core.URI value into a viable string url value
+    //  convert any TP.uri.URI value into a viable string url value
     headers.atPut('Destination', destination.getLocation());
 
     //  convert overwrite into a proper string from boolean
@@ -969,7 +969,7 @@ function(targetUrl, aRequest) {
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
 
-    //  convert any TP.core.URI value into a viable string url value
+    //  convert any TP.uri.URI value into a viable string url value
     headers.atPut('Destination', destination.getLocation());
 
     //  convert overwrite into a proper string from boolean

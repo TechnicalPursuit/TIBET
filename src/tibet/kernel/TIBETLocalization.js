@@ -182,9 +182,9 @@ function(aLocale) {
  *     Date, and String input.
  *
  *     Additional support for localization of content is provided by the
- *     TP.core.URI type's rewrite function, which uses the current locale's
+ *     TP.uri.URI type's rewrite function, which uses the current locale's
  *     language code as a qualifier for locating URI aliases and other mapping
- *     data. See the TP.core.URI type for more information.
+ *     data. See the TP.uri.URI type for more information.
  */
 
 //  ------------------------------------------------------------------------

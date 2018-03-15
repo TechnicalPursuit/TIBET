@@ -385,7 +385,7 @@ function(anElement) {
             //  Window) is the same as the current UI canvas Window. If it is,
             //  configure the GUI control to signal change when its GUI value
             //  changes.
-            if (TP.isKindOf(concreteURI, TP.core.TIBETURL)) {
+            if (TP.isKindOf(concreteURI, TP.uri.TIBETURL)) {
 
                 if (concreteURI.getCanvas() === TP.sys.uiwin(true)) {
 
@@ -490,7 +490,7 @@ function(anElement) {
 
             //  If this isn't a TIBET URL, just grab it's primary URI. This
             //  matches the behavior in the setup.
-            if (!TP.isKindOf(concreteURI, TP.core.TIBETURL)) {
+            if (!TP.isKindOf(concreteURI, TP.uri.TIBETURL)) {
                 concreteURI = concreteURI.getPrimaryURI();
             }
 

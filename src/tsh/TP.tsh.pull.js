@@ -63,7 +63,7 @@ function(aRequest) {
 
         //  Call the type method that processes all outstanding remote changes
         //  from all remotely changed URIs.
-        TP.core.URI.processRemoteChangeList();
+        TP.uri.URI.processRemoteChangeList();
     } else {
 
         //  No arguments and no '--all' parameter means we dump usage.

@@ -9,14 +9,14 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.WebDAVHandler}
+ * @type {TP.uri.WebDAVHandler}
  * @summary A URL handler type that can store and load from WebDAV-capable
  *     URLs.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('WebDAVHandler');
+TP.uri.URIHandler.defineSubtype('WebDAVHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -26,7 +26,7 @@ TP.core.URIHandler.defineSubtype('WebDAVHandler');
 //  CONTENT METHODS
 //  ------------------------------------------------------------------------
 
-TP.core.WebDAVHandler.Type.defineMethod('load',
+TP.uri.WebDAVHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
@@ -37,7 +37,7 @@ function(targetURI, aRequest) {
      *     kept up to date. You should normally override one of the more
      *     specific load* methods in subtypes if you're doing custom load
      *     handling.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -87,13 +87,13 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.WebDAVHandler.Type.defineMethod('delete',
+TP.uri.WebDAVHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -106,14 +106,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.WebDAVHandler.Type.defineMethod('save',
+TP.uri.WebDAVHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
      * @method save
      * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided.
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of

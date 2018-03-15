@@ -9,25 +9,25 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.PouchDBURLHandler}
+ * @type {TP.uri.PouchDBURLHandler}
  * @summary A URI handler type that can store and load from 'pouchdb://' URIs.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('PouchDBURLHandler');
+TP.uri.URIHandler.defineSubtype('PouchDBURLHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineAttribute('watchers');
+TP.uri.PouchDBURLHandler.Type.defineAttribute('watchers');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('initialize',
+TP.uri.PouchDBURLHandler.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -44,7 +44,7 @@ function() {
 //  CONTENT METHODS
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('load',
+TP.uri.PouchDBURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
@@ -55,7 +55,7 @@ function(targetURI, aRequest) {
      *     kept up to date. You should normally override one of the more
      *     specific load* methods in subtypes if you're doing custom load
      *     handling.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -137,13 +137,13 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('delete',
+TP.uri.PouchDBURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -212,13 +212,13 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('save',
+TP.uri.PouchDBURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
      * @method save
      * @summary
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -351,7 +351,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('watch',
+TP.uri.PouchDBURLHandler.Type.defineMethod('watch',
 function(targetURI, aRequest) {
 
     /**
@@ -444,7 +444,7 @@ function(targetURI, aRequest) {
 
                         //  Look up the URI without creating a new one if it
                         //  doesn't exist.
-                        if (TP.isURI(uri = TP.core.URI.getInstanceById(loc))) {
+                        if (TP.isURI(uri = TP.uri.URI.getInstanceById(loc))) {
 
                             //  Signal a 'TP.sig.ValueChange' from the URI,
                             //  using the computed action and supplying a new
@@ -476,7 +476,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineHandler('AppShutdown',
+TP.uri.PouchDBURLHandler.Type.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**
@@ -486,7 +486,7 @@ function(aSignal) {
      *     to URLs that represent their resources.
      * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
      *     application is to be shut down.
-     * @returns {TP.core.PouchDBURLHandler} The receiver.
+     * @returns {TP.uri.PouchDBURLHandler} The receiver.
      */
 
     var watchers;
@@ -510,7 +510,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('unwatch',
+TP.uri.PouchDBURLHandler.Type.defineMethod('unwatch',
 function(targetURI, aRequest) {
 
     /**

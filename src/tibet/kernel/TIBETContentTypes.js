@@ -20,7 +20,7 @@ function(content, aURI) {
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {Object} content The content to set into the content object.
-     * @param {TP.core.URI} aURI The source URI. Ignored for this type.
+     * @param {TP.uri.URI} aURI The source URI. Ignored for this type.
      * @returns {Object} The object representation of the content.
      */
 
@@ -180,7 +180,7 @@ function(content, aURI) {
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {String} content The string content to process.
-     * @param {TP.core.URI} [aURI] The source URI.
+     * @param {TP.uri.URI} [aURI] The source URI.
      * @returns {Object} The object representation of the content.
      */
 
@@ -196,7 +196,7 @@ function(content, aURI) {
      * @method getConcreteType
      * @summary Returns the type to use for a particular access path.
      * @param {Object} content The data to find a concrete type for.
-     * @param {TP.core.URI} [aURI] The source URI.
+     * @param {TP.uri.URI} [aURI] The source URI.
      * @returns {TP.core.Content} A viable subtype for enclosing the content.
      */
 
@@ -256,7 +256,7 @@ function(aString, aURI) {
      * @method fromString
      * @summary Returns a new instance from the string provided.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
+     * @param {TP.uri.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
      */
 
@@ -289,7 +289,7 @@ function(data, aURI) {
      * @method init
      * @summary Returns a newly constructed Object from inbound content.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
+     * @param {TP.uri.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
      */
 
@@ -2123,11 +2123,11 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
+     * @param {TP.uri.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
      *     pointing to the collection to add the row to or a path that, in
      *     combination with the receiver's 'public facing' URI, can be used to
      *     obtain a collection to add the row to.
-     * @param {Array|TP.core.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
+     * @param {Array|TP.uri.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
      *     or path that points to data or the object itself to insert into the
      *     collection.
      * @param {Number} [anInsertIndex] The index to insert the item at in the
@@ -2174,7 +2174,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     targetURIOrPath = aCollectionURIOrPath;
     publicURI = this.get('$publicURI');
 
-    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
     //  path...), then set targetURI to publicURI (if its real).
     if (!TP.isURI(targetURIOrPath)) {
 
@@ -2357,7 +2357,7 @@ function(aCollectionURI, aDeleteIndex) {
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
      * @param {Number} aDeleteIndex The index to remove the item from in the
      *     collection.
@@ -2549,7 +2549,7 @@ function(data, aURI) {
      * @method xmlcc
      * @summary Returns a newly initialized XMLContent instance.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI|String} aURI The source URI.
+     * @param {TP.uri.URI|String} aURI The source URI.
      * @returns {TP.core.XMLContent} The new instance.
      */
 
@@ -2624,7 +2624,7 @@ function(data, aURI) {
      * @method init
      * @summary Returns a newly constructed Object from inbound content.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
+     * @param {TP.uri.URI} aURI The source URI.
      * @returns {TP.core.XMLContent} A new instance.
      */
 
@@ -2729,11 +2729,11 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
+     * @param {TP.uri.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
      *     pointing to the collection to add the row to or a path that, in
      *     combination with the receiver's 'public facing' URI, can be used to
      *     obtain a collection to add the row to.
-     * @param {Array|TP.core.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
+     * @param {Array|TP.uri.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
      *     or path that points to data or the object itself to insert into the
      *     collection.
      * @param {Number} [anInsertIndex] The index to insert the item at in the
@@ -2784,7 +2784,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     targetURIOrPath = aCollectionURIOrPath;
     publicURI = this.get('$publicURI');
 
-    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
     //  path...), then set targetURI to publicURI (if its real).
     if (!TP.isURI(targetURIOrPath)) {
 
@@ -3083,7 +3083,7 @@ function(aCollectionURI, aDeleteIndex) {
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
      * @param {Number} aDeleteIndex The index to remove the item from in the
      *     collection.
@@ -6112,7 +6112,7 @@ function(targetObj, varargs) {
             targetURIOrPath = aCollectionURIOrPath;
             publicURI = this.get('$publicURI');
 
-            //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+            //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
             //  path...), then set targetURI to publicURI (if its real).
             if (!TP.isURI(targetURIOrPath)) {
 

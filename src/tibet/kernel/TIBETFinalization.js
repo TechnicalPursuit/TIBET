@@ -398,7 +398,7 @@ function() {
                         TP.boot.$configureOptions(obj);
 
                         //  Configure routing data from cfg() parameters
-                        TP.core.URIRouter.$configureRoutes();
+                        TP.uri.URIRouter.$configureRoutes();
                     });
 
                 TP.boot.$getStageInfo('starting').head =
@@ -499,7 +499,7 @@ function() {
 
     rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.root_page'));
 
-    //  Construct a TP.core.URI wrapper around the location and perform a
+    //  Construct a TP.uri.URI wrapper around the location and perform a
     //  rewrite on it, in case its actually a URI that's been mapped using
     //  the URI mapping system.
     rootURI = TP.uc(rootLoc);

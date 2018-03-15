@@ -9,8 +9,8 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.JSONPURL}
- * @summary A subtype of TP.core.URL specific to the 'jsonp://' scheme.
+ * @type {TP.uri.JSONPURL}
+ * @summary A subtype of TP.uri.URL specific to the 'jsonp://' scheme.
  * @description The overall format of a jsonp URI is:
  *
  *     jsonp://[domain]/[path]/[entity]?[query]
@@ -40,9 +40,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('JSONPURL');
+TP.uri.URL.defineSubtype('JSONPURL');
 
-TP.core.JSONPURL.addTraits(TP.core.CommURL);
+TP.uri.JSONPURL.addTraits(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -50,43 +50,43 @@ TP.core.JSONPURL.addTraits(TP.core.CommURL);
 
 //  This RegExp splits up the URL into the following components:
 //  jsonp://[domain]/[path]/[entity]?[query]
-TP.core.JSONPURL.Type.defineConstant('JSONP_REGEX',
+TP.uri.JSONPURL.Type.defineConstant('JSONP_REGEX',
         TP.rc('^jsonps?://([^/]*)/?([^?]+)\\??(.*)'));
 
-TP.core.JSONPURL.Type.defineConstant('SCHEME', 'jsonp');
+TP.uri.JSONPURL.Type.defineConstant('SCHEME', 'jsonp');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  JSONP is async-only so configure for that
-TP.core.JSONPURL.Type.defineAttribute('supportedModes',
+TP.uri.JSONPURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
-TP.core.JSONPURL.Type.defineAttribute('mode',
+TP.uri.JSONPURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
 
-TP.core.JSONPURL.registerForScheme('jsonp');
-TP.core.JSONPURL.registerForScheme('jsonps');
+TP.uri.JSONPURL.registerForScheme('jsonp');
+TP.uri.JSONPURL.registerForScheme('jsonps');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.JSONPURL.Type.defineMethod('$getDefaultHandler',
 function(targetURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Return the default URI handler type for this URI type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object.
      */
 
-    return TP.core.JSONPURLHandler;
+    return TP.uri.JSONPURLHandler;
 });
 
 //  ------------------------------------------------------------------------
@@ -94,27 +94,27 @@ function(targetURI, aRequest) {
 //  ------------------------------------------------------------------------
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
-TP.core.JSONPURL.Inst.defineAttribute('domain');
-TP.core.JSONPURL.Inst.defineAttribute('entity');
+//  TP.uri.URI / TP.uri.URL
+TP.uri.JSONPURL.Inst.defineAttribute('domain');
+TP.uri.JSONPURL.Inst.defineAttribute('entity');
 
-TP.core.JSONPURL.Inst.defineAttribute('query');
-TP.core.JSONPURL.Inst.defineAttribute('queryDict');
+TP.uri.JSONPURL.Inst.defineAttribute('query');
+TP.uri.JSONPURL.Inst.defineAttribute('queryDict');
 
-TP.core.JSONPURL.Inst.defineAttribute('useSSL', false);
+TP.uri.JSONPURL.Inst.defineAttribute('useSSL', false);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPURL.Inst.defineMethod('init',
+TP.uri.JSONPURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.core.JSONPURL} A new instance.
+     * @returns {TP.uri.JSONPURL} A new instance.
      */
 
     var results,

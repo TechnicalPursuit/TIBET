@@ -832,7 +832,7 @@ function() {
                     TP.sys.cfg().getKeys()));
 
     this.set('$uriMatcher',
-                TP.core.URIMatcher.construct(
+                TP.uri.URIMatcher.construct(
                     'TIBET_URIS'));
 
     return this;

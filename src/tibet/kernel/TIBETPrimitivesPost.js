@@ -1348,7 +1348,7 @@ function(anObject, assignIfAbsent) {
      *     uniquely identifies the element within a particular TIBET
      *     environment. Most objects can be found via their global ID however
      *     certain scenarios are not handled automatically including Node
-     *     instances which don't reside in a window, a TP.core.URI's content, or
+     *     instances which don't reside in a window, a TP.uri.URI's content, or
      *     an object capable of locating them. To find elements of this type you
      *     must have registered them under an ID, which you may have had to
      *     generate. NOTE that registering objects agressively can lead to
@@ -2950,10 +2950,10 @@ function(anObject) {
      * @alias loc
      * @summary Returns the location represented by the receiver. The typical
      *     usage is in methods that might accept either a string or a
-     *     TP.core.URI which need a common way to ask for the location. When the
-     *     object is neither a TP.core.URI instance or a String the return value
+     *     TP.uri.URI which need a common way to ask for the location. When the
+     *     object is neither a TP.uri.URI instance or a String the return value
      *     is based on the object's source path.
-     * @param {String|TP.core.URI} anObject The true location of the object in
+     * @param {String|TP.uri.URI} anObject The true location of the object in
      *     string form.
      * @returns {String} The location in string URI form.
      */
@@ -4727,7 +4727,7 @@ function(anObject) {
     }
 
     //  TP.core.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
-    //  TP.core.URI, etc.
+    //  TP.uri.URI, etc.
     if (TP.canInvoke(anObject, 'getNativeObject')) {
         return anObject.getNativeObject();
     }

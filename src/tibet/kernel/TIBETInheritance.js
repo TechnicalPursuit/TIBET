@@ -823,7 +823,7 @@ function() {
      *     TP.core.Browser to be messaged for a new instance and for different
      *     browsers to return appropriately "localized" subtype instances such
      *     as TP.core.IEBrowser. This strategy is used extensively by
-     *     TP.core.Node and TP.core.URI to return the proper subtypes for your
+     *     TP.core.Node and TP.uri.URI to return the proper subtypes for your
      *     content.
      * @returns {Object}
      */

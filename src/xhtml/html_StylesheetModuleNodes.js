@@ -136,13 +136,13 @@ function(aRequest) {
             //  If we have a valid CSSStyleSheet object
             if (TP.isValid(stylesheet)) {
 
-                //  Intern the stylesheet's href as a TP.core.URI. Note that we
+                //  Intern the stylesheet's href as a TP.uri.URI. Note that we
                 //  don't care about the return value here - we're simply
                 //  interested in having a URI object matching the href here.
                 TP.uc(stylesheet.href);
 
                 //  Grab any hrefs from @import statements in the stylesheet and
-                //  create instances of TP.core.URIs from them as well. Again,
+                //  create instances of TP.uri.URIs from them as well. Again,
                 //  we're not interested in the return values here. Note that
                 //  this method, by default, will recursively retrieve @import
                 //  hrefs.

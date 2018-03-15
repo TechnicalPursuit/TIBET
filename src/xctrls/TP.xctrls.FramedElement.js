@@ -170,7 +170,7 @@ function(aNode, aURI) {
      * @method init
      * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
-     * @param {TP.core.URI|String} aURI An optional URI from which the Node
+     * @param {TP.uri.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.xctrls.FramedElement} A new instance.
      */
@@ -276,7 +276,7 @@ function(stubURI) {
      *     type and sets up a callback handler that will call this type's
      *     'configure' method when the content from the iframe is all loaded and
      *     initialized.
-     * @param {TP.core.URI} stubURI The URI to load the 'stub' HTML from.
+     * @param {TP.uri.URI} stubURI The URI to load the 'stub' HTML from.
      * @returns {TP.xctrls.FramedElement} The receiver.
      */
 

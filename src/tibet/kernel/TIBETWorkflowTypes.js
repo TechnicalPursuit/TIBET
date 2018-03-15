@@ -5656,7 +5656,7 @@ function() {
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
      *     service during IO.
-     * @returns {TP.core.URI} The final request URI.
+     * @returns {TP.uri.URI} The final request URI.
      */
 
     return this.at('finaluri') || this.getRequestURI();
@@ -5675,7 +5675,7 @@ function() {
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
      *     of the request.
-     * @returns {TP.core.URI} The original request URI.
+     * @returns {TP.uri.URI} The original request URI.
      */
 
     var responder;
@@ -5716,7 +5716,7 @@ function() {
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
      *     service during IO.
-     * @returns {TP.core.URI} The final request URI.
+     * @returns {TP.uri.URI} The final request URI.
      */
 
     var request;
@@ -5742,7 +5742,7 @@ function() {
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
      *     of the request.
-     * @returns {TP.core.URI} The original request URI.
+     * @returns {TP.uri.URI} The original request URI.
      */
 
     var request;
@@ -5756,13 +5756,13 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.URIService
+//  TP.uri.URIService
 //  ========================================================================
 
 /**
- * @type {TP.core.URIService}
+ * @type {TP.uri.URIService}
  * @summary Provides common functionality for services focused on processing
- *     URI-targeted requests. TP.core.URIServices can be given an initial URI
+ *     URI-targeted requests. TP.uri.URIServices can be given an initial URI
  *     which will be used for all requests they process, or they can be
  *     initialized to handle certain request types with a variety of specific
  *     URIs provided by the requests themselves.
@@ -5770,7 +5770,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.IOService.defineSubtype('URIService');
+TP.core.IOService.defineSubtype('uri.URIService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -5778,11 +5778,11 @@ TP.core.IOService.defineSubtype('URIService');
 
 //  type-level service URI, used by all instances without their own which
 //  respond to requests without a uri key
-TP.core.URIService.Type.defineAttribute('serviceURI');
+TP.uri.URIService.Type.defineAttribute('serviceURI');
 
 //  This base type is configured to ignore username, pasword, auth and
 //  iswebdav. Subtypes can provide an alternate hash.
-TP.core.URIService.Type.defineAttribute('defaultedParameters',
+TP.uri.URIService.Type.defineAttribute('defaultedParameters',
                             TP.hc('username', TP.NONE,
                                     'password', TP.NONE,
                                     'auth', TP.NONE,
@@ -5794,13 +5794,13 @@ TP.core.URIService.Type.defineAttribute('defaultedParameters',
 
 //  instance-specific service URI used by the instance when request doesn't
 //  specify one
-TP.core.URIService.Inst.defineAttribute('serviceURI');
+TP.uri.URIService.Inst.defineAttribute('serviceURI');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.Inst.defineMethod('init',
+TP.uri.URIService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
@@ -5813,7 +5813,7 @@ function(resourceID, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
-     * @returns {TP.core.URIService} A new instance.
+     * @returns {TP.uri.URIService} A new instance.
      */
 
     var paramDict,
@@ -5899,7 +5899,7 @@ function(resourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.Inst.defineMethod('getRequestURI',
+TP.uri.URIService.Inst.defineMethod('getRequestURI',
 function(aRequest) {
 
     /**
@@ -5927,7 +5927,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.Inst.defineMethod('getServiceURI',
+TP.uri.URIService.Inst.defineMethod('getServiceURI',
 function() {
 
     /**
@@ -5935,7 +5935,7 @@ function() {
      * @summary Returns the default service URI for the receiver. This is the
      *     URI used when an individual request does not override it with an
      *     alternative URI.
-     * @returns {TP.core.URI} The receiver's default URI.
+     * @returns {TP.uri.URI} The receiver's default URI.
      */
 
     //  start with instance and work outward to the type
@@ -5944,7 +5944,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.Inst.defineMethod('rewriteRequestURI',
+TP.uri.URIService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
@@ -5953,7 +5953,7 @@ function(aRequest) {
      *     URI and is rewritten to the current concrete location based on
      *     TIBET's rewriting rules.
      * @param {TP.sig.Request} aRequest The request to rewrite.
-     * @returns {TP.core.URI} The new/updated URI instance.
+     * @returns {TP.uri.URI} The new/updated URI instance.
      */
 
     var requestURI,
@@ -5997,7 +5997,7 @@ function(aRequest) {
     //  do whatever rewriting we can to resolve to a concrete reference, but
     //  only if url is an absolute URI
     if (TP.uriIsAbsolute(url)) {
-        url = TP.core.URI.rewrite(url, aRequest).getLocation();
+        url = TP.uri.URI.rewrite(url, aRequest).getLocation();
     }
 
     return url;
@@ -6005,7 +6005,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.Inst.defineMethod('updateServiceURI',
+TP.uri.URIService.Inst.defineMethod('updateServiceURI',
 function(aRequest) {
 
     /**
@@ -6016,7 +6016,7 @@ function(aRequest) {
      *     retargeting of the endpoint URI that we represent.
      * @param {TP.sig.Request} aRequest The request to check for a new service
      *     URI.
-     * @returns {TP.core.URIService} The receiver.
+     * @returns {TP.uri.URIService} The receiver.
      */
 
     var serviceURI;
@@ -6416,7 +6416,7 @@ TP.core.Application.Inst.defineAttribute('customControllers');
 
 /**
  * The router type whose route method is used to process client-side routes.
- * @type {TP.core.URIRouter}
+ * @type {TP.uri.URIRouter}
  */
 TP.core.Application.Inst.defineAttribute('router');
 
@@ -6570,7 +6570,7 @@ function() {
     /**
      * @method getRouter
      * @summary Returns the current router instance used by the application.
-     * @returns {TP.core.URIRouter|null} The active router.
+     * @returns {TP.uri.URIRouter|null} The active router.
      */
 
     var type,
@@ -6783,7 +6783,7 @@ function(aRouter) {
     /**
      * @method setRouter
      * @summary Sets the supplied router instance as TIBET's active router.
-     * @param {TP.core.URIRouter} aRouter The router to set as the active
+     * @param {TP.uri.URIRouter} aRouter The router to set as the active
      *     router.
      * @returns {TP.core.Application} The receiver.
      */
@@ -7596,7 +7596,7 @@ function(aURL, fromDoc) {
      *     that URI values which refer to the project home page are translated
      *     so the actual home page location is not pushed, but instead the
      *     project's launch URL is pushed in keeping with the idea of "/".
-     * @param {TP.core.URI|String} aURL The location to push onto the history
+     * @param {TP.uri.URI|String} aURL The location to push onto the history
      *     stack.
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
@@ -8281,7 +8281,7 @@ function() {
     /**
      * @method getRouter
      * @summary Retrieves the application uri router.
-     * @returns {TP.core.URIRouter} The TIBET router.
+     * @returns {TP.uri.URIRouter} The TIBET router.
      */
 
     return this.getApplication().getRouter();
@@ -8377,7 +8377,7 @@ function() {
     /**
      * @method getRouter
      * @summary Retrieves the application uri router.
-     * @returns {TP.core.URIRouter} The TIBET router.
+     * @returns {TP.uri.URIRouter} The TIBET router.
      */
 
     return TP.sys.getRouter();

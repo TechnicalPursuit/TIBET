@@ -549,7 +549,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
      *     stylesheet's URL.
      * @param {Document} aDocument The document where the inlined CSS content
      *     will be added.
-     * @param {TP.core.URI} styleURI The URI of the original content that the
+     * @param {TP.uri.URI} styleURI The URI of the original content that the
      *     inlined content will be acting in place of.
      * @param {String} inlinedStyleContent The style content that will be
      *     inlined into the style element.

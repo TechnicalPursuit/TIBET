@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /*
- * Tests for the TP.core.URIRouter type.
+ * Tests for the TP.uri.URIRouter type.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.describe('router api',
+TP.uri.URIRouter.Type.describe('router api',
 function() {
     var router;
 
@@ -47,7 +47,7 @@ function() {
     });
 });
 
-TP.core.URIRouter.Type.describe('definePath',
+TP.uri.URIRouter.Type.describe('definePath',
 function() {
     var router;
 
@@ -86,7 +86,7 @@ function() {
     });
 });
 
-TP.core.URIRouter.Type.describe('compilePattern',
+TP.uri.URIRouter.Type.describe('compilePattern',
 function() {
     var router;
 
@@ -133,7 +133,7 @@ function() {
     });
 });
 
-TP.core.URIRouter.Type.describe('processRoute',
+TP.uri.URIRouter.Type.describe('processRoute',
 function() {
     var router;
 
@@ -207,7 +207,7 @@ function() {
 
 });
 
-TP.core.URIRouter.Type.describe('token definition',
+TP.uri.URIRouter.Type.describe('token definition',
 function() {
     var router;
 
@@ -222,7 +222,7 @@ function() {
     });
 });
 
-TP.core.URIRouter.Type.describe('route resolution',
+TP.uri.URIRouter.Type.describe('route resolution',
 function() {
 
     //  TODO:   processRoute

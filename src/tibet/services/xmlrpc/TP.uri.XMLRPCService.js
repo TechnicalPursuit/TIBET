@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.XMLRPCService}
+ * @type {TP.uri.XMLRPCService}
  * @summary A TP.core.Service specific to making XMLRPC requests. This
  *     particular service is only available to browsers which support an
  *     XMLHttpRequest object.
@@ -38,23 +38,23 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.defineSubtype('XMLRPCService');
+TP.uri.HTTPService.defineSubtype('XMLRPCService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  we'll respond to any TP.sig.XMLRPCRequest signals
-TP.core.XMLRPCService.Type.defineAttribute(
+TP.uri.XMLRPCService.Type.defineAttribute(
     'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.XMLRPCRequest')));
 
-TP.core.XMLRPCService.register();
+TP.uri.XMLRPCService.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCService.Inst.defineMethod('rewriteRequestMIMEType',
+TP.uri.XMLRPCService.Inst.defineMethod('rewriteRequestMIMEType',
 function(aRequest) {
 
     /**
@@ -70,7 +70,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCService.Inst.defineMethod('rewriteRequestBody',
+TP.uri.XMLRPCService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
@@ -91,7 +91,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCService.Inst.defineMethod('rewriteRequestHeaders',
+TP.uri.XMLRPCService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
@@ -136,7 +136,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLRPCService.Inst.defineMethod('rewriteRequestMethod',
+TP.uri.XMLRPCService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**

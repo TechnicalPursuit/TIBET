@@ -13,13 +13,13 @@ Core types specific to web technology including types to support the HTTP
 protocol, WebDAV, MIME types, XMLNS namespaces, TP.w3.DocType elements,
 URIs of various schemes, Cookies, and more.
 
-The TP.core.URI type and its subtypes are a particularly important type in
-TIBET. The TP.core.TIBETURL type, whose scheme is 'tibet:', provides
+The TP.uri.URI type and its subtypes are a particularly important type in
+TIBET. The TP.uri.TIBETURL type, whose scheme is 'tibet:', provides
 extensions to the normal URI addressing schemes for http: and file: URIs so
 that any object in the web, or more importantly within the local browser,
 can have a URI.
 
-XML standards like XInclude and XPointer are supported by TP.core.URI to
+XML standards like XInclude and XPointer are supported by TP.uri.URI to
 help meet the goal of "universal addressibility" where every object,
 including those within a visual DOM or a client-side XML data model, has an
 address.
@@ -657,14 +657,14 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
             TP.ietf.mime.ECMASCRIPT,
                 TP.hc('mimetype', TP.ietf.mime.ECMASCRIPT,
                         'alias', 'ECMASCRIPT',
-                        'handler', 'TP.core.JSURI',
+                        'handler', 'TP.uri.JSURI',
                         'extensions', 'js jscript',
                         'tshtag', 'tsh:script'),
             TP.ietf.mime.JS,
                 TP.hc('mimetype', TP.ietf.mime.JS,
                         'alias', 'JS',
                         'extensions', 'js jscript',
-                        'handler', 'TP.core.JSURI',
+                        'handler', 'TP.uri.JSURI',
                         'tshtag', 'tsh:script'),
             TP.ietf.mime.JSON,
                 TP.hc('mimetype', TP.ietf.mime.JSON,
@@ -936,7 +936,7 @@ function(aContent, aURI, defaultMIME) {
      *     Node can be created from it. If so, then Node testing will proceed as
      *     described. If not, then TP.ietf.mime.PLAIN will be returned. This
      *     parameter is optional.
-     * @param {TP.core.URI} aURI The URI that will be used to try to determine
+     * @param {TP.uri.URI} aURI The URI that will be used to try to determine
      *     the MIME type, based on its extension. This parameter is optional.
      * @param {String} defaultMIME The MIME type that will be used if one cannot
      *     be determined from either the content or the URI. This parameter is
@@ -2852,7 +2852,7 @@ function(aURI, aRequest, logError) {
      *     kept up to date. You should normally override one of the more
      *     specific load* methods in subtypes if you're doing custom load
      *     handling.
-     * @param {TP.core.URI} aURI The URI to load. NOTE that this URI will not
+     * @param {TP.uri.URI} aURI The URI to load. NOTE that this URI will not
      *     have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -2895,7 +2895,7 @@ function(aURI, aRequest) {
     /**
      * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} aURI The URI to delete. NOTE that this URI will not
+     * @param {TP.uri.URI} aURI The URI to delete. NOTE that this URI will not
      *     have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -2937,7 +2937,7 @@ function(aURI, aRequest) {
      * @method save
      * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided.
-     * @param {TP.core.URI} aURI The URI to save. NOTE that this URI will not
+     * @param {TP.uri.URI} aURI The URI to save. NOTE that this URI will not
      *     have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -2989,12 +2989,12 @@ function(aURI, aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.CookieURL
+//  TP.uri.CookieURL
 //  ========================================================================
 
 /**
- * @type {TP.core.CookieURL}
- * @summary A subtype of TP.core.URL specific to the 'cookie://' scheme.
+ * @type {TP.uri.CookieURL}
+ * @summary A subtype of TP.uri.URL specific to the 'cookie://' scheme.
  * @description The overall format of a cookie URI is:
  *
  *     cookie://[domain]/[path]/[cookie_name]?[expires=<value>]&[secure=true]
@@ -3047,7 +3047,7 @@ function(aURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('CookieURL');
+TP.uri.URL.defineSubtype('CookieURL');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -3055,52 +3055,52 @@ TP.core.URL.defineSubtype('CookieURL');
 
 //  This RegExp splits up the URL into the following components:
 //  cookie://[domain]/[path]/[cookie_name]?[expires=<value>]&[secure=true]
-TP.core.CookieURL.Type.defineConstant('COOKIE_REGEX',
+TP.uri.CookieURL.Type.defineConstant('COOKIE_REGEX',
         TP.rc('cookie://([^/]*)/?([^?]+)\\??(\\S*)'));
 
-TP.core.CookieURL.Type.defineConstant('SCHEME', 'cookie');
+TP.uri.CookieURL.Type.defineConstant('SCHEME', 'cookie');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  'cookie:' scheme is sync-only so configure for that
-TP.core.CookieURL.Type.defineAttribute('supportedModes',
+TP.uri.CookieURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.SYNCHRONOUS);
-TP.core.CookieURL.Type.defineAttribute('mode',
+TP.uri.CookieURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.SYNCHRONOUS);
 
-TP.core.CookieURL.registerForScheme('cookie');
+TP.uri.CookieURL.registerForScheme('cookie');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
-TP.core.CookieURL.Inst.defineAttribute('domain');
-TP.core.CookieURL.Inst.defineAttribute('path');
+//  TP.uri.URI / TP.uri.URL
+TP.uri.CookieURL.Inst.defineAttribute('domain');
+TP.uri.CookieURL.Inst.defineAttribute('path');
 
 //  The cookie name
-TP.core.CookieURL.Inst.defineAttribute('cname');
+TP.uri.CookieURL.Inst.defineAttribute('cname');
 
-TP.core.CookieURL.Inst.defineAttribute('queryDict');
+TP.uri.CookieURL.Inst.defineAttribute('queryDict');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CookieURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.CookieURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Return the default URI handler type for this URI type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object.
      */
 
@@ -3111,14 +3111,14 @@ function(aURI, aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CookieURL.Inst.defineMethod('init',
+TP.uri.CookieURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.core.CookieURL} A new instance.
+     * @returns {TP.uri.CookieURL} A new instance.
      */
 
     var results,

@@ -154,7 +154,7 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
     dataURISecondaries = dataURI.getSecondaryURIs();
     for (i = 0; i < dataURISecondaries.getSize(); i++) {
-        TP.core.URI.removeInstance(dataURISecondaries.at(i));
+        TP.uri.URI.removeInstance(dataURISecondaries.at(i));
     }
 
     dataURI.setResource(data, TP.request('signalChange', false));

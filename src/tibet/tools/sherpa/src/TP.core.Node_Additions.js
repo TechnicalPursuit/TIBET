@@ -1213,13 +1213,13 @@ function(aSourceName) {
     switch (aSourceName) {
 
         case 'Structure':
-            //  NB: We're returning the TP.core.URI instance itself here.
+            //  NB: We're returning the TP.uri.URI instance itself here.
             source = this.getResourceURI('template', TP.ietf.mime.XHTML);
 
             break;
 
         case 'Style':
-            //  NB: We're returning the TP.core.URI instance itself here.
+            //  NB: We're returning the TP.uri.URI instance itself here.
             source = this.getResourceURI('style', TP.ietf.mime.XHTML);
 
             break;
@@ -1261,11 +1261,11 @@ function(anAspect, options) {
     switch (anAspect) {
 
         case 'Structure':
-            //  NB: We're returning the TP.core.URI instance itself here.
+            //  NB: We're returning the TP.uri.URI instance itself here.
             return thisType.getResourceURI('template', TP.ietf.mime.XHTML);
 
         case 'Style':
-            //  NB: We're returning the TP.core.URI instance itself here.
+            //  NB: We're returning the TP.uri.URI instance itself here.
             return thisType.getResourceURI('style', TP.ietf.mime.CSS);
 
         default:

@@ -2096,7 +2096,7 @@ function(anObject) {
     /**
      * @method isURI
      * @summary Returns true if the object provided is either a valid instance
-     *     of TP.core.URI (or a subtype) or a String whose content appears
+     *     of TP.uri.URI (or a subtype) or a String whose content appears
      *     likely to represent a URI. The test is performed using the
      *     TP.regex.URI_LIKELY regular expression, which is *not* a strict
      *     attempt to parse the URI.
@@ -2105,7 +2105,7 @@ function(anObject) {
      *     to each scheme (which TIBET supports but which it does not leverage
      *     for this method).
      *     NOTE: This method is evolving to become just a type check for
-     *     TP.core.URI. Use TP.isURIString() to check to see if a String looks
+     *     TP.uri.URI. Use TP.isURIString() to check to see if a String looks
      *     like a URI.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object appears to be a URI.
@@ -2129,7 +2129,7 @@ function(anObject) {
                 !TP.regex.REGEX_LITERAL_STRING.test(anObject);
     }
 
-    return TP.isKindOf(anObject, 'TP.core.URI');
+    return TP.isKindOf(anObject, 'TP.uri.URI');
 });
 
 //  ------------------------------------------------------------------------

@@ -53,7 +53,7 @@ function(resource, mimeType, fallback) {
      *     TP.ietf.mime.INFO dictionary.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
      *     value of 'uri.fallbacks'.
-     * @returns {TP.core.URI} The computed resource URI.
+     * @returns {TP.uri.URI} The computed resource URI.
      */
 
     return null;

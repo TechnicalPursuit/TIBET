@@ -9,14 +9,14 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.StorageURL}
- * @summary A subtype of TP.core.URL specific to the storage: scheme, a custom
+ * @type {TP.uri.StorageURL}
+ * @summary A subtype of TP.uri.URL specific to the storage: scheme, a custom
  *     TIBET scheme specific to working with local and session storage data.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('TP.core.StorageURL');
+TP.uri.URL.defineSubtype('TP.uri.StorageURL');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -24,45 +24,45 @@ TP.core.URL.defineSubtype('TP.core.StorageURL');
 
 //  This RegExp splits up the URL into the following components:
 //  storage://store(/?key[=value])
-TP.core.StorageURL.Type.defineConstant('STORAGE_URL_REGEX',
+TP.uri.StorageURL.Type.defineConstant('STORAGE_URL_REGEX',
     TP.rc('^storage://([^/]+)((/)(.+))*'));
 
-TP.core.StorageURL.Type.defineConstant('SCHEME', 'storage');
+TP.uri.StorageURL.Type.defineConstant('SCHEME', 'storage');
 
-TP.core.StorageURL.Type.defineConstant('VALID_STORES',
+TP.uri.StorageURL.Type.defineConstant('VALID_STORES',
     TP.ac('local', 'session'));
 
-TP.core.StorageURL.Type.defineAttribute('supportedModes',
+TP.uri.StorageURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.DUAL_MODE);
-TP.core.StorageURL.Type.defineAttribute('mode',
+TP.uri.StorageURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.SYNCHRONOUS);
 
 //  NOTE we need to register with the overall system to the URI.construct call
 //  is aware of our scheme.
-TP.core.StorageURL.registerForScheme('storage');
+TP.uri.StorageURL.registerForScheme('storage');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineAttribute('item');
-TP.core.StorageURL.Inst.defineAttribute('store');
+TP.uri.StorageURL.Inst.defineAttribute('item');
+TP.uri.StorageURL.Inst.defineAttribute('store');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.StorageURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Return the default URI handler type for this URI type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     object.
      */
 
@@ -74,14 +74,14 @@ function(aURI, aRequest) {
 //  Handler Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Type.defineMethod('load',
+TP.uri.StorageURL.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
      * @method load
      * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to load. Note that this call is
+     * @param {TP.uri.URI} targetURI The URI to load. Note that this call is
      *     typically made via the load call of a URI and so rewriting and
      *     routing have already occurred.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -130,14 +130,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Type.defineMethod('delete',
+TP.uri.StorageURL.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to delete. Note that this call is
+     * @param {TP.uri.URI} targetURI The URI to delete. Note that this call is
      *     typically made via the delete call of a URI and so rewriting and
      *     routing have already occurred.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -173,7 +173,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Type.defineMethod('save',
+TP.uri.StorageURL.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -182,12 +182,12 @@ function(targetURI, aRequest) {
      *     method for most URI content.
      * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
-     *     URI instances. See TP.core.URIRewriter and TP.core.URIMapper for more
+     *     URI instances. See TP.uri.URIRewriter and TP.uri.URIMapper for more
      *     information. Important keys include 'append', 'body', and 'backup',
      *     which define whether this save should append or write new content,
      *     what content is being saved, and whether a backup should be created
      *     if possible (for 'file' scheme uris).
-     * @param {String|TP.core.URI} targetURI A target URI.
+     * @param {String|TP.uri.URI} targetURI A target URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -231,7 +231,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Type.defineMethod('watch',
+TP.uri.StorageURL.Type.defineMethod('watch',
 function(targetURI, aRequest) {
 
     /**
@@ -243,7 +243,7 @@ function(targetURI, aRequest) {
      *     represent change-notification capable servers should override this
      *     method to set up change notification machinery for this URI back to
      *     TIBET.
-     * @param {String|TP.core.URI} targetURI A target URI.
+     * @param {String|TP.uri.URI} targetURI A target URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -263,7 +263,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Type.defineMethod('unwatch',
+TP.uri.StorageURL.Type.defineMethod('unwatch',
 function(targetURI, aRequest) {
 
     /**
@@ -276,7 +276,7 @@ function(targetURI, aRequest) {
      *     method to tear down change notification machinery that it would have
      *     method to tear down change notification machinery for this URI that
      *     it would have set up to TIBET.
-     * @param {String|TP.core.URI} targetURI A target URI.
+     * @param {String|TP.uri.URI} targetURI A target URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -298,7 +298,7 @@ function(targetURI, aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('$getPrimaryResource',
+TP.uri.StorageURL.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
@@ -339,7 +339,7 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('getResource',
+TP.uri.StorageURL.Inst.defineMethod('getResource',
 function(aRequest) {
 
     /**
@@ -378,7 +378,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('getValue',
+TP.uri.StorageURL.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -392,7 +392,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('isPrimaryURI',
+TP.uri.StorageURL.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
@@ -408,7 +408,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('$initURIComponents',
+TP.uri.StorageURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
@@ -416,7 +416,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     this.callNextMethod();
@@ -438,7 +438,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.StorageURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -471,7 +471,7 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StorageURL.Inst.defineMethod('$setPrimaryResource',
+TP.uri.StorageURL.Inst.defineMethod('$setPrimaryResource',
 function(aResource, aRequest) {
 
     /**
@@ -482,7 +482,7 @@ function(aResource, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @listens {TP.sig.Change} Observes the primary resource for Change.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */

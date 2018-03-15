@@ -11,7 +11,7 @@
 /**
  * @type {TP.sig.XMPPRequest}
  * @summary A subtype of TP.sig.URIRequest that is used in conjunction with the
- *     TP.core.XMPPService type to communicate to XMPP servers.
+ *     TP.uri.XMPPService type to communicate to XMPP servers.
  * @example Communicating with an XMPP server from TIBET consists of:
  *
  *     1. Define the operation you want to perform via a set of 'request

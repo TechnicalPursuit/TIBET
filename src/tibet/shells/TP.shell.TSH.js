@@ -274,7 +274,7 @@ TP.shell.TSH.Type.defineConstant(
                                 //  etc.
             'Store',            //  save the content in a cache/repository
             'Load',             //  load the content from a cache/repository
-            'Resolve',          //  resolve xml:base TP.core.URI references,
+            'Resolve',          //  resolve xml:base TP.uri.URI references,
                                 //  decode etc.
 
             'Localize',         //  adjust for browser, lang, etc.

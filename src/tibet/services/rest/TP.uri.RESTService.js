@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.RESTService}
+ * @type {TP.uri.RESTService}
  * @summary A service supporting simple REST calls with minimal encoding and
  *     serialization logic.
  * @examples
@@ -18,7 +18,7 @@
  *     endpoint which will be the default target URI for requests handled by the
  *     service instance:
  *
- *     service = TP.core.RESTService.construct('XMLFetcher');
+ *     service = TP.uri.RESTService.construct('XMLFetcher');
  *
  *     If you will be using the service to handle asynchronous calls you should
  *     invoke register on it so it observes the trigger signals representing its
@@ -29,7 +29,7 @@
  *     NOTE that neither of the previous steps are necessary if you can
  *     leverage a default service instance. Each service type has the option of
  *     registering during type initialize so that a default instance will
- *     handle requests. TP.core.RESTService does that so you don't really need a
+ *     handle requests. TP.uri.RESTService does that so you don't really need a
  *     service instance.
  *
  *     To leverage the REST service simply construct request objects configured
@@ -79,17 +79,17 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.defineSubtype('RESTService');
+TP.uri.HTTPService.defineSubtype('RESTService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  we'll respond to any TP.sig.RESTRequest signals
-TP.core.RESTService.Type.defineAttribute(
+TP.uri.RESTService.Type.defineAttribute(
     'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.RESTRequest')));
 
-TP.core.RESTService.register();
+TP.uri.RESTService.register();
 
 //  ------------------------------------------------------------------------
 //  end

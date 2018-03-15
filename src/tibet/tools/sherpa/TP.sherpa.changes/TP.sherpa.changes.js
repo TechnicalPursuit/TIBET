@@ -207,7 +207,7 @@ function(aSignal) {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
-    if (TP.isKindOf(aSignal.getOrigin(), TP.core.URL)) {
+    if (TP.isKindOf(aSignal.getOrigin(), TP.uri.URL)) {
         this.updateURIInfo();
     }
 
@@ -316,7 +316,7 @@ function(aSignal) {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
-    if (TP.isKindOf(aSignal.getOrigin(), TP.core.URL)) {
+    if (TP.isKindOf(aSignal.getOrigin(), TP.uri.URL)) {
         this.updateURIInfo();
     }
 
@@ -531,9 +531,9 @@ function() {
 
         countPulseFinishedFunc;
 
-    //  Grab the server data by getting the keys of TP.core.URI's 'remote change
+    //  Grab the server data by getting the keys of TP.uri.URI's 'remote change
     //  list'. These will be the URI locations.
-    serverData = TP.core.URI.get('remoteChangeList').getKeys();
+    serverData = TP.uri.URI.get('remoteChangeList').getKeys();
 
     //  Virtualize these URIs to match the format in the client panel.
     serverData = serverData.collect(
@@ -574,14 +574,14 @@ function() {
 
     //  ---
 
-    //  Grab the client data by getting TP.core.URI's 'local change list'. These
+    //  Grab the client data by getting TP.uri.URI's 'local change list'. These
     //  will be hash of the URI locations as keys and the URIs as values.
-    clientData = TP.core.URI.getLocalChangeList();
+    clientData = TP.uri.URI.getLocalChangeList();
 
     //  Select out only URIs that are really URLs.
     clientData = clientData.select(
                     function(kvPair) {
-                        return TP.isKindOf(kvPair.last(), TP.core.URL);
+                        return TP.isKindOf(kvPair.last(), TP.uri.URL);
                     });
 
     //  Collect out the URL locations.

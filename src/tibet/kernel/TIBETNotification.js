@@ -4317,7 +4317,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         //  that we have to do this check *before* the 'TP.uc()' call (as it
         //  will create an entry if one doesn't exist).
         urnLocation = TP.TIBET_URN_PREFIX + handlerID;
-        existingURN = TP.core.URI.instances.containsKey(urnLocation);
+        existingURN = TP.uri.URI.instances.containsKey(urnLocation);
 
         urn = TP.uc(urnLocation);
 
@@ -4487,16 +4487,16 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
         //  If the handler is a TIBET URN, then it may have a registration count
         //  local attribute (see the '$registerInterest call above).
-        if (TP.isKindOf(handler, TP.core.TIBETURN) &&
+        if (TP.isKindOf(handler, TP.uri.TIBETURN) &&
             TP.owns(handler, '$regCount')) {
 
             //  Decrement the registration count
             handler.set('$regCount', handler.get('$regCount') - 1);
 
             //  If the registration count is 0, remove the URN from
-            //  TP.core.URI's instance dictionary.
+            //  TP.uri.URI's instance dictionary.
             if (handler.get('$regCount') === 0) {
-                TP.core.URI.removeInstance(handler);
+                TP.uri.URI.removeInstance(handler);
             }
         }
     }

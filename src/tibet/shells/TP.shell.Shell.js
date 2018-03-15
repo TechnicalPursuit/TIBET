@@ -2260,7 +2260,7 @@ function(aPath) {
 
     isURI = false;
 
-    subs = TP.core.URI.getSubtypes(true) || TP.ac();
+    subs = TP.uri.URI.getSubtypes(true) || TP.ac();
     schemes = subs.collect(
                 function(item) {
 

@@ -70,12 +70,12 @@ function(aSignal) {
 
     //  If it was a URL, then check to see if it's one of URL's 'special
     //  aspects'.
-    if (TP.isKindOf(origin, TP.core.URL)) {
+    if (TP.isKindOf(origin, TP.uri.URL)) {
 
         //  If the aspect is one of URI's 'special aspects', then we just return
         //  here.
         aspect = aSignal.at('aspect');
-        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+        if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
             return;
         }
     }

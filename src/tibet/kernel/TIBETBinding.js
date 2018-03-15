@@ -60,7 +60,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
-    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+    } else if (TP.isKindOf(resourceOrURI, TP.uri.TIBETURL)) {
         resource = resourceOrURI.getConcreteURI();
     } else {
         resource = resourceOrURI;
@@ -74,7 +74,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     finalTarget = target;
 
-    if (TP.isKindOf(finalTarget, TP.core.TIBETURL)) {
+    if (TP.isKindOf(finalTarget, TP.uri.TIBETURL)) {
         finalTarget = finalTarget.getConcreteURI();
     }
 
@@ -396,7 +396,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
-    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+    } else if (TP.isKindOf(resourceOrURI, TP.uri.TIBETURL)) {
         resource = resourceOrURI.getConcreteURI();
     } else {
         resource = resourceOrURI;
@@ -710,7 +710,7 @@ function(aSignal) {
     //  'direct to GUI' binding relationship.
     sigOrigin = aSignal.getOrigin();
 
-    if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+    if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
         //  The changed data source is a URI
 
@@ -925,7 +925,7 @@ function(aSignal) {
         //  If our signal origin is a URI and the aspect is one of URI's
         //  'special aspects', then we just return here.
         if (TP.isURI(aSignal.getOrigin()) &&
-            TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
 
             //  Set the DOM content loaded signaling whatever it was when we
             //  entered this method.
@@ -952,7 +952,7 @@ function(aSignal) {
             //  URI), then (because we don't have 'changed data paths' to go
             //  by), we just update all of the bind expressions that are on the
             //  computed bound elements.
-            if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+            if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
                 tpDocElem.refreshBranches(
                         primarySource, aSignal, elems, primarySource,
@@ -2260,7 +2260,7 @@ function() {
         //  NB: Note how we do *not* want the getResource() call to collapse
         //  it's results for these calls - we always want a collection.
 
-        //  If it's a URI String, then we can calculate a TP.core.URI from it
+        //  If it's a URI String, then we can calculate a TP.uri.URI from it
         //  and just grab that resource's value.
 
         if (TP.isURIString(repeatAttrVal)) {
@@ -2442,7 +2442,7 @@ function() {
         //  NB: Note how we do *not* want the getResource() call to collapse
         //  it's results for these calls - we always want a collection.
 
-        //  If it's a URI String, then we can calculate a TP.core.URI from it
+        //  If it's a URI String, then we can calculate a TP.uri.URI from it
         //  and just grab that resource's value.
         if (TP.isURIString(repeatAttrVal)) {
             repeatSource = TP.uc(repeatAttrVal).getResource(
@@ -3437,7 +3437,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             if (TP.isURIString(expr)) {
 
                 sigOrigin = aSignal.getOrigin();
-                if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+                if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     finalVal = initialVal;

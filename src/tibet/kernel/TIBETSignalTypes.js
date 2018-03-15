@@ -124,7 +124,7 @@ function(aTarget, aTest, aSignal) {
      * @summary Initializes a new instance of monitor.
      * @param {Object} aTarget An object or object ID which identifies the
      *     object being monitored. When an ID is used it should be a valid
-     *     TP.core.URI or a String which can be resolved via the
+     *     TP.uri.URI or a String which can be resolved via the
      *     TP.sys.getObjectById() call.
      * @param {?Function} aTest A function which defines the test being run on
      *     each target object. This should return true to cause the monitor to
@@ -195,8 +195,8 @@ function(aTarget) {
     /**
      * @method addTarget
      * @summary Adds a new target to the list of objects to monitor.
-     * @param {String|TP.core.URI|Function} aTarget A target specification in
-     *     one of a variety of forms: TP.core.URI, string ID, or acquisition
+     * @param {String|TP.uri.URI|Function} aTarget A target specification in
+     *     one of a variety of forms: TP.uri.URI, string ID, or acquisition
      *     function (or an array of them).
      * @returns {TP.core.Monitor} The receiver.
      */
@@ -279,7 +279,7 @@ function() {
             }
         } else if (TP.isString(target)) {
             obj = TP.sys.getObjectById(target);
-        } else if (TP.isKindOf(target, TP.core.URI)) {
+        } else if (TP.isKindOf(target, TP.uri.URI)) {
             //  NB: We assume 'async' of false here.
             obj = target.getResource().get('result');
         } else {
@@ -373,7 +373,7 @@ function() {
                 }
             } else if (TP.isString(target)) {
                 obj = TP.sys.getObjectById(target);
-            } else if (TP.isKindOf(target, TP.core.URI)) {
+            } else if (TP.isKindOf(target, TP.uri.URI)) {
                 //  NB: We assume 'async' of false here.
                 obj = target.getResource().get('result');
             } else {
@@ -415,8 +415,8 @@ function(aTarget) {
     /**
      * @method removeTarget
      * @summary Removes a target from the list of objects to monitor.
-     * @param {String|TP.core.URI|Function} aTarget A target specification in
-     *     one of a variety of forms: TP.core.URI, string ID, or acquisition
+     * @param {String|TP.uri.URI|Function} aTarget A target specification in
+     *     one of a variety of forms: TP.uri.URI, string ID, or acquisition
      *     function (or an array of them).
      * @returns {TP.core.Monitor} The receiver.
      */

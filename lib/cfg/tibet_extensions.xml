@@ -73,10 +73,10 @@
     <script src="./storage/localdb/TP.sig.LocalDBStorageResponse.js"/>
     <script src="./storage/localdb/TP.core.LocalDBStorageService.js"/>
 
-    <script src="./storage/localdb/TP.core.LocalDBURL.js"/>
-    <script src="./storage/localdb/TP.core.LocalDBURLHandler.js"/>
+    <script src="./storage/localdb/TP.uri.LocalDBURL.js"/>
+    <script src="./storage/localdb/TP.uri.LocalDBURLHandler.js"/>
 
-    <script src="./storage/TP.core.StorageURL.js"/>
+    <script src="./storage/TP.uri.StorageURL.js"/>
 </config>
 
 <config id="pouchdb_storage">
@@ -102,8 +102,8 @@
     <script src="./storage/pouchdb/TP.sig.PouchDBResponse.js"/>
     <script src="./storage/pouchdb/TP.core.PouchDBService.js"/>
 
-    <script src="./storage/pouchdb/TP.core.PouchDBURL.js"/>
-    <script src="./storage/pouchdb/TP.core.PouchDBURLHandler.js"/>
+    <script src="./storage/pouchdb/TP.uri.PouchDBURL.js"/>
+    <script src="./storage/pouchdb/TP.uri.PouchDBURLHandler.js"/>
 </config>
 
 <config id="json_schema">

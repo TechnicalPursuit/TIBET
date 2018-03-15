@@ -9,11 +9,11 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.WebDAVService}
- * @summary A subtype of TP.core.HTTPService that communicates with
+ * @type {TP.uri.WebDAVService}
+ * @summary A subtype of TP.uri.HTTPService that communicates with
  *     WebDAV-capable servers.
  * @example If the TP.core.WebDAVRequest/TP.core.WebDAVResponse processing model
- *     is used, it is unnecessary to manually set up an TP.core.WebDAVService.
+ *     is used, it is unnecessary to manually set up an TP.uri.WebDAVService.
  *     As part of the TIBET infrastructure of using request/response pairs, a
  *     'default' instance of this service will be instantiated and registered to
  *     handle all TP.core.WebDAVRequests.
@@ -30,7 +30,7 @@
  *     the 'uri' and 'iswebdav' parameters to the service as a set of connection
  *     parameters:
  *
- *     webdavService = TP.core.WebDAVService.construct(
+ *     webdavService = TP.uri.WebDAVService.construct(
  *                          'WebDAVTestServer',
  *                          TP.hc('uri', 'http://demo.sabredav.org/',
  *                                  'iswebdav', true));
@@ -50,7 +50,7 @@
  *
  *     and then construct it using:
  *
- *     webdavService = TP.core.WebDAVService.construct('WebDAVTestServer');
+ *     webdavService = TP.uri.WebDAVService.construct('WebDAVTestServer');
  *
  *     If these parameters aren't supplied in either the 'construct' call or in
  *     the vcard, the user can be prompted to supply them at runtime by
@@ -65,7 +65,7 @@
  *
  *     You will then need to register your service instance so that it services
  *     TP.core.WebDAVRequests (otherwise, the TIBET machinery will instantiate
- *     the 'default' instance of TP.core.WebDAVService as described above and
+ *     the 'default' instance of TP.uri.WebDAVService as described above and
  *     register it to service these kinds of requests):
  *
  *     webdavService.register();
@@ -73,16 +73,16 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.defineSubtype('WebDAVService');
+TP.uri.HTTPService.defineSubtype('WebDAVService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.WebDAVService.Type.defineAttribute(
+TP.uri.WebDAVService.Type.defineAttribute(
     'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.WebDAVRequest')));
 
-TP.core.WebDAVService.register();
+TP.uri.WebDAVService.register();
 
 //  for ease-of-querying WebDAV XML results, we register the canonical
 //  WebDAV namespace information with the XMLNS type. We use the
@@ -94,7 +94,7 @@ TP.w3.Xmlns.registerNSInfo('DAV:', TP.hc('prefix', 'D'));
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.WebDAVService.Inst.defineMethod('performHTTPCall',
+TP.uri.WebDAVService.Inst.defineMethod('performHTTPCall',
 function(aRequest) {
 
     /**

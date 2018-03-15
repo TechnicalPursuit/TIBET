@@ -294,7 +294,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(aDocument);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -352,7 +352,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     positionOrPath = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -475,7 +475,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(aDocument);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -1337,7 +1337,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
                                 'Must provide a target Element node.');
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -3835,7 +3835,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     positionOrPath = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -4070,7 +4070,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
                                 'Must provide a target Element node.');
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -4622,7 +4622,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(anElement);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -6552,7 +6552,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
 
     positionOrPath = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -14488,7 +14488,7 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(aNode);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(

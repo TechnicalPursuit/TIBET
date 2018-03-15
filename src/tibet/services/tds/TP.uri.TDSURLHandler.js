@@ -18,9 +18,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.defineSubtype('uri.TDSURLHandler');
+TP.uri.HTTPURLHandler.defineSubtype('uri.TDSURLHandler');
 
-TP.uri.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
+TP.uri.TDSURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -29,11 +29,11 @@ TP.uri.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 TP.uri.TDSURLHandler.set('uriConfigName', 'tds.watch.uri');
 
 //  Configuration names for the include/exclude configuration settings.
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
     'tds.watch.include');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
     'tds.watch.exclude');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
     'tds.watch.uri');
 
 //  ------------------------------------------------------------------------
@@ -67,7 +67,7 @@ function(targetURI, aRequest) {
      *     supplied URI by saving a patch in the 'unified diff' format to the
      *     endpoint of a server (such as the TDS) that can handle a patching
      *     operation against that kind of remote resource.
-     * @param {TP.core.URI} targetURI The URI to patch. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to patch. NOTE that this URI will
      *     not have been rewritten/resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -146,7 +146,7 @@ function(targetURI, patch) {
      * @summary Sends an HTTP POST with the supplied diff patch String and
      *     virtual resource location to the server to try to patch the remote
      *     version of the resource pointed to by the receiver.
-     * @param {TP.core.URI} targetURI The URI to patch. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to patch. NOTE that this URI will
      *     not have been rewritten/resolved.
      * @param {String} patch A 'unified diff' patch String that will be used
      *     to patch the remote version of the resource pointed to by the
@@ -217,7 +217,7 @@ function(targetURI, aRequest) {
      * @summary Saves URI data content. This is the default data persistence
      *     method for most URI content. In this type, this will call 'patch' if
      *     the supplied URI points to content that is 'patchable' by the TDS.
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -300,7 +300,7 @@ function(aSignal) {
     //  If we can successfully create a URL from the data, then process the
     //  change.
     if (TP.isURI(url = TP.uc(fileName))) {
-        TP.core.URI.processRemoteResourceChange(url);
+        TP.uri.URI.processRemoteResourceChange(url);
     }
 
     return this;
@@ -312,7 +312,7 @@ function(aSignal) {
 
 //  Make sure the remote url watcher knows about this handler type, but wait to
 //  do this after the type has been fully configured to avoid api check error.
-TP.core.RemoteURLWatchHandler.registerWatcher(TP.uri.TDSURLHandler);
+TP.uri.RemoteURLWatchHandler.registerWatcher(TP.uri.TDSURLHandler);
 
 //  =======================================================================
 //  TP.sig.TDSFileChange

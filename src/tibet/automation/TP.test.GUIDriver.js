@@ -285,13 +285,13 @@ function(aURI, resultType) {
      * @method fetchResource
      * @summary Fetches the resource at the end of the URI. The result will be
      *     available as the value of the returned promise.
-     * @param {TP.core.URI} The URI to fetch the resource for.
+     * @param {TP.uri.URI} The URI to fetch the resource for.
      * @exception TP.sig.InvalidURI
      * @returns {Promise} A Promise which completes when the resource is
      *     available.
      */
 
-    if (!TP.isKindOf(aURI, TP.core.URI)) {
+    if (!TP.isKindOf(aURI, TP.uri.URI)) {
         return this.raise('TP.sig.InvalidURI');
     }
 
@@ -383,14 +383,14 @@ function(aURI, aWindow) {
      * @method setBodyContent
      * @summary Sets the 'body' content of the (X)HTML document in the supplied
      *     Window to the content found at the end of the URI.
-     * @param {TP.core.URI} The URI to fetch content from.
+     * @param {TP.uri.URI} The URI to fetch content from.
      * @param {TP.core.Window} The Window to use the body of to load the content
      *     into. This will default to the current UI canvas.
      * @exception TP.sig.InvalidURI
      * @returns {TP.test.GUIDriver} The receiver.
      */
 
-    if (!TP.isKindOf(aURI, TP.core.URI)) {
+    if (!TP.isKindOf(aURI, TP.uri.URI)) {
         return this.raise('TP.sig.InvalidURI');
     }
 
@@ -429,7 +429,7 @@ function(aURI, aWindow) {
      * @method setLocation
      * @summary Sets the location of the supplied Window to the content found
      *     at the end of the URI.
-     * @param {TP.core.URI} The URI to fetch content from.
+     * @param {TP.uri.URI} The URI to fetch content from.
      * @param {TP.core.Window} The Window to load the content into. This will
      *     default to the current UI canvas.
      * @exception TP.sig.InvalidURI
@@ -439,7 +439,7 @@ function(aURI, aWindow) {
 
     var tpWin;
 
-    if (!TP.isKindOf(aURI, TP.core.URI)) {
+    if (!TP.isKindOf(aURI, TP.uri.URI)) {
         return this.raise('TP.sig.InvalidURI');
     }
 

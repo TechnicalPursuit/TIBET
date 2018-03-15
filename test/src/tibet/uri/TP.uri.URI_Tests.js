@@ -14,7 +14,7 @@
 //  TIBETURL
 //  ========================================================================
 
-TP.core.TIBETURL.Inst.describe('construct',
+TP.uri.TIBETURL.Inst.describe('construct',
 function() {
 
     this.it('TIBET URN uniques instances regardless of format', function(test, options) {
@@ -36,7 +36,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.describe('getLocation',
+TP.uri.TIBETURL.Inst.describe('getLocation',
 function() {
 
     this.it('TIBETURL: URL with virtual URI', function(test, options) {
@@ -71,7 +71,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.describe('getResource',
+TP.uri.TIBETURL.Inst.describe('getResource',
 function() {
 
     var params;
@@ -1078,7 +1078,7 @@ function() {
 //  TIBETURN
 //  ========================================================================
 
-TP.core.TIBETURN.Inst.describe('getResource',
+TP.uri.TIBETURN.Inst.describe('getResource',
 function() {
 
     var params;
@@ -1124,7 +1124,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('setResource',
+TP.uri.TIBETURN.Inst.describe('setResource',
 function() {
 
     this.it('TIBETURN: Set resource to object with pre-existing ID', function(test, options) {
@@ -1200,7 +1200,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('observe JS objects',
+TP.uri.TIBETURN.Inst.describe('observe JS objects',
 function() {
 
     var modelObj,
@@ -1522,7 +1522,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('observe plain XML',
+TP.uri.TIBETURN.Inst.describe('observe plain XML',
 function() {
 
     var modelObj,
@@ -1789,7 +1789,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('observe JSON content',
+TP.uri.TIBETURN.Inst.describe('observe JSON content',
 function() {
 
     var modelObj,
@@ -2101,7 +2101,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('observe XML content',
+TP.uri.TIBETURN.Inst.describe('observe XML content',
 function() {
 
     var modelObj,
@@ -2405,7 +2405,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('loaded and dirty checking',
+TP.uri.TIBETURN.Inst.describe('loaded and dirty checking',
 function() {
 
     var modelObj1,
@@ -2446,8 +2446,8 @@ function() {
 
     this.afterEach(function() {
 
-        TP.core.URI.removeInstance(objURI1);
-        TP.core.URI.removeInstance(objURI2);
+        TP.uri.URI.removeInstance(objURI1);
+        TP.uri.URI.removeInstance(objURI2);
 
         //  Reset the metrics we're tracking.
         this.getSuite().resetSignalTracking();
@@ -2632,7 +2632,7 @@ function() {
 //  HTTPURL
 //  ========================================================================
 
-TP.core.HTTPURL.Inst.describe('getResource',
+TP.uri.HTTPURL.Inst.describe('getResource',
 function() {
 
     var params,
@@ -2711,7 +2711,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.describe('setResource',
+TP.uri.HTTPURL.Inst.describe('setResource',
 function() {
 
     var params,
@@ -3174,7 +3174,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.describe('getResource matrix',
+TP.uri.HTTPURL.Inst.describe('getResource matrix',
 function() {
 
     var params,
@@ -3202,9 +3202,9 @@ function() {
             server = TP.test.fakeServer.create();
 
             //  Make sure our URI does _not_ exist before we start each test.
-            url = TP.core.URI.getInstanceById(locStr);
+            url = TP.uri.URI.getInstanceById(locStr);
             if (TP.isValid(url)) {
-                TP.core.URI.removeInstance(url);
+                TP.uri.URI.removeInstance(url);
             }
         });
 
@@ -3260,7 +3260,7 @@ function() {
 //  JSONPURL
 //  ========================================================================
 
-TP.core.JSONPURL.Inst.describe('getResource',
+TP.uri.JSONPURL.Inst.describe('getResource',
 function() {
 
     var params,
@@ -3322,7 +3322,7 @@ function() {
 //  LocalDBURL
 //  ========================================================================
 
-TP.core.LocalDBURL.Inst.describe('getResource',
+TP.uri.LocalDBURL.Inst.describe('getResource',
 function() {
 
     var storage;
@@ -3480,7 +3480,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Inst.describe('setResource',
+TP.uri.LocalDBURL.Inst.describe('setResource',
 function() {
 
     this.it('LocalDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
@@ -3663,7 +3663,7 @@ function() {
 //  PouchDBURL
 //  ========================================================================
 
-TP.core.PouchDBURL.Inst.describe('getResource',
+TP.uri.PouchDBURL.Inst.describe('getResource',
 function() {
 
     var testDb;
@@ -3926,7 +3926,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURL.Inst.describe('setResource',
+TP.uri.PouchDBURL.Inst.describe('setResource',
 function() {
 
     var testDb,
@@ -4206,7 +4206,7 @@ function() {
 //  StorageURL
 //  ========================================================================
 
-TP.core.StorageURL.Inst.describe('local storage',
+TP.uri.StorageURL.Inst.describe('local storage',
 function() {
 
     var localURI,
@@ -4230,8 +4230,8 @@ function() {
     });
 
     this.afterEach(function() {
-        TP.core.URI.removeInstance(localURI);
-        TP.core.URI.removeInstance(sessionURI);
+        TP.uri.URI.removeInstance(localURI);
+        TP.uri.URI.removeInstance(sessionURI);
     });
 
     //  ---

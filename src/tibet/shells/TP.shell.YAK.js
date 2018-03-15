@@ -129,7 +129,7 @@ function() {
     }
 
     if (TP.notValid(yakService =
-                        TP.core.XMPPService.getInstanceById(
+                        TP.uri.XMPPService.getInstanceById(
                                                     this.getServiceID()))) {
         return false;
     }
@@ -159,7 +159,7 @@ function(aMessage) {
         return;
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
 
     packet = yakService.get('connection').getOutputStream().getLastPacket();
     if (TP.notValid(packet)) {
@@ -460,9 +460,9 @@ function(aUserInputSeries) {
 
     //  Allocate the service and set its serviceURI and serverName
     if (TP.notValid(yakService =
-                        TP.core.XMPPService.getInstanceById(
+                        TP.uri.XMPPService.getInstanceById(
                                 this.getServiceID()))) {
-        yakService = TP.core.XMPPService.construct(this.getServiceID());
+        yakService = TP.uri.XMPPService.construct(this.getServiceID());
         yakService.set('serviceURI', this.get('serverURI'));
         yakService.set('serverName', this.get('serverName'));
     }
@@ -551,7 +551,7 @@ function(aRequest) {
     try {
         //  No XMPP service? Shut this shell down and exit here.
         if (TP.notValid(yakService =
-                            TP.core.XMPPService.getInstanceById(
+                            TP.uri.XMPPService.getInstanceById(
                                 this.getServiceID()))) {
             if (this.isRunning()) {
                 this.isRunning(false);
@@ -703,9 +703,9 @@ function(aRequest) {
 
             //  Allocate the service and set its serviceURI and serverName
             if (TP.notValid(yakService =
-                                TP.core.XMPPService.getInstanceById(
+                                TP.uri.XMPPService.getInstanceById(
                                     this.getServiceID()))) {
-                yakService = TP.core.XMPPService.construct(
+                yakService = TP.uri.XMPPService.construct(
                                     this.getServiceID());
 
                 yakService.set('serviceURI', shell.get('serverURI'));
@@ -842,7 +842,7 @@ function(aRegistrationNode) {
                     return true;
                 }));
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
 
     //  This returns a hash of registration field names and descriptions
     //  that the server wants the user to complete in order to register with
@@ -911,7 +911,7 @@ function(aRegistrationNode) {
                 regValues.atPut(item, val);
             }
 
-            service = TP.core.XMPPService.getInstanceById(
+            service = TP.uri.XMPPService.getInstanceById(
                                                 this.getServiceID());
 
             res = service.finalizeRegistration(regValues);
@@ -1157,7 +1157,7 @@ function(aRequest) {
         jidStatus = '';
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.setPresence(TP.xmpp.XMLNS.ONLINE, jidStatus);
 
     this.displayDebugData(yakService.get('lastMsg'));
@@ -1196,7 +1196,7 @@ function(aRequest) {
         jidStatus = '';
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.setPresence(TP.xmpp.XMLNS.AWAY, jidStatus);
 
     this.displayDebugData(yakService.get('lastMsg'));
@@ -1274,7 +1274,7 @@ function(aRequest) {
             'No active XMPP connection. Please login.');
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.fetchRoster();
 
     this.displayDebugData(yakService.get('lastMsg'));
@@ -1367,7 +1367,7 @@ function(aRequest) {
         msgContent = aRequest.at('cmd').encrypt(key);
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.sendMessage(jid, msgContent);
 
     this.displayDebugData(yakService.get('lastMsg'));
@@ -1487,7 +1487,7 @@ function(aRequest) {
             'No active XMPP connection. Please login.');
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.subscribeTo(jid);
 
     this.displayDebugData(yakService.get('lastMsg'));
@@ -1555,7 +1555,7 @@ function(aRequest) {
         msgContent = str.encrypt(key);
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.sendMessage(jid, msgContent);
 
     this.displayDebugData(yakService.get('lastMsg'));
@@ -1654,7 +1654,7 @@ function(aRequest) {
             'No active XMPP connection. Please login.');
     }
 
-    yakService = TP.core.XMPPService.getInstanceById(this.getServiceID());
+    yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
     yakService.unsubscribeFrom(jid);
 
     this.displayDebugData(yakService.get('lastMsg'));

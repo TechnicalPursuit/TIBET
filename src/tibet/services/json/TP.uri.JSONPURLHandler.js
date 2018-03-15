@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.JSONPURLHandler}
+ * @type {TP.uri.JSONPURLHandler}
  * @summary Supports operations specific to loading, saving, or deleting jsonp:
  *     URL content. For these types of URLs a 'load' operation is typically all
  *     that's reasonable.
@@ -17,13 +17,13 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('JSONPURLHandler');
+TP.uri.URIHandler.defineSubtype('JSONPURLHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPURLHandler.Type.defineMethod('load',
+TP.uri.JSONPURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
@@ -39,7 +39,7 @@ function(targetURI, aRequest) {
      *     that defines the callback function name. Google & Yahoo use the name
      *     'callback', but other systems might customize this. This defaults to
      *     'callback'.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -109,14 +109,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPURLHandler.Type.defineMethod('delete',
+TP.uri.JSONPURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes the target URL. This is an unsupported operation for a
      *     JSONP URL. NOTE: 'jsonp://' URIs don't implement this functionality.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -138,7 +138,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPURLHandler.Type.defineMethod('save',
+TP.uri.JSONPURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -146,7 +146,7 @@ function(targetURI, aRequest) {
      * @summary Attempts to save data using standard TIBET save primitives to
      *     the URI (after rewriting) that is provided. NOTE: 'jsonp://' URIs
      *     don't implement this functionality.
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of

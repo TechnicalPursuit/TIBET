@@ -123,15 +123,15 @@ function() {
         'TP.sig.Request',                       /^TP\.sig\.Request\$(\w+)$/,
         'TP.sig.Response',                      /^TP\.sig\.Response\$(\w+)$/,
 
-        'TP.core.TIBETURN',                     'foo',
-        'TP.core.HTTPURL',                      /^TP\.core\.HTTPURL\$(\w+)$/,
-        'TP.core.FileURL',                      /^TP\.core\.FileURL\$(\w+)$/,
+        'TP.uri.TIBETURN',                      'foo',
+        'TP.uri.HTTPURL',                       /^TP\.uri\.HTTPURL\$(\w+)$/,
+        'TP.uri.FileURL',                       /^TP\.uri\.FileURL\$(\w+)$/,
         /* eslint-disable no-script-url */
-        'TP.core.JSURI',                        /^TP\.core\.JSURI\$(\w+)$/,
+        'TP.uri.JSURI',                         /^TP\.uri\.JSURI\$(\w+)$/,
         /* eslint-enable no-script-url */
-        'TP.core.WSURL',                        /^TP\.core\.WSURL\$(\w+)$/,
-        'TP.core.TIBETURL',                     /^TP\.core\.TIBETURL\$(\w+)$/,
-        'TP.core.CookieURL',                    /^TP\.core\.CookieURL\$(\w+)$/,
+        'TP.uri.WSURL',                         /^TP\.uri\.WSURL\$(\w+)$/,
+        'TP.uri.TIBETURL',                      /^TP\.uri\.TIBETURL\$(\w+)$/,
+        'TP.uri.CookieURL',                     /^TP\.uri\.CookieURL\$(\w+)$/,
 
         'TP.w3.DocType',                        /^TP\.w3\.DocType\$(\w+)$/,
 
@@ -315,13 +315,13 @@ function() {
         'TP.sig.Request',                       'TP.sig.Request',
         'TP.sig.Response',                      'TP.sig.Response',
 
-        'TP.core.TIBETURN',                     'TP.core.TIBETURN',
-        'TP.core.HTTPURL',                      'TP.core.HTTPURL',
-        'TP.core.FileURL',                      'TP.core.FileURL',
-        'TP.core.JSURI',                        'TP.core.JSURI',
-        'TP.core.WSURL',                        'TP.core.WSURL',
-        'TP.core.TIBETURL',                     'TP.core.TIBETURL',
-        'TP.core.CookieURL',                    'TP.core.CookieURL',
+        'TP.uri.TIBETURN',                      'TP.uri.TIBETURN',
+        'TP.uri.HTTPURL',                       'TP.uri.HTTPURL',
+        'TP.uri.FileURL',                       'TP.uri.FileURL',
+        'TP.uri.JSURI',                         'TP.uri.JSURI',
+        'TP.uri.WSURL',                         'TP.uri.WSURL',
+        'TP.uri.TIBETURL',                      'TP.uri.TIBETURL',
+        'TP.uri.CookieURL',                     'TP.uri.CookieURL',
 
         'TP.w3.DocType',                        'TP.w3.DocType',
 
@@ -503,13 +503,13 @@ function() {
         'TP.sig.Request',                       '[object Object]',
         'TP.sig.Response',                      '[object Object]',
 
-        'TP.core.TIBETURN',                     '[object Object]',
-        'TP.core.HTTPURL',                      '[object Object]',
-        'TP.core.FileURL',                      '[object Object]',
-        'TP.core.JSURI',                        '[object Object]',
-        'TP.core.WSURL',                        '[object Object]',
-        'TP.core.TIBETURL',                     '[object Object]',
-        'TP.core.CookieURL',                    '[object Object]',
+        'TP.uri.TIBETURN',                      '[object Object]',
+        'TP.uri.HTTPURL',                       '[object Object]',
+        'TP.uri.FileURL',                       '[object Object]',
+        'TP.uri.JSURI',                         '[object Object]',
+        'TP.uri.WSURL',                         '[object Object]',
+        'TP.uri.TIBETURL',                      '[object Object]',
+        'TP.uri.CookieURL',                     '[object Object]',
 
         'TP.w3.DocType',                        '[object Object]',
 
@@ -698,15 +698,15 @@ function() {
         'TP.sig.Request',           'TP.sig.Request :: (foo => bar)',
         'TP.sig.Response',          'TP.sig.Response :: (foo => bar)',
 
-        'TP.core.TIBETURN',         'urn:tibet:foo',
-        'TP.core.HTTPURL',          'http://www.blah.com',
-        'TP.core.FileURL',          'file:///goo.txt',
+        'TP.uri.TIBETURN',          'urn:tibet:foo',
+        'TP.uri.HTTPURL',           'http://www.blah.com',
+        'TP.uri.FileURL',           'file:///goo.txt',
         /* eslint-disable no-script-url */
-        'TP.core.JSURI',            'javascript:alert("hi")',
+        'TP.uri.JSURI',             'javascript:alert("hi")',
         /* eslint-enable no-script-url */
-        'TP.core.WSURL',            'ws://ws.blah.com',
-        'TP.core.TIBETURL',         'tibet://top/file:///goo.txt',
-        'TP.core.CookieURL',        'cookie://blah=foo',
+        'TP.uri.WSURL',             'ws://ws.blah.com',
+        'TP.uri.TIBETURL',          'tibet://top/file:///goo.txt',
+        'TP.uri.CookieURL',         'cookie://blah=foo',
 
         'TP.w3.DocType',            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
 
@@ -897,13 +897,13 @@ function() {
         'TP.sig.Request',           '[TP.sig.Request :: ([TP.core.Hash :: foo => [String :: bar]])]',
         'TP.sig.Response',          '[TP.sig.Response :: ([TP.core.Hash :: foo => [String :: bar]])]',
 
-        'TP.core.TIBETURN',         '[TP.core.TIBETURN :: (urn:tibet:foo)]',
-        'TP.core.HTTPURL',          '[TP.core.HTTPURL :: (http://www.blah.com)]',
-        'TP.core.FileURL',          '[TP.core.FileURL :: (file:///goo.txt)]',
-        'TP.core.JSURI',            '[TP.core.JSURI :: (javascript:alert("hi"))]',
-        'TP.core.WSURL',            '[TP.core.WSURL :: (ws://ws.blah.com)]',
-        'TP.core.TIBETURL',         '[TP.core.TIBETURL :: (tibet://top/file:///goo.txt)]',
-        'TP.core.CookieURL',        '[TP.core.CookieURL :: (cookie://blah=foo)]',
+        'TP.uri.TIBETURN',          '[TP.uri.TIBETURN :: (urn:tibet:foo)]',
+        'TP.uri.HTTPURL',           '[TP.uri.HTTPURL :: (http://www.blah.com)]',
+        'TP.uri.FileURL',           '[TP.uri.FileURL :: (file:///goo.txt)]',
+        'TP.uri.JSURI',             '[TP.uri.JSURI :: (javascript:alert("hi"))]',
+        'TP.uri.WSURL',             '[TP.uri.WSURL :: (ws://ws.blah.com)]',
+        'TP.uri.TIBETURL',          '[TP.uri.TIBETURL :: (tibet://top/file:///goo.txt)]',
+        'TP.uri.CookieURL',         '[TP.uri.CookieURL :: (cookie://blah=foo)]',
 
         'TP.w3.DocType',            '[TP.w3.DocType :: (<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">)]',
 
@@ -1091,13 +1091,13 @@ function() {
         'TP.sig.Request',           '<span class="TP_sig_Signal TP_sig_Request"><span data-name="payload"><span class="TP_core_Hash"><span data-name="foo">bar</span></span></span></span>',
         'TP.sig.Response',          '<span class="TP_sig_Signal TP_sig_Response"><span data-name="payload"><span class="TP_core_Hash"><span data-name="foo">bar</span></span></span></span>',
 
-        'TP.core.TIBETURN',         '<span class="TP_core_URI TP_core_TIBETURN">urn:tibet:foo</span>',
-        'TP.core.HTTPURL',          '<span class="TP_core_URI TP_core_HTTPURL">http://www.blah.com</span>',
-        'TP.core.FileURL',          '<span class="TP_core_URI TP_core_FileURL">file:///goo.txt</span>',
-        'TP.core.JSURI',            '<span class="TP_core_URI TP_core_JSURI">javascript:alert(&quot;hi&quot;)</span>',
-        'TP.core.WSURL',            '<span class="TP_core_URI TP_core_WSURL">ws://ws.blah.com</span>',
-        'TP.core.TIBETURL',         '<span class="TP_core_URI TP_core_TIBETURL">tibet://top/file:///goo.txt</span>',
-        'TP.core.CookieURL',        '<span class="TP_core_URI TP_core_CookieURL">cookie://blah=foo</span>',
+        'TP.uri.TIBETURN',          '<span class="TP_uri_URI TP_uri_TIBETURN">urn:tibet:foo</span>',
+        'TP.uri.HTTPURL',           '<span class="TP_uri_URI TP_uri_HTTPURL">http://www.blah.com</span>',
+        'TP.uri.FileURL',           '<span class="TP_uri_URI TP_uri_FileURL">file:///goo.txt</span>',
+        'TP.uri.JSURI',             '<span class="TP_uri_URI TP_uri_JSURI">javascript:alert(&quot;hi&quot;)</span>',
+        'TP.uri.WSURL',             '<span class="TP_uri_URI TP_uri_WSURL">ws://ws.blah.com</span>',
+        'TP.uri.TIBETURL',          '<span class="TP_uri_URI TP_uri_TIBETURL">tibet://top/file:///goo.txt</span>',
+        'TP.uri.CookieURL',         '<span class="TP_uri_URI TP_uri_CookieURL">cookie://blah=foo</span>',
 
         'TP.w3.DocType',            '<span class="TP_w3_DocType TP_w3_DocType"><span data-name="doctypename">html</span><span data-name="publicID">-//W3C//DTD XHTML 1.0 Strict//EN</span><span data-name="systemID">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</span></span>',
 
@@ -1286,13 +1286,13 @@ function() {
         'TP.sig.Request',           '<instance type="TP.sig.Request"><payload><instance type="TP.core.Hash"><foo>bar</foo></instance></payload></instance>',
         'TP.sig.Response',           '<instance type="TP.sig.Response"><payload><instance type="TP.core.Hash"><foo>bar</foo></instance></payload></instance>',
 
-        'TP.core.TIBETURN',         '<instance type="TP.core.TIBETURN">urn:tibet:foo</instance>',
-        'TP.core.HTTPURL',          '<instance type="TP.core.HTTPURL">http://www.blah.com</instance>',
-        'TP.core.FileURL',          '<instance type="TP.core.FileURL">file:///goo.txt</instance>',
-        'TP.core.JSURI',            '<instance type="TP.core.JSURI">javascript:alert("hi")</instance>',
-        'TP.core.WSURL',            '<instance type="TP.core.WSURL">ws://ws.blah.com</instance>',
-        'TP.core.TIBETURL',         '<instance type="TP.core.TIBETURL">tibet://top/file:///goo.txt</instance>',
-        'TP.core.CookieURL',        '<instance type="TP.core.CookieURL">cookie://blah=foo</instance>',
+        'TP.uri.TIBETURN',          '<instance type="TP.uri.TIBETURN">urn:tibet:foo</instance>',
+        'TP.uri.HTTPURL',           '<instance type="TP.uri.HTTPURL">http://www.blah.com</instance>',
+        'TP.uri.FileURL',           '<instance type="TP.uri.FileURL">file:///goo.txt</instance>',
+        'TP.uri.JSURI',             '<instance type="TP.uri.JSURI">javascript:alert("hi")</instance>',
+        'TP.uri.WSURL',             '<instance type="TP.uri.WSURL">ws://ws.blah.com</instance>',
+        'TP.uri.TIBETURL',          '<instance type="TP.uri.TIBETURL">tibet://top/file:///goo.txt</instance>',
+        'TP.uri.CookieURL',         '<instance type="TP.uri.CookieURL">cookie://blah=foo</instance>',
 
         'TP.w3.DocType',            '<instance type="TP.w3.DocType"><doctypename>html</doctypename><publicID>-//W3C//DTD XHTML 1.0 Strict//EN</publicID><systemID>http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</systemID></instance>',
 
@@ -1482,13 +1482,13 @@ function() {
         'TP.sig.Request',           '<dl class="pretty TP_sig_Request"><dt>Type name</dt><dd class="pretty typename">TP.sig.Request</dd><dl class="pretty TP_core_Hash"><dt>Type name</dt><dd class="pretty typename">TP.core.Hash</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar</dd></dl></dd></dl></dl>',
         'TP.sig.Response',          '<dl class="pretty TP_sig_Response"><dt>Type name</dt><dd class="pretty typename">TP.sig.Response</dd><dl class="pretty TP_core_Hash"><dt>Type name</dt><dd class="pretty typename">TP.core.Hash</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar</dd></dl></dd></dl></dl>',
 
-        'TP.core.TIBETURN',         '<dl class="pretty TP_core_TIBETURN"><dt/><dd><dl class="pretty String"><dt/><dd>urn:tibet:foo</dd></dl></dd></dl>',
-        'TP.core.HTTPURL',          '<dl class="pretty TP_core_HTTPURL"><dt/><dd><dl class="pretty String"><dt/><dd>http://www.blah.com</dd></dl></dd></dl>',
-        'TP.core.FileURL',          '<dl class="pretty TP_core_FileURL"><dt/><dd><dl class="pretty String"><dt/><dd>file:///goo.txt</dd></dl></dd></dl>',
-        'TP.core.JSURI',            '<dl class="pretty TP_core_JSURI"><dt/><dd><dl class="pretty String"><dt/><dd>javascript:alert("hi")</dd></dl></dd></dl>',
-        'TP.core.WSURL',            '<dl class="pretty TP_core_WSURL"><dt/><dd><dl class="pretty String"><dt/><dd>ws://ws.blah.com</dd></dl></dd></dl>',
-        'TP.core.TIBETURL',         '<dl class="pretty TP_core_TIBETURL"><dt/><dd><dl class="pretty String"><dt/><dd>tibet://top/file:///goo.txt</dd></dl></dd></dl>',
-        'TP.core.CookieURL',        '<dl class="pretty TP_core_CookieURL"><dt/><dd><dl class="pretty String"><dt/><dd>cookie://blah=foo</dd></dl></dd></dl>',
+        'TP.uri.TIBETURN',          '<dl class="pretty TP_uri_TIBETURN"><dt/><dd><dl class="pretty String"><dt/><dd>urn:tibet:foo</dd></dl></dd></dl>',
+        'TP.uri.HTTPURL',           '<dl class="pretty TP_uri_HTTPURL"><dt/><dd><dl class="pretty String"><dt/><dd>http://www.blah.com</dd></dl></dd></dl>',
+        'TP.uri.FileURL',           '<dl class="pretty TP_uri_FileURL"><dt/><dd><dl class="pretty String"><dt/><dd>file:///goo.txt</dd></dl></dd></dl>',
+        'TP.uri.JSURI',             '<dl class="pretty TP_uri_JSURI"><dt/><dd><dl class="pretty String"><dt/><dd>javascript:alert("hi")</dd></dl></dd></dl>',
+        'TP.uri.WSURL',             '<dl class="pretty TP_uri_WSURL"><dt/><dd><dl class="pretty String"><dt/><dd>ws://ws.blah.com</dd></dl></dd></dl>',
+        'TP.uri.TIBETURL',          '<dl class="pretty TP_uri_TIBETURL"><dt/><dd><dl class="pretty String"><dt/><dd>tibet://top/file:///goo.txt</dd></dl></dd></dl>',
+        'TP.uri.CookieURL',         '<dl class="pretty TP_uri_CookieURL"><dt/><dd><dl class="pretty String"><dt/><dd>cookie://blah=foo</dd></dl></dd></dl>',
 
         'TP.w3.DocType',            '<dl class="pretty TP_w3_DocType"><dt>Type name</dt><dd class="pretty typename">TP.w3.DocType</dd><dt class="pretty key">DOCTYPE:</dt><dd class="pretty value">html</dd><dt class="pretty key">PUBLIC:</dt><dd class="pretty value">-//W3C//DTD XHTML 1.0 Strict//EN</dd><dt class="pretty key">SYSTEM:</dt><dd class="pretty value">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</dd></dl>',
 
@@ -1681,13 +1681,13 @@ function() {
         'TP.sig.Request',           '{"type":"TP.sig.Request","data":{"signame":"TP.sig.Request","payload":{"foo":"bar"}}}',
         'TP.sig.Response',          '{"type":"TP.sig.Response","data":{"signame":"TP.sig.Response","payload":{"foo":"bar"}}}',
 
-        'TP.core.TIBETURN',         '{"type":"TP.core.TIBETURN","data":"urn:tibet:foo"}',
-        'TP.core.HTTPURL',          '{"type":"TP.core.HTTPURL","data":"http://www.blah.com"}',
-        'TP.core.FileURL',          '{"type":"TP.core.FileURL","data":"file:///goo.txt"}',
-        'TP.core.JSURI',            '{"type":"TP.core.JSURI","data":"javascript:alert(\\"hi\\")"}',
-        'TP.core.WSURL',            '{"type":"TP.core.WSURL","data":"ws://ws.blah.com"}',
-        'TP.core.TIBETURL',         '{"type":"TP.core.TIBETURL","data":"tibet://top/file:///goo.txt"}',
-        'TP.core.CookieURL',        '{"type":"TP.core.CookieURL","data":"cookie://blah=foo"}',
+        'TP.uri.TIBETURN',          '{"type":"TP.uri.TIBETURN","data":"urn:tibet:foo"}',
+        'TP.uri.HTTPURL',           '{"type":"TP.uri.HTTPURL","data":"http://www.blah.com"}',
+        'TP.uri.FileURL',           '{"type":"TP.uri.FileURL","data":"file:///goo.txt"}',
+        'TP.uri.JSURI',             '{"type":"TP.uri.JSURI","data":"javascript:alert(\\"hi\\")"}',
+        'TP.uri.WSURL',             '{"type":"TP.uri.WSURL","data":"ws://ws.blah.com"}',
+        'TP.uri.TIBETURL',          '{"type":"TP.uri.TIBETURL","data":"tibet://top/file:///goo.txt"}',
+        'TP.uri.CookieURL',         '{"type":"TP.uri.CookieURL","data":"cookie://blah=foo"}',
 
         'TP.w3.DocType',            '{"type":"TP.w3.DocType","data":{"DOCTYPE":"html","PUBLIC":"-//W3C//DTD XHTML 1.0 Strict//EN","SYSTEM":"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"}}',
 

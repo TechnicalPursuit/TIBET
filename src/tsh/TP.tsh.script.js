@@ -512,7 +512,7 @@ function(source, shell, sibling, request) {
      *     For redirects you can also add a trailing ! (commit) symbol which
      *     tells TIBET that you want the data to be flushed from the local
      *     in-browser cache to the file system or remote server. In other cases
-     *     the data simply updates the TP.core.URI content but doesn't send it
+     *     the data simply updates the TP.uri.URI content but doesn't send it
      *     to the server. For example:
      *
      *     a .>! b (redirect stdout and 'commit')

@@ -9,8 +9,8 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.PouchDBURL}
- * @summary A subtype of TP.core.URL specific to the 'pouchdb:' scheme.
+ * @type {TP.uri.PouchDBURL}
+ * @summary A subtype of TP.uri.URL specific to the 'pouchdb:' scheme.
  * @description
 
     'pouchdb://' URLs behave in a very RESTy way and are modeled on those used
@@ -126,9 +126,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('TP.core.PouchDBURL');
+TP.uri.URL.defineSubtype('TP.uri.PouchDBURL');
 
-TP.core.PouchDBURL.addTraits(TP.core.CommURL);
+TP.uri.PouchDBURL.addTraits(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -136,69 +136,69 @@ TP.core.PouchDBURL.addTraits(TP.core.CommURL);
 
 //  This RegExp splits up the URL into the following components:
 //  pouchdb://dbName/(?id)
-TP.core.PouchDBURL.Type.defineConstant('POUCHDB_REGEX',
+TP.uri.PouchDBURL.Type.defineConstant('POUCHDB_REGEX',
     TP.rc('^pouchdb://([^/]+)(/([^?]+)(\\??(\\S*))?)?'));
 
-TP.core.PouchDBURL.Type.defineConstant('SCHEME', 'pouchdb');
+TP.uri.PouchDBURL.Type.defineConstant('SCHEME', 'pouchdb');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURL.Type.defineAttribute('supportedModes',
+TP.uri.PouchDBURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
-TP.core.PouchDBURL.Type.defineAttribute('mode',
+TP.uri.PouchDBURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
 
-TP.core.PouchDBURL.registerForScheme('pouchdb');
+TP.uri.PouchDBURL.registerForScheme('pouchdb');
 
-TP.core.PouchDBURL.Inst.defineAttribute('query');
-TP.core.PouchDBURL.Inst.defineAttribute('queryDict');
+TP.uri.PouchDBURL.Inst.defineAttribute('query');
+TP.uri.PouchDBURL.Inst.defineAttribute('queryDict');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
-TP.core.PouchDBURL.Inst.defineAttribute('dbName');
-TP.core.PouchDBURL.Inst.defineAttribute('resourceID');
+//  TP.uri.URI / TP.uri.URL
+TP.uri.PouchDBURL.Inst.defineAttribute('dbName');
+TP.uri.PouchDBURL.Inst.defineAttribute('resourceID');
 
-TP.core.PouchDBURL.Inst.defineAttribute('$lastAdded');
+TP.uri.PouchDBURL.Inst.defineAttribute('$lastAdded');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.PouchDBURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Return the default URI handler type for this URI type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object.
      */
 
-    return TP.core.PouchDBURLHandler;
+    return TP.uri.PouchDBURLHandler;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURL.Inst.defineMethod('init',
+TP.uri.PouchDBURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.core.PouchDBURL} A new instance.
+     * @returns {TP.uri.PouchDBURL} A new instance.
      */
 
     var results,
@@ -246,7 +246,7 @@ function(aURIString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURL.Inst.defineMethod('addResource',
+TP.uri.PouchDBURL.Inst.defineMethod('addResource',
 function(existingResource, newResource, aRequest) {
 
     /**
@@ -259,7 +259,7 @@ function(existingResource, newResource, aRequest) {
      *     the receiver.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */

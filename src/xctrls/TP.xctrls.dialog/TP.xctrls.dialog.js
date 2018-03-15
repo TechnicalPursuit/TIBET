@@ -207,7 +207,7 @@ function(info) {
      *          (i.e. will have an event-trapping curtain behind it).
      *          {String} templateContent The actual markup content to put into
      *          the dialog.
-     *          {TP.core.URI} [templateURI] If the templateContent parameter is
+     *          {TP.uri.URI} [templateURI] If the templateContent parameter is
      *          not supplied, this parameter will be checked for a URI that can
      *          be used to supply the markup content.
      *          {Object} [templateData] If either the templateContent or the

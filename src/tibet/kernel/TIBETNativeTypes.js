@@ -4749,7 +4749,7 @@ function() {
     /**
      * @method getLocation
      * @summary Returns the receiver. This method is used to conform to the
-     *     TP.core.URI API.
+     *     TP.uri.URI API.
      * @returns {String}
      */
 
@@ -4797,7 +4797,7 @@ function() {
      * @method hasFragment
      * @summary Returns true if the path contains a fragment reference. This is
      *     typically associated with anchors, barenames, or full XPointers.
-     *     Provided for polymorphic API with TP.core.URI.
+     *     Provided for polymorphic API with TP.uri.URI.
      * @returns {Boolean}
      */
 

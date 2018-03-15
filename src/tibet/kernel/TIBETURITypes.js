@@ -9,28 +9,28 @@
 //  ========================================================================
 
 /*
-The TP.core.URI type and its subtypes are central to development with TIBET.
+The TP.uri.URI type and its subtypes are central to development with TIBET.
 
 Everything in TIBET has a URI, from the data you work with on a remote server to
 the data cached in the client to the elements in your UI. Access to these
 objects for purposes of manipulation or data binding is done by leveraging the
-features of the TP.core.URI type and its subtypes.
+features of the TP.uri.URI type and its subtypes.
 
-TP.core.URL is the root for most common URIs including those for the http: and
+TP.uri.URL is the root for most common URIs including those for the http: and
 file: schemes most web developers are familiar with. Most of the time when
 you're working with a data source you're working with an instance of some
-concrete TP.core.URL subtype such as TP.core.HTTPURL or TP.core.FileURL.
+concrete TP.uri.URL subtype such as TP.uri.HTTPURL or TP.uri.FileURL.
 
-TP.core.URN (urn:*) is the typical URI form for "named objects" such as the
+TP.uri.URN (urn:*) is the typical URI form for "named objects" such as the
 types in the TIBET system or other objects for which a public name is useful or
 necessary. Most URNs in TIBET use a namespace ID (NID) of 'tibet' so most URN
 instances start off with urn:tibet: followed by the actual name string.
-Instances of TP.core.URN are typically instances of an NID-specific subtype so
+Instances of TP.uri.URN are typically instances of an NID-specific subtype so
 that each subtype can process the namespace specific string (NSS) portion in a
-namespace-specific fashion. TP.core.TIBETURN is the most common TP.core.URN
+namespace-specific fashion. TP.uri.TIBETURN is the most common TP.uri.URN
 subtype.
 
-TP.core.TIBETURN (urn:tibet:*) is a TIBET-specific URL type which provides
+TP.uri.TIBETURN (urn:tibet:*) is a TIBET-specific URL type which provides
 extensions to the general URI addressing model. In particular, TIBET URLs allow
 for dynamic resolution and targeting of objects in "browser space". TIBET URLs
 will be created when a virtual URI path is specified (i.e. one that uses a
@@ -68,11 +68,11 @@ virtual URIs:
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.core.URI
+//  TP.uri.URI
 //  ========================================================================
 
 /**
- * @type {TP.core.URI}
+ * @type {TP.uri.URI}
  * @summary An abstract type that models Uniform Resource Identifiers in the
  *     TIBET system. While abstract, this type's constructor should always be
  *     used directly or via the TP.uc() primitive.
@@ -85,7 +85,7 @@ virtual URIs:
  *     only a scheme-specific parser and processor can truly manage each
  *     scheme's URI format and requirements.
  *
- *     When asked for content, the TP.core.URI types typically return content
+ *     When asked for content, the TP.uri.URI types typically return content
  *     objects based on the MIME type of the content. If a type representing the
  *     content MIME type is registered as a content handler in TIBET's
  *     TP.ietf.mime map that type's constructContentObject() method is used to
@@ -96,7 +96,7 @@ virtual URIs:
  *     approach to support your own custom data formats as you require by
  *     pairing the MIME type your server sends with a client-side handler.
  *
- *     For flexibility, TP.core.URI uses a combination of URI "helpers" and URI
+ *     For flexibility, TP.uri.URI uses a combination of URI "helpers" and URI
  *     "handlers". Certain operations on a URI such as load, save, or delete
  *     are first checked for rewrite and remap data which would either change
  *     the concrete URI or delegate it to a different concrete handler.
@@ -104,21 +104,21 @@ virtual URIs:
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.URI');
+TP.lang.Object.defineSubtype('uri.URI');
 
-//  TP.core.URI is an abstract type in TIBET terms, meaning you can't
-//  construct a concrete instance of TP.core.URI (but you can invoke the
+//  TP.uri.URI is an abstract type in TIBET terms, meaning you can't
+//  construct a concrete instance of TP.uri.URI (but you can invoke the
 //  constructor to get a specialized subtype returned to you.)
-TP.core.URI.isAbstract(true);
+TP.uri.URI.isAbstract(true);
 
 //  Add support methods for sync vs. async mode and request rewriting.
-TP.core.URI.addTraits(TP.core.SyncAsync);
+TP.uri.URI.addTraits(TP.core.SyncAsync);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineAttribute('BEST_URIMAP_SORT',
+TP.uri.URI.Type.defineAttribute('BEST_URIMAP_SORT',
 function(a, b) {
     var aMatch,
         bMatch;
@@ -155,15 +155,15 @@ function(a, b) {
 //  ------------------------------------------------------------------------
 
 //  regex used to scan uri map configuration settings for pattern keys.
-TP.core.URI.Type.defineConstant('URI_PATTERN_REGEX',
+TP.uri.URI.Type.defineConstant('URI_PATTERN_REGEX',
     /^uri\.map\.(?:.*)\.pattern$/);
 
 //  placeholder for the scheme specific to the receiving type
-TP.core.URI.Type.defineConstant('SCHEME');
+TP.uri.URI.Type.defineConstant('SCHEME');
 
 //  special aspects for URIs that will broadcast 'Change', but should mostly be
 //  ignored by observers (certainly data-binding observers).
-TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS',
+TP.uri.URI.Type.defineConstant('SPECIAL_ASPECTS',
     TP.ac('dirty', 'expired', 'loaded'));
 
 //  ------------------------------------------------------------------------
@@ -172,28 +172,28 @@ TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS',
 
 //  most URI access is synchronous (file:, urn:, etc) so we
 //  start with that here and override for http:, jsonp:, etc.
-TP.core.URI.set('supportedModes', TP.core.SyncAsync.SYNCHRONOUS);
-TP.core.URI.set('mode', TP.core.SyncAsync.SYNCHRONOUS);
+TP.uri.URI.set('supportedModes', TP.core.SyncAsync.SYNCHRONOUS);
+TP.uri.URI.set('mode', TP.core.SyncAsync.SYNCHRONOUS);
 
 //  holder for path-to-instance registrations.
-TP.core.URI.Type.defineAttribute(
+TP.uri.URI.Type.defineAttribute(
             'instances',
-            TP.ifInvalid(TP.core.URI.$get('instances'), TP.hc()));
+            TP.ifInvalid(TP.uri.URI.$get('instances'), TP.hc()));
 
 //  holder for scheme-to-type registrations.
-TP.core.URI.Type.defineAttribute(
+TP.uri.URI.Type.defineAttribute(
             'schemeHandlers',
-            TP.ifInvalid(TP.core.URI.$get('schemeHandlers'), TP.hc()));
+            TP.ifInvalid(TP.uri.URI.$get('schemeHandlers'), TP.hc()));
 
 //  holder for URIs that have had their remote resources changed but that
 //  haven't been refreshed.
-TP.core.URI.Type.defineAttribute('remoteChangeList', TP.hc());
+TP.uri.URI.Type.defineAttribute('remoteChangeList', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('initialize',
+TP.uri.URI.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -208,7 +208,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('construct',
+TP.uri.URI.Type.defineMethod('construct',
 function(aURI, aResource) {
 
     /**
@@ -221,7 +221,7 @@ function(aURI, aResource) {
      * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
-     * @returns {?TP.core.URI} The new instance.
+     * @returns {?TP.uri.URI} The new instance.
      */
 
     var url,
@@ -243,9 +243,9 @@ function(aURI, aResource) {
         }
 
         //  Look for most common cases first (urn and virtual path)
-        inst = TP.core.URI.getInstanceById(TP.uriExpandPath(aURI));
+        inst = TP.uri.URI.getInstanceById(TP.uriExpandPath(aURI));
         if (TP.notValid(inst)) {
-            inst = TP.core.URI.getInstanceById(TP.uriInTIBETFormat(aURI));
+            inst = TP.uri.URI.getInstanceById(TP.uriInTIBETFormat(aURI));
         }
 
         if (TP.notValid(inst)) {
@@ -263,22 +263,22 @@ function(aURI, aResource) {
             }
 
             if (url.indexOf('~') === 0 || url.indexOf('tibet:') === 0) {
-                type = TP.core.TIBETURL;
+                type = TP.uri.TIBETURL;
                 check = TP.uriResolveVirtualPath(url);
 
-                inst = TP.core.URI.getInstanceById(check);
+                inst = TP.uri.URI.getInstanceById(check);
             } else if (url.indexOf('urn:') === 0) {
                 url = url.replace('urn::', 'urn:tibet:');
                 type = url.indexOf('urn:tibet:') === 0 ?
-                        TP.core.TIBETURN :
-                        TP.core.URN;
+                        TP.uri.TIBETURN :
+                        TP.uri.URN;
 
-                inst = TP.core.URI.getInstanceById(url);
+                inst = TP.uri.URI.getInstanceById(url);
             } else if (url.indexOf('#') === 0) {
-                type = TP.core.TIBETURL;
+                type = TP.uri.TIBETURL;
                 url = 'tibet://uicanvas/' + url;
 
-                inst = TP.core.URI.getInstanceById(url);
+                inst = TP.uri.URI.getInstanceById(url);
             } else if (!TP.regex.URI_LIKELY.test(url) ||
                     TP.regex.REGEX_LITERAL_STRING.test(url)) {
                 //  several areas in TIBET will try to resolve strings to URIs.
@@ -288,7 +288,7 @@ function(aURI, aResource) {
                 //  normalize if possible, removing embedded './', '..', etc.,
                 //  but we have to use a check here for ~ or tibet:///~ path
                 url = TP.uriCollapsePath(url);
-                inst = TP.core.URI.getInstanceById(url);
+                inst = TP.uri.URI.getInstanceById(url);
             }
 
             if (TP.notValid(inst) && !TP.isType(type)) {
@@ -296,13 +296,13 @@ function(aURI, aResource) {
                 //  of the form '/' or './' etc. In those cases we need to
                 //  update the url to include the current root.
                 url = TP.uriWithRoot(url);
-                inst = TP.core.URI.getInstanceById(url);
+                inst = TP.uri.URI.getInstanceById(url);
             }
         }
 
     } else if (TP.notValid(aURI)) {
         return;
-    } else if (TP.isKindOf(aURI, TP.core.URI)) {
+    } else if (TP.isKindOf(aURI, TP.uri.URI)) {
         inst = aURI;
     } else {
         //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
@@ -359,14 +359,14 @@ function(aURI, aResource) {
 
     /**
      * @method uc
-     * @summary A shorthand method for TP.core.URI.construct().
+     * @summary A shorthand method for TP.uri.URI.construct().
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
      * @param {Object} [aResource] Optional value for the targeted resource.
-     * @returns {TP.core.URI} The new instance.
+     * @returns {TP.uri.URI} The new instance.
      */
 
-    return TP.core.URI.construct(aURI, aResource);
+    return TP.uri.URI.construct(aURI, aResource);
 });
 
 //  ------------------------------------------------------------------------
@@ -376,16 +376,16 @@ function() {
 
     /**
      * @method asURI
-     * @summary A shorthand method for TP.core.URI.construct().
-     * @returns {TP.core.URI} The new instance.
+     * @summary A shorthand method for TP.uri.URI.construct().
+     * @returns {TP.uri.URI} The new instance.
      */
 
-    return TP.core.URI.construct(this.asString());
+    return TP.uri.URI.construct(this.asString());
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('fromDocument',
+TP.uri.URI.Type.defineMethod('fromDocument',
 function(aDocument) {
 
     /**
@@ -396,7 +396,7 @@ function(aDocument) {
      *     data.
      * @exception {TP.sig.InvalidDocument} When aDocument isn't a valid
      *     Document.
-     * @returns {?TP.core.URI} A new instance.
+     * @returns {?TP.uri.URI} A new instance.
      */
 
     var path;
@@ -419,15 +419,15 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('fromString',
+TP.uri.URI.Type.defineMethod('fromString',
 function(aURIString) {
 
     /**
      * @method fromString
-     * @summary Constructs and returns a new TP.core.URI instance from a
+     * @summary Constructs and returns a new TP.uri.URI instance from a
      *     String.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.core.URI} A new instance.
+     * @returns {TP.uri.URI} A new instance.
      */
 
     return this.construct(aURIString);
@@ -435,14 +435,14 @@ function(aURIString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('fromTP_core_URI',
+TP.uri.URI.Type.defineMethod('fromTP_uri.URI',
 function(aURI) {
 
     /**
-     * @method fromTP_core_URI
+     * @method fromTP_uri.URI
      * @summary Returns the URI provided to help ensure unique entries exist.
-     * @param {TP.core.URI} aURI An existing URI.
-     * @returns {TP.core.URI} A new instance.
+     * @param {TP.uri.URI} aURI An existing URI.
+     * @returns {TP.uri.URI} A new instance.
      */
 
     return aURI;
@@ -450,7 +450,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('fromWindow',
+TP.uri.URI.Type.defineMethod('fromWindow',
 function(aWindow) {
 
     /**
@@ -459,7 +459,7 @@ function(aWindow) {
      *     for its location information.
      * @param {Window} aWindow The window to interrogate to make the URI from.
      * @exception {TP.sig.InvalidWindow} When aWindow isn't a valid Window.
-     * @returns {?TP.core.URI} A new instance.
+     * @returns {?TP.uri.URI} A new instance.
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -477,7 +477,7 @@ function(aWindow) {
 //  Type Registration
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('getConcreteType',
+TP.uri.URI.Type.defineMethod('getConcreteType',
 function(aPath) {
 
     /**
@@ -494,7 +494,7 @@ function(aPath) {
                                 aPath.slice(0, aPath.indexOf(':')));
 
     //  Further allow each subtype to refine the concrete type being
-    //  assigned. A specific example is TP.core.URN which can specialize
+    //  assigned. A specific example is TP.uri.URN which can specialize
     //  based on the specific NID.
     if (TP.owns(schemeRoot, 'getConcreteType')) {
         return schemeRoot.getConcreteType(aPath);
@@ -505,7 +505,7 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('registerForScheme',
+TP.uri.URI.Type.defineMethod('registerForScheme',
 function(aScheme) {
 
     /**
@@ -524,7 +524,7 @@ function(aScheme) {
     }
 
     theScheme = aScheme.strip(':');
-    TP.core.URI.$get('schemeHandlers').atPut(theScheme, this);
+    TP.uri.URI.$get('schemeHandlers').atPut(theScheme, this);
 
     //  TP.boot objects are primitive, so don't assume at() will work here.
     if (TP.notValid(TP.boot.$uriSchemes[theScheme])) {
@@ -549,43 +549,43 @@ function(aScheme) {
 //  Instance Registration
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('getInstanceById',
+TP.uri.URI.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
      * @method getInstanceById
      * @summary Returns the existing URI instance whose "ID" or path is the
-     *     path provided. This uses the TP.core.URI instance registry as the
+     *     path provided. This uses the TP.uri.URI instance registry as the
      *     lookup location.
      * @param {String} anID A URI ID, which is typically the URI's
      *     fully-expanded and normalized location.
-     * @returns {TP.core.URI} A matching instance, if found.
+     * @returns {TP.uri.URI} A matching instance, if found.
      */
 
-    return TP.core.URI.$get('instances').at(anID);
+    return TP.uri.URI.$get('instances').at(anID);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('hasInstance',
+TP.uri.URI.Type.defineMethod('hasInstance',
 function(anID) {
 
     /**
      * @method hasInstance
      * @summary Returns whether a URI object with the supplied URI ID is in the
-     *     TP.core.URI instance registry.
+     *     TP.uri.URI instance registry.
      * @param {String} anID A URI ID, which is typically the URI's
      *     fully-expanded and normalized location.
      * @returns {Boolean} Whether or not an instance is registered with the
      *     type.
      */
 
-    return TP.core.URI.$get('instances').hasKey(anID);
+    return TP.uri.URI.$get('instances').hasKey(anID);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('registerInstance',
+TP.uri.URI.Type.defineMethod('registerInstance',
 function(anInstance, aKey) {
 
     /**
@@ -593,10 +593,10 @@ function(anInstance, aKey) {
      * @summary Registers an instance under that instance's URI string.
      *     Subsequent calls to construct an instance for that URI string will
      *     return the cached instance.
-     * @param {TP.core.URI} anInstance The instance to register.
+     * @param {TP.uri.URI} anInstance The instance to register.
      * @param {String} [aKey] The optional key to store the instance under.
      * @exception {TP.sig.InvalidURI}
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var dict,
@@ -626,22 +626,22 @@ function(anInstance, aKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('removeInstance',
+TP.uri.URI.Type.defineMethod('removeInstance',
 function(anInstance) {
 
     /**
      * @method removeInstance
      * @summary Removes an instance under all keys that instance is registered
      *     under.
-     * @param {TP.core.URI} anInstance The instance to remove.
+     * @param {TP.uri.URI} anInstance The instance to remove.
      * @exception {TP.sig.InvalidURI}
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var dict,
         seconds;
 
-    if (!TP.isKindOf(anInstance, TP.core.URI)) {
+    if (!TP.isKindOf(anInstance, TP.uri.URI)) {
         return this.raise('InvalidURI');
     }
 
@@ -653,7 +653,7 @@ function(anInstance) {
     if (TP.notEmpty(seconds = anInstance.getSecondaryURIs())) {
         seconds.forEach(
                     function(secondary) {
-                        TP.core.URI.removeInstance(secondary);
+                        TP.uri.URI.removeInstance(secondary);
                         dict.removeValue(secondary, TP.IDENTITY);
                     });
     }
@@ -680,20 +680,20 @@ function(anInstance) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('$getDefaultHandler',
+TP.uri.URI.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. This is
      *     typically the type defined by TP.sys.cfg('uri.handler.default') which
-     *     defaults to TP.core.URIHandler.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     *     defaults to TP.uri.URIHandler.
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
      * @exception {TP.sig.TypeNotFound}
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
 
@@ -707,7 +707,7 @@ function(aURI, aRequest) {
                     'uri.handler.default has no type name specified.');
 
         //  always return at least our default type
-        return TP.core.URIHandler;
+        return TP.uri.URIHandler;
     }
 
     type = TP.sys.getTypeByName(tname);
@@ -715,7 +715,7 @@ function(aURI, aRequest) {
         this.raise('TP.sig.TypeNotFound', tname);
 
         //  always return at least our default type
-        return TP.core.URIHandler;
+        return TP.uri.URIHandler;
     }
 
     return type;
@@ -723,7 +723,7 @@ function(aURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('$getURIMap',
+TP.uri.URI.Type.defineMethod('$getURIMap',
 function(aURI) {
 
     /**
@@ -731,7 +731,7 @@ function(aURI) {
      * @summary Scans configuration data for uri.map entries representing the
      *     best match for the URI provided. Only entries from a single mapping
      *     will be returned and only if a match is found.
-     * @param {TP.core.URI|String} aURI The URI to locate mapping data for.
+     * @param {TP.uri.URI|String} aURI The URI to locate mapping data for.
      * @exception {TP.sig.InvalidURI}
      * @returns {?TP.core.Hash} A dictionary of matching key values, if any.
      */
@@ -769,12 +769,12 @@ function(aURI) {
     if (TP.canInvoke(config, 'getKeys')) {
         patterns = config.getKeys().filter(
                         function(key) {
-                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                            return TP.uri.URI.Type.URI_PATTERN_REGEX.test(key);
                         });
     } else {
         patterns = TP.keys(config).filter(
                         function(key) {
-                            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+                            return TP.uri.URI.Type.URI_PATTERN_REGEX.test(key);
                         });
     }
 
@@ -844,7 +844,7 @@ function(aURI) {
     }
 
     //  Sort based on criteria for a best fit (more segments, longest match).
-    matches = matches.sort(TP.core.URI.BEST_URIMAP_SORT);
+    matches = matches.sort(TP.uri.URI.BEST_URIMAP_SORT);
 
     //  Get the entire set of keys for that mapping entry.
     map = matches.first().at(1);
@@ -864,7 +864,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('remap',
+TP.uri.URI.Type.defineMethod('remap',
 function(aURI, aRequest) {
 
     /**
@@ -872,13 +872,13 @@ function(aURI, aRequest) {
      * @summary Directs the operation implied by any data in aRequest to a
      *     viable handler for the URI and request.
      * @description This typically results in the request being passed to a
-     *     TP.core.URIHandler type/subtype. Note that the URI is expected to
+     *     TP.uri.URIHandler type/subtype. Note that the URI is expected to
      *     have been rewritten as needed prior to this call so that the
      *     operation is appropriate for the concrete URI being accessed.
-     * @param {TP.core.URI|String} aURI The URI to map.
+     * @param {TP.uri.URI|String} aURI The URI to map.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object that can handle the request for the supplied URI.
      */
 
@@ -896,13 +896,13 @@ function(aURI, aRequest) {
                     ' does not support remap(); using default.',
                     TP.IO_LOG) : 0;
 
-        return TP.core.URIMapper.remap(aURI, aRequest);
+        return TP.uri.URIMapper.remap(aURI, aRequest);
     }
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('rewrite',
+TP.uri.URI.Type.defineMethod('rewrite',
 function(aURI, aRequest) {
 
     /**
@@ -911,10 +911,10 @@ function(aURI, aRequest) {
      *     current TP.sys.cfg('uri.rewriter') responsible for URI rewriting.
      * @description This rewriting step is performed prior to any operations
      *     which require a URI handler such as load or save.
-     * @param {TP.core.URI|String} aURI The URI to rewrite.
+     * @param {TP.uri.URI|String} aURI The URI to rewrite.
      * @param {TP.sig.Request} [aRequest] An optional request whose values may
      *     inform the rewrite.
-     * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
+     * @returns {TP.uri.URI} The rewritten URI in TP.uri.URI form.
      */
 
     var rewriter,
@@ -931,7 +931,7 @@ function(aURI, aRequest) {
                         ' does not support rewrite(); using default.',
                     TP.IO_LOG) : 0;
 
-        return TP.core.URIRewriter.rewrite(aURI, aRequest);
+        return TP.uri.URIRewriter.rewrite(aURI, aRequest);
     }
 });
 
@@ -947,7 +947,7 @@ function(aURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('processRemoteResourceChange',
+TP.uri.URI.Type.defineMethod('processRemoteResourceChange',
 function(aURI) {
 
     /**
@@ -960,7 +960,7 @@ function(aURI) {
      *     method will either refresh the URI (via refreshFromRemoteResource) or
      *     it will put an entry for the supplied URI into a hash that tracks
      *     URIs that have had their remote resources changed without refreshing.
-     * @param {TP.core.URI|String} aURI The URI that had its remote resource
+     * @param {TP.uri.URI|String} aURI The URI that had its remote resource
      *     changed.
      * @returns {Promise} A promise which resolves based on success.
      */
@@ -996,7 +996,7 @@ function(aURI) {
     //  These entries will be removed in the refreshFromRemoteResource method
     //  when all processing is complete.
     loc = aURI.getLocation();
-    resourceHash = TP.core.URI.get('remoteChangeList');
+    resourceHash = TP.uri.URI.get('remoteChangeList');
     locHash = resourceHash.at(loc);
 
     if (TP.notValid(locHash)) {
@@ -1014,20 +1014,20 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('processRemoteChangeList',
+TP.uri.URI.Type.defineMethod('processRemoteChangeList',
 function() {
 
     /**
      * @method processRemoteChangeList
      * @summary Forces a refresh of all of the queued URIs that had their remote
      * resource changed. The queue is then emptied.
-     * @returns {TP.meta.core.URI} The receiver.
+     * @returns {TP.meta.uri.URI} The receiver.
      */
 
     var resourceHash,
         keys;
 
-    resourceHash = TP.core.URI.get('remoteChangeList');
+    resourceHash = TP.uri.URI.get('remoteChangeList');
     keys = resourceHash.getKeys();
 
     //  NOTE we iterate in this fashion so we don't remove a referenced URI
@@ -1052,7 +1052,7 @@ function() {
 //  Local Resource Change Handling
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('getLocalChangeList',
+TP.uri.URI.Type.defineMethod('getLocalChangeList',
 function() {
 
     /**
@@ -1067,7 +1067,7 @@ function() {
 
     hash = TP.hc();
 
-    TP.core.URI.instances.perform(
+    TP.uri.URI.instances.perform(
             function(item) {
                 var loc;
 
@@ -1086,13 +1086,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('pushLocalChangeList',
+TP.uri.URI.Type.defineMethod('pushLocalChangeList',
 function() {
 
     /**
      * @method pushLocalChangeList
      * @summary Pushes any changes for locally dirty URIs which are watched.
-     * @returns {TP.meta.core.URI} The receiver.
+     * @returns {TP.meta.uri.URI} The receiver.
      */
 
     var hash;
@@ -1120,85 +1120,85 @@ function() {
 
 //  the receiver's copy of the original uri used for construction if any,
 //  and a decoded variant of that for normal use
-TP.core.URI.Inst.defineAttribute('uri');
-TP.core.URI.Inst.defineAttribute('decoded');
+TP.uri.URI.Inst.defineAttribute('uri');
+TP.uri.URI.Inst.defineAttribute('decoded');
 
 //  the primary location, the portion in front of any # fragment, and any
-//  associated TP.core.URI instance constructed to reference it.
-TP.core.URI.Inst.defineAttribute('primaryLocation');
-TP.core.URI.Inst.defineAttribute('primaryURI');
+//  associated TP.uri.URI instance constructed to reference it.
+TP.uri.URI.Inst.defineAttribute('primaryLocation');
+TP.uri.URI.Inst.defineAttribute('primaryURI');
 
 //  any potentially cached fragment portion. NOTE that caching the fragment
 //  portion is a bit dicey since it can be manipulated by various means and
 //  must be keep synchronized in such cases.
-TP.core.URI.Inst.defineAttribute('fragment');
+TP.uri.URI.Inst.defineAttribute('fragment');
 
 //  whether the receiver is HTTP-based
-TP.core.URI.Inst.defineAttribute('httpBased');
+TP.uri.URI.Inst.defineAttribute('httpBased');
 
 //  the resource object for the primary href
-TP.core.URI.Inst.defineAttribute('resource');
-TP.core.URI.Inst.defineAttribute('resourceCache');
+TP.uri.URI.Inst.defineAttribute('resource');
+TP.uri.URI.Inst.defineAttribute('resourceCache');
 
 //  whether the receiver 'creates content' when setting it
-TP.core.URI.Inst.defineAttribute('shouldCreateContent');
+TP.uri.URI.Inst.defineAttribute('shouldCreateContent');
 
 //  holder for this instance's uri lookup properties
-TP.core.URI.Inst.defineAttribute('uriNodes');
-TP.core.URI.Inst.defineAttribute('uriRegex');
+TP.uri.URI.Inst.defineAttribute('uriNodes');
+TP.uri.URI.Inst.defineAttribute('uriRegex');
 
 //  the scheme which was actually used for this instance, usually the same
 //  as the scheme for the type.
-TP.core.URI.Inst.defineAttribute('scheme');
+TP.uri.URI.Inst.defineAttribute('scheme');
 
 //  the portion of the URI without the scheme. this is the string parsed by
 //  the scheme-specific parsing logic.
-TP.core.URI.Inst.defineAttribute('schemeSpecificPart');
+TP.uri.URI.Inst.defineAttribute('schemeSpecificPart');
 
 //  a container for any headers associated with this instance.  Note that
 //  while only HTTP uris are likely to have true headers TIBET can leverage
 //  this structure for other URIs to achieve similar results.
-TP.core.URI.Inst.defineAttribute('headers');
+TP.uri.URI.Inst.defineAttribute('headers');
 
 //  cached date instance for last update time
-TP.core.URI.Inst.defineAttribute('lastUpdated', null);
+TP.uri.URI.Inst.defineAttribute('lastUpdated', null);
 
 //  flag controlling expiration overrides
-TP.core.URI.Inst.defineAttribute('expired', false);
+TP.uri.URI.Inst.defineAttribute('expired', false);
 
 //  cached data on whether this URI exists so we can avoid checking too
 //  often. NOTE that we start out null so we don't imply a true/false
-TP.core.URI.Inst.defineAttribute('found', null);
+TP.uri.URI.Inst.defineAttribute('found', null);
 
 //  content change tracking flag
-TP.core.URI.Inst.defineAttribute('$dirty', false);
+TP.uri.URI.Inst.defineAttribute('$dirty', false);
 
 //  load status flag
-TP.core.URI.Inst.defineAttribute('$loaded', false);
+TP.uri.URI.Inst.defineAttribute('$loaded', false);
 
 //  uri mapping/rewriting configuration
-TP.core.URI.Inst.defineAttribute('$uriMap', null);
+TP.uri.URI.Inst.defineAttribute('$uriMap', null);
 
 //  uri handler type based on remap process caching
-TP.core.URI.Inst.defineAttribute('$uriHandler', null);
+TP.uri.URI.Inst.defineAttribute('$uriHandler', null);
 
 //  uri as rewritten based on rewrite process caching
-TP.core.URI.Inst.defineAttribute('$uriRewrite', null);
+TP.uri.URI.Inst.defineAttribute('$uriRewrite', null);
 
 //  the default MIME type for this instance
-TP.core.URI.Inst.defineAttribute('defaultMIMEType');
+TP.uri.URI.Inst.defineAttribute('defaultMIMEType');
 
 //  the computed MIME type for this instance
-TP.core.URI.Inst.defineAttribute('computedMIMEType');
+TP.uri.URI.Inst.defineAttribute('computedMIMEType');
 
 //  the controller instance for this instance
-TP.core.URI.Inst.defineAttribute('controller');
+TP.uri.URI.Inst.defineAttribute('controller');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('init',
+TP.uri.URI.Inst.defineMethod('init',
 function(aURIString, aResource) {
 
     /**
@@ -1211,7 +1211,7 @@ function(aURIString, aResource) {
      * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.InvalidURI} When the receiver cannot be initialized
      *     from the supplied URI String.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var index,
@@ -1253,7 +1253,7 @@ function(aURIString, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('addResource',
+TP.uri.URI.Inst.defineMethod('addResource',
 function(existingResource, newResource, aRequest) {
 
     /**
@@ -1266,7 +1266,7 @@ function(existingResource, newResource, aRequest) {
      *     the receiver.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
@@ -1291,7 +1291,7 @@ function(existingResource, newResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$initURIComponents',
+TP.uri.URI.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
@@ -1300,7 +1300,7 @@ function(parts) {
      *     URI components which were parsed during scheme-specific parsing. The
      *     default routine simply returns.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     return this;
@@ -1308,7 +1308,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.URI.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -1371,7 +1371,7 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('constructRequest',
+TP.uri.URI.Inst.defineMethod('constructRequest',
 function(aRequest) {
 
     /**
@@ -1401,7 +1401,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('constructSubrequest',
+TP.uri.URI.Inst.defineMethod('constructSubrequest',
 function(aRequest) {
 
     /**
@@ -1440,7 +1440,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asDumpString',
+TP.uri.URI.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -1478,7 +1478,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asHTMLString',
+TP.uri.URI.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -1487,7 +1487,7 @@ function() {
      * @returns {String} The receiver in HTML string format.
      */
 
-    return '<span class="TP_core_URI ' +
+    return '<span class="TP_uri_URI ' +
                 TP.escapeTypeName(TP.tname(this)) + '">' +
             TP.htmlstr(this.asString()) +
             '</span>';
@@ -1495,7 +1495,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asJSONSource',
+TP.uri.URI.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -1510,7 +1510,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asPrettyString',
+TP.uri.URI.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -1530,14 +1530,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asString',
+TP.uri.URI.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns a string representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.URI's String representation. This flag is ignored in
+     *     of the TP.uri.URI's String representation. This flag is ignored in
      *     this version of this method.
      * @returns {String} The receiver's String representation.
      */
@@ -1547,7 +1547,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asSource',
+TP.uri.URI.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -1561,7 +1561,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asXMLString',
+TP.uri.URI.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -1577,13 +1577,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('asTP_core_URI',
+TP.uri.URI.Inst.defineMethod('asTP_uri.URI',
 function() {
 
     /**
-     * @method asTP_core_URI
+     * @method asTP_uri.URI
      * @summary Returns the receiver.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     return this;
@@ -1591,7 +1591,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$changed',
+TP.uri.URI.Inst.defineMethod('$changed',
 function(anAspect, anAction, aDescription) {
 
     /**
@@ -1606,7 +1606,7 @@ function(anAspect, anAction, aDescription) {
      * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
      * @fires {TP.sig.Change}
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var primaryResource,
@@ -1695,7 +1695,7 @@ function(anAspect, anAction, aDescription) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$constructPrimaryResourceStub',
+TP.uri.URI.Inst.defineMethod('$constructPrimaryResourceStub',
 function(aPathType) {
 
     /**
@@ -1731,7 +1731,7 @@ function(aPathType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('clearCaches',
+TP.uri.URI.Inst.defineMethod('clearCaches',
 function() {
 
     /**
@@ -1739,7 +1739,7 @@ function() {
      * @summary Clears any content caches related to the receiver, returning
      *     things to their pre-loaded state. For URIs with a separate resource
      *     URI this will also clear the resource URI's caches.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var url;
@@ -1757,7 +1757,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$clearCaches',
+TP.uri.URI.Inst.defineMethod('$clearCaches',
 function() {
 
     /**
@@ -1766,7 +1766,7 @@ function() {
      *     expected to be overridden by subtypes so they can clear any
      *     specialized cache data, but it should be invoked by any overriding
      *     method.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var resource;
@@ -1798,7 +1798,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('empty',
+TP.uri.URI.Inst.defineMethod('empty',
 function() {
 
     /**
@@ -1807,7 +1807,7 @@ function() {
      *     URI if it has one which stores its data. Note that only the data is
      *     cleared, not the remaining cache data such as headers etc. This
      *     operation dirties the receiver.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var url;
@@ -1830,13 +1830,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('equalTo',
+TP.uri.URI.Inst.defineMethod('equalTo',
 function(aURI) {
 
     /**
      * @method equalTo
      * @summary Two URLs are considered equal if their locations are equal.
-     * @param {TP.core.URI|String} aURI The URI to compare.
+     * @param {TP.uri.URI|String} aURI The URI to compare.
      * @returns {Boolean} Whether or not the receiver is equal to the passed in
      *     parameter.
      */
@@ -1859,7 +1859,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('expire',
+TP.uri.URI.Inst.defineMethod('expire',
 function(aFlag) {
 
     /**
@@ -1887,14 +1887,14 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getConcreteURI',
+TP.uri.URI.Inst.defineMethod('getConcreteURI',
 function() {
 
     /**
      * @method getConcreteURI
      * @summary Return's the receiver's 'concrete' URI. At this level, this
      *     method just returns the receiver. Subtypes may override this method
-     *     to return a different URI as the concrete URI. See TP.core.TIBETURL
+     *     to return a different URI as the concrete URI. See TP.uri.TIBETURL
      *     for an example of this.
      * @returns {Object} The receiver's 'concrete' URI.
      */
@@ -1904,7 +1904,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getContent',
+TP.uri.URI.Inst.defineMethod('getContent',
 function() {
 
     /**
@@ -1928,17 +1928,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$getDefaultHandler',
+TP.uri.URI.Inst.defineMethod('$getDefaultHandler',
 function(aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. This is
      *     typically the type defined by TP.sys.cfg('uri.handler.default'),
-     *     which defaults to TP.core.URIHandler.
+     *     which defaults to TP.uri.URIHandler.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the handler assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
 
@@ -1947,7 +1947,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$getFilteredResult',
+TP.uri.URI.Inst.defineMethod('$getFilteredResult',
 function(anObject, resultType, collapse) {
 
     /**
@@ -2097,7 +2097,7 @@ function(anObject, resultType, collapse) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getFragment',
+TP.uri.URI.Inst.defineMethod('getFragment',
 function() {
 
     /**
@@ -2113,7 +2113,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getFragmentExpr',
+TP.uri.URI.Inst.defineMethod('getFragmentExpr',
 function() {
 
     /**
@@ -2143,7 +2143,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getFragmentParameters',
+TP.uri.URI.Inst.defineMethod('getFragmentParameters',
 function(textOnly) {
 
     /**
@@ -2188,7 +2188,7 @@ function(textOnly) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getFragmentPath',
+TP.uri.URI.Inst.defineMethod('getFragmentPath',
 function() {
 
     /**
@@ -2223,7 +2223,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getFragmentWeight',
+TP.uri.URI.Inst.defineMethod('getFragmentWeight',
 function() {
 
     /**
@@ -2253,7 +2253,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getHeader',
+TP.uri.URI.Inst.defineMethod('getHeader',
 function(aHeaderName) {
 
     /**
@@ -2276,7 +2276,7 @@ function(aHeaderName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getID',
+TP.uri.URI.Inst.defineMethod('getID',
 function() {
 
     /**
@@ -2309,7 +2309,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getLastUpdateDate',
+TP.uri.URI.Inst.defineMethod('getLastUpdateDate',
 function() {
 
     /**
@@ -2348,7 +2348,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getLocalPath',
+TP.uri.URI.Inst.defineMethod('getLocalPath',
 function() {
 
     /**
@@ -2366,7 +2366,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getLocation',
+TP.uri.URI.Inst.defineMethod('getLocation',
 function() {
 
     /**
@@ -2392,7 +2392,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getName',
+TP.uri.URI.Inst.defineMethod('getName',
 function() {
 
     /**
@@ -2409,13 +2409,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getNativeObject',
+TP.uri.URI.Inst.defineMethod('getNativeObject',
 function() {
 
     /**
      * @method getNativeObject
      * @summary Returns the native object that the receiver is wrapping. In the
-     *     case of TP.core.URIs, this is the receiver's string instance.
+     *     case of TP.uri.URIs, this is the receiver's string instance.
      * @returns {String} The receiver's native object.
      */
 
@@ -2424,7 +2424,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getOriginalSource',
+TP.uri.URI.Inst.defineMethod('getOriginalSource',
 function() {
 
     /**
@@ -2434,13 +2434,13 @@ function() {
      * @returns {String} The receiver's original source.
      */
 
-    //  For most TP.core.URIs, this is its location.
+    //  For most TP.uri.URIs, this is its location.
     return this.getLocation();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getPrimaryLocation',
+TP.uri.URI.Inst.defineMethod('getPrimaryLocation',
 function() {
 
     /**
@@ -2472,7 +2472,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$getPrimaryResource',
+TP.uri.URI.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
@@ -2498,7 +2498,7 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getPrimaryURI',
+TP.uri.URI.Inst.defineMethod('getPrimaryURI',
 function() {
 
     /**
@@ -2508,7 +2508,7 @@ function() {
      *     resource data for the receiver if the receiver has a fragment, or it
      *     may be an "embedded" URI in the case of schemes which support
      *     embedding URIs such as tibet:.
-     * @returns {TP.core.URI} The receiver's primary resource URI.
+     * @returns {TP.uri.URI} The receiver's primary resource URI.
      */
 
     var url;
@@ -2532,7 +2532,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getResource',
+TP.uri.URI.Inst.defineMethod('getResource',
 function(aRequest) {
 
     /**
@@ -2572,7 +2572,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getRoot',
+TP.uri.URI.Inst.defineMethod('getRoot',
 function() {
 
     /**
@@ -2586,7 +2586,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getRootAndPath',
+TP.uri.URI.Inst.defineMethod('getRootAndPath',
 function() {
 
     /**
@@ -2603,7 +2603,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$getResultFragment',
+TP.uri.URI.Inst.defineMethod('$getResultFragment',
 function(aRequest, aResult, aResource) {
 
     /**
@@ -2685,7 +2685,7 @@ function(aRequest, aResult, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getScheme',
+TP.uri.URI.Inst.defineMethod('getScheme',
 function() {
 
     /**
@@ -2700,7 +2700,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getSize',
+TP.uri.URI.Inst.defineMethod('getSize',
 function() {
 
     /**
@@ -2715,7 +2715,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getSecondaryURIs',
+TP.uri.URI.Inst.defineMethod('getSecondaryURIs',
 function(onlyShallow) {
 
     /**
@@ -2729,7 +2729,7 @@ function(onlyShallow) {
      *     set of secondary URIs consisted of 'urn:tibet:stuff#tibet(foo)' and
      *     'urn:tibet:stuff#tibet(foo.bar)', then only the first one will be
      *     returned.
-     * @returns {Array} An Array of TP.core.URI objects corresponding to the
+     * @returns {Array} An Array of TP.uri.URI objects corresponding to the
      *     'secondary URI's of the receiver.
      */
 
@@ -2760,7 +2760,7 @@ function(onlyShallow) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getSubURIs',
+TP.uri.URI.Inst.defineMethod('getSubURIs',
 function(onlySecondaries) {
 
     /**
@@ -2775,7 +2775,7 @@ function(onlySecondaries) {
      *     'urn:tibet:fooBar' is not.
      * @param {Boolean} [onlySecondaries=false] Whether or not to only include
      *     secondary resources (i.e. those with a hash)
-     * @returns {Array} An Array of TP.core.URI objects corresponding to the
+     * @returns {Array} An Array of TP.uri.URI objects corresponding to the
      *     'sub URI's of the receiver.
      */
 
@@ -2838,14 +2838,14 @@ function(onlySecondaries) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getURI',
+TP.uri.URI.Inst.defineMethod('getURI',
 function() {
 
     /**
      * @method getURI
      * @summary Returns a URI which can be used to acquire the receiver.
-     *     TP.core.URI differs slightly in that it returns itself.
-     * @returns {TP.core.URI} The receiver.
+     *     TP.uri.URI differs slightly in that it returns itself.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     return this;
@@ -2853,7 +2853,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getValue',
+TP.uri.URI.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -2867,7 +2867,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getVirtualLocation',
+TP.uri.URI.Inst.defineMethod('getVirtualLocation',
 function() {
 
     /**
@@ -2889,7 +2889,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getWebPath',
+TP.uri.URI.Inst.defineMethod('getWebPath',
 function() {
 
     /**
@@ -2906,7 +2906,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineHandler('Change',
+TP.uri.URI.Inst.defineHandler('Change',
 function(aSignal) {
 
     /**
@@ -2924,7 +2924,7 @@ function(aSignal) {
      *     will signal Change from itself.
      * @param {TP.sig.Change} aSignal The signal indicating a change has
      *     happened in the resource.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var resource,
@@ -3054,7 +3054,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('hasFragment',
+TP.uri.URI.Inst.defineMethod('hasFragment',
 function() {
 
     /**
@@ -3070,7 +3070,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$flag',
+TP.uri.URI.Inst.defineMethod('$flag',
 function(aProperty, aFlag) {
 
     /**
@@ -3098,7 +3098,7 @@ function(aProperty, aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('isDirty',
+TP.uri.URI.Inst.defineMethod('isDirty',
 function(aFlag, shouldSignal) {
 
     /**
@@ -3133,7 +3133,7 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('isExpired',
+TP.uri.URI.Inst.defineMethod('isExpired',
 function(aFlag) {
 
     /**
@@ -3148,7 +3148,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('isHTTPBased',
+TP.uri.URI.Inst.defineMethod('isHTTPBased',
 function() {
 
     /**
@@ -3170,7 +3170,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('isLoaded',
+TP.uri.URI.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
     /**
@@ -3187,7 +3187,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('isPrimaryURI',
+TP.uri.URI.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
@@ -3202,7 +3202,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('refreshFromRemoteResource',
+TP.uri.URI.Inst.defineMethod('refreshFromRemoteResource',
 function() {
 
     /**
@@ -3220,7 +3220,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('register',
+TP.uri.URI.Inst.defineMethod('register',
 function() {
 
     /**
@@ -3228,14 +3228,14 @@ function() {
      * @summary Registers the instance under a common key.
      */
 
-    TP.core.URI.registerInstance(this, TP.uriExpandPath(this.getLocation()));
+    TP.uri.URI.registerInstance(this, TP.uriExpandPath(this.getLocation()));
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$requestContent',
+TP.uri.URI.Inst.defineMethod('$requestContent',
 function(aRequest, contentFName, successFName, failureFName, aResource) {
 
     /**
@@ -3376,19 +3376,19 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('remap',
+TP.uri.URI.Inst.defineMethod('remap',
 function(aRequest) {
 
     /**
      * @method remap
      * @summary Directs the operation implied by any data in aRequest to a
      *     viable handler for the URI. This typically results in the request
-     *     being passed to a TP.core.URIHandler type/subtype. Note that the URI
+     *     being passed to a TP.uri.URIHandler type/subtype. Note that the URI
      *     is expected to have been rewritten as needed prior to this call so
      *     that the handler is appropriate for the concrete URI being accessed.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object that can handle the request for the supplied URI.
      */
 
@@ -3397,7 +3397,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('rewrite',
+TP.uri.URI.Inst.defineMethod('rewrite',
 function(aRequest) {
 
     /**
@@ -3406,7 +3406,7 @@ function(aRequest) {
      *     based on current runtime values and rewriting rules.
      * @param {TP.sig.Request} [aRequest] An optional request whose values may
      *     inform the rewrite.
-     * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
+     * @returns {TP.uri.URI} The rewritten URI in TP.uri.URI form.
      */
 
     return this.getType().rewrite(this, aRequest);
@@ -3414,7 +3414,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$sendDependentURINotifications',
+TP.uri.URI.Inst.defineMethod('$sendDependentURINotifications',
 function(oldResource, newResource, pathInfos, primaryOnly) {
 
     /**
@@ -3432,7 +3432,7 @@ function(oldResource, newResource, pathInfos, primaryOnly) {
      *     If this data isn't supplied, then a single notification is sent from
      *     this URI's primary URI.
      * @param {Boolean} [primaryOnly=false] Should we only signal the primary?
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var primaryURI,
@@ -3484,7 +3484,7 @@ function(oldResource, newResource, pathInfos, primaryOnly) {
 
     primaryLoc = primaryURI.getLocation();
 
-    uriRegistry = TP.core.URI.get('instances');
+    uriRegistry = TP.uri.URI.get('instances');
     registryKeys = uriRegistry.getKeys();
 
     leni = pathInfos.getSize();
@@ -3534,7 +3534,7 @@ function(oldResource, newResource, pathInfos, primaryOnly) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$sendSecondaryURINotifications',
+TP.uri.URI.Inst.defineMethod('$sendSecondaryURINotifications',
 function(oldResource, newResource) {
 
     /**
@@ -3547,7 +3547,7 @@ function(oldResource, newResource) {
      *     had.
      * @param {Object} newResource The new value of the resource that this URI
      *     was set to.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var secondaryURIs,
@@ -3625,7 +3625,7 @@ function(oldResource, newResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('setContent',
+TP.uri.URI.Inst.defineMethod('setContent',
 function(contentData, aRequest) {
 
     /**
@@ -3660,7 +3660,7 @@ function(contentData, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$setFacet',
+TP.uri.URI.Inst.defineMethod('$setFacet',
 function(aspectName, facetName, facetValue, shouldSignal) {
 
     /**
@@ -3675,7 +3675,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {String} facetName The name of the facet to set.
      * @param {Boolean} facetValue The value to set the facet to.
      * @param {Boolean} [shouldSignal=this.getShouldSignalChange()] If false no
-     *     signaling occurs. Note that we *ignore* this value for TP.core.URIs
+     *     signaling occurs. Note that we *ignore* this value for TP.uri.URIs
      *     and always let the resource decide whether it will broadcast change
      *     or not.
      * @returns {Object} The receiver.
@@ -3716,7 +3716,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('setLastUpdateDate',
+TP.uri.URI.Inst.defineMethod('setLastUpdateDate',
 function(aDate) {
 
     /**
@@ -3756,7 +3756,7 @@ function(aDate) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$setPrimaryResource',
+TP.uri.URI.Inst.defineMethod('$setPrimaryResource',
 function(aResource, aRequest, shouldSignal) {
 
     /**
@@ -3769,7 +3769,7 @@ function(aResource, aRequest, shouldSignal) {
      * @param {Boolean} [shouldSignal=true] Should changes to the value be
      *     signaled? By default true, but occasionally set to false when a
      *     series of changes is being performed etc.
-     * @returns {TP.core.URI|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URI|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
@@ -3903,7 +3903,7 @@ function(aResource, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('setResource',
+TP.uri.URI.Inst.defineMethod('setResource',
 function(aResource, aRequest) {
 
     /**
@@ -3950,7 +3950,7 @@ function(aResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('setResourceToResultOf',
+TP.uri.URI.Inst.defineMethod('setResourceToResultOf',
 function(aURI, aRequest, shouldCopy) {
 
     /**
@@ -3959,7 +3959,7 @@ function(aURI, aRequest, shouldCopy) {
      *     resource pointed to by aURI. If the shouldCopy flag is true, then a
      *     copy of the result is made before setting it as the resource of the
      *     receiver.
-     * @param {TP.core.URI} aURI The URI of the resource object to use as the
+     * @param {TP.uri.URI} aURI The URI of the resource object to use as the
      *     resource source.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
@@ -3991,7 +3991,7 @@ function(aURI, aRequest, shouldCopy) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$setResultContent',
+TP.uri.URI.Inst.defineMethod('$setResultContent',
 function(aRequest, aResult, aResource) {
 
     /**
@@ -4080,7 +4080,7 @@ function(aRequest, aResult, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('$setResultFragment',
+TP.uri.URI.Inst.defineMethod('$setResultFragment',
 function(aRequest, aResult, aResource, shouldSignal) {
 
     /**
@@ -4211,7 +4211,7 @@ function(aRequest, aResult, aResource, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('setValue',
+TP.uri.URI.Inst.defineMethod('setValue',
 function(aValue) {
 
     /**
@@ -4227,7 +4227,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('stubResourceContent',
+TP.uri.URI.Inst.defineMethod('stubResourceContent',
 function() {
 
     /**
@@ -4240,7 +4240,7 @@ function() {
      *     when that value changes. This is necessary in scenarios like data
      *     binding when bindings are triggered into this URI and no resource has
      *     been set.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var resourceContent;
@@ -4273,7 +4273,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('shouldSignalChange',
+TP.uri.URI.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
     /**
@@ -4288,13 +4288,13 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    //  Yes, TP.core.URIs are hardcoded to return false here.
+    //  Yes, TP.uri.URIs are hardcoded to return false here.
     return false;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('transform',
+TP.uri.URI.Inst.defineMethod('transform',
 function(aDataSource, aRequest) {
 
     /**
@@ -4419,13 +4419,13 @@ function(aDataSource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('unregister',
+TP.uri.URI.Inst.defineMethod('unregister',
 function() {
 
     /**
      * @method unregister
-     * @summary Unregisters the receiver from the overall TP.core.URI registry.
-     * @returns {TP.core.URI} The receiver.
+     * @summary Unregisters the receiver from the overall TP.uri.URI registry.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var oldResource;
@@ -4437,14 +4437,14 @@ function() {
         this.ignore(oldResource, 'Change');
     }
 
-    TP.core.URI.removeInstance(this);
+    TP.uri.URI.removeInstance(this);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('updateHeaders',
+TP.uri.URI.Inst.defineMethod('updateHeaders',
 function(headerData) {
 
     /**
@@ -4454,7 +4454,7 @@ function(headerData) {
      *     content.
      * @param {Object} headerData A string, hash, or request object containing
      *     header data.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var dict,
@@ -4532,15 +4532,15 @@ function(headerData) {
 });
 
 //  ========================================================================
-//  TP.core.URN
+//  TP.uri.URN
 //  ========================================================================
 
 /**
- * @type {TP.core.URN}
- * @summary A subtype of TP.core.URI that models Uniform Resource Names in the
+ * @type {TP.uri.URN}
+ * @summary A subtype of TP.uri.URI that models Uniform Resource Names in the
  *     TIBET system. A URN identifies its resource by specifying a name. Each
  *     "namespace identifier" (NID) tends to have a custom subtype of
- *     TP.core.URN to handle namespace-specific processing needs.
+ *     TP.uri.URN to handle namespace-specific processing needs.
  * @description Note that the spec requires this name to be globally unique and
  *     persistent, even after the resource it points to no longer exists or is
  *     reachable. This condition is not enforced. Also, this type does not limit
@@ -4551,23 +4551,23 @@ function(headerData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.defineSubtype('URN');
+TP.uri.URI.defineSubtype('URN');
 
 //  You can't have a generic URN, you have to have a subtype specific to the
 //  namespace identification string.
-TP.core.URN.isAbstract(true);
+TP.uri.URN.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Type.defineConstant('URN_REGEX',
+TP.uri.URN.Type.defineConstant('URN_REGEX',
                             TP.rc('urn:([a-zA-Z0-9]*):(\\S+)'));
 
-TP.core.URN.Type.defineConstant('URN_NSS_REGEX',
+TP.uri.URN.Type.defineConstant('URN_NSS_REGEX',
                             TP.rc('^([a-zA-Z0-9]+):(\\S+)'));
 
-TP.core.URN.Type.defineConstant('SCHEME', 'urn');
+TP.uri.URN.Type.defineConstant('SCHEME', 'urn');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -4575,20 +4575,20 @@ TP.core.URN.Type.defineConstant('SCHEME', 'urn');
 
 //  registry for subtypes based on the NID they are responsible for.
 //  'urn:' scheme is sync-only so configure for that
-TP.core.URN.Type.defineAttribute('supportedModes',
+TP.uri.URN.Type.defineAttribute('supportedModes',
                                 TP.core.SyncAsync.SYNCHRONOUS);
-TP.core.URN.Type.defineAttribute('mode',
+TP.uri.URN.Type.defineAttribute('mode',
                                 TP.core.SyncAsync.SYNCHRONOUS);
 
-TP.core.URN.Type.defineAttribute('nidHandlers', TP.hc());
+TP.uri.URN.Type.defineAttribute('nidHandlers', TP.hc());
 
-TP.core.URN.registerForScheme('urn');
+TP.uri.URN.registerForScheme('urn');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Type.defineMethod('getConcreteType',
+TP.uri.URN.Type.defineMethod('getConcreteType',
 function(aPath) {
 
     /**
@@ -4621,7 +4621,7 @@ function(aPath) {
         }
     }
 
-    type = TP.core.URN.$get('nidHandlers').at(nid);
+    type = TP.uri.URN.$get('nidHandlers').at(nid);
     if (TP.isType(type) && !type.isAbstract()) {
         return type;
     }
@@ -4632,7 +4632,7 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Type.defineMethod('registerForNID',
+TP.uri.URN.Type.defineMethod('registerForNID',
 function(aNID) {
 
     /**
@@ -4651,7 +4651,7 @@ function(aNID) {
     }
 
     theNID = aNID.strip(':');
-    TP.core.URN.$get('nidHandlers').atPut(theNID, this);
+    TP.uri.URN.$get('nidHandlers').atPut(theNID, this);
 
     return;
 });
@@ -4661,20 +4661,20 @@ function(aNID) {
 //  ------------------------------------------------------------------------
 
 //  the Namespace ID (NID) from the URN specification
-TP.core.URN.Inst.defineAttribute('nid');
+TP.uri.URN.Inst.defineAttribute('nid');
 
 //  the Namespaces Specific String (NSS)
-TP.core.URN.Inst.defineAttribute('nss');
+TP.uri.URN.Inst.defineAttribute('nss');
 
 //  The "name" portion as TIBET perceives it. This is effectively the NSS
 //  minus any concept of fragment.
-TP.core.URN.Inst.defineAttribute('name');
+TP.uri.URN.Inst.defineAttribute('name');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('$initURIComponents',
+TP.uri.URN.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
@@ -4682,7 +4682,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
@@ -4700,7 +4700,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.URN.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -4724,7 +4724,7 @@ function(schemeSpecificString) {
             */
     this.callNextMethod();
 
-    match = TP.core.URN.URN_NSS_REGEX.exec(schemeSpecificString);
+    match = TP.uri.URN.URN_NSS_REGEX.exec(schemeSpecificString);
     if (TP.isArray(match)) {
         hash = TP.hc('nid', match.at(1), 'nss', match.at(2));
     }
@@ -4736,7 +4736,7 @@ function(schemeSpecificString) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('$getPrimaryResource',
+TP.uri.URN.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
@@ -4803,7 +4803,7 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('getName',
+TP.uri.URN.Inst.defineMethod('getName',
 function() {
 
     /**
@@ -4836,7 +4836,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('$resolveName',
+TP.uri.URN.Inst.defineMethod('$resolveName',
 function(aName) {
 
     /**
@@ -4855,7 +4855,7 @@ function(aName) {
 //  Storage Management
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('load',
+TP.uri.URN.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
@@ -4879,17 +4879,17 @@ function(aRequest) {
 
     request.atPut('operation', 'load');
 
-    //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
+    //  NB: We hard-code 'TP.uri.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information.
-    handler = TP.core.URIHandler;
+    handler = TP.uri.URIHandler;
 
     return handler.load(url, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('delete',
+TP.uri.URN.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
@@ -4913,17 +4913,17 @@ function(aRequest) {
 
     request.atPut('operation', 'delete');
 
-    //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
+    //  NB: We hard-code 'TP.uri.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
-    handler = TP.core.URIHandler;
+    handler = TP.uri.URIHandler;
 
     return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('save',
+TP.uri.URN.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
@@ -4947,21 +4947,21 @@ function(aRequest) {
 
     request.atPut('operation', 'save');
 
-    //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
+    //  NB: We hard-code 'TP.uri.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
-    handler = TP.core.URIHandler;
+    handler = TP.uri.URIHandler;
 
     return handler.save(url, request);
 });
 
 //  ========================================================================
-//  TP.core.TIBETURN
+//  TP.uri.TIBETURN
 //  ========================================================================
 
 /**
- * @type {TP.core.TIBETURN}
- * @summary A subtype of TP.core.URN specific to the urn:tibet 'namespace'.
+ * @type {TP.uri.TIBETURN}
+ * @summary A subtype of TP.uri.URN specific to the urn:tibet 'namespace'.
  * @description When creating URNs the portion after the scheme is what is known
  *     as the "NIS" or Namespace Identification String". This is followed by the
  *     "NSS" or Namespace Specific String. To ensure proper parsing of the
@@ -4971,15 +4971,15 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.defineSubtype('TIBETURN');
+TP.uri.URN.defineSubtype('TIBETURN');
 
-TP.core.TIBETURN.registerForNID('tibet');
+TP.uri.TIBETURN.registerForNID('tibet');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.defineMethod('$resolveName',
+TP.uri.TIBETURN.Inst.defineMethod('$resolveName',
 function(aName) {
 
     /**
@@ -5024,7 +5024,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.defineMethod('$setPrimaryResource',
+TP.uri.TIBETURN.Inst.defineMethod('$setPrimaryResource',
 function(aResource, aRequest, shouldSignal) {
 
     /**
@@ -5037,7 +5037,7 @@ function(aResource, aRequest, shouldSignal) {
      * @param {Boolean} [shouldSignal=true] Should changes to the value be
      *     signaled? By default true, but occasionally set to false when a
      *     series of changes is being performed etc.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
@@ -5176,7 +5176,7 @@ function(aResource, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.defineMethod('getResource',
+TP.uri.TIBETURN.Inst.defineMethod('getResource',
 function(aRequest) {
 
     /**
@@ -5235,12 +5235,12 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.URL
+//  TP.uri.URL
 //  ========================================================================
 
 /**
- * @type {TP.core.URL}
- * @summary A subtype of TP.core.URI that models Uniform Resource Locators in
+ * @type {TP.uri.URL}
+ * @summary A subtype of TP.uri.URI that models Uniform Resource Locators in
  *     the TIBET system. A URL identifies its resource by specifying the network
  *     location.
  * @description The API of this object matches that of the Location object in
@@ -5250,17 +5250,17 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.defineSubtype('URL');
+TP.uri.URI.defineSubtype('URL');
 
-//  TP.core.URL is an abstract type - the scheme will cause a concrete type
+//  TP.uri.URL is an abstract type - the scheme will cause a concrete type
 //  to be created.
-TP.core.URL.isAbstract(true);
+TP.uri.URL.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Type.defineConstant('SCHEME', null);
+TP.uri.URL.Type.defineConstant('SCHEME', null);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -5268,27 +5268,27 @@ TP.core.URL.Type.defineConstant('SCHEME', null);
 
 //  the 'path' varies by scheme but is typically found behind any host:port
 //  or file: prefixes
-TP.core.URL.Inst.defineAttribute('path');
-TP.core.URL.Inst.defineAttribute('lastRequest');
+TP.uri.URL.Inst.defineAttribute('path');
+TP.uri.URL.Inst.defineAttribute('lastRequest');
 
 //  whether or not the URI is being watched for change. NOTE: do NOT set this
 //  to false without changing the isWatched method logic. Null implies true.
-TP.core.URL.Inst.defineAttribute('watched', null);
+TP.uri.URL.Inst.defineAttribute('watched', null);
 
 //  whether or not we should try to PATCH this instance
-TP.core.URL.Inst.defineAttribute('$shouldPatch');
+TP.uri.URL.Inst.defineAttribute('$shouldPatch');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('asURL',
+TP.uri.URL.Inst.defineMethod('asURL',
 function() {
 
     /**
      * @method asURL
      * @summary Returns the receiver as a URL (this).
-     * @returns {TP.core.URL} The receiver.
+     * @returns {TP.uri.URL} The receiver.
      */
 
     return this;
@@ -5296,7 +5296,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('canDiffPatch',
+TP.uri.URL.Inst.defineMethod('canDiffPatch',
 function() {
 
     /**
@@ -5347,7 +5347,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('computeDiffPatchAgainst',
+TP.uri.URL.Inst.defineMethod('computeDiffPatchAgainst',
 function(aContent, alternateContent) {
 
     /**
@@ -5472,7 +5472,7 @@ function(aContent, alternateContent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getExtension',
+TP.uri.URL.Inst.defineMethod('getExtension',
 function(aSeparator) {
 
     /**
@@ -5493,7 +5493,7 @@ function(aSeparator) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getHost',
+TP.uri.URL.Inst.defineMethod('getHost',
 function() {
 
     /**
@@ -5522,7 +5522,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getMIMEType',
+TP.uri.URL.Inst.defineMethod('getMIMEType',
 function(newResource) {
 
     /**
@@ -5603,7 +5603,7 @@ function(newResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getNativeNode',
+TP.uri.URL.Inst.defineMethod('getNativeNode',
 function(aRequest) {
 
     /**
@@ -5691,7 +5691,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getPath',
+TP.uri.URL.Inst.defineMethod('getPath',
 function() {
 
     /**
@@ -5727,7 +5727,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('$getPath',
+TP.uri.URL.Inst.defineMethod('$getPath',
 function(url) {
 
     /**
@@ -5761,7 +5761,7 @@ function(url) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getPathParts',
+TP.uri.URL.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -5786,7 +5786,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getRelativePath',
+TP.uri.URL.Inst.defineMethod('getRelativePath',
 function(secondPath, filePath) {
 
     /**
@@ -5814,7 +5814,7 @@ function(secondPath, filePath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('$getPrimaryResource',
+TP.uri.URL.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
@@ -5982,7 +5982,7 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('$normalizeRequestedResource',
+TP.uri.URL.Inst.defineMethod('$normalizeRequestedResource',
 function(aResource, Request) {
 
     var obj;
@@ -6007,7 +6007,7 @@ function(aResource, Request) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('getRequestedResource',
+TP.uri.URL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
     /**
@@ -6130,7 +6130,7 @@ function(aRequest) {
     handler = aRequest.at('contenttype');
     if (TP.notValid(handler) && aRequest.at('resultType') !== TP.TEXT) {
         //  check on uri mapping to see if the URI maps define a wrapper.
-        map = TP.core.URI.$getURIMap(this);
+        map = TP.uri.URI.$getURIMap(this);
         if (TP.isValid(map)) {
             handler = map.at('contenttype');
         }
@@ -6268,7 +6268,7 @@ function(aRequest) {
 //  Content Processing
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('hasReachedPhase',
+TP.uri.URL.Inst.defineMethod('hasReachedPhase',
 function(targetPhase, targetPhaseList) {
 
     /**
@@ -6306,7 +6306,7 @@ function(targetPhase, targetPhaseList) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('processTP_sig_Request',
+TP.uri.URL.Inst.defineMethod('processTP_sig_Request',
 function(aRequest) {
 
     /**
@@ -6466,7 +6466,7 @@ function(aRequest) {
 //  Storage Management
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('load',
+TP.uri.URL.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
@@ -6474,7 +6474,7 @@ function(aRequest) {
      * @summary Loads the content of the receiver from whatever is the
      *     currently mapped storage location. This method relies on both
      *     rewriting and routing which ultimately hand off to a
-     *     TP.core.URIHandler of some type to perform the actual load.
+     *     TP.uri.URIHandler of some type to perform the actual load.
      * @description This method is rarely called directly, it's typically
      *     invoked by the get*Content() calls when the receiver has not yet been
      *     loaded, or when a refresh is being requested. Note that this is a
@@ -6512,7 +6512,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('delete',
+TP.uri.URL.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
@@ -6548,7 +6548,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('isWatched',
+TP.uri.URL.Inst.defineMethod('isWatched',
 function() {
 
     /**
@@ -6563,7 +6563,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('save',
+TP.uri.URL.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
@@ -6602,7 +6602,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('setShouldPatch',
+TP.uri.URL.Inst.defineMethod('setShouldPatch',
 function(shouldBePatched) {
 
     /**
@@ -6612,7 +6612,7 @@ function(shouldBePatched) {
      *     'patched' property.
      * @param {Boolean} shouldBePatched Whether the URI should be patched or
      *     not.
-     * @returns {TP.core.TIBETURL} The receiver.
+     * @returns {TP.uri.TIBETURL} The receiver.
      */
 
     return this.getConcreteURI().set('$shouldPatch', shouldBePatched);
@@ -6620,7 +6620,7 @@ function(shouldBePatched) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('refreshFromRemoteResource',
+TP.uri.URL.Inst.defineMethod('refreshFromRemoteResource',
 function() {
 
     /**
@@ -6695,7 +6695,7 @@ function() {
 
         //  Grab the resource hash of changed remotes and remote the url that we
         //  just processed from the list.
-        resourceHash = TP.core.URI.get('remoteChangeList');
+        resourceHash = TP.uri.URI.get('remoteChangeList');
         resourceHash.removeKey(url.getLocation());
 
         url.signal('RemoteResourceChanged', TP.hc('isDirty', false));
@@ -6728,7 +6728,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('processRefreshedContent',
+TP.uri.URL.Inst.defineMethod('processRefreshedContent',
 function() {
 
     /**
@@ -6737,7 +6737,7 @@ function() {
      *     the receiver with the chance to post-process those changes. If you
      *     override this method you should signal Change (this.$changed) once
      *     you have completed processing to notify potential observers.
-     * @returns {TP.core.URL} The receiver.
+     * @returns {TP.uri.URL} The receiver.
      */
 
     this.$changed();
@@ -6747,7 +6747,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('watch',
+TP.uri.URL.Inst.defineMethod('watch',
 function() {
 
     /**
@@ -6757,7 +6757,7 @@ function() {
      *     true this flag will be checked to ensure the specific URI is not
      *     excluded from processing. It's not usually necessary to set this to
      *     true if the URL would pass remote URL isWatchableURI testing.
-     * @returns {TP.core.URL} The receiver.
+     * @returns {TP.uri.URL} The receiver.
      */
 
     var url,
@@ -6787,7 +6787,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('unwatch',
+TP.uri.URL.Inst.defineMethod('unwatch',
 function() {
 
     /**
@@ -6796,7 +6796,7 @@ function() {
      *     uri.watch_remote_changes is true and uri.process_remote_changes is
      *     true this flag will be checked to ensure the specific URI is not
      *     excluded from processing.
-     * @returns {TP.core.URL} The receiver.
+     * @returns {TP.uri.URL} The receiver.
      */
 
     var request,
@@ -6820,46 +6820,46 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.ChromeExtURL
+//  TP.uri.ChromeExtURL
 //  ========================================================================
 
 /**
- * @type {TP.core.ChromeExtURL}
- * @summary A subtype of TP.core.URL specific to the Chrome Extension scheme.
+ * @type {TP.uri.ChromeExtURL}
+ * @summary A subtype of TP.uri.URL specific to the Chrome Extension scheme.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('ChromeExtURL');
+TP.uri.URL.defineSubtype('ChromeExtURL');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.ChromeExtURL.Type.defineConstant('SCHEME', 'chrome-extension');
+TP.uri.ChromeExtURL.Type.defineConstant('SCHEME', 'chrome-extension');
 
-TP.core.ChromeExtURL.registerForScheme('chrome-extension');
+TP.uri.ChromeExtURL.registerForScheme('chrome-extension');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ChromeExtURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.ChromeExtURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. For
-     *     non-mapped HTTP urls this is the TP.core.HTTPURLHandler type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     *     non-mapped HTTP urls this is the TP.uri.HTTPURLHandler type.
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
 
-    return TP.core.FileURLHandler;
+    return TP.uri.FileURLHandler;
 });
 
 //  ------------------------------------------------------------------------
@@ -6870,7 +6870,7 @@ function(aURI, aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ChromeExtURL.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.ChromeExtURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -6896,19 +6896,19 @@ function(schemeSpecificString) {
 });
 
 //  ========================================================================
-//  TP.core.CommURL
+//  TP.uri.CommURL
 //  ========================================================================
 
 /**
- * @type {TP.core.CommURL}
+ * @type {TP.uri.CommURL}
  * @summary A trait class designed to add "comm" (mostly XHR) access methods.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('TP.core.CommURL');
+TP.lang.Object.defineSubtype('TP.uri.CommURL');
 
-TP.core.CommURL.isAbstract(true);       //  Always set for a trait.
+TP.uri.CommURL.isAbstract(true);       //  Always set for a trait.
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -6916,13 +6916,13 @@ TP.core.CommURL.isAbstract(true);       //  Always set for a trait.
 
 //  the most recent 'communication' object
 //  (i.e. the native XHR or WebSocket object)
-TP.core.CommURL.Inst.defineAttribute('commObject');
+TP.uri.CommURL.Inst.defineAttribute('commObject');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('commDidSucceed',
+TP.uri.CommURL.Inst.defineMethod('commDidSucceed',
 function() {
 
     /**
@@ -6944,7 +6944,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommObject',
+TP.uri.CommURL.Inst.defineMethod('getCommObject',
 function() {
 
     /**
@@ -6972,7 +6972,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponse',
+TP.uri.CommURL.Inst.defineMethod('getCommResponse',
 function() {
 
     /**
@@ -6994,7 +6994,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseText',
+TP.uri.CommURL.Inst.defineMethod('getCommResponseText',
 function() {
 
     /**
@@ -7016,7 +7016,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseType',
+TP.uri.CommURL.Inst.defineMethod('getCommResponseType',
 function() {
 
     /**
@@ -7040,7 +7040,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseXML',
+TP.uri.CommURL.Inst.defineMethod('getCommResponseXML',
 function() {
 
     /**
@@ -7062,7 +7062,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommStatusCode',
+TP.uri.CommURL.Inst.defineMethod('getCommStatusCode',
 function() {
 
     /**
@@ -7084,7 +7084,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommStatusText',
+TP.uri.CommURL.Inst.defineMethod('getCommStatusText',
 function() {
 
     /**
@@ -7105,56 +7105,56 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.HTTPURL
+//  TP.uri.HTTPURL
 //  ========================================================================
 
 /**
- * @type {TP.core.HTTPURL}
- * @summary A subtype of TP.core.URL specific to the HTTP scheme.
+ * @type {TP.uri.HTTPURL}
+ * @summary A subtype of TP.uri.URL specific to the HTTP scheme.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('HTTPURL');
+TP.uri.URL.defineSubtype('HTTPURL');
 
-TP.core.HTTPURL.addTraits(TP.core.CommURL);
+TP.uri.HTTPURL.addTraits(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
 //  note that by setting this to http we allow https to match as well
-TP.core.HTTPURL.Type.defineConstant('SCHEME', 'http');
+TP.uri.HTTPURL.Type.defineConstant('SCHEME', 'http');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  HTTP URIs can support access via either sync or async requests
-TP.core.HTTPURL.Type.defineAttribute('supportedModes',
+TP.uri.HTTPURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.DUAL_MODE);
-TP.core.HTTPURL.Type.defineAttribute('mode',
+TP.uri.HTTPURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
 
-TP.core.HTTPURL.registerForScheme('http');
-TP.core.HTTPURL.registerForScheme('https');
+TP.uri.HTTPURL.registerForScheme('http');
+TP.uri.HTTPURL.registerForScheme('https');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.HTTPURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. For
-     *     non-mapped HTTP urls this is the TP.core.HTTPURLHandler type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     *     non-mapped HTTP urls this is the TP.uri.HTTPURLHandler type.
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
 
@@ -7163,14 +7163,14 @@ function(aURI, aRequest) {
 
     tname = TP.sys.cfg('uri.handler.http');
     if (TP.isEmpty(tname)) {
-        return TP.core.HTTPURLHandler;
+        return TP.uri.HTTPURLHandler;
     }
 
     type = TP.sys.getTypeByName(tname);
     if (TP.notValid(type)) {
         this.raise('TP.sig.TypeNotFound', tname);
 
-        return TP.core.HTTPURLHandler;
+        return TP.uri.HTTPURLHandler;
     }
 
     return type;
@@ -7181,22 +7181,22 @@ function(aURI, aRequest) {
 //  ------------------------------------------------------------------------
 
 //  cached redirection location
-TP.core.HTTPURL.Inst.defineAttribute('location');
+TP.uri.HTTPURL.Inst.defineAttribute('location');
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
-TP.core.HTTPURL.Inst.defineAttribute('user');
-TP.core.HTTPURL.Inst.defineAttribute('password');
-TP.core.HTTPURL.Inst.defineAttribute('host');
-TP.core.HTTPURL.Inst.defineAttribute('port');
-TP.core.HTTPURL.Inst.defineAttribute('query');
-TP.core.HTTPURL.Inst.defineAttribute('queryDict');
+//  TP.uri.URI / TP.uri.URL
+TP.uri.HTTPURL.Inst.defineAttribute('user');
+TP.uri.HTTPURL.Inst.defineAttribute('password');
+TP.uri.HTTPURL.Inst.defineAttribute('host');
+TP.uri.HTTPURL.Inst.defineAttribute('port');
+TP.uri.HTTPURL.Inst.defineAttribute('query');
+TP.uri.HTTPURL.Inst.defineAttribute('queryDict');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('$initURIComponents',
+TP.uri.HTTPURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
@@ -7204,7 +7204,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     this.callNextMethod();
@@ -7229,7 +7229,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.HTTPURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -7257,7 +7257,7 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpConnect',
+TP.uri.HTTPURL.Inst.defineMethod('httpConnect',
 function(aRequest) {
 
     /**
@@ -7273,7 +7273,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpDelete',
+TP.uri.HTTPURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
     /**
@@ -7289,7 +7289,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpGet',
+TP.uri.HTTPURL.Inst.defineMethod('httpGet',
 function(aRequest) {
 
     /**
@@ -7305,7 +7305,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpHead',
+TP.uri.HTTPURL.Inst.defineMethod('httpHead',
 function(aRequest) {
 
     /**
@@ -7321,7 +7321,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpOptions',
+TP.uri.HTTPURL.Inst.defineMethod('httpOptions',
 function(aRequest) {
 
     /**
@@ -7337,7 +7337,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpPatch',
+TP.uri.HTTPURL.Inst.defineMethod('httpPatch',
 function(aRequest) {
 
     /**
@@ -7353,7 +7353,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpPost',
+TP.uri.HTTPURL.Inst.defineMethod('httpPost',
 function(aRequest) {
 
     /**
@@ -7369,7 +7369,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpPut',
+TP.uri.HTTPURL.Inst.defineMethod('httpPut',
 function(aRequest) {
 
     /**
@@ -7385,7 +7385,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpTrace',
+TP.uri.HTTPURL.Inst.defineMethod('httpTrace',
 function(aRequest) {
 
     /**
@@ -7400,54 +7400,54 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.FileURL
+//  TP.uri.FileURL
 //  ========================================================================
 
 /**
- * @type {TP.core.FileURL}
+ * @type {TP.uri.FileURL}
  * @summary A URL specific to file references.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('FileURL');
+TP.uri.URL.defineSubtype('FileURL');
 
-TP.core.FileURL.addTraits(TP.core.CommURL);
+TP.uri.FileURL.addTraits(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.FileURL.Type.defineConstant('SCHEME', 'file');
+TP.uri.FileURL.Type.defineConstant('SCHEME', 'file');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  'file:' scheme is sync-only so configure for that
-TP.core.FileURL.Type.defineAttribute('supportedModes',
+TP.uri.FileURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.SYNCHRONOUS);
-TP.core.FileURL.Type.defineAttribute('mode',
+TP.uri.FileURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.SYNCHRONOUS);
 
-TP.core.FileURL.registerForScheme('file');
+TP.uri.FileURL.registerForScheme('file');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.FileURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.FileURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. For
-     *     non-mapped HTTP urls this is the TP.core.HTTPURLHandler type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     *     non-mapped HTTP urls this is the TP.uri.HTTPURLHandler type.
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
 
@@ -7456,14 +7456,14 @@ function(aURI, aRequest) {
 
     tname = TP.sys.cfg('uri.handler.file');
     if (TP.isEmpty(tname)) {
-        return TP.core.FileURLHandler;
+        return TP.uri.FileURLHandler;
     }
 
     type = TP.sys.getTypeByName(tname);
     if (TP.notValid(type)) {
         this.raise('TP.sig.TypeNotFound', tname);
 
-        return TP.core.FileURLHandler;
+        return TP.uri.FileURLHandler;
     }
 
     return type;
@@ -7474,13 +7474,13 @@ function(aURI, aRequest) {
 //  ------------------------------------------------------------------------
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
+//  TP.uri.URI / TP.uri.URL
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.FileURL.Inst.defineMethod('$initURIComponents',
+TP.uri.FileURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
@@ -7488,7 +7488,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     var thePath;
@@ -7515,7 +7515,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.FileURL.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.FileURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -7541,7 +7541,7 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.FileURL.Inst.defineMethod('$getPath',
+TP.uri.FileURL.Inst.defineMethod('$getPath',
 function(url) {
 
     /**
@@ -7566,12 +7566,12 @@ function(url) {
 });
 
 //  ========================================================================
-//  TP.core.JSURI
+//  TP.uri.JSURI
 //  ========================================================================
 
 /**
- * @type {TP.core.JSURI}
- * @summary A subtype of TP.core.URI that stores a 'javascript:' URI. These
+ * @type {TP.uri.JSURI}
+ * @summary A subtype of TP.uri.URI that stores a 'javascript:' URI. These
  *     URIs are used in web browsers when a JavaScript expression needs to be
  *     executed upon traversal of the URI. This type is also used as the content
  *     object for text/javascript MIME content.
@@ -7579,41 +7579,41 @@ function(url) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.defineSubtype('JSURI');
+TP.uri.URI.defineSubtype('JSURI');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
 /* eslint-disable no-script-url */
-TP.core.JSURI.Type.defineConstant('JSURI_REGEX', TP.rc('javascript:\\s*'));
+TP.uri.JSURI.Type.defineConstant('JSURI_REGEX', TP.rc('javascript:\\s*'));
 /* eslint-enable no-script-url */
 
-TP.core.JSURI.Type.defineConstant('SCHEME', 'javascript');
+TP.uri.JSURI.Type.defineConstant('SCHEME', 'javascript');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  'javascript:' scheme is sync-only so configure for that
-TP.core.JSURI.Type.defineAttribute('supportedModes',
+TP.uri.JSURI.Type.defineAttribute('supportedModes',
                                 TP.core.SyncAsync.SYNCHRONOUS);
-TP.core.JSURI.Type.defineAttribute('mode',
+TP.uri.JSURI.Type.defineAttribute('mode',
                                 TP.core.SyncAsync.SYNCHRONOUS);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineAttribute('jsSource');
+TP.uri.JSURI.Inst.defineAttribute('jsSource');
 
-TP.core.JSURI.registerForScheme('javascript');
+TP.uri.JSURI.registerForScheme('javascript');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Type.defineMethod('constructContentObject',
+TP.uri.JSURI.Type.defineMethod('constructContentObject',
 function(content, aURI) {
 
     /**
@@ -7623,7 +7623,7 @@ function(content, aURI) {
      *     text/javascript or a similar MIME type specifying that their content
      *     is JavaScript source code.
      * @param {String} content The string content to process.
-     * @param {TP.core.URI} [aURI] The source URI.
+     * @param {TP.uri.URI} [aURI] The source URI.
      * @returns {String} The JavaScript source code in text form.
      */
 
@@ -7632,7 +7632,7 @@ function(content, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('$getPath',
+TP.uri.JSURI.Inst.defineMethod('$getPath',
 function(url) {
 
     /**
@@ -7650,7 +7650,7 @@ function(url) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Type.defineMethod('validate',
+TP.uri.JSURI.Type.defineMethod('validate',
 function(aString) {
 
     /**
@@ -7671,7 +7671,7 @@ function(aString) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('isPrimaryURI',
+TP.uri.JSURI.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
@@ -7687,7 +7687,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.JSURI.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -7706,14 +7706,14 @@ function(schemeSpecificString) {
                 this.$get('scheme') + ':' + schemeSpecificString);
 
     this.$set('jsSource',
-                schemeSpecificString.strip(TP.core.JSURI.JSURI_REGEX));
+                schemeSpecificString.strip(TP.uri.JSURI.JSURI_REGEX));
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('$getPrimaryResource',
+TP.uri.JSURI.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
@@ -7771,7 +7771,7 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('isDirty',
+TP.uri.JSURI.Inst.defineMethod('isDirty',
 function(aFlag, shouldSignal) {
 
     /**
@@ -7791,7 +7791,7 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('isLoaded',
+TP.uri.JSURI.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
     /**
@@ -7812,7 +7812,7 @@ function(aFlag) {
 //  Storage Management
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('load',
+TP.uri.JSURI.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
@@ -7836,17 +7836,17 @@ function(aRequest) {
 
     request.atPut('operation', 'load');
 
-    //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
+    //  NB: We hard-code 'TP.uri.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
-    handler = TP.core.URIHandler;
+    handler = TP.uri.URIHandler;
 
     return handler.load(url, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('delete',
+TP.uri.JSURI.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
@@ -7870,17 +7870,17 @@ function(aRequest) {
 
     request.atPut('operation', 'delete');
 
-    //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
+    //  NB: We hard-code 'TP.uri.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
-    handler = TP.core.URIHandler;
+    handler = TP.uri.URIHandler;
 
     return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('save',
+TP.uri.JSURI.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
@@ -7904,63 +7904,63 @@ function(aRequest) {
 
     request.atPut('operation', 'save');
 
-    //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
+    //  NB: We hard-code 'TP.uri.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
-    handler = TP.core.URIHandler;
+    handler = TP.uri.URIHandler;
 
     return handler.save(url, request);
 });
 
 //  ========================================================================
-//  TP.core.WSURL
+//  TP.uri.WSURL
 //  ========================================================================
 
 /**
- * @type {TP.core.WSURL}
- * @summary A subtype of TP.core.URL specific to the WebSocket scheme.
+ * @type {TP.uri.WSURL}
+ * @summary A subtype of TP.uri.URL specific to the WebSocket scheme.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('WSURL');
+TP.uri.URL.defineSubtype('WSURL');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.WSURL.Type.defineConstant('SCHEME', 'ws');
+TP.uri.WSURL.Type.defineConstant('SCHEME', 'ws');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  WebSocket URIs can support only async requests
-TP.core.WSURL.Type.defineAttribute('supportedModes',
+TP.uri.WSURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
-TP.core.WSURL.Type.defineAttribute('mode',
+TP.uri.WSURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
 
-TP.core.WSURL.registerForScheme('ws');
-TP.core.WSURL.registerForScheme('wss');
+TP.uri.WSURL.registerForScheme('ws');
+TP.uri.WSURL.registerForScheme('wss');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  cached redirection location
-TP.core.WSURL.Inst.defineAttribute('webSocketObj');
+TP.uri.WSURL.Inst.defineAttribute('webSocketObj');
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
-TP.core.WSURL.Inst.defineAttribute('host');
-TP.core.WSURL.Inst.defineAttribute('port');
+//  TP.uri.URI / TP.uri.URL
+TP.uri.WSURL.Inst.defineAttribute('host');
+TP.uri.WSURL.Inst.defineAttribute('port');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.WSURL.Inst.defineMethod('$initURIComponents',
+TP.uri.WSURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
@@ -7968,7 +7968,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     this.callNextMethod();
@@ -7986,7 +7986,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.WSURL.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.WSURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -8011,12 +8011,12 @@ function(schemeSpecificString) {
 });
 
 //  ========================================================================
-//  TP.core.TIBETURL
+//  TP.uri.TIBETURL
 //  ========================================================================
 
 /**
- * @type {TP.core.TIBETURL}
- * @summary A subtype of TP.core.URI that stores a 'tibet:' URI. These URIs
+ * @type {TP.uri.TIBETURL}
+ * @summary A subtype of TP.uri.URI that stores a 'tibet:' URI. These URIs
  *     provide access to TIBET components, files, and other resources and are
  *     the preferred URI format for TIBET.
  * @description TIBET uses tibet: URIs as a way of referring to things which a
@@ -8184,25 +8184,25 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('TIBETURL');
+TP.uri.URL.defineSubtype('TIBETURL');
 
-TP.core.TIBETURL.addTraits(TP.core.CommURL);
+TP.uri.TIBETURL.addTraits(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
 //  indexes into the match results from the url splitter regex
-TP.core.TIBETURL.Type.defineConstant('JID_INDEX', 1);
-TP.core.TIBETURL.Type.defineConstant('RESOURCE_INDEX', 2);
-TP.core.TIBETURL.Type.defineConstant('CANVAS_INDEX', 3);
-TP.core.TIBETURL.Type.defineConstant('URL_INDEX', 4);
-TP.core.TIBETURL.Type.defineConstant('PATH_INDEX', 5);
-TP.core.TIBETURL.Type.defineConstant('FRAGMENT_INDEX', 6);
+TP.uri.TIBETURL.Type.defineConstant('JID_INDEX', 1);
+TP.uri.TIBETURL.Type.defineConstant('RESOURCE_INDEX', 2);
+TP.uri.TIBETURL.Type.defineConstant('CANVAS_INDEX', 3);
+TP.uri.TIBETURL.Type.defineConstant('URL_INDEX', 4);
+TP.uri.TIBETURL.Type.defineConstant('PATH_INDEX', 5);
+TP.uri.TIBETURL.Type.defineConstant('FRAGMENT_INDEX', 6);
 
-TP.core.TIBETURL.Type.defineConstant('SCHEME', 'tibet');
+TP.uri.TIBETURL.Type.defineConstant('SCHEME', 'tibet');
 
-TP.core.TIBETURL.registerForScheme('tibet');
+TP.uri.TIBETURL.registerForScheme('tibet');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -8210,25 +8210,25 @@ TP.core.TIBETURL.registerForScheme('tibet');
 
 //  the canvas (window) name referenced by this URI. this is only used when
 //  the value is cacheable, meaning it was explicitly defined in the URI
-TP.core.TIBETURL.Inst.defineAttribute('canvasName');
+TP.uri.TIBETURL.Inst.defineAttribute('canvasName');
 
 //  a handle to any internally generated URI for file/http references which
 //  are resolved from the original TIBET URL string
-TP.core.TIBETURL.Inst.defineAttribute('nestedURI');
+TP.uri.TIBETURL.Inst.defineAttribute('nestedURI');
 
 //  a cached value for whether the instance's path and pointer components
 //  are empty, which helps keep getResource running faster
-TP.core.TIBETURL.Inst.defineAttribute('uriKey');
+TP.uri.TIBETURL.Inst.defineAttribute('uriKey');
 
 //  cached copy of the portions of the TIBET URI, used to access canvas name and
 //  other components of the virtual uri.
-TP.core.URI.Inst.defineAttribute('uriParts');
+TP.uri.URI.Inst.defineAttribute('uriParts');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('init',
+TP.uri.TIBETURL.Inst.defineMethod('init',
 function(aURIString, aResource) {
 
     /**
@@ -8239,7 +8239,7 @@ function(aURIString, aResource) {
      *     resolve to different concrete elements during its life.
      * @param {String} aURIString A String containing a proper URI.
      * @param {Object} [aResource] Optional value for the targeted resource.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     //  make sure we come in with tibet: scheme or that we add it
@@ -8260,17 +8260,17 @@ function(aURIString, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('$initURIComponents',
+TP.uri.TIBETURL.Inst.defineMethod('$initURIComponents',
 function(parts) {
 
     /**
      * @method $initURIComponents
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing. Note
-     *     that TP.core.URI's implementation ensures that the uri, scheme,
+     *     that TP.uri.URI's implementation ensures that the uri, scheme,
      *     primary, and fragment portions of a URI string will be set.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.core.URI} The receiver.
+     * @returns {TP.uri.URI} The receiver.
      */
 
     //  force ID expansion if it didn't already happen. this will also force
@@ -8286,7 +8286,7 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('asDumpString',
+TP.uri.TIBETURL.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -8312,7 +8312,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('asHTMLString',
+TP.uri.TIBETURL.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -8335,7 +8335,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('asJSONSource',
+TP.uri.TIBETURL.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -8356,7 +8356,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('asPrettyString',
+TP.uri.TIBETURL.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -8379,7 +8379,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('asString',
+TP.uri.TIBETURL.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
@@ -8388,8 +8388,8 @@ function(verbose) {
      *     containing valid resource URIs typically respond with that string for
      *     compatibility with their file/http counterparts.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.TIBETURL's String representation. The default is for
-     *     TP.core.TIBETURLs is false, which is different than for most types.
+     *     of the TP.uri.TIBETURL's String representation. The default is for
+     *     TP.uri.TIBETURLs is false, which is different than for most types.
      * @returns {String} The receiver's String representation.
      */
 
@@ -8405,7 +8405,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('asXMLString',
+TP.uri.TIBETURL.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -8428,7 +8428,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getCanvas',
+TP.uri.TIBETURL.Inst.defineMethod('getCanvas',
 function() {
 
     /**
@@ -8454,7 +8454,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getCanvasName',
+TP.uri.TIBETURL.Inst.defineMethod('getCanvasName',
 function() {
 
     /**
@@ -8470,7 +8470,7 @@ function() {
     parts = this.getURIParts();
 
     //  whole, jid, resource, canvas, path, pointer
-    name = parts.at(TP.core.TIBETURL.CANVAS_INDEX);
+    name = parts.at(TP.uri.TIBETURL.CANVAS_INDEX);
 
     if (TP.isEmpty(name)) {
         name = '';  //  leave empty, this URI doesn't specify a canvas.
@@ -8485,7 +8485,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getID',
+TP.uri.TIBETURL.Inst.defineMethod('getID',
 function() {
 
     /**
@@ -8551,14 +8551,14 @@ function() {
     } else {
         //  the path and pointer portions of our regex match are the
         //  location when there wasn't a valid resource URI value
-        loc = TP.ifInvalid(parts.at(TP.core.TIBETURL.PATH_INDEX), '') +
-                TP.ifInvalid(parts.at(TP.core.TIBETURL.FRAGMENT_INDEX), '');
+        loc = TP.ifInvalid(parts.at(TP.uri.TIBETURL.PATH_INDEX), '') +
+                TP.ifInvalid(parts.at(TP.uri.TIBETURL.FRAGMENT_INDEX), '');
     }
 
     //  build up the ID from the various parts
     id = TP.join('tibet:',
-        TP.ifInvalid(parts.at(TP.core.TIBETURL.JID_INDEX), ''), '/',
-        TP.ifInvalid(parts.at(TP.core.TIBETURL.RESOURCE_INDEX), ''), '/',
+        TP.ifInvalid(parts.at(TP.uri.TIBETURL.JID_INDEX), ''), '/',
+        TP.ifInvalid(parts.at(TP.uri.TIBETURL.RESOURCE_INDEX), ''), '/',
         canvas, '/',
         loc);
 
@@ -8570,7 +8570,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getLocation',
+TP.uri.TIBETURL.Inst.defineMethod('getLocation',
 function() {
 
     /**
@@ -8592,7 +8592,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getOriginalSource',
+TP.uri.TIBETURL.Inst.defineMethod('getOriginalSource',
 function() {
 
     /**
@@ -8602,25 +8602,25 @@ function() {
      * @returns {String} The receiver's original source.
      */
 
-    //  For TP.core.TIBETURLs, this is what the user originally initialized us
+    //  For TP.uri.TIBETURLs, this is what the user originally initialized us
     //  with. It can be found at the 5th position in URI parts.
     return this.getURIParts().at(4);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getConcreteURI',
+TP.uri.TIBETURL.Inst.defineMethod('getConcreteURI',
 function(forceRefresh) {
 
     /**
      * @method getConcreteURI
-     * @summary Return's the receiver's 'concrete' URI. For TP.core.TIBETURL,
+     * @summary Return's the receiver's 'concrete' URI. For TP.uri.TIBETURL,
      *     this will return the concrete URI that the TIBETURL is a holder for.
      *     This is typically the file: or http: URI for the content the receiver
      *     references.
      * @param {Boolean} forceRefresh True will force any cached value for
      *     resource URI to be ignored.
-     * @returns {TP.core.URI} A concrete URI if the receiver resolves to one.
+     * @returns {TP.uri.URI} A concrete URI if the receiver resolves to one.
      */
 
     var resource,
@@ -8665,7 +8665,7 @@ function(forceRefresh) {
         parts = path.match(TP.regex.TIBET_URL_SPLITTER);
     }
 
-    path = parts.at(TP.core.TIBETURL.URL_INDEX);
+    path = parts.at(TP.uri.TIBETURL.URL_INDEX);
     if (TP.isEmpty(path)) {
         return;
     }
@@ -8692,7 +8692,7 @@ function(forceRefresh) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getPath',
+TP.uri.TIBETURL.Inst.defineMethod('getPath',
 function() {
 
     /**
@@ -8708,7 +8708,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getPrimaryLocation',
+TP.uri.TIBETURL.Inst.defineMethod('getPrimaryLocation',
 function() {
 
     /**
@@ -8730,7 +8730,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('$getPrimaryResource',
+TP.uri.TIBETURL.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
     /**
@@ -8847,8 +8847,8 @@ function(aRequest, filterResult) {
     //  with parts in place we can ask for the canvas name
     canvas = this.getCanvasName();
 
-    path = parts.at(TP.core.TIBETURL.PATH_INDEX);
-    pointer = parts.at(TP.core.TIBETURL.FRAGMENT_INDEX);
+    path = parts.at(TP.uri.TIBETURL.PATH_INDEX);
+    pointer = parts.at(TP.uri.TIBETURL.FRAGMENT_INDEX);
 
     //  this key helps drive switch logic down below to keep things a little
     //  clearer from a logic/branching perspective
@@ -9090,7 +9090,7 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getPrimaryURI',
+TP.uri.TIBETURL.Inst.defineMethod('getPrimaryURI',
 function() {
 
     /**
@@ -9100,7 +9100,7 @@ function() {
      *     resource data for the receiver if the receiver has a fragment, or it
      *     may be an "embedded" URI in the case of schemes which support
      *     embedding URIs such as tibet:.
-     * @returns {TP.core.URI} The receiver's primary resource URI.
+     * @returns {TP.uri.URI} The receiver's primary resource URI.
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
@@ -9114,7 +9114,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getResource',
+TP.uri.TIBETURL.Inst.defineMethod('getResource',
 function(aRequest) {
 
     /**
@@ -9140,7 +9140,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('$getResourceResult',
+TP.uri.TIBETURL.Inst.defineMethod('$getResourceResult',
 function(request, result, async, filter) {
 
     /**
@@ -9182,7 +9182,7 @@ function(request, result, async, filter) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getURIParts',
+TP.uri.TIBETURL.Inst.defineMethod('getURIParts',
 function() {
 
     /**
@@ -9215,7 +9215,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getWatched',
+TP.uri.TIBETURL.Inst.defineMethod('getWatched',
 function() {
 
     /**
@@ -9230,7 +9230,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('$parseSchemeSpecificPart',
+TP.uri.TIBETURL.Inst.defineMethod('$parseSchemeSpecificPart',
 function(schemeSpecificString) {
 
     /**
@@ -9250,7 +9250,7 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpConnect',
+TP.uri.TIBETURL.Inst.defineMethod('httpConnect',
 function(aRequest) {
 
     /**
@@ -9270,7 +9270,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpDelete',
+TP.uri.TIBETURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
     /**
@@ -9290,7 +9290,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpGet',
+TP.uri.TIBETURL.Inst.defineMethod('httpGet',
 function(aRequest) {
 
     /**
@@ -9310,7 +9310,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpHead',
+TP.uri.TIBETURL.Inst.defineMethod('httpHead',
 function(aRequest) {
 
     /**
@@ -9330,7 +9330,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpOptions',
+TP.uri.TIBETURL.Inst.defineMethod('httpOptions',
 function(aRequest) {
 
     /**
@@ -9350,7 +9350,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpPatch',
+TP.uri.TIBETURL.Inst.defineMethod('httpPatch',
 function(aRequest) {
 
     /**
@@ -9370,7 +9370,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpPost',
+TP.uri.TIBETURL.Inst.defineMethod('httpPost',
 function(aRequest) {
 
     /**
@@ -9390,7 +9390,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpPut',
+TP.uri.TIBETURL.Inst.defineMethod('httpPut',
 function(aRequest) {
 
     /**
@@ -9410,7 +9410,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('httpTrace',
+TP.uri.TIBETURL.Inst.defineMethod('httpTrace',
 function(aRequest) {
 
     /**
@@ -9430,7 +9430,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('isDirty',
+TP.uri.TIBETURL.Inst.defineMethod('isDirty',
 function(aFlag, shouldSignal) {
 
     /**
@@ -9454,7 +9454,7 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('isLoaded',
+TP.uri.TIBETURL.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
     /**
@@ -9477,7 +9477,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('isPrimaryURI',
+TP.uri.TIBETURL.Inst.defineMethod('isPrimaryURI',
 function() {
 
     /**
@@ -9502,14 +9502,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('processRefreshedContent',
+TP.uri.TIBETURL.Inst.defineMethod('processRefreshedContent',
 function() {
 
     /**
      * @methoe processRefreshedContent
      * @summary Invoked when remote resource changes have been loaded to provide
      *     the receiver with the chance to post-process those changes.
-     * @returns {TP.core.URL} The receiver.
+     * @returns {TP.uri.URL} The receiver.
      */
 
     var concreteURI;
@@ -9525,7 +9525,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('register',
+TP.uri.TIBETURL.Inst.defineMethod('register',
 function() {
 
     /**
@@ -9533,14 +9533,14 @@ function() {
      * @summary Registers the instance under a common key.
      */
 
-    TP.core.URI.registerInstance(this, TP.uriInTIBETFormat(this.getLocation()));
+    TP.uri.URI.registerInstance(this, TP.uriInTIBETFormat(this.getLocation()));
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('load',
+TP.uri.TIBETURL.Inst.defineMethod('load',
 function(aRequest) {
 
     /**
@@ -9563,7 +9563,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('delete',
+TP.uri.TIBETURL.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
@@ -9586,7 +9586,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('save',
+TP.uri.TIBETURL.Inst.defineMethod('save',
 function(aRequest) {
 
     /**
@@ -9609,7 +9609,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('setWatched',
+TP.uri.TIBETURL.Inst.defineMethod('setWatched',
 function(shouldBeWatched) {
 
     /**
@@ -9618,7 +9618,7 @@ function(shouldBeWatched) {
      *     passes through to the concrete URI's 'watched' property.
      * @param {Boolean} shouldBeWatched Whether the URI should be watched or
      *     not.
-     * @returns {TP.core.TIBETURL} The receiver.
+     * @returns {TP.uri.TIBETURL} The receiver.
      */
 
     return this.getConcreteURI().set('watched', shouldBeWatched);
@@ -9626,7 +9626,7 @@ function(shouldBeWatched) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('$setPrimaryResource',
+TP.uri.TIBETURL.Inst.defineMethod('$setPrimaryResource',
 function(aResource, aRequest) {
 
     /**
@@ -9636,7 +9636,7 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
@@ -9649,12 +9649,12 @@ function(aResource, aRequest) {
     //  fragment, then grab the Window matching the canvas name and use that as
     //  the resource. Otherwise, we end up setting a #document node for a
     //  TIBETURL that should be pointing at a Window.
-    if (TP.notEmpty(parts.at(TP.core.TIBETURL.CANVAS_INDEX)) &&
-        TP.isEmpty(parts.at(TP.core.TIBETURL.URL_INDEX)) &&
-        TP.isEmpty(parts.at(TP.core.TIBETURL.FRAGMENT_INDEX))) {
+    if (TP.notEmpty(parts.at(TP.uri.TIBETURL.CANVAS_INDEX)) &&
+        TP.isEmpty(parts.at(TP.uri.TIBETURL.URL_INDEX)) &&
+        TP.isEmpty(parts.at(TP.uri.TIBETURL.FRAGMENT_INDEX))) {
 
         return this.callNextMethod(
-            TP.sys.getWindowById(parts.at(TP.core.TIBETURL.CANVAS_INDEX)),
+            TP.sys.getWindowById(parts.at(TP.uri.TIBETURL.CANVAS_INDEX)),
             aRequest);
     }
 
@@ -9663,7 +9663,7 @@ function(aResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('updateHeaders',
+TP.uri.TIBETURL.Inst.defineMethod('updateHeaders',
 function(headerData) {
 
     /**
@@ -9672,7 +9672,7 @@ function(headerData) {
      *     method by updating the headers for that URI.
      * @param {Object} headerData A string, hash, or request object containing
      *     header data.
-     * @returns {TP.core.TIBETURL} The receiver.
+     * @returns {TP.uri.TIBETURL} The receiver.
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
@@ -9687,7 +9687,7 @@ function(headerData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getRequestedResource',
+TP.uri.TIBETURL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
     /**
@@ -9718,7 +9718,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('watch',
+TP.uri.TIBETURL.Inst.defineMethod('watch',
 function(aRequest) {
 
     /**
@@ -9738,7 +9738,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('unwatch',
+TP.uri.TIBETURL.Inst.defineMethod('unwatch',
 function(aRequest) {
 
     /**
@@ -9756,12 +9756,12 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.URIHandler
+//  TP.uri.URIHandler
 //  ========================================================================
 
 /**
- * @type {TP.core.URIHandler}
- * @summary TP.core.URIHandler provides a top-level supertype for URI-specific
+ * @type {TP.uri.URIHandler}
+ * @summary TP.uri.URIHandler provides a top-level supertype for URI-specific
  *     handler classes.
  * @description When TIBET attempts to operate on a URI for load or save
  *     operations it first rewrites the URI and then directs the URI/operation
@@ -9775,20 +9775,20 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.URIHandler');
+TP.lang.Object.defineSubtype('uri.URIHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.Type.defineMethod('load',
+TP.uri.URIHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
      * @method load
      * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to load. Note that this call is
+     * @param {TP.uri.URI} targetURI The URI to load. Note that this call is
      *     typically made via the load call of a URI and so rewriting and
      *     routing have already occurred.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -9806,14 +9806,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.Type.defineMethod('delete',
+TP.uri.URIHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to delete. Note that this call is
+     * @param {TP.uri.URI} targetURI The URI to delete. Note that this call is
      *     typically made via the delete call of a URI and so rewriting and
      *     routing have already occurred.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
@@ -9842,7 +9842,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.Type.defineMethod('save',
+TP.uri.URIHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -9851,12 +9851,12 @@ function(targetURI, aRequest) {
      *     method for most URI content.
      * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
-     *     URI instances. See TP.core.URIRewriter and TP.core.URIMapper for more
+     *     URI instances. See TP.uri.URIRewriter and TP.uri.URIMapper for more
      *     information. Important keys include 'append', 'body', and 'backup',
      *     which define whether this save should append or write new content,
      *     what content is being saved, and whether a backup should be created
      *     if possible (for 'file' scheme uris).
-     * @param {String|TP.core.URI} targetURI A target URI.
+     * @param {String|TP.uri.URI} targetURI A target URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -9880,12 +9880,12 @@ function(targetURI, aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.URIRewriter
+//  TP.uri.URIRewriter
 //  ========================================================================
 
 /**
- * @type {TP.core.URIRewriter}
- * @summary TP.core.URIRewriter processes any uri.map.*.rewrite entries which
+ * @type {TP.uri.URIRewriter}
+ * @summary TP.uri.URIRewriter processes any uri.map.*.rewrite entries which
  *     match a particular URI based on that map entry's pattern value. This
  *     rewrite capability allows TIBET's URIs to work more like "keys" than
  *     "values". Rewrite ability is limited to simple URI "part substitution"
@@ -9895,13 +9895,13 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.URIRewriter');
+TP.lang.Object.defineSubtype('uri.URIRewriter');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIRewriter.Type.defineMethod('rewrite',
+TP.uri.URIRewriter.Type.defineMethod('rewrite',
 function(aURI, aRequest) {
 
     /**
@@ -9909,10 +9909,10 @@ function(aURI, aRequest) {
      * @summary Rewrites the receiver based on any uri.map configuration data
      *     which matches the URI. The rewrite is limited to replacing specific
      *     portions of the uri with fixed strings.
-     * @param {TP.core.URI|String} aURI The URI to rewrite.
+     * @param {TP.uri.URI|String} aURI The URI to rewrite.
      * @param {TP.sig.Request} [aRequest] An optional request whose values may
      *     inform the rewrite.
-     * @returns {TP.core.URI} The true URI for the resource.
+     * @returns {TP.uri.URI} The true URI for the resource.
      */
 
     var uri,
@@ -9924,7 +9924,7 @@ function(aURI, aRequest) {
         parts,
         newuri;
 
-    uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
+    uri = TP.isString(aURI) ? TP.uri.URI.construct(aURI) : aURI;
 
     //  Return cached rewrite if found, avoiding additional overhead.
     newuri = uri.$get('$uriRewrite');
@@ -9938,7 +9938,7 @@ function(aURI, aRequest) {
     }
 
     //  capture the best uri map configuration data for the URI.
-    map = TP.core.URI.$getURIMap(uri);
+    map = TP.uri.URI.$getURIMap(uri);
     if (TP.isEmpty(map)) {
         //  No mappings means we can avoid overhead in the future.
         return uri;
@@ -9980,38 +9980,38 @@ function(aURI, aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.URIMapper
+//  TP.uri.URIMapper
 //  ========================================================================
 
 /**
- * @type {TP.core.URIMapper}
- * @summary TP.core.URIMapper types manage mapping requests for URI operations
+ * @type {TP.uri.URIMapper}
+ * @summary TP.uri.URIMapper types manage mapping requests for URI operations
  *     to appropriate handlers. This is somewhat analogous to server-side
  *     front-controllers which examine a URI and determine which class should be
  *     invoked to perform the actual processing. The actual action processing in
- *     TIBET is done by TP.core.URIHandler subtypes.
+ *     TIBET is done by TP.uri.URIHandler subtypes.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.URIMapper');
+TP.lang.Object.defineSubtype('uri.URIMapper');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIMapper.Type.defineMethod('remap',
+TP.uri.URIMapper.Type.defineMethod('remap',
 function(aURI, aRequest) {
 
     /**
      * @method remap
-     * @summary Locates and returns the proper TP.core.URIHandler type for the
+     * @summary Locates and returns the proper TP.uri.URIHandler type for the
      *     URI and request pair provided. The handler type defaults to the type
      *     returned by the uri's getDefaultHandler method.
-     * @param {TP.core.URI} aURI The URI to map the request for.
+     * @param {TP.uri.URI} aURI The URI to map the request for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object that can handle the request for the supplied URI.
      */
 
@@ -10020,7 +10020,7 @@ function(aURI, aRequest) {
         handler,
         type;
 
-    uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
+    uri = TP.isString(aURI) ? TP.uri.URI.construct(aURI) : aURI;
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_remap'))) {
@@ -10034,7 +10034,7 @@ function(aURI, aRequest) {
     }
 
     //  capture the best uri map configuration data for the URI.
-    map = TP.core.URI.$getURIMap(uri);
+    map = TP.uri.URI.$getURIMap(uri);
     if (TP.notValid(map) || TP.isEmpty(map)) {
         type = uri.$getDefaultHandler(aRequest);
         uri.$set('$uriHandler', type, false);
@@ -10074,12 +10074,12 @@ function(aURI, aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.URIRouter
+//  TP.uri.URIRouter
 //  ========================================================================
 
 /**
- * @type {TP.core.URIRouter}
- * @summary TP.core.URIRouter types process changes to the client URL and
+ * @type {TP.uri.URIRouter}
+ * @summary TP.uri.URIRouter types process changes to the client URL and
  *     respond by triggering an appropriate handler either directly or
  *     indirectly via signaling. A URIRouter is typically triggered from the
  *     current application history object in response to URI changes.
@@ -10087,13 +10087,13 @@ function(aURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.URIRouter');
+TP.lang.Object.defineSubtype('uri.URIRouter');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineAttribute('BEST_ROUTE_SORT',
+TP.uri.URIRouter.Type.defineAttribute('BEST_ROUTE_SORT',
 function(a, b) {
     var aMatch,
         bMatch;
@@ -10132,19 +10132,19 @@ function(a, b) {
  * to use for translating matched URLs and any token names for parameters.
  * @type {Array[RegExp, Function, String[]]}
  */
-TP.core.URIRouter.Type.defineAttribute('processors');
+TP.uri.URIRouter.Type.defineAttribute('processors');
 
 /**
  * The route name to use for the "Root" or "/" route. Default is 'Home'.
  * @type {String}
  */
-TP.core.URIRouter.Type.defineAttribute('root', 'Home');
+TP.uri.URIRouter.Type.defineAttribute('root', 'Home');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('initialize',
+TP.uri.URIRouter.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -10169,7 +10169,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('compilePattern',
+TP.uri.URIRouter.Type.defineMethod('compilePattern',
 function(pattern) {
 
     /**
@@ -10256,7 +10256,7 @@ function(pattern) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('$configureRoutes',
+TP.uri.URIRouter.Type.defineMethod('$configureRoutes',
 function() {
 
     /**
@@ -10264,7 +10264,7 @@ function() {
      * @summary Configures the routes from the tokens and paths that are in the
      *     cfg() data. If the route cfg() data is altered, this method should be
      *     called to update internal structures.
-     * @returns {TP.core.URIRouter} The receiver.
+     * @returns {TP.uri.URIRouter} The receiver.
      */
 
     var cfg,
@@ -10304,7 +10304,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('definePath',
+TP.uri.URIRouter.Type.defineMethod('definePath',
 function(pattern, signalOrProcessor, processor) {
 
     /**
@@ -10396,7 +10396,7 @@ function(pattern, signalOrProcessor, processor) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('defineToken',
+TP.uri.URIRouter.Type.defineMethod('defineToken',
 function(token, pattern) {
 
     /**
@@ -10410,7 +10410,7 @@ function(token, pattern) {
      * @exception {TP.sig.InvalidToken} When the supplied token isn't a String.
      * @exception {TP.sig.InvalidPattern} When the supplied pattern isn't a
      *     RegExp.
-     * @returns {TP.core.URIRouter} The receiver.
+     * @returns {TP.uri.URIRouter} The receiver.
      */
 
     var regex;
@@ -10434,7 +10434,7 @@ function(token, pattern) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('getLastRoute',
+TP.uri.URIRouter.Type.defineMethod('getLastRoute',
 function() {
 
     /**
@@ -10460,7 +10460,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('getRoute',
+TP.uri.URIRouter.Type.defineMethod('getRoute',
 function(aURI) {
 
     /**
@@ -10470,7 +10470,7 @@ function(aURI) {
      *     root property even though that value will not be visible in the URI
      *     fragment path. On any other URI if the fragment path is empty the
      *     route is empty.
-     * @param {TP.core.URI|String} [aURI=top.location] The URI to test. Defaults
+     * @param {TP.uri.URI|String} [aURI=top.location] The URI to test. Defaults
      *     to the value of TP.uriNormalize(top.location.toString()).
      * @returns {?String} The route name or empty string.
      */
@@ -10521,7 +10521,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('getRouteControllerType',
+TP.uri.URIRouter.Type.defineMethod('getRouteControllerType',
 function() {
 
     /**
@@ -10621,7 +10621,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('processMatch',
+TP.uri.URIRouter.Type.defineMethod('processMatch',
 function(signal, match, names) {
 
     /**
@@ -10699,7 +10699,7 @@ function(signal, match, names) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('processRoute',
+TP.uri.URIRouter.Type.defineMethod('processRoute',
 function(path) {
 
     /**
@@ -10747,7 +10747,7 @@ function(path) {
 
     //  TODO:   make the sort here configurable. Maybe by weight but maybe by
     //          simple definition order, etc.
-    matches.sort(TP.core.URIRouter.BEST_ROUTE_SORT);
+    matches.sort(TP.uri.URIRouter.BEST_ROUTE_SORT);
 
     best = matches.first();
     if (TP.isEmpty(best)) {
@@ -10772,7 +10772,7 @@ function(path) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('route',
+TP.uri.URIRouter.Type.defineMethod('route',
 function(aURIOrPushState, aDirection) {
 
     /**
@@ -11235,7 +11235,7 @@ function(aURIOrPushState, aDirection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('setRoute',
+TP.uri.URIRouter.Type.defineMethod('setRoute',
 function(aRoute) {
 
     /**
@@ -11307,23 +11307,23 @@ function(aRoute) {
 });
 
 //  ========================================================================
-//  TP.core.FileURLHandler
+//  TP.uri.FileURLHandler
 //  ========================================================================
 
-TP.core.URIHandler.defineSubtype('FileURLHandler');
+TP.uri.URIHandler.defineSubtype('FileURLHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.FileURLHandler.Type.defineMethod('load',
+TP.uri.FileURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
      * @method load
      * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11449,14 +11449,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.FileURLHandler.Type.defineMethod('delete',
+TP.uri.FileURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11553,7 +11553,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.FileURLHandler.Type.defineMethod('save',
+TP.uri.FileURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -11562,12 +11562,12 @@ function(targetURI, aRequest) {
      *     method for most URI content.
      * @description By creating alternative URI handlers and ensuring that URI
      *     routing can find them you can alter how data is managed for different
-     *     URI instances. See TP.core.URIRewriter and TP.core.URIMapper for more
+     *     URI instances. See TP.uri.URIRewriter and TP.uri.URIMapper for more
      *     information. Important keys include 'append', 'body', and 'backup',
      *     which define whether this save should append or write new content,
      *     what content is being saved, and whether a backup should be created
      *     if possible (for 'file' scheme uris).
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11692,31 +11692,31 @@ function(targetURI, aRequest) {
 });
 
 //  =======================================================================
-//  TP.core.HTTPURLHandler
+//  TP.uri.HTTPURLHandler
 //  ========================================================================
 
 /**
- * @type {TP.core.HTTPURLHandler}
+ * @type {TP.uri.HTTPURLHandler}
  * @summary Supports operations specific to loading/saving URI data for HTTP
  *     URIs.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('HTTPURLHandler');
+TP.uri.URIHandler.defineSubtype('HTTPURLHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.Type.defineMethod('load',
+TP.uri.HTTPURLHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
      * @method load
      * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11762,7 +11762,7 @@ function(targetURI, aRequest) {
 
     //  this could be either sync or async, but the TP.sig.HTTPLoadRequest's
     //  handle* methods should be processing correctly in either case.
-    TP.core.HTTPService.handle(loadRequest);
+    TP.uri.HTTPService.handle(loadRequest);
 
     //  Make sure that the 2 requests match on sync/async
     request.updateRequestMode(loadRequest);
@@ -11772,14 +11772,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.Type.defineMethod('delete',
+TP.uri.HTTPURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
      * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11850,7 +11850,7 @@ function(targetURI, aRequest) {
 
     //  this could be either sync or async, but the TP.sig.HTTPLoadRequest's
     //  handle* methods should be processing correctly in either case.
-    TP.core.HTTPService.handle(deleteRequest);
+    TP.uri.HTTPService.handle(deleteRequest);
 
     //  subrequests can be rewritten so we need to be in sync on async
     request.atPut('async', deleteRequest.at('async'));
@@ -11860,7 +11860,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.Type.defineMethod('save',
+TP.uri.HTTPURLHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -11874,7 +11874,7 @@ function(targetURI, aRequest) {
      *     content is being created. The 'body' should contain the new/updated
      *     content, but this is normally configured by the URI's save() method
      *     itself.
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11970,7 +11970,7 @@ function(targetURI, aRequest) {
 
     //  this could be either sync or async, but the TP.sig.HTTPSaveRequest's
     //  handle* methods should be processing correctly in either case.
-    TP.core.HTTPService.handle(saveRequest);
+    TP.uri.HTTPService.handle(saveRequest);
 
     //  subrequests can be rewritten so we need to be in sync on async
     request.atPut('async', saveRequest.at('async'));
@@ -11979,11 +11979,11 @@ function(targetURI, aRequest) {
 });
 
 //  =======================================================================
-//  TP.core.RemoteURLWatchHandler
+//  TP.uri.RemoteURLWatchHandler
 //  ========================================================================
 
 /**
- * @type {TP.core.RemoteURLWatchHandler}
+ * @type {TP.uri.RemoteURLWatchHandler}
  * @summary Mixin supporting response processing for remote resources that
  *     can notify of server side changes. This type is normally used as a trait
  *     to the main handler type. TDS and Couch URL handlers are the primary
@@ -11992,11 +11992,11 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('RemoteURLWatchHandler');
+TP.uri.URIHandler.defineSubtype('RemoteURLWatchHandler');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.RemoteURLWatchHandler.isAbstract(true);
+TP.uri.RemoteURLWatchHandler.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  TypeLocal Attributes
@@ -12005,7 +12005,7 @@ TP.core.RemoteURLWatchHandler.isAbstract(true);
 //  Helper function for escaping regex metacharacters. NOTE that we need to
 //  take "ignore format" things like path/* and make it path/.* or the regex
 //  will fail. Also note we special case ~ to allow virtual path matches.
-TP.core.RemoteURLWatchHandler.defineConstant('INCLUDE_EXCLUDE_ESCAPER',
+TP.uri.RemoteURLWatchHandler.defineConstant('INCLUDE_EXCLUDE_ESCAPER',
 function(str) {
     return str.replace(
         /\*/g, '.*').replace(
@@ -12016,12 +12016,12 @@ function(str) {
 
 //  The list of methods any object which registered with this type must
 //  implement.
-TP.core.RemoteURLWatchHandler.defineConstant('REMOTE_WATCH_API',
+TP.uri.RemoteURLWatchHandler.defineConstant('REMOTE_WATCH_API',
     TP.ac('activateRemoteWatch', 'deactivateRemoteWatch'));
 
 //  A list of registered watchers, objects that will be activated/deactivated at
 //  application startup and shutdown to manage remote change handling.
-TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
+TP.uri.RemoteURLWatchHandler.defineAttribute('watchers');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -12029,26 +12029,26 @@ TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
 
 //  Regular expressions built based on include/exclude configuration data for
 //  the remote url watcher types which mix this in.
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeRE');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeRE');
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('includeRE');
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('excludeRE');
 
 //  Configuration names for the include/exclude configuration settings for the
 //  remote url watcher types which mix this in.
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName');
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName');
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName');
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName');
+TP.uri.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName');
 
 //  ------------------------------------------------------------------------
 //  TypeLocal Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.defineMethod('activateWatchers',
+TP.uri.RemoteURLWatchHandler.defineMethod('activateWatchers',
 function() {
 
     /**
      * @method activateWatchers
      * @summary Activates any registered remote URL watchers.
-     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     * @returns {TP.uri.RemoteURLWatchHandler} The receiver.
      */
 
     var watchers;
@@ -12063,7 +12063,7 @@ function() {
     TP.sys.setcfg('uri.watch_remote_changes', true);
 
     //  These get registered by the types which want activate/deactivate calls.
-    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+    watchers = TP.uri.RemoteURLWatchHandler.get('watchers');
     if (TP.isEmpty(watchers)) {
         return this;
     }
@@ -12079,20 +12079,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.defineMethod('deactivateWatchers',
+TP.uri.RemoteURLWatchHandler.defineMethod('deactivateWatchers',
 function(aFilterFunction) {
 
     /**
      * @method deactivateWatchers
      * @summary Deactivates any registered remote URL watchers.
-     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     * @returns {TP.uri.RemoteURLWatchHandler} The receiver.
      */
 
     var watchers;
 
     TP.sys.setcfg('uri.watch_remote_changes', false);
 
-    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+    watchers = TP.uri.RemoteURLWatchHandler.get('watchers');
     if (TP.isEmpty(watchers)) {
         return this;
     }
@@ -12108,7 +12108,7 @@ function(aFilterFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.defineMethod('registerWatcher',
+TP.uri.RemoteURLWatchHandler.defineMethod('registerWatcher',
 function(aWatcher) {
 
     /**
@@ -12124,7 +12124,7 @@ function(aWatcher) {
 
     if (!TP.canInvokeInterface(
         aWatcher,
-        TP.core.RemoteURLWatchHandler.REMOTE_WATCH_API)) {
+        TP.uri.RemoteURLWatchHandler.REMOTE_WATCH_API)) {
         return this.raise('InvalidURLWatcher', aWatcher);
     }
 
@@ -12145,7 +12145,7 @@ function(aWatcher) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.defineHandler('AppShutdown',
+TP.uri.RemoteURLWatchHandler.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**
@@ -12154,7 +12154,7 @@ function(aSignal) {
      *     deactivateWatchers to get them to close any open connections.
      * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
      *     application is to be shut down.
-     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     * @returns {TP.uri.RemoteURLWatchHandler} The receiver.
      */
 
     this.deactivateWatchers();
@@ -12169,7 +12169,7 @@ function(aSignal) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('initialize',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -12184,7 +12184,7 @@ function() {
 
     //  Activate if we're already set to watch based on startup config data.
     if (TP.sys.cfg('uri.watch_remote_changes')) {
-        TP.core.RemoteURLWatchHandler.activateWatchers();
+        TP.uri.RemoteURLWatchHandler.activateWatchers();
     }
 
     return;
@@ -12193,7 +12193,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('activateRemoteWatch',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('activateRemoteWatch',
 function() {
 
     /**
@@ -12223,7 +12223,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('deactivateRemoteWatch',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('deactivateRemoteWatch',
 function() {
 
     /**
@@ -12253,7 +12253,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
 function() {
 
     /**
@@ -12271,7 +12271,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceType',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceType',
 function() {
 
     /**
@@ -12288,14 +12288,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceURI',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceURI',
 function() {
 
     /**
      * @method getWatcherSourceURI
      * @summary Returns the URI to the resource that acts as a watcher to watch
      *     for changes to the resource of the supplied URI.
-     * @returns {TP.core.URI} A URI pointing to the resource that will notify
+     * @returns {TP.uri.URI} A URI pointing to the resource that will notify
      *     TIBET when the supplied URI's resource changes.
      */
 
@@ -12313,14 +12313,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('isWatchableURI',
+TP.uri.RemoteURLWatchHandler.Type.defineMethod('isWatchableURI',
 function(targetURI) {
 
     /**
      * @method isWatchableURI
      * @summary Tests a URI against include/exclude filters to determine if
      *     changes to the URI should be considered for processing.
-     * @param {String|TP.core.URI} targetURI The URI to test.
+     * @param {String|TP.uri.URI} targetURI The URI to test.
      * @returns {Boolean} true if the URI passes include/exclude filters.
      */
 
@@ -12341,7 +12341,7 @@ function(targetURI) {
         targetLoc = targetURI.getLocation();
         targetVirtual = TP.uriInTIBETFormat(targetLoc);
 
-        escaper = TP.core.RemoteURLWatchHandler.INCLUDE_EXCLUDE_ESCAPER;
+        escaper = TP.uri.RemoteURLWatchHandler.INCLUDE_EXCLUDE_ESCAPER;
 
         includes = TP.sys.cfg(this.get('includeConfigName'));
         if (TP.notEmpty(includes)) {

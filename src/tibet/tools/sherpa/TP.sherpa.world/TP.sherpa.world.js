@@ -214,7 +214,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
      * @param {?Number} beforeIndex The index of the existing screen that the
      *     new sherpa:screen will be inserted before. If null, the new screen
      *     will be appended to the end of the list of screens.
-     * @param {?TP.core.URI} loadURL The URL to load into the screen iframe.
+     * @param {?TP.uri.URI} loadURL The URL to load into the screen iframe.
      * @param {?Function} creationCompleteFunc The Function to call when the
      *     content of the iframe (if supplied by the loadURL) is finished
      *     loading.

@@ -117,8 +117,8 @@ function(enterSelection) {
             if (TP.isURIString(d)) {
                 uri = TP.uc(d);
 
-                if (TP.isKindOf(uri, TP.core.TIBETURL)) {
-                    result = uri.getURIParts().at(TP.core.TIBETURL.URL_INDEX);
+                if (TP.isKindOf(uri, TP.uri.TIBETURL)) {
+                    result = uri.getURIParts().at(TP.uri.TIBETURL.URL_INDEX);
                 } else {
                     result = TP.uriInTIBETFormat(d);
                 }

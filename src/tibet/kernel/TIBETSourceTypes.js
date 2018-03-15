@@ -168,7 +168,7 @@ function(aURI) {
     /**
      * @method setURI
      * @summary Defines the endpoint URI for the receiver.
-     * @param {TP.core.URI} aURI The URI representing the signal endpoint.
+     * @param {TP.uri.URI} aURI The URI representing the signal endpoint.
      * @exception TP.sig.InvalidURI
      * @returns {TP.sig.SignalSource} A new instance.
      */
@@ -677,7 +677,7 @@ function(aURI, sourceParams) {
     /**
      * @method init
      * @summary Initialize a new signal instance.
-     * @param {TP.core.URI} aURI The endpoint URI representing the remote
+     * @param {TP.uri.URI} aURI The endpoint URI representing the remote
      *     messaging source.
      * @param {TP.core.Hash} [sourceParams] Optional parameters used by the
      *     receiver to configure the message source.
@@ -1186,7 +1186,7 @@ function(aURI, protocols) {
     /**
      * @method init
      * @summary Initialize a new signal instance.
-     * @param {TP.core.URI} aURI The endpoint URI representing the WebSocket
+     * @param {TP.uri.URI} aURI The endpoint URI representing the WebSocket
      *     messaging source.
      * @param {Array} protocols An Array of custom WebSocket protocols that the
      *     connection should be configured for.
@@ -3587,7 +3587,7 @@ function(aCodeURL) {
      * @method import
      * @summary Imports the JavaScript source code referred to by the supplied
      *     URL into the worker thread that this object represents.
-     * @param {TP.core.URL|String} aCodeURL The URL referring to the resource
+     * @param {TP.uri.URL|String} aCodeURL The URL referring to the resource
      *     containing the source code to import inside of the worker.
      * @returns Promise A promise that will resolve when the importation is
      *     complete.

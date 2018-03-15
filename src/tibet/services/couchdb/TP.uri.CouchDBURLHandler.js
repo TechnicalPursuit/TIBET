@@ -19,9 +19,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.defineSubtype('uri.CouchDBURLHandler');
+TP.uri.HTTPURLHandler.defineSubtype('uri.CouchDBURLHandler');
 
-TP.uri.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
+TP.uri.CouchDBURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -135,7 +135,7 @@ function(aURI, username, password) {
      * @method authenticate
      * @summary Authenticate the supplied URI. This will actually authenticate
      *     the root of the supplied URI.
-     * @param {TP.core.URI} aURI The URI to authenticate.
+     * @param {TP.uri.URI} aURI The URI to authenticate.
      * @param {String} [username] The username to use to authenticate. If this
      *     is not supplied, the user will be prompted to supply it.
      * @param {String} [password] The password to use to authenticate. If this
@@ -306,7 +306,7 @@ function() {
      * @method getWatcherSourceURIs
      * @summary Returns an array of URIs which are needed to observe CouchDBs
      *     various change feeds.
-     * @returns {TP.core.URI[]} An Array of URIs pointing to 'change feed'
+     * @returns {TP.uri.URI[]} An Array of URIs pointing to 'change feed'
      *     resources that will notify TIBET when the supplied URI's resource
      *     changes.
      */
@@ -692,7 +692,7 @@ function(aSignal) {
 
                 //  If there's a registered URL for that document, then we
                 //  should fetch it from the server and signal a change
-                if (TP.core.URI.hasInstance(docLoc)) {
+                if (TP.uri.URI.hasInstance(docLoc)) {
                     url = TP.uc(docLoc);
                     url.getResource(
                             TP.hc('refresh', true, 'signalChange', true));
@@ -709,7 +709,7 @@ function(aSignal) {
             //  NB: This will only actually process the resource change if the
             //  'uri.process_remote_changes' flag is true. Otherwise, it just
             //  tracks changes.
-            TP.core.URI.processRemoteResourceChange(url);
+            TP.uri.URI.processRemoteResourceChange(url);
         }
 
         //  Update any view URLs that we know about
@@ -746,7 +746,7 @@ function(targetURI, roleName) {
     /**
      * @method isAuthenticated
      * @summary Returns whether or not the URI is authenticated.
-     * @param {TP.core.URI} targetURI The URI to test.
+     * @param {TP.uri.URI} targetURI The URI to test.
      * @param {String} [roleName] An optional role name to provide a further
      *     check.
      * @returns {Boolean} true if the URI is authenticated.
@@ -782,7 +782,7 @@ function(targetURI) {
      * @method isWatchableURI
      * @summary Tests a URI against include/exclude filters to determine if
      *     changes to the URI should be considered for processing.
-     * @param {String|TP.core.URI} targetURI The URI to test.
+     * @param {String|TP.uri.URI} targetURI The URI to test.
      * @returns {Boolean} true if the URI passes include/exclude filters.
      */
 
@@ -801,7 +801,7 @@ function(targetURI, aRequest) {
      * @method load
      * @summary Loads URI data content, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -830,7 +830,7 @@ function(targetURI, aRequest) {
         authRequest = this.authenticate(targetURI);
         authRequest.defineHandler('RequestSucceeded',
             function(aResponse) {
-                TP.core.HTTPService.handle(newReq);
+                TP.uri.HTTPService.handle(newReq);
             });
 
         authRequest.defineHandler('RequestFailed',
@@ -879,7 +879,7 @@ function(targetURI, aRequest) {
      * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -908,7 +908,7 @@ function(targetURI, aRequest) {
         authRequest = this.authenticate(targetURI);
         authRequest.defineHandler('RequestSucceeded',
             function(aResponse) {
-                TP.core.HTTPService.handle(newReq);
+                TP.uri.HTTPService.handle(newReq);
             });
 
         authRequest.defineHandler('RequestFailed',
@@ -964,7 +964,7 @@ function(targetURI, aRequest) {
      *     content is being created. The 'body' should contain the new/updated
      *     content, but this is normally configured by the URI's save() method
      *     itself.
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -997,7 +997,7 @@ function(targetURI, aRequest) {
         authRequest = this.authenticate(targetURI);
         authRequest.defineHandler('RequestSucceeded',
             function(aResponse) {
-                TP.core.HTTPService.handle(newReq);
+                TP.uri.HTTPService.handle(newReq);
             });
 
         authRequest.defineHandler('RequestFailed',
@@ -1075,7 +1075,7 @@ function(targetURI, aRequest) {
 //  do this after the type has been fully configured to avoid api check error.
 //  This will cause the activateRemoteWatch method to be invoked on the
 //  TP.uri.CouchDBURLHandler to be invoked.
-TP.core.RemoteURLWatchHandler.registerWatcher(TP.uri.CouchDBURLHandler);
+TP.uri.RemoteURLWatchHandler.registerWatcher(TP.uri.CouchDBURLHandler);
 
 //  =======================================================================
 //  TP.sig.CouchDBChange

@@ -77,7 +77,7 @@ TIBET XMPP targets.
 
     <script src="service/TP.sig.XMPPResponse.js"/>
     <script src="service/TP.sig.XMPPRequest.js"/>
-    <script src="service/TP.core.XMPPService.js"/>
+    <script src="service/TP.uri.XMPPService.js"/>
 
 </config>
 

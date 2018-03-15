@@ -226,13 +226,13 @@
 </config>
 
 <config id="routing">
-    <script src="~lib_test/src/tibet/routing/TP.core.URIRouter_Tests.js" />
+    <script src="~lib_test/src/tibet/routing/TP.uri.URIRouter_Tests.js" />
 </config>
 
 <config id="uri">
     <script src="~lib_test/src/tibet/uri/TP.URI_Tests.js" />
     <script src="~lib_test/src/tibet/uri/TP.URI_Map_Tests.js" />
-    <script src="~lib_test/src/tibet/uri/TP.core.URI_Tests.js" />
+    <script src="~lib_test/src/tibet/uri/TP.uri.URI_Tests.js" />
 </config>
 
 <config id="xctrls">

@@ -12,7 +12,7 @@
  * @type {TP.core.SyncAsync}
  * @summary An abstract type designed to be mixed in to other types which
  *     require support for synchronous and asynchronous mode control. Examples
- *     are TP.core.Resource and TP.core.URI and their subtypes.
+ *     are TP.core.Resource and TP.uri.URI and their subtypes.
  */
 
 //  ------------------------------------------------------------------------

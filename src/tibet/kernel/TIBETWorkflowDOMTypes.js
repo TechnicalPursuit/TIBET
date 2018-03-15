@@ -226,7 +226,7 @@ function(aURI) {
 
     //  If we got a URI or path of some kind it's time to validate it and create
     //  the URI instance needed to perform the data load.
-    if (!TP.isKindOf(url, TP.core.URI)) {
+    if (!TP.isKindOf(url, TP.uri.URI)) {
         fname = TP.uriExpandPath(url);
         if (!TP.isURI(url = TP.uc(fname))) {
             return this.raise('InvalidURI', aURI);
@@ -766,7 +766,7 @@ function(aURI) {
 
     //  If we got a URI or path of some kind it's time to validate it and create
     //  the URI instance needed to perform the data load.
-    if (!TP.isKindOf(url, TP.core.URI)) {
+    if (!TP.isKindOf(url, TP.uri.URI)) {
         fname = TP.uriExpandPath(url);
         if (!TP.isURI(url = TP.uc(fname))) {
             return this.raise('InvalidURI', aURI);
@@ -1026,7 +1026,7 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.TidyPhase',            //  move non-DTD content out of html:head
                                     //  etc.
 
-    'TP.core.ResolvePhase',         //  resolve xml:base TP.core.URI references,
+    'TP.core.ResolvePhase',         //  resolve xml:base TP.uri.URI references,
                                     //  decode etc.
 
     'TP.core.LocalizePhase',        //  adjust for browser, lang, etc.

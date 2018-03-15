@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.SOAPService}
+ * @type {TP.uri.SOAPService}
  * @summary A TP.core.Service specific to making SOAP requests. This particular
  *     service is only available to browsers which support an XMLHttpRequest API
  *     such as IE or Mozilla.
@@ -52,23 +52,23 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.defineSubtype('SOAPService');
+TP.uri.HTTPService.defineSubtype('SOAPService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  we'll respond to any TP.sig.SOAPRequest signals
-TP.core.SOAPService.Type.defineAttribute(
+TP.uri.SOAPService.Type.defineAttribute(
     'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.SOAPRequest')));
 
-TP.core.SOAPService.register();
+TP.uri.SOAPService.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SOAPService.Inst.defineMethod('rewriteRequestMIMEType',
+TP.uri.SOAPService.Inst.defineMethod('rewriteRequestMIMEType',
 function(aRequest) {
 
     /**
@@ -84,7 +84,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SOAPService.Inst.defineMethod('rewriteRequestBody',
+TP.uri.SOAPService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
@@ -103,7 +103,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SOAPService.Inst.defineMethod('rewriteRequestHeaders',
+TP.uri.SOAPService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
@@ -132,7 +132,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SOAPService.Inst.defineMethod('rewriteRequestMethod',
+TP.uri.SOAPService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**

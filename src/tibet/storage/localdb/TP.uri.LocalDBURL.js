@@ -9,8 +9,8 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.LocalDBURL}
- * @summary A subtype of TP.core.URL specific to the 'local:' scheme.
+ * @type {TP.uri.LocalDBURL}
+ * @summary A subtype of TP.uri.URL specific to the 'local:' scheme.
  * @description
 
     'local://' URLs behave in a very RESTy way and are modeled on those used in
@@ -126,9 +126,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('TP.core.LocalDBURL');
+TP.uri.URL.defineSubtype('TP.uri.LocalDBURL');
 
-TP.core.LocalDBURL.addTraits(TP.core.CommURL);
+TP.uri.LocalDBURL.addTraits(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -136,69 +136,69 @@ TP.core.LocalDBURL.addTraits(TP.core.CommURL);
 
 //  This RegExp splits up the URL into the following components:
 //  local://dbName/(?id)
-TP.core.LocalDBURL.Type.defineConstant('LOCALDB_REGEX',
+TP.uri.LocalDBURL.Type.defineConstant('LOCALDB_REGEX',
     TP.rc('^localdb://([^/]+)(/([^?]+)(\\??(\\S*))?)?'));
 
-TP.core.LocalDBURL.Type.defineConstant('SCHEME', 'localdb');
+TP.uri.LocalDBURL.Type.defineConstant('SCHEME', 'localdb');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Type.defineAttribute('supportedModes',
+TP.uri.LocalDBURL.Type.defineAttribute('supportedModes',
                                     TP.core.SyncAsync.SYNCHRONOUS);
-TP.core.LocalDBURL.Type.defineAttribute('mode',
+TP.uri.LocalDBURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.SYNCHRONOUS);
 
-TP.core.LocalDBURL.registerForScheme('localdb');
+TP.uri.LocalDBURL.registerForScheme('localdb');
 
-TP.core.LocalDBURL.Inst.defineAttribute('query');
-TP.core.LocalDBURL.Inst.defineAttribute('queryDict');
+TP.uri.LocalDBURL.Inst.defineAttribute('query');
+TP.uri.LocalDBURL.Inst.defineAttribute('queryDict');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
-TP.core.LocalDBURL.Inst.defineAttribute('dbName');
-TP.core.LocalDBURL.Inst.defineAttribute('resourceID');
+//  TP.uri.URI / TP.uri.URL
+TP.uri.LocalDBURL.Inst.defineAttribute('dbName');
+TP.uri.LocalDBURL.Inst.defineAttribute('resourceID');
 
-TP.core.LocalDBURL.Inst.defineAttribute('$lastAdded');
+TP.uri.LocalDBURL.Inst.defineAttribute('$lastAdded');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Type.defineMethod('$getDefaultHandler',
+TP.uri.LocalDBURL.Type.defineMethod('$getDefaultHandler',
 function(aURI, aRequest) {
 
     /**
      * @method $getDefaultHandler
      * @summary Return the default URI handler type for this URI type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object.
      */
 
-    return TP.core.LocalDBURLHandler;
+    return TP.uri.LocalDBURLHandler;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Inst.defineMethod('init',
+TP.uri.LocalDBURL.Inst.defineMethod('init',
 function(aURIString) {
 
     /**
      * @method init
      * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.core.LocalDBURL} A new instance.
+     * @returns {TP.uri.LocalDBURL} A new instance.
      */
 
     var results,
@@ -246,7 +246,7 @@ function(aURIString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Inst.defineMethod('addResource',
+TP.uri.LocalDBURL.Inst.defineMethod('addResource',
 function(existingResource, newResource, aRequest) {
 
     /**
@@ -259,7 +259,7 @@ function(existingResource, newResource, aRequest) {
      *     the receiver.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
+     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
      */
@@ -271,7 +271,7 @@ function(existingResource, newResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBURL.Inst.defineMethod('getContent',
+TP.uri.LocalDBURL.Inst.defineMethod('getContent',
 function(aRequest) {
 
     /**

@@ -1722,7 +1722,7 @@ function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
     //  default the JSONP 'callback' parameter name to 'callback'
     paramName = TP.ifInvalid(aCallbackParamName, 'callback');
 
-    //  get the string version of the URI, which will process TP.core.URIs as
+    //  get the string version of the URI, which will process TP.uri.URIs as
     //  needed so we're consistently working with a string URI
     url = aURI.asString();
 

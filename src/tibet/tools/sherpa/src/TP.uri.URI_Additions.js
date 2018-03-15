@@ -9,10 +9,10 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.URI Additions
+//  TP.uri.URI Additions
 //  ========================================================================
 
-TP.core.URI.addTraits(TP.sherpa.ToolAPI);
+TP.uri.URI.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -22,7 +22,7 @@ TP.core.URI.addTraits(TP.sherpa.ToolAPI);
 //  Inspector API
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('canReuseContentForInspector',
+TP.uri.URI.Inst.defineMethod('canReuseContentForInspector',
 function(options) {
 
     /**
@@ -69,7 +69,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getConfigForInspector',
+TP.uri.URI.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
     /**
@@ -121,7 +121,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getContentForInspector',
+TP.uri.URI.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
@@ -191,7 +191,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getDataForInspector',
+TP.uri.URI.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -220,7 +220,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getEntryAt',
+TP.uri.URI.Inst.defineMethod('getEntryAt',
 function(aSourceName) {
 
     /**
@@ -256,7 +256,7 @@ function(aSourceName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getEntryLabel',
+TP.uri.URI.Inst.defineMethod('getEntryLabel',
 function(anItem) {
 
     /**
@@ -272,7 +272,7 @@ function(anItem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getPathPartsForInspector',
+TP.uri.URI.Inst.defineMethod('getPathPartsForInspector',
 function(options) {
 
     /**
@@ -296,7 +296,7 @@ function(options) {
 //  Toolbar API
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getContentForToolbar',
+TP.uri.URI.Inst.defineMethod('getContentForToolbar',
 function(options) {
 
     /**

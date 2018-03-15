@@ -58,7 +58,7 @@ function(nodeSpec, varargs) {
      *
      *     - If nodeSpec is a native node, it is kept as the source node.
      *
-     *     - If nodeSpec is a TP.core.URI or a String that can be determined to
+     *     - If nodeSpec is a TP.uri.URI or a String that can be determined to
      *     be a URI, the resource TP.core.Node of that URI is fetched, cloned
      *     and returned. No further stages are processed.
      *
@@ -495,15 +495,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('fromTP_core_URI',
+TP.core.Node.Type.defineMethod('fromTP_uri.URI',
 function(aURI, shouldReport) {
 
     /**
-     * @method fromTP.core.URI
+     * @method fromTP.uri.URI
      * @summary Returns a new instance of the receiver, constructed around the
      *     DOM content of the URI provided. Note that the URI must point to XML
      *     data for this call to succeed.
-     * @param {TP.core.URI} aURI A URI referencing XML content.
+     * @param {TP.uri.URI} aURI A URI referencing XML content.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
@@ -1200,9 +1200,9 @@ function(aRequest) {
 
     id = TP.gid(node);
 
-    if (TP.isURI(uri = TP.core.URI.getInstanceById(id))) {
+    if (TP.isURI(uri = TP.uri.URI.getInstanceById(id))) {
         uri.clearCaches();
-        TP.core.URI.removeInstance(uri);
+        TP.uri.URI.removeInstance(uri);
     }
 
     //  Setting these to null is better for many VMs than using 'delete'.
@@ -1233,7 +1233,7 @@ TP.core.Node.Inst.defineAttribute('recyclable', true);
 //  'UNPROCESSED' for new nodes
 TP.core.Node.Inst.defineAttribute('phase', 'UNPROCESSED');
 
-//  when loaded via a TP.core.URI this will hold the URI's 'uri' string as a
+//  when loaded via a TP.uri.URI this will hold the URI's 'uri' string as a
 //  backlink the node can use to get to the original URI instance.
 TP.core.Node.Inst.defineAttribute('uri');
 
@@ -1248,7 +1248,7 @@ function(aNode, aURI) {
      * @method init
      * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
-     * @param {TP.core.URI|String} aURI An optional URI from which the Node
+     * @param {TP.uri.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.core.Node} The initialized instance.
      */
@@ -2984,7 +2984,7 @@ function(aURI) {
      * @method setUri
      * @summary Sets the 'source URI' of the receiver. This allows tracking of
      *     the source that the receiver came from.
-     * @param {TP.core.URI} aURI The URI to set as the receiver's source URI.
+     * @param {TP.uri.URI} aURI The URI to set as the receiver's source URI.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Node} The receiver.
      */
@@ -3735,7 +3735,7 @@ function(aURI, force) {
      *     receiver (or the receiver itself, if its the Document). This method
      *     is normally invoked when the Node is "owned" by a URI to ensure
      *     proper ID generation can occur.
-     * @param {TP.core.URI|String} aURI An optional URI value. If not provided
+     * @param {TP.uri.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
@@ -3752,7 +3752,7 @@ function(aURI, force) {
         return;
     }
 
-    if (TP.isKindOf(url, TP.core.URI)) {
+    if (TP.isKindOf(url, TP.uri.URI)) {
         url = url.getLocation();
     }
 
@@ -3779,7 +3779,7 @@ function(aURI, force, aParamHash) {
      *     ensure proper base-aware attribute computation can occur. If the
      *     receiver's document already has xml:base definition on the
      *     documentElement this method will return without altering the content.
-     * @param {TP.core.URI|String} aURI An optional URI value. If not provided
+     * @param {TP.uri.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
@@ -3814,7 +3814,7 @@ function(aURI, force, aParamHash) {
             url = aParamHash.at('uri');
             if (TP.isURIString(url) || TP.isURI(url)) {
                 //  The 'uri' slot in the param hash sometimes contains a
-                //  TP.core.URI instance... make sure its a String.
+                //  TP.uri.URI instance... make sure its a String.
                 url = url.asString();
             } else {
                 url = '~app_xmlbase';
@@ -3849,7 +3849,7 @@ function(aURI, force, aParamHash) {
     //  of where this file was loaded from. Note that we only do this if the
     //  url is absolute
     if (TP.uriIsAbsolute(url.getLocation())) {
-        url = TP.core.URI.rewrite(url).getLocation();
+        url = TP.uri.URI.rewrite(url).getLocation();
     }
 
     //  we may need to reset the value for things like cache file nodes, so
@@ -9090,7 +9090,7 @@ function(aURI, force) {
      *     is normally invoked when the Node is "owned" by a URI to ensure
      *     proper ID generation can occur.
      * @description At this level, this method is a no-op.
-     * @param {TP.core.URI|String} aURI An optional URI value. If not provided
+     * @param {TP.uri.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
@@ -9113,7 +9113,7 @@ function(aURI, force, aParamHash) {
      *     receiver's document already has xml:base definition on the
      *     documentElement this method will return without altering the content.
      * @description At this level, this method is a no-op.
-     * @param {TP.core.URI|String} aURI An optional URI value. If not provided
+     * @param {TP.uri.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
      *     already has one. Default is false.
@@ -9726,7 +9726,7 @@ function(content, aURI) {
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {Object} content The content to set into the content object.
-     * @param {TP.core.URI} aURI The URI containing the content.
+     * @param {TP.uri.URI} aURI The URI containing the content.
      * @returns {Object} The object representation of the content.
      */
 
@@ -10505,7 +10505,7 @@ function(mimeType) {
      *     will only return a valid URI if one is found via configuration
      *     settings. There is no default/fallback logic for key mapping.
      * @param {String} mimeType The mimeType for the resource being looked up.
-     * @returns {TP.core.URI} The computed resource URI.
+     * @returns {TP.uri.URI} The computed resource URI.
      */
 
     var uri,
@@ -10789,7 +10789,7 @@ function(resource, mimeType, fallback) {
      *     TP.ietf.mime.INFO dictionary.
      * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
      *     value of 'uri.fallbacks'.
-     * @returns {TP.core.URI|String|TP.NO_RESULT} The computed resource URI.
+     * @returns {TP.uri.URI|String|TP.NO_RESULT} The computed resource URI.
      */
 
     var loc,
@@ -12086,7 +12086,7 @@ function(aRequest) {
                 //  If its an absolute URI, check to see if it needs to be
                 //  rewritten.
                 if (TP.uriIsAbsolute(attrVal)) {
-                    newVal = TP.core.URI.rewrite(attrVal).getLocation();
+                    newVal = TP.uri.URI.rewrite(attrVal).getLocation();
 
                     if (newVal !== attrVal) {
                         TP.elementSetAttribute(elem,
@@ -12873,12 +12873,12 @@ function(aSignal) {
     origin = aSignal.getSignalOrigin();
 
     //  If it was a URL, then process it as a 'remote resource change'.
-    if (TP.isKindOf(origin, TP.core.URL)) {
+    if (TP.isKindOf(origin, TP.uri.URL)) {
 
         //  If the aspect is one of URI's 'special aspects', then we just return
         //  here.
         aspect = aSignal.at('aspect');
-        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+        if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
             return;
         }
 
@@ -15262,7 +15262,7 @@ function(aRequest) {
 
         if (TP.isValid(sheetPath = aRequest.at('uri'))) {
             //  The 'uri' slot in the param hash typically contains a
-            //  TP.core.URI instance... make sure its a String.
+            //  TP.uri.URI instance... make sure its a String.
             sheetPath = sheetPath.asString();
 
             //  And we want the 'collection' URL.
@@ -15290,7 +15290,7 @@ function(aRequest) {
         return;
     }
 
-    //  Construct a TP.core.URI relative to the sheetPath from the href
+    //  Construct a TP.uri.URI relative to the sheetPath from the href
     //  value.
     url = TP.uc(TP.uriResolvePaths(sheetPath, hrefValue));
 
@@ -15870,12 +15870,12 @@ function(aSignal) {
     origin = aSignal.getSignalOrigin();
 
     //  If it was a URL, then process it as a 'remote resource change'.
-    if (TP.isKindOf(origin, TP.core.URI)) {
+    if (TP.isKindOf(origin, TP.uri.URI)) {
 
         //  If the aspect is one of URI's 'special aspects', then we just return
         //  here.
         aspect = aSignal.at('aspect');
-        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+        if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
             return;
         }
 
@@ -16058,7 +16058,7 @@ function(newContent, aRequest, shouldSignal) {
 
             unloadHandler.ignore(TP.gid(natWin), 'TP.sig.DocumentUnloaded');
 
-            wasRegistered = TP.core.URI.hasInstance(loc);
+            wasRegistered = TP.uri.URI.hasInstance(loc);
             unloadURI = TP.uc(loc);
 
             //  Grab our current location and ignore/unwatch the URI for the

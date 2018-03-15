@@ -725,7 +725,7 @@ function() {
                 return this;
             }
 
-            if (TP.isKindOf(sourceURI, TP.core.URL)) {
+            if (TP.isKindOf(sourceURI, TP.uri.URL)) {
 
                 //  Try to get a MIME type from the URL - if we can't, then we
                 //  just treat the content as plain text.
@@ -987,7 +987,7 @@ function(anObj) {
      * @method setSourceObject
      * @summary Sets the source object (a URI) of the receiver to the supplied
      *     object.
-     * @param {TP.core.URI} anObj The object to set as the source object that
+     * @param {TP.uri.URI} anObj The object to set as the source object that
      *     the receiver will edit.
      * @returns {TP.sherpa.urieditor} The receiver.
      */

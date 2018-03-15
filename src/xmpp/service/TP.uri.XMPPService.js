@@ -9,11 +9,11 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.core.XMPPService}
- * @summary A subtype of TP.core.URIService that communicates with XMPP
+ * @type {TP.uri.XMPPService}
+ * @summary A subtype of TP.uri.URIService that communicates with XMPP
  *     servers.
  * @example If the TP.sig.XMPPRequest/TP.sig.XMPPResponse processing model is
- *     used, it is unnecessary to manually set up a TP.core.XMPPService. As part
+ *     used, it is unnecessary to manually set up a TP.uri.XMPPService. As part
  *     of the TIBET infrastructure of using request/response pairs, a 'default'
  *     instance of this service will be instantiated and registered to handle
  *     all TP.sig.XMPPRequests.
@@ -30,7 +30,7 @@
  *     the 'serviceURI', 'serverName' and 'connectionType' parameters to the
  *     service as a set of connection parameters:
  *
- *     xmppService = TP.core.XMPPService.construct(
+ *     xmppService = TP.uri.XMPPService.construct(
  *                      'localXMPPServer',
  *                      TP.hc('serviceURI', 'http://localhost:5280/http-bind/',
  *                              'serverName', 'infohost.com',
@@ -51,7 +51,7 @@
  *
  *     and then construct it using:
  *
- *     xmppService = TP.core.XMPPService.construct('localXMPPServer');
+ *     xmppService = TP.uri.XMPPService.construct('localXMPPServer');
  *
  *     If these parameters aren't supplied in either the 'construct' call or in
  *     the vcard, the user can be prompted to supply them at runtime by
@@ -61,7 +61,7 @@
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.XMPPRequests (otherwise, the TIBET machinery will instantiate the
- *     'default' instance of TP.core.XMPPService as described above and register
+ *     'default' instance of TP.uri.XMPPService as described above and register
  *     it to service these kinds of requests):
  *
  *     xmppService.register();
@@ -125,19 +125,19 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.defineSubtype('XMPPService');
+TP.uri.URIService.defineSubtype('XMPPService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Type.defineAttribute(
+TP.uri.XMPPService.Type.defineAttribute(
     'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.XMPPRequest')));
 
-//  TP.core.XMPPService scheme is async-only so configure for that
-TP.core.XMPPService.Type.defineAttribute('supportedModes',
+//  TP.uri.XMPPService scheme is async-only so configure for that
+TP.uri.XMPPService.Type.defineAttribute('supportedModes',
                                         TP.core.SyncAsync.ASYNCHRONOUS);
-TP.core.XMPPService.Type.defineAttribute('mode',
+TP.uri.XMPPService.Type.defineAttribute('mode',
                                         TP.core.SyncAsync.ASYNCHRONOUS);
 
 //  additional aspect on the core vcard Element type to retrieve the
@@ -146,46 +146,46 @@ TP.ietf.vcard.Inst.defineAttribute('conntype',
     TP.xpc('./vcard-ext:x-xmpp-conn-type',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.core.XMPPService.register();
+TP.uri.XMPPService.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  the cached last stanza - for debugging purposes.
-TP.core.XMPPService.Inst.defineAttribute('lastStanza');
+TP.uri.XMPPService.Inst.defineAttribute('lastStanza');
 
 //  the server name hosting the XMPP service. Note that this may be
 //  different from the 'serviceURI', inherited from our supertype.
-TP.core.XMPPService.Inst.defineAttribute('serverName');
+TP.uri.XMPPService.Inst.defineAttribute('serverName');
 
 //  the connection type, either TP.xmpp.XMLNS.BINDING or some other type.
-TP.core.XMPPService.Inst.defineAttribute('connectionType');
+TP.uri.XMPPService.Inst.defineAttribute('connectionType');
 
 //  the connection to the XMPP service
-TP.core.XMPPService.Inst.defineAttribute('connection');
+TP.uri.XMPPService.Inst.defineAttribute('connection');
 
 //  whether or not to immediately send the XMPP 'stanza' after
 //  construction. Normally true, but when servicing requests this gets
 //  switched to false so that requests have an opportunity to observe the
 //  msgID of the 'stanza' before it is sent.
-TP.core.XMPPService.Inst.defineAttribute('autosend', true);
+TP.uri.XMPPService.Inst.defineAttribute('autosend', true);
 
 //  the queue used by the XMPP request / response machinery.
-TP.core.XMPPService.Inst.defineAttribute('requestQueue');
+TP.uri.XMPPService.Inst.defineAttribute('requestQueue');
 
 //  the 'service name' used by the pubsub service - defaults to 'pubsub'.
-TP.core.XMPPService.Inst.defineAttribute('pubsubName', 'pubsub');
+TP.uri.XMPPService.Inst.defineAttribute('pubsubName', 'pubsub');
 
 //  the JID of the pubsub service - the combination of the 'pubsub service
 //  name' and the service's 'server name'.
-TP.core.XMPPService.Inst.defineAttribute('pubsubJID');
+TP.uri.XMPPService.Inst.defineAttribute('pubsubJID');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('init',
+TP.uri.XMPPService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
@@ -198,7 +198,7 @@ function(resourceID, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
-     * @returns {TP.core.URIService} A new instance.
+     * @returns {TP.uri.URIService} A new instance.
      */
 
     this.callNextMethod();
@@ -212,7 +212,7 @@ function(resourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('clearAuthData',
+TP.uri.XMPPService.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
@@ -234,7 +234,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('configureAuthData',
+TP.uri.XMPPService.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
@@ -315,7 +315,7 @@ function(aRequest) {
 //  Connection Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('authenticateConnection',
+TP.uri.XMPPService.Inst.defineMethod('authenticateConnection',
 function(aJID, aPassword) {
 
     /**
@@ -398,14 +398,14 @@ function(aJID, aPassword) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('getConnectedJID',
+TP.uri.XMPPService.Inst.defineMethod('getConnectedJID',
 function() {
 
     /**
      * @method getConnectedJID
      * @summary Returns the JID representing the receiver's identity as
      *     currently logged in.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var conn;
@@ -419,7 +419,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('getConnection',
+TP.uri.XMPPService.Inst.defineMethod('getConnection',
 function() {
 
     /**
@@ -428,7 +428,7 @@ function() {
      *     make sure that the connection's URI and server name matches ours. If
      *     it doesn't, and the connection is 'open', this method closes it and
      *     returns null.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var conn;
@@ -454,7 +454,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('hasAuthConnection',
+TP.uri.XMPPService.Inst.defineMethod('hasAuthConnection',
 function() {
 
     /**
@@ -476,7 +476,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('hasOpenConnection',
+TP.uri.XMPPService.Inst.defineMethod('hasOpenConnection',
 function() {
 
     /**
@@ -509,7 +509,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('openConnection',
+TP.uri.XMPPService.Inst.defineMethod('openConnection',
 function() {
 
     /**
@@ -530,7 +530,7 @@ function() {
     if (TP.notEmpty(this.get('serviceURI')) &&
         TP.notEmpty(this.get('serverName'))) {
         //  Open a connection. Note how we make sure that the serviceURI is
-        //  supplied as a subtype of TP.core.URI.
+        //  supplied as a subtype of TP.uri.URI.
         if (TP.isValid(connection = TP.xmpp.Connection.open(
                         this.get('serverName'),
                         TP.hc('httpServerURI',
@@ -549,13 +549,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('setupCurrentUser',
+TP.uri.XMPPService.Inst.defineMethod('setupCurrentUser',
 function() {
 
     /**
      * @method setupCurrentUser
      * @summary Announces our availability using the service's JID.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var theUser,
@@ -619,13 +619,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('shutdownConnection',
+TP.uri.XMPPService.Inst.defineMethod('shutdownConnection',
 function() {
 
     /**
      * @method shutdownConnection
      * @summary Shuts down the receiver's connection, if it is open.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var conn,
@@ -665,7 +665,7 @@ function() {
 //  Registration Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('initiateRegistration',
+TP.uri.XMPPService.Inst.defineMethod('initiateRegistration',
 function() {
 
     /**
@@ -711,7 +711,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('getRegistrationFieldsFrom',
+TP.uri.XMPPService.Inst.defineMethod('getRegistrationFieldsFrom',
 function(regNode) {
 
     /**
@@ -764,7 +764,7 @@ function(regNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('finalizeRegistration',
+TP.uri.XMPPService.Inst.defineMethod('finalizeRegistration',
 function(registrationValues) {
 
     /**
@@ -831,7 +831,7 @@ function(registrationValues) {
 //  Messaging Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('addToRoster',
+TP.uri.XMPPService.Inst.defineMethod('addToRoster',
 function(stanzaID, toJID, aName, aGroup) {
 
     /**
@@ -863,7 +863,7 @@ function(stanzaID, toJID, aName, aGroup) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('fetchRoster',
+TP.uri.XMPPService.Inst.defineMethod('fetchRoster',
 function(stanzaID) {
 
     /**
@@ -905,7 +905,7 @@ function(stanzaID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('removeFromRoster',
+TP.uri.XMPPService.Inst.defineMethod('removeFromRoster',
 function(stanzaID, toJID, aName) {
 
     /**
@@ -934,7 +934,7 @@ function(stanzaID, toJID, aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('sendCommand',
+TP.uri.XMPPService.Inst.defineMethod('sendCommand',
 function(stanzaID, toJID, aCommandAction, aCommandElem) {
 
     /**
@@ -971,7 +971,7 @@ function(stanzaID, toJID, aCommandAction, aCommandElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('sendMessage',
+TP.uri.XMPPService.Inst.defineMethod('sendMessage',
 function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
 
     /**
@@ -1049,7 +1049,7 @@ function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('setPresence',
+TP.uri.XMPPService.Inst.defineMethod('setPresence',
 function(stanzaID, presenceState, aStatus) {
 
     /**
@@ -1117,7 +1117,7 @@ function(stanzaID, presenceState, aStatus) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('subscribeTo',
+TP.uri.XMPPService.Inst.defineMethod('subscribeTo',
 function(stanzaID, aJID) {
 
     /**
@@ -1169,7 +1169,7 @@ function(stanzaID, aJID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('unsubscribeFrom',
+TP.uri.XMPPService.Inst.defineMethod('unsubscribeFrom',
 function(stanzaID, aJID) {
 
     /**
@@ -1224,7 +1224,7 @@ function(stanzaID, aJID) {
 //  Pubsub Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('constructPubsubNode',
+TP.uri.XMPPService.Inst.defineMethod('constructPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
 
     /**
@@ -1360,7 +1360,7 @@ function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('deletePubsubNode',
+TP.uri.XMPPService.Inst.defineMethod('deletePubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID) {
 
     /**
@@ -1437,7 +1437,7 @@ function(stanzaID, pubsubServiceJID, nodeID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('publishToPubsubNode',
+TP.uri.XMPPService.Inst.defineMethod('publishToPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
 
     /**
@@ -1577,7 +1577,7 @@ function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('retractFromPubsubNode',
+TP.uri.XMPPService.Inst.defineMethod('retractFromPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID, itemID) {
 
     /**
@@ -1661,7 +1661,7 @@ function(stanzaID, pubsubServiceJID, nodeID, itemID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('retrievePubsubSubscriptions',
+TP.uri.XMPPService.Inst.defineMethod('retrievePubsubSubscriptions',
 function(stanzaID, pubsubServiceJID) {
 
     /**
@@ -1730,7 +1730,7 @@ function(stanzaID, pubsubServiceJID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('setPubsubName',
+TP.uri.XMPPService.Inst.defineMethod('setPubsubName',
 function(aName) {
 
     /**
@@ -1742,7 +1742,7 @@ function(aName) {
      *     generate a 'pubsub JID' of 'pubsub.infohost.com').
      * @param {String} aName The name of the 'pubsub service' on the server.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     if (TP.isEmpty(aName)) {
@@ -1764,7 +1764,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('subscribeToPubsubNode',
+TP.uri.XMPPService.Inst.defineMethod('subscribeToPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID) {
 
     /**
@@ -1842,7 +1842,7 @@ function(stanzaID, pubsubServiceJID, nodeID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('unsubscribeFromPubsubNode',
+TP.uri.XMPPService.Inst.defineMethod('unsubscribeFromPubsubNode',
 function(stanzaID, pubsubServiceJID, nodeID) {
 
     /**
@@ -1923,7 +1923,7 @@ function(stanzaID, pubsubServiceJID, nodeID) {
 //  XMPP Service Request Processing
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('openAndAuthConnectionFrom',
+TP.uri.XMPPService.Inst.defineMethod('openAndAuthConnectionFrom',
 function(aRequest) {
 
     /**
@@ -1964,7 +1964,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineHandler('XMPPConnectionException',
+TP.uri.XMPPService.Inst.defineHandler('XMPPConnectionException',
 function(aSignal) {
 
     /**
@@ -1974,7 +1974,7 @@ function(aSignal) {
      *     is the only way to know the connection is ready to send more stuff.
      * @param {TP.sig.XMPPConnectionException} aSignal The signal that the
      *     connection is ready.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     //  By the time we get here, the connection will have closed itself. We
@@ -1990,7 +1990,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineHandler('XMPPConnectionReady',
+TP.uri.XMPPService.Inst.defineHandler('XMPPConnectionReady',
 function(aSignal) {
 
     /**
@@ -2000,7 +2000,7 @@ function(aSignal) {
      *     is the only way to know the connection is ready to send more stuff.
      * @param {TP.sig.XMPPConnectionReady} aSignal The signal that the
      *     connection is ready.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var reqQueue,
@@ -2020,7 +2020,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineHandler('XMPPPubsubInput',
+TP.uri.XMPPService.Inst.defineHandler('XMPPPubsubInput',
 function(aSignal) {
 
     /**
@@ -2029,7 +2029,7 @@ function(aSignal) {
      *     packets. In this type we use this to track user subscriptions.
      * @param {TP.sig.XMPPPubsubInput} aSignal The signal that pubsub data is
      *     ready.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var theUser,
@@ -2087,7 +2087,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineHandler('XMPPRequest',
+TP.uri.XMPPService.Inst.defineHandler('XMPPRequest',
 function(aRequest) {
 
     /**
@@ -2098,7 +2098,7 @@ function(aRequest) {
      *     kinds of requests.
      * @param {TP.sig.XMPPRequest} aRequest The XMPP request object to take the
      *     request parameters from.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var request;
@@ -2152,7 +2152,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('processTP_sig_XMPPRequest',
+TP.uri.XMPPService.Inst.defineMethod('processTP_sig_XMPPRequest',
 function(aRequest) {
 
     /**
@@ -2161,7 +2161,7 @@ function(aRequest) {
      *     on the receiver based on the 'action' supplied in the request.
      * @param {TP.sig.XMPPRequest} aRequest The XMPP request object to take the
      *     request parameters from.
-     * @returns {TP.core.XMPPService} The receiver.
+     * @returns {TP.uri.XMPPService} The receiver.
      */
 
     var wasAutoSending,

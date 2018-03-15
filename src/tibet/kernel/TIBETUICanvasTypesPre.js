@@ -758,7 +758,7 @@ function(url, aName, aSpec, shouldReplace) {
      * @summary Constructs a new TP.core.Window instance (having retrieved a
      *     real native window to go underneath it and having set it up for use
      *     with TIBET).
-     * @param {TP.core.URI|String} url The URL to load into the window.
+     * @param {TP.uri.URI|String} url The URL to load into the window.
      * @param {String} aName The name to give this window. This must be unique.
      * @param {TP.core.Hash|String} aSpec A 'spec string' of key=value pairs or
      *     a hash that can be used to produce a feature string. You should use
@@ -1017,7 +1017,7 @@ function(aWindowOrID, theContent, aLoadedFunction) {
         }
     } else if (TP.isNode(theContent)) {
         content = theContent;
-    } else if (TP.isKindOf(theContent, TP.core.URI)) {
+    } else if (TP.isKindOf(theContent, TP.uri.URI)) {
         //  NB: We assume 'async' false here.
         resp = theContent.getResource(TP.hc('async', false));
         content = resp.get('result');
@@ -1131,7 +1131,7 @@ function(aURL, aRequest) {
      *     similar to the native '<windowRef>.location =' call, except that it
      *     will process content at the end of the URL and set up proper TIBET
      *     constructs in the receiver's native window.
-     * @param {String|TP.core.URI} aURL The URL of the content to load into this
+     * @param {String|TP.uri.URI} aURL The URL of the content to load into this
      *     window.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      * @returns {TP.core.Window} The receiver.

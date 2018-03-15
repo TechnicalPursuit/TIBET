@@ -89,7 +89,7 @@ function(aURI, textOnly) {
      * @summary Returns the parameters found on the base URL, if any. Base
      *     parameters are effectively server-side parameters since they are not
      *     part of the fragment and hence not processed by the TIBET client.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just the text parameter string
      *     if any.
      * @returns {String} The URI base parameter values.
@@ -130,7 +130,7 @@ function(aURI) {
      * @summary Returns the path portion of the URL base, the portion of the URL
      *     after the uriRoot and before any uriBaseParams. This essentially is
      *     the "server route" component.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @returns {String} The URI base path value.
      */
 
@@ -397,7 +397,7 @@ function(aURI, textOnly) {
      * @method uriDecompose
      * @summary Splits a URL into constituent parts suitable for passing them to
      *     the uriCompose routine.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just text parameter strings
      *     rather than objects in the result object.
      * @returns {Object.<String, String>} The URI parts in key/value form.
@@ -611,7 +611,7 @@ function(aURI) {
     /**
      * @method uriFragment
      * @summary Returns the fragment portion, if any, from the URL.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @returns {String} The fragment portion or the empty string.
      */
 
@@ -641,7 +641,7 @@ function(aURI, textOnly) {
      *     split just as if it were a set of server parameters. For example,
      *     http://localhost/index.html#foo&boot.debug=true results in the
      *     argument object containing {'boot.debug':true};
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just the text parameter string
      *     if any.
      * @returns {Object||TP.core.Hash} The fragment parameters.
@@ -693,7 +693,7 @@ function(aURI) {
      *     anchor values in the URI will not produce a path with a leading '/'
      *     to avoid confusing anchors with routes. An empty fragment however
      *     will produce a value of '/' implying a "home route".
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @returns {String} The fragment path value.
      */
 
@@ -897,7 +897,7 @@ function(aURI) {
      * @summary Returns the "head" portion of the URL fragment, the portion
      *     prior to any fragment. The return value includes both the base path
      *     and base parameters, if any.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @returns {String} The URI base value.
      */
 
@@ -1640,7 +1640,7 @@ function(aURI) {
      * @summary Processes a URL to produce a value we can rely on to have a
      *     consistent form. This is typically used on window.location values to
      *     remove trailing '/' from certain path forms et.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @returns {String} The normalized URI value.
      */
 
@@ -2301,7 +2301,7 @@ function(aURI) {
      *     scheme-specific lead-in content. This routine essentially gives you
      *     back the http://, https://, or file:// portion which does not include
      *     any of the path.
-     * @param {String|TP.core.URI} aURI The URI to process.
+     * @param {String|TP.uri.URI} aURI The URI to process.
      * @returns {String} The root of the URI.
      */
 

@@ -363,21 +363,21 @@ function(aRequest) {
     //  down below
     tibetResponseVal.getSignalName();
 
-    //  Instance of TP.core.TIBETURN
+    //  Instance of TP.uri.TIBETURN
     tibetTIBETURNVal = TP.uc('urn:tibet:foo');
-    //  Instance of TP.core.HTTPURL
+    //  Instance of TP.uri.HTTPURL
     tibetHTTPURLVal = TP.uc('http://www.blah.com');
-    //  Instance of TP.core.FileURL
+    //  Instance of TP.uri.FileURL
     tibetFileURLVal = TP.uc('file:///goo.txt');
     /* eslint-disable no-script-url */
     //  Instance of TP.core.JSURL
     tibetJSURIVal = TP.uc('javascript:alert("hi")');
     /* eslint-enable no-script-url */
-    //  Instance of TP.core.WSURL
+    //  Instance of TP.uri.WSURL
     tibetWSURLVal = TP.uc('ws://ws.blah.com');
-    //  Instance of TP.core.TIBETURL
+    //  Instance of TP.uri.TIBETURL
     tibetTIBETURLVal = TP.uc('tibet://top/file:///goo.txt');
-    //  Instance of TP.core.CookieURL
+    //  Instance of TP.uri.CookieURL
     tibetCookieURLVal = TP.uc('cookie://blah=foo');
 
     //  Instance of TP.w3.DocType
@@ -504,13 +504,13 @@ function(aRequest) {
     'TP.sig.Request',           tibetRequestVal,        //  TP.sig.Request
     'TP.sig.Response',          tibetResponseVal,       //  TP.sig.Response
 
-    'TP.core.TIBETURN',         tibetTIBETURNVal,       //  TP.core.TIBETURN
-    'TP.core.HTTPURL',          tibetHTTPURLVal,        //  TP.core.HTTPURL
-    'TP.core.FileURL',          tibetFileURLVal,        //  TP.core.FileURL
-    'TP.core.JSURI',            tibetJSURIVal,          //  TP.core.JSURI
-    'TP.core.WSURL',            tibetWSURLVal,          //  TP.core.WSURL
-    'TP.core.TIBETURL',         tibetTIBETURLVal,       //  TP.core.TIBETURL
-    'TP.core.CookieURL',        tibetCookieURLVal,      //  TP.core.CookieURL
+    'TP.uri.TIBETURN',          tibetTIBETURNVal,       //  TP.uri.TIBETURN
+    'TP.uri.HTTPURL',           tibetHTTPURLVal,        //  TP.uri.HTTPURL
+    'TP.uri.FileURL',           tibetFileURLVal,        //  TP.uri.FileURL
+    'TP.uri.JSURI',             tibetJSURIVal,          //  TP.uri.JSURI
+    'TP.uri.WSURL',             tibetWSURLVal,          //  TP.uri.WSURL
+    'TP.uri.TIBETURL',          tibetTIBETURLVal,       //  TP.uri.TIBETURL
+    'TP.uri.CookieURL',         tibetCookieURLVal,      //  TP.uri.CookieURL
 
     'TP.w3.DocType',            tibetDocTypeVal,        //  TP.w3.DocType
 
@@ -746,13 +746,13 @@ function(aRequest) {
 
     tibetResponseVal = TP.ac(TP.sig.Response, TP.sig.WorkflowSignal, TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetTIBETURNVal = TP.ac(TP.core.TIBETURN, TP.core.URN, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetHTTPURLVal = TP.ac(TP.core.HTTPURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetFileURLVal = TP.ac(TP.core.FileURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetJSURIVal = TP.ac(TP.core.JSURI, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetWSURLVal = TP.ac(TP.core.WSURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetTIBETURLVal = TP.ac(TP.core.TIBETURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetCookieURLVal = TP.ac(TP.core.CookieURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTIBETURNVal = TP.ac(TP.uri.TIBETURN, TP.uri.URN, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHTTPURLVal = TP.ac(TP.uri.HTTPURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetFileURLVal = TP.ac(TP.uri.FileURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetJSURIVal = TP.ac(TP.uri.JSURI, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetWSURLVal = TP.ac(TP.uri.WSURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTIBETURLVal = TP.ac(TP.uri.TIBETURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetCookieURLVal = TP.ac(TP.uri.CookieURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetDocTypeVal = TP.ac(TP.w3.DocType, TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -850,13 +850,13 @@ function(aRequest) {
     'TP.sig.Request',           tibetRequestVal,        //  TP.sig.Request
     'TP.sig.Response',          tibetResponseVal,       //  TP.sig.Response
 
-    'TP.core.TIBETURN',         tibetTIBETURNVal,       //  TP.core.TIBETURN
-    'TP.core.HTTPURL',          tibetHTTPURLVal,        //  TP.core.HTTPURL
-    'TP.core.FileURL',          tibetFileURLVal,        //  TP.core.FileURL
-    'TP.core.JSURI',            tibetJSURIVal,          //  TP.core.JSURI
-    'TP.core.WSURL',            tibetWSURLVal,          //  TP.core.WSURL
-    'TP.core.TIBETURL',         tibetTIBETURLVal,       //  TP.core.TIBETURL
-    'TP.core.CookieURL',        tibetCookieURLVal,      //  TP.core.CookieURL
+    'TP.uri.TIBETURN',          tibetTIBETURNVal,       //  TP.uri.TIBETURN
+    'TP.uri.HTTPURL',           tibetHTTPURLVal,        //  TP.uri.HTTPURL
+    'TP.uri.FileURL',           tibetFileURLVal,        //  TP.uri.FileURL
+    'TP.uri.JSURI',             tibetJSURIVal,          //  TP.uri.JSURI
+    'TP.uri.WSURL',             tibetWSURLVal,          //  TP.uri.WSURL
+    'TP.uri.TIBETURL',          tibetTIBETURLVal,       //  TP.uri.TIBETURL
+    'TP.uri.CookieURL',         tibetCookieURLVal,      //  TP.uri.CookieURL
 
     'TP.w3.DocType',            tibetDocTypeVal,        //  TP.w3.DocType
 
@@ -1059,13 +1059,13 @@ function(aRequest) {
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      TP.IDENTITY,
 
-        'TP.core.TIBETURN',                     TP.IDENTITY,
-        'TP.core.HTTPURL',                      TP.IDENTITY,
-        'TP.core.FileURL',                      TP.IDENTITY,
-        'TP.core.JSURI',                        TP.IDENTITY,
-        'TP.core.WSURL',                        TP.IDENTITY,
-        'TP.core.TIBETURL',                     TP.IDENTITY,
-        'TP.core.CookieURL',                    TP.IDENTITY,
+        'TP.uri.TIBETURN',                      TP.IDENTITY,
+        'TP.uri.HTTPURL',                       TP.IDENTITY,
+        'TP.uri.FileURL',                       TP.IDENTITY,
+        'TP.uri.JSURI',                         TP.IDENTITY,
+        'TP.uri.WSURL',                         TP.IDENTITY,
+        'TP.uri.TIBETURL',                      TP.IDENTITY,
+        'TP.uri.CookieURL',                     TP.IDENTITY,
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
@@ -1180,13 +1180,13 @@ function(aRequest) {
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      TP.IDENTITY,
 
-        'TP.core.TIBETURN',                     'String',
-        'TP.core.HTTPURL',                      'String',
-        'TP.core.FileURL',                      'String',
-        'TP.core.JSURI',                        'String',
-        'TP.core.WSURL',                        'String',
-        'TP.core.TIBETURL',                     'String',
-        'TP.core.CookieURL',                    'String',
+        'TP.uri.TIBETURN',                      'String',
+        'TP.uri.HTTPURL',                       'String',
+        'TP.uri.FileURL',                       'String',
+        'TP.uri.JSURI',                         'String',
+        'TP.uri.WSURL',                         'String',
+        'TP.uri.TIBETURL',                      'String',
+        'TP.uri.CookieURL',                     'String',
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
@@ -1301,13 +1301,13 @@ function(aRequest) {
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      'baz',
 
-        'TP.core.TIBETURN',                     TP.IDENTITY,
-        'TP.core.HTTPURL',                      TP.IDENTITY,
-        'TP.core.FileURL',                      TP.IDENTITY,
-        'TP.core.JSURI',                        TP.IDENTITY,
-        'TP.core.WSURL',                        TP.IDENTITY,
-        'TP.core.TIBETURL',                     TP.IDENTITY,
-        'TP.core.CookieURL',                    TP.IDENTITY,
+        'TP.uri.TIBETURN',                      TP.IDENTITY,
+        'TP.uri.HTTPURL',                       TP.IDENTITY,
+        'TP.uri.FileURL',                       TP.IDENTITY,
+        'TP.uri.JSURI',                         TP.IDENTITY,
+        'TP.uri.WSURL',                         TP.IDENTITY,
+        'TP.uri.TIBETURL',                      TP.IDENTITY,
+        'TP.uri.CookieURL',                     TP.IDENTITY,
 
         'TP.w3.DocType',                        TP.IDENTITY,
 

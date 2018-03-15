@@ -1092,8 +1092,8 @@ function(aDataSource, transformParams) {
 
         //  If we have a URI string and there's already a registered instance of
         //  a URI matching that, then go ahead and use it.
-        if (TP.isURIString(urn) && TP.core.URI.hasInstance(urn)) {
-            url = TP.core.URI.getInstanceById(urn);
+        if (TP.isURIString(urn) && TP.uri.URI.hasInstance(urn)) {
+            url = TP.uri.URI.getInstanceById(urn);
             //  NB: We assume 'async' of false here.
             if (TP.isValid(template = url.getResource().get('result'))) {
                 return template.transform(aDataSource, transformParams);

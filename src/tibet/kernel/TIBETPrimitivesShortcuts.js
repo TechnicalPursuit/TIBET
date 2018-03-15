@@ -2690,7 +2690,7 @@ function(aURIOrRoute, linkContext) {
      *     depending on the content of the original href value. To define a
      *     route you must provide a value with a leading '#' to force this call
      *     to recognize the path as a 'client path' rather than a server path.
-     * @param {TP.core.URI|String} aURIOrRoute The URI or route to go to.
+     * @param {TP.uri.URI|String} aURIOrRoute The URI or route to go to.
      * @param {Window} linkContext The window with the original link element.
      * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.

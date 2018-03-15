@@ -51,7 +51,7 @@ function(content, aURI) {
      * @param {String} content The string content to process. Typically empty
      *     and ignored for this type unless it starts with 'data:' in which case
      *     the URL is ignored and the src attribute is set to the data URI.
-     * @param {TP.core.URI} aURI The URI referencing an image.
+     * @param {TP.uri.URI} aURI The URI referencing an image.
      * @returns {Node} A valid TP.html.img node.
      */
 

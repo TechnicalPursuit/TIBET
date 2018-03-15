@@ -38,7 +38,7 @@ function(aNode, aURI) {
      * @method init
      * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
-     * @param {TP.core.URI|String} aURI An optional URI from which the Node
+     * @param {TP.uri.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.core.Node} The initialized instance.
      */
