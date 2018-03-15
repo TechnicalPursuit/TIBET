@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tibet.template}
- * @summary A subtype of TP.core.CustomTag that knows how to define XML
+ * @summary A subtype of TP.tag.CustomTag that knows how to define XML
  *     templates.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('tibet:template');
+TP.tag.CustomTag.defineSubtype('tibet:template');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

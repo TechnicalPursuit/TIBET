@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.as}
- * @summary A subtype of TP.core.ActionTag that takes stdin data and formats
+ * @summary A subtype of TP.tag.ActionTag that takes stdin data and formats
  *     is via typical TIBET as() processing.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:as');
+TP.tag.ActionTag.defineSubtype('tsh:as');
 
 TP.tsh.as.addTraits(TP.tsh.Element);
 

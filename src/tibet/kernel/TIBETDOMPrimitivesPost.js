@@ -3325,14 +3325,14 @@ function(anElement) {
     }
 
     tpElement = TP.wrap(anElement);
-    if (TP.isKindOf(tpElement, TP.core.CustomTag)) {
+    if (TP.isKindOf(tpElement, TP.tag.CustomTag)) {
         return anElement;
     }
 
     element = anElement.parentNode;
     while (TP.isElement(element)) {
         tpElement = TP.wrap(element);
-        if (TP.isKindOf(tpElement, TP.core.CustomTag)) {
+        if (TP.isKindOf(tpElement, TP.tag.CustomTag)) {
             return element;
         }
         element = element.parentNode;

@@ -1200,6 +1200,8 @@ TP.sig.BINDSignal.Type.defineAttribute('cancelable', true);
 TP.sig.BINDSignal.defineSubtype('BINDItemSignal');
 
 TP.sig.BINDItemSignal.defineSubtype('SetContent');
+TP.sig.BINDItemSignal.defineSubtype('ClearContent');
+
 TP.sig.BINDItemSignal.defineSubtype('CloneItem');
 TP.sig.BINDItemSignal.defineSubtype('InsertItem');
 TP.sig.BINDItemSignal.defineSubtype('DeleteItem');

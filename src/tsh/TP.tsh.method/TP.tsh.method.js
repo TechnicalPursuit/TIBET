@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.method}
- * @summary A subtype of TP.core.ActionTag that knows how to create new
+ * @summary A subtype of TP.tag.ActionTag that knows how to create new
  *     types in the TIBET system.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:method');
+TP.tag.ActionTag.defineSubtype('tsh:method');
 
 TP.tsh.method.addTraits(TP.tsh.Element);
 

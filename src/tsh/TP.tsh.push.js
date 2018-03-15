@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:push');
+TP.tag.ActionTag.defineSubtype('tsh:push');
 
 TP.tsh.push.addTraits(TP.tsh.Element);
 

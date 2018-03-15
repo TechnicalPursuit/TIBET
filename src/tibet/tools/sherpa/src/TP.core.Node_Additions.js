@@ -379,16 +379,16 @@ function(aHalo) {
     generatorTPElem = this;
     /* eslint-enable consistent-this */
 
-    if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
+    if (TP.isKindOf(generatorTPElem, TP.tag.CustomTag)) {
         return generatorTPElem;
     }
 
     //  Keep iterating up the *haloable* ancestors of the receiver, looking for
-    //  one that is a TP.core.CustomTag (the parent type of compiled and
+    //  one that is a TP.tag.CustomTag (the parent type of compiled and
     //  templated tag types). Return the first one found.
     while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
 
-        if (TP.isKindOf(generatorTPElem, TP.core.CustomTag)) {
+        if (TP.isKindOf(generatorTPElem, TP.tag.CustomTag)) {
             return generatorTPElem;
         }
     }
@@ -1022,7 +1022,7 @@ function(aContent) {
 });
 
 //  ========================================================================
-//  TP.core.CustomTag Additions
+//  TP.tag.CustomTag Additions
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
@@ -1033,7 +1033,7 @@ function(aContent) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.Inst.defineMethod('getConfigForInspector',
+TP.tag.CustomTag.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
     /**
@@ -1067,7 +1067,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.Inst.defineMethod('getContentForInspector',
+TP.tag.CustomTag.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
@@ -1104,7 +1104,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.Inst.defineMethod('getDataForInspector',
+TP.tag.CustomTag.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -1148,7 +1148,7 @@ function(options) {
 });
 
 //  ========================================================================
-//  TP.core.TemplatedTag Additions
+//  TP.tag.TemplatedTag Additions
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
@@ -1159,7 +1159,7 @@ function(options) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Type.defineMethod('getDataForInspector',
+TP.tag.TemplatedTag.Type.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -1196,7 +1196,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Type.defineMethod('getEntryAt',
+TP.tag.TemplatedTag.Type.defineMethod('getEntryAt',
 function(aSourceName) {
 
     /**
@@ -1236,7 +1236,7 @@ function(aSourceName) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Inst.defineMethod('resolveAspectForInspector',
+TP.tag.TemplatedTag.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
     /**
@@ -1277,7 +1277,7 @@ function(anAspect, options) {
 //  Context Menu API
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Inst.defineMethod('getContentForContextMenu',
+TP.tag.TemplatedTag.Inst.defineMethod('getContentForContextMenu',
 function(options) {
 
     /**
@@ -1302,7 +1302,7 @@ function(options) {
 });
 
 //  ========================================================================
-//  TP.core.CompiledTag Additions
+//  TP.tag.CompiledTag Additions
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
@@ -1313,7 +1313,7 @@ function(options) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.Inst.defineMethod('resolveAspectForInspector',
+TP.tag.CompiledTag.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
     /**
@@ -1365,7 +1365,7 @@ function(anAspect, options) {
 //  Context Menu API
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.Inst.defineMethod('getContentForContextMenu',
+TP.tag.CompiledTag.Inst.defineMethod('getContentForContextMenu',
 function(options) {
 
     /**

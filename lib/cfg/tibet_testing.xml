@@ -108,7 +108,7 @@
 </config>
 
 <config id="tagprocessor">
-    <script src="~lib_test/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />
+    <script src="~lib_test/src/tibet/tagprocessor/TP.tag.TagProcessor_Tests.js" />
 </config>
 
 <config id="templating">

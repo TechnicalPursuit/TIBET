@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:import');
+TP.tag.ActionTag.defineSubtype('tsh:import');
 
 TP.tsh.import.addTraits(TP.tsh.Element);
 

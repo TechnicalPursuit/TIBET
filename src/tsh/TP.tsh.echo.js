@@ -10,12 +10,12 @@
 
 /**
  * @type {TP.tsh.echo}
- * @summary A subtype of TP.core.ActionTag that echos its arguments to stdout.
+ * @summary A subtype of TP.tag.ActionTag that echos its arguments to stdout.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:echo');
+TP.tag.ActionTag.defineSubtype('tsh:echo');
 
 TP.tsh.echo.addTraits(TP.tsh.Element);
 

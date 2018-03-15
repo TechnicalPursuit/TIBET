@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:halo');
+TP.tag.ActionTag.defineSubtype('tsh:halo');
 
 TP.tsh.halo.addTraits(TP.tsh.Element);
 

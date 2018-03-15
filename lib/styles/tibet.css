@@ -197,7 +197,7 @@ tibet|group {
 }
 
 /*
-  TP.core.ActionTag and TP.core.InfoTag elements are
+  TP.tag.ActionTag and TP.tag.InfoTag elements are
   transformed into XHTML, so we can't use '.' class notation here
 */
 

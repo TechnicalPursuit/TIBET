@@ -93,7 +93,7 @@ TP.defineNamespace(&#39;APP.hello&#39;);TP.w3.Xmlns.registerNSInfo(&#39;urn:app:
 TP.boot.$$srcPath = &#39;~app_src/APP.hello.Application.js&#39;;
 TP.core.Application.defineSubtype(&#39;APP.hello.Application&#39;);APP.hello.Application.Inst.defineHandler(&#39;AppDidInitialize&#39;,function(b){var a;a=TP.core.StateMachine.construct();a.defineState(null,&#39;home&#39;);a.defineState(&#39;home&#39;,&#39;fuzzy&#39;);a.defineState(&#39;home&#39;,&#39;fluffy&#39;);a.defineState(&#39;fuzzy&#39;,&#39;fluffy&#39;);a.defineState(&#39;fluffy&#39;,&#39;fuzzy&#39;);a.defineState(&#39;fluffy&#39;);a.defineState(&#39;fuzzy&#39;);a.activate();this.setStateMachine(a);TP.sys.getLocale().registerStrings({HELLO:&#39;Hello World!&#39;});return this;});
 TP.boot.$$srcPath = &#39;~app_tags/APP.hello.app/APP.hello.app.js&#39;;
-TP.core.TemplatedTag.defineSubtype(&#39;APP.hello:app&#39;);
+TP.tag.TemplatedTag.defineSubtype(&#39;APP.hello:app&#39;);
 TP.boot.$$srcPath = &#39;~app_build/tags.APP.hello.app.xhtml.js&#39;;
 TP.uc(&#39;~app_tags/APP.hello.app/APP.hello.app.xhtml&#39;).setContent(&#39;    &lt;h1 tibet:tag=&quot;hello:app&quot; class=&quot;hello&quot;&gt;\n        Welcome to your new TIBET application!\n    &lt;/h1&gt;\n&#39;);
 TP.boot.$$srcPath = &#39;~app_build/tags.APP.hello.app.css.js&#39;;

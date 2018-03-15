@@ -1,6 +1,6 @@
 {
     "default": {
-        "supertype": "TP.core.TemplatedTag",
+        "supertype": "TP.tag.TemplatedTag",
         "bundled": true
     },
     "APP": {

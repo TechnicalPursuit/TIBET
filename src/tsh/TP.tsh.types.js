@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.types}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:types');
+TP.tag.ActionTag.defineSubtype('tsh:types');
 
 TP.tsh.types.addTraits(TP.tsh.Element);
 

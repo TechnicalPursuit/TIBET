@@ -23,7 +23,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:eval');
+TP.tag.ActionTag.defineSubtype('tsh:eval');
 
 TP.tsh.eval.addTraits(TP.tsh.Element);
 

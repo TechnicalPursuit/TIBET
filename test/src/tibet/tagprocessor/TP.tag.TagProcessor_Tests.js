@@ -12,13 +12,13 @@
 //  Tag Processor Fixture Builder
 //  ========================================================================
 
-TP.lang.Object.defineSubtype('core.TagProcessorFixtureBuilder');
+TP.lang.Object.defineSubtype('tag.TagProcessorFixtureBuilder');
 
 //  ------------------------------------------------------------------------
 //  Test Tag Types
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildNoChangeTagType',
 function() {
 
@@ -36,7 +36,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildAttrChangeTagType',
 function() {
 
@@ -60,7 +60,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildMoreAttrChangeTagType',
 function() {
 
@@ -88,7 +88,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildContentChangeTagType',
 function() {
 
@@ -117,7 +117,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildMoreContentChangeTagType',
 function() {
 
@@ -164,14 +164,14 @@ function() {
 //  Test Phases
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildAllNodesPhase',
 function() {
 
     var phaseType;
 
     if (!TP.isType(phaseType = TP.sys.getTypeByName('TP.test.AllNodesPhase'))) {
-        phaseType = TP.core.TagProcessorPhase.defineSubtype('test.AllNodesPhase');
+        phaseType = TP.tag.TagProcessorPhase.defineSubtype('test.AllNodesPhase');
         phaseType.Inst.defineMethod(
             'getTargetMethod',
             function() {
@@ -186,7 +186,7 @@ function() {
 //  Test Processors
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorFixtureBuilder.Type.defineMethod(
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
 'buildAllNodesProcessor',
 function() {
     var processor;
@@ -199,7 +199,7 @@ function() {
 
     this.buildAllNodesPhase();
 
-    processor = TP.core.TagProcessor.construct();
+    processor = TP.tag.TagProcessor.construct();
 
     processor.set('phases', TP.ac(TP.test.AllNodesPhase.construct()));
 
@@ -210,12 +210,12 @@ function() {
 //  TagProcessor Fixture
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessor.Type.defineMethod('getTestFixture',
+TP.tag.TagProcessor.Type.defineMethod('getTestFixture',
 function(options) {
 
     switch (options) {
         case 'allNodes':
-            return TP.core.TagProcessorFixtureBuilder.buildAllNodesProcessor();
+            return TP.tag.TagProcessorFixtureBuilder.buildAllNodesProcessor();
         default:
             return null;
     }
@@ -225,7 +225,7 @@ function(options) {
 //  Test Suite
 //  ========================================================================
 
-TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst all nodes suite',
+TP.tag.TagProcessor.Inst.describe('TP.tag.TagProcessor Inst all nodes suite',
 function() {
 
     var testDataLoc;
@@ -257,7 +257,7 @@ function() {
                     beforeStr,
                     afterStr;
 
-                processor = TP.core.TagProcessor.getTestFixture('allNodes');
+                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 //  Capture the String representation before we process it
                 beforeStr = TP.str(result);
@@ -285,7 +285,7 @@ function() {
             function(result) {
                 var processor;
 
-                processor = TP.core.TagProcessor.getTestFixture('allNodes');
+                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
@@ -307,7 +307,7 @@ function() {
             function(result) {
                 var processor;
 
-                processor = TP.core.TagProcessor.getTestFixture('allNodes');
+                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
@@ -330,7 +330,7 @@ function() {
             function(result) {
                 var processor;
 
-                processor = TP.core.TagProcessor.getTestFixture('allNodes');
+                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
@@ -352,7 +352,7 @@ function() {
             function(result) {
                 var processor;
 
-                processor = TP.core.TagProcessor.getTestFixture('allNodes');
+                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
@@ -370,7 +370,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst core functionality suite',
+TP.tag.TagProcessor.Inst.describe('TP.tag.TagProcessor Inst core functionality suite',
 function() {
 
     var unloadURI,

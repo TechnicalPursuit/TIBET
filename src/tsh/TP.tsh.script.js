@@ -23,7 +23,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:script');
+TP.tag.ActionTag.defineSubtype('tsh:script');
 
 TP.tsh.script.addTraits(TP.tsh.Element);
 

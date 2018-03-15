@@ -27,7 +27,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:history');
+TP.tag.ActionTag.defineSubtype('tsh:history');
 
 TP.tsh.history.addTraits(TP.tsh.Element);
 

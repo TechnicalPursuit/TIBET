@@ -8892,8 +8892,8 @@ function(aRequest, replaceNode, alternateNode) {
         //  in situ.
 
         //  Allocate a tag processor and initialize it with the COMPILE_PHASES
-        processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                        TP.core.TagProcessor.COMPILE_PHASES);
+        processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                        TP.tag.TagProcessor.COMPILE_PHASES);
 
         //  Capture this before processing - the following steps will virtually
         //  detach this node.
@@ -9344,8 +9344,8 @@ function(aRequest) {
     request = TP.request(aRequest);
 
     //  Allocate a tag processor and initialize it with the COMPILE_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.COMPILE_PHASES);
+    processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                    TP.tag.TagProcessor.COMPILE_PHASES);
 
     childNodes = TP.nodeGetChildNodes(node);
 
@@ -11193,8 +11193,8 @@ function(anElement, nodesAdded) {
     }
 
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.ATTACH_PHASES);
+    processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                    TP.tag.TagProcessor.ATTACH_PHASES);
 
     mutatedGIDs = TP.ac();
 
@@ -11319,8 +11319,8 @@ function(anElement, nodesRemoved) {
     }
 
     //  Allocate a tag processor and initialize it with the DETACH_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.DETACH_PHASES);
+    processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                    TP.tag.TagProcessor.DETACH_PHASES);
 
     mutatedGIDs = TP.ac();
 
@@ -11525,8 +11525,8 @@ function(aNode) {
     }
 
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.ATTACH_PHASES);
+    processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                    TP.tag.TagProcessor.ATTACH_PHASES);
 
     //  Process the tree of markup
     processor.processTree(aNode);
@@ -11582,8 +11582,8 @@ function(aNode) {
     }
 
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.DETACH_PHASES);
+    processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                    TP.tag.TagProcessor.DETACH_PHASES);
 
     //  Process the tree of markup
     processor.processTree(aNode);

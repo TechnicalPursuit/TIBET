@@ -228,11 +228,11 @@ function(aStyleTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('xctrls.CompiledTag');
+TP.tag.CompiledTag.defineSubtype('xctrls.CompiledTag');
 TP.xctrls.CompiledTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
-//  and execute the one inherited from TP.core.CompiledTag afterwards as well.
+//  and execute the one inherited from TP.tag.CompiledTag afterwards as well.
 TP.xctrls.CompiledTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
@@ -248,11 +248,11 @@ TP.xctrls.CompiledTag.Type.resolveTrait(
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
+TP.tag.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
 TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
-//  and execute the one inherited from TP.core.TemplatedTag afterwards as well.
+//  and execute the one inherited from TP.tag.TemplatedTag afterwards as well.
 TP.xctrls.TemplatedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 

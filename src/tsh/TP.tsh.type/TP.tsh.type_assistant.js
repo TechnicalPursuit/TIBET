@@ -25,12 +25,12 @@ TP.tsh.type_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 
 TP.tsh.type_assistant.Type.defineConstant('BUILT_IN_DNA_TAG_TYPES',
     TP.ac(
-        'TP.core.ActionTag',
-        'TP.core.CompiledTag',
+        'TP.tag.ActionTag',
+        'TP.tag.CompiledTag',
         'TP.core.Content',
         'TP.core.Controller',
-        'TP.core.InfoTag',
-        'TP.core.TemplatedTag'));
+        'TP.tag.InfoTag',
+        'TP.tag.TemplatedTag'));
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -155,11 +155,11 @@ function(aSignal) {
             break;
 
         case 'actiontag':
-            supertypeForDNA = 'TP.core.ActionTag';
+            supertypeForDNA = 'TP.tag.ActionTag';
             break;
 
         case 'compiledtag':
-            supertypeForDNA = 'TP.core.CompiledTag';
+            supertypeForDNA = 'TP.tag.CompiledTag';
             break;
 
         case 'content':
@@ -171,11 +171,11 @@ function(aSignal) {
             break;
 
         case 'infotag':
-            supertypeForDNA = 'TP.core.InfoTag';
+            supertypeForDNA = 'TP.tag.InfoTag';
             break;
 
         case 'templatedtag':
-            supertypeForDNA = 'TP.core.TemplatedTag';
+            supertypeForDNA = 'TP.tag.TemplatedTag';
             break;
 
         default:

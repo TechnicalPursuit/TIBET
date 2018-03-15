@@ -20,7 +20,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('ev:script');
+TP.tag.ActionTag.defineSubtype('ev:script');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

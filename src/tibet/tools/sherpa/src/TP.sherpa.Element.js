@@ -87,7 +87,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('sherpa.CompiledTag');
+TP.tag.CompiledTag.defineSubtype('sherpa.CompiledTag');
 
 TP.sherpa.CompiledTag.addTraits(TP.sherpa.Element);
 
@@ -103,7 +103,7 @@ TP.sherpa.CompiledTag.addTraits(TP.sherpa.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('sherpa.TemplatedTag');
+TP.tag.TemplatedTag.defineSubtype('sherpa.TemplatedTag');
 
 TP.sherpa.TemplatedTag.addTraits(TP.sherpa.Element);
 

@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('sherpa.tofuInsertionAssistant');
+TP.tag.CustomTag.defineSubtype('sherpa.tofuInsertionAssistant');
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.sherpa.tofuInsertionAssistant.defineAttribute('themeURI', TP.NO_RESULT);

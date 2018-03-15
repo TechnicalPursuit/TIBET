@@ -19,7 +19,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('sherpa:tofu');
+TP.tag.CustomTag.defineSubtype('sherpa:tofu');
 
 //  This tag has no theme CSS. Note how this properties is TYPE_LOCAL, by
 //  design.

@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('sherpa.couchDocumentURIInsertionAssistant');
+TP.tag.CustomTag.defineSubtype('sherpa.couchDocumentURIInsertionAssistant');
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.sherpa.couchDocumentURIInsertionAssistant.defineAttribute('themeURI', TP.NO_RESULT);

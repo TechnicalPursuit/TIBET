@@ -1150,10 +1150,10 @@ function(aSignal) {
         return this;
     }
 
-    //  If the new type is a subtype of TP.core.CustomTag, then we need to have
+    //  If the new type is a subtype of TP.tag.CustomTag, then we need to have
     //  the 'sherpa:tofu' tag replace any occurrences of itself that are proxies
     //  for that new tag type.
-    if (TP.isSubtypeOf(newType, TP.core.CustomTag)) {
+    if (TP.isSubtypeOf(newType, TP.tag.CustomTag)) {
         typeName = newType.getName();
         TP.sherpa.tofu.replaceOccurrencesOf(typeName);
     }
@@ -1298,7 +1298,7 @@ function(aTPElem) {
                     'cmdText',
                         ':type --assist' +
                                 ' --name=\'' + newTagName + '\'' +
-                                ' --supertype=\'TP.core.TemplatedTag\'' +
+                                ' --supertype=\'TP.tag.TemplatedTag\'' +
                                 ' --dna=\'templatedtag\''
                 ));
 
@@ -1331,7 +1331,7 @@ function(aTPElem) {
         //  Now, if it's a templated tag, we have to serialize and save a markup
         //  representation of supplied TP.core.Element as the new tag's
         //  template.
-        if (TP.isKindOf(tagType, TP.core.TemplatedTag)) {
+        if (TP.isKindOf(tagType, TP.tag.TemplatedTag)) {
 
             //  Create a tag name from the type's namespace prefix and local
             //  name.
@@ -3155,7 +3155,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     while (TP.isElement(tagSrcElem)) {
         tagTPSrcElem = TP.wrap(tagSrcElem);
-        if (TP.isKindOf(tagTPSrcElem, TP.core.TemplatedTag)) {
+        if (TP.isKindOf(tagTPSrcElem, TP.tag.TemplatedTag)) {
             break;
         }
 
