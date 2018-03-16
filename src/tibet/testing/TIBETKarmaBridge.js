@@ -239,8 +239,23 @@ TP.log.Appender.defineSubtype('KarmaAppender');
  */
 TP.log.KarmaAppender.Type.$set('defaultLayoutType', 'TP.log.KarmaLayout');
 
-//  ----------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.log.KarmaAppender.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.installControllers();
+
+    return;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.log.KarmaAppender.Type.defineMethod('installControllers',
