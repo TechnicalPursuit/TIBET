@@ -3307,7 +3307,7 @@ function(storageInfo) {
     //  representative of the 'whole document'.
     serializationStorage.atPut('store', loc);
 
-    //  Message the TP.core.Document to begin the serialization.
+    //  Message the TP.dom.Document to begin the serialization.
     data.serializeForStorage(serializationStorage);
 
     //  The representation we're interested in will be the one at our URI, since
@@ -5866,7 +5866,7 @@ function(targetObj, varargs) {
                     result = TP.$xml2jsonObj(TP.unwrap(someTPXML)))) {
 
                     //  Locally program a reference to ourself on the
-                    //  generated XML TP.core.Document.
+                    //  generated XML TP.dom.Document.
                     someTPXML.defineAttribute('$$realData');
                     someTPXML.$set('$$realData', this);
 
@@ -5969,7 +5969,7 @@ function(targetObj, varargs) {
 
                 if (TP.isKindOf(tpValueDoc, TP.dom.DocumentNode)) {
                     //  Locally program a reference to ourself on the generated
-                    //  XML TP.core.Document.
+                    //  XML TP.dom.Document.
                     tpValueDoc.defineAttribute('$$realData');
                     tpValueDoc.$set('$$realData', this);
                 } else {

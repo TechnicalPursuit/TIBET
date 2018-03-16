@@ -72,7 +72,7 @@ function(aTagTypeName) {
             var tpDoc,
                 docTofus;
 
-            //  Grab the TP.core.Document that the screen contains (*not* the
+            //  Grab the TP.dom.Document that the screen contains (*not* the
             //  one that contains the screen ;-)).
             tpDoc = aScreen.getContentDocument();
             docTofus =

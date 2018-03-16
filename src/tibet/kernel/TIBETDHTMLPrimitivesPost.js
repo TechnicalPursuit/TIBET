@@ -8989,7 +8989,7 @@ function(aWindow) {
         try {
             //  We *must* unique the page load function so that if the
             //  same one has been registered multiple times (because of
-            //  multiple TP.core.Document.writes or whatever), it will only
+            //  multiple TP.dom.Document.writes or whatever), it will only
             //  be executed once.
             winLoadFuncs = winLoadFuncs.unique();
 

@@ -7554,7 +7554,7 @@ function(unwrapped) {
      * @summary Returns the current UI document in either wrapped or unwrapped
      *     form. The default is wrapped.
      * @param {Boolean} unwrapped True to unwrap the document.
-     * @returns {TP.core.Document|Document}
+     * @returns {TP.dom.Document|Document}
      */
 
     var obj;

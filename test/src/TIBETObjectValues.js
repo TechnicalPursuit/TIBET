@@ -316,12 +316,12 @@ function(aRequest) {
     //  Instance of TP.core.Window
     tibetWindowVal = TP.core.Window.construct(windowVal);
     //  Instance of TP.dom.HTMLDocumentNode
-    tibetHTMLDocVal = TP.core.Document.construct(htmlDocumentVal);
+    tibetHTMLDocVal = TP.dom.Document.construct(htmlDocumentVal);
     //  Instance of TP.dom.HTMLElementNode
     tibetHTMLElemVal = TP.dom.HTMLElementNode.construct(htmlElementVal);
 
     //  Instance of TP.dom.XMLDocumentNode
-    tibetXMLDocVal = TP.core.Document.construct(xmlDocumentVal);
+    tibetXMLDocVal = TP.dom.Document.construct(xmlDocumentVal);
     //  Instance of TP.dom.XMLElementNode
     tibetXMLElemVal = TP.dom.XMLElementNode.construct(xmlElementVal);
 

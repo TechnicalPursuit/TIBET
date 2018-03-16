@@ -5684,7 +5684,7 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
     sigPayload.atPut('trigger', triggerSignal);
 
     //  Some objects in the system, in lieu of the trigger, will still use the
-    //  TP.core.Document where the triggering originated. We try to provide that
+    //  TP.dom.Document where the triggering originated. We try to provide that
     //  here, which is especially important if the trigger is undefined.
     sigPayload.atPut('triggerTPDocument', TP.tpdoc(doc));
 

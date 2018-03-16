@@ -48,15 +48,15 @@ function(aTPDocument, anOverlayID) {
     /**
      * @method getOverlayWithID
      * @summary Returns (and, if necessary, creates) a 'shared system overlay'
-     *     for use by the system on the supplied TP.core.Document.
-     * @param {TP.core.Document} aTPDocument The document to create the overlay
+     *     for use by the system on the supplied TP.dom.Document.
+     * @param {TP.dom.Document} aTPDocument The document to create the overlay
      *     in, if it can't be found. Note that, in this case, the overlay will
      *     be created as the last child of the document's 'body' element.
      * @param {String} [anOverlayID] The ID to use to query for the system
      *     overlay. If this isn't supplied, the receiver is messaged for it's
      *     'sharedOverlayID'.
      * @returns {TP.xctrls.SharedOverlay} The system overlay on the supplied
-     *     TP.core.Document.
+     *     TP.dom.Document.
      */
 
     var tpDocBody,
@@ -107,10 +107,10 @@ function(aSignal, triggerTPDocument) {
      *     - The element matching a 'triggerPath' supplied in aSignal
      *     - The target element of the trigger signal supplied in aSignal
      *     - The body element of the triggerTPDocument which should be the
-     *         TP.core.Document that the triggering element is contained in.
+     *         TP.dom.Document that the triggering element is contained in.
      * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
      *     this method.
-     * @param {TP.core.Document} triggerTPDocument The TP.core.Document that the
+     * @param {TP.dom.Document} triggerTPDocument The TP.dom.Document that the
      *     triggering element is contained in.
      * @returns {TP.dom.ElementNode} The TP.dom.ElementNode that caused the
      *     overlay to trigger.
@@ -150,7 +150,7 @@ function(aSignal, triggerTPDocument) {
     if (TP.notValid(triggerTPElem)) {
 
         //  Otherwise, there was no valid trigger element, so we just use the
-        //  triggering TP.core.Document's body.
+        //  triggering TP.dom.Document's body.
         triggerTPElem = triggerTPDocument.getBody();
     }
 

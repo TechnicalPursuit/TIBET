@@ -61,10 +61,10 @@ function() {
 
     /**
      * @method getContentDocument
-     * @summary Returns a TP.core.Document instance wrapping the receiver's
+     * @summary Returns a TP.dom.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
-     * @returns {TP.core.Document}
+     * @returns {TP.dom.Document}
      */
 
     //  rely on the content window so we can leverage caching behavior
@@ -80,7 +80,7 @@ function() {
      * @method getContentNode
      * @summary Returns the native node of the TP.dom.DocumentNode wrapping
      *     the receiver's document object.
-     * @returns {TP.core.Document}
+     * @returns {TP.dom.Document}
      */
 
     //  rely on the content window so we can leverage caching behavior
@@ -144,8 +144,8 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
-     * @returns {TP.core.Document} The Document object contained by the
+     *     of the receiver in a TP.dom.Document wrapper.
+     * @returns {TP.dom.Document} The Document object contained by the
      *     receiver.
      */
 
@@ -1075,7 +1075,7 @@ function(aWindowOrID, aKey, aValue) {
 //  the id (global ID) of our native window
 TP.core.Window.Inst.defineAttribute('$windowID');
 
-//  the TP.core.Document wrapper for the window's document. This is managed
+//  the TP.dom.Document wrapper for the window's document. This is managed
 //  by the setContent method on TP.core.Window to keep the native document
 //  current
 TP.core.Window.Inst.defineAttribute('contentDoc');
@@ -1516,10 +1516,10 @@ function() {
 
     /**
      * @method getContentDocument
-     * @summary Returns a TP.core.Document instance wrapping the receiver's
+     * @summary Returns a TP.dom.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument().
-     * @returns {TP.core.Document} The TP.core.Document object wrapping the
+     * @returns {TP.dom.Document} The TP.dom.Document object wrapping the
      *     receiver's native document object.
      */
 
@@ -1530,7 +1530,7 @@ function() {
         return this.raise('TP.sig.InvalidWindow');
     }
 
-    //  try to reuse one TP.core.Document if at all possible
+    //  try to reuse one TP.dom.Document if at all possible
     if (TP.isDocument(doc = this.$get('contentDoc'))) {
         //  need to check Document objects - they can become detached or
         //  otherwise messed with
@@ -1540,7 +1540,7 @@ function() {
     }
 
     //  build/save a new wrapper for the current document object
-    doc = TP.core.Document.construct(win.document);
+    doc = TP.dom.Document.construct(win.document);
     this.$set('contentDoc', doc, false);
 
     return doc;
@@ -1627,8 +1627,8 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
-     * @returns {TP.core.Document} The TP.core.Document object contained by the
+     *     of the receiver in a TP.dom.Document wrapper.
+     * @returns {TP.dom.Document} The TP.dom.Document object contained by the
      *     receiver.
      */
 
@@ -1807,14 +1807,14 @@ function() {
 
     /**
      * @method getDocument
-     * @summary Returns a TP.core.Document instance wrapping the receiver's
+     * @summary Returns a TP.dom.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
      * @description Windows are unique in that their content document and their
      *     document are the same object. For other UICanvas objects the content
      *     document is contained within the canvas, but the document contains
      *     the canvas. Windows sit at the boundary.
-     * @returns {TP.core.Document}
+     * @returns {TP.dom.Document}
      */
 
     return this.getContentDocument();
@@ -1828,7 +1828,7 @@ function() {
     /**
      * @method getNativeDocument
      * @summary Returns the receiver's native document object without creating
-     *     a TP.core.Document wrapper.
+     *     a TP.dom.Document wrapper.
      * @returns {Document} A native document instance.
      */
 

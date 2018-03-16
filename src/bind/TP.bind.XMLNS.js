@@ -333,11 +333,11 @@ function(anElement) {
         repeatTPElem.$registerRepeatContent();
     }
 
-    //  Make sure that the owner TP.core.Document has an '$observedLocations'
+    //  Make sure that the owner TP.dom.Document has an '$observedLocations'
     //  hash. This hash will consist of the location and a counter matching the
     //  number of times this primary URI is encountered in the content. This
     //  counter is used as Elements come and go (see the 'teardown' method
-    //  below) and when the count is 0, the TP.core.Document ignores that
+    //  below) and when the count is 0, the TP.dom.Document ignores that
     //  location.
 
     tpDoc = TP.wrap(doc);
@@ -349,12 +349,12 @@ function(anElement) {
 
     //  Gather any locations that are referenced in binding expressions under
     //  the supplied Element. These are the locations that the owner
-    //  TP.core.Document of the supplied Element will observe for FacetChange.
+    //  TP.dom.Document of the supplied Element will observe for FacetChange.
     uriLocs = this.$gatherReferencedLocations(anElement);
 
     //  Iterate over the gathered locations and register them with the
     //  'observedLocations' hash. Note that the first time a particular location
-    //  is encountered, the TP.core.Document is told to observe it.
+    //  is encountered, the TP.dom.Document is told to observe it.
     uriLocs.forEach(
         function(aLocation) {
             var location,
@@ -424,7 +424,7 @@ function(anElement) {
             } else {
 
                 //  Initialize the counter for this primary URI and tell our
-                //  TP.core.Document to observe it for FacetChange.
+                //  TP.dom.Document to observe it for FacetChange.
                 observedLocations.atPut(concreteLoc, 1);
                 tpDoc.observe(TP.uc(concreteLoc), 'FacetChange');
             }
@@ -453,14 +453,14 @@ function(anElement) {
     doc = TP.nodeGetDocument(anElement);
     tpDoc = TP.wrap(doc);
 
-    //  If the TP.core.Document has no '$observedLocations', then just exit here.
+    //  If the TP.dom.Document has no '$observedLocations', then just exit here.
     if (TP.notValid(observedLocations = tpDoc.get('$observedLocations'))) {
         return;
     }
 
     //  Gather any URIs that are referenced in binding expressions under the
     //  supplied Element. The primary URIs of these URIs will be the URIs that
-    //  the owner TP.core.Document of the supplied Element could ignore for
+    //  the owner TP.dom.Document of the supplied Element could ignore for
     //  FacetChange (if by detecting it, we decrement the count to 0).
     uriLocs = this.$gatherReferencedLocations(anElement);
 
@@ -502,7 +502,7 @@ function(anElement) {
 
                 uriCount--;
 
-                //  If the counter is 0, then tell our TP.core.Document to
+                //  If the counter is 0, then tell our TP.dom.Document to
                 //  ignore that location for FacetChange and remove that key.
                 if (uriCount === 0) {
                     tpDoc.ignore(TP.uc(concreteLoc), 'FacetChange');

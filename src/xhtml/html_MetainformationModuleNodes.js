@@ -82,11 +82,11 @@ function(aRequest) {
      * @summary Returns the receiver's content node(s). This method is provided
      *     for API compatibility with other types.
      * @description At this level, this method returns its 'inner content' node,
-     *     which is a TP.core.DocumentFragment, which will contain a *clone* of
+     *     which is a TP.dom.DocumentFragment, which will contain a *clone* of
      *     the receiver's '.content'. property.
      * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
-     * @returns {TP.core.DocumentFragment} A TP.core.DocumentFragment containing
+     * @returns {TP.dom.DocumentFragment} A TP.dom.DocumentFragment containing
      *     a *clone* of the receiver's '.content' DocumentFragment.
      */
 

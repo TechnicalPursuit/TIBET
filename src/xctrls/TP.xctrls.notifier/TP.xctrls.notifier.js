@@ -64,10 +64,10 @@ function(aSignal, triggerTPDocument) {
      *     - The element matching a 'triggerPath' supplied in aSignal
      *     - The target element of the trigger signal supplied in aSignal
      *     - The body element of the triggerTPDocument which should be the
-     *         TP.core.Document that the triggering element is contained in.
+     *         TP.dom.Document that the triggering element is contained in.
      * @param {TP.sig.OpenNotifier} aSignal The TIBET signal which triggered
      *     this method.
-     * @param {TP.core.Document} triggerTPDocument The TP.core.Document that the
+     * @param {TP.dom.Document} triggerTPDocument The TP.dom.Document that the
      *     triggering element is contained in.
      * @returns {TP.dom.ElementNode} The TP.dom.ElementNode that caused the
      *     overlay to trigger.

@@ -3963,13 +3963,13 @@ function(aRequest) {
      *     for API compatibility with other types.
      * @description At this level, this method returns its 'inner content' node,
      *     which is either a TP.dom.Node, if there's only one child or a
-     *     TP.core.DocumentFragment, if there is more than one. NOTE: If a
-     *     TP.core.DocumentFragment is returned, it contains a *clone* of the
+     *     TP.dom.DocumentFragment, if there is more than one. NOTE: If a
+     *     TP.dom.DocumentFragment is returned, it contains a *clone* of the
      *     child nodes, not the originals.
      * @param {TP.sig.Request|TP.core.Hash} aRequest Optional control
      *     parameters.
-     * @returns {TP.dom.Node|TP.core.DocumentFragment} The only child node or a
-     *     TP.core.DocumentFragment containing a *clone* of all child nodes.
+     * @returns {TP.dom.Node|TP.dom.DocumentFragment} The only child node or a
+     *     TP.dom.DocumentFragment containing a *clone* of all child nodes.
      */
 
     var nativeNode,
@@ -16239,11 +16239,11 @@ TP.backstop(
     TP.dom.DocumentNode.getInstPrototype());
 
 //  ========================================================================
-//  TP.core.Document (alias)
+//  TP.dom.Document (alias)
 //  ========================================================================
 
-TP.core.Document = TP.dom.DocumentNode;
-TP.sys.addCustomType('TP.core.Document', TP.core.Document);
+TP.dom.Document = TP.dom.DocumentNode;
+TP.sys.addCustomType('TP.dom.Document', TP.dom.Document);
 
 //  ========================================================================
 //  TP.dom.HTMLDocumentNode

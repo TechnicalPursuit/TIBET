@@ -37,14 +37,14 @@ function(aTPDocument, aCurtainID) {
     /**
      * @method getSystemCurtainFor
      * @summary Returns (and, if necessary, creates) a 'shared system curtain'
-     *     for use by the system on the supplied TP.core.Document.
-     * @param {TP.core.Document} aTPDocument The document to create the curtain
+     *     for use by the system on the supplied TP.dom.Document.
+     * @param {TP.dom.Document} aTPDocument The document to create the curtain
      *     in, if it can't be found. Note that, in this case, the curtain will
      *     be created as the last child of the document's 'body' element.
      * @param {String} [aCurtainID=systemCurtain] The ID to use to query for the
      *     system curtain.
      * @returns {TP.xctrls.curtain} The system curtain on the supplied
-     *     TP.core.Document.
+     *     TP.dom.Document.
      */
 
     var tpDocBody,

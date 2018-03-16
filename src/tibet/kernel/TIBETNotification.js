@@ -1366,7 +1366,7 @@ function() {
      * @summary Returns the document from which the signal originated. This is
      *     typically the TIBET window's document, but it can vary when UI events
      *     are involved.
-     * @returns {TP.core.Document} The document that the signal originated in.
+     * @returns {TP.dom.Document} The document that the signal originated in.
      */
 
     return this.getWindow().getDocument();

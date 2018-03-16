@@ -222,7 +222,7 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
+     *     of the receiver in a TP.dom.Document wrapper.
      * @returns {Document} The Document object contained by the receiver.
      */
 

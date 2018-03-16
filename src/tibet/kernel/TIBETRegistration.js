@@ -383,7 +383,7 @@ function(anID, regOnly, nodeContext) {
     //  .document and .#document are often used to get document handles so
     //  check for that next to avoid lookup overhead below
     if (id === 'document') {
-        return TP.core.Document.construct(win.document);
+        return TP.dom.Document.construct(win.document);
     }
 
     //  not the document, perhaps an element in the document
@@ -399,7 +399,7 @@ function(anID, regOnly, nodeContext) {
                 if (TP.isWindow(inst)) {
                     return TP.core.Window.construct(inst);
                 } else if (TP.isDocument(inst)) {
-                    return TP.core.Document.construct(inst);
+                    return TP.dom.Document.construct(inst);
                 }
 
                 return inst;

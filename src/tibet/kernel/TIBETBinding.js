@@ -2359,7 +2359,7 @@ function() {
             return null;
         }
 
-        //  The template content was stored on our TP.core.Document when it was
+        //  The template content was stored on our TP.dom.Document when it was
         //  captured and was stored under our templateID.
         if (TP.notValid(
                 templateInfo = this.getDocument().get('$repeatTemplates'))) {
@@ -3718,7 +3718,7 @@ function() {
     /**
      * @method $registerRepeatContent
      * @summary Registers the content under the receiver as repeat content with
-     *     the receiver's TP.core.Document for iteration purposes.
+     *     the receiver's TP.dom.Document for iteration purposes.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
