@@ -790,6 +790,21 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineHandler('ClearContent',
+function(aSignal) {
+
+    /**
+     * @method handleClearContent
+     * @summary Handles when the receiver's data is to be cleared.
+     * @param {TP.sig.ClearContent} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    return TP.todo();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineHandler('CloneItem',
 function(aSignal) {
 
