@@ -243,12 +243,12 @@ TP.log.KarmaAppender.Type.$set('defaultLayoutType', 'TP.log.KarmaLayout');
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
-TP.log.KarmaAppender.Type.defineMethod('initialize',
+TP.log.KarmaAppender.Type.defineMethod('installControllers',
 function() {
 
     /**
-     * @method initialize
-     * @summary Configures the Karma-related infrastructure on system startup,
+     * @method installControllers
+     * @summary Configures the Karma-related controller infrastructure,
      *     contingent on being loaded within a Karma-enabled environment.
      */
 
