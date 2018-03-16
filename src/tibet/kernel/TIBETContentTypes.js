@@ -7763,8 +7763,8 @@ function(aPath, config) {
 
     /**
      * @method tpc
-     * @summary Returns a newly initialized TIBETSimplePath or
-     *     TIBETComplexPath instance.
+     * @summary Returns a newly initialized SimpleTIBETPath or ComplexTIBETPath
+     *     instance.
      * @param {String} aPath The path as a String.
      * @param {TP.core.Hash} config The configuration for this path.
      * @returns {TP.path.SimpleTIBETPath|TP.path.ComplexTIBETPath} The new

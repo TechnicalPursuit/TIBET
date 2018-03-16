@@ -1016,7 +1016,7 @@ function() {
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 
-    this.it('TP.core.ComplexPath path-enhanced aspect change notification', function(test, options) {
+    this.it('TP.path.ComplexTIBETPath path-enhanced aspect change notification', function(test, options) {
 
         var aspectChangedResults,
             valueChangedResults,
