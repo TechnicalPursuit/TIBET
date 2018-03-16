@@ -350,6 +350,8 @@ function() {
             TP.sys.hasInitialized(true);
 
             //  Refresh controllers now that all initialization is done.
+            //  Note that this will build the proper Application subtype instance
+            //  and configure it.
             TP.sys.getApplication().refreshControllers();
 
             try {
@@ -363,11 +365,6 @@ function() {
                 // Fall through and take our chances the UI will display
                 // properly.
             }
-
-            //  Get the Application subtype instance built and configured. Note
-            //  that we don't need to assign this - we're only calling it to
-            //  make sure the cached application instance is built.
-            TP.sys.getApplication();
 
             //  Final signal before UI begins processing.
             TP.signal('TP.sys', 'AppDidInitialize');
