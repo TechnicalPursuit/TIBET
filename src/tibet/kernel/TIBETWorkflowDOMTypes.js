@@ -993,7 +993,7 @@ TP.tag.TagProcessor.Type.defineConstant(
     'TP.tag.AttachDataPhase',      //  model construct et. al.
     'TP.tag.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
     'TP.tag.AttachBindsPhase',     //  data bindings in the bind: namespace
-    'TP.core.AttachStylePhase',     //  CSS is near end so display: none can
+    'TP.tag.AttachStylePhase',     //  CSS is near end so display: none can
                                     //  flip late
     'TP.tag.AttachCompletePhase'
     ));
@@ -1004,7 +1004,7 @@ TP.tag.TagProcessor.Type.defineConstant(
 TP.tag.TagProcessor.Type.defineConstant(
     'DETACH_PHASES',
     TP.ac(
-    'TP.core.DetachStylePhase',
+    'TP.tag.DetachStylePhase',
     'TP.tag.DetachDataPhase',
     'TP.tag.DetachBindsPhase',
     'TP.tag.DetachInfoPhase',
@@ -2530,20 +2530,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.AttachStylePhase
+//  TP.tag.AttachStylePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachStylePhase}
+ * @type {TP.tag.AttachStylePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.tag.MutationPhase.defineSubtype('core.AttachStylePhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachStylePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachStylePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachStylePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2990,20 +2990,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.DetachStylePhase
+//  TP.tag.DetachStylePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachStylePhase}
+ * @type {TP.tag.DetachStylePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.tag.MutationPhase.defineSubtype('core.DetachStylePhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachStylePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachStylePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachStylePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
