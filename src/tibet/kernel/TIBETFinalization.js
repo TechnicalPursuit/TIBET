@@ -195,6 +195,19 @@ function() {
         function() {
             var i;
 
+            //  One tricky part is that we can sometimes trigger application
+            //  instance creation during phase one of parallel booting. Because
+            //  of that, it will be an instance of the common
+            //  TP.core.Application type and not the specific subtype of
+            //  TP.core.Application that we'll want for the rest of the life of
+            //  running the app.
+
+            //  So, when that happens we want to clear the singleton instance
+            //  now that phase two has loaded and before we try anything that
+            //  would depend on routes etc. This singleton instance will be
+            //  re-created as an instance of our application-specific subtype.
+            TP.core.Application.set('singleton', null);
+
             //  Initialize all the types which own initialize methods so we're
             //  sure they're ready for operation. this may cause them to load
             //  other types so we do this before proxy setup.
@@ -220,30 +233,6 @@ function() {
                 TP.boot.$stderr('Initialization failure.', TP.FATAL);
 
                 throw e;
-            } finally {
-
-                //  One tricky part is that we can sometimes trigger application
-                //  instance creation during phase one of parallel booting.
-                //  Because of that, it will be an instance of the common
-                //  TP.core.Application type and not the specific subtype of
-                //  TP.core.Application that we'll want for the rest of the life
-                //  of running the app.
-
-                //  So, when that happens we want to clear the singleton
-                //  instance now that phase two has loaded and before we try
-                //  anything that would depend on routes etc. This singleton
-                //  instance will be re-created as an instance of our
-                //  application-specific subtype.
-                TP.core.Application.set('singleton', null);
-
-                //  If we're running inside of a Karma environment, we need to
-                //  allow various components to install controllers onto the app
-                //  singleton object (which is created on demand - a new
-                //  instance will be created if Karma installs controllers).
-                //
-                if (TP.sys.hasFeature('karma')) {
-                    TP.log.KarmaAppender.Type.installControllers();
-                }
             }
         }).then(
         function() {
