@@ -10461,6 +10461,84 @@ function(aTarget, name, aTrack) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('methodByDisplayName',
+function(aDisplayName) {
+
+    /**
+     * @method methodByDisplayName
+     * @summary Returns the method whose display name matches the supplied name.
+     *     This value should be something like 'TP.Primitive.json' for primitive
+     *     methods or 'TP.lang.RootObject.Inst.$addFacetFunction' for
+     *     non-primitive methods.
+     * @param {String} aDisplayName The display name of the method to locate.
+     * @returns {Function} The Function object representing the method.
+     */
+
+    var nameParts,
+
+        rootNamespace,
+        namespace,
+
+        methodName,
+        methodObj,
+
+        ownerType,
+        ownerTrack;
+
+    //  The display name will be something like 'TP.Primitive.json' for
+    //  primitive methods or 'TP.lang.RootObject.Inst.$addFacetFunction' for
+    //  methods associated with a type.
+
+    //  Split the name up into component parts
+    nameParts = aDisplayName.split('.');
+
+    //  If the second part is the ID of one of our 'special' objects, then we
+    //  have to use them to obtain the method
+    if (nameParts.at(1) === TP.META_INST_OWNER.getID()) {
+        return TP.META_INST_OWNER.getMethod(nameParts.at(2));
+    }
+
+    if (nameParts.at(1) === TP.META_TYPE_OWNER.getID()) {
+        return TP.META_TYPE_OWNER.getMethod(nameParts.at(2));
+    }
+
+    //  To start we need a valid root namespace
+    rootNamespace = TP.global[nameParts.at(0)];
+    if (TP.notValid(rootNamespace)) {
+        return null;
+    }
+
+    //  Then an organizing namespace within that root
+    namespace = rootNamespace[nameParts.at(1)];
+    if (TP.notValid(namespace)) {
+        return null;
+    }
+
+    methodObj = null;
+
+    //  If the organizing namespace is TP.PRIMITIVE_TRACK, then it's really the
+    //  track for a method that's a primitive method.
+    if (namespace === TP.PRIMITIVE_TRACK) {
+        methodName = nameParts.at(2);
+        methodObj = rootNamespace[methodName];
+    } else {
+
+        //  Otherwise, the owning type can be computed.
+        ownerType = namespace[nameParts.at(2)];
+        if (!TP.isType(ownerType)) {
+            return this;
+        }
+
+        ownerTrack = nameParts.at(3);
+        methodName = nameParts.at(4);
+        methodObj = ownerType.getMethod(methodName, ownerTrack);
+    }
+
+    return methodObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('methods',
 function(aTarget, aTrack) {
 
