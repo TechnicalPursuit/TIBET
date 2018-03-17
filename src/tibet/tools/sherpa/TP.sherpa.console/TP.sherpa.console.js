@@ -62,6 +62,245 @@ TP.sherpa.console.Inst.defineAttribute('statusReadoutTimer');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('createNewConsoleEditorFor',
+function(tabValue, tabLabel) {
+
+    /**
+     * @method createNewConsoleEditorFor
+     * @summary Creates a new console tab and, using the supplied value, loads
+     *     it with the content for that value.
+     * @param {String} tabValue The value to use as the tab and panel's value.
+     *     This is the value that will be resolved in the system and that
+     *     resolved object will be used as the source for the editor.
+     * @param {String} tabLabel The label to use for the new tab.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var newPanel,
+
+        editorTPElem,
+        toolbarTPElem,
+
+        sourceObj,
+
+        editorLID,
+
+        panelContentElem,
+        elem,
+
+        editor,
+        handler;
+
+    //  Ask the inspector to create a new console tab with the value and label.
+    //  This will return the new panel that we can add content to. Note that we
+    //  pass false here to tell the system to *not* create a profile entry.
+    newPanel = this.makeNewConsoleTabPanel(tabValue, tabLabel, false);
+
+    //  Depending on whether or not the value is a URI string, we create either
+    //  a general URI editor or a method editor.
+    if (TP.isURIString(tabValue)) {
+
+        editorTPElem = TP.sherpa.urieditor.getResourceElement(
+                                'template',
+                                TP.ietf.mime.XHTML);
+
+        toolbarTPElem = TP.sherpa.uriEditorToolbarContent.getResourceElement(
+                                'template',
+                                TP.ietf.mime.XHTML);
+
+        sourceObj = TP.uc(tabValue);
+
+    } else {
+
+        editorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                                'template',
+                                TP.ietf.mime.XHTML);
+
+        toolbarTPElem = TP.sherpa.methodEditorToolbarContent.getResourceElement(
+                                'template',
+                                TP.ietf.mime.XHTML);
+
+        //  The tab value will be the method's TP.DISPLAY name. Fetch the method
+        //  object based on that value.
+        sourceObj = TP.methodByDisplayName(tabValue);
+    }
+
+    editorTPElem = editorTPElem.clone();
+    toolbarTPElem = toolbarTPElem.clone();
+
+    //  We don't want adding the editor and it's toolbar to the DOM to cause
+    //  mutation signals to be processed.
+    newPanel.setAttribute('tibet:nomutationtracking', 'true');
+
+    //  Compute a unique ID for the editor, based on the number of tabs that are
+    //  already in the console tab view.
+    editorLID = 'editor_' + (this.getTabCount() - 1);
+
+    //  Grab the 'xctrls:content' element from it.
+    panelContentElem = newPanel.get('contentElement').getNativeNode();
+
+    //  Grab the toolbar's native element and set the 'tibet:ctrl' attribute
+    //  (used for dispatching responder signals) to the new unique ID that we
+    //  computed above so that responder signals from this particular toolbar
+    //  will go to the right place (ourself, via our new ID).
+    elem = TP.unwrap(toolbarTPElem);
+    TP.elementSetAttribute(elem, 'tibet:ctrl', editorLID, true);
+    TP.elementAddClass(elem, 'tabbed');
+
+    //  Move the toolbar into place in our panel content.
+    TP.nodeAppendChild(panelContentElem, elem, false);
+
+    //  Grab our native element and reset the 'id' to the new unique ID that we
+    //  computed above. This will tie us together with the toolbar via it's
+    //  now-reset 'tibet:ctrl' attribute above.
+    elem = TP.unwrap(editorTPElem);
+    TP.elementSetAttribute(elem, 'id', editorLID, true);
+
+    //  Add a class of 'tabbed' and add the editor into place in our panel
+    //  content.
+    TP.elementAddClass(elem, 'tabbed');
+    editorTPElem = TP.wrap(panelContentElem).addContent(editorTPElem);
+
+    //  Set up a handler on the underlying 'editor' object of the editor element
+    //  for the TP.sig.DOMReady signal that will be fired when the editor is
+    //  ready to have its value set.
+    editor = editorTPElem.get('editor');
+
+    handler = function(aSignal) {
+        handler.ignore(editor, 'TP.sig.DOMReady');
+
+        //  The editor is ready - set the value.
+        editorTPElem.set('value', sourceObj);
+    };
+    handler.observe(editor, 'TP.sig.DOMReady');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('getTabCount',
+function() {
+
+    /**
+     * @method getTabCount
+     * @summary Returns the number of tabs in the console tab control.
+     * @returns {Number} The number of tabs in the console tab control.
+     */
+
+    var tabsURI,
+        data;
+
+    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
+
+    data = tabsURI.getResource().get('result').get('data');
+
+    return data.getSize();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('hasTabForValue',
+function(aValue) {
+
+    /**
+     * @method hasTabForValue
+     * @summary Returns whether or not the console's tab control has a tab whose
+     *     value matches the supplied value.
+     * @param {String} aValue The value to match.
+     * @returns {Boolean} Whether or not there is a tab matching that value.
+     */
+
+    var tabsURI,
+        data,
+
+        keys,
+        tabHasValue;
+
+    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
+    data = tabsURI.getResource().get('result').get('data');
+
+    tabHasValue = false;
+    if (TP.notEmpty(data)) {
+
+        //  Grab up all of the items in the first position at each Array in the
+        //  data. This will be the 'key'.
+        keys = data.collect(TP.RETURN_FIRST);
+
+        //  If there is a tab with a value matching one of the keys, then we
+        //  will detect it. If it's valid, then we know we have a tab matching
+        //  that.
+        tabHasValue = TP.isValid(
+                        keys.detect(
+                            function(aKey) {
+                                return aKey === aValue;
+                            }));
+    }
+
+    return tabHasValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('makeNewConsoleTabPanel',
+function(tabValue, tabLabel, shouldCreateProfileEntry) {
+
+    /**
+     * @method makeNewConsoleTabPanel
+     * @summary Makes a new tab in the console using the supplied value and
+     *     label.
+     * @param {String} tabValue The value to use as the tab and panel's value.
+     *     This is the value that will tie them together so that when the value
+     *     of the tabbar is changed, the panel will change to match.
+     * @param {String} tabLabel The label to use for the new tab.
+     * @param {Boolean} [shouldCreateProfileEntry=true] Whether or not the
+     *     system should create an entry for this tab in the user's shell
+     *     profile.
+     * @returns {TP.xctrls.panel} The newly created panel, ready for new content
+     *     to be placed into it.
+     */
+
+    var tabsURI,
+        data,
+
+        panelBox,
+        newPanel,
+
+        editorTabEntries;
+
+    //  Grab the value holder holding the tab data.
+    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
+
+    //  Grab the data and push a new value of an Array consisting of the value
+    //  and the label.
+    data = tabsURI.getResource().get('result').get('data');
+    data.push(TP.ac(tabValue, tabLabel));
+
+    //  Signal that the data has changed - we need to do this manually since we
+    //  extracted the data from the value holder URI.
+    tabsURI.$changed();
+
+    //  Grab the Sherpa console's panel box and add a new panel, supplying the
+    //  value we are using to tie the two together.
+    panelBox = TP.byId('SherpaConsolePanelbox', this.getNativeDocument());
+    newPanel = panelBox.addPanel(tabValue);
+
+    //  If we should create an entry in the profile, then do so and tell the
+    //  shell to save the profile.
+    if (TP.notFalse(shouldCreateProfileEntry)) {
+        editorTabEntries =
+            TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
+
+        editorTabEntries.push(TP.ac(tabValue, tabLabel));
+
+        TP.bySystemId('TSH').saveProfile();
+    }
+
+    return newPanel;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setup',
 function() {
 
@@ -389,6 +628,8 @@ function() {
     consoleDrawerTPElem = TP.byId('south', TP.win('UIROOT'));
     this.observe(consoleDrawerTPElem, 'ClosedChange');
 
+    this.observe(TP.uc('urn:tibet:sherpa_consoletabs'), 'ValueChange');
+
     //  Observe the current tab selection for the tabbar in the source drawer
     //  for when its value changes.
     tabSelectionURI = TP.uc('urn:tibet:current_console_tab#tibet(selection)');
@@ -498,6 +739,10 @@ function(aSignal) {
     var tabItem,
         tabValue,
 
+        editorTabEntries,
+        editorTabValues,
+        valueIndex,
+
         tabbar,
         newTabValue,
 
@@ -512,6 +757,19 @@ function(aSignal) {
     if (TP.isValid(tabItem)) {
         tabValue = tabItem.get('value');
     }
+
+    //  Find the entry matching the tab value in the console tab entries that we
+    //  store in the profile.
+    editorTabEntries =
+        TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
+    editorTabValues = editorTabEntries.collect(TP.RETURN_FIRST);
+    valueIndex = editorTabValues.indexOf(tabValue);
+
+    //  Remove the entry corresponding to that tab value.
+    editorTabEntries.splice(valueIndex, 1);
+
+    //  Tell the Shell to save the profile.
+    TP.bySystemId('TSH').saveProfile();
 
     //  Remove the item from the tabbar matching that value.
     tabbar = TP.byId('SherpaConsoleTabbar', this.getNativeDocument());
@@ -582,22 +840,45 @@ function(aSignal) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var value,
+    var editorTabEntries,
+
+        len,
+        i,
+        entry,
+
+        value,
 
         consoleInput;
 
-    value = aSignal.getOrigin().getResource().get('result');
+    if (aSignal.getOrigin() === TP.uc('urn:tibet:sherpa_consoletabs')) {
 
-    //  If the new value is 'TSH', then we need to grab the console input and
-    //  set up a timeout to refresh the editor and focus. This causes the
-    //  embedded CodeMirror editor to redraw properly.
-    if (value === 'TSH') {
+        editorTabEntries =
+            TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
 
-        if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-            setTimeout(
-                function() {
-                    consoleInput.focus();
-                }, 100);
+        if (TP.notEmpty(editorTabEntries)) {
+            len = editorTabEntries.getSize();
+
+            for (i = 0; i < len; i++) {
+                entry = editorTabEntries.at(i);
+                this.createNewConsoleEditorFor(entry.first(), entry.last());
+            }
+        }
+
+    } else {
+
+        value = aSignal.getOrigin().getResource().get('result');
+
+        //  If the new value is 'TSH', then we need to grab the console input
+        //  and set up a timeout to refresh the editor and focus. This causes
+        //  the embedded CodeMirror editor to redraw properly.
+        if (value === 'TSH') {
+
+            if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+                setTimeout(
+                    function() {
+                        consoleInput.focus();
+                    }, 100);
+            }
         }
     }
 

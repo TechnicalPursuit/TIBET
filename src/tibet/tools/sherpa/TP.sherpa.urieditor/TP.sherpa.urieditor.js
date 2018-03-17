@@ -239,7 +239,9 @@ function(aSignal) {
 
     var sourceURI,
 
+        console,
         inspector,
+
         detachedValueAndName,
         newPanel,
         editorLID,
@@ -256,22 +258,29 @@ function(aSignal) {
     //  we're done doing that.
     this.ignore(sourceURI, TP.ac('TP.sig.ValueChange', 'DirtyChange'));
 
+    console = TP.byId('SherpaConsole', this.getNativeWindow());
     inspector = TP.byId('SherpaInspector', this.getNativeWindow());
 
     //  Compute the value and name for the receiver that it will use as the name
     //  and value for the tab.
     detachedValueAndName = this.$computeDetachedValueAndName();
 
-    //  Ask the inspector to create a new console tab with that value and name.
-    //  This will return the new panel that we can add content to it.
-    newPanel = inspector.createNewConsoleTab(detachedValueAndName.first(),
-                                                detachedValueAndName.last());
+    //  Ask the console to create a new console tab with that value and name.
+    //  This will return the new panel that we can add content to it. Note here
+    //  how we pass true so that a profile entry is made for this tab for when
+    //  the profile is saved.
+    newPanel = console.makeNewConsoleTabPanel(
+                    detachedValueAndName.first(),
+                    detachedValueAndName.last(),
+                    true);
 
+    //  We don't want moving this object and it's toolbar around in the DOM to
+    //  cause mutation signals to be processed.
     newPanel.setAttribute('tibet:nomutationtracking', 'true');
 
     //  Compute a unique ID for the editor, based on the number of tabs that are
     //  already in the console tab view.
-    editorLID = 'editor_' + (inspector.getConsoleTabCount() - 1);
+    editorLID = 'editor_' + (console.getTabCount() - 1);
 
     //  Grab the 'xctrls:content' element from it.
     panelContentElem = newPanel.get('contentElement').getNativeNode();
@@ -290,10 +299,9 @@ function(aSignal) {
     //  will go to the right place (ourself, via our new ID).
     elem = TP.unwrap(toolbarContent);
     TP.elementSetAttribute(elem, 'tibet:ctrl', editorLID, true);
-
-    //  Add a class of 'tabbed' and move the toolbar into place in our panel
-    //  content.
     TP.elementAddClass(elem, 'tabbed');
+
+    //  Move the toolbar into place in our panel content.
     TP.nodeAppendChild(panelContentElem, elem, false);
 
     //  Grab our native element and reset the 'id' to the new unique ID that we

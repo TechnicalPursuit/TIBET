@@ -54,7 +54,7 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in the
     //  inspector.
     loc = this.getLocation();
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
     //  If so, then we want to return false to force the inspector bay to use
@@ -107,7 +107,7 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
     //  If not, then possibly reset the content type to be that for a Sherpa
@@ -155,7 +155,7 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
 
@@ -323,7 +323,7 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 loc);
 
     //  If not, then return the uri toolbar content for placement into the
