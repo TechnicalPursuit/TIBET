@@ -199,7 +199,9 @@ function() {
 
     this.observe(editorTPElem, 'DirtyChange');
 
-    this.refreshControls();
+    if (TP.isURI(this.get('sourceURI'))) {
+        this.refreshControls();
+    }
 
     return this;
 });
