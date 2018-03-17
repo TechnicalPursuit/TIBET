@@ -1239,49 +1239,6 @@ function(aBay, bayConfig) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('createNewConsoleTab',
-function(tabValue, tabLabel) {
-
-    /**
-     * @method createNewConsoleTab
-     * @summary Creates a new tab in the console using the supplied value and
-     *     label.
-     * @param {String} tabValue The value to use as the tab and panel's value.
-     *     This is the value that will tie them together so that when the value
-     *     of the tabbar is changed, the panel will change to match.
-     * @param {String} tabLabel The label to use for the new tab.
-     * @returns {TP.xctrls.panel} The newly created panel, ready for new content
-     *     to be placed into it.
-     */
-
-    var tabsURI,
-        data,
-
-        panelBox,
-        newPanel;
-
-    //  Grab the value holder holding the tab data.
-    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
-
-    //  Grab the data and push a new value of an Array consisting of the value
-    //  and the label.
-    data = tabsURI.getResource().get('result').get('data');
-    data.push(TP.ac(tabValue, tabLabel));
-
-    //  Signal that the data has changed - we need to do this manually since we
-    //  extracted the data from the value holder URI.
-    tabsURI.$changed();
-
-    //  Grab the Sherpa console's panel box and add a new panel, supplying the
-    //  value we are using to tie the two together.
-    panelBox = TP.byId('SherpaConsolePanelbox', this.getNativeDocument());
-    newPanel = panelBox.addPanel(tabValue);
-
-    return newPanel;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineMethod('emptyBay',
 function(aBay) {
 
@@ -1997,27 +1954,6 @@ function(aSlotPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getConsoleTabCount',
-function() {
-
-    /**
-     * @method getConsoleTabCount
-     * @summary Returns the number of tabs in the console tab control.
-     * @returns {Number} The number of tabs in the console tab control.
-     */
-
-    var tabsURI,
-        data;
-
-    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
-
-    data = tabsURI.getResource().get('result').get('data');
-
-    return data.getSize();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineMethod('getCurrentPropertyValueForTool',
 function(propertyName, toolName) {
 
@@ -2246,48 +2182,6 @@ function() {
             });
 
     return totalSlotCount;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('hasTabForValue',
-function(aValue) {
-
-    /**
-     * @method hasTabForValue
-     * @summary Returns whether or not the console's tab control has a tab whose
-     *     value matches the supplied value.
-     * @param {String} aValue The value to match.
-     * @returns {Boolean} Whether or not there is a tab matching that value.
-     */
-
-    var tabsURI,
-        data,
-
-        keys,
-        tabHasValue;
-
-    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
-    data = tabsURI.getResource().get('result').get('data');
-
-    tabHasValue = false;
-    if (TP.notEmpty(data)) {
-
-        //  Grab up all of the items in the first position at each Array in the
-        //  data. This will be the 'key'.
-        keys = data.collect(TP.RETURN_FIRST);
-
-        //  If there is a tab with a value matching one of the keys, then we
-        //  will detect it. If it's valid, then we know we have a tab matching
-        //  that.
-        tabHasValue = TP.isValid(
-                        keys.detect(
-                            function(aKey) {
-                                return aKey === aValue;
-                            }));
-    }
-
-    return tabHasValue;
 });
 
 //  ------------------------------------------------------------------------
