@@ -998,7 +998,8 @@ function() {
 
         historyEntries,
         snippetEntries,
-        bookmarkEntries; // ,
+        bookmarkEntries,
+        editorTabEntries;
         // screenEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
@@ -1113,6 +1114,20 @@ function() {
             }
 */
 
+            //  ---
+            //  Console Editor Tabs
+            //  ---
+
+            editorTabEntries = dataSet.at('editortabs');
+
+            if (TP.isEmpty(editorTabEntries)) {
+                editorTabEntries = TP.ac();
+            }
+
+            TP.uc('urn:tibet:sherpa_consoletabs').setResource(
+                                            editorTabEntries,
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
         } else {
 
             //  ---
@@ -1216,7 +1231,7 @@ function() {
         //  ---
 
         editorTabEntries =
-            TP.uc('urn:tibet:sherpa_editortabs').getResource().get('result');
+            TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
         if (TP.isEmpty(editorTabEntries)) {
             editorTabEntries = TP.ac();
         }
