@@ -291,6 +291,34 @@ function(aText, line) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('blur',
+function() {
+
+    /**
+     * @method blur
+     * @summary Blurs the receiver for keyboard input.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var nativeTATPElem;
+
+    //  Go ahead and 'focus' the editor.
+    this.$get('$editorObj').blur();
+
+    //  Make sure to do a separate 'blur' on the textarea that the ACE editor
+    //  uses. This keeps everything in sync for TIBET's focusing machinery.
+    nativeTATPElem = TP.byCSSPath(
+                        'textarea.ace_text-input',
+                        this.getNativeNode(),
+                        true);
+
+    nativeTATPElem.blur();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('captureCurrentScrollInfo',
 function() {
 
