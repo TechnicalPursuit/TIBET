@@ -586,7 +586,7 @@ function(anObj, anInputStr) {
         //  then compute a URI based on that.
         switch (pathParts.at(0)) {
             case 'CSS':
-                httpStr += 'css/' + obj;
+                httpStr += 'css/' + pathParts.at(1);
                 return httpStr;
             default:
                 break;
