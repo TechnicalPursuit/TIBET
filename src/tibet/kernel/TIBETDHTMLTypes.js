@@ -5717,7 +5717,7 @@ function(aValue, anIndex, shouldSignal) {
      *     the exception that, if the receiver allows multiple selection, this
      *     method does not clear existing selections when processing the
      *     value(s) provided.
-     * @param {Object} [aValue] The value to select. Note that this can be an
+     * @param {Object} aValue The value to select. Note that this can be an
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
@@ -5727,6 +5727,10 @@ function(aValue, anIndex, shouldSignal) {
      */
 
     var dirty;
+
+    if (TP.notValid(aValue)) {
+        return false;
+    }
 
     //  If allowMultiples is false, then we can use a reference to a singular
     //  value that will be used as the selected value.
