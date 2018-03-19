@@ -243,8 +243,6 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.methodeditor-TP.sherpa.methodeditor.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.typedisplay-TP.sherpa.typedisplay.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.typedisplay-TP.sherpa.typedisplay.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.searcher-TP.sherpa.searcher.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.searcher-TP.sherpa.searcher.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.drawer-TP.sherpa.drawer.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.drawer-TP.sherpa.drawer.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tofu-TP.sherpa.tofu.css.js"/>
