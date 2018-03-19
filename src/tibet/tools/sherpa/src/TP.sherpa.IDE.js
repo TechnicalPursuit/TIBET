@@ -291,9 +291,6 @@ function(finalizationFunc) {
     //  Set up the inspector
     this.setupInspector();
 
-    //  Set up the searcher
-    //  this.setupSearcher();
-
     //  Set up the thumbnail viewer
     this.setupThumbnail();
 
@@ -2716,24 +2713,6 @@ function() {
     //  construct it. This will set its ID and register it so that it can be
     //  found.
     TP.sherpa.outliner.construct();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.IDE.Inst.defineMethod('setupSearcher',
-function() {
-
-    /*
-    var searchDrawerContent;
-
-    searchDrawerContent = TP.byCSSPath('sherpa|search > .content',
-                                        this.get('vWin'),
-                                        true);
-
-    searchDrawerContent.insertContent('<sherpa:searcher/>', TP.AFTER_BEGIN);
-    */
 
     return this;
 });

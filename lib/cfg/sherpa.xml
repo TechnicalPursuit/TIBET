@@ -42,7 +42,6 @@
     <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
     <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>
     <script src="./TP.sherpa.typedisplay/TP.sherpa.typedisplay.js"/>
-    <script src="./TP.sherpa.searcher/TP.sherpa.searcher.js"/>
     <script src="./TP.sherpa.drawer/TP.sherpa.drawer.js"/>
     <script src="./TP.sherpa.tofu/TP.sherpa.tofu.js"/>
     <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
