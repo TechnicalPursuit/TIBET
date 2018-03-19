@@ -1451,7 +1451,7 @@ function(anElement) {
     //  Try to obtain the style element and its sheet - if its not
     //  available, create one and grab its sheet
     styleElem = TP.nodeGetElementById(TP.nodeGetDocument(anElement),
-                                                'pseudo_inline_rules');
+                                        'pseudo_inline_rules_generated');
     if (!TP.isElement(styleElem)) {
         //  Note here how we pass 'false' as the final parameter to avoid having
         //  this call signal and possibly cause a recursion.
@@ -1465,7 +1465,8 @@ function(anElement) {
         }
 
         //  Uniquely identify the 'pseudo inline style element'
-        TP.elementSetAttribute(styleElem, 'id', 'pseudo_inline_rules');
+        TP.elementSetAttribute(
+                    styleElem, 'id', 'pseudo_inline_rules_generated');
 
         //  We did create a new sheet
         newSheet = true;
