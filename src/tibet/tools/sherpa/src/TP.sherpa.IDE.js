@@ -2332,8 +2332,8 @@ function() {
         },
         'BUILDER_OBSERVER');
 
-    //  Add a managed Mutation Observer filter Function that will filter
-    //  child tree mutation records for:
+    //  Add managed Mutation Observer filter Functions that will filter child
+    //  tree mutation records for:
     //
     //      - generated elements
 
