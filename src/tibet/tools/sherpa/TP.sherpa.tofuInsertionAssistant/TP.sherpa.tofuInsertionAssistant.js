@@ -200,7 +200,7 @@ function(anObject) {
 
     //  If we found a valid tag template, then clone it's first child (which
     //  will be the content that we actually want to insert).
-    if (TP.isValid(tagTemplate)) {
+    if (TP.isKindOf(tagTemplate, TP.core.ElementNode)) {
 
         tagTemplate = tagTemplate.getFirstChildElement();
         newElem = TP.nodeCloneNode(tagTemplate.getNativeNode());
