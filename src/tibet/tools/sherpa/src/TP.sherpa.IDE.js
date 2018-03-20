@@ -2267,6 +2267,18 @@ function() {
                             return false;
                         }
 
+                        //  For XHTML 'style' elements that are generated as
+                        //  part of the style processing machinery, these
+                        //  elements will not exist in the source document. Even
+                        //  though the ID value will likely be a generated ID
+                        //  matching a type name, the logic below won't catch
+                        //  them because the prefix on a 'style' element will
+                        //  likely be null.
+                        if (TP.elementHasAttribute(
+                            elem, 'tibet:originalHref', true)) {
+                            return false;
+                        }
+
                         //  In the first case, we use the real element name
                         //  prefix and tagName and see if they're joined
                         //  together with an underscore ('_'). If so, then it's
