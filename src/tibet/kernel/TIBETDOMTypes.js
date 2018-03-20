@@ -13540,6 +13540,11 @@ function(storageInfo) {
         }
 
         switch (attrName) {
+            case 'pseudoinline':
+
+                //  Don't emit this attribute.
+                continue;
+
             case 'xmlns':
 
                 //  A default namespace. Try to obtain the document's MIME type
