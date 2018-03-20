@@ -308,7 +308,9 @@ function(aSignal) {
     var aspectPath,
         targetTPElem,
 
-        value;
+        value,
+
+        haloTPElem;
 
     aspectPath = aSignal.at('aspect');
 
@@ -338,6 +340,9 @@ function(aSignal) {
     TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
     targetTPElem.sherpaSetTextContent(value);
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem.moveAndSizeToTarget(targetTPElem);
 
     return this;
 });
