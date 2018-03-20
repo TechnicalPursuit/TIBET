@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<keyrings xmlns="http://www.technicalpursuit.com/1999/tibet">
+<keyrings>
     <!-- Normally, application keyrings go in this file. But this copy of the
          file is here (inside of the TIBET lib directory) because the test
          harness wants to load resources from this directory. So this file is
