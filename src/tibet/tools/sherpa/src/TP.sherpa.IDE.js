@@ -3120,9 +3120,11 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             TP.elementHasAttribute(
                 mutatedElem, 'tibet:desugaredTextBinding');
 
+        /* eslint-disable no-extra-parens */
         if (TP.nodeIsDetached(mutatedNode) ||
             (operation === TP.DELETE &&
                 TP.notEmpty(mutatedNode[TP.PREVIOUS_POSITION]))) {
+        /* eslint-enable no-extra-parens */
 
             //  If mutatedNode was a Text node that was a desugared text
             //  binding, then we normalize the mutatedElem (which will be the
