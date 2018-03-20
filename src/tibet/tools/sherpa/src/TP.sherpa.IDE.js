@@ -2195,7 +2195,9 @@ function() {
     TP.addMutationObserverFilter(
         function(aMutationRecord) {
 
-            var attrName,
+            var elem,
+
+                attrName,
                 attrPrefix,
                 attrValue,
                 attrOldValue,
@@ -2208,6 +2210,8 @@ function() {
                 computedElemPrefix,
                 computedElemLocalName;
 
+            elem = aMutationRecord.target;
+
             if (aMutationRecord.type === 'attributes') {
 
                 //  Compute attribute name, value, old value and prefix
@@ -2218,7 +2222,7 @@ function() {
                     if (!TP.regex.HAS_COLON.test(attrName)) {
                         attrPrefix = TP.w3.Xmlns.getURIPrefix(
                                         aMutationRecord.attributeNamespace,
-                                        aMutationRecord.target);
+                                        elem);
                         attrName = attrPrefix + ':' + attrName;
                     } else {
                         attrPrefix = attrName.slice(
@@ -2227,7 +2231,7 @@ function() {
                 }
 
                 attrValue = TP.elementGetAttribute(
-                                aMutationRecord.target,
+                                elem,
                                 attrName,
                                 true);
                 attrOldValue = aMutationRecord.oldValue;
@@ -2268,8 +2272,8 @@ function() {
                         //  together with an underscore ('_'). If so, then it's
                         //  very likely that TIBET generated it and so we ignore
                         //  it.
-                        realElemPrefix = aMutationRecord.target.prefix;
-                        realElemLocalName = aMutationRecord.target.tagName;
+                        realElemPrefix = elem.prefix;
+                        realElemLocalName = elem.tagName;
 
                         if (attrValue.startsWith(
                                 realElemPrefix + '_' +
@@ -2283,7 +2287,7 @@ function() {
                         //  then it's very likely that TIBET generated it and so
                         //  we ignore it.
                         computedElemName =
-                                TP.elementGetFullName(aMutationRecord.target);
+                                TP.elementGetFullName(elem);
                         computedElemNameParts =
                                 computedElemName.split(':');
                         computedElemPrefix =
