@@ -13496,6 +13496,13 @@ function(storageInfo) {
                     if (attrName !== 'tag') {
                         continue;
                     }
+
+                    //  It's a 'tibet:tag' attribute. See if it matches the
+                    //  computed element name. If so, then skip it.
+                    if (attrValue === computedElemName) {
+                        continue;
+                    }
+
                     break;
 
                 case 'xmlns':   //  NB: We allow default namespaces below.
