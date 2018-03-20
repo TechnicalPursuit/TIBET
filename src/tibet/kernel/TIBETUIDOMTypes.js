@@ -249,7 +249,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
 
     } else {
 
-        //  Otherwise, since it very well may have TIBET-ism (i.e. be a 'TIBET
+        //  Otherwise, since it very well may have TIBET-isms (i.e. be a 'TIBET
         //  CSS' kind of CSS)  - set up a 'tibet:style' element, with a type
         //  that denotes that, and let the processing machinery handle it.
         styleElem = TP.documentConstructElement(
@@ -371,10 +371,10 @@ function(aDocument) {
         return TP.elementGetAttribute(aStyleElem, 'id', true);
     };
 
-    //  We compute an 'id' by taking our *resource* type name and escaping
-    //  it. The resource type name is usually the type name, but can be
-    //  overridden for special types that need to supply a different name
-    //  here for use in resource location computations.
+    //  We compute an 'id' by taking our *resource* type name and escaping it.
+    //  The resource type name is usually the type name, but can be overridden
+    //  for special types that need to supply a different name here for use in
+    //  resource location computations.
     ourID = TP.escapeTypeName(this.getResourceTypeName());
 
     //  Add any theme name we might be using. The presumption is that a theme
