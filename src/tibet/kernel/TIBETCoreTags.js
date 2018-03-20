@@ -204,6 +204,10 @@ TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
 
 TP.tag.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
 
+//  The setting that determines whether or not we descend into our descendants
+//  when serializing. The default is TP.DESCEND.
+TP.tag.TemplatedTag.Type.defineAttribute('serializationTraversal', TP.DESCEND);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -339,6 +343,8 @@ function(storageInfo) {
 
     var str,
 
+        traversalSetting,
+
         currentStore,
         currentResult,
 
@@ -349,8 +355,18 @@ function(storageInfo) {
     //  If we're serializing, then we just do what our supertype does and
     //  descend into our child nodes.
     if (this.get('$areSerializing')) {
+
+        //  Call 'super' to get the serialized version of ourself.
         str = this.callNextMethod();
-        return TP.ac(str, TP.DESCEND);
+
+        //  Grab the traversal setting. If it's not TP.DESCEND (which is the
+        //  default), then call a method to serialize select descendants.
+        traversalSetting = this.getType().get('serializationTraversal');
+        if (traversalSetting !== TP.DESCEND) {
+            str += this.serializeSelectDescendants(storageInfo);
+        }
+
+        return TP.ac(str, traversalSetting);
     }
 
     //  Turn the serializing flag on.
@@ -419,6 +435,44 @@ function(storageInfo) {
     //  above - just hand back the empty String and continue on to the next
     //  sibling.
     return TP.ac('', TP.CONTINUE);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('serializeSelectDescendants',
+function(storageInfo) {
+
+    /**
+     * @method serializeSelectDescendants
+     * @summary Serializes selected descendants per the logic of this tag. This
+     *     method is only called if the setting of 'serializationTraversal' is
+     *     set to a value *other* than TP.DESCEND (which is the default). Note
+     *     that, at a minimum, this method *must* return the empty String.
+     * @description At this type level, this method just returns the empty
+     *     String. A templated tag subtype might choose to override this to
+     *     serialize selected descendants. If so, it needs to set it's
+     *     type-level 'serializationTraversal' attribute to something other than
+     *     TP.DESCEND (probably TP.CONTINUE) and then implement this method.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of selected descendants of the
+     *     receiver.
+     */
+
+    return '';
 });
 
 //  ========================================================================
