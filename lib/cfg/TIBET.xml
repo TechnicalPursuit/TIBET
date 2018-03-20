@@ -322,6 +322,7 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjusterValueMenuContent-TP.sherpa.adjusterValueMenuContent.css.js"/>
 
     <script src="~lib_build/lib_src-tibet-tools-sherpa-schema-tibet_tooling_types.json.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tofuInsertionAssistant-insertion_templates.xml.js"/>
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">

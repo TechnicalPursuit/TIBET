@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<templates xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols">
+    <template for="xctrls:button">
+        <xctrls:button>
+            <xctrls:label/>
+        </xctrls:button>
+    </template>
+</templates>

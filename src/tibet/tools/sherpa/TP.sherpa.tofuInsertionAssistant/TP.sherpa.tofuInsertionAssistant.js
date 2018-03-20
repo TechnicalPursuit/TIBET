@@ -110,6 +110,11 @@ function(anObject) {
         str,
 
         targetElem,
+
+        templateURL,
+        resp,
+        tagTemplate,
+
         targetTPElem,
 
         newTPElem,
@@ -179,57 +184,102 @@ function(anObject) {
         return this;
     }
 
-    //  If the tagName has a colon, then we try to match its namespace to the
-    //  namespace of the insertion target. If they're the same, then we insert
-    //  an Element with that tag name, minus its prefix.
-    if (TP.regex.HAS_COLON.test(tagName)) {
+    //  Grab the pre-defined template for the tagName, if it has one. Many of
+    //  the commonly-used tags have pre-defined templates.
+    templateURL = TP.uc(
+                    TP.objectGetSourceCollectionPath(this) + '/' +
+                    'insertion_templates.xml' +
+                    '#xpath1(//$def:template[@for="' + tagName + '"])');
 
-        //  Grab the namespace of the inserted tag.
-        tagParts = tagName.split(':');
-        tagXmlns = TP.w3.Xmlns.getPrefixURI(tagParts.first());
+    resp = templateURL.getResource(
+            TP.request('async', false,
+                        'resultType', TP.WRAP,
+                        'shouldSignal', false));
 
-        //  Grab the namespaces of the element at the insertion point.
-        currentDefaultXmlns = TP.elementGetDefaultXMLNS(targetElem);
+    tagTemplate = resp.get('result');
 
-        //  If they're the same, then strip off the prefix, but add an
-        //  'xmlns="..."' with that namespace so that the element goes into the
-        //  correct namespace.
-        if (tagXmlns === currentDefaultXmlns) {
-            tagName = tagName.slice(tagName.indexOf(':') + 1);
-            tagName += ' xmlns="' + currentDefaultXmlns + '"';
+    //  If we found a valid tag template, then clone it's first child (which
+    //  will be the content that we actually want to insert).
+    if (TP.isValid(tagTemplate)) {
+
+        tagTemplate = tagTemplate.getFirstChildElement();
+        newElem = TP.nodeCloneNode(tagTemplate.getNativeNode());
+
+        //  If attributes were defined by the user, populate them onto the new
+        //  element.
+        if (TP.notEmpty(val = info.at('tagAttrs'))) {
+            val.forEach(
+                function(attrInfo) {
+                    var hash;
+
+                    hash = TP.hc(attrInfo);
+
+                    TP.elementSetAttribute(
+                                newElem,
+                                hash.at('tagAttrName'),
+                                hash.at('tagAttrValue'),
+                                true);
+                });
         }
+
+    } else {
+
+        //  Otherwise, there was no pre-defined template for the tag.
+
+        //  If the tagName has a colon, then we try to match its namespace to
+        //  the namespace of the insertion target. If they're the same, then we
+        //  insert an Element with that tag name, minus its prefix.
+        if (TP.regex.HAS_COLON.test(tagName)) {
+
+            //  Grab the namespace of the inserted tag.
+            tagParts = tagName.split(':');
+            tagXmlns = TP.w3.Xmlns.getPrefixURI(tagParts.first());
+
+            //  Grab the namespaces of the element at the insertion point.
+            currentDefaultXmlns = TP.elementGetDefaultXMLNS(targetElem);
+
+            //  If they're the same, then strip off the prefix, but add an
+            //  'xmlns="..."' with that namespace so that the element goes into
+            //  the correct namespace.
+            if (tagXmlns === currentDefaultXmlns) {
+                tagName = tagName.slice(tagName.indexOf(':') + 1);
+                tagName += ' xmlns="' + currentDefaultXmlns + '"';
+            }
+        }
+
+        str = '<' + tagName;
+
+        //  If attributes were defined by the user, add them onto the string
+        //  defining the new element.
+        if (TP.notEmpty(val = info.at('tagAttrs'))) {
+            val.forEach(
+                function(attrInfo) {
+                    var hash;
+
+                    hash = TP.hc(attrInfo);
+
+                    str +=
+                        ' ' + hash.at('tagAttrName') +
+                        '=' +
+                        '"' + hash.at('tagAttrValue') + '"';
+                });
+        }
+
+        str += '/>';
+
+        newElem = TP.nodeFromString(str);
+
+        if (!TP.isElement(newElem)) {
+            //  Can't make valid markup from the computed String? Exit here.
+            //  TODO: Raise an exception
+            return this;
+        }
+
+        //  If the user has entered a tag that we don't know about, we force the
+        //  system to autodefine missing tags here.
+        autodefineMissingTags = TP.sys.cfg('sherpa.autodefine_missing_tags');
+        TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
     }
-
-    str = '<' + tagName;
-
-    if (TP.notEmpty(val = info.at('tagAttrs'))) {
-        val.forEach(
-            function(attrInfo) {
-                var hash;
-
-                hash = TP.hc(attrInfo);
-
-                str +=
-                    ' ' + hash.at('tagAttrName') +
-                    '=' +
-                    '"' + hash.at('tagAttrValue') + '"';
-            });
-    }
-
-    str += '/>';
-
-    newElem = TP.nodeFromString(str);
-
-    if (!TP.isElement(newElem)) {
-        //  Can't make valid markup from the computed String? Exit here.
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    //  If the user has entered a tag that we don't know about, we force the
-    //  system to autodefine missing tags here.
-    autodefineMissingTags = TP.sys.cfg('sherpa.autodefine_missing_tags');
-    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
 
     //  Tell the main Sherpa object that it should go ahead and process DOM
     //  mutations to the source DOM.
