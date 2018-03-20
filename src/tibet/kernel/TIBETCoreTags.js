@@ -193,14 +193,20 @@ function(aRequest) {
 
 TP.tag.CustomTag.defineSubtype('TP.tag.TemplatedTag');
 
-//  ------------------------------------------------------------------------
-
 //  Mix in templating behavior, resolving compile in favor of templating.
 TP.tag.TemplatedTag.addTraits(TP.dom.TemplatedNode);
 
 TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.tag.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
 //  Whether or not we're currently in the process of being serialized.
 TP.tag.TemplatedTag.Inst.defineAttribute('$areSerializing');
