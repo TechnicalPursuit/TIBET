@@ -256,6 +256,11 @@ TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 TP.xctrls.TemplatedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
+//  The setting that determines whether or not we descend into our descendants
+//  when serializing. We override the value from our supertype and set this to
+//  TP.CONTINUE.
+TP.xctrls.TemplatedTag.Type.set('serializationTraversal', TP.CONTINUE);
+
 //  ========================================================================
 //  TP.xctrls.value
 //  ========================================================================
