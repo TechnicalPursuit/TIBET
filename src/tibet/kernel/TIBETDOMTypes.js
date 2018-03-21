@@ -13359,7 +13359,7 @@ function(storageInfo) {
         return '';
     }
 
-    result.push('</', elem.tagName.toLowerCase(), '>');
+    result.push('</', elem.tagName.toLowerCase(), '>\n');
 
     return result.join('');
 });
@@ -13707,9 +13707,9 @@ function(storageInfo) {
 
     //  If the tag is empty, then we use 'XML empty' syntax.
     if (TP.isEmpty(elem)) {
-        result.push('/>');
+        result.push('/>\n');
     } else {
-        result.push('>');
+        result.push('>\n');
     }
 
     //  Clear out any current namespace prefixes we are tracking.
