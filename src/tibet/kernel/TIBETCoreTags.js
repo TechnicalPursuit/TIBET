@@ -274,6 +274,23 @@ function(nodeSpec, varargs) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.tag.TemplatedTag.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tag.TemplatedTag.Inst.defineMethod('isSerializationEmpty',
 function() {
 
@@ -502,7 +519,31 @@ function(storageInfo) {
      *     receiver.
      */
 
-    return '';
+    var selectedDescendants,
+        serializationStorage,
+        str;
+
+    //  Get the descendants that we want to serialize. If there are none, just
+    //  return the empty String.
+    selectedDescendants = this.getDescendantsForSerialization();
+    if (TP.isEmpty(selectedDescendants)) {
+        return '';
+    }
+
+    //  Set up a serialization storage, with a store registered under our local
+    //  (unique) ID.
+    serializationStorage = TP.hc('store', this.getLocalID());
+
+    //  Iterate over the selected descendants and serialize them into the store.
+    selectedDescendants.forEach(
+        function(aDescendant) {
+            aDescendant.serializeForStorage(serializationStorage);
+        });
+
+    //  Grab the result at the store registered under our local ID.
+    str = serializationStorage.at('stores').at(this.getLocalID());
+
+    return str;
 });
 
 //  ========================================================================
