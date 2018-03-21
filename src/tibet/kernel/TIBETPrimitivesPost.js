@@ -4919,6 +4919,35 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('expand',
+function(anObject) {
+
+    /**
+     * @method expand
+     * @summary If the supplied object is an Array, this function returns it.
+     *     Otherwise it returns an Array wrapping the object.
+     * @param {Object} anObject The object to expand.
+     * @returns {Object[]} The result of expanding the object.
+     */
+
+    //  no valid source object means no work
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    if (TP.isArray(anObject)) {
+        return anObject;
+    }
+
+    if (TP.canInvoke(anObject, 'expand')) {
+        return anObject.expand();
+    }
+
+    return TP.ac(anObject);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getAccessPathParts',
 function(aPath, aScheme) {
 
