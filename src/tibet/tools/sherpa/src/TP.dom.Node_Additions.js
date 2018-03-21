@@ -680,6 +680,28 @@ function(anAspect, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterTemplate',
+function() {
+
+    /**
+     * @method sherpaShouldAlterTemplate
+     * @summary Returns whether or not the Sherpa should alter the template for
+     *     this type when updating the source document that the visual document
+     *     is displaying. Typically, the Sherpa will alter application
+     *     templates, but not TIBET core templates, such as those for XControls.
+     * @description This method, normally associated with a template tag, is
+     *     backstopped here (returning false) to avoid having to test for this
+     *     method's presence on altered elements when updating source documents
+     *     in the Sherpa.
+     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
+     *     template.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
 function(insertionPointElement, insertionPosition) {
 
@@ -1299,6 +1321,31 @@ function(options) {
      */
 
     return TP.elem('<sherpa:templatedTagContextMenuContent/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('sherpaShouldAlterTemplate',
+function() {
+
+    /**
+     * @method sherpaShouldAlterTemplate
+     * @summary Returns whether or not the Sherpa should alter the template for
+     *     this type when updating the source document that the visual document
+     *     is displaying. Typically, the Sherpa will alter application
+     *     templates, but not TIBET core templates, such as those for XControls.
+     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
+     *     template.
+     */
+
+    var nsRoot;
+
+    nsRoot = this.getType().getNamespaceRoot();
+    if (nsRoot === 'TP') {
+        return false;
+    }
+
+    return true;
 });
 
 //  ========================================================================

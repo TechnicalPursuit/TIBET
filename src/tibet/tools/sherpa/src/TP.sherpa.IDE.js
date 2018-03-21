@@ -3055,7 +3055,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     while (TP.isElement(tagSrcElem)) {
         tagTPSrcElem = TP.wrap(tagSrcElem);
-        if (TP.isKindOf(tagTPSrcElem, TP.tag.TemplatedTag)) {
+        if (tagTPSrcElem.sherpaShouldAlterTemplate()) {
             break;
         }
 
