@@ -3038,6 +3038,8 @@ TP.regex.TITLE_CASE = /([-\s_]([a-z]))/g;       //  needs reset
 TP.regex.WORD_BOUNDARIES = /[-\s_]/g;           //  needs reset
 
 TP.regex.WHITESPACE = /\s+/;
+
+TP.regex.ONLY_WHITESPACE = /^\s+$/;
 TP.regex.ONLY_WORD = /^\w+$/;
 TP.regex.ONLY_NUM = /^\d+$/;
 TP.regex.ONLY_PERIOD = /^\.$/;
