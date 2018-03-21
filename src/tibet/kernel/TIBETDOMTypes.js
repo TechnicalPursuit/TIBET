@@ -4336,8 +4336,6 @@ function(storageInfo) {
     //  with the XML-compliant '&#160;'s.
     result = TP.htmlEntitiesToXMLEntities(storageInfo.at('result').join(''));
 
-    result += '\n';
-
     //  Grab the current store key and put the result into the overall 'stores'
     //  hash (creating it if it doesn't exist).
     storeKey = storageInfo.at('store');
