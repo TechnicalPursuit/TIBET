@@ -215,6 +215,10 @@ TP.tag.TemplatedTag.Type.defineAttribute('serializationTraversal', TP.DESCEND);
 //  Whether or not we're currently in the process of being serialized.
 TP.tag.TemplatedTag.Inst.defineAttribute('$areSerializing');
 
+//  Whether or not we have real selected descendant content that we serialize.
+//  This is used to determine what kind of tag (empty or not) to serialize.
+TP.tag.TemplatedTag.Inst.defineAttribute('$serializesAsEmpty');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -268,6 +272,25 @@ function(nodeSpec, varargs) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('isSerializationEmpty',
+function() {
+
+    /**
+     * @method isSerializationEmpty
+     * @summary Returns whether or not the receiver should serialize with no
+     *     content (i.e. an 'empty element')
+     * @description At this type level, this simply returns whether the receiver
+     *     is empty (i.e. devoid of child nodes). Subtypes may choose to use
+     *     different criteria to determine this.
+     * @returns {Boolean} Whether or not the receiver should serialize as an
+     *     'empty element'.
+     */
+
+    return this.get('$serializesAsEmpty');
+});
+
 //  ------------------------------------------------------------------------
 
 TP.tag.TemplatedTag.Inst.defineMethod('serializeCloseTag',
@@ -356,15 +379,22 @@ function(storageInfo) {
     //  descend into our child nodes.
     if (this.get('$areSerializing')) {
 
-        //  Call 'super' to get the serialized version of ourself.
-        str = this.callNextMethod();
-
         //  Grab the traversal setting. If it's not TP.DESCEND (which is the
         //  default), then call a method to serialize select descendants.
         traversalSetting = this.getType().get('serializationTraversal');
         if (traversalSetting !== TP.DESCEND) {
-            str += this.serializeSelectDescendants(storageInfo);
+            //  Serialize descendants. Set whether or not we serialize as empty
+            //  as to whether there was actual descendant content.
+            str = this.serializeSelectDescendants(storageInfo);
+            this.set('$serializesAsEmpty', TP.isEmpty(str), false);
+        } else {
+            str = '';
+            this.set('$serializesAsEmpty', false, false);
         }
+
+        //  Call 'super' to get the serialized version of ourself and prepend it
+        //  onto our selected descendants markup.
+        str = this.callNextMethod() + str;
 
         return TP.ac(str, traversalSetting);
     }

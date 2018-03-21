@@ -13044,6 +13044,25 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('isSerializationEmpty',
+function() {
+
+    /**
+     * @method isSerializationEmpty
+     * @summary Returns whether or not the receiver should serialize with no
+     *     content (i.e. an 'empty element')
+     * @description At this type level, this simply returns whether the receiver
+     *     is empty (i.e. devoid of child nodes). Subtypes may choose to use
+     *     different criteria to determine this.
+     * @returns {Boolean} Whether or not the receiver should serialize as an
+     *     'empty element'.
+     */
+
+    return this.isEmpty();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('produceValue',
 function(aspectName, aContentObject, aRequest) {
 
@@ -13351,9 +13370,9 @@ function(storageInfo) {
 
     elem = this.getNativeNode();
 
-    //  If the tag is empty, then the serializeOpenTag() method will have
-    //  written 'empty XML syntax', so we don't need to do anything here.
-    if (TP.isEmpty(elem)) {
+    //  If the tag serializes as empty, then the serializeOpenTag() method will
+    //  have written 'empty XML syntax', so we don't need to do anything here.
+    if (this.isSerializationEmpty()) {
         return '';
     }
 
@@ -13431,7 +13450,9 @@ function(storageInfo) {
 
         desugaredAttrExprs,
         entryStr,
-        bindEntries;
+        bindEntries,
+
+        childTextNodes;
 
     result = TP.ac();
 
@@ -13703,11 +13724,23 @@ function(storageInfo) {
 
     //  End the tag.
 
-    //  If the tag is empty, then we use 'XML empty' syntax.
-    if (TP.isEmpty(elem)) {
+    //  If the tag serializes as empty, then we use 'XML empty' syntax along
+    //  with a newline.
+    if (this.isSerializationEmpty()) {
         result.push('/>\n');
     } else {
-        result.push('>\n');
+        //  Otherwise, simply close the opening tag and then use a more
+        //  sophisticated way to detect whether or not to append a newline. If
+        //  there are no child text nodes (i.e. only child element nodes) or if
+        //  the first or last child text nodes are whitespace *only*, then
+        //  append a newline.
+        result.push('>');
+        childTextNodes = TP.nodeGetChildNodesByType(elem, Node.TEXT_NODE);
+        if (TP.isEmpty(childTextNodes) ||
+            TP.regex.ONLY_WHITESPACE.test(childTextNodes.first().nodeValue) ||
+            TP.regex.ONLY_WHITESPACE.test(childTextNodes.last().nodeValue)) {
+            result.push('\n');
+        }
     }
 
     //  Clear out any current namespace prefixes we are tracking.
