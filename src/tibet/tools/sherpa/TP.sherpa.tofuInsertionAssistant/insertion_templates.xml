@@ -3,17 +3,17 @@
 <templates xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols">
     <template for="xctrls:button">
         <xctrls:button>
-            <xctrls:label/>
+            <xctrls:label>New Button</xctrls:label>
         </xctrls:button>
     </template>
     <template for="xctrls:buttonitem">
         <xctrls:buttonitem>
-            <xctrls:label/>
+            <xctrls:label>New Button Item</xctrls:label>
         </xctrls:buttonitem>
     </template>
     <template for="xctrls:checkitem">
         <xctrls:checkitem>
-            <xctrls:label/>
+            <xctrls:label>New Check Item</xctrls:label>
         </xctrls:checkitem>
     </template>
     <template for="xctrls:panelbox">
@@ -30,7 +30,7 @@
     </template>
     <template for="xctrls:radioitem">
         <xctrls:radioitem>
-            <xctrls:label/>
+            <xctrls:label>New Radio Item</xctrls:label>
         </xctrls:radioitem>
     </template>
     <template for="xctrls:tabbar">
@@ -48,7 +48,7 @@
     </template>
     <template for="xctrls:textitem">
         <xctrls:textitem>
-            <xctrls:label/>
+            <xctrls:label>New Text Item</xctrls:label>
         </xctrls:textitem>
     </template>
 </templates>
