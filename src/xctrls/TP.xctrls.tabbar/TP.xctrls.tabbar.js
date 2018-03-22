@@ -1458,6 +1458,9 @@ TP.xctrls.tabitem.Inst.defineAttribute('label',
     TP.xpc('string(./xctrls:label)', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.xctrls.tabitem.Inst.defineMethod('getValue',
 function() {

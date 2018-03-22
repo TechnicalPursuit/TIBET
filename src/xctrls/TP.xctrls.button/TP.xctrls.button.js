@@ -18,6 +18,8 @@
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:button');
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.xctrls.button.Inst.defineMethod('getDescendantsForSerialization',
 function() {
@@ -33,7 +35,8 @@ function() {
 
     var selectedDescendants;
 
-    selectedDescendants = this.get('./xctrls:label|./xctrls:value|./xctrls:hint');
+    selectedDescendants =
+                this.get('./xctrls:label|./xctrls:value|./xctrls:hint');
     selectedDescendants = TP.expand(selectedDescendants);
 
     return selectedDescendants;
