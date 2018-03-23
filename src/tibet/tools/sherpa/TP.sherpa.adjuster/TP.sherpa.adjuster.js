@@ -355,6 +355,10 @@ function(aValue, shouldSignal) {
     editorsDiv = TP.documentConstructElement(doc, 'div', TP.w3.Xmlns.XHTML);
     TP.elementAddClass(editorsDiv, 'editors');
 
+    //  Turn off mutation tracking for the editors div. We don't need it and the
+    //  overhead.
+    TP.elementSetAttribute(editorsDiv, 'tibet:nomutationtracking', 'true', true);
+
     editorEntries = TP.ac();
 
     //  Iterate over each item in the rule information and construct a property
