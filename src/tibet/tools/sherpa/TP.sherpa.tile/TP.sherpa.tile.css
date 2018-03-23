@@ -21,9 +21,9 @@ sherpa|tile {
 
     z-index: var(--tibet-HUD-TILE-TIER);
 
-    -ms-user-select: none;
-    -moz-user-select: none;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    /* IE/Edge use the -webkit- prefix for user-select */
 }
 
 sherpa|tile[class~="modal"] {
