@@ -336,6 +336,8 @@ function(aValue, shouldSignal) {
         doc,
         editorsDiv,
 
+        editorEntries,
+
         childTPElems;
 
     ruleSource = TP.unwrap(aValue);
@@ -353,6 +355,8 @@ function(aValue, shouldSignal) {
     editorsDiv = TP.documentConstructElement(doc, 'div', TP.w3.Xmlns.XHTML);
     TP.elementAddClass(editorsDiv, 'editors');
 
+    editorEntries = TP.ac();
+
     //  Iterate over each item in the rule information and construct a property
     //  editor element for each one.
     ruleInfo.perform(
@@ -364,57 +368,20 @@ function(aValue, shouldSignal) {
                 len,
                 i,
 
+                propName,
+                propVal,
+
                 editorElem;
 
             rule = aRuleInfo.at('rule');
             info = TP.styleRuleGetSourceInfo(rule, TP.hc());
-            decls = info.at('declarations');
 
-            len = decls.getSize();
-            for (i = 0; i < len; i++) {
-
-                //  Declarations can contain a comment - we want to skip those.
-                if (decls.at(i).type === 'comment') {
-                    continue;
-                }
-
-                //  Grab a specific editor Element for this property name and
-                //  value.
-                editorElem = this.getEditorForPropertyNameAndValue(
-                                decls.at(i).property, decls.at(i).value);
-
-                TP.nodeAppendChild(
-                    editorsDiv,
-                    editorElem,
-                    false);
+            //  Sometimes we get entries that are not rules - like '@namespace'
+            //  or '@import' declarations. If that's the case, move on here.
+            if (info.at('type') !== 'rule') {
+                return;
             }
-        }.bind(this));
 
-    //  Set the body of the tile to be the div containing all of the editors.
-    editorsWrapperTPElem = tileTPElem.get('body').setContent(editorsDiv);
-
-    //  Grab all of the child elements - these will have now been processed and
-    //  expanded.
-    childTPElems = editorsWrapperTPElem.getChildElements();
-
-    //  Iterate over each property editor in the rule information and set the
-    //  rule information for each one.
-    ruleInfo.perform(
-        function(aRuleInfo, index) {
-            var rule,
-                info,
-                decls,
-
-                len,
-                i,
-
-                propName,
-                propVal,
-
-                editorTPElem;
-
-            rule = aRuleInfo.at('rule');
-            info = TP.styleRuleGetSourceInfo(rule, TP.hc());
             decls = info.at('declarations');
 
             len = decls.getSize();
@@ -428,19 +395,34 @@ function(aValue, shouldSignal) {
                 propName = decls.at(i).property;
                 propVal = decls.at(i).value;
 
-                //  Set the 'value' of the editor to be a TP.core.Hash of
-                //  various bits of information about the property name, value,
-                //  selector and rule it came from.
-                editorTPElem = childTPElems.at(index + i);
-                editorTPElem.set('value',
-                                TP.hc('name', propName,
-                                        'value', propVal,
-                                        'selector', aRuleInfo.at('selector'),
-                                        'rule', aRuleInfo.at('rule')));
+                //  Grab a specific editor Element for this property name and
+                //  value.
+                editorElem = this.getEditorForPropertyNameAndValue(
+                                                        propName, propVal);
 
-                //  Now that the 'value' of the editor has been set, render it.
-                editorTPElem.render();
+                editorElem = TP.nodeAppendChild(editorsDiv, editorElem, false);
+
+                editorEntries.push(
+                            TP.hc('name', propName,
+                                    'value', propVal,
+                                    'selector', aRuleInfo.at('selector'),
+                                    'rule', aRuleInfo.at('rule')));
             }
+        }.bind(this));
+
+    //  Set the body of the tile to be the div containing all of the editors.
+    editorsWrapperTPElem = tileTPElem.get('body').setContent(editorsDiv);
+
+    //  Grab all of the child elements - these will have now been processed and
+    //  expanded.
+    childTPElems = editorsWrapperTPElem.getChildElements();
+
+    //  Now that the editor elements have actually been placed into the DOM, we
+    //  can set their values from the entries we computed before.
+    childTPElems.perform(
+        function(aChildTPElem, index) {
+            aChildTPElem.set('value', editorEntries.at(index));
+            aChildTPElem.render();
         });
 
     return this;
