@@ -347,6 +347,10 @@ function(aValue, shouldSignal) {
     //  return rules in specificity order, from highest to lowest.
     ruleInfo = TP.elementGetAppliedStyleInfo(ruleSource, true);
 
+    //  Reverse the info list so that we always process the most specific rules
+    //  first.
+    ruleInfo.reverse();
+
     tileTPElem = TP.byId('Adjuster_Tile', this.getNativeWindow());
 
     doc = this.getNativeDocument();
