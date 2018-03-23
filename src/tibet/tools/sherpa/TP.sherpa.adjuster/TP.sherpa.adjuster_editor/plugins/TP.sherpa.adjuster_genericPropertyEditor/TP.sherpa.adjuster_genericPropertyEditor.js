@@ -629,6 +629,10 @@ function() {
     //  Generate the data that will be used to generate the 'value field' markup
     //  and then generate the markup from that.
     cssData = this.generateCSSData();
+    if (TP.notValid(cssData)) {
+        return this;
+    }
+
     valueFieldMarkup = this.generateValueFieldMarkup(cssData);
 
     //  Create a DOM structure for it, assuming that non-prefixed elements are
