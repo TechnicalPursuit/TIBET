@@ -22,19 +22,19 @@ TP.sherpa.adjuster_editor.defineSubtype('adjuster_genericPropertyEditor');
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyName',
-    TP.cpc('> .grid > *[name="propertyName"] span[part="name"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyName"] span[part="name"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValue',
-    TP.cpc('> .grid > *[name="propertyValue"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyValue"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValueSlotEditors',
-    TP.cpc('> .grid > *[name="propertyValue"] > .slots', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyValue"] > .slots', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyRuleSelector',
-    TP.cpc('> .grid > *[name="propertyRuleSelector"] > .input', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyRuleSelector"] > .input', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -511,6 +511,8 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
+    return this;
+
     var infoTPElem;
 
     if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
@@ -540,6 +542,8 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
+    return this;
+
     var namePart,
         name,
 
@@ -551,7 +555,7 @@ function(aSignal) {
     }
 
     namePart = TP.wrap(aSignal.getDOMTarget()).get('span[part="name"]');
-    if (!TP.isKindOf(namePart, TP.core.UIElementNode)) {
+    if (!TP.isKindOf(namePart, TP.dom.UIElementNode)) {
         return this;
     }
 

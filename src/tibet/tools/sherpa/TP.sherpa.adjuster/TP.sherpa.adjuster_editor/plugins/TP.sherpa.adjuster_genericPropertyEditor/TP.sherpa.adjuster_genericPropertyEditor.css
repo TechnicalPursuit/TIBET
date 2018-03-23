@@ -7,6 +7,12 @@ sherpa|adjuster_genericPropertyEditor {
     width: 100%;
 
     background: white;
+
+    border: dotted 1px gold;
+
+    display: grid;
+
+    grid-template-columns: 33% 33% 33%;
 }
 
 sherpa|adjuster_genericPropertyEditor[inactive] {
@@ -23,13 +29,6 @@ sherpa|adjuster_genericPropertyEditor[current] {
     border-radius: 5px;
 
     box-shadow: 3px 3px rgba(0, 0, 0, 0.2);
-}
-
-sherpa|adjuster_genericPropertyEditor > .grid {
-
-    display: grid;
-
-    grid-template-columns: 33% 33% 33%;
 }
 
 sherpa|adjuster_genericPropertyEditor div.field {
