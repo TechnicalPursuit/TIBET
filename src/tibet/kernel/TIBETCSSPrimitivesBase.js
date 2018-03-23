@@ -2364,6 +2364,10 @@ function(aStyleRule) {
      * @summary Returns the native style sheet object associated with the
      *     supplied style rule and the index that the rule can be found within
      *     that style sheet.
+     * @description Note that this will filter out all CSS rules except
+     *     CSSRule.STYLE_RULE (i.e. no @namespace rules, @import rules, etc.)
+     *     *before* it computes the returned index. Therefore, the indexes are
+     *     relative to the subset that are CSSRule.STYLE_RULE rules.
      * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
      *     stylesheet of.
      * @exception TP.sig.InvalidParameter
@@ -2374,6 +2378,7 @@ function(aStyleRule) {
 
     var styleSheet,
         allRules,
+        styleRules,
         i;
 
     if (!TP.isStyleRule(aStyleRule)) {
@@ -2389,8 +2394,14 @@ function(aStyleRule) {
     //  NB: Note how we do *not* expand imports here
     allRules = TP.styleSheetGetStyleRules(styleSheet, false);
 
-    for (i = 0; i < allRules.getSize(); i++) {
-        if (allRules.at(i) === aStyleRule) {
+    //  Filter out all non CSSRule.STYLE_RULE 'rules'.
+    styleRules = allRules.filter(
+                function(aRule) {
+                    return aRule.type === CSSRule.STYLE_RULE;
+                });
+
+    for (i = 0; i < styleRules.getSize(); i++) {
+        if (styleRules.at(i) === aStyleRule) {
             return TP.ac(styleSheet, i);
         }
     }
