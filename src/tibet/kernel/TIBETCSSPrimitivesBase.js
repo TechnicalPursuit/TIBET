@@ -2167,6 +2167,7 @@ function(aStyleRule, sourceASTs) {
         sheetAST,
 
         vendorPrefix,
+        nonPlatformMatcher,
 
         rules,
 
@@ -2177,6 +2178,10 @@ function(aStyleRule, sourceASTs) {
 
         embeddedRules,
         embeddedLength,
+
+        selectors,
+        nonPlatformSelectorCount,
+        j,
 
         args,
 
@@ -2249,10 +2254,13 @@ function(aStyleRule, sourceASTs) {
     //  Compute a vendor prefix.
     if (TP.sys.isUA('GECKO')) {
         vendorPrefix = '-moz-';
+        nonPlatformMatcher = /-ms-|-webkit-/;
     } else if (TP.sys.isUA('IE')) {
         vendorPrefix = '-ms-';
+        nonPlatformMatcher = /-moz-|-webkit-/;
     } else if (TP.sys.isUA('WEBKIT')) {
         vendorPrefix = '-webkit-';
+        nonPlatformMatcher = /-moz-|-ms-/;
     }
 
     //  Now iterate through all results in the AST, looking for the style rule
@@ -2289,9 +2297,28 @@ function(aStyleRule, sourceASTs) {
             continue;
         }
 
-        //  We skip comments and charsets (charsets are skipped by the native
-        //  browser machinery per the spec).
-        if (rule.type === 'comment' || rule.type === 'charset') {
+        //  We skip comments, namespaces and charsets (namespaces are skipped by
+        //  our primitive method call at the top of this method and charsets are
+        //  skipped by the native browser machinery per the spec).
+        if (rule.type === 'comment' ||
+            rule.type === 'namespace' ||
+            rule.type === 'charset') {
+            continue;
+        }
+
+        //  Iterate over all of the selectors. If they *all* match vendor
+        //  prefixes that are *not* supported on this browser, then move on.
+        selectors = rule.selectors;
+        nonPlatformSelectorCount = 0;
+        for (j = 0; j < selectors.getSize(); j++) {
+            if (nonPlatformMatcher.test(selectors.at(j))) {
+                nonPlatformSelectorCount++;
+            }
+        }
+
+        //  They all had vendor prefixes that did *not* match the currently
+        //  executing browser.
+        if (nonPlatformSelectorCount === selectors.getSize()) {
             continue;
         }
 
