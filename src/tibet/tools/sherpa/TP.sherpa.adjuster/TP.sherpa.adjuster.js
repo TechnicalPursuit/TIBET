@@ -176,7 +176,7 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab the styleshud target - this will be the TP.core.ElementNode that is
+    //  Grab the styleshud target - this will be the TP.dom.ElementNode that is
     //  currently focused.
     modelURI = TP.uc('urn:tibet:styleshud_target_source');
     value = modelURI.getResource().get('result');
