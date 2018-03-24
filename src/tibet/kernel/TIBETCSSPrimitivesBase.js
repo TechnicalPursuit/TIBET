@@ -19,7 +19,7 @@
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentAddCSSElement',
-function(targetDoc, cssHref, inlineRuleText) {
+function(targetDoc, cssHref, inlineRuleText, shouldSignal) {
 
     /**
      * @method documentAddCSSElement
@@ -32,6 +32,7 @@ function(targetDoc, cssHref, inlineRuleText) {
      * @param {String} cssHref The href to use on the newly added CSS element.
      * @param {Boolean} inlineRuleText Whether or not the rule text should be
      *     'inlined' into the document. Defaults to false.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link or style element that was added.
      */
@@ -58,9 +59,11 @@ function(targetDoc, cssHref, inlineRuleText) {
                                 TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = response.get('result');
 
-        newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
+        newNativeElem = TP.documentAddCSSStyleElement(
+                                targetDoc, cssText, null, shouldSignal);
     } else {
-        newNativeElem = TP.documentAddCSSLinkElement(targetDoc, cssHref);
+        newNativeElem = TP.documentAddCSSLinkElement(
+                                targetDoc, cssHref, null, shouldSignal);
     }
 
     return newNativeElem;
@@ -221,7 +224,7 @@ function(targetDoc) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentCopyCSSElements',
-function(cssElements, targetDoc) {
+function(cssElements, targetDoc, shouldSignal) {
 
     /**
      * @method documentCopyCSSElements
@@ -233,6 +236,7 @@ function(cssElements, targetDoc) {
      *     document.
      * @param {Document} targetDoc The document whose style nodes should be
      *     updated.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidArray
      */
@@ -256,9 +260,11 @@ function(cssElements, targetDoc) {
         localName = TP.elementGetLocalName(aCSSElement).toLowerCase();
 
         if (localName === 'link') {
-            TP.documentCopyCSSLinkElement(aCSSElement, targetDoc);
+            TP.documentCopyCSSLinkElement(
+                    aCSSElement, targetDoc, false, false, shouldSignal);
         } else if (localName === 'style') {
-            TP.documentCopyCSSStyleElement(aCSSElement, targetDoc);
+            TP.documentCopyCSSStyleElement(
+                    aCSSElement, targetDoc, false, false, shouldSignal);
         }
     }
 
@@ -268,7 +274,7 @@ function(cssElements, targetDoc) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentCopyCSSLinkElement',
-function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
+function(anElement, targetDoc, inlineRuleText, onlyIfAbsent, shouldSignal) {
 
     /**
      * @method documentCopyCSSLinkElement
@@ -281,10 +287,11 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
      *     into the target document.
      * @param {Document} targetDoc The document to which the CSS text should be
      *     added.
-     * @param {Boolean} inlineRuleText Whether or not the rule text should be
-     *     'inlined' into the document. Defaults to false.
-     * @param {Boolean} onlyIfAbsent Whether or not the style element/link
-     *     should be added only if it doesn't already exist. Defaults to false.
+     * @param {Boolean} [inlineRuleText=false] Whether or not the rule text
+     *     should be 'inlined' into the document.
+     * @param {Boolean} [onlyIfAbsent=false] Whether or not the style
+     *     element/link should be added only if it doesn't already exist.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidElement
      */
@@ -356,11 +363,17 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
                                 TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = resp.get('result');
 
-        newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
+        newNativeElem = TP.documentAddCSSStyleElement(
+                                targetDoc,
+                                cssText,
+                                null,
+                                shouldSignal);
     } else {
         newNativeElem = TP.documentAddCSSLinkElement(
                                 targetDoc,
-                                TP.uriJoinPaths(sourceDirectory, linkHref));
+                                TP.uriJoinPaths(sourceDirectory, linkHref),
+                                null,
+                                shouldSignal);
     }
 
     return newNativeElem;
@@ -369,7 +382,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentCopyCSSStyleElement',
-function(anElement, targetDoc) {
+function(anElement, targetDoc, shouldSignal) {
 
     /**
      * @method documentCopyCSSStyleElement
@@ -381,6 +394,7 @@ function(anElement, targetDoc) {
      *     into the target document.
      * @param {Document} targetDoc The document to which the CSS text should be
      *     added.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidElement
      * @returns {HTMLElement|null} The newly added 'style' element if the style
@@ -405,7 +419,8 @@ function(anElement, targetDoc) {
 
     cssText = TP.cssStyleElementGetContent(anElement);
 
-    newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
+    newNativeElem = TP.documentAddCSSStyleElement(
+                            targetDoc, cssText, null, shouldSignal);
 
     return newNativeElem;
 });
