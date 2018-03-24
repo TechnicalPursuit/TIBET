@@ -522,8 +522,7 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
-    return this;
-
+    /*
     var infoTPElem;
 
     if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
@@ -535,6 +534,7 @@ function(aSignal) {
     if (TP.isValid(infoTPElem)) {
         infoTPElem.hide(true);
     }
+    */
 
     return this;
 });
@@ -553,8 +553,7 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
-    return this;
-
+    /*
     var namePart,
         name,
 
@@ -585,6 +584,7 @@ function(aSignal) {
             }
         }
     }
+    */
 
     return this;
 });
