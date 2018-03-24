@@ -987,9 +987,9 @@ function(aDocument, anHref, shouldSignal) {
         //  detecting and stripping any '_tibet_nocache' prefix here because
         //  these are all new).
         existingHrefs = currentTopLevelLinkElems.collect(
-                function(anElem) {
-                    return anElem.href;
-                });
+                            function(anElem) {
+                                return anElem.href;
+                            });
     }
 
     //  Look for the href in the set of existing hrefs we have. That will be the
