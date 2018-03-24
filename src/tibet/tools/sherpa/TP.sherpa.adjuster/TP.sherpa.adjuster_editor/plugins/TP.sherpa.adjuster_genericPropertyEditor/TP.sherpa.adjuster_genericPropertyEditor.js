@@ -328,29 +328,19 @@ function(slotData) {
             str += ' tibet:tag="sherpa:CSSDimensionSlotEditor"';
             break;
 
-        case 'Function':
-            break;
-
-        case 'HexColor':
-            break;
-
         case 'Identifier':
             str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
-            break;
-
-        case 'Number':
             break;
 
         case 'Percentage':
             str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
             break;
 
+        case 'Function':
+        case 'HexColor':
+        case 'Number':
         case 'String':
-            break;
-
         case 'Url':
-            break;
-
         default:
             str += ' tibet:tag="sherpa:CSSSlotEditor"';
             break;
