@@ -755,7 +755,12 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         //  via the 'tibet:originalHref' attribute.
         TP.nodeAwakenContent(inlinedStyleElem);
     } else {
-        TP.cssStyleElementSetContent(inlinedStyleElem, processedStyleContent);
+
+        //  Note how we specify false here to avoid signaling when the content
+        //  is set. That makes the semantic match the above where no signaling
+        //  occurred (at least the style mutation signaling).
+        TP.cssStyleElementSetContent(
+            inlinedStyleElem, processedStyleContent, false);
     }
 
     return inlinedStyleElem;
@@ -1921,7 +1926,10 @@ function(anElement) {
         len = hrefsToAdd.getSize();
         for (i = 0; i < len; i++) {
 
-            newLinkElem = TP.documentAddCSSLinkElement(doc, hrefsToAdd.at(i));
+            //  Note here that we pass false to avoid style mutation change
+            //  signaling.
+            newLinkElem = TP.documentAddCSSLinkElement(
+                                doc, hrefsToAdd.at(i), null, false);
             TP.elementSetAttribute(newLinkElem, 'tibet:flattened',
                                     'true', true);
         }
