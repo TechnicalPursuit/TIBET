@@ -813,7 +813,22 @@ function(aRequest) {
      * @returns {Element} The element.
      */
 
-    return aRequest.at('node');
+    var elem,
+
+        str,
+        newFrag;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    str = '<span part="value"/>';
+
+    newFrag = TP.xhtmlnode(str);
+
+    TP.nodeAppendChild(elem, newFrag, false);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -895,7 +910,15 @@ function(anInfo) {
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
 
+    var val,
+        unit;
+
     this.$set('info', anInfo);
+
+    //  The value that we want to display here comes from our information's
+    //  'value' slot.
+    val = anInfo.at('value');
+    this.get('valuePart').setTextContent(val);
 
     return this;
 });
