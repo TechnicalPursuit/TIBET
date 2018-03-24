@@ -187,8 +187,19 @@ function() {
     propertySyntax = TP.extern.csstree.lexer.getProperty(name);
 
     match = defaultSyntax.match(propertySyntax, valTree);
-
     syntaxResults = match.matched;
+
+    if (TP.notValid(syntaxResults)) {
+        match = defaultSyntax.match(defaultSyntax.valueCommonSyntax, valTree);
+        syntaxResults = match.matched;
+    }
+
+    if (TP.notValid(syntaxResults)) {
+        TP.ifWarn() ?
+            TP.warn('Could not retrieve syntax for property name: ' + name +
+                    ' and value: ' + val + '.') : 0;
+        return null;
+    }
 
     result = TP.hc();
     result.atPut('propName', syntaxResults.syntax.name);
