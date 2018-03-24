@@ -1344,8 +1344,8 @@ function() {
         outlinerStyleElement[TP.GENERATED] = true;
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
-                                outlinerStyleElement.sheet,
-                                '.sherpa-outliner *');
+                            TP.cssElementGetStyleSheet(outlinerStyleElement),
+                            '.sherpa-outliner *');
 
         this.set('$hudOutlinerDescendantsRule', descendantRule.first());
     } else {
