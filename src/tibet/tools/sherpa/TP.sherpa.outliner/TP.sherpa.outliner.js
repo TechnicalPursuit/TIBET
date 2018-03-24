@@ -1330,7 +1330,8 @@ function() {
             doc,
             TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner_injected.css').
                 getLocation(),
-            true);
+            true,
+            false);
 
         TP.elementSetAttribute(
             outlinerStyleElement, 'id', 'outliner_injected_generated');
