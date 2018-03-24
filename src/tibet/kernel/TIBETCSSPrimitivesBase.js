@@ -175,7 +175,7 @@ function(targetDoc, styleText, beforeNode, shouldSignal) {
 
     if (TP.isString(styleText)) {
         //  Set the content of the style element to the new style text.
-        TP.cssStyleElementSetContent(newStyleElement, styleText);
+        TP.cssStyleElementSetContent(newStyleElement, styleText, shouldSignal);
     }
 
     if (TP.notFalse(shouldSignal)) {
