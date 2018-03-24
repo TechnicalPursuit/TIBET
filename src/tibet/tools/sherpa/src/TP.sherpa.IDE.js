@@ -2938,6 +2938,18 @@ function() {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
+    //  For now, we only run the Sherpa on Chrome
+    if (!TP.sys.isUA('chrome')) {
+        TP.alert(
+            'The TIBET Sherpa technology preview is not supported on this' +
+            ' platform.<br/>' +
+            'Please use Google Chrome.<br/>' +
+            'More information can be found here:<br/>' +
+            'www.technicalpursuit.com/docs/faq.html#platforms');
+
+        return this;
+    }
+
     //  If the Sherpa's setup is complete, then we just toggle the HUD and exit.
     if (this.get('setupComplete')) {
         TP.byId('SherpaHUD', this.get('vWin')).toggle('closed');
