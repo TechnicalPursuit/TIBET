@@ -805,9 +805,7 @@ function() {
         textareaTPElem,
 
         vertScroller,
-        vertScrollerInner,
-
-        diff;
+        vertScrollerInner;
 
     /* eslint-disable new-cap */
     editorObj = TP.extern.ace.edit(this.getNativeNode().firstElementChild);
@@ -855,11 +853,6 @@ function() {
                                         this.getNativeNode(),
                                         true,
                                         false);
-
-    diff = TP.elementGetHeight(vertScroller) -
-            TP.elementGetHeight(vertScrollerInner);
-    this.$set('$editorHeightDiff',
-                diff - editorObj.renderer.$fontMetrics.$characterSize.height);
 
     //  Add a resize listener to the inner part of the vertical scrollbar. The
     //  attached function will signal an 'EditorResize'.
