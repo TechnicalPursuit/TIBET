@@ -16,7 +16,7 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('breadcrumb');
 
-TP.sherpa.breadcrumb.addTraits(TP.core.D3Tag);
+TP.sherpa.breadcrumb.addTraits(TP.dom.D3Tag);
 
 TP.sherpa.breadcrumb.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
@@ -65,7 +65,7 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.breadcrumb.Inst.defineMethod('buildNewContent',
@@ -117,8 +117,8 @@ function(enterSelection) {
             if (TP.isURIString(d)) {
                 uri = TP.uc(d);
 
-                if (TP.isKindOf(uri, TP.core.TIBETURL)) {
-                    result = uri.getURIParts().at(TP.core.TIBETURL.URL_INDEX);
+                if (TP.isKindOf(uri, TP.uri.TIBETURL)) {
+                    result = uri.getURIParts().at(TP.uri.TIBETURL.URL_INDEX);
                 } else {
                     result = TP.uriInTIBETFormat(d);
                 }

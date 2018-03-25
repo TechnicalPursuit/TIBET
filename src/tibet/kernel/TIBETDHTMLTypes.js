@@ -12,28 +12,28 @@
  */
 
 //  ========================================================================
-//  TP.core.DragResponder
+//  TP.dnd.DragResponder
 //  ========================================================================
 
 /**
- * @type {TP.core.DragResponder}
+ * @type {TP.dnd.DragResponder}
  * @summary A StateMachine event responder for simple drag operations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('TP.core.DragResponder');
+TP.lang.Object.defineSubtype('dnd.DragResponder');
 
-TP.core.DragResponder.addTraits(TP.core.StateResponder);
+TP.dnd.DragResponder.addTraits(TP.core.StateResponder);
 
 //  need a drag responsder of a specific subtype
-TP.core.DragResponder.isAbstract(true);
+TP.dnd.DragResponder.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'LOCK_X_TO_ELEMENT_X',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -55,7 +55,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'LOCK_Y_TO_ELEMENT_Y',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -77,7 +77,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'LOCK_X_TO_START_X',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -89,7 +89,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'LOCK_Y_TO_START_Y',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -101,7 +101,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'INCREMENT_X_BY',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -109,7 +109,7 @@ function(aDragResponder, aSignal, xyPoint) {
         xVal,
         kallee;
 
-    kallee = TP.core.DragResponder.INCREMENT_X_BY;
+    kallee = TP.dnd.DragResponder.INCREMENT_X_BY;
 
     /* eslint-disable no-extra-parens */
     if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
@@ -125,7 +125,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'INCREMENT_Y_BY',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -133,7 +133,7 @@ function(aDragResponder, aSignal, xyPoint) {
         yVal,
         kallee;
 
-    kallee = TP.core.DragResponder.INCREMENT_Y_BY;
+    kallee = TP.dnd.DragResponder.INCREMENT_Y_BY;
 
     /* eslint-disable no-extra-parens */
     if (TP.isNumber(incrVal = kallee.modifierData.at('increment'))) {
@@ -149,7 +149,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'INCREMENT_X_AND_Y_BY',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -160,7 +160,7 @@ function(aDragResponder, aSignal, xyPoint) {
         yVal,
         kallee;
 
-    kallee = TP.core.DragResponder.INCREMENT_X_AND_Y_BY;
+    kallee = TP.dnd.DragResponder.INCREMENT_X_AND_Y_BY;
 
     /* eslint-disable no-extra-parens */
     if (TP.isNumber(incrXVal = kallee.modifierData.at('incrementX'))) {
@@ -183,7 +183,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'CLAMP_X_TO_OFFSET_PARENT',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -207,7 +207,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'CLAMP_Y_TO_OFFSET_PARENT',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -231,7 +231,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'CLAMP_X_AND_Y_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -248,7 +248,7 @@ function(aDragResponder, aSignal, xyPoint) {
         maxPoint,
         kallee;
 
-    kallee = TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER;
+    kallee = TP.dnd.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER;
 
     if (TP.notValid(maxFittedRect = kallee.tempData.at(
             'maxFittedRect'))) {
@@ -286,7 +286,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'CLAMP_X_TO_CSS_MINMAX',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -318,7 +318,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'CLAMP_Y_TO_CSS_MINMAX',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -351,31 +351,31 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DragResponder.Type.defineConstant(
+TP.dnd.DragResponder.Type.defineConstant(
 'CLAMP_X_AND_Y_TO_RECT',
 function(aDragResponder, aSignal, xyPoint) {
 
     var clampRect,
         kallee;
 
-    kallee = TP.core.DragResponder.CLAMP_X_AND_Y_TO_RECT;
+    kallee = TP.dnd.DragResponder.CLAMP_X_AND_Y_TO_RECT;
 
     if (TP.notValid(clampRect = kallee.tempData.at('clampData'))) {
         return;
     }
 
-    if (!TP.isKindOf(clampRect, TP.core.Rect)) {
+    if (!TP.isKindOf(clampRect, TP.gui.Rect)) {
         if (TP.isElement(clampRect)) {
             clampRect = TP.wrap(clampRect);
         }
 
-        if (TP.isKindOf(clampRect, TP.core.UIElementNode)) {
+        if (TP.isKindOf(clampRect, TP.dom.UIElementNode)) {
             clampRect = clampRect.getPageRect();
         } else {
-            clampRect = TP.core.Rect.construct(clampRect);
+            clampRect = TP.gui.Rect.construct(clampRect);
         }
 
-        if (!TP.isKindOf(clampRect, TP.core.Rect)) {
+        if (!TP.isKindOf(clampRect, TP.gui.Rect)) {
             clampRect = null;
         }
 
@@ -390,13 +390,13 @@ function(aDragResponder, aSignal, xyPoint) {
 //  ------------------------------------------------------------------------
 
 //  A state machine shared amongst all of the dragging responders.
-TP.core.DragResponder.Type.defineAttribute('dragStateMachine');
+TP.dnd.DragResponder.Type.defineAttribute('dragStateMachine');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Type.defineMethod('initialize',
+TP.dnd.DragResponder.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -442,52 +442,52 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineAttribute('startSignal');
-TP.core.DragResponder.Inst.defineAttribute('currentSignal');
-TP.core.DragResponder.Inst.defineAttribute('lastSignal');
+TP.dnd.DragResponder.Inst.defineAttribute('startSignal');
+TP.dnd.DragResponder.Inst.defineAttribute('currentSignal');
+TP.dnd.DragResponder.Inst.defineAttribute('lastSignal');
 
-TP.core.DragResponder.Inst.defineAttribute('startPoint');
-TP.core.DragResponder.Inst.defineAttribute('currentPoint');
+TP.dnd.DragResponder.Inst.defineAttribute('startPoint');
+TP.dnd.DragResponder.Inst.defineAttribute('currentPoint');
 
 //  The target element the drag machine will be watching for drag events.
-TP.core.DragResponder.Inst.defineAttribute('targetElement');
+TP.dnd.DragResponder.Inst.defineAttribute('targetElement');
 
-TP.core.DragResponder.Inst.defineAttribute('infoAttrs');
+TP.dnd.DragResponder.Inst.defineAttribute('infoAttrs');
 
 //  The action element the drag machine will be modifying for drag events.
-TP.core.DragResponder.Inst.defineAttribute('actionElement');
+TP.dnd.DragResponder.Inst.defineAttribute('actionElement');
 
-TP.core.DragResponder.Inst.defineAttribute('$offsetPoint');
+TP.dnd.DragResponder.Inst.defineAttribute('$offsetPoint');
 
-TP.core.DragResponder.Inst.defineAttribute('actionWindow');
-TP.core.DragResponder.Inst.defineAttribute('$frameOffsetPoint');
+TP.dnd.DragResponder.Inst.defineAttribute('actionWindow');
+TP.dnd.DragResponder.Inst.defineAttribute('$frameOffsetPoint');
 
-TP.core.DragResponder.Inst.defineAttribute('modifiers');
-TP.core.DragResponder.Inst.defineAttribute('workers');
+TP.dnd.DragResponder.Inst.defineAttribute('modifiers');
+TP.dnd.DragResponder.Inst.defineAttribute('workers');
 
-TP.core.DragResponder.Inst.defineAttribute('dragCorner');
+TP.dnd.DragResponder.Inst.defineAttribute('dragCorner');
 
-TP.core.DragResponder.Inst.defineAttribute('insetTop', 0);
-TP.core.DragResponder.Inst.defineAttribute('insetRight', 0);
-TP.core.DragResponder.Inst.defineAttribute('insetBottom', 0);
-TP.core.DragResponder.Inst.defineAttribute('insetLeft', 0);
+TP.dnd.DragResponder.Inst.defineAttribute('insetTop', 0);
+TP.dnd.DragResponder.Inst.defineAttribute('insetRight', 0);
+TP.dnd.DragResponder.Inst.defineAttribute('insetBottom', 0);
+TP.dnd.DragResponder.Inst.defineAttribute('insetLeft', 0);
 
 //  User-settable X and Y offsets. These are merely added to the current
 //  point.
-TP.core.DragResponder.Inst.defineAttribute('xOffset', 0);
-TP.core.DragResponder.Inst.defineAttribute('yOffset', 0);
+TP.dnd.DragResponder.Inst.defineAttribute('xOffset', 0);
+TP.dnd.DragResponder.Inst.defineAttribute('yOffset', 0);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('init',
+TP.dnd.DragResponder.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
-     * @returns {TP.core.DragResponder} A new instance.
+     * @returns {TP.dnd.DragResponder} A new instance.
      */
 
     this.callNextMethod();
@@ -508,7 +508,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('addDataModifier',
+TP.dnd.DragResponder.Inst.defineMethod('addDataModifier',
 function(aModifierFunc, modifierData) {
 
     /**
@@ -520,7 +520,7 @@ function(aModifierFunc, modifierData) {
      *     receiver's list.
      * @param {Object} modifierData Modifier data that goes along with the
      *     modifier function.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     if (!TP.isFunction(aModifierFunc)) {
@@ -537,7 +537,7 @@ function(aModifierFunc, modifierData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('addDragWorker',
+TP.dnd.DragResponder.Inst.defineMethod('addDragWorker',
 function(aWorkerFunc) {
 
     /**
@@ -548,7 +548,7 @@ function(aWorkerFunc) {
      *     values computed by the responder engine.
      * @param {Function} aWorkerFunc The modifier function to add to the
      *     receiver's list.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     if (!TP.isFunction(aWorkerFunc)) {
@@ -563,7 +563,7 @@ function(aWorkerFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('computeOffsetPoint',
+TP.dnd.DragResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
     /**
@@ -576,7 +576,7 @@ function() {
      *       element.
      *     - The border of the action element.
      *     - The 'drag corner' that was configured or computed for the gesture.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var actionElem,
@@ -739,7 +739,7 @@ function() {
         /* eslint-enable no-extra-parens */
     }
 
-    //  Create a TP.core.Point and use it for the offset point.
+    //  Create a TP.gui.Point and use it for the offset point.
     this.set('$offsetPoint', TP.pc(offsetX, offsetY));
 
     return this;
@@ -747,7 +747,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('getCurrentPoint',
+TP.dnd.DragResponder.Inst.defineMethod('getCurrentPoint',
 function(runModifiers) {
 
     /**
@@ -756,7 +756,7 @@ function(runModifiers) {
      *     modifiers' on the point data).
      * @param {Boolean} runModifiers Whether or not to run the 'data modifiers'
      *     (i.e. Functions that alter the current point). Defaults to true.
-     * @returns {TP.core.Point} The responder's current point.
+     * @returns {TP.gui.Point} The responder's current point.
      */
 
     var xyPoint,
@@ -766,7 +766,7 @@ function(runModifiers) {
 
         frameOffsetPoint;
 
-    //  Grab the TP.core.Point representing the current point and the current
+    //  Grab the TP.gui.Point representing the current point and the current
     //  signal (which will probably be some sort of DOMDrag signal)
     xyPoint = this.$get('currentPoint');
     currentSignal = this.get('currentSignal');
@@ -777,7 +777,7 @@ function(runModifiers) {
 
     //  If the existing 'current drag window' doesn't match the signal's window,
     //  then we need to compute the offsets from the signal's window to the
-    //  window of the action element and store those away in a TP.core.Point
+    //  window of the action element and store those away in a TP.gui.Point
     //  which is the 'frame offset point'.
     if (this.get('actionWindow') !==
         (eventWin = TP.eventGetWindow(currentSignal.getEvent()))) {
@@ -790,7 +790,7 @@ function(runModifiers) {
         this.set('actionWindow', eventWin);
     } else {
         //  Grab the current 'frame offset' point. Initially, this will be a
-        //  TP.core.Point of 0,0 but may have been modified if the mouse pointer
+        //  TP.gui.Point of 0,0 but may have been modified if the mouse pointer
         //  is over an iframe.
         frameOffsetPoint = this.get('$frameOffsetPoint');
     }
@@ -809,7 +809,7 @@ function(runModifiers) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineHandler('DOMDragHover',
+TP.dnd.DragResponder.Inst.defineHandler('DOMDragHover',
 function(aSignal) {
 
     /**
@@ -825,7 +825,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineHandler('DOMDragMove',
+TP.dnd.DragResponder.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -854,7 +854,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('modifyResponderData',
+TP.dnd.DragResponder.Inst.defineMethod('modifyResponderData',
 function(aSignal, aPoint) {
 
     /**
@@ -862,8 +862,8 @@ function(aSignal, aPoint) {
      * @summary Executes all of the registered 'data modifiers' (such as the
      *     constraint functions that are type constants on this type).
      * @param {TP.sig.DOMDragMove} aSignal The current DOMDragMove signal.
-     * @param {TP.core.Point} aPoint Optional point data to modify.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @param {TP.gui.Point} aPoint Optional point data to modify.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var modifiers,
@@ -912,25 +912,25 @@ function(aSignal, aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('prepareFrom',
+TP.dnd.DragResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the info element.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var attrs,
@@ -953,7 +953,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         startPoint;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -1021,7 +1021,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                 actionElem, attrVals.at('left'), 'width');
         if (attrVal !== 0) {
             this.addDataModifier(
-                TP.core.DragResponder.INCREMENT_X_BY,
+                TP.dnd.DragResponder.INCREMENT_X_BY,
                 TP.hc('increment', attrVal));
         }
 
@@ -1029,7 +1029,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                 actionElem, attrVals.at('top'), 'height');
         if (attrVal !== 0) {
             this.addDataModifier(
-                TP.core.DragResponder.INCREMENT_Y_BY,
+                TP.dnd.DragResponder.INCREMENT_Y_BY,
                 TP.hc('increment', attrVal));
         }
     }
@@ -1103,7 +1103,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('setActionElement',
+TP.dnd.DragResponder.Inst.defineMethod('setActionElement',
 function(anElement) {
 
     /**
@@ -1113,7 +1113,7 @@ function(anElement) {
      *     provided.
      * @param {HTMLElement} anElement The Element to use as the the action
      *     element.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var actionElem;
@@ -1151,14 +1151,14 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('setupDataModifiers',
+TP.dnd.DragResponder.Inst.defineMethod('setupDataModifiers',
 function() {
 
     /**
      * @method setupDataModifiers
      * @summary Sets up any installed data modifiers in preparation for a 'drag
      *     session'.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var modifiers;
@@ -1184,14 +1184,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('teardownDataModifiers',
+TP.dnd.DragResponder.Inst.defineMethod('teardownDataModifiers',
 function() {
 
     /**
      * @method teardownDataModifiers
      * @summary Tears down any installed data modifiers at the conclusion of a
      *     'drag session'.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var modifiers;
@@ -1214,23 +1214,23 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.MoveResponder
+//  TP.dnd.MoveResponder
 //  ========================================================================
 
 /**
- * @type {TP.core.MoveResponder}
+ * @type {TP.dnd.MoveResponder}
  * @summary A DragResponder responsible for simple move operations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.defineSubtype('MoveResponder');
+TP.dnd.DragResponder.defineSubtype('MoveResponder');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Type.defineMethod('initialize',
+TP.dnd.MoveResponder.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -1243,7 +1243,7 @@ function() {
 
     //  Construct a new state machine and use it as the state machine for the
     //  move singleton.
-    stateMachine = TP.core.DragResponder.get('dragStateMachine');
+    stateMachine = TP.dnd.DragResponder.get('dragStateMachine');
 
     //  The state machine will transition to 'moving' when it is activated.
     stateMachine.defineState('idle', 'moving');
@@ -1262,15 +1262,15 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineAttribute('$overlayElement');
+TP.dnd.MoveResponder.Inst.defineAttribute('$overlayElement');
 
-TP.core.MoveResponder.Inst.defineAttribute('$computedPoint');
+TP.dnd.MoveResponder.Inst.defineAttribute('$computedPoint');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineHandler('DOMDragMove',
+TP.dnd.MoveResponder.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -1358,7 +1358,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineHandler('MovingEnter',
+TP.dnd.MoveResponder.Inst.defineHandler('MovingEnter',
 function(aSignal) {
 
     /**
@@ -1473,7 +1473,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineHandler('MovingExit',
+TP.dnd.MoveResponder.Inst.defineHandler('MovingExit',
 function(aSignal) {
 
     /**
@@ -1531,25 +1531,25 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('prepareFrom',
+TP.dnd.MoveResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the element.
-     * @returns {TP.core.MoveResponder} The receiver.
+     * @returns {TP.dnd.MoveResponder} The receiver.
      */
 
     var attrs,
@@ -1558,7 +1558,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         containerElem;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -1579,7 +1579,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                         true,
                                         true))) {
         this.addDataModifier(
-                TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER,
+                TP.dnd.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
     }
 
@@ -1596,15 +1596,15 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                     var constraintFunc;
 
                     //  If the value names a constant on the
-                    //  TP.core.MoveResponder or the TP.core.DragResponder
+                    //  TP.dnd.MoveResponder or the TP.dnd.DragResponder
                     //  type that points to a callable Function, then add it
                     //  as a data modifier.
                     if (TP.isCallable(
                             constraintFunc =
-                                TP.core.MoveResponder[aConstraintVal]) ||
+                                TP.dnd.MoveResponder[aConstraintVal]) ||
                         TP.isCallable(
                             constraintFunc =
-                                TP.core.DragResponder[aConstraintVal])) {
+                                TP.dnd.DragResponder[aConstraintVal])) {
                         this.addDataModifier(constraintFunc);
                     }
                 }.bind(this));
@@ -1620,15 +1620,15 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                     var workerFunc;
 
                     //  If the value names a constant on the
-                    //  TP.core.MoveResponder or the TP.core.DragResponder
+                    //  TP.dnd.MoveResponder or the TP.dnd.DragResponder
                     //  type that points to a callable Function, then add it
                     //  as a data modifier.
                     if (TP.isCallable(
                             workerFunc =
-                                TP.core.MoveResponder[aConstraintVal]) ||
+                                TP.dnd.MoveResponder[aConstraintVal]) ||
                         TP.isCallable(
                             workerFunc =
-                                TP.core.DragResponder[aConstraintVal])) {
+                                TP.dnd.DragResponder[aConstraintVal])) {
                         this.addDragWorker(workerFunc);
                     }
                 }.bind(this));
@@ -1641,23 +1641,23 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 });
 
 //  ========================================================================
-//  TP.core.ResizeResponder
+//  TP.dnd.ResizeResponder
 //  ========================================================================
 
 /**
- * @type {TP.core.ResizeResponder}
+ * @type {TP.dnd.ResizeResponder}
  * @summary A DragResponder responsible for simple resize operations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.defineSubtype('ResizeResponder');
+TP.dnd.DragResponder.defineSubtype('ResizeResponder');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Type.defineConstant(
+TP.dnd.ResizeResponder.Type.defineConstant(
         'CLAMP_RECT_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -1672,7 +1672,7 @@ function(aDragResponder, aSignal, xyPoint) {
         borderXOffset,
         borderYOffset;
 
-    kallee = TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER;
+    kallee = TP.dnd.ResizeResponder.CLAMP_RECT_TO_CONTAINER;
 
     if (TP.notValid(containerRect = kallee.tempData.at('containerRect'))) {
 
@@ -1711,7 +1711,7 @@ function(aDragResponder, aSignal, xyPoint) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Type.defineMethod('initialize',
+TP.dnd.ResizeResponder.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -1724,7 +1724,7 @@ function() {
 
     //  Construct a new state machine and use it as the state machine for the
     //  resize singleton.
-    stateMachine = TP.core.DragResponder.get('dragStateMachine');
+    stateMachine = TP.dnd.DragResponder.get('dragStateMachine');
 
     //  The state machine will transition to 'resizing' when it is activated.
     stateMachine.defineState('idle', 'resizing');
@@ -1743,29 +1743,29 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineAttribute('$overlayElement');
+TP.dnd.ResizeResponder.Inst.defineAttribute('$overlayElement');
 
-TP.core.ResizeResponder.Inst.defineAttribute('$computedPoint');
+TP.dnd.ResizeResponder.Inst.defineAttribute('$computedPoint');
 
-TP.core.ResizeResponder.Inst.defineAttribute('dragSide');
-TP.core.ResizeResponder.Inst.defineAttribute('sideComputed');
+TP.dnd.ResizeResponder.Inst.defineAttribute('dragSide');
+TP.dnd.ResizeResponder.Inst.defineAttribute('sideComputed');
 
-TP.core.ResizeResponder.Inst.defineAttribute('perimeterTop');
-TP.core.ResizeResponder.Inst.defineAttribute('perimeterRight');
-TP.core.ResizeResponder.Inst.defineAttribute('perimeterBottom');
-TP.core.ResizeResponder.Inst.defineAttribute('perimeterLeft');
+TP.dnd.ResizeResponder.Inst.defineAttribute('perimeterTop');
+TP.dnd.ResizeResponder.Inst.defineAttribute('perimeterRight');
+TP.dnd.ResizeResponder.Inst.defineAttribute('perimeterBottom');
+TP.dnd.ResizeResponder.Inst.defineAttribute('perimeterLeft');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('init',
+TP.dnd.ResizeResponder.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
-     * @returns {TP.core.ResizeResponder} A new instance.
+     * @returns {TP.dnd.ResizeResponder} A new instance.
      */
 
     this.callNextMethod();
@@ -1780,7 +1780,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('computeOffsetPoint',
+TP.dnd.ResizeResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
     /**
@@ -1793,7 +1793,7 @@ function() {
      *       element.
      *     - The border of the action element.
      *     - The 'drag corner' that was configured or computed for the gesture.
-     * @returns {TP.core.ResizeResponder} The receiver.
+     * @returns {TP.dnd.ResizeResponder} The receiver.
      */
 
     var actionElem,
@@ -2081,7 +2081,7 @@ function() {
             break;
     }
 
-    //  Create a TP.core.Point and use it for the offset point.
+    //  Create a TP.gui.Point and use it for the offset point.
     this.set('$offsetPoint', TP.pc(offsetX, offsetY));
 
     return this;
@@ -2089,7 +2089,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineHandler('DOMDragMove',
+TP.dnd.ResizeResponder.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -2594,7 +2594,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineHandler('ResizingEnter',
+TP.dnd.ResizeResponder.Inst.defineHandler('ResizingEnter',
 function(aSignal) {
 
     /**
@@ -2708,7 +2708,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineHandler('ResizingExit',
+TP.dnd.ResizeResponder.Inst.defineHandler('ResizingExit',
 function(aSignal) {
 
     /**
@@ -2770,25 +2770,25 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('prepareFrom',
+TP.dnd.ResizeResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the element.
-     * @returns {TP.core.ResizeResponder} The receiver.
+     * @returns {TP.dnd.ResizeResponder} The receiver.
      */
 
     var attrs,
@@ -2797,7 +2797,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         containerElem;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -2818,7 +2818,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                         true,
                                         true))) {
         this.addDataModifier(
-                TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER,
+                TP.dnd.ResizeResponder.CLAMP_RECT_TO_CONTAINER,
                 TP.hc('container', containerElem));
     }
 
@@ -2842,15 +2842,15 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                     var constraintFunc;
 
                     //  If the value names a constant on the
-                    //  TP.core.ResizeResponder or the TP.core.DragResponder
+                    //  TP.dnd.ResizeResponder or the TP.dnd.DragResponder
                     //  type that points to a callable Function, then add it
                     //  as a data modifier.
                     if (TP.isCallable(
                             constraintFunc =
-                                TP.core.ResizeResponder[aConstraintVal]) ||
+                                TP.dnd.ResizeResponder[aConstraintVal]) ||
                         TP.isCallable(
                             constraintFunc =
-                                TP.core.DragResponder[aConstraintVal])) {
+                                TP.dnd.DragResponder[aConstraintVal])) {
                         this.addDataModifier(constraintFunc);
                     }
                 }.bind(this));
@@ -2866,15 +2866,15 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                     var workerFunc;
 
                     //  If the value names a constant on the
-                    //  TP.core.ResizeResponder or the TP.core.DragResponder
+                    //  TP.dnd.ResizeResponder or the TP.dnd.DragResponder
                     //  type that points to a callable Function, then add it
                     //  as a data modifier.
                     if (TP.isCallable(
                             workerFunc =
-                                TP.core.ResizeResponder[aConstraintVal]) ||
+                                TP.dnd.ResizeResponder[aConstraintVal]) ||
                         TP.isCallable(
                             workerFunc =
-                                TP.core.DragResponder[aConstraintVal])) {
+                                TP.dnd.DragResponder[aConstraintVal])) {
                         this.addDragWorker(workerFunc);
                     }
                 }.bind(this));
@@ -2887,23 +2887,23 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 });
 
 //  ========================================================================
-//  TP.core.DNDResponder
+//  TP.dnd.DNDResponder
 //  ========================================================================
 
 /**
- * @type {TP.core.DNDResponder}
+ * @type {TP.dnd.DNDResponder}
  * @summary A DragResponder responsible for drag and drop operations.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.defineSubtype('DNDResponder');
+TP.dnd.MoveResponder.defineSubtype('DNDResponder');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Type.defineConstant(
+TP.dnd.DNDResponder.Type.defineConstant(
 'CLAMP_X_AND_Y_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
@@ -2920,7 +2920,7 @@ function(aDragResponder, aSignal, xyPoint) {
         maxPoint,
         kallee;
 
-    kallee = TP.core.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER;
+    kallee = TP.dnd.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER;
 
     if (TP.notValid(maxFittedRect = kallee.tempData.at('maxFittedRect'))) {
 
@@ -2957,7 +2957,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
 //  ---
 
-TP.core.DNDResponder.Type.defineConstant(
+TP.dnd.DNDResponder.Type.defineConstant(
 'FILTER_BY_STRING_OR',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
@@ -2984,7 +2984,7 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
 //  ---
 
-TP.core.DNDResponder.Type.defineConstant(
+TP.dnd.DNDResponder.Type.defineConstant(
 'FILTER_BY_STRING_AND',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
@@ -3011,7 +3011,7 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
 //  ---
 
-TP.core.DNDResponder.Type.defineConstant(
+TP.dnd.DNDResponder.Type.defineConstant(
 'FILTER_BY_TYPE',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
@@ -3103,7 +3103,7 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
 //  ---
 
-TP.core.DNDResponder.Type.defineConstant(
+TP.dnd.DNDResponder.Type.defineConstant(
 'FILTER_BY_PATH',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
@@ -3133,7 +3133,7 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
 //  ---
 
-TP.core.DNDResponder.Type.defineConstant(
+TP.dnd.DNDResponder.Type.defineConstant(
 'FILTER_BY_DTD',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
@@ -3153,7 +3153,7 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Type.defineMethod('initialize',
+TP.dnd.DNDResponder.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -3166,7 +3166,7 @@ function() {
 
     //  Construct a new state machine and use it as the state machine for the
     //  DND singleton.
-    stateMachine = TP.core.DragResponder.get('dragStateMachine');
+    stateMachine = TP.dnd.DragResponder.get('dragStateMachine');
 
     //  The state machine will transition to 'resizing' when it is activated.
     stateMachine.defineState('idle', 'dragdropping');
@@ -3187,20 +3187,20 @@ function() {
 
 //  The 'real' action element. This type uses a 'cover element' as the action
 //  element.
-TP.core.DNDResponder.Inst.defineAttribute('$realActionElem');
+TP.dnd.DNDResponder.Inst.defineAttribute('$realActionElem');
 
 //  The item element - the element that the 'action element' (i.e. the DND
 //  representation element) was generated from.
-TP.core.DNDResponder.Inst.defineAttribute('itemElement');
+TP.dnd.DNDResponder.Inst.defineAttribute('itemElement');
 
 //  The item element's offset X/Y point.
-TP.core.DNDResponder.Inst.defineAttribute('itemPagePoint');
+TP.dnd.DNDResponder.Inst.defineAttribute('itemPagePoint');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('computeOffsetPoint',
+TP.dnd.DNDResponder.Inst.defineMethod('computeOffsetPoint',
 function() {
 
     /**
@@ -3213,7 +3213,7 @@ function() {
      *       element.
      *     - The border and margin from the action element's offset parent.
      *     - The 'drag corner' that was configured or computed for the gesture.
-     * @returns {TP.core.DragResponder} The receiver.
+     * @returns {TP.dnd.DragResponder} The receiver.
      */
 
     var startPoint,
@@ -3330,7 +3330,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragdroppingEnter',
+TP.dnd.DNDResponder.Inst.defineHandler('DragdroppingEnter',
 function(aSignal) {
 
     /**
@@ -3367,7 +3367,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragdroppingExit',
+TP.dnd.DNDResponder.Inst.defineHandler('DragdroppingExit',
 function(aSignal) {
 
     /**
@@ -3385,17 +3385,17 @@ function(aSignal) {
         dndElem;
 
     if (TP.isValid(targetTPElem =
-                    TP.core.UIElementNode.get('currentDNDTarget'))) {
+                    TP.dom.UIElementNode.get('currentDNDTarget'))) {
 
         sigPayload = TP.hc('dndSource',
-                            TP.core.UIElementNode.get('currentDNDSource'),
+                            TP.dom.UIElementNode.get('currentDNDSource'),
                             'dndTarget',
                             targetTPElem);
 
     } else {
 
         sigPayload = TP.hc('dndSource',
-                            TP.core.UIElementNode.get('currentDNDSource'));
+                            TP.dom.UIElementNode.get('currentDNDSource'));
     }
 
     if (TP.isValid(targetTPElem) && targetTPElem.willDrop()) {
@@ -3412,9 +3412,9 @@ function(aSignal) {
     //  Send a 'TP.sig.DOMDNDCompleted' signal
     this.signal('TP.sig.DOMDNDCompleted', sigPayload);
 
-    TP.core.UIElementNode.Type.set('currentDNDSource', null);
-    TP.core.UIElementNode.Type.set('currentDNDTarget', null);
-    TP.core.UIElementNode.Type.set('currentDNDItem', null);
+    TP.dom.UIElementNode.Type.set('currentDNDSource', null);
+    TP.dom.UIElementNode.Type.set('currentDNDTarget', null);
+    TP.dom.UIElementNode.Type.set('currentDNDItem', null);
 
     //  Send a 'TP.sig.DOMDNDTerminate' signal
     this.signal('TP.sig.DOMDNDTerminate');
@@ -3457,7 +3457,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('makeDragElementFrom',
+TP.dnd.DNDResponder.Inst.defineMethod('makeDragElementFrom',
 function(anElement) {
 
     /**
@@ -3555,25 +3555,25 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('prepareFrom',
+TP.dnd.DNDResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The object to obtain
+     * @param {TP.dom.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
+     * @param {TP.dom.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     * @param {TP.dom.ElementNode} evtTPElement The object that the originating
      *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the element.
-     * @returns {TP.core.DNDResponder} The receiver.
+     * @returns {TP.dnd.DNDResponder} The receiver.
      */
 
     var attrs,
@@ -3582,7 +3582,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         containerElem;
 
     //  If no attribute hash was supplied, then grab one from the 'information'
-    //  TP.core.ElementNode.
+    //  TP.dom.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -3605,22 +3605,22 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                         true,
                                         true))) {
         this.addDataModifier(
-                TP.core.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER,
+                TP.dnd.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
     }
 
-    //  NB: We do *not* call up to the TP.core.MoveResponder's method here,
+    //  NB: We do *not* call up to the TP.dnd.MoveResponder's method here,
     //  since we have different logic for setup.
 
     return this;
 });
 
 //  ========================================================================
-//  TP.core.UIElementNode additions
+//  TP.dom.UIElementNode additions
 //  ========================================================================
 
 /**
- * @summary Additions to the TP.core.UIElementNode type to support drag and
+ * @summary Additions to the TP.dom.UIElementNode type to support drag and
  *     drop operations.
  */
 
@@ -3628,7 +3628,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineConstant(
+TP.dom.UIElementNode.Type.defineConstant(
         'DRAG_CSS_PROPERTY_NAMES',
         TP.ac('background', 'backgroundAttachment', 'backgroundColor',
                 'backgroundImage', 'backgroundPosition', 'backgroundRepeat',
@@ -3660,15 +3660,15 @@ TP.core.UIElementNode.Type.defineConstant(
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineAttribute('currentDNDSource');
-TP.core.UIElementNode.Type.defineAttribute('currentDNDTarget');
-TP.core.UIElementNode.Type.defineAttribute('currentDNDItem');
+TP.dom.UIElementNode.Type.defineAttribute('currentDNDSource');
+TP.dom.UIElementNode.Type.defineAttribute('currentDNDTarget');
+TP.dom.UIElementNode.Type.defineAttribute('currentDNDItem');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragdown',
+TP.dom.UIElementNode.Type.defineMethod('ondragdown',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3679,7 +3679,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -3712,7 +3712,7 @@ function(aTargetElem, anEvent) {
     evtTargetTPElem = TP.wrap(aTargetElem);
 
     //  Check to see if the event target will move. If so, activate the shared
-    //  MoveService (an instance of TP.core.MoveResponder), set it up, activate
+    //  MoveService (an instance of TP.dnd.MoveResponder), set it up, activate
     //  it and exit.
     if (evtTargetTPElem.willMove()) {
         if (TP.isValid(moveResponder = TP.bySystemId('MoveService'))) {
@@ -3721,12 +3721,12 @@ function(aTargetElem, anEvent) {
             moveResponder.set('targetElement', aTargetElem);
 
             //  Ask the wrapped event target element for its 'drag source'
-            //  TP.core.ElementNode. If it can't find one, then it acts as it's
+            //  TP.dom.ElementNode. If it can't find one, then it acts as it's
             //  own.
             sourceTPElem = evtTargetTPElem.getDragSource();
 
-            //  Ask the drag source TP.core.ElementNode for its 'drag info'
-            //  TP.core.ElementNode
+            //  Ask the drag source TP.dom.ElementNode for its 'drag info'
+            //  TP.dom.ElementNode
             infoTPElem = sourceTPElem.getDragInfo();
 
             //  Set up the responder using the info, source and event target
@@ -3749,7 +3749,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Check to see if the event target will resize. If so, activate the shared
-    //  ResizeService (an instance of TP.core.ResizeResponder), set it up,
+    //  ResizeService (an instance of TP.dnd.ResizeResponder), set it up,
     //  activate it and exit.
     if (evtTargetTPElem.willResize()) {
         if (TP.isValid(resizeResponder = TP.bySystemId('ResizeService'))) {
@@ -3758,10 +3758,10 @@ function(aTargetElem, anEvent) {
             resizeResponder.set('targetElement', aTargetElem);
 
             //  Ask the wrapped event target element for its 'drag source'
-            //  TP.core.ElementNode
+            //  TP.dom.ElementNode
             sourceTPElem = evtTargetTPElem.getDragSource();
 
-            //  Ask the drag source for its 'drag info' TP.core.ElementNode
+            //  Ask the drag source for its 'drag info' TP.dom.ElementNode
             infoTPElem = sourceTPElem.getDragInfo();
 
             //  Set up the responder using the info, source and event target
@@ -3784,7 +3784,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Check to see if the event target will grab. If so, obtain the
-    //  drag-and-drop 'source' TP.core.ElementNode and proceed from there.
+    //  drag-and-drop 'source' TP.dom.ElementNode and proceed from there.
     if (evtTargetTPElem.willGrab() &&
         TP.isValid(sourceTPElem = evtTargetTPElem.getDNDSource())) {
         if (TP.isValid(dndResponder = TP.bySystemId('DNDService'))) {
@@ -3795,18 +3795,18 @@ function(aTargetElem, anEvent) {
                 return this;
             }
 
-            //  Ask the source for its 'drag info' TP.core.ElementNode. This
+            //  Ask the source for its 'drag info' TP.dom.ElementNode. This
             //  very well may be the sourceTPElem itself if there is no separate
             //  element pointed to by 'drag:info'.
             infoTPElem = sourceTPElem.getDNDInfo();
 
-            //  Get the 'drag item' TP.core.ElementNode. Again, this very well
+            //  Get the 'drag item' TP.dom.ElementNode. Again, this very well
             //  may be the sourceTPElem itself, but it might an 'item' within
             //  the source or some other element. It's the one we actually want
             //  to drag.
             itemTPElem = infoTPElem.getDragItem();
 
-            //  Ask the item TP.core.ElementNode if a 'DND representation
+            //  Ask the item TP.dom.ElementNode if a 'DND representation
             //  element' can be computed. If one can be, then set up the shared
             //  DND responder.
             if (TP.isElement(actionElem = itemTPElem.getDNDRepElement())) {
@@ -3864,9 +3864,9 @@ function(aTargetElem, anEvent) {
                     //  the start point will remain unchanged.
                 }
 
-                TP.core.UIElementNode.Type.set(
+                TP.dom.UIElementNode.Type.set(
                                         'currentDNDSource', sourceTPElem);
-                TP.core.UIElementNode.Type.set(
+                TP.dom.UIElementNode.Type.set(
                                         'currentDNDItem', itemTPElem);
 
                 stateMachine = dndResponder.getStateMachines().first();
@@ -3885,7 +3885,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragup',
+TP.dom.UIElementNode.Type.defineMethod('ondragup',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3897,7 +3897,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var dragStateMachine,
@@ -3909,7 +3909,7 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    dragStateMachine = TP.core.DragResponder.get('dragStateMachine');
+    dragStateMachine = TP.dnd.DragResponder.get('dragStateMachine');
 
     //  Grab the target element before we deactivate.
     //  TODO: This is a little cheesy - we should have another way to get back
@@ -3940,7 +3940,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragover',
+TP.dom.UIElementNode.Type.defineMethod('ondragover',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3952,7 +3952,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -3971,7 +3971,7 @@ function(aTargetElem, anEvent) {
 
         //  Cache a reference to the 'current drag and drop target' for when the
         //  target exits.
-        TP.core.UIElementNode.Type.set('currentDNDTarget', targetTPElem);
+        TP.dom.UIElementNode.Type.set('currentDNDTarget', targetTPElem);
 
         //  Send a 'TP.sig.DOMDNDTargetOver' signal
         targetTPElem.signal('TP.sig.DOMDNDTargetOver', TP.hc('event', anEvent));
@@ -3982,7 +3982,7 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('ondragout',
+TP.dom.UIElementNode.Type.defineMethod('ondragout',
 function(aTargetElem, anEvent) {
 
     /**
@@ -3994,7 +3994,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var targetTPElem;
@@ -4004,7 +4004,7 @@ function(aTargetElem, anEvent) {
     }
 
     if (TP.notValid(targetTPElem =
-                    TP.core.UIElementNode.get('currentDNDTarget'))) {
+                    TP.dom.UIElementNode.get('currentDNDTarget'))) {
         return this;
     }
 
@@ -4012,7 +4012,7 @@ function(aTargetElem, anEvent) {
     targetTPElem.signal('TP.sig.DOMDNDTargetOut', TP.hc('event', anEvent));
 
     //  Clear out the reference to the 'current drag and drop target'
-    TP.core.UIElementNode.Type.set('currentDNDTarget', null);
+    TP.dom.UIElementNode.Type.set('currentDNDTarget', null);
 
     return this;
 });
@@ -4021,7 +4021,7 @@ function(aTargetElem, anEvent) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDragInfo',
+TP.dom.UIElementNode.Inst.defineMethod('getDragInfo',
 function() {
 
     /**
@@ -4033,7 +4033,7 @@ function() {
      * @description If the 'drag:info' attribute doesn't exist on the receiver,
      *     then the receiver itself is returned as the source for drag
      *     information.
-     * @returns {TP.core.ElementNode} The element that provides information
+     * @returns {TP.dom.ElementNode} The element that provides information
      *     about configuring the drag session.
      */
 
@@ -4065,7 +4065,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDragItem',
+TP.dom.UIElementNode.Inst.defineMethod('getDragItem',
 function() {
 
     /**
@@ -4078,7 +4078,7 @@ function() {
      *     'target', then the target of the last mouse down event is used as the
      *     drag item. If the 'drag:item' attribute doesn't exist on the
      *     receiver, then the receiver itself is returned as the drag item.
-     * @returns {TP.core.ElementNode} The element to be dragged in a drag
+     * @returns {TP.dom.ElementNode} The element to be dragged in a drag
      *     session.
      */
 
@@ -4131,7 +4131,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDragSource',
+TP.dom.UIElementNode.Inst.defineMethod('getDragSource',
 function() {
 
     /**
@@ -4141,7 +4141,7 @@ function() {
      * @description If the 'drag:mover' or 'drag:resizer' attributes exist on
      *     the receiver, then the receiver itself is returned as the dragging
      *     source.
-     * @returns {TP.core.ElementNode} The element that provides information
+     * @returns {TP.dom.ElementNode} The element that provides information
      *     about configuring the drag session.
      */
 
@@ -4170,8 +4170,8 @@ function() {
                                                 true);
             });
 
-    //  If we found a valid source TP.core.ElementNode, get its 'info'
-    //  TP.core.ElementNode and make sure that the receiver's native node is
+    //  If we found a valid source TP.dom.ElementNode, get its 'info'
+    //  TP.dom.ElementNode and make sure that the receiver's native node is
     //  part of the results returned by executing the path supplied in the
     //  'drag:item' attribute (relative to the source element).
     if (TP.isValid(sourceTPElem)) {
@@ -4196,7 +4196,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDInfo',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDInfo',
 function() {
 
     /**
@@ -4209,7 +4209,7 @@ function() {
      * @description If the 'dnd:info' attribute doesn't exist on the receiver,
      *     then the receiver itself is returned as the source for drag and drop
      *     information.
-     * @returns {TP.core.ElementNode} The element that provides information
+     * @returns {TP.dom.ElementNode} The element that provides information
      *     about configuring the drag and drop session.
      */
 
@@ -4242,7 +4242,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDRepElement',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDRepElement',
 function() {
 
     /**
@@ -4288,7 +4288,7 @@ function() {
                 dragClone,
                 TP.elementGetComputedStyleString(
                     repElem,
-                    TP.core.UIElementNode.DRAG_CSS_PROPERTY_NAMES));
+                    TP.dom.UIElementNode.DRAG_CSS_PROPERTY_NAMES));
 
     //  Remove the 'id' to make sure the clone is unique in the document.
     TP.elementRemoveAttribute(dragClone, 'id');
@@ -4302,7 +4302,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDSource',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDSource',
 function() {
 
     /**
@@ -4311,7 +4311,7 @@ function() {
      *     current drag and drop session.
      * @description If the 'drag:vend' attribute exists on the receiver, then
      *     the receiver itself is returned as the drag and drop source.
-     * @returns {TP.core.ElementNode} The element that acts as the source for a
+     * @returns {TP.dom.ElementNode} The element that acts as the source for a
      *     drag and drop session.
      */
 
@@ -4330,7 +4330,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDNDTarget',
+TP.dom.UIElementNode.Inst.defineMethod('getDNDTarget',
 function() {
 
     /**
@@ -4339,7 +4339,7 @@ function() {
      *     current drag and drop session.
      * @description If the 'drag:accept' attribute exists on the receiver, then
      *     the receiver itself is returned as the drag and drop target.
-     * @returns {TP.core.ElementNode} The element that acts as the target for a
+     * @returns {TP.dom.ElementNode} The element that acts as the target for a
      *     drag and drop session.
      */
 
@@ -4361,7 +4361,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('isValidTarget',
+TP.dom.UIElementNode.Inst.defineMethod('isValidTarget',
 function() {
 
     /**
@@ -4421,7 +4421,7 @@ function() {
             break;
     }
 
-    if (!TP.isCallable(TP.core.DNDResponder[testFuncName])) {
+    if (!TP.isCallable(TP.dnd.DNDResponder[testFuncName])) {
         return false;
     }
 
@@ -4429,7 +4429,7 @@ function() {
         return false;
     }
 
-    return TP.core.DNDResponder[testFuncName](dragResponder,
+    return TP.dnd.DNDResponder[testFuncName](dragResponder,
                                                 dndSource,
                                                 this,
                                                 dndItem);
@@ -4437,7 +4437,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willDrop',
+TP.dom.UIElementNode.Inst.defineMethod('willDrop',
 function() {
 
     /**
@@ -4453,7 +4453,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willGrab',
+TP.dom.UIElementNode.Inst.defineMethod('willGrab',
 function() {
 
     /**
@@ -4469,7 +4469,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willMove',
+TP.dom.UIElementNode.Inst.defineMethod('willMove',
 function() {
 
     /**
@@ -4502,8 +4502,8 @@ function() {
                                                     true);
                 });
 
-    //  If we found a valid source TP.core.ElementNode, get its 'info'
-    //  TP.core.ElementNode and make sure that the info TP.core.ElementNode has
+    //  If we found a valid source TP.dom.ElementNode, get its 'info'
+    //  TP.dom.ElementNode and make sure that the info TP.dom.ElementNode has
     //  a 'drag:mover' attribute and that the receiver's native node is part of
     //  the results returned by executing the path supplied in the 'drag:item'
     //  attribute (relative to the source element).
@@ -4528,7 +4528,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('willResize',
+TP.dom.UIElementNode.Inst.defineMethod('willResize',
 function() {
 
     /**
@@ -4560,8 +4560,8 @@ function() {
                                                     true);
                 });
 
-    //  If we found a valid source TP.core.ElementNode, get its 'info'
-    //  TP.core.ElementNode and make sure that the info TP.core.ElementNode has
+    //  If we found a valid source TP.dom.ElementNode, get its 'info'
+    //  TP.dom.ElementNode and make sure that the info TP.dom.ElementNode has
     //  a 'drag:resizer' attribute and that the receiver's native node is part
     //  of the results returned by executing the path supplied in the
     //  'drag:item' attribute (relative to the source element).
@@ -4586,12 +4586,12 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DragTracker
+//  TP.dnd.DragTracker
 //  ========================================================================
 
 /**
- * @type {TP.core.DragTracker}
- * @summary The TP.core.DragTracker is an object which responds to the
+ * @type {TP.dnd.DragTracker}
+ * @summary The TP.dnd.DragTracker is an object which responds to the
  *     current drag state and related events by tracking the mouse relative to a
  *     "domain" of objects.
  * @description Based on the configuration of the tracker instance the various
@@ -4609,7 +4609,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('TP.core.DragTracker');
+TP.lang.Object.defineSubtype('dnd.DragTracker');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -4620,7 +4620,7 @@ TP.lang.Object.defineSubtype('TP.core.DragTracker');
 //  subset that matches some criteria.
 //  ---
 
-TP.core.DragTracker.Type.defineConstant('VEND_ACCEPT',
+TP.dnd.DragTracker.Type.defineConstant('VEND_ACCEPT',
 function(domainObj, computeObj, mouseEvent) {
     //  Returns true if the vend and accept attributes are a match.
 });
@@ -4633,7 +4633,7 @@ function(domainObj, computeObj, mouseEvent) {
 
 /* eslint-disable new-cap */
 
-TP.core.DragTracker.Type.defineConstant('GLOBAL_CENTER',
+TP.dnd.DragTracker.Type.defineConstant('GLOBAL_CENTER',
     function(target) {
         var rect;
 
@@ -4643,7 +4643,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_CENTER',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('GLOBAL_RECT',
+TP.dnd.DragTracker.Type.defineConstant('GLOBAL_RECT',
     function(target) {
         if (TP.canInvoke(target, 'getGlobalRect')) {
             return target.getGlobalRect();
@@ -4653,7 +4653,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_RECT',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('GLOBAL_X_COORDS',
+TP.dnd.DragTracker.Type.defineConstant('GLOBAL_X_COORDS',
     function(target) {
         var rect;
 
@@ -4663,7 +4663,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_X_COORDS',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('GLOBAL_Y_COORDS',
+TP.dnd.DragTracker.Type.defineConstant('GLOBAL_Y_COORDS',
     function(target) {
         var rect;
 
@@ -4673,7 +4673,7 @@ TP.core.DragTracker.Type.defineConstant('GLOBAL_Y_COORDS',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('PAGE_CENTER',
+TP.dnd.DragTracker.Type.defineConstant('PAGE_CENTER',
     function(target) {
         var rect;
 
@@ -4683,7 +4683,7 @@ TP.core.DragTracker.Type.defineConstant('PAGE_CENTER',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('PAGE_RECT',
+TP.dnd.DragTracker.Type.defineConstant('PAGE_RECT',
     function(target) {
         if (TP.canInvoke(target, 'getPageRect')) {
             return target.getPageRect();
@@ -4693,7 +4693,7 @@ TP.core.DragTracker.Type.defineConstant('PAGE_RECT',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('PAGE_X_COORDS',
+TP.dnd.DragTracker.Type.defineConstant('PAGE_X_COORDS',
     function(target) {
         var rect;
 
@@ -4703,7 +4703,7 @@ TP.core.DragTracker.Type.defineConstant('PAGE_X_COORDS',
         return;
     });
 
-TP.core.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
+TP.dnd.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
     function(target) {
         var rect;
 
@@ -4728,43 +4728,43 @@ TP.core.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
 //  ------------------------------------------------------------------------
 
 //  The state machine we observe for tracking event state changes.
-TP.core.DragTracker.Inst.defineAttribute('stateMachine');
+TP.dnd.DragTracker.Inst.defineAttribute('stateMachine');
 
 //  The list of objects the tracker uses for computation.
-TP.core.DragTracker.Inst.defineAttribute('computeList');
+TP.dnd.DragTracker.Inst.defineAttribute('computeList');
 
 //  The list of objects the tracker resolved by executing the domainSpec.
-TP.core.DragTracker.Inst.defineAttribute('domainList');
+TP.dnd.DragTracker.Inst.defineAttribute('domainList');
 
 //  A function constructed from the domainSpec which is used to construct the
 //  domainList.
-TP.core.DragTracker.Inst.defineAttribute('domainFunction');
+TP.dnd.DragTracker.Inst.defineAttribute('domainFunction');
 
 //  The query specification used to describe (and acquire) the domainList.
-TP.core.DragTracker.Inst.defineAttribute('domainSpec');
+TP.dnd.DragTracker.Inst.defineAttribute('domainSpec');
 
 //  The default value for the filter function...simple vend/accept matching.
-TP.core.DragTracker.Inst.defineAttribute('filterFunction',
-    TP.core.DragTracker.VEND_ACCEPT);
+TP.dnd.DragTracker.Inst.defineAttribute('filterFunction',
+    TP.dnd.DragTracker.VEND_ACCEPT);
 
 //  The default value for the range function...page rectangle.
-TP.core.DragTracker.Inst.defineAttribute('rangeFunction',
-    TP.core.DragTracker.PAGE_RECT);
+TP.dnd.DragTracker.Inst.defineAttribute('rangeFunction',
+    TP.dnd.DragTracker.PAGE_RECT);
 
 //  The test function run against each computable as the tracker's event
 //  stream is processed. The default is a simple vend/accept matcher.
-TP.core.DragTracker.Inst.defineAttribute('testFunction',
-    TP.core.DragTracker.VEND_ACCEPT);
+TP.dnd.DragTracker.Inst.defineAttribute('testFunction',
+    TP.dnd.DragTracker.VEND_ACCEPT);
 
 //  The signal to fire when the testFunction returns at least one computable.
-TP.core.DragTracker.Inst.defineAttribute('trackingSignal',
+TP.dnd.DragTracker.Inst.defineAttribute('trackingSignal',
     'TP.sig.DragTrackerResults');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('init',
+TP.dnd.DragTracker.Inst.defineMethod('init',
 function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal) {
 
     /**
@@ -4776,7 +4776,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
      * @param {Function} rangeFunction
      * @param {Function} testFunction
      * @param {TP.sig.Signal} trackingSignal
-     * @returns {TP.core.DragTracker} A new instance.
+     * @returns {TP.dnd.DragTracker} A new instance.
      */
 
     var machine;
@@ -4841,13 +4841,13 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('clearComputables',
+TP.dnd.DragTracker.Inst.defineMethod('clearComputables',
 function() {
 
     /**
      * @method clearComputables
      * @summary Clears the receiver's cache of computable data.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     var list;
@@ -4860,14 +4860,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('clearDomain',
+TP.dnd.DragTracker.Inst.defineMethod('clearDomain',
 function() {
 
     /**
      * @method clearDomain
      * @summary Clears the receiver's cache of domain objects, the objects
      *     which provide the basis for selection sets and computations.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     var list;
@@ -4880,7 +4880,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineHandler('DraggingEnter',
+TP.dnd.DragTracker.Inst.defineHandler('DraggingEnter',
 function(aSignal) {
 
     /**
@@ -4901,7 +4901,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineHandler('DraggingExit',
+TP.dnd.DragTracker.Inst.defineHandler('DraggingExit',
 function(aSignal) {
 
     /**
@@ -4923,7 +4923,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineHandler('DOMDragHover',
+TP.dnd.DragTracker.Inst.defineHandler('DOMDragHover',
 function(aSignal) {
 
     /**
@@ -4939,7 +4939,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineHandler('DOMDragMove',
+TP.dnd.DragTracker.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -4955,13 +4955,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('refreshComputables',
+TP.dnd.DragTracker.Inst.defineMethod('refreshComputables',
 function() {
 
     /**
      * @method refreshComputables
      * @summary Refreshes the receiver's cache of computable data.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     this.clearComputables();
@@ -4974,14 +4974,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('refreshDomain',
+TP.dnd.DragTracker.Inst.defineMethod('refreshDomain',
 function() {
 
     /**
      * @method refreshDomain
      * @summary Refreshes the receiver's cache of domain objects, the objects
      *     which provide the basis for selection sets and computations.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     //  If the domain is being refreshed both our domain and computable lists
@@ -5000,7 +5000,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('setFilterFunction',
+TP.dnd.DragTracker.Inst.defineMethod('setFilterFunction',
 function(filterFunction) {
 
     /**
@@ -5010,7 +5010,7 @@ function(filterFunction) {
      *     update the computables list.
      * @param {Function} filterFunction The function to invoke on each domain
      *     object filter out non-matches.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     if (!TP.isFunction(filterFunction)) {
@@ -5029,7 +5029,7 @@ function(filterFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('setRangeFunction',
+TP.dnd.DragTracker.Inst.defineMethod('setRangeFunction',
 function(rangeFunction) {
 
     /**
@@ -5039,7 +5039,7 @@ function(rangeFunction) {
      *     for their computable value.
      * @param {Function} rangeFunction The function to invoke on each domain
      *     object to acquire a computable value.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     if (!TP.isFunction(rangeFunction)) {
@@ -5057,7 +5057,7 @@ function(rangeFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('setTestFunction',
+TP.dnd.DragTracker.Inst.defineMethod('setTestFunction',
 function(testFunction) {
 
     /**
@@ -5068,7 +5068,7 @@ function(testFunction) {
      *     tracking signal which notifies observers.
      * @param {Function} testFunction The function to invoke on each computable
      *     value to find tracking matches.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     if (!TP.isFunction(testFunction)) {
@@ -5083,7 +5083,7 @@ function(testFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('setTrackingSignal',
+TP.dnd.DragTracker.Inst.defineMethod('setTrackingSignal',
 function(trackingSignal) {
 
     /**
@@ -5092,7 +5092,7 @@ function(trackingSignal) {
      *     found.
      * @param {TP.sig.Signal|String} trackingSignal A signal or string which can
      *     provide the signal name to fire when tracking matches are found.
-     * @returns {TP.core.DragTracker} The receiver.
+     * @returns {TP.dnd.DragTracker} The receiver.
      */
 
     if (!TP.canInvoke(trackingSignal, 'getSignalName')) {
@@ -5153,20 +5153,20 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.core.SelectableItemUIElementNode
+//  TP.dom.SelectableItemUIElementNode
 //  ========================================================================
 
-TP.core.UIElementNode.defineSubtype('SelectableItemUIElementNode');
+TP.dom.UIElementNode.defineSubtype('SelectableItemUIElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.SelectableItemUIElementNode.isAbstract(true);
+TP.dom.SelectableItemUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
 function() {
 
     /**
@@ -5180,7 +5180,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
 function() {
 
     /**
@@ -5196,7 +5196,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
     /**
@@ -5211,7 +5211,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
 function() {
 
     /**
@@ -5227,7 +5227,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
 function() {
 
     /**
@@ -5241,7 +5241,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
+TP.dom.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
 function(aToggleValue) {
 
     /**
@@ -5250,21 +5250,21 @@ function(aToggleValue) {
      *     to display a 'checked' or 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
      *     'checked' or 'selected' state.
-     * @returns {TP.core.SelectableItemUIElementNode} The receiver.
+     * @returns {TP.dom.SelectableItemUIElementNode} The receiver.
      */
 
     return TP.override();
 });
 
 //  ========================================================================
-//  TP.core.SelectingUIElementNode
+//  TP.dom.SelectingUIElementNode
 //  ========================================================================
 
-TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
+TP.dom.UIElementNode.defineSubtype('SelectingUIElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.SelectingUIElementNode.isAbstract(true);
+TP.dom.SelectingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -5277,13 +5277,13 @@ TP.core.SelectingUIElementNode.isAbstract(true);
  * receiver to be considered 'selected'.
  * @type {TP.core.Hash}
  */
-TP.core.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
+TP.dom.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('addSelection',
 function(aValue, anAspect) {
 
     /**
@@ -5322,7 +5322,7 @@ function(aValue, anAspect) {
     if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
+                'Target TP.dom.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
@@ -5385,7 +5385,7 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
 function() {
 
     /**
@@ -5399,7 +5399,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('deselect',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -5433,13 +5433,13 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('deselectAll',
 function() {
 
     /**
      * @method deselectAll
      * @summary Clears any current selection(s).
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     * @returns {TP.dom.SelectingUIElementNode} The receiver.
      */
 
     var selectionModel,
@@ -5468,7 +5468,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
 function() {
 
     /**
@@ -5490,7 +5490,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('isSelected',
 function(aValue, anAspect) {
 
     /**
@@ -5529,7 +5529,7 @@ function(aValue, anAspect) {
     if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
+                'Target TP.dom.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
@@ -5580,7 +5580,7 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
     /**
@@ -5596,7 +5596,7 @@ function(anAspect) {
      *     that mix in this trait should implement this if necessary.
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     * @returns {TP.dom.SelectingUIElementNode} The receiver.
      */
 
     return this;
@@ -5604,7 +5604,7 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('removeSelection',
 function(aValue, anAspect) {
 
     /**
@@ -5644,7 +5644,7 @@ function(aValue, anAspect) {
     if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
+                'Target TP.dom.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
@@ -5706,7 +5706,7 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('select',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('select',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -5717,7 +5717,7 @@ function(aValue, anIndex, shouldSignal) {
      *     the exception that, if the receiver allows multiple selection, this
      *     method does not clear existing selections when processing the
      *     value(s) provided.
-     * @param {Object} [aValue] The value to select. Note that this can be an
+     * @param {Object} aValue The value to select. Note that this can be an
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
@@ -5727,6 +5727,10 @@ function(aValue, anIndex, shouldSignal) {
      */
 
     var dirty;
+
+    if (TP.notValid(aValue)) {
+        return false;
+    }
 
     //  If allowMultiples is false, then we can use a reference to a singular
     //  value that will be used as the selected value.
@@ -5745,7 +5749,7 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
+TP.dom.SelectingUIElementNode.Inst.defineMethod('selectAll',
 function() {
 
     /**
@@ -5755,7 +5759,7 @@ function() {
      *     multiple selections (such as radiobuttons), this will raise an
      *     'InvalidOperation' exception.
      * @exception TP.sig.InvalidOperation
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     * @returns {TP.dom.SelectingUIElementNode} The receiver.
      */
 
     var selectionModel,
@@ -5794,24 +5798,24 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.TogglingUIElementNode
+//  TP.dom.TogglingUIElementNode
 //  ========================================================================
 
-TP.core.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
+TP.dom.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
 
 //  Add in selectable item traits - instances of this type manage themselves as
 //  selectable items.
-TP.core.TogglingUIElementNode.addTraits(TP.core.SelectableItemUIElementNode);
+TP.dom.TogglingUIElementNode.addTraits(TP.dom.SelectableItemUIElementNode);
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.TogglingUIElementNode.isAbstract(true);
+TP.dom.TogglingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('deselect',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('deselect',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -5869,7 +5873,7 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
 function(aValue) {
 
     /**
@@ -5919,7 +5923,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
@@ -5981,7 +5985,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('getValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -6038,17 +6042,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('getValueElements',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('getValueElements',
 function() {
 
     /**
      * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     * @summary Returns an Array TP.dom.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
+     *     TP.dom.UIElementNodes. By default, this method will return other
      *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     * @returns {TP.dom.UIElementNode[]} The Array of shared value items.
      */
 
     var valueTPElems,
@@ -6075,13 +6079,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
 function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -6093,7 +6097,7 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('produceValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('produceValue',
 function(aspectName, aContentObject, aRequest) {
 
     /**
@@ -6143,7 +6147,7 @@ function(aspectName, aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
     /**
@@ -6158,7 +6162,7 @@ function(anAspect) {
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
      * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -6234,7 +6238,7 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('render',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('render',
 function() {
 
     /**
@@ -6244,7 +6248,7 @@ function() {
      *     configure the receiver's 'value elements' based on the current
      *     selection model.
      * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -6339,7 +6343,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('setDisplayValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
@@ -6352,7 +6356,7 @@ function(aValue) {
      * @param {Object} aValue The value to set (select) in the receiver. For a
      *     select list this might be an array.
      * @exception TP.sig.InvalidValueElements
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -6461,7 +6465,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('select',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('select',
 function(aValue, anIndex, shouldSignal) {
 
     /**
@@ -6522,7 +6526,7 @@ function(aValue, anIndex, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('setValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -6536,7 +6540,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var oldValue,
@@ -6605,14 +6609,14 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TogglingUIElementNode.Inst.defineMethod('toggleValue',
+TP.dom.TogglingUIElementNode.Inst.defineMethod('toggleValue',
 function(aValue) {
 
     /**
      * @method toggleValue
      * @summary Toggles the value to the inverse of its current value.
      * @param {Object} aValue The value to toggle.
-     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     * @returns {TP.dom.TogglingUIElementNode} The receiver.
      */
 
     var isSelected;

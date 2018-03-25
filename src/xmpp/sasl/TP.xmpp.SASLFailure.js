@@ -35,7 +35,7 @@ function() {
      * @method getErrorCondition
      * @summary Returns an element containing the error condition that
      *     occurred.
-     * @returns {TP.core.ElementNode} The element denoting the error condition
+     * @returns {TP.dom.ElementNode} The element denoting the error condition
      *     as per the XMPP 1.0 specification.
      */
 

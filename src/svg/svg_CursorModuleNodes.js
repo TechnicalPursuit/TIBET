@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:cursor');
+TP.dom.UIElementNode.defineSubtype('svg:cursor');
 
 TP.svg.cursor.addTraits(TP.svg.Element);
 

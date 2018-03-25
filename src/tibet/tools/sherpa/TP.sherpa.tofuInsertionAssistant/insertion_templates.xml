@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<templates xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols">
+    <template for="xctrls:button">
+        <xctrls:button>
+            <xctrls:label>New Button</xctrls:label>
+        </xctrls:button>
+    </template>
+    <template for="xctrls:buttonitem">
+        <xctrls:buttonitem>
+            <xctrls:label>New Button Item</xctrls:label>
+        </xctrls:buttonitem>
+    </template>
+    <template for="xctrls:checkitem">
+        <xctrls:checkitem>
+            <xctrls:label>New Check Item</xctrls:label>
+        </xctrls:checkitem>
+    </template>
+    <template for="xctrls:panelbox">
+        <xctrls:panelbox>
+            <xctrls:panel>
+                <xctrls:value>0</xctrls:value>
+                <xctrls:content>Content for panel 0</xctrls:content>
+            </xctrls:panel>
+            <xctrls:panel>
+                <xctrls:value>1</xctrls:value>
+                <xctrls:content>Content for panel 1</xctrls:content>
+            </xctrls:panel>
+        </xctrls:panelbox>
+    </template>
+    <template for="xctrls:radioitem">
+        <xctrls:radioitem>
+            <xctrls:label>New Radio Item</xctrls:label>
+        </xctrls:radioitem>
+    </template>
+    <template for="xctrls:tabbar">
+        <xctrls:tabbar/>
+        <xctrls:panelbox>
+            <xctrls:panel>
+                <xctrls:value>0</xctrls:value>
+                <xctrls:content>Content for panel 0</xctrls:content>
+            </xctrls:panel>
+            <xctrls:panel>
+                <xctrls:value>1</xctrls:value>
+                <xctrls:content>Content for panel 1</xctrls:content>
+            </xctrls:panel>
+        </xctrls:panelbox>
+    </template>
+    <template for="xctrls:textitem">
+        <xctrls:textitem>
+            <xctrls:label>New Text Item</xctrls:label>
+        </xctrls:textitem>
+    </template>
+</templates>

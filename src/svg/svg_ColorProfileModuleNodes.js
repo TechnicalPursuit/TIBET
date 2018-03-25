@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:color_profile');
+TP.dom.UIElementNode.defineSubtype('svg:color_profile');
 
 TP.svg.color_profile.addTraits(TP.svg.Element);
 

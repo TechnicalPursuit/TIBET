@@ -20,12 +20,12 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:Lattice');
 //  don't allow instance creation
 TP.xctrls.Lattice.isAbstract(true);
 
-TP.xctrls.Lattice.addTraits(TP.core.SelectingUIElementNode);
-TP.xctrls.Lattice.addTraits(TP.core.D3VirtualList);
+TP.xctrls.Lattice.addTraits(TP.dom.SelectingUIElementNode);
+TP.xctrls.Lattice.addTraits(TP.dom.D3VirtualList);
 
-TP.xctrls.Lattice.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
-TP.xctrls.Lattice.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
-TP.xctrls.Lattice.Inst.resolveTrait('render', TP.core.D3VirtualList);
+TP.xctrls.Lattice.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
+TP.xctrls.Lattice.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);
+TP.xctrls.Lattice.Inst.resolveTrait('render', TP.dom.D3VirtualList);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -397,25 +397,15 @@ function(anID) {
      * @param {String} anID The ID to use for the receiver and its subelements.
      */
 
-    var oldID,
+    var elem,
 
-        elem,
-
-        groupElem,
-        templateElem;
-
-    oldID = this.getAttribute('id');
+        groupElem;
 
     elem = this.getNativeNode();
 
     //  Update the group element's 'id'.
     groupElem = TP.unwrap(this.get('group'));
     TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
-
-    //  Update the template element's 'id'. Note that 'getTemplate' has all
-    //  kinds of other side effects, so we do this manually here.
-    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
-    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
 
     //  Note - we do not call 'setAttribute()' against the receiver here - don't
     //  want to endlessly recurse ;-).
@@ -502,7 +492,7 @@ function(aValue, shouldSignal) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Lattice.Inst.defineMethod('getRowHeight',

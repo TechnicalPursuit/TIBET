@@ -316,14 +316,14 @@ function() {
     delete Object.test15LocalAttribute;
     delete Array.test15LocalAttribute;
 
-    delete TP.core.Node.Type.testTypeAttribute1;
+    delete TP.dom.Node.Type.testTypeAttribute1;
     delete Array.testTypeAttribute1;
-    delete TP.core.Node.testTypeLocalAttribute1;
+    delete TP.dom.Node.testTypeLocalAttribute1;
     delete Array.testTypeLocalAttribute1;
 
-    delete TP.core.Point.Inst.testSharedInstAttribute1;
+    delete TP.gui.Point.Inst.testSharedInstAttribute1;
     delete Array.getInstPrototype().testSharedInstAttribute1;
-    delete TP.core.Point.Inst.testInstAttribute1;
+    delete TP.gui.Point.Inst.testInstAttribute1;
     delete Array.getInstPrototype().testInstAttribute1;
 });
 
@@ -348,8 +348,8 @@ function() {
         typeName = TP.lang.RootObject.getTypeName();
 
         //  For TIBET *Type objects*, their type name is their name
-        //  ('TP.core.Node') with the word 'meta' inserted as a special
-        //  namespace (so, 'TP.meta.core.Node')
+        //  ('TP.dom.Node') with the word 'meta' inserted as a special
+        //  namespace (so, 'TP.meta.dom.Node')
         test.assert.isEqualTo(
             typeName,
             'TP.meta.lang.RootObject',
@@ -366,8 +366,8 @@ function() {
         typeName = TP.lang.Object.getTypeName();
 
         //  For TIBET *Type objects*, their type name is their name
-        //  ('TP.core.Node') with the word 'meta' inserted as a special
-        //  namespace (so, 'TP.meta.core.Node')
+        //  ('TP.dom.Node') with the word 'meta' inserted as a special
+        //  namespace (so, 'TP.meta.dom.Node')
         test.assert.isEqualTo(
             typeName,
             'TP.meta.lang.Object',
@@ -381,15 +381,15 @@ function() {
 
         var typeName;
 
-        typeName = TP.core.XMLElementNode.getTypeName();
+        typeName = TP.dom.XMLElementNode.getTypeName();
 
         //  For TIBET *Type objects*, their type name is their name
-        //  ('TP.core.Node') with the word 'meta' inserted as a special
-        //  namespace (so, 'TP.meta.core.Node')
+        //  ('TP.dom.Node') with the word 'meta' inserted as a special
+        //  namespace (so, 'TP.meta.dom.Node')
         test.assert.isEqualTo(
             typeName,
-            'TP.meta.core.XMLElementNode',
-            TP.sc('Typename value: should be "TP.meta.core.XMLElementNode"',
+            'TP.meta.dom.XMLElementNode',
+            TP.sc('Typename value: should be "TP.meta.dom.XMLElementNode"',
                     ' not: ', typeName, '.'));
     });
 
@@ -3416,7 +3416,7 @@ function() {
         //  Derive the key set in a method & manner independent of
         //  'getInterface' to provide a proper 'control'.
 
-        obj = TP.core.Node;
+        obj = TP.dom.Node;
         tpNodeProto = obj.getPrototype();
         tpObjProto = TP.lang.Object.getPrototype();
 
@@ -3599,7 +3599,7 @@ function() {
         //  Derive the key set in a method & manner independent of
         //  'getInterface' to provide a proper 'control'.
 
-        obj = TP.core.Point.construct(20, 40);
+        obj = TP.gui.Point.construct(20, 40);
         pointInstProto = obj.getInstPrototype();
         tpObjInstProto = TP.lang.Object.getInstPrototype();
 
@@ -4094,10 +4094,10 @@ function() {
 
         //  Type-level attribute - should be inherited by subtypes
 
-        TP.core.Node.Type.defineAttribute('testTypeAttribute1');
-        TP.core.Node.Type.set('testTypeAttribute1', 'testTypeAttVal1');
+        TP.dom.Node.Type.defineAttribute('testTypeAttribute1');
+        TP.dom.Node.Type.set('testTypeAttribute1', 'testTypeAttVal1');
 
-        val = TP.core.Node.get('testTypeAttribute1');
+        val = TP.dom.Node.get('testTypeAttribute1');
         correctVal = 'testTypeAttVal1';
 
         test.assert.isEqualTo(
@@ -4109,10 +4109,10 @@ function() {
 
         //  ---
 
-        //  Testing inherited value - TP.core.ElementNode inherits from
-        //  TP.core.Node
+        //  Testing inherited value - TP.dom.ElementNode inherits from
+        //  TP.dom.Node
 
-        val = TP.core.ElementNode.Type.get('testTypeAttribute1');
+        val = TP.dom.ElementNode.Type.get('testTypeAttribute1');
         correctVal = 'testTypeAttVal1';
 
         test.assert.isEqualTo(
@@ -4126,10 +4126,10 @@ function() {
 
         //  Local attribute - should *not* be inherited by subtypes
 
-        TP.core.Node.defineAttribute('testTypeLocalAttribute1');
-        TP.core.Node.set('testTypeLocalAttribute1', 'testTypeLocalAttVal1');
+        TP.dom.Node.defineAttribute('testTypeLocalAttribute1');
+        TP.dom.Node.set('testTypeLocalAttribute1', 'testTypeLocalAttVal1');
 
-        val = TP.core.Node.get('testTypeLocalAttribute1');
+        val = TP.dom.Node.get('testTypeLocalAttribute1');
         correctVal = 'testTypeLocalAttVal1';
 
         test.assert.isEqualTo(
@@ -4141,10 +4141,10 @@ function() {
 
         //  ---
 
-        //  Testing non-inherited value - TP.core.ElementNode inherits from
-        //  TP.core.Node, but shouldn't have inherited this value.
+        //  Testing non-inherited value - TP.dom.ElementNode inherits from
+        //  TP.dom.Node, but shouldn't have inherited this value.
 
-        val = TP.core.ElementNode.Type.get('testLocalAttribute1');
+        val = TP.dom.ElementNode.Type.get('testLocalAttribute1');
 
         test.refute.isDefined(
             val,
@@ -4167,11 +4167,11 @@ function() {
 
         //  Instance-level shared attribute
 
-        TP.core.Point.Inst.defineAttribute('testSharedInstAttribute1');
-        TP.core.Point.Inst.set('testSharedInstAttribute1',
+        TP.gui.Point.Inst.defineAttribute('testSharedInstAttribute1');
+        TP.gui.Point.Inst.set('testSharedInstAttribute1',
                                 'testSharedInstAttVal1');
 
-        obj = TP.core.Point.construct(20, 30);
+        obj = TP.gui.Point.construct(20, 30);
 
         val = obj.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
@@ -4183,7 +4183,7 @@ function() {
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
-        obj2 = TP.core.Point.construct(20, 30);
+        obj2 = TP.gui.Point.construct(20, 30);
 
         val = obj2.get('testSharedInstAttribute1');
         correctVal = 'testSharedInstAttVal1';
@@ -4199,8 +4199,8 @@ function() {
 
         //  Instance-level attribute
 
-        TP.core.Point.Inst.defineAttribute('testInstAttribute1');
-        obj = TP.core.Point.construct(20, 30);
+        TP.gui.Point.Inst.defineAttribute('testInstAttribute1');
+        obj = TP.gui.Point.construct(20, 30);
 
         obj.set('testInstAttribute1', 'testInstAttVal1');
 
@@ -4385,15 +4385,15 @@ function() {
 
         //  ---
 
-        TP.core.Node.Type.defineMethod(
+        TP.dom.Node.Type.defineMethod(
             'testTypeMethod1',
             function() {
                 return true;
             });
-        obj = TP.core.Node.testTypeMethod1;
+        obj = TP.dom.Node.testTypeMethod1;
 
         val = obj[TP.OWNER];
-        correctVal = TP.core.Node;
+        correctVal = TP.dom.Node;
 
         test.assert.isIdenticalTo(
             val,
@@ -4413,7 +4413,7 @@ function() {
                     ' not: ', val, '.'));
 
         val = obj[TP.DISPLAY];
-        correctVal = 'TP.core.Node.Type.testTypeMethod1';
+        correctVal = 'TP.dom.Node.Type.testTypeMethod1';
 
         test.assert.isEqualTo(
             val,
@@ -4424,15 +4424,15 @@ function() {
 
         //  ---
 
-        TP.core.Node.defineMethod(
+        TP.dom.Node.defineMethod(
             'testTypeLocalMethod1',
             function() {
                 return true;
             });
-        obj = TP.core.Node.testTypeLocalMethod1;
+        obj = TP.dom.Node.testTypeLocalMethod1;
 
         val = obj[TP.OWNER];
-        correctVal = TP.core.Node;
+        correctVal = TP.dom.Node;
 
         test.assert.isIdenticalTo(
             val,
@@ -4452,7 +4452,7 @@ function() {
                     ' not: ', val, '.'));
 
         val = obj[TP.DISPLAY];
-        correctVal = 'TP.core.Node.testTypeLocalMethod1';
+        correctVal = 'TP.dom.Node.testTypeLocalMethod1';
 
         test.assert.isEqualTo(
             val,
@@ -4475,15 +4475,15 @@ function() {
 
         //  ---
 
-        TP.core.Point.Inst.defineMethod(
+        TP.gui.Point.Inst.defineMethod(
             'testInstMethod1',
             function() {
                 return true;
             });
-        obj = TP.core.Point.getInstPrototype().testInstMethod1;
+        obj = TP.gui.Point.getInstPrototype().testInstMethod1;
 
         val = obj[TP.OWNER];
-        correctVal = TP.core.Point;
+        correctVal = TP.gui.Point;
 
         test.assert.isIdenticalTo(
             val,
@@ -4503,7 +4503,7 @@ function() {
                     ' not: ', val, '.'));
 
         val = obj[TP.DISPLAY];
-        correctVal = 'TP.core.Point.Inst.testInstMethod1';
+        correctVal = 'TP.gui.Point.Inst.testInstMethod1';
 
         test.assert.isEqualTo(
             val,
@@ -4514,7 +4514,7 @@ function() {
 
         //  ---
 
-        inst = TP.core.Point.construct(20, 30);
+        inst = TP.gui.Point.construct(20, 30);
 
         inst.defineMethod('testLocalMethod1',
                             function() {

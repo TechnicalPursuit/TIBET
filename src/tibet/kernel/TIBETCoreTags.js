@@ -19,36 +19,36 @@ TP.sys.addFeatureTest('sherpa',
 function() {
 
     //  NB: For the system to be considered to have the 'sherpa' feature, it has
-    //  to both have the 'TP.core.Sherpa' type loaded *and* have the Sherpa
+    //  to both have the 'TP.sherpa.IDE' type loaded *and* have the Sherpa
     //  enabled for opening. The Sherpa HUD doesn't necessarily have to be open.
-    return TP.isType(TP.sys.getTypeByName('TP.core.Sherpa')) &&
+    return TP.isType(TP.sys.getTypeByName('TP.sherpa.IDE')) &&
             TP.sys.cfg('sherpa.enabled') === true;
 });
 
 //  ========================================================================
-//  TP.core.CustomTag
+//  TP.tag.CustomTag
 //  ========================================================================
 
 /**
- * @type {TP.core.CustomTag}
+ * @type {TP.tag.CustomTag}
  * @summary A common supertype for custom UI tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('TP.core.CustomTag');
+TP.dom.UIElementNode.defineSubtype('TP.tag.CustomTag');
 
-TP.core.CustomTag.addTraits(TP.core.NonNativeUIElementNode);
+TP.tag.CustomTag.addTraits(TP.dom.NonNativeUIElementNode);
 
-TP.core.CustomTag.Inst.resolveTraits(
+TP.tag.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
+        TP.dom.UIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.Type.defineHandler('ValueChange',
+TP.tag.CustomTag.Type.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -70,12 +70,12 @@ function(aSignal) {
 
     //  If it was a URL, then check to see if it's one of URL's 'special
     //  aspects'.
-    if (TP.isKindOf(origin, TP.core.URL)) {
+    if (TP.isKindOf(origin, TP.uri.URL)) {
 
         //  If the aspect is one of URI's 'special aspects', then we just return
         //  here.
         aspect = aSignal.at('aspect');
-        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+        if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
             return;
         }
     }
@@ -86,23 +86,23 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.core.CompiledTag
+//  TP.tag.CompiledTag
 //  ========================================================================
 
 /**
- * @type {TP.core.CompiledTag}
+ * @type {TP.tag.CompiledTag}
  * @summary A common supertype for compiled UI tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('TP.core.CompiledTag');
+TP.tag.CustomTag.defineSubtype('TP.tag.CompiledTag');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.Type.defineMethod('defineMethod',
+TP.tag.CompiledTag.Type.defineMethod('defineMethod',
 function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
@@ -139,7 +139,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.Type.defineMethod('tagCompile',
+TP.tag.CompiledTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -182,34 +182,48 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.TemplatedTag
+//  TP.tag.TemplatedTag
 //  ========================================================================
 
 /**
- * @type {TP.core.TemplatedTag}
+ * @type {TP.tag.TemplatedTag}
  * @summary A common supertype for templated UI tags. This type provides an
  * inheritance root for templated tags by mixing in TemplatedNode properly.
  */
 
-TP.core.CustomTag.defineSubtype('TP.core.TemplatedTag');
-
-//  ------------------------------------------------------------------------
+TP.tag.CustomTag.defineSubtype('TP.tag.TemplatedTag');
 
 //  Mix in templating behavior, resolving compile in favor of templating.
-TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
+TP.tag.TemplatedTag.addTraits(TP.dom.TemplatedNode);
 
-TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
 
-TP.core.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
+
+//  The setting that determines whether or not we descend into our descendants
+//  when serializing. The default is TP.DESCEND.
+TP.tag.TemplatedTag.Type.defineAttribute('serializationTraversal', TP.DESCEND);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
 //  Whether or not we're currently in the process of being serialized.
-TP.core.TemplatedTag.Inst.defineAttribute('$areSerializing');
+TP.tag.TemplatedTag.Inst.defineAttribute('$areSerializing');
+
+//  Whether or not we have real selected descendant content that we serialize.
+//  This is used to determine what kind of tag (empty or not) to serialize.
+TP.tag.TemplatedTag.Inst.defineAttribute('$serializesAsEmpty');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Type.defineMethod('construct',
+TP.tag.TemplatedTag.Type.defineMethod('construct',
 function(nodeSpec, varargs) {
 
     /**
@@ -218,11 +232,11 @@ function(nodeSpec, varargs) {
      *     may have been provided or a String could have been provided. By far
      *     the most common usage is construction of a wrapper around an existing
      *     node.
-     * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
+     * @param {Node|URI|String|TP.dom.Node} nodeSpec Some suitable object to
      *     construct a source node. See type discussion above. Can also be null.
      * @param {Array} varargs Optional additional arguments for the
      *     constructor.
-     * @returns {TP.core.TemplatedTag} A new instance.
+     * @returns {TP.tag.TemplatedTag} A new instance.
      */
 
     var retVal,
@@ -260,7 +274,43 @@ function(nodeSpec, varargs) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Inst.defineMethod('serializeCloseTag',
+TP.tag.TemplatedTag.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('isSerializationEmpty',
+function() {
+
+    /**
+     * @method isSerializationEmpty
+     * @summary Returns whether or not the receiver should serialize with no
+     *     content (i.e. an 'empty element')
+     * @description At this type level, this simply returns whether the receiver
+     *     is empty (i.e. devoid of child nodes). Subtypes may choose to use
+     *     different criteria to determine this.
+     * @returns {Boolean} Whether or not the receiver should serialize as an
+     *     'empty element'.
+     */
+
+    return this.get('$serializesAsEmpty');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('serializeCloseTag',
 function(storageInfo) {
 
     /**
@@ -301,7 +351,7 @@ function(storageInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Inst.defineMethod('serializeOpenTag',
+TP.tag.TemplatedTag.Inst.defineMethod('serializeOpenTag',
 function(storageInfo) {
 
     /**
@@ -333,6 +383,8 @@ function(storageInfo) {
 
     var str,
 
+        traversalSetting,
+
         currentStore,
         currentResult,
 
@@ -343,8 +395,25 @@ function(storageInfo) {
     //  If we're serializing, then we just do what our supertype does and
     //  descend into our child nodes.
     if (this.get('$areSerializing')) {
-        str = this.callNextMethod();
-        return TP.ac(str, TP.DESCEND);
+
+        //  Grab the traversal setting. If it's not TP.DESCEND (which is the
+        //  default), then call a method to serialize select descendants.
+        traversalSetting = this.getType().get('serializationTraversal');
+        if (traversalSetting !== TP.DESCEND) {
+            //  Serialize descendants. Set whether or not we serialize as empty
+            //  as to whether there was actual descendant content.
+            str = this.serializeSelectDescendants(storageInfo);
+            this.set('$serializesAsEmpty', TP.isEmpty(str), false);
+        } else {
+            str = '';
+            this.set('$serializesAsEmpty', false, false);
+        }
+
+        //  Call 'super' to get the serialized version of ourself and prepend it
+        //  onto our selected descendants markup.
+        str = this.callNextMethod() + str;
+
+        return TP.ac(str, traversalSetting);
     }
 
     //  Turn the serializing flag on.
@@ -415,6 +484,68 @@ function(storageInfo) {
     return TP.ac('', TP.CONTINUE);
 });
 
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('serializeSelectDescendants',
+function(storageInfo) {
+
+    /**
+     * @method serializeSelectDescendants
+     * @summary Serializes selected descendants per the logic of this tag. This
+     *     method is only called if the setting of 'serializationTraversal' is
+     *     set to a value *other* than TP.DESCEND (which is the default). Note
+     *     that, at a minimum, this method *must* return the empty String.
+     * @description At this type level, this method just returns the empty
+     *     String. A templated tag subtype might choose to override this to
+     *     serialize selected descendants. If so, it needs to set it's
+     *     type-level 'serializationTraversal' attribute to something other than
+     *     TP.DESCEND (probably TP.CONTINUE) and then implement this method.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of selected descendants of the
+     *     receiver.
+     */
+
+    var selectedDescendants,
+        serializationStorage,
+        str;
+
+    //  Get the descendants that we want to serialize. If there are none, just
+    //  return the empty String.
+    selectedDescendants = this.getDescendantsForSerialization();
+    if (TP.isEmpty(selectedDescendants)) {
+        return '';
+    }
+
+    //  Set up a serialization storage, with a store registered under our local
+    //  (unique) ID.
+    serializationStorage = TP.hc('store', this.getLocalID());
+
+    //  Iterate over the selected descendants and serialize them into the store.
+    selectedDescendants.forEach(
+        function(aDescendant) {
+            aDescendant.serializeForStorage(serializationStorage);
+        });
+
+    //  Grab the result at the store registered under our local ID.
+    str = serializationStorage.at('stores').at(this.getLocalID());
+
+    return str;
+});
+
 //  ========================================================================
 //  TP.tibet.app
 //  ========================================================================
@@ -428,10 +559,10 @@ function(storageInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('tibet:app');
+TP.tag.CompiledTag.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
@@ -539,10 +670,10 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('tibet:root');
+TP.tag.CompiledTag.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
@@ -729,34 +860,38 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.InfoTag
+//  TP.tag.InfoTag
 //  ========================================================================
 
 /**
- * @type {TP.core.InfoTag}
- * @summary TP.core.InfoTag is the supertype for all 'info' elements in
+ * @type {TP.tag.InfoTag}
+ * @summary TP.tag.InfoTag is the supertype for all 'info' elements in
  *     the TIBET framework. Examples of info elements are acl:info, bind:info,
  *     drag:info, ev:info, and similar items which provide processing
  *     information but don't typically perform direct action in the way that a
- *     TP.core.ActionTag might.
+ *     TP.tag.ActionTag might.
  */
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('InfoTag');
+TP.tag.CustomTag.defineSubtype('InfoTag');
 
 //  Can't construct concrete instances of this type.
-TP.core.InfoTag.isAbstract(true);
+TP.tag.InfoTag.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are *not*
 //  TYPE_LOCAL, by design.
-TP.core.InfoTag.Type.defineAttribute('styleURI', TP.NO_RESULT);
-TP.core.InfoTag.Type.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tag.InfoTag.Type.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tag.InfoTag.Type.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('cmdAddContent',
+TP.tag.InfoTag.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -770,7 +905,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('cmdFilterInput',
+TP.tag.InfoTag.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -784,7 +919,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('cmdGetContent',
+TP.tag.InfoTag.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -798,7 +933,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('cmdRunContent',
+TP.tag.InfoTag.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
@@ -848,7 +983,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('cmdSetContent',
+TP.tag.InfoTag.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -862,7 +997,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('cmdTransformInput',
+TP.tag.InfoTag.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -876,7 +1011,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoTag.Type.defineMethod('tagCompile',
+TP.tag.InfoTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -900,12 +1035,12 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.ActionTag
+//  TP.tag.ActionTag
 //  ========================================================================
 
 /**
- * @type {TP.core.ActionTag}
- * @summary TP.core.ActionTag is the supertype for all action elements
+ * @type {TP.tag.ActionTag}
+ * @summary TP.tag.ActionTag is the supertype for all action elements
  *     in the TIBET framework. Action nodes are found most typically in
  *     association with XControls and the various TIBET shells where they serve
  *     as "xml macros" for various JavaScript operations or commands.
@@ -923,31 +1058,35 @@ function(aRequest) {
  */
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('ActionTag');
+TP.tag.CustomTag.defineSubtype('ActionTag');
 
 //  can't construct concrete instances of this
-TP.core.ActionTag.isAbstract(true);
+TP.tag.ActionTag.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are *not*
 //  TYPE_LOCAL, by design.
-TP.core.ActionTag.Type.defineAttribute('styleURI', TP.NO_RESULT);
-TP.core.ActionTag.Type.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tag.ActionTag.Type.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tag.ActionTag.Type.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  the default request type to use for construction of a request
-TP.core.ActionTag.Type.defineAttribute('requestType', 'TP.sig.Request');
+TP.tag.ActionTag.Type.defineAttribute('requestType', 'TP.sig.Request');
 
 //  an optional name which refines the request by altering its name
-TP.core.ActionTag.Type.defineAttribute('requestName');
+TP.tag.ActionTag.Type.defineAttribute('requestName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('canAct',
+TP.tag.ActionTag.Type.defineMethod('canAct',
 function(aNode) {
 
     /**
@@ -1033,7 +1172,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('cmdAddContent',
+TP.tag.ActionTag.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -1047,7 +1186,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('cmdFilterInput',
+TP.tag.ActionTag.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -1061,7 +1200,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('cmdGetContent',
+TP.tag.ActionTag.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -1075,7 +1214,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('cmdRunContent',
+TP.tag.ActionTag.Type.defineMethod('cmdRunContent',
 function(aRequest) {
 
     /**
@@ -1125,7 +1264,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('cmdSetContent',
+TP.tag.ActionTag.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -1139,7 +1278,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('cmdTransformInput',
+TP.tag.ActionTag.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -1153,7 +1292,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('getActionInput',
+TP.tag.ActionTag.Type.defineMethod('getActionInput',
 function(aRequest) {
 
     /**
@@ -1186,7 +1325,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('getActionParam',
+TP.tag.ActionTag.Type.defineMethod('getActionParam',
 function(aRequest, parameterName) {
 
     /**
@@ -1213,7 +1352,7 @@ function(aRequest, parameterName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('getPrimaryArgument',
+TP.tag.ActionTag.Type.defineMethod('getPrimaryArgument',
 function(aRequest) {
 
     /**
@@ -1245,7 +1384,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('getPrimaryArgumentName',
+TP.tag.ActionTag.Type.defineMethod('getPrimaryArgumentName',
 function() {
 
     /**
@@ -1262,7 +1401,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('tagCompile',
+TP.tag.ActionTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -1287,7 +1426,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Type.defineMethod('tshExecute',
+TP.tag.ActionTag.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
@@ -1307,7 +1446,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('act',
+TP.tag.ActionTag.Inst.defineMethod('act',
 function(aSignal) {
 
     /**
@@ -1321,7 +1460,7 @@ function(aSignal) {
      *     as the first argument.
      * @param {TP.sig.Signal} aSignal The signal instance which triggered this
      *     activity. Only valid when being invoked in response to a handle call.
-     * @returns {TP.core.ActionTag} The receiver.
+     * @returns {TP.tag.ActionTag} The receiver.
      */
 
     var request,
@@ -1334,7 +1473,7 @@ function(aSignal) {
 
     request = this.constructActRequest(aSignal);
 
-    shell = TP.core.TSH.getDefaultInstance();
+    shell = TP.shell.TSH.getDefaultInstance();
     shell[TP.composeHandlerName('ShellRequest')](request);
 
     return;
@@ -1342,7 +1481,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('constructActRequest',
+TP.tag.ActionTag.Inst.defineMethod('constructActRequest',
 function(aSignal) {
 
     /**
@@ -1368,7 +1507,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('getActionParam',
+TP.tag.ActionTag.Inst.defineMethod('getActionParam',
 function(aRequest, parameterName) {
 
     /**
@@ -1385,7 +1524,7 @@ function(aRequest, parameterName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('getRequestName',
+TP.tag.ActionTag.Inst.defineMethod('getRequestName',
 function() {
 
     /**
@@ -1400,7 +1539,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('getRequestType',
+TP.tag.ActionTag.Inst.defineMethod('getRequestType',
 function() {
 
     /**
@@ -1428,14 +1567,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('getDownstreamSegment',
+TP.tag.ActionTag.Inst.defineMethod('getDownstreamSegment',
 function() {
 
     /**
      * @method getUpstreamSegment
      * @summary Returns the 'downstream' segment for this action - that is, any
      *     following action element in a command sequence.
-     * @returns {TP.core.ActionTag|null} The downstream segment of this
+     * @returns {TP.tag.ActionTag|null} The downstream segment of this
      *     action or null if it's the last segment.
      */
 
@@ -1457,14 +1596,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('getUpstreamSegment',
+TP.tag.ActionTag.Inst.defineMethod('getUpstreamSegment',
 function() {
 
     /**
      * @method getUpstreamSegment
      * @summary Returns the 'upstream' segment for this action - that is, any
      *     preceding action element in a command sequence.
-     * @returns {TP.core.ActionTag|null} The upstream segment of this
+     * @returns {TP.tag.ActionTag|null} The upstream segment of this
      *     action or null if it's the first segment.
      */
 
@@ -1486,7 +1625,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('getRedirectionType',
+TP.tag.ActionTag.Inst.defineMethod('getRedirectionType',
 function() {
 
     /**
@@ -1518,7 +1657,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('isLastSegment',
+TP.tag.ActionTag.Inst.defineMethod('isLastSegment',
 function() {
 
     /**
@@ -1533,7 +1672,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineHandler('Signal',
+TP.tag.ActionTag.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -1566,7 +1705,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.Inst.defineMethod('isOutermostAction',
+TP.tag.ActionTag.Inst.defineMethod('isOutermostAction',
 function() {
 
     /**
@@ -1603,24 +1742,24 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.PipeSegmentElementNode
+//  TP.dom.PipeSegmentElementNode
 //  ========================================================================
 
 /**
- * @type {TP.core.PipeSegmentElementNode}
+ * @type {TP.dom.PipeSegmentElementNode}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('PipeSegmentElementNode');
+TP.tag.ActionTag.defineSubtype('dom.PipeSegmentElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.PipeSegmentElementNode.isAbstract(true);
+TP.dom.PipeSegmentElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('cmdFilterInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -1636,7 +1775,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('cmdTransformInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -1652,7 +1791,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('filterInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('filterInput',
 function(anInput, cmdNode, aRequest) {
 
     /**
@@ -1676,7 +1815,7 @@ function(anInput, cmdNode, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('getDefaultAction',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('getDefaultAction',
 function(aRequest) {
 
     /**
@@ -1704,7 +1843,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('processInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('processInput',
 function(aRequest, functionName) {
 
     /**
@@ -1832,7 +1971,7 @@ function(aRequest, functionName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('shouldFailOnEmptyInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('shouldFailOnEmptyInput',
 function() {
 
     /**
@@ -1848,7 +1987,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('transformInput',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('transformInput',
 function(anInput, cmdNode, aRequest) {
 
     /**
@@ -1871,7 +2010,7 @@ function(anInput, cmdNode, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PipeSegmentElementNode.Type.defineMethod('tshExecute',
+TP.dom.PipeSegmentElementNode.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**

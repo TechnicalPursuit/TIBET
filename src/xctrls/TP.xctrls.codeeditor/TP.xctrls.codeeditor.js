@@ -291,6 +291,34 @@ function(aText, line) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('blur',
+function() {
+
+    /**
+     * @method blur
+     * @summary Blurs the receiver for keyboard input.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var nativeTATPElem;
+
+    //  Go ahead and 'focus' the editor.
+    this.$get('$editorObj').blur();
+
+    //  Make sure to do a separate 'blur' on the textarea that the ACE editor
+    //  uses. This keeps everything in sync for TIBET's focusing machinery.
+    nativeTATPElem = TP.byCSSPath(
+                        'textarea.ace_text-input',
+                        this.getNativeNode(),
+                        true);
+
+    nativeTATPElem.blur();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('captureCurrentScrollInfo',
 function() {
 
@@ -777,9 +805,7 @@ function() {
         textareaTPElem,
 
         vertScroller,
-        vertScrollerInner,
-
-        diff;
+        vertScrollerInner;
 
     /* eslint-disable new-cap */
     editorObj = TP.extern.ace.edit(this.getNativeNode().firstElementChild);
@@ -827,11 +853,6 @@ function() {
                                         this.getNativeNode(),
                                         true,
                                         false);
-
-    diff = TP.elementGetHeight(vertScroller) -
-            TP.elementGetHeight(vertScrollerInner);
-    this.$set('$editorHeightDiff',
-                diff - editorObj.renderer.$fontMetrics.$characterSize.height);
 
     //  Add a resize listener to the inner part of the vertical scrollbar. The
     //  attached function will signal an 'EditorResize'.

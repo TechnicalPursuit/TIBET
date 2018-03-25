@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.interests}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:interests');
+TP.tag.ActionTag.defineSubtype('tsh:interests');
 
 TP.tsh.interests.addTraits(TP.tsh.Element);
 
@@ -60,7 +60,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('interests',
+TP.shell.TSH.addHelpTopic('interests',
     TP.tsh.interests.Type.getMethod('tshExecute'),
     'Displays the system signal interest map.',
     ':interests',

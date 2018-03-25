@@ -1913,18 +1913,18 @@
     TP.sys.setcfg('uri.keybindings_fallback', false);
 
     //  the default types used to handle URI load/save operations.
-    TP.sys.setcfg('uri.handler.default', 'TP.core.URIHandler');
-    TP.sys.setcfg('uri.handler.file', 'TP.core.FileURLHandler');
-    TP.sys.setcfg('uri.handler.http', 'TP.core.HTTPURLHandler');
+    TP.sys.setcfg('uri.handler.default', 'TP.uri.URIHandler');
+    TP.sys.setcfg('uri.handler.file', 'TP.uri.FileURLHandler');
+    TP.sys.setcfg('uri.handler.http', 'TP.uri.HTTPURLHandler');
 
     //  the default type used to handle URI rewriting decisions.
-    TP.sys.setcfg('uri.rewriter', 'TP.core.URIRewriter');
+    TP.sys.setcfg('uri.rewriter', 'TP.uri.URIRewriter');
 
     //  the default type used to handle URI mapping decisions.
-    TP.sys.setcfg('uri.mapper', 'TP.core.URIMapper');
+    TP.sys.setcfg('uri.mapper', 'TP.uri.URIMapper');
 
     //  the default type used to handle URI routing decisions.
-    TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
+    TP.sys.setcfg('uri.router', 'TP.uri.URIRouter');
 
     //  should we watch remote resources configured to be 'watched'?
     TP.sys.setcfg('uri.watch_remote_changes', false);

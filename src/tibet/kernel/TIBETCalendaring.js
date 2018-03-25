@@ -237,7 +237,7 @@ function(aString, sourceLocale) {
      *     that Date into a valid TP.iso.ISO8601 formatted string. If successful
      *     the ISO string is returned.
      * @param {String} aString The potential date string.
-     * @param {TP.core.Locale|String} sourceLocale A source xml:lang or locale
+     * @param {TP.i18n.Locale|String} sourceLocale A source xml:lang or locale
      *     defining the language the string is now in.
      * @returns {String} An TP.iso.ISO8601 string.
      */

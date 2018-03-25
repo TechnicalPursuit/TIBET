@@ -102,6 +102,30 @@ function(aValue, aContentObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panelbox.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants =
+        this.get('./*[not(@tibet:assembly = \'xctrls:panelbox\')]');
+
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.panelbox.Inst.defineMethod('removePanel',
 function(aValue) {
 
@@ -208,10 +232,10 @@ function(aContentObject, aRequest) {
         //  If the request doesn't have a 'forceContentSet' flag set to true,
         //  then test the content that's already tehre.
         if (TP.notTrue(request.at('forceContentSet'))) {
-            //  If the supplied content is a TP.core.ElementNode, then compare
+            //  If the supplied content is a TP.dom.ElementNode, then compare
             //  the tag names of the existing content and the supplied content.
             //  If they're the same, then we skip setting content.
-            if (TP.isKindOf(aContentObject, TP.core.ElementNode)) {
+            if (TP.isKindOf(aContentObject, TP.dom.ElementNode)) {
                 if (aContentObject.getTagName() ===
                     firstContentChildTPElem.getTagName()) {
                     skipSettingContent = true;

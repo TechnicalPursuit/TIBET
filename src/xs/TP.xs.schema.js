@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('xs:schema');
+TP.dom.ElementNode.defineSubtype('xs:schema');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

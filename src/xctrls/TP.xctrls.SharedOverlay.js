@@ -48,15 +48,15 @@ function(aTPDocument, anOverlayID) {
     /**
      * @method getOverlayWithID
      * @summary Returns (and, if necessary, creates) a 'shared system overlay'
-     *     for use by the system on the supplied TP.core.Document.
-     * @param {TP.core.Document} aTPDocument The document to create the overlay
+     *     for use by the system on the supplied TP.dom.Document.
+     * @param {TP.dom.Document} aTPDocument The document to create the overlay
      *     in, if it can't be found. Note that, in this case, the overlay will
      *     be created as the last child of the document's 'body' element.
      * @param {String} [anOverlayID] The ID to use to query for the system
      *     overlay. If this isn't supplied, the receiver is messaged for it's
      *     'sharedOverlayID'.
      * @returns {TP.xctrls.SharedOverlay} The system overlay on the supplied
-     *     TP.core.Document.
+     *     TP.dom.Document.
      */
 
     var tpDocBody,
@@ -73,7 +73,7 @@ function(aTPDocument, anOverlayID) {
     overlayTPElem = aTPDocument.get('//*[@id="' + overlayID + '"]');
 
     //  If the 'get' expression above didn't find one, it hands back an empty
-    //  Array. Otherwise it will hand back the TP.core.ElementNode that
+    //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the overlay.
     if (TP.isEmpty(overlayTPElem)) {
 
@@ -101,18 +101,18 @@ function(aSignal, triggerTPDocument) {
 
     /**
      * @method getTriggerElement
-     * @summary Returns the TP.core.ElementNode that is acting as the
+     * @summary Returns the TP.dom.ElementNode that is acting as the
      *     'triggering' element for the overlay. This can be one of three
      *     values:
      *     - The element matching a 'triggerPath' supplied in aSignal
      *     - The target element of the trigger signal supplied in aSignal
      *     - The body element of the triggerTPDocument which should be the
-     *         TP.core.Document that the triggering element is contained in.
+     *         TP.dom.Document that the triggering element is contained in.
      * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
      *     this method.
-     * @param {TP.core.Document} triggerTPDocument The TP.core.Document that the
+     * @param {TP.dom.Document} triggerTPDocument The TP.dom.Document that the
      *     triggering element is contained in.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode that caused the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode that caused the
      *     overlay to trigger.
      */
 
@@ -150,7 +150,7 @@ function(aSignal, triggerTPDocument) {
     if (TP.notValid(triggerTPElem)) {
 
         //  Otherwise, there was no valid trigger element, so we just use the
-        //  triggering TP.core.Document's body.
+        //  triggering TP.dom.Document's body.
         triggerTPElem = triggerTPDocument.getBody();
     }
 
@@ -273,7 +273,7 @@ function(aSignal) {
      *     display the overlay content.
      * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.core.ElementNode} The wrapped Element that will be used to
+     * @returns {TP.dom.ElementNode} The wrapped Element that will be used to
      *     display the overlay content.
      */
 
@@ -418,13 +418,13 @@ function(anOverlayPoint, anAvoidPoint) {
      * @method getPositioningPoint
      * @summary Computes and returns the point used to position the overlay
      *     using the supplied point (which should be the initial point).
-     * @param {TP.core.Point} anOverlayPoint The initial point to use to
+     * @param {TP.gui.Point} anOverlayPoint The initial point to use to
      *     position the overlay. NOTE: This point should be in *global*
      *     coordinates.
-     * @param {TP.core.Point} [anAvoidPoint] A point to 'avoid' when computing
+     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
      *     the positioning point. The system will shift the overlay around,
      *     trying to avoid this point.
-     * @returns {TP.core.Point} The point (in global coordinates) to position
+     * @returns {TP.gui.Point} The point (in global coordinates) to position
      *     the overlay at.
      */
 
@@ -604,7 +604,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
      *     content to place inside of the overlay element.
      * @param {Function} [afterLoadHandler] The optional function to invoke
      *     after the content has loaded (and refreshed from its data). This
-     *     Function should take a single parameter, a TP.core.ElementNode that
+     *     Function should take a single parameter, a TP.dom.ElementNode that
      *     will represent the final content.
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
@@ -658,10 +658,10 @@ function(contentInfo, overlayContent, afterLoadHandler) {
             var elem;
 
             //  If the URI pointed to a type and that type is a subtype
-            //  of TP.core.ElementNode, then create an Element using the
+            //  of TP.dom.ElementNode, then create an Element using the
             //  canonical name
             if (TP.isType(result) &&
-                TP.isSubtypeOf(result, TP.core.ElementNode)) {
+                TP.isSubtypeOf(result, TP.dom.ElementNode)) {
                 elem = TP.elem('<' + result.getCanonicalName() + '/>');
             } else {
                 elem = TP.elem(result.get('data'));
@@ -708,20 +708,14 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         //  Normalize whitespace
         TP.nodeNormalize(contentElem);
 
+        //  If we're supposed to use the top-level content element, then do so.
+        //  Otherwise, get the child content node/fragment from content element
+        //  and use that.
         if (TP.isTrue(contentInfo.at('useTopLevelContentElem'))) {
             content = contentElem;
-        } else if (TP.nodeGetChildElements(contentElem).getSize() > 1) {
-            //  Grab all of the content element's child nodes as a
-            //  DocumentFragment.
-            content = TP.nodeListAsFragment(contentElem.childNodes);
-        } else if (TP.isValid(contentElem.content)) {
-            //  If the content element has a '.content' slot on it, then it
-            //  might be an HTML5 <template> element. In this case, obtain its
-            //  content (a DocumentFragment) by using the '.content' slot, but
-            //  make sure to clone the content so that we don't remove it.
-            content = TP.nodeCloneNode(contentElem.content);
         } else {
-            content = TP.nodeGetFirstChildElement(contentElem);
+            content = TP.wrap(contentElem).getContentNode();
+            content = TP.unwrap(content);
         }
 
         //  If the content isn't some kind of Node (DocumentFragment or
@@ -819,9 +813,9 @@ function(anOverlayPoint, anAvoidPoint) {
     /**
      * @method positionUsing
      * @summary Positions the overlay using the supplied point.
-     * @param {TP.core.Point} anOverlayPoint The point to use to position the
+     * @param {TP.gui.Point} anOverlayPoint The point to use to position the
      *     overlay. NOTE: This point should be in *global* coordinates.
-     * @param {TP.core.Point} [anAvoidPoint] A point to 'avoid' when computing
+     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
      *     the positioning point. The system will shift the overlay around,
      *     trying to avoid this point.
      * @returns {TP.xctrls.SharedOverlay} The receiver.
@@ -888,7 +882,7 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 

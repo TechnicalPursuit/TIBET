@@ -239,16 +239,31 @@ TP.log.Appender.defineSubtype('KarmaAppender');
  */
 TP.log.KarmaAppender.Type.$set('defaultLayoutType', 'TP.log.KarmaLayout');
 
-//  ----------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 //  Type Methods
-//  ----------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.log.KarmaAppender.Type.defineMethod('initialize',
 function() {
 
     /**
      * @method initialize
-     * @summary Configures the Karma-related infrastructure on system startup,
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.installControllers();
+
+    return;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.KarmaAppender.Type.defineMethod('installControllers',
+function() {
+
+    /**
+     * @method installControllers
+     * @summary Configures the Karma-related controller infrastructure,
      *     contingent on being loaded within a Karma-enabled environment.
      */
 
@@ -282,7 +297,7 @@ function() {
                     var script;
 
                     script = TP.sys.cfg('karma.script', ':test');
-                    TP.shell(script);
+                    TP.shellExec(script);
                 });
 
         TP.sys.getApplication().pushController(controller);

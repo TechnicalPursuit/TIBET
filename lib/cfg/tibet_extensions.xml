@@ -27,7 +27,7 @@
 </config>
 
 <config id="content">
-    <script src="./content/TP.core.RSSTypes.js"/>
+    <script src="./content/TP.rss.RSSTypes.js"/>
 </config>
 
 <config id="crypto">
@@ -55,11 +55,11 @@
     <script src="./shells/TP.sig.ShellResponse.js"/>
     <script src="./shells/TP.sig.ShellRequest.js"/>
 
-    <script src="./shells/TP.core.Shell.js"/>
+    <script src="./shells/TP.shell.Shell.js"/>
     <script src="./shells/ShellExtensions.js"/>
 
-    <script src="./shells/TP.core.TSH.js"/>
-    <script src="./shells/TP.core.YAK.js"/>
+    <script src="./shells/TP.shell.TSH.js"/>
+    <script src="./shells/TP.shell.YAK.js"/>
 
     <!--script src="./shells/001_CreateTPShellRequest.js"/-->
 </config>
@@ -73,10 +73,10 @@
     <script src="./storage/localdb/TP.sig.LocalDBStorageResponse.js"/>
     <script src="./storage/localdb/TP.core.LocalDBStorageService.js"/>
 
-    <script src="./storage/localdb/TP.core.LocalDBURL.js"/>
-    <script src="./storage/localdb/TP.core.LocalDBURLHandler.js"/>
+    <script src="./storage/localdb/TP.uri.LocalDBURL.js"/>
+    <script src="./storage/localdb/TP.uri.LocalDBURLHandler.js"/>
 
-    <script src="./storage/TP.core.StorageURL.js"/>
+    <script src="./storage/TP.uri.StorageURL.js"/>
 </config>
 
 <config id="pouchdb_storage">
@@ -102,8 +102,8 @@
     <script src="./storage/pouchdb/TP.sig.PouchDBResponse.js"/>
     <script src="./storage/pouchdb/TP.core.PouchDBService.js"/>
 
-    <script src="./storage/pouchdb/TP.core.PouchDBURL.js"/>
-    <script src="./storage/pouchdb/TP.core.PouchDBURLHandler.js"/>
+    <script src="./storage/pouchdb/TP.uri.PouchDBURL.js"/>
+    <script src="./storage/pouchdb/TP.uri.PouchDBURLHandler.js"/>
 </config>
 
 <config id="json_schema">

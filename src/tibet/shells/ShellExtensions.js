@@ -652,10 +652,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.Node Methods
+//  TP.dom.Node Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('cmdAddContent',
+TP.dom.Node.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -693,7 +693,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('cmdGetContent',
+TP.dom.Node.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -724,7 +724,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Type.defineMethod('cmdSetContent',
+TP.dom.Node.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -761,10 +761,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.XSLDocumentNode Methods
+//  TP.dom.XSLDocumentNode Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XSLDocumentNode.Type.defineMethod('cmdTransformInput',
+TP.dom.XSLDocumentNode.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -910,10 +910,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.URI Methods
+//  TP.uri.URI Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('cmdAddContent',
+TP.uri.URI.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
@@ -931,7 +931,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('cmdFilterInput',
+TP.uri.URI.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
@@ -949,7 +949,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('cmdGetContent',
+TP.uri.URI.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
@@ -966,13 +966,13 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('cmdRunContent',
+TP.uri.URI.Type.defineMethod('cmdRunContent',
 function(aRequest, cmdType) {
 
     /**
      * @method cmdRunContent
      * @summary Runs the receiver, effectively invoking its action. For
-     *     TP.core.URI this method is responsible for dispatching all the
+     *     TP.uri.URI this method is responsible for dispatching all the
      *     variations of pipe methods which are suitable for use with a URI.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
@@ -1140,7 +1140,7 @@ function(aRequest, cmdType) {
 
             //  set content, with or without commit
 
-            //  NOTE that because of how TP.core.URI operates any invocation
+            //  NOTE that because of how TP.uri.URI operates any invocation
             //  of a setContent() call that isn't followed by a commit
             //  operation simply sets the content of the URI without any
             //  network or local DB access. As a result we can update
@@ -1266,7 +1266,7 @@ function(aRequest, cmdType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('cmdSetContent',
+TP.uri.URI.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
@@ -1284,7 +1284,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('cmdTransformInput',
+TP.uri.URI.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
@@ -1380,7 +1380,7 @@ function(aRequest) {
     //  stdin is always an Array, so we want the first item.
     result = input.at(0);
 
-    if (TP.isKindOf(result, TP.core.XHTMLDocumentNode)) {
+    if (TP.isKindOf(result, TP.dom.XHTMLDocumentNode)) {
         maybeURI = result.get('uri');
     } else if (TP.isKindOf(result, TP.core.Content)) {
         maybeURI = result.get('sourceURI');

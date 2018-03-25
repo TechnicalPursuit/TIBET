@@ -277,14 +277,14 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
 
 TP.html.Attrs.defineSubtype('li');
 
-TP.html.li.addTraits(TP.core.SelectableItemUIElementNode);
+TP.html.li.addTraits(TP.dom.SelectableItemUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TP.core.SelectableItemUIElementNode Methods
+//  TP.dom.SelectableItemUIElementNode Methods
 //  ------------------------------------------------------------------------
 
 TP.html.li.Inst.defineMethod('getLabelText',

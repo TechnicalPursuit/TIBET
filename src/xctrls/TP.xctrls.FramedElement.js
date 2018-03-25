@@ -104,7 +104,7 @@ function(aRequest) {
         return;
     }
 
-    //  Get a handle to a TP.core.ElementNode representing an instance of this
+    //  Get a handle to a TP.dom.ElementNode representing an instance of this
     //  element type wrapped around elem.
     elemTPNode = TP.tpnode(elem);
 
@@ -170,7 +170,7 @@ function(aNode, aURI) {
      * @method init
      * @summary Returns a newly initialized instance.
      * @param {Node} aNode A native node.
-     * @param {TP.core.URI|String} aURI An optional URI from which the Node
+     * @param {TP.uri.URI|String} aURI An optional URI from which the Node
      *     received its content.
      * @returns {TP.xctrls.FramedElement} A new instance.
      */
@@ -179,11 +179,11 @@ function(aNode, aURI) {
 
     this.callNextMethod();
 
-    //  Grab a TP.core.ElementNode reference to the iframe that we built.
+    //  Grab a TP.dom.ElementNode reference to the iframe that we built.
     iFrame = this.getDocument().getElementById(
                             this.getAttribute('id') + '_frame');
 
-    if (TP.isKindOf(iFrame, 'TP.core.ElementNode')) {
+    if (TP.isKindOf(iFrame, 'TP.dom.ElementNode')) {
         this.set('tpIFrame', iFrame);
     }
 
@@ -222,7 +222,7 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
+     *     of the receiver in a TP.dom.Document wrapper.
      * @returns {Document} The Document object contained by the receiver.
      */
 
@@ -276,7 +276,7 @@ function(stubURI) {
      *     type and sets up a callback handler that will call this type's
      *     'configure' method when the content from the iframe is all loaded and
      *     initialized.
-     * @param {TP.core.URI} stubURI The URI to load the 'stub' HTML from.
+     * @param {TP.uri.URI} stubURI The URI to load the 'stub' HTML from.
      * @returns {TP.xctrls.FramedElement} The receiver.
      */
 

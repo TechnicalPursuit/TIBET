@@ -77,7 +77,7 @@ function(aSignal) {
         //  signal args are where the real data will be hiding...need that
         //  in a suitable xml form
         try {
-            dat = args.as('TP.core.XMLRPCNode');
+            dat = args.as('TP.dom.XMLRPCNode');
             if (TP.isNode(dat)) {
                 TP.nodeAppendChild(sigTPElem.getNativeNode(), dat);
             }
@@ -124,7 +124,7 @@ function() {
     org = this.getAttribute('origin');
 
     try {
-        payload = TP.core.XMLRPCNode.objectFromNode(
+        payload = TP.dom.XMLRPCNode.objectFromNode(
                                         this.getNativeNode().firstChild);
     } catch (e) {
         return this.raise('TP.sig.ReconstitutionFailure',

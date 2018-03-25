@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:propertysheet');
+TP.dom.UIElementNode.defineSubtype('xctrls:propertysheet');
 
 TP.xctrls.propertysheet.addTraits(TP.xctrls.Element);
 
@@ -62,7 +62,7 @@ function(topLevelSchema, params) {
      *                                                      enumerated values -
      *                                                      currently either
      *                                                      'text' or 'number'.
-     * @returns {TP.core.ElementNode} The top-level element that was created
+     * @returns {TP.dom.ElementNode} The top-level element that was created
      *     from the generated content.
      */
 

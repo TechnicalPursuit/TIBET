@@ -21,11 +21,11 @@
 
 TP.html.Attrs.defineSubtype('base');
 
-TP.html.base.addTraits(TP.core.EmptyElementNode);
+TP.html.base.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.base.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ------------------------------------------------------------------------
 //  end

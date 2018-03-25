@@ -95,7 +95,7 @@ function(aNode) {
 
     //  Couldn't determine a concrete type at this level. Just return the
     //  generic 'XML Element' concrete type.
-    return TP.core.XMLElementNode;
+    return TP.dom.XMLElementNode;
 });
 
 //  ------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:marker');
+TP.dom.UIElementNode.defineSubtype('svg:marker');
 
 TP.svg.marker.addTraits(TP.svg.Element);
 

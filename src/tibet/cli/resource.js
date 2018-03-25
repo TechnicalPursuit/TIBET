@@ -7,7 +7,7 @@
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet resource' command. Lists resources that are needed
  *     by components of a particular package/config and optionally builds files
- *     describing TP.core.URI instances which can be rolled up for loading.
+ *     describing TP.uri.URI instances which can be rolled up for loading.
  */
 //  ========================================================================
 

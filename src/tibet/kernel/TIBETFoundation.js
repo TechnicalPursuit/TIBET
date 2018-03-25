@@ -2096,7 +2096,7 @@ function(anObject) {
     /**
      * @method isURI
      * @summary Returns true if the object provided is either a valid instance
-     *     of TP.core.URI (or a subtype) or a String whose content appears
+     *     of TP.uri.URI (or a subtype) or a String whose content appears
      *     likely to represent a URI. The test is performed using the
      *     TP.regex.URI_LIKELY regular expression, which is *not* a strict
      *     attempt to parse the URI.
@@ -2105,7 +2105,7 @@ function(anObject) {
      *     to each scheme (which TIBET supports but which it does not leverage
      *     for this method).
      *     NOTE: This method is evolving to become just a type check for
-     *     TP.core.URI. Use TP.isURIString() to check to see if a String looks
+     *     TP.uri.URI. Use TP.isURIString() to check to see if a String looks
      *     like a URI.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object appears to be a URI.
@@ -2129,7 +2129,7 @@ function(anObject) {
                 !TP.regex.REGEX_LITERAL_STRING.test(anObject);
     }
 
-    return TP.isKindOf(anObject, 'TP.core.URI');
+    return TP.isKindOf(anObject, 'TP.uri.URI');
 });
 
 //  ------------------------------------------------------------------------
@@ -6743,7 +6743,7 @@ function(attributeName) {
      *     used. Getters should follow the normal coding convention of
      *     this.attributeName for access while all others should use
      *     get('attributeName').
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
      */
@@ -6837,7 +6837,7 @@ function(aPath) {
      * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     receiver.
-     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     * @param {TP.path.AccessPath} aPath The path that the path source will be
      *     used with.
      * @returns {Object} The object used as the current path source object.
      */
@@ -6924,7 +6924,7 @@ function(attributeName) {
      *     used. Getters should follow the normal coding convention of
      *     this.attributeName for access while all others should use
      *     get('attributeName').
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
      */
@@ -7030,7 +7030,7 @@ function(attributeName) {
     /**
      * @method get
      * @summary Returns the value, if any, for the attribute provided.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to get.
      * @returns {Object} The value of the attribute on the receiver.
      */
@@ -7248,7 +7248,7 @@ function(attributeName, attributeValue, shouldSignal) {
      *     value is set directly at the attribute level this method will signal
      *     Change as appropriate. This allows the developer of a setter function
      *     complete control over behavior without fear of side-effects.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
@@ -7358,7 +7358,7 @@ function(attributeName, attributeValue, shouldSignal) {
      *     value is set directly at the attribute level this method will signal
      *     Change as appropriate. This allows the developer of a setter function
      *     complete control over behavior without fear of side-effects.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to

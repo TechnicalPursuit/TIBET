@@ -103,7 +103,7 @@ function(aTPElement) {
     /**
      * @method focusOnTarget
      * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
      *     receiver on.
      * @returns {TP.sherpa.bindshud} The receiver.
      */
@@ -167,7 +167,7 @@ function(aTPElement) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.bindshud.Inst.defineMethod('buildNewContent',
@@ -450,7 +450,7 @@ function(aSignal) {
     newTargetTPElem = TP.bySystemId(peerID);
 
     //  If its a Node, then it was valid and it was found. Focus the halo.
-    if (TP.isKindOf(newTargetTPElem, TP.core.Node) &&
+    if (TP.isKindOf(newTargetTPElem, TP.dom.Node) &&
         !TP.isType(newTargetTPElem)) {
         halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
@@ -718,7 +718,7 @@ function(aSignal) {
             if (TP.notEmpty(sourceResult)) {
                 if (TP.isKindOf(sourceResult, TP.core.Content)) {
                     mimeType = sourceResult.getContentMIMEType();
-                } else if (TP.isKindOf(sourceResult, TP.core.Node)) {
+                } else if (TP.isKindOf(sourceResult, TP.dom.Node)) {
                     mimeType = TP.XML_ENCODED;
                 } else {
                     mimeType = TP.JSON_ENCODED;

@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:test');
+TP.tag.ActionTag.defineSubtype('tsh:test');
 
 TP.tsh.test.addTraits(TP.tsh.Element);
 
@@ -304,7 +304,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('test',
+TP.shell.TSH.addHelpTopic('test',
     TP.tsh.test.Type.getMethod('cmdRunContent'),
     'Executes an object\'s tests or test suite.',
     ':test [<target>] [--suite <suite>] [--cases <filter>] [--karma]' +

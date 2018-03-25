@@ -14,7 +14,7 @@
 
 //  ----------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet:sherpa');
+TP.dom.UIElementNode.defineSubtype('tibet:sherpa');
 
 //  ----------------------------------------------------------------------------
 //  Type Methods
@@ -58,7 +58,7 @@ function(aRequest) {
 
             //  This performs some initial setup. The first time the Sherpa is
             //  triggered, it will complete this sequence.
-            newSherpa = TP.core.Sherpa.construct();
+            newSherpa = TP.sherpa.IDE.construct();
             newSherpa.setID('Sherpa');
 
             TP.sys.registerObject(newSherpa);

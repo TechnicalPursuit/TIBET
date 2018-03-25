@@ -23,7 +23,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:eval');
+TP.tag.ActionTag.defineSubtype('tsh:eval');
 
 TP.tsh.eval.addTraits(TP.tsh.Element);
 
@@ -49,7 +49,7 @@ function(aString, aShell, aRequest, asTokens) {
      *     history replacements, aliases, command substitutions, variable
      *     substitutions, etc. and returns the result.
      * @param {String} aString The source string to tokenize.
-     * @param {TP.core.Shell} aShell The shell instance.
+     * @param {TP.shell.Shell} aShell The shell instance.
      * @param {TP.sig.Request} aRequest The shell request.
      * @param {Boolean} asTokens True to return the token array.
      * @returns {String|Array} A desugared string or token list.
@@ -1792,7 +1792,7 @@ function(aString, aShell, aRequest) {
      *     substitutions (content inside of `...` constructs), templates, and
      *     shell variables contained in the content.
      * @param {String} aString The source string to expand content in.
-     * @param {TP.core.Shell} aShell The shell instance.
+     * @param {TP.shell.Shell} aShell The shell instance.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {String} The source string with the content expanded.

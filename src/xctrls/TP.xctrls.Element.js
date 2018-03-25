@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls.Element');
+TP.dom.UIElementNode.defineSubtype('xctrls.Element');
 
 //  This type is intended to be used as either a trait type or supertype of
 //  concrete types, so we don't allow instance creation
@@ -26,11 +26,11 @@ TP.xctrls.Element.isAbstract(true);
 //  other markup language we support (XHTML, SVG, XMPP), this is ok. Therefore,
 //  we don't mark it as abstract.
 
-TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
+TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.xctrls.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
+        TP.dom.UIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -228,11 +228,11 @@ function(aStyleTPElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('xctrls.CompiledTag');
+TP.tag.CompiledTag.defineSubtype('xctrls.CompiledTag');
 TP.xctrls.CompiledTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
-//  and execute the one inherited from TP.core.CompiledTag afterwards as well.
+//  and execute the one inherited from TP.tag.CompiledTag afterwards as well.
 TP.xctrls.CompiledTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
@@ -248,13 +248,18 @@ TP.xctrls.CompiledTag.Type.resolveTrait(
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
+TP.tag.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
 TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
-//  and execute the one inherited from TP.core.TemplatedTag afterwards as well.
+//  and execute the one inherited from TP.tag.TemplatedTag afterwards as well.
 TP.xctrls.TemplatedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
+
+//  The setting that determines whether or not we descend into our descendants
+//  when serializing. We override the value from our supertype and set this to
+//  TP.CONTINUE.
+TP.xctrls.TemplatedTag.Type.set('serializationTraversal', TP.CONTINUE);
 
 //  ========================================================================
 //  TP.xctrls.value

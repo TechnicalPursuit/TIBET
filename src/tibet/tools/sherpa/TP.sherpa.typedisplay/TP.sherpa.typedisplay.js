@@ -16,7 +16,7 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('typedisplay');
 
-TP.sherpa.typedisplay.addTraits(TP.core.D3Tag);
+TP.sherpa.typedisplay.addTraits(TP.dom.D3Tag);
 
 TP.sherpa.typedisplay.Inst.defineAttribute('body',
     TP.cpc('> .body', TP.hc('shouldCollapse', true)));
@@ -36,7 +36,7 @@ function() {
      *     data that uses TIBET data binding to bind data to this control. This
      *     method allows the receiver to transform it's 'data binding data' into
      *     data appropriate for d3.js selections.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     //  The default version of this just returns the data-binding bound data.
@@ -62,7 +62,7 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.typedisplay.Inst.defineMethod('buildNewContent',

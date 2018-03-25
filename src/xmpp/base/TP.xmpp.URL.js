@@ -133,7 +133,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.defineSubtype('xmpp.URL');
+TP.uri.URL.defineSubtype('xmpp.URL');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -168,11 +168,11 @@ function(aURI, aRequest) {
     /**
      * @method $getDefaultHandler
      * @summary Return the default URI handler type for this URI type.
-     * @param {TP.core.URI|String} aURI The URI to obtain the default handler
+     * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
      *     subtype type object.
      */
 
@@ -184,7 +184,7 @@ function(aURI, aRequest) {
 //  ------------------------------------------------------------------------
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
-//  TP.core.URI / TP.core.URL
+//  TP.uri.URI / TP.uri.URL
 
 //  the authenticating JID, constructed from the string trailing the xmpp://
 //  prefix, but before the next slash

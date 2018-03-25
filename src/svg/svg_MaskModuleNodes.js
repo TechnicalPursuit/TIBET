@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:mask');
+TP.dom.UIElementNode.defineSubtype('svg:mask');
 
 TP.svg.mask.addTraits(TP.svg.Element);
 

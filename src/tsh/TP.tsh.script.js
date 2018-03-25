@@ -23,7 +23,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:script');
+TP.tag.ActionTag.defineSubtype('tsh:script');
 
 TP.tsh.script.addTraits(TP.tsh.Element);
 
@@ -512,7 +512,7 @@ function(source, shell, sibling, request) {
      *     For redirects you can also add a trailing ! (commit) symbol which
      *     tells TIBET that you want the data to be flushed from the local
      *     in-browser cache to the file system or remote server. In other cases
-     *     the data simply updates the TP.core.URI content but doesn't send it
+     *     the data simply updates the TP.uri.URI content but doesn't send it
      *     to the server. For example:
      *
      *     a .>! b (redirect stdout and 'commit')
@@ -551,9 +551,9 @@ function(source, shell, sibling, request) {
      *     the TP.tsh.eval type for processing specific to "runtime" processing
      *     of shell input.
      * @param {String|Array} source The input source to translate.
-     * @param {TP.core.Shell} shell The shell instance handling the request
+     * @param {TP.shell.Shell} shell The shell instance handling the request
      *     we're processing text for.
-     * @param {TP.core.Node} sibling The previous sibling, which may contain
+     * @param {TP.dom.Node} sibling The previous sibling, which may contain
      *     pipe information.
      * @param {TP.sig.Request} request The request being desugared.
      * @returns {String} The translated/desugared script source.
@@ -2560,7 +2560,7 @@ function(src, shell, request) {
      *     and closing tags, TSH here document syntax is processed, subshell
      *     content is handled, and more.
      * @param {String} src The source text to process/convert.
-     * @param {TP.core.Shell} shell The shell instance requesting processing.
+     * @param {TP.shell.Shell} shell The shell instance requesting processing.
      * @param {TP.sig.Request} request The request being processed.
      * @returns {String} The processed/converted content.
      */

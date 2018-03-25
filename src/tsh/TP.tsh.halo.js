@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:halo');
+TP.tag.ActionTag.defineSubtype('tsh:halo');
 
 TP.tsh.halo.addTraits(TP.tsh.Element);
 
@@ -68,7 +68,7 @@ function(aRequest) {
             arg0 = TP.byId(arg0);
         }
 
-        if (TP.isKindOf(arg0, TP.core.Node)) {
+        if (TP.isKindOf(arg0, TP.dom.Node)) {
             halo = TP.byId('SherpaHalo', TP.win('UIROOT'));
             if (TP.isValid(halo)) {
 
@@ -85,7 +85,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('halo',
+TP.shell.TSH.addHelpTopic('halo',
     TP.tsh.halo.Type.getMethod('tshExecute'),
     'Focuses the halo on the node resolved by the supplied argument',
     ':halo <target>',

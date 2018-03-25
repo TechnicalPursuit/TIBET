@@ -20,7 +20,7 @@ TP.sherpa.TemplatedTag.defineSubtype('hudsidebar');
 //  don't allow instance creation
 TP.sherpa.hudsidebar.isAbstract(true);
 
-TP.sherpa.hudsidebar.addTraits(TP.core.D3Tag);
+TP.sherpa.hudsidebar.addTraits(TP.dom.D3Tag);
 
 TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
@@ -103,7 +103,7 @@ function(aTPElement) {
     /**
      * @method focusOnTarget
      * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
      *     receiver on.
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
@@ -230,9 +230,9 @@ function(aSignal) {
     this.set('$isRecasting', false);
 
     //  See if we can get a recasting target from the signal. If so, and it's a
-    //  type of TP.core.Node, then focus ourself on it.
+    //  type of TP.dom.Node, then focus ourself on it.
     recastTPNode = aSignal.at('recastTarget');
-    if (TP.isKindOf(recastTPNode, TP.core.Node)) {
+    if (TP.isKindOf(recastTPNode, TP.dom.Node)) {
         this.focusOnTarget(recastTPNode);
     }
 
@@ -300,7 +300,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.hudsidebar.Inst.defineMethod('buildNewContent',

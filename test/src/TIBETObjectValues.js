@@ -288,7 +288,7 @@ function(aRequest) {
     xhrVal = new XMLHttpRequest();
 
     //  TIBET Type
-    tibetTypeVal = TP.sys.getTypeByName('TP.core.Node');
+    tibetTypeVal = TP.sys.getTypeByName('TP.dom.Node');
 
     //  Instance of TP.lang.Object
     tibetObjectVal = TP.lang.Object.construct();
@@ -315,41 +315,41 @@ function(aRequest) {
 
     //  Instance of TP.core.Window
     tibetWindowVal = TP.core.Window.construct(windowVal);
-    //  Instance of TP.core.HTMLDocumentNode
-    tibetHTMLDocVal = TP.core.Document.construct(htmlDocumentVal);
-    //  Instance of TP.core.HTMLElementNode
-    tibetHTMLElemVal = TP.core.HTMLElementNode.construct(htmlElementVal);
+    //  Instance of TP.dom.HTMLDocumentNode
+    tibetHTMLDocVal = TP.dom.Document.construct(htmlDocumentVal);
+    //  Instance of TP.dom.HTMLElementNode
+    tibetHTMLElemVal = TP.dom.HTMLElementNode.construct(htmlElementVal);
 
-    //  Instance of TP.core.XMLDocumentNode
-    tibetXMLDocVal = TP.core.Document.construct(xmlDocumentVal);
-    //  Instance of TP.core.XMLElementNode
-    tibetXMLElemVal = TP.core.XMLElementNode.construct(xmlElementVal);
+    //  Instance of TP.dom.XMLDocumentNode
+    tibetXMLDocVal = TP.dom.Document.construct(xmlDocumentVal);
+    //  Instance of TP.dom.XMLElementNode
+    tibetXMLElemVal = TP.dom.XMLElementNode.construct(xmlElementVal);
 
-    //  Instance of TP.core.DocumentFragmentNode
-    tibetDocFragNodeVal = TP.core.DocumentFragmentNode.construct(
+    //  Instance of TP.dom.DocumentFragmentNode
+    tibetDocFragNodeVal = TP.dom.DocumentFragmentNode.construct(
         documentFragmentNodeVal);
-    //  Instance of TP.core.AttributeNode
-    tibetAttributeNodeVal = TP.core.AttributeNode.construct(attrNodeVal);
-    //  Instance of TP.core.TextNode
-    tibetTextNodeVal = TP.core.TextNode.construct(textNodeVal);
-    //  Instance of TP.core.CDATASectionNode
-    tibetCDATASectionNodeVal = TP.core.CDATASectionNode.construct(
+    //  Instance of TP.dom.AttributeNode
+    tibetAttributeNodeVal = TP.dom.AttributeNode.construct(attrNodeVal);
+    //  Instance of TP.dom.TextNode
+    tibetTextNodeVal = TP.dom.TextNode.construct(textNodeVal);
+    //  Instance of TP.dom.CDATASectionNode
+    tibetCDATASectionNodeVal = TP.dom.CDATASectionNode.construct(
         cdataSectionNodeVal);
-    //  Instance of TP.core.ProcessingInstructionNode
-    tibetPINodeVal = TP.core.ProcessingInstructionNode.construct(piNodeVal);
-    //  Instance of TP.core.CommentNode
-    tibetCommentNodeVal = TP.core.CommentNode.construct(commentNodeVal);
+    //  Instance of TP.dom.ProcessingInstructionNode
+    tibetPINodeVal = TP.dom.ProcessingInstructionNode.construct(piNodeVal);
+    //  Instance of TP.dom.CommentNode
+    tibetCommentNodeVal = TP.dom.CommentNode.construct(commentNodeVal);
 
-    //  Instance of TP.core.SimpleTIBETPath
-    tibetSimpleTIBETPathVal = TP.core.SimpleTIBETPath.construct('foo');
-    //  Instance of TP.core.ComplexTIBETPath
-    tibetComplexTIBETPathVal = TP.core.ComplexTIBETPath.construct('foo.bar.baz');
-    //  Instance of TP.core.ElementPath
-    tibetElementPathVal = TP.core.ElementPath.construct('/1/2');
-    //  Instance of TP.core.XTensionPath
-    tibetXTensionPathVal = TP.core.XTensionPath.construct('*[foo]');
-    //  Instance of TP.core.XPathPath
-    tibetXPathVal = TP.core.XPathPath.construct('//*');
+    //  Instance of TP.path.SimpleTIBETPath
+    tibetSimpleTIBETPathVal = TP.path.SimpleTIBETPath.construct('foo');
+    //  Instance of TP.path.ComplexTIBETPath
+    tibetComplexTIBETPathVal = TP.path.ComplexTIBETPath.construct('foo.bar.baz');
+    //  Instance of TP.path.ElementPath
+    tibetElementPathVal = TP.path.ElementPath.construct('/1/2');
+    //  Instance of TP.path.XTensionPath
+    tibetXTensionPathVal = TP.path.XTensionPath.construct('*[foo]');
+    //  Instance of TP.path.XPathPath
+    tibetXPathVal = TP.path.XPathPath.construct('//*');
 
     //  Instance of TP.sig.Request
     tibetRequestVal = TP.sig.Request.construct(TP.hc('foo', 'bar'));
@@ -363,21 +363,21 @@ function(aRequest) {
     //  down below
     tibetResponseVal.getSignalName();
 
-    //  Instance of TP.core.TIBETURN
+    //  Instance of TP.uri.TIBETURN
     tibetTIBETURNVal = TP.uc('urn:tibet:foo');
-    //  Instance of TP.core.HTTPURL
+    //  Instance of TP.uri.HTTPURL
     tibetHTTPURLVal = TP.uc('http://www.blah.com');
-    //  Instance of TP.core.FileURL
+    //  Instance of TP.uri.FileURL
     tibetFileURLVal = TP.uc('file:///goo.txt');
     /* eslint-disable no-script-url */
     //  Instance of TP.core.JSURL
     tibetJSURIVal = TP.uc('javascript:alert("hi")');
     /* eslint-enable no-script-url */
-    //  Instance of TP.core.WSURL
+    //  Instance of TP.uri.WSURL
     tibetWSURLVal = TP.uc('ws://ws.blah.com');
-    //  Instance of TP.core.TIBETURL
+    //  Instance of TP.uri.TIBETURL
     tibetTIBETURLVal = TP.uc('tibet://top/file:///goo.txt');
-    //  Instance of TP.core.CookieURL
+    //  Instance of TP.uri.CookieURL
     tibetCookieURLVal = TP.uc('cookie://blah=foo');
 
     //  Instance of TP.w3.DocType
@@ -386,37 +386,37 @@ function(aRequest) {
         '-//W3C//DTD XHTML 1.0 Strict//EN',
         'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd');
 
-    //  Instance of TP.core.Point
-    tibetPointVal = TP.core.Point.construct(20, 30);
-    //  Instance of TP.core.Rect
-    tibetRectVal = TP.core.Rect.construct(0, 0, 100, 100);
-    //  Instance of TP.core.Matrix
-    tibetMatrixVal = TP.core.Matrix.construct();
-    //  Instance of TP.core.Color
-    tibetColorVal = TP.core.Color.construct(0, 255, 255);
+    //  Instance of TP.gui.Point
+    tibetPointVal = TP.gui.Point.construct(20, 30);
+    //  Instance of TP.gui.Rect
+    tibetRectVal = TP.gui.Rect.construct(0, 0, 100, 100);
+    //  Instance of TP.gui.Matrix
+    tibetMatrixVal = TP.gui.Matrix.construct();
+    //  Instance of TP.gui.Color
+    tibetColorVal = TP.gui.Color.construct(0, 255, 255);
 
-    //  Instance of TP.core.LinearGradient
-    tibetLinearGradientVal = TP.core.LinearGradient.construct();
+    //  Instance of TP.gui.LinearGradient
+    tibetLinearGradientVal = TP.gui.LinearGradient.construct();
     tibetLinearGradientVal.set('angle', 45);
     tibetLinearGradientVal.addColorStop('10%', TP.cc(0, 0, 255, 0.5));
     tibetLinearGradientVal.addColorStop('50%', TP.cc(0, 255, 255, 1.0));
 
-    //  Instance of TP.core.RadialGradient
-    tibetRadialGradientVal = TP.core.RadialGradient.construct();
+    //  Instance of TP.gui.RadialGradient
+    tibetRadialGradientVal = TP.gui.RadialGradient.construct();
     tibetRadialGradientVal.addColorStop('10%', TP.cc(0, 0, 255, 0.5));
     tibetRadialGradientVal.addColorStop('50%', TP.cc(0, 255, 255, 1.0));
 
-    //  Instance of TP.core.Pattern
-    tibetPatternVal = TP.core.Pattern.construct().
+    //  Instance of TP.gui.Pattern
+    tibetPatternVal = TP.gui.Pattern.construct().
                         set('x', 20).
                         set('y', 20).
                         set('width', 100).
                         set('height', 100);
 
-    //  Instance of TP.core.SVGPath
-    tibetPath = TP.core.SVGPath.construct();
-    tibetPath.addSegment(TP.core.SVGPath.MOVE_TO_ABS, TP.ac(10, 10));
-    tibetPath.addSegment(TP.core.SVGPath.MOVE_TO_ABS, TP.ac(20, 20));
+    //  Instance of TP.gui.SVGPath
+    tibetPath = TP.gui.SVGPath.construct();
+    tibetPath.addSegment(TP.gui.SVGPath.MOVE_TO_ABS, TP.ac(10, 10));
+    tibetPath.addSegment(TP.gui.SVGPath.MOVE_TO_ABS, TP.ac(20, 20));
 
     //  Instance of TP.core.Job
     tibetJob = TP.core.Job.construct(TP.hc());
@@ -482,47 +482,47 @@ function(aRequest) {
     'TP.sig.Exception',         tibetExceptionVal,      //  TP.sig.Exception
 
     'TP.core.Window',           tibetWindowVal,         //  TP.core.Window
-    'TP.core.HTMLDocumentNode', tibetHTMLDocVal,        //  TP.core.HTMLDocumentNode
-    'TP.core.HTMLElementNode',  tibetHTMLElemVal,       //  TP.core.HTMLElementNode
+    'TP.dom.HTMLDocumentNode',  tibetHTMLDocVal,        //  TP.dom.HTMLDocumentNode
+    'TP.dom.HTMLElementNode',   tibetHTMLElemVal,       //  TP.dom.HTMLElementNode
 
-    'TP.core.XMLDocumentNode',  tibetXMLDocVal,         //  TP.core.XMLDocumentNode
-    'TP.core.XMLElementNode',   tibetXMLElemVal,        //  TP.core.XMLElementNode
+    'TP.dom.XMLDocumentNode',   tibetXMLDocVal,         //  TP.dom.XMLDocumentNode
+    'TP.dom.XMLElementNode',    tibetXMLElemVal,        //  TP.dom.XMLElementNode
 
-    'TP.core.DocumentFragmentNode', tibetDocFragNodeVal,    //  TP.core.DocumentFragmentNode
-    'TP.core.AttributeNode',    tibetAttributeNodeVal,      //  TP.core.AttributeNode
-    'TP.core.TextNode',         tibetTextNodeVal,           //  TP.core.TextNode
-    'TP.core.CDATASectionNode', tibetCDATASectionNodeVal,   //  TP.core.CDATASectionNode
-    'TP.core.ProcessingInstructionNode',    tibetPINodeVal, //  TP.core.ProcessingInstructionNode
-    'TP.core.CommentNode',      tibetCommentNodeVal,        //  TP.core.CommentNode
+    'TP.dom.DocumentFragmentNode', tibetDocFragNodeVal,     //  TP.dom.DocumentFragmentNode
+    'TP.dom.AttributeNode',     tibetAttributeNodeVal,      //  TP.dom.AttributeNode
+    'TP.dom.TextNode',          tibetTextNodeVal,           //  TP.dom.TextNode
+    'TP.dom.CDATASectionNode',  tibetCDATASectionNodeVal,   //  TP.dom.CDATASectionNode
+    'TP.dom.ProcessingInstructionNode',    tibetPINodeVal,  //  TP.dom.ProcessingInstructionNode
+    'TP.dom.CommentNode',       tibetCommentNodeVal,        //  TP.dom.CommentNode
 
-    'TP.core.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.core.SimpleTIBETPath
-    'TP.core.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.core.SimpleTIBETPath
-    'TP.core.ElementPath',      tibetElementPathVal,        //  TP.core.ElementPath
-    'TP.core.XTensionPath',     tibetXTensionPathVal,       //  TP.core.XTensionPath
-    'TP.core.XPathPath',        tibetXPathVal,              //  TP.core.XPathPath
+    'TP.path.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.path.SimpleTIBETPath
+    'TP.path.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.path.SimpleTIBETPath
+    'TP.path.ElementPath',      tibetElementPathVal,        //  TP.path.ElementPath
+    'TP.path.XTensionPath',     tibetXTensionPathVal,       //  TP.path.XTensionPath
+    'TP.path.XPathPath',        tibetXPathVal,              //  TP.path.XPathPath
 
     'TP.sig.Request',           tibetRequestVal,        //  TP.sig.Request
     'TP.sig.Response',          tibetResponseVal,       //  TP.sig.Response
 
-    'TP.core.TIBETURN',         tibetTIBETURNVal,       //  TP.core.TIBETURN
-    'TP.core.HTTPURL',          tibetHTTPURLVal,        //  TP.core.HTTPURL
-    'TP.core.FileURL',          tibetFileURLVal,        //  TP.core.FileURL
-    'TP.core.JSURI',            tibetJSURIVal,          //  TP.core.JSURI
-    'TP.core.WSURL',            tibetWSURLVal,          //  TP.core.WSURL
-    'TP.core.TIBETURL',         tibetTIBETURLVal,       //  TP.core.TIBETURL
-    'TP.core.CookieURL',        tibetCookieURLVal,      //  TP.core.CookieURL
+    'TP.uri.TIBETURN',          tibetTIBETURNVal,       //  TP.uri.TIBETURN
+    'TP.uri.HTTPURL',           tibetHTTPURLVal,        //  TP.uri.HTTPURL
+    'TP.uri.FileURL',           tibetFileURLVal,        //  TP.uri.FileURL
+    'TP.uri.JSURI',             tibetJSURIVal,          //  TP.uri.JSURI
+    'TP.uri.WSURL',             tibetWSURLVal,          //  TP.uri.WSURL
+    'TP.uri.TIBETURL',          tibetTIBETURLVal,       //  TP.uri.TIBETURL
+    'TP.uri.CookieURL',         tibetCookieURLVal,      //  TP.uri.CookieURL
 
     'TP.w3.DocType',            tibetDocTypeVal,        //  TP.w3.DocType
 
-    'TP.core.Point',            tibetPointVal,          //  TP.core.Point
-    'TP.core.Rect',             tibetRectVal,           //  TP.core.Rect
-    'TP.core.Matrix',           tibetMatrixVal,         //  TP.core.Matrix
-    'TP.core.Color',            tibetColorVal,          //  TP.core.Color
+    'TP.gui.Point',             tibetPointVal,          //  TP.gui.Point
+    'TP.gui.Rect',              tibetRectVal,           //  TP.gui.Rect
+    'TP.gui.Matrix',            tibetMatrixVal,         //  TP.gui.Matrix
+    'TP.gui.Color',             tibetColorVal,          //  TP.gui.Color
 
-    'TP.core.LinearGradient',   tibetLinearGradientVal, //  TP.core.LinearGradient
-    'TP.core.RadialGradient',   tibetRadialGradientVal, //  TP.core.RadialGradient
-    'TP.core.Pattern',          tibetPatternVal,        //  TP.core.Pattern
-    'TP.core.Path',             tibetPath,              //  TP.core.Path
+    'TP.gui.LinearGradient',    tibetLinearGradientVal, //  TP.gui.LinearGradient
+    'TP.gui.RadialGradient',    tibetRadialGradientVal, //  TP.gui.RadialGradient
+    'TP.gui.Pattern',           tibetPatternVal,        //  TP.gui.Pattern
+    'TP.gui.Path',              tibetPath,              //  TP.gui.Path
 
     'TP.core.Job',              tibetJob,               //  TP.core.Job
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
@@ -712,7 +712,7 @@ function(aRequest) {
     eventVal = TP.ac(MouseEvent, UIEvent, Object);
     xhrVal = TP.ac(XMLHttpRequest, Object);
 
-    tibetTypeVal = TP.ac(TP.meta.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTypeVal = TP.ac(TP.meta.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetObjectVal = TP.ac(TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -723,51 +723,51 @@ function(aRequest) {
     tibetExceptionVal = TP.ac(TP.sig.Exception, TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetWindowVal = TP.ac(TP.core.Window, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetHTMLDocVal = TP.ac(TP.core.HTMLDocumentNode, TP.core.DocumentNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetHTMLElemVal = TP.ac(TP.html.body, TP.html.Attrs, TP.core.UIElementNode, TP.core.ElementNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHTMLDocVal = TP.ac(TP.dom.HTMLDocumentNode, TP.dom.DocumentNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHTMLElemVal = TP.ac(TP.html.body, TP.html.Attrs, TP.dom.UIElementNode, TP.dom.ElementNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetXMLDocVal = TP.ac(TP.core.XMLDocumentNode, TP.core.DocumentNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetXMLElemVal = TP.ac(TP.core.XMLElementNode, TP.core.ElementNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXMLDocVal = TP.ac(TP.dom.XMLDocumentNode, TP.dom.DocumentNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXMLElemVal = TP.ac(TP.dom.XMLElementNode, TP.dom.ElementNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetDocFragNodeVal = TP.ac(TP.core.DocumentFragmentNode, TP.core.CollectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetAttributeNodeVal = TP.ac(TP.core.AttributeNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetTextNodeVal = TP.ac(TP.core.TextNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetCDATASectionNodeVal = TP.ac(TP.core.CDATASectionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetPINodeVal = TP.ac(TP.core.XMLProcessingInstruction, TP.core.ProcessingInstructionNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetCommentNodeVal = TP.ac(TP.core.CommentNode, TP.core.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetDocFragNodeVal = TP.ac(TP.dom.DocumentFragmentNode, TP.dom.CollectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetAttributeNodeVal = TP.ac(TP.dom.AttributeNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTextNodeVal = TP.ac(TP.dom.TextNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetCDATASectionNodeVal = TP.ac(TP.dom.CDATASectionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPINodeVal = TP.ac(TP.dom.XMLProcessingInstructionNode, TP.dom.ProcessingInstructionNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetCommentNodeVal = TP.ac(TP.dom.CommentNode, TP.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetSimpleTIBETPathVal = TP.ac(TP.core.SimpleTIBETPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetComplexTIBETPathVal = TP.ac(TP.core.ComplexTIBETPath, TP.core.SimpleTIBETPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetElementPathVal = TP.ac(TP.core.ElementPath, TP.core.XMLPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetXTensionPathVal = TP.ac(TP.core.XTensionPath, TP.core.XMLPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetXPathVal = TP.ac(TP.core.XPathPath, TP.core.XMLPath, TP.core.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetSimpleTIBETPathVal = TP.ac(TP.path.SimpleTIBETPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetComplexTIBETPathVal = TP.ac(TP.path.ComplexTIBETPath, TP.path.SimpleTIBETPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetElementPathVal = TP.ac(TP.path.ElementPath, TP.path.XMLPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXTensionPathVal = TP.ac(TP.path.XTensionPath, TP.path.XMLPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetXPathVal = TP.ac(TP.path.XPathPath, TP.path.XMLPath, TP.path.AccessPath, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetRequestVal = TP.ac(TP.sig.Request, TP.sig.WorkflowSignal, TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetResponseVal = TP.ac(TP.sig.Response, TP.sig.WorkflowSignal, TP.sig.Signal, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetTIBETURNVal = TP.ac(TP.core.TIBETURN, TP.core.URN, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetHTTPURLVal = TP.ac(TP.core.HTTPURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetFileURLVal = TP.ac(TP.core.FileURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetJSURIVal = TP.ac(TP.core.JSURI, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetWSURLVal = TP.ac(TP.core.WSURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetTIBETURLVal = TP.ac(TP.core.TIBETURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetCookieURLVal = TP.ac(TP.core.CookieURL, TP.core.URL, TP.core.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTIBETURNVal = TP.ac(TP.uri.TIBETURN, TP.uri.URN, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetHTTPURLVal = TP.ac(TP.uri.HTTPURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetFileURLVal = TP.ac(TP.uri.FileURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetJSURIVal = TP.ac(TP.uri.JSURI, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetWSURLVal = TP.ac(TP.uri.WSURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTIBETURLVal = TP.ac(TP.uri.TIBETURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetCookieURLVal = TP.ac(TP.uri.CookieURL, TP.uri.URL, TP.uri.URI, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetDocTypeVal = TP.ac(TP.w3.DocType, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPointVal = TP.ac(TP.core.Point, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetRectVal = TP.ac(TP.core.Rect, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetMatrixVal = TP.ac(TP.core.Matrix, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetColorVal = TP.ac(TP.core.Color, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPointVal = TP.ac(TP.gui.Point, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetRectVal = TP.ac(TP.gui.Rect, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetMatrixVal = TP.ac(TP.gui.Matrix, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetColorVal = TP.ac(TP.gui.Color, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetLinearGradientVal = TP.ac(TP.core.LinearGradient, TP.core.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetLinearGradientVal = TP.ac(TP.gui.LinearGradient, TP.gui.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetRadialGradientVal = TP.ac(TP.core.RadialGradient, TP.core.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetRadialGradientVal = TP.ac(TP.gui.RadialGradient, TP.gui.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPatternVal = TP.ac(TP.core.Pattern, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPatternVal = TP.ac(TP.gui.Pattern, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPath = TP.ac(TP.core.SVGPath, TP.core.Path, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPath = TP.ac(TP.gui.SVGPath, TP.gui.Path, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetJob = TP.ac(TP.core.Job, TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -828,47 +828,47 @@ function(aRequest) {
     'TP.sig.Exception',         tibetExceptionVal,      //  TP.sig.Exception
 
     'TP.core.Window',           tibetWindowVal,         //  TP.core.Window
-    'TP.core.HTMLDocumentNode', tibetHTMLDocVal,        //  TP.core.HTMLDocumentNode
-    'TP.core.HTMLElementNode',  tibetHTMLElemVal,       //  TP.core.HTMLElementNode
+    'TP.dom.HTMLDocumentNode',  tibetHTMLDocVal,        //  TP.dom.HTMLDocumentNode
+    'TP.dom.HTMLElementNode',   tibetHTMLElemVal,       //  TP.dom.HTMLElementNode
 
-    'TP.core.XMLDocumentNode',  tibetXMLDocVal,         //  TP.core.XMLDocumentNode
-    'TP.core.XMLElementNode',   tibetXMLElemVal,        //  TP.core.XMLElementNode
+    'TP.dom.XMLDocumentNode',   tibetXMLDocVal,         //  TP.dom.XMLDocumentNode
+    'TP.dom.XMLElementNode',    tibetXMLElemVal,        //  TP.dom.XMLElementNode
 
-    'TP.core.DocumentFragmentNode', tibetDocFragNodeVal,    //  TP.core.DocumentFragmentNode
-    'TP.core.AttributeNode',    tibetAttributeNodeVal,      //  TP.core.AttributeNode
-    'TP.core.TextNode',         tibetTextNodeVal,           //  TP.core.TextNode
-    'TP.core.CDATASectionNode', tibetCDATASectionNodeVal,   //  TP.core.CDATASectionNode
-    'TP.core.ProcessingInstructionNode',    tibetPINodeVal, //  TP.core.ProcessingInstructionNode
-    'TP.core.CommentNode',      tibetCommentNodeVal,        //  TP.core.CommentNode
+    'TP.dom.DocumentFragmentNode', tibetDocFragNodeVal,     //  TP.dom.DocumentFragmentNode
+    'TP.dom.AttributeNode',     tibetAttributeNodeVal,      //  TP.dom.AttributeNode
+    'TP.dom.TextNode',          tibetTextNodeVal,           //  TP.dom.TextNode
+    'TP.dom.CDATASectionNode',  tibetCDATASectionNodeVal,   //  TP.dom.CDATASectionNode
+    'TP.dom.ProcessingInstructionNode',    tibetPINodeVal,  //  TP.dom.ProcessingInstructionNode
+    'TP.dom.CommentNode',       tibetCommentNodeVal,        //  TP.dom.CommentNode
 
-    'TP.core.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.core.SimpleTIBETPath
-    'TP.core.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.core.SimpleTIBETPath
-    'TP.core.ElementPath',      tibetElementPathVal,        //  TP.core.ElementPath
-    'TP.core.XTensionPath',     tibetXTensionPathVal,       //  TP.core.XTensionPath
-    'TP.core.XPathPath',        tibetXPathVal,              //  TP.core.XPathPath
+    'TP.path.SimpleTIBETPath',  tibetSimpleTIBETPathVal,    //  TP.path.SimpleTIBETPath
+    'TP.path.ComplexTIBETPath', tibetComplexTIBETPathVal,   //  TP.path.SimpleTIBETPath
+    'TP.path.ElementPath',      tibetElementPathVal,        //  TP.path.ElementPath
+    'TP.path.XTensionPath',     tibetXTensionPathVal,       //  TP.path.XTensionPath
+    'TP.path.XPathPath',        tibetXPathVal,              //  TP.path.XPathPath
 
     'TP.sig.Request',           tibetRequestVal,        //  TP.sig.Request
     'TP.sig.Response',          tibetResponseVal,       //  TP.sig.Response
 
-    'TP.core.TIBETURN',         tibetTIBETURNVal,       //  TP.core.TIBETURN
-    'TP.core.HTTPURL',          tibetHTTPURLVal,        //  TP.core.HTTPURL
-    'TP.core.FileURL',          tibetFileURLVal,        //  TP.core.FileURL
-    'TP.core.JSURI',            tibetJSURIVal,          //  TP.core.JSURI
-    'TP.core.WSURL',            tibetWSURLVal,          //  TP.core.WSURL
-    'TP.core.TIBETURL',         tibetTIBETURLVal,       //  TP.core.TIBETURL
-    'TP.core.CookieURL',        tibetCookieURLVal,      //  TP.core.CookieURL
+    'TP.uri.TIBETURN',          tibetTIBETURNVal,       //  TP.uri.TIBETURN
+    'TP.uri.HTTPURL',           tibetHTTPURLVal,        //  TP.uri.HTTPURL
+    'TP.uri.FileURL',           tibetFileURLVal,        //  TP.uri.FileURL
+    'TP.uri.JSURI',             tibetJSURIVal,          //  TP.uri.JSURI
+    'TP.uri.WSURL',             tibetWSURLVal,          //  TP.uri.WSURL
+    'TP.uri.TIBETURL',          tibetTIBETURLVal,       //  TP.uri.TIBETURL
+    'TP.uri.CookieURL',         tibetCookieURLVal,      //  TP.uri.CookieURL
 
     'TP.w3.DocType',            tibetDocTypeVal,        //  TP.w3.DocType
 
-    'TP.core.Point',            tibetPointVal,          //  TP.core.Point
-    'TP.core.Rect',             tibetRectVal,           //  TP.core.Rect
-    'TP.core.Matrix',           tibetMatrixVal,         //  TP.core.Matrix
-    'TP.core.Color',            tibetColorVal,          //  TP.core.Color
+    'TP.gui.Point',             tibetPointVal,          //  TP.gui.Point
+    'TP.gui.Rect',              tibetRectVal,           //  TP.gui.Rect
+    'TP.gui.Matrix',            tibetMatrixVal,         //  TP.gui.Matrix
+    'TP.gui.Color',             tibetColorVal,          //  TP.gui.Color
 
-    'TP.core.LinearGradient',   tibetLinearGradientVal, //  TP.core.LinearGradient
-    'TP.core.RadialGradient',   tibetRadialGradientVal, //  TP.core.RadialGradient
-    'TP.core.Pattern',          tibetPatternVal,        //  TP.core.Pattern
-    'TP.core.Path',             tibetPath,              //  TP.core.Path
+    'TP.gui.LinearGradient',    tibetLinearGradientVal, //  TP.gui.LinearGradient
+    'TP.gui.RadialGradient',    tibetRadialGradientVal, //  TP.gui.RadialGradient
+    'TP.gui.Pattern',           tibetPatternVal,        //  TP.gui.Pattern
+    'TP.gui.Path',              tibetPath,              //  TP.gui.Path
 
     'TP.core.Job',              tibetJob,               //  TP.core.Job
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
@@ -1006,18 +1006,18 @@ function(aRequest) {
         'IFrameWindow',                         'TP.core.Window',
 
         // 'Node',                                 'Node',
-        'HTMLDocument',                         'TP.core.HTMLDocumentNode',
+        'HTMLDocument',                         'TP.dom.HTMLDocumentNode',
         'HTMLElement',                          'TP.html.body',
 
-        'XMLDocument',                          'TP.core.XMLDocumentNode',
-        'XMLElement',                           'TP.core.XMLElementNode',
+        'XMLDocument',                          'TP.dom.XMLDocumentNode',
+        'XMLElement',                           'TP.dom.XMLElementNode',
 
-        'AttributeNode',                        'TP.core.AttributeNode',
-        'TextNode',                             'TP.core.TextNode',
-        'CDATASectionNode',                     'TP.core.CDATASectionNode',
-        'PINode',                               'TP.core.ProcessingInstructionNode',
-        'CommentNode',                          'TP.core.CommentNode',
-        'DocumentFragmentNode',                 'TP.core.DocumentFragmentNode',
+        'AttributeNode',                        'TP.dom.AttributeNode',
+        'TextNode',                             'TP.dom.TextNode',
+        'CDATASectionNode',                     'TP.dom.CDATASectionNode',
+        'PINode',                               'TP.dom.ProcessingInstructionNode',
+        'CommentNode',                          'TP.dom.CommentNode',
+        'DocumentFragmentNode',                 'TP.dom.DocumentFragmentNode',
 
         'NodeList',                             'Array',        //  contents wrapped
         'NamedNodeMap',                         'TP.core.Hash', //  contents wrapped
@@ -1037,48 +1037,48 @@ function(aRequest) {
         'TP.sig.Exception',                     TP.IDENTITY,
 
         'TP.core.Window',                       TP.IDENTITY,
-        'TP.core.HTMLDocumentNode',             TP.IDENTITY,
-        'TP.core.HTMLElementNode',              TP.IDENTITY,
+        'TP.dom.HTMLDocumentNode',              TP.IDENTITY,
+        'TP.dom.HTMLElementNode',               TP.IDENTITY,
 
-        'TP.core.XMLDocumentNode',              TP.IDENTITY,
-        'TP.core.XMLElementNode',               TP.IDENTITY,
+        'TP.dom.XMLDocumentNode',               TP.IDENTITY,
+        'TP.dom.XMLElementNode',                TP.IDENTITY,
 
-        'TP.core.DocumentFragmentNode',         TP.IDENTITY,
-        'TP.core.AttributeNode',                TP.IDENTITY,
-        'TP.core.TextNode',                     TP.IDENTITY,
-        'TP.core.CDATASectionNode',             TP.IDENTITY,
-        'TP.core.ProcessingInstructionNode',    TP.IDENTITY,
-        'TP.core.CommentNode',                  TP.IDENTITY,
+        'TP.dom.DocumentFragmentNode',          TP.IDENTITY,
+        'TP.dom.AttributeNode',                 TP.IDENTITY,
+        'TP.dom.TextNode',                      TP.IDENTITY,
+        'TP.dom.CDATASectionNode',              TP.IDENTITY,
+        'TP.dom.ProcessingInstructionNode',     TP.IDENTITY,
+        'TP.dom.CommentNode',                   TP.IDENTITY,
 
-        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
-        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
-        'TP.core.ElementPath',                  TP.IDENTITY,
-        'TP.core.XTensionPath',                 TP.IDENTITY,
-        'TP.core.XPathPath',                    TP.IDENTITY,
+        'TP.path.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.path.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.path.ElementPath',                  TP.IDENTITY,
+        'TP.path.XTensionPath',                 TP.IDENTITY,
+        'TP.path.XPathPath',                    TP.IDENTITY,
 
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      TP.IDENTITY,
 
-        'TP.core.TIBETURN',                     TP.IDENTITY,
-        'TP.core.HTTPURL',                      TP.IDENTITY,
-        'TP.core.FileURL',                      TP.IDENTITY,
-        'TP.core.JSURI',                        TP.IDENTITY,
-        'TP.core.WSURL',                        TP.IDENTITY,
-        'TP.core.TIBETURL',                     TP.IDENTITY,
-        'TP.core.CookieURL',                    TP.IDENTITY,
+        'TP.uri.TIBETURN',                      TP.IDENTITY,
+        'TP.uri.HTTPURL',                       TP.IDENTITY,
+        'TP.uri.FileURL',                       TP.IDENTITY,
+        'TP.uri.JSURI',                         TP.IDENTITY,
+        'TP.uri.WSURL',                         TP.IDENTITY,
+        'TP.uri.TIBETURL',                      TP.IDENTITY,
+        'TP.uri.CookieURL',                     TP.IDENTITY,
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
-        'TP.core.Point',                        TP.IDENTITY,
-        'TP.core.Rect',                         TP.IDENTITY,
-        'TP.core.Matrix',                       TP.IDENTITY,
-        'TP.core.Color',                        TP.IDENTITY,
+        'TP.gui.Point',                         TP.IDENTITY,
+        'TP.gui.Rect',                          TP.IDENTITY,
+        'TP.gui.Matrix',                        TP.IDENTITY,
+        'TP.gui.Color',                         TP.IDENTITY,
 
-        'TP.core.LinearGradient',               TP.IDENTITY,
-        'TP.core.RadialGradient',               TP.IDENTITY,
+        'TP.gui.LinearGradient',                TP.IDENTITY,
+        'TP.gui.RadialGradient',                TP.IDENTITY,
 
-        'TP.core.Pattern',                      TP.IDENTITY,
-        'TP.core.Path',                         TP.IDENTITY,
+        'TP.gui.Pattern',                       TP.IDENTITY,
+        'TP.gui.Path',                          TP.IDENTITY,
 
         'TP.core.Job',                          TP.IDENTITY,
         'TP.core.Browser_TYPE',                 TP.IDENTITY,
@@ -1158,48 +1158,48 @@ function(aRequest) {
         'TP.sig.Exception',                     TP.IDENTITY,
 
         'TP.core.Window',                       'DOMWindow',
-        'TP.core.HTMLDocumentNode',             'HTMLDocument',
-        'TP.core.HTMLElementNode',              'HTMLBodyElement',
+        'TP.dom.HTMLDocumentNode',              'HTMLDocument',
+        'TP.dom.HTMLElementNode',               'HTMLBodyElement',
 
-        'TP.core.XMLDocumentNode',              'XMLDocument',
-        'TP.core.XMLElementNode',               'Element',
+        'TP.dom.XMLDocumentNode',               'XMLDocument',
+        'TP.dom.XMLElementNode',                'Element',
 
-        'TP.core.DocumentFragmentNode',         'DocumentFragment',
-        'TP.core.AttributeNode',                'Attr',
-        'TP.core.TextNode',                     'Text',
-        'TP.core.CDATASectionNode',             'CDATASection',
-        'TP.core.ProcessingInstructionNode',    'ProcessingInstruction',
-        'TP.core.CommentNode',                  'Comment',
+        'TP.dom.DocumentFragmentNode',          'DocumentFragment',
+        'TP.dom.AttributeNode',                 'Attr',
+        'TP.dom.TextNode',                      'Text',
+        'TP.dom.CDATASectionNode',              'CDATASection',
+        'TP.dom.ProcessingInstructionNode',     'ProcessingInstruction',
+        'TP.dom.CommentNode',                   'Comment',
 
-        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
-        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
-        'TP.core.ElementPath',                  TP.IDENTITY,
-        'TP.core.XTensionPath',                 TP.IDENTITY,
-        'TP.core.XPathPath',                    TP.IDENTITY,
+        'TP.path.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.path.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.path.ElementPath',                  TP.IDENTITY,
+        'TP.path.XTensionPath',                 TP.IDENTITY,
+        'TP.path.XPathPath',                    TP.IDENTITY,
 
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      TP.IDENTITY,
 
-        'TP.core.TIBETURN',                     'String',
-        'TP.core.HTTPURL',                      'String',
-        'TP.core.FileURL',                      'String',
-        'TP.core.JSURI',                        'String',
-        'TP.core.WSURL',                        'String',
-        'TP.core.TIBETURL',                     'String',
-        'TP.core.CookieURL',                    'String',
+        'TP.uri.TIBETURN',                      'String',
+        'TP.uri.HTTPURL',                       'String',
+        'TP.uri.FileURL',                       'String',
+        'TP.uri.JSURI',                         'String',
+        'TP.uri.WSURL',                         'String',
+        'TP.uri.TIBETURL',                      'String',
+        'TP.uri.CookieURL',                     'String',
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
-        'TP.core.Point',                        TP.IDENTITY,
-        'TP.core.Rect',                         TP.IDENTITY,
-        'TP.core.Matrix',                       TP.IDENTITY,
-        'TP.core.Color',                        TP.IDENTITY,
+        'TP.gui.Point',                         TP.IDENTITY,
+        'TP.gui.Rect',                          TP.IDENTITY,
+        'TP.gui.Matrix',                        TP.IDENTITY,
+        'TP.gui.Color',                         TP.IDENTITY,
 
-        'TP.core.LinearGradient',               TP.IDENTITY,
-        'TP.core.RadialGradient',               TP.IDENTITY,
+        'TP.gui.LinearGradient',                TP.IDENTITY,
+        'TP.gui.RadialGradient',                TP.IDENTITY,
 
-        'TP.core.Pattern',                      TP.IDENTITY,
-        'TP.core.Path',                         TP.IDENTITY,
+        'TP.gui.Pattern',                       TP.IDENTITY,
+        'TP.gui.Path',                          TP.IDENTITY,
 
         'TP.core.Job',                          TP.IDENTITY,
         'TP.core.Browser_TYPE',                 TP.IDENTITY,
@@ -1279,48 +1279,48 @@ function(aRequest) {
         'TP.sig.Exception',                     TP.IDENTITY,
 
         'TP.core.Window',                       TP.IDENTITY,
-        'TP.core.HTMLDocumentNode',             /([\s\S]+)/,
-        'TP.core.HTMLElementNode',              /([\s\S]+)/,
+        'TP.dom.HTMLDocumentNode',              /([\s\S]+)/,
+        'TP.dom.HTMLElementNode',               /([\s\S]+)/,
 
-        'TP.core.XMLDocumentNode',              'Hi there<boo><goo/></boo><moo/>',
-        'TP.core.XMLElementNode',               'bar',
+        'TP.dom.XMLDocumentNode',               'Hi there<boo><goo/></boo><moo/>',
+        'TP.dom.XMLElementNode',                'bar',
 
-        'TP.core.DocumentFragmentNode',         /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
-        'TP.core.AttributeNode',                'bar',
-        'TP.core.TextNode',                     'foo',
-        'TP.core.CDATASectionNode',             'foo',
-        'TP.core.ProcessingInstructionNode',    'bar',
-        'TP.core.CommentNode',                  'foo',
+        'TP.dom.DocumentFragmentNode',          /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'TP.dom.AttributeNode',                 'bar',
+        'TP.dom.TextNode',                      'foo',
+        'TP.dom.CDATASectionNode',              'foo',
+        'TP.dom.ProcessingInstructionNode',     'bar',
+        'TP.dom.CommentNode',                   'foo',
 
-        'TP.core.SimpleTIBETPath',              TP.IDENTITY,
-        'TP.core.ComplexTIBETPath',             TP.IDENTITY,
-        'TP.core.ElementPath',                  TP.IDENTITY,
-        'TP.core.XTensionPath',                 TP.IDENTITY,
-        'TP.core.XPathPath',                    TP.IDENTITY,
+        'TP.path.SimpleTIBETPath',              TP.IDENTITY,
+        'TP.path.ComplexTIBETPath',             TP.IDENTITY,
+        'TP.path.ElementPath',                  TP.IDENTITY,
+        'TP.path.XTensionPath',                 TP.IDENTITY,
+        'TP.path.XPathPath',                    TP.IDENTITY,
 
         'TP.sig.Request',                       TP.IDENTITY,
         'TP.sig.Response',                      'baz',
 
-        'TP.core.TIBETURN',                     TP.IDENTITY,
-        'TP.core.HTTPURL',                      TP.IDENTITY,
-        'TP.core.FileURL',                      TP.IDENTITY,
-        'TP.core.JSURI',                        TP.IDENTITY,
-        'TP.core.WSURL',                        TP.IDENTITY,
-        'TP.core.TIBETURL',                     TP.IDENTITY,
-        'TP.core.CookieURL',                    TP.IDENTITY,
+        'TP.uri.TIBETURN',                      TP.IDENTITY,
+        'TP.uri.HTTPURL',                       TP.IDENTITY,
+        'TP.uri.FileURL',                       TP.IDENTITY,
+        'TP.uri.JSURI',                         TP.IDENTITY,
+        'TP.uri.WSURL',                         TP.IDENTITY,
+        'TP.uri.TIBETURL',                      TP.IDENTITY,
+        'TP.uri.CookieURL',                     TP.IDENTITY,
 
         'TP.w3.DocType',                        TP.IDENTITY,
 
-        'TP.core.Point',                        TP.IDENTITY,
-        'TP.core.Rect',                         TP.IDENTITY,
-        'TP.core.Matrix',                       TP.IDENTITY,
-        'TP.core.Color',                        TP.IDENTITY,
+        'TP.gui.Point',                         TP.IDENTITY,
+        'TP.gui.Rect',                          TP.IDENTITY,
+        'TP.gui.Matrix',                        TP.IDENTITY,
+        'TP.gui.Color',                         TP.IDENTITY,
 
-        'TP.core.LinearGradient',               TP.IDENTITY,
-        'TP.core.RadialGradient',               TP.IDENTITY,
+        'TP.gui.LinearGradient',                TP.IDENTITY,
+        'TP.gui.RadialGradient',                TP.IDENTITY,
 
-        'TP.core.Pattern',                      TP.IDENTITY,
-        'TP.core.Path',                         TP.IDENTITY,
+        'TP.gui.Pattern',                       TP.IDENTITY,
+        'TP.gui.Path',                          TP.IDENTITY,
 
         'TP.core.Job',                          TP.IDENTITY,
         'TP.core.Browser_TYPE',                 TP.IDENTITY,

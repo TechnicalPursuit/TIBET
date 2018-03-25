@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:clipPath');
+TP.dom.UIElementNode.defineSubtype('svg:clipPath');
 
 TP.svg.clipPath.addTraits(TP.svg.Element);
 

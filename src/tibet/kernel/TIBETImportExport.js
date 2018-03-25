@@ -607,7 +607,7 @@ function(aURI, aRequest) {
      *     adding its code to the currently running application. Note that this
      *     call is done in a synchronous fashion, even though a callback
      *     function may be provided.
-     * @param {TP.core.URI|String} aURI A TP.core.URI or String referencing the
+     * @param {TP.uri.URI|String} aURI A TP.uri.URI or String referencing the
      *     script location.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
      *     parameters. The only meaningful one here is 'callback' which should

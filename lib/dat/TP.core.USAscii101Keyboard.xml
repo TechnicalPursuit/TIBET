@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<keyboard xmlns="http://www.technicalpursuit.com/1999/tibet"
-  name="USAscii101Keyboard">
+<keyboard name="USAscii101Keyboard">
 
   <!--
   Keyboard definition for a typical US Ascii 101 Keyboard.

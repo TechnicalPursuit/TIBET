@@ -276,7 +276,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  TODO: Support more than one signal type
     signal = signals.first();
 
-    this.observe(TP.uri('xmpp:' + this.asString() +
+    this.observe(TP.uc('xmpp:' + this.asString() +
                         '?;node=' + signal.getSignalName()),
                     'TP.sig.XMPPPubsubNodeChange');
 
@@ -645,7 +645,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  TODO: Support more than one signal type
     signal = signals.first();
 
-    this.ignore(TP.uri('xmpp:' + this.asString() +
+    this.ignore(TP.uc('xmpp:' + this.asString() +
                         '?;node=' + signal.getSignalName()),
                     'TP.sig.XMPPPubsubNodeChange');
 
@@ -773,7 +773,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable,
     //  TODO: Support more than one signal type
     signal = signals.first();
 
-    sigURI = TP.uri('xmpp:' + this.asString() +
+    sigURI = TP.uc('xmpp:' + this.asString() +
                     '?;node=' + signal.getSignalName());
 
     if (TP.isString(sigInst = signal)) {

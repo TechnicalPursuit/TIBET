@@ -179,10 +179,19 @@ function(statusInfo) {
         allStatusInfo.atPut('mousePoint', TP.pc(0, 0));
     }
 
+    if (statusInfo.hasKey('isCloning')) {
+        allStatusInfo.atPut('isCloning',
+                            statusInfo.at('isCloning'));
+    } else {
+        allStatusInfo.atPut('isCloning', false);
+    }
+
     str = 'Insertion position: ' +
             allStatusInfo.at('insertionPosition') +
             '    Mouse position: ' +
-            allStatusInfo.at('mousePoint').asString();
+            allStatusInfo.at('mousePoint').asString() +
+            '    Cloning: ' +
+            allStatusInfo.at('isCloning').asString();
 
     sherpaStatusbar.setContent(str);
 

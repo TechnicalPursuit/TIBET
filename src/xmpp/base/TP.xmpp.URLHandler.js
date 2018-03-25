@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('xmpp.URLHandler');
+TP.uri.URIHandler.defineSubtype('xmpp.URLHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -36,7 +36,7 @@ function(targetURI, aRequest) {
      *     kept up to date. You should normally override one of the more
      *     specific load* methods in subtypes if you're doing custom load
      *     handling.
-     * @param {TP.core.URI} targetURI The URI to load. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to load. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -399,7 +399,7 @@ function(targetURI, aRequest) {
      * @method delete
      * @summary Deletes the target URL. This is an unsupported operation for an
      *     XMPP URL.
-     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -435,7 +435,7 @@ function(targetURI, aRequest) {
      *     processing, since most XMPP URI's are of the 'load' variety (i.e.
      *     like an 'HTTP GET') anyway, rather than of the 'save' variety (i.e.
      *     like an 'HTTP PUT').
-     * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
+     * @param {TP.uri.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of

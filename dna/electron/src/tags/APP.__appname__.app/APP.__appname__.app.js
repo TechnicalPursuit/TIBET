@@ -5,7 +5,7 @@
  *     for handling events which reach the application tag (this type).
  */
 
-TP.core.TemplatedTag.defineSubtype('APP.{{appname}}:app');
+TP.tag.TemplatedTag.defineSubtype('APP.{{appname}}:app');
 
 //  The app tag is not a themed tag. By default, since the body element has a
 //  'data-theme' attribute, we have to explicity say so.

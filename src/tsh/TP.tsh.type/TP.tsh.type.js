@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.type}
- * @summary A subtype of TP.core.ActionTag that knows how to create new
+ * @summary A subtype of TP.tag.ActionTag that knows how to create new
  *     types in the TIBET system.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:type');
+TP.tag.ActionTag.defineSubtype('tsh:type');
 
 TP.tsh.type.addTraits(TP.tsh.Element);
 
@@ -113,7 +113,7 @@ function() {
 
     assistantTPElem = TP.tsh.type_assistant.getResourceElement(
                         'template',
-                        TP.ietf.Mime.XHTML);
+                        TP.ietf.mime.XHTML);
 
     return TP.unwrap(assistantTPElem);
 });

@@ -14,13 +14,17 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa.Element');
+TP.dom.UIElementNode.defineSubtype('sherpa.Element');
 
-TP.sherpa.Element.addTraits(TP.core.NonNativeUIElementNode);
+TP.sherpa.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.sherpa.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
+        TP.dom.UIElementNode);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how this property is TYPE_LOCAL, by
 //  design.
@@ -83,7 +87,7 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('sherpa.CompiledTag');
+TP.tag.CompiledTag.defineSubtype('sherpa.CompiledTag');
 
 TP.sherpa.CompiledTag.addTraits(TP.sherpa.Element);
 
@@ -99,7 +103,7 @@ TP.sherpa.CompiledTag.addTraits(TP.sherpa.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('sherpa.TemplatedTag');
+TP.tag.TemplatedTag.defineSubtype('sherpa.TemplatedTag');
 
 TP.sherpa.TemplatedTag.addTraits(TP.sherpa.Element);
 

@@ -35,6 +35,50 @@ TP.html.Attrs.defineSubtype('b');
 TP.html.Attrs.defineSubtype('big');
 
 //  ========================================================================
+//  TP.html.data (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {TP.html.data}
+ * @summary 'data' tag. A tag that links content with a machine-readable
+ *     translation.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('data');
+
+//  ------------------------------------------------------------------------
+
+TP.html.data.Inst.defineMethod('getDisplayValue',
+function() {
+
+    /**
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
+     * @returns {String} The receiver's formatted input value.
+     */
+
+    return this.getNativeNode().value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.data.Inst.defineMethod('setDisplayValue',
+function(aValue) {
+
+    /**
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
+     * @returns {TP.html.data} The receiver.
+     */
+
+    this.getNativeNode().value = TP.str(aValue);
+
+    return this;
+});
+
+//  ========================================================================
 //  TP.html.details (HTML 5)
 //  ========================================================================
 
@@ -80,13 +124,13 @@ TP.html.Aligned.defineSubtype('hr');
 
 TP.html.hr.Type.set('booleanAttrs', TP.ac('noShade'));
 
-TP.html.hr.addTraits(TP.core.EmptyElementNode);
+TP.html.hr.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.hr.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.hr.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ========================================================================
 //  TP.html.i

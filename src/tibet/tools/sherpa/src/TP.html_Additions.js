@@ -277,7 +277,7 @@ function(aContent) {
      *     descendant elements, this method will do nothing.
      * @param {String} aContent The content to set the receiver's text content
      *     to.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var val,

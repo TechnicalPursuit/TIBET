@@ -550,7 +550,7 @@ function(options) {
 
     generator = this.getNearestHaloGenerator(halo);
 
-    if (TP.isKindOf(generator, TP.core.CompiledTag)) {
+    if (TP.isKindOf(generator, TP.tag.CompiledTag)) {
         return TP.elem('<sherpa:compiledTagContextMenuContent/>');
     }
 

@@ -115,7 +115,7 @@ function() {
         }
     }
 
-    return TP.core.XMLRPCNode.objectFromNode(node);
+    return TP.dom.XMLRPCNode.objectFromNode(node);
 });
 
 //  ------------------------------------------------------------------------

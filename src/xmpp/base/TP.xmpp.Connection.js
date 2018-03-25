@@ -619,7 +619,7 @@ function(aJID, aPassword) {
 
     featuresElement = this.get('transport').receive();
 
-    //  Because we used the 'receive' call above, we got a TP.core.Node, but
+    //  Because we used the 'receive' call above, we got a TP.dom.Node, but
     //  'obtainStreamFeatures' expects a native node, so we convert it.
     if (TP.isValid(featuresElement) &&
         TP.isElement(featuresElement = featuresElement.getNativeNode())) {
@@ -978,7 +978,7 @@ function(aSignal) {
     //  Read data from the input stream and process it.
     try {
         //  Keep reading nodes from the stream. As long as we successfully
-        //  get a TP.core.Node each time, process each one until we run out.
+        //  get a TP.dom.Node each time, process each one until we run out.
         while (TP.isValid(node = stream.read())) {
             //  If that node was an TP.xmpp.Node.
             if (TP.isKindOf(node, TP.xmpp.Node)) {

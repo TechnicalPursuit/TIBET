@@ -97,7 +97,7 @@ function(aTPElement) {
     /**
      * @method focusOnTarget
      * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
      *     receiver on.
      * @returns {TP.sherpa.styleshud} The receiver.
      */
@@ -119,7 +119,7 @@ function(aTPElement) {
         targetElemPageRect;
 
     //  If the element is tofu, then we don't show any style for it.
-    if (aTPElement.getCanonicalName() === 'tibet:tofu') {
+    if (aTPElement.getCanonicalName() === 'sherpa:tofu') {
         this.setValue(TP.ac());
         return this;
     }
@@ -200,7 +200,7 @@ function(aTPElement) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.styleshud.Inst.defineMethod('buildNewContent',

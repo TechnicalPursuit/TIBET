@@ -683,7 +683,7 @@ function() {
             url = TP.uc(this.getRequest().at('finaluri'));
             if (TP.isValid(xmlnsInfo =
                             TP.w3.Xmlns.fromMIMEType(
-                                TP.ietf.Mime.guessMIMEType(text, url)))) {
+                                TP.ietf.mime.guessMIMEType(text, url)))) {
                 defaultNS = xmlnsInfo.at('uri');
             } else {
                 defaultNS = null;
@@ -754,11 +754,11 @@ function(aFormat) {
 });
 
 //  ========================================================================
-//  TP.core.HTTPService
+//  TP.uri.HTTPService
 //  ========================================================================
 
 /**
- * @type {TP.core.HTTPService}
+ * @type {TP.uri.HTTPService}
  * @summary The top-level service for all services which use HTTP-based
  *     primitives for their transport layer. This service is capable of
  *     performing all the basic requirements of making XMLHttpRequest calls
@@ -769,29 +769,29 @@ function(aFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIService.defineSubtype('HTTPService');
+TP.uri.URIService.defineSubtype('HTTPService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  the default MIME type to use for encoding the body
-TP.core.HTTPService.Type.defineAttribute('mimetype', TP.PLAIN_TEXT_ENCODED);
+TP.uri.HTTPService.Type.defineAttribute('mimetype', TP.PLAIN_TEXT_ENCODED);
 
 //  the default method to use for services of this type
-TP.core.HTTPService.Type.defineAttribute('httpMethod', TP.HTTP_GET);
+TP.uri.HTTPService.Type.defineAttribute('httpMethod', TP.HTTP_GET);
 
 //  HTTP services can support access via either sync or async requests
-TP.core.HTTPService.Type.defineAttribute('supportedModes',
+TP.uri.HTTPService.Type.defineAttribute('supportedModes',
                                         TP.core.SyncAsync.DUAL_MODE);
-TP.core.HTTPService.Type.defineAttribute('mode',
+TP.uri.HTTPService.Type.defineAttribute('mode',
                                         TP.core.SyncAsync.ASYNCHRONOUS);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('finalizeRequest',
+TP.uri.HTTPService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
@@ -842,7 +842,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('getMIMEType',
+TP.uri.HTTPService.Inst.defineMethod('getMIMEType',
 function() {
 
     /**
@@ -858,7 +858,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('getHTTPMethod',
+TP.uri.HTTPService.Inst.defineMethod('getHTTPMethod',
 function() {
 
     /**
@@ -874,7 +874,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineHandler('HTTPRequest',
+TP.uri.HTTPService.Inst.defineHandler('HTTPRequest',
 function(aRequest) {
 
     /**
@@ -957,7 +957,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('performHTTPCall',
+TP.uri.HTTPService.Inst.defineMethod('performHTTPCall',
 function(aRequest) {
 
     /**
@@ -1000,7 +1000,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('rewriteRequestBody',
+TP.uri.HTTPService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
@@ -1030,7 +1030,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('rewriteRequestMIMEType',
+TP.uri.HTTPService.Inst.defineMethod('rewriteRequestMIMEType',
 function(aRequest) {
 
     /**
@@ -1049,7 +1049,7 @@ function(aRequest) {
             aRequest.at('mimetype'),
             TP.ifEmpty(
                 this.$get('mimetype'),
-                TP.ietf.Mime.guessMIMEType(
+                TP.ietf.mime.guessMIMEType(
                     aRequest.at('body'),
                     TP.uc(aRequest.at('uri')),
                     this.getType().get('mimetype'))
@@ -1059,7 +1059,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('rewriteRequestHeaders',
+TP.uri.HTTPService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
@@ -1108,7 +1108,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('rewriteRequestMethod',
+TP.uri.HTTPService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**

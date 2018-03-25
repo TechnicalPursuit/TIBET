@@ -95,7 +95,7 @@ function(targetUrl) {
     //  URL instances which make use of "comm objects" support API to access the
     //  last used object and its data provided we keep that reference updated.
     if (TP.isValid(targetUrl) &&
-            TP.isValid(TP.sys.getTypeByName('TP.core.URI'))) {
+            TP.isValid(TP.sys.getTypeByName('TP.uri.URI'))) {
         url = TP.uc(targetUrl);
         url.$set('commObject', xhr);
     }
@@ -294,7 +294,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
         data = aPayload;
     }
 
-    //  commonly get nodes for encoding, but we want to unwrap TP.core.Nodes
+    //  commonly get nodes for encoding, but we want to unwrap TP.dom.Nodes
     if (TP.canInvoke(data, 'getNativeNode')) {
         data = data.getNativeNode();
     }
@@ -972,7 +972,7 @@ function(targetUrl, aRequest, httpObj) {
     //  Default the mimetype based on body type as best we can.
     if (TP.notDefined(request.at('mimetype'))) {
         request.atPut('mimetype',
-            TP.ietf.Mime.guessMIMEType(body, TP.uc(url), TP.URL_ENCODED));
+            TP.ietf.mime.guessMIMEType(body, TP.uc(url), TP.URL_ENCODED));
     }
 
     //  typically we turn off cache behavior for these requests so we're

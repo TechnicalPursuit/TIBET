@@ -60,7 +60,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
-    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+    } else if (TP.isKindOf(resourceOrURI, TP.uri.TIBETURL)) {
         resource = resourceOrURI.getConcreteURI();
     } else {
         resource = resourceOrURI;
@@ -74,7 +74,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     finalTarget = target;
 
-    if (TP.isKindOf(finalTarget, TP.core.TIBETURL)) {
+    if (TP.isKindOf(finalTarget, TP.uri.TIBETURL)) {
         finalTarget = finalTarget.getConcreteURI();
     }
 
@@ -396,7 +396,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
-    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+    } else if (TP.isKindOf(resourceOrURI, TP.uri.TIBETURL)) {
         resource = resourceOrURI.getConcreteURI();
     } else {
         resource = resourceOrURI;
@@ -589,21 +589,21 @@ TP.totalUpdateTime = 0;
 TP.totalInitialGetTime = 0;
 
 //  ------------------------------------------------------------------------
-//  TP.core.DocumentNode
+//  TP.dom.DocumentNode
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineAttribute('$signalingBatchID');
-TP.core.DocumentNode.Inst.defineAttribute('$repeatTemplates');
+TP.dom.DocumentNode.Inst.defineAttribute('$signalingBatchID');
+TP.dom.DocumentNode.Inst.defineAttribute('$repeatTemplates');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineHandler('FacetChange',
+TP.dom.DocumentNode.Inst.defineHandler('FacetChange',
 function(aSignal) {
 
     /**
@@ -710,7 +710,7 @@ function(aSignal) {
     //  'direct to GUI' binding relationship.
     sigOrigin = aSignal.getOrigin();
 
-    if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+    if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
         //  The changed data source is a URI
 
@@ -743,16 +743,16 @@ function(aSignal) {
         //  window.
         if (changedPrimaryURI.getCanvas() === TP.sys.uiwin(true)) {
 
-            if (TP.isKindOf(sigOrigin, TP.core.ElementNode)) {
+            if (TP.isKindOf(sigOrigin, TP.dom.ElementNode)) {
 
-                //  If signal origin was a TP.core.ElementNode, then we want to
+                //  If signal origin was a TP.dom.ElementNode, then we want to
                 //  use its local ID to compute our RegExp to match 'top level'
                 //  binding expressions.
                 changedPrimaryLoc = sigOrigin.getLocalID();
 
-            } else if (TP.isKindOf(sigOrigin, TP.core.AttributeNode)) {
+            } else if (TP.isKindOf(sigOrigin, TP.dom.AttributeNode)) {
 
-                //  If signal origin was a TP.core.AttributeNode, then we want
+                //  If signal origin was a TP.dom.AttributeNode, then we want
                 //  to use its owner element's local ID and then a '@' separator
                 //  and then its local name to compute our RegExp to match 'top
                 //  level' binding expressions.
@@ -804,7 +804,7 @@ function(aSignal) {
         }
     }
 
-    //  Grab the TP.core.ElementNode that is our document Element.
+    //  Grab the TP.dom.ElementNode that is our document Element.
     tpDocElem = this.getDocumentElement();
 
     //  If the signal had a payload of TP.CHANGE_PATHS then we can drive the
@@ -925,7 +925,7 @@ function(aSignal) {
         //  If our signal origin is a URI and the aspect is one of URI's
         //  'special aspects', then we just return here.
         if (TP.isURI(aSignal.getOrigin()) &&
-            TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
 
             //  Set the DOM content loaded signaling whatever it was when we
             //  entered this method.
@@ -952,7 +952,7 @@ function(aSignal) {
             //  URI), then (because we don't have 'changed data paths' to go
             //  by), we just update all of the bind expressions that are on the
             //  computed bound elements.
-            if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+            if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
                 tpDocElem.refreshBranches(
                         primarySource, aSignal, elems, primarySource,
@@ -1027,7 +1027,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineHandler('UIRefresh',
+TP.dom.DocumentNode.Inst.defineHandler('UIRefresh',
 function(aSignal) {
 
     /**
@@ -1044,7 +1044,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('refresh',
+TP.dom.DocumentNode.Inst.defineMethod('refresh',
 function(shouldRender) {
 
     /**
@@ -1078,7 +1078,7 @@ function(shouldRender) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.ElementNode
+//  TP.dom.ElementNode
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
@@ -1089,13 +1089,13 @@ function(shouldRender) {
 //  attributes' that can not only be bound to data source but be bound *back* to
 //  the data source so that when they are changed by the user, they update the
 //  data source.
-TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
+TP.dom.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('computeBindingInfo',
+TP.dom.ElementNode.Type.defineMethod('computeBindingInfo',
 function(targetElement, attributeValue) {
 
     /**
@@ -1265,7 +1265,7 @@ function(targetElement, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('computeTransformationFunction',
+TP.dom.ElementNode.Type.defineMethod('computeTransformationFunction',
 function(attributeValue) {
 
     /**
@@ -1513,13 +1513,13 @@ function(attributeValue) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineAttribute('scopeValues');
+TP.dom.ElementNode.Inst.defineAttribute('scopeValues');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
+TP.dom.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
 function(indexes) {
 
     /**
@@ -1532,7 +1532,7 @@ function(indexes) {
      *     '0-based' (like JSONPath).
      * @param {Array.<Number>} indexes An Array of Numbers that indicate the
      *     indexes of the items to remove.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -1655,7 +1655,7 @@ function(indexes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('flushBindingInfoCacheFor',
+TP.dom.ElementNode.Inst.defineMethod('flushBindingInfoCacheFor',
 function(attributeValue) {
 
     /**
@@ -1664,7 +1664,7 @@ function(attributeValue) {
      *     value.
      * @param {String} attributeValue The attribute value to obtain binding
      *     information from.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -1689,7 +1689,7 @@ function(attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
+TP.dom.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeValue, flushCache) {
 
     /**
@@ -1745,7 +1745,7 @@ function(attributeValue, flushCache) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getBindingScopeValues',
+TP.dom.ElementNode.Inst.defineMethod('getBindingScopeValues',
 function() {
 
     /**
@@ -1840,7 +1840,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$getBoundElements',
+TP.dom.ElementNode.Inst.defineMethod('$getBoundElements',
 function(wantsShallowScope) {
 
     /**
@@ -1954,7 +1954,7 @@ function(wantsShallowScope) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getBoundValues',
+TP.dom.ElementNode.Inst.defineMethod('getBoundValues',
 function(scopeVals, bindingInfoValue) {
 
     /**
@@ -2060,7 +2060,7 @@ function(scopeVals, bindingInfoValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getFullyExpandedBindingExpressions',
+TP.dom.ElementNode.Inst.defineMethod('getFullyExpandedBindingExpressions',
 function() {
 
     /**
@@ -2149,7 +2149,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$getNearestRepeatIndex',
+TP.dom.ElementNode.Inst.defineMethod('$getNearestRepeatIndex',
 function() {
 
     /**
@@ -2204,7 +2204,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
+TP.dom.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
 function() {
 
     /**
@@ -2260,7 +2260,7 @@ function() {
         //  NB: Note how we do *not* want the getResource() call to collapse
         //  it's results for these calls - we always want a collection.
 
-        //  If it's a URI String, then we can calculate a TP.core.URI from it
+        //  If it's a URI String, then we can calculate a TP.uri.URI from it
         //  and just grab that resource's value.
 
         if (TP.isURIString(repeatAttrVal)) {
@@ -2329,7 +2329,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$getRepeatTemplate',
+TP.dom.ElementNode.Inst.defineMethod('$getRepeatTemplate',
 function() {
 
     /**
@@ -2359,7 +2359,7 @@ function() {
             return null;
         }
 
-        //  The template content was stored on our TP.core.Document when it was
+        //  The template content was stored on our TP.dom.Document when it was
         //  captured and was stored under our templateID.
         if (TP.notValid(
                 templateInfo = this.getDocument().get('$repeatTemplates'))) {
@@ -2411,7 +2411,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$getRepeatValue',
+TP.dom.ElementNode.Inst.defineMethod('$getRepeatValue',
 function() {
 
     /**
@@ -2442,7 +2442,7 @@ function() {
         //  NB: Note how we do *not* want the getResource() call to collapse
         //  it's results for these calls - we always want a collection.
 
-        //  If it's a URI String, then we can calculate a TP.core.URI from it
+        //  If it's a URI String, then we can calculate a TP.uri.URI from it
         //  and just grab that resource's value.
         if (TP.isURIString(repeatAttrVal)) {
             repeatSource = TP.uc(repeatAttrVal).getResource(
@@ -2467,7 +2467,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
+TP.dom.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
 function(indexes) {
 
     /**
@@ -2480,7 +2480,7 @@ function(indexes) {
      *     '0-based' (like JSONPath).
      * @param {Array.<Number>} indexes An Array of Numbers that indicate the
      *     indexes of the items to insert new items at.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -2660,7 +2660,7 @@ function(indexes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('isBoundElement',
+TP.dom.ElementNode.Inst.defineMethod('isBoundElement',
 function() {
 
     /**
@@ -2680,7 +2680,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('isScopingElement',
+TP.dom.ElementNode.Inst.defineMethod('isScopingElement',
 function() {
 
     /**
@@ -2700,7 +2700,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refreshBranches',
+TP.dom.ElementNode.Inst.defineMethod('refreshBranches',
 function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, isScoped) {
 
     var elem,
@@ -2918,7 +2918,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     //  branch value. This makes things much easier later on.
                     if (TP.isXMLNode(branchVal)) {
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.isKindOf(branchVal, TP.core.Node)) {
+                    } else if (TP.isKindOf(branchVal, TP.dom.Node)) {
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
                     } else if (TP.regex.JSON_POINTER.test(attrVal) ||
                                 TP.regex.JSON_PATH.test(attrVal)) {
@@ -2935,7 +2935,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     if (TP.isXMLNode(theVal)) {
                         branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                    } else if (TP.isKindOf(theVal, TP.dom.Node)) {
                         branchVal = theVal.get(TP.xpc(attrVal));
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
                     } else if (TP.regex.JSON_POINTER.test(attrVal) ||
@@ -3121,7 +3121,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                             pathType = TP.ifInvalid(aPathType,
                                                     TP.XPATH_PATH_TYPE);
 
-                        } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                        } else if (TP.isKindOf(theVal, TP.dom.Node)) {
 
                             branchVal = theVal.get(TP.xpc(attrVal));
                             pathType = TP.ifInvalid(aPathType,
@@ -3312,7 +3312,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refreshLeaf',
+TP.dom.ElementNode.Inst.defineMethod('refreshLeaf',
 function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     var facet,
@@ -3412,7 +3412,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     case TP.XPATH_PATH_TYPE:
 
                         if (TP.isXMLNode(theVal) ||
-                            TP.isKindOf(theVal, TP.core.Node)) {
+                            TP.isKindOf(theVal, TP.dom.Node)) {
                             //  empty
                         } else {
                             pathType = null;
@@ -3437,7 +3437,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             if (TP.isURIString(expr)) {
 
                 sigOrigin = aSignal.getOrigin();
-                if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+                if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     finalVal = initialVal;
@@ -3452,7 +3452,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
                         if (TP.isXMLNode(theVal)) {
                             finalVal = path.executeGet(TP.wrap(theVal));
-                        } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                        } else if (TP.isKindOf(theVal, TP.dom.Node)) {
                             finalVal = path.executeGet(theVal);
                         }
                         break;
@@ -3497,7 +3497,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     finalVal = TP.hc(theVal).get(expr);
                 } else if (TP.isXMLNode(theVal)) {
                     finalVal = TP.wrap(theVal).get(TP.xpc(expr, pathOptions));
-                } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                } else if (TP.isKindOf(theVal, TP.dom.Node)) {
                     finalVal = theVal.get(TP.xpc(expr, pathOptions));
                 } else if (TP.regex.JSON_POINTER.test(expr) ||
                             TP.regex.JSON_PATH.test(expr)) {
@@ -3571,7 +3571,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
+TP.dom.ElementNode.Inst.defineMethod('$regenerateRepeat',
 function(aCollection, elems) {
 
     /**
@@ -3586,7 +3586,7 @@ function(aCollection, elems) {
      *     currently processing, of which is this element. We will splice any
      *     new content that this method generates into this collection so that
      *     the engine will recursively process into this new content.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var existingItemCount,
@@ -3712,14 +3712,14 @@ function(aCollection, elems) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$registerRepeatContent',
+TP.dom.ElementNode.Inst.defineMethod('$registerRepeatContent',
 function() {
 
     /**
      * @method $registerRepeatContent
      * @summary Registers the content under the receiver as repeat content with
-     *     the receiver's TP.core.Document for iteration purposes.
-     * @returns {TP.core.ElementNode} The receiver.
+     *     the receiver's TP.dom.Document for iteration purposes.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -3810,10 +3810,10 @@ function() {
     TP.nodeAppendChild(repeatContent, repeatItems, false);
 
     //  Generate a unique ID for our repeat content. We'll use this to register
-    //  the repeat content with our TP.core.DocumentNode.
+    //  the repeat content with our TP.dom.DocumentNode.
     templateID = TP.genID('bind_repeat_template');
 
-    //  Create a registry on our TP.core.DocumentNode for repeat content if it's
+    //  Create a registry on our TP.dom.DocumentNode for repeat content if it's
     //  not already there.
     if (TP.notValid(
             templateInfo = this.getDocument().get('$repeatTemplates'))) {
@@ -3830,7 +3830,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatindex',
+TP.dom.ElementNode.Inst.defineMethod('setAttrBindRepeatindex',
 function(index) {
 
     /**
@@ -3850,7 +3850,7 @@ function(index) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatsize',
+TP.dom.ElementNode.Inst.defineMethod('setAttrBindRepeatsize',
 function(size) {
 
     /**
@@ -3870,7 +3870,7 @@ function(size) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setBoundValue',
+TP.dom.ElementNode.Inst.defineMethod('setBoundValue',
 function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
 
     /**
@@ -3887,7 +3887,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
      *     receiver's bidirectional attribute information. If this parameter is
      *     true, this method will always set the bound value whether or not the
      *     bound attribute is considered to be both a getter and setter.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var bindingInfo,
@@ -4040,7 +4040,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('setBoundValueIfBound',
+TP.dom.ElementNode.Inst.defineMethod('setBoundValueIfBound',
 function(aValue) {
 
     /**
@@ -4052,7 +4052,7 @@ function(aValue) {
      *     that assumes that the receiver's binding scope values and binding
      *     attribute value will be used.
      * @param {Object} aValue The value to set onto the model.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -4084,7 +4084,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$showHideRepeatRows',
+TP.dom.ElementNode.Inst.defineMethod('$showHideRepeatRows',
 function(aCollection) {
 
     /**
@@ -4098,7 +4098,7 @@ function(aCollection) {
      *     specified.
      * @param {Object} aCollection The collection data model that is used for
      *     the repeating content.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -4191,7 +4191,7 @@ function(aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineHandler('UIRefresh',
+TP.dom.ElementNode.Inst.defineHandler('UIRefresh',
 function(aSignal) {
 
     /**
@@ -4199,7 +4199,7 @@ function(aSignal) {
      * @summary Refreshes the receiver's bound data.
      * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
      *     this handler.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     this.refresh();
@@ -4209,7 +4209,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$refresh',
+TP.dom.ElementNode.Inst.defineMethod('$refresh',
 function(shouldRender) {
 
     /**
@@ -4420,7 +4420,7 @@ function(shouldRender) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refresh',
+TP.dom.ElementNode.Inst.defineMethod('refresh',
 function(shouldRender) {
 
     /**
@@ -4447,7 +4447,7 @@ function(shouldRender) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('refreshBoundDescendants',
+TP.dom.ElementNode.Inst.defineMethod('refreshBoundDescendants',
 function(shouldRender) {
 
     /**
@@ -4458,7 +4458,7 @@ function(shouldRender) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var boundDescendants;
@@ -4485,10 +4485,10 @@ function(shouldRender) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.UIElementNode
+//  TP.dom.UIElementNode
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineHandler('UIEdit',
+TP.dom.UIElementNode.Inst.defineHandler('UIEdit',
 function(aSignal) {
 
     /**

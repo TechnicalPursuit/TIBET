@@ -387,7 +387,7 @@ function(anEvent) {
             //  Grab the TIBET wrapper type for the element and query it to see
             //  if the current element should capture the event at it's level.
             if (TP.isType(targetType =
-                            TP.core.ElementNode.getConcreteType(current))) {
+                            TP.dom.ElementNode.getConcreteType(current))) {
                 if (targetType.isOpaqueCapturerFor(current, theSignal)) {
                     //  set computedTarget to the current, but NOTE NO BREAK
                     //  here so the iteration will continue up the tree until

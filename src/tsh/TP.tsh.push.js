@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:push');
+TP.tag.ActionTag.defineSubtype('tsh:push');
 
 TP.tsh.push.addTraits(TP.tsh.Element);
 
@@ -60,7 +60,7 @@ function(aRequest) {
 
         //  Populate information on all URLs that we're going to push to not
         //  save prefixed XMLNS attributes.
-        localChangeList = TP.core.URI.getLocalChangeList();
+        localChangeList = TP.uri.URI.getLocalChangeList();
         localChangeList.perform(
             function(locURIPair) {
                 var req;
@@ -80,7 +80,7 @@ function(aRequest) {
 
         //  Call the type method that push all outstanding local changes to the
         //  remote server.
-        TP.core.URI.processRemoteChangeList();
+        TP.uri.URI.processRemoteChangeList();
     } else {
 
         //  No arguments and no '--all' parameter means we dump usage.
@@ -113,7 +113,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('push',
+TP.shell.TSH.addHelpTopic('push',
     TP.tsh.push.Type.getMethod('tshExecute'),
     'Pushes pending changes in the running system to the remote file system.' +
         ' Requires TDS.',

@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.audit}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:audit');
+TP.tag.ActionTag.defineSubtype('tsh:audit');
 
 TP.tsh.audit.addTraits(TP.tsh.Element);
 
@@ -133,7 +133,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('audit',
+TP.shell.TSH.addHelpTopic('audit',
     TP.tsh.audit.Type.getMethod('tshExecute'),
     'Scans unused document style rules.',
     ':audit <document>',

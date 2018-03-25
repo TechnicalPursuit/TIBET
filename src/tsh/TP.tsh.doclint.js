@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.doclint}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:doclint');
+TP.tag.ActionTag.defineSubtype('tsh:doclint');
 
 TP.tsh.doclint.addTraits(TP.tsh.Element);
 
@@ -973,7 +973,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('doclint',
+TP.shell.TSH.addHelpTopic('doclint',
     TP.tsh.doclint.Type.getMethod('tshExecute'),
     'Run a lint check on all method comments.',
     ':doclint [<target>] [--filter <filter>] [--context <app|lib|all>]',

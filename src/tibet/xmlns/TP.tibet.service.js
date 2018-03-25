@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tibet.service}
- * @summary A subtype of TP.core.ElementNode that exposes a remote service
+ * @summary A subtype of TP.dom.ElementNode that exposes a remote service
  *     endpoint in markup.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet.service');
+TP.dom.UIElementNode.defineSubtype('tibet.service');
 
 //  NB: 'href' for us is a URI attribute, but it's *not* a 'reloadable' URI
 //  attribute - we handle reloading specially for this tag.
@@ -354,7 +354,7 @@ function() {
 
                     //  Obtain a MIME type for the result and use it to obtain a
                     //  result type.
-                    mimeType = TP.ietf.Mime.guessMIMEType(result, uri);
+                    mimeType = TP.ietf.mime.guessMIMEType(result, uri);
 
                     resultType = thisref.getResultType(mimeType);
 
@@ -855,7 +855,7 @@ function(aResult) {
 
         //  Obtain a MIME type for the result and use it to obtain a
         //  result type.
-        mimeType = TP.ietf.Mime.guessMIMEType(aResult, this);
+        mimeType = TP.ietf.mime.guessMIMEType(aResult, this);
 
         resultType = this.getResultType(mimeType);
 

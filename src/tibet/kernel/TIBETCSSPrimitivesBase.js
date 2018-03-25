@@ -19,7 +19,7 @@
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentAddCSSElement',
-function(targetDoc, cssHref, inlineRuleText) {
+function(targetDoc, cssHref, inlineRuleText, shouldSignal) {
 
     /**
      * @method documentAddCSSElement
@@ -32,6 +32,7 @@ function(targetDoc, cssHref, inlineRuleText) {
      * @param {String} cssHref The href to use on the newly added CSS element.
      * @param {Boolean} inlineRuleText Whether or not the rule text should be
      *     'inlined' into the document. Defaults to false.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link or style element that was added.
      */
@@ -58,9 +59,11 @@ function(targetDoc, cssHref, inlineRuleText) {
                                 TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = response.get('result');
 
-        newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
+        newNativeElem = TP.documentAddCSSStyleElement(
+                                targetDoc, cssText, null, shouldSignal);
     } else {
-        newNativeElem = TP.documentAddCSSLinkElement(targetDoc, cssHref);
+        newNativeElem = TP.documentAddCSSLinkElement(
+                                targetDoc, cssHref, null, shouldSignal);
     }
 
     return newNativeElem;
@@ -175,7 +178,7 @@ function(targetDoc, styleText, beforeNode, shouldSignal) {
 
     if (TP.isString(styleText)) {
         //  Set the content of the style element to the new style text.
-        TP.cssStyleElementSetContent(newStyleElement, styleText);
+        TP.cssStyleElementSetContent(newStyleElement, styleText, shouldSignal);
     }
 
     if (TP.notFalse(shouldSignal)) {
@@ -221,7 +224,7 @@ function(targetDoc) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentCopyCSSElements',
-function(cssElements, targetDoc) {
+function(cssElements, targetDoc, shouldSignal) {
 
     /**
      * @method documentCopyCSSElements
@@ -233,6 +236,7 @@ function(cssElements, targetDoc) {
      *     document.
      * @param {Document} targetDoc The document whose style nodes should be
      *     updated.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidArray
      */
@@ -256,9 +260,11 @@ function(cssElements, targetDoc) {
         localName = TP.elementGetLocalName(aCSSElement).toLowerCase();
 
         if (localName === 'link') {
-            TP.documentCopyCSSLinkElement(aCSSElement, targetDoc);
+            TP.documentCopyCSSLinkElement(
+                    aCSSElement, targetDoc, false, false, shouldSignal);
         } else if (localName === 'style') {
-            TP.documentCopyCSSStyleElement(aCSSElement, targetDoc);
+            TP.documentCopyCSSStyleElement(
+                    aCSSElement, targetDoc, false, false, shouldSignal);
         }
     }
 
@@ -268,7 +274,7 @@ function(cssElements, targetDoc) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentCopyCSSLinkElement',
-function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
+function(anElement, targetDoc, inlineRuleText, onlyIfAbsent, shouldSignal) {
 
     /**
      * @method documentCopyCSSLinkElement
@@ -281,10 +287,11 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
      *     into the target document.
      * @param {Document} targetDoc The document to which the CSS text should be
      *     added.
-     * @param {Boolean} inlineRuleText Whether or not the rule text should be
-     *     'inlined' into the document. Defaults to false.
-     * @param {Boolean} onlyIfAbsent Whether or not the style element/link
-     *     should be added only if it doesn't already exist. Defaults to false.
+     * @param {Boolean} [inlineRuleText=false] Whether or not the rule text
+     *     should be 'inlined' into the document.
+     * @param {Boolean} [onlyIfAbsent=false] Whether or not the style
+     *     element/link should be added only if it doesn't already exist.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidElement
      */
@@ -356,11 +363,17 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
                                 TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = resp.get('result');
 
-        newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
+        newNativeElem = TP.documentAddCSSStyleElement(
+                                targetDoc,
+                                cssText,
+                                null,
+                                shouldSignal);
     } else {
         newNativeElem = TP.documentAddCSSLinkElement(
                                 targetDoc,
-                                TP.uriJoinPaths(sourceDirectory, linkHref));
+                                TP.uriJoinPaths(sourceDirectory, linkHref),
+                                null,
+                                shouldSignal);
     }
 
     return newNativeElem;
@@ -369,7 +382,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentCopyCSSStyleElement',
-function(anElement, targetDoc) {
+function(anElement, targetDoc, shouldSignal) {
 
     /**
      * @method documentCopyCSSStyleElement
@@ -381,6 +394,7 @@ function(anElement, targetDoc) {
      *     into the target document.
      * @param {Document} targetDoc The document to which the CSS text should be
      *     added.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidDocument
      * @exception TP.sig.InvalidElement
      * @returns {HTMLElement|null} The newly added 'style' element if the style
@@ -405,7 +419,8 @@ function(anElement, targetDoc) {
 
     cssText = TP.cssStyleElementGetContent(anElement);
 
-    newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
+    newNativeElem = TP.documentAddCSSStyleElement(
+                            targetDoc, cssText, null, shouldSignal);
 
     return newNativeElem;
 });
@@ -549,7 +564,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
      *     stylesheet's URL.
      * @param {Document} aDocument The document where the inlined CSS content
      *     will be added.
-     * @param {TP.core.URI} styleURI The URI of the original content that the
+     * @param {TP.uri.URI} styleURI The URI of the original content that the
      *     inlined content will be acting in place of.
      * @param {String} inlinedStyleContent The style content that will be
      *     inlined into the style element.
@@ -755,7 +770,12 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         //  via the 'tibet:originalHref' attribute.
         TP.nodeAwakenContent(inlinedStyleElem);
     } else {
-        TP.cssStyleElementSetContent(inlinedStyleElem, processedStyleContent);
+
+        //  Note how we specify false here to avoid signaling when the content
+        //  is set. That makes the semantic match the above where no signaling
+        //  occurred (at least the style mutation signaling).
+        TP.cssStyleElementSetContent(
+            inlinedStyleElem, processedStyleContent, false);
     }
 
     return inlinedStyleElem;
@@ -967,9 +987,9 @@ function(aDocument, anHref, shouldSignal) {
         //  detecting and stripping any '_tibet_nocache' prefix here because
         //  these are all new).
         existingHrefs = currentTopLevelLinkElems.collect(
-                function(anElem) {
-                    return anElem.href;
-                });
+                            function(anElem) {
+                                return anElem.href;
+                            });
     }
 
     //  Look for the href in the set of existing hrefs we have. That will be the
@@ -1451,7 +1471,7 @@ function(anElement) {
     //  Try to obtain the style element and its sheet - if its not
     //  available, create one and grab its sheet
     styleElem = TP.nodeGetElementById(TP.nodeGetDocument(anElement),
-                                                'pseudo_inline_rules');
+                                        'pseudo_inline_rules_generated');
     if (!TP.isElement(styleElem)) {
         //  Note here how we pass 'false' as the final parameter to avoid having
         //  this call signal and possibly cause a recursion.
@@ -1465,7 +1485,8 @@ function(anElement) {
         }
 
         //  Uniquely identify the 'pseudo inline style element'
-        TP.elementSetAttribute(styleElem, 'id', 'pseudo_inline_rules');
+        TP.elementSetAttribute(
+                    styleElem, 'id', 'pseudo_inline_rules_generated');
 
         //  We did create a new sheet
         newSheet = true;
@@ -1920,7 +1941,10 @@ function(anElement) {
         len = hrefsToAdd.getSize();
         for (i = 0; i < len; i++) {
 
-            newLinkElem = TP.documentAddCSSLinkElement(doc, hrefsToAdd.at(i));
+            //  Note here that we pass false to avoid style mutation change
+            //  signaling.
+            newLinkElem = TP.documentAddCSSLinkElement(
+                                doc, hrefsToAdd.at(i), null, false);
             TP.elementSetAttribute(newLinkElem, 'tibet:flattened',
                                     'true', true);
         }
@@ -2166,6 +2190,7 @@ function(aStyleRule, sourceASTs) {
         sheetAST,
 
         vendorPrefix,
+        nonPlatformMatcher,
 
         rules,
 
@@ -2176,6 +2201,10 @@ function(aStyleRule, sourceASTs) {
 
         embeddedRules,
         embeddedLength,
+
+        selectors,
+        nonPlatformSelectorCount,
+        j,
 
         args,
 
@@ -2248,10 +2277,13 @@ function(aStyleRule, sourceASTs) {
     //  Compute a vendor prefix.
     if (TP.sys.isUA('GECKO')) {
         vendorPrefix = '-moz-';
+        nonPlatformMatcher = /-ms-|-webkit-/;
     } else if (TP.sys.isUA('IE')) {
         vendorPrefix = '-ms-';
+        nonPlatformMatcher = /-moz-|-webkit-/;
     } else if (TP.sys.isUA('WEBKIT')) {
         vendorPrefix = '-webkit-';
+        nonPlatformMatcher = /-moz-|-ms-/;
     }
 
     //  Now iterate through all results in the AST, looking for the style rule
@@ -2288,9 +2320,28 @@ function(aStyleRule, sourceASTs) {
             continue;
         }
 
-        //  We skip comments and charsets (charsets are skipped by the native
-        //  browser machinery per the spec).
-        if (rule.type === 'comment' || rule.type === 'charset') {
+        //  We skip comments, namespaces and charsets (namespaces are skipped by
+        //  our primitive method call at the top of this method and charsets are
+        //  skipped by the native browser machinery per the spec).
+        if (rule.type === 'comment' ||
+            rule.type === 'namespace' ||
+            rule.type === 'charset') {
+            continue;
+        }
+
+        //  Iterate over all of the selectors. If they *all* match vendor
+        //  prefixes that are *not* supported on this browser, then move on.
+        selectors = rule.selectors;
+        nonPlatformSelectorCount = 0;
+        for (j = 0; j < selectors.getSize(); j++) {
+            if (nonPlatformMatcher.test(selectors.at(j))) {
+                nonPlatformSelectorCount++;
+            }
+        }
+
+        //  They all had vendor prefixes that did *not* match the currently
+        //  executing browser.
+        if (nonPlatformSelectorCount === selectors.getSize()) {
             continue;
         }
 
@@ -2363,6 +2414,10 @@ function(aStyleRule) {
      * @summary Returns the native style sheet object associated with the
      *     supplied style rule and the index that the rule can be found within
      *     that style sheet.
+     * @description Note that this will filter out all CSS rules except
+     *     CSSRule.STYLE_RULE (i.e. no @namespace rules, @import rules, etc.)
+     *     *before* it computes the returned index. Therefore, the indexes are
+     *     relative to the subset that are CSSRule.STYLE_RULE rules.
      * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
      *     stylesheet of.
      * @exception TP.sig.InvalidParameter
@@ -2373,6 +2428,7 @@ function(aStyleRule) {
 
     var styleSheet,
         allRules,
+        styleRules,
         i;
 
     if (!TP.isStyleRule(aStyleRule)) {
@@ -2388,8 +2444,14 @@ function(aStyleRule) {
     //  NB: Note how we do *not* expand imports here
     allRules = TP.styleSheetGetStyleRules(styleSheet, false);
 
-    for (i = 0; i < allRules.getSize(); i++) {
-        if (allRules.at(i) === aStyleRule) {
+    //  Filter out all non CSSRule.STYLE_RULE 'rules'.
+    styleRules = allRules.filter(
+                function(aRule) {
+                    return aRule.type === CSSRule.STYLE_RULE;
+                });
+
+    for (i = 0; i < styleRules.getSize(); i++) {
+        if (styleRules.at(i) === aStyleRule) {
             return TP.ac(styleSheet, i);
         }
     }

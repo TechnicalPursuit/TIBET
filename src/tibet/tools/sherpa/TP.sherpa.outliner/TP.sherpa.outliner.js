@@ -482,7 +482,7 @@ function(aSignal) {
     dndTargetElem = aSignal.getDOMTarget();
     dndTargetTPElem = TP.wrap(dndTargetElem);
 
-    sourceTPElem = TP.core.UIElementNode.get('currentDNDSource');
+    sourceTPElem = TP.dom.UIElementNode.get('currentDNDSource');
     vendType = sourceTPElem.getAttribute('dnd:vend');
 
     switch (vendType) {
@@ -1330,7 +1330,8 @@ function() {
             doc,
             TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner_injected.css').
                 getLocation(),
-            true);
+            true,
+            false);
 
         TP.elementSetAttribute(
             outlinerStyleElement, 'id', 'outliner_injected_generated');
@@ -1344,8 +1345,8 @@ function() {
         outlinerStyleElement[TP.GENERATED] = true;
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
-                                outlinerStyleElement.sheet,
-                                '.sherpa-outliner *');
+                            TP.cssElementGetStyleSheet(outlinerStyleElement),
+                            '.sherpa-outliner *');
 
         this.set('$hudOutlinerDescendantsRule', descendantRule.first());
     } else {

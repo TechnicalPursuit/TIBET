@@ -1,40 +1,30 @@
 //  ========================================================================
-//  TP.notifiertest
+//  TP.tmp.NotifierTestContent
 //  ========================================================================
 
 /**
- * @type {Namespace}
- * @summary Defines namespace-level objects and functionality for the project.
- */
-
-TP.defineNamespace('TP.notifiertest');
-
-TP.w3.Xmlns.registerNSInfo('urn:app:notifiertest',
-    TP.hc('prefix', 'notifiertest'));
-
-//  ========================================================================
-//  TP.notifiertest.NotifierTestContent
-//  ========================================================================
-
-/**
- * @type {TP.notifiertest.NotifierTestContent}
- * @summary TP.notifiertest.NotifierTestContent
+ * @type {TP.tmp.NotifierTestContent}
+ * @summary TP.tmp.NotifierTestContent
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('notifiertest.NotifierTestContent');
+TP.tag.CompiledTag.defineSubtype('tmp.NotifierTestContent');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
-TP.notifiertest.NotifierTestContent.defineAttribute('styleURI', TP.NO_RESULT);
-TP.notifiertest.NotifierTestContent.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tmp.NotifierTestContent.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tmp.NotifierTestContent.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.notifiertest.NotifierTestContent.Type.defineMethod('tagCompile',
+TP.tmp.NotifierTestContent.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -55,7 +45,7 @@ function(aRequest) {
     }
 
     newElem = TP.xhtmlnode(
-    '<div tibet:tag="notifiertest:NotifierTestContent"' +
+    '<div tibet:tag="tmp:NotifierTestContent"' +
             ' class="type_test_content">' +
         '<ul>' +
             '<li>' + 'Item #1' + '</li>' +

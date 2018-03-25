@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:svg');
+TP.dom.UIElementNode.defineSubtype('svg:svg');
 
 TP.svg.svg.addTraits(TP.svg.Element);
 
@@ -34,7 +34,7 @@ TP.svg.svg.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:g');
+TP.dom.UIElementNode.defineSubtype('svg:g');
 
 TP.svg.g.addTraits(TP.svg.Element);
 
@@ -50,7 +50,7 @@ TP.svg.g.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:defs');
+TP.dom.UIElementNode.defineSubtype('svg:defs');
 
 TP.svg.defs.addTraits(TP.svg.Element);
 
@@ -66,7 +66,7 @@ TP.svg.defs.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'))
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:desc');
+TP.dom.UIElementNode.defineSubtype('svg:desc');
 
 TP.svg.desc.addTraits(TP.svg.Element);
 
@@ -80,7 +80,7 @@ TP.svg.desc.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:title');
+TP.dom.UIElementNode.defineSubtype('svg:title');
 
 TP.svg.title.addTraits(TP.svg.Element);
 
@@ -94,7 +94,7 @@ TP.svg.title.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:metadata');
+TP.dom.UIElementNode.defineSubtype('svg:metadata');
 
 TP.svg.metadata.addTraits(TP.svg.Element);
 
@@ -108,7 +108,7 @@ TP.svg.metadata.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:symbol');
+TP.dom.UIElementNode.defineSubtype('svg:symbol');
 
 TP.svg.symbol.addTraits(TP.svg.Element);
 
@@ -124,7 +124,7 @@ TP.svg.symbol.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:use');
+TP.dom.UIElementNode.defineSubtype('svg:use');
 
 TP.svg.use.addTraits(TP.svg.Element);
 

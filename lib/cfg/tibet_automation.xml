@@ -27,7 +27,7 @@
     }());
     }
     </script>
-    <script src="automation/TP.gui.Driver.js" />
+    <script src="automation/TP.test.GUIDriver.js" />
 </config>
 
 <config id="syn" depends="" unless="boot.context=phantomjs">
@@ -62,8 +62,8 @@
 </config>
 
 <config id="tsh" depends="">
-    <script src="automation/TP.tsh.ShellDriver.js" />
-    <script src="automation/TP.tsh.testCmd.js" />
+    <script src="automation/TP.test.TSHDriver.js" />
+    <script src="automation/TP.test.TSHTestCmd.js" />
 </config>
 
 </package>

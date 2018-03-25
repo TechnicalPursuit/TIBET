@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.bookmark}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:bookmark');
+TP.tag.ActionTag.defineSubtype('tsh:bookmark');
 
 TP.tsh.bookmark.addTraits(TP.tsh.Element);
 
@@ -199,7 +199,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('bookmark',
+TP.shell.TSH.addHelpTopic('bookmark',
     TP.tsh.bookmark.Type.getMethod('tshExecute'),
     'Allows addition and removal of commonly used bookmarks of the Sherpa' +
         ' Inspector.',

@@ -16,22 +16,22 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:tabbar');
 
+TP.xctrls.tabbar.addTraits(TP.dom.SelectingUIElementNode);
+TP.xctrls.tabbar.addTraits(TP.dom.D3Tag);
+
+TP.xctrls.tabbar.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
+TP.xctrls.tabbar.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);
+TP.xctrls.tabbar.Inst.resolveTrait('render', TP.dom.D3Tag);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 /**
  * The tag name of the tag to use for each item if there is no template.
  * @type {String}
  */
 TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName', 'xctrls:tabitem');
-
-TP.xctrls.tabbar.addTraits(TP.core.SelectingUIElementNode);
-TP.xctrls.tabbar.addTraits(TP.core.D3Tag);
-
-TP.xctrls.tabbar.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
-TP.xctrls.tabbar.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
-TP.xctrls.tabbar.Inst.resolveTrait('render', TP.core.D3Tag);
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
 
 TP.xctrls.tabbar.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
@@ -376,7 +376,7 @@ function(aspectName) {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -551,25 +551,15 @@ function(anID) {
      * @param {String} anID The ID to use for the receiver and its subelements.
      */
 
-    var oldID,
+    var elem,
 
-        elem,
-
-        groupElem,
-        templateElem;
-
-    oldID = this.getAttribute('id');
+        groupElem;
 
     elem = this.getNativeNode();
 
     //  Update the group element's 'id'.
     groupElem = TP.unwrap(this.get('group'));
     TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
-
-    //  Update the template element's 'id'. Note that 'getTemplate' has all
-    //  kinds of other side effects, so we do this manually here.
-    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
-    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
 
     //  Note - we do not call 'setAttribute()' against the receiver here - don't
     //  want to endlessly recurse ;-).
@@ -896,7 +886,7 @@ function(aStyleTPElem) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.tabbar.Inst.defineMethod('buildNewContent',
@@ -1112,7 +1102,7 @@ function() {
      *     to generate content under the receiver. This template can include
      *     data binding expressions that will be used, along with the receiver's
      *     data, to generate that content.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode to use as the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
      *     template for the receiver.
      */
 
@@ -1122,42 +1112,37 @@ function() {
         templateContentTPElem,
         compiledTemplateContent;
 
-    //  First, we check to see if the author actually defined a template
-    templateTPElem = this.get('#' + this.getLocalID() + '_template');
-
-    if (TP.isEmpty(templateTPElem)) {
-        return null;
-    }
+    templateTPElem = this.get(
+                        TP.cpc('tibet|template', TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.
-    if (!TP.isValid(templateTPElem.getFirstChildElement())) {
+    if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
+
+        //  Make sure to null out the return value in case we got an empty
+        //  Array.
+        templateTPElem = null;
+
         itemTagName = this.getAttribute('itemTag');
         if (TP.notEmpty(itemTagName)) {
 
             //  Build a template element, using the supplied item tag name and
             //  building a label/value pair containing expressions that will be
             //  populated to the bound data.
-            templateContentTPElem = TP.tpelem(
-                '<' + itemTagName + '>' +
-                    '<xctrls:label>[[value.1]]</xctrls:label>' +
-                    '<xctrls:value>[[value.0]]</xctrls:value>' +
-                '</' + itemTagName + '>');
+            templateContentTPElem = TP.wrap(
+                TP.xhtmlnode(
+                    '<span>' +
+                        '<' + itemTagName + '>' +
+                            '<xctrls:label>[[value.1]]</xctrls:label>' +
+                            '<xctrls:value>[[value.0]]</xctrls:value>' +
+                        '</' + itemTagName + '>' +
+                    '</span>')
+                );
 
             //  Compile it.
             templateContentTPElem.compile();
 
-            //  Note here how we remove the 'id' attribute, since we're going to
-            //  be using it as a template.
-            templateContentTPElem.removeAttribute('id');
-
-            //  Note here how we grab the return value and use that. It will be
-            //  fully awakened.
-            compiledTemplateContent =
-                TP.nodeAppendChild(
-                    TP.unwrap(templateTPElem),
-                    TP.unwrap(templateContentTPElem),
-                    true);
+            compiledTemplateContent = templateContentTPElem.getNativeNode();
 
             //  Cache that.
             this.set('$compiledTemplateContent', compiledTemplateContent);
@@ -1179,7 +1164,7 @@ function(content) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selectedValues,
@@ -1234,7 +1219,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selectedValues;
@@ -1471,6 +1456,31 @@ TP.xctrls.tabitem.Type.defineAttribute('opaqueCapturingSignalNames',
 
 TP.xctrls.tabitem.Inst.defineAttribute('label',
     TP.xpc('string(./xctrls:label)', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.tabitem.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants = this.get('./*[local-name() = \'template\']');
+
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
+});
 
 //  ------------------------------------------------------------------------
 

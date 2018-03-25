@@ -1348,7 +1348,7 @@ function(anObject, assignIfAbsent) {
      *     uniquely identifies the element within a particular TIBET
      *     environment. Most objects can be found via their global ID however
      *     certain scenarios are not handled automatically including Node
-     *     instances which don't reside in a window, a TP.core.URI's content, or
+     *     instances which don't reside in a window, a TP.uri.URI's content, or
      *     an object capable of locating them. To find elements of this type you
      *     must have registered them under an ID, which you may have had to
      *     generate. NOTE that registering objects agressively can lead to
@@ -1461,7 +1461,7 @@ function(anObject, assignIfAbsent) {
 
     assign = TP.ifInvalid(assignIfAbsent, false);
 
-    if (TP.isKindOf(anObject, TP.core.Node)) {
+    if (TP.isKindOf(anObject, TP.dom.Node)) {
         if (TP.isType(anObject)) {
             obj = anObject;
         } else {
@@ -1815,7 +1815,7 @@ function(anObject, assignIfAbsent) {
 
     assign = TP.ifInvalid(assignIfAbsent, false);
 
-    if (TP.isKindOf(anObject, TP.core.Node)) {
+    if (TP.isKindOf(anObject, TP.dom.Node)) {
         obj = TP.unwrap(anObject);
     } else {
         obj = anObject;
@@ -2209,7 +2209,7 @@ function(anElement, assignIfAbsent) {
      * @method elemGenID
      * @summary Generates a unique ID (if the element doesn't already have one)
      *     that is compliant with XML ID rules.
-     * @param {TP.core.ElementNode|Element} anElement An Element or element
+     * @param {TP.dom.ElementNode|Element} anElement An Element or element
      *     wrapper.
      * @param {Boolean} assignIfAbsent True if the element should have an ID
      *     assigned if one doesn't exist. Default is false.
@@ -2252,7 +2252,7 @@ function(anObject) {
      * @summary Returns the namespace URI of the object, if it has one. This is
      *     only relevant for nodes. The search includes both the namespaceURI
      *     property and a search for an xmlns attribute.
-     * @param {TP.core.Node|Node} anObject A Node or node wrapper.
+     * @param {TP.dom.Node|Node} anObject A Node or node wrapper.
      * @returns {String} The namespace URI.
      */
 
@@ -2950,10 +2950,10 @@ function(anObject) {
      * @alias loc
      * @summary Returns the location represented by the receiver. The typical
      *     usage is in methods that might accept either a string or a
-     *     TP.core.URI which need a common way to ask for the location. When the
-     *     object is neither a TP.core.URI instance or a String the return value
+     *     TP.uri.URI which need a common way to ask for the location. When the
+     *     object is neither a TP.uri.URI instance or a String the return value
      *     is based on the object's source path.
-     * @param {String|TP.core.URI} anObject The true location of the object in
+     * @param {String|TP.uri.URI} anObject The true location of the object in
      *     string form.
      * @returns {String} The location in string URI form.
      */
@@ -2992,8 +2992,8 @@ function(aType, aString, aLocale) {
      * @param {TP.FunctionProto|TP.lang.RootObject} aType A specific target type
      *     to produce.
      * @param {String} aString The incoming data to parse.
-     * @param {TP.core.Locale|String} aLocale A string of the proper xml:lang
-     *     format such as en, en:us, de, etc. or a valid TP.core.Locale subtype.
+     * @param {TP.i18n.Locale|String} aLocale A string of the proper xml:lang
+     *     format such as en, en:us, de, etc. or a valid TP.i18n.Locale subtype.
      * @returns {Object} An instance of aType if the parse is successful.
      */
 
@@ -4659,7 +4659,7 @@ function(anObject, aType) {
 //  ------------------------------------------------------------------------
 
 /*
-TP.core.Node vs. Node, TP.core.Window vs. Window, etc.
+TP.dom.Node vs. Node, TP.core.Window vs. Window, etc.
 */
 
 //  ------------------------------------------------------------------------
@@ -4681,13 +4681,13 @@ function(anObject) {
      *          TP.unwrap(tpWin) === top;
      *          <samp>true</samp>
      *     </code>
-     * @example Obtain the native Document for a TP.core.DocumentNode:
+     * @example Obtain the native Document for a TP.dom.DocumentNode:
      *     <code>
      *          tpDoc = TP.tpnode(top.document);
      *          TP.unwrap(tpDoc) === top.document;
      *          <samp>true</samp>
      *     </code>
-     * @example Obtain the native Node for a TP.core.Node:
+     * @example Obtain the native Node for a TP.dom.Node:
      *     <code>
      *          tpNode = TP.tpnode(TP.documentGetBody(top.document));
      *          TP.unwrap(tpNode) === TP.documentGetBody(top.document);
@@ -4726,8 +4726,8 @@ function(anObject) {
         return anObject;
     }
 
-    //  TP.core.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
-    //  TP.core.URI, etc.
+    //  TP.dom.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
+    //  TP.uri.URI, etc.
     if (TP.canInvoke(anObject, 'getNativeObject')) {
         return anObject.getNativeObject();
     }
@@ -4773,11 +4773,11 @@ function(anObject) {
      * @alias wrap
      * @summary Wraps the object in a suitable TIBET encapsulation type. Most
      *     objects don't require this and simply pass through, however Node and
-     *     Window instances will be wrapped in TP.core.Node or TP.core.Window
+     *     Window instances will be wrapped in TP.dom.Node or TP.core.Window
      *     wrappers as appropriate. NOTE that passing an array or, more
      *     interestingly, a NodeList to this method will result in the contents
      *     of the list being wrapped. This is an easy way to get a set of native
-     *     nodes wrapped into an array of TP.core.Node objects for further
+     *     nodes wrapped into an array of TP.dom.Node objects for further
      *     processing.
      * @param {Object} anObject The object wrapper, or the object if no wrapper
      *     type is suitable.
@@ -4820,11 +4820,11 @@ function(anObject) {
             anObject[TP.WRAPPER].$set('node', anObject, false);
             return anObject[TP.WRAPPER];
         }
-        return TP.core.ElementNode.construct(anObject);
+        return TP.dom.ElementNode.construct(anObject);
     } else if (TP.isDocument(anObject)) {
-        return TP.core.DocumentNode.construct(anObject);
+        return TP.dom.DocumentNode.construct(anObject);
     } else if (TP.isNode(anObject)) {
-        return TP.core.Node.construct(anObject);
+        return TP.dom.Node.construct(anObject);
     }
 
     //  wrapping a list of items is a really powerful option so we can
@@ -4915,6 +4915,35 @@ function(anObject) {
     }
 
     return anObject;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('expand',
+function(anObject) {
+
+    /**
+     * @method expand
+     * @summary If the supplied object is an Array, this function returns it.
+     *     Otherwise it returns an Array wrapping the object.
+     * @param {Object} anObject The object to expand.
+     * @returns {Object[]} The result of expanding the object.
+     */
+
+    //  no valid source object means no work
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    if (TP.isArray(anObject)) {
+        return anObject;
+    }
+
+    if (TP.canInvoke(anObject, 'expand')) {
+        return anObject.expand();
+    }
+
+    return TP.ac(anObject);
 });
 
 //  ------------------------------------------------------------------------
@@ -5684,7 +5713,7 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
     sigPayload.atPut('trigger', triggerSignal);
 
     //  Some objects in the system, in lieu of the trigger, will still use the
-    //  TP.core.Document where the triggering originated. We try to provide that
+    //  TP.dom.Document where the triggering originated. We try to provide that
     //  here, which is especially important if the trigger is undefined.
     sigPayload.atPut('triggerTPDocument', TP.tpdoc(doc));
 

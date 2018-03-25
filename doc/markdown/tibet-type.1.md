@@ -38,8 +38,8 @@ specified as a fully-qualified {root}.{namespace}.{typename} triplet.
     The name of the dna (essentially a directory reference) to clone and process
 to produce the new type. The default is `default`. Other options are `content`
 for `TP.core.Content` subtypes, `controller` for `TP.core.Controller` subtypes,
-`compiledtag` for `TP.core.CompiledTag` and `templatedtag` for
-`TP.core.TemplatedTag` subtypes. (As you can see the dna name is often simply
+`compiledtag` for `TP.tag.CompiledTag` and `templatedtag` for
+`TP.tag.TemplatedTag` subtypes. (As you can see the dna name is often simply
 the name of a type to use as the supertype, but each does in fact refer to a
 unique dna directory.
 

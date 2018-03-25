@@ -16,9 +16,9 @@
 
 TP.sherpa.Element.defineSubtype('hud');
 
-TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
+TP.sherpa.hud.addTraits(TP.dom.TemplatedNode);
 
-TP.sherpa.hud.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.sherpa.hud.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
 
 TP.sherpa.hud.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
@@ -349,7 +349,9 @@ function() {
         hudStyleElement = TP.documentAddCSSElement(
             doc,
             TP.uc('~TP.sherpa.hud/TP.sherpa.hud_injected.css').getLocation(),
-            true);
+            true,
+            false);
+
         TP.elementSetAttribute(hudStyleElement, 'id', 'hud_injected_generated');
 
         //  Mark the sheet as 'TIBET_PRIVATE' so that it's style rules are not
@@ -407,7 +409,7 @@ function(aSignal) {
 //  TP.sherpa.huddrawer
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:huddrawer');
+TP.dom.UIElementNode.defineSubtype('sherpa:huddrawer');
 
 //  ------------------------------------------------------------------------
 //  end

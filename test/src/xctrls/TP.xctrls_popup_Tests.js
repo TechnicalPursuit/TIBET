@@ -1,40 +1,30 @@
 //  ========================================================================
-//  TP.popuptest
+//  TP.tmp.PopupTestContent
 //  ========================================================================
 
 /**
- * @type {Namespace}
- * @summary Defines namespace-level objects and functionality for the project.
- */
-
-TP.defineNamespace('TP.popuptest');
-
-TP.w3.Xmlns.registerNSInfo('urn:app:popuptest',
-    TP.hc('prefix', 'popuptest'));
-
-//  ========================================================================
-//  TP.popuptest.PopupTestContent
-//  ========================================================================
-
-/**
- * @type {TP.popuptest.PopupTestContent}
- * @summary TP.popuptest.PopupTestContent
+ * @type {TP.tmp.PopupTestContent}
+ * @summary TP.tmp.PopupTestContent
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('popuptest.PopupTestContent');
+TP.tag.CompiledTag.defineSubtype('tmp.PopupTestContent');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
-TP.popuptest.PopupTestContent.defineAttribute('styleURI', TP.NO_RESULT);
-TP.popuptest.PopupTestContent.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tmp.PopupTestContent.defineAttribute('styleURI', TP.NO_RESULT);
+TP.tmp.PopupTestContent.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.popuptest.PopupTestContent.Type.defineMethod('tagCompile',
+TP.tmp.PopupTestContent.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -55,7 +45,7 @@ function(aRequest) {
     }
 
     newElem = TP.xhtmlnode(
-    '<div tibet:tag="popuptest:PopupTestContent"' +
+    '<div tibet:tag="tmp:PopupTestContent"' +
             ' class="type_test_content">' +
         '<ul>' +
             '<li>' + 'Item #1' + '</li>' +

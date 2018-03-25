@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:label');
+TP.dom.UIElementNode.defineSubtype('xctrls:label');
 
 TP.xctrls.label.addTraits(TP.xctrls.Element);
 

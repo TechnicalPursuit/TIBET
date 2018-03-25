@@ -188,7 +188,7 @@ function() {
     /**
      * @method becomeFocusedResponder
      * @summary Tells the receiver that it is now the 'focused responder'.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  We override this from our supertype because, while we're considered
@@ -207,7 +207,7 @@ function() {
      * @method resignFocusedResponder
      * @summary Tells the receiver that it is no longer the 'focused
      *     responder'.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  We override this from our supertype because, while we're considered
@@ -342,7 +342,7 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
+     *     of the receiver in a TP.dom.Document wrapper.
      * @returns {Document} The Document object contained by the receiver.
      */
 

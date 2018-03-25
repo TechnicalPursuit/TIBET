@@ -141,7 +141,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
-     *     TRUE for TP.core.Node subtypes.
+     *     TRUE for TP.dom.Node subtypes.
      */
 
     //  If the method name is in the list of method names that a 2D context
@@ -336,7 +336,7 @@ function(aNodeOrId) {
         return TP.byId(aNodeOrId);
     }
 
-    typeName = TP.ietf.Mime.get('info').at(
+    typeName = TP.ietf.mime.get('info').at(
                 TP.elementGetAttribute(aNodeOrId, 'type')).at('objectNodeType');
 
     type = TP.sys.getTypeByName(typeName);
@@ -360,11 +360,25 @@ function(aNodeOrId) {
 
 TP.html.Attrs.defineSubtype('param');
 
-TP.html.param.addTraits(TP.core.EmptyElementNode);
+TP.html.param.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.param.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
+
+//  ========================================================================
+//  TP.html.picture (HTML 5)
+//  ========================================================================
+
+/**
+ * @type {TP.html.picture}
+ * @summary 'picture' tag. Group of img and 1...n source elements for displaying
+ *     alternate versions of images.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.html.Attrs.defineSubtype('picture');
 
 //  ========================================================================
 //  TP.html.source (HTML 5)
@@ -397,11 +411,11 @@ TP.html.Attrs.defineSubtype('track');
 TP.html.track.Type.set('uriAttrs', TP.ac('src'));
 TP.html.track.Type.set('booleanAttrs', TP.ac('default'));
 
-TP.html.track.addTraits(TP.core.EmptyElementNode);
+TP.html.track.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.track.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ========================================================================
 //  TP.html.video (HTML 5)

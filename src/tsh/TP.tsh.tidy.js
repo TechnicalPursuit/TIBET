@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.tidy}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:tidy');
+TP.tag.ActionTag.defineSubtype('tsh:tidy');
 
 TP.tsh.tidy.addTraits(TP.tsh.Element);
 
@@ -65,7 +65,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('tidy',
+TP.shell.TSH.addHelpTopic('tidy',
     TP.tsh.tidy.Type.getMethod('tshExecute'),
     'Runs a URI through the HTML Tidy service.',
     ':tidy <target>',

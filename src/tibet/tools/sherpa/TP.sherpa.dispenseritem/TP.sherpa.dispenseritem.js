@@ -16,6 +16,10 @@
 
 TP.sherpa.Element.defineSubtype('dispenseritem');
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.sherpa.dispenseritem.defineAttribute('styleURI', TP.NO_RESULT);

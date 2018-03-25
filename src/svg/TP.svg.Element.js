@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('svg.Element');
+TP.dom.ElementNode.defineSubtype('svg.Element');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation

@@ -191,7 +191,7 @@ function() {
         //  'as' substitution - type conversion
         //  ---
 
-        testElem = TP.ac(1, 2, TP.hc('foo', 'bar')).as('TP.core.XMLRPCNode');
+        testElem = TP.ac(1, 2, TP.hc('foo', 'bar')).as('TP.dom.XMLRPCNode');
 
         //  Need to generate an ID for elements for reporting purposes.
         TP.elemGenID(testElem, true);
@@ -451,6 +451,9 @@ function() {
 
             googleDogData;
 
+        //  TODO: Skipped for now until we restore Google data
+        //  manipulation capability
+
         //  ---
 
         googleDogData = TP.google.GoogleSearchData.construct('{"responseData":{"results":[{"GsearchResultClass":"GwebSearch","unescapedUrl":"http://en.wikipedia.org/wiki/Dog","url":"http://en.wikipedia.org/wiki/Dog","visibleUrl":"en.wikipedia.org","cacheUrl":"http://www.google.com/search?q=cache:dIBIpaJI7JgJ:en.wikipedia.org","title":"<b>Dog</b> - Wikipedia, the free encyclopedia","titleNoFormatting":"Dog - Wikipedia, the free encyclopedia","content":"The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora."},{"GsearchResultClass":"GwebSearch","unescapedUrl":"http://www.petfinder.com/dogs/","url":"http://www.petfinder.com/dogs/","visibleUrl":"www.petfinder.com","cacheUrl":"http://www.google.com/search?q=cache:Rht9y0MbwZEJ:www.petfinder.com","title":"<b>Dog</b>: <b>Dog</b> Breeds, Adoption, Bringing a <b>Dog</b> Home and Care","titleNoFormatting":"Dog: Dog Breeds, Adoption, Bringing a Dog Home and Care","content":"Everything you need to know about <b>dogs</b>, including <b>dog</b> breeds, <b>...</b>"},{"GsearchResultClass":"GwebSearch","unescapedUrl":"http://www.petfinder.com/dog-breeds?see-all=1","url":"http://www.petfinder.com/dog-breeds%3Fsee-all%3D1","visibleUrl":"www.petfinder.com","cacheUrl":"http://www.google.com/search?q=cache:bJO230hBZAgJ:www.petfinder.com","title":"<b>Dog</b> Breeds | Browse 151 <b>dog</b> breeds | Petfinder","titleNoFormatting":"Dog Breeds | Browse 151 dog breeds | Petfinder","content":"<b>Dog</b> breeds: Browse our list of 152 <b>dog</b> breeds to find the perfect <b>dog</b> breed for you, and then find adoptable <b>dogs</b> and <b>dog</b> shelters close to you."},{"GsearchResultClass":"GwebSearch","unescapedUrl":"http://animal.discovery.com/tv-shows/dogs-101","url":"http://animal.discovery.com/tv-shows/dogs-101","visibleUrl":"animal.discovery.com","cacheUrl":"http://www.google.com/search?q=cache:1alMhUGABdQJ:animal.discovery.com","title":"<b>Dogs</b> 101: Animal Planet","titleNoFormatting":"Dogs 101: Animal Planet","content":"<b>Dogs</b> 101 is a fun crash course about all things <b>dog</b>! Learn about some of the most popular <b>dog</b> breeds, play fun <b>dog</b> games and find fascinating <b>dog</b> trivia."}],"cursor":{"resultCount":"53,700,000","pages":[{"start":"0","label":1},{"start":"4","label":2},{"start":"8","label":3},{"start":"12","label":4},{"start":"16","label":5},{"start":"20","label":6},{"start":"24","label":7},{"start":"28","label":8}],"estimatedResultCount":"126000000","currentPageIndex":0,"moreResultsUrl":"http://www.google.com/search?oe=utf8&ie=utf8&source=uds&start=0&hl=en&q=dogs","searchResultTime":"0.13"}},"responseDetails":null,"responseStatus":200}');
@@ -511,7 +514,7 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent when' +
             ' external template used as a formatter in conjunction with path' +
             ' retrieval'));
-    });
+    }).skip();
 
     //  ------------------------------------------------------------------------
 
@@ -839,7 +842,7 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
 
         //  ---
-        //  $TAG is the TP.core.ElementNode that is supplied to the template.
+        //  $TAG is the TP.dom.ElementNode that is supplied to the template.
         //  Note that in the case of nested templates, $TAG shifts to be
         //  whatever markup is being processed at that time. To access the
         //  original, authored markup that started the templating process, use

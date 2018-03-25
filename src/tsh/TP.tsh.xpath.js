@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.xpath}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:xpath');
+TP.tag.ActionTag.defineSubtype('tsh:xpath');
 
 TP.tsh.xpath.addTraits(TP.tsh.Element);
 
@@ -65,7 +65,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('xpath',
+TP.shell.TSH.addHelpTopic('xpath',
     TP.tsh.xpath.Type.getMethod('tshExecute'),
     'Executes an XPath expression against a node.',
     ':xpath',

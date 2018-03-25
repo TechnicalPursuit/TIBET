@@ -823,7 +823,7 @@ function() {
      *     TP.core.Browser to be messaged for a new instance and for different
      *     browsers to return appropriately "localized" subtype instances such
      *     as TP.core.IEBrowser. This strategy is used extensively by
-     *     TP.core.Node and TP.core.URI to return the proper subtypes for your
+     *     TP.dom.Node and TP.uri.URI to return the proper subtypes for your
      *     content.
      * @returns {Object}
      */
@@ -1020,8 +1020,8 @@ function(aString, sourceLocale) {
      * @summary Returns a new instance from the string provided by invoking the
      *     receiver's parse() functionality.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to 'getTargetLanguage()' which is based on the current locale's
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
@@ -1041,8 +1041,8 @@ function(aString, sourceLocale) {
      * @summary Returns a new instance from the string provided by invoking the
      *     receiver's parse() functionality.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string
@@ -1135,8 +1135,8 @@ function(aString, sourceLocale) {
      * @summary Parses aString using the best method possible given the
      *     receiver's type.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to 'getTargetLanguage()' which is based on the current locale's
      *     language-country value.
      * @returns {Object} The result of the parse. This is null when the parse
@@ -1238,8 +1238,8 @@ function(aString, sourceLocale) {
      *     one of its supertypes. For example, a Date would try to find
      *     'parseDateString'.
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Object} The result of the parse. This is null when the parse
@@ -1362,7 +1362,7 @@ function(typeOrFormat, formatParams) {
      *     type/format may implement a 'from<type>' method, where <type> is the
      *     receiver's type.
      *     <code>
-     *          foo = TP.ac(1, 2 ,TP.hc('foo', 'bar')).as('TP.core.XMLRPCNode');
+     *          foo = TP.ac(1, 2 ,TP.hc('foo', 'bar')).as('TP.dom.XMLRPCNode');
      *          <samp>[object Element]</samp>
      *          TP.str(foo);
      *          <samp>... string representation of foo ...</samp>
@@ -7289,10 +7289,10 @@ function(aString, sourceLocale) {
      *     default constructor this method uses an array of "false strings" such
      *     as 'n', 'N', 'no', '', '0', etc. to make a determination about
      *     boolean value. The strings used are acquired from the current TIBET
-     *     TP.core.Locale type to ensure they are localized properly.
+     *     TP.i18n.Locale type to ensure they are localized properly.
      * @param {String} aString Source String value.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Boolean}
@@ -7554,11 +7554,11 @@ function(aString, sourceLocale) {
     /**
      * @method fromString
      * @summary Parses the inbound string to produce a new Number using a
-     *     combination of the current TP.core.Locale and native JavaScript
+     *     combination of the current TP.i18n.Locale and native JavaScript
      *     numeric parse routines.
      * @param {String} aString The string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Number} A new instance.
@@ -10457,6 +10457,84 @@ function(aTarget, name, aTrack) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('methodByDisplayName',
+function(aDisplayName) {
+
+    /**
+     * @method methodByDisplayName
+     * @summary Returns the method whose display name matches the supplied name.
+     *     This value should be something like 'TP.Primitive.json' for primitive
+     *     methods or 'TP.lang.RootObject.Inst.$addFacetFunction' for
+     *     non-primitive methods.
+     * @param {String} aDisplayName The display name of the method to locate.
+     * @returns {Function} The Function object representing the method.
+     */
+
+    var nameParts,
+
+        rootNamespace,
+        namespace,
+
+        methodName,
+        methodObj,
+
+        ownerType,
+        ownerTrack;
+
+    //  The display name will be something like 'TP.Primitive.json' for
+    //  primitive methods or 'TP.lang.RootObject.Inst.$addFacetFunction' for
+    //  methods associated with a type.
+
+    //  Split the name up into component parts
+    nameParts = aDisplayName.split('.');
+
+    //  If the second part is the ID of one of our 'special' objects, then we
+    //  have to use them to obtain the method
+    if (nameParts.at(1) === TP.META_INST_OWNER.getID()) {
+        return TP.META_INST_OWNER.getMethod(nameParts.at(2));
+    }
+
+    if (nameParts.at(1) === TP.META_TYPE_OWNER.getID()) {
+        return TP.META_TYPE_OWNER.getMethod(nameParts.at(2));
+    }
+
+    //  To start we need a valid root namespace
+    rootNamespace = TP.global[nameParts.at(0)];
+    if (TP.notValid(rootNamespace)) {
+        return null;
+    }
+
+    //  Then an organizing namespace within that root
+    namespace = rootNamespace[nameParts.at(1)];
+    if (TP.notValid(namespace)) {
+        return null;
+    }
+
+    methodObj = null;
+
+    //  If the organizing namespace is TP.PRIMITIVE_TRACK, then it's really the
+    //  track for a method that's a primitive method.
+    if (namespace === TP.PRIMITIVE_TRACK) {
+        methodName = nameParts.at(2);
+        methodObj = rootNamespace[methodName];
+    } else {
+
+        //  Otherwise, the owning type can be computed.
+        ownerType = namespace[nameParts.at(2)];
+        if (!TP.isType(ownerType)) {
+            return this;
+        }
+
+        ownerTrack = nameParts.at(3);
+        methodName = nameParts.at(4);
+        methodObj = ownerType.getMethod(methodName, ownerTrack);
+    }
+
+    return methodObj;
 });
 
 //  ------------------------------------------------------------------------

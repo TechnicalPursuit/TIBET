@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:pull');
+TP.tag.ActionTag.defineSubtype('tsh:pull');
 
 TP.tsh.pull.addTraits(TP.tsh.Element);
 
@@ -63,7 +63,7 @@ function(aRequest) {
 
         //  Call the type method that processes all outstanding remote changes
         //  from all remotely changed URIs.
-        TP.core.URI.processRemoteChangeList();
+        TP.uri.URI.processRemoteChangeList();
     } else {
 
         //  No arguments and no '--all' parameter means we dump usage.
@@ -89,7 +89,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('pull',
+TP.shell.TSH.addHelpTopic('pull',
     TP.tsh.pull.Type.getMethod('tshExecute'),
     'Pulls pending remote file system changes into the running system.' +
         ' Requires TDS.',

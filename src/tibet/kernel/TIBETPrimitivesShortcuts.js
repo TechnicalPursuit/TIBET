@@ -843,7 +843,7 @@ function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
      * @method addContent
-     * @summary A convenience wrapper for TP.core.Node's addContent call. The
+     * @summary A convenience wrapper for TP.dom.Node's addContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -867,7 +867,7 @@ function(elemOrId, nodeContext) {
 
     /**
      * @method getContent
-     * @summary A convenience wrapper for TP.core.Node's getContent call. The
+     * @summary A convenience wrapper for TP.dom.Node's getContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -887,7 +887,7 @@ function(elemOrId, newContent, aLocation, aRequest, nodeContext) {
 
     /**
      * @method insertContent
-     * @summary A convenience wrapper for TP.core.Node's insertContent call.
+     * @summary A convenience wrapper for TP.dom.Node's insertContent call.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -914,7 +914,7 @@ function(elemOrId, nodeContext) {
 
     /**
      * @method removeContent
-     * @summary A convenience wrapper for TP.core.CollectionNode's empty call.
+     * @summary A convenience wrapper for TP.dom.CollectionNode's empty call.
      *     The element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -934,7 +934,7 @@ function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
      * @method setContent
-     * @summary A convenience wrapper for TP.core.Node's setContent call. The
+     * @summary A convenience wrapper for TP.dom.Node's setContent call. The
      *     element definition is resolved via TP.byId(). The resulting
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1244,7 +1244,7 @@ function(anElement, propertyName, animationParams, nodeContext) {
     /**
      * @method animate
      * @summary A convenience wrapper for invoking a
-     *     TP.core.CSSPropertyTransition. The element definition is resolved via
+     *     TP.gui.CSSPropertyTransition. The element definition is resolved via
      *     TP.byId(). The resulting element(s) are then used as the targets of
      *     the transition.
      * @param {Array|String|Element} anElement An element specification, or
@@ -1271,7 +1271,7 @@ function(anElement, propertyName, animationParams, nodeContext) {
         elems = anElement;
     }
 
-    animationJob = TP.core.CSSPropertyTransition.transition(
+    animationJob = TP.gui.CSSPropertyTransition.transition(
                                 elems,
                                 propertyName,
                                 animationParams);
@@ -1610,7 +1610,7 @@ function(anObject, nodeContext) {
      * @summary Returns the 'document-level' X and Y for the supplied event or
      *     element object.
      * @param {Event|String|} anObject An event object or an
-     *     Element|TP.core.Hash| element specification, Array|TP.core.Point or
+     *     Element|TP.core.Hash| element specification, Array|TP.gui.Point or
      *     element, suitable for TP.byId() or a hash or point with 'x' and 'y'
      *     values or an array with an X 'value' in the first position and a Y
      *     value in the second.
@@ -1630,7 +1630,7 @@ function(anObject, nodeContext) {
     }
 
     if (TP.isHash(anObject) ||
-        TP.isKindOf(anObject, TP.core.Point)) {
+        TP.isKindOf(anObject, TP.gui.Point)) {
         return TP.ac(anObject.at('x'), anObject.at('y'));
     }
 
@@ -2690,7 +2690,7 @@ function(aURIOrRoute, linkContext) {
      *     depending on the content of the original href value. To define a
      *     route you must provide a value with a leading '#' to force this call
      *     to recognize the path as a 'client path' rather than a server path.
-     * @param {TP.core.URI|String} aURIOrRoute The URI or route to go to.
+     * @param {TP.uri.URI|String} aURIOrRoute The URI or route to go to.
      * @param {Window} linkContext The window with the original link element.
      * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.

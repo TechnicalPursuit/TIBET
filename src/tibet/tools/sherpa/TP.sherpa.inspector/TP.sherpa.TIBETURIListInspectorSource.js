@@ -126,7 +126,7 @@ function(options) {
         data;
 
     //  Grab all of the URIs and their keys
-    uris = TP.core.URI.get('instances');
+    uris = TP.uri.URI.get('instances');
     uriKeys = TP.keys(uris);
 
     //  Iterate over all the URIs, expanding whatever path they hand back as
@@ -185,7 +185,7 @@ function(aSourceName) {
 
     fullURIStr = TP.uriResolveVirtualPath(aSourceName);
 
-    source = TP.core.URI.get('instances').at(fullURIStr);
+    source = TP.uri.URI.get('instances').at(fullURIStr);
 
     return source;
 });

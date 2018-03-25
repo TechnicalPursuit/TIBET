@@ -9,34 +9,34 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.Point
+//  TP.gui.Point
 //  ========================================================================
 
 /**
- * @type {TP.core.Point}
+ * @type {TP.gui.Point}
  * @summary A type that can manage point (x, y) values.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Point');
+TP.lang.Object.defineSubtype('gui.Point');
 
 //  ------------------------------------------------------------------------
 
-//  Note that we use apply here - otherwise, when TP.core.Point's 'init'
+//  Note that we use apply here - otherwise, when TP.gui.Point's 'init'
 //  method is called, it will incorrectly report 4 arguments even if there
 //  is just 1.
 TP.definePrimitive('pc',
 function(x, y) {
 
-    return TP.core.Point.construct.apply(TP.core.Point, arguments);
+    return TP.gui.Point.construct.apply(TP.gui.Point, arguments);
 });
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Type.defineMethod('constructFromPolar',
+TP.gui.Point.Type.defineMethod('constructFromPolar',
 function(radius, angle) {
 
     var x,
@@ -45,31 +45,31 @@ function(radius, angle) {
     x = radius * angle.cosD();
     y = radius * angle.sinD();
 
-    return TP.core.Point.construct(x, y);
+    return TP.gui.Point.construct(x, y);
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineAttribute('data');
+TP.gui.Point.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('init',
+TP.gui.Point.Inst.defineMethod('init',
 function(x, y) {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.core.Point|Object|TP.core.Hash|Array} x The x value
-     *     of the receiver or a TP.core.Point to copy or an object that has 'x'
+     * @param {Number|TP.gui.Point|Object|TP.core.Hash|Array} x The x value
+     *     of the receiver or a TP.gui.Point to copy or an object that has 'x'
      *     and 'y' (or 'top' and 'left') slots or an Array that has x in the
      *     first position and y in the last position.
      * @param {Number} y The y value of the receiver.
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var theData,
@@ -80,12 +80,12 @@ function(x, y) {
     if (TP.notEmpty(arguments)) {
         if (arguments.length === 1) {
             //  Got handed one argument. It could be:
-            //      a) another TP.core.Point
+            //      a) another TP.gui.Point
             //      b) an Array with 2 values
             //      c) an Object that has 'x' and 'y' slots
 
             theData = arguments[0];
-            if (TP.isKindOf(theData, TP.core.Point)) {
+            if (TP.isKindOf(theData, TP.gui.Point)) {
                 theData = theData.$get('data');
                 newData = {
                     x: theData.x,
@@ -129,15 +129,15 @@ function(x, y) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('add',
+TP.gui.Point.Inst.defineMethod('add',
 function(aPoint) {
 
     /**
      * @method add
      * @summary Adds the dimensions of the supplied point to the receiver.
-     * @param {TP.core.Point} aPoint The point to add to the receiver.
+     * @param {TP.gui.Point} aPoint The point to add to the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -156,7 +156,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('addToX',
+TP.gui.Point.Inst.defineMethod('addToX',
 function(xDiff) {
 
     /**
@@ -164,7 +164,7 @@ function(xDiff) {
      * @summary Adds the value supplied to the x value of the receiver.
      * @param {Number} xDiff The amount to add to the x value of the receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     if (!TP.isNumber(xDiff)) {
@@ -178,7 +178,7 @@ function(xDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('addToY',
+TP.gui.Point.Inst.defineMethod('addToY',
 function(yDiff) {
 
     /**
@@ -186,7 +186,7 @@ function(yDiff) {
      * @summary Adds the value supplied to the y value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     if (!TP.isNumber(yDiff)) {
@@ -200,7 +200,7 @@ function(yDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asDumpString',
+TP.gui.Point.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -230,7 +230,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asHTMLString',
+TP.gui.Point.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -245,7 +245,7 @@ function() {
     data = this.$get('data');
 
     try {
-        str = '<span class="TP_core_Point">' +
+        str = '<span class="TP_gui_Point">' +
                     '<span data-name="x">' + data.x + '</span>' +
                     '<span data-name="y">' + data.y + '</span>' +
                 '</span>';
@@ -258,7 +258,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asJSONSource',
+TP.gui.Point.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -280,7 +280,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asPrettyString',
+TP.gui.Point.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -319,7 +319,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asSource',
+TP.gui.Point.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -337,14 +337,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asString',
+TP.gui.Point.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Point's String representation. This flag is ignored in
+     *     of the TP.gui.Point's String representation. This flag is ignored in
      *     this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -360,7 +360,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('asXMLString',
+TP.gui.Point.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -387,15 +387,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('clampToPoint',
+TP.gui.Point.Inst.defineMethod('clampToPoint',
 function(aPoint) {
 
     /**
      * @method clampToPoint
      * @summary Clamps the receiver's X and Y values to values less than or
      *     equal to the supplied point.
-     * @param {TP.core.Point} aPoint The point to clamp to.
-     * @returns {TP.core.Point} The receiver.
+     * @param {TP.gui.Point} aPoint The point to clamp to.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var otherData,
@@ -412,15 +412,15 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('clampToRect',
+TP.gui.Point.Inst.defineMethod('clampToRect',
 function(aRect) {
 
     /**
      * @method clampToRect
      * @summary Clamps the receiver's X and Y values to values within the
      *     supplied rectangle.
-     * @param {TP.core.Rect} aRect The rect to clamp to.
-     * @returns {TP.core.Point} The receiver.
+     * @param {TP.gui.Rect} aRect The rect to clamp to.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var rectData,
@@ -437,7 +437,7 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('clampXToMinMax',
+TP.gui.Point.Inst.defineMethod('clampXToMinMax',
 function(aMin, aMax) {
 
     /**
@@ -449,7 +449,7 @@ function(aMin, aMax) {
      * @param {Number} aMax The maximum amount to clamp the X value of the
      *     receiver to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -467,7 +467,7 @@ function(aMin, aMax) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('clampYToMinMax',
+TP.gui.Point.Inst.defineMethod('clampYToMinMax',
 function(aMin, aMax) {
 
     /**
@@ -479,7 +479,7 @@ function(aMin, aMax) {
      * @param {Number} aMax The maximum amount to clamp the Y value of the
      *     receiver to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -497,17 +497,17 @@ function(aMin, aMax) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('computeMidpoint',
+TP.gui.Point.Inst.defineMethod('computeMidpoint',
 function(aPoint) {
 
     /**
      * @method computeMidpoint
      * @summary Computes the midpoint between the receiver and the supplied
      *     point
-     * @param {TP.core.Point} aPoint The other point to use to compute the
+     * @param {TP.gui.Point} aPoint The other point to use to compute the
      *     midpoint.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} A new TP.core.Point which is the midpoint
+     * @returns {TP.gui.Point} A new TP.gui.Point which is the midpoint
      *     between the receiver and the supplied point.
      */
 
@@ -519,36 +519,36 @@ function(aPoint) {
 
     data = this.$get('data');
 
-    return TP.core.Point.construct((data.x + aPoint.get('x')) / 2,
+    return TP.gui.Point.construct((data.x + aPoint.get('x')) / 2,
                                     (data.y + aPoint.get('y')) / 2);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('copy',
+TP.gui.Point.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Point} A new TP.core.Point which is a copy of the
+     * @returns {TP.gui.Point} A new TP.gui.Point which is a copy of the
      *     receiver.
      */
 
-    return TP.core.Point.construct(this);
+    return TP.gui.Point.construct(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('distanceBetween',
+TP.gui.Point.Inst.defineMethod('distanceBetween',
 function(aPoint) {
 
     /**
      * @method distanceBetween
      * @summary Returns the distance between the receiver and the supplied
      *     point.
-     * @param {TP.core.Point} aPoint The other point to compute the distance
+     * @param {TP.gui.Point} aPoint The other point to compute the distance
      *     from.
      * @exception TP.sig.InvalidParameter
      * @returns {Number} The distance between the receiver and the supplied
@@ -575,7 +575,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('getX',
+TP.gui.Point.Inst.defineMethod('getX',
 function() {
 
     /**
@@ -589,7 +589,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('getY',
+TP.gui.Point.Inst.defineMethod('getY',
 function() {
 
     /**
@@ -603,7 +603,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('interpolate',
+TP.gui.Point.Inst.defineMethod('interpolate',
 function(aPoint, t) {
 
     /**
@@ -615,12 +615,12 @@ function(aPoint, t) {
      *     between 0 and 1. To weight the computed point towards the receiver,
      *     use a value approaching 0. To weight it towards the supplied point,
      *     use a value approaching 1.
-     * @param {TP.core.Point} aRect The point to compute an interpolation with
+     * @param {TP.gui.Point} aRect The point to compute an interpolation with
      *     the receiver.
      * @param {Number} t Interpolation factor. Should be a Number between 0 and
      *     1.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} A new point with the coordinates of the receiver
+     * @returns {TP.gui.Point} A new point with the coordinates of the receiver
      *     interpolated with the supplied point using the supplied interpolation
      *     factor.
      */
@@ -643,20 +643,20 @@ function(aPoint, t) {
             return a + (b - a) * factor;
         };
 
-    return TP.core.Point.construct(
+    return TP.gui.Point.construct(
                     interpFunc(data.x, otherData.x, t),
                     interpFunc(data.y, otherData.y, t));
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('invert',
+TP.gui.Point.Inst.defineMethod('invert',
 function() {
 
     /**
      * @method invert
      * @summary Inverts the values in the receiver by multiplying them by -1.
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -671,7 +671,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('setX',
+TP.gui.Point.Inst.defineMethod('setX',
 function(xVal) {
 
     /**
@@ -680,7 +680,7 @@ function(xVal) {
      * @param {Number} xVal The amount to set the 'x' coordinate of the receiver
      *     to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     if (!TP.isNumber(xVal)) {
@@ -694,7 +694,7 @@ function(xVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('setY',
+TP.gui.Point.Inst.defineMethod('setY',
 function(yVal) {
 
     /**
@@ -703,7 +703,7 @@ function(yVal) {
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     if (!TP.isNumber(yVal)) {
@@ -717,7 +717,7 @@ function(yVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('setXY',
+TP.gui.Point.Inst.defineMethod('setXY',
 function(xVal, yVal) {
 
     /**
@@ -729,7 +729,7 @@ function(xVal, yVal) {
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -748,7 +748,7 @@ function(xVal, yVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('snapToIncrement',
+TP.gui.Point.Inst.defineMethod('snapToIncrement',
 function(xIncrement, yIncrement) {
 
     /**
@@ -758,7 +758,7 @@ function(xIncrement, yIncrement) {
      *     to.
      * @param {Number} yDiff The amount to snap the y value of the receiver to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -777,7 +777,7 @@ function(xIncrement, yIncrement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('sortByDistance',
+TP.gui.Point.Inst.defineMethod('sortByDistance',
 function(points) {
 
     /**
@@ -785,7 +785,7 @@ function(points) {
      * @summary Sorts the supplied Array by comparing the distance of each
      *     point in the Array to the receiver. This returns the same Array with
      *     the points sorted in ascending order (i.e closest one first).
-     * @param {Array} points The Array of TP.core.Points to sort.
+     * @param {Array} points The Array of TP.gui.Points to sort.
      * @exception TP.sig.InvalidParameter
      * @returns {Array} The supplied Array with the points sorted by computing
      *     the distance between the receiver and each point.
@@ -820,16 +820,16 @@ function(points) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('subtract',
+TP.gui.Point.Inst.defineMethod('subtract',
 function(aPoint) {
 
     /**
      * @method subtract
      * @summary Subtracts the dimensions of the supplied point from the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to subtract from the receiver.
+     * @param {TP.gui.Point} aPoint The point to subtract from the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -848,7 +848,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('subtractFromX',
+TP.gui.Point.Inst.defineMethod('subtractFromX',
 function(xDiff) {
 
     /**
@@ -857,7 +857,7 @@ function(xDiff) {
      * @param {Number} xDiff The amount to subtract from the x value of the
      *     receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     if (!TP.isNumber(xDiff)) {
@@ -871,7 +871,7 @@ function(xDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('subtractFromY',
+TP.gui.Point.Inst.defineMethod('subtractFromY',
 function(yDiff) {
 
     /**
@@ -880,7 +880,7 @@ function(yDiff) {
      * @param {Number} yDiff The amount to subtract from the y value of the
      *     receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     if (!TP.isNumber(yDiff)) {
@@ -894,7 +894,7 @@ function(yDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('translate',
+TP.gui.Point.Inst.defineMethod('translate',
 function(xDiff, yDiff) {
 
     /**
@@ -903,7 +903,7 @@ function(xDiff, yDiff) {
      * @param {Number} xDiff The amount to add to the x value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -922,16 +922,16 @@ function(xDiff, yDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Point.Inst.defineMethod('translateByPoint',
+TP.gui.Point.Inst.defineMethod('translateByPoint',
 function(aPoint) {
 
     /**
      * @method translateByPoint
      * @summary Translates the position of the receiver by the values of the
      *     supplied point.
-     * @param {TP.core.Point} aPoint The point to use to translate the receiver.
+     * @param {TP.gui.Point} aPoint The point to use to translate the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The receiver.
+     * @returns {TP.gui.Point} The receiver.
      */
 
     var data;
@@ -949,54 +949,54 @@ function(aPoint) {
 });
 
 //  ========================================================================
-//  TP.core.Rect
+//  TP.gui.Rect
 //  ========================================================================
 
 /**
- * @type {TP.core.Rect}
+ * @type {TP.gui.Rect}
  * @summary A type that can manage rectangle (x, y, width, height) values.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Rect');
+TP.lang.Object.defineSubtype('gui.Rect');
 
 //  ------------------------------------------------------------------------
 
-//  Note that we use apply here - otherwise, when TP.core.Rect's 'init'
+//  Note that we use apply here - otherwise, when TP.gui.Rect's 'init'
 //  method is called, it will incorrectly report 4 arguments even if there
 //  is just 1.
 TP.definePrimitive('rtc',
 function(x, y, width, height) {
 
-    return TP.core.Rect.construct.apply(TP.core.Rect, arguments);
+    return TP.gui.Rect.construct.apply(TP.gui.Rect, arguments);
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineAttribute('data');
+TP.gui.Rect.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('init',
+TP.gui.Rect.Inst.defineMethod('init',
 function(x, y, width, height) {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.core.Rect|Object|TP.core.Hash|Array} x The x value of
-     *     the receiver or a TP.core.Rect to copy or an object that has 'x', 'y'
+     * @param {Number|TP.gui.Rect|Object|TP.core.Hash|Array} x The x value of
+     *     the receiver or a TP.gui.Rect to copy or an object that has 'x', 'y'
      *     (or 'top', 'left'), 'width' and 'height' slots or an Array that has x
      *     in the first position, y in the second position, width in the third
      *     position and height in the fourth position.
      * @param {Number} y The y value of the receiver.
      * @param {Number} width The width value of the receiver.
      * @param {Number} height The height value of the receiver.
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var theData,
@@ -1007,13 +1007,13 @@ function(x, y, width, height) {
     if (TP.notEmpty(arguments)) {
         if (arguments.length === 1) {
             //  Got handed one argument. It could be:
-            //      a) another TP.core.Rect
+            //      a) another TP.gui.Rect
             //      b) an Array with 4 values
             //      c) an Object that has 'x', 'y', 'width', and 'height'
             //      slots.
 
             theData = arguments[0];
-            if (TP.isKindOf(theData, TP.core.Rect)) {
+            if (TP.isKindOf(theData, TP.gui.Rect)) {
                 theData = theData.$get('data');
                 newData = {
                     x: theData.x,
@@ -1044,7 +1044,7 @@ function(x, y, width, height) {
                 };
             }
         } else if (arguments.length === 2) {
-            //  Got handed two TP.core.Rects.
+            //  Got handed two TP.gui.Rects.
             newData = {
                 x: arguments[0].$get('data').x,
                 y: arguments[0].$get('data').y,
@@ -1077,15 +1077,15 @@ function(x, y, width, height) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('addByPoint',
+TP.gui.Rect.Inst.defineMethod('addByPoint',
 function(aPoint) {
 
     /**
      * @method addByPoint
      * @summary Adds the dimensions of the supplied point to the receiver.
-     * @param {TP.core.Point} aPoint The point to add to the receiver.
+     * @param {TP.gui.Point} aPoint The point to add to the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -1104,7 +1104,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('addToX',
+TP.gui.Rect.Inst.defineMethod('addToX',
 function(xDiff) {
 
     /**
@@ -1112,7 +1112,7 @@ function(xDiff) {
      * @summary Adds the value supplied to the x value of the receiver.
      * @param {Number} xDiff The amount to add to the x value of the receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(xDiff)) {
@@ -1126,7 +1126,7 @@ function(xDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('addToY',
+TP.gui.Rect.Inst.defineMethod('addToY',
 function(yDiff) {
 
     /**
@@ -1134,7 +1134,7 @@ function(yDiff) {
      * @summary Adds the value supplied to the y value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(yDiff)) {
@@ -1148,7 +1148,7 @@ function(yDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asDumpString',
+TP.gui.Rect.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -1179,7 +1179,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asHTMLString',
+TP.gui.Rect.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -1194,7 +1194,7 @@ function() {
     data = this.$get('data');
 
     try {
-        str = '<span class="TP_core_Rect">' +
+        str = '<span class="TP_gui_Rect">' +
                     '<span data-name="x">' + data.x + '</span>' +
                     '<span data-name="y">' + data.y + '</span>' +
                     '<span data-name="width">' + data.width + '</span>' +
@@ -1209,7 +1209,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asJSONSource',
+TP.gui.Rect.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -1233,7 +1233,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asPrettyString',
+TP.gui.Rect.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -1280,7 +1280,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asSource',
+TP.gui.Rect.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -1299,14 +1299,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asString',
+TP.gui.Rect.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Rect's String representation. This flag is ignored in
+     *     of the TP.gui.Rect's String representation. This flag is ignored in
      *     this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -1324,7 +1324,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('asXMLString',
+TP.gui.Rect.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -1352,7 +1352,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('clampToRect',
+TP.gui.Rect.Inst.defineMethod('clampToRect',
 function(aRect) {
 
     /**
@@ -1360,8 +1360,8 @@ function(aRect) {
      * @summary Clamps the receiver's X and Y values to values within the
      *     supplied rectangle, taking into account the receiver's width and
      *     height.
-     * @param {TP.core.Rect} aRect The rect to clamp to.
-     * @returns {TP.core.Rect} The receiver.
+     * @param {TP.gui.Rect} aRect The rect to clamp to.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var rectData,
@@ -1378,16 +1378,16 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('constrainPoint',
+TP.gui.Rect.Inst.defineMethod('constrainPoint',
 function(aPoint) {
 
     /**
      * @method constrainPoint
      * @summary Constrains the supplied point to be within the bounds of the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to constrain.
+     * @param {TP.gui.Point} aPoint The point to constrain.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data,
@@ -1408,16 +1408,16 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('constrainRect',
+TP.gui.Rect.Inst.defineMethod('constrainRect',
 function(aRect) {
 
     /**
      * @method constrainRect
      * @summary Constrains the supplied rect to be within the bounds of the
      *     receiver.
-     * @param {TP.core.Rect} aRect The rect to constrain.
+     * @param {TP.gui.Rect} aRect The rect to constrain.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data,
@@ -1455,14 +1455,14 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('containsPoint',
+TP.gui.Rect.Inst.defineMethod('containsPoint',
 function(aPoint) {
 
     /**
      * @method containsPoint
      * @summary Returns whether or not the receiver contains the supplied
      *     point.
-     * @param {TP.core.Point} aPoint The point to test.
+     * @param {TP.gui.Point} aPoint The point to test.
      * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the receiver contains the point.
      */
@@ -1491,14 +1491,14 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('containsPointX',
+TP.gui.Rect.Inst.defineMethod('containsPointX',
 function(aPoint) {
 
     /**
      * @method containsPointX
      * @summary Returns whether or not the receiver contains the supplied
      *     point's X value.
-     * @param {TP.core.Point} aPoint The point to test.
+     * @param {TP.gui.Point} aPoint The point to test.
      * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the receiver contains the point's X
      *     value.
@@ -1526,14 +1526,14 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('containsPointY',
+TP.gui.Rect.Inst.defineMethod('containsPointY',
 function(aPoint) {
 
     /**
      * @method containsPointY
      * @summary Returns whether or not the receiver contains the supplied
      *     point's Y value.
-     * @param {TP.core.Point} aPoint The point to test.
+     * @param {TP.gui.Point} aPoint The point to test.
      * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the receiver contains the point's Y
      *     value.
@@ -1561,14 +1561,14 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('containsRect',
+TP.gui.Rect.Inst.defineMethod('containsRect',
 function(aRect) {
 
     /**
      * @method containsRect
      * @summary Returns whether or not the receiver contains the supplied
      *     rectangle.
-     * @param {TP.core.Rect} aRect The rectangle to test.
+     * @param {TP.gui.Rect} aRect The rectangle to test.
      * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not the receiver contains the rectangle.
      */
@@ -1597,23 +1597,23 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('copy',
+TP.gui.Rect.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Rect} A new TP.core.Rect which is a copy of the
+     * @returns {TP.gui.Rect} A new TP.gui.Rect which is a copy of the
      *     receiver.
      */
 
-    return TP.core.Rect.construct(this);
+    return TP.gui.Rect.construct(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('difference',
+TP.gui.Rect.Inst.defineMethod('difference',
 function(aRect) {
 
     /**
@@ -1622,8 +1622,8 @@ function(aRect) {
      *     regions of the receiver after the supplied rectangle has been
      *     subtracted.
      * @description This routine is adapted from Google's Closure library.
-     * @param {TP.core.Rect} aRect The rectangle to test.
-     * @returns {Array} An Array of TP.core.Rectangles containing the remaining
+     * @param {TP.gui.Rect} aRect The rectangle to test.
+     * @returns {Array} An Array of TP.gui.Rectangles containing the remaining
      *     regions.
      */
 
@@ -1668,7 +1668,7 @@ function(aRect) {
     //  supplied rectangle.
     if (otherData.y > data.y) {
         result.push(
-            TP.core.Rect.construct(data.x, data.y,
+            TP.gui.Rect.construct(data.x, data.y,
                                 data.width, otherData.y - data.y));
 
         thisY = otherData.y;
@@ -1682,7 +1682,7 @@ function(aRect) {
     //  supplied rectangle.
     if (otherBottom < thisBottom) {
         result.push(
-            TP.core.Rect.construct(data.x, otherBottom,
+            TP.gui.Rect.construct(data.x, otherBottom,
                                 data.width, thisBottom - otherBottom));
 
         thisHeight = otherBottom - thisY;
@@ -1692,7 +1692,7 @@ function(aRect) {
     //  supplied rectangle.
     if (otherData.x > data.x) {
         result.push(
-            TP.core.Rect.construct(data.x, thisY,
+            TP.gui.Rect.construct(data.x, thisY,
                                 otherData.x - data.x, thisHeight));
     }
 
@@ -1700,7 +1700,7 @@ function(aRect) {
     //  supplied rectangle.
     if (otherRight < thisRight) {
         result.push(
-            TP.core.Rect.construct(otherRight, thisY,
+            TP.gui.Rect.construct(otherRight, thisY,
                                 thisRight - otherRight, thisHeight));
     }
 
@@ -1709,14 +1709,14 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('empty',
+TP.gui.Rect.Inst.defineMethod('empty',
 function() {
 
     /**
      * @method empty
      * @summary Sets the receiver to be the 'empty' rectangle (i.e. all
      *     coordinates are set to 0).
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -1733,13 +1733,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getCenterPoint',
+TP.gui.Rect.Inst.defineMethod('getCenterPoint',
 function() {
 
     /**
      * @method getCenterPoint
      * @summary Returns the center point of the receiver.
-     * @returns {TP.core.Point} The center point of the receiver.
+     * @returns {TP.gui.Point} The center point of the receiver.
      */
 
     var data;
@@ -1747,24 +1747,24 @@ function() {
     data = this.$get('data');
 
     /* eslint-disable no-extra-parens */
-    return TP.core.Point.construct(data.x + (data.width / 2),
+    return TP.gui.Point.construct(data.x + (data.width / 2),
                                     data.y + (data.height / 2));
     /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getClosestEdgePointFromPoint',
+TP.gui.Rect.Inst.defineMethod('getClosestEdgePointFromPoint',
 function(aPoint) {
 
     /**
      * @method getClosestEdgePointFromPoint
      * @summary Returns the 'closest edge point to the supplied point' of the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to use to calculate the closest
+     * @param {TP.gui.Point} aPoint The point to use to calculate the closest
      *     edge point from.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The closest edge point of the receiver.
+     * @returns {TP.gui.Point} The closest edge point of the receiver.
      */
 
     var data,
@@ -1811,7 +1811,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getCompassCorner',
+TP.gui.Rect.Inst.defineMethod('getCompassCorner',
 function(aPoint) {
 
     /**
@@ -1830,7 +1830,7 @@ function(aPoint) {
      *     TP.WEST
      *     TP.NORTHWEST
      *
-     * @param {TP.core.Point} aPoint The point to use to calculate the compass
+     * @param {TP.gui.Point} aPoint The point to use to calculate the compass
      *     point from.
      * @exception TP.sig.InvalidParameter
      * @returns {Number} A Number matching the constant corresponding to the
@@ -1853,7 +1853,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getEdgePoint',
+TP.gui.Rect.Inst.defineMethod('getEdgePoint',
 function(compassCorner) {
 
     /**
@@ -1876,7 +1876,7 @@ function(compassCorner) {
      *     TP.NORTHWEST
      *
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The closest edge point of the receiver.
+     * @returns {TP.gui.Point} The closest edge point of the receiver.
      */
 
     var data;
@@ -1921,7 +1921,7 @@ function(compassCorner) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getHeight',
+TP.gui.Rect.Inst.defineMethod('getHeight',
 function() {
 
     /**
@@ -1935,7 +1935,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getWidth',
+TP.gui.Rect.Inst.defineMethod('getWidth',
 function() {
 
     /**
@@ -1949,7 +1949,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getX',
+TP.gui.Rect.Inst.defineMethod('getX',
 function() {
 
     /**
@@ -1963,13 +1963,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getXYPoint',
+TP.gui.Rect.Inst.defineMethod('getXYPoint',
 function() {
 
     /**
      * @method getXYPoint
      * @summary Returns the X,Y (i.e. left, top)  point of the receiver.
-     * @returns {TP.core.Point} The X,Y point of the receiver.
+     * @returns {TP.gui.Point} The X,Y point of the receiver.
      */
 
     var data;
@@ -1977,13 +1977,13 @@ function() {
     data = this.$get('data');
 
     /* eslint-disable no-extra-parens */
-    return TP.core.Point.construct(data.x, data.y);
+    return TP.gui.Point.construct(data.x, data.y);
     /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('getY',
+TP.gui.Rect.Inst.defineMethod('getY',
 function() {
 
     /**
@@ -1997,7 +1997,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('grow',
+TP.gui.Rect.Inst.defineMethod('grow',
 function(widthDiff, heightDiff) {
 
     /**
@@ -2008,7 +2008,7 @@ function(widthDiff, heightDiff) {
      *     receiver.
      * @param {Number} heightDiff The amount to add to the height value of the
      *     receiver.
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2027,16 +2027,16 @@ function(widthDiff, heightDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('growByPoint',
+TP.gui.Rect.Inst.defineMethod('growByPoint',
 function(aPoint) {
 
     /**
      * @method growByPoint
      * @summary Grows the width and height of the receiver by the values of the
      *     supplied point.
-     * @param {TP.core.Point} aPoint The point to use to grow the receiver.
+     * @param {TP.gui.Point} aPoint The point to use to grow the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2055,7 +2055,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('interpolate',
+TP.gui.Rect.Inst.defineMethod('interpolate',
 function(aRect, t) {
 
     /**
@@ -2067,12 +2067,12 @@ function(aRect, t) {
      *     between 0 and 1. To weight the computed rectangle towards the
      *     receiver, use a value approaching 0. To weight it towards the
      *     supplied rectangle, use a value approaching 1.
-     * @param {TP.core.Rect} aRect The rectangle to compute an interpolation
+     * @param {TP.gui.Rect} aRect The rectangle to compute an interpolation
      *     with the receiver.
      * @param {Number} t Interpolation factor. Should be a Number between 0 and
      *     1.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} A new rectangle with the coordinates of the
+     * @returns {TP.gui.Rect} A new rectangle with the coordinates of the
      *     receiver interpolated with the supplied rectangle using the supplied
      *     interpolation factor.
      */
@@ -2095,7 +2095,7 @@ function(aRect, t) {
             return a + (b - a) * factor;
         };
 
-    return TP.core.Rect.construct(
+    return TP.gui.Rect.construct(
                     interpFunc(data.x, otherData.x, t),
                     interpFunc(data.y, otherData.y, t),
                     interpFunc(data.width, otherData.width, t),
@@ -2104,16 +2104,16 @@ function(aRect, t) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('intersection',
+TP.gui.Rect.Inst.defineMethod('intersection',
 function(aRect) {
 
     /**
      * @method intersection
      * @summary Returns a new rectangle that contains the area common to both
      *     the receiver and the supplied rectangle.
-     * @param {TP.core.Rect} aRect The rectangle to compute an intersection with
+     * @param {TP.gui.Rect} aRect The rectangle to compute an intersection with
      *     the receiver.
-     * @returns {TP.core.Rect} A new rectangle that contains the area common to
+     * @returns {TP.gui.Rect} A new rectangle that contains the area common to
      *     the receiver and the supplied rectangle.
      */
 
@@ -2127,11 +2127,11 @@ function(aRect) {
         maxY;
 
     if (this.isEmpty()) {
-        return TP.core.Rect.construct(aRect);
+        return TP.gui.Rect.construct(aRect);
     }
 
     if (aRect.isEmpty()) {
-        return TP.core.Rect.construct(this);
+        return TP.gui.Rect.construct(this);
     }
 
     data = this.$get('data');
@@ -2145,7 +2145,7 @@ function(aRect) {
         maxY = (data.y + data.height).min(otherData.y + otherData.height);
 
         if (minY <= maxY) {
-            return TP.core.Rect.construct(minX,
+            return TP.gui.Rect.construct(minX,
                                             minY,
                                             maxX - minX,
                                             maxY - minY);
@@ -2157,13 +2157,13 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('intersects',
+TP.gui.Rect.Inst.defineMethod('intersects',
 function(aRect) {
 
     /**
      * @method intersects
      * @summary Returns whether the supplied rectangle intersects the receiver.
-     * @param {TP.core.Rect} aRect The rectangle to test to see if it intersects
+     * @param {TP.gui.Rect} aRect The rectangle to test to see if it intersects
      *     with the receiver.
      * @returns {Boolean} Whether or not the supplied rectangle intersects the
      *     rectangle.
@@ -2187,7 +2187,7 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('isEmpty',
+TP.gui.Rect.Inst.defineMethod('isEmpty',
 function() {
 
     /**
@@ -2202,7 +2202,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('isOffsetFromCenterBy',
+TP.gui.Rect.Inst.defineMethod('isOffsetFromCenterBy',
 function(aPoint, offset) {
 
     /**
@@ -2210,7 +2210,7 @@ function(aPoint, offset) {
      * @summary Returns whether or not the supplied point is offset from the
      *     receiver's center point by at least the amount supplied in the offset
      *     parameter.
-     * @param {TP.core.Point} aPoint The point to test.
+     * @param {TP.gui.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
      * @exception TP.sig.InvalidParameter
@@ -2253,7 +2253,7 @@ function(aPoint, offset) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('maxFittedPoint',
+TP.gui.Rect.Inst.defineMethod('maxFittedPoint',
 function(aRect) {
 
     /**
@@ -2261,10 +2261,10 @@ function(aRect) {
      * @summary Computes the maximum X/Y coordinates that the receiver can have
      *     while still remaining completely enclosed within the supplied
      *     rectangle.
-     * @param {TP.core.Rect} aRect The rectangle to use to compute the maximum
+     * @param {TP.gui.Rect} aRect The rectangle to use to compute the maximum
      *     fitted point for the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The maximum 'fitted point'.
+     * @returns {TP.gui.Point} The maximum 'fitted point'.
      */
 
     var data,
@@ -2288,16 +2288,16 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('union',
+TP.gui.Rect.Inst.defineMethod('union',
 function(aRect) {
 
     /**
      * @method union
      * @summary Returns a new rectangle that contains both the receiver and the
      *     supplied rectangle.
-     * @param {TP.core.Rect} aRect The rectangle to compute a union with the
+     * @param {TP.gui.Rect} aRect The rectangle to compute a union with the
      *     receiver.
-     * @returns {TP.core.Rect} A new rectangle that contains both the receiver
+     * @returns {TP.gui.Rect} A new rectangle that contains both the receiver
      *     and the supplied rectangle.
      */
 
@@ -2308,11 +2308,11 @@ function(aRect) {
         newY;
 
     if (this.isEmpty()) {
-        return TP.core.Rect.construct(aRect);
+        return TP.gui.Rect.construct(aRect);
     }
 
     if (aRect.isEmpty()) {
-        return TP.core.Rect.construct(this);
+        return TP.gui.Rect.construct(this);
     }
 
     data = this.$get('data');
@@ -2321,7 +2321,7 @@ function(aRect) {
     newX = data.x.min(otherData.x);
     newY = data.y.min(otherData.y);
 
-    return TP.core.Rect.construct(
+    return TP.gui.Rect.construct(
                 newX,
                 newY,
                 (data.x + data.width - newX).max(
@@ -2332,13 +2332,13 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('scale',
+TP.gui.Rect.Inst.defineMethod('scale',
 function(xScaleFactor, yScaleFactor) {
 
     /**
      * @method scale
      * @summary Scales the coordinates of the receiver around its center using
-     *     the supplied scaling factor and returns a new TP.core.Rect with those
+     *     the supplied scaling factor and returns a new TP.gui.Rect with those
      *     new coordinates.
      * @param {Number} xScaleFactor The amount to scale the coordinates of the
      *     receiver to. If this is the only argument supplied, the Y value will
@@ -2346,7 +2346,7 @@ function(xScaleFactor, yScaleFactor) {
      * @param {Number} yScaleFactor The amount to scale the coordinates of the
      *     receiver to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} A new rectangle with the coordinates of the
+     * @returns {TP.gui.Rect} A new rectangle with the coordinates of the
      *     receiver scaled using the scaling factor.
      */
 
@@ -2370,7 +2370,7 @@ function(xScaleFactor, yScaleFactor) {
         newHeight = data.height * xScaleFactor;
     }
 
-    return TP.core.Rect.construct(
+    return TP.gui.Rect.construct(
                     data.x - (newWidth - data.width) / 2,
                     data.y - (newHeight - data.height) / 2,
                     newWidth,
@@ -2379,7 +2379,7 @@ function(xScaleFactor, yScaleFactor) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('setHeight',
+TP.gui.Rect.Inst.defineMethod('setHeight',
 function(aHeight) {
 
     /**
@@ -2387,7 +2387,7 @@ function(aHeight) {
      * @summary Sets the height of the receiver to the supplied value.
      * @param {Number} aHeight The amount to set the height of the receiver to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(aHeight)) {
@@ -2401,7 +2401,7 @@ function(aHeight) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('setWidth',
+TP.gui.Rect.Inst.defineMethod('setWidth',
 function(aWidth) {
 
     /**
@@ -2409,7 +2409,7 @@ function(aWidth) {
      * @summary Sets the width of the receiver to the supplied value.
      * @param {Number} aWidth The amount to set the width of the receiver to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(aWidth)) {
@@ -2423,7 +2423,7 @@ function(aWidth) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('setX',
+TP.gui.Rect.Inst.defineMethod('setX',
 function(xVal) {
 
     /**
@@ -2432,7 +2432,7 @@ function(xVal) {
      * @param {Number} xVal The amount to set the 'x' coordinate of the receiver
      *     to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(xVal)) {
@@ -2446,7 +2446,7 @@ function(xVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('setY',
+TP.gui.Rect.Inst.defineMethod('setY',
 function(yVal) {
 
     /**
@@ -2455,7 +2455,7 @@ function(yVal) {
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(yVal)) {
@@ -2469,7 +2469,7 @@ function(yVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('setXY',
+TP.gui.Rect.Inst.defineMethod('setXY',
 function(xVal, yVal) {
 
     /**
@@ -2481,7 +2481,7 @@ function(xVal, yVal) {
      * @param {Number} yVal The amount to set the 'y' coordinate of the receiver
      *     to.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2500,7 +2500,7 @@ function(xVal, yVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('shrink',
+TP.gui.Rect.Inst.defineMethod('shrink',
 function(widthDiff, heightDiff) {
 
     /**
@@ -2511,7 +2511,7 @@ function(widthDiff, heightDiff) {
      *     the receiver.
      * @param {Number} heightDiff The amount to subtract from the height value
      *     of the receiver.
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2530,16 +2530,16 @@ function(widthDiff, heightDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('shrinkByPoint',
+TP.gui.Rect.Inst.defineMethod('shrinkByPoint',
 function(aPoint) {
 
     /**
      * @method shrinkByPoint
      * @summary Shrinks the width and height of the receiver by the values of
      *     the supplied point.
-     * @param {TP.core.Point} aPoint The point to use to grow the receiver.
+     * @param {TP.gui.Point} aPoint The point to use to grow the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2558,16 +2558,16 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('subtractByPoint',
+TP.gui.Rect.Inst.defineMethod('subtractByPoint',
 function(aPoint) {
 
     /**
      * @method subtractByPoint
      * @summary Subtracts the dimensions of the supplied point from the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to subtract from the receiver.
+     * @param {TP.gui.Point} aPoint The point to subtract from the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2586,7 +2586,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('subtractFromX',
+TP.gui.Rect.Inst.defineMethod('subtractFromX',
 function(xDiff) {
 
     /**
@@ -2595,7 +2595,7 @@ function(xDiff) {
      * @param {Number} xDiff The amount to subtract from the x value of the
      *     receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(xDiff)) {
@@ -2609,7 +2609,7 @@ function(xDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('subtractFromY',
+TP.gui.Rect.Inst.defineMethod('subtractFromY',
 function(yDiff) {
 
     /**
@@ -2618,7 +2618,7 @@ function(yDiff) {
      * @param {Number} yDiff The amount to subtract from the y value of the
      *     receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     if (!TP.isNumber(yDiff)) {
@@ -2632,7 +2632,7 @@ function(yDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('translate',
+TP.gui.Rect.Inst.defineMethod('translate',
 function(xDiff, yDiff) {
 
     /**
@@ -2641,7 +2641,7 @@ function(xDiff, yDiff) {
      * @param {Number} xDiff The amount to add to the x value of the receiver.
      * @param {Number} yDiff The amount to add to the y value of the receiver.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2660,16 +2660,16 @@ function(xDiff, yDiff) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('translateByPoint',
+TP.gui.Rect.Inst.defineMethod('translateByPoint',
 function(aPoint) {
 
     /**
      * @method translateByPoint
      * @summary Translates the position of the receiver by the values of the
      *     supplied point.
-     * @param {TP.core.Point} aPoint The point to use to translate the receiver.
+     * @param {TP.gui.Point} aPoint The point to use to translate the receiver.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The receiver.
+     * @returns {TP.gui.Rect} The receiver.
      */
 
     var data;
@@ -2687,25 +2687,25 @@ function(aPoint) {
 });
 
 //  ========================================================================
-//  TP.core.Matrix
+//  TP.gui.Matrix
 //  ========================================================================
 
 /**
- * @type {TP.core.Matrix}
+ * @type {TP.gui.Matrix}
  * @summary A type that can manage matrix (xx, xy, yx, yy, dx, dy) values.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Matrix');
+TP.lang.Object.defineSubtype('gui.Matrix');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-//  A RegExp that can construct a TP.core.Matrix from
+//  A RegExp that can construct a TP.gui.Matrix from
 //  'matrix(xx, yx, xy, yy, dx, dy)'
-TP.core.Matrix.Type.defineConstant('MATRIX_REGEX',
+TP.gui.Matrix.Type.defineConstant('MATRIX_REGEX',
                     TP.rc('matrix\\s*\\(\\s*([-.\\d]+)\\s*' +
                             '(?:,\\s*)([-.\\d]+)\\s*' +
                             '(?:,\\s*)([-.\\d]+)\\s*' +
@@ -2713,31 +2713,31 @@ TP.core.Matrix.Type.defineConstant('MATRIX_REGEX',
                             '(?:,\\s*)([-.\\d]+)\\s*' +
                             '(?:,\\s*)([-.\\d]+)\\s*\\)'));
 
-//  A RegExp that can construct a TP.core.Matrix from 'rotate(deg)'
-TP.core.Matrix.Type.defineConstant('ROTATE_REGEX',
+//  A RegExp that can construct a TP.gui.Matrix from 'rotate(deg)'
+TP.gui.Matrix.Type.defineConstant('ROTATE_REGEX',
                     TP.rc('rotate\\s*\\(\\s*([-.\\d]+)\\s*\\)'));
 
-//  A RegExp that can construct a TP.core.Matrix from
+//  A RegExp that can construct a TP.gui.Matrix from
 //  'scale(xScale, yScale)'
 //  NB: The yScale value is optional and will default to the xScale value
 //  if not supplied
-TP.core.Matrix.Type.defineConstant('SCALE_REGEX',
+TP.gui.Matrix.Type.defineConstant('SCALE_REGEX',
                     TP.rc('scale\\s*\\(\\s*([-.\\d]+)\\s*' +
                             '(?:,\\s*)?([-.\\d]+)?\\s*\\)'));
 
-//  A RegExp that can construct a TP.core.Matrix from 'skewX(xSkew)'
-TP.core.Matrix.Type.defineConstant('SKEWX_REGEX',
+//  A RegExp that can construct a TP.gui.Matrix from 'skewX(xSkew)'
+TP.gui.Matrix.Type.defineConstant('SKEWX_REGEX',
                     TP.rc('skewX\\s*\\(\\s*([-.\\d]+)\\s*\\)'));
 
-//  A RegExp that can construct a TP.core.Matrix from 'skewY(ySkew)'
-TP.core.Matrix.Type.defineConstant('SKEWY_REGEX',
+//  A RegExp that can construct a TP.gui.Matrix from 'skewY(ySkew)'
+TP.gui.Matrix.Type.defineConstant('SKEWY_REGEX',
                     TP.rc('skewY\\s*\\(\\s*([-.\\d]+)\\s*\\)'));
 
-//  A RegExp that can construct a TP.core.Matrix from
+//  A RegExp that can construct a TP.gui.Matrix from
 //  'translate(xVal, yVal)'
 //  NB: The yVal value is optional and will default to the xVal value if not
 //  supplied
-TP.core.Matrix.Type.defineConstant('TRANSLATE_REGEX',
+TP.gui.Matrix.Type.defineConstant('TRANSLATE_REGEX',
                     TP.rc('translate\\s*\\(\\s*([-.\\d]+)\\s*' +
                             '(?:,\\s*)?([-.\\d]+)?\\s*\\)'));
 
@@ -2745,20 +2745,20 @@ TP.core.Matrix.Type.defineConstant('TRANSLATE_REGEX',
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineConstant('STYLE_DECLVALUE_PARSER',
+TP.gui.Matrix.Type.defineConstant('STYLE_DECLVALUE_PARSER',
 function(aString) {
 
     /**
      * @method STYLE_DECLVALUE_PARSER
      * @summary Converts a String containing a matrix description to a
-     *     TP.core.Matrix object.
+     *     TP.gui.Matrix object.
      * @description The supplied String can be in one of seven formats:
      *     translate(xCoord, yCoord) translate(xAndYCoord) scale(xFactor,
      *     yFactor) scale(xAndYFactor) rotate(rotationAngle) skewX(skewAngle)
      *     skewY(skewAngle) matrix(xx, yx, xy, yy, dx, dy)
-     * @param {The} aString String definition to use to build a TP.core.Matrix
+     * @param {The} aString String definition to use to build a TP.gui.Matrix
      *     object from.
-     * @returns {TP.core.Matrix} A TP.core.Matrix expressing the supplied
+     * @returns {TP.gui.Matrix} A TP.gui.Matrix expressing the supplied
      *     transformation.
      */
 
@@ -2775,7 +2775,7 @@ function(aString) {
     newObj = null;
 
     if (/translate/.test(aString)) {
-        vals = TP.core.Matrix.TRANSLATE_REGEX.match(aString);
+        vals = TP.gui.Matrix.TRANSLATE_REGEX.match(aString);
 
         xVal = vals.at(1);
         yVal = vals.at(2);
@@ -2784,10 +2784,10 @@ function(aString) {
             yVal = xVal;
         }
 
-        newObj = TP.core.Matrix.constructTranslationMatrix(
+        newObj = TP.gui.Matrix.constructTranslationMatrix(
                                         parseFloat(xVal), parseFloat(yVal));
     } else if (/scale/.test(aString)) {
-        vals = TP.core.Matrix.SCALE_REGEX.match(aString);
+        vals = TP.gui.Matrix.SCALE_REGEX.match(aString);
 
         xVal = vals.at(1);
         yVal = vals.at(2);
@@ -2796,32 +2796,32 @@ function(aString) {
             yVal = xVal;
         }
 
-        newObj = TP.core.Matrix.constructScalingMatrix(
+        newObj = TP.gui.Matrix.constructScalingMatrix(
                                         parseFloat(xVal), parseFloat(yVal));
     } else if (/rotate/.test(aString)) {
-        vals = TP.core.Matrix.ROTATE_REGEX.match(aString);
+        vals = TP.gui.Matrix.ROTATE_REGEX.match(aString);
 
-        newObj = TP.core.Matrix.constructRotationMatrix(
+        newObj = TP.gui.Matrix.constructRotationMatrix(
                                         parseFloat(vals.at(1)));
     } else if (/skewX/.test(aString)) {
-        vals = TP.core.Matrix.SKEWX_REGEX.match(aString);
+        vals = TP.gui.Matrix.SKEWX_REGEX.match(aString);
 
         xVal = vals.at(1);
 
-        newObj = TP.core.Matrix.constructSkewXMatrix(parseFloat(xVal));
+        newObj = TP.gui.Matrix.constructSkewXMatrix(parseFloat(xVal));
     } else if (/skewY/.test(aString)) {
-        vals = TP.core.Matrix.SKEWY_REGEX.match(aString);
+        vals = TP.gui.Matrix.SKEWY_REGEX.match(aString);
 
         yVal = vals.at(1);
 
-        newObj = TP.core.Matrix.constructSkewYMatrix(parseFloat(yVal));
+        newObj = TP.gui.Matrix.constructSkewYMatrix(parseFloat(yVal));
     } else if (/matrix/.test(aString)) {
-        vals = TP.core.Matrix.MATRIX_REGEX.match(aString);
+        vals = TP.gui.Matrix.MATRIX_REGEX.match(aString);
 
         if (vals.getSize() < 7) {
             newObj = null;
         } else {
-            newObj = TP.core.Matrix.construct({
+            newObj = TP.gui.Matrix.construct({
                 xx: parseFloat(vals.at(1)),
                 yx: parseFloat(vals.at(2)),
                 xy: parseFloat(vals.at(3)),
@@ -2837,13 +2837,13 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.addParser(TP.core.Matrix.STYLE_DECLVALUE_PARSER);
+TP.gui.Matrix.addParser(TP.gui.Matrix.STYLE_DECLVALUE_PARSER);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('cloneIdentityData',
+TP.gui.Matrix.Type.defineMethod('cloneIdentityData',
 function() {
 
     /**
@@ -2866,34 +2866,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructIdentityMatrix',
+TP.gui.Matrix.Type.defineMethod('constructIdentityMatrix',
 function() {
 
     /**
      * @method constructIdentityMatrix
      * @summary Returns a matrix that has configured its data to be an identity
      *     matrix.
-     * @returns {TP.core.Matrix} An identity matrix.
+     * @returns {TP.gui.Matrix} An identity matrix.
      */
 
     //  An identity matrix is the default.
-    return TP.core.Matrix.construct();
+    return TP.gui.Matrix.construct();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructFlipXMatrix',
+TP.gui.Matrix.Type.defineMethod('constructFlipXMatrix',
 function() {
 
     /**
      * @method constructFlipXMatrix
      * @summary Returns a matrix that will flip coordinates on the X axis.
-     * @returns {TP.core.Matrix} A matrix that flips X coordinates.
+     * @returns {TP.gui.Matrix} A matrix that flips X coordinates.
      */
 
     var newMatrix;
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     newMatrix.$get('data').xx = -1;
 
@@ -2902,18 +2902,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructFlipYMatrix',
+TP.gui.Matrix.Type.defineMethod('constructFlipYMatrix',
 function() {
 
     /**
      * @method constructFlipYMatrix
      * @summary Returns a matrix that will flip coordinates on the Y axis.
-     * @returns {TP.core.Matrix} A matrix that flips Y coordinates.
+     * @returns {TP.gui.Matrix} A matrix that flips Y coordinates.
      */
 
     var newMatrix;
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     newMatrix.$get('data').yy = -1;
 
@@ -2922,19 +2922,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructFlipXYMatrix',
+TP.gui.Matrix.Type.defineMethod('constructFlipXYMatrix',
 function() {
 
     /**
      * @method constructFlipXYMatrix
      * @summary Returns a matrix that will flip coordinates on both the X and Y
      *     axis.
-     * @returns {TP.core.Matrix} A matrix that flips both X and Y coordinates.
+     * @returns {TP.gui.Matrix} A matrix that flips both X and Y coordinates.
      */
 
     var newMatrix;
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     newMatrix.$get('data').xx = -1;
     newMatrix.$get('data').yy = -1;
@@ -2944,18 +2944,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructProjectionMatrix',
+TP.gui.Matrix.Type.defineMethod('constructProjectionMatrix',
 function(projectX, projectY) {
 
     /**
      * @method constructProjectionMatrix
      * @summary Returns a matrix that will project X and Y coordinates around a
      *     point defined by the supplied X and Y.
-     * @param {Number|TP.core.Point} projectX The X coordinate to project points
-     *     around or a TP.core.Point to use as both the X and Y coordinates.
+     * @param {Number|TP.gui.Point} projectX The X coordinate to project points
+     *     around or a TP.gui.Point to use as both the X and Y coordinates.
      * @param {Number} projectY The Y coordinate to project points around.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that projects X and Y coordinates
+     * @returns {TP.gui.Matrix} A matrix that projects X and Y coordinates
      *     around the supplied X and Y point.
      */
 
@@ -2979,7 +2979,7 @@ function(projectX, projectY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
     newMatrixData = newMatrix.$get('data');
 
     if (arguments.length === 1) {
@@ -3008,18 +3008,18 @@ function(projectX, projectY) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructReflectionMatrix',
+TP.gui.Matrix.Type.defineMethod('constructReflectionMatrix',
 function(reflectX, reflectY) {
 
     /**
      * @method constructReflectionMatrix
      * @summary Returns a matrix that will reflect X and Y coordinates around a
      *     point defined by the supplied X and Y.
-     * @param {Number|TP.core.Point} reflectX The X coordinate to reflect points
-     *     around or a TP.core.Point to use as both the X and Y coordinates.
+     * @param {Number|TP.gui.Point} reflectX The X coordinate to reflect points
+     *     around or a TP.gui.Point to use as both the X and Y coordinates.
      * @param {Number} reflectY The Y coordinate to reflect points around.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that reflects X and Y coordinates
+     * @returns {TP.gui.Matrix} A matrix that reflects X and Y coordinates
      *     around the supplied X and Y point.
      */
 
@@ -3043,7 +3043,7 @@ function(reflectX, reflectY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
     newMatrixData = newMatrix.$get('data');
 
     if (arguments.length === 1) {
@@ -3072,7 +3072,7 @@ function(reflectX, reflectY) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructRotationMatrix',
+TP.gui.Matrix.Type.defineMethod('constructRotationMatrix',
 function(angle) {
 
     /**
@@ -3082,7 +3082,7 @@ function(angle) {
      * @param {Number} angle The angle in radians to rotate the X and Y
      *     coordinates by.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Matrix} A matrix that rotates X and Y coordinates
+     * @returns {TP.gui.Matrix} A matrix that rotates X and Y coordinates
      *     around the (0,0) point by the supplied amounts.
      */
 
@@ -3096,7 +3096,7 @@ function(angle) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
     newMatrixData = newMatrix.$get('data');
 
     angleSine = angle.sin();
@@ -3113,18 +3113,18 @@ function(angle) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructScalingMatrix',
+TP.gui.Matrix.Type.defineMethod('constructScalingMatrix',
 function(diffX, diffY) {
 
     /**
      * @method constructScalingMatrix
      * @summary Returns a matrix that will scale X and Y coordinates by the
      *     supplied amounts.
-     * @param {Number|TP.core.Point} diffX The amount to scale X coordinates or
-     *     a TP.core.Point to use for both X and Y amounts.
+     * @param {Number|TP.gui.Point} diffX The amount to scale X coordinates or
+     *     a TP.gui.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to scale Y coordinates.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that scales X and Y coordinates by the
+     * @returns {TP.gui.Matrix} A matrix that scales X and Y coordinates by the
      *     supplied amounts.
      */
 
@@ -3137,7 +3137,7 @@ function(diffX, diffY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     if (arguments.length === 1) {
         newMatrix.$get('data').xx = diffX.get('data').x;
@@ -3152,7 +3152,7 @@ function(diffX, diffY) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructSkewXMatrix',
+TP.gui.Matrix.Type.defineMethod('constructSkewXMatrix',
 function(skewAngle) {
 
     /**
@@ -3162,7 +3162,7 @@ function(skewAngle) {
      * @param {Number} skewAngle The angle in radians to skew the X coordinates
      *     by.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Matrix} A matrix that skews X coordinates.
+     * @returns {TP.gui.Matrix} A matrix that skews X coordinates.
      */
 
     var newMatrix;
@@ -3171,7 +3171,7 @@ function(skewAngle) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     newMatrix.$get('data').xy = -skewAngle.tan();
 
@@ -3180,7 +3180,7 @@ function(skewAngle) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructSkewYMatrix',
+TP.gui.Matrix.Type.defineMethod('constructSkewYMatrix',
 function(skewAngle) {
 
     /**
@@ -3190,7 +3190,7 @@ function(skewAngle) {
      * @param {Number} skewAngle The angle in radians to skew the Y coordinates
      *     by.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Matrix} A matrix that skews Y coordinates.
+     * @returns {TP.gui.Matrix} A matrix that skews Y coordinates.
      */
 
     var newMatrix;
@@ -3199,7 +3199,7 @@ function(skewAngle) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     newMatrix.$get('data').yx = skewAngle.tan();
 
@@ -3208,18 +3208,18 @@ function(skewAngle) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('constructTranslationMatrix',
+TP.gui.Matrix.Type.defineMethod('constructTranslationMatrix',
 function(diffX, diffY) {
 
     /**
      * @method constructTranslationMatrix
      * @summary Returns a matrix that will move X and Y coordinates by the
      *     supplied amounts.
-     * @param {Number|TP.core.Point} diffX The amount to move X coordinates or a
-     *     TP.core.Point to use for both X and Y amounts.
+     * @param {Number|TP.gui.Point} diffX The amount to move X coordinates or a
+     *     TP.gui.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to move Y coordinates.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that moves X and Y coordinates by the
+     * @returns {TP.gui.Matrix} A matrix that moves X and Y coordinates by the
      *     supplied amounts.
      */
 
@@ -3232,7 +3232,7 @@ function(diffX, diffY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.core.Matrix.construct();
+    newMatrix = TP.gui.Matrix.construct();
 
     if (arguments.length === 1) {
         newMatrix.$get('data').dx = diffX.get('data').x;
@@ -3247,20 +3247,20 @@ function(diffX, diffY) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('fromCSSString',
+TP.gui.Matrix.Type.defineMethod('fromCSSString',
 function(aString) {
 
     /**
      * @method fromString
      * @summary Converts a String containing a CSS matrix represenation to a
-     *     TP.core.Matrix object.
+     *     TP.gui.Matrix object.
      * @description The supplied String can be in either the 3X2 'matrix()'
      *     format for CSS 2D transforms or the 4X4 'matrix3d()' format for CSS
      *     3D transforms. Since this type only supports 3X2 matrices, however,
      *     3D 4X4 matrices will be converted to 3X2 matrices.
      * @param {String} aString The String that an instance of this type will be
      *     extracted from.
-     * @returns {TP.core.Matrix} A TP.core.Matrix having a set of values as
+     * @returns {TP.gui.Matrix} A TP.gui.Matrix having a set of values as
      *     expressed in the supplied String.
      */
 
@@ -3270,7 +3270,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('fromArray',
+TP.gui.Matrix.Type.defineMethod('fromArray',
 function(anObj) {
 
     /**
@@ -3283,7 +3283,7 @@ function(anObj) {
      *     to be converted to a 3X2 matrix first.
      * @param {Array} anObj The Array that an instance of this type will be
      *     extracted from.
-     * @returns {TP.core.Matrix} An instance of this type as extracted from
+     * @returns {TP.gui.Matrix} An instance of this type as extracted from
      *     anObj.
      */
 
@@ -3306,7 +3306,7 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('rotateAt',
+TP.gui.Matrix.Type.defineMethod('rotateAt',
 function(angle, aPoint) {
 
     /**
@@ -3315,10 +3315,10 @@ function(angle, aPoint) {
      *     (used as a center point) according to the supplied rotation angle.
      * @param {Number} angle The angle in radians to rotate around the X and Y
      *     coordinates.
-     * @param {TP.core.Point} aPoint The point to use as the center point of the
+     * @param {TP.gui.Point} aPoint The point to use as the center point of the
      *     rotation.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that is rotated around the point by
+     * @returns {TP.gui.Matrix} A matrix that is rotated around the point by
      *     the angle supplied.
      */
 
@@ -3328,14 +3328,14 @@ function(angle, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    rotationMatrix = TP.core.Matrix.constructRotationMatrix(angle);
+    rotationMatrix = TP.gui.Matrix.constructRotationMatrix(angle);
 
     return rotationMatrix.applyTransformsUsing(aPoint);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('scaleAt',
+TP.gui.Matrix.Type.defineMethod('scaleAt',
 function(aPoint, xFactor, yFactor) {
 
     /**
@@ -3343,12 +3343,12 @@ function(aPoint, xFactor, yFactor) {
      * @summary Returns a matrix that scales its X and Y axis around the
      *     supplied point (used as a center point) according to the supplied
      *     scaling factors.
-     * @param {TP.core.Point} aPoint The point to use as the center point of the
+     * @param {TP.gui.Point} aPoint The point to use as the center point of the
      *     scaling.
      * @param {Number} xFactor The amount to scale the X axis by.
      * @param {Number} yFactor The amount to scale the Y axis by.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that scales around the point by the
+     * @returns {TP.gui.Matrix} A matrix that scales around the point by the
      *     angle supplied.
      */
 
@@ -3360,14 +3360,14 @@ function(aPoint, xFactor, yFactor) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    scalingMatrix = TP.core.Matrix.constructScalingMatrix(xFactor, yFactor);
+    scalingMatrix = TP.gui.Matrix.constructScalingMatrix(xFactor, yFactor);
 
     return scalingMatrix.applyTransformsUsing(aPoint);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('skewXAt',
+TP.gui.Matrix.Type.defineMethod('skewXAt',
 function(angle, aPoint) {
 
     /**
@@ -3376,10 +3376,10 @@ function(angle, aPoint) {
      *     (used as a center point) according to the supplied rotation angle.
      * @param {Number} angle The angle in radians to skew the X axis around the
      *     X and Y coordinates.
-     * @param {TP.core.Point} aPoint The point to use as the center point of the
+     * @param {TP.gui.Point} aPoint The point to use as the center point of the
      *     skew.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that skews the X axis around the point
+     * @returns {TP.gui.Matrix} A matrix that skews the X axis around the point
      *     by the angle supplied.
      */
 
@@ -3389,14 +3389,14 @@ function(angle, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    skewMatrix = TP.core.Matrix.constructSkewXMatrix(angle);
+    skewMatrix = TP.gui.Matrix.constructSkewXMatrix(angle);
 
     return skewMatrix.applyTransformsUsing(aPoint);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('skewYAt',
+TP.gui.Matrix.Type.defineMethod('skewYAt',
 function(angle, aPoint) {
 
     /**
@@ -3405,10 +3405,10 @@ function(angle, aPoint) {
      *     (used as a center point) according to the supplied rotation angle.
      * @param {Number} angle The angle in radians to skew the Y axis around the
      *     X and Y coordinates.
-     * @param {TP.core.Point} aPoint The point to use as the center point of the
+     * @param {TP.gui.Point} aPoint The point to use as the center point of the
      *     skew.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that skews the Y axis around the point
+     * @returns {TP.gui.Matrix} A matrix that skews the Y axis around the point
      *     by the angle supplied.
      */
 
@@ -3418,14 +3418,14 @@ function(angle, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    skewMatrix = TP.core.Matrix.constructSkewYMatrix(angle);
+    skewMatrix = TP.gui.Matrix.constructSkewYMatrix(angle);
 
     return skewMatrix.applyTransformsUsing(aPoint);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Type.defineMethod('translateBy',
+TP.gui.Matrix.Type.defineMethod('translateBy',
 function(diffX, diffY, aPoint) {
 
     /**
@@ -3435,10 +3435,10 @@ function(diffX, diffY, aPoint) {
      *     rotation angle.
      * @param {Number} diffX The difference to translate the X axis.
      * @param {Number} diffY The difference to translate the Y axis.
-     * @param {TP.core.Point} aPoint The point to use as the center point of the
+     * @param {TP.gui.Point} aPoint The point to use as the center point of the
      *     skew.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A matrix that translates the X and Y axis
+     * @returns {TP.gui.Matrix} A matrix that translates the X and Y axis
      *     around the point by the differences supplied.
      */
 
@@ -3448,7 +3448,7 @@ function(diffX, diffY, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    translationMatrix = TP.core.Matrix.constructTranslationMatrix(
+    translationMatrix = TP.gui.Matrix.constructTranslationMatrix(
                                                             diffX, diffY);
 
     return translationMatrix.applyTransformsUsing(aPoint);
@@ -3458,13 +3458,13 @@ function(diffX, diffY, aPoint) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineAttribute('data');
+TP.gui.Matrix.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('init',
+TP.gui.Matrix.Inst.defineMethod('init',
 function(matrixData) {
 
     /**
@@ -3472,16 +3472,16 @@ function(matrixData) {
      * @summary Initialize the instance.
      * @description The argument to this method may be either a literal Object
      *     that contains matrix data to initialize the new instance with, a
-     *     TP.core.Matrix or an Array of either of these type of objects. If the
+     *     TP.gui.Matrix or an Array of either of these type of objects. If the
      *     objects are literal Objects, they should have the following keys /
      *     format: { xx: 1, xy: 0, yx: 0, yy: 1, dx: 0, dy: 0 };
      *
      *     Note that this example is the 'identity matrix' data that can be
-     *     obtained by calling TP.core.Matrix.cloneIdentityData().
-     * @param {Object|TP.core.Matrix|Array} matrixData One or more objects of
+     *     obtained by calling TP.gui.Matrix.cloneIdentityData().
+     * @param {Object|TP.gui.Matrix|Array} matrixData One or more objects of
      *     matrix data to initialize the matrix with. If this parameter is not
      *     valid, the matrix is initialized with the 'identity matrix'.
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var newData,
@@ -3498,7 +3498,7 @@ function(matrixData) {
     if (TP.notEmpty(arguments)) {
         newData = arguments[0];
 
-        if (TP.isKindOf(newData, TP.core.Matrix)) {
+        if (TP.isKindOf(newData, TP.gui.Matrix)) {
             newData = newData.$get('data');
 
             newData = {
@@ -3509,16 +3509,16 @@ function(matrixData) {
         }
 
         //  Loop over the rest of the arguments and 'accumulate' them into a
-        //  single TP.core.Matrix.
+        //  single TP.gui.Matrix.
         for (i = 1; i < arguments.length; i++) {
             lastData = newData;
             currentData = arguments[i];
 
-            if (TP.isKindOf(currentData, TP.core.Matrix)) {
+            if (TP.isKindOf(currentData, TP.gui.Matrix)) {
                 currentData = currentData.$get('data');
             }
 
-            newData = TP.core.Matrix.cloneIdentityData();
+            newData = TP.gui.Matrix.cloneIdentityData();
 
             newData.xx = lastData.xx * currentData.xx +
                             lastData.xy * currentData.yx;
@@ -3536,7 +3536,7 @@ function(matrixData) {
 
         newMatrixData = newData;
     } else {
-        newMatrixData = TP.core.Matrix.cloneIdentityData();
+        newMatrixData = TP.gui.Matrix.cloneIdentityData();
     }
 
     this.set('data', newMatrixData);
@@ -3546,15 +3546,15 @@ function(matrixData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('add',
+TP.gui.Matrix.Inst.defineMethod('add',
 function(aMatrix) {
 
     /**
      * @method add
      * @summary Changes the receiver by summing the receiver and the supplied
      *     matrix together.
-     * @param {TP.core.Matrix} aMatrix The matrix to add to the receiver.
-     * @returns {TP.core.Matrix} The receiver.
+     * @param {TP.gui.Matrix} aMatrix The matrix to add to the receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data,
@@ -3575,7 +3575,7 @@ function(aMatrix) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('applyTransformsUsing',
+TP.gui.Matrix.Inst.defineMethod('applyTransformsUsing',
 function(aPoint) {
 
     /**
@@ -3583,10 +3583,10 @@ function(aPoint) {
      * @summary Applies the a positive translation, the receiver (which
      *     performs the actual transformation) and a negative translation to the
      *     point given and returns a matrix.
-     * @param {TP.core.Point} aPoint The point to use to compute the two
+     * @param {TP.gui.Point} aPoint The point to use to compute the two
      *     translation matrices.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} A new TP.core.Matrix containing the result of
+     * @returns {TP.gui.Matrix} A new TP.gui.Matrix containing the result of
      *     executing the translations and the receiver against the supplied
      *     point.
      */
@@ -3604,9 +3604,9 @@ function(aPoint) {
 
     pointData = aPoint.get('data');
 
-    matrix1 = TP.core.Matrix.constructTranslationMatrix(pointData.x,
+    matrix1 = TP.gui.Matrix.constructTranslationMatrix(pointData.x,
                                                         pointData.y);
-    matrix2 = TP.core.Matrix.constructTranslationMatrix(-pointData.x,
+    matrix2 = TP.gui.Matrix.constructTranslationMatrix(-pointData.x,
                                                         -pointData.y);
 
     resultMatrix = matrix1.multiply(this, matrix2);
@@ -3616,7 +3616,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asCSSTransformString',
+TP.gui.Matrix.Inst.defineMethod('asCSSTransformString',
 function() {
 
     /**
@@ -3637,7 +3637,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asDumpString',
+TP.gui.Matrix.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -3674,7 +3674,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asHTMLString',
+TP.gui.Matrix.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -3689,7 +3689,7 @@ function() {
     data = this.$get('data');
 
     try {
-        str = '<span class="TP_core_Matrix">' +
+        str = '<span class="TP_gui_Matrix">' +
                     '<span data-name="xx">' + data.xx + '</span>' +
                     '<span data-name="xy">' + data.xy + '</span>' +
                     '<span data-name="yx">' + data.yx + '</span>' +
@@ -3706,7 +3706,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asJSONSource',
+TP.gui.Matrix.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -3732,7 +3732,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asPrettyString',
+TP.gui.Matrix.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -3787,7 +3787,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asSource',
+TP.gui.Matrix.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -3810,12 +3810,12 @@ function() {
                         ', dy: ', data.dy,
                         '}');
 
-    return 'TP.core.Matrix.construct(' + dataStr + ')';
+    return 'TP.gui.Matrix.construct(' + dataStr + ')';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asString',
+TP.gui.Matrix.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
@@ -3823,7 +3823,7 @@ function(verbose) {
      * @summary Returns the matrix data formatted as a JavaScript literal
      *     object as its String representation.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Matrix's String representation. This flag is ignored
+     *     of the TP.gui.Matrix's String representation. This flag is ignored
      *     in this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -3847,7 +3847,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('asXMLString',
+TP.gui.Matrix.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -3876,29 +3876,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('copy',
+TP.gui.Matrix.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Matrix} A new TP.core.Matrix which is a copy of the
+     * @returns {TP.gui.Matrix} A new TP.gui.Matrix which is a copy of the
      *     receiver.
      */
 
-    return TP.core.Matrix.construct(this);
+    return TP.gui.Matrix.construct(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('invert',
+TP.gui.Matrix.Inst.defineMethod('invert',
 function() {
 
     /**
      * @method invert
      * @summary Inverts the receiver.
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data,
@@ -3921,16 +3921,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('multiply',
+TP.gui.Matrix.Inst.defineMethod('multiply',
 function() {
 
     /**
      * @method multiply
-     * @summary Multiplies the supplied 1 or more TP.core.Matrix objects
+     * @summary Multiplies the supplied 1 or more TP.gui.Matrix objects
      *     against the receiver, beginning with the receiver.
-     * @description This method accepts 1 or more TP.core.Matrix objects as
+     * @description This method accepts 1 or more TP.gui.Matrix objects as
      *     arguments and therefore has no named parameters.
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var newData,
@@ -3943,12 +3943,12 @@ function() {
     newData = this.$get('data');
 
     //  Loop over all of the arguments and 'accumulate' them into a single
-    //  TP.core.Matrix.
+    //  TP.gui.Matrix.
     for (i = 0; i < arguments.length; i++) {
         lastData = newData;
         currentData = arguments[i].$get('data');
 
-        newData = TP.core.Matrix.cloneIdentityData();
+        newData = TP.gui.Matrix.cloneIdentityData();
 
         newData.xx = lastData.xx * currentData.xx +
                         lastData.xy * currentData.yx;
@@ -3971,7 +3971,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('rotate',
+TP.gui.Matrix.Inst.defineMethod('rotate',
 function(angle) {
 
     /**
@@ -3980,7 +3980,7 @@ function(angle) {
      * @param {Number} angle The angle in radians to rotate the X and Y
      *     coordinates by.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data,
@@ -4008,17 +4008,17 @@ function(angle) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('scale',
+TP.gui.Matrix.Inst.defineMethod('scale',
 function(diffX, diffY) {
 
     /**
      * @method scale
      * @summary Applies a scaling transformation to the receiver.
-     * @param {Number|TP.core.Point} diffX The amount to scale X coordinates or
-     *     a TP.core.Point to use for both X and Y amounts.
+     * @param {Number|TP.gui.Point} diffX The amount to scale X coordinates or
+     *     a TP.gui.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to scale Y coordinates.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data;
@@ -4042,15 +4042,15 @@ function(diffX, diffY) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('subtract',
+TP.gui.Matrix.Inst.defineMethod('subtract',
 function(aMatrix) {
 
     /**
      * @method subtract
      * @summary Changes the receiver by subtracting the supplied matrix and the
      *     receiver.
-     * @param {TP.core.Matrix} aMatrix The matrix to subtract from the receiver.
-     * @returns {TP.core.Matrix} The receiver.
+     * @param {TP.gui.Matrix} aMatrix The matrix to subtract from the receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data,
@@ -4071,16 +4071,16 @@ function(aMatrix) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('transformPoint',
+TP.gui.Matrix.Inst.defineMethod('transformPoint',
 function(aPoint) {
 
     /**
      * @method transformPoint
-     * @summary Uses the receiver to multiply the supplied TP.core.Point,
+     * @summary Uses the receiver to multiply the supplied TP.gui.Point,
      *     thereby transforming it.
-     * @param {TP.core.Point} aPoint The point to apply the receiver to.
+     * @param {TP.gui.Point} aPoint The point to apply the receiver to.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The transformed point.
+     * @returns {TP.gui.Point} The transformed point.
      */
 
     var data,
@@ -4095,7 +4095,7 @@ function(aPoint) {
     data = this.$get('data');
     pointData = aPoint.$get('data');
 
-    newPoint = TP.core.Point.construct(
+    newPoint = TP.gui.Point.construct(
             data.xx * pointData.x + data.xy * pointData.y + data.dx,
             data.yx * pointData.x + data.yy * pointData.y + data.dy);
 
@@ -4104,16 +4104,16 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('transformRect',
+TP.gui.Matrix.Inst.defineMethod('transformRect',
 function(aRect) {
 
     /**
      * @method transformRect
-     * @summary Uses the receiver to multiply the supplied TP.core.Rect,
+     * @summary Uses the receiver to multiply the supplied TP.gui.Rect,
      *     thereby transforming it.
-     * @param {TP.core.Rect} aRect The rect to apply the receiver to.
+     * @param {TP.gui.Rect} aRect The rect to apply the receiver to.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Rect} The transformed rect.
+     * @returns {TP.gui.Rect} The transformed rect.
      */
 
     var data,
@@ -4129,7 +4129,7 @@ function(aRect) {
     rectData = aRect.$get('data');
 
     //  Note here how we do *not* add the dx,dy to the width and height
-    newRect = TP.core.Rect.construct(
+    newRect = TP.gui.Rect.construct(
             data.xx * rectData.x + data.xy * rectData.y + data.dx,
             data.yx * rectData.x + data.yy * rectData.y + data.dy,
             data.xx * rectData.width + data.xy * rectData.height,
@@ -4141,17 +4141,17 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('translate',
+TP.gui.Matrix.Inst.defineMethod('translate',
 function(diffX, diffY) {
 
     /**
      * @method translate
      * @summary Applies a translation transformation to the receiver.
-     * @param {Number|TP.core.Point} diffX The amount to move X coordinates or a
-     *     TP.core.Point to use for both X and Y amounts.
+     * @param {Number|TP.gui.Point} diffX The amount to move X coordinates or a
+     *     TP.gui.Point to use for both X and Y amounts.
      * @param {Number} diffY The amount to move Y coordinates.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data;
@@ -4175,13 +4175,13 @@ function(diffX, diffY) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matrix.Inst.defineMethod('transpose',
+TP.gui.Matrix.Inst.defineMethod('transpose',
 function() {
 
     /**
      * @method transpose
      * @summary Transposes the receiver.
-     * @returns {TP.core.Matrix} The receiver.
+     * @returns {TP.gui.Matrix} The receiver.
      */
 
     var data,
@@ -4204,11 +4204,11 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.Color
+//  TP.gui.Color
 //  ========================================================================
 
 /**
- * @type {TP.core.Color}
+ * @type {TP.gui.Color}
  * @summary A type that can manage color values. These values contain red,
  *     green, blue and alpha information.
  * @description This type can be produced by a String having one of the
@@ -4219,33 +4219,33 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Color');
+TP.lang.Object.defineSubtype('gui.Color');
 
 //  ------------------------------------------------------------------------
 
-//  Note that we use apply here - otherwise, when TP.core.Color's 'init'
+//  Note that we use apply here - otherwise, when TP.gui.Color's 'init'
 //  method is called, it will incorrectly report 4 arguments even if there
 //  is just 1.
 TP.definePrimitive('cc',
 function(r, g, b, a) {
 
-    return TP.core.Color.construct.apply(TP.core.Color, arguments);
+    return TP.gui.Color.construct.apply(TP.gui.Color, arguments);
 });
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Type.defineMethod('fromString',
+TP.gui.Color.Type.defineMethod('fromString',
 function(aString) {
 
     /**
      * @method fromString
-     * @summary Converts a String containing a color to a TP.core.Color object.
+     * @summary Converts a String containing a color to a TP.gui.Color object.
      * @description The supplied String can be in one of nine formats: FFFFFF
      *     #FFFFFF FFF #FFF rgb(255, 255, 255) rgba(255, 255, 255, .5) hsl(120,
      *     50%, 50%) hsla(120, 50%, 50%, .5) <aColorName>
-     * @returns {TP.core.Color} A TP.core.Color having this color value
+     * @returns {TP.gui.Color} A TP.gui.Color having this color value
      *     expressed as RGB.
      */
 
@@ -4259,7 +4259,7 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Type.defineMethod('fromArray',
+TP.gui.Color.Type.defineMethod('fromArray',
 function(anObj) {
 
     /**
@@ -4269,7 +4269,7 @@ function(anObj) {
      *     [redNumber, greenNumber, blueNumber, alphaNumber]
      * @param {Array} anObj The Array that an instance of this type will be
      *     extracted from.
-     * @returns {TP.core.Color} An instance of this type as extracted from
+     * @returns {TP.gui.Color} An instance of this type as extracted from
      *     anObj.
      */
 
@@ -4284,20 +4284,20 @@ function(anObj) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineAttribute('data');
+TP.gui.Color.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('init',
+TP.gui.Color.Inst.defineMethod('init',
 function(red, green, blue, alpha) {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.core.Color|Object|Array|String} red The red value of
-     *     the receiver or a TP.core.Color to copy or an object that has 'r',
+     * @param {Number|TP.gui.Color|Object|Array|String} red The red value of
+     *     the receiver or a TP.gui.Color to copy or an object that has 'r',
      *     'g', 'b', and 'a' slots or an Array that has r in the first position,
      *     b in the second position, g in the third position and a in the last
      *     position.
@@ -4307,7 +4307,7 @@ function(red, green, blue, alpha) {
      *     supplied.
      * @param {Number} alpha The alpha value of the receiver, if 4 arguments are
      *     supplied.
-     * @returns {TP.core.Color} The receiver.
+     * @returns {TP.gui.Color} The receiver.
      */
 
     var theData,
@@ -4319,13 +4319,13 @@ function(red, green, blue, alpha) {
         if (arguments.length <= 2) {
             //  Got handed one or two arguments. The first argument could
             //  be:
-            //      a) another TP.core.Color
+            //      a) another TP.gui.Color
             //      b) an Array with 3 or 4 values
             //      c) an Object that has 'r', 'g', 'b', and (maybe) 'a'
             //          slots
 
             theData = arguments[0];
-            if (TP.isKindOf(theData, TP.core.Color)) {
+            if (TP.isKindOf(theData, TP.gui.Color)) {
                 theData = theData.$get('data');
 
                 newData = {
@@ -4392,14 +4392,14 @@ function(red, green, blue, alpha) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('add',
+TP.gui.Color.Inst.defineMethod('add',
 function(aColor) {
 
     /**
      * @method addColor
      * @summary Adds the supplied color to the receiver.
-     * @param {TP.core.Color} aColor The color to add to the receiver.
-     * @returns {TP.core.Color} The receiver.
+     * @param {TP.gui.Color} aColor The color to add to the receiver.
+     * @returns {TP.gui.Color} The receiver.
      */
 
     var colorData,
@@ -4418,7 +4418,7 @@ function(aColor) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asArray',
+TP.gui.Color.Inst.defineMethod('asArray',
 function() {
 
     /**
@@ -4439,7 +4439,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asDumpString',
+TP.gui.Color.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -4466,7 +4466,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asHTMLString',
+TP.gui.Color.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -4481,7 +4481,7 @@ function() {
     data = this.$get('data');
 
     try {
-        str = '<span class="TP_core_Color">' +
+        str = '<span class="TP_gui_Color">' +
                     '<span data-name="r">' + data.r + '</span>' +
                     '<span data-name="g">' + data.g + '</span>' +
                     '<span data-name="b">' + data.b + '</span>' +
@@ -4496,7 +4496,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asJSONSource',
+TP.gui.Color.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -4520,7 +4520,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asRGBString',
+TP.gui.Color.Inst.defineMethod('asRGBString',
 function() {
 
     /**
@@ -4543,7 +4543,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asRGBAString',
+TP.gui.Color.Inst.defineMethod('asRGBAString',
 function() {
 
     /**
@@ -4565,7 +4565,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asHexString',
+TP.gui.Color.Inst.defineMethod('asHexString',
 function() {
 
     /**
@@ -4580,7 +4580,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asSource',
+TP.gui.Color.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -4590,19 +4590,19 @@ function() {
      * @returns {Object} An appropriate form for recreating the receiver.
      */
 
-    return 'TP.core.Color.from(\'' + this.asRGBAString() + '\')';
+    return 'TP.gui.Color.from(\'' + this.asRGBAString() + '\')';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asString',
+TP.gui.Color.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Color's String representation. This flag is ignored in
+     *     of the TP.gui.Color's String representation. This flag is ignored in
      *     this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -4612,7 +4612,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asPrettyString',
+TP.gui.Color.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -4659,7 +4659,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('asXMLString',
+TP.gui.Color.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -4687,18 +4687,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('blendToColor',
+TP.gui.Color.Inst.defineMethod('blendToColor',
 function(toColor, weight) {
 
     /**
      * @method blendColor
      * @summary Blends the supplied color with the receiver, according to the
      *     supplied weight and returns the result of that blend.
-     * @param {TP.core.Color} toColor The color to blend to starting at the
+     * @param {TP.gui.Color} toColor The color to blend to starting at the
      *     receiver.
      * @param {Number} weight The weighting factor, a number between 0 and 1,
      *     that determines how much of the 'toColor' to blend into the receiver.
-     * @returns {TP.core.Color} The new color, after toColor has been blended
+     * @returns {TP.gui.Color} The new color, after toColor has been blended
      *     with the receiver.
      */
 
@@ -4722,28 +4722,28 @@ function(toColor, weight) {
                                                     otherColorAsNum,
                                                     balanceWeight));
 
-    return TP.core.Color.construct(colorVal);
+    return TP.gui.Color.construct(colorVal);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('copy',
+TP.gui.Color.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Color} A new TP.core.Color which is a copy of the
+     * @returns {TP.gui.Color} A new TP.gui.Color which is a copy of the
      *     receiver.
      */
 
-    return TP.core.Color.construct(this);
+    return TP.gui.Color.construct(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('getAlpha',
+TP.gui.Color.Inst.defineMethod('getAlpha',
 function() {
 
     /**
@@ -4757,7 +4757,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('getBlue',
+TP.gui.Color.Inst.defineMethod('getBlue',
 function() {
 
     /**
@@ -4771,7 +4771,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('getGreen',
+TP.gui.Color.Inst.defineMethod('getGreen',
 function() {
 
     /**
@@ -4785,7 +4785,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('getRed',
+TP.gui.Color.Inst.defineMethod('getRed',
 function() {
 
     /**
@@ -4799,14 +4799,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Color.Inst.defineMethod('subtract',
+TP.gui.Color.Inst.defineMethod('subtract',
 function(aColor) {
 
     /**
      * @method subtract
      * @summary Subtracts the supplied color from the receiver.
-     * @param {TP.core.Color} aColor The color to subtract from the receiver.
-     * @returns {TP.core.Color} The receiver.
+     * @param {TP.gui.Color} aColor The color to subtract from the receiver.
+     * @returns {TP.gui.Color} The receiver.
      */
 
     var colorData,
@@ -4824,21 +4824,21 @@ function(aColor) {
 });
 
 //  ========================================================================
-//  TP.core.Gradient
+//  TP.gui.Gradient
 //  ========================================================================
 
 /**
- * @type {TP.core.Gradient}
+ * @type {TP.gui.Gradient}
  * @summary A type which models a progression of color values along a vector,
  *     either linear or radial.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Gradient');
+TP.lang.Object.defineSubtype('gui.Gradient');
 
-//  TP.core.Gradient is an abstract type.
-TP.core.Gradient.isAbstract(true);
+//  TP.gui.Gradient is an abstract type.
+TP.gui.Gradient.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -4847,29 +4847,29 @@ TP.core.Gradient.isAbstract(true);
 //  A RegExp that can separate a gradient angle value from gradient color
 //  stop values in the following format:
 //      'gradient-linear(deg, color stop, ...)'
-TP.core.Gradient.Type.defineConstant(
+TP.gui.Gradient.Type.defineConstant(
         'GRADIENT_LINEAR_REGEX',
         TP.rc('gradient-linear\\(\\s*(\\d+deg\\s*,)?\\s*(.+)\\s*\\)'));
 
-TP.core.Gradient.Type.defineConstant(
+TP.gui.Gradient.Type.defineConstant(
         'GRADIENT_RADIAL_REGEX',
         TP.rc('gradient-radial\\(\\s*(?:(\\S+? \\S+?)\\s*,){1}\\s*(.+)\\s*\\)'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Type.defineConstant('STYLE_DECLVALUE_PARSER',
+TP.gui.Gradient.Type.defineConstant('STYLE_DECLVALUE_PARSER',
 function(aString) {
 
     /**
      * @method STYLE_DECLVALUE_PARSER
      * @summary Converts a String containing a gradient description to a
-     *     TP.core.Gradient object.
+     *     TP.gui.Gradient object.
      * @description The supplied String can be in one of two formats:
      *     gradient-linear(angle, color stop, ...) gradient-radial(center-x
      *     center-y, color stop, ...)
-     * @param {The} aString String definition to use to build a TP.core.Gradient
+     * @param {The} aString String definition to use to build a TP.gui.Gradient
      *     object from.
-     * @returns {TP.core.Gradient} A TP.core.Gradient expressing the supplied
+     * @returns {TP.gui.Gradient} A TP.gui.Gradient expressing the supplied
      *     gradient information.
      */
 
@@ -4892,7 +4892,7 @@ function(aString) {
     if (/gradient-linear/.test(aString)) {
         //  Extract the color stops and the (optional) angle from the
         //  supplied String.
-        angleAndColorStops = TP.core.Gradient.GRADIENT_LINEAR_REGEX.exec(
+        angleAndColorStops = TP.gui.Gradient.GRADIENT_LINEAR_REGEX.exec(
                                     aString);
 
         if (TP.notValid(angleAndColorStops)) {
@@ -4906,13 +4906,13 @@ function(aString) {
         }
 
         //  Extract those into an Array
-        colorsAndStops = TP.core.Gradient.$extractColorsAndStops(
+        colorsAndStops = TP.gui.Gradient.$extractColorsAndStops(
                                                 colorsAndStopsStr);
 
         //  Invoke the constructor, supplying the colors and stops Array as
         //  the arguments to the constructor.
-        newObj = TP.core.LinearGradient.construct.apply(
-                            TP.core.LinearGradient, colorsAndStops);
+        newObj = TP.gui.LinearGradient.construct.apply(
+                            TP.gui.LinearGradient, colorsAndStops);
 
         //  The gradient angle, if it was defined, will be at the second
         //  position in the results.
@@ -4924,7 +4924,7 @@ function(aString) {
         //  Extract the color stops and the center point from the supplied
         //  String.
         centerPointAndColorStops =
-                TP.core.Gradient.GRADIENT_RADIAL_REGEX.exec(aString);
+                TP.gui.Gradient.GRADIENT_RADIAL_REGEX.exec(aString);
 
         if (TP.notValid(centerPointAndColorStops)) {
             return null;
@@ -4941,13 +4941,13 @@ function(aString) {
             return null;
         }
 
-        colorsAndStops = TP.core.Gradient.$extractColorsAndStops(
+        colorsAndStops = TP.gui.Gradient.$extractColorsAndStops(
                                                 colorsAndStopsStr);
 
         //  Invoke the constructor, supplying the colors and stops Array as
         //  the arguments to the constructor.
-        newObj = TP.core.RadialGradient.construct.apply(
-                                    TP.core.RadialGradient, colorsAndStops);
+        newObj = TP.gui.RadialGradient.construct.apply(
+                                    TP.gui.RadialGradient, colorsAndStops);
 
         centerPoint = centerPoint.split(' ');
 
@@ -4966,13 +4966,13 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.addParser(TP.core.Gradient.STYLE_DECLVALUE_PARSER);
+TP.gui.Gradient.addParser(TP.gui.Gradient.STYLE_DECLVALUE_PARSER);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Type.defineMethod('$extractColorsAndStops',
+TP.gui.Gradient.Type.defineMethod('$extractColorsAndStops',
 function(aString) {
 
     /**
@@ -4981,7 +4981,7 @@ function(aString) {
      * @param {String} aString The String to extract the color and stop values
      *     from.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Gradient} The receiver.
+     * @returns {TP.gui.Gradient} The receiver.
      */
 
     var colors,
@@ -5032,20 +5032,20 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Type.defineMethod('constructShadowGradient',
+TP.gui.Gradient.Type.defineMethod('constructShadowGradient',
 function(color, opacity) {
 
     /**
      * @method constructShadowGradient
      * @summary Constructs a gradient that uses the color to fade from the
      *     given opacity value to a 0 opacity.
-     * @param {TP.core.Color|Number|String} color A color value that can be
-     *     represented as a TP.core.Color.
+     * @param {TP.gui.Color|Number|String} color A color value that can be
+     *     represented as a TP.gui.Color.
      * @param {Number} opacity An opacity percentage value, given as a Number
      *     between 0.0 and 1.0.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.Gradient} The receiver.
+     * @returns {TP.gui.Gradient} The receiver.
      */
 
     var opacityOffset,
@@ -5063,11 +5063,11 @@ function(color, opacity) {
 
     newGradient = this.construct(
                     0,
-                    TP.core.Color.construct(color, opacityOffset),
+                    TP.gui.Color.construct(color, opacityOffset),
                     0.25,
-                    TP.core.Color.construct(color, opacity),
+                    TP.gui.Color.construct(color, opacity),
                     1,
-                    TP.core.Color.construct(color, 0));
+                    TP.gui.Color.construct(color, 0));
 
     return newGradient;
 });
@@ -5076,20 +5076,20 @@ function(color, opacity) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineAttribute('colors');
-TP.core.Gradient.Inst.defineAttribute('stops');
+TP.gui.Gradient.Inst.defineAttribute('colors');
+TP.gui.Gradient.Inst.defineAttribute('stops');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('init',
+TP.gui.Gradient.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.Gradient} The receiver.
+     * @returns {TP.gui.Gradient} The receiver.
      */
 
     var colors,
@@ -5105,7 +5105,7 @@ function() {
     if (TP.notEmpty(arguments)) {
         for (i = 0; i < arguments.length; i += 2) {
             stops.push(arguments[i]);
-            colors.push(TP.core.Color.construct(arguments[i + 1]));
+            colors.push(TP.gui.Color.construct(arguments[i + 1]));
         }
     }
 
@@ -5117,7 +5117,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('addColorStop',
+TP.gui.Gradient.Inst.defineMethod('addColorStop',
 function(aStopValue, aColorValue) {
 
     /**
@@ -5126,9 +5126,9 @@ function(aStopValue, aColorValue) {
      *     usually a number or percentage, denoting where that color should stop
      *     along the gradient vector.
      * @param {String} aStopValue A value denoting where the color should stop.
-     * @param {TP.core.Color|String} aColorValue A color value.
+     * @param {TP.gui.Color|String} aColorValue A color value.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Gradient} The receiver.
+     * @returns {TP.gui.Gradient} The receiver.
      */
 
     var colorValue;
@@ -5143,8 +5143,8 @@ function(aStopValue, aColorValue) {
 
     this.get('stops').push(aStopValue);
 
-    if (!TP.isKindOf(colorValue = aColorValue, TP.core.Color)) {
-        colorValue = TP.core.Color.construct(aColorValue);
+    if (!TP.isKindOf(colorValue = aColorValue, TP.gui.Color)) {
+        colorValue = TP.gui.Color.construct(aColorValue);
     }
 
     this.get('colors').push(colorValue);
@@ -5154,7 +5154,7 @@ function(aStopValue, aColorValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('asSource',
+TP.gui.Gradient.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -5164,19 +5164,19 @@ function() {
      * @returns {Object} An appropriate form for recreating the receiver.
      */
 
-    return 'TP.core.Gradient.from(\'' + this.asString() + '\')';
+    return 'TP.gui.Gradient.from(\'' + this.asString() + '\')';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('copy',
+TP.gui.Gradient.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Gradient} A new TP.core.Gradient which is a copy of the
+     * @returns {TP.gui.Gradient} A new TP.gui.Gradient which is a copy of the
      *     receiver.
      */
 
@@ -5192,14 +5192,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('normalizeGradientValues',
+TP.gui.Gradient.Inst.defineMethod('normalizeGradientValues',
 function() {
 
     /**
      * @method normalizeGradientValues
      * @summary Normalizes the receiver's color stops so that there are a
      *     consistent number of stops that match the number of colors.
-     * @returns {TP.core.Gradient} The receiver.
+     * @returns {TP.gui.Gradient} The receiver.
      */
 
     var colors,
@@ -5260,41 +5260,41 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.LinearGradient
+//  TP.gui.LinearGradient
 //  ========================================================================
 
 /**
- * @type {TP.core.LinearGradient}
+ * @type {TP.gui.LinearGradient}
  * @summary A type that represents a 'linear gradient' - that is, a color
  *     transition that proceeds along an angle having one or more 'color stops'.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.defineSubtype('LinearGradient');
+TP.gui.Gradient.defineSubtype('LinearGradient');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineAttribute('angle');
+TP.gui.LinearGradient.Inst.defineAttribute('angle');
 
-TP.core.LinearGradient.Inst.defineAttribute('x1');
-TP.core.LinearGradient.Inst.defineAttribute('y1');
-TP.core.LinearGradient.Inst.defineAttribute('x2');
-TP.core.LinearGradient.Inst.defineAttribute('y2');
+TP.gui.LinearGradient.Inst.defineAttribute('x1');
+TP.gui.LinearGradient.Inst.defineAttribute('y1');
+TP.gui.LinearGradient.Inst.defineAttribute('x2');
+TP.gui.LinearGradient.Inst.defineAttribute('y2');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('init',
+TP.gui.LinearGradient.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.LinearGradient} The receiver.
+     * @returns {TP.gui.LinearGradient} The receiver.
      */
 
     this.callNextMethod();
@@ -5307,7 +5307,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asDumpString',
+TP.gui.LinearGradient.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -5362,7 +5362,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asGeckoCSSString',
+TP.gui.LinearGradient.Inst.defineMethod('asGeckoCSSString',
 function() {
 
     /**
@@ -5398,7 +5398,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asHTMLString',
+TP.gui.LinearGradient.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -5410,7 +5410,7 @@ function() {
     var str;
 
     try {
-        str = '<span class="TP_core_LinearGradient">' +
+        str = '<span class="TP_gui_LinearGradient">' +
                 '<span data-name="angle">' + this.get('angle') + '</span>';
 
         if (TP.notEmpty(this.get('stops'))) {
@@ -5443,7 +5443,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asJSONSource',
+TP.gui.LinearGradient.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -5483,7 +5483,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asPrettyString',
+TP.gui.LinearGradient.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -5539,14 +5539,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asString',
+TP.gui.LinearGradient.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.LinearGradient's String representation. This flag is
+     *     of the TP.gui.LinearGradient's String representation. This flag is
      *     ignored in this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -5587,7 +5587,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asWebkitCSSString',
+TP.gui.LinearGradient.Inst.defineMethod('asWebkitCSSString',
 function() {
 
     /**
@@ -5626,7 +5626,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asXMLString',
+TP.gui.LinearGradient.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -5667,7 +5667,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('setAngle',
+TP.gui.LinearGradient.Inst.defineMethod('setAngle',
 function(anAngle) {
 
     /**
@@ -5677,7 +5677,7 @@ function(anAngle) {
      *     the angle: 0, 45, 90, 135, 180, 225, 270, 315
      * @param {Number} anAngle The angle of the gradient.
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.core.LinearGradient} The receiver.
+     * @returns {TP.gui.LinearGradient} The receiver.
      */
 
     var gradientAngle,
@@ -5797,11 +5797,11 @@ function(anAngle) {
 });
 
 //  ========================================================================
-//  TP.core.RadialGradient
+//  TP.gui.RadialGradient
 //  ========================================================================
 
 /**
- * @type {TP.core.RadialGradient}
+ * @type {TP.gui.RadialGradient}
  * @summary A type that represents a 'radial gradient' - that is, a color
  *     transition that radiates outward from a supplied center point along one
  *     or more 'color stops'.
@@ -5809,29 +5809,29 @@ function(anAngle) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.defineSubtype('RadialGradient');
+TP.gui.Gradient.defineSubtype('RadialGradient');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineAttribute('cx');
-TP.core.RadialGradient.Inst.defineAttribute('cy');
-TP.core.RadialGradient.Inst.defineAttribute('radius');
-TP.core.RadialGradient.Inst.defineAttribute('fx');
-TP.core.RadialGradient.Inst.defineAttribute('fy');
+TP.gui.RadialGradient.Inst.defineAttribute('cx');
+TP.gui.RadialGradient.Inst.defineAttribute('cy');
+TP.gui.RadialGradient.Inst.defineAttribute('radius');
+TP.gui.RadialGradient.Inst.defineAttribute('fx');
+TP.gui.RadialGradient.Inst.defineAttribute('fy');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('init',
+TP.gui.RadialGradient.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.RadialGradient} The receiver.
+     * @returns {TP.gui.RadialGradient} The receiver.
      */
 
     this.callNextMethod();
@@ -5853,7 +5853,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asDumpString',
+TP.gui.RadialGradient.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -5907,7 +5907,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asJSONSource',
+TP.gui.RadialGradient.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -5948,7 +5948,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asHTMLString',
+TP.gui.RadialGradient.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -5960,7 +5960,7 @@ function() {
     var str;
 
     try {
-        str = '<span class="TP_core_RadialGradient">' +
+        str = '<span class="TP_gui_RadialGradient">' +
                 '<span data-name="cx">' + this.get('cx') + '</span>' +
                 '<span data-name="cy">' + this.get('cy') + '</span>';
 
@@ -5994,7 +5994,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asGeckoCSSString',
+TP.gui.RadialGradient.Inst.defineMethod('asGeckoCSSString',
 function() {
 
     /**
@@ -6009,7 +6009,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asPrettyString',
+TP.gui.RadialGradient.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -6069,14 +6069,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asString',
+TP.gui.RadialGradient.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.RadialGradient's String representation. This flag is
+     *     of the TP.gui.RadialGradient's String representation. This flag is
      *     ignored in this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -6116,7 +6116,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asWebkitCSSString',
+TP.gui.RadialGradient.Inst.defineMethod('asWebkitCSSString',
 function() {
 
     /**
@@ -6131,7 +6131,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asXMLString',
+TP.gui.RadialGradient.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -6172,43 +6172,43 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.Pattern
+//  TP.gui.Pattern
 //  ========================================================================
 
 /**
- * @type {TP.core.Pattern}
+ * @type {TP.gui.Pattern}
  * @summary A type that can manage patterns (i.e. a repeatable image within a
  *     particular boundary).
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Pattern');
+TP.lang.Object.defineSubtype('gui.Pattern');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-//  A RegExp that can construct a TP.core.Pattern from
+//  A RegExp that can construct a TP.gui.Pattern from
 //  'pattern(url(...), x, y, width, height)'
-TP.core.Pattern.Type.defineConstant(
+TP.gui.Pattern.Type.defineConstant(
         'PATTERN_REGEX',
         TP.rc('pattern\\(url\\((.+?)\\)\\s*,\\s*(.+?)\\s*,\\s*(.+?)\\s*,\\s*(.+?)\\s*,\\s*(.+?)\\s*\\)'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Type.defineConstant('STYLE_DECLVALUE_PARSER',
+TP.gui.Pattern.Type.defineConstant('STYLE_DECLVALUE_PARSER',
 function(aString) {
 
     /**
      * @method STYLE_DECLVALUE_PARSER
      * @summary Converts a String containing a matrix description to a
-     *     TP.core.Pattern object.
+     *     TP.gui.Pattern object.
      * @description The supplied String can be in the following format:
      *     pattern(url(...), rect(...))
-     * @param {The} aString String definition to use to build a TP.core.Pattern
+     * @param {The} aString String definition to use to build a TP.gui.Pattern
      *     object from.
-     * @returns {TP.core.Pattern} A TP.core.Pattern expressing the supplied
+     * @returns {TP.gui.Pattern} A TP.gui.Pattern expressing the supplied
      *     gradient information.
      */
 
@@ -6230,7 +6230,7 @@ function(aString) {
     newObj = null;
 
     //  Extract pattern info from the supplied String.
-    if (TP.isArray(results = TP.core.Pattern.PATTERN_REGEX.exec(aString))) {
+    if (TP.isArray(results = TP.gui.Pattern.PATTERN_REGEX.exec(aString))) {
         //  The url will be at the first position.
         if (TP.notEmpty(url = results.at(1))) {
             //  If the author enclosed it in quotes, strip them off.
@@ -6252,7 +6252,7 @@ function(aString) {
 
         //  Allocate and initialize the new instance.
 
-        newObj = TP.core.Pattern.construct();
+        newObj = TP.gui.Pattern.construct();
 
         newObj.set('uri', TP.uc(url));
 
@@ -6267,24 +6267,24 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.addParser(TP.core.Pattern.STYLE_DECLVALUE_PARSER);
+TP.gui.Pattern.addParser(TP.gui.Pattern.STYLE_DECLVALUE_PARSER);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineAttribute('uri');
+TP.gui.Pattern.Inst.defineAttribute('uri');
 
-TP.core.Pattern.Inst.defineAttribute('x');
-TP.core.Pattern.Inst.defineAttribute('y');
-TP.core.Pattern.Inst.defineAttribute('width');
-TP.core.Pattern.Inst.defineAttribute('height');
+TP.gui.Pattern.Inst.defineAttribute('x');
+TP.gui.Pattern.Inst.defineAttribute('y');
+TP.gui.Pattern.Inst.defineAttribute('width');
+TP.gui.Pattern.Inst.defineAttribute('height');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asDumpString',
+TP.gui.Pattern.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -6324,7 +6324,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asHTMLString',
+TP.gui.Pattern.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -6336,7 +6336,7 @@ function() {
     var str;
 
     try {
-        str = '<span class="TP_core_Pattern">' +
+        str = '<span class="TP_gui_Pattern">' +
                 '<span data-name="x">' + this.get('x') + '</span>' +
                 '<span data-name="y">' + this.get('y') + '</span>' +
                 '<span data-name="width">' + this.get('width') + '</span>' +
@@ -6352,7 +6352,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asJSONSource',
+TP.gui.Pattern.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -6373,7 +6373,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asPrettyString',
+TP.gui.Pattern.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -6421,7 +6421,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asSource',
+TP.gui.Pattern.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -6431,19 +6431,19 @@ function() {
      * @returns {Object} An appropriate form for recreating the receiver.
      */
 
-    return 'TP.core.Pattern.from(\'' + this.asString() + '\')';
+    return 'TP.gui.Pattern.from(\'' + this.asString() + '\')';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asString',
+TP.gui.Pattern.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns the String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Pattern's String representation. This flag is ignored
+     *     of the TP.gui.Pattern's String representation. This flag is ignored
      *     in this version of this method.
      * @returns {String} The String representation of the receiver.
      */
@@ -6469,7 +6469,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asXMLString',
+TP.gui.Pattern.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -6499,20 +6499,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('copy',
+TP.gui.Pattern.Inst.defineMethod('copy',
 function() {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.core.Pattern} A new TP.core.Pattern which is a copy of the
+     * @returns {TP.gui.Pattern} A new TP.gui.Pattern which is a copy of the
      *     receiver.
      */
 
     var newPattern;
 
-    newPattern = TP.core.Pattern.construct();
+    newPattern = TP.gui.Pattern.construct();
 
     newPattern.set('uri', TP.uc(this.get('uri')));
 
@@ -6526,7 +6526,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('getURI',
+TP.gui.Pattern.Inst.defineMethod('getURI',
 function() {
 
     /**
@@ -6540,67 +6540,67 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.Path
+//  TP.gui.Path
 //  ========================================================================
 
 /**
- * @type {TP.core.Path}
+ * @type {TP.gui.Path}
  * @summary A type that can manage an arbitrarily complex set of points.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Path');
+TP.lang.Object.defineSubtype('gui.Path');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Type.defineConstant('MOVE_TO_ABS', 0);
-TP.core.Path.Type.defineConstant('LINE_TO_ABS', 1);
-TP.core.Path.Type.defineConstant('HORIZ_LINE_TO_ABS', 2);
-TP.core.Path.Type.defineConstant('VERT_LINE_TO_ABS', 3);
-TP.core.Path.Type.defineConstant('CURVE_TO_ABS', 4);
-TP.core.Path.Type.defineConstant('SMOOTH_CURVE_TO_ABS', 5);
-TP.core.Path.Type.defineConstant('QUAD_CURVE_TO_ABS', 6);
-TP.core.Path.Type.defineConstant('QUAD_SMOOTH_CURVE_TO_ABS', 7);
-TP.core.Path.Type.defineConstant('ARC_TO_ABS', 8);
-TP.core.Path.Type.defineConstant('CLOSE_PATH_ABS', 9);
+TP.gui.Path.Type.defineConstant('MOVE_TO_ABS', 0);
+TP.gui.Path.Type.defineConstant('LINE_TO_ABS', 1);
+TP.gui.Path.Type.defineConstant('HORIZ_LINE_TO_ABS', 2);
+TP.gui.Path.Type.defineConstant('VERT_LINE_TO_ABS', 3);
+TP.gui.Path.Type.defineConstant('CURVE_TO_ABS', 4);
+TP.gui.Path.Type.defineConstant('SMOOTH_CURVE_TO_ABS', 5);
+TP.gui.Path.Type.defineConstant('QUAD_CURVE_TO_ABS', 6);
+TP.gui.Path.Type.defineConstant('QUAD_SMOOTH_CURVE_TO_ABS', 7);
+TP.gui.Path.Type.defineConstant('ARC_TO_ABS', 8);
+TP.gui.Path.Type.defineConstant('CLOSE_PATH_ABS', 9);
 
-TP.core.Path.Type.defineConstant('MOVE_TO_REL', 10);
-TP.core.Path.Type.defineConstant('LINE_TO_REL', 11);
-TP.core.Path.Type.defineConstant('HORIZ_LINE_TO_REL', 12);
-TP.core.Path.Type.defineConstant('VERT_LINE_TO_REL', 13);
-TP.core.Path.Type.defineConstant('CURVE_TO_REL', 14);
-TP.core.Path.Type.defineConstant('SMOOTH_CURVE_TO_REL', 15);
-TP.core.Path.Type.defineConstant('QUAD_CURVE_TO_REL', 16);
-TP.core.Path.Type.defineConstant('QUAD_SMOOTH_CURVE_TO_REL', 17);
-TP.core.Path.Type.defineConstant('ARC_TO_REL', 18);
-TP.core.Path.Type.defineConstant('CLOSE_PATH_REL', 19);
-
-//  Subtypes should redefine this.
-TP.core.Path.Type.defineConstant('SEGMENT_INFO', TP.hc());
+TP.gui.Path.Type.defineConstant('MOVE_TO_REL', 10);
+TP.gui.Path.Type.defineConstant('LINE_TO_REL', 11);
+TP.gui.Path.Type.defineConstant('HORIZ_LINE_TO_REL', 12);
+TP.gui.Path.Type.defineConstant('VERT_LINE_TO_REL', 13);
+TP.gui.Path.Type.defineConstant('CURVE_TO_REL', 14);
+TP.gui.Path.Type.defineConstant('SMOOTH_CURVE_TO_REL', 15);
+TP.gui.Path.Type.defineConstant('QUAD_CURVE_TO_REL', 16);
+TP.gui.Path.Type.defineConstant('QUAD_SMOOTH_CURVE_TO_REL', 17);
+TP.gui.Path.Type.defineConstant('ARC_TO_REL', 18);
+TP.gui.Path.Type.defineConstant('CLOSE_PATH_REL', 19);
 
 //  Subtypes should redefine this.
-TP.core.Path.Type.defineConstant('PATH_SPLITUP_REGEX', TP.rc('.+', 'g'));
+TP.gui.Path.Type.defineConstant('SEGMENT_INFO', TP.hc());
+
+//  Subtypes should redefine this.
+TP.gui.Path.Type.defineConstant('PATH_SPLITUP_REGEX', TP.rc('.+', 'g'));
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineAttribute('pathSegments');
+TP.gui.Path.Inst.defineAttribute('pathSegments');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('init',
+TP.gui.Path.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.Path} A new instance.
+     * @returns {TP.gui.Path} A new instance.
      */
 
     this.set('pathSegments', TP.ac());
@@ -6610,7 +6610,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('addSegment',
+TP.gui.Path.Inst.defineMethod('addSegment',
 function(segmentOpConstant, segmentArgs) {
 
     /**
@@ -6621,8 +6621,8 @@ function(segmentOpConstant, segmentArgs) {
      *     the path segment. This should be one of the constant values defined
      *     in this type's SEGMENT_INFO hash.
      * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
-     *     TP.core.Points that contain the segment arguments.
-     * @returns {TP.core.Path} The receiver.
+     *     TP.gui.Points that contain the segment arguments.
+     * @returns {TP.gui.Path} The receiver.
      */
 
     var segmentInfo,
@@ -6652,13 +6652,13 @@ function(segmentOpConstant, segmentArgs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('operandsAsNumbers',
+TP.gui.Path.Inst.defineMethod('operandsAsNumbers',
 function(operandsArray) {
 
     /**
      * @method operandsAsNumbers
      * @summary Converts the supplied Array of operands (each of which can be a
-     *     Number, a Boolean, an Array or a TP.core.Point), into a Number
+     *     Number, a Boolean, an Array or a TP.gui.Point), into a Number
      *     sequence suitable for use in a segment.
      * @param {Array} operandsArray An Array of objects to convert.
      * @returns {Array} An Array of Numbers.
@@ -6684,7 +6684,7 @@ function(operandsArray) {
             }
         } else if (TP.isArray(operand)) {
             convertedOperands.addAll(this.operandsAsNumbers(operand));
-        } else if (operand.getType() === TP.core.Point) {
+        } else if (operand.getType() === TP.gui.Point) {
             convertedOperands.push(operand.get('x'), operand.get('y'));
         }
     }
@@ -6694,7 +6694,7 @@ function(operandsArray) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('deleteSegment',
+TP.gui.Path.Inst.defineMethod('deleteSegment',
 function(segmentOpConstant, occurrenceCount) {
 
     /**
@@ -6706,7 +6706,7 @@ function(segmentOpConstant, occurrenceCount) {
      *     in this type's SEGMENT_INFO hash.
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be removed from the path. E.g. 'The 3rd MOVETO'.
-     * @returns {TP.core.Path} The receiver.
+     * @returns {TP.gui.Path} The receiver.
      */
 
     var segmentInfo,
@@ -6730,7 +6730,7 @@ function(segmentOpConstant, occurrenceCount) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('asDumpString',
+TP.gui.Path.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -6764,7 +6764,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('asHTMLString',
+TP.gui.Path.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -6773,14 +6773,14 @@ function() {
      * @returns {String} The receiver in HTML string format.
      */
 
-    return '<span class="TP_core_Pattern">' +
+    return '<span class="TP_gui_Pattern">' +
                 TP.htmlstr(this.get('pathSegments')) +
             '</span>';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('asJSONSource',
+TP.gui.Path.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -6797,7 +6797,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('asPrettyString',
+TP.gui.Path.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -6822,14 +6822,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('asString',
+TP.gui.Path.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
      * @method asString
      * @summary Returns a String representation of the receiver.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.Path's String representation. The default is true.
+     *     of the TP.gui.Path's String representation. The default is true.
      * @returns {String} The receiver's String representation.
      */
 
@@ -6849,7 +6849,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('asXMLString',
+TP.gui.Path.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -6865,7 +6865,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('getSegment',
+TP.gui.Path.Inst.defineMethod('getSegment',
 function(segmentOpConstant, occurrenceCount) {
 
     /**
@@ -6905,7 +6905,7 @@ function(segmentOpConstant, occurrenceCount) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('getSegmentIndex',
+TP.gui.Path.Inst.defineMethod('getSegmentIndex',
 function(segmentOpConstant, occurrenceCount) {
 
     /**
@@ -6950,7 +6950,7 @@ function(segmentOpConstant, occurrenceCount) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('insertSegment',
+TP.gui.Path.Inst.defineMethod('insertSegment',
 function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
          occurrenceCount) {
 
@@ -6964,14 +6964,14 @@ function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
      *     the path segment. This should be one of the constant values defined
      *     in this type's SEGMENT_INFO hash.
      * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
-     *     TP.core.Points that contain the segment arguments.
+     *     TP.gui.Points that contain the segment arguments.
      * @param {String} insPointSegmentConstant A constant that denotes the
      *     operator of the insertion point path segment. This should be one of
      *     the constant values defined in this type's SEGMENT_INFO hash.
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be the insertion point from the path. E.g. 'The 3rd
      *     MOVETO'.
-     * @returns {TP.core.Path} The receiver.
+     * @returns {TP.gui.Path} The receiver.
      */
 
     var segmentInfo,
@@ -7022,7 +7022,7 @@ function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('updateSegment',
+TP.gui.Path.Inst.defineMethod('updateSegment',
 function(segmentOpConstant, segmentArgs, occurrenceCount) {
 
     /**
@@ -7033,10 +7033,10 @@ function(segmentOpConstant, segmentArgs, occurrenceCount) {
      *     the path segment. This should be one of the constant values defined
      *     in this type's SEGMENT_INFO hash.
      * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
-     *     TP.core.Points that contain the segment arguments.
+     *     TP.gui.Points that contain the segment arguments.
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be obtained from the path. E.g. 'The 3rd MOVETO'.
-     * @returns {TP.core.Path} The receiver.
+     * @returns {TP.gui.Path} The receiver.
      */
 
     var segmentInfo,
@@ -7075,64 +7075,64 @@ function(segmentOpConstant, segmentArgs, occurrenceCount) {
 });
 
 //  ========================================================================
-//  TP.core.SVGPath
+//  TP.gui.SVGPath
 //  ========================================================================
 
 /**
- * @summary A subtype of TP.core.Path that can manage SVG paths.
+ * @summary A subtype of TP.gui.Path that can manage SVG paths.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Path.defineSubtype('SVGPath');
+TP.gui.Path.defineSubtype('SVGPath');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.Type.defineConstant('SEGMENT_INFO',
+TP.gui.SVGPath.Type.defineConstant('SEGMENT_INFO',
     TP.hc(
-        TP.core.Path.MOVE_TO_ABS, TP.ac('M', 2),
-        TP.core.Path.LINE_TO_ABS, TP.ac('L', 2),
-        TP.core.Path.HORIZ_LINE_TO_ABS, TP.ac('H', 1),
-        TP.core.Path.VERT_LINE_TO_ABS, TP.ac('V', 1),
-        TP.core.Path.CURVE_TO_ABS, TP.ac('C', 6),
-        TP.core.Path.SMOOTH_CURVE_TO_ABS, TP.ac('S', 4),
-        TP.core.Path.QUAD_CURVE_TO_ABS, TP.ac('Q', 4),
-        TP.core.Path.QUAD_SMOOTH_CURVE_TO_ABS, TP.ac('T', 2),
-        TP.core.Path.ARC_TO_ABS, TP.ac('A', 7),
-        TP.core.Path.CLOSE_PATH_ABS, TP.ac('Z', 0),
+        TP.gui.Path.MOVE_TO_ABS, TP.ac('M', 2),
+        TP.gui.Path.LINE_TO_ABS, TP.ac('L', 2),
+        TP.gui.Path.HORIZ_LINE_TO_ABS, TP.ac('H', 1),
+        TP.gui.Path.VERT_LINE_TO_ABS, TP.ac('V', 1),
+        TP.gui.Path.CURVE_TO_ABS, TP.ac('C', 6),
+        TP.gui.Path.SMOOTH_CURVE_TO_ABS, TP.ac('S', 4),
+        TP.gui.Path.QUAD_CURVE_TO_ABS, TP.ac('Q', 4),
+        TP.gui.Path.QUAD_SMOOTH_CURVE_TO_ABS, TP.ac('T', 2),
+        TP.gui.Path.ARC_TO_ABS, TP.ac('A', 7),
+        TP.gui.Path.CLOSE_PATH_ABS, TP.ac('Z', 0),
 
-        TP.core.Path.MOVE_TO_REL, TP.ac('m', 2),
-        TP.core.Path.LINE_TO_REL, TP.ac('l', 2),
-        TP.core.Path.HORIZ_LINE_TO_REL, TP.ac('h', 1),
-        TP.core.Path.VERT_LINE_TO_REL, TP.ac('v', 1),
-        TP.core.Path.CURVE_TO_REL, TP.ac('c', 6),
-        TP.core.Path.SMOOTH_CURVE_TO_REL, TP.ac('s', 4),
-        TP.core.Path.QUAD_CURVE_TO_REL, TP.ac('q', 4),
-        TP.core.Path.QUAD_SMOOTH_CURVE_TO_REL, TP.ac('t', 2),
-        TP.core.Path.ARC_TO_REL, TP.ac('a', 7),
-        TP.core.Path.CLOSE_PATH_REL, TP.ac('z', 0)
+        TP.gui.Path.MOVE_TO_REL, TP.ac('m', 2),
+        TP.gui.Path.LINE_TO_REL, TP.ac('l', 2),
+        TP.gui.Path.HORIZ_LINE_TO_REL, TP.ac('h', 1),
+        TP.gui.Path.VERT_LINE_TO_REL, TP.ac('v', 1),
+        TP.gui.Path.CURVE_TO_REL, TP.ac('c', 6),
+        TP.gui.Path.SMOOTH_CURVE_TO_REL, TP.ac('s', 4),
+        TP.gui.Path.QUAD_CURVE_TO_REL, TP.ac('q', 4),
+        TP.gui.Path.QUAD_SMOOTH_CURVE_TO_REL, TP.ac('t', 2),
+        TP.gui.Path.ARC_TO_REL, TP.ac('a', 7),
+        TP.gui.Path.CLOSE_PATH_REL, TP.ac('z', 0)
         ));
 
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.Type.defineConstant('PATH_SPLITUP_REGEX',
+TP.gui.SVGPath.Type.defineConstant('PATH_SPLITUP_REGEX',
         TP.rc('([A-Za-z])|(\\d+(\\.\\d+)?)|(\\.\\d+)|(-\\d+(\\.\\d+)?)|(-\\.\\d+)',
     'g'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.Type.defineConstant('PATH_PARSER',
+TP.gui.SVGPath.Type.defineConstant('PATH_PARSER',
 function(aString) {
 
     /**
      * @method PATH_PARSER
      * @summary Converts a String containing a path description to a
-     *     TP.core.Path object.
-     * @param {The} aString String definition to use to build a TP.core.Path
+     *     TP.gui.Path object.
+     * @param {The} aString String definition to use to build a TP.gui.Path
      *     object from.
-     * @returns {TP.core.SVGPath} A TP.core.Path expressing the supplied
+     * @returns {TP.gui.SVGPath} A TP.gui.Path expressing the supplied
      *     transformation.
      */
 
@@ -7150,7 +7150,7 @@ function(aString) {
 
     newPath = TP.ac();
 
-    pathParts = TP.core.SVGPath.at('PATH_SPLITUP_REGEX').match(aString);
+    pathParts = TP.gui.SVGPath.at('PATH_SPLITUP_REGEX').match(aString);
 
     operatorMatcher = TP.rc('[MLHVCSQTAZ]', 'i');
 
@@ -7177,7 +7177,7 @@ function(aString) {
     }
 
     if (TP.notEmpty(newPath)) {
-        newObj = TP.core.SVGPath.construct();
+        newObj = TP.gui.SVGPath.construct();
         newObj.set('pathSegments', newPath);
 
         return newObj;
@@ -7188,13 +7188,13 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.addParser(TP.core.SVGPath.PATH_PARSER);
+TP.gui.SVGPath.addParser(TP.gui.SVGPath.PATH_PARSER);
 
 //  ------------------------------------------------------------------------
 //  Type Methods.
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.Type.defineMethod('elementGetBoundingBox',
+TP.gui.SVGPath.Type.defineMethod('elementGetBoundingBox',
 function(anElement) {
 
     /**
@@ -7202,7 +7202,7 @@ function(anElement) {
      * @summary Returns the rectangle that completely encloses the shape.
      * @param {Element} anElement An SVG 'path' element to return the bounding
      *     box rectangle for.
-     * @returns {TP.core.Rect} The rectangle that encloses the shape.
+     * @returns {TP.gui.Rect} The rectangle that encloses the shape.
      */
 
     var pathStr,
@@ -7210,11 +7210,11 @@ function(anElement) {
         pathObj;
 
     if (TP.isEmpty(pathStr = anElement.getAttribute('d'))) {
-        return TP.core.Rect.construct(-1, -1, -1, -1);
+        return TP.gui.Rect.construct(-1, -1, -1, -1);
     }
 
-    if (TP.notValid(pathObj = TP.core.SVGPath.from(pathStr))) {
-        return TP.core.Rect.construct(-1, -1, -1, -1);
+    if (TP.notValid(pathObj = TP.gui.SVGPath.from(pathStr))) {
+        return TP.gui.Rect.construct(-1, -1, -1, -1);
     }
 
     return pathObj.getBoundingBox();
@@ -7224,13 +7224,13 @@ function(anElement) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Path.Inst.defineMethod('$updateBBoxData',
+TP.gui.SVGPath.Inst.defineMethod('$updateBBoxData',
 function(bboxData, x, y) {
 
     /**
      * @method $updateBBoxData
      * @summary Update
-     * @returns {TP.core.Path}
+     * @returns {TP.gui.Path}
      */
 
     if (bboxData.left === TP.NOT_FOUND) {
@@ -7261,13 +7261,13 @@ function(bboxData, x, y) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.Inst.defineMethod('$updateBBoxFromSegment',
+TP.gui.SVGPath.Inst.defineMethod('$updateBBoxFromSegment',
 function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
     /**
      * @method $updateBBox
      * @summary
-     * @returns {TP.core.SVGPath}
+     * @returns {TP.gui.SVGPath}
      */
 
     var i,
@@ -7494,7 +7494,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SVGPath.Inst.defineMethod('getBoundingBox',
+TP.gui.SVGPath.Inst.defineMethod('getBoundingBox',
 function() {
 
     /**
@@ -7502,7 +7502,7 @@ function() {
      * @summary Returns the rectangle that completely encloses the shape.
      * @param {Element} anElement An SVG 'path' element to return the bounding
      *     box rectangle for.
-     * @returns {TP.core.Rect} The rectangle that encloses the shape.
+     * @returns {TP.gui.Rect} The rectangle that encloses the shape.
      */
 
     var pathParts,
@@ -7533,7 +7533,7 @@ function() {
                                     trackingData);
     }
 
-    return TP.core.Rect.construct(
+    return TP.gui.Rect.construct(
                             trackingData.left,
                             trackingData.top,
                             trackingData.right - trackingData.left,
@@ -7541,33 +7541,33 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.Transition
+//  TP.gui.Transition
 //  ========================================================================
 
 /**
- * @type {TP.core.Transition}
+ * @type {TP.gui.Transition}
  * @summary The common supertype for transition types in TIBET, providing
  *     (mostly abstract) methods for use in subtypes.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Transition');
+TP.lang.Object.defineSubtype('gui.Transition');
 
 //  This is an abstract type.
-TP.core.Transition.isAbstract(true);
+TP.gui.Transition.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineAttribute('transitionJob');
+TP.gui.Transition.Inst.defineAttribute('transitionJob');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('init',
+TP.gui.Transition.Inst.defineMethod('init',
 function(controlParams, stepParams) {
 
     /**
@@ -7584,7 +7584,7 @@ function(controlParams, stepParams) {
      *     control parameters: delay, interval, limit, count, compute, freeze.
      * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job step
      *     parameters: target, property.
-     * @returns {TP.core.Transition} A new instance.
+     * @returns {TP.gui.Transition} A new instance.
      */
 
     var transitionJob;
@@ -7608,7 +7608,7 @@ function(controlParams, stepParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('clearValues',
+TP.gui.Transition.Inst.defineMethod('clearValues',
 function(params) {
 
     /**
@@ -7622,7 +7622,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('configure',
+TP.gui.Transition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -7646,7 +7646,7 @@ function(job, params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('constructJob',
+TP.gui.Transition.Inst.defineMethod('constructJob',
 function(controlParams, stepParams) {
 
     /**
@@ -7790,7 +7790,7 @@ function(controlParams, stepParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('constructJobGroup',
+TP.gui.Transition.Inst.defineMethod('constructJobGroup',
 function() {
 
     /**
@@ -7826,7 +7826,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('getComputeFunction',
+TP.gui.Transition.Inst.defineMethod('getComputeFunction',
 function() {
 
     /**
@@ -7843,7 +7843,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('getCount',
+TP.gui.Transition.Inst.defineMethod('getCount',
 function() {
 
     /**
@@ -7862,7 +7862,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('getDelay',
+TP.gui.Transition.Inst.defineMethod('getDelay',
 function() {
 
     /**
@@ -7884,7 +7884,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('getInterval',
+TP.gui.Transition.Inst.defineMethod('getInterval',
 function() {
 
     /**
@@ -7903,7 +7903,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('getLimit',
+TP.gui.Transition.Inst.defineMethod('getLimit',
 function() {
 
     /**
@@ -7924,7 +7924,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('preserveValues',
+TP.gui.Transition.Inst.defineMethod('preserveValues',
 function(params) {
 
     /**
@@ -7938,13 +7938,13 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('reset',
+TP.gui.Transition.Inst.defineMethod('reset',
 function() {
 
     /**
      * @method reset
      * @summary Resets the effect so that it can be executed again.
-     * @returns {TP.core.Transition} The receiver.
+     * @returns {TP.gui.Transition} The receiver.
      */
 
     //  At this level, we just reset our job.
@@ -7955,7 +7955,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('restoreValues',
+TP.gui.Transition.Inst.defineMethod('restoreValues',
 function(params) {
 
     /**
@@ -7969,7 +7969,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('start',
+TP.gui.Transition.Inst.defineMethod('start',
 function(params) {
 
     /**
@@ -8004,7 +8004,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.Inst.defineMethod('step',
+TP.gui.Transition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
@@ -8026,28 +8026,28 @@ function(job, params) {
 });
 
 //  ========================================================================
-//  TP.core.MultiTransition
+//  TP.gui.MultiTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.MultiTransition}
+ * @type {TP.gui.MultiTransition}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.defineSubtype('MultiTransition');
+TP.gui.Transition.defineSubtype('MultiTransition');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineAttribute('transitionEntries');
+TP.gui.MultiTransition.Inst.defineAttribute('transitionEntries');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('init',
+TP.gui.MultiTransition.Inst.defineMethod('init',
 function(controlParams, stepParams) {
 
     /**
@@ -8064,7 +8064,7 @@ function(controlParams, stepParams) {
      *     control parameters: delay, interval, limit, count, compute, freeze.
      * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job step
      *     parameters: target, property.
-     * @returns {TP.core.MultiTransition} A new instance.
+     * @returns {TP.gui.MultiTransition} A new instance.
      */
 
     this.callNextMethod();
@@ -8076,7 +8076,7 @@ function(controlParams, stepParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('addTransitionEntry',
+TP.gui.MultiTransition.Inst.defineMethod('addTransitionEntry',
 function(transitionEntry) {
 
     /**
@@ -8084,7 +8084,7 @@ function(transitionEntry) {
      * @summary Adds the supplied transition entry to the receiver.
      * @param {TP.core.Hash} aTransitionEntry The transition entry to add to the
      *     list of the receiver's transitions.
-     * @returns {TP.core.MultiTransition} A new instance.
+     * @returns {TP.gui.MultiTransition} A new instance.
      */
 
     var transitionType;
@@ -8108,7 +8108,7 @@ function(transitionEntry) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('clearValues',
+TP.gui.MultiTransition.Inst.defineMethod('clearValues',
 function(params) {
 
     /**
@@ -8149,7 +8149,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('configure',
+TP.gui.MultiTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -8209,7 +8209,7 @@ function(job, params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('preserveValues',
+TP.gui.MultiTransition.Inst.defineMethod('preserveValues',
 function(params) {
 
     /**
@@ -8251,7 +8251,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('restoreValues',
+TP.gui.MultiTransition.Inst.defineMethod('restoreValues',
 function(params) {
 
     /**
@@ -8293,7 +8293,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MultiTransition.Inst.defineMethod('step',
+TP.gui.MultiTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
@@ -8363,30 +8363,30 @@ function(job, params) {
 });
 
 //  ========================================================================
-//  TP.core.ObjectPropertyTransition
+//  TP.gui.ObjectPropertyTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.ObjectPropertyTransition}
- * @summary A subtype of TP.core.Transition that supplies some common methods
+ * @type {TP.gui.ObjectPropertyTransition}
+ * @summary A subtype of TP.gui.Transition that supplies some common methods
  *     for transitioning object properties.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Transition.defineSubtype('ObjectPropertyTransition');
+TP.gui.Transition.defineSubtype('ObjectPropertyTransition');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ObjectPropertyTransition.Type.defineMethod('transition',
+TP.gui.ObjectPropertyTransition.Type.defineMethod('transition',
 function(aTarget, propertyName, aTransitionParams) {
 
     /**
      * @method transition
      * @summary A convenience wrapper for invoking this type of
-     *     TP.core.Transition to do a 'simple transition'.
+     *     TP.gui.Transition to do a 'simple transition'.
      * @param {Array|Element} aTarget The target or targets to transition.
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.core.Hash} aTransitionParams A hash of parameters to use for
@@ -8521,7 +8521,7 @@ function(aTarget, propertyName, aTransitionParams) {
 
     //  We sneak the property onto the control params so that abstract
     //  subtypes that need to look up concrete types (like
-    //  TP.core.CSSPropertyTransition), can use it.
+    //  TP.gui.CSSPropertyTransition), can use it.
     controlParams.atPut('property', propertyName);
 
     //  All the configuration is over. Set up the transition.
@@ -8641,7 +8641,7 @@ function(aTarget, propertyName, aTransitionParams) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ObjectPropertyTransition.Inst.defineMethod('configure',
+TP.gui.ObjectPropertyTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -8741,7 +8741,7 @@ function(job, params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ObjectPropertyTransition.Inst.defineMethod('step',
+TP.gui.ObjectPropertyTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
@@ -8805,24 +8805,24 @@ function(job, params) {
 });
 
 //  ========================================================================
-//  TP.core.AttributeTransition
+//  TP.gui.AttributeTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.AttributeTransition}
- * @summary A subtype of TP.core.ObjectPropertyTransition that supplies some
+ * @type {TP.gui.AttributeTransition}
+ * @summary A subtype of TP.gui.ObjectPropertyTransition that supplies some
  *     common methods for transitioning element attributes.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ObjectPropertyTransition.defineSubtype('AttributeTransition');
+TP.gui.ObjectPropertyTransition.defineSubtype('AttributeTransition');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeTransition.Inst.defineMethod('configure',
+TP.gui.AttributeTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -8920,7 +8920,7 @@ function(job, params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttributeTransition.Inst.defineMethod('step',
+TP.gui.AttributeTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**

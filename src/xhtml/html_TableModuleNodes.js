@@ -54,13 +54,13 @@ TP.html.Aligned.defineSubtype('caption');
 
 TP.html.tcolumn.defineSubtype('col');
 
-TP.html.col.addTraits(TP.core.EmptyElementNode);
+TP.html.col.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.col.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.col.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ========================================================================
 //  TP.html.colgroup

@@ -10,14 +10,14 @@
 
 /**
  * @type {TP.tibet.content}
- * @summary A subtype of TP.core.ElementNode that implements a way of describing
+ * @summary A subtype of TP.dom.ElementNode that implements a way of describing
  *     a 'content type', along with its attendant data types and aspect
  *     mappings, in markup.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('tibet:content');
+TP.dom.ElementNode.defineSubtype('tibet:content');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -64,7 +64,7 @@ function(aRequest) {
         return;
     }
 
-    //  Get a handle to a TP.core.Node representing an instance of this
+    //  Get a handle to a TP.dom.Node representing an instance of this
     //  element type wrapped around elem. Note that this will both ensure a
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
@@ -119,7 +119,7 @@ function(aRequest) {
                     resp = schemaURI.getResource(fetchParams);
 
                     if (TP.isValid(schemaObj = resp.get('result'))) {
-                        if (TP.isKindOf(schemaObj, TP.core.XMLDocumentNode)) {
+                        if (TP.isKindOf(schemaObj, TP.dom.XMLDocumentNode)) {
                             schemaObj = schemaObj.getDocumentElement();
                         }
                     }
@@ -304,7 +304,7 @@ function(aRequest) {
 
 /**
  * @type {TP.tibet.aspect}
- * @summary A subtype of TP.core.ElementNode that implements a way of describing
+ * @summary A subtype of TP.dom.ElementNode that implements a way of describing
  *     an 'aspect' of a 'content type', along with rules about it. It is defined
  *     so that development when the Sherpa is loaded does not cause an
  *     'autodefinition' of a missing tag.
@@ -312,7 +312,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('tibet:aspect');
+TP.dom.ElementNode.defineSubtype('tibet:aspect');
 
 //  ------------------------------------------------------------------------
 //  end

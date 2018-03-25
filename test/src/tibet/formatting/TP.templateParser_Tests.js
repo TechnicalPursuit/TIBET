@@ -242,7 +242,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The content as XML-RPC is: {{value .% TP.core.XMLRPCNode}}';
+        templateStr = 'The content as XML-RPC is: {{value .% TP.dom.XMLRPCNode}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -253,7 +253,7 @@ function() {
             ],
             [
                 'value',
-                'value .% TP.core.XMLRPCNode'
+                'value .% TP.dom.XMLRPCNode'
             ]
         ];
 

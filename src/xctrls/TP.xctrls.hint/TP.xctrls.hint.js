@@ -55,7 +55,7 @@ function(anEvent) {
         textContent;
 
     //  Wrap the Event into a Signal and the event's *resolved* target into a
-    //  TP.core.ElementNode wrapper. Note that we use the resolved target here
+    //  TP.dom.ElementNode wrapper. Note that we use the resolved target here
     //  because the mouse over might have happened on something like an
     //  'xctrls:label' and we want the core control element, which will be the
     //  parent in that case.
@@ -344,6 +344,30 @@ function(aRequest) {
     this.teardownHintOn(forElem);
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.hint.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants = this.getDescendants();
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
 });
 
 //  ------------------------------------------------------------------------

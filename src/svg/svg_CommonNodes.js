@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('svg:Shape');
+TP.dom.UIElementNode.defineSubtype('svg:Shape');
 
 TP.svg.Shape.addTraits(TP.svg.Element);
 

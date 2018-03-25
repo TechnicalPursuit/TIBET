@@ -729,7 +729,7 @@ function(aNode, smartConversion) {
         //  the outer element since all JSON strings are ultimately enclosed in
         //  '{'s.
         if (TP.elementGetLocalName(node) === 'struct') {
-            return TP.core.XMLRPCNode.objectFromNode(node);
+            return TP.dom.XMLRPCNode.objectFromNode(node);
         }
     }
 
@@ -1545,11 +1545,11 @@ function(anObject) {
     }
 
     //  defer to object itself whenever possible
-    if (TP.canInvoke(anObject, 'asTP_core_XMLRPCNode')) {
-        return anObject.asTP_core_XMLRPCNode();
+    if (TP.canInvoke(anObject, 'asTP_dom.XMLRPCNode')) {
+        return anObject.asTP_dom.XMLRPCNode();
     }
 
-    return TP.core.XMLRPCNode.from(anObject);
+    return TP.dom.XMLRPCNode.from(anObject);
 });
 
 //  ------------------------------------------------------------------------
@@ -1722,7 +1722,7 @@ function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
     //  default the JSONP 'callback' parameter name to 'callback'
     paramName = TP.ifInvalid(aCallbackParamName, 'callback');
 
-    //  get the string version of the URI, which will process TP.core.URIs as
+    //  get the string version of the URI, which will process TP.uri.URIs as
     //  needed so we're consistently working with a string URI
     url = aURI.asString();
 

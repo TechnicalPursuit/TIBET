@@ -209,7 +209,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
         if (TP.elementHasAttribute(anElement, 'tibet:sig_name', true) &&
             TP.isType(sigDispatchType =
                         TP.sys.getTypeByName('tibet:sig_dispatch')) &&
-            TP.core.ElementNode.getConcreteType(anElement) !==
+            TP.dom.ElementNode.getConcreteType(anElement) !==
                         sigDispatchType) {
             /* eslint-disable no-script-url */
             //  TODO: The 'sig' namespace is no longer used for this. Figure out

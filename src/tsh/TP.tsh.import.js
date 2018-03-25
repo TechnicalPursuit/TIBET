@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:import');
+TP.tag.ActionTag.defineSubtype('tsh:import');
 
 TP.tsh.import.addTraits(TP.tsh.Element);
 
@@ -198,7 +198,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('import',
+TP.shell.TSH.addHelpTopic('import',
     TP.tsh.import.Type.getMethod('tshExecute'),
     'Loads/executes a JavaScript/TIBET source file.',
     ':import [--href <importurl>] | <importurl>',

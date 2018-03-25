@@ -25,9 +25,9 @@ function() {
     /**
      * @method constructMatcherForGlobalJSContexts
      * @summary Returns a special, locally-programmed,
-     *     TP.core.KeyedSourceMatcher, that can handle the JavaScript global
+     *     TP.xctrls.KeyedSourceMatcher, that can handle the JavaScript global
      *     object better than a generic keyed source matcher.
-     * @returns {TP.core.KeyedSourceMatcher} A new matcher specially configured
+     * @returns {TP.xctrls.KeyedSourceMatcher} A new matcher specially configured
      *     to handle global JS contexts, including native JS constructors.
      */
 
@@ -39,7 +39,7 @@ function() {
         keySourceName;
 
     //  Construct a keyed source matcher with TP.global as the source.
-    matcher = TP.core.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global);
+    matcher = TP.xctrls.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global);
 
     //  Locally program 2 methods onto that instance that will manage native
     //  objects better than a regular keyed source matcher will. Note the use of
@@ -143,42 +143,42 @@ function() {
     this.callNextMethod();
 
     this.set('$cssMatcher',
-                TP.core.CSSPropertyMatcher.construct(
+                TP.xctrls.CSSPropertyMatcher.construct(
                     'CSS_PROPS'));
 
     this.set('$cfgMatcher',
-                TP.core.ListMatcher.construct(
+                TP.xctrls.ListMatcher.construct(
                     'TIBET_CFG',
                     TP.sys.cfg().getKeys()));
 
     this.set('$keywordsMatcher',
-                TP.core.ListMatcher.construct(
+                TP.xctrls.ListMatcher.construct(
                     'JS_COMMANDS',
                     TP.boot.$keywords.concat(TP.boot.$futurereservedwords),
                     'match_keyword'));
 
     this.set('$tshHistoryMatcher',
-                TP.core.TSHHistoryMatcher.construct(
+                TP.xctrls.TSHHistoryMatcher.construct(
                     'TSH_HISTORY'));
 
     this.set('$tshExecutionInstanceMatcher',
-                TP.core.KeyedSourceMatcher.construct(
+                TP.xctrls.KeyedSourceMatcher.construct(
                     'TSH_CONTEXT',
-                    TP.core.TSH.getDefaultInstance().
+                    TP.shell.TSH.getDefaultInstance().
                                         getExecutionInstance()));
 
     tshCommands = TP.ac();
-    TP.core.Shell.get('helpTopics').perform(
+    TP.shell.Shell.get('helpTopics').perform(
         function(kvPair) {
             tshCommands.push(kvPair.first());
         });
     this.set('$tshCommandsMatcher',
-                TP.core.ListMatcher.construct(
+                TP.xctrls.ListMatcher.construct(
                     'TSH_COMMANDS',
                     tshCommands));
 
     this.set('$uriMatcher',
-                TP.core.URIMatcher.construct(
+                TP.xctrls.URIMatcher.construct(
                     'TIBET_URIS'));
 
     this.set('matchers', TP.ac());
@@ -195,7 +195,7 @@ function(aMatcher) {
     /**
      * @method addMatcher
      * @summary Adds the supplied matcher to the receiver's matcher list.
-     * @param {TP.core.Matcher} aMatcher The matcher to add to the receiver's
+     * @param {TP.xctrls.Matcher} aMatcher The matcher to add to the receiver's
      *     matcher list.
      * @returns {TP.xctrls.Searcher} The receiver.
      */
@@ -215,7 +215,7 @@ function(aValue, matchers) {
      * @summary Computes and massages the search results using the supplied
      *     search term value and set of search matchers.
      * @param {String} aValue The search term value to search for.
-     * @param {TP.core.Matcher[]} matchers The list of matchers to use to
+     * @param {TP.xctrls.Matcher[]} matchers The list of matchers to use to
      *     compute the result set from.
      * @returns {Object[]} An Array of search result POJOs that contain one or
      *     more of the following slots:
@@ -371,7 +371,7 @@ function(aValue, topLevelObjects) {
      *     of matchers.
      * @param {Object[]} topLevelObjects The list of top level objects that will
      *     be used to compute matchers from. This is defaulted to TP.global.
-     * @returns {TP.core.Matcher[]} The list of matchers to use to search
+     * @returns {TP.xctrls.Matcher[]} The list of matchers to use to search
      *     various search spaces for the specified search term.
      */
 
@@ -477,7 +477,7 @@ function(aValue, topLevelObjects) {
                 //  Otherwise, just use a regular keyed source matcher against
                 //  the resolved object.
                 matchers.push(
-                    TP.core.KeyedSourceMatcher.construct(
+                    TP.xctrls.KeyedSourceMatcher.construct(
                                         'JS_CONTEXT', resolvedObj).
                         set('input', tokenizedFragment));
             }
@@ -842,7 +842,7 @@ function(aValue) {
                         TP,
                         APP,
                         CSS,
-                        TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                        TP.shell.TSH.getDefaultInstance().getExecutionInstance()
                     );
 
     //  Compute the matchers to use using a variety of techniques, including

@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.snippet}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:snippet');
+TP.tag.ActionTag.defineSubtype('tsh:snippet');
 
 TP.tsh.snippet.addTraits(TP.tsh.Element);
 
@@ -229,7 +229,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('snippet',
+TP.shell.TSH.addHelpTopic('snippet',
     TP.tsh.snippet.Type.getMethod('tshExecute'),
     'Allows addition and removal of commonly used snippets of TSH.',
     ':snippet [<snippet> [<description>]] [--hid=N] [--remove=N]',

@@ -22,19 +22,19 @@ TP.sherpa.adjuster_editor.defineSubtype('adjuster_genericPropertyEditor');
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyName',
-    TP.cpc('> .grid > *[name="propertyName"] span[part="name"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyName"] span[part="name"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValue',
-    TP.cpc('> .grid > *[name="propertyValue"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyValue"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValueSlotEditors',
-    TP.cpc('> .grid > *[name="propertyValue"] > .slots', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyValue"] > .slots', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyRuleSelector',
-    TP.cpc('> .grid > *[name="propertyRuleSelector"] > .input', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyRuleSelector"] > .input', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -187,8 +187,19 @@ function() {
     propertySyntax = TP.extern.csstree.lexer.getProperty(name);
 
     match = defaultSyntax.match(propertySyntax, valTree);
-
     syntaxResults = match.matched;
+
+    if (TP.notValid(syntaxResults)) {
+        match = defaultSyntax.match(defaultSyntax.valueCommonSyntax, valTree);
+        syntaxResults = match.matched;
+    }
+
+    if (TP.notValid(syntaxResults)) {
+        TP.ifWarn() ?
+            TP.warn('Could not retrieve syntax for property name: ' + name +
+                    ' and value: ' + val + '.') : 0;
+        return null;
+    }
 
     result = TP.hc();
     result.atPut('propName', syntaxResults.syntax.name);
@@ -317,29 +328,19 @@ function(slotData) {
             str += ' tibet:tag="sherpa:CSSDimensionSlotEditor"';
             break;
 
-        case 'Function':
-            break;
-
-        case 'HexColor':
-            break;
-
         case 'Identifier':
             str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
-            break;
-
-        case 'Number':
             break;
 
         case 'Percentage':
             str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
             break;
 
+        case 'Function':
+        case 'HexColor':
+        case 'Number':
         case 'String':
-            break;
-
         case 'Url':
-            break;
-
         default:
             str += ' tibet:tag="sherpa:CSSSlotEditor"';
             break;
@@ -511,6 +512,7 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
+    /*
     var infoTPElem;
 
     if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
@@ -522,6 +524,7 @@ function(aSignal) {
     if (TP.isValid(infoTPElem)) {
         infoTPElem.hide(true);
     }
+    */
 
     return this;
 });
@@ -540,6 +543,7 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
+    /*
     var namePart,
         name,
 
@@ -551,7 +555,7 @@ function(aSignal) {
     }
 
     namePart = TP.wrap(aSignal.getDOMTarget()).get('span[part="name"]');
-    if (!TP.isKindOf(namePart, TP.core.UIElementNode)) {
+    if (!TP.isKindOf(namePart, TP.dom.UIElementNode)) {
         return this;
     }
 
@@ -570,6 +574,7 @@ function(aSignal) {
             }
         }
     }
+    */
 
     return this;
 });
@@ -625,6 +630,10 @@ function() {
     //  Generate the data that will be used to generate the 'value field' markup
     //  and then generate the markup from that.
     cssData = this.generateCSSData();
+    if (TP.notValid(cssData)) {
+        return this;
+    }
+
     valueFieldMarkup = this.generateValueFieldMarkup(cssData);
 
     //  Create a DOM structure for it, assuming that non-prefixed elements are
@@ -804,7 +813,22 @@ function(aRequest) {
      * @returns {Element} The element.
      */
 
-    return aRequest.at('node');
+    var elem,
+
+        str,
+        newFrag;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    str = '<span part="value"/>';
+
+    newFrag = TP.xhtmlnode(str);
+
+    TP.nodeAppendChild(elem, newFrag, false);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -886,7 +910,15 @@ function(anInfo) {
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
 
+    var val,
+        unit;
+
     this.$set('info', anInfo);
+
+    //  The value that we want to display here comes from our information's
+    //  'value' slot.
+    val = anInfo.at('value');
+    this.get('valuePart').setTextContent(val);
 
     return this;
 });

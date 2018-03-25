@@ -9,12 +9,12 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.CSSPropertyTransition
+//  TP.gui.CSSPropertyTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.CSSPropertyTransition}
- * @summary A subtype (abstract) of TP.core.ObjectPropertyTransition that
+ * @type {TP.gui.CSSPropertyTransition}
+ * @summary A subtype (abstract) of TP.gui.ObjectPropertyTransition that
  *     supplies some common methods for animating CSS properties. This type can
  *     also capture the property name, a property prefix and a property suffix
  *     as instance variables.
@@ -22,16 +22,16 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ObjectPropertyTransition.defineSubtype('CSSPropertyTransition');
+TP.gui.ObjectPropertyTransition.defineSubtype('CSSPropertyTransition');
 
 //  This is an abstract type.
-TP.core.CSSPropertyTransition.isAbstract(true);
+TP.gui.CSSPropertyTransition.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Type.defineMethod('getConcreteType',
+TP.gui.CSSPropertyTransition.Type.defineMethod('getConcreteType',
 function(params) {
 
     /**
@@ -48,15 +48,15 @@ function(params) {
     propertyName = params.at('property');
 
     if (TP.CSS_COLOR_PROPERTIES.contains(propertyName)) {
-        return TP.core.CSSColorTransition;
+        return TP.gui.CSSColorTransition;
     }
 
     if (TP.CSS_LENGTH_PROPERTIES.contains(propertyName)) {
-        return TP.core.CSSLengthTransition;
+        return TP.gui.CSSLengthTransition;
     }
 
     if (TP.CSS_UNITLESS_PROPERTIES.contains(propertyName)) {
-        return TP.core.CSSValueTransition;
+        return TP.gui.CSSValueTransition;
     }
 
     return null;
@@ -66,16 +66,16 @@ function(params) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineAttribute('styleProperty');
+TP.gui.CSSPropertyTransition.Inst.defineAttribute('styleProperty');
 
-TP.core.CSSPropertyTransition.Inst.defineAttribute('propPrefix');
-TP.core.CSSPropertyTransition.Inst.defineAttribute('propSuffix');
+TP.gui.CSSPropertyTransition.Inst.defineAttribute('propPrefix');
+TP.gui.CSSPropertyTransition.Inst.defineAttribute('propSuffix');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('init',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('init',
 function(controlParams, stepParams) {
 
     /**
@@ -92,7 +92,7 @@ function(controlParams, stepParams) {
      *     control parameters: delay, interval, limit, count, compute, freeze.
      * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job
      *     step parameters: target, property.
-     * @returns {TP.core.CSSPropertyTransition} A new instance.
+     * @returns {TP.gui.CSSPropertyTransition} A new instance.
      */
 
 
@@ -110,7 +110,7 @@ function(controlParams, stepParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('clearValues',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('clearValues',
 function(params) {
 
     /**
@@ -165,7 +165,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('constructWorkFunction',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('constructWorkFunction',
 function(transitionJob) {
 
     /**
@@ -229,7 +229,7 @@ function(transitionJob) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('constructJob',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('constructJob',
 function(controlParams, stepParams) {
 
     /**
@@ -271,7 +271,7 @@ function(controlParams, stepParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('getComputeFunction',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('getComputeFunction',
 function() {
 
     /**
@@ -290,7 +290,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('preserveValues',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('preserveValues',
 function(params) {
 
     /**
@@ -336,7 +336,7 @@ function(params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.Inst.defineMethod('restoreValues',
+TP.gui.CSSPropertyTransition.Inst.defineMethod('restoreValues',
 function(params) {
 
     /**
@@ -400,27 +400,27 @@ function(params) {
 });
 
 //  ========================================================================
-//  TP.core.CSSValueTransition
+//  TP.gui.CSSValueTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.CSSValueTransition}
- * @summary A subtype of TP.core.CSSPropertyTransition that knows how to
+ * @type {TP.gui.CSSValueTransition}
+ * @summary A subtype of TP.gui.CSSPropertyTransition that knows how to
  *     animate CSS values. It doesn't take into account unit lengths, but is
  *     good for non-unit values like opacity. A subtype of this type,
- *     TP.core.CSSLengthTransition, should be used for CSS values that have unit
+ *     TP.gui.CSSLengthTransition, should be used for CSS values that have unit
  *     lengths.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertyTransition.defineSubtype('CSSValueTransition');
+TP.gui.CSSPropertyTransition.defineSubtype('CSSValueTransition');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSValueTransition.Inst.defineMethod('configure',
+TP.gui.CSSValueTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -548,7 +548,7 @@ function(job, params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSValueTransition.Inst.defineMethod('step',
+TP.gui.CSSValueTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**
@@ -629,24 +629,24 @@ function(job, params) {
 });
 
 //  ========================================================================
-//  TP.core.CSSLengthTransition
+//  TP.gui.CSSLengthTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.CSSLengthTransition}
- * @summary A subtype of TP.core.CSSValueTransition that knows how to animate
+ * @type {TP.gui.CSSLengthTransition}
+ * @summary A subtype of TP.gui.CSSValueTransition that knows how to animate
  *     CSS values with unit lengths, such as top, left, width, height, etc.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSValueTransition.defineSubtype('CSSLengthTransition');
+TP.gui.CSSValueTransition.defineSubtype('CSSLengthTransition');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSLengthTransition.Inst.defineMethod('configure',
+TP.gui.CSSLengthTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -777,24 +777,24 @@ function(job, params) {
 });
 
 //  ========================================================================
-//  TP.core.CSSColorTransition
+//  TP.gui.CSSColorTransition
 //  ========================================================================
 
 /**
- * @type {TP.core.CSSColorTransition}
- * @summary A subtype of TP.core.CSSValueTransition that knows how to animate
+ * @type {TP.gui.CSSColorTransition}
+ * @summary A subtype of TP.gui.CSSValueTransition that knows how to animate
  *     CSS colors values, such as color, backgroundColor, etc.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSValueTransition.defineSubtype('CSSColorTransition');
+TP.gui.CSSValueTransition.defineSubtype('CSSColorTransition');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSColorTransition.Inst.defineMethod('configure',
+TP.gui.CSSColorTransition.Inst.defineMethod('configure',
 function(job, params) {
 
     /**
@@ -871,7 +871,7 @@ function(job, params) {
     //  grab those values.
 
     //  We make sure to do 'asString's here, in case we got handed a
-    //  TP.core.Color.
+    //  TP.gui.Color.
     if (TP.notEmpty(from = params.at('from'))) {
         from = from.asString();
     }
@@ -943,7 +943,7 @@ function(job, params) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSColorTransition.Inst.defineMethod('step',
+TP.gui.CSSColorTransition.Inst.defineMethod('step',
 function(job, params) {
 
     /**

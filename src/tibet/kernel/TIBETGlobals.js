@@ -2196,7 +2196,7 @@ TP.RETURN_TOSTRING = function() {
 //  ------------------------------------------------------------------------
 
 //  Define a placeholder for string constant lookup. The idea is that each
-//  TP.core.Locale can place sprintf-capable (or constant) strings here upon
+//  TP.i18n.Locale can place sprintf-capable (or constant) strings here upon
 //  activation so code can simply refer to TP.msg.{{STRING_NAME}} in code.
 TP.msg = {};
 
@@ -2205,6 +2205,12 @@ TP.msg = {};
 //  ------------------------------------------------------------------------
 
 TP.defineNamespace('TP.dat');
+
+//  ------------------------------------------------------------------------
+//  DOM TYPES
+//  ------------------------------------------------------------------------
+
+TP.defineNamespace('TP.dom');
 
 //  ------------------------------------------------------------------------
 //  SORT FUNCTIONS
@@ -3032,6 +3038,8 @@ TP.regex.TITLE_CASE = /([-\s_]([a-z]))/g;       //  needs reset
 TP.regex.WORD_BOUNDARIES = /[-\s_]/g;           //  needs reset
 
 TP.regex.WHITESPACE = /\s+/;
+
+TP.regex.ONLY_WHITESPACE = /^\s+$/;
 TP.regex.ONLY_WORD = /^\w+$/;
 TP.regex.ONLY_NUM = /^\d+$/;
 TP.regex.ONLY_PERIOD = /^\.$/;

@@ -1175,14 +1175,14 @@ function() {
      * @method construct
      * @summary Constructs and returns a new instance of Date. Dates are parsed
      *     using any date parsers which have been added to the Date type,
-     *     followed by the current TP.core.Locale which attempts to construct a
+     *     followed by the current TP.i18n.Locale which attempts to construct a
      *     Date using localized parsing logic.
      * @description Date parsing is a key element of usability. TIBET's approach
      *     is to attempt to use the standard Date constructor, followed by the
      *     Date.fromString() method when the input is a string. The fromString
      *     method looks for any parsers which may have been registered via prior
      *     Date.addParser() calls. If those parsers are unsuccessful the current
-     *     TP.core.Locale is invoked to parse the input string in an attempt to
+     *     TP.i18n.Locale is invoked to parse the input string in an attempt to
      *     offer locale-specific Date construction.
      * @returns {Date} A new instance.
      */
@@ -1340,13 +1340,13 @@ function(anObject) {
      * @method construct
      * @summary Constructs and returns a new instance of Number. Numbers are
      *     parsed using any number parsers which have been added to the number
-     *     type, followed by the current TP.core.Locale which attempts to
+     *     type, followed by the current TP.i18n.Locale which attempts to
      *     construct a Number using localized parsing logic.
      * @description Number parsing is a key element of usability. TIBET's
      *     approach is to attempt to use the Number.fromString() method when the
      *     input is a string. The fromString method looks for any parsers which
      *     may have been registered via addParser. If those parsers are
-     *     unsuccessful the current TP.core.Locale is invoked to parse the input
+     *     unsuccessful the current TP.i18n.Locale is invoked to parse the input
      *     string in an attempt to offer locale-specific Number construction.
      *     Note that this method, being on a type that produces non-mutable
      *     instances, will always return its primitive value.

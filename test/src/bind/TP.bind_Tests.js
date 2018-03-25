@@ -6240,13 +6240,13 @@ function() {
                     colorField.get('value'),
                     'red');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('red'));
+                    TP.gui.Color.fromString('red'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('/people/person[1]/color')),
@@ -6267,10 +6267,10 @@ function() {
                             'purple');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('purple'));
+                            TP.gui.Color.fromString('purple'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[1]/color')),
@@ -6311,14 +6311,14 @@ function() {
                     colorField.get('value'),
                     'green');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
                     //  For some reason, green isn't green...
-                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+                    TP.gui.Color.fromString('rgb(0, 128, 0)'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('/people/person[2]/color')),
@@ -6339,10 +6339,10 @@ function() {
                             'yellow');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('yellow'));
+                            TP.gui.Color.fromString('yellow'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[2]/color')),
@@ -6383,13 +6383,13 @@ function() {
                     colorField.get('value'),
                     'blue');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('blue'));
+                    TP.gui.Color.fromString('blue'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('/people/person[3]/color')),
@@ -6410,10 +6410,10 @@ function() {
                             'orange');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('orange'));
+                            TP.gui.Color.fromString('orange'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[3]/color')),
@@ -6454,13 +6454,13 @@ function() {
                     colorField.get('value'),
                     'yellow');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('yellow'));
+                    TP.gui.Color.fromString('yellow'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('/people/person[4]/color')),
@@ -6481,10 +6481,10 @@ function() {
                             'blue');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('blue'));
+                            TP.gui.Color.fromString('blue'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[4]/color')),
@@ -6745,13 +6745,13 @@ function() {
                     colorField.get('value'),
                     'red');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('red'));
+                    TP.gui.Color.fromString('red'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('$.people[0].color')),
@@ -6772,10 +6772,10 @@ function() {
                             'purple');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('purple'));
+                            TP.gui.Color.fromString('purple'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('$.people[0].color')),
@@ -6816,14 +6816,14 @@ function() {
                     colorField.get('value'),
                     'green');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
                     //  For some reason, green isn't green...
-                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+                    TP.gui.Color.fromString('rgb(0, 128, 0)'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('$.people[1].color')),
@@ -6844,10 +6844,10 @@ function() {
                             'yellow');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('yellow'));
+                            TP.gui.Color.fromString('yellow'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('$.people[1].color')),
@@ -6888,13 +6888,13 @@ function() {
                     colorField.get('value'),
                     'blue');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('blue'));
+                    TP.gui.Color.fromString('blue'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('$.people[2].color')),
@@ -6915,10 +6915,10 @@ function() {
                             'orange');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('orange'));
+                            TP.gui.Color.fromString('orange'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('$.people[2].color')),
@@ -6959,13 +6959,13 @@ function() {
                     colorField.get('value'),
                     'yellow');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('yellow'));
+                    TP.gui.Color.fromString('yellow'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('$.people[3].color')),
@@ -6986,10 +6986,10 @@ function() {
                             'blue');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('blue'));
+                            TP.gui.Color.fromString('blue'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('$.people[3].color')),
@@ -7250,13 +7250,13 @@ function() {
                     colorField.get('value'),
                     'red');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('red'));
+                    TP.gui.Color.fromString('red'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('people[0].color')),
@@ -7277,10 +7277,10 @@ function() {
                             'purple');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('purple'));
+                            TP.gui.Color.fromString('purple'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('people[0].color')),
@@ -7321,14 +7321,14 @@ function() {
                     colorField.get('value'),
                     'green');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
                     //  For some reason, green isn't green...
-                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+                    TP.gui.Color.fromString('rgb(0, 128, 0)'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('people[1].color')),
@@ -7349,10 +7349,10 @@ function() {
                             'yellow');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('yellow'));
+                            TP.gui.Color.fromString('yellow'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('people[1].color')),
@@ -7393,13 +7393,13 @@ function() {
                     colorField.get('value'),
                     'blue');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('blue'));
+                    TP.gui.Color.fromString('blue'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('people[2].color')),
@@ -7420,10 +7420,10 @@ function() {
                             'orange');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('orange'));
+                            TP.gui.Color.fromString('orange'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('people[2].color')),
@@ -7464,13 +7464,13 @@ function() {
                     colorField.get('value'),
                     'yellow');
 
-                //  NB: We convert this into a TP.core.Color object to compare
+                //  NB: We convert this into a TP.gui.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
-                    TP.core.Color.fromString(
+                    TP.gui.Color.fromString(
                         colorSpan.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('yellow'));
+                    TP.gui.Color.fromString('yellow'));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('people[3].color')),
@@ -7491,10 +7491,10 @@ function() {
                             'blue');
 
                         test.assert.isEqualTo(
-                            TP.core.Color.fromString(
+                            TP.gui.Color.fromString(
                                 colorSpan.getComputedStyleProperty(
                                                         'backgroundColor')),
-                            TP.core.Color.fromString('blue'));
+                            TP.gui.Color.fromString('blue'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('people[3].color')),

@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.dump}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:dump');
+TP.tag.ActionTag.defineSubtype('tsh:dump');
 
 TP.tsh.dump.addTraits(TP.tsh.Element);
 
@@ -76,7 +76,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('dump',
+TP.shell.TSH.addHelpTopic('dump',
     TP.tsh.dump.Type.getMethod('tshExecute'),
     'Dumps a detailed version of stdout to stdout.',
     ':dump <target>',

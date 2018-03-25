@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:uri');
+TP.tag.ActionTag.defineSubtype('tsh:uri');
 
 TP.tsh.uri.addTraits(TP.tsh.Element);
 
@@ -245,7 +245,7 @@ function(aRequest) {
     }
 
     //  Now that we've gathered all of the parameters and the body, call the core
-    //  TP.core.URI's 'cmdRunContent' manually to do the work.
+    //  TP.uri.URI's 'cmdRunContent' manually to do the work.
 
     //  First, though, put the URL instance that we've generated so that
     //  cmdRunContent (a type method) can find it and use it.
@@ -259,7 +259,7 @@ function(aRequest) {
     //  Call cmdRunContent and supply the kind of redirection that was supplied
     //  (if any). This will be one of: TP.GET, TP.SET, TP.FILTER, TP.TRANSFORM,
     //  TP.ADD or TP.NONE.
-    TP.core.URI.cmdRunContent(aRequest, TP.wrap(node).getRedirectionType());
+    TP.uri.URI.cmdRunContent(aRequest, TP.wrap(node).getRedirectionType());
 
     return;
 });

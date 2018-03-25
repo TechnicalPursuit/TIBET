@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.entity}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:entity');
+TP.tag.ActionTag.defineSubtype('tsh:entity');
 
 TP.tsh.entity.addTraits(TP.tsh.Element);
 
@@ -72,7 +72,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('entity',
+TP.shell.TSH.addHelpTopic('entity',
     TP.tsh.entity.Type.getMethod('tshExecute'),
     'Generates a table of XML entity codes.',
     ':entity [<entity_name_or_number>]',

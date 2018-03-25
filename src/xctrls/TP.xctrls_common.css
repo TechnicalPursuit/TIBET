@@ -11,7 +11,7 @@ xctrls|* {
 
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
-    -ms-appearance: none !important;
+    /* IE/Edge use the -webkit- prefix for appearance */
     appearance: none !important;
 }
 

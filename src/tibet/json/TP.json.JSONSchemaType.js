@@ -537,8 +537,8 @@ function(aString, sourceLocale) {
      *     calling fromObject(). Therefore we override this method and just call
      *     fromObject().
      * @param {String} aString The content string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
      *     to getTargetLanguage() which is based on the current locale's
      *     language-country value.
      * @returns {Object} An instance of the receiver, if parsing of the string

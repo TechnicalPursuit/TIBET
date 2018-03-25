@@ -46,7 +46,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var listTPElem,
@@ -345,6 +345,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants = this.get('./*[local-name() = \'template\']');
+
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
@@ -464,7 +487,7 @@ function(aspectName) {
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
@@ -1081,7 +1104,7 @@ function() {
 
         newSearcher = TP.xctrls.Searcher.construct();
         newSearcher.addMatcher(
-                            TP.core.ListMatcher.construct(
+                            TP.xctrls.ListMatcher.construct(
                                 'XCTRLS_LIST_' + this.getLocalID()));
 
         this.set('$autocompleterSearcher', newSearcher);
@@ -1117,7 +1140,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('buildNewContent',
@@ -1388,7 +1411,7 @@ function() {
      *     to generate content under the receiver. This template can include
      *     data binding expressions that will be used, along with the receiver's
      *     data, to generate that content.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode to use as the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
      *     template for the receiver.
      */
 
@@ -1398,42 +1421,37 @@ function() {
         templateContentTPElem,
         compiledTemplateContent;
 
-    //  First, we check to see if the author actually defined a template
-    templateTPElem = this.get('#' + this.getLocalID() + '_template');
-
-    if (TP.isEmpty(templateTPElem)) {
-        return null;
-    }
+    templateTPElem = this.get(
+                        TP.cpc('tibet|template', TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.
-    if (!TP.isValid(templateTPElem.getFirstChildElement())) {
+    if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
+
+        //  Make sure to null out the return value in case we got an empty
+        //  Array.
+        templateTPElem = null;
+
         itemTagName = this.getAttribute('itemTag');
         if (TP.notEmpty(itemTagName)) {
 
             //  Build a template element, using the supplied item tag name and
             //  building a label/value pair containing expressions that will be
             //  populated to the bound data.
-            templateContentTPElem = TP.tpelem(
-                '<' + itemTagName + '>' +
-                    '<xctrls:label>[[value.1]]</xctrls:label>' +
-                    '<xctrls:value>[[value.0]]</xctrls:value>' +
-                '</' + itemTagName + '>');
+            templateContentTPElem = TP.wrap(
+                TP.xhtmlnode(
+                    '<span>' +
+                        '<' + itemTagName + '>' +
+                            '<xctrls:label>[[value.1]]</xctrls:label>' +
+                            '<xctrls:value>[[value.0]]</xctrls:value>' +
+                        '</' + itemTagName + '>' +
+                    '</span>')
+                );
 
             //  Compile it.
             templateContentTPElem.compile();
 
-            //  Note here how we remove the 'id' attribute, since we're going to
-            //  be using it as a template.
-            templateContentTPElem.removeAttribute('id');
-
-            //  Note here how we grab the return value and use that. It will be
-            //  fully awakened.
-            compiledTemplateContent =
-                TP.nodeAppendChild(
-                    TP.unwrap(templateTPElem),
-                    TP.unwrap(templateContentTPElem),
-                    true);
+            compiledTemplateContent = templateContentTPElem.getNativeNode();
 
             //  Cache that.
             this.set('$compiledTemplateContent', compiledTemplateContent);
@@ -1455,7 +1473,7 @@ function(content) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selectedValues,
@@ -1488,7 +1506,7 @@ function(content) {
                  * @summary Computes the 'successor' focus element using the
                  *     currently focused element (if there is one) and the
                  *     move action.
-                 * @param {TP.core.ElementNode} focusedTPElem The currently
+                 * @param {TP.dom.ElementNode} focusedTPElem The currently
                  *     focused element. This may be null if no element is
                  *     currently focused.
                  * @param {Constant} moveAction The type of 'move' that the
@@ -1504,7 +1522,7 @@ function(content) {
                  *         TP.FIRST_IN_PREVIOUS_GROUP
                  *         TP.FOLLOWING
                  *         TP.PRECEDING
-                 * @returns {TP.core.ElementNode} The element that is the
+                 * @returns {TP.dom.ElementNode} The element that is the
                  *         successor focus element.
                  */
 
@@ -1605,7 +1623,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.dom.D3Tag} The receiver.
      */
 
     var selectedValues,

@@ -294,7 +294,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(aDocument);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -352,7 +352,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     positionOrPath = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -475,7 +475,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(aDocument);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -662,10 +662,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
 
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
         //  Make sure to clone this content since we're going to be manipulating
         //  it below and don't want to modify the original.
         nodeContent = TP.nodeCloneNode(nodeContent, true);
@@ -683,6 +679,14 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Set the TIBET flag that says we're "document.write()ing" (we are
@@ -1333,7 +1337,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
                                 'Must provide a target Element node.');
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -3321,14 +3325,14 @@ function(anElement) {
     }
 
     tpElement = TP.wrap(anElement);
-    if (TP.isKindOf(tpElement, TP.core.CustomTag)) {
+    if (TP.isKindOf(tpElement, TP.tag.CustomTag)) {
         return anElement;
     }
 
     element = anElement.parentNode;
     while (TP.isElement(element)) {
         tpElement = TP.wrap(element);
-        if (TP.isKindOf(tpElement, TP.core.CustomTag)) {
+        if (TP.isKindOf(tpElement, TP.tag.CustomTag)) {
             return element;
         }
         element = element.parentNode;
@@ -3831,7 +3835,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     positionOrPath = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
                 theContent.getResource(
@@ -4066,7 +4070,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
                                 'Must provide a target Element node.');
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -4618,7 +4622,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(anElement);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -4826,11 +4830,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
     } else if (TP.isString(theContent)) {
         //  Convert any entities to literals, since the caller assumed that they
         //  could pass entities, but this may create a Text node which will want
@@ -4849,6 +4848,14 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Based on the value of the position, we insert the node at the
@@ -5002,11 +5009,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
     } else if (TP.isString(theContent)) {
 
         //  Convert any entities to literals, since the caller assumed that they
@@ -5026,6 +5028,14 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Before we remove anElement from its parent, we capture its 'gid' for
@@ -5124,11 +5134,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        nodeContent[TP.PREVIOUS_POSITION] = null;
-
     } else if (TP.isString(theContent)) {
 
         //  Convert any entities to literals, since the caller assumed that they
@@ -5148,6 +5153,14 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
+    }
+
+    //  Before we move the nodeContent, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(nodeContent)) {
+        nodeContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                nodeContent);
     }
 
     //  Clear out the element's existing content.
@@ -5669,10 +5682,6 @@ function(aNode, newNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -5725,6 +5734,14 @@ function(aNode, newNode, shouldAwake) {
 
     //  Grab the current number of children
     childNodeCount = targetNode.childNodes.length;
+
+    //  Before we move the importedContent, if it's not detached, we stamp it
+    //  with its previous position. That way, when it detaches from its current
+    //  DOM, other machinery will know where it came from.
+    if (!TP.nodeIsDetached(importedContent)) {
+        importedContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                            importedContent);
+    }
 
     try {
         //  Append the new content. This will (or should) change the number
@@ -6347,10 +6364,6 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -6387,6 +6400,14 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
                                 TP.str(childContent)) : 0;
             }
 
+            //  Before we move the firstElement, if it's not detached, we stamp
+            //  it with its previous position. That way, when it detaches from
+            //  its current DOM, other machinery will know where it came from.
+            if (!TP.nodeIsDetached(firstElement)) {
+                firstElement[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                firstElement);
+            }
+
             return TP.nodeAppendChild(aNode, firstElement, shouldAwake);
         }
     }
@@ -6398,6 +6419,15 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
     //  case the new node is just appended.
 
     if (!targetNode.hasChildNodes() || TP.notValid(insertionPointNode)) {
+
+        //  Before we move the childContent, if it's not detached, we stamp it
+        //  with its previous position. That way, when it detaches from its
+        //  current DOM, other machinery will know where it came from.
+        if (!TP.nodeIsDetached(childContent)) {
+            childContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                                childContent);
+        }
+
         return TP.nodeAppendChild(targetNode, childContent, shouldAwake);
     }
 
@@ -6420,6 +6450,14 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
 
     if (awakenContent || TP.isFragment(importedContent)) {
         start = TP.nodeGetChildIndex(targetNode, insertionPointNode);
+    }
+
+    //  Before we move the importedContent, if it's not detached, we stamp it
+    //  with its previous position. That way, when it detaches from its current
+    //  DOM, other machinery will know where it came from.
+    if (!TP.nodeIsDetached(importedContent)) {
+        importedContent[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(
+                                                            importedContent);
     }
 
     try {
@@ -6514,17 +6552,13 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
 
     positionOrPath = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
                     TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
-
-    //  Clear out any previous position information that might have come from
-    //  this content being in another DOM tree.
-    content[TP.PREVIOUS_POSITION] = null;
 
     switch (aNode.nodeType) {
         case Node.ELEMENT_NODE:
@@ -6900,10 +6934,6 @@ function(aNode, newNode, oldNode, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
-
-        //  Clear out any previous position information that might have come
-        //  from this content being in another DOM tree.
-        childContent[TP.PREVIOUS_POSITION] = null;
     }
 
     //  if the target is a document and not the documentElement we can't
@@ -6968,9 +6998,12 @@ function(aNode, newNode, oldNode, shouldAwake) {
         start = TP.nodeGetChildIndex(targetNode, oldNode);
     }
 
-    //  Capture the position old node in the document and store it as the
-    //  'previous position'
-    oldNode[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(oldNode);
+    //  Before we move the oldNode, if it's not detached, we stamp it with
+    //  its previous position. That way, when it detaches from its current DOM,
+    //  other machinery will know where it came from.
+    if (!TP.nodeIsDetached(oldNode)) {
+        oldNode[TP.PREVIOUS_POSITION] = TP.nodeGetDocumentPosition(oldNode);
+    }
 
     try {
         //  Replace the new content in. This will (or should) change the
@@ -13977,7 +14010,7 @@ function(aNode, phaseList, outerElem) {
     }
 
     //  The default phase list is non-cached page processing list.
-    phases = TP.ifInvalid(phaseList, TP.core.TSH.NOCACHE_PHASES);
+    phases = TP.ifInvalid(phaseList, TP.shell.TSH.NOCACHE_PHASES);
 
     //  Once we have an element of any kind, loop upward until we a) find a
     //  tibet:phase, b) find the outerElem (if any), or c) run out of
@@ -14052,7 +14085,7 @@ function(aNode, phaseList, outerElem) {
     }
 
     //  The default phase list is non-cached page processing list.
-    phases = TP.ifInvalid(phaseList, TP.core.TSH.NOCACHE_PHASES);
+    phases = TP.ifInvalid(phaseList, TP.shell.TSH.NOCACHE_PHASES);
 
     //  Once we have an element of any kind, loop upward until we a) find a
     //  tibet:phase, b) find the outerElem (if any), or c) run out of
@@ -14175,7 +14208,7 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
     }
 
     //  default phase list to NOCACHE phases when missing.
-    phaseList = TP.ifInvalid(targetPhaseList, TP.core.TSH.NOCACHE_PHASES);
+    phaseList = TP.ifInvalid(targetPhaseList, TP.shell.TSH.NOCACHE_PHASES);
 
     //  Note that execution is a "hard-coded phase" so it will never be in
     //  the phase list. We have to test specifically for that.
@@ -14455,7 +14488,7 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
         TP.nodeEmptyContent(aNode);
     }
 
-    //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
+    //  this allows us to accept things like TP.uri.URI, TP.dom.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
                 anObject.getResource(
@@ -14902,7 +14935,7 @@ function(anObject, defaultNS, shouldReport) {
      *     element node will return the element itself, other node types return
      *     their parentNode, etc.
      * @param {Object} anObject Typically a Node of some form, but a wrapper
-     *     such as a TP.core.Node, TP.core.DocumentNode, or TP.core.Window is
+     *     such as a TP.dom.Node, TP.dom.DocumentNode, or TP.core.Window is
      *     also a workable parameter.
      * @param {String|null} defaultNS What namespace should be used for the
      *     'default namespace' for element markup in the supplied String.
@@ -15069,7 +15102,7 @@ function(anObject, defaultNS, shouldReport) {
         //  Note here how we pass 'false' to *not* awaken any content that
         //  gets appended.
         TP.nodeAppendChild(fragment, node, false);
-    } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
+    } else if (TP.isKindOf(anObject, 'TP.dom.Node')) {
         fragment = TP.documentConstructFragment(anObject.getNativeDocument());
 
         //  Note here how we pass 'false' to *not* awaken any content that
@@ -15200,7 +15233,7 @@ function(anObject, defaultNS, shouldReport) {
     //  typically called with document or element nodes so test those first
     if (TP.isNode(anObject)) {
         return anObject;
-    } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
+    } else if (TP.isKindOf(anObject, 'TP.dom.Node')) {
         return anObject.getNativeNode();
     } else if (TP.isWindow(anObject)) {
         return anObject.document;
@@ -15289,7 +15322,7 @@ function(anObject, defaultNS, shouldReport) {
 
     /**
      * @method tpdoc
-     * @summary Returns the best TP.core.DocumentNode representation of
+     * @summary Returns the best TP.dom.DocumentNode representation of
      *     anObject based on a variety of input object types.
      * @param {Object} anObject A string, window, node, or other object which
      *     can provide a document or be used to construct one.
@@ -15303,17 +15336,17 @@ function(anObject, defaultNS, shouldReport) {
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
-     * @returns {TP.core.DocumentNode} A TIBET document wrapper.
+     * @returns {TP.dom.DocumentNode} A TIBET document wrapper.
      */
 
     var doc;
 
     if (TP.notValid(anObject)) {
-        return TP.core.DocumentNode.construct(TP.constructDocument());
+        return TP.dom.DocumentNode.construct(TP.constructDocument());
     }
 
     //  already one? don't want to unwrap/rewrap...
-    if (TP.isKindOf(anObject, 'TP.core.DocumentNode')) {
+    if (TP.isKindOf(anObject, 'TP.dom.DocumentNode')) {
         return anObject;
     }
 
@@ -15330,10 +15363,10 @@ function(anObject, defaultNS, shouldReport) {
                                             defaultNS,
                                             shouldReport);
                 if (TP.isDocument(doc)) {
-                    return TP.core.DocumentNode.construct(doc);
+                    return TP.dom.DocumentNode.construct(doc);
                 }
             } else {
-                return TP.core.DocumentNode.construct(doc);
+                return TP.dom.DocumentNode.construct(doc);
             }
         } catch (e) {
             //  Moz in particular will throw exceptions on cross-domain
@@ -15341,32 +15374,32 @@ function(anObject, defaultNS, shouldReport) {
                                         defaultNS,
                                         shouldReport);
             if (TP.isDocument(doc)) {
-                return TP.core.DocumentNode.construct(doc);
+                return TP.dom.DocumentNode.construct(doc);
             }
         }
     }
 
     //  typically called with document or element nodes so test those first
     if (TP.isDocument(anObject)) {
-        return TP.core.DocumentNode.construct(anObject);
+        return TP.dom.DocumentNode.construct(anObject);
     } else if (TP.isNode(anObject)) {
         doc = TP.nodeGetDocument(anObject);
         if (TP.isDocument(doc)) {
-            return TP.core.DocumentNode.construct(doc);
+            return TP.dom.DocumentNode.construct(doc);
         }
-    } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
+    } else if (TP.isKindOf(anObject, 'TP.dom.Node')) {
         return anObject.getDocument();
     } else if (TP.isWindow(anObject)) {
-        return TP.core.DocumentNode.construct(anObject.document);
+        return TP.dom.DocumentNode.construct(anObject.document);
     } else if (TP.isString(anObject)) {
         doc = TP.documentFromString(anObject, defaultNS, shouldReport);
         if (TP.isDocument(doc)) {
-            return TP.core.DocumentNode.construct(doc);
+            return TP.dom.DocumentNode.construct(doc);
         }
     } else if (TP.canInvoke(anObject, 'getDocument')) {
         return anObject.getDocument();
     } else if (TP.canInvoke(anObject, 'getResponseXML')) {
-        return TP.core.DocumentNode.construct(anObject.getResponseXML());
+        return TP.dom.DocumentNode.construct(anObject.getResponseXML());
     }
 
     return;
@@ -15379,10 +15412,10 @@ function(anObject, defaultNS, shouldReport) {
 
     /**
      * @method tpelem
-     * @summary Returns the best TP.core.ElementNode representation of the
+     * @summary Returns the best TP.dom.ElementNode representation of the
      *     object based on a variety of input formats.
      * @param {Object} anObject Typically a Node of some form, but a wrapper
-     *     such as a TP.core.Node, TP.core.DocumentNode, or TP.core.Window is
+     *     such as a TP.dom.Node, TP.dom.DocumentNode, or TP.core.Window is
      *     also a workable parameter.
      * @param {String|null} defaultNS What namespace should be used for the
      *     'default namespace' for element markup in the supplied String.
@@ -15394,7 +15427,7 @@ function(anObject, defaultNS, shouldReport) {
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
-     * @returns {TP.core.ElementNode} A TIBET element wrapper.
+     * @returns {TP.dom.ElementNode} A TIBET element wrapper.
      * @exception TP.sig.InvalidParameter Raised when an invalid object is
      *     provided to the method.
      */
@@ -15406,14 +15439,14 @@ function(anObject, defaultNS, shouldReport) {
     }
 
     //  already one? don't want to unwrap/rewrap...
-    if (TP.isKindOf(anObject, 'TP.core.ElementNode')) {
+    if (TP.isKindOf(anObject, 'TP.dom.ElementNode')) {
         return anObject;
     }
 
     //  get best element rep we can from whatever it is...
     elem = TP.elem(anObject, defaultNS, shouldReport);
     if (TP.isElement(elem)) {
-        return TP.core.ElementNode.construct(elem);
+        return TP.dom.ElementNode.construct(elem);
     }
 
     return;
@@ -15426,10 +15459,10 @@ function(anObject, defaultNS, shouldReport) {
 
     /**
      * @method tpfrag
-     * @summary Returns the TP.core.DocumentFragmentNode representation of the
+     * @summary Returns the TP.dom.DocumentFragmentNode representation of the
      *     object based on a variety of input formats.
      * @param {Object} anObject Typically a Node of some form, but a wrapper
-     *     such as a TP.core.Node, TP.core.DocumentNode, or TP.core.Window is
+     *     such as a TP.dom.Node, TP.dom.DocumentNode, or TP.core.Window is
      *     also a workable parameter.
      * @param {String|null} defaultNS What namespace should be used for the
      *     'default namespace' for element markup in the supplied String.
@@ -15441,26 +15474,26 @@ function(anObject, defaultNS, shouldReport) {
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
-     * @returns {TP.core.DocumentFragmentNode} A TIBET document fragment
+     * @returns {TP.dom.DocumentFragmentNode} A TIBET document fragment
      *     wrapper.
      */
 
     var frag;
 
     if (TP.notValid(anObject)) {
-        return TP.core.DocumentFragmentNode.construct(
+        return TP.dom.DocumentFragmentNode.construct(
                     TP.documentConstructFragment(TP.XML_FACTORY_DOCUMENT));
     }
 
     //  already one? don't want to unwrap/rewrap...
-    if (TP.isKindOf(anObject, 'TP.core.DocumentFragmentNode')) {
+    if (TP.isKindOf(anObject, 'TP.dom.DocumentFragmentNode')) {
         return anObject;
     }
 
     //  get best fragment rep we can from whatever it is...
     frag = TP.frag(anObject, defaultNS, shouldReport);
     if (TP.isFragment(frag)) {
-        return TP.core.DocumentFragmentNode.construct(frag);
+        return TP.dom.DocumentFragmentNode.construct(frag);
     }
 
     return;
@@ -15478,7 +15511,7 @@ function(anObject, defaultNS, shouldReport) {
      *     less discriminating than TP.tpelem() in that it can return a wrapper
      *     for virtually any Node type.
      * @description This method is essentially a cover for creation of a
-     *     TP.core.Node from TP.nodeFromString() and other node construction and
+     *     TP.dom.Node from TP.nodeFromString() and other node construction and
      *     extraction routines. NOTE that document objects are nodes, so you may
      *     receive a document node.
      * @param {Object} anObject A string, window, node, or other object which
@@ -15493,19 +15526,19 @@ function(anObject, defaultNS, shouldReport) {
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
-     * @example Obtain an instance of a TIBET TP.core.Node subtype from a
+     * @example Obtain an instance of a TIBET TP.dom.Node subtype from a
      *     variety of objects:
      *     <code>
      *          TP.tpnode('<foo><bar/></foo>');
-     *          <samp>[TP.core.ElementNode Element]</samp>
+     *          <samp>[TP.dom.ElementNode Element]</samp>
      *          TP.tpnode(TP.documentGetBody(document));
      *          <samp>[html:body HTMLBodyElement]</samp>
      *          TP.tpnode(TP.sys.getUICanvas());
-     *          <samp>[TP.core.DocumentNode HTMLDocument]</samp>
+     *          <samp>[TP.dom.DocumentNode HTMLDocument]</samp>
      *          TP.tpnode(TP.sys.getUICanvas().getNativeWindow());
-     *          <samp>[TP.core.DocumentNode HTMLDocument]</samp>
+     *          <samp>[TP.dom.DocumentNode HTMLDocument]</samp>
      *          TP.tpnode(document);
-     *          <samp>[TP.core.DocumentNode HTMLDocument]</samp>
+     *          <samp>[TP.dom.DocumentNode HTMLDocument]</samp>
      *          bodyTPElem = TP.tpnode(TP.documentGetBody(document));
      *          <samp>[html:body HTMLBodyElement]</samp>
      *          TP.tpnode(bodyTPElem);
@@ -15515,7 +15548,7 @@ function(anObject, defaultNS, shouldReport) {
      *          topTPWin = TP.tpwin(TP.sys.getUICanvas());
      *          <samp>(UI canvas window name)</samp>
      *          TP.tpnode(topTPWin);
-     *          <samp>[TP.core.DocumentNode HTMLDocument]</samp>
+     *          <samp>[TP.dom.DocumentNode HTMLDocument]</samp>
      *     </code>
      * @returns {Node} A native Node.
      * @exception TP.sig.InvalidParameter Raised when an invalid object is
@@ -15531,7 +15564,7 @@ function(anObject, defaultNS, shouldReport) {
     }
 
     //  already one? don't want to unwrap/rewrap...
-    if (TP.isKindOf(anObject, 'TP.core.Node')) {
+    if (TP.isKindOf(anObject, 'TP.dom.Node')) {
         return anObject;
     }
 
@@ -15548,57 +15581,57 @@ function(anObject, defaultNS, shouldReport) {
                                             defaultNS,
                                             shouldReport);
                 if (TP.isNode(node)) {
-                    return TP.core.Node.construct(node);
+                    return TP.dom.Node.construct(node);
                 }
             } else {
-                return TP.core.Node.construct(node);
+                return TP.dom.Node.construct(node);
             }
         } catch (e) {
             //  Moz in particular will throw exceptions on cross-domain
             node = TP.nodeFromString(
                         anObject.responseText, defaultNS, shouldReport);
             if (TP.isNode(node)) {
-                return TP.core.Node.construct(node);
+                return TP.dom.Node.construct(node);
             }
         }
     }
 
     //  typically called with document or element nodes so test those first
     if (TP.isNode(anObject)) {
-        return TP.core.Node.construct(anObject);
-    } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
+        return TP.dom.Node.construct(anObject);
+    } else if (TP.isKindOf(anObject, 'TP.dom.Node')) {
         return anObject;
     } else if (TP.isWindow(anObject)) {
-        return TP.core.DocumentNode.construct(anObject.document);
+        return TP.dom.DocumentNode.construct(anObject.document);
     } else if (TP.isString(anObject)) {
         node = TP.nodeFromString(anObject, defaultNS, shouldReport);
         if (TP.isNode(node)) {
-            return TP.core.Node.construct(node);
+            return TP.dom.Node.construct(node);
         }
     } else if (TP.canInvoke(anObject, 'getData')) {
         //  Content objects often get asked for nodes. If it's an XMLContent
         //  object of some form it should work via getData.
         resp = anObject.getData();
-        if (TP.isKindOf(resp, 'TP.core.Node')) {
+        if (TP.isKindOf(resp, 'TP.dom.Node')) {
             return resp;
         }
         if (TP.isNode(resp)) {
             content = TP.wrap(resp);
-            if (TP.isKindOf(content, 'TP.core.Node')) {
+            if (TP.isKindOf(content, 'TP.dom.Node')) {
                 return content;
             }
         }
     } else if (TP.canInvoke(anObject, 'getResource')) {
-        //  content will be a Node - we want a TP.core.Node
+        //  content will be a Node - we want a TP.dom.Node
         resp = anObject.getResource(
             TP.hc('async', false, 'resultType', TP.DOM));
         content = TP.wrap(resp.get('result'));
 
-        if (TP.isKindOf(content, 'TP.core.Node')) {
+        if (TP.isKindOf(content, 'TP.dom.Node')) {
             return content;
         }
     } else if (TP.canInvoke(anObject, 'getResponseXML')) {
-        return TP.core.Node.construct(anObject.getResponseXML());
+        return TP.dom.Node.construct(anObject.getResponseXML());
     }
 
     return;

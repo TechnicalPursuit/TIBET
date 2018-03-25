@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tibet.data}
- * @summary A subtype of TP.core.ElementNode that implements the ability to put
+ * @summary A subtype of TP.dom.ElementNode that implements the ability to put
  *         'static data' in the page.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tibet:data');
+TP.dom.UIElementNode.defineSubtype('tibet:data');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -355,7 +355,7 @@ function(aContentObject, aRequest) {
     }
 
     if (TP.isEmpty(mimeType = this.getAttribute('type'))) {
-        mimeType = TP.ietf.Mime.guessMIMEType(aContentObject);
+        mimeType = TP.ietf.mime.guessMIMEType(aContentObject);
     }
 
     //  If the MIME type that was computed is text/plain, then something

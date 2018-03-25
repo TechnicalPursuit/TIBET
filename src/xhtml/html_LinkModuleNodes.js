@@ -24,13 +24,13 @@ TP.html.Attrs.defineSubtype('link');
 TP.html.link.Type.set('uriAttrs', TP.ac('href'));
 TP.html.link.Type.set('reloadableUriAttrs', TP.ac('href'));
 
-TP.html.link.addTraits(TP.core.EmptyElementNode);
+TP.html.link.addTraits(TP.dom.EmptyElementNode);
 
 TP.html.link.Type.resolveTrait('uriAttrs', TP.html.link);
 
 TP.html.link.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
+        TP.dom.EmptyElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -93,7 +93,7 @@ function(aRequest) {
     //  Grab the type and, if it's a 'TIBET CSS' type of styling, then change
     //  the original element into a 'tibet:style' tag.
     type = TP.elementGetAttribute(elem, 'type', true);
-    if (type === TP.ietf.Mime.TIBET_CSS) {
+    if (type === TP.ietf.mime.TIBET_CSS) {
         elem = TP.elementBecome(
                     elem, 'tibet:style', TP.hc('tibet:tag', 'tibet:style'));
     }
@@ -141,13 +141,13 @@ function(aRequest) {
             //  If we have a valid CSSStyleSheet object
             if (TP.isValid(stylesheet)) {
 
-                //  Intern the stylesheet's href as a TP.core.URI. Note that we
+                //  Intern the stylesheet's href as a TP.uri.URI. Note that we
                 //  don't care about the return value here - we're simply
                 //  interested in having a URI object matching the href here.
                 TP.uc(stylesheet.href);
 
                 //  Grab any hrefs from @import statements in the stylesheet and
-                //  create instances of TP.core.URIs from them as well. Again,
+                //  create instances of TP.uri.URIs from them as well. Again,
                 //  we're not interested in the return values here. Note that
                 //  this method, by default, will recursively retrieve @import
                 //  hrefs.

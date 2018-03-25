@@ -5,9 +5,7 @@
         <tibet:group wrapWhen="true" id="{{$SOURCE.(@id)}}_group">
             <xctrls:content tibet:pelem="choices" class="noselect"/>
         </tibet:group>
-        <span id="{{$SOURCE.(@id)}}_template" class="template">
-            {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:tabbar')])}}
-        </span>
+        {{$SOURCE.(./*[local-name() = 'template'])}}
     </span>
 </xctrls:tabbar>
 

@@ -1,6 +1,6 @@
 {
     "default": {
-        "supertype": "TP.core.ActionTag",
+        "supertype": "TP.tag.ActionTag",
         "bundled": true
     },
     "APP": {

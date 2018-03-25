@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.open}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:open');
+TP.tag.ActionTag.defineSubtype('tsh:open');
 
 TP.tsh.open.addTraits(TP.tsh.Element);
 
@@ -70,7 +70,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('open',
+TP.shell.TSH.addHelpTopic('open',
     TP.tsh.open.Type.getMethod('tshExecute'),
     'Opens a URI in a window/canvas.',
     ':open',

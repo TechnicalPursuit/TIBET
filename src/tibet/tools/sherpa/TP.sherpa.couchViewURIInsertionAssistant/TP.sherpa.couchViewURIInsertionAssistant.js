@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('sherpa.couchViewURIInsertionAssistant');
+TP.tag.CustomTag.defineSubtype('sherpa.couchViewURIInsertionAssistant');
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.sherpa.couchViewURIInsertionAssistant.defineAttribute(

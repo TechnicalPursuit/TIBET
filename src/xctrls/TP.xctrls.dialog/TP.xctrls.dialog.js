@@ -158,7 +158,7 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -207,7 +207,7 @@ function(info) {
      *          (i.e. will have an event-trapping curtain behind it).
      *          {String} templateContent The actual markup content to put into
      *          the dialog.
-     *          {TP.core.URI} [templateURI] If the templateContent parameter is
+     *          {TP.uri.URI} [templateURI] If the templateContent parameter is
      *          not supplied, this parameter will be checked for a URI that can
      *          be used to supply the markup content.
      *          {Object} [templateData] If either the templateContent or the
@@ -327,7 +327,7 @@ function(info) {
 
             //  If a callback Function that should be executed before we show
             //  the dialog was supplied, invoke it with the dialog
-            //  TP.core.ElementNode as the only parameter.
+            //  TP.dom.ElementNode as the only parameter.
             beforeShowCallback = info.at('beforeShow');
             if (TP.isCallable(beforeShowCallback)) {
                 beforeShowCallback(dialogTPElem);

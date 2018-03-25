@@ -20,7 +20,7 @@ function(content, aURI) {
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {Object} content The content to set into the content object.
-     * @param {TP.core.URI} aURI The source URI. Ignored for this type.
+     * @param {TP.uri.URI} aURI The source URI. Ignored for this type.
      * @returns {Object} The object representation of the content.
      */
 
@@ -180,7 +180,7 @@ function(content, aURI) {
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
      * @param {String} content The string content to process.
-     * @param {TP.core.URI} [aURI] The source URI.
+     * @param {TP.uri.URI} [aURI] The source URI.
      * @returns {Object} The object representation of the content.
      */
 
@@ -196,11 +196,11 @@ function(content, aURI) {
      * @method getConcreteType
      * @summary Returns the type to use for a particular access path.
      * @param {Object} content The data to find a concrete type for.
-     * @param {TP.core.URI} [aURI] The source URI.
+     * @param {TP.uri.URI} [aURI] The source URI.
      * @returns {TP.core.Content} A viable subtype for enclosing the content.
      */
 
-    if (TP.isNode(content) || TP.isKindOf(content, TP.core.Node)) {
+    if (TP.isNode(content) || TP.isKindOf(content, TP.dom.Node)) {
         return TP.core.XMLContent;
     }
 
@@ -208,8 +208,8 @@ function(content, aURI) {
         return TP.core.XMLContent;
     }
 
-    if (TP.core.CSSStyleSheet.canConstruct(content, aURI)) {
-        return TP.core.CSSStyleSheet;
+    if (TP.core.CSSStyleSheetContent.canConstruct(content, aURI)) {
+        return TP.core.CSSStyleSheetContent;
     }
 
     if (TP.core.JSONContent.canConstruct(content, aURI)) {
@@ -256,7 +256,7 @@ function(aString, aURI) {
      * @method fromString
      * @summary Returns a new instance from the string provided.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
+     * @param {TP.uri.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
      */
 
@@ -289,7 +289,7 @@ function(data, aURI) {
      * @method init
      * @summary Returns a newly constructed Object from inbound content.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
+     * @param {TP.uri.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
      */
 
@@ -578,7 +578,7 @@ function(aPath) {
      * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     underlying data object.
-     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     * @param {TP.path.AccessPath} aPath The path that the path source will be
      *     used with.
      * @returns {Object} The object used as the current path source object.
      */
@@ -786,6 +786,21 @@ function(aSignal) {
     description.atPut('target', oldTarget);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineHandler('ClearContent',
+function(aSignal) {
+
+    /**
+     * @method handleClearContent
+     * @summary Handles when the receiver's data is to be cleared.
+     * @param {TP.sig.ClearContent} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
@@ -1057,7 +1072,7 @@ function(attributeName, attributeValue, shouldSignal) {
      *     no value is provided the value null is used.
      * @description This is overridden from its supertype to automatically check
      *     facets after the value is set.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
@@ -1776,7 +1791,7 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.CSSStyleSheet
+//  TP.core.CSSStyleSheetContent
 //  ========================================================================
 
 /**
@@ -1784,13 +1799,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.defineSubtype('core.CSSStyleSheet');
+TP.core.Content.defineSubtype('core.CSSStyleSheetContent');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSStyleSheet.Type.defineMethod('canConstruct',
+TP.core.CSSStyleSheetContent.Type.defineMethod('canConstruct',
 function(data, uri) {
 
     /**
@@ -1817,7 +1832,7 @@ function(data, uri) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSStyleSheet.Inst.defineMethod('getContentMIMEType',
+TP.core.CSSStyleSheetContent.Inst.defineMethod('getContentMIMEType',
 function() {
 
     /**
@@ -2025,14 +2040,14 @@ function(aPath) {
      * @summary Return the current source object being used by the executeGet()
      *     and executeSet() methods. At this level, this method returns the
      *     underlying data object.
-     * @param {TP.core.AccessPath} aPath The path that the path source will be
+     * @param {TP.path.AccessPath} aPath The path that the path source will be
      *     used with.
      * @returns {Object} The object used as the current path source object.
      */
 
     //  If we're going to be used with a JSONPath, then we are the path source -
     //  otherwise our data is.
-    if (TP.isKindOf(aPath, TP.core.JSONPath)) {
+    if (TP.isKindOf(aPath, TP.path.JSONPath)) {
         return this;
     }
 
@@ -2123,11 +2138,11 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI|TP.core.AccessPath} aCollectionURIOrPath The URI
+     * @param {TP.uri.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
      *     pointing to the collection to add the row to or a path that, in
      *     combination with the receiver's 'public facing' URI, can be used to
      *     obtain a collection to add the row to.
-     * @param {Array|TP.core.URI|TP.core.AccessPath} aDataRowOrURIOrPath The URI
+     * @param {Array|TP.uri.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
      *     or path that points to data or the object itself to insert into the
      *     collection.
      * @param {Number} [anInsertIndex] The index to insert the item at in the
@@ -2174,7 +2189,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     targetURIOrPath = aCollectionURIOrPath;
     publicURI = this.get('$publicURI');
 
-    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
     //  path...), then set targetURI to publicURI (if its real).
     if (!TP.isURI(targetURIOrPath)) {
 
@@ -2357,7 +2372,7 @@ function(aCollectionURI, aDeleteIndex) {
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
      * @param {Number} aDeleteIndex The index to remove the item from in the
      *     collection.
@@ -2549,7 +2564,7 @@ function(data, aURI) {
      * @method xmlcc
      * @summary Returns a newly initialized XMLContent instance.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI|String} aURI The source URI.
+     * @param {TP.uri.URI|String} aURI The source URI.
      * @returns {TP.core.XMLContent} The new instance.
      */
 
@@ -2624,7 +2639,7 @@ function(data, aURI) {
      * @method init
      * @summary Returns a newly constructed Object from inbound content.
      * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
+     * @param {TP.uri.URI} aURI The source URI.
      * @returns {TP.core.XMLContent} A new instance.
      */
 
@@ -2632,7 +2647,7 @@ function(data, aURI) {
 
     contentData = data;
 
-    if (TP.isKindOf(contentData, TP.core.Node)) {
+    if (TP.isKindOf(contentData, TP.dom.Node)) {
         contentData = contentData.getNativeNode();
     }
 
@@ -2729,11 +2744,11 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI|TP.core.AccessPath} aCollectionURIOrPath The URI
+     * @param {TP.uri.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
      *     pointing to the collection to add the row to or a path that, in
      *     combination with the receiver's 'public facing' URI, can be used to
      *     obtain a collection to add the row to.
-     * @param {Array|TP.core.URI|TP.core.AccessPath} aDataRowOrURIOrPath The URI
+     * @param {Array|TP.uri.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
      *     or path that points to data or the object itself to insert into the
      *     collection.
      * @param {Number} [anInsertIndex] The index to insert the item at in the
@@ -2784,7 +2799,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     targetURIOrPath = aCollectionURIOrPath;
     publicURI = this.get('$publicURI');
 
-    //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+    //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
     //  path...), then set targetURI to publicURI (if its real).
     if (!TP.isURI(targetURIOrPath)) {
 
@@ -2826,7 +2841,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
             return this;
         }
 
-        //  Make sure that we have a TP.core.CollectionNode
+        //  Make sure that we have a TP.dom.CollectionNode
 
         //  NB: We assume 'async' of false here.
         targetCollection = targetURI.getResource(
@@ -3009,7 +3024,7 @@ function() {
         if (TP.notEmpty(uri)) {
 
             //  Guess the MIME type based on the data and the URI
-            mimeType = TP.ietf.Mime.guessMIMEType(xmlData, uri);
+            mimeType = TP.ietf.mime.guessMIMEType(xmlData, uri);
 
             //  Try to get a 'namespace entry' from that. The namespace URI can
             //  be found under 'uri'.
@@ -3065,7 +3080,7 @@ function() {
 
     xmlData = this.get('data');
 
-    if (TP.isKindOf(xmlData, TP.core.Node)) {
+    if (TP.isKindOf(xmlData, TP.dom.Node)) {
         xmlData = xmlData.getNativeNode();
     }
 
@@ -3083,7 +3098,7 @@ function(aCollectionURI, aDeleteIndex) {
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
-     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
      * @param {Number} aDeleteIndex The index to remove the item from in the
      *     collection.
@@ -3113,7 +3128,7 @@ function(aCollectionURI, aDeleteIndex) {
 
         batchID;
 
-    //  Make sure that we have a TP.core.CollectionNode
+    //  Make sure that we have a TP.dom.CollectionNode
 
     //  NB: We assume 'async' of false here.
     targetCollection = aCollectionURI.getResource(
@@ -3292,7 +3307,7 @@ function(storageInfo) {
     //  representative of the 'whole document'.
     serializationStorage.atPut('store', loc);
 
-    //  Message the TP.core.Document to begin the serialization.
+    //  Message the TP.dom.Document to begin the serialization.
     data.serializeForStorage(serializationStorage);
 
     //  The representation we're interested in will be the one at our URI, since
@@ -3329,7 +3344,7 @@ function(anObject, aParamHash) {
 
     /**
      * @method transform
-     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     * @summary Transforms the supplied Node (or TP.dom.Node) by using the
      *     content of the receiver.
      * @param {Object} anObject The object supplying the data to use in the
      *     transformation.
@@ -3348,7 +3363,7 @@ function(anObject, aParamHash) {
 
     xmlData = this.get('data');
 
-    if (TP.isKindOf(xmlData, TP.core.Node)) {
+    if (TP.isKindOf(xmlData, TP.dom.Node)) {
         return xmlData.transform(anObject, aParamHash);
     }
 
@@ -3418,11 +3433,11 @@ function(aNode, shouldSignal) {
 });
 
 //  ========================================================================
-//  TP.core.AccessPath
+//  TP.path.AccessPath
 //  ========================================================================
 
 /**
- * @type {TP.core.AccessPath}
+ * @type {TP.path.AccessPath}
  * @summary A common supertype for access paths, which can get used in TIBET
  *     get() and set() calls to provide sophisticated data access. Common
  *     subtypes include types to access TIBETan JS objects, 'plain' JSON data
@@ -3431,11 +3446,11 @@ function(aNode, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.AccessPath');
+TP.lang.Object.defineSubtype('path.AccessPath');
 
 //  This is an abstract supertype - need a concrete subtype to get real work
 //  done.
-TP.core.AccessPath.isAbstract(true);
+TP.path.AccessPath.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
@@ -3447,27 +3462,27 @@ function(aPath, config) {
      * @summary Returns a newly initialized access path instance.
      * @param {String} aPath The path as a String.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.AccessPath} The new instance.
+     * @returns {TP.path.AccessPath} The new instance.
      */
 
-    return TP.core.AccessPath.construct(aPath, config);
+    return TP.path.AccessPath.construct(aPath, config);
 });
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineAttribute('$observedAddresses');
+TP.path.AccessPath.Type.defineAttribute('$observedAddresses');
 
-TP.core.AccessPath.Type.defineAttribute('$executedPaths');
+TP.path.AccessPath.Type.defineAttribute('$executedPaths');
 
-TP.core.AccessPath.Type.defineAttribute('$changedAddresses');
+TP.path.AccessPath.Type.defineAttribute('$changedAddresses');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('construct',
+TP.path.AccessPath.Type.defineMethod('construct',
 function(aPath, config) {
 
     /**
@@ -3476,7 +3491,7 @@ function(aPath, config) {
      *     already a path.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.AccessPath} A new instance or aPath if it's already a
+     * @returns {TP.path.AccessPath} A new instance or aPath if it's already a
      *     path.
      */
 
@@ -3489,7 +3504,7 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('getConcreteType',
+TP.path.AccessPath.Type.defineMethod('getConcreteType',
 function(aPath) {
 
     /**
@@ -3497,7 +3512,7 @@ function(aPath) {
      * @summary Returns the type to use for a particular access path.
      * @param {String} aPath A path string from which the subtype will be
      *     determined.
-     * @returns {TP.lang.RootObject.<TP.core.AccessPath>} A TP.core.AccessPath
+     * @returns {TP.lang.RootObject.<TP.path.AccessPath>} A TP.path.AccessPath
      *     subtype type object.
      */
 
@@ -3512,13 +3527,13 @@ function(aPath) {
     //  If the path is a composite path, then create one and let it handle
     //  creation of its subpaths.
     if (TP.regex.COMPOSITE_PATH.test(aPath)) {
-        return TP.core.CompositePath;
+        return TP.path.CompositePath;
     }
 
     //  If the path is just '.', then that's the shortcut to just return the
     //  target object itself.
     if (TP.regex.ONLY_PERIOD.test(aPath)) {
-        return TP.core.SimpleTIBETPath;
+        return TP.path.SimpleTIBETPath;
     }
 
     //  Note that we only allow numeric ACP expressions in paths
@@ -3544,7 +3559,7 @@ function(aPath) {
     //  If we're handed a '#jpath(...)' pointer, then we know what kind of
     //  path it is (or should be, anyway)
     if (TP.regex.JSON_POINTER.test(path)) {
-        return TP.core.JSONPath;
+        return TP.path.JSONPath;
     }
 
     //  If we're handed a '#tibet(...)' pointer, then we know what kind of
@@ -3554,20 +3569,20 @@ function(aPath) {
         path = TP.regex.TIBET_POINTER.match(path);
 
         if (TP.regex.COMPOSITE_PATH.test(path.at(1))) {
-            return TP.core.CompositePath;
+            return TP.path.CompositePath;
         } else if (TP.regex.TIBET_PATH.test(path.at(1))) {
             //  Otherwise, if it just has 'TIBETan' access path characters,
             //  create a 'complex' TIBET path to deal with it.
-            return TP.core.ComplexTIBETPath;
+            return TP.path.ComplexTIBETPath;
         } else {
             //  Otherwise, it's just a simple path
-            return TP.core.SimpleTIBETPath;
+            return TP.path.SimpleTIBETPath;
         }
     }
 
     //  Barename (i.e. ID) paths
     if (TP.regex.BARENAME.test(path)) {
-        return TP.core.BarenamePath;
+        return TP.path.BarenamePath;
     }
 
     //  It could be some kind of XPointer - either xpointer(), xpath1() or
@@ -3580,32 +3595,32 @@ function(aPath) {
         //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
         //  matches all IDs ("#"), attributes ("@"), etc.
         if (TP.regex.ELEMENT_POINTER.test(path)) {
-            return TP.core.ElementPath;
+            return TP.path.ElementPath;
         } else {
-            return TP.core.XPathPath;
+            return TP.path.XPathPath;
         }
     }
 
     //  If we're handed an '#css(...)' or other kind of 'xtension' pointer,
     //  then we know what kind of path it is (or should be, anyway)
     if (TP.regex.XTENSION_POINTER.test(path)) {
-        return TP.core.XTensionPath;
+        return TP.path.XTensionPath;
     }
 
     //  attribute paths
     if (TP.regex.ATTRIBUTE.test(path)) {
-        return TP.core.SimpleXMLPath;
+        return TP.path.SimpleXMLPath;
     }
 
     //  Other kinds of XML paths
     if (TP.regex.XPATH_PATH.test(path) ||
         TP.regex.HAS_SLASH.test(path)) {
-        return TP.core.XPathPath;
+        return TP.path.XPathPath;
     }
 
     //  JSON Paths
     if (TP.regex.JSON_PATH.test(path)) {
-        return TP.core.JSONPath;
+        return TP.path.JSONPath;
     }
 
     //  If there is no 'path punctuation' (only JS identifer characters), or
@@ -3615,21 +3630,21 @@ function(aPath) {
     if (TP.regex.JS_IDENTIFIER.test(path) ||
         TP.regex.ONLY_NUM.test(path) ||
         TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
-        return TP.core.SimpleTIBETPath;
+        return TP.path.SimpleTIBETPath;
     }
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
     if (TP.regex.TIBET_PATH.test(path)) {
-        return TP.core.ComplexTIBETPath;
+        return TP.path.ComplexTIBETPath;
     }
 
-    return TP.core.CSSPath;
+    return TP.path.CSSPath;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('$getExecutedPaths',
+TP.path.AccessPath.Type.defineMethod('$getExecutedPaths',
 function() {
 
     /**
@@ -3652,7 +3667,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('$getChangedAddresses',
+TP.path.AccessPath.Type.defineMethod('$getChangedAddresses',
 function() {
 
     /**
@@ -3675,7 +3690,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('$getObservedAddresses',
+TP.path.AccessPath.Type.defineMethod('$getObservedAddresses',
 function() {
 
     /**
@@ -3698,7 +3713,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('registerChangedAddress',
+TP.path.AccessPath.Type.defineMethod('registerChangedAddress',
 function(anAddress, anAction) {
 
     /**
@@ -3717,7 +3732,7 @@ function(anAddress, anAction) {
      * @returns {Object} The receiver.
      */
 
-    TP.core.AccessPath.$getChangedAddresses().push(
+    TP.path.AccessPath.$getChangedAddresses().push(
         TP.hc('address', anAddress, 'action', anAction));
 
     return this;
@@ -3725,7 +3740,7 @@ function(anAddress, anAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Type.defineMethod('registerObservedAddress',
+TP.path.AccessPath.Type.defineMethod('registerObservedAddress',
 function(anAddress, sourceObjectID, interestedPath) {
 
     /**
@@ -3755,7 +3770,7 @@ function(anAddress, sourceObjectID, interestedPath) {
     //  }
 
     //  All observed addresses in the system
-    addressMap = TP.core.AccessPath.$getObservedAddresses();
+    addressMap = TP.path.AccessPath.$getObservedAddresses();
 
     //  Observed addresses are only interesting in the combination between the
     //  path *and* the data object it was executed against.
@@ -3777,34 +3792,34 @@ function(anAddress, sourceObjectID, interestedPath) {
 //  ------------------------------------------------------------------------
 
 //  The path's internal path
-TP.core.AccessPath.Inst.defineAttribute('srcPath');
+TP.path.AccessPath.Inst.defineAttribute('srcPath');
 
 //  Whether or not to make data structures on execution
-TP.core.AccessPath.Inst.defineAttribute('shouldMakeStructures');
+TP.path.AccessPath.Inst.defineAttribute('shouldMakeStructures');
 
 //  How to make data structures on execution (if we are making them)
-TP.core.AccessPath.Inst.defineAttribute('packageWith');
+TP.path.AccessPath.Inst.defineAttribute('packageWith');
 
 //  Whether or not to collapse results into a single value
-TP.core.AccessPath.Inst.defineAttribute('shouldCollapse');
+TP.path.AccessPath.Inst.defineAttribute('shouldCollapse');
 
 //  How to extract a 'final value'
-TP.core.AccessPath.Inst.defineAttribute('extractWith');
+TP.path.AccessPath.Inst.defineAttribute('extractWith');
 
 //  If a 'not valid' value is found, this Function can create values
-TP.core.AccessPath.Inst.defineAttribute('fallbackWith');
+TP.path.AccessPath.Inst.defineAttribute('fallbackWith');
 
 //  Paths that would have been invalidated due to structural mutations
-TP.core.AccessPath.Inst.defineAttribute('$invalidatedPaths');
+TP.path.AccessPath.Inst.defineAttribute('$invalidatedPaths');
 
 //  Addresses to remove due to structural mutations
-TP.core.AccessPath.Inst.defineAttribute('$addressesToRemove');
+TP.path.AccessPath.Inst.defineAttribute('$addressesToRemove');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('init',
+TP.path.AccessPath.Inst.defineMethod('init',
 function(aPath, config) {
 
     /**
@@ -3812,7 +3827,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.AccessPath} The receiver.
+     * @returns {TP.path.AccessPath} The receiver.
      */
 
     this.callNextMethod();
@@ -3839,7 +3854,7 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asSource',
+TP.path.AccessPath.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -3867,7 +3882,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asDumpString',
+TP.path.AccessPath.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
     /**
@@ -3897,7 +3912,7 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asHTMLString',
+TP.path.AccessPath.Inst.defineMethod('asHTMLString',
 function() {
 
     /**
@@ -3906,7 +3921,7 @@ function() {
      * @returns {String} The receiver in HTML string format.
      */
 
-    return '<span class="TP_core_AccessPath ' +
+    return '<span class="TP_path_AccessPath ' +
                     TP.escapeTypeName(TP.tname(this)) + '">' +
                 this.asString() +
             '</span>';
@@ -3914,7 +3929,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asJSONSource',
+TP.path.AccessPath.Inst.defineMethod('asJSONSource',
 function() {
 
     /**
@@ -3937,7 +3952,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asPrettyString',
+TP.path.AccessPath.Inst.defineMethod('asPrettyString',
 function() {
 
     /**
@@ -3962,7 +3977,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asString',
+TP.path.AccessPath.Inst.defineMethod('asString',
 function() {
 
     /**
@@ -3976,7 +3991,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('asXMLString',
+TP.path.AccessPath.Inst.defineMethod('asXMLString',
 function() {
 
     /**
@@ -3991,7 +4006,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('isAccessPath',
+TP.path.AccessPath.Inst.defineMethod('isAccessPath',
 function() {
 
     /**
@@ -4005,7 +4020,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('isEmpty',
+TP.path.AccessPath.Inst.defineMethod('isEmpty',
 function() {
 
     /**
@@ -4021,7 +4036,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('executeGet',
+TP.path.AccessPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
@@ -4044,7 +4059,7 @@ function(targetObj, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('executeSet',
+TP.path.AccessPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
@@ -4068,7 +4083,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('getFirstSimplePath',
+TP.path.AccessPath.Inst.defineMethod('getFirstSimplePath',
 function() {
 
     /**
@@ -4083,7 +4098,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('getPathParts',
+TP.path.AccessPath.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -4097,7 +4112,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('getPathType',
+TP.path.AccessPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -4111,7 +4126,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('getPointerScheme',
+TP.path.AccessPath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -4125,7 +4140,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('getLastChangedPathsInfo',
+TP.path.AccessPath.Inst.defineMethod('getLastChangedPathsInfo',
 function(targetObj, filterOutSignalSupertypes) {
 
     /**
@@ -4211,7 +4226,7 @@ function(targetObj, filterOutSignalSupertypes) {
         target = target.$get('data');
     }
 
-    allAddresses = TP.core.AccessPath.$getObservedAddresses();
+    allAddresses = TP.path.AccessPath.$getObservedAddresses();
 
     observedAddresses = allAddresses.at(TP.id(target));
 
@@ -4232,7 +4247,7 @@ function(targetObj, filterOutSignalSupertypes) {
 
         //  Make sure that this path is registered in 'executed paths' - to
         //  make sure that at least observers of this path will be notified.
-        executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+        executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                             TP.id(target));
 
        //  If we can't find any executed paths for the source, or not one for
@@ -4249,7 +4264,7 @@ function(targetObj, filterOutSignalSupertypes) {
     //  comparing with the 'observed' addresses and then collect the paths that
     //  did those observations.
 
-    changedAddresses = TP.core.AccessPath.$getChangedAddresses();
+    changedAddresses = TP.path.AccessPath.$getChangedAddresses();
 
     //  Generate a data structure with a data path as its key and
     //  action/addresses as the value:
@@ -4483,7 +4498,7 @@ function(targetObj, filterOutSignalSupertypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('processFinalValue',
+TP.path.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
     /**
@@ -4585,7 +4600,7 @@ function(aReturnValue, targetObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('updateRegistrationsAfterSignaling',
+TP.path.AccessPath.Inst.defineMethod('updateRegistrationsAfterSignaling',
 function(targetObj) {
 
     /**
@@ -4597,7 +4612,7 @@ function(targetObj) {
      *     address.
      * @param {Object} targetObj The object to update the path and address
      *     information for.
-     * @returns {TP.core.AccessPath} The receiver.
+     * @returns {TP.path.AccessPath} The receiver.
      */
 
     var observedAddresses,
@@ -4607,7 +4622,7 @@ function(targetObj) {
         invalidatedPaths,
         addressesToRemove;
 
-    observedAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+    observedAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                             TP.id(targetObj));
 
     if (TP.isEmpty(observedAddresses)) {
@@ -4622,7 +4637,7 @@ function(targetObj) {
     //  repopulate this with addresses that are still valid.
     observedAddresses.removeKeys(addressesToRemove);
 
-    executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+    executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                             TP.id(targetObj));
     invalidatedPaths = this.get('$invalidatedPaths');
 
@@ -4649,7 +4664,7 @@ function(targetObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('updateRegistrationsBeforeSignaling',
+TP.path.AccessPath.Inst.defineMethod('updateRegistrationsBeforeSignaling',
 function(targetObj) {
 
     /**
@@ -4662,7 +4677,7 @@ function(targetObj) {
      *     paths and addresses.
      * @param {Object} targetObj The object to update the path and address
      *     information for.
-     * @returns {TP.core.AccessPath} The receiver.
+     * @returns {TP.path.AccessPath} The receiver.
      */
 
     var observedAddresses,
@@ -4675,7 +4690,7 @@ function(targetObj) {
 
     //  We need to clear the path information registered for the addresses
     //  'under' the data that changed.
-    observedAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+    observedAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                             TP.id(targetObj));
 
     if (TP.isEmpty(observedAddresses)) {
@@ -4686,7 +4701,7 @@ function(targetObj) {
 
     //  Go through the addresses that changed and match them against any
     //  entries in observedAddresses
-    changedAddresses = TP.core.AccessPath.$getChangedAddresses();
+    changedAddresses = TP.path.AccessPath.$getChangedAddresses();
 
     invalidatedPaths = this.get('$invalidatedPaths');
     addressesToRemove = this.get('$addressesToRemove');
@@ -4723,7 +4738,7 @@ function(targetObj) {
                                         observedAddresses.at(theKey));
                         addressesToRemove.push(theKey);
 
-                        TP.core.AccessPath.registerChangedAddress(
+                        TP.path.AccessPath.registerChangedAddress(
                                 theKey, TP.DELETE);
                     }
                 }
@@ -4739,7 +4754,7 @@ function(targetObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.Inst.defineMethod('sendChangedSignal',
+TP.path.AccessPath.Inst.defineMethod('sendChangedSignal',
 function(targetObj) {
 
     /**
@@ -4747,7 +4762,7 @@ function(targetObj) {
      * @summary Sends a signal using the supplied target object as the origin
      *     to let observers know that we have changed.
      * @param {Object} targetObj The object to send the 'changed signal' from.
-     * @returns {TP.core.AccessPath} The receiver.
+     * @returns {TP.path.AccessPath} The receiver.
      */
 
     var allAddresses,
@@ -4792,7 +4807,7 @@ function(targetObj) {
     //                          }
     //  }
 
-    allAddresses = TP.core.AccessPath.$getObservedAddresses();
+    allAddresses = TP.path.AccessPath.$getObservedAddresses();
 
     observedAddresses = allAddresses.at(TP.id(targetObj));
 
@@ -4813,7 +4828,7 @@ function(targetObj) {
 
         //  Make sure that this path is registered in 'executed paths' - to
         //  make sure that at least observers of this path will be notified.
-        executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+        executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                             TP.id(targetObj));
 
        //  If we can't find any executed paths for the source, or not one for
@@ -4830,7 +4845,7 @@ function(targetObj) {
     //  comparing with the 'observed' addresses and then collect the paths that
     //  did those observations.
 
-    changedAddresses = TP.core.AccessPath.$getChangedAddresses();
+    changedAddresses = TP.path.AccessPath.$getChangedAddresses();
 
     //  Generate a data structure with a data path as its key and
     //  action/addresses as the value:
@@ -5040,10 +5055,10 @@ function(targetObj) {
 });
 
 //  ========================================================================
-//  TP.core.CompositePath
+//  TP.path.CompositePath
 //  ========================================================================
 
-TP.core.AccessPath.defineSubtype('CompositePath');
+TP.path.AccessPath.defineSubtype('CompositePath');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -5051,13 +5066,13 @@ TP.core.AccessPath.defineSubtype('CompositePath');
 
 //  The set of paths that this composite path holds. It chains them together to
 //  get or set a value when executing.
-TP.core.CompositePath.Inst.defineAttribute('paths');
+TP.path.CompositePath.Inst.defineAttribute('paths');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CompositePath.Inst.defineMethod('init',
+TP.path.CompositePath.Inst.defineMethod('init',
 function(aPath, config) {
 
     /**
@@ -5065,7 +5080,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.CompositePath} The receiver.
+     * @returns {TP.path.CompositePath} The receiver.
      */
 
     var path,
@@ -5114,7 +5129,7 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompositePath.Inst.defineMethod('executeGet',
+TP.path.CompositePath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
@@ -5184,7 +5199,7 @@ function(targetObj, varargs) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.CompositePath.Inst.defineMethod('executeSet',
+TP.path.CompositePath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
@@ -5244,7 +5259,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompositePath.Inst.defineMethod('getPathParts',
+TP.path.CompositePath.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -5272,7 +5287,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompositePath.Inst.defineMethod('getPathType',
+TP.path.CompositePath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -5285,16 +5300,16 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.JSONPath
+//  TP.path.JSONPath
 //  ========================================================================
 
 /**
- * @type {TP.core.JSONPath}
+ * @type {TP.path.JSONPath}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.defineSubtype('JSONPath');
+TP.path.AccessPath.defineSubtype('JSONPath');
 
 //  ------------------------------------------------------------------------
 
@@ -5307,21 +5322,21 @@ function(aPath, config) {
      * @summary Returns a newly initialized JSONPath instance. Note that if
      * @param {String} aPath The JSONPath as a String.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.XPathPath} The new instance.
+     * @returns {TP.path.XPathPath} The new instance.
      */
 
-    return TP.core.JSONPath.construct.apply(TP.core.JSONPath, arguments);
+    return TP.path.JSONPath.construct.apply(TP.path.JSONPath, arguments);
 });
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Type.defineAttribute('$mirroredAttributes');
+TP.path.JSONPath.Type.defineAttribute('$mirroredAttributes');
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Type.defineMethod('initialize',
+TP.path.JSONPath.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -5340,7 +5355,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Type.defineMethod('asXPath',
+TP.path.JSONPath.Type.defineMethod('asXPath',
 function(srcPath, templateArgs) {
 
     /**
@@ -5706,13 +5721,13 @@ function(srcPath, templateArgs) {
 //  ------------------------------------------------------------------------
 
 //  Our internal XPath
-TP.core.JSONPath.Inst.defineAttribute('$xmlPath');
+TP.path.JSONPath.Inst.defineAttribute('$xmlPath');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('init',
+TP.path.JSONPath.Inst.defineMethod('init',
 function(aPath, config) {
 
     /**
@@ -5720,7 +5735,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var path;
@@ -5745,7 +5760,7 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('executeGet',
+TP.path.JSONPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
@@ -5818,7 +5833,7 @@ function(targetObj, varargs) {
 
     //  See if the JSONContent object already has corresponding XML content. If
     //  not, create it.
-    if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
+    if (!TP.isKindOf(tpXMLDoc, TP.dom.XMLDocumentNode)) {
 
         //  Some sleight-of-hand to get our target content object to hold XML
         //  rather than JSON, but pretend to outside observers like it's holding
@@ -5836,7 +5851,7 @@ function(targetObj, varargs) {
         if (TP.isString(currentJSONData = target.$get('data'))) {
             currentJSONData = TP.json2js(currentJSONData, false);
         } else if (TP.isValid(currentJSONData) &&
-                !TP.isKindOf(currentJSONData, TP.core.Node)) {
+                !TP.isKindOf(currentJSONData, TP.dom.Node)) {
             currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
         }
 
@@ -5851,7 +5866,7 @@ function(targetObj, varargs) {
                     result = TP.$xml2jsonObj(TP.unwrap(someTPXML)))) {
 
                     //  Locally program a reference to ourself on the
-                    //  generated XML TP.core.Document.
+                    //  generated XML TP.dom.Document.
                     someTPXML.defineAttribute('$$realData');
                     someTPXML.$set('$$realData', this);
 
@@ -5952,9 +5967,9 @@ function(targetObj, varargs) {
                 };
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
-                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
+                if (TP.isKindOf(tpValueDoc, TP.dom.DocumentNode)) {
                     //  Locally program a reference to ourself on the generated
-                    //  XML TP.core.Document.
+                    //  XML TP.dom.Document.
                     tpValueDoc.defineAttribute('$$realData');
                     tpValueDoc.$set('$$realData', this);
                 } else {
@@ -6112,7 +6127,7 @@ function(targetObj, varargs) {
             targetURIOrPath = aCollectionURIOrPath;
             publicURI = this.get('$publicURI');
 
-            //  If targetURIOrPath is null or is not a TP.core.URI (maybe its a
+            //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
             //  path...), then set targetURI to publicURI (if its real).
             if (!TP.isURI(targetURIOrPath)) {
 
@@ -6143,7 +6158,7 @@ function(targetObj, varargs) {
 
             //  Grab the XPath version of the JSONPath that should be the
             //  fragment expression of the supplied URI.
-            xpath = TP.core.JSONPath.asXPath(fragmentExpr);
+            xpath = TP.path.JSONPath.asXPath(fragmentExpr);
 
             //  Grab the underlying XML data structure that we will manipulate.
             //  Note how we do this with a primitive call, so that we avoid
@@ -6331,7 +6346,7 @@ function(targetObj, varargs) {
 
             //  Grab the XPath version of the JSONPath that should be the
             //  fragment expression of the supplied URI.
-            xpath = TP.core.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
+            xpath = TP.path.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
 
             //  Grab the underlying XML data structure that we will manipulate.
             //  Note how we do this with a primitive call, so that we avoid
@@ -6438,7 +6453,7 @@ function(targetObj, varargs) {
 
                 tpValueDoc = this.$get('data');
 
-                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
+                if (TP.isKindOf(tpValueDoc, TP.dom.DocumentNode)) {
                     return tpValueDoc.clone(true, true);
                 }
             });
@@ -6553,7 +6568,7 @@ function(targetObj, varargs) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('executeSet',
+TP.path.JSONPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
@@ -6570,7 +6585,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath
-     * @returns {TP.core.JSONPath} The receiver.
+     * @returns {TP.path.JSONPath} The receiver.
      */
 
     var srcPath,
@@ -6690,7 +6705,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('getPathParts',
+TP.path.JSONPath.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -6704,7 +6719,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('getPathType',
+TP.path.JSONPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -6718,7 +6733,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('getPointerScheme',
+TP.path.JSONPath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -6732,7 +6747,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('set',
+TP.path.JSONPath.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
     /**
@@ -6742,7 +6757,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @description This is overridden from its supertype to make sure to copy
      *     over attributes that also need to be populated onto the receiver's
      *     internal XPath.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
+     * @param {String|TP.path.AccessPath} attributeName The name of the
      *     attribute to set.
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
@@ -6767,7 +6782,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONPath.Inst.defineMethod('$setupXMLPath',
+TP.path.JSONPath.Inst.defineMethod('$setupXMLPath',
 function(templateArgs) {
 
     /**
@@ -6778,7 +6793,7 @@ function(templateArgs) {
      * @param {Array} templateArgs An optional Array of template arguments. If
      *     the receiver is a templated path, these values will be used to fill
      *     in the template values and the computed XPath will *not* be cached.
-     * @returns {TP.core.XPathPath} The new instance of the computed XPath pate
+     * @returns {TP.path.XPathPath} The new instance of the computed XPath pate
      *     object.
      */
 
@@ -7029,7 +7044,7 @@ function(templateArgs) {
                     addressesToRemove;
 
                 observedAddresses =
-                    TP.core.AccessPath.$getObservedAddresses().at(
+                    TP.path.AccessPath.$getObservedAddresses().at(
                                         TP.id(targetObj));
 
                 if (TP.isEmpty(observedAddresses)) {
@@ -7045,7 +7060,7 @@ function(templateArgs) {
                 //  addresses that are still valid.
                 observedAddresses.removeKeys(addressesToRemove);
 
-                executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                                         TP.id(targetObj));
 
                 invalidatedPaths = this.get('$invalidatedPaths');
@@ -7058,7 +7073,7 @@ function(templateArgs) {
                     invalidInternalPaths = invalidatedPaths.copy();
                     invalidInternalPaths.convert(
                             function(aJSONPath) {
-                                return TP.core.JSONPath.asXPath(aJSONPath);
+                                return TP.path.JSONPath.asXPath(aJSONPath);
                             });
 
                     //  Remove the matching paths that were invalid from the
@@ -7102,32 +7117,32 @@ function(templateArgs) {
 });
 
 //  ========================================================================
-//  TP.core.SimpleTIBETPath
+//  TP.path.SimpleTIBETPath
 //  ========================================================================
 
 /**
- * @type {TP.core.SimpleTIBETPath}
+ * @type {TP.path.SimpleTIBETPath}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.defineSubtype('SimpleTIBETPath');
+TP.path.AccessPath.defineSubtype('SimpleTIBETPath');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineAttribute('$traversalLevel');
-TP.core.SimpleTIBETPath.Type.defineAttribute('$prefixParts');
+TP.path.SimpleTIBETPath.Type.defineAttribute('$traversalLevel');
+TP.path.SimpleTIBETPath.Type.defineAttribute('$prefixParts');
 
-TP.core.SimpleTIBETPath.Type.defineAttribute('$currentSource');
-TP.core.SimpleTIBETPath.Type.defineAttribute('$currentPath');
+TP.path.SimpleTIBETPath.Type.defineAttribute('$currentSource');
+TP.path.SimpleTIBETPath.Type.defineAttribute('$currentPath');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineMethod('initialize',
+TP.path.SimpleTIBETPath.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -7143,12 +7158,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineMethod('endChangedAddress',
+TP.path.SimpleTIBETPath.Type.defineMethod('endChangedAddress',
 function() {
 
     /**
      * @method endChangedAddress
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     this.get('$prefixParts').pop();
@@ -7158,17 +7173,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineMethod('endObservedAddress',
+TP.path.SimpleTIBETPath.Type.defineMethod('endObservedAddress',
 function() {
 
     /**
      * @method endObservedAddress
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var srcObj;
 
-    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    srcObj = TP.path.SimpleTIBETPath.get('$currentSource');
     if (TP.owns(srcObj, '$$noPathTracking')) {
         return this;
     }
@@ -7180,7 +7195,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineMethod('getChangedAddress',
+TP.path.SimpleTIBETPath.Type.defineMethod('getChangedAddress',
 function() {
 
     /**
@@ -7194,13 +7209,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineMethod('startChangedAddress',
+TP.path.SimpleTIBETPath.Type.defineMethod('startChangedAddress',
 function(addressPart) {
 
     /**
      * @method startChangedAddress
      * @param {String} addressPart
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var prefixParts;
@@ -7214,13 +7229,13 @@ function(addressPart) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Type.defineMethod('startObservedAddress',
+TP.path.SimpleTIBETPath.Type.defineMethod('startObservedAddress',
 function(addressPart) {
 
     /**
      * @method startObservedAddress
      * @param {String} addressPart
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var srcObj,
@@ -7232,7 +7247,7 @@ function(addressPart) {
 
         address;
 
-    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    srcObj = TP.path.SimpleTIBETPath.get('$currentSource');
     if (TP.owns(srcObj, '$$noPathTracking')) {
         return this;
     }
@@ -7244,7 +7259,7 @@ function(addressPart) {
     //  Note here the conversion from 'foo.[1]' to 'foo[1]'
     address = prefixParts.join('.').replace(/\.\[/g, '[');
 
-    srcPath = TP.core.SimpleTIBETPath.get('$currentPath').get('srcPath');
+    srcPath = TP.path.SimpleTIBETPath.get('$currentPath').get('srcPath');
 
     //  Note here the conversion from 'foo.[1]' to 'foo[1]'
     srcPath = srcPath.replace(/\.\[/g, '[');
@@ -7263,13 +7278,13 @@ function(addressPart) {
 
 //  Whether or not the receiver 'created structure' on it's latest run. This is
 //  reset after each 'setter run' of the path.
-TP.core.SimpleTIBETPath.Inst.defineAttribute('$createdStructure');
+TP.path.SimpleTIBETPath.Inst.defineAttribute('$createdStructure');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('init',
+TP.path.SimpleTIBETPath.Inst.defineMethod('init',
 function(aPath, config) {
 
     /**
@@ -7277,7 +7292,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var path;
@@ -7302,7 +7317,7 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('executeGet',
+TP.path.SimpleTIBETPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
@@ -7384,7 +7399,7 @@ function(targetObj, varargs) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('executeSet',
+TP.path.SimpleTIBETPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
@@ -7470,11 +7485,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         path = path.transform(args);
     }
 
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
 
         //  Empty the changed addresses before we start another run.
-        TP.core.AccessPath.$getChangedAddresses().empty();
+        TP.path.AccessPath.$getChangedAddresses().empty();
     }
 
     //  Trigger the actual 'set' mechanism, tracking changed addresses as we
@@ -7521,7 +7536,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  We're all done - acquire the traversal level again. We have to do this
     //  a second time, since the pre/post calls manipulate it.
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
 
     if (traversalLevel === 0) {
 
@@ -7529,11 +7544,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  executed paths need to be run, because they could now refer to new
         //  addresses.
         if (this.get('$createdStructure')) {
-            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+            executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                                     TP.id(targetObj));
 
             if (TP.notEmpty(executedPaths)) {
-                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                                                 TP.id(targetObj));
                 if (TP.notEmpty(obsAddresses)) {
                     obsAddresses.empty();
@@ -7574,7 +7589,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('getFirstSimplePath',
+TP.path.SimpleTIBETPath.Inst.defineMethod('getFirstSimplePath',
 function() {
 
     /**
@@ -7590,7 +7605,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('getPathParts',
+TP.path.SimpleTIBETPath.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -7604,7 +7619,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('getPathType',
+TP.path.SimpleTIBETPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -7618,7 +7633,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('getPointerScheme',
+TP.path.SimpleTIBETPath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -7632,77 +7647,77 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('preGetAccess',
+TP.path.SimpleTIBETPath.Inst.defineMethod('preGetAccess',
 function(targetObj) {
 
     /**
      * @method preGetAccess
      * @param {targetObj} Object
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var executedPaths;
 
-    executedPaths = TP.core.AccessPath.$getExecutedPaths().atPutIfAbsent(
+    executedPaths = TP.path.AccessPath.$getExecutedPaths().atPutIfAbsent(
                     TP.id(targetObj),
                     TP.hc());
 
     executedPaths.atPut(this.get('srcPath'), this);
 
-    TP.core.SimpleTIBETPath.set(
+    TP.path.SimpleTIBETPath.set(
         '$currentSource',
         TP.ifInvalid(
-            TP.core.SimpleTIBETPath.get('$currentSource'), targetObj));
-    TP.core.SimpleTIBETPath.set(
+            TP.path.SimpleTIBETPath.get('$currentSource'), targetObj));
+    TP.path.SimpleTIBETPath.set(
         '$currentPath',
         TP.ifInvalid(
-            TP.core.SimpleTIBETPath.get('$currentPath'), this));
+            TP.path.SimpleTIBETPath.get('$currentPath'), this));
 
-    TP.core.SimpleTIBETPath.set(
+    TP.path.SimpleTIBETPath.set(
         '$traversalLevel',
-        TP.core.SimpleTIBETPath.get('$traversalLevel') + 1);
+        TP.path.SimpleTIBETPath.get('$traversalLevel') + 1);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('preSetAccess',
+TP.path.SimpleTIBETPath.Inst.defineMethod('preSetAccess',
 function(targetObj) {
 
     /**
      * @method preSetAccess
      * @param {targetObj} Object
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
-    TP.core.SimpleTIBETPath.set(
+    TP.path.SimpleTIBETPath.set(
         '$traversalLevel',
-        TP.core.SimpleTIBETPath.get('$traversalLevel') + 1);
+        TP.path.SimpleTIBETPath.get('$traversalLevel') + 1);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('postGetAccess',
+TP.path.SimpleTIBETPath.Inst.defineMethod('postGetAccess',
 function(targetObj) {
 
     /**
      * @method postGetAccess
      * @param {targetObj} Object
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var traversalLevel;
 
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel') - 1;
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel') - 1;
 
-    TP.core.SimpleTIBETPath.set('$traversalLevel', traversalLevel);
+    TP.path.SimpleTIBETPath.set('$traversalLevel', traversalLevel);
 
     if (traversalLevel === 0) {
-        TP.core.SimpleTIBETPath.set('$currentSource', null);
-        TP.core.SimpleTIBETPath.set('$currentPath', null);
+        TP.path.SimpleTIBETPath.set('$currentSource', null);
+        TP.path.SimpleTIBETPath.set('$currentPath', null);
     }
 
     return this;
@@ -7710,35 +7725,35 @@ function(targetObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.Inst.defineMethod('postSetAccess',
+TP.path.SimpleTIBETPath.Inst.defineMethod('postSetAccess',
 function(targetObj) {
 
     /**
      * @method postSetAccess
      * @param {targetObj} Object
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
     var traversalLevel;
 
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel') - 1;
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel') - 1;
 
-    TP.core.SimpleTIBETPath.set('$traversalLevel', traversalLevel);
+    TP.path.SimpleTIBETPath.set('$traversalLevel', traversalLevel);
 
     return this;
 });
 
 //  ========================================================================
-//  TP.core.ComplexTIBETPath
+//  TP.path.ComplexTIBETPath
 //  ========================================================================
 
 /**
- * @type {TP.core.ComplexTIBETPath}
+ * @type {TP.path.ComplexTIBETPath}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleTIBETPath.defineSubtype('ComplexTIBETPath');
+TP.path.SimpleTIBETPath.defineSubtype('ComplexTIBETPath');
 
 //  ------------------------------------------------------------------------
 
@@ -7748,11 +7763,11 @@ function(aPath, config) {
 
     /**
      * @method tpc
-     * @summary Returns a newly initialized TIBETSimplePath or
-     *     TIBETComplexPath instance.
+     * @summary Returns a newly initialized SimpleTIBETPath or ComplexTIBETPath
+     *     instance.
      * @param {String} aPath The path as a String.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.SimpleTIBETPath|TP.core.ComplexTIBETPath} The new
+     * @returns {TP.path.SimpleTIBETPath|TP.path.ComplexTIBETPath} The new
      *     instance.
      */
 
@@ -7773,15 +7788,15 @@ function(aPath, config) {
         TP.regex.ONLY_NUM.test(path) ||
         TP.regex.ONLY_PERIOD.test(path) ||
         TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
-        return TP.core.SimpleTIBETPath.construct.apply(
-                        TP.core.SimpleTIBETPath, arguments);
+        return TP.path.SimpleTIBETPath.construct.apply(
+                        TP.path.SimpleTIBETPath, arguments);
     }
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
     if (TP.regex.TIBET_PATH.test(path)) {
-        return TP.core.ComplexTIBETPath.construct.apply(
-                            TP.core.ComplexTIBETPath, arguments);
+        return TP.path.ComplexTIBETPath.construct.apply(
+                            TP.path.ComplexTIBETPath, arguments);
     }
 
     return null;
@@ -7793,13 +7808,13 @@ function(aPath, config) {
 
 //  The transformed path we actually execute - it may have templated
 //  expressions.
-TP.core.ComplexTIBETPath.Inst.defineAttribute('$transformedPath');
+TP.path.ComplexTIBETPath.Inst.defineAttribute('$transformedPath');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('init',
+TP.path.ComplexTIBETPath.Inst.defineMethod('init',
 function(aPath, config) {
 
     /**
@@ -7807,7 +7822,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.ComplexTIBETPath} The receiver.
+     * @returns {TP.path.ComplexTIBETPath} The receiver.
      */
 
     var path;
@@ -7824,7 +7839,7 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('checkValueEquality',
+TP.path.ComplexTIBETPath.Inst.defineMethod('checkValueEquality',
 function(objectA, objectB) {
 
     /**
@@ -7852,7 +7867,7 @@ function(objectA, objectB) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('executeGet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
@@ -7927,7 +7942,7 @@ function(targetObj, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('executeSet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
@@ -7996,7 +8011,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
 
         if (TP.regex.HAS_ACP.test(srcPath)) {
@@ -8020,7 +8035,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
 
         //  Empty the changed addresses before we start another run.
-        TP.core.AccessPath.$getChangedAddresses().empty();
+        TP.path.AccessPath.$getChangedAddresses().empty();
     }
 
     //  Note here how we always do the set with a 'false' and then send a
@@ -8038,7 +8053,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  We're all done - acquire the traversal level again. We have to do this
     //  a second time, since the pre/post calls manipulate it.
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
 
     //  Only signal change if we're the 'top level' TIBET path - we could've
     //  had more 'complex paths' buried under us.
@@ -8048,11 +8063,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  executed paths need to be run, because they could now refer to new
         //  addresses.
         if (this.get('$createdStructure')) {
-            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+            executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                                     TP.id(targetObj));
 
             if (TP.notEmpty(executedPaths)) {
-                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                                                 TP.id(targetObj));
                 if (TP.notEmpty(obsAddresses)) {
                     obsAddresses.empty();
@@ -8098,7 +8113,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 //  Getter Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('$executeArrayGet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('$executeArrayGet',
 function(targetObj) {
 
     /**
@@ -8317,7 +8332,7 @@ function(targetObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('$executeObjectGet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('$executeObjectGet',
 function(targetObj) {
 
     /**
@@ -8464,7 +8479,7 @@ function(targetObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('$executeStringGet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('$executeStringGet',
 function(targetObj) {
 
     /**
@@ -8560,7 +8575,7 @@ function(targetObj) {
 //  Setter Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('$executeArraySet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('$executeArraySet',
 function(targetObj, attributeValue, shouldSignal) {
 
     /**
@@ -8892,7 +8907,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('$executeObjectSet',
+TP.path.ComplexTIBETPath.Inst.defineMethod('$executeObjectSet',
 function(targetObj, attributeValue, shouldSignal) {
 
     /**
@@ -9101,7 +9116,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('$extractPathHeadAndTail',
+TP.path.ComplexTIBETPath.Inst.defineMethod('$extractPathHeadAndTail',
 function(aPath) {
 
     /**
@@ -9145,7 +9160,7 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ComplexTIBETPath.Inst.defineMethod('getFirstSimplePath',
+TP.path.ComplexTIBETPath.Inst.defineMethod('getFirstSimplePath',
 function() {
 
     /**
@@ -9183,40 +9198,40 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.XMLPath
+//  TP.path.XMLPath
 //  ========================================================================
 
 /**
- * @type {TP.core.XMLPath}
+ * @type {TP.path.XMLPath}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.AccessPath.defineSubtype('XMLPath');
+TP.path.AccessPath.defineSubtype('XMLPath');
 
 //  This is an abstract supertype - need a concrete subtype to get real work
 //  done.
-TP.core.XMLPath.isAbstract(true);
+TP.path.XMLPath.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  The path we use to register interest for change notification
-TP.core.XMLPath.Inst.defineAttribute('$interestedPath');
+TP.path.XMLPath.Inst.defineAttribute('$interestedPath');
 
 //  The transformed path we actually execute - it may have templated
 //  expressions.
-TP.core.XMLPath.Inst.defineAttribute('$transformedPath');
+TP.path.XMLPath.Inst.defineAttribute('$transformedPath');
 
 //  Whether or not to make scalar data slots on execution
-TP.core.XMLPath.Inst.defineAttribute('shouldMakeValues');
+TP.path.XMLPath.Inst.defineAttribute('shouldMakeValues');
 
 //  -----------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('init',
+TP.path.XMLPath.Inst.defineMethod('init',
 function(aPath, config) {
 
     /**
@@ -9224,7 +9239,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.XMLPath} The receiver.
+     * @returns {TP.path.XMLPath} The receiver.
      */
 
     this.callNextMethod();
@@ -9241,13 +9256,13 @@ function(aPath, config) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
+TP.path.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
 function(aNode, prevNode, aValue) {
 
     /**
      * @method $addChangedAddressFromNode
      * @summary Adds the supplied node's address and action to
-     *     TP.core.AccessPath's 'changed address list'.
+     *     TP.path.AccessPath's 'changed address list'.
      * @param {Node} aNode The Node to extract the address and action from.
      * @param {Node} prevNode Any previous content that was at the place in the
      *     data structure where aNode is now. This is used to determine what
@@ -9255,7 +9270,7 @@ function(aNode, prevNode, aValue) {
      * @param {Object} aValue The value that the node is being set to. Note that
      *     this isn't necessary a Node / markup value, but is useful for
      *     comparison purposes.
-     * @returns {TP.core.XMLPath} The receiver.
+     * @returns {TP.path.XMLPath} The receiver.
      */
 
     var address,
@@ -9323,10 +9338,10 @@ function(aNode, prevNode, aValue) {
     if (TP.isValid(aValue) &&
         action === TP.UPDATE &&
         this.$updateOpsBecomeDeleteInsertOps(aNode, prevNode)) {
-        TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
-        TP.core.AccessPath.registerChangedAddress(address, TP.CREATE);
+        TP.path.AccessPath.registerChangedAddress(address, TP.DELETE);
+        TP.path.AccessPath.registerChangedAddress(address, TP.CREATE);
     } else {
-        TP.core.AccessPath.registerChangedAddress(address, action);
+        TP.path.AccessPath.registerChangedAddress(address, action);
     }
 
     return this;
@@ -9334,7 +9349,7 @@ function(aNode, prevNode, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('checkValueEquality',
+TP.path.XMLPath.Inst.defineMethod('checkValueEquality',
 function(objectA, objectB) {
 
     /**
@@ -9370,7 +9385,7 @@ function(objectA, objectB) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('executeGet',
+TP.path.XMLPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
     /**
@@ -9425,7 +9440,7 @@ function(targetObj, varargs) {
     }
 
     //  This kind of path only works against XML
-    if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
+    if (!TP.isNode(target) && !TP.isKindOf(target, TP.dom.Node)) {
         if (TP.isWindow(target) || TP.isKindOf(target, TP.core.Window)) {
             target = TP.unwrap(target).document;
             if (!TP.isXMLDocument(target)) {
@@ -9444,7 +9459,7 @@ function(targetObj, varargs) {
         return target;
     }
 
-    executedPaths = TP.core.AccessPath.$getExecutedPaths().atPutIfAbsent(
+    executedPaths = TP.path.AccessPath.$getExecutedPaths().atPutIfAbsent(
                     TP.id(target),
                     TP.hc());
 
@@ -9546,7 +9561,7 @@ function(targetObj, varargs) {
 
     addresses.perform(
             function(anAddress) {
-                TP.core.AccessPath.registerObservedAddress(
+                TP.path.AccessPath.registerObservedAddress(
                     anAddress, sourceObjectID, interestedPath);
             });
 
@@ -9564,7 +9579,7 @@ function(targetObj, varargs) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('executeSet',
+TP.path.XMLPath.Inst.defineMethod('executeSet',
 function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /**
@@ -9581,7 +9596,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath
-     * @returns {TP.core.XPathPath} The receiver.
+     * @returns {TP.path.XPathPath} The receiver.
      */
 
     var target,
@@ -9642,7 +9657,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     //  This kind of path only works against XML
-    if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
+    if (!TP.isNode(target) && !TP.isKindOf(target, TP.dom.Node)) {
         if (TP.isWindow(target) || TP.isKindOf(target, TP.core.Window)) {
             target = TP.wrap(TP.unwrap(target).document);
         } else {
@@ -9724,11 +9739,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
     this.set('$transformedPath', path);
 
-    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
 
         //  Empty the changed addresses before we start another run.
-        TP.core.AccessPath.$getChangedAddresses().empty();
+        TP.path.AccessPath.$getChangedAddresses().empty();
     }
 
     //  First, we have to get the nodes that we can use to set the value - if
@@ -9823,7 +9838,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         if (TP.notValid(value)) {
             TP.nodeEmptyContent(content);
         } else {
-            //  leverage TP.core.Node wrappers to manage update intelligently
+            //  leverage TP.dom.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(content);
             tpcontent.setRawContent(value);
         }
@@ -9898,7 +9913,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             if (TP.notValid(value)) {
                 TP.nodeEmptyContent(contentnode);
             } else {
-                //  leverage TP.core.Node wrappers to manage update
+                //  leverage TP.dom.Node wrappers to manage update
                 //  intelligently
                 tpcontent = TP.wrap(contentnode);
                 tpcontent.setRawContent(value);
@@ -10011,10 +10026,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  addresses.
     if (createdStructure) {
         if (TP.notEmpty(
-            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+            executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                                                 targetTPDoc.getID()))) {
             if (TP.notEmpty(executedPaths)) {
-                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                                                 TP.id(targetObj));
                 if (TP.notEmpty(obsAddresses)) {
                     obsAddresses.empty();
@@ -10064,7 +10079,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('finalizeSetValue',
+TP.path.XMLPath.Inst.defineMethod('finalizeSetValue',
 function(content, value) {
 
     /**
@@ -10087,7 +10102,7 @@ function(content, value) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('$$getContentForSetOperation',
+TP.path.XMLPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
@@ -10106,7 +10121,7 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('getPathType',
+TP.path.XMLPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -10123,7 +10138,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('getPathParts',
+TP.path.XMLPath.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -10137,7 +10152,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('getPointerScheme',
+TP.path.XMLPath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -10154,7 +10169,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('$updateOpsBecomeDeleteInsertOps',
+TP.path.XMLPath.Inst.defineMethod('$updateOpsBecomeDeleteInsertOps',
 function(aNode, prevNode) {
 
     /**
@@ -10181,7 +10196,7 @@ function(aNode, prevNode) {
 
 //  -----------------------------------------------------------------------
 
-TP.core.XMLPath.Inst.defineMethod('valueIsStructural',
+TP.path.XMLPath.Inst.defineMethod('valueIsStructural',
 function(content, value) {
 
     /**
@@ -10199,14 +10214,14 @@ function(content, value) {
 });
 
 //  ========================================================================
-//  TP.core.SimpleXMLPath
+//  TP.path.SimpleXMLPath
 //  ========================================================================
 
-TP.core.XMLPath.defineSubtype('SimpleXMLPath');
+TP.path.XMLPath.defineSubtype('SimpleXMLPath');
 
 //  ------------------------------------------------------------------------
 
-TP.core.SimpleXMLPath.Inst.defineMethod('$$getContentForSetOperation',
+TP.path.SimpleXMLPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
@@ -10252,14 +10267,14 @@ function(aNode, flagChanges) {
 });
 
 //  ========================================================================
-//  TP.core.ElementPath
+//  TP.path.ElementPath
 //  ========================================================================
 
-TP.core.XMLPath.defineSubtype('ElementPath');
+TP.path.XMLPath.defineSubtype('ElementPath');
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementPath.Inst.defineMethod('$$getContentForSetOperation',
+TP.path.ElementPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
@@ -10302,14 +10317,14 @@ function(aNode, flagChanges) {
 });
 
 //  ========================================================================
-//  TP.core.XTensionPath
+//  TP.path.XTensionPath
 //  ========================================================================
 
-TP.core.XMLPath.defineSubtype('XTensionPath');
+TP.path.XMLPath.defineSubtype('XTensionPath');
 
 //  ------------------------------------------------------------------------
 
-TP.core.XTensionPath.Inst.defineMethod('$$getContentForSetOperation',
+TP.path.XTensionPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
@@ -10345,10 +10360,10 @@ function(aNode, flagChanges) {
 });
 
 //  ========================================================================
-//  TP.core.CSSPath
+//  TP.path.CSSPath
 //  ========================================================================
 
-TP.core.XTensionPath.defineSubtype('CSSPath');
+TP.path.XTensionPath.defineSubtype('CSSPath');
 
 //  ------------------------------------------------------------------------
 
@@ -10361,17 +10376,17 @@ function(aPath, config) {
      * @summary Returns a newly initialized CSSPath instance.
      * @param {String} aPath The CSS path as a String.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.CSSPath} The new instance.
+     * @returns {TP.path.CSSPath} The new instance.
      */
 
-    return TP.core.CSSPath.construct.apply(TP.core.CSSPath, arguments);
+    return TP.path.CSSPath.construct.apply(TP.path.CSSPath, arguments);
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPath.Inst.defineMethod('getPathType',
+TP.path.CSSPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -10385,7 +10400,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPath.Inst.defineMethod('getPathParts',
+TP.path.CSSPath.Inst.defineMethod('getPathParts',
 function() {
 
     /**
@@ -10399,7 +10414,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPath.Inst.defineMethod('getPointerScheme',
+TP.path.CSSPath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -10412,16 +10427,16 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.BarenamePath
+//  TP.path.BarenamePath
 //  ========================================================================
 
-TP.core.XMLPath.defineSubtype('BarenamePath');
+TP.path.XMLPath.defineSubtype('BarenamePath');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.BarenamePath.Inst.defineMethod('$$getContentForSetOperation',
+TP.path.BarenamePath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
@@ -10466,7 +10481,7 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.BarenamePath.Inst.defineMethod('getPathType',
+TP.path.BarenamePath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -10480,7 +10495,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.BarenamePath.Inst.defineMethod('getPointerScheme',
+TP.path.BarenamePath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -10502,7 +10517,7 @@ function() {
 
 /*
 Note that the setup for this type is handled dynamically during processing
-of the getFunctionResolver method on TP.core.XPathPath.
+of the getFunctionResolver method on TP.path.XPathPath.
 */
 
 /* eslint-disable no-empty-function */
@@ -10515,7 +10530,7 @@ TP.extern.XPathFunctionResolver = function() {};
 
 /*
 Note that the setup for this type is handled dynamically during processing
-of the getNSResolver method on TP.core.XPathPath.
+of the getNSResolver method on TP.path.XPathPath.
 */
 
 /* eslint-disable no-empty-function */
@@ -10528,7 +10543,7 @@ TP.extern.XPathNamespaceResolver = function() {};
 
 /*
 Note that the setup for this type is handled dynamically during processing
-of the getVariableResolver method on TP.core.XPathPath.
+of the getVariableResolver method on TP.path.XPathPath.
 */
 
 /* eslint-disable no-empty-function */
@@ -10536,16 +10551,16 @@ TP.extern.XPathVariableResolver = function() {};
 /* eslint-enable no-empty-function */
 
 //  ========================================================================
-//  TP.core.XPathPath
+//  TP.path.XPathPath
 //  ========================================================================
 
 /**
- * @type {TP.core.XPathPath}
+ * @type {TP.path.XPathPath}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLPath.defineSubtype('XPathPath');
+TP.path.XMLPath.defineSubtype('XPathPath');
 
 //  ------------------------------------------------------------------------
 
@@ -10565,10 +10580,10 @@ function(aPath, config, forceNative) {
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
      *     discussion for more information.
-     * @returns {TP.core.XPathPath} The new instance.
+     * @returns {TP.path.XPathPath} The new instance.
      */
 
-    return TP.core.XPathPath.construct.apply(TP.core.XPathPath, arguments);
+    return TP.path.XPathPath.construct.apply(TP.path.XPathPath, arguments);
 });
 
 //  ------------------------------------------------------------------------
@@ -10579,33 +10594,33 @@ function(aPath, config, forceNative) {
 //  in it ('$' followed by word characters) or custom XPath namespaced
 //  functions in it (word characters followed by colon followed by word
 //  characters followed by an opening parenthesis).
-TP.core.XPathPath.Type.defineConstant('NON_NATIVE_PATH_REGEX',
+TP.path.XPathPath.Type.defineConstant('NON_NATIVE_PATH_REGEX',
                                 TP.rc('\\$\\w+|\\w+:[\\w-]+\\('));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineAttribute('$tpParser');
-TP.core.XPathPath.Type.defineAttribute('$nsResolver');
-TP.core.XPathPath.Type.defineAttribute('$fnResolver');
-TP.core.XPathPath.Type.defineAttribute('$varResolver');
+TP.path.XPathPath.Type.defineAttribute('$tpParser');
+TP.path.XPathPath.Type.defineAttribute('$nsResolver');
+TP.path.XPathPath.Type.defineAttribute('$fnResolver');
+TP.path.XPathPath.Type.defineAttribute('$varResolver');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineAttribute('isNative');
+TP.path.XPathPath.Inst.defineAttribute('isNative');
 
-TP.core.XPathPath.Inst.defineAttribute('$origPath');
-TP.core.XPathPath.Inst.defineAttribute('$tpPath');
-TP.core.XPathPath.Inst.defineAttribute('$tpContext');
+TP.path.XPathPath.Inst.defineAttribute('$origPath');
+TP.path.XPathPath.Inst.defineAttribute('$tpPath');
+TP.path.XPathPath.Inst.defineAttribute('$tpContext');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineMethod('initialize',
+TP.path.XPathPath.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -10620,7 +10635,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineMethod('canonicalizePath',
+TP.path.XPathPath.Type.defineMethod('canonicalizePath',
 function(aPath) {
 
     /**
@@ -10645,7 +10660,7 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineMethod('getFunctionResolver',
+TP.path.XPathPath.Type.defineMethod('getFunctionResolver',
 function() {
 
     /**
@@ -10702,7 +10717,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineMethod('getNSResolver',
+TP.path.XPathPath.Type.defineMethod('getNSResolver',
 function() {
 
     /**
@@ -10753,7 +10768,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineMethod('getParser',
+TP.path.XPathPath.Type.defineMethod('getParser',
 function() {
 
     /**
@@ -10782,7 +10797,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Type.defineMethod('getVariableResolver',
+TP.path.XPathPath.Type.defineMethod('getVariableResolver',
 function() {
 
     /**
@@ -10859,7 +10874,7 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('init',
+TP.path.XPathPath.Inst.defineMethod('init',
 function(aPath, config, forceNative) {
 
     /**
@@ -10874,7 +10889,7 @@ function(aPath, config, forceNative) {
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
      *     discussion for more information.
-     * @returns {TP.core.XPathPath} The new instance.
+     * @returns {TP.path.XPathPath} The new instance.
      */
 
     var thePath,
@@ -10922,7 +10937,7 @@ function(aPath, config, forceNative) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('asReplacedString',
+TP.path.XPathPath.Inst.defineMethod('asReplacedString',
 function(replacementFunction) {
 
     /**
@@ -10950,7 +10965,7 @@ function(replacementFunction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('asSource',
+TP.path.XPathPath.Inst.defineMethod('asSource',
 function() {
 
     /**
@@ -10962,7 +10977,7 @@ function() {
     var str,
         val;
 
-    str = 'TP.core.XPathPath.construct(\'' + this.get('$origPath') +
+    str = 'TP.path.XPathPath.construct(\'' + this.get('$origPath') +
             '\', ' +
             this.get('isNative') + ')';
 
@@ -10979,7 +10994,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('asString',
+TP.path.XPathPath.Inst.defineMethod('asString',
 function(verbose) {
 
     /**
@@ -10988,7 +11003,7 @@ function(verbose) {
      *     non-native paths this is the string representation of the parsed
      *     expression (which is canonicalized).
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.core.XPathPath's String representation. The default is
+     *     of the TP.path.XPathPath's String representation. The default is
      *     true.
      * @returns {String} The String representation of the receiver.
      */
@@ -11011,7 +11026,7 @@ function(verbose) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('$$createNodesForPath',
+TP.path.XPathPath.Inst.defineMethod('$$createNodesForPath',
 function(aNode, flagChanges) {
 
     /**
@@ -11059,7 +11074,7 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('$createNonNativeParserContext',
+TP.path.XPathPath.Inst.defineMethod('$createNonNativeParserContext',
 function(aPath) {
 
     /**
@@ -11068,7 +11083,7 @@ function(aPath) {
      *     parser for the receiver.
      * @param {String} aPath The XPath as a String. Defaults to the receiver's
      *     current path.
-     * @returns {TP.core.XPathPath} The receiver.
+     * @returns {TP.path.XPathPath} The receiver.
      */
 
     var path,
@@ -11109,14 +11124,14 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('exec',
+TP.path.XPathPath.Inst.defineMethod('exec',
 function(aTPNode, resultType, logErrors, flagChanges) {
 
     /**
      * @method exec
      * @summary 'Executes' the XPath by evaluating it against the supplied
-     *     TP.core.Node.
-     * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
+     *     TP.dom.Node.
+     * @param {TP.dom.Node} aTPNode The TP.dom.Node to execute the receiver
      *     against.
      * @param {Number} resultType The type of result desired, either TP.NODESET
      *     or TP.FIRST_NODE.
@@ -11124,10 +11139,10 @@ function(aTPNode, resultType, logErrors, flagChanges) {
      *     particularly during operations such as String localization which can
      *     cause recusion issues.
      * @param {Boolean} flagChanges True if any newly created nodes should be
-     *     flagged. Defaults to the value set by the TP.core.Node being
+     *     flagged. Defaults to the value set by the TP.dom.Node being
      *     processed.
      * @returns {Object} The result of evaluating the receiver against the
-     *     supplied TP.core.Node. Will be one of: String, Number, Boolean or
+     *     supplied TP.dom.Node. Will be one of: String, Number, Boolean or
      *     Array (of Nodes).
      */
 
@@ -11148,7 +11163,7 @@ function(aTPNode, resultType, logErrors, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('execOnNative',
+TP.path.XPathPath.Inst.defineMethod('execOnNative',
 function(aNode, resultType, logErrors, flagChanges) {
 
     /**
@@ -11164,7 +11179,7 @@ function(aNode, resultType, logErrors, flagChanges) {
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
      * @returns {Object} The result of evaluating the receiver against the
-     *     supplied TP.core.Node. Will be one of: String, Number, Boolean or
+     *     supplied TP.dom.Node. Will be one of: String, Number, Boolean or
      *     Array (of Nodes).
      */
 
@@ -11189,7 +11204,7 @@ function(aNode, resultType, logErrors, flagChanges) {
         TP.isXMLDocument(TP.nodeGetDocument(aNode)) &&
         !flag) {
         //  Note here how we use the primitive call. If we used
-        //  TP.core.Node's evaluateXPath(), we'd likely recurse because we
+        //  TP.dom.Node's evaluateXPath(), we'd likely recurse because we
         //  are most likely being called from there.
         return TP.nodeEvaluateXPath(aNode, path, resultType, logErrors);
     }
@@ -11247,7 +11262,7 @@ function(aNode, resultType, logErrors, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('execRemove',
+TP.path.XPathPath.Inst.defineMethod('execRemove',
 function(aTPNode, shouldSignal) {
 
     /**
@@ -11255,7 +11270,7 @@ function(aTPNode, shouldSignal) {
      * @summary Removes all nodes under the receiver which match the XPath
      *     provided. This method is typically called via remove when an XPath
      *     is provided as the attributeName.
-     * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
+     * @param {TP.dom.Node} aTPNode The TP.dom.Node to execute the receiver
      *     against.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
@@ -11359,7 +11374,7 @@ function(aTPNode, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('$$getContentForSetOperation',
+TP.path.XPathPath.Inst.defineMethod('$$getContentForSetOperation',
 function(aNode, flagChanges) {
 
     /**
@@ -11485,7 +11500,7 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getPathType',
+TP.path.XPathPath.Inst.defineMethod('getPathType',
 function() {
 
     /**
@@ -11499,7 +11514,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getPointerScheme',
+TP.path.XPathPath.Inst.defineMethod('getPointerScheme',
 function() {
 
     /**
@@ -11513,7 +11528,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getShouldMakeStructures',
+TP.path.XPathPath.Inst.defineMethod('getShouldMakeStructures',
 function() {
 
     /**
@@ -11538,16 +11553,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getReferencedNodes',
+TP.path.XPathPath.Inst.defineMethod('getReferencedNodes',
 function(aNode) {
 
     /**
      * @method getReferencedNodes
      * @summary Returns an Array of the Nodes that are referenced by this
      *     path, using aNode as the 'context node' (e.g. starting point).
-     * @param {Node|TP.core.Node} aNode The Node to execute the receiver
+     * @param {Node|TP.dom.Node} aNode The Node to execute the receiver
      *     against.
-     * @returns {Array} The array of TP.core.Nodes referenced by the receiver.
+     * @returns {Array} The array of TP.dom.Nodes referenced by the receiver.
      */
 
     var context,
@@ -11581,7 +11596,7 @@ function(aNode) {
     //  Grab the non-native context and parser objects and configure them
     //  in preparation for executing the path at each referenced location
 
-    //  Make sure to TP.unwrap() aNode - it might have been a TP.core.Node.
+    //  Make sure to TP.unwrap() aNode - it might have been a TP.dom.Node.
     context.expressionContextNode = TP.unwrap(aNode);
 
     parser = this.getType().getParser();
@@ -11609,7 +11624,7 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getReferencedLocationPaths',
+TP.path.XPathPath.Inst.defineMethod('getReferencedLocationPaths',
 function() {
 
     /**
@@ -11637,7 +11652,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('$getReferencedLocationPathObjects',
+TP.path.XPathPath.Inst.defineMethod('$getReferencedLocationPathObjects',
 function() {
 
     /**
@@ -11666,7 +11681,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getReferencedLocationStepsAtPath',
+TP.path.XPathPath.Inst.defineMethod('getReferencedLocationStepsAtPath',
 function(aPathIndex) {
 
     /**
@@ -11705,7 +11720,7 @@ function(aPathIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('isAbsolute',
+TP.path.XPathPath.Inst.defineMethod('isAbsolute',
 function() {
 
     /**
@@ -11729,7 +11744,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('isNativePath',
+TP.path.XPathPath.Inst.defineMethod('isNativePath',
 function(aFlag) {
 
     /**
@@ -11749,7 +11764,7 @@ function(aFlag) {
         path = this.$get('srcPath');
 
         if (aFlag) {
-            if (TP.core.XPathPath.NON_NATIVE_PATH_REGEX.test(path)) {
+            if (TP.path.XPathPath.NON_NATIVE_PATH_REGEX.test(path)) {
                 TP.ifWarn() ?
                     TP.warn('Found non-native XPath constructs in XPath: ' +
                             path +
@@ -11773,7 +11788,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('setShouldMakeStructures',
+TP.path.XPathPath.Inst.defineMethod('setShouldMakeStructures',
 function(shouldMakeStruct) {
 
     /**
@@ -11782,7 +11797,7 @@ function(shouldMakeStruct) {
      *     Nodes as it is executed against a particular context node.
      * @param {shouldMakeStruct} Boolean the receiver should be configured to
      *     create nodes as it executes.
-     * @returns {TP.core.XPathPath} The receiver.
+     * @returns {TP.path.XPathPath} The receiver.
      */
 
     var context;
@@ -11807,7 +11822,7 @@ function(shouldMakeStruct) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('setPath',
+TP.path.XPathPath.Inst.defineMethod('setPath',
 function(aPath, forceNative) {
 
     /**
@@ -11821,7 +11836,7 @@ function(aPath, forceNative) {
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
      *     discussion for more information.
-     * @returns {TP.core.XPathPath} The receiver.
+     * @returns {TP.path.XPathPath} The receiver.
      */
 
     var pathType;
@@ -11829,7 +11844,7 @@ function(aPath, forceNative) {
     if (TP.notValid(forceNative)) {
         //  based on whether it looks like a non-native path we'll either
         //  accept their input or ensure consistent processing
-        if (TP.core.XPathPath.NON_NATIVE_PATH_REGEX.test(aPath)) {
+        if (TP.path.XPathPath.NON_NATIVE_PATH_REGEX.test(aPath)) {
             if (forceNative) {
                 TP.ifWarn() ?
                     TP.warn('Found non-native XPath constructs in XPath: ' +
@@ -11849,7 +11864,7 @@ function(aPath, forceNative) {
 
     //  If we're a non-native path we'll need additional processing assistance
     //  so we get that configured once at initialization time
-    if (pathType === TP.core.XPathPath.NON_NATIVE_PATH) {
+    if (pathType === TP.path.XPathPath.NON_NATIVE_PATH) {
         this.$createNonNativeParserContext(aPath);
     }
 

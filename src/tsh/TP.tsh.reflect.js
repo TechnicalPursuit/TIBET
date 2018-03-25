@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.reflect}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:reflect');
+TP.tag.ActionTag.defineSubtype('tsh:reflect');
 
 TP.tsh.reflect.addTraits(TP.tsh.Element);
 
@@ -558,7 +558,9 @@ function(anObj, anInputStr) {
         slot,
 
         nativeSlotExists,
-        trackNotSupplied;
+        trackNotSupplied,
+
+        realOwner;
 
     //  If we're running in a PhantomJS/CLI environment, then we always return
     //  null here since we can't go get Web-based docs.
@@ -580,9 +582,11 @@ function(anObj, anInputStr) {
 
         pathParts = anInputStr.split('.');
 
+        //  If the user typed the special syntax of 'CSS.<css_property_name>',
+        //  then compute a URI based on that.
         switch (pathParts.at(0)) {
             case 'CSS':
-                httpStr += 'css/' + obj;
+                httpStr += 'css/' + pathParts.at(1);
                 return httpStr;
             default:
                 break;
@@ -590,18 +594,23 @@ function(anObj, anInputStr) {
 
         pathParts = obj.split('.');
 
+        //  If we can't find the first path part on the global object, then we
+        //  can't even proceed, so we just return null.
         owner = TP.global[pathParts.at(0)];
         if (TP.notValid(owner)) {
             return null;
         }
 
+        //  If we only had one path part, then it needed to be resolved directly
+        //  as a slot on the global object. It either did or didn't, but in any
+        //  case don't need to do any further computation.
         if (pathParts.getSize() === 1) {
             nativeSlotExists = true;
         } else {
             trackNotSupplied = false;
 
             //  If they didn't supply a track, then we assume TP.INST_TRACK
-            //  first, but we'll also try the TP.TYPE_TRACK second.
+            //  first (but we'll also try the TP.TYPE_TRACK second below).
             if (pathParts.getSize() === 2) {
                 track = TP.INST_TRACK;
                 trackNotSupplied = true;
@@ -612,15 +621,30 @@ function(anObj, anInputStr) {
             }
 
             try {
+                //  Try the 'instance track' which, for natives, is basically
+                //  getting their instance prototype and using that.
                 if (track === TP.INST_TRACK || track === 'prototype') {
+                    //  Force the track to TP.INST_TRACK in case it was
+                    //  'prototype'
+                    track = TP.INST_TRACK;
                     slot = owner.getInstPrototype()[slotName];
+
+                    //  Couldn't find it on the instance prototype and the track
+                    //  wasn't supplied? Try the (constructor) object itself
+                    //  (which is the 'type track' for natives).
                     if (TP.notValid(slot) && trackNotSupplied) {
                         slot = owner[slotName];
+                        track = TP.TYPE_TRACK;
                     }
                 } else {
+
+                    //  Otherwise, just use the constructor object itself (which
+                    //  is the 'type track' for natives).
                     slot = owner[slotName];
+                    track = TP.TYPE_TRACK;
                 }
 
+                //  Make sure it's a native Function.
                 nativeSlotExists = TP.isNativeFunction(slot);
             } catch (e) {
                 nativeSlotExists = TP.isValid(
@@ -639,14 +663,42 @@ function(anObj, anInputStr) {
 
     if (nativeSlotExists && TP.isNativeType(owner)) {
 
-        if (Node.prototype.isPrototypeOf(owner.prototype) ||
-            owner.prototype === Node.prototype) {
-            httpStr += 'dom/' + TP.name(owner);
+        //  There is still one issue left to resolve - the owner might *not*
+        //  actually be the object that 'owns' the slot. For instance, if the
+        //  slotName is 'appendChild' and the owner is 'Element' (prototype),
+        //  then the owner should actually be 'Node' (since devdocs.io wants to
+        //  see 'Node.appendChild'). To do this, we iterate up the chain,
+        //  looking for the slot that actually owns the slot named slotName
+
+        realOwner = owner;
+        while (TP.isValid(realOwner)) {
+            if (track === TP.INST_TRACK) {
+                if (realOwner.prototype.hasOwnProperty(slotName)) {
+                    break;
+                }
+            } else if (track === TP.TYPE_TRACK) {
+                if (realOwner.hasOwnProperty(slotName)) {
+                    break;
+                }
+            }
+
+            realOwner = Object.getPrototypeOf(realOwner);
+        }
+
+        //  Traversed all of the way to the top and still didn't find the real
+        //  owner? Then just default to the original owner.
+        if (TP.notValid(realOwner)) {
+            realOwner = owner;
+        }
+
+        if (Node.prototype.isPrototypeOf(realOwner.prototype) ||
+            realOwner.prototype === Node.prototype) {
+            httpStr += 'dom/' + TP.name(realOwner);
             if (TP.isValid(slotName)) {
                 httpStr += '/' + slotName;
             }
         } else {
-            httpStr += 'javascript/global_objects/' + TP.name(owner);
+            httpStr += 'javascript/global_objects/' + TP.name(realOwner);
             if (TP.isValid(slotName)) {
                 httpStr += '/' + slotName;
             }
@@ -662,7 +714,7 @@ function(anObj, anInputStr) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('reflect',
+TP.shell.TSH.addHelpTopic('reflect',
     TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
     ':reflect [target] [--interface <interface>]' +

@@ -58,18 +58,18 @@ function(aSignal, triggerTPDocument) {
 
     /**
      * @method getTriggerElement
-     * @summary Returns the TP.core.ElementNode that is acting as the
+     * @summary Returns the TP.dom.ElementNode that is acting as the
      *     'triggering' element for the overlay. This can be one of three
      *     values:
      *     - The element matching a 'triggerPath' supplied in aSignal
      *     - The target element of the trigger signal supplied in aSignal
      *     - The body element of the triggerTPDocument which should be the
-     *         TP.core.Document that the triggering element is contained in.
+     *         TP.dom.Document that the triggering element is contained in.
      * @param {TP.sig.OpenNotifier} aSignal The TIBET signal which triggered
      *     this method.
-     * @param {TP.core.Document} triggerTPDocument The TP.core.Document that the
+     * @param {TP.dom.Document} triggerTPDocument The TP.dom.Document that the
      *     triggering element is contained in.
-     * @returns {TP.core.ElementNode} The TP.core.ElementNode that caused the
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode that caused the
      *     overlay to trigger.
      */
 
@@ -93,6 +93,30 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.notifier.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants =
+        this.get('./*[not(@tibet:assembly = \'xctrls:notifier\')]');
+
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.notifier.Inst.defineMethod('getOverlayOffset',

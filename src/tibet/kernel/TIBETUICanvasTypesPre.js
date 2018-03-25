@@ -61,10 +61,10 @@ function() {
 
     /**
      * @method getContentDocument
-     * @summary Returns a TP.core.Document instance wrapping the receiver's
+     * @summary Returns a TP.dom.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
-     * @returns {TP.core.Document}
+     * @returns {TP.dom.Document}
      */
 
     //  rely on the content window so we can leverage caching behavior
@@ -78,13 +78,13 @@ function() {
 
     /**
      * @method getContentNode
-     * @summary Returns the native node of the TP.core.DocumentNode wrapping
+     * @summary Returns the native node of the TP.dom.DocumentNode wrapping
      *     the receiver's document object.
-     * @returns {Node}
+     * @returns {TP.dom.Document}
      */
 
     //  rely on the content window so we can leverage caching behavior
-    return this.getContentWindow().getContentDocument().getNativeNode();
+    return this.getContentWindow().getContentDocument();
 });
 
 //  ------------------------------------------------------------------------
@@ -144,8 +144,8 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
-     * @returns {TP.core.Document} The Document object contained by the
+     *     of the receiver in a TP.dom.Document wrapper.
+     * @returns {TP.dom.Document} The Document object contained by the
      *     receiver.
      */
 
@@ -188,7 +188,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
-     *     TRUE for TP.core.Node subtypes.
+     *     TRUE for TP.dom.Node subtypes.
      */
 
     var win,
@@ -328,7 +328,7 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -343,7 +343,7 @@ function(aContentObject, aRequest) {
  * @type {TP.core.Window}
  * @summary TP.core.Window is a top-level type for wrapping windows and frames.
  * @description In TIBET you typically operate with documents and elements via
- *     the TP.core.Node hierarchy. The TP.core.Window hierarchy is intended to
+ *     the TP.dom.Node hierarchy. The TP.core.Window hierarchy is intended to
  *     provide functional support for window-level operations. When creating a
  *     TP.core.Window the specific subtype vended back on construct().
  *
@@ -410,7 +410,7 @@ function(anObject) {
         }
 
         return TP.core.Window.construct(win);
-    } else if (TP.isKindOf(anObject, TP.core.Node)) {
+    } else if (TP.isKindOf(anObject, TP.dom.Node)) {
         return anObject.getWindow();
     }
 
@@ -758,7 +758,7 @@ function(url, aName, aSpec, shouldReplace) {
      * @summary Constructs a new TP.core.Window instance (having retrieved a
      *     real native window to go underneath it and having set it up for use
      *     with TIBET).
-     * @param {TP.core.URI|String} url The URL to load into the window.
+     * @param {TP.uri.URI|String} url The URL to load into the window.
      * @param {String} aName The name to give this window. This must be unique.
      * @param {TP.core.Hash|String} aSpec A 'spec string' of key=value pairs or
      *     a hash that can be used to produce a feature string. You should use
@@ -1017,7 +1017,7 @@ function(aWindowOrID, theContent, aLoadedFunction) {
         }
     } else if (TP.isNode(theContent)) {
         content = theContent;
-    } else if (TP.isKindOf(theContent, TP.core.URI)) {
+    } else if (TP.isKindOf(theContent, TP.uri.URI)) {
         //  NB: We assume 'async' false here.
         resp = theContent.getResource(TP.hc('async', false));
         content = resp.get('result');
@@ -1075,7 +1075,7 @@ function(aWindowOrID, aKey, aValue) {
 //  the id (global ID) of our native window
 TP.core.Window.Inst.defineAttribute('$windowID');
 
-//  the TP.core.Document wrapper for the window's document. This is managed
+//  the TP.dom.Document wrapper for the window's document. This is managed
 //  by the setContent method on TP.core.Window to keep the native document
 //  current
 TP.core.Window.Inst.defineAttribute('contentDoc');
@@ -1131,7 +1131,7 @@ function(aURL, aRequest) {
      *     similar to the native '<windowRef>.location =' call, except that it
      *     will process content at the end of the URL and set up proper TIBET
      *     constructs in the receiver's native window.
-     * @param {String|TP.core.URI} aURL The URL of the content to load into this
+     * @param {String|TP.uri.URI} aURL The URL of the content to load into this
      *     window.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      * @returns {TP.core.Window} The receiver.
@@ -1516,10 +1516,10 @@ function() {
 
     /**
      * @method getContentDocument
-     * @summary Returns a TP.core.Document instance wrapping the receiver's
+     * @summary Returns a TP.dom.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument().
-     * @returns {TP.core.Document} The TP.core.Document object wrapping the
+     * @returns {TP.dom.Document} The TP.dom.Document object wrapping the
      *     receiver's native document object.
      */
 
@@ -1530,7 +1530,7 @@ function() {
         return this.raise('TP.sig.InvalidWindow');
     }
 
-    //  try to reuse one TP.core.Document if at all possible
+    //  try to reuse one TP.dom.Document if at all possible
     if (TP.isDocument(doc = this.$get('contentDoc'))) {
         //  need to check Document objects - they can become detached or
         //  otherwise messed with
@@ -1540,7 +1540,7 @@ function() {
     }
 
     //  build/save a new wrapper for the current document object
-    doc = TP.core.Document.construct(win.document);
+    doc = TP.dom.Document.construct(win.document);
     this.$set('contentDoc', doc, false);
 
     return doc;
@@ -1627,8 +1627,8 @@ function() {
     /**
      * @method getNativeContentDocument
      * @summary Returns the content document (that is the contained 'document')
-     *     of the receiver in a TP.core.Document wrapper.
-     * @returns {TP.core.Document} The TP.core.Document object contained by the
+     *     of the receiver in a TP.dom.Document wrapper.
+     * @returns {TP.dom.Document} The TP.dom.Document object contained by the
      *     receiver.
      */
 
@@ -1676,7 +1676,7 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
+     * @returns {TP.dom.Node} The result of setting the content of the
      *     receiver.
      */
 
@@ -1807,14 +1807,14 @@ function() {
 
     /**
      * @method getDocument
-     * @summary Returns a TP.core.Document instance wrapping the receiver's
+     * @summary Returns a TP.dom.Document instance wrapping the receiver's
      *     document object. To get the native document object use
      *     getNativeDocument.
      * @description Windows are unique in that their content document and their
      *     document are the same object. For other UICanvas objects the content
      *     document is contained within the canvas, but the document contains
      *     the canvas. Windows sit at the boundary.
-     * @returns {TP.core.Document}
+     * @returns {TP.dom.Document}
      */
 
     return this.getContentDocument();
@@ -1828,7 +1828,7 @@ function() {
     /**
      * @method getNativeDocument
      * @summary Returns the receiver's native document object without creating
-     *     a TP.core.Document wrapper.
+     *     a TP.dom.Document wrapper.
      * @returns {Document} A native document instance.
      */
 

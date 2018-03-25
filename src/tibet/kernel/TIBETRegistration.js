@@ -64,7 +64,7 @@ function(anID, regOnly, nodeContext) {
      *     to use for resolution when no other reference is found. Default is
      *     the current canvas.
      * @returns {Object} Typically a TIBET object (meaning nodes are wrapped in
-     *     TP.core.Node instances etc) to maintain encapsulation for as long as
+     *     TP.dom.Node instances etc) to maintain encapsulation for as long as
      *     possible.
      */
 
@@ -103,10 +103,10 @@ function(anID, regOnly, nodeContext) {
 
     //  If the ID starts with a TIBET URN scheme and it has a real resource
     //  result object, then return that. Note here how we use 'getInstanceById'
-    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  on the TP.uri.URI type rather than 'TP.uc()' - that call will always
     //  create an instance *and register it* if it doesn't exist.
     if (TP.regex.TIBET_URN.test(id)) {
-        if (TP.isURI(url = TP.core.URI.getInstanceById(id))) {
+        if (TP.isURI(url = TP.uri.URI.getInstanceById(id))) {
 
             //  NB: This is a URN so we assume 'async' of false here.
             if (TP.isValid(inst = url.getResource().get('result'))) {
@@ -117,9 +117,9 @@ function(anID, regOnly, nodeContext) {
 
     //  Try to make a TIBET URN from the ID and, if it has a real resource
     //  result object, then return that. Note here how we use 'getInstanceById'
-    //  on the TP.core.URI type rather than 'TP.uc' - that call will always
+    //  on the TP.uri.URI type rather than 'TP.uc' - that call will always
     //  create an instance *and register it* if it doesn't exist.
-    if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
+    if (TP.isURI(url = TP.uri.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
 
         //  NB: This is a URN so we assume 'async' of false here.
         if (TP.isValid(inst = url.getResource().get('result'))) {
@@ -256,7 +256,7 @@ function(anID, regOnly, nodeContext) {
 
             if (TP.isNode(inst)) {
                 //  try to force types to come in for creation
-                if (TP.isType(type = TP.core.Node.getConcreteType(inst))) {
+                if (TP.isType(type = TP.dom.Node.getConcreteType(inst))) {
                     return type.construct(inst);
                 }
             } else if (TP.isWindow(inst)) {
@@ -383,12 +383,12 @@ function(anID, regOnly, nodeContext) {
     //  .document and .#document are often used to get document handles so
     //  check for that next to avoid lookup overhead below
     if (id === 'document') {
-        return TP.core.Document.construct(win.document);
+        return TP.dom.Document.construct(win.document);
     }
 
     //  not the document, perhaps an element in the document
     if (TP.isElement(inst = TP.nodeGetElementById(win.document, id))) {
-        if (TP.isType(type = TP.core.Node.getConcreteType(inst))) {
+        if (TP.isType(type = TP.dom.Node.getConcreteType(inst))) {
             return type.construct(inst);
         }
     } else {
@@ -399,7 +399,7 @@ function(anID, regOnly, nodeContext) {
                 if (TP.isWindow(inst)) {
                     return TP.core.Window.construct(inst);
                 } else if (TP.isDocument(inst)) {
-                    return TP.core.Document.construct(inst);
+                    return TP.dom.Document.construct(inst);
                 }
 
                 return inst;
@@ -464,14 +464,14 @@ function(anObj, anID) {
         }
     }
 
-    //  Note that in the checks below, we check with the TP.core.URI *type*'s
+    //  Note that in the checks below, we check with the TP.uri.URI *type*'s
     //  'instances' registry *before* the 'TP.uc' calls. 'TP.uc' will create
     //  a URI in the registry if one doesn't exist.
 
     //  If a TIBET URN can be made from the ID and it is registered with the URI
     //  type and it has a real resource result object, then return that.
     if (TP.regex.TIBET_URN.test(id) &&
-        TP.core.URI.instances.containsKey(id) &&
+        TP.uri.URI.instances.containsKey(id) &&
         TP.isValid(TP.uc(id).getResource().get('result'))) {
 
         return true;
@@ -482,7 +482,7 @@ function(anObj, anID) {
     //  Try to make a TIBET URN from the urnID and, if it is registered with the
     //  URI type and it has a real resource result object, then return that.
     if (TP.regex.TIBET_URN.test(urnID) &&
-        TP.core.URI.instances.containsKey(urnID) &&
+        TP.uri.URI.instances.containsKey(urnID) &&
         TP.isValid(TP.uc(urnID).getResource().get('result'))) {
 
         return true;
@@ -532,7 +532,7 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     //  A URI can be found directly by using the TP.uc call and its registry.
     //  But go ahead and do the registration if caller is forcing it.
-    if (TP.isKindOf(anObj, TP.core.URI) && TP.notTrue(forceRegistration)) {
+    if (TP.isKindOf(anObj, TP.uri.URI) && TP.notTrue(forceRegistration)) {
         return false;
     }
 
@@ -615,7 +615,7 @@ function(anObj, anID) {
 
     //  NOTE that we don't create a URI here, we simply check to see if one has
     //  already been created that might need to be flushed.
-    urn = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id);
+    urn = TP.uri.URI.getInstanceById(TP.TIBET_URN_PREFIX + id);
     if (!TP.isURI(urn)) {
         return false;
     }

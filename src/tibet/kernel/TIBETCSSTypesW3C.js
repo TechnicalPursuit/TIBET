@@ -9,14 +9,14 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.Gradient
+//  TP.gui.Gradient
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('asCanvasGradientOn',
+TP.gui.Gradient.Inst.defineMethod('asCanvasGradientOn',
 function(aCanvas) {
 
     /**
@@ -34,7 +34,7 @@ function(aCanvas) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('asSVGGradientOn',
+TP.gui.Gradient.Inst.defineMethod('asSVGGradientOn',
 function(anElement, idValue) {
 
     /**
@@ -53,7 +53,7 @@ function(anElement, idValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Gradient.Inst.defineMethod('$setupSVGGradientElement',
+TP.gui.Gradient.Inst.defineMethod('$setupSVGGradientElement',
 function(anElement, idValue, gradientTagName) {
 
     /**
@@ -178,14 +178,14 @@ function(anElement, idValue, gradientTagName) {
 });
 
 //  ========================================================================
-//  TP.core.LinearGradient
+//  TP.gui.LinearGradient
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asCanvasGradientOn',
+TP.gui.LinearGradient.Inst.defineMethod('asCanvasGradientOn',
 function(aCanvas) {
 
     /**
@@ -274,7 +274,7 @@ function(aCanvas) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.LinearGradient.Inst.defineMethod('asSVGGradientOn',
+TP.gui.LinearGradient.Inst.defineMethod('asSVGGradientOn',
 function(anElement, idValue) {
 
     /**
@@ -298,7 +298,7 @@ function(anElement, idValue) {
                                                 'linearGradient');
 
     //  Set the various x1, y1, x2, y2 values given those values on the
-    //  TP.core.Gradient object.
+    //  TP.gui.Gradient object.
     TP.elementSetAttribute(gradElem, 'x1', this.get('x1'));
     TP.elementSetAttribute(gradElem, 'y1', this.get('y1'));
     TP.elementSetAttribute(gradElem, 'x2', this.get('x2'));
@@ -317,14 +317,14 @@ function(anElement, idValue) {
 });
 
 //  ========================================================================
-//  TP.core.RadialGradient
+//  TP.gui.RadialGradient
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asCanvasGradientOn',
+TP.gui.RadialGradient.Inst.defineMethod('asCanvasGradientOn',
 function(aCanvas) {
 
     /**
@@ -417,7 +417,7 @@ function(aCanvas) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RadialGradient.Inst.defineMethod('asSVGGradientOn',
+TP.gui.RadialGradient.Inst.defineMethod('asSVGGradientOn',
 function(anElement, idValue) {
 
     /**
@@ -441,7 +441,7 @@ function(anElement, idValue) {
                                                 'radialGradient');
 
     //  Set the various cx, cy, r, fx, fy values given those values on the
-    //  TP.core.Gradient object.
+    //  TP.gui.Gradient object.
     TP.elementSetAttribute(gradElem, 'cx', this.get('cx'));
     TP.elementSetAttribute(gradElem, 'cy', this.get('cy'));
 
@@ -463,14 +463,14 @@ function(anElement, idValue) {
 });
 
 //  ========================================================================
-//  TP.core.Pattern
+//  TP.gui.Pattern
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asCanvasPatternOn',
+TP.gui.Pattern.Inst.defineMethod('asCanvasPatternOn',
 function(aCanvas) {
 
     /**
@@ -488,7 +488,7 @@ function(aCanvas) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Pattern.Inst.defineMethod('asSVGPatternOn',
+TP.gui.Pattern.Inst.defineMethod('asSVGPatternOn',
 function(anElement, idValue) {
 
     /**
@@ -576,7 +576,7 @@ function(anElement, idValue) {
     }
 
     //  Set the various x, y, width, height values of the pattern element
-    //  given those values on the TP.core.Gradient object.
+    //  given those values on the TP.gui.Gradient object.
     TP.elementSetAttribute(imageElem, 'x', this.get('x'));
     TP.elementSetAttribute(imageElem, 'y', this.get('y'));
     TP.elementSetAttribute(imageElem, 'width', this.get('width'));

@@ -78,7 +78,7 @@ function() {
     /**
      * @method getReleaseURL
      * @summary Returns the URL of the release specified by this node.
-     * @returns {TP.core.URL}
+     * @returns {TP.uri.URL}
      */
 
     var tpRelElem;

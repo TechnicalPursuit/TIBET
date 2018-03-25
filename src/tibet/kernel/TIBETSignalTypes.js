@@ -124,7 +124,7 @@ function(aTarget, aTest, aSignal) {
      * @summary Initializes a new instance of monitor.
      * @param {Object} aTarget An object or object ID which identifies the
      *     object being monitored. When an ID is used it should be a valid
-     *     TP.core.URI or a String which can be resolved via the
+     *     TP.uri.URI or a String which can be resolved via the
      *     TP.sys.getObjectById() call.
      * @param {?Function} aTest A function which defines the test being run on
      *     each target object. This should return true to cause the monitor to
@@ -195,8 +195,8 @@ function(aTarget) {
     /**
      * @method addTarget
      * @summary Adds a new target to the list of objects to monitor.
-     * @param {String|TP.core.URI|Function} aTarget A target specification in
-     *     one of a variety of forms: TP.core.URI, string ID, or acquisition
+     * @param {String|TP.uri.URI|Function} aTarget A target specification in
+     *     one of a variety of forms: TP.uri.URI, string ID, or acquisition
      *     function (or an array of them).
      * @returns {TP.core.Monitor} The receiver.
      */
@@ -279,7 +279,7 @@ function() {
             }
         } else if (TP.isString(target)) {
             obj = TP.sys.getObjectById(target);
-        } else if (TP.isKindOf(target, TP.core.URI)) {
+        } else if (TP.isKindOf(target, TP.uri.URI)) {
             //  NB: We assume 'async' of false here.
             obj = target.getResource().get('result');
         } else {
@@ -373,7 +373,7 @@ function() {
                 }
             } else if (TP.isString(target)) {
                 obj = TP.sys.getObjectById(target);
-            } else if (TP.isKindOf(target, TP.core.URI)) {
+            } else if (TP.isKindOf(target, TP.uri.URI)) {
                 //  NB: We assume 'async' of false here.
                 obj = target.getResource().get('result');
             } else {
@@ -415,8 +415,8 @@ function(aTarget) {
     /**
      * @method removeTarget
      * @summary Removes a target from the list of objects to monitor.
-     * @param {String|TP.core.URI|Function} aTarget A target specification in
-     *     one of a variety of forms: TP.core.URI, string ID, or acquisition
+     * @param {String|TP.uri.URI|Function} aTarget A target specification in
+     *     one of a variety of forms: TP.uri.URI, string ID, or acquisition
      *     function (or an array of them).
      * @returns {TP.core.Monitor} The receiver.
      */
@@ -1200,6 +1200,8 @@ TP.sig.BINDSignal.Type.defineAttribute('cancelable', true);
 TP.sig.BINDSignal.defineSubtype('BINDItemSignal');
 
 TP.sig.BINDItemSignal.defineSubtype('SetContent');
+TP.sig.BINDItemSignal.defineSubtype('ClearContent');
+
 TP.sig.BINDItemSignal.defineSubtype('CloneItem');
 TP.sig.BINDItemSignal.defineSubtype('InsertItem');
 TP.sig.BINDItemSignal.defineSubtype('DeleteItem');
@@ -1266,7 +1268,7 @@ function() {
      *     target to their origin so that responder chain semantics work
      *     properly. This method allows access to the original *DOM* target of
      *     the signal.
-     * @returns {TP.core.UIElementNode} The DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The DOM target of the receiver.
      */
 
     var trigger,
@@ -1309,7 +1311,7 @@ function() {
      *     target to their origin so that responder chain semantics work
      *     properly. This method allows access to the original *resolved* *DOM*
      *     target of the signal.
-     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The resolved DOM target of the receiver.
      */
 
     var evt,
@@ -2686,9 +2688,9 @@ function() {
 
     /**
      * @method getClientPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     window containing the source element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     window.
      */
 
@@ -2762,13 +2764,13 @@ function(wantsTransformed) {
 
     /**
      * @method getGlobalPoint
-     * @summary Returns the X/Y TP.core.Point of the signal as a global
+     * @summary Returns the X/Y TP.gui.Point of the signal as a global
      *     position. The global position is the signal's mouse position
      *     relative to its overall *top level* window.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     overall top level window.
      */
 
@@ -2856,9 +2858,9 @@ function() {
 
     /**
      * @method getOffsetPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     containing source element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     containing element.
      */
 
@@ -2922,9 +2924,9 @@ function() {
 
     /**
      * @method getPagePoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     page containing the source element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     overall page.
      */
 
@@ -2988,9 +2990,9 @@ function() {
 
     /**
      * @method getScreenPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     video screen
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     video screen.
      */
 
@@ -3014,10 +3016,10 @@ function() {
 
     /**
      * @method getTransformedPoint
-     * @summary Returns the X/Y TP.core.Point of the signal relative to the
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
      *     target element while taking into account any CSS transformations to
      *     that element.
-     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
      *     target element, including any CSS transformations.
      */
 
@@ -3588,7 +3590,7 @@ function() {
      * @description DND targeting signals, such as TP.sig.DOMDNDTargetOver and
      *     TP.sig.DOMDNDTargetOut capture the event that caused them to trigger.
      *     This can be very useful when wanting to refine the target.
-     * @returns {TP.core.UIElementNode} The DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The DOM target of the receiver.
      */
 
     var evt,
@@ -3624,7 +3626,7 @@ function() {
      *     target to their origin so that responder chain semantics work
      *     properly. This method allows access to the original *resolved* *DOM*
      *     target of the signal.
-     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     * @returns {TP.dom.UIElementNode} The resolved DOM target of the receiver.
      */
 
     var evt,

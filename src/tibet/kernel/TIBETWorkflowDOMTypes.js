@@ -9,11 +9,11 @@
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.vcard.vcard
+//  TP.ietf.vcard
 //  ========================================================================
 
 /**
- * @type {TP.vcard.vcard}
+ * @type {TP.ietf.vcard}
  * @summary A VCard originally based on the Jabber/XEP-0054 vcard-temp spec.
  * @description The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
@@ -34,7 +34,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('vcard:vcard');
+TP.dom.ElementNode.defineSubtype('ietf.vcard');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -44,13 +44,13 @@ TP.core.ElementNode.defineSubtype('vcard:vcard');
  * The dictionary of registered vcards.
  * @type {TP.core.Hash}
  */
-TP.vcard.vcard.Type.defineAttribute('instances', TP.hc());
+TP.ietf.vcard.Type.defineAttribute('instances', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Types Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('initialize',
+TP.ietf.vcard.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -62,8 +62,8 @@ function() {
 
     url = TP.sys.cfg('path.lib_vcards');
     if (TP.notEmpty(url)) {
-        TP.vcard.vcard.loadVCards(url).then(function(result) {
-            TP.vcard.vcard.initVCards(result);
+        TP.ietf.vcard.loadVCards(url).then(function(result) {
+            TP.ietf.vcard.initVCards(result);
         }).catch(function(err) {
             TP.ifError() ?
                 TP.error('Error loading library vcards: ' +
@@ -73,8 +73,8 @@ function() {
 
     url = TP.sys.cfg('path.app_vcards');
     if (TP.notEmpty(url)) {
-        TP.vcard.vcard.loadVCards(url).then(function(result) {
-            TP.vcard.vcard.initVCards(result);
+        TP.ietf.vcard.loadVCards(url).then(function(result) {
+            TP.ietf.vcard.initVCards(result);
         }).catch(function(err) {
             TP.ifError() ?
                 TP.error('Error loading application vcards: ' +
@@ -85,7 +85,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('generate',
+TP.ietf.vcard.Type.defineMethod('generate',
 function(userInfo) {
 
     /**
@@ -94,7 +94,7 @@ function(userInfo) {
      *     Keys can include 'fn', 'n', 'role', 'org', and 'orgunit'. Defaults
      *     are taken from the user.default_* keys in TIBET's configuration data.
      * @param {TP.core.Hash} userInfo The user information to build a card for.
-     * @returns {TP.vcard.vcard} The new instance.
+     * @returns {TP.ietf.vcard} The new instance.
      */
 
     var params,
@@ -121,13 +121,13 @@ function(userInfo) {
             '</vcard-ext:x-orgunit>',
         '</vcard>'));
 
-    return TP.vcard.vcard.construct(node);
+    return TP.ietf.vcard.construct(node);
 });
 
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('getInstanceById',
+TP.ietf.vcard.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
@@ -135,14 +135,14 @@ function(anID) {
      * @summary Returns the vcard instance whose <fn> value matches the ID
      *     provided. If the ID matches that of the user.default_name value and
      *     the vcard isn't found a default version will be created.
-     * @returns {vcard.vcard} A vcard element wrapper.
+     * @returns {TP.ietf.vcard} A vcard element wrapper.
      */
 
     var vcards,
         inst;
 
     //  NOTE the access to the top-level type here, not 'this'.
-    vcards = TP.vcard.vcard.get('instances');
+    vcards = TP.ietf.vcard.get('instances');
 
     inst = vcards.at(anID);
     if (TP.isValid(inst)) {
@@ -158,7 +158,7 @@ function(anID) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('initVCards',
+TP.ietf.vcard.Type.defineMethod('initVCards',
 function(aDocument) {
 
     /**
@@ -168,7 +168,7 @@ function(aDocument) {
      *     to loadVCards to acquire a vcard-containing document.
      * @param {Document} aDocument A TIBET vcards document. See the
      *     documentation on TIBET vcard files for more information.
-     * @returns {Array.<TP.vcard.vcard>} An array of vcard instances.
+     * @returns {TP.ietf.vcard[]} An array of vcard instances.
      */
 
     var vcards,
@@ -179,7 +179,7 @@ function(aDocument) {
         return this.raise('InvalidDocument', aDocument);
     }
 
-    type = TP.vcard.vcard;
+    type = TP.ietf.vcard;
 
     vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vcard', TP.NODESET);
     list = vcards.collect(function(elem) {
@@ -191,7 +191,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('loadVCards',
+TP.ietf.vcard.Type.defineMethod('loadVCards',
 function(aURI) {
 
     /**
@@ -226,7 +226,7 @@ function(aURI) {
 
     //  If we got a URI or path of some kind it's time to validate it and create
     //  the URI instance needed to perform the data load.
-    if (!TP.isKindOf(url, TP.core.URI)) {
+    if (!TP.isKindOf(url, TP.uri.URI)) {
         fname = TP.uriExpandPath(url);
         if (!TP.isURI(url = TP.uc(fname))) {
             return this.raise('InvalidURI', aURI);
@@ -238,7 +238,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('registerVCard',
+TP.ietf.vcard.Type.defineMethod('registerVCard',
 function(aVCard) {
 
     /**
@@ -247,8 +247,8 @@ function(aVCard) {
      *     'fullname' (i.e. the <text> value of <fn>) as the key to register it
      *     under. This method is invoked automatically during vcard instance
      *     creation so you don't normally need to call it yourself.
-     * @param {TP.vcard.vcard} aVCard The vcard instance to register.
-     * @returns {TP.vcard.vcard} The registered vcard instance.
+     * @param {TP.ietf.vcard} aVCard The vcard instance to register.
+     * @returns {TP.ietf.vcard} The registered vcard instance.
      */
 
     var id,
@@ -264,7 +264,7 @@ function(aVCard) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.vcard.vcard.get('instances');
+    keys = TP.ietf.vcard.get('instances');
     keys.atPut(id, aVCard);
 
     return aVCard;
@@ -277,87 +277,87 @@ function(aVCard) {
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.vcard.vcard.Inst.defineAttribute('fullname',
+TP.ietf.vcard.Inst.defineAttribute('fullname',
     TP.xpc('./$def:fn/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('shortname',
+TP.ietf.vcard.Inst.defineAttribute('shortname',
     TP.xpc('./$def:n/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('surname',
+TP.ietf.vcard.Inst.defineAttribute('surname',
     TP.xpc('./$def:n/$def:surname',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('givenname',
+TP.ietf.vcard.Inst.defineAttribute('givenname',
     TP.xpc('./$def:n/$def:given',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('prefix',
+TP.ietf.vcard.Inst.defineAttribute('prefix',
     TP.xpc('./$def:n/$def:prefix',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('nickname',
+TP.ietf.vcard.Inst.defineAttribute('nickname',
     TP.xpc('./$def:nickname/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('jid',
+TP.ietf.vcard.Inst.defineAttribute('jid',
     TP.xpc('./$def:impp/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('url',
+TP.ietf.vcard.Inst.defineAttribute('url',
     TP.xpc('./$def:url/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('email',
+TP.ietf.vcard.Inst.defineAttribute('email',
     TP.xpc('./$def:email/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('tel',
+TP.ietf.vcard.Inst.defineAttribute('tel',
     TP.xpc('./$def:tel/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('url',
+TP.ietf.vcard.Inst.defineAttribute('url',
     TP.xpc('./$def:url/$def:uri',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('timezone',
+TP.ietf.vcard.Inst.defineAttribute('timezone',
     TP.xpc('./$def:tz/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('role',
+TP.ietf.vcard.Inst.defineAttribute('role',
     TP.xpc('./$def:role/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('orgname',
+TP.ietf.vcard.Inst.defineAttribute('orgname',
     TP.xpc('./$def:org/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('orgunit',
+TP.ietf.vcard.Inst.defineAttribute('orgunit',
     TP.xpc('./vcard-ext:x-orgunit/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('key',
+TP.ietf.vcard.Inst.defineAttribute('key',
     TP.xpc('./$def:key/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('secretkey',
+TP.ietf.vcard.Inst.defineAttribute('secretkey',
     TP.xpc('./vcard-ext:x-secret-key',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('username',
+TP.ietf.vcard.Inst.defineAttribute('username',
     TP.xpc('./vcard-ext:x-username',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('password',
+TP.ietf.vcard.Inst.defineAttribute('password',
     TP.xpc('./vcard-ext:x-password',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('auth',
+TP.ietf.vcard.Inst.defineAttribute('auth',
     TP.xpc('./vcard-ext:x-auth',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
-TP.vcard.vcard.Inst.defineAttribute('iswebdav',
+TP.ietf.vcard.Inst.defineAttribute('iswebdav',
     TP.xpc('./vcard-ext:x-is-webdav',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
@@ -365,7 +365,7 @@ TP.vcard.vcard.Inst.defineAttribute('iswebdav',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('init',
+TP.ietf.vcard.Inst.defineMethod('init',
 function(aVCard) {
 
     /**
@@ -376,7 +376,7 @@ function(aVCard) {
      *     that this method will update the associated resource instance if one
      *     is found for the 'id' (fullname) portion of the vcard.
      * @param {Element} aVCard The vcard element to wrap in an instance.
-     * @returns {TP.vcard.vcard} The newly created vcard instance.
+     * @returns {TP.ietf.vcard} The newly created vcard instance.
      */
 
     var id,
@@ -389,7 +389,7 @@ function(aVCard) {
         return this.raise('InvalidVCard', aVCard);
     }
 
-    TP.vcard.vcard.registerVCard(this);
+    TP.ietf.vcard.registerVCard(this);
 
     //  Update the associated resource to have the updated vCard instance.
     id = this.get('fullname');
@@ -405,7 +405,7 @@ function(aVCard) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getAccessKeys',
+TP.ietf.vcard.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
@@ -452,7 +452,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getRoleNames',
+TP.ietf.vcard.Inst.defineMethod('getRoleNames',
 function() {
 
     /**
@@ -483,7 +483,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getRoles',
+TP.ietf.vcard.Inst.defineMethod('getRoles',
 function() {
 
     /**
@@ -506,7 +506,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getUnitNames',
+TP.ietf.vcard.Inst.defineMethod('getUnitNames',
 function() {
 
     /**
@@ -537,7 +537,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Inst.defineMethod('getUnits',
+TP.ietf.vcard.Inst.defineMethod('getUnits',
 function() {
 
     /**
@@ -589,7 +589,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('tibet:keyring');
+TP.dom.ElementNode.defineSubtype('tibet:keyring');
 
 //  ------------------------------------------------------------------------
 //  Types Attributes
@@ -766,7 +766,7 @@ function(aURI) {
 
     //  If we got a URI or path of some kind it's time to validate it and create
     //  the URI instance needed to perform the data load.
-    if (!TP.isKindOf(url, TP.core.URI)) {
+    if (!TP.isKindOf(url, TP.uri.URI)) {
         fname = TP.uriExpandPath(url);
         if (!TP.isURI(url = TP.uc(fname))) {
             return this.raise('InvalidURI', aURI);
@@ -963,11 +963,11 @@ function(aKey) {
 });
 
 //  ========================================================================
-//  TP.core.TagProcessor
+//  TP.tag.TagProcessor
 //  ========================================================================
 
 /**
- * @type {TP.core.TagProcessor}
+ * @type {TP.tag.TagProcessor}
  * @summary The core engine responsible for processing tags (or any type of DOM
  *     construct like PIs or Text nodes, really). This object holds a set of
  *     processing phases and is responsible for executing them against a chunk
@@ -976,61 +976,61 @@ function(aKey) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.TagProcessor');
+TP.lang.Object.defineSubtype('tag.TagProcessor');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
 //  A set of phase types used when 'attaching' content to a visual DOM
-TP.core.TagProcessor.Type.defineConstant(
+TP.tag.TagProcessor.Type.defineConstant(
     'ATTACH_PHASES',
     TP.ac(
-    'TP.core.AttachDOMPhase',       //  Late additions to the DOM needed for
+    'TP.tag.AttachDOMPhase',       //  Late additions to the DOM needed for
                                     //  visual structuring
-    'TP.core.AttachEventsPhase',    //  ev: namespace. NOTE others can generate
-    'TP.core.AttachSignalsPhase',   //  on: namespace (for non-native events)
-    'TP.core.AttachDataPhase',      //  model construct et. al.
-    'TP.core.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
-    'TP.core.AttachBindsPhase',     //  data bindings in the bind: namespace
-    'TP.core.AttachStylePhase',     //  CSS is near end so display: none can
+    'TP.tag.AttachEventsPhase',    //  ev: namespace. NOTE others can generate
+    'TP.tag.AttachSignalsPhase',   //  on: namespace (for non-native events)
+    'TP.tag.AttachDataPhase',      //  model construct et. al.
+    'TP.tag.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
+    'TP.tag.AttachBindsPhase',     //  data bindings in the bind: namespace
+    'TP.tag.AttachStylePhase',     //  CSS is near end so display: none can
                                     //  flip late
-    'TP.core.AttachCompletePhase'
+    'TP.tag.AttachCompletePhase'
     ));
 
 //  A set of phase types used when 'detaching' content from a visual DOM
 //  Note how these are reversed from the attach phases, to give things that rely
 //  on these phases chance to unwind in reverse order.
-TP.core.TagProcessor.Type.defineConstant(
+TP.tag.TagProcessor.Type.defineConstant(
     'DETACH_PHASES',
     TP.ac(
-    'TP.core.DetachStylePhase',
-    'TP.core.DetachDataPhase',
-    'TP.core.DetachBindsPhase',
-    'TP.core.DetachInfoPhase',
-    'TP.core.DetachSignalsPhase',
-    'TP.core.DetachEventsPhase',
-    'TP.core.DetachDOMPhase',
-    'TP.core.DetachCompletePhase'
+    'TP.tag.DetachStylePhase',
+    'TP.tag.DetachDataPhase',
+    'TP.tag.DetachBindsPhase',
+    'TP.tag.DetachInfoPhase',
+    'TP.tag.DetachSignalsPhase',
+    'TP.tag.DetachEventsPhase',
+    'TP.tag.DetachDOMPhase',
+    'TP.tag.DetachCompletePhase'
     ));
 
 //  A set of phase types used when 'compiling' or transforming content from one
 //  representation into another.
-TP.core.TagProcessor.Type.defineConstant(
+TP.tag.TagProcessor.Type.defineConstant(
     'COMPILE_PHASES',
     TP.ac(
-    'TP.core.IncludesPhase',        //  xi:includes, CSS @imports, etc.
-    'TP.core.InstructionsPhase',    //  ?tibet, ?xsl-stylesheet, etc.
-    'TP.core.PrecompilePhase',      //  conversion to compilable form
-    'TP.core.CompilePhase',         //  tag/macro expansion (ACT)
-    'TP.core.TidyPhase',            //  move non-DTD content out of html:head
+    'TP.tag.IncludesPhase',        //  xi:includes, CSS @imports, etc.
+    'TP.tag.InstructionsPhase',    //  ?tibet, ?xsl-stylesheet, etc.
+    'TP.tag.PrecompilePhase',      //  conversion to compilable form
+    'TP.tag.CompilePhase',         //  tag/macro expansion (ACT)
+    'TP.tag.TidyPhase',            //  move non-DTD content out of html:head
                                     //  etc.
 
-    'TP.core.ResolvePhase',         //  resolve xml:base TP.core.URI references,
+    'TP.tag.ResolvePhase',         //  resolve xml:base TP.uri.URI references,
                                     //  decode etc.
 
-    'TP.core.LocalizePhase',        //  adjust for browser, lang, etc.
-    'TP.core.CompileCompletePhase'
+    'TP.tag.LocalizePhase',        //  adjust for browser, lang, etc.
+    'TP.tag.CompileCompletePhase'
     ));
 
 //  A common query used by some phases to find custom nodes - elements or
@@ -1041,7 +1041,7 @@ TP.core.TagProcessor.Type.defineConstant(
 //          b. Are not in the 'bind:' namespace
 //          c. Are not in the 'ev:' namespace
 //          d. Are not in the 'on:' namespace
-TP.core.TagProcessor.Type.defineConstant(
+TP.tag.TagProcessor.Type.defineConstant(
     'CUSTOM_NODES_QUERY',
         'descendant-or-self::*' +
         ' | ' +
@@ -1066,13 +1066,13 @@ TP.core.TagProcessor.Type.defineConstant(
  * we don't have to look up the types each time.
  * @type {TP.core.Hash}
  */
-TP.core.TagProcessor.Type.defineAttribute('$tagTypeDict');
+TP.tag.TagProcessor.Type.defineAttribute('$tagTypeDict');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
+TP.tag.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
 function(phaseTypesArray) {
 
     /**
@@ -1081,7 +1081,7 @@ function(phaseTypesArray) {
      *     of phases constructed from the supplied Array of phase types.
      * @param {Array} phaseTypesArray The Array of phase type objects to
      *     construct the phases from.
-     * @returns {TP.core.TagProcessor} A new instance configured with instances
+     * @returns {TP.tag.TagProcessor} A new instance configured with instances
      *     of the phase types as its phase list.
      */
 
@@ -1106,13 +1106,13 @@ function(phaseTypesArray) {
  * The list of phases to run over the content when this processor is used
  * @type {Array}
  */
-TP.core.TagProcessor.Inst.defineAttribute('phases');
+TP.tag.TagProcessor.Inst.defineAttribute('phases');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessor.Inst.defineMethod('init',
+TP.tag.TagProcessor.Inst.defineMethod('init',
 function(phases) {
 
     /**
@@ -1120,7 +1120,7 @@ function(phases) {
      * @summary Initialize the instance.
      * @param {Array} phases The list of phases to use when this processor is
      *     run over supplied content.
-     * @returns {TP.core.TagProcessor} The receiver.
+     * @returns {TP.tag.TagProcessor} The receiver.
      */
 
     this.callNextMethod();
@@ -1132,7 +1132,7 @@ function(phases) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessor.Inst.defineMethod('processTree',
+TP.tag.TagProcessor.Inst.defineMethod('processTree',
 function(aNode, aRequest, allowDetached) {
 
     /**
@@ -1150,7 +1150,7 @@ function(aNode, aRequest, allowDetached) {
      *     unawaken processing), whether a node is detached or not needs to be
      *     ignored (obviously).
      * @exception TP.sig.InvalidNode
-     * @returns {TP.core.TagProcessor} The receiver.
+     * @returns {TP.tag.TagProcessor} The receiver.
      */
 
     var phases,
@@ -1215,11 +1215,11 @@ function(aNode, aRequest, allowDetached) {
 });
 
 //  ========================================================================
-//  TP.core.TagProcessorPhase
+//  TP.tag.TagProcessorPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.TagProcessorPhase}
+ * @type {TP.tag.TagProcessorPhase}
  * @summary The top-level tag processor 'phase' type, used in conjunction with
  *     the tag processor type. The tag processor holds 1...n phases and
  *     processes it's content through each one.
@@ -1227,13 +1227,13 @@ function(aNode, aRequest, allowDetached) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.TagProcessorPhase');
+TP.lang.Object.defineSubtype('tag.TagProcessorPhase');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.Inst.defineMethod('getFilteredNodes',
+TP.tag.TagProcessorPhase.Inst.defineMethod('getFilteredNodes',
 function(aNode, aProcessor) {
 
     /**
@@ -1242,7 +1242,7 @@ function(aNode, aProcessor) {
      *     'queryForNodes()' method) and then filters that set down to the nodes
      *     whose TIBET wrapper type can respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
+     * @param {TP.tag.TagProcessor} aProcessor The processor that 'owns' this
      *     phase.
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidParameter
@@ -1304,7 +1304,7 @@ function(aNode, aProcessor) {
 
             //  If we can't get a concrete type at all, then we just return
             //  false. Can't do anything from here.
-            if (!TP.isType(type = TP.core.Node.getConcreteType(node))) {
+            if (!TP.isType(type = TP.dom.Node.getConcreteType(node))) {
                 return false;
             }
 
@@ -1322,13 +1322,13 @@ function(aNode, aProcessor) {
             //  above.
             if (TP.notEmpty(elemKey) &&
                 elemKey !== 'processingroot' &&
-                type === TP.core.XMLElementNode &&
+                type === TP.dom.XMLElementNode &&
                 TP.sys.cfg('sherpa.autodefine_missing_tags')) {
 
                 //  If the Sherpa is loaded and has been configured to
                 //  automatically define missing tags, then we do so.
                 if (TP.sys.hasFeature('sherpa')) {
-                    TP.core.Sherpa.replaceWithUnknownElementProxy(node);
+                    TP.sherpa.IDE.replaceWithUnknownElementProxy(node);
                 }
             }
 
@@ -1351,7 +1351,7 @@ function(aNode, aProcessor) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.TagProcessorPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1368,7 +1368,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.Inst.defineMethod('processNode',
+TP.tag.TagProcessorPhase.Inst.defineMethod('processNode',
 function(aNode, aProcessor, aRequest, allowDetached) {
 
     /**
@@ -1376,7 +1376,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
      * @summary Processes the content of the supplied Node through this
      *     processor phase.
      * @param {Node} aNode The root node to start the processing from.
-     * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
+     * @param {TP.tag.TagProcessor} aProcessor The processor that 'owns' this
      *     phase.
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
@@ -1388,7 +1388,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
      *     ignored (obviously).
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.TagProcessorPhase} The receiver.
+     * @returns {TP.tag.TagProcessorPhase} The receiver.
      */
 
     var methodName,
@@ -1485,10 +1485,10 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         if (TP.isElement(node)) {
             if (!TP.isType(type = tagTypeDict.at(
                                     TP.elementComputeTIBETTypeKey(node)))) {
-                type = TP.core.Node.getConcreteType(node);
+                type = TP.dom.Node.getConcreteType(node);
             }
         } else {
-            type = TP.core.Node.getConcreteType(node);
+            type = TP.dom.Node.getConcreteType(node);
         }
 
         try {
@@ -1540,7 +1540,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         subPhases = subPhases.slice(0, subPhases.indexOf(this) + 1);
 
         //  Configure a new processor with that phase list
-        subProcessor = TP.core.TagProcessor.construct();
+        subProcessor = TP.tag.TagProcessor.construct();
         subProcessor.set('phases', subPhases);
 
         subProcessingRequest = TP.request(aRequest);
@@ -1582,7 +1582,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.Inst.defineMethod('queryForNodes',
+TP.tag.TagProcessorPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -1618,20 +1618,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.IncludesPhase
+//  TP.tag.IncludesPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.IncludesPhase}
+ * @type {TP.tag.IncludesPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.IncludesPhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.IncludesPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.IncludesPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.IncludesPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1648,7 +1648,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.IncludesPhase.Inst.defineMethod('queryForNodes',
+TP.tag.IncludesPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -1684,20 +1684,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.InstructionsPhase
+//  TP.tag.InstructionsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.InstructionsPhase}
+ * @type {TP.tag.InstructionsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.InstructionsPhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.InstructionsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.InstructionsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.InstructionsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1714,7 +1714,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InstructionsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.InstructionsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -1748,20 +1748,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.PrecompilePhase
+//  TP.tag.PrecompilePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.PrecompilePhase}
+ * @type {TP.tag.PrecompilePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.PrecompilePhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.PrecompilePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.PrecompilePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.PrecompilePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1778,7 +1778,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PrecompilePhase.Inst.defineMethod('queryForNodes',
+TP.tag.PrecompilePhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -1839,20 +1839,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.CompilePhase
+//  TP.tag.CompilePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.CompilePhase}
+ * @type {TP.tag.CompilePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.CompilePhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.CompilePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompilePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.CompilePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1869,7 +1869,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompilePhase.Inst.defineMethod('queryForNodes',
+TP.tag.CompilePhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -1894,7 +1894,7 @@ function(aNode) {
     }
 
     //  See the type constants for a description of this query.
-    query = TP.core.TagProcessor.CUSTOM_NODES_QUERY;
+    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY;
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
@@ -1902,20 +1902,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.TidyPhase
+//  TP.tag.TidyPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.TidyPhase}
+ * @type {TP.tag.TidyPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.TidyPhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.TidyPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TidyPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.TidyPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1932,7 +1932,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TidyPhase.Inst.defineMethod('queryForNodes',
+TP.tag.TidyPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -1962,20 +1962,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.ResolvePhase
+//  TP.tag.ResolvePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.ResolvePhase}
+ * @type {TP.tag.ResolvePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.ResolvePhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.ResolvePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResolvePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.ResolvePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1992,7 +1992,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResolvePhase.Inst.defineMethod('queryForNodes',
+TP.tag.ResolvePhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2022,20 +2022,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.LocalizePhase
+//  TP.tag.LocalizePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.LocalizePhase}
+ * @type {TP.tag.LocalizePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.LocalizePhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.LocalizePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.LocalizePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.LocalizePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2051,20 +2051,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.CompileCompletePhase
+//  TP.tag.CompileCompletePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.CompileCompletePhase}
+ * @type {TP.tag.CompileCompletePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.CompileCompletePhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.CompileCompletePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompileCompletePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.CompileCompletePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2080,34 +2080,34 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.MutationPhase
+//  TP.tag.MutationPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.MutationPhase}
+ * @type {TP.tag.MutationPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.MutationPhase');
+TP.tag.TagProcessorPhase.defineSubtype('tag.MutationPhase');
 
-TP.core.MutationPhase.isAbstract(true);
+TP.tag.MutationPhase.isAbstract(true);
 
 //  ========================================================================
-//  TP.core.AttachDOMPhase
+//  TP.tag.AttachDOMPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachDOMPhase}
+ * @type {TP.tag.AttachDOMPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachDOMPhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachDOMPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachDOMPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachDOMPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2124,7 +2124,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachDOMPhase.Inst.defineMethod('queryForNodes',
+TP.tag.AttachDOMPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2149,7 +2149,7 @@ function(aNode) {
     }
 
     //  See the type constants for a description of this query.
-    query = TP.core.TagProcessor.CUSTOM_NODES_QUERY;
+    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY;
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
@@ -2157,20 +2157,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.AttachEventsPhase
+//  TP.tag.AttachEventsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachEventsPhase}
+ * @type {TP.tag.AttachEventsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachEventsPhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachEventsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachEventsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachEventsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2187,7 +2187,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachEventsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.AttachEventsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2228,20 +2228,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.AttachDataPhase
+//  TP.tag.AttachDataPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachDataPhase}
+ * @type {TP.tag.AttachDataPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachDataPhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachDataPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachDataPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachDataPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2257,20 +2257,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.AttachSignalsPhase
+//  TP.tag.AttachSignalsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachSignalsPhase}
+ * @type {TP.tag.AttachSignalsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachSignalsPhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachSignalsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachSignalsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachSignalsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2287,7 +2287,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachSignalsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.AttachSignalsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2326,20 +2326,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.AttachInfoPhase
+//  TP.tag.AttachInfoPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachInfoPhase}
+ * @type {TP.tag.AttachInfoPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachInfoPhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachInfoPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachInfoPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachInfoPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2356,7 +2356,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachInfoPhase.Inst.defineMethod('queryForNodes',
+TP.tag.AttachInfoPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2391,20 +2391,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.AttachBindsPhase
+//  TP.tag.AttachBindsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachBindsPhase}
+ * @type {TP.tag.AttachBindsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachBindsPhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachBindsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachBindsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachBindsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2421,7 +2421,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachBindsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.AttachBindsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2530,20 +2530,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.AttachStylePhase
+//  TP.tag.AttachStylePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachStylePhase}
+ * @type {TP.tag.AttachStylePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachStylePhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachStylePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachStylePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachStylePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2559,20 +2559,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.AttachCompletePhase
+//  TP.tag.AttachCompletePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.AttachCompletePhase}
+ * @type {TP.tag.AttachCompletePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.AttachCompletePhase');
+TP.tag.MutationPhase.defineSubtype('tag.AttachCompletePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.AttachCompletePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.AttachCompletePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2588,20 +2588,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DetachDOMPhase
+//  TP.tag.DetachDOMPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachDOMPhase}
+ * @type {TP.tag.DetachDOMPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachDOMPhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachDOMPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachDOMPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachDOMPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2617,20 +2617,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DetachEventsPhase
+//  TP.tag.DetachEventsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachEventsPhase}
+ * @type {TP.tag.DetachEventsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachEventsPhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachEventsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachEventsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachEventsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2647,7 +2647,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachEventsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.DetachEventsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2688,20 +2688,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.DetachSignalsPhase
+//  TP.tag.DetachSignalsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachSignalsPhase}
+ * @type {TP.tag.DetachSignalsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachSignalsPhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachSignalsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachSignalsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachSignalsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2718,7 +2718,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachSignalsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.DetachSignalsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2757,20 +2757,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.DetachDataPhase
+//  TP.tag.DetachDataPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachDataPhase}
+ * @type {TP.tag.DetachDataPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachDataPhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachDataPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachDataPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachDataPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2786,20 +2786,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DetachInfoPhase
+//  TP.tag.DetachInfoPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachInfoPhase}
+ * @type {TP.tag.DetachInfoPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachInfoPhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachInfoPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachInfoPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachInfoPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2816,7 +2816,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachInfoPhase.Inst.defineMethod('queryForNodes',
+TP.tag.DetachInfoPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2851,20 +2851,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.DetachBindsPhase
+//  TP.tag.DetachBindsPhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachBindsPhase}
+ * @type {TP.tag.DetachBindsPhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachBindsPhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachBindsPhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachBindsPhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachBindsPhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -2881,7 +2881,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachBindsPhase.Inst.defineMethod('queryForNodes',
+TP.tag.DetachBindsPhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
@@ -2990,20 +2990,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.DetachStylePhase
+//  TP.tag.DetachStylePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachStylePhase}
+ * @type {TP.tag.DetachStylePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachStylePhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachStylePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachStylePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachStylePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -3019,20 +3019,20 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.DetachCompletePhase
+//  TP.tag.DetachCompletePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.DetachCompletePhase}
+ * @type {TP.tag.DetachCompletePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationPhase.defineSubtype('core.DetachCompletePhase');
+TP.tag.MutationPhase.defineSubtype('tag.DetachCompletePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.DetachCompletePhase.Inst.defineMethod('getTargetMethod',
+TP.tag.DetachCompletePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**

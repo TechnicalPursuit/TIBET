@@ -186,7 +186,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     //  If so, then we want to return false to force the inspector bay to use
@@ -255,7 +255,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     if (tabHasValue) {
@@ -305,7 +305,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     //  If so, then set the value of both the tabbar and the panel box to our
@@ -326,7 +326,7 @@ function(options) {
 
     methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
                             'template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.mime.XHTML);
 
     methodEditorTPElem = methodEditorTPElem.clone();
 
@@ -428,7 +428,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaInspector', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
                                                                 displayName);
 
     //  If not, then return the uri toolbar content for placement into the

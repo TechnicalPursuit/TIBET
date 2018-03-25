@@ -23,7 +23,7 @@
 <config id="rest">
     <script src="rest/TP.sig.RESTRequest.js"/>
     <script src="rest/TP.sig.RESTResponse.js"/>
-    <script src="rest/TP.core.RESTService.js"/>
+    <script src="rest/TP.uri.RESTService.js"/>
 </config>
 
 <config id="json">
@@ -31,14 +31,14 @@
     <script src="json/TP.sig.JSONResponse.js"/>
     <script src="json/TP.core.JSONService.js"/>
 
-    <script src="json/TP.core.JSONPURL.js"/>
-    <script src="json/TP.core.JSONPURLHandler.js"/>
+    <script src="json/TP.uri.JSONPURL.js"/>
+    <script src="json/TP.uri.JSONPURLHandler.js"/>
 </config>
 
 <config id="soap">
     <script src="soap/TP.sig.SOAPRequest.js"/>
     <script src="soap/TP.sig.SOAPResponse.js"/>
-    <script src="soap/TP.core.SOAPService.js"/>
+    <script src="soap/TP.uri.SOAPService.js"/>
 </config>
 
 <config id="webdav">
@@ -46,23 +46,23 @@
 
     <script src="webdav/TP.sig.WebDAVRequest.js"/>
     <script src="webdav/TP.sig.WebDAVResponse.js"/>
-    <script src="webdav/TP.core.WebDAVService.js"/>
+    <script src="webdav/TP.uri.WebDAVService.js"/>
 
-    <script src="webdav/TP.core.WebDAVHandler.js"/>
+    <script src="webdav/TP.uri.WebDAVHandler.js"/>
 </config>
 
 <config id="xmlrpc">
     <script src="xmlrpc/TP.sig.XMLRPCRequest.js"/>
     <script src="xmlrpc/TP.sig.XMLRPCResponse.js"/>
-    <script src="xmlrpc/TP.core.XMLRPCService.js"/>
+    <script src="xmlrpc/TP.uri.XMLRPCService.js"/>
 </config>
 
 <config id="couchdb">
-    <script src="couchdb/TP.couchdb.CouchDBURLHandler.js"/>
+    <script src="couchdb/TP.uri.CouchDBURLHandler.js"/>
 </config>
 
 <config id="tds">
-    <script src="tds/TP.tds.TDSURLHandler.js"/>
+    <script src="tds/TP.uri.TDSURLHandler.js"/>
 </config>
 
 </package>

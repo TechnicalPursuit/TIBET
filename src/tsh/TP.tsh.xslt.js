@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.xslt}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:xslt');
+TP.tag.ActionTag.defineSubtype('tsh:xslt');
 
 TP.tsh.xslt.addTraits(TP.tsh.Element);
 
@@ -65,7 +65,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('xslt',
+TP.shell.TSH.addHelpTopic('xslt',
     TP.tsh.xslt.Type.getMethod('tshExecute'),
     'Transforms a node using an XSLT node/file.',
     ':xslt',

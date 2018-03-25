@@ -10,13 +10,13 @@
 
 /**
  * @type {TP.tsh.validate}
- * @summary A subtype of TP.core.ActionTag that knows how to
+ * @summary A subtype of TP.tag.ActionTag that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionTag.defineSubtype('tsh:validate');
+TP.tag.ActionTag.defineSubtype('tsh:validate');
 
 TP.tsh.validate.addTraits(TP.tsh.Element);
 
@@ -65,7 +65,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic('validate',
+TP.shell.TSH.addHelpTopic('validate',
     TP.tsh.validate.Type.getMethod('tshExecute'),
     'Runs the W3C validation service on a URL.',
     ':validate',

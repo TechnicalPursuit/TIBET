@@ -26,9 +26,9 @@ sherpa|scrollbutton {
 
     pointer-events: none;
 
-    -ms-user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
+    /* IE/Edge use the -webkit- prefix for user-select */
 
     z-index: var(--tibet-SLIDER-TIER);
 }

@@ -9,7 +9,7 @@
 
     <script src="./src/TP.tibet.sherpa.js"/>
 
-    <script src="./src/TP.core.Sherpa.js"/>
+    <script src="./src/TP.sherpa.IDE.js"/>
 
     <script src="./src/TP.sherpa.ConsoleService.js"/>
 
@@ -42,8 +42,8 @@
     <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
     <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>
     <script src="./TP.sherpa.typedisplay/TP.sherpa.typedisplay.js"/>
-    <script src="./TP.sherpa.searcher/TP.sherpa.searcher.js"/>
     <script src="./TP.sherpa.drawer/TP.sherpa.drawer.js"/>
+    <script src="./TP.sherpa.tofu/TP.sherpa.tofu.js"/>
     <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
     <script src="./TP.sherpa.workbench/TP.sherpa.workbench.js"/>
     <script src="./TP.sherpa.styleshud/TP.sherpa.styleshud.js"/>
@@ -116,8 +116,8 @@
     <!-- These may create subtypes defined in TP.sherpa.inspector.js, so we need
          to place them *after* that in the load order. -->
     <script src="./src/TIBETNativeTypes_Additions.js"/>
-    <script src="./src/TP.core.Node_Additions.js"/>
-    <script src="./src/TP.core.URI_Additions.js"/>
+    <script src="./src/TP.dom.Node_Additions.js"/>
+    <script src="./src/TP.uri.URI_Additions.js"/>
     <script src="./src/TP.html_Additions.js"/>
     <script src="./src/TP.lang.RootObject_Additions.js"/>
     <script src="./src/TP.lang.Namespace_Additions.js"/>
@@ -138,6 +138,7 @@
 
     <resource href="~ide_root/schema/tibet_tooling_types.json"/>
 
+    <resource href="~ide_root/TP.sherpa.tofuInsertionAssistant/insertion_templates.xml"/>
     <script src="./src/TP.sherpa.CouchTools.js"/>
 
 </config>

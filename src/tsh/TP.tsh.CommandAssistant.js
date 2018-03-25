@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('tsh.CommandAssistant');
+TP.tag.CustomTag.defineSubtype('tsh.CommandAssistant');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

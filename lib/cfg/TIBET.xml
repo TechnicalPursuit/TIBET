@@ -116,8 +116,6 @@
     <script src="~lib_build/lib_dat-TP.core.USAscii101Keyboard.xml.js"/>
     <script src="~lib_build/lib_dat-vcards.xml.js"/>
 
-    <script src="~lib_build/lib_src-tibet-xmlns-TP.tibet.tofu.css.js"/>
-
     <script src="~lib_build/lib_src-tsh-TP.tsh.type-TP.tsh.type_assistant.xhtml.js"/>
     <script src="~lib_build/lib_src-tsh-TP.tsh.type-TP.tsh.type_assistant.css.js"/>
     <script src="~lib_build/lib_src-tsh-TP.tsh.method-TP.tsh.method_assistant.xhtml.js"/>
@@ -245,10 +243,9 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.methodeditor-TP.sherpa.methodeditor.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.typedisplay-TP.sherpa.typedisplay.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.typedisplay-TP.sherpa.typedisplay.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.searcher-TP.sherpa.searcher.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.searcher-TP.sherpa.searcher.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.drawer-TP.sherpa.drawer.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.drawer-TP.sherpa.drawer.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tofu-TP.sherpa.tofu.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.thumbnail-TP.sherpa.thumbnail.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.thumbnail-TP.sherpa.thumbnail.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.workbench-TP.sherpa.workbench.xhtml.js"/>
@@ -325,18 +322,19 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjusterValueMenuContent-TP.sherpa.adjusterValueMenuContent.css.js"/>
 
     <script src="~lib_build/lib_src-tibet-tools-sherpa-schema-tibet_tooling_types.json.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tofuInsertionAssistant-insertion_templates.xml.js"/>
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello1.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello2.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello3.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello4.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello5.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello6.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hello7.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hellonested.xhtml.js"/>
-    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.templatetest.hellonestedvars.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello1_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello2_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello3_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello4_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello5_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello6_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hello7_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hellonested_templatetest.xhtml.js"/>
+    <script src="~lib_build/lib_test-src-tibet-templating-src-TP.tmp.hellonestedvars_templatetest.xhtml.js"/>
 </config>
 
 </package>

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-        xmlns:templatetest="urn:test:templatetest">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
@@ -28,11 +26,11 @@
 
     This expression references the text node's tag's outer content and puts in its String representation:
     <br/>
-    <templatetest:hello7 id="textResults">{{$TAG.outerContent}}</templatetest:hello7>
+    <tmp:hello7_templatetest id="textResults">{{$TAG.outerContent}}</tmp:hello7_templatetest>
     <br/>
 
     This expression references the attribute node's tag's canonical name and makes it it's value:
-    <templatetest:hello7 id="attrResults" officialname="{{$TAG.canonicalName}}"></templatetest:hello7>
+    <tmp:hello7_templatetest id="attrResults" officialname="{{$TAG.canonicalName}}"></tmp:hello7_templatetest>
     <br/>
 
 </body>

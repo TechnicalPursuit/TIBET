@@ -9,10 +9,10 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.core.URIMapper
+//  TP.uri.URIMapper
 //  ========================================================================
 
-TP.core.URIMapper.Type.describe('remap',
+TP.uri.URIMapper.Type.describe('remap',
 function() {
 
     var uri,
@@ -25,29 +25,29 @@ function() {
 
     this.it('remaps a CouchDB uri to the CouchDB handler', function(test, options) {
         uri = TP.uriExpandPath('http://127.0.0.1:5984/_design/app/tibet.json');
-        handler = TP.core.URIMapper.Type.remap(uri);
+        handler = TP.uri.URIMapper.Type.remap(uri);
 
-        test.assert.isIdenticalTo(handler, TP.couchdb.CouchDBURLHandler);
+        test.assert.isIdenticalTo(handler, TP.uri.CouchDBURLHandler);
     });
 
     this.it('remaps exact matches to their defined handler', function(test, options) {
         TP.sys.setcfg('uri.map.exactly.pattern',
             'http://localhost/exactly.xhtml');
-        TP.sys.setcfg('uri.map.exactly.urihandler', 'TP.core.URIHandler');
+        TP.sys.setcfg('uri.map.exactly.urihandler', 'TP.uri.URIHandler');
         uri = TP.uriExpandPath('http://localhost/exactly.xhtml');
-        handler = TP.core.URIMapper.Type.remap(uri);
+        handler = TP.uri.URIMapper.Type.remap(uri);
 
-        test.assert.isIdenticalTo(handler, TP.core.URIHandler);
+        test.assert.isIdenticalTo(handler, TP.uri.URIHandler);
     });
 
     this.it('remaps localhost to configured http handler', function(test, options) {
         var result;
 
         uri = TP.uriExpandPath('http://localhost/foo.xhtml');
-        handler = TP.core.URIMapper.Type.remap(uri);
+        handler = TP.uri.URIMapper.Type.remap(uri);
 
-        result = TP.sys.cfg('uri.handler.http') === 'TP.tds.TDSURLHandler' ?
-            TP.tds.TDSURLHandler : TP.core.HTTPURLHandler;
+        result = TP.sys.cfg('uri.handler.http') === 'TP.uri.TDSURLHandler' ?
+            TP.uri.TDSURLHandler : TP.uri.HTTPURLHandler;
         test.assert.isIdenticalTo(handler, result);
     });
 
@@ -55,20 +55,20 @@ function() {
         var result;
 
         uri = TP.uriExpandPath('http://127.0.0.1:1407');
-        handler = TP.core.URIMapper.Type.remap(uri);
+        handler = TP.uri.URIMapper.Type.remap(uri);
 
-        result = TP.sys.cfg('uri.handler.http') === 'TP.tds.TDSURLHandler' ?
-            TP.tds.TDSURLHandler : TP.core.HTTPURLHandler;
+        result = TP.sys.cfg('uri.handler.http') === 'TP.uri.TDSURLHandler' ?
+            TP.uri.TDSURLHandler : TP.uri.HTTPURLHandler;
         test.assert.isIdenticalTo(handler, result);
     });
 
 });
 
 //  ========================================================================
-//  TP.core.URIRewriter
+//  TP.uri.URIRewriter
 //  ========================================================================
 
-TP.core.URIRewriter.Type.describe('rewrite',
+TP.uri.URIRewriter.Type.describe('rewrite',
 function() {
 
     var uri,
@@ -82,7 +82,7 @@ function() {
 
     this.it('returns a uri from rewrite call', function(test, options) {
         uri = TP.uriExpandPath('http://localhost/foo.xhtml');
-        rewrite = TP.core.URIRewriter.Type.rewrite(uri);
+        rewrite = TP.uri.URIRewriter.Type.rewrite(uri);
 
         test.assert.isEqualTo(uri, TP.str(rewrite));
     });

@@ -162,7 +162,7 @@ function(aTPElement) {
     /**
      * @method focusOnTarget
      * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.core.UIElementNode} aTPElement The element to focus the
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
      *     receiver on.
      * @returns {TP.sherpa.domhud} The receiver.
      */
@@ -325,7 +325,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.D3Tag Methods
+//  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.domhud.Inst.defineMethod('buildNewContent',
@@ -617,7 +617,7 @@ function(aSignal) {
 
     dndTargetElem = aSignal.getDOMTarget();
 
-    sourceTPElem = TP.core.UIElementNode.get('currentDNDSource');
+    sourceTPElem = TP.dom.UIElementNode.get('currentDNDSource');
     vendType = sourceTPElem.getAttribute('dnd:vend');
 
     switch (vendType) {
