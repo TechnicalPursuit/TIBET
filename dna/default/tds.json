@@ -3,9 +3,6 @@
         "https": false,
         "https_port": 1443,
         "port": 1407,
-        "crypto": {
-            "salt": "mmm...salty"
-        },
         "plugins": {
             "tds": ["tasks"]
         },

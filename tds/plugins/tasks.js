@@ -148,7 +148,7 @@
             TDS.encrypt('RUSH.is.a.band');
         } catch (e) {
             //  If it failed we'll forward along the message stating the user
-            //  needs to export the TDS_CRYPTO_KEY.
+            //  needs to export the TIBET_CRYPTO_* variables necessary.
             logger.error(e.message);
             return;
         }

@@ -27,7 +27,7 @@
             crypto,
             logger,
             LocalStrategy,
-            salt,
+            hash,
             Promise,
             strategy,
             TDS;
@@ -40,12 +40,8 @@
         LocalStrategy = require('passport-local');
         Promise = require('bluebird').Promise;
 
-        salt = process.env.TDS_CRYPTO_SALT || TDS.cfg('tds.crypto.salt');
-        if (!salt) {
-            logger.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
-            logger.warn('Defaulting to encryption salt default value');
-            salt = 'mmm...salty';
-        }
+        hash = process.env.TDS_CRYPTO_HASH ||
+            TDS.getcfg('tds.crypto.hash', 'sha256');
 
         //  ---
         //  Middleware
@@ -59,29 +55,51 @@
 
             promise = new Promise(function(resolve, reject) {
                 var pass,
-                    hex;
+                    salt,
+                    hex,
+                    parts,
+                    salt,
+                    test;
 
-                //  Simple authentication is a hash check against TDS data.
+                //  Simple authentication is a check against TDS user data.
+                //  We don't currently encrypt usernames in that data since it
+                //  would then require us to essentially scan and decode each
+                //  one since all our salt values are random one-time strings.
                 pass = TDS.cfg('users.' + username);
                 if (pass) {
 
-                    //  Compute a simple hash to compare against the stored
-                    //  user configuration value (which is similarly hashed).
-                    hex = crypto.createHash('sha256').update(
-                        password + salt).digest('hex');
+                    //  Two ways to go here...decrypt the value or split off the
+                    //  salt and encrypt the incoming value looking for a match.
+                    //  The latter is more secure and essentially required if
+                    //  using an asymmetrical encryption approach.
+                    try {
+                        parts = pass.split(':');
+                        salt = new Buffer(parts.shift(), 'hex');
 
-                    if (hex === pass) {
-                        //  Match? Resolve the promise and provide a "user"
-                        //  object of some form.
-                        return resolve({
-                            id: username
-                        });
+                        test = TDS.encrypt(password, salt);
+                        if (test === pass) {
+                            //  Match? Resolve the promise and provide a "user"
+                            //  object of some form.
+                            return resolve({
+                                id: username
+                            });
+                        }
+                    } catch (e) {
+                        logger.error(e.message);
+                        //  Password mismatch...but don't say so.
+                        return reject('Authentication failed.');
                     }
 
-                    return reject('Password mismatch.');
+                    //  Password mismatch...but don't say so.
+                    return reject('Authentication failed.');
                 }
 
-                return reject('Unknown username.');
+                //  Unknown username...but don't say so.
+                return reject('Authentication failed.');
+            });
+
+            promise.catch(function(err) {
+                logger.error(err);
             });
 
             return promise;

@@ -61,9 +61,12 @@
             }
 
             if (xhr.status === 200) {
+                //  On success we want to go to the "post login" page.
+                pathname = pathname.toString().replace(/\/login/, '/');
                 window.location.replace(pathname);
             } else {
-                window.location.replace(pathname + 'login');
+                //  If we failed to log in remain on the login page.
+                window.location.replace(pathname);
             }
         };
 

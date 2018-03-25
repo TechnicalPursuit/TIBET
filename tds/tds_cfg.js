@@ -45,9 +45,15 @@
         setcfg('path.tds_task_defs', '~/couch/tws');
         setcfg('path.tws', '~/couch/tws');
 
-        //  default definitions for cookie keys. should be changed for real work
-        setcfg('tds.cookie.key1', 'T1B3TC00K13');   //   change this too :)
-        setcfg('tds.cookie.key2', '31K00CT3B1T');   //   change this too :)
+        //  Security-related keys. These start out null but will take on values
+        //  during runtime based on environment variable settings. If there are
+        //  no matching environment variable settings the server will a) log a
+        //  large warning stating the server is not secure, b) may not be able
+        //  to authenticate users or operate correctly due to mismatched crypto.
+        setcfg('tibet.crypto.cipher', null);    //  cipher algorithm (aes-256-ctr)
+        setcfg('tibet.crypto.hash', null);      //  hash algorithm (sha256)
+        setcfg('tibet.crypto.keylen', 32);      //  target key length
+        setcfg('tibet.crypto.saltlen', 16);     //  target salt length
 
         //  true will cause the server to start with HTTPS server/port info.
         setcfg('tds.https', false);
@@ -83,8 +89,6 @@
         //  How long before connections time out after a shutdown request.
         setcfg('tds.shutdown_timeout', 3000);
 
-        setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
-        setcfg('tds.session.key', 'T1B3TS3SS10N');   //  change this too :)
         setcfg('tds.session.store', 'memory');
 
         setcfg('tds.stop_onerror', true);

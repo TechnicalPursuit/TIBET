@@ -6,8 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet encrypt' command. Used to perform the same encryption
- *     done by the TDS to support generating encrypted passwords or api keys for
- *     storage in configuration or database storage.
+ *     done by the TDS for security-related operations.
  */
 //  ========================================================================
 
@@ -44,12 +43,6 @@ Cmd.prototype = new Cmd.Parent();
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
-
-/**
- * The algorithm used for encryption. Should match TDS.CRYPTO_ALGORITHM
- * @type {String}
- */
-Cmd.CRYPTO_ALGORITHM = 'aes-256-ctr';
 
 /**
  * The command name for this type.
@@ -91,9 +84,12 @@ Cmd.prototype.USAGE = 'tibet encrypt <string>';
  */
 Cmd.prototype.execute = function() {
     var key,
+        keylen,
+        salt,
+        saltlen,
+        alg,
         cipher,
         text,
-        salt,
         encrypted;
 
     //  NOTE argv[0] is the command name.
@@ -101,25 +97,37 @@ Cmd.prototype.execute = function() {
     if (CLI.isEmpty(text)) {
         throw new Error('No text to encrypt.');
     }
+    text = text.trim();
 
-    key = process.env.TDS_CRYPTO_KEY;
+    //  Capture key and normalize it to keylen bytes. This typically has to
+    //  match up with salt length for the targeted cipher algorithm.
+    key = process.env.TIBET_CRYPTO_KEY;
     if (CLI.isEmpty(key)) {
-        throw new Error('No TDS_CRYPTO_KEY found for encryption.');
+        throw new Error(
+            'No secret key for encryption. $ export TIBET_CRYPTO_KEY="{{secret}}"');
     }
+    keylen = process.env.TIBET_CRYPTO_KEYLEN ||
+        CLI.getcfg('tibet.crypto.keylen', 32);
+    key = new Buffer(CLI.rpad(key, keylen, '.'));
+    key = key.slice(0, keylen);
 
-    salt = process.env.TDS_CRYPTO_SALT || CLI.getcfg('tds.crypto.salt');
-    if (!salt) {
-        this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
-        this.warn('Defaulting to encryption salt default value');
-        salt = 'mmm...salty';
-    }
+    //  Generate a random salt value. See discussion at the OWASP site:
+    //  https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet
+    saltlen = process.env.TIBET_CRYPTO_SALTLEN || CLI.getcfg('tibet.crypto.saltlen', 16);
+    salt = new Buffer(crypto.randomBytes(saltlen));
 
-    cipher = crypto.createCipher(Cmd.CRYPTO_ALGORITHM, key + salt);
+    //  Get the target algorithm. This will ultimately default via getcfg here.
+    alg = process.env.TIBET_CRYPTO_CIPHER ||
+        CLI.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
 
-    encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
+    cipher = crypto.createCipheriv(alg, key, salt);
 
-    this.info(encrypted);
+    encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+    //  Always include the salt (since it's random) as part of the final value,
+    //  otherwise it's impossible to decrypt :).
+    this.info(salt.toString('hex') + ':' + encrypted.toString('hex'));
 
     return 0;
 };

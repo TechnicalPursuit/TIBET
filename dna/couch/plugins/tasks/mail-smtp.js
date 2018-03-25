@@ -91,7 +91,7 @@
                 srctext = params[format];
             }
 
-            //  Map over the transport parameters from the task as our top-level
+            //  Map over the smtp parameters from the task as our top-level
             //  option data. This should give us service name, secure, host,
             //  port, auth: {user, pass} etc.
             smtpOpts = TDS.blend({}, params.transport);

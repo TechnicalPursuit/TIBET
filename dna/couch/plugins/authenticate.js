@@ -155,7 +155,7 @@
                     //  Not parallel, login page only and require validation
                     //  in the '/login' route to return index.html to boot.
                     //  NOTE: this renders into the login route (/login).
-                    res.redirect('login');
+                    res.redirect('/login');
                     return;
                 }
 
@@ -178,15 +178,36 @@
          */
         app.get('/login', parsers.urlencoded, function(req, res, next) {
             var user,
+                c1,
+                c2,
+                msg,
                 cookies,
                 grip;
+
+            c1 = process.env.TDS_COOKIE_KEY1;
+            if (TDS.isEmpty(c1)) {
+                msg = 'No cookie key #1. $ export TDS_COOKIE_KEY1="{{secret}}"';
+                if (TDS.getEnv() !== 'development') {
+                    throw new Error(msg);
+                }
+                logger.warn(msg);
+                c1 = 'T1B3TC00K13';
+            }
+
+            c2 = process.env.TDS_COOKIE_KEY2;
+            if (TDS.isEmpty(c2)) {
+                msg = 'No cookie key #2. $ export TDS_COOKIE_KEY2="{{secret}}"';
+                if (TDS.getEnv() !== 'development') {
+                    throw new Error(msg);
+                }
+                logger.warn(msg);
+                c2 = '31K00CT3B1T';
+            }
 
             //  Read any username cookie from the client and use it to
             //  pre-populate the login field. Keys must match those used
             //  during the post /login process to read correctly.
-            grip = new Keygrip([
-                TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
-            ]);
+            grip = new Keygrip([c1, c2]);
             cookies = new Cookies(
                 req,
                 res,
@@ -213,6 +234,9 @@
 
             passport.authenticate(name, function(err, user, info) {
                 var grip,
+                    c1,
+                    c2,
+                    msg,
                     cookies;
 
                 if (err) {
@@ -248,13 +272,31 @@
                     return res.redirect('/login');
                 }
 
+                c1 = process.env.TDS_COOKIE_KEY1;
+                if (TDS.isEmpty(c1)) {
+                    msg = 'No cookie key #1. $ export TDS_COOKIE_KEY1="{{secret}}"';
+                    if (TDS.getEnv() !== 'development') {
+                        throw new Error(msg);
+                    }
+                    logger.warn(msg);
+                    c1 = 'T1B3TC00K13';
+                }
+
+                c2 = process.env.TDS_COOKIE_KEY2;
+                if (TDS.isEmpty(c2)) {
+                    msg = 'No cookie key #2. $ export TDS_COOKIE_KEY2="{{secret}}"';
+                    if (TDS.getEnv() !== 'development') {
+                        throw new Error(msg);
+                    }
+                    logger.warn(msg);
+                    c2 = '31K00CT3B1T';
+                }
+
                 //  TIBET leverages the current username as a way to determine
                 //  which vcard information (and hence which roles, orgs, units)
                 //  should be applied in the client. Set a cookie here the
                 //  client can access when login is successful.
-                grip = new Keygrip([
-                    TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
-                ]);
+                grip = new Keygrip([c1, c2]);
                 cookies = new Cookies(
                     req,
                     res,

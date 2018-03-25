@@ -6,8 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet decrypt' command. Used to perform the same decryption
- *     done by the TDS to support using encrypted passwords or api keys for
- *     storage in configuration or database storage.
+ *     done by the TDS for security-related operations.
  */
 //  ========================================================================
 
@@ -44,12 +43,6 @@ Cmd.prototype = new Cmd.Parent();
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
-
-/**
- * The algorithm used for decryption. Should match TDS.CRYPTO_ALGORITHM
- * @type {String}
- */
-Cmd.CRYPTO_ALGORITHM = 'aes-256-ctr';
 
 /**
  * The command name for this type.
@@ -91,8 +84,11 @@ Cmd.prototype.USAGE = 'tibet decrypt <string>';
  */
 Cmd.prototype.execute = function() {
     var key,
+        keylen,
+        alg,
         cipher,
         text,
+        parts,
         salt,
         decrypted;
 
@@ -101,25 +97,35 @@ Cmd.prototype.execute = function() {
     if (CLI.isEmpty(text)) {
         throw new Error('No text to decrypt.');
     }
+    text = text.trim();
 
-    key = process.env.TDS_CRYPTO_KEY;
+    //  The encrypt call will put salt on the front and separate with ':' so
+    //  reverse that to get the one-time salt back so we can decrypt.
+    parts = text.split(':');
+    salt = new Buffer(parts.shift(), 'hex');
+    text = new Buffer(parts.join(':'), 'hex');
+
+    //  Capture key and normalize it to keylen bytes.
+    key = process.env.TIBET_CRYPTO_KEY;
     if (CLI.isEmpty(key)) {
-        throw new Error('No TDS_CRYPTO_KEY found for decryption.');
+        throw new Error(
+            'No secret key for encryption. $ export TIBET_CRYPTO_KEY="{{secret}}"');
     }
+    keylen = process.env.TIBET_CRYPTO_KEYLEN ||
+        CLI.getcfg('tibet.crypto.keylen', 32);
+    key = new Buffer(CLI.rpad(key, keylen, '.'));
+    key = key.slice(0, keylen);
 
-    salt = process.env.TDS_CRYPTO_SALT || CLI.getcfg('tds.crypto.salt');
-    if (!salt) {
-        this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
-        this.warn('Defaulting to encryption salt default value');
-        salt = 'mmm...salty';
-    }
+    //  Get the target algorithm. This will ultimately default via getcfg here.
+    alg = process.env.TIBET_CRYPTO_CIPHER ||
+        CLI.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
 
-    cipher = crypto.createDecipher(Cmd.CRYPTO_ALGORITHM, key + salt);
+    cipher = crypto.createDecipheriv(alg, key, salt);
 
-    decrypted = cipher.update(text, 'hex', 'utf8');
-    decrypted += cipher.final('utf8');
+    decrypted = cipher.update(text);
+    decrypted = Buffer.concat([decrypted, cipher.final()]);
 
-    this.info(decrypted);
+    this.info(decrypted.toString());
 
     return 0;
 };

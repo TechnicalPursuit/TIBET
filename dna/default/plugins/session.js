@@ -26,9 +26,10 @@
             logger,
             name,
             meta,
-            secretKey,          // Secrete key value.
+            sessionKey,         // Secret key value.
             session,            // Express session management.
             store,              // Session store.
+            msg,
             TDS;
 
         app = options.app;
@@ -47,7 +48,15 @@
         //  ---
 
         //  NOTE:   this must be initialized before any session is.
-        cookieKey = TDS.cfg('tds.cookie.key1') || 'T1B3TC00K13';
+        cookieKey = process.env.TDS_COOKIE_KEY1;
+        if (TDS.isEmpty(cookieKey)) {
+            msg = 'No cookie key for session. $ export TDS_COOKIE_KEY1="{{secret}}"';
+            if (TDS.getEnv() !== 'development') {
+                throw new Error(msg);
+            }
+            logger.warn(msg);
+            cookieKey = 'T1B3TC00K13';
+        }
         app.use(cookieParser(cookieKey));
 
         //  Require in the session store, allowing it to be separately
@@ -61,15 +70,23 @@
 
         store = require('./' + name + '-store')(options);
 
-        secretKey = TDS.cfg('tds.secret.key') || 'ThisIsNotSecureChangeIt';
+        sessionKey = process.env.TDS_SESSION_KEY;
+        if (TDS.isEmpty(sessionKey)) {
+            msg = 'No secret key for session. $ export TDS_SESSION_KEY="{{secret}}"';
+            if (TDS.getEnv() !== 'development') {
+                throw new Error(msg);
+            }
+            logger.warn(msg);
+            sessionKey = 'T1B3TS3SS10N';
+        }
 
         //  ---
         //  Middleware
         //  ---
 
-        //  Configure a simple memory session by default.
+        //  Configure the session and start using it.
         app.use(session({
-            secret: secretKey,
+            secret: sessionKey,
             resave: false,
             saveUninitialized: false,
             store: store,

@@ -1327,10 +1327,6 @@
     //  should signals sent prior to signaling system installation be logged?
     TP.sys.setcfg('log.load_signals', false);
 
-    //  should the system log mouse actions? this is a useful way to get mouse
-    //  information when debugging things like drag and drop
-    TP.sys.setcfg('log.keys', false);
-
     //  Turns on/off warnings regarding detached nodes in DOM traversal
     //  routines. The default is true since this implies a true bug.
     TP.sys.setcfg('log.node_detachment', true);
