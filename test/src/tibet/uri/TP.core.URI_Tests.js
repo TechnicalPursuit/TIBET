@@ -14,7 +14,7 @@
 //  TIBETURL
 //  ========================================================================
 
-TP.core.TIBETURL.Inst.describe('construct',
+TP.core.TIBETURL.Type.describe('construct',
 function() {
 
     this.it('TIBET URN uniques instances regardless of format', function(test, options) {
