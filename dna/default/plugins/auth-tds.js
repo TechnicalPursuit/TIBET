@@ -24,10 +24,8 @@
     module.exports = function(options) {
         var app,
             authenticate,
-            crypto,
             logger,
             LocalStrategy,
-            hash,
             Promise,
             strategy,
             TDS;
@@ -36,12 +34,8 @@
         TDS = app.TDS;
         logger = options.logger;
 
-        crypto = require('crypto');
         LocalStrategy = require('passport-local');
         Promise = require('bluebird').Promise;
-
-        hash = process.env.TDS_CRYPTO_HASH ||
-            TDS.getcfg('tds.crypto.hash', 'sha256');
 
         //  ---
         //  Middleware
@@ -56,9 +50,7 @@
             promise = new Promise(function(resolve, reject) {
                 var pass,
                     salt,
-                    hex,
                     parts,
-                    salt,
                     test;
 
                 //  Simple authentication is a check against TDS user data.
