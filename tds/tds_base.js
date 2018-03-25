@@ -569,7 +569,7 @@
             keylen,
             alg,
             cipher,
-            text,
+            str,
             parts,
             salt,
             decrypted;
@@ -577,13 +577,13 @@
         if (TDS.isEmpty(text)) {
             throw new Error('No text to decrypt.');
         }
-        text = text.trim();
+        str = text.trim();
 
         //  The encrypt call will put salt on the front and separate with ':' so
         //  reverse that to get the one-time salt back so we can decrypt.
-        parts = text.split(':');
+        parts = str.split(':');
         salt = new Buffer(parts.shift(), 'hex');
-        text = new Buffer(parts.join(':'), 'hex');
+        str = new Buffer(parts.join(':'), 'hex');
 
         //  Capture key and normalize it to keylen bytes.
         key = process.env.TIBET_CRYPTO_KEY;
@@ -602,7 +602,7 @@
 
         cipher = crypto.createDecipheriv(alg, key, salt);
 
-        decrypted = cipher.update(text);
+        decrypted = cipher.update(str);
         decrypted = Buffer.concat([decrypted, cipher.final()]);
 
         return decrypted.toString();
@@ -619,17 +619,17 @@
     TDS.encrypt = function(text, salt) {
         var key,
             keylen,
-            salt,
+            saltval,
             saltlen,
             alg,
             cipher,
-            text,
+            str,
             encrypted;
 
         if (TDS.isEmpty(text)) {
             throw new Error('No text to encrypt.');
         }
-        text = text.trim();
+        str = text.trim();
 
         //  Capture key and normalize it to keylen bytes. This typically has to
         //  match up with salt length for the targeted cipher algorithm.
@@ -648,21 +648,23 @@
             //  https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet
             saltlen = process.env.TIBET_CRYPTO_SALTLEN ||
                 TDS.getcfg('tibet.crypto.saltlen', 16);
-            salt = new Buffer(crypto.randomBytes(saltlen));
+            saltval = new Buffer(crypto.randomBytes(saltlen));
+        } else {
+            saltval = salt;
         }
 
         //  Get the target algorithm. This will ultimately default via getcfg here.
         alg = process.env.TIBET_CRYPTO_CIPHER ||
             TDS.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
 
-        cipher = crypto.createCipheriv(alg, key, salt);
+        cipher = crypto.createCipheriv(alg, key, saltval);
 
-        encrypted = cipher.update(text);
+        encrypted = cipher.update(str);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
 
         //  Always include the salt (since it's random) as part of the final value,
         //  otherwise it's impossible to decrypt :).
-        return salt.toString('hex') + ':' + encrypted.toString('hex');
+        return saltval.toString('hex') + ':' + encrypted.toString('hex');
     };
 
     /**

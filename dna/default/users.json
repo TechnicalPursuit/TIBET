@@ -2,6 +2,6 @@
     "default": {
     },
     "development": {
-        "guest": "a3bc2645acb9cf7051998cb6b7539b79253d67cadb4a1c514e077b882a1b17bc"
+        "guest": "*"
     }
 }
