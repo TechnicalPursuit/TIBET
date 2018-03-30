@@ -63,6 +63,7 @@
             db_url,
             doc_name,
             dbError,
+            Evaluator,
             feed,
             feedopts,
             follow,
@@ -161,6 +162,8 @@
         sh = require('shelljs');
         Promise = require('bluebird');
         follow = require('follow');
+
+        Evaluator = require('../../etc/helpers/task_helpers')(options);
 
         //  ---
         //  Variables
@@ -303,7 +306,9 @@
         acceptTask = function(job, task) {
             var step,
                 plugin,
-                runner;
+                runner,
+                guard,
+                state;
 
             //  See if the task uses a different plugin for require().
             plugin = task.plugin || task.name;
@@ -322,12 +327,26 @@
             step = JSON.parse(JSON.stringify(task));
             step.pid = process.pid;
             step.start = Date.now();
-            step.state = '$$ready';
             step.index = job.steps.length;
 
             job.state = task.name + '-' + job.steps.length;
 
             step.params = prepareParams(job, step, task);
+
+            //  If the task has a guard expression we need to evaluate that.
+            //  When it's true we continue processing with a status of ready but
+            //  when it's false we set the status to skipped for that task.
+            state = '$$ready';
+            if (job.guards) {
+                guard = job.guards[task.name];
+                if (TDS.notEmpty(guard)) {
+                    if (!Evaluator.evaluate(guard,
+                            { job: job, step: step, params: step.params })) {
+                        state = '$$skipped';
+                    }
+                }
+            }
+            step.state = state;
 
             job.steps.push(step);
 
@@ -431,8 +450,7 @@
         /*
          */
         failJob = function(job, reason) {
-            logger.error(job,
-                job.state + ' failed: ' + reason);
+            logger.error(job, 'failed: ' + reason);
 
             job.state = '$$failed';
             job.result = reason;
@@ -556,6 +574,12 @@
                             }
                             break;
 
+                        case '$$skipped':
+                            //  Fall through. Skipped at the task level is
+                            //  equivalent to complete for this check.
+                            /* eslint-disable no-fallthrough */
+                            void 0;
+                            /* eslint-enable no-fallthrough */
                         case '$$complete':
                             //  Last task has completed so we need next one.
                             //  Which task we pluck depends on how many we've
@@ -581,7 +605,8 @@
                             //  out of previously run steps (if there are
                             //  any) is the next task to run.
                             for (i = 0; i < len; i++) {
-                                if (steps[i].state === '$$complete') {
+                                if (steps[i].state === '$$complete' ||
+                                    steps[i].state === '$$skipped') {
                                     list.shift();
                                 }
                             }
@@ -645,6 +670,15 @@
                 job.error = flow.error;
                 job.retry = flow.retry;
                 job.timeout = flow.timeout;
+
+                //  Map any guards for the flow into the job.
+                if (flow.guards) {
+                    if (job.guards) {
+                        TDS.blend(job.guards, flow.guards);
+                    } else {
+                        job.guards = TDS.blend({}, flow.guards);
+                    }
+                }
 
                 //  Map any flow parameter defaults into the job. Additional
                 //  params processing will occur as steps are processed.
@@ -711,7 +745,7 @@
             //  Tasks don't proceed after being set to an error or timeout, they
             //  can retry but that creates a new task, it doesn't continue using
             //  the one that errored or timed out.
-            return ['$$complete', '$$timeout', '$$error'].indexOf(
+            return ['$$skipped', '$$complete', '$$timeout', '$$error'].indexOf(
                 task.state) !== -1;
         };
 
@@ -721,7 +755,8 @@
             //  States like $$ready and $$active could wait forever, but other
             //  concrete states imply the task is finished in some form and can
             //  not be timed out (it might already be..but that's different).
-            if (['$$complete', '$$error', '$$timeout'].indexOf(task.state) !== -1) {
+            if (['$$skipped', '$$complete', '$$error', '$$timeout'].indexOf(
+                    task.state) !== -1) {
                 return false;
             }
 
