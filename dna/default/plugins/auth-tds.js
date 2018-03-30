@@ -60,6 +60,14 @@
                 pass = TDS.cfg('users.' + username);
                 if (pass) {
 
+                    //  During development simple password bypass for
+                    //  guest/demo accounts can be set manually via '*'.
+                    if (TDS.getEnv() === 'development' && pass === '*') {
+                        return resolve({
+                            id: username
+                        });
+                    }
+
                     //  Two ways to go here...decrypt the value or split off the
                     //  salt and encrypt the incoming value looking for a match.
                     //  The latter is more secure and essentially required if
