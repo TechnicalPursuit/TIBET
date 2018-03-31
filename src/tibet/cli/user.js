@@ -7,9 +7,9 @@
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet user' command. Lists known users, or adds a user, or
  *     updates a user password. This is a simple convenience method to let you
- *     have a small set of user data stored in the tds.json file. For serious
- *     user administration you should rely on authentication strategies other
- *     than the simple default provided with the TDS.
+ *     have a few development/test users stored in the users.json file. For
+ *     serious user administration you should use authentication strategies
+ *     other than the 'auth-tds' development sample provided with the TDS.
  */
 //  ========================================================================
 
@@ -26,7 +26,7 @@ var CLI,
     Cmd;
 
 CLI = require('./_cli');
-crypto = require('crypto');
+crypto = require('../../../etc/helpers/crypto_helpers');
 path = require('path');
 hb = require('handlebars');
 
@@ -99,10 +99,9 @@ Cmd.prototype.execute = function() {
     var data,
         env,
         file,
-        hex,
+        encrypted,
         json,
         pass,
-        salt,
         user,
         users,
         fullpath;
@@ -138,7 +137,7 @@ Cmd.prototype.execute = function() {
         //  User lookup.
         data = users[user];
         if (CLI.isValid(data)) {
-            this.info('User was found.');
+            this.info('User found.');
         } else {
             this.error('User not found.');
         }
@@ -157,15 +156,12 @@ Cmd.prototype.execute = function() {
         return 0;
     } else {
 
-        salt = process.env.TDS_CRYPTO_SALT || CLI.getcfg('tds.crypto.salt');
-        if (!salt) {
-            this.warn('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
-            this.warn('Defaulting to encryption salt default value');
-            salt = 'mmm...salty';
+        if (pass === '*') {
+            encrypted = pass;
+        } else {
+            //  NOTE leave salt undefined to force generation of a random value.
+            encrypted = crypto.encrypt(pass, undefined, CLI);
         }
-
-        //  Password update.
-        hex = crypto.createHash('sha256').update(pass + salt).digest('hex');
 
         //  Check on vcard info
         fullpath = path.join(CLI.expandPath(
@@ -180,11 +176,11 @@ Cmd.prototype.execute = function() {
         data = users[user];
         if (CLI.isValid(data)) {
             //  Update
-            users[user] = hex;
+            users[user] = encrypted;
             this.info('User updated.');
         } else {
             //  Insert
-            users[user] = hex;
+            users[user] = encrypted;
             this.info('User added.');
         }
 

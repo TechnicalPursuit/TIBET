@@ -21,7 +21,7 @@ var CLI,
     crypto;
 
 CLI = require('./_cli');
-crypto = require('crypto');
+crypto = require('../../../etc/helpers/crypto_helpers');
 
 //  ---
 //  Type Construction
@@ -83,14 +83,7 @@ Cmd.prototype.USAGE = 'tibet decrypt <string>';
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    var key,
-        keylen,
-        alg,
-        cipher,
-        text,
-        parts,
-        salt,
-        decrypted;
+    var text;
 
     //  NOTE argv[0] is the command name.
     text = this.options.text || this.getArgv()[1];
@@ -99,33 +92,7 @@ Cmd.prototype.execute = function() {
     }
     text = text.trim();
 
-    //  The encrypt call will put salt on the front and separate with ':' so
-    //  reverse that to get the one-time salt back so we can decrypt.
-    parts = text.split(':');
-    salt = new Buffer(parts.shift(), 'hex');
-    text = new Buffer(parts.join(':'), 'hex');
-
-    //  Capture key and normalize it to keylen bytes.
-    key = process.env.TIBET_CRYPTO_KEY;
-    if (CLI.isEmpty(key)) {
-        throw new Error(
-            'No secret key for encryption. $ export TIBET_CRYPTO_KEY="{{secret}}"');
-    }
-    keylen = process.env.TIBET_CRYPTO_KEYLEN ||
-        CLI.getcfg('tibet.crypto.keylen', 32);
-    key = new Buffer(CLI.rpad(key, keylen, '.'));
-    key = key.slice(0, keylen);
-
-    //  Get the target algorithm. This will ultimately default via getcfg here.
-    alg = process.env.TIBET_CRYPTO_CIPHER ||
-        CLI.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
-
-    cipher = crypto.createDecipheriv(alg, key, salt);
-
-    decrypted = cipher.update(text);
-    decrypted = Buffer.concat([decrypted, cipher.final()]);
-
-    this.info(decrypted.toString());
+    this.info(crypto.decrypt(text, CLI));
 
     return 0;
 };

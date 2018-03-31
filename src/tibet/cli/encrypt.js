@@ -21,7 +21,7 @@ var CLI,
     crypto;
 
 CLI = require('./_cli');
-crypto = require('crypto');
+crypto = require('../../../etc/helpers/crypto_helpers');
 
 //  ---
 //  Type Construction
@@ -83,14 +83,7 @@ Cmd.prototype.USAGE = 'tibet encrypt <string>';
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    var key,
-        keylen,
-        salt,
-        saltlen,
-        alg,
-        cipher,
-        text,
-        encrypted;
+    var text;
 
     //  NOTE argv[0] is the command name.
     text = this.options.text || this.getArgv()[1];
@@ -99,35 +92,8 @@ Cmd.prototype.execute = function() {
     }
     text = text.trim();
 
-    //  Capture key and normalize it to keylen bytes. This typically has to
-    //  match up with salt length for the targeted cipher algorithm.
-    key = process.env.TIBET_CRYPTO_KEY;
-    if (CLI.isEmpty(key)) {
-        throw new Error(
-            'No secret key for encryption. $ export TIBET_CRYPTO_KEY="{{secret}}"');
-    }
-    keylen = process.env.TIBET_CRYPTO_KEYLEN ||
-        CLI.getcfg('tibet.crypto.keylen', 32);
-    key = new Buffer(CLI.rpad(key, keylen, '.'));
-    key = key.slice(0, keylen);
-
-    //  Generate a random salt value. See discussion at the OWASP site:
-    //  https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet
-    saltlen = process.env.TIBET_CRYPTO_SALTLEN || CLI.getcfg('tibet.crypto.saltlen', 16);
-    salt = new Buffer(crypto.randomBytes(saltlen));
-
-    //  Get the target algorithm. This will ultimately default via getcfg here.
-    alg = process.env.TIBET_CRYPTO_CIPHER ||
-        CLI.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
-
-    cipher = crypto.createCipheriv(alg, key, salt);
-
-    encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-    //  Always include the salt (since it's random) as part of the final value,
-    //  otherwise it's impossible to decrypt :).
-    this.info(salt.toString('hex') + ':' + encrypted.toString('hex'));
+    //  NOTE leave salt undefined to force generation of a random value.
+    this.info(crypto.encrypt(text, undefined, CLI));
 
     return 0;
 };
