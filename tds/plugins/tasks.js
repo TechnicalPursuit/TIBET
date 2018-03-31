@@ -341,7 +341,7 @@
                 guard = job.guards[task.name];
                 if (TDS.notEmpty(guard)) {
                     if (!Evaluator.evaluate(guard,
-                            { job: job, step: step, params: step.params })) {
+                            {job: job, step: step, params: step.params})) {
                         state = '$$skipped';
                     }
                 }
