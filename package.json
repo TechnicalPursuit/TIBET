@@ -1,112 +1,126 @@
 {
-    "name": "tibet",
-    "version": "v5.0.0-pre.16",
-    "description": "The TIBET Platform.",
-    "keywords": ["CLI", "CouchDB", "Framework", "IDE", "Microservice", "MVC", "MVVC", "TIBET", "Workflow"],
-    "homepage": "http://www.technicalpursuit.com",
-    "author": {
-        "name": "Technical Pursuit Inc.",
-        "email": "tibet@technicalpursuit.com",
-        "url": "http://www.technicalpursuit.com"
+  "name": "tibet",
+  "version": "v5.0.0-pre.16",
+  "description": "The TIBET Platform.",
+  "keywords": [
+    "CLI",
+    "CouchDB",
+    "Framework",
+    "IDE",
+    "Microservice",
+    "MVC",
+    "MVVC",
+    "TIBET",
+    "Workflow"
+  ],
+  "homepage": "http://www.technicalpursuit.com",
+  "author": {
+    "name": "Technical Pursuit Inc.",
+    "email": "tibet@technicalpursuit.com",
+    "url": "http://www.technicalpursuit.com"
+  },
+  "contributors": [
+    {
+      "name": "Scott Shattuck",
+      "email": "ss@technicalpursuit.com"
     },
-    "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/TechnicalPursuit/TIBET"
-    },
-    "bugs": {
-        "url": "http://github.com/TechnicalPursuit/TIBET/issues",
-        "email": "tibet@technicalpursuit.com"
-    },
-    "license": "RPL-1.5",
-    "main": "./lib/tibet.js",
-    "bin": {
-        "tibet": "./bin/tibet"
-    },
-    "directories": {
-        "bin": "./bin",
-        "doc": "./doc/markdown",
-        "lib": "./lib",
-        "man": "./doc/man"
-    },
-    "dependencies": {
-        "ace-builds": "https://github.com/TechnicalPursuit/ace-builds/tarball/master",
-        "ansi-256-colors": "^1.1.0",
-        "ansi-styles": "^2.2.1",
-        "bluebird": "https://github.com/TechnicalPursuit/bluebird/tarball/master",
-        "bower": "*",
-        "chai": "*",
-        "chokidar": "*",
-        "codemirror": "https://github.com/TechnicalPursuit/CodeMirror/tarball/master",
-        "cors": "^2.8.1",
-        "crypto": "0.0.3",
-        "d3": "https://github.com/TechnicalPursuit/d3/tarball/master",
-        "diff": "https://github.com/TechnicalPursuit/jsdiff/tarball/master",
-        "escodegen": "*",
-        "eslint": "3.13.0",
-        "esmangle": "*",
-        "esprima": "*",
-        "express": "^4.15.3",
-        "faye-websocket": "^0.11.1",
-        "findit": "*",
-        "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
-        "fuse.js": "https://github.com/TechnicalPursuit/Fuse/tarball/master",
-        "handlebars": "*",
-        "has-ansi": "^2.0.0",
-        "ip": "^1.1.5",
-        "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
-        "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
-        "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",
-        "js-beautify": "*",
-        "jsDAV": "https://github.com/TechnicalPursuit/jsDAV/tarball/master",
-        "less": "https://github.com/TechnicalPursuit/less.js/tarball/master",
-        "marked-man": "^0.1.5",
-        "mime-types": "^2.1.4",
-        "minimatch": "^3.0.3",
-        "minimist": "*",
-        "mocha": "*",
-        "nano": "https://github.com/TechnicalPursuit/couchdb-nano/tarball/master",
-        "node-sass": "^4.7.2",
-        "node-forge": "https://github.com/TechnicalPursuit/forge/tarball/master",
-        "opener": "^1.4.1",
-        "permessage-deflate": "^0.1.5",
-        "phantomjs-prebuilt": "*",
-        "pouchdb": "TechnicalPursuit/pouchdb#5.4.4",
-        "pouchdb-all-dbs": "https://github.com/TechnicalPursuit/pouchdb-all-dbs/tarball/master",
-        "readline-sync": "^1.2.19",
-        "resize-observer-polyfill": "https://github.com/TechnicalPursuit/resize-observer-polyfill/tarball/master",
-        "semver": "^5.3.0",
-        "shelljs": "https://github.com/TechnicalPursuit/shelljs/tarball/master",
-        "shelljs-nodecli": "*",
-        "sinon": "TechnicalPursuit/Sinon.JS#v1.12.2",
-        "socket.io": "^1.3.5",
-        "sprintf-js": "https://github.com/TechnicalPursuit/sprintf.js/tarball/master",
-        "stylelint": "^7.10.1",
-        "stylelint-config-standard": "^15.0.1",
-        "supports-color": "^3.1.2",
-        "syn": "https://github.com/TechnicalPursuit/syn/tarball/master",
-        "websocket-extensions": "^0.1.1",
-        "winston": "^2.2.0",
-        "xml2js": "^0.4.15",
-        "xmldom": "*",
-        "xpath.js": "https://github.com/TechnicalPursuit/xpath.js/tarball/master"
-    },
-    "devDependencies": {},
-    "engines": {
-        "node": ">=6",
-        "npm": ">=3"
-    },
-    "scripts": {
-        "test": "./bin/tibet checkup",
-        "test_all": "phantomjs ./test/phantom/phantomtsh.js --profile '~app/phantom' --script ':test -ignore_only'",
-        "test_cli": "mocha ./test/mocha/cli_test.js"
-    },
-    "preferGlobal": true,
-    "private": false
+    {
+      "name": "William J. Edney",
+      "email": "bedney@technicalpursuit.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/TechnicalPursuit/TIBET"
+  },
+  "bugs": {
+    "url": "http://github.com/TechnicalPursuit/TIBET/issues",
+    "email": "tibet@technicalpursuit.com"
+  },
+  "license": "RPL-1.5",
+  "main": "./lib/tibet.js",
+  "bin": {
+    "tibet": "./bin/tibet"
+  },
+  "directories": {
+    "bin": "./bin",
+    "doc": "./doc/markdown",
+    "lib": "./lib",
+    "man": "./doc/man"
+  },
+  "dependencies": {
+    "ace-builds": "https://github.com/TechnicalPursuit/ace-builds/tarball/master",
+    "ansi-256-colors": "^1.1.0",
+    "ansi-styles": "^2.2.1",
+    "bluebird": "https://github.com/TechnicalPursuit/bluebird/tarball/master",
+    "bower": "*",
+    "chai": "*",
+    "chokidar": "*",
+    "codemirror": "https://github.com/TechnicalPursuit/CodeMirror/tarball/master",
+    "cors": "^2.8.1",
+    "crypto": "0.0.3",
+    "d3": "https://github.com/TechnicalPursuit/d3/tarball/master",
+    "diff": "https://github.com/TechnicalPursuit/jsdiff/tarball/master",
+    "escodegen": "*",
+    "eslint": "3.13.0",
+    "esmangle": "*",
+    "esprima": "*",
+    "express": "^4.15.3",
+    "faye-websocket": "^0.11.1",
+    "findit": "*",
+    "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
+    "fuse.js": "https://github.com/TechnicalPursuit/Fuse/tarball/master",
+    "handlebars": "*",
+    "has-ansi": "^2.0.0",
+    "ip": "^1.1.5",
+    "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
+    "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
+    "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",
+    "js-beautify": "*",
+    "jsDAV": "https://github.com/TechnicalPursuit/jsDAV/tarball/master",
+    "less": "https://github.com/TechnicalPursuit/less.js/tarball/master",
+    "marked-man": "^0.1.5",
+    "mime-types": "^2.1.4",
+    "minimatch": "^3.0.3",
+    "minimist": "*",
+    "mocha": "*",
+    "nano": "https://github.com/TechnicalPursuit/couchdb-nano/tarball/master",
+    "node-forge": "https://github.com/TechnicalPursuit/forge/tarball/master",
+    "node-sass": "^4.7.2",
+    "opener": "^1.4.1",
+    "permessage-deflate": "^0.1.5",
+    "phantomjs-prebuilt": "*",
+    "pouchdb": "TechnicalPursuit/pouchdb#5.4.4",
+    "pouchdb-all-dbs": "https://github.com/TechnicalPursuit/pouchdb-all-dbs/tarball/master",
+    "readline-sync": "^1.2.19",
+    "resize-observer-polyfill": "https://github.com/TechnicalPursuit/resize-observer-polyfill/tarball/master",
+    "safe-eval": "^0.3.0",
+    "semver": "^5.3.0",
+    "shelljs": "https://github.com/TechnicalPursuit/shelljs/tarball/master",
+    "shelljs-nodecli": "*",
+    "sinon": "TechnicalPursuit/Sinon.JS#v1.12.2",
+    "socket.io": "^1.3.5",
+    "sprintf-js": "https://github.com/TechnicalPursuit/sprintf.js/tarball/master",
+    "stylelint": "^7.10.1",
+    "stylelint-config-standard": "^15.0.1",
+    "supports-color": "^3.1.2",
+    "syn": "https://github.com/TechnicalPursuit/syn/tarball/master",
+    "websocket-extensions": "^0.1.1",
+    "winston": "^2.2.0",
+    "xml2js": "^0.4.15",
+    "xmldom": "*",
+    "xpath.js": "https://github.com/TechnicalPursuit/xpath.js/tarball/master"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=6",
+    "npm": ">=3"
+  },
+  "scripts": {
+    "test": "./bin/tibet checkup",
+    "test_all": "phantomjs ./test/phantom/phantomtsh.js --profile '~app/phantom' --script ':test -ignore_only'",
+    "test_cli": "mocha ./test/mocha/cli_test.js"
+  },
+  "preferGlobal": true,
+  "private": false
 }

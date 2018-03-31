@@ -22,6 +22,7 @@
             TDS,
             logger,
             meta,
+            safeEval,
             Evaluator;
 
         app = options.app;
@@ -35,6 +36,8 @@
 
         logger = options.logger.getContextualLogger(meta);
         logger.system('loading task guard evaluator');
+
+        safeEval = require('safe-eval');
 
         Evaluator = {};
 
@@ -62,10 +65,7 @@
                 logger.info('evaluating: ' + expr);
 
                 try {
-                    //  TODO:   replace with safe eval etc.
-                    /* eslint-disable no-eval */
-                    result = eval(expr);
-                    /* eslint-enable no-eval */
+                    result = safeEval(expr);
                     result = Boolean(result);  //  always convert to a boolean
                 } catch (e2) {
                     logger.error(e2);
