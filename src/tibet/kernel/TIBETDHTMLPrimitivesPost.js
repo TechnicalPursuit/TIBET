@@ -4717,7 +4717,9 @@ function(anElement, partial, direction, wantsTransformed) {
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    var isDisplayed,
+    var computedStyle,
+
+        isDisplayed,
 
         viewportBox,
         elementBox,
@@ -4732,6 +4734,24 @@ function(anElement, partial, direction, wantsTransformed) {
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  If the element isn't position fixed and the offsetParent is null, and
+    //  we're not checking for partial visibility (only whole visibility) then
+    //  this element isn't visible.
+
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
+    }
+
+    //  Note the native check here for offsetParent rather than using our
+    //  primitive method. This is because we're testing for the special behavior
+    //  of when 'offsetParent' is null.
+    if (computedStyle.position !== 'fixed' &&
+        TP.notTrue(partial) &&
+        TP.notValid(anElement.offsetParent)) {
+        return false;
     }
 
     //  First, is the element even displayed? If not (i.e. 'display: none'),
