@@ -66,7 +66,7 @@
             //  Basic content sanity check
             if (!params.key || !params.body) {
                 return TDS.Promise.reject(new Error(
-                    'Misconfigured SMTP task. Missing params.key and/or params.body.'));
+                    'Misconfigured S3 task. Missing params.key and/or params.body.'));
             }
 
             //  Build up the options necessary to construct the service.
