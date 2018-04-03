@@ -338,7 +338,7 @@
             //  when it's false we set the status to skipped for that task.
             state = '$$ready';
             if (job.guards) {
-                guard = job.guards[task.name];
+                guard = job.guards[job.state] || job.guards[task.name];
                 if (TDS.notEmpty(guard)) {
                     if (!Evaluator.evaluate(guard,
                             {job: job, step: step, params: step.params})) {
