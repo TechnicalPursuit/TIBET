@@ -2680,8 +2680,26 @@ function(aStylesheet) {
      *     some stylesheets, like those produced from compiled or processed CSS,
      *     will be associated with an XHTML 'style' element that doesn't have an
      *     'href' pointing back to the source of the sheet. In this case, we
-     *     have stamped a TIBETan attribute on it that points back to the
-     *     original source.
+     *     have stamped one of several TIBETan attributes on it that point back
+     *     to the original source.
+     * @description Determining the location of the stylesheet uses the
+     *     following logic:
+     *         1. If the rule came from a sheet that is associated to a regular
+     *         CSS <link> element, then we obtain its href value as the source
+     *         location as the source location of the rule.
+     *         2. If the rule came from a sheet that is associated to a regular
+     *         CSS <style> element with no 'tibet:originalHref' or 'tibet:for'
+     *         attribute, then it is not associated with any source location,
+     *         which will be null.
+     *         3. If the rule came from a sheet that is associated to a
+     *         'generated' CSS <style> element, then we can try to trace the
+     *         source of the rule.
+     *             a. If the <style> element has a 'tibet:originalHref'
+     *             attribute, then we obtain that as the source location of the
+     *             rule.
+     *             b. If the <style> element has a 'tibet:for' attribute, then
+     *             there will be a <tibet:style> element that has an 'href'
+     *             attribute. We obtain that as the source location of the rule.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
      *     location of.
      * @exception TP.sig.InvalidParameter
@@ -2689,23 +2707,58 @@ function(aStylesheet) {
      */
 
     var loc,
-        ownerElem;
+        ownerElem,
+
+        forRef,
+        realOwnerElem;
 
     if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    //  If there is an 'href', use it.
+    //  If it has an 'href' property, use it.
     loc = aStylesheet.href;
     if (TP.notEmpty(loc)) {
         return loc;
     }
 
-    //  Otherwise, if we can get to the stylesheet's owner node, return whatever
-    //  is stored in 'tibet:originalHref'.
+    //  Otherwise, if we can get to the stylesheet's owner node, then we run a
+    //  set of alternate checks. return whatever
     ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
     if (TP.isElement(ownerElem)) {
-        return TP.elementGetAttribute(ownerElem, 'tibet:originalHref', true);
+
+        //  If the stylesheet's owner element has a 'tibet:originalHref'
+        //  attribute that's not empty, return the value of that.
+        loc = TP.elementGetAttribute(ownerElem, 'tibet:originalHref', true);
+        if (TP.notEmpty(loc)) {
+            //  Note here how we expand it to match the semantics of the value
+            //  that we'll get from using the '.href' property at the start of
+            //  this method.
+            return TP.uriExpandPath(loc);
+        }
+
+        //  If the stylesheet's owner element has a 'tibet:for' attribute, then
+        //  it's representing style content that has been processed or compiled
+        //  in some way. This attribute will link this style element back to the
+        //  originating element.
+        forRef = TP.elementGetAttribute(ownerElem, 'tibet:for', true);
+        if (TP.notEmpty(forRef)) {
+            realOwnerElem = TP.byId(forRef,
+                                    TP.nodeGetDocument(ownerElem),
+                                    false);
+
+            //  If we were able to compute a real owner element and it has an
+            //  'href' attribute that's not empty, return the value of that..
+            if (TP.isElement(realOwnerElem)) {
+                loc = TP.elementGetAttribute(realOwnerElem, 'href', true);
+                if (TP.notEmpty(loc)) {
+                    //  Note here how we expand it to match the semantics of the
+                    //  value that we'll get from using the '.href' property at
+                    //  the start of this method.
+                    return TP.uriExpandPath(loc);
+                }
+            }
+        }
     }
 
     return null;
