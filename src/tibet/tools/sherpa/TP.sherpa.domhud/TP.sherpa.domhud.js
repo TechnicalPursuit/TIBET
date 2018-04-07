@@ -188,7 +188,6 @@ function(aTPElement) {
     info = TP.ac();
 
     //  Get the supplied element's ancestor chain and build a list from that.
-
     nodes = aTPElement.getAncestors();
 
     //  Unshift the supplied element onto the front.
