@@ -2970,7 +2970,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
     newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
 
     newRuleIndex = aStylesheet.insertRule(
-                        TP.join(selectorText, '{', theRuleText, '}'),
+                        TP.join(selectorText, ' {', theRuleText, '}'),
                         newRuleIndex);
 
     if (TP.notFalse(shouldSignal)) {
