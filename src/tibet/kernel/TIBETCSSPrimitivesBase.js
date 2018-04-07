@@ -2156,6 +2156,38 @@ function(aStyleRule, allDocumentStyleSheets) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleRuleGetDeclarationsSource',
+function(aStyleRule) {
+
+    /**
+     * @method styleRuleGetDeclarationsSource
+     * @summary Retrieves the declarations source of the supplied rule.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the rule
+     *     declarations source for.
+     * @returns {String} The property declarations of the supplied rule.
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var declsSource;
+
+    if (!TP.isStyleRule(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    declsSource = aStyleRule.cssText;
+
+    //  The '.cssText' property will start with the selector. We need to slice
+    //  it off along with the leading and trailing braces. We then trim
+    //  whitespace.
+    declsSource = TP.trim(declsSource.slice(
+                            declsSource.indexOf('{') + 1,
+                            declsSource.lastIndexOf('}')));
+
+    return declsSource;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleRuleGetSourceInfo',
 function(aStyleRule, sourceASTs) {
 
