@@ -34,7 +34,7 @@
             getNextTasks,
             isTaskComplete,
             shouldTaskTimeOut,
-            // isJobComplete,
+            isJobComplete,
             loggedInOrLocalDev,
             failJob,
             failTask,
@@ -63,7 +63,6 @@
             db_url,
             doc_name,
             dbError,
-            Evaluator,
             feed,
             feedopts,
             follow,
@@ -79,7 +78,8 @@
             Promise,
             sh,
             taskdir,
-            TDS;
+            TDS,
+            TWS;
 
         app = options.app;
         TDS = app.TDS;
@@ -146,7 +146,7 @@
 
         //  For TWS we need to ensure TDS.encrypt/decrypt will operate.
         try {
-            TDS.encrypt('RUSH.is.a.band');
+            TDS.encrypt('testencryptingthis');
         } catch (e) {
             //  If it failed we'll forward along the message stating the user
             //  needs to export the TIBET_CRYPTO_* variables necessary.
@@ -163,7 +163,10 @@
         Promise = require('bluebird');
         follow = require('follow');
 
-        Evaluator = require('../../etc/helpers/task_helpers')(options);
+        //  Load the TWS surrogate (via the task_helpers module). NOTE this
+        //  should only be done once to ensure we keep a unique reference.
+        app.TWS = require('../../etc/helpers/task_helpers')(options);
+        TWS = app.TWS;
 
         //  ---
         //  Variables
@@ -293,11 +296,7 @@
                 });
             } else {
                 //  No next task...job is done.
-                job.state = '$$complete';
-                job.exit = 0;
-                job.end = Date.now();
-
-                dbSave(job);
+                cleanupJob(job);
             }
         };
 
@@ -340,7 +339,7 @@
             if (job.guards) {
                 guard = job.guards[job.state] || job.guards[task.name];
                 if (TDS.notEmpty(guard)) {
-                    if (!Evaluator.evaluate(guard,
+                    if (!TWS.Evaluator.evaluate(guard,
                             {job: job, step: step, params: step.params})) {
                         state = '$$skipped';
                     }
@@ -362,15 +361,32 @@
         /*
          */
         cleanupJob = function(job, state) {
-            var code,
+            var status,
+                failed,
+                code,
                 errname;
 
-            //  Job is "done" in that it's either timed out or errored out and
-            //  it can't be retried (or it did retry but is out of chances now).
+            //  Determine state. If we were provided one that's great but if not
+            //  we need to scan the last task/step to see its state.
+            status = state || job.steps[job.steps.length - 1].state;
+
+            switch (status) {
+                case '$$timeout':
+                    failed = true;
+                    code = 1;
+                    break;
+                case '$$error':
+                    failed = true;
+                    code = 2;
+                    break;
+                default:
+                    code = 0;
+                    break;
+            }
 
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
-            if (job.error) {
+            if (failed && job.error) {
                 errname = job.error + '::' + job.owner;
                 retrieveTask(job, job.error, job.owner).then(function(errtask) {
                     if (!errtask) {
@@ -391,19 +407,7 @@
             //  No job-level error tasks. We're truly done. Need to update final
             //  state to stop processing for this job. The exit slot is used to
             //  signify final success/failure code.
-            switch (state || job.steps[job.steps.length - 1].state) {
-                case '$$timeout':
-                    code = 1;
-                    break;
-                case '$$error':
-                    code = 2;
-                    break;
-                default:
-                    code = -1;
-                    break;
-            }
-
-            job.state = '$$failed';
+            job.state = failed ? '$$failed' : '$$complete';
             job.exit = code;
             job.end = Date.now();
 
@@ -702,11 +706,9 @@
             });
         };
 
-        /*
         isJobComplete = function(job) {
-            return job.state === '$$complete';
+            return job.state === '$$complete' || job.state === '$$failed';
         };
-        */
 
         /*
          */
@@ -803,6 +805,8 @@
             if (task.params) {
                 TDS.blend(params, task.params);
             }
+
+//  TODO: try catch for bad compile/json etc. here...
 
             //  Now, we interpolate any parameter values that we find, using
             //  job, step and params as objects that can be referenced in those
@@ -1192,6 +1196,9 @@
             }
             job = json;
 
+            //  Notify any subscribers that activity has occurred on this job.
+            TWS.Job.notify(job);
+
             switch (job.state) {
                 case '$$ready':
                     //  No tasks running yet but ready for first one. Competing
@@ -1203,7 +1210,7 @@
                     if (canRetry(job)) {
                         retryJob(job);
                     } else {
-                        cleanupJob(job);
+                        cleanupJob(job, job.state);
                     }
                     break;
                 case '$$error':
@@ -1211,7 +1218,7 @@
                     if (canRetry(job)) {
                         retryJob(job);
                     } else {
-                        cleanupJob(job);
+                        cleanupJob(job, job.state);
                     }
                     break;
                 case '$$cancelled':
@@ -1534,3 +1541,4 @@
     };
 
 }(this));
+

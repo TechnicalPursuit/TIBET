@@ -19,11 +19,9 @@
 var helpers,
     path,
     sh;
-    // beautify;
 
 sh = require('shelljs');
 path = require('path');
-// beautify = require('js-beautify').js_beautify;
 
 
 /**
@@ -207,9 +205,13 @@ helpers.getCouchDatabase = function(options) {
  * Computes the common parameters needed by other interfaces to CouchDB. This
  * includes the CouchDB URL, the target database name, and the target design doc
  * application name.
- * @param {Object} options A parameter block with at least a 'requestor'. You
- *     can optionally specify 'needsapp' as false to turn off any prompting
- *     specific to an application name (aka design document name).
+ * @param {Object} options A parameter block. Specifying a 'requestor' lets the
+ *     routine leverage the requestor's logger etc. You can optionally specify
+ *     'needsapp' as false to turn off any prompting specific to an application
+ *     name (aka design document name) and 'needsdb' as false to turn off any
+ *     prompting specific to a database name. A 'cfg_root' value defaults to
+ *     'tds.couch' but can be set to 'tds.tasks' for example to leverage config
+ *     data specific to the TWS.
  * @returns {Object} An object with db_url, db_name, and db_app values.
  */
 helpers.getCouchParameters = function(options) {
@@ -235,9 +237,8 @@ helpers.getCouchParameters = function(options) {
         opts.confirm = false;
     }
 
-    //  Check cache so we reuse across multiple non-confirm calls.
-    if (!opts.confirm && helpers.lastCouchParams) {
-        return helpers.lastCouchParams;
+    if (requestor.blend && helpers.lastCouchParams) {
+        opts = requestor.blend(opts, helpers.lastCouchParams);
     }
 
     cfg_root = opts.cfg_root || 'tds.couch.';
@@ -532,8 +533,6 @@ helpers.populateDesignDoc = function(doc, root, params) {
     }
 
     //  TODO:   push attachments... see 'tibet couch pushapp' for code.
-
-    // console.log(beautify(JSON.stringify(obj)));
 
     return obj;
 };

@@ -1,11 +1,13 @@
+//  ========================================================================
 /**
- * @overview Simple guard expression evaluator for the TWS task processor.
+ * @overview Simple helper objects and support routines for the TWS engine.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     open source waivers to keep your derivative work source code private.
  */
+//  ========================================================================
 
 (function(root) {
 
@@ -23,6 +25,8 @@
             logger,
             meta,
             safeEval,
+            TWS,
+            Job,
             Evaluator;
 
         app = options.app;
@@ -35,12 +39,146 @@
         };
 
         logger = options.logger.getContextualLogger(meta);
-        logger.system('loading task guard evaluator');
 
         safeEval = require('safe-eval');
 
+        TWS = {};
+
+        //  ---
+        //  Job Processing
+        //  ---
+
+        Job = {};
+
+        TWS.Job = Job;
+
+        /**
+         * Dictionary of job ids and references to callbacks to be
+         * invoked/notified as jobs move through the task engine.
+         */
+        Job.$$subscribers = {};
+
+        /**
+         */
+        Job.didFail = function(job) {
+            return job.state === '$$failed';
+        };
+
+        /**
+         */
+        Job.didSucceed = function(job) {
+            return job.state === '$$complete';
+        };
+
+        /**
+         */
+        Job.isComplete = function(job) {
+            return job.state === '$$complete' || job.state === '$$failed';
+        };
+
+        /**
+         */
+        Job.notify = function(job) {
+            var id,
+                subscriber;
+
+            id = job.id;
+            subscriber = Job.$$subscribers[id];
+
+            if (TDS.notValid(subscriber)) {
+                return;
+            }
+
+            try {
+                subscriber(job);
+            } catch (e) {
+                logger.error(e);
+                //  If a subscriber is invalid/throws then remove it.
+                logger.warn('Removing faulty subscriber for job: ' + id);
+                Job.$$subscribers[id] = undefined;
+            }
+
+            if (Job.isComplete(job)) {
+                Job.$$subscribers[id] = undefined;
+            }
+        };
+
+        /**
+         *
+         */
+        Job.submit = function(flow, owner, options, subscriber) {
+            var job,
+                params,
+                db;
+
+            if (TDS.isEmpty(flow)) {
+                logger.error(err);
+                res.status(400);    // Bad Request
+                res.send({
+                    ok: false,
+                    message: 'Bad request. Missing flow specification.'
+                });
+            }
+
+            if (TDS.isEmpty(owner)) {
+                logger.error(err);
+                res.status(400);    // Bad Request
+                res.send({
+                    ok: false,
+                    message: 'Bad request. Missing owner specification.'
+                });
+            }
+
+            params = options || {};
+
+            job = {
+                type: 'job',
+                flow: flow,
+                owner: owner,
+                params: params
+            };
+
+            TDS.ifDebug() ?
+                logger.debug('submitting job data: ' + TDS.beautify(job)) : 0;
+
+            console.log('submitting job data: ' + TDS.beautify(job));
+
+            db = TDS.getCouchDatabase({
+                db_name: TDS.cfg('tds.tasks.db_name'),
+                confirm: false
+            });
+
+            if (TDS.notValid(db)) {
+                return TDS.Promise.reject(
+                    new Error('Database connection error.'));
+            }
+
+            //  Pass back the promise in case the requestor wants to attach.
+            return db.insertAsync(job).then(function(result) {
+                //  Once the insert is done we need to optionally register any
+                //  subscriber hook under the job id. When the job is complete
+                //  the engine will notify and then remove the subscription.
+                if (TDS.isValid(subscriber)) {
+                    Job.$$subscribers[result.id] = subscriber;
+                }
+
+                return result;
+            }).catch(function(err) {
+                return err;
+            });
+        };
+
+        //  ---
+        //  Task Guard Evaluator
+        //  ---
+
         Evaluator = {};
 
+        TWS.Evaluator = Evaluator;
+
+        /**
+         *
+         */
         Evaluator.evaluate = function(expression, params) {
             var template,
                 data,
@@ -79,7 +217,11 @@
             return result;
         };
 
-        return Evaluator;
+        //  ---
+        //  Export
+        //  ---
+
+        return TWS;
     };
 
 }(this));
