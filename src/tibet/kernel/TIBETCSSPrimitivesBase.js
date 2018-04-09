@@ -3007,7 +3007,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
 
     if (TP.notFalse(shouldSignal)) {
         //  Grab the rule that we're inserting.
-        rule = aStylesheet.cssRules[ruleIndex];
+        rule = aStylesheet.cssRules[newRuleIndex];
 
         ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
         if (TP.isElement(ownerElem)) {
