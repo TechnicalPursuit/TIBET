@@ -1340,6 +1340,7 @@ function() {
 
     var nsRoot;
 
+    //  We only alter templates that are *not* under the lib ('TP') root.
     nsRoot = this.getType().getNamespaceRoot();
     if (nsRoot === 'TP') {
         return false;
