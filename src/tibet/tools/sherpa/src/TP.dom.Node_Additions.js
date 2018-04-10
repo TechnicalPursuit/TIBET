@@ -680,6 +680,24 @@ function(anAspect, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterStyle',
+function() {
+
+    /**
+     * @method sherpaShouldAlterStyle
+     * @summary Returns whether or not the Sherpa should alter the style for
+     *     this type when updating the source document that the visual document
+     *     is displaying. Typically, the Sherpa will alter application
+     *     styles, but not TIBET core styles, such as those for XControls.
+     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
+     *     style.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterTemplate',
 function() {
 
@@ -1321,6 +1339,32 @@ function(options) {
      */
 
     return TP.elem('<sherpa:templatedTagContextMenuContent/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('sherpaShouldAlterStyle',
+function() {
+
+    /**
+     * @method sherpaShouldAlterStyle
+     * @summary Returns whether or not the Sherpa should alter the style for
+     *     this type when updating the source document that the visual document
+     *     is displaying. Typically, the Sherpa will alter application
+     *     styles, but not TIBET core styles, such as those for XControls.
+     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
+     *     style.
+     */
+
+    var nsRoot;
+
+    //  We only alter styles that are *not* under the lib ('TP') root.
+    nsRoot = this.getType().getNamespaceRoot();
+    if (nsRoot === 'TP') {
+        return false;
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
