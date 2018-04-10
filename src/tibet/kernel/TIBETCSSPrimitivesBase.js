@@ -3118,8 +3118,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
      * @param {String} ruleText The style text of the rule.
      * @param {Number} ruleIndex The index to insert the style rule at. If not
      *     supplied, the rule will be inserted at the end.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidString
      * @returns {Number} The index of the newly created rule within the
@@ -3300,8 +3299,7 @@ function(aStylesheet, ruleIndex, shouldSignal) {
      *     from.
      * @param {Number} ruleIndex The index of the rule within the stylesheet to
      *     remove.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidParameter
      */
 
