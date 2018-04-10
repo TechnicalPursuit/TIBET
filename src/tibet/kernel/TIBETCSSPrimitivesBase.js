@@ -2731,7 +2731,7 @@ function(aStylesheet, selectorText) {
             //  Grab the URI that goes with the undefined prefix.
             uri = TP.w3.Xmlns.getPrefixURI(undefinedPrefixes.at(i));
             if (TP.isEmpty(uri)) {
-                return TP.raise(this, 'TP.sig.InvalidValud');
+                return TP.raise(this, 'TP.sig.InvalidValue');
             }
 
             //  Insert a new @namespace rule for the prefix and its
