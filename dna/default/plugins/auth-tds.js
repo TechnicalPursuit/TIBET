@@ -48,7 +48,11 @@
             var promise;
 
             promise = new Promise(function(resolve, reject) {
-                var pass,
+                var user,
+                    pass,
+                    org,
+                    unit,
+                    role,
                     salt,
                     parts,
                     test;
@@ -57,14 +61,22 @@
                 //  We don't currently encrypt usernames in that data since it
                 //  would then require us to essentially scan and decode each
                 //  one since all our salt values are random one-time strings.
-                pass = TDS.cfg('users.' + username);
-                if (pass) {
+                user = TDS.cfg('users.' + username);
+                if (user) {
+
+                    pass = TDS.cfg('users.' + username + '.pass');
+                    org = TDS.cfg('users.' + username + '.org');
+                    unit = TDS.cfg('users.' + username + '.unit');
+                    role = TDS.cfg('users.' + username + '.role');
 
                     //  During development simple password bypass for
                     //  guest/demo accounts can be set manually via '*'.
                     if (TDS.getEnv() === 'development' && pass === '*') {
                         return resolve({
-                            id: username
+                            id: username,
+                            org: org,
+                            unit: unit,
+                            role: role
                         });
                     }
 
@@ -81,7 +93,10 @@
                             //  Match? Resolve the promise and provide a "user"
                             //  object of some form.
                             return resolve({
-                                id: username
+                                id: username,
+                                org: org,
+                                unit: unit,
+                                role: role
                             });
                         }
                     } catch (e) {

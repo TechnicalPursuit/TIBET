@@ -34,7 +34,7 @@
             getNextTasks,
             isTaskComplete,
             shouldTaskTimeOut,
-            isJobComplete,
+            // isJobComplete,
             loggedInOrLocalDev,
             failJob,
             failTask,
@@ -706,9 +706,11 @@
             });
         };
 
+        /*
         isJobComplete = function(job) {
             return job.state === '$$complete' || job.state === '$$failed';
         };
+        */
 
         /*
          */

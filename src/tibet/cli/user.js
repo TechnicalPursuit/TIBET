@@ -84,7 +84,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] ' +
-    '[--env <env>] [--role <role>] [--org <org>] [--unit unit]';
+    '[--env <env>] [--role <role|roles>] [--org <org>] [--unit unit]';
 
 
 //  ---
@@ -102,6 +102,9 @@ Cmd.prototype.execute = function() {
         encrypted,
         json,
         pass,
+        org,
+        unit,
+        role,
         user,
         users,
         fullpath;
@@ -129,63 +132,120 @@ Cmd.prototype.execute = function() {
         json[this.options.env] = env;
     }
 
-    pass = this.options.pass;
-
     users = env;
 
-    if (CLI.isEmpty(pass)) {
-        //  User lookup.
-        data = users[user];
-        if (CLI.isValid(data)) {
+    org = this.options.org;
+    unit = this.options.unit;
+    role = this.options.role;
+    pass = this.options.pass;
+
+    //  Create vcard path for later checks/generation.
+    fullpath = path.join(CLI.expandPath(
+        CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
+
+    //  User lookup. If the user is found this will be an 'update' operation as
+    //  opposed to an insert. NOTE that we only insert if we at least have a
+    //  password value provided.
+    data = users[user];
+    if (CLI.isValid(data)) {
+
+        //  No new data? Just a user check.
+        if (!unit && !org && !role && !pass) {
             this.info('User found.');
-        } else {
-            this.error('User not found.');
+            return 0;
+
         }
 
-        //  Check on vcard info
-        fullpath = path.join(CLI.expandPath(
-            CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
+        this.info('User found. Updating user record.');
 
+        //  Ensure all users have at least a default vcard created.
         if (CLI.sh.test('-e', fullpath)) {
             this.info('User vcard found in ' + fullpath);
         } else {
-            this.warn('User vcard not found in ' + fullpath);
+            this.info('Generating vcard in ' + fullpath);
             this.generateDefaultVCard(user, fullpath);
         }
 
-        return 0;
-    } else {
+        org = this.options.org || data.org;
+        unit = this.options.unit || data.unit;
 
-        if (pass === '*') {
-            encrypted = pass;
+        //  Password update?
+        if (CLI.notEmpty(this.options.pass)) {
+            if (this.options.pass === '*') {
+                encrypted = this.options.pass;
+            } else {
+                //  NOTE leave salt undefined to force generation of a random value.
+                encrypted = crypto.encrypt(this.options.pass, undefined, CLI);
+            }
         } else {
-            //  NOTE leave salt undefined to force generation of a random value.
-            encrypted = crypto.encrypt(pass, undefined, CLI);
+            encrypted = data.pass;
         }
 
-        //  Check on vcard info
-        fullpath = path.join(CLI.expandPath(
-            CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
-
-        if (CLI.sh.test('-e', fullpath)) {
-            this.info('User vcard found in ' + fullpath);
+        //  Role update?
+        if (this.options.role) {
+            //  Convert any role input into an array of role names.
+            role = this.options.role.split(',');
+            role = role.map(function(item) {
+                return item.trim();
+            });
         } else {
-            this.generateDefaultVCard(user, fullpath);
+            role = data.role;
         }
 
-        data = users[user];
-        if (CLI.isValid(data)) {
-            //  Update
-            users[user] = encrypted;
-            this.info('User updated.');
-        } else {
-            //  Insert
-            users[user] = encrypted;
-            this.info('User added.');
-        }
+        data.org = org;
+        data.unit = unit;
+        data.role = role;
+        data.pass = encrypted;
 
         //  Write out the changes from the top-level json object.
         CLI.beautify(JSON.stringify(json)).to(file);
+
+        this.info('User updated.');
+
+    } else {
+        if (CLI.isEmpty(pass)) {
+            this.error('Cannot insert new user without a password value.');
+            return 1;
+        }
+
+        this.info('New user id. Inserting user record.');
+
+        data = {};
+        users[user] = data;
+        data.id = user;
+
+        if (this.options.pass === '*') {
+            encrypted = this.options.pass;
+        } else {
+            //  NOTE leave salt undefined to force generation of a random value.
+            encrypted = crypto.encrypt(this.options.pass, undefined, CLI);
+        }
+
+        org = this.options.org || 'public';
+        unit = this.options.unit || 'guest';
+
+        if (this.options.role) {
+            //  Convert any role input into an array of role names.
+            role = this.options.role.split(',');
+            role = role.map(function(item) {
+                return item.trim();
+            });
+        } else {
+            role = [];
+        }
+
+        this.info('Generating vcard in ' + fullpath);
+        this.generateDefaultVCard(user, fullpath);
+
+        data.org = org;
+        data.unit = unit;
+        data.role = role;
+        data.pass = encrypted;
+
+        //  Write out the changes from the top-level json object.
+        CLI.beautify(JSON.stringify(json)).to(file);
+
+        this.info('User added.');
     }
 
     return 0;

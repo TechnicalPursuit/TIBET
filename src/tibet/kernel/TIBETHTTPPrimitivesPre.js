@@ -942,7 +942,7 @@ function(targetUrl, aRequest, httpObj) {
         simpleCORSOnly,
 
         header,
-
+        token,
         hash,
 
         keys,
@@ -1051,6 +1051,12 @@ function(targetUrl, aRequest, httpObj) {
                 headers.atPut('X-HTTP-Method-Override', altMethod);
             }
         }
+    }
+
+    //  If there's a client-side JWT token send it as well.
+    token = top.sessionStorage.getItem('tibet_token');
+    if (TP.notEmpty(token)) {
+        headers.atPut('x-access-token', token);
     }
 
     //  now that we've got our header collection in place for this call we
