@@ -241,6 +241,76 @@ function() {
     return '';
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('computeMutableStyleSheet',
+function(startTPElement) {
+
+    /**
+     * @method computeMutableStyleSheet
+     * @summary Starting at the supplied element, this method computes the
+     *     'nearest' mutable style sheet that rules affecting the element could
+     *     be placed in. By default, this will be the nearest templated tag
+     *     ancestor of the supplied element.
+     * @param {TP.core.Element} startTPElement The element to start searching
+     *     'upwards' through the ancestor hierarchy for mutable style sheets.
+     * @returns {CSSStyleSheet} The nearest mutable style sheet to the supplied
+     *      element.
+     */
+
+    var ancestors,
+
+        doc,
+
+        len,
+        i,
+
+        currentTPElem,
+
+        styleURI,
+        styleLoc,
+        styleElem;
+
+    //  Get the supplied element's ancestor chain and build a list from that.
+    ancestors = startTPElement.getAncestors();
+
+    doc = TP.sys.uidoc(true);
+
+    len = ancestors.getSize();
+    for (i = 0; i < len; i++) {
+        currentTPElem = ancestors.at(i);
+
+        if (currentTPElem.sherpaShouldAlterStyle()) {
+
+            styleURI = currentTPElem.getType().getResourceURI(
+                                                'style', TP.ietf.mime.CSS);
+
+            //  If the style URI doesn't end in '.css', then continue.
+            if (styleURI.getExtension() !== 'css') {
+                continue;
+            }
+
+            styleLoc = styleURI.getLocation();
+
+            //  First, look to see if there's a generated <style> element in the
+            //  UI canvas document for the type of the element that we found.
+            //  Note that we make sure to go after only HTML style elements
+            //  here.
+            styleElem = TP.byCSSPath(
+                        'html|style[tibet|originalHref="' + styleLoc + '"]',
+                        doc,
+                        true,
+                        false);
+
+            if (TP.isElement(styleElem)) {
+                return TP.cssElementGetStyleSheet(styleElem);
+            }
+        }
+    }
+
+    return null;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('finishSetup',
