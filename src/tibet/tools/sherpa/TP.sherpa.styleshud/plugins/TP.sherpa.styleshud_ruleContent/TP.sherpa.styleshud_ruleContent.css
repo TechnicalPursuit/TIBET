@@ -5,7 +5,8 @@
 
 sherpa|styleshud_ruleContent .styles_properties {
 
-    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
     font-size: 100%;
 
     padding: 4px;
