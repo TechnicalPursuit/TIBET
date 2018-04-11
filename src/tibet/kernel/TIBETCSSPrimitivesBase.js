@@ -2617,7 +2617,7 @@ function(aStyleRule, aPropertyName, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$styleSheetAddMissingNamespaceRules',
-function(aStylesheet, selectorText) {
+function(aStylesheet, selectorText, shouldSignal) {
 
     /**
      * @method $styleSheetAddMissingNamespaceRules
@@ -2627,8 +2627,10 @@ function(aStylesheet, selectorText) {
      *     namespace rules to.
      * @param {String} selectorText The text of the selector to scan for CSS
      *     namespace prefixes.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidString
+     * @returns {Number} The number of @namespace rules added.
      */
 
     var rules,
@@ -2642,10 +2644,16 @@ function(aStylesheet, selectorText) {
         foundMatch,
 
         j,
+        ownerElem,
+
         uri,
 
         removedRules,
         endIndex,
+
+        nsRulesAdded,
+
+        rule,
 
         len;
 
@@ -2730,6 +2738,9 @@ function(aStylesheet, selectorText) {
             aStylesheet.removeRule(endIndex);
         }
 
+        //  Keep track of the number of rules we added.
+        nsRulesAdded = 0;
+
         //  Iterate over the list of undefined prefixes.
         len = undefinedPrefixes.getSize();
         for (i = 0; i < len; i++) {
@@ -2745,6 +2756,27 @@ function(aStylesheet, selectorText) {
             aStylesheet.insertRule(
                 '@namespace ' + nsPrefix + ' url("' + uri + '");',
                 rules.length);
+
+            nsRulesAdded++;
+
+            if (TP.notFalse(shouldSignal)) {
+                //  Grab the rule that we're inserting.
+                rule = aStylesheet.cssRules[rules.length - 1];
+
+                ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
+
+                if (TP.isElement(ownerElem)) {
+
+                    //  Signal from our (wrapped) owner element that we added a
+                    //  @namespace rule.
+                    TP.signal(TP.tpdoc(ownerElem),
+                                'TP.sig.MutationStyleRuleChange',
+                                TP.hc('mutationTarget', TP.wrap(ownerElem),
+                                        'mutatedRule', rule,
+                                        'ruleIndex', rules.length - 1,
+                                        'operation', TP.CREATE));
+                }
+            }
         }
 
         //  Iterate over the rules that we removed earlier and append them back
@@ -2758,7 +2790,7 @@ function(aStylesheet, selectorText) {
         }
     }
 
-    return;
+    return nsRulesAdded;
 });
 
 //  ------------------------------------------------------------------------
