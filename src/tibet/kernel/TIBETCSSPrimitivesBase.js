@@ -2439,7 +2439,7 @@ function(aStyleRule) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('styleRuleGetStyleSheetAndIndex',
-function(aStyleRule) {
+function(aStyleRule, filterNonStyleRules) {
 
     /**
      * @method styleRuleGetStyleSheetAndIndex
@@ -2452,6 +2452,8 @@ function(aStyleRule) {
      *     relative to the subset that are CSSRule.STYLE_RULE rules.
      * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
      *     stylesheet of.
+     * @param {Boolean} [filterNonStyleRules=true] If true, the list is filtered
+     *     for non-style rules.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidStyleSheet
      * @returns {Array} An Array of the stylesheet object containing the rule
@@ -2476,11 +2478,15 @@ function(aStyleRule) {
     //  NB: Note how we do *not* expand imports here
     allRules = TP.styleSheetGetStyleRules(styleSheet, false);
 
-    //  Filter out all non CSSRule.STYLE_RULE 'rules'.
-    styleRules = allRules.filter(
-                function(aRule) {
-                    return aRule.type === CSSRule.STYLE_RULE;
-                });
+    if (TP.isFalse(filterNonStyleRules)) {
+        styleRules = allRules;
+    } else {
+        //  Filter out all non CSSRule.STYLE_RULE 'rules'.
+        styleRules = allRules.filter(
+                    function(aRule) {
+                        return aRule.type === CSSRule.STYLE_RULE;
+                    });
+    }
 
     for (i = 0; i < styleRules.getSize(); i++) {
         if (styleRules.at(i) === aStyleRule) {
