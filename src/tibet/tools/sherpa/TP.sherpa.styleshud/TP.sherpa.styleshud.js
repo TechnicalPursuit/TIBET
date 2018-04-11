@@ -218,11 +218,15 @@ function(enterSelection) {
 
     var domContent,
 
-        currentRuleIndex;
+        currentRuleIndex,
+
+        sherpaMain;
 
     domContent = enterSelection.append('li');
 
     currentRuleIndex = this.get('$currentRuleIndex');
+
+    sherpaMain = TP.bySystemId('Sherpa');
 
     domContent.attr(
             'pclass:selected',
@@ -263,11 +267,20 @@ function(enterSelection) {
                 return val;
             }).each(
             function(d) {
-                var hintContent,
+                var lockContent,
+
+                    hintContent,
                     hintElement;
 
                 TP.elementSetAttribute(
                         this, 'dnd:accept', 'tofu', true);
+
+                if (!sherpaMain.styleLocationIsMutable(d[0])) {
+                    lockContent = TP.extern.d3.select(this).append(
+                                                            'span');
+                    lockContent.attr('class', 'lock');
+                    lockContent.attr('on:click', 'UnlockRule');
+                }
 
                 if (d[1] !== 'spacer') {
                     hintContent = TP.extern.d3.select(this).append(
@@ -349,9 +362,13 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var currentRuleIndex;
+    var currentRuleIndex,
+
+        sherpaMain;
 
     currentRuleIndex = this.get('$currentRuleIndex');
+
+    sherpaMain = TP.bySystemId('Sherpa');
 
     updateSelection.attr(
             'pclass:selected',
@@ -391,9 +408,19 @@ function(updateSelection) {
 
                 return val;
             }).each(
-            function() {
+            function(d) {
+                var lockContent;
+
                 TP.elementSetAttribute(
                     this, 'dnd:accept', 'tofu', true);
+
+                if (!sherpaMain.styleLocationIsMutable(d[0])) {
+                    lockContent = TP.extern.d3.select(this).append(
+                                                            'span');
+                    lockContent.attr('class', 'lock');
+                    lockContent.attr('on:click', 'UnlockRule');
+                }
+
             });
 
     return updateSelection;
@@ -1074,6 +1101,141 @@ function(aSignal) {
         this.observe(newScreenTPWin,
                         TP.ac('DocumentLoaded', 'DocumentUnloaded'));
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineHandler('UnlockRule',
+function(aSignal) {
+
+    /**
+     * @method handleUnlockRule
+     * @summary Handles when a style rule's lozenge's lock is clicked.
+     * @param {TP.sig.UnlockRule} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var lockElem,
+        parentListItem,
+
+        indexInData,
+        data,
+        dataRecord,
+
+        selector,
+
+        sherpaMain,
+
+        len,
+        i,
+        checkSelector,
+        checkLocation,
+
+        halo,
+        currentTargetTPElem,
+        mutableSheet,
+        declsSource;
+
+    lockElem = aSignal.getDOMTarget();
+
+    parentListItem = lockElem.parentNode;
+
+    //  Grab the index in our data that is represented by the lozenge item whose
+    //  lock was clicked on
+    indexInData = TP.elementGetAttribute(parentListItem, 'indexInData', true);
+    indexInData = indexInData.asNumber();
+
+    data = this.get('data');
+    dataRecord = data.at(indexInData);
+
+    selector = dataRecord.at(1);
+
+    sherpaMain = TP.bySystemId('Sherpa');
+
+    //  Check to see if any of the existing rules that have *exactly* the same
+    //  selector are mutable. If so, navigate to that rule and exit.
+
+    //  NB: '0' is the spot for the 'cascaded' rule, so we start at 1
+    len = data.getSize();
+    for (i = 1; i < len; i++) {
+
+        //  Don't check the rule that we are checking
+        if (i === indexInData) {
+            continue;
+        }
+
+        checkSelector = data.at(i).at(1);
+
+        //  If we have another rule that has exactly the same selector, then
+        //  check the style location for mutability.
+        if (checkSelector === selector) {
+            checkLocation = data.at(i).at(0);
+
+            if (sherpaMain.styleLocationIsMutable(checkLocation)) {
+                this.set('$currentRuleIndex', i);
+                this.render();
+
+                return this;
+            }
+        }
+    }
+
+    //  Couldn't find a rule whose selector exactly matched. See if there are
+    //  any that end with the selector that we're searching for. This allows for
+    //  the fact that maybe one matches the selector, but is qualified by a
+    //  portion that further qualifies it.
+    len = data.getSize();
+    for (i = 1; i < len; i++) {
+
+        //  Don't check the rule that we are checking
+        if (i === indexInData) {
+            continue;
+        }
+
+        checkSelector = data.at(i).at(1);
+
+        //  If we have another rule that ends with our selector, then check the
+        //  style location for mutability.
+        if (checkSelector.endsWith(selector)) {
+            checkLocation = data.at(i).at(0);
+
+            if (sherpaMain.styleLocationIsMutable(checkLocation)) {
+                this.set('$currentRuleIndex', i);
+                this.render();
+
+                return this;
+            }
+        }
+    }
+
+    //  The declarations of the existing sheet will be found at the 3rd position
+    //  in the current data record.
+    declsSource = dataRecord.at(2);
+    declsSource = TP.trim(declsSource.slice(
+                            declsSource.indexOf('{') + 1,
+                            declsSource.lastIndexOf('}')));
+
+    //  Grab the halo and its current target element.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    currentTargetTPElem = halo.get('currentTargetTPElem');
+
+    //  Obtain a mutable stylesheet by asking the Sherpa IDE object to compute
+    //  one based on the currently halo'ed element.
+    mutableSheet = sherpaMain.computeMutableStyleSheet(currentTargetTPElem);
+
+    //  Create a new rule and add it to the end of the stylesheet.
+    TP.styleSheetInsertRule(mutableSheet,
+                            selector,
+                            declsSource,
+                            null,
+                            true);
+
+    //  Refocus on the target element, which will cause our list to refresh,
+    //  thereby showing the new rule.
+    this.focusOnTarget(currentTargetTPElem);
 
     return this;
 });

@@ -38,6 +38,8 @@ sherpa|styleshud > ul {
 sherpa|styleshud > ul.content > li.item {
 
     margin: 1px 8px;
+
+    padding-left: 1.5em;
 }
 
 /* Selector items */
@@ -46,8 +48,6 @@ sherpa|styleshud > ul.content > li.selector {
 
     height: 1.75em;
     line-height: 1.75em;
-
-    padding-left: 0.25em;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -81,14 +81,28 @@ sherpa|styleshud > ul.content > li.selector[pclass|selected]:hover {
     background-color: #91a9c0;
 }
 
+sherpa|styleshud > ul.content > li.selector span.lock {
+
+    background-image: url("../media/ic_lock_black_24px.svg");
+
+    position: absolute;
+
+    left: 11px;
+
+    width: 12px;
+    height: 12px;
+
+    background-size: 12px 12px;
+
+    margin-top: 3px;
+}
+
 /* Cascaded item */
 
 sherpa|styleshud > ul.content > li.cascaded {
 
     height: 1.75em;
     line-height: 1.75em;
-
-    padding-left: 0.25em;
 
     border: 1px solid #666;
     border-radius: 5px;
