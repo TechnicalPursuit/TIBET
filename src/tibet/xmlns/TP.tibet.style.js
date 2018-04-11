@@ -397,6 +397,25 @@ function(anHref) {
 
                     styleURI = TP.uc(hrefLocation);
 
+                    //  Grab any existing inlined style element, if available.
+                    inlinedStyleElem = TP.byCSSPath(
+                                            'html|style[tibet|originalHref=' +
+                                            '"' +
+                                            styleURI.getOriginalSource() +
+                                            '"]',
+                                        doc,
+                                        true,
+                                        false);
+
+                    //  If the element existed, check to make sure that it
+                    //  doesn't have a 'tibet:dontreload' attribute. If it does,
+                    //  then exit here without reloading.
+                    if (TP.isElement(inlinedStyleElem) &&
+                        TP.elementHasAttribute(
+                            inlinedStyleElem, 'tibet:dontreload', true)) {
+                        return;
+                    }
+
                     //  Note how we *don't* specify 'refresh' here, since we
                     //  want the latest content as set into the URL.
                     fetchOptions = TP.hc('async', false,
@@ -431,15 +450,25 @@ function(anHref) {
                                             true);
                 } else {
 
+                    //  Grab any existing style element, if available.
+                    existingStyleElem = TP.byCSSPath(
+                                        '[tibet|for="' + ourID + '"]',
+                                        doc,
+                                        true,
+                                        false);
+
+                    //  If the element existed, check to make sure that it
+                    //  doesn't have a 'tibet:dontreload' attribute. If it does,
+                    //  then exit here without reloading.
+                    if (TP.isElement(existingStyleElem) &&
+                        TP.elementHasAttribute(
+                            existingStyleElem, 'tibet:dontreload', true)) {
+                        return;
+                    }
+
                     //  If there is no existing 'style' element, create one and
                     //  set its content.
-                    if (!TP.isElement(
-                            existingStyleElem =
-                            TP.byCSSPath('[tibet|for="' + ourID + '"]',
-                                            doc,
-                                            true,
-                                            false))) {
-
+                    if (!TP.isElement(existingStyleElem)) {
                         //  Just some CSS - link it in.
                         newStyleElem = TP.documentAddCSSLinkElement(
                                             doc,

@@ -319,6 +319,8 @@ function(anHref) {
 
     var styleURI,
 
+        inlinedStyleElem,
+
         fetchOptions,
 
         styleContent;
@@ -326,6 +328,25 @@ function(anHref) {
     styleURI = TP.uc(anHref);
 
     if (TP.isURI(styleURI)) {
+
+        //  Grab any existing inlined style element, if available.
+        inlinedStyleElem = TP.byCSSPath(
+                                'html|style[tibet|originalHref=' +
+                                '"' +
+                                styleURI.getOriginalSource() +
+                                '"]',
+                            this.getNativeDocument(),
+                            true,
+                            false);
+
+        //  If the element existed, check to make sure that it
+        //  doesn't have a 'tibet:dontreload' attribute. If it does,
+        //  then exit here without reloading.
+        if (TP.isElement(inlinedStyleElem) &&
+            TP.elementHasAttribute(
+                inlinedStyleElem, 'tibet:dontreload', true)) {
+            return;
+        }
 
         //  Fetch the CSS content *synchronously*
         fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT);
