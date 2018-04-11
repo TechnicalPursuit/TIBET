@@ -859,6 +859,8 @@ function(aSignal) {
 
     var mutatedRule,
 
+        operation,
+
         results,
         ownerSheet,
         ruleIndex,
@@ -866,13 +868,22 @@ function(aSignal) {
         loc,
         sheetURI,
 
+        ownerElem,
+
         shouldRefresh,
         currentResource,
         currentContent,
 
+        lastNSIndex,
+        endOfLastNSIndex,
+        beforeNSContent,
+        afterNSContent,
+
         sheetRules,
         matchCount,
         i,
+
+        rules,
 
         str,
 
@@ -883,7 +894,6 @@ function(aSignal) {
         endIndex,
         ruleText,
         propertyMatcher,
-        operation,
 
         newStr,
         newContent,
@@ -900,6 +910,8 @@ function(aSignal) {
         return this;
     }
 
+    operation = aSignal.at('operation');
+
     results = TP.styleRuleGetStyleSheetAndIndex(mutatedRule);
 
     ownerSheet = results.first();
@@ -914,6 +926,8 @@ function(aSignal) {
         return this;
     }
 
+    ownerElem = TP.styleSheetGetOwnerNode(ownerSheet);
+
     //  Load the URI's content if it isn't already loaded and obtain it.
     shouldRefresh = !sheetURI.isLoaded();
     currentResource = sheetURI.getResource(
@@ -921,6 +935,63 @@ function(aSignal) {
 
     //  NB: We'll get a CSS stylesheet content object here - we want its String.
     currentContent = currentResource.get('result').asString();
+
+    //  Before we try to match any existing rules of type CSSRule.STYLE_RULE in
+    //  the sheet, see what kind of rule we have here. If it's an @namespace
+    //  rule or a @import rule, then all we can do is insert those as new rules
+    //  anyway and we can handle that process here.
+    if (mutatedRule.type === CSSRule.NAMESPACE_RULE ||
+        mutatedRule.type === CSSRule.IMPORT_RULE) {
+
+        if (operation === TP.CREATE) {
+
+            //  If it's an @import rule, then we place it before any other rules
+            //  in the content
+            if (mutatedRule.type === CSSRule.IMPORT_RULE) {
+                finalContent = mutatedRule.cssText + '\n' + currentContent;
+            } else if (mutatedRule.type === CSSRule.NAMESPACE_RULE) {
+
+                //  Otherwise, find the index of the last occurrence of
+                //  @namespace declaration.
+                lastNSIndex = currentContent.lastIndexOf('@namespace');
+
+                //  Now, search for its corresponding ');', relative to that
+                //  last index. Add 2 to account for the size of ');'.
+                endOfLastNSIndex = currentContent.indexOf(');', lastNSIndex) + 2;
+
+                //  Slice off all of the content that occurs before the last
+                //  occurrence of @namespace declaration.
+                beforeNSContent = currentContent.slice(0, endOfLastNSIndex + 1);
+
+                //  Slice off all of the content that occurs after the last
+                //  occurrence of @namespace declaration and its content.
+                afterNSContent = currentContent.slice(endOfLastNSIndex + 1);
+
+                //  Assemble the final content by piecing the before and after
+                //  pieces with the cssText of the mutated rule.
+                finalContent = beforeNSContent +
+                                mutatedRule.cssText + '\n' +
+                                afterNSContent;
+            }
+
+            //  Stamp the owner element with a 'tibet:dontreload' attribute so
+            //  that the style element will *not* reload when it receives a
+            //  change notification due to its underlying content changing.
+            TP.elementSetAttribute(ownerElem, 'tibet:dontreload', 'true', true);
+
+            //  Set the resource of the sheetURI. This should dirty it.
+            sheetURI.setResource(finalContent);
+
+            //  Remove the 'tibet:dontreload' attribute from the owner element
+            //  so that it will now reload when its content changes.
+            TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+
+            return this;
+        } else {
+            //  TODO: Raise an exception
+            return this;
+        }
+    }
 
     //  Look for the rule by using the selector text
 
@@ -941,6 +1012,43 @@ function(aSignal) {
     for (i = 0; i < ruleIndex; i++) {
         if (sheetRules.at(i).selectorText === mutatedRule.selectorText) {
             matchCount++;
+        }
+    }
+
+    //  If we didn't find a matching rule to update, then if the operation is
+    //  TP.CREATE, we can just append the new rule to the URI content matching
+    //  the sheet's location.
+    if (matchCount === 0) {
+
+        if (operation === TP.CREATE) {
+
+            //  Grab all of the declarations for the mutated rule, split them
+            //  and join them back together with newlines to match TIBET
+            //  formatting rules.
+            rules = TP.styleRuleGetDeclarationsSource(mutatedRule).split(';');
+            str = rules.join(';\n');
+
+            //  Build up a content chunk that can be appended to the URI content
+            //  matching the sheet's location.
+            str = mutatedRule.selectorText + '\n{\n' + str + '}\n';
+            finalContent = currentContent + '\n' + str;
+
+            //  Stamp the owner element with a 'tibet:dontreload' attribute so
+            //  that the style element will *not* reload when it receives a
+            //  change notification due to its underlying content changing.
+            TP.elementSetAttribute(ownerElem, 'tibet:dontreload', 'true', true);
+
+            //  Set the resource of the sheetURI. This should dirty it.
+            sheetURI.setResource(finalContent);
+
+            //  Remove the 'tibet:dontreload' attribute from the owner element
+            //  so that it will now reload when its content changes.
+            TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+
+            return this;
+        } else {
+            //  TODO: Raise an exception
+            return this;
         }
     }
 
@@ -985,7 +1093,6 @@ function(aSignal) {
                             '\\s*:.+;[\\n\\r]?');
 
     //  Switch on the operation performed.
-    operation = aSignal.at('operation');
     switch (operation) {
         case TP.CREATE:
             //  If we're creating a new property, just splice it in before the
@@ -1024,8 +1131,17 @@ function(aSignal) {
     patch = TP.extern.JsDiff.createPatch(loc, currentContent, newContent);
     finalContent = TP.extern.JsDiff.applyPatch(currentContent, patch);
 
+    //  Stamp the owner element with a 'tibet:dontreload' attribute so that the
+    //  style element will *not* reload when it receives a change notification
+    //  due to its underlying content changing.
+    TP.elementSetAttribute(ownerElem, 'tibet:dontreload', 'true', true);
+
     //  Set the resource of the sheetURI. This should dirty it.
     sheetURI.setResource(finalContent);
+
+    //  Remove the 'tibet:dontreload' attribute from the owner element so that
+    //  it will now reload when its content changes.
+    TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
 
     return this;
 });
