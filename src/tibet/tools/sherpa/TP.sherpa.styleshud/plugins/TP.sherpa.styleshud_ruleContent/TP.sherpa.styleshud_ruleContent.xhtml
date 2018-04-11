@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 
 <sherpa:styleshud_ruleContent bind:in="urn:tibet:styleshud_rule_source">
-    <tibet:group wrapWhen="true" autofocus="autofocus">
-        <span class="styles_properties" bind:scope="urn:tibet:styleshud_prop_source#jpath($.info)">
+    <tibet:group name="readonly">
+        <span class="styles_properties" bind:scope="urn:tibet:styleshud_readonly_prop_source#jpath($.info)">
+            <div id="styleshud_properties" bind:repeat="ruleProps">
+                <span class="propName" bind:in="{value: rulePropName}"/>:&#160;<span class="propValue" bind:in="{value: rulePropValue}"/>&#59;<br/>
+            </div>
+        </span>
+    </tibet:group>
+    <tibet:group name="readwrite" wrapWhen="true" autofocus="autofocus">
+        <span class="styles_properties" bind:scope="urn:tibet:styleshud_readwrite_prop_source#jpath($.info)">
             <div id="styleshud_properties" bind:repeat="ruleProps">
                 <input type="text" class="propName" bind:io="{value: rulePropName}" tabindex="0"/>
                 <input type="text" class="propValue" bind:io="{value: rulePropValue}" tabindex="0"/>

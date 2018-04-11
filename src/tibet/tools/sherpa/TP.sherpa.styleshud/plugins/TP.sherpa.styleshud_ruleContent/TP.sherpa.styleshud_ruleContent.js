@@ -87,6 +87,12 @@ function(aRequest) {
 
 TP.sherpa.styleshud_ruleContent.Inst.defineAttribute('$propertyNames');
 
+TP.sherpa.styleshud_ruleContent.Inst.defineAttribute('readOnlyGroup',
+    TP.cpc('> tibet|group[name="readonly"]', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.styleshud_ruleContent.Inst.defineAttribute('readWriteGroup',
+    TP.cpc('> tibet|group[name="readwrite"]', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -173,6 +179,7 @@ function(aValue, shouldSignal) {
 
     var propertiesModel,
 
+        sherpaMain,
         modelURI;
 
     //  NB: In this method, 'value' is the source element that we're currently
@@ -181,8 +188,21 @@ function(aValue, shouldSignal) {
     //  Compute the attributes model.
     propertiesModel = this.buildPropertiesModel(aValue);
 
-    //  Set it as the resource of the URI.
-    modelURI = TP.uc('urn:tibet:styleshud_prop_source');
+    sherpaMain = TP.bySystemId('Sherpa');
+
+    //  If the style location isn't mutable, then show the read-only panel.
+    if (!sherpaMain.styleLocationIsMutable(aValue.first())) {
+        //  Set it as the resource of the URI.
+        modelURI = TP.uc('urn:tibet:styleshud_readonly_prop_source');
+        this.get('readOnlyGroup').show();
+        this.get('readWriteGroup').hide();
+    } else {
+        //  Set it as the resource of the URI.
+        modelURI = TP.uc('urn:tibet:styleshud_readwrite_prop_source');
+        this.get('readWriteGroup').show();
+        this.get('readOnlyGroup').hide();
+    }
+
     modelURI.setResource(propertiesModel, TP.hc('signalChange', true));
 
     return this;
