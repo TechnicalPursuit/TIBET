@@ -3045,6 +3045,65 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('styleLocationIsMutable',
+function(styleLoc) {
+
+    /**
+     * @method styleLocationIsMutable
+     * @summary Returns whether or not the supplied location (which should be a
+     *     fully expanded URL location string) is a mutable location.
+     * @description There are a number of factors that determine whether or not
+     *     a style location is mutable or not.
+     *     1. If the source location is null, then it is not editable.
+     *     2. If the source location points to a '.less' file, then it not
+     *     editable.
+     *     3. If the source location points to a '.css' file, then a further
+     *     check needs to be made on the path.
+     *         a. If the path is under the TIBET framework directory, then it is
+     *         not editable. The rule could be copied to a location where it is
+     *         editable.
+     *         b. If the path is under the application directory, then it is
+     *         editable.
+     * @param {String} styleLoc The fully expanded URL location of the style to
+     *     check for mutability.
+     * @returns {Boolean} Whether or not the supplied style location is mutable.
+     */
+
+    var ext,
+        expandedLoc,
+
+        testPath;
+
+    if (TP.notValid(styleLoc)) {
+        return false;
+    }
+
+    //  If it's a LESS file, then it's not mutable.
+    ext = TP.uriExtension(styleLoc);
+    if (ext === 'less') {
+        return false;
+    }
+
+    expandedLoc = TP.uriExpandPath(styleLoc);
+
+    //  If it's anywhere under the library root, then it's not mutable.
+    testPath = TP.getLibRoot();
+    if (expandedLoc.contains(testPath)) {
+        return false;
+    }
+
+    //  If it's anywhere under the app's 'TIBET-INF' directory, then it's not
+    //  mutable.
+    testPath = TP.uriExpandPath(TP.sys.cfg('path.app_inf'));
+    if (expandedLoc.startsWith(testPath)) {
+        return false;
+    }
+
+    return true;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('toggle',
 function() {
 
