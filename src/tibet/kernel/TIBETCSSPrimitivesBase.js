@@ -3165,9 +3165,11 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
      *     this value will be the same as that supplied.
      */
 
-    var theRuleText,
+    var nsRulesAdded,
 
         newRuleIndex,
+
+        theRuleText,
 
         rule,
         ownerElem;
@@ -3184,12 +3186,19 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
     //  If the selector text has namespace-qualified selector content, make sure
     //  that the namespace is defined.
     if (TP.regex.HAS_PIPE.test(selectorText)) {
-        TP.$styleSheetAddMissingNamespaceRules(aStylesheet, selectorText);
+        nsRulesAdded = TP.$styleSheetAddMissingNamespaceRules(
+                            aStylesheet, selectorText, shouldSignal);
+        if (TP.isNumber(ruleIndex)) {
+            newRuleIndex = ruleIndex + nsRulesAdded;
+        } else {
+            newRuleIndex = aStylesheet.cssRules.length;
+        }
+
+    } else {
+        newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
     }
 
     theRuleText = TP.ifInvalid(ruleText, '');
-
-    newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
 
     newRuleIndex = aStylesheet.insertRule(
                         TP.join(selectorText, ' {', theRuleText, '}'),
