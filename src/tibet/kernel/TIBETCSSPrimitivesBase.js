@@ -2494,7 +2494,7 @@ function(aStyleRule, filterNonStyleRules) {
         }
     }
 
-    return TP.ac();
+    return TP.ac(styleSheet, TP.NOT_FOUND);
 });
 
 //  ------------------------------------------------------------------------
