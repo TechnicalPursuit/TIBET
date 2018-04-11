@@ -12,7 +12,10 @@
 
     'use strict';
 
-    var VERBS;
+    var BACKUPS,
+        VERBS;
+
+    BACKUPS = ['.bak', '.backup'];
 
     VERBS = ['get', 'put', 'post', 'patch', 'delete', 'trace', 'options',
         'head', 'connect'];
@@ -88,7 +91,11 @@
                 var base;
 
                 base = path.basename(fname);
-                return !base.match(/^(\.|_)/) && !sh.test('-d', fname);
+
+                return !base.match(/^(\.|_)/) &&
+                    !base.match(/~$/) &&            //  tilde files for vi etc.
+                    !base.match(/\.sw(.{1})$/) &&   //  swap files for vi etc.
+                    !sh.test('-d', fname);
             });
 
             //  Adjust list by cross-referencing against any specific load order
@@ -241,7 +248,7 @@
                         logger.error('Route ' + name +
                             ' should export a function instance.', meta);
                     }
-                } else {
+                } else if (BACKUPS.indexOf(ext) === -1) {
                     //  Files that aren't source files are treated as data
                     //  files. We generate a simple route for these based on
                     //  their name. A suffix of _get, _post, etc. defines the

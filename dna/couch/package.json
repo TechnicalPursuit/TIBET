@@ -17,6 +17,7 @@
         "helmet": "*",
         "ip": "*",
         "js-beautify": "*",
+        "jsonwebtoken": "*",
         "keygrip": "*",
         "marked-man": "^0.2.1",
         "mime-types": "^2.1.4",

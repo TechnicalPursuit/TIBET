@@ -30,7 +30,12 @@
             meta,
             parsers,
             passport,
+            jwt,
             strategy,
+            secret,
+            msg,
+            cookie1,
+            cookie2,
             TDS;
 
         app = options.app;
@@ -42,7 +47,34 @@
         Cookies = require('cookies');
         Keygrip = require('keygrip');
         passport = require('passport');
+        jwt = require('jsonwebtoken');
         ip = require('ip');
+
+        secret = process.env.TIBET_CRYPTO_KEY;
+        if (TDS.isEmpty(secret)) {
+            msg = 'No crypto secret. $ export TIBET_CRYPTO_KEY="{secret}"';
+            throw new Error(msg);
+        }
+
+        cookie1 = process.env.TDS_COOKIE_KEY1;
+        if (TDS.isEmpty(cookie1)) {
+            msg = 'No cookie key #1. $ export TDS_COOKIE_KEY1="{secret}"';
+            if (TDS.getEnv() !== 'development') {
+                throw new Error(msg);
+            }
+            logger.warn(msg);
+            cookie1 = 'T1B3TC00K13';
+        }
+
+        cookie2 = process.env.TDS_COOKIE_KEY2;
+        if (TDS.isEmpty(cookie2)) {
+            msg = 'No cookie key #2. $ export TDS_COOKIE_KEY2="{secret}"';
+            if (TDS.getEnv() !== 'development') {
+                throw new Error(msg);
+            }
+            logger.warn(msg);
+            cookie2 = '31K00CT3B1T';
+        }
 
         //  ---
         //  Initialization
@@ -178,36 +210,13 @@
          */
         app.get('/login', parsers.urlencoded, function(req, res, next) {
             var user,
-                c1,
-                c2,
-                msg,
                 cookies,
                 grip;
-
-            c1 = process.env.TDS_COOKIE_KEY1;
-            if (TDS.isEmpty(c1)) {
-                msg = 'No cookie key #1. $ export TDS_COOKIE_KEY1="{{secret}}"';
-                if (TDS.getEnv() !== 'development') {
-                    throw new Error(msg);
-                }
-                logger.warn(msg);
-                c1 = 'T1B3TC00K13';
-            }
-
-            c2 = process.env.TDS_COOKIE_KEY2;
-            if (TDS.isEmpty(c2)) {
-                msg = 'No cookie key #2. $ export TDS_COOKIE_KEY2="{{secret}}"';
-                if (TDS.getEnv() !== 'development') {
-                    throw new Error(msg);
-                }
-                logger.warn(msg);
-                c2 = '31K00CT3B1T';
-            }
 
             //  Read any username cookie from the client and use it to
             //  pre-populate the login field. Keys must match those used
             //  during the post /login process to read correctly.
-            grip = new Keygrip([c1, c2]);
+            grip = new Keygrip([cookie1, cookie2]);
             cookies = new Cookies(
                 req,
                 res,
@@ -234,16 +243,13 @@
 
             passport.authenticate(name, function(err, user, info) {
                 var grip,
-                    c1,
-                    c2,
-                    msg,
                     cookies;
 
                 if (err) {
                     //  Special handling for xhr and/or curl. We just want to
                     //  send back JSON in those cases.
                     if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
-                        res.status(400);
+                        res.status(401);
                         res.json({
                             ok: false,
                             message: 'login failed'
@@ -259,7 +265,7 @@
                     //  Special handling for xhr and/or curl. We just want to
                     //  send back JSON in those cases.
                     if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
-                        res.status(400);
+                        res.status(401);
                         res.json({
                             ok: false,
                             message: 'login failed'
@@ -272,31 +278,11 @@
                     return res.redirect('/login');
                 }
 
-                c1 = process.env.TDS_COOKIE_KEY1;
-                if (TDS.isEmpty(c1)) {
-                    msg = 'No cookie key #1. $ export TDS_COOKIE_KEY1="{{secret}}"';
-                    if (TDS.getEnv() !== 'development') {
-                        throw new Error(msg);
-                    }
-                    logger.warn(msg);
-                    c1 = 'T1B3TC00K13';
-                }
-
-                c2 = process.env.TDS_COOKIE_KEY2;
-                if (TDS.isEmpty(c2)) {
-                    msg = 'No cookie key #2. $ export TDS_COOKIE_KEY2="{{secret}}"';
-                    if (TDS.getEnv() !== 'development') {
-                        throw new Error(msg);
-                    }
-                    logger.warn(msg);
-                    c2 = '31K00CT3B1T';
-                }
-
                 //  TIBET leverages the current username as a way to determine
                 //  which vcard information (and hence which roles, orgs, units)
                 //  should be applied in the client. Set a cookie here the
                 //  client can access when login is successful.
-                grip = new Keygrip([c1, c2]);
+                grip = new Keygrip([cookie1, cookie2]);
                 cookies = new Cookies(
                     req,
                     res,
@@ -313,6 +299,8 @@
                 //  Passport requires that if we're using a custom
                 //  callback function we need to invoke req.login ourselves.
                 req.login(user, function(err2) {
+                    var token,
+                        payload;
 
                     if (err2) {
                         return next(err2);
@@ -341,9 +329,9 @@
                     //  Special handling for xhr and/or curl. We just want to
                     //  send back JSON in those cases.
                     if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
-                        res.json({
-                            ok: true
-                        });
+                        payload = user;
+                        token = jwt.sign(payload, secret);
+                        res.json({ok: true, token: token});
                         return;
                     } else {
                         res.redirect('/');
@@ -376,6 +364,104 @@
         //  ---
         //  Sharing
         //  ---
+
+        /**
+         * Creates a middleware function which will verify that a particular JWT
+         * token matches a particular user profile (org, unit, role).
+         * @param {Object} profile An object containing an optional org, unit,
+         *     and role key (at least one) defining a user profile.
+         */
+        options.hasProfile = function(profile) {
+            var org,
+                unit,
+                role;
+
+            org = profile.org;
+            unit = profile.unit;
+            role = profile.role;
+
+            //  The middleware function to do the testing.
+            return function(req, res, next) {
+                var token;
+
+                token = req.headers['x-access-token'];
+                if (!token) {
+                    res.status(401);
+                    res.send('{ok: false}');
+                    return;
+                }
+
+                jwt.verify(token, secret, function(err, decoded) {
+                    var missing;
+
+                    if (err) {
+                        res.status(401);
+                        res.send('{ok: false}');
+                        return;
+                    }
+
+                    logger.info('token: ' + JSON.stringify(decoded));
+
+                    //  TODO:   verify keys are in the decoded claims list...
+                    if (org && decoded.org !== org) {
+                        res.status(401);
+                        res.send('{ok: false}');
+                        return;
+                    }
+
+                    if (unit && decoded.unit !== unit) {
+                        res.status(401);
+                        res.send('{ok: false}');
+                        return;
+                    }
+
+                    //  Role is an array of roles so we need to confirm they all
+                    //  exist (currently we don't support 'any' or expressions.
+                    if (role) {
+                        if (!decoded.role) {
+                            res.status(401);
+                            res.send('{ok: false}');
+                            return;
+                        }
+
+                        missing = role.some(function(item) {
+                            return decoded.role.indexOf(item) === -1;
+                        });
+
+                        if (missing) {
+                            res.status(401);
+                            res.send('{ok: false}');
+                            return;
+                        }
+                    }
+
+                    next();
+                });
+            };
+        };
+
+        /**
+         *
+         */
+        options.hasToken = function(req, res, next) {
+            var token;
+
+            token = req.headers['x-access-token'];
+            if (!token) {
+                res.status(401);
+                res.send('{ok: false}');
+                return;
+            }
+
+            jwt.verify(token, secret, function(err, decoded) {
+                if (err) {
+                    res.status(401);
+                    res.send('{ok: false}');
+                    return;
+                }
+                next();
+            });
+        };
 
         /**
          *
