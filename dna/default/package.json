@@ -21,7 +21,6 @@
         "marked-man": "^0.2.1",
         "minimist": "*",
         "passport": "*",
-        "passport-jwt": "*",
         "passport-local": "*",
         "request": "*",
         "require-dir": "*",

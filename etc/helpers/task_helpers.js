@@ -106,30 +106,22 @@
         /**
          *
          */
-        Job.submit = function(flow, owner, options, subscriber) {
+        Job.submit = function(flow, owner, opts, subscriber) {
             var job,
                 params,
                 db;
 
             if (TDS.isEmpty(flow)) {
-                logger.error(err);
-                res.status(400);    // Bad Request
-                res.send({
-                    ok: false,
-                    message: 'Bad request. Missing flow specification.'
-                });
+                return TDS.Promise.reject(
+                    new Error('Bad request. Missing flow specification.'));
             }
 
             if (TDS.isEmpty(owner)) {
-                logger.error(err);
-                res.status(400);    // Bad Request
-                res.send({
-                    ok: false,
-                    message: 'Bad request. Missing owner specification.'
-                });
+                return TDS.Promise.reject(
+                    new Error('Bad request. Missing owner specification.'));
             }
 
-            params = options || {};
+            params = opts || {};
 
             job = {
                 type: 'job',
@@ -140,8 +132,6 @@
 
             TDS.ifDebug() ?
                 logger.debug('submitting job data: ' + TDS.beautify(job)) : 0;
-
-            console.log('submitting job data: ' + TDS.beautify(job));
 
             db = TDS.getCouchDatabase({
                 db_name: TDS.cfg('tds.tasks.db_name'),

@@ -30,7 +30,6 @@
             meta,
             parsers,
             passport,
-            passportJWT,
             jwt,
             strategy,
             secret,
@@ -48,7 +47,6 @@
         Cookies = require('cookies');
         Keygrip = require('keygrip');
         passport = require('passport');
-        passportJWT = require('passport-jwt');
         jwt = require('jsonwebtoken');
         ip = require('ip');
 

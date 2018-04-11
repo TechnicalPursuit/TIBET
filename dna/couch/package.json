@@ -24,7 +24,6 @@
         "minimist": "*",
         "nano": "TechnicalPursuit/couchdb-nano",
         "passport": "*",
-        "passport-jwt": "*",
         "passport-local": "*",
         "request": "*",
         "require-dir": "*",
