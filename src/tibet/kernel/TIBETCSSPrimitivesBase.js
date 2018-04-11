@@ -2156,6 +2156,38 @@ function(aStyleRule, allDocumentStyleSheets) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleRuleGetDeclarationsSource',
+function(aStyleRule) {
+
+    /**
+     * @method styleRuleGetDeclarationsSource
+     * @summary Retrieves the declarations source of the supplied rule.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the rule
+     *     declarations source for.
+     * @returns {String} The property declarations of the supplied rule.
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var declsSource;
+
+    if (!TP.isStyleRule(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    declsSource = aStyleRule.cssText;
+
+    //  The '.cssText' property will start with the selector. We need to slice
+    //  it off along with the leading and trailing braces. We then trim
+    //  whitespace.
+    declsSource = TP.trim(declsSource.slice(
+                            declsSource.indexOf('{') + 1,
+                            declsSource.lastIndexOf('}')));
+
+    return declsSource;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleRuleGetSourceInfo',
 function(aStyleRule, sourceASTs) {
 
@@ -2578,6 +2610,153 @@ function(aStyleRule, aPropertyName, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$styleSheetAddMissingNamespaceRules',
+function(aStylesheet, selectorText) {
+
+    /**
+     * @method $styleSheetAddMissingNamespaceRules
+     * @summary Adds any missing @namespace rules to the supplied sheet based on
+     *     any namespace prefixes found in the supplied selector text.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to add missing
+     *     namespace rules to.
+     * @param {String} selectorText The text of the selector to scan for CSS
+     *     namespace prefixes.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidString
+     */
+
+    var rules,
+        nsRules,
+        i,
+
+        undefinedPrefixes,
+        nsPrefixUsages,
+        nsPrefix,
+
+        foundMatch,
+
+        j,
+        uri,
+
+        removedRules,
+        endIndex,
+
+        len;
+
+    if (!TP.isStyleSheet(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  NB: We allow empty rule text
+    if (TP.isEmpty(selectorText)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    rules = aStylesheet.cssRules;
+
+    //  Gather all of the existing @namespace rules. We'll test them to make
+    //  sure that any namespace prefixes used in the supplied selector text are
+    //  defined.
+    nsRules = TP.ac();
+    for (i = 0; i < rules.length; i++) {
+        if (rules[i].type === CSSRule.NAMESPACE_RULE) {
+            nsRules.push(rules[i]);
+        }
+    }
+
+    //  Scan the selector for prefixes and check those against the gathered
+    //  @namespace rules. If we find undefined ones, we add them to our list.
+
+    undefinedPrefixes = TP.ac();
+
+    nsPrefixUsages = selectorText.match(/\w+\|\w*/g);
+    for (i = 0; i < nsPrefixUsages.getSize(); i++) {
+
+        //  Grab the prefix and slice off from the first character to the last
+        //  occurrence of '|'
+        nsPrefix = nsPrefixUsages.at(i);
+        nsPrefix = nsPrefix.slice(0, nsPrefix.lastIndexOf('|'));
+
+        //  Iterate over the list of gathered @namespace rules and see if we
+        //  have a match.
+        foundMatch = false;
+        for (j = 0; j < nsRules.getSize(); j++) {
+            if (nsRules.at(j).prefix === nsPrefix) {
+                foundMatch = true;
+                break;
+            }
+        }
+
+        //  No match found? Add it to the list.
+        if (!foundMatch) {
+            undefinedPrefixes.push(nsPrefix);
+        }
+    }
+
+    if (TP.notEmpty(undefinedPrefixes)) {
+
+        //  Because of the way the spec works, we cannot have any non
+        //  @import or @namespace rules in the sheet when we insert new
+        //  @namespace rules. So we iterate and remove all of the
+        //  non-@import/non-@namespace rules in the sheet and add them back
+        //  in after we insert our new @namespace rules. Sigh.
+
+        removedRules = TP.ac();
+
+        //  NB: It's easier to do this from the end of the list, since
+        //  @import and @namespace rules (per the spec) will be clustered at
+        //  the top. In fact, once we reach those rules, we will stop.
+
+        //  Also note that 'rules' (i.e. cssRules) is a *live* list and
+        //  we're leveraging that here.
+        for (i = 0; i < rules.length; i++) {
+
+            endIndex = rules.length - 1;
+
+            if (rules[endIndex].type === CSSRule.NAMESPACE_RULE ||
+                rules[endIndex].type === CSSRule.IMPORT_RULE) {
+                break;
+            }
+
+            //  Keep the removed rule in our list of removed rules and remove
+            //  the rule.
+            removedRules.unshift(rules[endIndex]);
+            aStylesheet.removeRule(endIndex);
+        }
+
+        //  Iterate over the list of undefined prefixes.
+        len = undefinedPrefixes.getSize();
+        for (i = 0; i < len; i++) {
+
+            //  Grab the URI that goes with the undefined prefix.
+            uri = TP.w3.Xmlns.getPrefixURI(undefinedPrefixes.at(i));
+            if (TP.isEmpty(uri)) {
+                return TP.raise(this, 'TP.sig.InvalidValud');
+            }
+
+            //  Insert a new @namespace rule for the prefix and its
+            //  corresponding namespace URI.
+            aStylesheet.insertRule(
+                '@namespace ' + nsPrefix + ' url("' + uri + '");',
+                rules.length);
+        }
+
+        //  Iterate over the rules that we removed earlier and append them back
+        //  into stylesheet. This should put them back in the order in which
+        //  they were originally found.
+        len = removedRules.getSize();
+        for (i = 0; i < len; i++) {
+            aStylesheet.insertRule(
+                removedRules.at(i).cssText,
+                rules.length);
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetGetImportHrefs',
 function(aStylesheet, expandImports) {
 
@@ -2680,8 +2859,26 @@ function(aStylesheet) {
      *     some stylesheets, like those produced from compiled or processed CSS,
      *     will be associated with an XHTML 'style' element that doesn't have an
      *     'href' pointing back to the source of the sheet. In this case, we
-     *     have stamped a TIBETan attribute on it that points back to the
-     *     original source.
+     *     have stamped one of several TIBETan attributes on it that point back
+     *     to the original source.
+     * @description Determining the location of the stylesheet uses the
+     *     following logic:
+     *         1. If the rule came from a sheet that is associated to a regular
+     *         CSS <link> element, then we obtain its href value as the source
+     *         location as the source location of the rule.
+     *         2. If the rule came from a sheet that is associated to a regular
+     *         CSS <style> element with no 'tibet:originalHref' or 'tibet:for'
+     *         attribute, then it is not associated with any source location,
+     *         which will be null.
+     *         3. If the rule came from a sheet that is associated to a
+     *         'generated' CSS <style> element, then we can try to trace the
+     *         source of the rule.
+     *             a. If the <style> element has a 'tibet:originalHref'
+     *             attribute, then we obtain that as the source location of the
+     *             rule.
+     *             b. If the <style> element has a 'tibet:for' attribute, then
+     *             there will be a <tibet:style> element that has an 'href'
+     *             attribute. We obtain that as the source location of the rule.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
      *     location of.
      * @exception TP.sig.InvalidParameter
@@ -2689,23 +2886,58 @@ function(aStylesheet) {
      */
 
     var loc,
-        ownerElem;
+        ownerElem,
+
+        forRef,
+        realOwnerElem;
 
     if (!TP.isStyleSheet(aStylesheet)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    //  If there is an 'href', use it.
+    //  If it has an 'href' property, use it.
     loc = aStylesheet.href;
     if (TP.notEmpty(loc)) {
         return loc;
     }
 
-    //  Otherwise, if we can get to the stylesheet's owner node, return whatever
-    //  is stored in 'tibet:originalHref'.
+    //  Otherwise, if we can get to the stylesheet's owner node, then we run a
+    //  set of alternate checks. return whatever
     ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
     if (TP.isElement(ownerElem)) {
-        return TP.elementGetAttribute(ownerElem, 'tibet:originalHref', true);
+
+        //  If the stylesheet's owner element has a 'tibet:originalHref'
+        //  attribute that's not empty, return the value of that.
+        loc = TP.elementGetAttribute(ownerElem, 'tibet:originalHref', true);
+        if (TP.notEmpty(loc)) {
+            //  Note here how we expand it to match the semantics of the value
+            //  that we'll get from using the '.href' property at the start of
+            //  this method.
+            return TP.uriExpandPath(loc);
+        }
+
+        //  If the stylesheet's owner element has a 'tibet:for' attribute, then
+        //  it's representing style content that has been processed or compiled
+        //  in some way. This attribute will link this style element back to the
+        //  originating element.
+        forRef = TP.elementGetAttribute(ownerElem, 'tibet:for', true);
+        if (TP.notEmpty(forRef)) {
+            realOwnerElem = TP.byId(forRef,
+                                    TP.nodeGetDocument(ownerElem),
+                                    false);
+
+            //  If we were able to compute a real owner element and it has an
+            //  'href' attribute that's not empty, return the value of that..
+            if (TP.isElement(realOwnerElem)) {
+                loc = TP.elementGetAttribute(realOwnerElem, 'href', true);
+                if (TP.notEmpty(loc)) {
+                    //  Note here how we expand it to match the semantics of the
+                    //  value that we'll get from using the '.href' property at
+                    //  the start of this method.
+                    return TP.uriExpandPath(loc);
+                }
+            }
+        }
     }
 
     return null;
@@ -2912,17 +3144,23 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
         return TP.raise(this, 'TP.sig.InvalidString');
     }
 
+    //  If the selector text has namespace-qualified selector content, make sure
+    //  that the namespace is defined.
+    if (TP.regex.HAS_PIPE.test(selectorText)) {
+        TP.$styleSheetAddMissingNamespaceRules(aStylesheet, selectorText);
+    }
+
     theRuleText = TP.ifInvalid(ruleText, '');
 
     newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
 
     newRuleIndex = aStylesheet.insertRule(
-                        TP.join(selectorText, '{', theRuleText, '}'),
+                        TP.join(selectorText, ' {', theRuleText, '}'),
                         newRuleIndex);
 
     if (TP.notFalse(shouldSignal)) {
         //  Grab the rule that we're inserting.
-        rule = aStylesheet.cssRules[ruleIndex];
+        rule = aStylesheet.cssRules[newRuleIndex];
 
         ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
         if (TP.isElement(ownerElem)) {

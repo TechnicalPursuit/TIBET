@@ -804,7 +804,6 @@ function() {
 
         textareaTPElem,
 
-        vertScroller,
         vertScrollerInner;
 
     /* eslint-disable new-cap */
@@ -839,13 +838,6 @@ function() {
     //  tab).
     editorObj.getSession().setUseSoftTabs(true);
     editorObj.getSession().setNavigateWithinSoftTabs(true);
-
-    //  Dig around in the internals of ACE to find the element that acts as the
-    //  vertical scrollbar - ugh.
-    vertScroller = TP.byCSSPath('.ace_scrollbar-v',
-                                this.getNativeNode(),
-                                true,
-                                false);
 
     //  Grab the 'inner part' of the vertical scrollbar. This is the element
     //  that we'll monitor.

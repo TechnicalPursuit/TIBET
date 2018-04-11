@@ -82,7 +82,7 @@
                 window.location.replace(pathname);
             } else {
                 //  If we failed to log in remain on the login page.
-                window.location.replace(pathname);
+                window.location.replace(pathname + 'login');
             }
         };
 
