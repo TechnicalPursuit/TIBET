@@ -464,7 +464,7 @@ function() {
 
         testRep = TP.uc('~lib_test/src/tibet/formatting/google_results_template.xml#totalTemplate').transform(googleDogData).get('result');
 
-        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: <span([\s\S]*)tibet:template_expr="responseData.cursor.resultCount"([\s\S]*)>53,700,000<\/span><\/span>Results:<br\/><span([\s\S]*)tibet:template_expr="responseData.results"([\s\S]*)>\[object Object\]\[object Object\]\[object Object\]\[object Object\]<\/span><\/span>/;
+        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: <span([\s\S]*)tibet:templateexpr="responseData.cursor.resultCount"([\s\S]*)>53,700,000<\/span><\/span>Results:<br\/><span([\s\S]*)tibet:templateexpr="responseData.results"([\s\S]*)>\[object Object\]\[object Object\]\[object Object\]\[object Object\]<\/span><\/span>/;
 
         test.assert.matches(
             testRep,
@@ -479,7 +479,7 @@ function() {
 
         testRep = '{{value .% ~lib_test/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
 
-        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: <span([\s\S]*)tibet:template_expr="responseData.cursor.resultCount"([\s\S]*)>53,700,000<\/span><\/span>Results:<br\/><span([\s\S]*)tibet:template_expr="responseData.results"([\s\S]*)>\[object Object\]\[object Object\]\[object Object\]\[object Object\]<\/span><\/span>/;
+        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: <span([\s\S]*)tibet:templateexpr="responseData.cursor.resultCount"([\s\S]*)>53,700,000<\/span><\/span>Results:<br\/><span([\s\S]*)tibet:templateexpr="responseData.results"([\s\S]*)>\[object Object\]\[object Object\]\[object Object\]\[object Object\]<\/span><\/span>/;
         test.assert.matches(
             testRep,
             correctRep,
@@ -491,7 +491,7 @@ function() {
         //  ---
 
         testRep = TP.uc('~lib_test/src/tibet/formatting/google_results_template.xml#rowTemplate').transform(googleDogData.get('responseData.results.0')).get('result');
-        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="rowTemplate"><tr class="googleResultRow"><td><span([\s\S]*)tibet:template_expr="unescapedUrl"([\s\S]*)>http:\/\/en.wikipedia.org\/wiki\/Dog<\/span><\/td><td><span([\s\S]*)tibet:template_expr="title"([\s\S]*)><b>Dog<\/b> - Wikipedia, the free encyclopedia<\/span><\/td><td><span([\s\S]*)tibet:template_expr="content"([\s\S]*)>The domestic <b>dog<\/b> \(Canis lupus familiaris\) is a subspecies of the gray wolf \(Canis lupus\), a member of the Canidae family of the mammalian order Carnivora\.<\/span><\/td><\/tr><\/span>/;
+        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="rowTemplate"><tr class="googleResultRow"><td><span([\s\S]*)tibet:templateexpr="unescapedUrl"([\s\S]*)>http:\/\/en.wikipedia.org\/wiki\/Dog<\/span><\/td><td><span([\s\S]*)tibet:templateexpr="title"([\s\S]*)><b>Dog<\/b> - Wikipedia, the free encyclopedia<\/span><\/td><td><span([\s\S]*)tibet:templateexpr="content"([\s\S]*)>The domestic <b>dog<\/b> \(Canis lupus familiaris\) is a subspecies of the gray wolf \(Canis lupus\), a member of the Canidae family of the mammalian order Carnivora\.<\/span><\/td><\/tr><\/span>/;
 
         test.assert.matches(
             testRep,
@@ -506,7 +506,7 @@ function() {
 
         testRep = '{{value.responseData.results.0 .% ~lib_test/src/tibet/formatting/google_results_template.xml#rowTemplate}}'.transform(googleDogData);
 
-        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="rowTemplate"><tr class="googleResultRow"><td><span([\s\S]*)tibet:template_expr="unescapedUrl"([\s\S]*)>http:\/\/en.wikipedia.org\/wiki\/Dog<\/span><\/td><td><span([\s\S]*)tibet:template_expr="title"([\s\S]*)><b>Dog<\/b> - Wikipedia, the free encyclopedia<\/span><\/td><td><span([\s\S]*)tibet:template_expr="content"([\s\S]*)>The domestic <b>dog<\/b> \(Canis lupus familiaris\) is a subspecies of the gray wolf \(Canis lupus\), a member of the Canidae family of the mammalian order Carnivora\.<\/span><\/td><\/tr><\/span>/;
+        correctRep = /<span xmlns="http:\/\/www.w3.org\/1999\/xhtml" id="rowTemplate"><tr class="googleResultRow"><td><span([\s\S]*)tibet:templateexpr="unescapedUrl"([\s\S]*)>http:\/\/en.wikipedia.org\/wiki\/Dog<\/span><\/td><td><span([\s\S]*)tibet:templateexpr="title"([\s\S]*)><b>Dog<\/b> - Wikipedia, the free encyclopedia<\/span><\/td><td><span([\s\S]*)tibet:templateexpr="content"([\s\S]*)>The domestic <b>dog<\/b> \(Canis lupus familiaris\) is a subspecies of the gray wolf \(Canis lupus\), a member of the Canidae family of the mammalian order Carnivora\.<\/span><\/td><\/tr><\/span>/;
 
         test.assert.matches(
             testRep,
@@ -665,7 +665,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('bar', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><span tibet:template_expr="foo.bar"><li>googoo</li><li>moomoo</li></span></ul>';
+        correctRep = '<ul><span tibet:templateexpr="foo.bar"><li>googoo</li><li>moomoo</li></span></ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -681,7 +681,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('bar', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><span tibet:template_expr="foo.bar"><li>googoo</li><li>moomoo</li></span></ul> and then there\'s: <span tibet:template_expr="foo.bar.moo">moomoo</span>';
+        correctRep = '<ul><span tibet:templateexpr="foo.bar"><li>googoo</li><li>moomoo</li></span></ul> and then there\'s: <span tibet:templateexpr="foo.bar.moo">moomoo</span>';
 
         test.assert.isEqualTo(
             testRep,
@@ -695,7 +695,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('baz', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><span tibet:template_expr="foo.bar"></span></ul> and then there\'s: <span tibet:template_expr="foo.bar.moo"></span>';
+        correctRep = '<ul><span tibet:templateexpr="foo.bar"></span></ul> and then there\'s: <span tibet:templateexpr="foo.bar.moo"></span>';
 
         test.assert.isEqualTo(
             testRep,
@@ -712,7 +712,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('bar', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><span tibet:template_expr="foo.bar"><li>This is goo: googoo</li></span></ul>';
+        correctRep = '<ul><span tibet:templateexpr="foo.bar"><li>This is goo: googoo</li></span></ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -726,7 +726,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('baz', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><span tibet:template_expr="foo.bar"><li>This is moo: moomoo</li></span></ul>';
+        correctRep = '<ul><span tibet:templateexpr="foo.bar"><li>This is moo: moomoo</li></span></ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -756,7 +756,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.ac(TP.hc('goo', 'googoo1', 'moo', 'moomoo1'), TP.hc('goo', 'googoo2', 'moo', 'moomoo2'))));
 
-        correctRep = '<ul><span tibet:template_expr="foo"><li><span>googoo1</span><span>moomoo1</span></li><li><span>googoo2</span><span>moomoo2</span></li></span></ul>';
+        correctRep = '<ul><span tibet:templateexpr="foo"><li><span>googoo1</span><span>moomoo1</span></li><li><span>googoo2</span><span>moomoo2</span></li></span></ul>';
 
         test.assert.isEqualTo(
             testRep,

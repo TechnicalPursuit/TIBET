@@ -62,7 +62,7 @@ function(aRequest) {
     //  see if we've been able to build a cached function for this script
     //  block on a prior invocation. if so we'll call that directly
     if (TP.notEmpty(funcID =
-                    TP.elementGetAttribute(node, 'tibet:function', true))) {
+                    TP.elementGetAttribute(node, 'tibet:handlerid', true))) {
         //  caching is done on the node's native window (if it has one) or
         //  on the current TIBET code window
         win = TP.nodeGetWindow(node) || window;
@@ -217,7 +217,7 @@ function(aRequest) {
 
         //  Cache the 'function ID' back on the element so that it can be used
         //  above for lookup and we won't eval the code again.
-        TP.elementSetAttribute(node, 'tibet:function', funcID, true);
+        TP.elementSetAttribute(node, 'tibet:handlerid', funcID, true);
 
         try {
             result = win[funcID](aRequest, aRequest.at('cmdTrigger'));

@@ -148,10 +148,10 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
     //  append child).
     insertionPoint = null;
 
-    //  Start by looking for style elements that have a 'tibet:originalHref' on
+    //  Start by looking for style elements that have a 'tibet:originalhref' on
     //  them - these will have been placed here by the system as part of
     //  processing, possibly inline processing.
-    existingStyleElems = TP.byCSSPath('style[tibet|originalHref]',
+    existingStyleElems = TP.byCSSPath('style[tibet|originalhref]',
                                         docHead,
                                         false,
                                         false);
@@ -163,7 +163,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
     } else {
 
         //  Otherwise, if there were existing style elements (without a
-        //  'tibet:originalHref they were most likely hand authored by the page
+        //  'tibet:originalhref they were most likely hand authored by the page
         //  author), we choose the first one as our insertion point.
 
         //  This is done because stylesheets added using this mechanism should
@@ -202,7 +202,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
     if (inlined) {
 
         //  First, see if we've processed this style URI before.
-        inlinedStyleElem = TP.byCSSPath('style[tibet|originalHref=' +
+        inlinedStyleElem = TP.byCSSPath('style[tibet|originalhref=' +
                                             '"' +
                                             styleURI.getOriginalSource() +
                                             '"]',
@@ -296,7 +296,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
             //  originally typed and might be a virtual URI. We'd like to track
             //  it here.
             TP.elementSetAttribute(styleElem,
-                                    'tibet:originalHref',
+                                    'tibet:originalhref',
                                     styleURI.getOriginalSource(),
                                     true);
         }
@@ -707,7 +707,7 @@ function(anElement, aSignal) {
      *     can handle a particular key signal. If so, it is considered to be an
      *     opaque capturer.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaque_capturing' attribute.
+     *     'tibet:opaquecapturing' attribute.
      * @param {String} aSignalName The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     capture phase for the signal.
@@ -1219,7 +1219,7 @@ function(aTargetElem, anEvent) {
 
             //  If the target element is configured to want manual tab mgmt,
             //  then allow for that by just returning here.
-            if (TP.elementHasAttribute(aTargetElem, 'tibet:manualTabs', true)) {
+            if (TP.elementHasAttribute(aTargetElem, 'tibet:manualtabs', true)) {
                 return this;
             }
 

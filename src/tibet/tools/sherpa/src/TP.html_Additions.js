@@ -221,7 +221,7 @@ function() {
      * @returns {String} The label to use in the 'domhud' panel.
      */
 
-    if (this.hasAttribute('tibet:desugaredTextBinding')) {
+    if (this.hasAttribute('tibet:textbinding')) {
         return 'ACP Expression';
     }
 
@@ -247,7 +247,7 @@ function() {
     var bindInfo,
         str;
 
-    if (this.hasAttribute('tibet:desugaredTextBinding')) {
+    if (this.hasAttribute('tibet:textbinding')) {
 
         //  NB: We know for a fact, because we generated this binding from a
         //  sugared text binding expression, that we have a 'bind:in' attribute
@@ -285,7 +285,7 @@ function(aContent) {
 
         elem;
 
-    if (this.hasAttribute('tibet:desugaredTextBinding')) {
+    if (this.hasAttribute('tibet:textbinding')) {
 
         //  Extract out the binding statement.
         TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;

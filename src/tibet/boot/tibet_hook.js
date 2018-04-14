@@ -42,7 +42,7 @@ if (root.frameElement) {
 if (root.document && root.document.getElementsByTagName) {
     $$root = root.document.getElementsByTagName('html')[0];
     if ($$root) {
-        $$location = $$root.getAttribute('tibet:globalDocID');
+        $$location = $$root.getAttribute('tibet:globaldocid');
     }
 }
 $$location = $$location || root.location.toString();

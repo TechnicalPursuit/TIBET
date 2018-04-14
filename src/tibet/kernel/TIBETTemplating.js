@@ -95,7 +95,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
      *     out to the result if no source object can be computed for it.
      * @param {Boolean} [annotateMarkup=true] Whether or not to annotate markup
      *     output with embedded XHTML 'span' elements that wrap ACP expressions
-     *     and contain the ACP expression in a 'tibet:template_expr' attribute
+     *     and contain the ACP expression in a 'tibet:templateexpr' attribute
      *     on that element.
      * @returns {Function} The compiled template Function.
      */
@@ -209,7 +209,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
                         newTokens.push(
                             TP.ac('text',
                                     '<span' +
-                                    ' tibet:template_expr="' + tokenText + '"' +
+                                    ' tibet:templateexpr="' + tokenText + '"' +
                                     '>'),
                                     tokens.at(i),
                                     TP.ac('text', '</span>'));

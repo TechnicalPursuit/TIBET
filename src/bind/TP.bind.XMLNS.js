@@ -295,7 +295,7 @@ function(anElement) {
                                         true);
 
                 TP.elementSetAttribute(newSpan,
-                                        'tibet:desugaredTextBinding',
+                                        'tibet:textbinding',
                                         'true',
                                         true);
 

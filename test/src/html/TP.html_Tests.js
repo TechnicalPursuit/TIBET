@@ -886,7 +886,7 @@ function() {
                     strip(/ xml:base=".+?"/g).
                     strip(/ xmlns:xml=".+?"/g).
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:globalDocID=".+?"/g).
+                    strip(/ tibet:globaldocid=".+?"/g).
                     strip(/ tibet:nocompile="true"/g);
 
         test.assert.isEqualTo(
@@ -1032,7 +1032,7 @@ function() {
                     strip(/ xml:base=".+?"/g).
                     strip(/ xmlns:xml=".+?"/g).
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:globalDocID=".+?"/g).
+                    strip(/ tibet:globaldocid=".+?"/g).
                     strip(/ tibet:nocompile="true"/g);
 
         test.assert.isEqualTo(

@@ -1625,7 +1625,7 @@ TP.BASE_AWARE_PREFIX = 'BASE_AWARE_PREFIX';
 TP.XML_EXTENSIONS = ['xml', 'xhtml', 'tsh', 'xsl', 'xsd'];
 
 //  XML attributes
-TP.GLOBAL_DOCID_ATTR = 'tibet:globalDocID';
+TP.GLOBAL_DOCID_ATTR = 'tibet:globaldocid';
 
 //  XML Headers
 TP.XML_10_HEADER = '<?xml version="1.0"?>';

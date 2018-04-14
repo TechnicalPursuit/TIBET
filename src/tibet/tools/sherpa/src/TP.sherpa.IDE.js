@@ -297,7 +297,7 @@ function(startTPElement) {
             //  Note that we make sure to go after only HTML style elements
             //  here.
             styleElem = TP.byCSSPath(
-                        'html|style[tibet|originalHref="' + styleLoc + '"]',
+                        'html|style[tibet|originalhref="' + styleLoc + '"]',
                         doc,
                         true,
                         false);
@@ -2167,7 +2167,7 @@ function() {
     //  Set up resizing worker functions and value gathering.
 
     framingStyleElement = TP.byCSSPath(
-                            'style[tibet|originalHref$="sherpa_framing.css"]',
+                            'style[tibet|originalhref$="sherpa_framing.css"]',
                             win,
                             true,
                             false);
@@ -2353,7 +2353,7 @@ function() {
                 aMutationRecord.attributeName === 'in' &&
                 aMutationRecord.attributeNamespace === TP.w3.Xmlns.BIND &&
                 TP.elementHasAttribute(aMutationRecord.target,
-                                        'tibet:desugaredTextBinding',
+                                        'tibet:textbinding',
                                         true)) {
                 return false;
             }
@@ -2370,8 +2370,8 @@ function() {
     //      - TIBET attributes:
     //          'tibet:focuscontext'
     //          'tibet:for'
-    //          'tibet:globalDocID'
-    //          'tibet:originalHref'
+    //          'tibet:globaldocid'
+    //          'tibet:originalhref'
     //          'tibet:recasting'
     //          'tibet:type'
     //      - generated 'id' attributes
@@ -2437,8 +2437,8 @@ function() {
 
                     case 'tibet:focuscontext':
                     case 'tibet:for':
-                    case 'tibet:globalDocID':
-                    case 'tibet:originalHref':
+                    case 'tibet:globaldocid':
+                    case 'tibet:originalhref':
                     case 'tibet:recasting':
                     case 'tibet:type':
                         return false;
@@ -2461,7 +2461,7 @@ function() {
                         //  them because the prefix on a 'style' element will
                         //  likely be null.
                         if (TP.elementHasAttribute(
-                            elem, 'tibet:originalHref', true)) {
+                            elem, 'tibet:originalhref', true)) {
                             return false;
                         }
 
@@ -3250,7 +3250,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         sourceNode,
 
-        wasADesugaredTextBinding,
+        wasTextBinding,
 
         processingNodes,
         mutatedNode,
@@ -3386,12 +3386,12 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         //  If the mutated *element* (which could be the parent Element of the
         //  mutated node, if the mutated node is a Text node) has a
-        //  'tibet:desugaredTextBinding' attribute on it, that means that it was
+        //  'tibet:textbinding' attribute on it, that means that it was
         //  created by the mechanism that looks for ACP expressions in markup
         //  and creates a 'span' to wrap them.
-        wasADesugaredTextBinding =
+        wasTextBinding =
             TP.elementHasAttribute(
-                mutatedElem, 'tibet:desugaredTextBinding');
+                mutatedElem, 'tibet:textbinding');
 
         /* eslint-disable no-extra-parens */
         if (TP.nodeIsDetached(mutatedNode) ||
@@ -3403,7 +3403,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  binding, then we normalize the mutatedElem (which will be the
             //  parent Element node) and grab it's address to use to find the
             //  source DOM's corresponding Text node.
-            if (wasADesugaredTextBinding) {
+            if (wasTextBinding) {
                 TP.nodeNormalize(mutatedElem);
 
                 originatingAddress = TP.nodeGetDocumentPosition(
@@ -3506,7 +3506,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  span.
                 //  The set of addresses will now address the element that was
                 //  the element that the expression was originally placed into.
-                if (wasADesugaredTextBinding) {
+                if (wasTextBinding) {
                     addresses.pop();
                     addresses.pop();
                 }
@@ -3603,15 +3603,15 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     mutatedElem = mutationAncestor;
                 }
 
-                wasADesugaredTextBinding =
+                wasTextBinding =
                     TP.elementHasAttribute(
-                        mutatedElem, 'tibet:desugaredTextBinding');
+                        mutatedElem, 'tibet:textbinding');
 
                 //  If this was a Text node representing a desugared text
                 //  binding then we have to update the text expression by using
                 //  the first data expression found in the updating ancestor's
                 //  (to the Text node) binding information.
-                if (wasADesugaredTextBinding) {
+                if (wasTextBinding) {
 
                     updatingAnsTPElem = TP.wrap(mutationAncestor);
                     bindInfo = updatingAnsTPElem.getBindingInfoFrom(
@@ -3664,7 +3664,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 TP.elementRemoveAttribute(currentNode, attributeName, true);
                 shouldMarkDirty = true;
             } else {
-                if (wasADesugaredTextBinding) {
+                if (wasTextBinding) {
                     //  NB: currentNode is the ancestor Element that is holding
                     //  the text node that represents the sugared binding
                     //  expression.

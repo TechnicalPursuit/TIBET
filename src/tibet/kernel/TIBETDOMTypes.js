@@ -11031,13 +11031,13 @@ function(anElement, aSignal) {
      *     they will handle the signal themselves and not allow ancestors above
      *     them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:opaque_bubbling' attribute, which should contain a
+     *     'tibet:opaquebubbling' attribute, which should contain a
      *     space-separated set of TIBET signal names that will be captured by
      *     this element during the bubble phase of signaling. If that attribute
      *     is not present, it will check the 'opaqueBubblingSignalNames' type
      *     attribute for a list of signal names.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaque_bubbling' attribute.
+     *     'tibet:opaquebubbling' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     bubble phase for the signal.
@@ -11056,12 +11056,12 @@ function(anElement, aSignal) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:opaque_bubbling'
+    //  Check to see if the supplied element has a 'tibet:opaquebubbling'
     //  attribute. If so, split on space (' ') and use those values as the list
     //  of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:opaque_bubbling', true)) {
+    if (TP.elementHasAttribute(anElement, 'tibet:opaquebubbling', true)) {
         attrVal = TP.elementGetAttribute(
-                        anElement, 'tibet:opaque_bubbling', true);
+                        anElement, 'tibet:opaquebubbling', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.
@@ -11099,13 +11099,13 @@ function(anElement, aSignal) {
      *     that they will handle the signal themselves and not allow targeted
      *     descendants underneath them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:opaque_capturing' attribute, which should contain a
+     *     'tibet:opaquecapturing' attribute, which should contain a
      *     space-separated set of TIBET signal names that will be captured by
      *     this element during the capture phase of signaling. If that attribute
      *     is not present, it will check the 'opaqueCapturingSignalNames' type
      *     attribute for a list of signal names.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaque_capturing' attribute.
+     *     'tibet:opaquecapturing' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     capture phase for the signal.
@@ -11124,12 +11124,12 @@ function(anElement, aSignal) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:opaque_capturing'
+    //  Check to see if the supplied element has a 'tibet:opaquecapturing'
     //  attribute. If so, split on space (' ') and use those values as the list
     //  of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:opaque_capturing', true)) {
+    if (TP.elementHasAttribute(anElement, 'tibet:opaquecapturing', true)) {
         attrVal = TP.elementGetAttribute(
-                        anElement, 'tibet:opaque_capturing', true);
+                        anElement, 'tibet:opaquecapturing', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.
@@ -14382,14 +14382,14 @@ function(aFlag) {
 
     if (TP.isBoolean(aFlag)) {
         if (TP.notTrue(aFlag)) {
-            TP.elementRemoveAttribute(natElem, 'tibet:shouldFlagChanges');
+            TP.elementRemoveAttribute(natElem, 'tibet:shouldflagchanges');
         } else {
             TP.elementSetAttribute(
-                    natElem, 'tibet:shouldFlagChanges', true);
+                    natElem, 'tibet:shouldflagchanges', true);
         }
     }
 
-    return TP.elementGetAttribute(natElem, 'tibet:shouldFlagChanges') ===
+    return TP.elementGetAttribute(natElem, 'tibet:shouldflagchanges') ===
                     'true';
 });
 

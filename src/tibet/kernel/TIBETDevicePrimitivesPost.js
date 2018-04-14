@@ -279,8 +279,8 @@ function(anEvent) {
      *     - Whether the native target is a Document
      *     - Whether the native target or any of its ancestors are disabled.
      *     - Whether the native target or any of its ancestors have a
-     *     'tibet:opaque_capturing' attribute that allows them to capture a
-     *     particular signal in the capture phase or 'tibet:opaque_bubbling'
+     *     'tibet:opaquecapturing' attribute that allows them to capture a
+     *     particular signal in the capture phase or 'tibet:opaquebubbling'
      *     attribute that allows them to capture a particular signal in the
      *     bubbling phase and therefore designates them as the 'proper target'.
      * @param {Event} anEvent The event to resolve the target of.
@@ -406,8 +406,8 @@ function(anEvent) {
     //  'original' (unless it was a Node.TEXT_NODE) event target, since we
     //  couldn't find any elements that had the attribute we were searching for.
     //  This allows a nice defaulting behavior when we're in a page (or DOM
-    //  section) that's not using the 'tibet:opaque_capturing' or
-    //  'tibet:opaque_bubbling' attribute and doesn't care.
+    //  section) that's not using the 'tibet:opaquecapturing' or
+    //  'tibet:opaquebubbling' attribute and doesn't care.
     return computedTarget || target;
 });
 

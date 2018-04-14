@@ -22,7 +22,7 @@
 TP.html.Attrs.defineSubtype('style');
 
 TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
-TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalHref'));
+TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalhref'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -302,11 +302,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.html.style.Inst.defineMethod('reloadFromAttrTibetOriginalHref',
+TP.html.style.Inst.defineMethod('reloadFromAttrTibetOriginalhref',
 function(anHref) {
 
     /**
-     * @method reloadFromAttrTibetOriginalHref
+     * @method reloadFromAttrTibetOriginalhref
      * @summary Sets the href that the receiver will use to retrieve its
      *     content.
      * @description Note that the only reason that the receiver would have this
@@ -331,7 +331,7 @@ function(anHref) {
 
         //  Grab any existing inlined style element, if available.
         inlinedStyleElem = TP.byCSSPath(
-                                'html|style[tibet|originalHref=' +
+                                'html|style[tibet|originalhref=' +
                                 '"' +
                                 styleURI.getOriginalSource() +
                                 '"]',

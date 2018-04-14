@@ -598,7 +598,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
     //  First, see if we've processed this style URI into an *XHTML* style
     //  element before (note the specific namespace query of 'html|' for XHTML
     //  style elements only - we don't want 'tibet:style' elements).
-    inlinedStyleElem = TP.byCSSPath('html|style[tibet|originalHref=' +
+    inlinedStyleElem = TP.byCSSPath('html|style[tibet|originalhref=' +
                                         '"' +
                                         styleURI.getOriginalSource() +
                                         '"]',
@@ -612,7 +612,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         inlinedStyleElem = TP.documentConstructCSSStyleElement(aDocument);
 
         TP.elementSetAttribute(inlinedStyleElem,
-                                'tibet:originalHref',
+                                'tibet:originalhref',
                                 styleURI.getOriginalSource(),
                                 true);
 
@@ -767,7 +767,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         TP.nodeAppendChild(inlinedStyleElem, processedContentNode, false);
 
         //  Awaken it. This will cause the new style element to observe changes
-        //  via the 'tibet:originalHref' attribute.
+        //  via the 'tibet:originalhref' attribute.
         TP.nodeAwakenContent(inlinedStyleElem);
     } else {
 
@@ -2905,13 +2905,13 @@ function(aStylesheet) {
      *         CSS <link> element, then we obtain its href value as the source
      *         location as the source location of the rule.
      *         2. If the rule came from a sheet that is associated to a regular
-     *         CSS <style> element with no 'tibet:originalHref' or 'tibet:for'
+     *         CSS <style> element with no 'tibet:originalhref' or 'tibet:for'
      *         attribute, then it is not associated with any source location,
      *         which will be null.
      *         3. If the rule came from a sheet that is associated to a
      *         'generated' CSS <style> element, then we can try to trace the
      *         source of the rule.
-     *             a. If the <style> element has a 'tibet:originalHref'
+     *             a. If the <style> element has a 'tibet:originalhref'
      *             attribute, then we obtain that as the source location of the
      *             rule.
      *             b. If the <style> element has a 'tibet:for' attribute, then
@@ -2944,9 +2944,9 @@ function(aStylesheet) {
     ownerElem = TP.styleSheetGetOwnerNode(aStylesheet);
     if (TP.isElement(ownerElem)) {
 
-        //  If the stylesheet's owner element has a 'tibet:originalHref'
+        //  If the stylesheet's owner element has a 'tibet:originalhref'
         //  attribute that's not empty, return the value of that.
-        loc = TP.elementGetAttribute(ownerElem, 'tibet:originalHref', true);
+        loc = TP.elementGetAttribute(ownerElem, 'tibet:originalhref', true);
         if (TP.notEmpty(loc)) {
             //  Note here how we expand it to match the semantics of the value
             //  that we'll get from using the '.href' property at the start of

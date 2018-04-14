@@ -2353,7 +2353,7 @@ function() {
 
         //  Grab the unique templateID that should've been placed on us when our
         //  template content was captured.
-        templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
+        templateID = TP.elementGetAttribute(elem, 'tibet:templateid', true);
         if (TP.isEmpty(templateID)) {
             //  TODO: Raise an exception
             return null;
@@ -2513,7 +2513,7 @@ function(indexes) {
 
     elem = this.getNativeNode();
 
-    templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
+    templateID = TP.elementGetAttribute(elem, 'tibet:templateid', true);
     if (TP.isEmpty(templateID)) {
         //  TODO: Raise an exception
         return this;
@@ -3746,7 +3746,7 @@ function() {
 
     //  If this attribute is present, then we've already register - just bail
     //  out.
-    if (TP.elementHasAttribute(elem, 'tibet:templateID', true)) {
+    if (TP.elementHasAttribute(elem, 'tibet:templateid', true)) {
         return this;
     }
 
@@ -3823,7 +3823,7 @@ function() {
 
     //  Register our repeat content under the unique ID we generated.
     templateInfo.atPut(templateID, repeatContent);
-    TP.elementSetAttribute(elem, 'tibet:templateID', templateID, true);
+    TP.elementSetAttribute(elem, 'tibet:templateid', templateID, true);
 
     return repeatContent;
 });
