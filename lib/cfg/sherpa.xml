@@ -27,6 +27,7 @@
 
     <script src="./TP.sherpa.about/TP.sherpa.about.js"/>
     <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster.js"/>
+    <script src="./TP.sherpa.connector/TP.sherpa.connector.js"/>
     <script src="./TP.sherpa.console/TP.sherpa.console.js"/>
     <script src="./TP.sherpa.halo/TP.sherpa.halo.js"/>
     <script src="./TP.sherpa.compiledTagContextMenuContent/TP.sherpa.compiledTagContextMenuContent.js"/>

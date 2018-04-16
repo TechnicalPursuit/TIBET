@@ -140,6 +140,75 @@ TP.dom.ElementNode.addTraits(TP.sherpa.ToolAPI);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('canConnectTo',
+function(destElement) {
+
+    /**
+     * @method canConnectTo
+     * @summary Returns whether the receiver will allow connection to the
+     *     supplied destination element.
+     * @param {Element} destElement The destination element.
+     * @returns {Boolean} Whether or not the receiver will allow connection.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('canConnectFrom',
+function(srcElement) {
+
+    /**
+     * @method canConnectFrom
+     * @summary Returns whether the receiver will allow connection from the
+     *     supplied source element.
+     * @param {Element} srcElement The source element.
+     * @returns {Boolean} Whether or not the receiver will allow connection.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getConnectorDestination',
+function(aConnector) {
+
+    /**
+     * @method getConnectorDestination
+     * @summary Returns an element to be used as a connector destination. Note
+     *     that, at this level, the receiver returns itself as a valid connector
+     *     destination.
+     * @param {TP.sherpa.connector} aConnector The connector that is requesting
+     *     the destination to drag to.
+     * @returns {TP.dom.ElementNode} The element to use as the connector
+     *     destination.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getConnectorSource',
+function(aConnector) {
+
+    /**
+     * @method getConnectorSource
+     * @summary Returns an element to be used as a connector source. Note that,
+     *     at this level, the receiver returns itself as a valid connector
+     *     source.
+     * @param {TP.sherpa.connector} aConnector The connector that is requesting
+     *     the source to drag from.
+     * @returns {TP.dom.ElementNode} The element to use as the connector source.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getContentForInspector',
 function(options) {
 
