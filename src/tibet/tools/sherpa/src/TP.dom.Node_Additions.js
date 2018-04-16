@@ -680,46 +680,6 @@ function(anAspect, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterStyle',
-function() {
-
-    /**
-     * @method sherpaShouldAlterStyle
-     * @summary Returns whether or not the Sherpa should alter the style for
-     *     this type when updating the source document that the visual document
-     *     is displaying. Typically, the Sherpa will alter application
-     *     styles, but not TIBET core styles, such as those for XControls.
-     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
-     *     style.
-     */
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterTemplate',
-function() {
-
-    /**
-     * @method sherpaShouldAlterTemplate
-     * @summary Returns whether or not the Sherpa should alter the template for
-     *     this type when updating the source document that the visual document
-     *     is displaying. Typically, the Sherpa will alter application
-     *     templates, but not TIBET core templates, such as those for XControls.
-     * @description This method, normally associated with a template tag, is
-     *     backstopped here (returning false) to avoid having to test for this
-     *     method's presence on altered elements when updating source documents
-     *     in the Sherpa.
-     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
-     *     template.
-     */
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.ElementNode.Inst.defineMethod('sherpaDidInsertBreadcrumb',
 function(insertionPointElement, insertionPosition) {
 
@@ -762,6 +722,46 @@ function(insertionPointElement, insertionPosition) {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterStyle',
+function() {
+
+    /**
+     * @method sherpaShouldAlterStyle
+     * @summary Returns whether or not the Sherpa should alter the style for
+     *     this type when updating the source document that the visual document
+     *     is displaying. Typically, the Sherpa will alter application
+     *     styles, but not TIBET core styles, such as those for XControls.
+     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
+     *     style.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('sherpaShouldAlterTemplate',
+function() {
+
+    /**
+     * @method sherpaShouldAlterTemplate
+     * @summary Returns whether or not the Sherpa should alter the template for
+     *     this type when updating the source document that the visual document
+     *     is displaying. Typically, the Sherpa will alter application
+     *     templates, but not TIBET core templates, such as those for XControls.
+     * @description This method, normally associated with a template tag, is
+     *     backstopped here (returning false) to avoid having to test for this
+     *     method's presence on altered elements when updating source documents
+     *     in the Sherpa.
+     * @returns {Boolean} Whether or not the Sherpa should alter the receiver's
+     *     template.
+     */
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
