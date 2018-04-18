@@ -1022,6 +1022,10 @@ TP.STDIO = 'tsh_stdio';
 //  invocation-derived path filter constants
 //  ----
 
+TP.EXCLUDE_INVOCATION_TRACKED_PACKAGES = [
+    /tibet_kernel.xml@vm/
+];
+
 TP.EXCLUDE_INVOCATION_TRACKED_PATHS = [
     /tibet\/tools/,
     /tibet\/testing/,

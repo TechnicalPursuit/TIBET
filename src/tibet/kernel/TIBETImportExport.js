@@ -425,7 +425,6 @@ function(packageConfig) {
         usedMethodPaths,
 
         configScriptPaths,
-
         missingScriptPaths,
 
         filters,
@@ -433,7 +432,8 @@ function(packageConfig) {
 
         allPackagePaths,
         usedPackagePaths,
-        missingPackagePaths;
+        missingPackagePaths,
+        filteredPackagePaths;
 
     if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
         TP.ifError() ?
@@ -459,7 +459,7 @@ function(packageConfig) {
     //  represented in the supplied package and config.
     missingScriptPaths = usedMethodPaths.difference(configScriptPaths);
 
-    //  Filter out paths for developer tools, boot system, etc. using a
+    //  Filter out script paths for developer tools, boot system, etc. using a
     //  predetermined list of RegExps.
     filters = TP.EXCLUDE_INVOCATION_TRACKED_PATHS;
 
@@ -498,7 +498,32 @@ function(packageConfig) {
     //  represented in the supplied package and config.
     missingPackagePaths = usedPackagePaths.difference(allPackagePaths);
 
-    return TP.hc('packagePaths', missingPackagePaths,
+    //  Filter out package paths for developer tools, boot system, etc. using a
+    //  predetermined list of RegExps.
+    filters = TP.EXCLUDE_INVOCATION_TRACKED_PACKAGES;
+
+    filteredPackagePaths = missingPackagePaths.filter(
+                        function(aPath) {
+
+                            var filterPath,
+
+                                len,
+                                i;
+
+                            filterPath = false;
+
+                            len = filters.getSize();
+                            for (i = 0; i < len; i++) {
+                                if (filters.at(i).test(aPath)) {
+                                    filterPath = true;
+                                    break;
+                                }
+                            }
+
+                            return !filterPath;
+                        });
+
+    return TP.hc('packagePaths', filteredPackagePaths,
                     'scriptPaths', filteredScriptPaths);
 });
 
