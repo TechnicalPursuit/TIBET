@@ -173,9 +173,22 @@ function(aRequest) {
         //  that we're processing.
         thisref = this;
         loadHandler = function() {
+            var aceObj;
+
             scriptElem.removeEventListener('load', loadHandler, false);
 
-            TP.registerExternalObject('ace', TP.nodeGetWindow(elem).ace);
+            aceObj = TP.nodeGetWindow(elem).ace;
+
+            TP.registerExternalObject('ace', aceObj);
+
+            //  NB: Wire these in *after* the registerExternalObject method is
+            //  executed because it will try to devine these settings from the
+            //  loader, which is no longer involved - the app is running.
+            aceObj[TP.LOAD_PATH] = 'inline';
+            aceObj[TP.SOURCE_PATH] = 'inline';
+            aceObj[TP.LOAD_CONFIG] = 'base';
+            aceObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
+
             thisref.defineDependencies('TP.extern.ace');
 
             tpElem.setup();
