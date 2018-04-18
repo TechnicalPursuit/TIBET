@@ -101,7 +101,7 @@ TP.USE_WHOLE_PACKAGE = function() {
         wholePackageInfo: true,
         $$loadPackage: this[TP.LOAD_PACKAGE],
         $$loadConfig: this[TP.LOAD_CONFIG],
-        $$oid: this[TP.LOAD_PACKAGE] + this[TP.LOAD_CONFIG]
+        $$oid: this[TP.LOAD_PACKAGE] + '@' + this[TP.LOAD_CONFIG]
     };
 };
 
