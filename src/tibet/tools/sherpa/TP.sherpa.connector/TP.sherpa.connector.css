@@ -10,8 +10,8 @@ sherpa|connector div {
 
     position: absolute;
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 
     display: none;
 
@@ -46,7 +46,7 @@ sherpa|connector div[part="launchpad"] {
 
     height: var(--sherpa-connector-launchsize);
 
-    clip: rect(0px var(--sherpa-connector-launchsize) var(--sherpa-connector-launchsize) 0px);
+    clip: rect(0 var(--sherpa-connector-launchsize) var(--sherpa-connector-launchsize) 0);
 }
 
 sherpa|connector div[part="destination"] {

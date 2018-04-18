@@ -146,8 +146,9 @@ function(fromX, fromY, toX, toY) {
     horizConnector = this.get('$horizConnector').getNativeNode();
     vertConnector = this.get('$vertConnector').getNativeNode();
 
+    /* eslint-disable no-extra-parens */
     //  If the drag orientation hasn't been decided yet, compute it.
-    if (dragOrientation == TP.sherpa.connector.NO_ORIENTATION) {
+    if (dragOrientation === TP.sherpa.connector.NO_ORIENTATION) {
         launchTopSideCoord = fromY - connectorThickness + 1;
         launchRightSideCoord = fromX + (connectorThickness * 2);
         launchBottomSideCoord = fromY + (connectorThickness * 2);
@@ -165,7 +166,7 @@ function(fromX, fromY, toX, toY) {
             dragOrientation = TP.sherpa.connector.VERT_ORIENTATION;
         } else {
             //  Is this random?? Who knows... ;-)
-            if (Math.random() > .5) {
+            if (Math.random() > 0.5) {
                 dragOrientation = TP.sherpa.connector.HORIZ_ORIENTATION;
             } else {
                 dragOrientation = TP.sherpa.connector.VERT_ORIENTATION;
@@ -174,10 +175,12 @@ function(fromX, fromY, toX, toY) {
 
         this.set('$dragOrientation', dragOrientation, false);
     }
+    /* eslint-enable no-extra-parens */
 
+    /* eslint-disable no-extra-parens */
     //  If we started horizontally, then we stretch the horizontal connector
     //  and move the vertical.
-    if (dragOrientation == TP.sherpa.connector.HORIZ_ORIENTATION) {
+    if (dragOrientation === TP.sherpa.connector.HORIZ_ORIENTATION) {
         if (toX >= fromX) {
             horizConnector.style.left = fromX + 'px';
             horizConnector.style.width = ((toX - fromX) +
@@ -218,6 +221,7 @@ function(fromX, fromY, toX, toY) {
             vertConnector.style.height = (fromY - toY) + 'px';
         }
     }
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
@@ -280,7 +284,7 @@ function(aSignal) {
     //  If currentDestElement is an Element and its the same as the computed
     //  dest element, they're the same element so we just return here.
     if (TP.isElement(currentDestElement) &&
-        (currentDestElement === destElement)) {
+        currentDestElement === destElement) {
         return null;
     }
 
@@ -446,6 +450,7 @@ function(destElement) {
 
     //  Position and size the connector destination element based on the box
     //  coordinates and the connector thickness.
+    /* eslint-disable no-extra-parens */
     connectorDest.style.left =
         (coords.at('left') - connectorThickness) + 'px';
     connectorDest.style.top =
@@ -454,6 +459,7 @@ function(destElement) {
         (coords.at('width') + connectorThickness) + 'px';
     connectorDest.style.height =
         (coords.at('height') + connectorThickness) + 'px';
+    /* eslint-enable no-extra-parens */
 
     //  Show the connection destination element to the user.
     TP.elementShow(connectorDest);
@@ -497,10 +503,12 @@ function(aPoint) {
 
     //  Position and size the launch point and the horizontal and vertical
     //  connector elements.
+    /* eslint-disable no-extra-parens */
     connectorLaunch.style.left =
         (connectorStartX - connectorThickness + 1) + 'px';
     connectorLaunch.style.top =
         (connectorStartY - connectorThickness + 1) + 'px';
+    /* eslint-enable no-extra-parens */
 
     horizConnector.style.left = connectorStartX + 'px';
     horizConnector.style.top = connectorStartY + 'px';
