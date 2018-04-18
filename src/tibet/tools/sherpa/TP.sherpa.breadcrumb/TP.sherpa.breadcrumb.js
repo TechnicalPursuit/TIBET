@@ -18,6 +18,10 @@ TP.sherpa.TemplatedTag.defineSubtype('breadcrumb');
 
 TP.sherpa.breadcrumb.addTraits(TP.dom.D3Tag);
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
 TP.sherpa.breadcrumb.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
