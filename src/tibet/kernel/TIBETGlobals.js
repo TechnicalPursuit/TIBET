@@ -89,6 +89,14 @@ TP.LOAD_CONFIG_ATTR = 'load_config';
 
 TP.DEPENDENCIES = '$$dependencies';
 TP.USE_WHOLE_PACKAGE = function() {
+    if (this[TP.LOAD_PACKAGE] === null && this[TP.LOAD_CONFIG] === null) {
+        /* eslint-disable no-console */
+        console.error('No load information for object with keys: ' +
+                        JSON.stringify(Object.keys(this)));
+        /* eslint-enable no-console */
+        return {};
+    }
+
     return {
         wholePackageInfo: true,
         $$loadPackage: this[TP.LOAD_PACKAGE],
