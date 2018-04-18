@@ -47,6 +47,7 @@ function(aRequest) {
         results,
         packagePaths,
         scriptPaths,
+        libSrcPath,
 
         shouldFix,
 
@@ -95,6 +96,15 @@ function(aRequest) {
 
         packagePaths = results.at('packagePaths');
         scriptPaths = results.at('scriptPaths');
+
+        //  Iterate over all of the script paths and make them relative to
+        //  '~lib_src', since they're going to be added to the application's
+        //  'alacarte' target, which already has a basedir of '~lib_src'.
+        libSrcPath = TP.uriExpandPath('~lib_src');
+        scriptPaths = scriptPaths.collect(
+                        function(aPath) {
+                            return TP.uriRelativeToPath(aPath, libSrcPath);
+                        });
 
         //  If the user is asking us to fix this situation, then we invoke a
         //  remote command to actually patch these into the config matching the
