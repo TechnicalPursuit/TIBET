@@ -145,8 +145,8 @@ TP.objectDefineDependencies = function(anObject, varargs) {
      *     object will consider the dependency as part of the computation.
      * @param {Object} anObject The object to register the dependency
      *     information for.
-     * @param {Array} varargs One or more dependencies provided as a variable
-     *     argument list.
+     * @param {Object[]|String[]} varargs One or more dependencies or dependency
+     *     references provided as a variable argument list.
      * @return {Array} The updated list of object dependencies.
      */
 
@@ -155,30 +155,65 @@ TP.objectDefineDependencies = function(anObject, varargs) {
 
     if (arguments.length < 1) {
         /* eslint-disable no-console */
-        console.error('No dependencies provided for object ' +
-            anObject[TP.NAME]);
+        console.error('No dependencies provided for object: ' +
+                        anObject[TP.NAME]);
         /* eslint-enable no-console */
         return;
     }
 
+    //  Make sure that dependencies is an Array. If not, create one.
     dependencies = anObject[TP.DEPENDENCIES];
     if (!Array.isArray(dependencies)) {
         dependencies = [];
         anObject[TP.DEPENDENCIES] = dependencies;
     }
 
+    //  Grab the supplied prerequisities by getting the arguments and slicing
+    //  off the target object that we're defining the dependencies for.
     prereqs = Array.prototype.slice.call(arguments, 1);
-    prereqs.forEach(function(prereq) {
-        if (TP.notValid(prereq)) {
-            /* eslint-disable no-console */
-            console.error('Undefined dependency for object ' +
-                anObject[TP.NAME]);
-            /* eslint-enable no-console */
-            return;
-        }
+    prereqs.forEach(
+        function(prereq) {
+            var parts,
+                ref,
+                i;
 
-        dependencies.push(prereq);
-    });
+            if (TP.boot.$notValid(prereq)) {
+                /* eslint-disable no-console */
+                console.error('Undefined dependency for object: ' +
+                                anObject[TP.NAME]);
+                /* eslint-enable no-console */
+                return;
+            }
+
+            if (TP.ObjectProto.toString.call(prereq) === '[object String]') {
+                parts = prereq.split('.');
+                ref = TP.global[parts[0]];
+                if (TP.boot.$notValid(ref)) {
+                    /* eslint-disable no-console */
+                    console.error('Undefined dependency: ' + prereq +
+                                    ' for object: ' +
+                                    anObject[TP.NAME]);
+                    /* eslint-enable no-console */
+                    return;
+                }
+
+                for (i = 1; i < parts.length; i++) {
+                    ref = ref[parts[i]];
+                    if (TP.boot.$notValid(ref)) {
+                        /* eslint-disable no-console */
+                        console.error('Undefined dependency: ' + prereq +
+                                        ' for object: ' +
+                                        anObject[TP.NAME]);
+                        /* eslint-enable no-console */
+                        return;
+                    }
+                }
+
+                dependencies.push(ref);
+            } else {
+                dependencies.push(prereq);
+            }
+        });
 
     return dependencies;
 };
