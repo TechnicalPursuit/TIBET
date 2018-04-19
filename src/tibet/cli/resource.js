@@ -787,7 +787,11 @@ Cmd.prototype.processScssResource = function(options) {
         varStr,
 
         cfg,
-        dataStr;
+        dataStr,
+
+        resourcePath,
+
+        opts;
 
     cmd = this;
 
@@ -827,7 +831,15 @@ Cmd.prototype.processScssResource = function(options) {
 
     dataStr = varStr + options.data;
 
-    return sass.render({data: dataStr}, function(error, output) {
+    resourcePath = options.fullpath;
+    resourcePath = resourcePath.slice(0, resourcePath.lastIndexOf('/') + 1);
+
+    opts = {
+        data: dataStr,
+        includePaths: [resourcePath]
+    };
+
+    return sass.render(opts, function(error, output) {
         var content,
             rname,
             fname,
