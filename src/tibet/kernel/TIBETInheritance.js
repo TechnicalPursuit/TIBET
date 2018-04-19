@@ -11387,8 +11387,12 @@ function(aFunction, copySourceInfo) {
 
         loadPath,
         sourcePath,
+
         loadPackage,
-        loadConfig;
+        sourcePackage,
+
+        loadConfig,
+        sourceConfig;
 
     if (TP.notValid(aFunction)) {
         return this.raise('TP.sig.InvalidParameter');
