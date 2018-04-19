@@ -50,12 +50,6 @@
         jwt = require('jsonwebtoken');
         ip = require('ip');
 
-        secret = process.env.TIBET_CRYPTO_KEY;
-        if (TDS.isEmpty(secret)) {
-            msg = 'No crypto secret. $ export TIBET_CRYPTO_KEY="{secret}"';
-            throw new Error(msg);
-        }
-
         cookie1 = process.env.TDS_COOKIE_KEY1;
         if (TDS.isEmpty(cookie1)) {
             msg = 'No cookie key #1. $ export TDS_COOKIE_KEY1="{secret}"';
@@ -241,6 +235,12 @@
          */
         app.post('/login', parsers.json, parsers.urlencoded, function(req, res, next) {
 
+            secret = secret || process.env.TIBET_CRYPTO_KEY;
+            if (TDS.isEmpty(secret)) {
+                msg = 'No crypto secret. $ export TIBET_CRYPTO_KEY="{secret}"';
+                throw new Error(msg);
+            }
+
             passport.authenticate(name, function(err, user, info) {
                 var grip,
                     cookies;
@@ -380,6 +380,12 @@
             unit = profile.unit;
             role = profile.role;
 
+            secret = secret || process.env.TIBET_CRYPTO_KEY;
+            if (TDS.isEmpty(secret)) {
+                msg = 'No crypto secret. $ export TIBET_CRYPTO_KEY="{secret}"';
+                throw new Error(msg);
+            }
+
             //  The middleware function to do the testing.
             return function(req, res, next) {
                 var token;
@@ -445,6 +451,12 @@
          */
         options.hasToken = function(req, res, next) {
             var token;
+
+            secret = secret || process.env.TIBET_CRYPTO_KEY;
+            if (TDS.isEmpty(secret)) {
+                msg = 'No crypto secret. $ export TIBET_CRYPTO_KEY="{secret}"';
+                throw new Error(msg);
+            }
 
             token = req.headers['x-access-token'];
             if (!token) {
