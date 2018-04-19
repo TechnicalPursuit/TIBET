@@ -53,7 +53,12 @@ function() {
         keyCode,
         val;
 
-    this.defineDependencies('TP.extern.syn', 'TP.extern.Promise');
+    //  The 'syn' library only loads if we're *not* running in PhantomJS.
+    if (TP.sys.cfg('boot.context') !== 'phantomjs') {
+        this.defineDependencies('TP.extern.syn');
+    }
+
+    this.defineDependencies('TP.extern.Promise');
 
     //  If Syn isn't loaded, then don't try to manipulate its keymap. Just
     //  return.
