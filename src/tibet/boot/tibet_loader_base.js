@@ -2379,7 +2379,7 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
 
     TP.boot.$$pathKeys = TP.boot.$$pathKeys ||
         Object.keys(cfg).filter(function(key) {
-            return /path\.(lib_|app_)/.test(key) && cfg[key];
+            return /path\.(lib_|app_)/.test(key) && cfg.at(key);
         });
     keys = TP.boot.$$pathKeys;
 
@@ -2391,8 +2391,8 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     keys.forEach(function(key) {
         var value;
 
-        value = boot.$uriExpandPath(cfg[key]);
         if (path.indexOf(value) === 0) {
+        value = boot.$uriExpandPath(cfg.at(key));
             matches.push([key, value]);
         }
     });
