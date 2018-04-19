@@ -486,10 +486,10 @@
                     }
 
                     if (!compareProfileItem(role, decoded.role, profile.roleJoin)) {
-                            res.status(401);
-                            res.send('{ok: false}');
-                            return;
-                        }
+                        res.status(401);
+                        res.send('{ok: false}');
+                        return;
+                    }
 
                     next();
                 });

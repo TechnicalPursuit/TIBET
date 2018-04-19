@@ -223,8 +223,6 @@
          *
          */
         dbSave = function(doc, params) {
-            var promise;
-
             if (TDS.notEmpty(doc._id)) {
                 return dbGet(doc._id).then(function(result) {
                     //  ensure we have the latest rev for update.
@@ -1488,18 +1486,16 @@
         //  Shutdown
         //  ---
 
-        TDS.addShutdownHook(function(server) {
+        TDS.addShutdownHook(function(serv) {
             var msg;
 
             msg = 'shutting down TWS change feed follower';
             meta.style = 'error';
 
-            server.logger.system(msg, meta);
+            serv.logger.system(msg, meta);
             if (!TDS.hasConsole()) {
                 process.stdout.write(TDS.colorize(msg, 'error'));
             }
-
-            //  TODO
         });
 
 
