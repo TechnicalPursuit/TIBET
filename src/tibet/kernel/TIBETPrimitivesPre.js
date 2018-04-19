@@ -7215,26 +7215,6 @@ with ways to acquire or reload original source for an object very quickly.
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('objectGetLoadPackage',
-function(anObject) {
-
-    /**
-     * @method objectGetLoadPackage
-     * @summary Returns the package name from which the script defining the
-     *     object's node was loaded.
-     * @param {Object} anObject The object to query.
-     * @returns {String} The module name for the object's node.
-     */
-
-    if (TP.notValid(anObject)) {
-        return;
-    }
-
-    return anObject[TP.LOAD_PACKAGE];
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('objectGetLoadCollectionPath',
 function(anObject) {
 
@@ -7258,25 +7238,6 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('objectGetLoadPath',
-function(anObject) {
-
-    /**
-     * @method objectGetLoadPath
-     * @summary Returns the path to the file responsible for the object.
-     * @param {Object} anObject The object to query.
-     * @returns {String} The load path where the receiver can be found.
-     */
-
-    if (TP.notValid(anObject)) {
-        return;
-    }
-
-    return anObject[TP.LOAD_PATH];
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('objectGetLoadConfig',
 function(anObject) {
 
@@ -7293,6 +7254,45 @@ function(anObject) {
     }
 
     return anObject[TP.LOAD_CONFIG];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectGetLoadPackage',
+function(anObject) {
+
+    /**
+     * @method objectGetLoadPackage
+     * @summary Returns the package name from which the script defining the
+     *     object's node was loaded.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The module name for the object's node.
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    return anObject[TP.LOAD_PACKAGE];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectGetLoadPath',
+function(anObject) {
+
+    /**
+     * @method objectGetLoadPath
+     * @summary Returns the path to the file responsible for the object.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The load path where the receiver can be found.
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    return anObject[TP.LOAD_PATH];
 });
 
 //  ------------------------------------------------------------------------
