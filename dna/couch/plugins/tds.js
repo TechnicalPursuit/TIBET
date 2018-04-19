@@ -59,7 +59,10 @@
                 var base;
 
                 base = path.basename(fname);
-                return !base.match(/^(\.|_)/) && !sh.test('-d', fname);
+                return !base.match(/^(\.|_)/) &&
+                    !base.match(/~$/) &&            //  tilde files for vi etc.
+                    !base.match(/\.sw(.{1})$/) &&   //  swap files for vi etc.
+                    !sh.test('-d', fname);
             });
         } else {
             //  Plugin list won't have the directory path, just basename minus

@@ -50,7 +50,7 @@
         //  NOTE:   this must be initialized before any session is.
         cookieKey = process.env.TDS_COOKIE_KEY1;
         if (TDS.isEmpty(cookieKey)) {
-            msg = 'No cookie key for session. $ export TDS_COOKIE_KEY1="{{secret}}"';
+            msg = 'No cookie key for session. $ export TDS_COOKIE_KEY1="{secret}"';
             if (TDS.getEnv() !== 'development') {
                 throw new Error(msg);
             }
@@ -72,7 +72,7 @@
 
         sessionKey = process.env.TDS_SESSION_KEY;
         if (TDS.isEmpty(sessionKey)) {
-            msg = 'No secret key for session. $ export TDS_SESSION_KEY="{{secret}}"';
+            msg = 'No secret key for session. $ export TDS_SESSION_KEY="{secret}"';
             if (TDS.getEnv() !== 'development') {
                 throw new Error(msg);
             }
