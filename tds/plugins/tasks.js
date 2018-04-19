@@ -50,8 +50,9 @@
             retryTask,
             retryJob,
             canRetry,
+            couch,
             db,
-            // dbGet,
+            dbGet,
             dbSave,
             dbView,
             db_app,
@@ -73,9 +74,9 @@
             logger,
             name,
             meta,
-            nano,
             path,
             Promise,
+            server,
             sh,
             taskdir,
             TDS,
@@ -168,6 +169,8 @@
         app.TWS = require('../../etc/helpers/task_helpers')(options);
         TWS = app.TWS;
 
+        couch = require('../../etc/helpers/couch_helpers');
+
         //  ---
         //  Variables
         //  ---
@@ -186,8 +189,8 @@
         //  CouchDB Helpers
         //  ---
 
-        nano = require('nano')(db_url);
-        db = nano.use(db_name);
+        server = couch.server(db_url);
+        db = server.use(db_name);
 
         /**
          * Common error logging routine to avoid duplication.
@@ -213,24 +216,28 @@
         };
 
         /**
+         */
+        dbGet = Promise.promisify(db.get);
+
+        /**
          *
          */
         dbSave = function(doc, params) {
             var promise;
 
-            promise = new Promise(function(resolve, reject) {
-
-                db.insert(doc, params, function(err, body) {
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    return resolve(body);
+            if (TDS.notEmpty(doc._id)) {
+                return dbGet(doc._id).then(function(result) {
+                    //  ensure we have the latest rev for update.
+                    doc._rev = result[0]._rev;
+                    return db.insertAsync(doc, params);
+                }).catch(function(err) {
+                    logger.error('Document update error: ' + err);
                 });
-
-            });
-
-            return promise;
+            } else {
+                return db.insertAsync(doc, params).catch(function(err) {
+                    logger.error('Document insert error: ' + err);
+                });
+            }
         };
 
         /**
