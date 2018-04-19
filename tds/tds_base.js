@@ -1260,14 +1260,20 @@
     };
 
     /**
-     * Reads the currently stored version of
+     * TODO this routine should be removed. we probably want a view we can
+     * query for 'unprocessed' documents to get stuff that's "older" than 'now'.
      */
     TDS.readWatchSince = function(app, plugin) {
+        /*
         var fullpath,
             env,
             dat,
             obj;
+        */
 
+        return 'now';
+
+        /*
         fullpath = TDS.expandPath('~/.tds_watch_since.json');
         if (!sh.test('-e', fullpath)) {
             return 'now';
@@ -1288,17 +1294,24 @@
         }
 
         return obj[env][plugin] || 'now';
+        */
     };
 
-
     /**
+     * TODO this routine shouldn't even exist really...it's guaranteed to be a
+     * huge bottleneck in any reasonably busy system.
      */
     TDS.writeWatchSince = function(app, plugin, sequence) {
+        /*
         var fullpath,
             env,
             dat,
             obj;
+        */
 
+        return;
+
+        /*
         fullpath = TDS.expandPath('~/.tds_watch_since.json');
         if (!sh.test('-e', fullpath)) {
             //  file doesn't exist...we'll create it shortly...
@@ -1318,8 +1331,16 @@
 
         obj[env][plugin] = sequence;
 
-        //  TODO: replace with something async...
-        TDS.beautify(JSON.stringify(obj)).to(fullpath);
+        content = TDS.beautify(JSON.stringify(obj));
+        fs.writeFile(fullpath, content, function(err) {
+            if (err) {
+                TDS.error(err);
+                return;
+            }
+
+            //  DO something here?
+        });
+        */
     };
 
     /**
