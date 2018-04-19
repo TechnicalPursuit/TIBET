@@ -357,16 +357,16 @@ function() {
             }
 
             //  Otherwise, iterate over all of the 'whole package' entries. If
-            //  both the TP.LOAD_PACKAGE and the TP.LOAD_CONFIG from the entry
+            //  both the TP.SOURCE_PACKAGE and the TP.SOURCE_CONFIG from the entry
             //  are also represented by one of the 'whole package' entries, then
             //  we do *not* add that source path to the list of source paths. It
             //  will be represented by the package.
             for (i = 0; i < len; i++) {
                 /* eslint-disable brace-style */
-                if (entry[TP.LOAD_PACKAGE] ===
-                        packageEntries.at(i)[TP.LOAD_PACKAGE] &&
-                    entry[TP.LOAD_CONFIG] ===
-                        packageEntries.at(i)[TP.LOAD_CONFIG])
+                if (entry[TP.SOURCE_PACKAGE] ===
+                        packageEntries.at(i)[TP.SOURCE_PACKAGE] &&
+                    entry[TP.SOURCE_CONFIG] ===
+                        packageEntries.at(i)[TP.SOURCE_CONFIG])
                 {
                     return;
                 }
@@ -389,9 +389,9 @@ function() {
     //  them.
     expandedPackagePaths = packageEntries.collect(
                 function(aPackageEntry) {
-                    return TP.uriExpandPath(aPackageEntry[TP.LOAD_PACKAGE]) +
+                    return TP.uriExpandPath(aPackageEntry[TP.SOURCE_PACKAGE]) +
                             '@' +
-                            aPackageEntry[TP.LOAD_CONFIG];
+                            aPackageEntry[TP.SOURCE_CONFIG];
                 });
 
     return TP.hc('wholePackagePaths', expandedPackagePaths,
