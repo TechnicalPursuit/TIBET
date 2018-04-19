@@ -1293,7 +1293,10 @@
                 name = file.slice(0, file.lastIndexOf('.'));
 
                 //  Ignore hidden or 'sample/helper' files.
-                if (name.match(/^(\.|_)/)) {
+                if (name.match(/^(\.|_)/) ||
+                        name.match(/~$/) ||            //  tilde files for vi etc.
+                        name.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
+                        sh.test('-d', file)) {
                     return;
                 }
 

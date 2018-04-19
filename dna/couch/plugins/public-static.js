@@ -54,7 +54,10 @@
                 var ok;
 
                 //  Never vend hidden or 'helper' files.
-                if (fname.match(/^(\.|_)/)) {
+                if (fname.match(/^(\.|_)/) ||
+                        fname.match(/~$/) ||            //  tilde files for vi etc.
+                        fname.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
+                        sh.test('-d', fname)) {
                     return false;
                 }
 
