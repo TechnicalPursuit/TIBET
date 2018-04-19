@@ -2391,8 +2391,8 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     keys.forEach(function(key) {
         var value;
 
-        if (path.indexOf(value) === 0) {
         value = boot.$uriExpandPath(cfg.at(key));
+        if (path.indexOf(value) === 0 && path !== value) {
             matches.push([key, value]);
         }
     });
@@ -2432,6 +2432,10 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     path = path.replace(this.$uriExpandPath('~lib'), '~lib');
     path = path.replace(this.$uriExpandPath('~app'), '~app');
     path = path.replace(this.$uriExpandPath('~'), '~');
+
+    if (path.indexOf('/') !== -1 && path !== aPath) {
+        path = TP.boot.$uriInTIBETFormat(path);
+    }
 
     TP.boot.$$tibetURIS[aPath] = path;
 
