@@ -186,7 +186,9 @@ function(aRequest) {
     newMethod[TP.LOAD_PATH] = methodOwnerType[TP.LOAD_PATH];
     newMethod[TP.SOURCE_PATH] = methodOwnerType[TP.SOURCE_PATH];
     newMethod[TP.LOAD_PACKAGE] = methodOwnerType[TP.LOAD_PACKAGE];
+    newMethod[TP.SOURCE_PACKAGE] = methodOwnerType[TP.SOURCE_PACKAGE];
     newMethod[TP.LOAD_CONFIG] = methodOwnerType[TP.LOAD_CONFIG];
+    newMethod[TP.SOURCE_CONFIG] = methodOwnerType[TP.SOURCE_CONFIG];
 
     //  Tag this method as 'not yet having persisted'
     newMethod[TP.IS_PERSISTED] = false;

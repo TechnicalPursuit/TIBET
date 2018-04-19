@@ -82,10 +82,14 @@ TP.TYPE_LOCAL_TRACK = 'TypeLocal';
 TP.LOAD_PATH = '$$loadPath';
 TP.SOURCE_PATH = '$$srcPath';
 TP.LOAD_PACKAGE = '$$loadPackage';
+TP.SOURCE_PACKAGE = '$$srcPackage';
 TP.LOAD_CONFIG = '$$loadConfig';
+TP.SOURCE_CONFIG = '$$srcConfig';
 
 TP.LOAD_PACKAGE_ATTR = 'load_package';
 TP.LOAD_CONFIG_ATTR = 'load_config';
+TP.SOURCE_PACKAGE_ATTR = 'src_package';
+TP.SOURCE_CONFIG_ATTR = 'src_config';
 
 TP.DEPENDENCIES = '$$dependencies';
 TP.USE_WHOLE_PACKAGE = function() {
@@ -101,7 +105,9 @@ TP.USE_WHOLE_PACKAGE = function() {
         wholePackageInfo: true,
         $$loadPackage: this[TP.LOAD_PACKAGE],
         $$loadConfig: this[TP.LOAD_CONFIG],
-        $$oid: this[TP.LOAD_PACKAGE] + '@' + this[TP.LOAD_CONFIG]
+        $$srcPackage: this[TP.SOURCE_PACKAGE],
+        $$srcConfig: this[TP.SOURCE_CONFIG],
+        $$oid: this[TP.SOURCE_PACKAGE] + '@' + this[TP.SOURCE_CONFIG]
     };
 };
 
@@ -131,8 +137,12 @@ TP.registerLoadInfo = function(anObject) {
 
     anObject[TP.LOAD_PATH] = lpath;
     anObject[TP.SOURCE_PATH] = spath;
+
     anObject[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
+    anObject[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
+
     anObject[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
+    anObject[TP.SOURCE_CONFIG] = TP.boot[TP.SOURCE_CONFIG];
 };
 
 //  Manual setup

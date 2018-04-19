@@ -9020,6 +9020,10 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
                                     TP.sys.cfg('load.package', ''));
     TP.boot.$$loadNode.setAttribute('load_config',
                                     TP.sys.cfg('load.config', ''));
+    TP.boot.$$loadNode.setAttribute('src_package',
+                                    TP.sys.cfg('src.package', ''));
+    TP.boot.$$loadNode.setAttribute('src_config',
+                                    TP.sys.cfg('src.config', ''));
 
     scriptDoc = TP.boot.$isValid(targetDoc) ?
                         targetDoc :
@@ -9330,10 +9334,15 @@ TP.boot.$importComponents = function(loadSync) {
         source;
 
     TP.boot.$$loadNode = null;
+
     TP.boot.$$loadPath = null;
     TP.boot.$$srcPath = null;
+
     TP.boot.$$loadPackage = null;
     TP.boot.$$loadConfig = null;
+
+    TP.boot.$$srcPackage = null;
+    TP.boot.$$srcConfig = null;
 
     if (TP.boot.shouldStop()) {
         return;
@@ -9470,10 +9479,17 @@ TP.boot.$importComponents = function(loadSync) {
         TP.boot.$$loadPackage = nd.getAttribute('load_package') || '';
         TP.boot.$$loadConfig = nd.getAttribute('load_config') || '';
 
+        TP.boot.$$srcPackage = TP.boot.$uriInTIBETFormat(TP.boot.$$loadPackage);
+        TP.boot.$$srcConfig = TP.boot.$$loadConfig;
+
         //  set the configuration values so the sourceImport call will have
         //  the information from the current node being processed
+
         TP.sys.setcfg('load.package', TP.boot.$$loadPackage);
         TP.sys.setcfg('load.config', TP.boot.$$loadConfig);
+
+        TP.sys.setcfg('src.package', TP.boot.$$srcPackage);
+        TP.sys.setcfg('src.config', TP.boot.$$srcConfig);
 
         //  In some sense the rest of this is all about getting the source code
         //  to import, either inlined, or from the original location, in either
@@ -9493,6 +9509,9 @@ TP.boot.$importComponents = function(loadSync) {
 
                 elem.setAttribute('load_package', TP.boot.$$loadPackage);
                 elem.setAttribute('load_config', TP.boot.$$loadConfig);
+
+                elem.setAttribute('src_package', TP.boot.$$srcPackage);
+                elem.setAttribute('src_config', TP.boot.$$srcConfig);
 
                 TP.boot.$$loadNode = elem;
 
@@ -10656,6 +10675,10 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                 TP.boot.$getCurrentPackage());
                             child.setAttribute('load_config',
                                 anElement.getAttribute('id'));
+                            child.setAttribute('src_package',
+                                TP.boot.$getCurrentPackage());
+                            child.setAttribute('src_config',
+                                anElement.getAttribute('id'));
                             result.push(child);
 
                             break;
@@ -10687,6 +10710,11 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                     child.setAttribute('load_config',
                                         anElement.getAttribute('id'));
 
+                                    child.setAttribute('src_package',
+                                        TP.boot.$getCurrentPackage());
+                                    child.setAttribute('src_config',
+                                        anElement.getAttribute('id'));
+
                                     result.push(child);
                                 } else {
                                     TP.boot.$stdout(
@@ -10697,6 +10725,10 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                 child.setAttribute('load_package',
                                     TP.boot.$getCurrentPackage());
                                 child.setAttribute('load_config',
+                                    anElement.getAttribute('id'));
+                                child.setAttribute('src_package',
+                                    TP.boot.$getCurrentPackage());
+                                child.setAttribute('src_config',
                                     anElement.getAttribute('id'));
                                 result.push(child);
                             }

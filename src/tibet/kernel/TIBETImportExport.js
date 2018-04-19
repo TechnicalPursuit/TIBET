@@ -553,7 +553,9 @@ function() {
                     loadPath: methodBody[TP.LOAD_PATH],
                     sourcePath: methodBody[TP.SOURCE_PATH],
                     loadPackage: methodBody[TP.LOAD_PACKAGE],
-                    loadConfig: methodBody[TP.LOAD_CONFIG]
+                    sourcePackage: methodBody[TP.SOURCE_PACKAGE],
+                    loadConfig: methodBody[TP.LOAD_CONFIG],
+                    sourceConfig: methodBody[TP.SOURCE_CONFIG]
                 };
 
                 results.push(methodEntry);

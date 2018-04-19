@@ -684,6 +684,9 @@ function() {
                 singleSourceFileInfo: true,
                 $$loadPackage: this[TP.LOAD_PACKAGE],
                 $$loadConfig: this[TP.LOAD_CONFIG],
+                $$loadPath: this[TP.LOAD_PATH],
+                $$srcPackage: this[TP.SOURCE_PACKAGE],
+                $$srcConfig: this[TP.SOURCE_CONFIG],
                 $$srcPath: this[TP.SOURCE_PATH],
                 $$oid: this[TP.SOURCE_PATH]
             });
@@ -11422,8 +11425,12 @@ function(aFunction, copySourceInfo) {
     if (TP.notFalse(copySourceInfo)) {
         loadPath = obj[TP.LOAD_PATH];
         sourcePath = obj[TP.SOURCE_PATH];
+
         loadPackage = obj[TP.LOAD_PACKAGE];
+        sourcePackage = obj[TP.SOURCE_PACKAGE];
+
         loadConfig = obj[TP.LOAD_CONFIG];
+        sourceConfig = obj[TP.SOURCE_CONFIG];
     }
 
     isHandler = /^handle/.test(obj.getName());
@@ -11448,7 +11455,9 @@ function(aFunction, copySourceInfo) {
         newMethod[TP.LOAD_PATH] = loadPath;
         newMethod[TP.SOURCE_PATH] = sourcePath;
         newMethod[TP.LOAD_PACKAGE] = loadPackage;
+        newMethod[TP.SOURCE_PACKAGE] = sourcePackage;
         newMethod[TP.LOAD_CONFIG] = loadConfig;
+        newMethod[TP.SOURCE_CONFIG] = sourceConfig;
     }
 
     //  Return the new method object here - the caller already has a handle to

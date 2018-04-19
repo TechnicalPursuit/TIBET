@@ -187,7 +187,9 @@ function(aRequest) {
             aceObj[TP.LOAD_PATH] = 'inline';
             aceObj[TP.SOURCE_PATH] = 'inline';
             aceObj[TP.LOAD_CONFIG] = 'base';
+            aceObj[TP.SOURCE_CONFIG] = 'base';
             aceObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
+            aceObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
 
             thisref.defineDependencies('TP.extern.ace');
 

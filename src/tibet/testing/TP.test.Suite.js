@@ -287,10 +287,22 @@ TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PATH);
 TP.test.Suite.Inst.defineAttribute(TP.LOAD_PACKAGE);
 
 /**
+ * What is the path of the original source package that loaded this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PACKAGE);
+
+/**
  * What is the name of the config that loaded this suite?
  * @type {String}
  */
 TP.test.Suite.Inst.defineAttribute(TP.LOAD_CONFIG);
+
+/**
+ * What is the name of the original source config that loaded this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.SOURCE_CONFIG);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -943,12 +955,16 @@ function(target, suiteName, suiteFunc) {
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
     this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
     this.$set(TP.LOAD_PACKAGE, TP.boot[TP.LOAD_PACKAGE]);
+    this.$set(TP.SOURCE_PACKAGE, TP.boot[TP.SOURCE_PACKAGE]);
     this.$set(TP.LOAD_CONFIG, TP.boot[TP.LOAD_CONFIG]);
+    this.$set(TP.SOURCE_CONFIG, TP.boot[TP.SOURCE_CONFIG]);
 
     suiteFunc[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
     suiteFunc[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
     suiteFunc[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
+    suiteFunc[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
     suiteFunc[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
+    suiteFunc[TP.SOURCE_CONFIG] = TP.boot[TP.SOURCE_CONFIG];
 
     //  Set up a handler for unhandled rejections. We need this because if we
     //  have code outside of the test harness that is using Promises, we need to

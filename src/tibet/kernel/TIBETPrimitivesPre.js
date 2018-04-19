@@ -7347,6 +7347,48 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectGetSourceConfig',
+function(anObject) {
+
+    /**
+     * @method objectGetSourceConfig
+     * @summary Returns the module target from which the object's node was
+     *     sourced - that is, the config that it belonged to before any bundling
+     *     or rollup processing.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The module target for the object's node.
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    return anObject[TP.SOURCE_CONFIG];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectGetSourcePackage',
+function(anObject) {
+
+    /**
+     * @method objectGetSourcePackage
+     * @summary Returns the package name from which the script defining the
+     *     object's node was sourced - that is, the package that it belonged to
+     *     before any bundling or rollup processing.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The module name for the object's node.
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    return anObject[TP.SOURCE_PACKAGE];
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectGetSourcePath',
 function(anObject) {
 

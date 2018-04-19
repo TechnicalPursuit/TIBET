@@ -488,20 +488,33 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 
     var currentLoadPath,
         currentSourcePath,
+
         currentLoadPackage,
-        currentLoadConfig;
+        currentLoadConfig,
+
+        currentSourcePackage,
+        currentSourceConfig;
 
     currentLoadPath = TP.boot[TP.LOAD_PATH];
     currentSourcePath = TP.boot[TP.SOURCE_PATH];
+
     currentLoadPackage = TP.boot[TP.LOAD_PACKAGE];
     currentLoadConfig = TP.boot[TP.LOAD_CONFIG];
 
+    currentSourcePackage = TP.boot[TP.SOURCE_PACKAGE];
+    currentSourceConfig = TP.boot[TP.SOURCE_CONFIG];
+
     TP.boot[TP.LOAD_PATH] = '';
     TP.boot[TP.SOURCE_PATH] = '';
+
     TP.boot[TP.LOAD_PACKAGE] = '';
     TP.boot[TP.LOAD_CONFIG] = '';
 
-    //  Go ahead and instrument the builtins by 'defining' them, according to TIBET
+    TP.boot[TP.SOURCE_PACKAGE] = '';
+    TP.boot[TP.SOURCE_CONFIG] = '';
+
+    //  Go ahead and instrument the builtins by 'defining' them, according to
+    //  TIBET
 
     //  Array.Type.defineMethod('from', Array.from); // E6
     Array.Type.defineMethod('isArray', Array.isArray);
@@ -764,8 +777,12 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
     //  Restore the real load information
     TP.boot[TP.LOAD_PATH] = currentLoadPath;
     TP.boot[TP.SOURCE_PATH] = currentSourcePath;
+
     TP.boot[TP.LOAD_PACKAGE] = currentLoadPackage;
     TP.boot[TP.LOAD_CONFIG] = currentLoadConfig;
+
+    TP.boot[TP.SOURCE_PACKAGE] = currentSourcePackage;
+    TP.boot[TP.SOURCE_CONFIG] = currentSourceConfig;
 
 }());
 
