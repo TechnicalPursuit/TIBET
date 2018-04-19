@@ -7397,7 +7397,7 @@ function(anObject) {
      * @summary Returns the path to the original source file, before any
      *     bundling or rollup processing, where the object resides.
      * @param {Object} anObject The object to query.
-     * @returns {String} The load path where the receiver can be found.
+     * @returns {String} The source path where the receiver can be found.
      */
 
     var obj;
