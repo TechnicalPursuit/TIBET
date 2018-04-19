@@ -2335,8 +2335,10 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 //  Cache for TIBET Formatted URIs. We look these up a lot during booting.
 TP.boot.$$tibetURIS = {};
 
-//  Cache for TIBET path keys. We don't need to compute these each time.
-TP.boot.$$pathKeys = [];
+//  Cache for TIBET path keys. We don't need to compute these each time. Note
+//  that this is set to null because of the logic in the
+//  TP.boot.$uriInTIBETFormat method.
+TP.boot.$$pathKeys = null;
 
 //  ----------------------------------------------------------------------------
 
