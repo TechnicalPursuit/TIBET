@@ -31,6 +31,7 @@
             parsers,
             passport,
             jwt,
+            compareProfileItem,
             strategy,
             secret,
             msg,
@@ -366,6 +367,72 @@
         //  ---
 
         /**
+         *
+         */
+        compareProfileItem = function(profiled, decoded, comparator) {
+            var join,
+                failed;
+
+            //  No profiled value to check? Success.
+            if (TDS.notValid(profiled)) {
+                return true;
+            }
+
+            //  There's a profiled item...but no token value. Failure.
+            if (TDS.notValid(decoded)) {
+                return false;
+            }
+
+            //  Make sure we're comparing arrays, not different types.
+            /* eslint-disable no-param-reassign */
+            if (!Array.isArray(profiled)) {
+                profiled = profiled.split(',').map(function(item) {
+                    return item.trim();
+                });
+            }
+
+            if (!Array.isArray(decoded)) {
+                decoded = decoded.split(',').map(function(item) {
+                    return item.trim();
+                });
+            }
+            /* eslint-enable no-param-reassign */
+
+            //  Assume failure, it's the most secure default.
+            failed = true;
+
+            //  Default to the most restrictive form where all elements in the
+            //  profiled value must be found in the decoded value.
+            join = comparator || 'AND';
+            join = join.toUpperCase();
+
+            if (join === 'AND') {
+                //  All values in profiled list must appear in decoded.
+                failed = profiled.some(function(item) {
+                    return decoded.indexOf(item) === -1;
+                });
+            } else if (join === 'OR') {
+                //  At least one value in profiled list must appear in decoded.
+                failed = !profiled.some(function(item) {
+                    return decoded.indexOf(item) !== -1;
+                });
+            } else if (join === 'NOT') {
+                //  No values in the profiled list can appear in decoded.
+                failed = false;
+                profiled.forEach(function(item) {
+                    if (decoded.indexOf(item) !== -1) {
+                        failed = true;
+                    }
+                });
+            } else {
+                logger.error('Invalid profile comparator: ' + join);
+                failed = true;
+            }
+
+            return !failed;
+        };
+
+        /**
          * Creates a middleware function which will verify that a particular JWT
          * token matches a particular user profile (org, unit, role).
          * @param {Object} profile An object containing an optional org, unit,
@@ -398,48 +465,31 @@
                 }
 
                 jwt.verify(token, secret, function(err, decoded) {
-                    var missing;
-
                     if (err) {
                         res.status(401);
                         res.send('{ok: false}');
                         return;
                     }
 
-                    logger.info('token: ' + JSON.stringify(decoded));
+                    // logger.info('token: ' + JSON.stringify(decoded));
 
-                    //  TODO:   verify keys are in the decoded claims list...
-                    if (org && decoded.org !== org) {
+                    if (!compareProfileItem(org, decoded.org, profile.orgJoin)) {
                         res.status(401);
                         res.send('{ok: false}');
                         return;
                     }
 
-                    if (unit && decoded.unit !== unit) {
+                    if (!compareProfileItem(unit, decoded.unit, profile.unitJoin)) {
                         res.status(401);
                         res.send('{ok: false}');
                         return;
                     }
 
-                    //  Role is an array of roles so we need to confirm they all
-                    //  exist (currently we don't support 'any' or expressions.
-                    if (role) {
-                        if (!decoded.role) {
+                    if (!compareProfileItem(role, decoded.role, profile.roleJoin)) {
                             res.status(401);
                             res.send('{ok: false}');
                             return;
                         }
-
-                        missing = role.some(function(item) {
-                            return decoded.role.indexOf(item) === -1;
-                        });
-
-                        if (missing) {
-                            res.status(401);
-                            res.send('{ok: false}');
-                            return;
-                        }
-                    }
 
                     next();
                 });
