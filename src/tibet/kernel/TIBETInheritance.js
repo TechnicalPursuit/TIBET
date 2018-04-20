@@ -8324,8 +8324,25 @@ function() {
         dependencies = TP.ac();
     }
 
-    //  Second, add ourself
-    dependencies.push(this);
+    //  Second, add ourself. Note that if we have our package associated with us
+    //  then we want the entire package to be considered as a dependency.
+    if (this.hasOwnPackage()) {
+
+        //  Note here how we hardcode 'base' as the source config. This is so
+        //  that when package dependencies are computed, our 'whole package'
+        //  dependency will report in a way that the whole base of our package
+        //  is included.
+        dependencies.push({
+            wholePackageInfo: true,
+            $$loadPackage: this[TP.LOAD_PACKAGE],
+            $$loadConfig: this[TP.LOAD_CONFIG],
+            $$srcPackage: this[TP.SOURCE_PACKAGE],
+            $$srcConfig: 'base',
+            $$oid: this[TP.SOURCE_PACKAGE] + '@base'
+        });
+    } else {
+        dependencies.push(this);
+    }
 
     //  Third, add the dependencies of the direct supertype
     superType = this.getSupertype();
