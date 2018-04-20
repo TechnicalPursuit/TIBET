@@ -8283,6 +8283,8 @@ function(attributeName, includeSupertypes) {
 });
 
 //  ------------------------------------------------------------------------
+//  Dependency Management
+//  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getDependencies',
 function() {
