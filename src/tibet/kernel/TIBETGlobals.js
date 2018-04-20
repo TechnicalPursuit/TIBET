@@ -1033,7 +1033,8 @@ TP.STDIO = 'tsh_stdio';
 //  ----
 
 TP.EXCLUDE_INVOCATION_TRACKED_PACKAGES = [
-    /tibet_kernel.xml@vm/
+    /tibet_kernel.xml@vm/,
+    /~app|APP\./
 ];
 
 TP.EXCLUDE_INVOCATION_TRACKED_PATHS = [
