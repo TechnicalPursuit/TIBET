@@ -28,6 +28,9 @@
     <resource href="system_alert.xhtml"/>
     <resource href="system_confirm.xhtml"/>
     <resource href="system_prompt.xhtml"/>
+
+    <resource href="TP.xctrls.dialog.less"/>
+    <resource href="../themes/tpi/TP.xctrls.dialog_tpi.less"/>
 </config>
 
 <config id="tests">

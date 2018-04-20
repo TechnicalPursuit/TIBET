@@ -23,6 +23,9 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.tooltip.xhtml"/>
+
+    <resource href="TP.xctrls.tooltip.less"/>
+    <resource href="../themes/tpi/TP.xctrls.tooltip_tpi.less"/>
 </config>
 
 <config id="tests">

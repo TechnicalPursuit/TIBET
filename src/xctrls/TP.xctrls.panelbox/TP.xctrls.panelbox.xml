@@ -22,6 +22,8 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.panelbox.xhtml"/>
+
+    <resource href="TP.xctrls.panelbox.less"/>
 </config>
 
 <config id="tests">

@@ -22,6 +22,8 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.hint.xhtml"/>
+
+    <resource href="TP.xctrls.hint.less"/>
 </config>
 
 <config id="tests">

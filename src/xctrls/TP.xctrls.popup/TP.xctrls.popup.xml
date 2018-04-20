@@ -23,6 +23,8 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.popup.xhtml"/>
+
+    <resource href="TP.xctrls.popup.less"/>
 </config>
 
 <config id="tests">

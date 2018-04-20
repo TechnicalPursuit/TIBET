@@ -22,6 +22,8 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.curtain.xhtml"/>
+
+    <resource href="TP.xctrls.curtain.less"/>
 </config>
 
 <config id="tests">
