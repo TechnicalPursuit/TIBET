@@ -8415,6 +8415,41 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('hasOwnPackage',
+function() {
+
+    /**
+     * @method hasOwnPackage
+     * @summary Returns whether or not the receiver has it's own 'package' (i.e.
+     *     bundle) associated with it. This will usually report 'true' for the
+     *     'main type' associated with a bundle package.
+     * @returns {Boolean} Whether or not the receiver has it's own 'package'.
+     */
+
+    var sourcePackagePath,
+
+        localPackagePath,
+        localPackageName;
+
+    //  Grab the *source* package and make sure it's real.
+    sourcePackagePath = this[TP.SOURCE_PACKAGE];
+    if (TP.isEmpty(sourcePackagePath)) {
+        return false;
+    }
+
+    //  Slice down to just the local package name without the extension.
+    localPackagePath = sourcePackagePath.slice(
+                            sourcePackagePath.lastIndexOf('/') + 1);
+    localPackageName = localPackagePath.slice(
+                            0, localPackagePath.lastIndexOf('.'));
+
+    //  If the local package name is equal to this type's name, then return true
+    //  otherwise return false.
+    return localPackageName === this.getName();
+});
+
+//  ------------------------------------------------------------------------
 //  Attribute Facets
 //  ------------------------------------------------------------------------
 
