@@ -461,7 +461,8 @@ helpers.rollup = function(make, options) {
     if (options.brotli) {
 
         if (!iltorb) {
-            make.warn('Ignoring brotli flag. Module `iltorb` not installed.');
+            make.warn('Ignoring brotli flag. Module `iltorb` not installed' +
+                        ' in the TIBET library.');
             return promise;
         }
 
