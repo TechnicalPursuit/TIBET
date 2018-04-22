@@ -1258,7 +1258,6 @@ function(aSignal, statusOutID) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    /*
     var statID,
 
         hudWin,
@@ -1271,6 +1270,11 @@ function(aSignal, statusOutID) {
         arr,
         evt,
 
+        keyCode,
+        unicodeCharCode,
+
+        hasModifier,
+
         keyboardStatusTPElem,
         mouseStatusTPElem,
 
@@ -1280,6 +1284,7 @@ function(aSignal, statusOutID) {
 
     hudWin = this.getNativeWindow();
 
+    /*
     //  TODO: This was disabled in original version
 
     //  ---
@@ -1316,6 +1321,7 @@ function(aSignal, statusOutID) {
     }
 
     //  TODO-END
+    */
 
     keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
     mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
@@ -1329,7 +1335,12 @@ function(aSignal, statusOutID) {
         if (TP.canInvoke(aSignal, 'getEvent') &&
             TP.isEvent(evt = aSignal.getEvent())) {
 
+            keyCode = TP.eventGetKeyCode(evt);
+            unicodeCharCode = evt.$unicodeCharCode;
+
             arr = TP.ac();
+
+            hasModifier = false;
 
             //  Sometimes the virtual key name will have 'Ctrl', 'Shift', etc.
             //  as part of the name - we don't want to repeat it. So we use this
@@ -1337,21 +1348,30 @@ function(aSignal, statusOutID) {
             virtKey = TP.core.Keyboard.getEventVirtualKey(evt);
             if (!/Ctrl/i.test(virtKey)) {
                 arr.push(TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null);
+                hasModifier = true;
             }
             if (!/Alt/i.test(virtKey)) {
                 arr.push(TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null);
+                hasModifier = true;
             }
             if (!/Meta/i.test(virtKey)) {
                 arr.push(TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null);
+                hasModifier = true;
             }
             if (!/Shift/i.test(virtKey)) {
                 arr.push(TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null);
+                hasModifier = true;
+            }
+
+            if (hasModifier && TP.isEmpty(unicodeCharCode)) {
+                return this;
             }
 
             arr.push(
                 TP.core.Keyboard.getEventVirtualKey(evt),
-                TP.eventGetKeyCode(evt),
-                evt.$unicodeCharCode);
+                keyCode,
+                unicodeCharCode);
+
             arr.compact();
 
             if (TP.isEmpty(arr.last())) {
@@ -1381,17 +1401,17 @@ function(aSignal, statusOutID) {
                                 null,
                                 'mouseInfo');
                     }
+                }.bind(this);
 
-                }.bind(this).fork(      //  TODO: fork is obsolete. redo.
-                    TP.ifInvalid(
-                        TP.sys.cfg('sherpa.readout_mouse_reset_time'), 1000));
+                setTimeout(
+                    timer,
+                    TP.sys.cfg('sherpa.readout_mouse_reset_time', 1000));
+
                 this.$set('statusReadoutTimer', timer, false);
             }
         } else {
-            keyboardStatusTPElem.clearTextContent();
+            keyboardStatusTPElem.empty();
         }
-
-        mouseStatusTPElem.hide();
     }
 
     //  ---
@@ -1411,12 +1431,9 @@ function(aSignal, statusOutID) {
 
             mouseStatusTPElem.setTextContent(str);
         } else {
-            mouseStatusTPElem.clearTextContent();
+            mouseStatusTPElem.empty();
         }
-
-        mouseStatusTPElem.show();
     }
-    */
 
     return this;
 });
