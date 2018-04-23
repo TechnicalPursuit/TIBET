@@ -617,11 +617,6 @@ sherpa|hud:not([pclass|closed]) #center {
     cursor: pointer;
 }
 
-#south[pclass|closed] #addsnippet {
-
-    display: none;
-}
-
 #south #addsnippet {
 
     position: absolute;
@@ -640,6 +635,11 @@ sherpa|hud:not([pclass|closed]) #center {
     background-image: url("~ide_root/media/ic_add_circle_outline_black_24px.svg");
 
     cursor: pointer;
+}
+
+#south[pclass|closed] #addsnippet {
+
+    display: none;
 }
 
 #south [name="outputmode"].indicator {
