@@ -23,9 +23,6 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.list.xhtml"/>
-
-    <resource href="TP.xctrls.list.less"/>
-    <resource href="../themes/tpi/TP.xctrls.list_tpi.less"/>
 </config>
 
 <config id="tests">

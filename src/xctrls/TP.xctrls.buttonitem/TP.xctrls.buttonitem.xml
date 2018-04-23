@@ -23,9 +23,6 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.buttonitem.xhtml"/>
-
-    <resource href="TP.xctrls.buttonitem.less"/>
-    <resource href="../themes/tpi/TP.xctrls.buttonitem_tpi.less"/>
 </config>
 
 <config id="tests">

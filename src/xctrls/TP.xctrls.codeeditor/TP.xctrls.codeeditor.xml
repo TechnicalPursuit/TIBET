@@ -22,8 +22,6 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.codeeditor.xhtml"/>
-
-    <resource href="TP.xctrls.codeeditor.css"/>
 </config>
 
 <config id="tests">
