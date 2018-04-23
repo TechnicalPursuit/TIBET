@@ -123,6 +123,12 @@ CLI.GULP_FILE = 'gulpfile.js';
 
 
 /**
+ * Constant for string joins. This *must* match TP.JOIN from the kernel.
+ * @type {string}
+ */
+CLI.JOIN = '__JOIN__';
+
+/**
  * The default `make` file for TIBET projects. Functions exported from this file
  * are potential fallbacks for cli commands. NOTE that this is targeted at the
  * launch root location, not app root or lib root.
@@ -162,6 +168,14 @@ CLI.PARSE_OPTIONS = {
     }
 };
 /* eslint-enable quote-props */
+
+
+/**
+ * Constants used in conjunction with boot system stages.
+ * @type {string}
+ */
+CLI.PHASE_ONE = 'import_phase_one';
+CLI.PHASE_TWO = 'import_phase_two';
 
 
 /**

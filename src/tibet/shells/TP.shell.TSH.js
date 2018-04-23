@@ -2166,11 +2166,19 @@ function(aRequest) {
         if (TP.canInvoke(itemtype, 'computeResourceURI')) {
             val = itemtype.computeResourceURI('template');
             if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                arr.push(val);
+                arr.push(
+                    val + TP.JOIN +
+                    itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                    itemtype.getName()
+                );
             }
             val = itemtype.computeResourceURI('style');
             if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                arr.push(val);
+                arr.push(
+                    val + TP.JOIN +
+                    itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                    itemtype.getName()
+                );
             }
 
             //  Now iterate on the known themes...
@@ -2180,33 +2188,57 @@ function(aRequest) {
                 function(theme) {
                     val = itemtype.computeResourceURI('style_' + theme);
                     if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                        arr.push(val);
+                        arr.push(
+                            val + TP.JOIN +
+                            itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                            itemtype.getName()
+                        );
                     }
                 });
 
             if (raw) {
                 val = itemtype.computeResourceURI('source');
                 if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                    arr.push(val);
+                    arr.push(
+                        val + TP.JOIN +
+                        itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                        itemtype.getName()
+                    );
                 }
 
                 val = itemtype.computeResourceURI('tests');
                 if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                    arr.push(val);
+                    arr.push(
+                        val + TP.JOIN +
+                        itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                        itemtype.getName()
+                    );
                 }
             }
         }
     });
 
-    arr.unique().compact();
+    arr = arr.unique().compact().map(
+        function(item) {
+            delete item.$$oid;
+            return item;
+        });
 
     //  PhantomJS/CLI support requires output line-by-line.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
 
         //  Reprocess paths to void ~Type/* format. That won't resolve in CLI.
         arr.forEach(function(result) {
-            aRequest.stdout(TP.uriInTIBETFormat(TP.uriExpandPath(result)));
+            var parts,
+                res;
+
+            parts = result.split(TP.JOIN);
+            parts[0] = TP.uriInTIBETFormat(TP.uriExpandPath(parts[0]));
+            res = parts.join(TP.JOIN);
+
+            aRequest.stdout(res);
         });
+
         return aRequest.complete();
     }
 

@@ -481,32 +481,53 @@ Cmd.prototype.processResources = function() {
     libpath = CLI.expandPath('~lib');
 
     helper = function(resource) {
-        var fullpath;
+        var fullpath,
+            uri,
+            stage;
+
+        //  Could be a JSON struct with a 'uri' property or a String
+        uri = Array.isArray(resource) ? resource[0] : resource;
+        stage = Array.isArray(resource) ? resource[1] : null;
+
+        if (!uri) {
+            return false;
+        }
 
         //  Check for paths that will expand properly, silence any errors.
-        fullpath = CLI.expandPath(resource, true);
+        fullpath = CLI.expandPath(uri, true);
         if (!fullpath) {
-            cmd.debug('filtered ' + resource + '. No fullpath...');
+            cmd.debug('filtered ' + uri + '. No fullpath...');
             return false;
         }
 
         //  Didn't expand? ignore it. Didn't process properly.
-        if (fullpath === resource) {
-            cmd.debug('filtered ' + resource + '. Path did not expand.');
+        if (fullpath === uri) {
+            cmd.debug('filtered ' + uri + '. Path did not expand.');
             return false;
         }
 
         //  filter based on context
         if (CLI.inProject() && cmd.options.context !== 'lib') {
-            //  In lib...and not explicitly specified in app context...
-            if (fullpath.indexOf(libpath) === 0 &&
-                    cmd.specified.indexOf(resource) === -1) {
-                cmd.debug('filtered ' + resource + '. In project, lib resource.');
+            if (stage) {
+                if (stage === CLI.PHASE_ONE) {
+                    //  In lib...and not explicitly specified in app context...
+                    cmd.debug('filtered ' + uri + '. In project, lib resource.');
+                    return false;
+                }
+            } else if (fullpath.indexOf(libpath) === 0 &&
+                        cmd.specified.indexOf(uri) === -1) {
+                //  In lib...and not explicitly specified in app context...
+                cmd.debug('filtered ' + uri + '. In project, lib resource.');
                 return false;
             }
         } else {
-            if (fullpath.indexOf(libpath) !== 0) {
-                cmd.debug('filtered ' + resource + '. Non-library resource.');
+            if (stage) {
+                if (stage === CLI.PHASE_TWO) {
+                    cmd.debug('filtered ' + uri + '. Non-library resource.');
+                    return false;
+                }
+            } else if (fullpath.indexOf(libpath) !== 0) {
+                cmd.debug('filtered ' + uri + '. Non-library resource.');
                 return false;
             }
         }
@@ -514,7 +535,7 @@ Cmd.prototype.processResources = function() {
         //  deal with any filtering pattern
         if (CLI.notEmpty(filter)) {
             if (!filter.test(fullpath)) {
-                cmd.debug('filtered ' + resource + '. Filter match failed.');
+                cmd.debug('filtered ' + uri + '. Filter match failed.');
                 return false;
             }
         }
@@ -524,17 +545,18 @@ Cmd.prototype.processResources = function() {
             return true;
         } else {
             if (packagePhase) {
-                cmd.error(resource + ' (404) ');
+                cmd.error(uri + ' (404) ');
             }
 
-            cmd.debug('filtered ' + resource + '. Non-existent ' + fullpath);
+            cmd.debug('filtered ' + uri + '. Non-existent ' + fullpath);
             return false;
         }
     };
 
     if (!this.options.raw) {
-        this.info('Filtering ' +
-            (this.computed.length + this.specified.length) + ' potential resources...');
+        this.info('Filtering ' + this.computed.length + ' computed' +
+                    ' and ' + this.specified.length + ' specified' +
+                    ' resources...');
     }
 
     //  Produce a filtered list by expanding the resource path and checking for
@@ -550,13 +572,17 @@ Cmd.prototype.processResources = function() {
 
     //  Normalize the paths to their best form.
     this.filtered = this.filtered.map(function(resource) {
-        return CLI.getVirtualPath(CLI.expandPath(resource));
+        var uri;
+
+        uri = Array.isArray(resource) ? resource[0] : resource;
+        return CLI.getVirtualPath(CLI.expandPath(uri));
     });
 
     if (!this.options.build) {
 
         if (!this.options.raw) {
-            this.info('Found ' + this.filtered.length + ' concrete resources...');
+            this.info(
+                'Found ' + this.filtered.length + ' concrete resources...');
         }
 
         this.filtered.forEach(function(resource) {
@@ -952,8 +978,17 @@ Cmd.prototype.stdout = function(data) {
     str = ('' + data).trim();
     arr = str.split('\n');
     arr.forEach(function(line) {
-        if (line.charAt(0) === '~') {
-            cmd.computed.push(line);
+        var obj;
+
+        //  Obj will be an Array with 3 parts:
+        //  - The virtualized filename
+        //  - The load stage that the file loaded in (CLI.PHASE_ONE or
+        //  CLI.PHASE_TWO).
+        //  - The name of the owner type that the resource is owned by.
+        obj = line.split(CLI.JOIN);
+
+        if (obj[0].charAt(0) === '~') {
+            cmd.computed.push(obj);
         } else {
             //  NOTE we manually colorize since color is off to phantomjs to
             //  avoid problems trying to parse the output data.
