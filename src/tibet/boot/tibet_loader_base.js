@@ -10006,9 +10006,10 @@ TP.boot.$expandConfig = function(anElement, configName) {
                             key = src + '@' + config;
                             if (TP.boot.$$configs.indexOf(key) !== -1) {
                                 //  A duplicate/circular reference of some type.
-                                TP.boot.$stderr(
+                                TP.boot.$stdout(
                                     'Ignoring duplicate package reference to: ' +
-                                    key);
+                                    key,
+                                    TP.WARN);
                                 break;
                             }
 
