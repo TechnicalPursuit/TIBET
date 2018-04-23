@@ -106,6 +106,12 @@
         //  directories/files that would sidestep the routes for / and login.
         if (TDS.cfg('boot.use_login')) {
             pubs = ['TIBET-INF', 'media', 'styles'];
+
+            //  If we're in development mode, then we also allow access to the
+            //  'src' directory.
+            if (TDS.getEnv() === 'development') {
+                pubs.push('src');
+            }
             pubs.forEach(function(pub) {
                 app.use('/' + pub, express.static(path.join(appRoot, pub)));
             });
