@@ -6,7 +6,7 @@
 
         make.helpers.resource_build(make, {
             pkg: '~lib_cfg/TIBET.xml',
-            config: 'developer'
+            config: 'contributor'
         }).then(
         function(output) {
             if (output) {
