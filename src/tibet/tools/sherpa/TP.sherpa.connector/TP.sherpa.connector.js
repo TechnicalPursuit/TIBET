@@ -324,7 +324,7 @@ function(aSignal) {
 
     /**
      * @method handleDOMDragUp
-     * @summary Handles notification of when the receiver needs to end it mouse
+     * @summary Handles notification of when the receiver needs to end its mouse
      *     tracking because the user has released the mouse button.
      * @param {TP.sig.DOMDragUp} aSignal The TIBET signal which triggered
      *     this method.
