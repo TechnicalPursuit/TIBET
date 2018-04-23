@@ -2524,7 +2524,13 @@ function(aRequest) {
 
     //  Tell the main Sherpa object that it should go ahead and process DOM
     //  mutations to the source DOM.
-    if (TP.sys.hasFeature('sherpa')) {
+
+    //  Note here how we also check to make sure we have a real Sherpa object.
+    //  That's because this code can sometimes run in a 'packaging' environment
+    //  where the command is being invoked, hasFeature('Sherpa') is true,
+    //  TP.sys.cfg('sherpa.enabled') is true, but no real Sherpa has been
+    //  allocated
+    if (TP.sys.hasFeature('sherpa') && TP.isValid(TP.bySystemId('Sherpa'))) {
         TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
     }
 
