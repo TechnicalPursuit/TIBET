@@ -437,7 +437,16 @@ Cmd.prototype.getProfile = function() {
  * @returns {String} The profile config ID.
  */
 Cmd.prototype.getProfileConfig = function() {
-    return 'reflection';
+
+    var config;
+
+    if (CLI.notEmpty(this.options.profile)) {
+        config = this.options.profile.split('@')[1];
+    } else if (CLI.notEmpty(this.options.config)) {
+        return this.options.config;
+    }
+
+    return config || 'reflection';
 };
 
 
@@ -451,7 +460,9 @@ Cmd.prototype.getProfileRoot = function() {
     var profile;
 
     if (CLI.notEmpty(this.options.profile)) {
-        profile = this.options.profile;
+        profile = this.options.profile.split('@')[0];
+    } else if (CLI.notEmpty(this.options.package)) {
+        return this.options.package;
     }
 
     if (CLI.inProject()) {
