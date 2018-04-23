@@ -185,10 +185,12 @@ function(aRequest) {
             //  executed because it will try to devine these settings from the
             //  loader, which is no longer involved - the app is running.
             aceObj[TP.LOAD_PATH] = 'inline';
-            aceObj[TP.SOURCE_PATH] = 'inline';
             aceObj[TP.LOAD_CONFIG] = 'base';
-            aceObj[TP.SOURCE_CONFIG] = 'base';
             aceObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
+            aceObj[TP.LOAD_STAGE] = TP.PHASE_TWO;
+
+            aceObj[TP.SOURCE_PATH] = 'inline';
+            aceObj[TP.SOURCE_CONFIG] = 'base';
             aceObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
 
             thisref.defineDependencies('TP.extern.ace');

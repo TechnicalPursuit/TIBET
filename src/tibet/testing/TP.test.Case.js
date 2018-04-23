@@ -85,28 +85,34 @@ TP.test.Case.Inst.defineAttribute('$executedAssertion');
 TP.test.Case.Inst.defineAttribute(TP.LOAD_PATH);
 
 /**
- * What is the original source location for this test case?
- * @type {String}
- */
-TP.test.Case.Inst.defineAttribute(TP.SOURCE_PATH);
-
-/**
  * What is the path of the package that loaded this case?
  * @type {String}
  */
 TP.test.Case.Inst.defineAttribute(TP.LOAD_PACKAGE);
 
 /**
- * What is the path of the original source package that loaded this case?
- * @type {String}
- */
-TP.test.Case.Inst.defineAttribute(TP.SOURCE_PACKAGE);
-
-/**
  * What is the name of the config that loaded this case?
  * @type {String}
  */
 TP.test.Case.Inst.defineAttribute(TP.LOAD_CONFIG);
+
+/**
+ * What is the stage that loaded this case? Phase one or phase two?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.LOAD_STAGE);
+
+/**
+ * What is the original source location for this test case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.SOURCE_PATH);
+
+/**
+ * What is the path of the original source package that loaded this case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.SOURCE_PACKAGE);
 
 /**
  * What is the name of the original source config that loaded this case?
@@ -368,10 +374,12 @@ function(suite, caseName, caseFunc) {
      */
 
     var loadPath,
-        sourcePath,
         loadPackage,
-        sourcePackage,
         loadConfig,
+        loadStage,
+
+        sourcePath,
+        sourcePackage,
         sourceConfig,
 
         thisref;
@@ -391,10 +399,12 @@ function(suite, caseName, caseFunc) {
     this.$set('caseFunc', caseFunc);
 
     loadPath = suite[TP.LOAD_PATH];
-    sourcePath = suite[TP.SOURCE_PATH];
     loadPackage = suite[TP.LOAD_PACKAGE];
-    sourcePackage = suite[TP.SOURCE_PACKAGE];
     loadConfig = suite[TP.LOAD_CONFIG];
+    loadStage = suite[TP.LOAD_STAGE];
+
+    sourcePath = suite[TP.SOURCE_PATH];
+    sourcePackage = suite[TP.SOURCE_PACKAGE];
     sourceConfig = suite[TP.SOURCE_CONFIG];
 
     //  Track load information to support context/file test filtering. NOTE that
@@ -402,18 +412,22 @@ function(suite, caseName, caseFunc) {
     //  invokes the suite function the 'it' calls are not run and hence the case
     //  won't reflect where it was truly defined.
     this.$set(TP.LOAD_PATH, loadPath);
-    this.$set(TP.SOURCE_PATH, sourcePath);
     this.$set(TP.LOAD_PACKAGE, loadPackage);
-    this.$set(TP.SOURCE_PACKAGE, sourcePackage);
     this.$set(TP.LOAD_CONFIG, loadConfig);
+    this.$set(TP.LOAD_STAGE, loadStage);
+
+    this.$set(TP.SOURCE_PATH, sourcePath);
+    this.$set(TP.SOURCE_PACKAGE, sourcePackage);
     this.$set(TP.SOURCE_CONFIG, sourceConfig);
 
     //  Track load information to support context/file test filtering.
     caseFunc[TP.LOAD_PATH] = loadPath;
-    caseFunc[TP.SOURCE_PATH] = sourcePath;
     caseFunc[TP.LOAD_PACKAGE] = loadPackage;
-    caseFunc[TP.SOURCE_PACKAGE] = sourcePackage;
     caseFunc[TP.LOAD_CONFIG] = loadConfig;
+    caseFunc[TP.LOAD_STAGE] = loadStage;
+
+    caseFunc[TP.SOURCE_PATH] = sourcePath;
+    caseFunc[TP.SOURCE_PACKAGE] = sourcePackage;
     caseFunc[TP.SOURCE_CONFIG] = sourceConfig;
 
     //  Capture the case (this) as the TP.OWNER of the case Function. This will
@@ -816,10 +830,12 @@ function(oldFunction, newFunction, copySourceInfo) {
     //  lost.
     if (TP.notFalse(copySourceInfo)) {
         newFunction[TP.LOAD_PATH] = oldFunction[TP.LOAD_PATH];
-        newFunction[TP.SOURCE_PATH] = oldFunction[TP.SOURCE_PATH];
         newFunction[TP.LOAD_PACKAGE] = oldFunction[TP.LOAD_PACKAGE];
-        newFunction[TP.SOURCE_PACKAGE] = oldFunction[TP.SOURCE_PACKAGE];
         newFunction[TP.LOAD_CONFIG] = oldFunction[TP.LOAD_CONFIG];
+        newFunction[TP.LOAD_STAGE] = oldFunction[TP.LOAD_STAGE];
+
+        newFunction[TP.SOURCE_PATH] = oldFunction[TP.SOURCE_PATH];
+        newFunction[TP.SOURCE_PACKAGE] = oldFunction[TP.SOURCE_PACKAGE];
         newFunction[TP.SOURCE_CONFIG] = oldFunction[TP.SOURCE_CONFIG];
     }
 

@@ -62,6 +62,7 @@ TP.StringProto = String.prototype;
 TP.DISPLAY = 'displayName';     //  What debuggers want to see.
 TP.NAME = '$$name';
 TP.ID = '$$id';
+TP.OID = '$$oid';
 TP.OWNER = '$$owner';
 TP.TRACK = '$$track';
 TP.DESCRIPTOR = '$$descriptor';
@@ -80,19 +81,28 @@ TP.TYPE_LOCAL_TRACK = 'TypeLocal';
 //  load metadata constants
 
 TP.LOAD_PATH = '$$loadPath';
-TP.SOURCE_PATH = '$$srcPath';
 TP.LOAD_PACKAGE = '$$loadPackage';
-TP.SOURCE_PACKAGE = '$$srcPackage';
 TP.LOAD_CONFIG = '$$loadConfig';
+TP.LOAD_STAGE = '$$stage';
+
+TP.SOURCE_PATH = '$$srcPath';
+TP.SOURCE_PACKAGE = '$$srcPackage';
 TP.SOURCE_CONFIG = '$$srcConfig';
 
 TP.LOAD_PACKAGE_ATTR = 'load_package';
 TP.LOAD_CONFIG_ATTR = 'load_config';
+
 TP.SOURCE_PACKAGE_ATTR = 'src_package';
 TP.SOURCE_CONFIG_ATTR = 'src_config';
 
+TP.PHASE_ONE = 'import_phase_one';
+TP.PHASE_TWO = 'import_phase_two';
+
 TP.DEPENDENCIES = '$$dependencies';
 TP.USE_WHOLE_PACKAGE = function() {
+
+    var obj;
+
     if (this[TP.LOAD_PACKAGE] === null && this[TP.LOAD_CONFIG] === null) {
         /* eslint-disable no-console */
         console.error('No load information for object with keys: ' +
@@ -101,14 +111,15 @@ TP.USE_WHOLE_PACKAGE = function() {
         return {};
     }
 
-    return {
-        wholePackageInfo: true,
-        $$loadPackage: this[TP.LOAD_PACKAGE],
-        $$loadConfig: this[TP.LOAD_CONFIG],
-        $$srcPackage: this[TP.SOURCE_PACKAGE],
-        $$srcConfig: this[TP.SOURCE_CONFIG],
-        $$oid: this[TP.SOURCE_PACKAGE] + '@' + this[TP.SOURCE_CONFIG]
-    };
+    obj = {};
+
+    obj.wholePackageInfo = true;
+    obj[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
+    obj[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
+    obj[TP.LOAD_STAGE] = this[TP.LOAD_STAGE];
+    obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
+    obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
+    obj[TP.OID] = this[TP.SOURCE_PACKAGE] + '@' + this[TP.SOURCE_CONFIG];
 };
 
 TP.IS_PERSISTED = 'is_persisted';
@@ -136,12 +147,12 @@ TP.registerLoadInfo = function(anObject) {
     spath = TP.boot[TP.SOURCE_PATH] || lpath;
 
     anObject[TP.LOAD_PATH] = lpath;
-    anObject[TP.SOURCE_PATH] = spath;
-
     anObject[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
-    anObject[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
-
     anObject[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
+    anObject[TP.LOAD_STAGE] = TP.boot[TP.LOAD_STAGE];
+
+    anObject[TP.SOURCE_PATH] = spath;
+    anObject[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
     anObject[TP.SOURCE_CONFIG] = TP.boot[TP.SOURCE_CONFIG];
 };
 

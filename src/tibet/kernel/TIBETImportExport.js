@@ -556,10 +556,11 @@ function() {
                     name: methodKey,
                     invocationCount: methodBody.invocationCount,
                     loadPath: methodBody[TP.LOAD_PATH],
-                    sourcePath: methodBody[TP.SOURCE_PATH],
                     loadPackage: methodBody[TP.LOAD_PACKAGE],
-                    sourcePackage: methodBody[TP.SOURCE_PACKAGE],
                     loadConfig: methodBody[TP.LOAD_CONFIG],
+                    loadStage: methodBody[TP.LOAD_STAGE],
+                    sourcePath: methodBody[TP.SOURCE_PATH],
+                    sourcePackage: methodBody[TP.SOURCE_PACKAGE],
                     sourceConfig: methodBody[TP.SOURCE_CONFIG]
                 };
 

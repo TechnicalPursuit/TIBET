@@ -487,29 +487,29 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 (function() {
 
     var currentLoadPath,
-        currentSourcePath,
-
         currentLoadPackage,
         currentLoadConfig,
+        currentLoadStage,
 
+        currentSourcePath,
         currentSourcePackage,
         currentSourceConfig;
 
     currentLoadPath = TP.boot[TP.LOAD_PATH];
-    currentSourcePath = TP.boot[TP.SOURCE_PATH];
-
     currentLoadPackage = TP.boot[TP.LOAD_PACKAGE];
     currentLoadConfig = TP.boot[TP.LOAD_CONFIG];
+    currentLoadStage = TP.boot[TP.LOAD_STAGE];
 
+    currentSourcePath = TP.boot[TP.SOURCE_PATH];
     currentSourcePackage = TP.boot[TP.SOURCE_PACKAGE];
     currentSourceConfig = TP.boot[TP.SOURCE_CONFIG];
 
     TP.boot[TP.LOAD_PATH] = '';
-    TP.boot[TP.SOURCE_PATH] = '';
-
     TP.boot[TP.LOAD_PACKAGE] = '';
     TP.boot[TP.LOAD_CONFIG] = '';
+    TP.boot[TP.LOAD_STAGE] = '';
 
+    TP.boot[TP.SOURCE_PATH] = '';
     TP.boot[TP.SOURCE_PACKAGE] = '';
     TP.boot[TP.SOURCE_CONFIG] = '';
 
@@ -776,11 +776,11 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 
     //  Restore the real load information
     TP.boot[TP.LOAD_PATH] = currentLoadPath;
-    TP.boot[TP.SOURCE_PATH] = currentSourcePath;
-
     TP.boot[TP.LOAD_PACKAGE] = currentLoadPackage;
     TP.boot[TP.LOAD_CONFIG] = currentLoadConfig;
+    TP.boot[TP.LOAD_STAGE] = currentLoadStage;
 
+    TP.boot[TP.SOURCE_PATH] = currentSourcePath;
     TP.boot[TP.SOURCE_PACKAGE] = currentSourcePackage;
     TP.boot[TP.SOURCE_CONFIG] = currentSourceConfig;
 

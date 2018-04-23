@@ -275,28 +275,34 @@ TP.test.Suite.Inst.defineAttribute('$exclusiveCount');
 TP.test.Suite.Inst.defineAttribute(TP.LOAD_PATH);
 
 /**
- * What is the original source location for this suite?
- * @type {String}
- */
-TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PATH);
-
-/**
  * What is the path of the package that loaded this suite?
  * @type {String}
  */
 TP.test.Suite.Inst.defineAttribute(TP.LOAD_PACKAGE);
 
 /**
- * What is the path of the original source package that loaded this suite?
- * @type {String}
- */
-TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PACKAGE);
-
-/**
  * What is the name of the config that loaded this suite?
  * @type {String}
  */
 TP.test.Suite.Inst.defineAttribute(TP.LOAD_CONFIG);
+
+/**
+ * What is the stage that loaded this suite? Phase one or phase two?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.LOAD_STAGE);
+
+/**
+ * What is the original source location for this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PATH);
+
+/**
+ * What is the path of the original source package that loaded this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PACKAGE);
 
 /**
  * What is the name of the original source config that loaded this suite?
@@ -953,17 +959,21 @@ function(target, suiteName, suiteFunc) {
 
     //  Track load information to support context/file test filtering.
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
-    this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
     this.$set(TP.LOAD_PACKAGE, TP.boot[TP.LOAD_PACKAGE]);
-    this.$set(TP.SOURCE_PACKAGE, TP.boot[TP.SOURCE_PACKAGE]);
     this.$set(TP.LOAD_CONFIG, TP.boot[TP.LOAD_CONFIG]);
+    this.$set(TP.LOAD_STAGE, TP.boot[TP.LOAD_STAGE]);
+
+    this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
+    this.$set(TP.SOURCE_PACKAGE, TP.boot[TP.SOURCE_PACKAGE]);
     this.$set(TP.SOURCE_CONFIG, TP.boot[TP.SOURCE_CONFIG]);
 
     suiteFunc[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
-    suiteFunc[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
     suiteFunc[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
-    suiteFunc[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
     suiteFunc[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
+    suiteFunc[TP.LOAD_STAGE] = TP.boot[TP.LOAD_STAGE];
+
+    suiteFunc[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+    suiteFunc[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
     suiteFunc[TP.SOURCE_CONFIG] = TP.boot[TP.SOURCE_CONFIG];
 
     //  Set up a handler for unhandled rejections. We need this because if we

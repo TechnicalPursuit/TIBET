@@ -7297,6 +7297,26 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectGetLoadStage',
+function(anObject) {
+
+    /**
+     * @method objectGetLoadStage
+     * @summary Returns the stage (e.g. 'phase one' or 'phase two' that the
+     *     object loaded in.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The load stage that the receiver loaded in.
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    return anObject[TP.LOAD_STAGE];
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectGetMetadata',
 function(anObject) {
 

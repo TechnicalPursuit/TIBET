@@ -9020,6 +9020,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
                                     TP.sys.cfg('load.package', ''));
     TP.boot.$$loadNode.setAttribute('load_config',
                                     TP.sys.cfg('load.config', ''));
+    TP.boot.$$loadNode.setAttribute('load_stage',
+                                    TP.sys.cfg('load.stage', ''));
     TP.boot.$$loadNode.setAttribute('src_package',
                                     TP.sys.cfg('src.package', ''));
     TP.boot.$$loadNode.setAttribute('src_config',
@@ -9336,11 +9338,12 @@ TP.boot.$importComponents = function(loadSync) {
     TP.boot.$$loadNode = null;
 
     TP.boot.$$loadPath = null;
-    TP.boot.$$srcPath = null;
-
     TP.boot.$$loadPackage = null;
     TP.boot.$$loadConfig = null;
+    //  NB: We do *not* reset TP.boot.$$stage to null here - bad things will
+    //  happen.
 
+    TP.boot.$$srcPath = null;
     TP.boot.$$srcPackage = null;
     TP.boot.$$srcConfig = null;
 
@@ -9487,6 +9490,7 @@ TP.boot.$importComponents = function(loadSync) {
 
         TP.sys.setcfg('load.package', TP.boot.$$loadPackage);
         TP.sys.setcfg('load.config', TP.boot.$$loadConfig);
+        TP.sys.setcfg('load.stage', TP.boot.$$stage);
 
         TP.sys.setcfg('src.package', TP.boot.$$srcPackage);
         TP.sys.setcfg('src.config', TP.boot.$$srcConfig);
@@ -9509,6 +9513,7 @@ TP.boot.$importComponents = function(loadSync) {
 
                 elem.setAttribute('load_package', TP.boot.$$loadPackage);
                 elem.setAttribute('load_config', TP.boot.$$loadConfig);
+                elem.setAttribute('load_stage', TP.boot.$$stage);
 
                 elem.setAttribute('src_package', TP.boot.$$srcPackage);
                 elem.setAttribute('src_config', TP.boot.$$srcConfig);
@@ -10676,10 +10681,13 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                 TP.boot.$getCurrentPackage());
                             child.setAttribute('load_config',
                                 anElement.getAttribute('id'));
+                            child.setAttribute('load_stage',
+                                TP.boot.$$stage);
                             child.setAttribute('src_package',
                                 TP.boot.$getCurrentPackage());
                             child.setAttribute('src_config',
                                 anElement.getAttribute('id'));
+
                             result.push(child);
 
                             break;
@@ -10710,6 +10718,8 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                         TP.boot.$getCurrentPackage());
                                     child.setAttribute('load_config',
                                         anElement.getAttribute('id'));
+                                    child.setAttribute('load_stage',
+                                        TP.boot.$$stage);
 
                                     child.setAttribute('src_package',
                                         TP.boot.$getCurrentPackage());
@@ -10727,10 +10737,14 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                     TP.boot.$getCurrentPackage());
                                 child.setAttribute('load_config',
                                     anElement.getAttribute('id'));
+                                child.setAttribute('load_stage',
+                                    TP.boot.$$stage);
+
                                 child.setAttribute('src_package',
                                     TP.boot.$getCurrentPackage());
                                 child.setAttribute('src_config',
                                     anElement.getAttribute('id'));
+
                                 result.push(child);
                             }
 

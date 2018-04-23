@@ -654,7 +654,9 @@ function() {
      */
 
     var dependencies,
-        owner;
+        owner,
+
+        obj;
 
     //  First, grab whatever direct dependencies were programmed onto this
     //  object.
@@ -679,17 +681,21 @@ function() {
     //  it could've been added anywhere, so we need to push an entry that will
     //  represent the Function in the set of package dependencies.
     if (owner === TP || owner === TP.sys) {
-        dependencies.push(
-            {
-                singleSourceFileInfo: true,
-                $$loadPackage: this[TP.LOAD_PACKAGE],
-                $$loadConfig: this[TP.LOAD_CONFIG],
-                $$loadPath: this[TP.LOAD_PATH],
-                $$srcPackage: this[TP.SOURCE_PACKAGE],
-                $$srcConfig: this[TP.SOURCE_CONFIG],
-                $$srcPath: this[TP.SOURCE_PATH],
-                $$oid: this[TP.SOURCE_PATH]
-            });
+
+        obj = {};
+
+        obj.singleSourceFileInfo = true;
+        obj[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
+        obj[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
+        obj[TP.LOAD_PATH] = this[TP.LOAD_PATH];
+        obj[TP.LOAD_STAGE] = this[TP.LOAD_STAGE];
+        obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
+        obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
+        obj[TP.SOURCE_PATH] = this[TP.SOURCE_PATH];
+
+        obj[TP.OID] = this[TP.SOURCE_PATH];
+
+        dependencies.push(obj);
     }
 
     return dependencies;
@@ -8310,6 +8316,8 @@ function() {
 
     var dependencies,
 
+        obj,
+
         superType,
         traitTypes;
 
@@ -8330,18 +8338,22 @@ function() {
     //  then we want the entire package to be considered as a dependency.
     if (this.hasOwnPackage()) {
 
+        obj = {};
+
+        obj.wholePackageInfo = true;
+        obj[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
+        obj[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
+        obj[TP.LOAD_STAGE] = this[TP.LOAD_STAGE];
+        obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
+        obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
+
         //  Note here how we hardcode 'base' as the source config. This is so
         //  that when package dependencies are computed, our 'whole package'
         //  dependency will report in a way that the whole base of our package
         //  is included.
-        dependencies.push({
-            wholePackageInfo: true,
-            $$loadPackage: this[TP.LOAD_PACKAGE],
-            $$loadConfig: this[TP.LOAD_CONFIG],
-            $$srcPackage: this[TP.SOURCE_PACKAGE],
-            $$srcConfig: 'base',
-            $$oid: this[TP.SOURCE_PACKAGE] + '@base'
-        });
+        obj[TP.OID] = this[TP.SOURCE_PACKAGE] + '@base';
+
+        dependencies.push(obj);
     } else {
         dependencies.push(this);
     }
@@ -11440,12 +11452,12 @@ function(aFunction, copySourceInfo) {
         newMethod,
 
         loadPath,
-        sourcePath,
-
         loadPackage,
-        sourcePackage,
-
         loadConfig,
+        loadStage,
+
+        sourcePath,
+        sourcePackage,
         sourceConfig;
 
     if (TP.notValid(aFunction)) {
@@ -11482,12 +11494,12 @@ function(aFunction, copySourceInfo) {
     //  lost.
     if (TP.notFalse(copySourceInfo)) {
         loadPath = obj[TP.LOAD_PATH];
-        sourcePath = obj[TP.SOURCE_PATH];
-
         loadPackage = obj[TP.LOAD_PACKAGE];
-        sourcePackage = obj[TP.SOURCE_PACKAGE];
-
         loadConfig = obj[TP.LOAD_CONFIG];
+        loadStage = obj[TP.LOAD_STAGE];
+
+        sourcePath = obj[TP.SOURCE_PATH];
+        sourcePackage = obj[TP.SOURCE_PACKAGE];
         sourceConfig = obj[TP.SOURCE_CONFIG];
     }
 
@@ -11511,10 +11523,12 @@ function(aFunction, copySourceInfo) {
     //  copy over the 'path information' slots about this method.
     if (TP.notFalse(copySourceInfo)) {
         newMethod[TP.LOAD_PATH] = loadPath;
-        newMethod[TP.SOURCE_PATH] = sourcePath;
         newMethod[TP.LOAD_PACKAGE] = loadPackage;
-        newMethod[TP.SOURCE_PACKAGE] = sourcePackage;
         newMethod[TP.LOAD_CONFIG] = loadConfig;
+        newMethod[TP.LOAD_STAGE] = loadStage;
+
+        newMethod[TP.SOURCE_PATH] = sourcePath;
+        newMethod[TP.SOURCE_PACKAGE] = sourcePackage;
         newMethod[TP.SOURCE_CONFIG] = sourceConfig;
     }
 
