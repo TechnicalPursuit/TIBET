@@ -60,23 +60,62 @@
 
         /**
          */
-        Job.didFail = function(job) {
-            return job.state === '$$failed';
+        Job.didFail = function(jobOrStep) {
+            return jobOrStep.state === '$$failed';
         };
 
         /**
          */
-        Job.didSucceed = function(job) {
-            return job.state === '$$complete';
+        Job.didSucceed = function(jobOrStep) {
+            return jobOrStep.state === '$$complete';
         };
 
         /**
          */
-        Job.isComplete = function(job) {
-            return job.state === '$$complete' || job.state === '$$failed';
+        Job.getLastStep = function(job) {
+            var steps;
+
+            steps = job.steps;
+            if (!steps) {
+                return;
+            }
+
+            return steps[steps.length - 1];
         };
 
         /**
+         */
+        Job.getLastCompleteStep = function(job) {
+            var steps,
+                len,
+                i,
+                step;
+
+            steps = job.steps;
+            if (!steps) {
+                return;
+            }
+
+            len = steps.length;
+
+            for (i = len - 1; i >= 0; i--) {
+                step = steps[i];
+                //  NB: Jobs and Steps share the same status codes.
+                if (Job.isComplete(step)) {
+                    return step;
+                }
+            }
+        };
+
+        /**
+         */
+        Job.isComplete = function(jobOrStep) {
+            return jobOrStep.state === '$$complete' ||
+                    jobOrStep.state === '$$failed';
+        };
+
+        /**
+         * Gets invoked when activity has occurred on the job.
          */
         Job.notify = function(job) {
             var id,
@@ -101,6 +140,23 @@
             if (Job.isComplete(job)) {
                 Job.$$subscribers[id] = undefined;
             }
+        };
+
+        /**
+         * Invoke to remove the notifier and cease notifications
+         */
+        Job.removeNotifier = function(job) {
+            var id,
+                subscriber;
+
+            id = job._id;
+            subscriber = Job.$$subscribers[id];
+
+            if (TDS.notValid(subscriber)) {
+                return;
+            }
+
+            Job.$$subscribers[id] = undefined;
         };
 
         /**
