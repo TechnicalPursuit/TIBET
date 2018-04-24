@@ -23,6 +23,8 @@
         certFile,           // Name of the certificate file.
         certKey,            // Name of the key file for certs.
         certPath,           // Directory containing cert data.
+        key,                // The key file data.
+        cert,               // The cert file data.
         env,                // Current execution environment.
         express,            // Express web framework.
         fs,                 // File system module.
@@ -247,38 +249,40 @@
             });
         }
 
-        msg = 'shutting down HTTP server';
-        TDS.logger.system(msg, meta);
-        if (!TDS.hasConsole()) {
-            process.stdout.write(TDS.colorize(msg, 'error'));
-        }
-
-        TDS.httpServer.close(function(err) {
-            var code;
-
-            if (err) {
-                msg = 'HTTP server: ' + err.message;
-                TDS.logger.error(msg, meta);
-                if (!TDS.hasConsole()) {
-                    process.stderr.write(TDS.colorize(msg, 'error'));
-                }
-            }
-
-            //  This will call process.exit();
-            code = TDS.shutdown(err, meta);
-
-            msg = 'shutdown complete';
+        if (TDS.httpServer) {
+            msg = 'shutting down HTTP server';
             TDS.logger.system(msg, meta);
             if (!TDS.hasConsole()) {
                 process.stdout.write(TDS.colorize(msg, 'error'));
             }
 
-            if (TDS.logger.flush) {
-                TDS.logger.flush(true);
-            }
+            TDS.httpServer.close(function(err) {
+                var code;
 
-            process.exit(code);
-        });
+                if (err) {
+                    msg = 'HTTP server: ' + err.message;
+                    TDS.logger.error(msg, meta);
+                    if (!TDS.hasConsole()) {
+                        process.stderr.write(TDS.colorize(msg, 'error'));
+                    }
+                }
+
+                //  This will call process.exit();
+                code = TDS.shutdown(err, meta);
+
+                msg = 'shutdown complete';
+                TDS.logger.system(msg, meta);
+                if (!TDS.hasConsole()) {
+                    process.stdout.write(TDS.colorize(msg, 'error'));
+                }
+
+                if (TDS.logger.flush) {
+                    TDS.logger.flush(true);
+                }
+
+                process.exit(code);
+            });
+        }
 
         //  Force connections to become aware of a timeout so they drop.
         TDS.timeoutConnections();
@@ -315,9 +319,33 @@
         certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
         certFile = TDS.getcfg('tds.cert.file') || 'ssl.crt';
 
+        try {
+            certKey = path.join(certPath, certKey);
+            key = fs.readFileSync(certKey + 'x');
+        } catch (e) {
+            TDS.logger.error('Missing cert key for HTTPS: ' + certKey, meta);
+        }
+
+        try {
+            certFile = path.join(certPath, certFile);
+            cert = fs.readFileSync(certFile);
+        } catch (e) {
+            TDS.logger.error('Missing cert file for HTTPS: ' + certFile, meta);
+        }
+
+        if (!key || !cert) {
+            if (TDS.logger.flush) {
+                TDS.logger.flush(true);
+            }
+
+            /* eslint-disable no-process-exit */
+            process.exit(1);
+            /* eslint-enable no-process-exit */
+        }
+
         httpsOpts = {
-            key: fs.readFileSync(path.join(certPath, certKey)),
-            cert: fs.readFileSync(path.join(certPath, certFile))
+            key: key,
+            cert: cert
         };
 
         TDS.httpServer = http.createServer(app);
