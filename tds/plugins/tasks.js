@@ -34,7 +34,7 @@
             getNextTasks,
             isTaskComplete,
             shouldTaskTimeOut,
-            // isJobComplete,
+            isJobComplete,
             loggedInOrLocalDev,
             failJob,
             failTask,
@@ -299,8 +299,10 @@
                         'error: ' + err.message +
                         ' fetching/accepting task: ' + fullname);
                 });
-            } else {
-                //  No next task...job is done.
+            } else if (!isJobComplete(job)) {
+                //  No next task or last task failed so we have an empty Array.
+                //  If last task failed, the job will have already been
+                //  completed during cleanupTask processing.
                 cleanupJob(job);
             }
         };
@@ -711,11 +713,9 @@
             });
         };
 
-        /*
         isJobComplete = function(job) {
             return job.state === '$$complete' || job.state === '$$failed';
         };
-        */
 
         /*
          */
