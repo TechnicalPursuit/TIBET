@@ -82,7 +82,7 @@
             var id,
                 subscriber;
 
-            id = job.id;
+            id = job._id;
             subscriber = Job.$$subscribers[id];
 
             if (TDS.notValid(subscriber)) {
@@ -149,7 +149,7 @@
                 //  subscriber hook under the job id. When the job is complete
                 //  the engine will notify and then remove the subscription.
                 if (TDS.isValid(subscriber)) {
-                    Job.$$subscribers[result.id] = subscriber;
+                    Job.$$subscribers[result[0].id] = subscriber;
                 }
 
                 return result;
