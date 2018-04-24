@@ -202,8 +202,10 @@
             //  Pass back the promise in case the requestor wants to attach.
             return db.insertAsync(job).then(function(result) {
                 //  Once the insert is done we need to optionally register any
-                //  subscriber hook under the job id. When the job is complete
-                //  the engine will notify and then remove the subscription.
+                //  subscriber hook under the job id. When the job changes
+                //  status (i.e. first task start, task completion, etc.), the
+                //  engine will notify. When the job is complete, the engine
+                //  will notify and then remove the subscription.
                 if (TDS.isValid(subscriber)) {
                     Job.$$subscribers[result[0].id] = subscriber;
                 }
