@@ -680,7 +680,11 @@ function() {
     //  For a pure Function or a Function with 'TP' or 'TP.sys' as its owner,
     //  it could've been added anywhere, so we need to push an entry that will
     //  represent the Function in the set of package dependencies.
-    if (owner === TP || owner === TP.sys) {
+    //  Note here how we compare ID's - this is because objects booted very
+    //  early in the process will actually have a different owner than 'TP' or
+    //  'TP.sys', but they really belong to those objects.
+    //  TODO: This shouldn't be so - figure out why it is.
+    if (owner[TP.ID] === 'TP' || owner[TP.ID] === 'TP.sys') {
 
         obj = {};
 
