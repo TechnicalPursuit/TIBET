@@ -94,16 +94,36 @@ function(aRequest) {
     if (unlisted) {
         results = TP.sys.getMissingPackagingInfo(profile);
 
+        //  NB: These contain fully expanded paths
         packagePaths = results.at('packagePaths');
         scriptPaths = results.at('scriptPaths');
 
-        //  Iterate over all of the script paths and make them relative to
-        //  '~lib_src', since they're going to be added to the application's
-        //  'alacarte' target, which already has a basedir of '~lib_src'.
+        //  We want to make all package and script paths that *start* with the
+        //  '~lib_src' path be relative to '~lib_src', since they're going to be
+        //  added to the application's 'alacarte' target, which already has a
+        //  basedir of '~lib_src'.
+
+        //  Compute the fully expanded path to '~lib_src'.
         libSrcPath = TP.uriExpandPath('~lib_src');
+
+        //  Iterate over all of the package paths and make them relative to the
+        //  fully expanded '~lib_src' path *if they start with it*.
+        packagePaths = packagePaths.collect(
+                        function(aPath) {
+                            if (aPath.startsWith(libSrcPath)) {
+                                return TP.uriRelativeToPath(aPath, libSrcPath);
+                            }
+                            return aPath;
+                        });
+
+        //  Iterate over all of the script paths and make them relative to the
+        //  fully expanded '~lib_src' path *if they start with it*.
         scriptPaths = scriptPaths.collect(
                         function(aPath) {
-                            return TP.uriRelativeToPath(aPath, libSrcPath);
+                            if (aPath.startsWith(libSrcPath)) {
+                                return TP.uriRelativeToPath(aPath, libSrcPath);
+                            }
+                            return aPath;
                         });
 
         //  If the user is asking us to fix this situation, then we invoke a
