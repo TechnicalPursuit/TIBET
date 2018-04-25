@@ -28,8 +28,13 @@ sherpa|styleshud_ruleContent .styles_properties {
 
 .styles_properties input {
 
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
+
     height: 1.25em;
+
     line-height: 1.25em;
+
     margin-left: 0;
     margin-bottom: 2px;
 }

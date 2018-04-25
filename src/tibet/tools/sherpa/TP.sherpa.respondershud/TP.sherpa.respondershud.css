@@ -149,8 +149,7 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 
     position: relative;
 
-    height: 2em;
-    line-height: 2em;
+    height: 1.5em;
 
     transform: none;
 }
@@ -161,8 +160,14 @@ sherpa|respondershud > ul.content > li[type="controller"] {
 #ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem xctrls|label {
 
     display: block;
+
     height: 2em;
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
+
     line-height: 2em;
+
     padding-left: 12px;
 }
 
