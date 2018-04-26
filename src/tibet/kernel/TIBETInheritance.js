@@ -11473,7 +11473,7 @@ function(aFunction, copySourceInfo) {
                             'Cannot replace non-methods');
     }
 
-    obj = TP.getRealFunc(this);
+    obj = TP.getRealFunction(this);
 
     track = obj[TP.TRACK];
 
