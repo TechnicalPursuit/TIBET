@@ -2836,6 +2836,7 @@ function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, p
 
                     return true;
                 }
+
                 return false;
             });
 
@@ -2981,8 +2982,9 @@ function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, p
                         branchVal = TP.ac(branchVal);
                     }
 
-                    //  NB: This modifies the supplied 'boundElems' Array to add the
-                    //  newly generated elements. They will be refreshed below.
+                    //  NB: This modifies the supplied 'boundElems' Array to add
+                    //  the newly generated elements. They will be refreshed
+                    //  below.
                     ownerTPElem.$regenerateRepeat(branchVal, boundElems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
                 }
@@ -3018,8 +3020,8 @@ function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, p
 
         predicatePhaseOneComplete = false;
 
-        //  Work in reverse order, trying to find the 'most specific'
-        //  branching elements.
+        //  Work in reverse order, trying to find the 'most specific' branching
+        //  elements.
         while (TP.notEmpty(searchParts)) {
 
             didProcess = false;
@@ -3218,9 +3220,9 @@ function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, p
                                     ownerTPElem.empty();
 
                                     //  NB: This modifies the supplied
-                                    //  'boundElems'
-                                    //  Array to add the newly generated
-                                    //  elements. They will be refreshed below.
+                                    //  'boundElems' Array to add the newly
+                                    //  generated elements. They will be
+                                    //  refreshed below.
                                     ownerTPElem.$regenerateRepeat(
                                                     branchVal, boundElems);
                                     ownerTPElem.$showHideRepeatRows(branchVal);
@@ -3285,12 +3287,9 @@ function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, p
 
                 if (TP.notEmpty(indexes)) {
                     newRowElem = this.$insertRepeatRowAt(indexes);
-                    if (TP.owns(
-                        this, 'generatedItemCount')) {
-                        this.set(
-                        'generatedItemCount',
-                        this.get('generatedItemCount') +
-                                1);
+                    if (TP.owns(this, 'generatedItemCount')) {
+                        this.set('generatedItemCount',
+                                    this.get('generatedItemCount') + 1);
                     }
 
                     TP.wrap(newRowElem).refreshBoundDescendants();
@@ -3298,8 +3297,9 @@ function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, p
 
                     ownerTPElem.empty();
 
-                    //  NB: This modifies the supplied 'boundElems' Array to add the
-                    //  newly generated elements. They will be refreshed below.
+                    //  NB: This modifies the supplied 'boundElems' Array to add
+                    //  the newly generated elements. They will be refreshed
+                    //  below.
                     ownerTPElem.$regenerateRepeat(branchVal, boundElems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
 
@@ -3400,8 +3400,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 continue;
             }
 
-            //  This should only have one expression. If it has more than
-            //  one, then we need to raise an exception.
+            //  This should only have one expression. If it has more than one,
+            //  then we need to raise an exception.
             if (exprs.getSize() > 1) {
                 //  TODO: Raise
                 continue;
