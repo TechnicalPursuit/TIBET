@@ -1530,8 +1530,8 @@ function(indexes) {
      *     the repeat is an XML object, these indexes should be '1-based' (like
      *     XPath). If it is an JS or JSON object, these indexes should be
      *     '0-based' (like JSONPath).
-     * @param {Array.<Number>} indexes An Array of Numbers that indicate the
-     *     indexes of the items to remove.
+     * @param {Number[]} indexes An Array of Numbers that indicate the indexes
+     *     of the items to remove.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -2487,8 +2487,8 @@ function(indexes) {
      *     the repeat is an XML object, these indexes should be '1-based' (like
      *     XPath). If it is an JS or JSON object, these indexes should be
      *     '0-based' (like JSONPath).
-     * @param {Array.<Number>} indexes An Array of Numbers that indicate the
-     *     indexes of the items to insert new items at.
+     * @param {Number[]} indexes An Array of Numbers that indicate the indexes
+     *     of the items to insert new items at.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
