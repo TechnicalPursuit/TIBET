@@ -2070,8 +2070,8 @@ function() {
      * @description These are computed by taking all of the scoping values plus
      *     the local expression and then expanding them into the fully expanded
      *     binding expression.
-     * @returns {TP.core.Hash} A hash of the aspect names and the fully-formed
-     *     binding expressions on the receiver for each name.
+     * @returns {TP.core.Hash} A hash of the aspect names and an Array of
+     *     fully-formed binding expressions on the receiver for each name.
      */
 
     var elem,
@@ -2115,7 +2115,7 @@ function() {
     //  If the attribute is a 'bind:scope' or 'bind:repeat', then all we really
     //  need are the scoping values themselves.
     if (attrName === 'bind:scope' || attrName === 'bind:repeat') {
-        results.atPut('scope', TP.uriJoinFragments.apply(TP, scopeVals));
+        results.atPut('scope', TP.ac(TP.uriJoinFragments.apply(TP, scopeVals)));
     } else {
         attrVal = this.getAttribute(attrName);
 
@@ -2125,22 +2125,31 @@ function() {
         info.perform(
             function(kvPair) {
 
-                var dataExpr,
+                var exprs,
+                    exprResults,
 
                     allVals,
                     fullExpr;
 
-                //  Get the data expression for the named aspect.
-                //  TODO: Support more than 1 data expression.
-                dataExpr = kvPair.last().at('dataExprs').first();
+                //  Get all data expressions for the named aspect.
+                exprs = kvPair.last().at('dataExprs');
 
-                //  Join together the data expression along with the scoping
-                //  values to calculate the 'fully formed' binding expression.
-                allVals = scopeVals.concat(dataExpr);
+                exprResults = TP.ac();
 
-                fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+                len = exprs.getSize();
+                for (i = 0; i < len; i++) {
 
-                results.atPut(kvPair.first(), fullExpr);
+                    //  Join together the each expression along with the scoping
+                    //  values to calculate the 'fully formed' binding
+                    //  expression.
+                    allVals = scopeVals.concat(exprs.at(i));
+
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    exprResults.push(fullExpr);
+                }
+
+                results.atPut(kvPair.first(), exprResults);
             });
     }
 

@@ -229,7 +229,7 @@ function(enterSelection) {
                 var targetTPElem,
 
                     bindingExprs,
-                    expandedBindingExpr,
+                    expandedBindingExprs,
 
                     hintContent,
                     hintElement;
@@ -238,7 +238,7 @@ function(enterSelection) {
                     targetTPElem = TP.byId(d[0]);
                     bindingExprs = targetTPElem.
                                     getFullyExpandedBindingExpressions();
-                    expandedBindingExpr = bindingExprs.at(
+                    expandedBindingExprs = bindingExprs.at(
                                             bindingExprs.getKeys().first());
 
                     hintContent = TP.extern.d3.select(this).append(
@@ -246,7 +246,7 @@ function(enterSelection) {
                     hintContent.html(
                         function() {
                             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                                    expandedBindingExpr +
+                                    expandedBindingExprs.join(', ') +
                                     '</span>';
                         }
                     );
@@ -362,7 +362,7 @@ function(updateSelection) {
                 var targetTPElem,
 
                     bindingExprs,
-                    expandedBindingExpr,
+                    expandedBindingExprs,
 
                     hintContent,
                     hintElement;
@@ -371,7 +371,7 @@ function(updateSelection) {
                     targetTPElem = TP.byId(d[0]);
                     bindingExprs = targetTPElem.
                                     getFullyExpandedBindingExpressions();
-                    expandedBindingExpr = bindingExprs.at(
+                    expandedBindingExprs = bindingExprs.at(
                                             bindingExprs.getKeys().first());
 
                     hintContent = TP.extern.d3.select(this).append(
@@ -379,7 +379,7 @@ function(updateSelection) {
                     hintContent.html(
                         function() {
                             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                                    expandedBindingExpr +
+                                    expandedBindingExprs.join(', ') +
                                     '</span>';
                         }
                     );
@@ -498,6 +498,7 @@ function(aSignal) {
         targetTPElem,
 
         bindingExprs,
+        expandedBindingExprs,
         expandedBindingExpr,
 
         bindSrcURI,
@@ -522,9 +523,12 @@ function(aSignal) {
     targetTPElem = TP.byId(peerID);
 
     //  Grab the fully expanded binding expression. This will contain the
-    //  expression'sURI.
+    //  expression's URI.
     bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
-    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
+    expandedBindingExprs = bindingExprs.at(bindingExprs.getKeys().first());
+
+    //  We're only going to browse to the source of the first expression.
+    expandedBindingExpr = expandedBindingExprs.first();
 
     //  Make a URI from that and then get it's primary location. This will
     //  ensure that we're going to get the 'root'ed data.
