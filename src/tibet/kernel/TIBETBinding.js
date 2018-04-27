@@ -630,7 +630,7 @@ function(aSignal) {
         doc,
 
         query,
-        elems,
+        boundElems,
 
         tpDocElem,
 
@@ -779,13 +779,13 @@ function(aSignal) {
     //  recognize namespaces... we'll fix that later.
     query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
 
-    elems = TP.ac(doc.documentElement.querySelectorAll(query));
+    boundElems = TP.ac(doc.documentElement.querySelectorAll(query));
 
     boundAttrNodes = TP.ac();
 
     //  Loop over all of the elements that were found.
-    for (i = 0; i < elems.length; i++) {
-        attrs = elems[i].attributes;
+    for (i = 0; i < boundElems.length; i++) {
+        attrs = boundElems[i].attributes;
 
         //  Loop over all of the attributes of the found element.
         for (j = 0; j < attrs.length; j++) {
@@ -907,7 +907,7 @@ function(aSignal) {
                         //  of course) using all of the information that we
                         //  compiled.
                         tpDocElem.refreshBranches(
-                            primarySource, aSignal, elems, initialVal,
+                            primarySource, aSignal, boundElems, initialVal,
                             pathType, pathParts, pathAction, false);
                     }
                 });
@@ -944,7 +944,7 @@ function(aSignal) {
             //  Refresh all 'branches' using the aspect from the path, since
             //  we're updating 'non value facet' bindings..
             tpDocElem.refreshBranches(
-                    primarySource, aSignal, elems, primarySource,
+                    primarySource, aSignal, boundElems, primarySource,
                     TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE, false);
         } else if (TP.notEmpty(facet)) {
 
@@ -955,7 +955,7 @@ function(aSignal) {
             if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
                 tpDocElem.refreshBranches(
-                        primarySource, aSignal, elems, primarySource,
+                        primarySource, aSignal, boundElems, primarySource,
                         null, null, null, false);
             } else {
 
@@ -2380,7 +2380,7 @@ function() {
             //  TODO: Raise an exception
             return null;
             /*
-            repeatContent = this.$captureRepeatContent(elems);
+            repeatContent = this.$captureRepeatContent(boundElems);
             if (!TP.owns(this, 'addContent')) {
                 this.defineMethod(
                     'addContent',
@@ -2710,7 +2710,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, isScoped) {
+function(primarySource, aSignal, boundElems, initialVal, aPathType, pathParts, pathAction, isScoped) {
 
     var elem,
 
@@ -2817,7 +2817,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
     //  'shallow' fashion - that is, 'under' the receiver but not under any
     //  nested scopes (i.e. 'bind:scope' or 'bind:repeat') that are also under
     //  the receiver.
-    nextElems = elems.filter(
+    nextElems = boundElems.filter(
             function(anElem) {
 
                 var k;
@@ -2981,14 +2981,14 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         branchVal = TP.ac(branchVal);
                     }
 
-                    //  NB: This modifies the supplied 'elems' Array to add the
+                    //  NB: This modifies the supplied 'boundElems' Array to add the
                     //  newly generated elements. They will be refreshed below.
-                    ownerTPElem.$regenerateRepeat(branchVal, elems);
+                    ownerTPElem.$regenerateRepeat(branchVal, boundElems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
                 }
 
                 ownerTPElem.refreshBranches(
-                                primarySource, aSignal, elems, branchVal,
+                                primarySource, aSignal, boundElems, branchVal,
                                 pathType, null, pathAction, true);
             } else {
 
@@ -3105,7 +3105,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     //  this method and is currently in theVal.
                     if (attrVal === '.') {
                         return ownerTPElem.refreshBranches(
-                                primarySource, aSignal, elems, theVal,
+                                primarySource, aSignal, boundElems, theVal,
                                 aPathType, pathParts, pathAction, true);
                     }
 
@@ -3217,11 +3217,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                                     ownerTPElem.empty();
 
-                                    //  NB: This modifies the supplied 'elems'
+                                    //  NB: This modifies the supplied
+                                    //  'boundElems'
                                     //  Array to add the newly generated
                                     //  elements. They will be refreshed below.
                                     ownerTPElem.$regenerateRepeat(
-                                                    branchVal, elems);
+                                                    branchVal, boundElems);
                                     ownerTPElem.$showHideRepeatRows(branchVal);
 
                                     TP.wrap(ownerTPElem).
@@ -3257,7 +3258,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     if (needsRefresh) {
                         ownerTPElem.refreshBranches(
-                                primarySource, aSignal, elems, branchVal,
+                                primarySource, aSignal, boundElems, branchVal,
                                 pathType, remainderParts, pathAction, true);
                     } else {
                         break;
@@ -3297,9 +3298,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     ownerTPElem.empty();
 
-                    //  NB: This modifies the supplied 'elems' Array to add the
+                    //  NB: This modifies the supplied 'boundElems' Array to add the
                     //  newly generated elements. They will be refreshed below.
-                    ownerTPElem.$regenerateRepeat(branchVal, elems);
+                    ownerTPElem.$regenerateRepeat(branchVal, boundElems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
 
                     TP.wrap(ownerTPElem).refreshBoundDescendants();
