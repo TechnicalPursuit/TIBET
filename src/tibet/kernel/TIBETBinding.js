@@ -3371,8 +3371,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     infoKeys = info.getKeys();
 
-    theVal = TP.collapse(initialVal);
-
     pathOptions = TP.hc();
     if (this.isScalarValued(aspect)) {
         pathOptions.atPut('extractWith', 'value');
@@ -3393,6 +3391,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         if (facet !== 'value') {
             this.setFacet(aspect, facet, aSignal.at(TP.NEWVAL), true);
         } else {
+
+            theVal = TP.collapse(initialVal);
 
             exprs = entry.at('dataExprs');
 
