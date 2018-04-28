@@ -634,11 +634,8 @@ function(aSignal) {
 
         tpDocElem,
 
-        boundAttrNodes,
         i,
-        attrs,
         j,
-        attrVal,
 
         changedPathKeys,
         keysToProcess,
@@ -657,7 +654,11 @@ function(aSignal) {
         originWasURI,
 
         sigSource,
-        sigIndexes;
+        sigIndexes,
+
+        boundAttrNodes,
+        attrs,
+        attrVal;
 
     //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
     //  that there were specific paths to data that changed and we can more
@@ -785,29 +786,6 @@ function(aSignal) {
     query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
 
     boundElems = TP.ac(doc.documentElement.querySelectorAll(query));
-
-    boundAttrNodes = TP.ac();
-
-    //  Loop over all of the elements that were found.
-    for (i = 0; i < boundElems.length; i++) {
-        attrs = boundElems[i].attributes;
-
-        //  Loop over all of the attributes of the found element.
-        for (j = 0; j < attrs.length; j++) {
-
-            attrVal = attrs[j].value;
-
-            //  If the attribute was in the BIND namespace and either matched
-            //  our matcher OR contained ACP variables, then add it to our list
-            //  of bound attributes.
-            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                (matcher.test(attrVal) ||
-                    TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
-
-                boundAttrNodes.push(attrs[j]);
-            }
-        }
-    }
 
     //  Grab the TP.dom.ElementNode that is our document Element.
     tpDocElem = this.getDocumentElement();
@@ -999,6 +977,31 @@ function(aSignal) {
                         sigSource,
                         sigIndexes);
             } else {
+
+                boundAttrNodes = TP.ac();
+
+                //  Loop over all of the elements that were found.
+                for (i = 0; i < boundElems.length; i++) {
+                    attrs = boundElems[i].attributes;
+
+                    //  Loop over all of the attributes of the found element.
+                    for (j = 0; j < attrs.length; j++) {
+
+                        attrVal = attrs[j].value;
+
+                        //  If the attribute was in the BIND namespace and
+                        //  either matched our matcher OR contained ACP
+                        //  variables, then add it to our list of bound
+                        //  attributes.
+                        if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
+                            (matcher.test(attrVal) ||
+                                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
+                                                                    attrVal))) {
+
+                            boundAttrNodes.push(attrs[j]);
+                        }
+                    }
+                }
 
                 //  Otherwise, the signal's origin was not a URI, so it must've
                 //  been another GUI control within the page. Because we don't
