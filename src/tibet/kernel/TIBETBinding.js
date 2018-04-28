@@ -1047,7 +1047,6 @@ function(aSignal) {
                             //  decoding methods (isSingleValued,
                             //  isScalarValued, etc.)
                             ownerTPElem.refreshLeaf(
-                                    sigOrigin,
                                     facet,
                                     sigOrigin,
                                     boundAttrNodes[i],
@@ -3105,7 +3104,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 //  Otherwise, go ahead and process this as a leaf.
                 ownerTPElem.refreshLeaf(
-                    primarySource,
                     aFacet,
                     theVal,
                     boundAttr,
@@ -3392,7 +3390,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
                     ownerTPElem.refreshLeaf(
-                        primarySource,
                         aFacet,
                         theVal,
                         boundAttr,
@@ -3450,15 +3447,12 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('refreshLeaf',
-function(primarySource, aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource) {
+function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource) {
 
     /**
      * @method refreshLeaf
      * @summary Refreshes any data bindings occurring as a 'leaf' (i.e. a
      *     scalar displayed value) under the receiver.
-     * @param {Object} primarySource The object that is the primary data source
-     *     that the receiver could be bound to. This is usually a collection of
-     *     data. The receiver would be bound to a 'scalar' aspect of this data.
      * @param {String} [aFacet=value] The facet of the binding expressions that
      *     we're refreshing. This defaults to 'value' which is the 99% case.
      * @param {Object} initialVal The initial value to use to update the
