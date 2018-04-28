@@ -4378,15 +4378,17 @@ function(shouldRender) {
 
     var elem,
 
-        attrVal,
-
         scopeVals,
+
+        attrNode,
+        attrVal,
+        bindingInfo,
 
         repeatFullExpr,
         repeatWholeURI,
         repeatResult,
 
-        bindingInfo,
+        boundElems,
 
         valChanged,
 
@@ -4394,16 +4396,18 @@ function(shouldRender) {
 
     elem = this.getNativeNode();
 
+    scopeVals = this.getBindingScopeValues();
+
     //  NB: This check is done in order of precedence of these attributes
     if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrNode = TP.elementGetAttributeNode(elem, 'bind:io');
         attrVal = this.getAttribute('bind:io');
     } else if (TP.elementHasAttribute(elem, 'bind:in', true)) {
+        attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
         attrVal = this.getAttribute('bind:in');
     } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
         return this.refreshBoundDescendants();
     } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-
-        scopeVals = this.getBindingScopeValues();
 
         repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
         repeatWholeURI = TP.uc(repeatFullExpr);
@@ -4415,7 +4419,26 @@ function(shouldRender) {
 
         this.$regenerateRepeat(repeatResult, TP.ac());
 
-        return this.refreshBoundDescendants();
+        boundElems = this.$getBoundElements();
+
+        if (TP.isCollection(repeatResult)) {
+            this.refreshBranches(
+                    repeatResult,
+                    'value',
+                    repeatResult,
+                    boundElems,
+                    null,
+                    null,
+                    null,
+                    false,
+                    repeatWholeURI,
+                    true,
+                    this,
+                    null);
+        }
+
+        return this;
+
     } else {
         //  If this isn't an element around one of those three attributes, then
         //  just call render() and return
@@ -4427,8 +4450,6 @@ function(shouldRender) {
     if (TP.isEmpty(attrVal)) {
         return this;
     }
-
-    scopeVals = this.getBindingScopeValues();
 
     //  Extract the binding information from the supplied binding information
     //  value String. This may have already been parsed and cached, in which
@@ -4458,9 +4479,7 @@ function(shouldRender) {
 
                 oldVal,
 
-                result,
-
-                transformFunc;
+                result;
 
             aspectName = bindEntry.first();
 
@@ -4532,23 +4551,18 @@ function(shouldRender) {
                     result = dataExpr.unquoted();
                 } else {
                     //  Otherwise, it's a binding expression to a data source.
-                    //  Grab the result from the URI. Then use that value to set
-                    //  our value in the receiver for that particular aspect.
+                    //  Grab the result from the URI.
                     result = TP.val(wholeURI.getResource().get('result'));
                 }
 
-                if (TP.isCallable(
-                            transformFunc = bindVal.at('transformFunc'))) {
-                    result = transformFunc(null, result, this);
-                }
-
                 if (!TP.equal(result, oldVal)) {
-
-                    if (aspectName === 'value') {
-                        this.setValue(result);
-                    } else {
-                        this.setFacet(aspectName, 'value', result);
-                    }
+                    this.refreshLeaf(
+                            'value',
+                            result,
+                            attrNode,
+                            null,
+                            false,
+                            this);
 
                     valChanged = true;
                 }
