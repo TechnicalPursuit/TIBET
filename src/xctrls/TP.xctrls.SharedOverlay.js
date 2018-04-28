@@ -787,10 +787,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         //  signal map.
         handler.ignore(tpContent, 'TP.sig.AttachComplete');
 
-        //  Note here how we don't force the rendering behavior - if
-        //  the data has changed, the content will re-render.
-        tpContent.refresh();
-
         //  If we were handed a callable Function to invoke after all of our
         //  content has been loaded and refreshed, then call it.
         if (TP.isCallable(afterLoadHandler)) {
