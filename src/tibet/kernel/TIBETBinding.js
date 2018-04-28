@@ -2174,6 +2174,9 @@ function() {
                 var exprs,
                     exprResults,
 
+                    len,
+                    i,
+
                     allVals,
                     fullExpr;
 
@@ -4365,13 +4368,6 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$refresh',
-function(shouldRender) {
-
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.ElementNode.Inst.defineMethod('$refreshFoofy',
 function(shouldRender) {
 
     /**
