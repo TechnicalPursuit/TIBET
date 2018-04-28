@@ -967,9 +967,7 @@ function(aSignal) {
             tpDocElem.refreshBranches(
                     primarySource,
                     facet,
-                    facet === 'value' ?
-                                initialVal :
-                                aSignal.at(TP.NEWVAL),
+                    aSignal.at(TP.NEWVAL),
                     boundElems,
                     TP.TIBET_PATH_TYPE,
                     TP.ac(aspect),
