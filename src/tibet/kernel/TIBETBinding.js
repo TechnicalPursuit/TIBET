@@ -919,7 +919,7 @@ function(aSignal) {
                         //  top-level bound expressions and scoped expressions,
                         //  of course) using all of the information that we
                         //  compiled.
-                        tpDocElem.refreshBranches(
+                        tpDocElem.$refreshBranches(
                             primarySource,
                             facet,
                             facet === 'value' ?
@@ -964,7 +964,7 @@ function(aSignal) {
 
             //  Refresh all 'branches' using the aspect from the path, since
             //  we're updating 'non value facet' bindings..
-            tpDocElem.refreshBranches(
+            tpDocElem.$refreshBranches(
                     primarySource,
                     facet,
                     aSignal.at(TP.NEWVAL),
@@ -985,7 +985,7 @@ function(aSignal) {
             //  computed bound elements.
             if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
-                tpDocElem.refreshBranches(
+                tpDocElem.$refreshBranches(
                         primarySource,
                         facet,
                         primarySource,
@@ -1046,7 +1046,7 @@ function(aSignal) {
                             //  element based on their standard data binding /
                             //  decoding methods (isSingleValued,
                             //  isScalarValued, etc.)
-                            ownerTPElem.refreshLeaf(
+                            ownerTPElem.$refreshLeaf(
                                     facet,
                                     sigOrigin,
                                     boundAttrNodes[i],
@@ -2757,11 +2757,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('refreshBranches',
+TP.dom.ElementNode.Inst.defineMethod('$refreshBranches',
 function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pathAction, isScoped, sigOrigin, originWasURI, changeSource, updateIndexes) {
 
     /**
-     * @method refreshBranches
+     * @method $refreshBranches
      * @summary Refreshes any data bindings that are collections ('branches')
      *     under the set of supplied bound elements.
      * @param {Object} primarySource The object that is the primary data source
@@ -3075,7 +3075,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     ownerTPElem.$showHideRepeatRows(branchVal);
                 }
 
-                ownerTPElem.refreshBranches(
+                ownerTPElem.$refreshBranches(
                                 primarySource,
                                 aFacet,
                                 branchVal,
@@ -3103,7 +3103,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 }
 
                 //  Otherwise, go ahead and process this as a leaf.
-                ownerTPElem.refreshLeaf(
+                ownerTPElem.$refreshLeaf(
                     aFacet,
                     theVal,
                     boundAttr,
@@ -3207,7 +3207,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     //  to the data (probably a collection) that was supplied to
                     //  this method and is currently in theVal.
                     if (attrVal === '.') {
-                        return ownerTPElem.refreshBranches(
+                        return ownerTPElem.$refreshBranches(
                                 primarySource,
                                 aFacet,
                                 theVal,
@@ -3370,7 +3370,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     didProcess = true;
 
                     if (needsRefresh) {
-                        ownerTPElem.refreshBranches(
+                        ownerTPElem.$refreshBranches(
                                 primarySource,
                                 aFacet,
                                 branchVal,
@@ -3389,7 +3389,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
-                    ownerTPElem.refreshLeaf(
+                    ownerTPElem.$refreshLeaf(
                         aFacet,
                         theVal,
                         boundAttr,
@@ -3446,11 +3446,11 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('refreshLeaf',
+TP.dom.ElementNode.Inst.defineMethod('$refreshLeaf',
 function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource) {
 
     /**
-     * @method refreshLeaf
+     * @method $refreshLeaf
      * @summary Refreshes any data bindings occurring as a 'leaf' (i.e. a
      *     scalar displayed value) under the receiver.
      * @param {String} [aFacet=value] The facet of the binding expressions that
@@ -4422,7 +4422,7 @@ function(shouldRender) {
         boundElems = this.$getBoundElements();
 
         if (TP.isCollection(repeatResult)) {
-            this.refreshBranches(
+            this.$refreshBranches(
                     repeatResult,
                     'value',
                     repeatResult,
@@ -4556,7 +4556,7 @@ function(shouldRender) {
                 }
 
                 if (!TP.equal(result, oldVal)) {
-                    this.refreshLeaf(
+                    this.$refreshLeaf(
                             'value',
                             result,
                             attrNode,
