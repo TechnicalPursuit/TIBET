@@ -2138,9 +2138,23 @@ function(aRequest) {
         arr,
         tname,
         type,
-        raw;
+        raw,
+        profile,
+        pkg,
+        cfg,
+        paths,
+        context;
 
     arr = [];
+
+    profile = this.getArgument(aRequest, 'tsh:profile', null, true);
+    if (TP.isEmpty(profile)) {
+        pkg = this.getArgument(aRequest, 'tsh:package', '~app_cfg/main', true);
+        cfg = this.getArgument(aRequest, 'tsh:config', 'base', true);
+        profile = pkg + '@' + cfg;
+    }
+
+    context = this.getArgument(aRequest, 'tsh:context', 'app', true);
 
     raw = this.getArgument(aRequest, 'tsh:raw', null, true);
     tname = this.getArgument(aRequest, 'tsh:type', null, true);
@@ -2153,7 +2167,40 @@ function(aRequest) {
                 'Unable to find type ' + TP.str(tname));
         }
     } else {
-        types = TP.sys.getTypes();
+        //  NOTE we only access resource data for custom types.
+        types = TP.sys.getCustomTypes();
+
+        //  Get the list of paths from the defined profile.
+        paths = TP.sys.getAllScriptPaths(profile).collect(function(path) {
+            return TP.uriInTIBETFormat(path);
+        }).unique();
+
+        //  Filter types by the package paths we're provided and any context we
+        //  may have.
+        types = types.select(function(item) {
+            var srcpath;
+
+            //  If we have a context we can filter by use it...but NOTE we want
+            //  to use load phase, not file path, to handle a-la-carte lib code.
+            switch (context) {
+                case 'lib':
+                    if (TP.objectGetLoadStage(item[1]) !== TP.PHASE_ONE) {
+                        return false;
+                    }
+                    break;
+                case 'app':
+                    if (TP.objectGetLoadStage(item[1]) !== TP.PHASE_TWO) {
+                        return false;
+                    }
+                    break;
+                default:
+                    //  No specific filter...use srcpath filter below.
+                    break;
+            }
+
+            srcpath = TP.objectGetSourcePath(item[1]);
+            return paths.contains(srcpath);
+        });
     }
 
     //  types will be a hash of names/type objects.

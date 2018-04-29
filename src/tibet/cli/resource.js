@@ -420,6 +420,13 @@ Cmd.prototype.getScript = function() {
         str += ' --raw';
     }
 
+    //  Pass context. This is used to drive a load phase filter in the client.
+    if (CLI.inProject()) {
+        str += ' --context=app';
+    } else {
+        str += ' --context=lib';
+    }
+
     //  Ensure we pass along any profile/package/config parameters (which are
     //  not boot variants) as part of the script itself.
     this.options.profile = this.getProfile();
