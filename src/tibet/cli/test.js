@@ -247,13 +247,16 @@ Cmd.prototype.executeViaKarma = function() {
  * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
+    var args;
 
-    if (arglist.indexOf('--tap') === -1 &&
-            arglist.indexOf('--no-tap') === -1) {
-        arglist.push('--tap');
+    args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
+
+    if (args.indexOf('--tap') === -1 &&
+            args.indexOf('--no-tap') === -1) {
+        args.push('--tap');
     }
 
-    return arglist;
+    return args;
 };
 
 
@@ -276,27 +279,12 @@ Cmd.prototype.getCompletionOptions = function() {
  * Computes and returns the proper profile to boot in support of the TSH.
  * @returns {String} The profile to boot.
  */
-Cmd.prototype.getProfile = function() {
-
-    var profile;
-
-    if (CLI.notEmpty(this.options.profile)) {
-        profile = this.options.profile;
-    }
-
+Cmd.prototype.getBootProfile = function() {
     if (this.options.selftest) {
-        profile = '~lib_etc/phantom/phantom@selftest';
-    } else if (CLI.notEmpty(this.options.profile)) {
-        profile = this.options.profile;
+        return '~lib_etc/phantom/phantom@selftest';
     }
 
-    if (CLI.inProject()) {
-        profile = profile || '~app_cfg/phantom';
-    } else {
-        profile = profile || '~lib_etc/phantom/phantom';
-    }
-
-    return profile;
+    return Cmd.Parent.prototype.getBootProfile.call(this);
 };
 
 
