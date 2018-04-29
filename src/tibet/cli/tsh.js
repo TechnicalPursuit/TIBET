@@ -87,7 +87,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 {
     'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
         'system', 'quiet'],
-    'string': ['script', 'url', 'profile', 'params', 'level'],
+    'string': ['script', 'url', 'params', 'level'],
     'number': ['timeout', 'remote-debug-port'],
     'default': {
         color: true
@@ -183,20 +183,15 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    // Without a script we can't run so verify that we got something useful.
+    //  Without a script we can't run so verify that we got something useful.
     script = this.getScript();
     if (script === void 0) {
         return this.usage();
     }
     this.options.script = script;
 
-    // Ensure we update the value for our profile. This is often computed based
-    // on where the command is being executed.
-    this.options.profile = this.getProfile();
-
     //  Push values into the config or we won't get them back in the arglist.
     CLI.setcfg('script', this.options.script);
-    CLI.setcfg('profile', this.options.profile);
 
     // Access the argument list. Subtypes can adjust how they assemble this to
     // alter the default behavior. Note the slice() here removes the command
@@ -213,6 +208,11 @@ Cmd.prototype.execute = function() {
     if (!arglist) {
         return 0;
     }
+
+    //  Tell phantomjs which specific boot profile to use. We use a separate
+    //  routine for this so we can check the prefix/value and avoid pushing a
+    //  profile more than once into the argument list.
+    this.finalizeBootProfile(arglist);
 
     // Push the path to our script runner onto the front so our command line is
     // complete.
@@ -335,9 +335,38 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
 
-    arglist.push('--quiet');
+    if (arglist.indexOf('--quiet') === -1) {
+        arglist.push('--quiet');
+    }
 
     return arglist;
+};
+
+
+/**
+ * Finalize the --boot.profile argument for the command. This requires a search
+ * of the current argument list to be sure we don't push a boot profile more
+ * than once into the argumnt list.
+ */
+Cmd.prototype.finalizeBootProfile = function(arglist) {
+    var found;
+
+    found = arglist.some(function(item) {
+        if (typeof(item) === 'string') {
+            if (item === '--boot.profile' ||
+                    item.indexOf('--boot.profile=') === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    });
+
+    if (!found) {
+        arglist.push('--boot.profile=' + this.getBootProfile());
+    }
+
+    return;
 };
 
 
@@ -408,19 +437,17 @@ Cmd.prototype.finalizeTimeout = function(arglist) {
     return arglist;
 };
 
-
 /**
  * Computes and returns the full boot profile value, combining the profile
  * package name with any profile config ID.
  * @returns {String} The profile@config to boot.
  */
-Cmd.prototype.getProfile = function() {
-
+Cmd.prototype.getBootProfile = function() {
     var root,
         config;
 
-    root = this.getProfileRoot();
-    config = this.getProfileConfig();
+    root = this.getBootProfileRoot();
+    config = this.getBootProfileConfig();
 
     if (CLI.notEmpty(config)) {
         return root + '@' + config;
@@ -436,8 +463,71 @@ Cmd.prototype.getProfile = function() {
  * value. Most commands use the same root but some will alter the configuration.
  * @returns {String} The profile config ID.
  */
-Cmd.prototype.getProfileConfig = function() {
+Cmd.prototype.getBootProfileConfig = function() {
+    var config;
 
+    if (CLI.notEmpty(this.options['boot.profile'])) {
+        config = this.options['boot.profile'].split('@')[1];
+    } else if (CLI.notEmpty(this.options['boot.config'])) {
+        return this.options['boot.config'];
+    }
+
+    //  NOTE the majority of commands should load the full suite of code to
+    //  ensure proper operation.
+    config = config || 'reflection';
+
+    return config;
+};
+
+
+/**
+ * Computes and returns the proper profile to boot in support of the TSH. This
+ * is the name of the package file, minus any specific boot config ID.
+ * @returns {String} The profile root name.
+ */
+Cmd.prototype.getBootProfileRoot = function() {
+    var profile;
+
+    if (CLI.notEmpty(this.options['boot.profile'])) {
+        profile = this.options['boot.profile'].split('@')[0];
+    } else if (CLI.notEmpty(this.options['boot.package'])) {
+        return this.options['boot.package'];
+    }
+
+    //  NOTE that boot profiles for TSH execution must use a phantom profile.
+    profile = profile || '~lib_etc/phantom/phantom';
+
+    return profile;
+};
+
+
+/**
+ * Computes and returns any optional profile value, combining the profile
+ * package name with any profile config ID. Note this is the profile passed to
+ * any command line (script) being run, not the boot profile.
+ * @returns {String} The profile@config to include with any script.
+ */
+Cmd.prototype.getProfile = function() {
+    var root,
+        config;
+
+    root = this.getProfileRoot();
+    config = this.getProfileConfig();
+
+    if (CLI.notEmpty(config)) {
+        return root + '@' + config;
+    }
+
+    return root;
+};
+
+
+/**
+ * Computes and returns the proper profile config value. This value is appended
+ * to the value from getProfileRoot() to produce the full script profile value.
+ * @returns {String} The profile config ID.
+ */
+Cmd.prototype.getProfileConfig = function() {
     var config;
 
     if (CLI.notEmpty(this.options.profile)) {
@@ -446,14 +536,20 @@ Cmd.prototype.getProfileConfig = function() {
         return this.options.config;
     }
 
-    return config || 'reflection';
+    if (CLI.inProject()) {
+        config = config || 'base';
+    } else {
+        config = config || 'reflection';
+    }
+
+    return config;
 };
 
 
 /**
- * Computes and returns the proper profile to boot in support of the TSH. This
- * is the name of the package file, minus any specific boot config ID.
- * @returns {String} The profile root name.
+ * Computes and returns the proper profile package for the script. This
+ * is the name of the package file, minus any specific profile config ID.
+ * @returns {String} The profile root aka packkge name.
  */
 Cmd.prototype.getProfileRoot = function() {
 
@@ -466,7 +562,7 @@ Cmd.prototype.getProfileRoot = function() {
     }
 
     if (CLI.inProject()) {
-        profile = profile || '~app_cfg/phantom';
+        profile = profile || '~app_cfg/main';
     } else {
         profile = profile || '~lib_etc/phantom/phantom';
     }
