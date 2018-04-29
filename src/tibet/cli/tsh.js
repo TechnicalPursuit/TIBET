@@ -495,7 +495,12 @@ Cmd.prototype.getBootProfileRoot = function() {
     }
 
     //  NOTE that boot profiles for TSH execution must use a phantom profile.
-    profile = profile || '~lib_etc/phantom/phantom';
+    if (CLI.inProject()) {
+        profile = profile || '~app_cfg/phantom';
+    } else {
+        profile = profile || '~lib_etc/phantom/phantom';
+    }
+
 
     return profile;
 };
