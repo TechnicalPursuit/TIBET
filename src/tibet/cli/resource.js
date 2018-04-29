@@ -424,7 +424,8 @@ Cmd.prototype.getScript = function() {
     //  not boot variants) as part of the script itself.
     this.options.profile = this.getProfile();
     CLI.setcfg('profile', this.options.profile);
-    script += ' --profile=' + this.options.profile;
+
+    str += ' --profile=' + this.options.profile;
 
     return str;
 };
