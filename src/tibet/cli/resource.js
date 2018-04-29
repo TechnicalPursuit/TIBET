@@ -425,7 +425,7 @@ Cmd.prototype.getScript = function() {
     this.options.profile = this.getProfile();
     CLI.setcfg('profile', this.options.profile);
 
-    str += ' --profile=' + this.options.profile;
+    str += ' --profile=\'' + this.options.profile + '\'';
 
     return str;
 };
