@@ -118,7 +118,7 @@
         'Use --script to define the TSH script to run, quoting as needed for your\n' +
         'particular shell. For example, --script \':echo "Hi"\'\n\n' +
 
-        'You can use --profile to alter the profile used regardless of the boot URL.\n' +
+        'You can use --boot.profile to alter the profile used regardless of boot URL.\n' +
         'Using a different boot profile is the best way to alter what code TIBET will\n' +
         'load prior to running your script. The profile value should match the form\n' +
         'used on a TIBET launch URL: namely a config.xml@id pattern pointing to the\n' +
@@ -179,8 +179,7 @@
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
             'tap', 'system', 'quiet', 'ok'],
-        'string': ['script', 'url', 'profile', 'params', 'level', 'app-root',
-            'contrast'],
+        'string': ['script', 'url', 'params', 'level', 'app-root', 'contrast'],
         'number': ['timeout', 'remote-debug-port'],
         'default': {
             color: true,
@@ -207,7 +206,7 @@
      * @type {String}
      */
     PhantomTSH.USAGE = 'phantomjs phantomtsh.js [--script <script>] ' +
-        '[--url <url>] [--profile <profile>] [--timeout <timeout>] ' +
+        '[--url <url>] [--boot.profile <profile>] [--timeout <timeout>] ' +
         '[--help] [<flags>]';
 
 
@@ -827,8 +826,12 @@
         PhantomTSH.url = argv.url || PhantomTSH.DEFAULT_URL;
         PhantomTSH.url = fs.absolute(PhantomTSH.url);
 
-        PhantomTSH.url += '#?boot.profile="' +
-            (argv.profile || PhantomTSH.DEFAULT_PROFILE) + '"';
+        PhantomTSH.url += '#?boot.profile="';
+        if (argv.boot && argv.boot.profile) {
+            PhantomTSH.url += argv.boot.profile + '"';
+        } else {
+            PhantomTSH.url += PhantomTSH.DEFAULT_PROFILE + '"';
+        }
 
         if (argv.params) {
             PhantomTSH.url += '&' + argv.params + '&boot.level=' +
