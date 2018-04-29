@@ -101,9 +101,18 @@ Cmd.prototype.USAGE =
  * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
-    arglist.push('--contrast', '#');
+    var args;
 
-    return arglist;
+    args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
+
+    if (args.indexOf('--contrast') === -1 &&
+            args.indexOf('--no-contrast') === -1) {
+        args.push('--contrast');
+    }
+
+    // args.push('#');
+
+    return args;
 };
 
 
@@ -119,17 +128,6 @@ Cmd.prototype.getCompletionOptions = function() {
         plist = Cmd.Parent.prototype.getCompletionOptions();
 
         return CLI.subtract(plist, list);
-};
-
-
-/**
- * Computes and returns the proper profile configuration to boot. This value is
- * appended to the value from getProfileRoot() to produce the full boot profile
- * value. Most commands use the same root but some will alter the configuration.
- * @returns {String} The profile config ID.
- */
-Cmd.prototype.getProfileConfig = function() {
-    return 'reflection';
 };
 
 

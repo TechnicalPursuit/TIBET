@@ -80,17 +80,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 
 
 /**
- * Computes and returns the proper profile configuration to boot. This value is
- * appended to the value from getProfileRoot() to produce the full boot profile
- * value. Most commands use the same root but some will alter the configuration.
- * @returns {String} The profile config ID.
- */
-Cmd.prototype.getProfileConfig = function() {
-    return 'reflection';
-};
-
-
-/**
  * The command usage string.
  * @type {String}
  */

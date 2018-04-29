@@ -216,7 +216,9 @@ Cmd.prototype.finalizeArglist = function(arglist) {
         //  remove item since we'll be putting in an explicit --no-color
         args.splice(index, 1);
     }
-    args.push('--no-color');
+    if (args.indexOf('--no-color') === -1) {
+        args.push('--no-color');
+    }
 
     //  Adjust timeout value to the larger of any value which might already
     //  exist or any provided locally.
@@ -417,6 +419,12 @@ Cmd.prototype.getScript = function() {
     if (this.options.raw) {
         str += ' --raw';
     }
+
+    //  Ensure we pass along any profile/package/config parameters (which are
+    //  not boot variants) as part of the script itself.
+    this.options.profile = this.getProfile();
+    CLI.setcfg('profile', this.options.profile);
+    script += ' --profile=' + this.options.profile;
 
     return str;
 };
