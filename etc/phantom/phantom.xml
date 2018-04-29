@@ -4,6 +4,8 @@
     name="phantom" default="phantom" basedir="~lib">
 
 <config id="properties" if="boot.phase_one">
+    <property name="boot.inlined" value="false"/>
+    <property name="boot.use_login" value="false"/>
     <property name="sherpa.enabled" value="false"/>
     <property name="uri.watch_remote_changes" value="false"/>
 </config>
