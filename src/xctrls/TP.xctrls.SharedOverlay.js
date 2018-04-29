@@ -779,17 +779,12 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     //  Show the overlay content
     tpContent.setAttribute('hidden', false);
 
-    //  Observe the new content when it gets attached to the DOM. When
-    //  it does, refresh its bound data.
+    //  Observe the new content when it gets attached to the DOM. When it does,
+    //  refresh its bound data.
     handler = function() {
 
-        //  Make sure to ignore here - otherwise, we'll fill up the
-        //  signal map.
+        //  Make sure to ignore here - otherwise, we'll fill up the signal map.
         handler.ignore(tpContent, 'TP.sig.AttachComplete');
-
-        //  Note here how we don't force the rendering behavior - if
-        //  the data has changed, the content will re-render.
-        tpContent.refresh();
 
         //  If we were handed a callable Function to invoke after all of our
         //  content has been loaded and refreshed, then call it.

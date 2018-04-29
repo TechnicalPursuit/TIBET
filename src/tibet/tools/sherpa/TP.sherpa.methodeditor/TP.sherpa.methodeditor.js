@@ -107,7 +107,8 @@ function() {
     existingMethodResource = sourceURI.getResource();
     existingMethodResource.then(
         function(aResult) {
-            var finalContent;
+            var finalContent,
+                owner;
 
             finalContent = TP.extern.JsDiff.applyPatch(aResult, diffPatch);
 
@@ -123,6 +124,14 @@ function() {
             //  Now that we've set the content and various flags to false, we can
             //  unset the 'changing content' flag.
             this.set('$changingSourceContent', false);
+
+            //  If the 'refreshInstances' method can be invoked on the method's
+            //  TP.OWNER, then call it. This is usually a templated tag that
+            //  should refresh it's content based on code changes in its type.
+            owner = newSourceObj[TP.OWNER];
+            if (TP.canInvoke(owner, 'refreshInstances')) {
+                owner.refreshInstances();
+            }
         }.bind(this));
 
     return this;

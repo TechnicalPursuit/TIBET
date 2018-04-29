@@ -927,7 +927,7 @@ function() {
      *     'footer' of the styleshud tile panel.
      */
 
-    return TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'styleshud_properties\', payload: {source: \'urn:tibet:style_prop_data_blank\', copy: true}}"></button>');
+    return TP.xhtmlnode('<button class="inserter" on:click="{signal: InsertItem, origin: \'styleshud_rw_properties\', payload: {source: \'urn:tibet:style_prop_data_blank\', copy: true}}"></button>');
 });
 
 //  ------------------------------------------------------------------------

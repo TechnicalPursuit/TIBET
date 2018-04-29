@@ -27,7 +27,11 @@ sherpa|domhud_genericElementContent .dom_attributes {
 
 .dom_attributes input {
 
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
+
     height: 1.25em;
+
     line-height: 1.25em;
 
     margin-left: 0;

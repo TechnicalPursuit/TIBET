@@ -630,15 +630,12 @@ function(aSignal) {
         doc,
 
         query,
-        elems,
+        boundElems,
 
         tpDocElem,
 
-        boundAttrNodes,
         i,
-        attrs,
         j,
-        attrVal,
 
         changedPathKeys,
         keysToProcess,
@@ -652,7 +649,16 @@ function(aSignal) {
         ownerTPElem,
 
         aspect,
-        facet;
+        facet,
+
+        originWasURI,
+
+        sigSource,
+        sigIndexes,
+
+        boundAttrNodes,
+        attrs,
+        attrVal;
 
     //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
     //  that there were specific paths to data that changed and we can more
@@ -779,33 +785,18 @@ function(aSignal) {
     //  recognize namespaces... we'll fix that later.
     query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
 
-    elems = TP.ac(doc.documentElement.querySelectorAll(query));
-
-    boundAttrNodes = TP.ac();
-
-    //  Loop over all of the elements that were found.
-    for (i = 0; i < elems.length; i++) {
-        attrs = elems[i].attributes;
-
-        //  Loop over all of the attributes of the found element.
-        for (j = 0; j < attrs.length; j++) {
-
-            attrVal = attrs[j].value;
-
-            //  If the attribute was in the BIND namespace and either matched
-            //  our matcher OR contained ACP variables, then add it to our list
-            //  of bound attributes.
-            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                (matcher.test(attrVal) ||
-                    TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
-
-                boundAttrNodes.push(attrs[j]);
-            }
-        }
-    }
+    boundElems = TP.ac(doc.documentElement.querySelectorAll(query));
 
     //  Grab the TP.dom.ElementNode that is our document Element.
     tpDocElem = this.getDocumentElement();
+
+    aspect = aSignal.at('aspect');
+    facet = aSignal.at('facet');
+
+    originWasURI = TP.isURI(sigOrigin);
+
+    sigSource = aSignal.getSource();
+    sigIndexes = aSignal.at('indexes');
 
     //  If the signal had a payload of TP.CHANGE_PATHS then we can drive the
     //  updating process directly from those paths.
@@ -906,9 +897,21 @@ function(aSignal) {
                         //  top-level bound expressions and scoped expressions,
                         //  of course) using all of the information that we
                         //  compiled.
-                        tpDocElem.refreshBranches(
-                            primarySource, aSignal, elems, initialVal,
-                            pathType, pathParts, pathAction, false);
+                        tpDocElem.$refreshBranches(
+                            primarySource,
+                            facet,
+                            facet === 'value' ?
+                                        initialVal :
+                                        aSignal.at(TP.NEWVAL),
+                            boundElems,
+                            pathType,
+                            pathParts,
+                            pathAction,
+                            false,
+                            sigOrigin,
+                            originWasURI,
+                            sigSource,
+                            sigIndexes);
                     }
                 });
 
@@ -919,13 +922,9 @@ function(aSignal) {
 
         //  TIMING: var startSetup = Date.now();
 
-        aspect = aSignal.at('aspect');
-        facet = aSignal.at('facet');
-
         //  If our signal origin is a URI and the aspect is one of URI's
         //  'special aspects', then we just return here.
-        if (TP.isURI(aSignal.getOrigin()) &&
-            TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
+        if (originWasURI && TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
 
             //  Set the DOM content loaded signaling whatever it was when we
             //  entered this method.
@@ -943,9 +942,19 @@ function(aSignal) {
 
             //  Refresh all 'branches' using the aspect from the path, since
             //  we're updating 'non value facet' bindings..
-            tpDocElem.refreshBranches(
-                    primarySource, aSignal, elems, primarySource,
-                    TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE, false);
+            tpDocElem.$refreshBranches(
+                    primarySource,
+                    facet,
+                    aSignal.at(TP.NEWVAL),
+                    boundElems,
+                    TP.TIBET_PATH_TYPE,
+                    TP.ac(aspect),
+                    TP.UPDATE,
+                    false,
+                    sigOrigin,
+                    originWasURI,
+                    sigSource,
+                    sigIndexes);
         } else if (TP.notEmpty(facet)) {
 
             //  Otherwise, if the signal's origin is a URI (usually a data-bound
@@ -954,10 +963,45 @@ function(aSignal) {
             //  computed bound elements.
             if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
 
-                tpDocElem.refreshBranches(
-                        primarySource, aSignal, elems, primarySource,
-                        null, null, null, false);
+                tpDocElem.$refreshBranches(
+                        primarySource,
+                        facet,
+                        primarySource,
+                        boundElems,
+                        null,
+                        null,
+                        null,
+                        false,
+                        sigOrigin,
+                        originWasURI,
+                        sigSource,
+                        sigIndexes);
             } else {
+
+                boundAttrNodes = TP.ac();
+
+                //  Loop over all of the elements that were found.
+                for (i = 0; i < boundElems.length; i++) {
+                    attrs = boundElems[i].attributes;
+
+                    //  Loop over all of the attributes of the found element.
+                    for (j = 0; j < attrs.length; j++) {
+
+                        attrVal = attrs[j].value;
+
+                        //  If the attribute was in the BIND namespace and
+                        //  either matched our matcher OR contained ACP
+                        //  variables, then add it to our list of bound
+                        //  attributes.
+                        if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
+                            (matcher.test(attrVal) ||
+                                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
+                                                                    attrVal))) {
+
+                            boundAttrNodes.push(attrs[j]);
+                        }
+                    }
+                }
 
                 //  Otherwise, the signal's origin was not a URI, so it must've
                 //  been another GUI control within the page. Because we don't
@@ -1005,9 +1049,13 @@ function(aSignal) {
                             //  element based on their standard data binding /
                             //  decoding methods (isSingleValued,
                             //  isScalarValued, etc.)
-                            ownerTPElem.refreshLeaf(
-                                    sigOrigin, aSignal,
-                                    sigOrigin, boundAttrNodes[i], null);
+                            ownerTPElem.$refreshLeaf(
+                                    facet,
+                                    sigOrigin,
+                                    boundAttrNodes[i],
+                                    null,
+                                    originWasURI,
+                                    sigSource);
                         }
                     }
                 }
@@ -1530,8 +1578,8 @@ function(indexes) {
      *     the repeat is an XML object, these indexes should be '1-based' (like
      *     XPath). If it is an JS or JSON object, these indexes should be
      *     '0-based' (like JSONPath).
-     * @param {Array.<Number>} indexes An Array of Numbers that indicate the
-     *     indexes of the items to remove.
+     * @param {Number[]} indexes An Array of Numbers that indicate the indexes
+     *     of the items to remove.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -2070,8 +2118,8 @@ function() {
      * @description These are computed by taking all of the scoping values plus
      *     the local expression and then expanding them into the fully expanded
      *     binding expression.
-     * @returns {TP.core.Hash} A hash of the aspect names and the fully-formed
-     *     binding expressions on the receiver for each name.
+     * @returns {TP.core.Hash} A hash of the aspect names and an Array of
+     *     fully-formed binding expressions on the receiver for each name.
      */
 
     var elem,
@@ -2115,7 +2163,7 @@ function() {
     //  If the attribute is a 'bind:scope' or 'bind:repeat', then all we really
     //  need are the scoping values themselves.
     if (attrName === 'bind:scope' || attrName === 'bind:repeat') {
-        results.atPut('scope', TP.uriJoinFragments.apply(TP, scopeVals));
+        results.atPut('scope', TP.ac(TP.uriJoinFragments.apply(TP, scopeVals)));
     } else {
         attrVal = this.getAttribute(attrName);
 
@@ -2125,22 +2173,34 @@ function() {
         info.perform(
             function(kvPair) {
 
-                var dataExpr,
+                var exprs,
+                    exprResults,
+
+                    len,
+                    i,
 
                     allVals,
                     fullExpr;
 
-                //  Get the data expression for the named aspect.
-                //  TODO: Support more than 1 data expression.
-                dataExpr = kvPair.last().at('dataExprs').first();
+                //  Get all data expressions for the named aspect.
+                exprs = kvPair.last().at('dataExprs');
 
-                //  Join together the data expression along with the scoping
-                //  values to calculate the 'fully formed' binding expression.
-                allVals = scopeVals.concat(dataExpr);
+                exprResults = TP.ac();
 
-                fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+                len = exprs.getSize();
+                for (i = 0; i < len; i++) {
 
-                results.atPut(kvPair.first(), fullExpr);
+                    //  Join together the each expression along with the scoping
+                    //  values to calculate the 'fully formed' binding
+                    //  expression.
+                    allVals = scopeVals.concat(exprs.at(i));
+
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    exprResults.push(fullExpr);
+                }
+
+                results.atPut(kvPair.first(), exprResults);
             });
     }
 
@@ -2371,7 +2431,7 @@ function() {
             //  TODO: Raise an exception
             return null;
             /*
-            repeatContent = this.$captureRepeatContent(elems);
+            repeatContent = this.$captureRepeatContent(boundElems);
             if (!TP.owns(this, 'addContent')) {
                 this.defineMethod(
                     'addContent',
@@ -2478,8 +2538,8 @@ function(indexes) {
      *     the repeat is an XML object, these indexes should be '1-based' (like
      *     XPath). If it is an JS or JSON object, these indexes should be
      *     '0-based' (like JSONPath).
-     * @param {Array.<Number>} indexes An Array of Numbers that indicate the
-     *     indexes of the items to insert new items at.
+     * @param {Number[]} indexes An Array of Numbers that indicate the indexes
+     *     of the items to insert new items at.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -2700,8 +2760,47 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, isScoped) {
+TP.dom.ElementNode.Inst.defineMethod('$refreshBranches',
+function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pathAction, isScoped, sigOrigin, originWasURI, changeSource, updateIndexes) {
+
+    /**
+     * @method $refreshBranches
+     * @summary Refreshes any data bindings that are collections ('branches')
+     *     under the set of supplied bound elements.
+     * @param {Object} primarySource The object that is the primary data source
+     *     that leafs under the receiver could be bound to. This is usually a
+     *     collection of data.
+     * @param {String} [aFacet=value] The facet of the binding expressions that
+     *     we're refreshing. This defaults to 'value' which is the 99% case.
+     * @param {Object} initialVal The initial value to use to update the
+     *     binding. This could be mutated inside of this method to a final,
+     *     massaged, value.
+     * @param {Element[]} boundElems An array of elements that are descendants
+     *     of the receiver that need to be refreshed from their binding
+     *     expressions.
+     * @param {Number} [aPathType] The path type that is contained in the
+     *     binding expression.
+     * @param {String[]} [pathParts] An array of parts of the data binding path
+     *     that are being updated as computed by the data content management
+     *     engine.
+     * @param {String} pathAction If one of the leafs under the receiver is a
+     *     repeating construct, then this is a constant to tell the machinery
+     *     whether to create/insert or delete items.
+     * @param {Boolean} [isScoped] Whether or not this invocation of this method
+     *     is servicing a 'scoped' context. Used internally by recursive calls
+     *     to this method.
+     * @param {Object} [sigOrigin] If a signal initiated the refreshing process,
+     *     this will be the signal's 'origin'.
+     * @param {Boolean} [originWasURI=false] If a signal initiated the
+     *     refreshing process, then this is whether or not the origin of the
+     *     signal that started the refreshing process was a TP.core.URI.
+     * @param {Object} [changeSource] The source of the change. If a signal
+     *     initiated the refreshing process, this will be the signal's 'source'.
+     * @param {Number[]} [updateIndexes] If one of the leafs under the receiver
+     *     is a repeating construct, then this is an optional set of indexes
+     *     that tells the repeat where to insert, delete, etc.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
 
     var elem,
 
@@ -2766,7 +2865,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
         insideRepeatScope,
 
-        indexes,
         newRowElem;
 
     elem = this.getNativeNode();
@@ -2808,7 +2906,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
     //  'shallow' fashion - that is, 'under' the receiver but not under any
     //  nested scopes (i.e. 'bind:scope' or 'bind:repeat') that are also under
     //  the receiver.
-    nextElems = elems.filter(
+    nextElems = boundElems.filter(
             function(anElem) {
 
                 var k;
@@ -2827,6 +2925,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     return true;
                 }
+
                 return false;
             });
 
@@ -2876,7 +2975,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
     if (TP.isEmpty(pathParts)) {
 
         primaryLocMatcher =
-            TP.rc(TP.regExpEscape(aSignal.getOrigin().getPrimaryLocation()));
+            TP.rc(TP.regExpEscape(sigOrigin.getPrimaryLocation()));
 
         //  Loop over all of the found binding attributes.
         len = boundAttrNodes.getSize();
@@ -2972,15 +3071,26 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         branchVal = TP.ac(branchVal);
                     }
 
-                    //  NB: This modifies the supplied 'elems' Array to add the
-                    //  newly generated elements. They will be refreshed below.
-                    ownerTPElem.$regenerateRepeat(branchVal, elems);
+                    //  NB: This modifies the supplied 'boundElems' Array to add
+                    //  the newly generated elements. They will be refreshed
+                    //  below.
+                    ownerTPElem.$regenerateRepeat(branchVal, boundElems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
                 }
 
-                ownerTPElem.refreshBranches(
-                                primarySource, aSignal, elems, branchVal,
-                                pathType, null, pathAction, true);
+                ownerTPElem.$refreshBranches(
+                                primarySource,
+                                aFacet,
+                                branchVal,
+                                boundElems,
+                                pathType,
+                                null,
+                                pathAction,
+                                true,
+                                sigOrigin,
+                                originWasURI,
+                                changeSource,
+                                updateIndexes);
             } else {
 
                 //  If we're not scoped (i.e. we're running top-level
@@ -2996,8 +3106,13 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 }
 
                 //  Otherwise, go ahead and process this as a leaf.
-                ownerTPElem.refreshLeaf(
-                    primarySource, aSignal, theVal, boundAttr, aPathType);
+                ownerTPElem.$refreshLeaf(
+                    aFacet,
+                    theVal,
+                    boundAttr,
+                    aPathType,
+                    originWasURI,
+                    changeSource);
             }
         }
 
@@ -3009,8 +3124,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
         predicatePhaseOneComplete = false;
 
-        //  Work in reverse order, trying to find the 'most specific'
-        //  branching elements.
+        //  Work in reverse order, trying to find the 'most specific' branching
+        //  elements.
         while (TP.notEmpty(searchParts)) {
 
             didProcess = false;
@@ -3095,9 +3210,19 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     //  to the data (probably a collection) that was supplied to
                     //  this method and is currently in theVal.
                     if (attrVal === '.') {
-                        return ownerTPElem.refreshBranches(
-                                primarySource, aSignal, elems, theVal,
-                                aPathType, pathParts, pathAction, true);
+                        return ownerTPElem.$refreshBranches(
+                                primarySource,
+                                aFacet,
+                                theVal,
+                                boundElems,
+                                aPathType,
+                                pathParts,
+                                pathAction,
+                                true,
+                                sigOrigin,
+                                originWasURI,
+                                changeSource,
+                                updateIndexes);
                     }
 
                     if (TP.isURIString(attrVal)) {
@@ -3182,16 +3307,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                             ownerTPElem = TP.wrap(ownerElem);
                         }
 
-                        indexes = aSignal.at('indexes');
-
                         switch (pathAction) {
 
                             case TP.CREATE:
                             case TP.INSERT:
 
-                                if (TP.notEmpty(indexes)) {
+                                if (TP.notEmpty(updateIndexes)) {
                                     newRowElem =
-                                        ownerTPElem.$insertRepeatRowAt(indexes);
+                                        ownerTPElem.$insertRepeatRowAt(
+                                                                updateIndexes);
 
                                     if (TP.owns(
                                         ownerTPElem, 'generatedItemCount')) {
@@ -3208,11 +3332,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                                     ownerTPElem.empty();
 
-                                    //  NB: This modifies the supplied 'elems'
-                                    //  Array to add the newly generated
-                                    //  elements. They will be refreshed below.
+                                    //  NB: This modifies the supplied
+                                    //  'boundElems' Array to add the newly
+                                    //  generated elements. They will be
+                                    //  refreshed below.
                                     ownerTPElem.$regenerateRepeat(
-                                                    branchVal, elems);
+                                                    branchVal, boundElems);
                                     ownerTPElem.$showHideRepeatRows(branchVal);
 
                                     TP.wrap(ownerTPElem).
@@ -3225,8 +3350,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                             case TP.DELETE:
 
-                                if (TP.notEmpty(indexes)) {
-                                    ownerTPElem.$deleteRepeatRowAt(indexes);
+                                if (TP.notEmpty(updateIndexes)) {
+                                    ownerTPElem.$deleteRepeatRowAt(
+                                                            updateIndexes);
                                     ownerTPElem.set(
                                     'generatedItemCount',
                                     ownerTPElem.get('generatedItemCount') - 1);
@@ -3247,17 +3373,32 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     didProcess = true;
 
                     if (needsRefresh) {
-                        ownerTPElem.refreshBranches(
-                                primarySource, aSignal, elems, branchVal,
-                                pathType, remainderParts, pathAction, true);
+                        ownerTPElem.$refreshBranches(
+                                primarySource,
+                                aFacet,
+                                branchVal,
+                                boundElems,
+                                pathType,
+                                remainderParts,
+                                pathAction,
+                                true,
+                                sigOrigin,
+                                originWasURI,
+                                changeSource,
+                                updateIndexes);
                     } else {
                         break;
                     }
 
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
-                    ownerTPElem.refreshLeaf(
-                        primarySource, aSignal, theVal, boundAttr, aPathType);
+                    ownerTPElem.$refreshLeaf(
+                        aFacet,
+                        theVal,
+                        boundAttr,
+                        aPathType,
+                        originWasURI,
+                        changeSource);
 
                     didProcess = true;
                 }
@@ -3271,16 +3412,11 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 TP.isDefined(branchVal = TP.wrap(theVal).get(lastPart)) &&
                 (pathAction === TP.CREATE || pathAction === TP.INSERT)) {
 
-                indexes = aSignal.at('indexes');
-
-                if (TP.notEmpty(indexes)) {
-                    newRowElem = this.$insertRepeatRowAt(indexes);
-                    if (TP.owns(
-                        this, 'generatedItemCount')) {
-                        this.set(
-                        'generatedItemCount',
-                        this.get('generatedItemCount') +
-                                1);
+                if (TP.notEmpty(updateIndexes)) {
+                    newRowElem = this.$insertRepeatRowAt(updateIndexes);
+                    if (TP.owns(this, 'generatedItemCount')) {
+                        this.set('generatedItemCount',
+                                    this.get('generatedItemCount') + 1);
                     }
 
                     TP.wrap(newRowElem).refreshBoundDescendants();
@@ -3288,9 +3424,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     ownerTPElem.empty();
 
-                    //  NB: This modifies the supplied 'elems' Array to add the
-                    //  newly generated elements. They will be refreshed below.
-                    ownerTPElem.$regenerateRepeat(branchVal, elems);
+                    //  NB: This modifies the supplied 'boundElems' Array to add
+                    //  the newly generated elements. They will be refreshed
+                    //  below.
+                    ownerTPElem.$regenerateRepeat(branchVal, boundElems);
                     ownerTPElem.$showHideRepeatRows(branchVal);
 
                     TP.wrap(ownerTPElem).refreshBoundDescendants();
@@ -3312,8 +3449,28 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('refreshLeaf',
-function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
+TP.dom.ElementNode.Inst.defineMethod('$refreshLeaf',
+function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource) {
+
+    /**
+     * @method $refreshLeaf
+     * @summary Refreshes any data bindings occurring as a 'leaf' (i.e. a
+     *     scalar displayed value) under the receiver.
+     * @param {String} [aFacet=value] The facet of the binding expressions that
+     *     we're refreshing. This defaults to 'value' which is the 99% case.
+     * @param {Object} initialVal The initial value to use to update the
+     *     binding. This could be mutated inside of this method to a final,
+     *     massaged, value.
+     * @param {AttributeNode} bindingAttr The attribute node containing the
+     *     binding expression.
+     * @param {Number} [aPathType] The path type that is contained in the
+     *     binding expression.
+     * @param {Boolean} [originWasURI=false] Whether or not the origin of the
+     *     signal that started the refreshing process was a TP.core.URI.
+     * @param {Object} [changeSource] The source of the change. If a signal
+     *     initiated the refreshing process, this will be the signal's 'source'.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
 
     var facet,
 
@@ -3335,8 +3492,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         info,
         infoKeys,
 
-        sigOrigin,
-
         theVal,
 
         len,
@@ -3354,14 +3509,12 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     //  TIMING: var start = Date.now();
 
-    facet = TP.ifInvalid(aSignal.at('facet'), 'value');
+    facet = TP.ifInvalid(aFacet, 'value');
 
     attrValue = bindingAttr.value;
     info = this.getBindingInfoFrom(attrValue);
 
     infoKeys = info.getKeys();
-
-    theVal = TP.collapse(initialVal);
 
     pathOptions = TP.hc();
     if (this.isScalarValued(aspect)) {
@@ -3381,8 +3534,10 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         //  If the facet isn't 'value', then we just set the facet using the new
         //  value extracted from the signal and continue on.
         if (facet !== 'value') {
-            this.setFacet(aspect, facet, aSignal.at(TP.NEWVAL), true);
+            this.setFacet(aspect, facet, initialVal, true);
         } else {
+
+            theVal = TP.collapse(initialVal);
 
             exprs = entry.at('dataExprs');
 
@@ -3390,8 +3545,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 continue;
             }
 
-            //  This should only have one expression. If it has more than
-            //  one, then we need to raise an exception.
+            //  This should only have one expression. If it has more than one,
+            //  then we need to raise an exception.
             if (exprs.getSize() > 1) {
                 //  TODO: Raise
                 continue;
@@ -3436,8 +3591,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
             if (TP.isURIString(expr)) {
 
-                sigOrigin = aSignal.getOrigin();
-                if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
+                if (originWasURI) {
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     finalVal = initialVal;
@@ -3534,19 +3688,20 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                             TP.isXMLNode(TP.unwrap(finalVal));
                     }
 
-                    //  Important for the logic in the transformation Function
-                    //  to set this to NaN and let the logic below set it if it
-                    //  finds it.
+                    //  It is important for the logic in the transformation
+                    //  Function to set this to NaN and let the logic below set
+                    //  it if it finds it.
                     repeatIndex = NaN;
 
-                    if (TP.isValid(
-                            repeatInfo = this.$getRepeatSourceAndIndex())) {
+                    repeatInfo = this.$getRepeatSourceAndIndex();
+
+                    if (TP.isValid(repeatInfo)) {
                         repeatSource = repeatInfo.first();
                         repeatIndex = repeatInfo.last();
                     }
 
                     finalVal = transformFunc(
-                                    aSignal.getSource(),
+                                    changeSource,
                                     finalVal,
                                     this,
                                     repeatSource,
@@ -4226,15 +4381,17 @@ function(shouldRender) {
 
     var elem,
 
-        attrVal,
-
         scopeVals,
+
+        attrNode,
+        attrVal,
+        bindingInfo,
 
         repeatFullExpr,
         repeatWholeURI,
         repeatResult,
 
-        bindingInfo,
+        boundElems,
 
         valChanged,
 
@@ -4242,16 +4399,18 @@ function(shouldRender) {
 
     elem = this.getNativeNode();
 
+    scopeVals = this.getBindingScopeValues();
+
     //  NB: This check is done in order of precedence of these attributes
     if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrNode = TP.elementGetAttributeNode(elem, 'bind:io');
         attrVal = this.getAttribute('bind:io');
     } else if (TP.elementHasAttribute(elem, 'bind:in', true)) {
+        attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
         attrVal = this.getAttribute('bind:in');
     } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
         return this.refreshBoundDescendants();
     } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-
-        scopeVals = this.getBindingScopeValues();
 
         repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
         repeatWholeURI = TP.uc(repeatFullExpr);
@@ -4263,7 +4422,26 @@ function(shouldRender) {
 
         this.$regenerateRepeat(repeatResult, TP.ac());
 
-        return this.refreshBoundDescendants();
+        boundElems = this.$getBoundElements();
+
+        if (TP.isCollection(repeatResult)) {
+            this.$refreshBranches(
+                    repeatResult,
+                    'value',
+                    repeatResult,
+                    boundElems,
+                    null,
+                    null,
+                    null,
+                    false,
+                    repeatWholeURI,
+                    true,
+                    this,
+                    null);
+        }
+
+        return this;
+
     } else {
         //  If this isn't an element around one of those three attributes, then
         //  just call render() and return
@@ -4275,8 +4453,6 @@ function(shouldRender) {
     if (TP.isEmpty(attrVal)) {
         return this;
     }
-
-    scopeVals = this.getBindingScopeValues();
 
     //  Extract the binding information from the supplied binding information
     //  value String. This may have already been parsed and cached, in which
@@ -4306,9 +4482,7 @@ function(shouldRender) {
 
                 oldVal,
 
-                result,
-
-                transformFunc;
+                result;
 
             aspectName = bindEntry.first();
 
@@ -4380,23 +4554,18 @@ function(shouldRender) {
                     result = dataExpr.unquoted();
                 } else {
                     //  Otherwise, it's a binding expression to a data source.
-                    //  Grab the result from the URI. Then use that value to set
-                    //  our value in the receiver for that particular aspect.
+                    //  Grab the result from the URI.
                     result = TP.val(wholeURI.getResource().get('result'));
                 }
 
-                if (TP.isCallable(
-                            transformFunc = bindVal.at('transformFunc'))) {
-                    result = transformFunc(null, result, this);
-                }
-
                 if (!TP.equal(result, oldVal)) {
-
-                    if (aspectName === 'value') {
-                        this.setValue(result);
-                    } else {
-                        this.setFacet(aspectName, 'value', result);
-                    }
+                    this.$refreshLeaf(
+                            'value',
+                            result,
+                            attrNode,
+                            null,
+                            false,
+                            this);
 
                     valChanged = true;
                 }

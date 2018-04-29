@@ -120,6 +120,8 @@ TP.USE_WHOLE_PACKAGE = function() {
     obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
     obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
     obj[TP.OID] = this[TP.SOURCE_PACKAGE] + '@' + this[TP.SOURCE_CONFIG];
+
+    return obj;
 };
 
 TP.IS_PERSISTED = 'is_persisted';

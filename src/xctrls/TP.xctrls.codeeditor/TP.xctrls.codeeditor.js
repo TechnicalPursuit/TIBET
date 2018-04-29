@@ -319,7 +319,7 @@ function() {
 
     var nativeTATPElem;
 
-    //  Go ahead and 'focus' the editor.
+    //  Go ahead and 'blur' the editor.
     this.$get('$editorObj').blur();
 
     //  Make sure to do a separate 'blur' on the textarea that the ACE editor
