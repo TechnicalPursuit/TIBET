@@ -148,7 +148,14 @@ Cmd.prototype.execute = function() {
             return true;
         });
 
-        if (this.options.debug && nodeargs.length === 0) {
+        //  Special handling for server/tds for aliases re: tds.log.level.
+        if (this.options.debug) {
+            serverargs.push('--tds.log.level', 'debug');
+        } else if (this.options.level) {
+            serverargs.push('--tds.log.level', this.options.level);
+        }
+
+        if (this.options.debugger && nodeargs.length === 0) {
             nodeargs.push('--inspect', '--debug-brk');
         }
 
