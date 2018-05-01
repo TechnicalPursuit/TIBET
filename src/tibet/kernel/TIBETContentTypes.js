@@ -9427,7 +9427,9 @@ function(targetObj, varargs) {
         doc,
         sourceObjectID,
 
-        interestedPath;
+        interestedPath,
+
+        extractWith;
 
     target = targetObj;
 

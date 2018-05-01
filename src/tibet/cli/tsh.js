@@ -352,7 +352,7 @@ Cmd.prototype.finalizeBootProfile = function(arglist) {
     var found;
 
     found = arglist.some(function(item) {
-        if (typeof(item) === 'string') {
+        if (typeof item === 'string') {
             if (item === '--boot.profile' ||
                     item.indexOf('--boot.profile=') === 0) {
                 return true;
