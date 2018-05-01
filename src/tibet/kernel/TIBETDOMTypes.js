@@ -13376,7 +13376,7 @@ function(storageInfo) {
         return '';
     }
 
-    result.push('</', elem.tagName.toLowerCase(), '>\n');
+    result.push('</', elem.tagName.toLowerCase(), '>');
 
     return result.join('');
 });
@@ -13730,7 +13730,7 @@ function(storageInfo) {
     //  If the tag serializes as empty, then we use 'XML empty' syntax along
     //  with a newline.
     if (this.isSerializationEmpty()) {
-        result.push('/>\n');
+        result.push('/>');
     } else {
         //  Otherwise, simply close the opening tag and then use a more
         //  sophisticated way to detect whether or not to append a newline. If
