@@ -13737,8 +13737,10 @@ function(storageInfo) {
         result.push('>');
         childTextNodes = TP.nodeGetChildNodesByType(elem, Node.TEXT_NODE);
         if (TP.isEmpty(childTextNodes) ||
-            TP.regex.ONLY_WHITESPACE.test(childTextNodes.first().nodeValue) ||
-            TP.regex.ONLY_WHITESPACE.test(childTextNodes.last().nodeValue)) {
+            TP.regex.ONLY_NON_NEWLINE_WHITESPACE.test(
+                            childTextNodes.first().nodeValue) ||
+            TP.regex.ONLY_NON_NEWLINE_WHITESPACE.test(
+                            childTextNodes.last().nodeValue)) {
             result.push('\n');
         }
     }

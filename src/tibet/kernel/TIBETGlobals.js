@@ -3116,6 +3116,8 @@ TP.regex.ONLY_NUM = /^\d+$/;
 TP.regex.ONLY_PERIOD = /^\.$/;
 TP.regex.ONLY_DOLLAR = /^\$$/;
 
+TP.regex.ONLY_NON_NEWLINE_WHITESPACE = /^[^\S\n]+$/;
+
 TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 
 TP.regex.ANY_NUMBER = /^-?\d*\.{0,1}\d+$/i;
