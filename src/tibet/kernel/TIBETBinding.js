@@ -4555,7 +4555,7 @@ function(shouldRender) {
                 } else {
                     //  Otherwise, it's a binding expression to a data source.
                     //  Grab the result from the URI.
-                    result = TP.val(wholeURI.getResource().get('result'));
+                    result = wholeURI.getResource().get('result');
                 }
 
                 if (!TP.equal(result, oldVal)) {
