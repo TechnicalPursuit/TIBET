@@ -3474,10 +3474,20 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
 
     var facet,
 
+        attrValue,
+
+        info,
+        infoKeys,
+
         pathOptions,
 
-        aspect,
+        extractVal,
+        collapseVal,
 
+        len,
+        i,
+
+        aspect,
         entry,
 
         exprs,
@@ -3487,15 +3497,7 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
 
         path,
 
-        attrValue,
-
-        info,
-        infoKeys,
-
         theVal,
-
-        len,
-        i,
 
         transformFunc,
         finalVal,
@@ -3512,18 +3514,9 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
     facet = TP.ifInvalid(aFacet, 'value');
 
     attrValue = bindingAttr.value;
+
     info = this.getBindingInfoFrom(attrValue);
-
     infoKeys = info.getKeys();
-
-    pathOptions = TP.hc();
-    if (this.isScalarValued(aspect)) {
-        pathOptions.atPut('extractWith', 'value');
-    }
-
-    if (this.isSingleValued(aspect)) {
-        pathOptions.atPut('shouldCollapse', true);
-    }
 
     len = infoKeys.getSize();
     for (i = 0; i < len; i++) {
@@ -3531,11 +3524,31 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
         aspect = infoKeys.at(i);
         entry = info.at(aspect);
 
+        pathOptions = TP.hc();
+
+        //  If the receiver is a 'scalar valued' target object, then we set
+        //  flags to extract the value from the data value.
+        extractVal = false;
+        if (this.isScalarValued(aspect)) {
+            extractVal = true;
+            pathOptions.atPut('extractWith', 'value');
+        }
+
+        //  If the receiver is a 'single valued' target object, then we set
+        //  flags to collapse a single item value from the data value.
+        collapseVal = false;
+        if (this.isSingleValued(aspect)) {
+            collapseVal = true;
+            pathOptions.atPut('shouldCollapse', true);
+        }
+
         //  If the facet isn't 'value', then we just set the facet using the new
         //  value extracted from the signal and continue on.
         if (facet !== 'value') {
             this.setFacet(aspect, facet, initialVal, true);
         } else {
+
+            transformFunc = entry.at('transformFunc');
 
             theVal = TP.collapse(initialVal);
 
@@ -3595,6 +3608,21 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     finalVal = initialVal;
+                }
+
+                //  If there is no transformation function defined, then we test
+                //  to see if the value extraction or collapsing flags are
+                //  defined and take action based on that. If there is a
+                //  transformation function, then we just hand the whole,
+                //  unreduced value of the data value to it.
+                if (!TP.isCallable(transformFunc)) {
+                    if (extractVal) {
+                        finalVal = TP.val(finalVal);
+                    }
+
+                    if (collapseVal) {
+                        finalVal = TP.collapse(finalVal);
+                    }
                 }
 
             } else if (TP.isValid(pathType)) {
@@ -3678,7 +3706,8 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
             // }
 
             if (TP.isValid(finalVal)) {
-                if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
+
+                if (TP.isCallable(transformFunc)) {
 
                     if (TP.isCollection(finalVal)) {
                         isXMLResource =
@@ -3707,13 +3736,26 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                                     repeatSource,
                                     repeatIndex,
                                     isXMLResource);
-                }
-            }
 
-            if (aspect === 'value') {
-                this.setValue(finalVal, true);
-            } else {
-                this.setFacet(aspect, facet, finalVal, true);
+                } else if (!TP.isURIString(expr)) {
+
+                    //  There was no transformation function and the expression
+                    //  did *not* contain a URI, then we extract the value
+                    //  and/or collapse it based on flags set earlier.
+                    if (extractVal) {
+                        finalVal = TP.val(finalVal);
+                    }
+
+                    if (collapseVal) {
+                        finalVal = TP.collapse(finalVal);
+                    }
+                }
+
+                if (aspect === 'value') {
+                    this.setValue(finalVal, true);
+                } else {
+                    this.setFacet(aspect, facet, finalVal, true);
+                }
             }
         }
     }
