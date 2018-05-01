@@ -2433,6 +2433,11 @@ function() {
                         break;
                 }
 
+                //  It's a 'tibet:' attribute that we never serialize.
+                if (TP.NEVER_SERIALIZED_TIBET_ATTRS.contains(attrName)) {
+                    return false;
+                }
+
                 switch (attrName) {
 
                     case 'tibet:focuscontext':
