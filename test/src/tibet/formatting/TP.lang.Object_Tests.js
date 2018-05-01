@@ -846,7 +846,7 @@ function() {
         //  Note that in the case of nested templates, $TAG shifts to be
         //  whatever markup is being processed at that time. To access the
         //  original, authored markup that started the templating process, use
-        //  $SOURCE>
+        //  $SOURCE.
         //  ---
 
         templateStr = 'The item is: {{$TAG .% String}}';
