@@ -1639,6 +1639,16 @@ TP.CONTAINED_BY_NODE = 16;
 //  DOM attributes that never get prefixed
 TP.NEVER_PREFIXED_ATTRS = ['id'];
 
+//  DOM attributes that never get serialized
+TP.NEVER_SERIALIZED_TIBET_ATTRS = [
+    'tibet:assembly',
+    'tibet:focuscontext',
+    'tibet:for',
+    'tibet:globaldocid',
+    'tibet:originalhref',
+    'tibet:recasting'
+];
+
 //  A list of queries for elements that can be focused without a 'tabindex'
 //  attribute, plus the query for any element that has a tabindex.
 TP.FOCUSABLE_QUERIES = [

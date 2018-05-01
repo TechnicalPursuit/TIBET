@@ -13512,13 +13512,16 @@ function(storageInfo) {
 
                 case 'tibet':
 
-                    if (attrName !== 'tag') {
+                    //  It's a 'tibet:tag' attribute. See if it matches the
+                    //  computed element name. If so, then skip it.
+                    if (attrName === 'tag' &&
+                        attrValue === computedElemName) {
                         continue;
                     }
 
-                    //  It's a 'tibet:tag' attribute. See if it matches the
-                    //  computed element name. If so, then skip it.
-                    if (attrValue === computedElemName) {
+                    //  It's a 'tibet:' attribute that we never serialize.
+                    if (TP.NEVER_SERIALIZED_TIBET_ATTRS.contains(
+                                        attrPrefix + ':' + attrName)) {
                         continue;
                     }
 
