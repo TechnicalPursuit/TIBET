@@ -4482,6 +4482,8 @@ function(shouldRender) {
 
                 oldVal,
 
+                wasURI,
+
                 result;
 
             aspectName = bindEntry.first();
@@ -4552,10 +4554,12 @@ function(shouldRender) {
                 //  that content with the quotes stripped off.
                 if (TP.regex.QUOTED_CONTENT.test(dataExpr)) {
                     result = dataExpr.unquoted();
+                    wasURI = false;
                 } else {
                     //  Otherwise, it's a binding expression to a data source.
                     //  Grab the result from the URI.
                     result = wholeURI.getResource().get('result');
+                    wasURI = true;
                 }
 
                 if (!TP.equal(result, oldVal)) {
@@ -4564,7 +4568,7 @@ function(shouldRender) {
                             result,
                             attrNode,
                             null,
-                            false,
+                            wasURI,
                             this);
 
                     valChanged = true;
