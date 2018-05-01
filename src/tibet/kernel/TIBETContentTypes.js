@@ -9574,6 +9574,17 @@ function(targetObj, varargs) {
         return finalValue;
     }
 
+    //  To maintain consistency with other data types, if we ended up with an
+    //  empty Array of result nodes and the caller has defined a property to
+    //  extract a value with, then just return the result of doing that.
+    if (TP.isArray(nodes) && TP.isEmpty(nodes)) {
+        extractWith = this.get('extractWith');
+
+        if (TP.notEmpty(extractWith)) {
+            return TP.val(targetObj, extractWith);
+        }
+    }
+
     return this.processFinalValue(nodes, target);
 });
 
