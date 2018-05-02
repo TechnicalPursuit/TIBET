@@ -1155,7 +1155,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.tabbar.Inst.defineMethod('finishBuildingNewContent',
-function(content) {
+function(selection) {
 
     /**
      * @method finishBuildingNewContent
@@ -1178,7 +1178,7 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    content.each(
+    selection.each(
         function(d) {
             var wrappedElem;
 

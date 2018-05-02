@@ -1188,7 +1188,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineMethod('finishBuildingNewContent',
-function(content) {
+function(selection) {
 
     /**
      * @method finishBuildingNewContent
@@ -1227,7 +1227,7 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    content.attr('tibet:tag', 'TP.xctrls.item').each(
+    selection.attr('tibet:tag', 'TP.xctrls.item').each(
         function(d, i) {
             var wrappedElem;
 
