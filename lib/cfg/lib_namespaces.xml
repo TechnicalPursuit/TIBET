@@ -190,6 +190,7 @@
     <script src="xctrls/TP.xctrls.item/TP.xctrls.item.keybindings.js"/>
 
     <script src="xctrls/TP.xctrls.itemgroup.js"/>
+    <script src="xctrls/TP.xctrls.itemset.js"/>
 
     <script src="xctrls/TP.xctrls.FramedElement.js"/>
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
