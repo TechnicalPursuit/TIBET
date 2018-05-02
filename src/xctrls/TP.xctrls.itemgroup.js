@@ -113,7 +113,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} False for this type as it't not single valued.
+     * @returns {Boolean} False for this type as it's not single valued.
      */
 
     return false;
