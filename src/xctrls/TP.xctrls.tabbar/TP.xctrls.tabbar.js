@@ -1088,7 +1088,14 @@ function() {
      *     enter/update/exit selections.
      */
 
-    return TP.unwrap(this.get('tabcontent'));
+    var content;
+
+    content = this.get('tabcontent');
+    if (TP.isEmptyArray(content)) {
+        return null;
+    }
+
+    return TP.unwrap(content);
 });
 
 //  ------------------------------------------------------------------------

@@ -9980,6 +9980,30 @@ function(aSuspectValue, aDefaultValue) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('isEmptyArray',
+function(anObj) {
+
+    /**
+     * @method isEmptyArray
+     * @summary Returns true if the object provided is a JavaScript Array and is
+     *     empty.
+     * @param {Object} anObj The object to test.
+     * @example Test to see if 'anObj' is an Array:
+     *     <code>
+     *          anObj = TP.ac();
+     *          TP.isEmptyArray(anObj);
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is an empty
+     *     JavaScript Array.
+     */
+
+    //  Defined by ECMAScript edition 5
+    return Array.isArray(anObj) && anObj.length === 0;
+});
+
+//  ------------------------------------------------------------------------
 //  BLANK (WHITESPACE) ONLY
 //  ------------------------------------------------------------------------
 
