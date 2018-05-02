@@ -133,7 +133,10 @@ function(aSignal) {
     var domTarget,
         wrappedDOMTarget,
 
-        value;
+        newValue,
+        oldValue,
+
+        wasSignalingChange;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -150,13 +153,32 @@ function(aSignal) {
         }
 
         //  Grab the value of the item.
-        value = wrappedDOMTarget.$getPrimitiveValue();
-        if (TP.isEmpty(value)) {
+        newValue = wrappedDOMTarget.$getPrimitiveValue();
+        if (TP.isEmpty(newValue)) {
             return;
         }
 
+        //  Grab the old value before we set it.
+        oldValue = this.getValue();
+
+        //  If the two values are equivalent, than just return
+        if (TP.equal(oldValue, newValue)) {
+            return;
+        }
+
+        //  If the item was already selected, then deselect the value.
+        //  Otherwise, select it.
+
+        //  Note here how we turn off change signaling to avoid multiple
+        //  unnecessary calls to render.
+        wasSignalingChange = this.shouldSignalChange();
+        this.shouldSignalChange(false);
+
         //  Toggle it.
-        this.toggleValue(value);
+        this.toggleValue(newValue);
+
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
         //  If the element is bound, then update its bound value.
         //  NOTE: we use the control's display value, which might not
@@ -165,6 +187,8 @@ function(aSignal) {
         //  would be an Array). Therefore, we need to fetch the whole display
         //  value here to set as the bound value.
         this.setBoundValueIfBound(this.getDisplayValue());
+
+        this.shouldSignalChange(wasSignalingChange);
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
