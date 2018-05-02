@@ -1660,7 +1660,7 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:shouldflagchanges',
     'tibet:templateid',
     'tibet:templateexpr',
-    'tibet:textbinding',
+    'tibet:textbinding'
 ];
 
 //  A list of queries for elements that can be focused without a 'tabindex'
