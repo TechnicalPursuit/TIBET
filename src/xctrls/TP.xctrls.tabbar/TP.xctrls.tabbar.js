@@ -27,6 +27,8 @@ TP.xctrls.itemset.defineSubtype('xctrls:tabbar');
 TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName', 'xctrls:tabitem');
 
 //  ========================================================================
+//  TP.xctrls.tabitem
+//  ========================================================================
 
 TP.xctrls.item.defineSubtype('tabitem');
 
