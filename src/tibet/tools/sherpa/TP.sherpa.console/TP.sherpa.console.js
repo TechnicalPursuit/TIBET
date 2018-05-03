@@ -192,8 +192,7 @@ function() {
         data;
 
     tabsURI = TP.uc('urn:tibet:sherpa_tabs');
-
-    data = tabsURI.getResource().get('result').get('data');
+    data = TP.val(tabsURI.getResource().get('result'));
 
     return data.getSize();
 });
@@ -218,7 +217,7 @@ function(aValue) {
         tabHasValue;
 
     tabsURI = TP.uc('urn:tibet:sherpa_tabs');
-    data = tabsURI.getResource().get('result').get('data');
+    data = TP.val(tabsURI.getResource().get('result'));
 
     tabHasValue = false;
     if (TP.notEmpty(data)) {
@@ -273,7 +272,7 @@ function(tabValue, tabLabel, shouldCreateProfileEntry) {
 
     //  Grab the data and push a new value of an Array consisting of the value
     //  and the label.
-    data = tabsURI.getResource().get('result').get('data');
+    data = TP.val(tabsURI.getResource().get('result'));
     data.push(TP.ac(tabValue, tabLabel));
 
     //  Signal that the data has changed - we need to do this manually since we
