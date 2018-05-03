@@ -173,6 +173,10 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.notifier_tpi.css.js"/>
 
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.pagerbar-TP.xctrls.pagerbar.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.pagerbar_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.pagerbar-TP.xctrls.pagerbar.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.panelbox-TP.xctrls.panelbox.css.js"/>
 
