@@ -15,7 +15,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.item.defineSubtype('xctrls:textitem');
+TP.xctrls.item.defineSubtype('textitem');
+
+TP.xctrls.textitem.addTraits(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

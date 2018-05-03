@@ -15,7 +15,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.item.defineSubtype('xctrls:checkitem');
+TP.xctrls.item.defineSubtype('checkitem');
+
+TP.xctrls.checkitem.addTraits(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
