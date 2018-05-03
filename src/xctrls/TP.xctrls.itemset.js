@@ -39,7 +39,6 @@ TP.xctrls.itemset.Type.defineAttribute('defaultItemTagName', 'xctrls:item');
 
 TP.xctrls.itemset.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
-            'TP.sig.DOMClick',
             'TP.sig.DOMDblClick',
 
             'TP.sig.DOMKeyDown',
