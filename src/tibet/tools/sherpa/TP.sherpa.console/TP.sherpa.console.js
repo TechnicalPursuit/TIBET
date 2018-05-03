@@ -327,6 +327,7 @@ function() {
 
         consoleDrawerTPElem,
 
+        data,
         tabSelectionURI;
 
     consoleInputTPElem = this.get('consoleInput');
@@ -627,6 +628,16 @@ function() {
     //  Observe the HUD's south drawer for when it opens/closes
     consoleDrawerTPElem = TP.byId('south', TP.win('UIROOT'));
     this.observe(consoleDrawerTPElem, 'ClosedChange');
+
+    //  Set the overall data Array as the resource for the console tabs.
+    data = TP.ac(
+            TP.ac('TSH', 'TSH')
+            );
+    TP.uc('urn:tibet:sherpa_tabs').setResource(data);
+
+    //  Set the selection hash for the console tabs.
+    data = TP.hc('selection', 'TSH');
+    TP.uc('urn:tibet:current_console_tab').setResource(data);
 
     this.observe(TP.uc('urn:tibet:sherpa_consoletabs'), 'ValueChange');
 
