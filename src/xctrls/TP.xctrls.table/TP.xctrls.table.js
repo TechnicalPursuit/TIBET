@@ -70,7 +70,7 @@ function() {
         templateContentElem,
         childElems,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
 
         newRowDiv,
 
@@ -98,11 +98,11 @@ function() {
 
     //  Grab whatever row attribute is used for selection purposes and set that
     //  as an attribute on the row.
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
     TP.elementSetAttribute(
                 newRowDiv,
-                attrSelectionInfo.first(),
-                attrSelectionInfo.last(),
+                itemSelectionInfo.first(),
+                itemSelectionInfo.last(),
                 true);
 
     //  Iterate over the child elements, create individual 'cell' divs and move
@@ -827,7 +827,7 @@ function(enterSelection) {
 
     var defaultTagName,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
 
         newRows,
         newCells,
@@ -842,13 +842,13 @@ function(enterSelection) {
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     //  The enter selection has been computed by 'select()'ing the return value
     //  of the 'getSelectionContainer' method.
     newRows = enterSelection.append('xhtml:div').
                     classed('row', true).
-                    attr(attrSelectionInfo.first(), attrSelectionInfo.last()).
+                    attr(itemSelectionInfo.first(), itemSelectionInfo.last()).
                     attr('tibet:tag', 'TP.xctrls.item');
 
     newCells = newRows.selectAll('xhtml:div').

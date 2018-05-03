@@ -1158,17 +1158,17 @@ function(enterSelection) {
 
     var defaultTagName,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
         newContent,
 
         shouldConstructTooltips;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     newContent = enterSelection.append(defaultTagName).attr(
-                    attrSelectionInfo.first(), attrSelectionInfo.last());
+                    itemSelectionInfo.first(), itemSelectionInfo.last());
 
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 

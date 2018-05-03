@@ -251,15 +251,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.D3VirtualList.Inst.defineMethod('getRowAttrSelectionInfo',
+TP.dom.D3VirtualList.Inst.defineMethod('getItemSelectionInfo',
 function() {
 
     /**
-     * @method getRowAttrSelectionInfo
+     * @method getItemSelectionInfo
      * @summary Returns an Array that contains an attribute name and attribute
-     *     value that will be used to 'select' all of the rows of the receiver.
+     *     value that will be used to 'select' all of the items in the template
+     *     of the receiver.
      *     Therefore, the receiver needs to stamp this attribute and value on
-     *     each row in its drawing machinery methods.
+     *     each item in its drawing machinery methods.
      * @returns {Array} A pair containing the attribute name and value.
      */
 
@@ -545,7 +546,7 @@ function() {
         scrollerElem,
         viewportElem,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
 
         virtualScroller;
 
@@ -564,7 +565,7 @@ function() {
 
     //  Row 'selection' criteria - an Array with the name of the attribute as
     //  the first value and the value of the attribute as the second value.
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     //  Allocate and initialize a virtual scroller with a variety of information
     //  about the receiver, including bound versions of the d3 enter/update/exit
@@ -577,7 +578,7 @@ function() {
         scroller(TP.extern.d3.select(scrollerElem)).
         viewport(TP.extern.d3.select(viewportElem)).
         target(viewportElem).
-        selectionInfo(attrSelectionInfo).
+        selectionInfo(itemSelectionInfo).
         control(this);
 
     //  Call the virtual scroller method to set up the scrolling event listener.

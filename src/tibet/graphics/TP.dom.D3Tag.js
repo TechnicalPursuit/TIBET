@@ -158,7 +158,7 @@ function(enterSelection) {
      *     content that was added by processing the template.
      */
 
-    var attrSelectionInfo,
+    var itemSelectionInfo,
 
         compiledTemplateContent,
 
@@ -173,7 +173,7 @@ function(enterSelection) {
 
         newContent;
 
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     compiledTemplateContent = this.get('$compiledTemplateContent');
 
@@ -246,8 +246,8 @@ function(enterSelection) {
 
             return newElem;
         }.bind(this)).attr(
-            attrSelectionInfo.first(),
-            attrSelectionInfo.last());
+            itemSelectionInfo.first(),
+            itemSelectionInfo.last());
 
     return newContent;
 });
@@ -597,6 +597,24 @@ function(selection) {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.D3Tag.Inst.defineMethod('getItemSelectionInfo',
+function() {
+
+    /**
+     * @method getItemSelectionInfo
+     * @summary Returns an Array that contains an attribute name and attribute
+     *     value that will be used to 'select' all of the items in the template
+     *     of the receiver.
+     *     Therefore, the receiver needs to stamp this attribute and value on
+     *     each item in its drawing machinery methods.
+     * @returns {Array} A pair containing the attribute name and value.
+     */
+
+    return TP.ac('class', 'item');
 });
 
 //  ------------------------------------------------------------------------
