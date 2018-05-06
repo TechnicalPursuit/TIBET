@@ -142,7 +142,7 @@ function(aValue, anIndex, shouldSignal) {
                 if (TP.isNumber(value)) {
                     this.dispatch('TP.sig.UIPageSet',
                                     null,
-                                    TP.hc('page', value));
+                                    TP.hc('pageNum', value));
                 }
                 break;
         }
