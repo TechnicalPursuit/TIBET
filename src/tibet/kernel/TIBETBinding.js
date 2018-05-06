@@ -2527,6 +2527,144 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineHandler('UIPageEnd',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageEnd
+     * @summary Handles when the data 'pages' should be set to the last page.
+     * @param {TP.sig.UIPageEnd} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+        TP.info('got to page end');
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageNext',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageNext
+     * @summary Handles when the data 'pages' should be set to the next page
+     *     from the current one.
+     * @param {TP.sig.UIPageNext} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+        TP.info('got to page next');
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPagePrevious',
+function(aSignal) {
+
+    /**
+     * @method handleUIPagePrevious
+     * @summary Handles when the data 'pages' should be set to the previous page
+     *     from the current one.
+     * @param {TP.sig.UIPagePrevious} aSignal The signal instance which
+     *     triggered this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+        TP.info('got to page previous');
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageSet',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageSet
+     * @summary Handles when the data 'pages' should be set to a specific page.
+     * @param {TP.sig.UIPageSet} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        TP.info('got to page set with page number: ' + aSignal.at('pageNum'));
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageStart',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageStart
+     * @summary Handles when the data 'pages' should be set to the first page.
+     * @param {TP.sig.UIPageStart} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+        TP.info('got to page start');
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineHandler('UIRefresh',
 function(aSignal) {
 

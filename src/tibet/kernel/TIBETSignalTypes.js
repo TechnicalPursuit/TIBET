@@ -1551,6 +1551,13 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIDelete');        //  XForms
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
 
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageEnd');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageNext');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPagePrevious');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageStart');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageSet');
+
 //  ------------------------------------------------------------------------
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIStateChange');
