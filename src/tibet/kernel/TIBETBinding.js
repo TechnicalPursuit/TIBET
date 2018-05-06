@@ -2527,6 +2527,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineHandler('UIRefresh',
+function(aSignal) {
+
+    /**
+     * @method handleUIRefresh
+     * @summary Refreshes the receiver's bound data.
+     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    this.refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
 function(indexes) {
 
@@ -4382,24 +4400,6 @@ function(aCollection) {
             TP.elementHide(allRepeatRows.at(i));
         }
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.ElementNode.Inst.defineHandler('UIRefresh',
-function(aSignal) {
-
-    /**
-     * @method handleUIRefresh
-     * @summary Refreshes the receiver's bound data.
-     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
-     *     this handler.
-     * @returns {TP.dom.ElementNode} The receiver.
-     */
-
-    this.refresh();
 
     return this;
 });
