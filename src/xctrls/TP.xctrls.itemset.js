@@ -37,6 +37,13 @@ TP.xctrls.itemset.Inst.resolveTrait('render', TP.dom.D3Tag);
  */
 TP.xctrls.itemset.Type.defineAttribute('defaultItemTagName', 'xctrls:item');
 
+/**
+ * Whether or not the tag wants 'close mark' elements to allow individual
+ * items to be closed (i.e. removed)
+ * @type {String}
+ */
+TP.xctrls.itemset.Type.defineAttribute('wantsCloseMarks', false);
+
 TP.xctrls.itemset.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
             'TP.sig.DOMDblClick',
@@ -910,12 +917,14 @@ function(enterSelection) {
 
         newContent,
 
+        shouldConstructCloseMarks,
         shouldConstructTooltips;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
     newContent = enterSelection.append(defaultTagName);
 
+    shouldConstructCloseMarks = this.getType().get('wantsCloseMarks');
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 
     newContent.each(
@@ -934,8 +943,10 @@ function(enterSelection) {
                 }
             );
 
-            markContent = TP.extern.d3.select(this).insert('xhtml:div');
-            markContent.classed('close_mark', true);
+            if (shouldConstructCloseMarks) {
+                markContent = TP.extern.d3.select(this).insert('xhtml:div');
+                markContent.classed('close_mark', true);
+            }
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(

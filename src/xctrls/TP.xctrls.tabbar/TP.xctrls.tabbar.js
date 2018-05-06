@@ -26,6 +26,13 @@ TP.xctrls.itemset.defineSubtype('xctrls:tabbar');
  */
 TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName', 'xctrls:tabitem');
 
+/**
+ * Whether or not the tag wants 'close mark' elements to allow individual
+ * items to be closed (i.e. removed)
+ * @type {String}
+ */
+TP.xctrls.tabbar.Type.defineAttribute('wantsCloseMarks', true);
+
 //  ========================================================================
 //  TP.xctrls.tabitem
 //  ========================================================================
