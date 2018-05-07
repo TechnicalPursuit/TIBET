@@ -110,7 +110,8 @@ function(aValue, anIndex, shouldSignal) {
      *     type, only numeric page items are selected.
      */
 
-    var value;
+    var value,
+        shouldDeselect;
 
     this.callNextMethod();
 
