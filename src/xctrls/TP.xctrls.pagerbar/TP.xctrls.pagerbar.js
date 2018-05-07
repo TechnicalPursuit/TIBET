@@ -106,49 +106,54 @@ function(aValue, anIndex, shouldSignal) {
      *     set.
      * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
      *     If false changes to the selection are not signaled. Defaults to true.
-     * @returns {Boolean} Whether or not a selection was selected.
+     * @returns {Boolean} Whether or not a selection was selected. For this
+     *     type, only numeric page items are selected.
      */
 
-    var didChange,
-        value;
+    var value;
 
-    didChange = this.callNextMethod();
+    this.callNextMethod();
 
-    if (didChange) {
+    value = this.get('value');
 
-        value = this.get('value');
+    shouldDeselect = true;
 
-        switch (value) {
+    switch (value) {
 
-            case 'start':
-                this.dispatch('TP.sig.UIPageStart');
-                break;
+        case 'start':
+            this.dispatch('TP.sig.UIPageStart');
+            break;
 
-            case 'previous':
-                this.dispatch('TP.sig.UIPagePrevious');
-                break;
+        case 'previous':
+            this.dispatch('TP.sig.UIPagePrevious');
+            break;
 
-            case 'next':
-                this.dispatch('TP.sig.UIPageNext');
-                break;
+        case 'next':
+            this.dispatch('TP.sig.UIPageNext');
+            break;
 
-            case 'end':
-                this.dispatch('TP.sig.UIPageEnd');
-                break;
+        case 'end':
+            this.dispatch('TP.sig.UIPageEnd');
+            break;
 
-            default:
-                //  Make sure this is a Number before dispatching the signal.
-                value = value.asNumber();
-                if (TP.isNumber(value)) {
-                    this.dispatch('TP.sig.UIPageSet',
-                                    null,
-                                    TP.hc('pageNum', value));
-                }
-                break;
-        }
+        default:
+            //  Make sure this is a Number before dispatching the signal.
+            value = value.asNumber();
+            if (TP.isNumber(value)) {
+                this.dispatch('TP.sig.UIPageSet',
+                                null,
+                                TP.hc('pageNum', value));
+            }
+
+            shouldDeselect = false;
+            break;
     }
 
-    return this;
+    if (shouldDeselect) {
+        this.deselectAll();
+    }
+
+    return !shouldDeselect;
 }, {
     patchCallee: true
 });
