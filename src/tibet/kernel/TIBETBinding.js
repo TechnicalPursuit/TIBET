@@ -2637,11 +2637,14 @@ function(aSignal) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var elem;
+    var elem,
+        pagePos;
 
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-        TP.info('got to page end');
+
+        pagePos = this.getRepeatPageCount() + 1;
+        this.setRepeatPagePosition(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -2665,11 +2668,14 @@ function(aSignal) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var elem;
+    var elem,
+        pagePos;
 
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-        TP.info('got to page next');
+
+        pagePos = this.getRepeatPagePosition();
+        this.setRepeatPagePosition(pagePos + 1);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -2693,11 +2699,14 @@ function(aSignal) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var elem;
+    var elem,
+        pagePos;
 
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-        TP.info('got to page previous');
+
+        pagePos = this.getRepeatPagePosition() - 1;
+        this.setRepeatPagePosition(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -2720,12 +2729,14 @@ function(aSignal) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var elem;
+    var elem,
+        pagePos;
 
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        TP.info('got to page set with page number: ' + aSignal.at('pageNum'));
+        pagePos = aSignal.at('pageNum') + 1;
+        this.setRepeatPagePosition(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -2752,7 +2763,8 @@ function(aSignal) {
 
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-        TP.info('got to page start');
+
+        this.setRepeatPagePosition(1);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
