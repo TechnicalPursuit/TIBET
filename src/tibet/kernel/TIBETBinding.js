@@ -1737,6 +1737,56 @@ function(attributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getAttrBindRepeatindex',
+function(size) {
+
+    /**
+     * @method getAttrBindRepeatindex
+     * @summary Gets the repeat index that the receiver will use to display
+     *     'pages' of repeating data.
+     * @returns {Number} The repeat index of the receiver.
+     */
+
+    var repeatIndex;
+
+    repeatIndex = TP.elementGetAttribute(
+                    this.getNativeNode(), 'bind:repeatindex', true);
+
+    repeatIndex = repeatIndex.asNumber();
+    if (!TP.isNumber(repeatIndex)) {
+        repeatIndex = 1;
+    }
+
+    return repeatIndex;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getAttrBindRepeatsize',
+function(size) {
+
+    /**
+     * @method getAttrBindRepeatsize
+     * @summary Gets the repeat size that the receiver will use to display
+     *     'pages' of repeating data.
+     * @returns {Number} The repeat size of the receiver.
+     */
+
+    var repeatSize;
+
+    repeatSize = TP.elementGetAttribute(
+                    this.getNativeNode(), 'bind:repeatsize', true);
+
+    repeatSize = repeatSize.asNumber();
+    if (!TP.isNumber(repeatSize)) {
+        repeatSize = 1;
+    }
+
+    return repeatSize;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeValue, flushCache) {
 
