@@ -2314,6 +2314,55 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getRepeatPageCount',
+function() {
+
+    /**
+     * @method getRepeatPageCount
+     * @summary Returns the total number of repeat 'pages' there are in the
+     *     receiver, based on the total number of items in the collection being
+     *     represented by the 'bind:repeat' and the value of the
+     *     'bind:repeatsize' attribute (which defaults to 1).
+     * @returns {Number} The total number of repeat 'pages' there are.
+     */
+
+    var repeatCollection,
+        repeatSize;
+
+    repeatCollection = this.$getRepeatValue();
+
+    if (!TP.isCollection(repeatCollection)) {
+        return -1;
+    }
+
+    repeatSize = this.getAttribute('bind:repeatsize');
+
+    return (repeatCollection.getSize() / repeatSize).floor();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getRepeatPagePosition',
+function() {
+
+    /**
+     * @method getRepeatPagePosition
+     * @summary Returns the repeat page 'position', that is the currently
+     *     showing page of repeating results.
+     * @returns {Number} The repeat page position.
+     */
+
+    var repeatSize,
+        repeatIndex;
+
+    repeatSize = this.getAttribute('bind:repeatsize');
+    repeatIndex = this.getAttribute('bind:repeatindex');
+
+    return (repeatIndex / repeatSize).ceil();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
 function() {
 
@@ -4481,6 +4530,46 @@ function(aValue) {
     this.setBoundValue(aValue,
                         this.getBindingScopeValues(),
                         this.getAttribute(attrName));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('setRepeatPagePosition',
+function(aPosition) {
+
+    /**
+     * @method setRepeatPagePosition
+     * @summary Sets the repeat page 'position', that is the currently showing
+     *     page of repeating results.
+     * @param {Number} aPosition The position to set the repeating paging system
+     *     to.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var repeatSize,
+        position;
+
+    repeatSize = this.getAttribute('bind:repeatsize');
+
+    position = aPosition - 1;
+
+    //  Can't go before the first page.
+    if (position < 0) {
+        return this;
+    }
+
+    //  Can't go after the last page.
+    if (position > this.getRepeatPageCount()) {
+        return this;
+    }
+
+    endIndex = position * repeatSize;
+
+    //  NB: We offset the repeatindex by 1 since it is always computed as a
+    //  1-based number.
+    this.setAttribute('bind:repeatindex', endIndex + 1);
 
     return this;
 });
