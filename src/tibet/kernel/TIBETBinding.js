@@ -4561,7 +4561,9 @@ function(aPosition) {
      */
 
     var repeatSize,
-        position;
+
+        position,
+        endIndex;
 
     repeatSize = this.getAttribute('bind:repeatsize');
 
