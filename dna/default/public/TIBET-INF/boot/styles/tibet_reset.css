@@ -3,6 +3,8 @@
  * @overview A common baseline (reset) for TIBET-based applications.
  */
 
+@namespace url("http://www.w3.org/1999/xhtml");
+
 /* Refresh periodically from http://necolas.github.io/normalize.css. */
 @import url("normalize.css");
 

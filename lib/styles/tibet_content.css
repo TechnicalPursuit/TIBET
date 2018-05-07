@@ -3,6 +3,8 @@
  * @overview Styles specific to the various TPI/TIBET content pages.
  */
 
+@namespace url("http://www.w3.org/1999/xhtml");
+
 @import url("tibet_reset.css");
 
 a {
