@@ -4675,7 +4675,7 @@ function(aCollection) {
     //  Generate a list of numbers from startIndex...endIndex.
     indices = Array.generateNumericSequence(startIndex, endIndex);
 
-    //  Itereate over all of the repeating content rows in the receiver and show
+    //  Iterate over all of the repeating content rows in the receiver and show
     //  or hide them, depending on whether their index exists in the numeric
     //  sequence.
     len = allRepeatRows.getSize();
