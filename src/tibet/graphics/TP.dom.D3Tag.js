@@ -158,7 +158,7 @@ function(enterSelection) {
      *     content that was added by processing the template.
      */
 
-    var attrSelectionInfo,
+    var itemSelectionInfo,
 
         compiledTemplateContent,
 
@@ -173,7 +173,7 @@ function(enterSelection) {
 
         newContent;
 
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     compiledTemplateContent = this.get('$compiledTemplateContent');
 
@@ -246,8 +246,8 @@ function(enterSelection) {
 
             return newElem;
         }.bind(this)).attr(
-            attrSelectionInfo.first(),
-            attrSelectionInfo.last());
+            itemSelectionInfo.first(),
+            itemSelectionInfo.last());
 
     return newContent;
 });
@@ -469,12 +469,19 @@ function() {
      * @method d3Select
      * @summary Creates the root update selection by obtaining it and returning
      *     it.
-     * @returns {TP.extern.d3.selection} The d3.js root update selection.
+     * @returns {TP.extern.d3.selection|null} The d3.js root update selection.
      */
 
-    var selection;
+    var container,
+        selection;
 
-    selection = this.getRootUpdateSelection(this.get('containerSelection'));
+    //  Grab the container D3 selection. If it's not valid, return null.
+    container = this.get('containerSelection');
+    if (TP.notValid(container)) {
+        return null;
+    }
+
+    selection = this.getRootUpdateSelection(container);
 
     return selection;
 });
@@ -492,11 +499,17 @@ function() {
      * @returns {TP.dom.D3Tag} The receiver.
      */
 
+    var container;
+
     //  Note how we pass 'false' here to not trigger change notification.
     //  Commonly, subtypes of this type will be bound objects, so change
     //  notification will be on by default.
 
-    this.set('containerSelection', this.makeContainerSelection(), false);
+    container = this.makeContainerSelection();
+
+    if (TP.isValid(container)) {
+        this.set('containerSelection', container, false);
+    }
 
     return this;
 });
@@ -597,6 +610,24 @@ function(selection) {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.D3Tag.Inst.defineMethod('getItemSelectionInfo',
+function() {
+
+    /**
+     * @method getItemSelectionInfo
+     * @summary Returns an Array that contains an attribute name and attribute
+     *     value that will be used to 'select' all of the items in the template
+     *     of the receiver.
+     *     Therefore, the receiver needs to stamp this attribute and value on
+     *     each item in its drawing machinery methods.
+     * @returns {Array} A pair containing the attribute name and value.
+     */
+
+    return TP.ac('class', 'item');
 });
 
 //  ------------------------------------------------------------------------
@@ -735,10 +766,19 @@ function() {
     /**
      * @method makeContainerSelection
      * @summary Manufactures a d3.js selection around our container.
-     * @returns {TP.extern.d3.selection} The d3.js selection that was created.
+     * @returns {TP.extern.d3.selection|null} The d3.js selection that was
+     *     created.
      */
 
-    return TP.extern.d3.select(this.get('selectionContainer'));
+    var container;
+
+    //  Grab the D3 selection container. If it's not valid, return null.
+    container = this.get('selectionContainer');
+    if (TP.notValid(container)) {
+        return null;
+    }
+
+    return TP.extern.d3.select(container);
 });
 
 //  ------------------------------------------------------------------------
@@ -772,6 +812,11 @@ function() {
 
         //  Select any nodes under the 'selection root'
         rootUpdateSelection = this.d3Select();
+
+        //  No valid root update selection? Return here.
+        if (TP.notValid(rootUpdateSelection)) {
+            return this;
+        }
 
         //  Associate (or 'bind') the data to the root update selection.
         this.d3Data(rootUpdateSelection);

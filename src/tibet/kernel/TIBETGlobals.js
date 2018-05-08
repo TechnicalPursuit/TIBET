@@ -1642,11 +1642,25 @@ TP.NEVER_PREFIXED_ATTRS = ['id'];
 //  DOM attributes that never get serialized
 TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:assembly',
+    'tibet:crud',
     'tibet:focuscontext',
     'tibet:for',
     'tibet:globaldocid',
+    'tibet:group',
     'tibet:originalhref',
-    'tibet:recasting'
+    'tibet:handlerid',
+    'tibet:mime',
+    'tibet:noawaken',
+    'tibet:nocompile',
+    'tibet:nodragtrapping',
+    'tibet:nomutationtracking',
+    'tibet:originalhref',
+    'tibet:phase',
+    'tibet:recasting',
+    'tibet:shouldflagchanges',
+    'tibet:templateid',
+    'tibet:templateexpr',
+    'tibet:textbinding'
 ];
 
 //  A list of queries for elements that can be focused without a 'tabindex'

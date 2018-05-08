@@ -1,0 +1,44 @@
+
+/*
+    CSS styles common across 'xctrls:pagerbar' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+*[data-theme] {
+
+    /* All themed 'xctrls:pagerbar' controls */
+
+    xctrls|pagerbar {
+
+        & xctrls|pageritem {
+
+            text-align: center;
+
+            padding: 0.1em 1em;
+
+            margin-left: -1px;
+
+            z-index: 1;
+
+            cursor: pointer;
+        }
+
+        & xctrls|pageritem:first-of-type {
+
+            margin-left: 0;
+        }
+
+        /* All themed, non-disabled 'xctrls:pagerbar' controls */
+
+        &:not([pclass|disabled]) {
+        }
+
+        /* All themed, non-disabled 'xctrls:pagerbar' control labels */
+
+        &:not([pclass|disabled]) xctrls|label {
+        }
+    }
+}
+

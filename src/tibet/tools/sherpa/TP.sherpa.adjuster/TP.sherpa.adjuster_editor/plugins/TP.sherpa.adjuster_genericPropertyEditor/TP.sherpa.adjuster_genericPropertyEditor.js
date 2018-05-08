@@ -910,8 +910,7 @@ function(anInfo) {
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
 
-    var val,
-        unit;
+    var val;
 
     this.$set('info', anInfo);
 

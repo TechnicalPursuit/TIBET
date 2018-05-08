@@ -1158,17 +1158,17 @@ function(enterSelection) {
 
     var defaultTagName,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
         newContent,
 
         shouldConstructTooltips;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     newContent = enterSelection.append(defaultTagName).attr(
-                    attrSelectionInfo.first(), attrSelectionInfo.last());
+                    itemSelectionInfo.first(), itemSelectionInfo.last());
 
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 
@@ -1393,11 +1393,18 @@ function() {
      * @summary Returns the Element that will be used as the 'root' to
      *     add/update/remove content to/from using d3.js functionality. By
      *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as the container for d3.js
+     * @returns {Element|null} The element to use as the container for d3.js
      *     enter/update/exit selections.
      */
 
-    return TP.unwrap(this.get('listcontent'));
+    var content;
+
+    content = this.get('listcontent');
+    if (TP.isEmptyArray(content)) {
+        return null;
+    }
+
+    return TP.unwrap(content);
 });
 
 //  ------------------------------------------------------------------------
@@ -1464,7 +1471,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('finishBuildingNewContent',
-function(content) {
+function(selection) {
 
     /**
      * @method finishBuildingNewContent
@@ -1490,7 +1497,7 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    content.each(
+    selection.each(
         function(d) {
             var wrappedElem;
 

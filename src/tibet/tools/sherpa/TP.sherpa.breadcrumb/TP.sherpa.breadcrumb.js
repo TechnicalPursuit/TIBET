@@ -224,11 +224,18 @@ function() {
      * @summary Returns the Element that will be used as the 'root' to
      *     add/update/remove content to/from using d3.js functionality. By
      *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as the container for d3.js
+     * @returns {Element|null} The element to use as the container for d3.js
      *     enter/update/exit selections.
      */
 
-    return TP.unwrap(this.get('listcontent'));
+    var content;
+
+    content = this.get('listcontent');
+    if (TP.isEmptyArray(content)) {
+        return null;
+    }
+
+    return TP.unwrap(content);
 });
 
 //  ------------------------------------------------------------------------

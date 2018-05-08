@@ -1,0 +1,137 @@
+/*
+    CSS styles for 'xctrls:pagerbar' controls for the 'tpi' theme.
+*/
+
+@import (reference) url("TP.xctrls_variables_tpi.less");
+
+@import url("../TP.xctrls.pagerbar_all.less");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The pagerbar */
+
+*[data-theme~="tpi"] {
+
+    xctrls|pagerbar {
+
+        & xctrls|pageritem {
+
+            border-width: @xctrls_pageritem-border-width;
+            border-style: @xctrls_pageritem-border-style;
+            border-top-left-radius: @xctrls_pageritem-border-radius;
+            border-top-right-radius: @xctrls_pageritem-border-radius;
+
+            /* Hovering over the pagerbar */
+
+            &:hover {
+            }
+
+            /* Focusing on the pagerbar */
+
+            /* doesn't work in any browser:
+            &:focus
+            */
+            &[pclass|focus] {
+            }
+
+            /* Clicking down on the pagerbar */
+
+            /* doesn't work in IE9:
+            &:active
+            */
+            &[pclass|active] {
+            }
+
+            /* The pagerbar is disabled */
+
+            /* doesn't work in any browser:
+            &:disabled
+            */
+            &[pclass|disabled] {
+            }
+
+            /* The pagerbar label */
+
+            & > xctrls|label {
+
+                font-family: @xctrls_pageritem-font-family;
+                color: @xctrls_pageritem-font-color-normal;
+            }
+
+            /* Hovering over the pagerbar, tab and label must highlight */
+
+            &:hover {
+
+                background-color: @xctrls_pageritem-background-color-hover;
+            }
+
+            &:hover > xctrls|label {
+
+                color: @xctrls_pageritem-font-color-hover;
+            }
+
+            /* Selected list item, tab must highlight */
+
+            &[pclass|selected] {
+
+                background-color: @xctrls_pageritem-background-color-selected-normal;
+                border-bottom-color: @xctrls_pageritem-background-color-selected-normal;
+            }
+
+            /* Focusing on the pagerbar, tab and label must highlight */
+
+            /* doesn't work in any browser
+            &:focus > xctrls|label
+            */
+            &[pclass|focus] {
+
+                background-color: @xctrls_pageritem-background-color-focus;
+            }
+
+            /* doesn't work in any browser
+            &:focus > xctrls|label
+            */
+            &[pclass|focus] > xctrls|label {
+
+                color: @xctrls_pageritem-font-color-focus;
+            }
+
+            /* Clicking down on the pagerbar, tab and label must highlight */
+
+            /* doesn't work in IE9:
+            &:active > xctrls|label
+            */
+            &[pclass|active] {
+
+                background-color: @xctrls_pageritem-background-color-active;
+            }
+
+            /* doesn't work in IE9:
+            &:active > xctrls|label
+            */
+            &[pclass|active] > xctrls|label {
+
+                color: @xctrls_pageritem-font-color-active;
+            }
+
+            /* The pageritem is disabled, so is the label */
+
+            /* doesn't work in any browser:
+            &:disabled > xctrls|label
+            */
+            &[pclass|disabled] {
+
+                background-color: @xctrls_pageritem-background-color-disabled;
+            }
+
+            /* doesn't work in any browser:
+            &:disabled > xctrls|label
+            */
+            &[pclass|disabled] > xctrls|label {
+
+                color: @xctrls_pageritem-font-color-disabled;
+            }
+        }
+    }
+}

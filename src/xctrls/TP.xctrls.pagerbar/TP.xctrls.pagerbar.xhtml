@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<xctrls:pagerbar tibet:nomutationtracking="true">
+    <span tibet:assembly="xctrls:pagerbar">
+        <tibet:group wrapWhen="true" id="{{$SOURCE.(@id)}}_group">
+            <xctrls:content tibet:pelem="choices" class="noselect"/>
+        </tibet:group>
+        {{$SOURCE.(./*[local-name() = 'template'])}}
+    </span>
+</xctrls:pagerbar>
+

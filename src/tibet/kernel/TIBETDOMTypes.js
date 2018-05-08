@@ -13739,11 +13739,11 @@ function(storageInfo) {
         //  append a newline.
         result.push('>');
         childTextNodes = TP.nodeGetChildNodesByType(elem, Node.TEXT_NODE);
-        if (TP.isEmpty(childTextNodes) ||
-            TP.regex.ONLY_NON_NEWLINE_WHITESPACE.test(
+        if (TP.notEmpty(childTextNodes) &&
+            (TP.regex.ONLY_NON_NEWLINE_WHITESPACE.test(
                             childTextNodes.first().nodeValue) ||
             TP.regex.ONLY_NON_NEWLINE_WHITESPACE.test(
-                            childTextNodes.last().nodeValue)) {
+                            childTextNodes.last().nodeValue))) {
             result.push('\n');
         }
     }

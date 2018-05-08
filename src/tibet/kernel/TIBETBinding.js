@@ -1737,6 +1737,56 @@ function(attributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getAttrBindRepeatindex',
+function(size) {
+
+    /**
+     * @method getAttrBindRepeatindex
+     * @summary Gets the repeat index that the receiver will use to display
+     *     'pages' of repeating data.
+     * @returns {Number} The repeat index of the receiver.
+     */
+
+    var repeatIndex;
+
+    repeatIndex = TP.elementGetAttribute(
+                    this.getNativeNode(), 'bind:repeatindex', true);
+
+    repeatIndex = repeatIndex.asNumber();
+    if (!TP.isNumber(repeatIndex)) {
+        repeatIndex = 1;
+    }
+
+    return repeatIndex;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getAttrBindRepeatsize',
+function(size) {
+
+    /**
+     * @method getAttrBindRepeatsize
+     * @summary Gets the repeat size that the receiver will use to display
+     *     'pages' of repeating data.
+     * @returns {Number} The repeat size of the receiver.
+     */
+
+    var repeatSize;
+
+    repeatSize = TP.elementGetAttribute(
+                    this.getNativeNode(), 'bind:repeatsize', true);
+
+    repeatSize = repeatSize.asNumber();
+    if (!TP.isNumber(repeatSize)) {
+        repeatSize = 1;
+    }
+
+    return repeatSize;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeValue, flushCache) {
 
@@ -2264,6 +2314,55 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getRepeatPageCount',
+function() {
+
+    /**
+     * @method getRepeatPageCount
+     * @summary Returns the total number of repeat 'pages' there are in the
+     *     receiver, based on the total number of items in the collection being
+     *     represented by the 'bind:repeat' and the value of the
+     *     'bind:repeatsize' attribute (which defaults to 1).
+     * @returns {Number} The total number of repeat 'pages' there are.
+     */
+
+    var repeatCollection,
+        repeatSize;
+
+    repeatCollection = this.$getRepeatValue();
+
+    if (!TP.isCollection(repeatCollection)) {
+        return -1;
+    }
+
+    repeatSize = this.getAttribute('bind:repeatsize');
+
+    return (repeatCollection.getSize() / repeatSize).floor();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getRepeatPagePosition',
+function() {
+
+    /**
+     * @method getRepeatPagePosition
+     * @summary Returns the repeat page 'position', that is the currently
+     *     showing page of repeating results.
+     * @returns {Number} The repeat page position.
+     */
+
+    var repeatSize,
+        repeatIndex;
+
+    repeatSize = this.getAttribute('bind:repeatsize');
+    repeatIndex = this.getAttribute('bind:repeatindex');
+
+    return (repeatIndex / repeatSize).ceil();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
 function() {
 
@@ -2523,6 +2622,174 @@ function() {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageEnd',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageEnd
+     * @summary Handles when the data 'pages' should be set to the last page.
+     * @param {TP.sig.UIPageEnd} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem,
+        pagePos;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        pagePos = this.getRepeatPageCount() + 1;
+        this.setRepeatPagePosition(pagePos);
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageNext',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageNext
+     * @summary Handles when the data 'pages' should be set to the next page
+     *     from the current one.
+     * @param {TP.sig.UIPageNext} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem,
+        pagePos;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        pagePos = this.getRepeatPagePosition();
+        this.setRepeatPagePosition(pagePos + 1);
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPagePrevious',
+function(aSignal) {
+
+    /**
+     * @method handleUIPagePrevious
+     * @summary Handles when the data 'pages' should be set to the previous page
+     *     from the current one.
+     * @param {TP.sig.UIPagePrevious} aSignal The signal instance which
+     *     triggered this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem,
+        pagePos;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        pagePos = this.getRepeatPagePosition() - 1;
+        this.setRepeatPagePosition(pagePos);
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageSet',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageSet
+     * @summary Handles when the data 'pages' should be set to a specific page.
+     * @param {TP.sig.UIPageSet} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem,
+        pagePos;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        pagePos = aSignal.at('pageNum') + 1;
+        this.setRepeatPagePosition(pagePos);
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIPageStart',
+function(aSignal) {
+
+    /**
+     * @method handleUIPageStart
+     * @summary Handles when the data 'pages' should be set to the first page.
+     * @param {TP.sig.UIPageStart} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        this.setRepeatPagePosition(1);
+
+        //  Make sure to stop the signal propagation here - we've processed the
+        //  paging.
+        aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineHandler('UIRefresh',
+function(aSignal) {
+
+    /**
+     * @method handleUIRefresh
+     * @summary Refreshes the receiver's bound data.
+     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    this.refresh();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4281,6 +4548,48 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('setRepeatPagePosition',
+function(aPosition) {
+
+    /**
+     * @method setRepeatPagePosition
+     * @summary Sets the repeat page 'position', that is the currently showing
+     *     page of repeating results.
+     * @param {Number} aPosition The position to set the repeating paging system
+     *     to.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var repeatSize,
+
+        position,
+        endIndex;
+
+    repeatSize = this.getAttribute('bind:repeatsize');
+
+    position = aPosition - 1;
+
+    //  Can't go before the first page.
+    if (position < 0) {
+        return this;
+    }
+
+    //  Can't go after the last page.
+    if (position > this.getRepeatPageCount()) {
+        return this;
+    }
+
+    endIndex = position * repeatSize;
+
+    //  NB: We offset the repeatindex by 1 since it is always computed as a
+    //  1-based number.
+    this.setAttribute('bind:repeatindex', endIndex + 1);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$showHideRepeatRows',
 function(aCollection) {
 
@@ -4368,7 +4677,7 @@ function(aCollection) {
     //  Generate a list of numbers from startIndex...endIndex.
     indices = Array.generateNumericSequence(startIndex, endIndex);
 
-    //  Itereate over all of the repeating content rows in the receiver and show
+    //  Iterate over all of the repeating content rows in the receiver and show
     //  or hide them, depending on whether their index exists in the numeric
     //  sequence.
     len = allRepeatRows.getSize();
@@ -4382,24 +4691,6 @@ function(aCollection) {
             TP.elementHide(allRepeatRows.at(i));
         }
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.ElementNode.Inst.defineHandler('UIRefresh',
-function(aSignal) {
-
-    /**
-     * @method handleUIRefresh
-     * @summary Refreshes the receiver's bound data.
-     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
-     *     this handler.
-     * @returns {TP.dom.ElementNode} The receiver.
-     */
-
-    this.refresh();
 
     return this;
 });

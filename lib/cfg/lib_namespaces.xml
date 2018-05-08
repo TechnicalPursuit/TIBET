@@ -190,6 +190,7 @@
     <script src="xctrls/TP.xctrls.item/TP.xctrls.item.keybindings.js"/>
 
     <script src="xctrls/TP.xctrls.itemgroup.js"/>
+    <script src="xctrls/TP.xctrls.itemset.js"/>
 
     <script src="xctrls/TP.xctrls.FramedElement.js"/>
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
@@ -216,6 +217,7 @@
     <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
     <package src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.xml" config="base"/>
     <package src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.pagerbar/TP.xctrls.pagerbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.popup/TP.xctrls.popup.xml" config="base"/>
     <package src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.xml" config="base"/>
     <package src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.xml" config="base"/>

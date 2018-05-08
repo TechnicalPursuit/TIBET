@@ -70,7 +70,7 @@ function() {
         templateContentElem,
         childElems,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
 
         newRowDiv,
 
@@ -98,11 +98,11 @@ function() {
 
     //  Grab whatever row attribute is used for selection purposes and set that
     //  as an attribute on the row.
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
     TP.elementSetAttribute(
                 newRowDiv,
-                attrSelectionInfo.first(),
-                attrSelectionInfo.last(),
+                itemSelectionInfo.first(),
+                itemSelectionInfo.last(),
                 true);
 
     //  Iterate over the child elements, create individual 'cell' divs and move
@@ -827,7 +827,7 @@ function(enterSelection) {
 
     var defaultTagName,
 
-        attrSelectionInfo,
+        itemSelectionInfo,
 
         newRows,
         newCells,
@@ -842,13 +842,13 @@ function(enterSelection) {
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
-    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    itemSelectionInfo = this.getItemSelectionInfo();
 
     //  The enter selection has been computed by 'select()'ing the return value
     //  of the 'getSelectionContainer' method.
     newRows = enterSelection.append('xhtml:div').
                     classed('row', true).
-                    attr(attrSelectionInfo.first(), attrSelectionInfo.last()).
+                    attr(itemSelectionInfo.first(), itemSelectionInfo.last()).
                     attr('tibet:tag', 'TP.xctrls.item');
 
     newCells = newRows.selectAll('xhtml:div').
@@ -1146,11 +1146,18 @@ function() {
      * @summary Returns the Element that will be used as the 'root' to
      *     add/update/remove content to/from using d3.js functionality. By
      *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as the container for d3.js
+     * @returns {Element|null} The element to use as the container for d3.js
      *     enter/update/exit selections.
      */
 
-    return TP.unwrap(this.get('tablecontent'));
+    var content;
+
+    content = this.get('tablecontent');
+    if (TP.isEmptyArray(content)) {
+        return null;
+    }
+
+    return TP.unwrap(content);
 });
 
 //  ------------------------------------------------------------------------
@@ -1188,7 +1195,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineMethod('finishBuildingNewContent',
-function(content) {
+function(selection) {
 
     /**
      * @method finishBuildingNewContent
@@ -1227,7 +1234,7 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    content.attr('tibet:tag', 'TP.xctrls.item').each(
+    selection.attr('tibet:tag', 'TP.xctrls.item').each(
         function(d, i) {
             var wrappedElem;
 
