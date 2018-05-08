@@ -2143,7 +2143,8 @@ function(aRequest) {
         pkg,
         cfg,
         paths,
-        context;
+        context,
+        phase;
 
     arr = [];
 
@@ -2155,6 +2156,11 @@ function(aRequest) {
     }
 
     context = this.getArgument(aRequest, 'tsh:context', 'app', true);
+    if (context === 'app') {
+        phase = TP.PHASE_TWO;
+    } else if (context === 'lib') {
+        phase = TP.PHASE_ONE;
+    }
 
     raw = this.getArgument(aRequest, 'tsh:raw', null, true);
     tname = this.getArgument(aRequest, 'tsh:type', null, true);
@@ -2171,34 +2177,18 @@ function(aRequest) {
         types = TP.sys.getCustomTypes();
 
         //  Get the list of paths from the defined profile.
-        paths = TP.sys.getAllScriptPaths(profile).collect(function(path) {
+        paths = TP.sys.getAllScriptPaths(profile, phase).collect(
+        function(path) {
             return TP.uriInTIBETFormat(path);
         }).unique();
 
-        //  Filter types by the package paths we're provided and any context we
-        //  may have.
+        //  Filter types by the package paths we're provided. If it's part of
+        //  the overall package we retain it.
         types = types.select(function(item) {
             var srcpath;
 
-            //  If we have a context we can filter by use it...but NOTE we want
-            //  to use load phase, not file path, to handle a-la-carte lib code.
-            switch (context) {
-                case 'lib':
-                    if (TP.objectGetLoadStage(item[1]) !== TP.PHASE_ONE) {
-                        return false;
-                    }
-                    break;
-                case 'app':
-                    if (TP.objectGetLoadStage(item[1]) !== TP.PHASE_TWO) {
-                        return false;
-                    }
-                    break;
-                default:
-                    //  No specific filter...use srcpath filter below.
-                    break;
-            }
-
             srcpath = TP.objectGetSourcePath(item[1]);
+
             return paths.contains(srcpath);
         });
     }

@@ -83,6 +83,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             headers: true,
             'package': CLI.inProject() ? '~app_cfg/main' : '~lib_cfg/TIBET',
             'phase': CLI.inProject() ? 'two' : 'one',
+            //  TODO:   don't hardcode this. should be a getcfg() value or
+            //  lookup, not something the command line parser fills in for us
             config: 'base'
         }
     },

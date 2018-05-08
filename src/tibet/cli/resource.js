@@ -133,7 +133,7 @@ Cmd.prototype.specified = [];
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['build', 'list', 'raw'],
-        'string': ['type'],
+        'string': ['context', 'type'],
         'default': {
             build: false,
             list: false,
@@ -408,7 +408,8 @@ Cmd.prototype.getCompletionOptions = function() {
  * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
-    var str;
+    var str,
+        context;
 
     str = ':resource';
 
@@ -421,11 +422,8 @@ Cmd.prototype.getScript = function() {
     }
 
     //  Pass context. This is used to drive a load phase filter in the client.
-    if (CLI.inProject()) {
-        str += ' --context=app';
-    } else {
-        str += ' --context=lib';
-    }
+    context = this.options.context || CLI.inProject() ? 'app' : 'lib';
+    str += ' --context=' + context;
 
     //  Ensure we pass along any profile/package/config parameters (which are
     //  not boot variants) as part of the script itself.
@@ -464,7 +462,7 @@ Cmd.prototype.getTag = function(file) {
 Cmd.prototype.processResources = function() {
     var cmd,
         buildpath,
-        libpath,
+        // libpath,
         filter,
         helper,
         packagePhase;
@@ -494,16 +492,16 @@ Cmd.prototype.processResources = function() {
     //  list is then used to update the appropriate manifest data file.
     this.products = [];
 
-    libpath = CLI.expandPath('~lib');
+    // libpath = CLI.expandPath('~lib');
 
     helper = function(resource) {
         var fullpath,
-            uri,
-            stage;
+            uri;
+            // stage;
 
         //  Could be a JSON struct with a 'uri' property or a String
         uri = Array.isArray(resource) ? resource[0] : resource;
-        stage = Array.isArray(resource) ? resource[1] : null;
+        // stage = Array.isArray(resource) ? resource[1] : null;
 
         if (!uri) {
             return false;
@@ -522,7 +520,18 @@ Cmd.prototype.processResources = function() {
             return false;
         }
 
-        //  filter based on context
+        /*
+        //  filter based on context...but note that we can't make assumptions
+        //  about too much...alacarte will load lib resources during phase two
+        //  from the app package for example.
+        if (CLI.inProject()) {
+            //  use package list from ~app_cfg/{{appname}}.xml for filtering
+        } else {
+            //  use package list from ~app_cfg/tibet.xml for filtering
+        }
+        */
+
+        /*
         if (CLI.inProject() && cmd.options.context !== 'lib') {
             if (stage) {
                 if (stage === CLI.PHASE_ONE) {
@@ -547,6 +556,7 @@ Cmd.prototype.processResources = function() {
                 return false;
             }
         }
+        */
 
         //  deal with any filtering pattern
         if (CLI.notEmpty(filter)) {

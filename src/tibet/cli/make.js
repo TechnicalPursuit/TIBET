@@ -108,6 +108,7 @@ Cmd.initialize = function() {
 
     //  Parse options for package-related tasks in helpers.
     options = {
+        //  TODO: do we need 'profile' in this list?
         string: ['package', 'config']
     };
     Cmd.setcfg('make.package.parse_options', options);

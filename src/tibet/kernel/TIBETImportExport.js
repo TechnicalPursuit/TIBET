@@ -9,7 +9,7 @@
 //  ========================================================================
 
 TP.sys.defineMethod('getAllScriptPaths',
-function(packageConfig) {
+function(packageConfig, phase) {
 
     /**
      * @method getAllScriptPaths
@@ -17,6 +17,8 @@ function(packageConfig) {
      *     config.
      * @param {String} packageConfig The package name to locate and import along
      *     with an optional [@config] section. For example 'hello@base'.
+     * @param {String} [phase] Optional phase specifier. Use TP.PHASE_ONE or
+     *     TP.PHASE_TWO to set a specific phase. Default is both.
      * @returns {String[]} An Array of script paths in the supplied package and
      *     config.
      */
@@ -70,8 +72,10 @@ function(packageConfig) {
         phaseTwo = TP.sys.cfg('boot.phase_two');
         teamTIBET = TP.sys.cfg('boot.teamtibet');
 
-        TP.sys.setcfg('boot.phase_one', true);
-        TP.sys.setcfg('boot.phase_two', true);
+        TP.sys.setcfg('boot.phase_one',
+            TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
+        TP.sys.setcfg('boot.phase_two',
+            TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
         TP.sys.setcfg('boot.teamtibet', true);
         packageAssets = TP.boot.$listPackageAssets(uri, cfgName);
     } catch (e) {
@@ -113,7 +117,7 @@ function(packageConfig) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getAllPackagePaths',
-function(packageConfig) {
+function(packageConfig, phase) {
 
     /**
      * @method getAllPackagePaths
@@ -121,6 +125,8 @@ function(packageConfig) {
      *     config.
      * @param {String} packageConfig The package name to locate and import along
      *     with an optional [@config] section. For example 'hello@base'.
+     * @param {String} [phase] Optional phase specifier. Use TP.PHASE_ONE or
+     *     TP.PHASE_TWO to set a specific phase. Default is both.
      * @returns {String[]} An Array of package paths in the supplied package and
      *     config.
      */
@@ -171,8 +177,11 @@ function(packageConfig) {
     try {
         phaseOne = TP.sys.cfg('boot.phase_one');
         phaseTwo = TP.sys.cfg('boot.phase_two');
-        TP.sys.setcfg('boot.phase_one', true);
-        TP.sys.setcfg('boot.phase_two', true);
+
+        TP.sys.setcfg('boot.phase_one',
+            TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
+        TP.sys.setcfg('boot.phase_two',
+            TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
         packageAssets = TP.boot.$listPackageAssets(uri, cfgName, null, true);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
