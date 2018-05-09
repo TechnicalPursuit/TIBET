@@ -3,6 +3,8 @@
  * @overview Simple CSS-driven progress bar styles.
  */
 
+@namespace url("http://www.w3.org/1999/xhtml");
+
 /* ---  tibet_content.css overrides --- */
 
 .detail-intro .lead {
