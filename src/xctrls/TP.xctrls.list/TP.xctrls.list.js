@@ -1425,11 +1425,12 @@ function() {
     var templateTPElem,
         itemTagName,
 
-        templateContentTPElem,
+        prebuiltTemplateTPElem,
         compiledTemplateContent;
 
     templateTPElem = this.get(
-                        TP.cpc('tibet|template', TP.hc('shouldCollapse', true)));
+                        TP.cpc('tibet|template',
+                            TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.
@@ -1439,13 +1440,15 @@ function() {
         //  Array.
         templateTPElem = null;
 
+        //  If the author specified an 'itemTag' attribute, then we use that in
+        //  a prebuilt template that we'll define here.
         itemTagName = this.getAttribute('itemTag');
         if (TP.notEmpty(itemTagName)) {
 
             //  Build a template element, using the supplied item tag name and
             //  building a label/value pair containing expressions that will be
             //  populated to the bound data.
-            templateContentTPElem = TP.wrap(
+            prebuiltTemplateTPElem = TP.wrap(
                 TP.xhtmlnode(
                     '<span>' +
                         '<' + itemTagName + '>' +
@@ -1456,9 +1459,9 @@ function() {
                 );
 
             //  Compile it.
-            templateContentTPElem.compile();
+            prebuiltTemplateTPElem.compile();
 
-            compiledTemplateContent = templateContentTPElem.getNativeNode();
+            compiledTemplateContent = prebuiltTemplateTPElem.getNativeNode();
 
             //  Cache that.
             this.set('$compiledTemplateContent', compiledTemplateContent);
