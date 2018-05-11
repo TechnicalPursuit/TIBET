@@ -28,5 +28,30 @@ TP.tibet.template.defineAttribute('styleURI', TP.NO_RESULT);
 TP.tibet.template.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+
+TP.tibet.template.Type.defineMethod('populateCompilationAttrs',
+function(aRequest) {
+
+    /**
+     * @method populateCompilationAttrs
+     * @summary Populates attributes on the element that is produced by this
+     *     type when it is compiled.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return null;
+    }
+
+    TP.elementSetAttribute(elem, 'tibet:opaque', 'bind', true);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
