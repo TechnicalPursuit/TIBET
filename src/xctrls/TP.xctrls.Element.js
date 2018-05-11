@@ -129,11 +129,9 @@ function(aRequest) {
         TP.elementSetAttributes(elem, reqAttrs, true);
     }
 
-    //  Make sure to add any 'compilation attributes' to the element (since
-    //  we don't call up to our supertype here).
-    if (TP.notEmpty(compAttrs = this.getCompilationAttrs(aRequest))) {
-        TP.elementSetAttributes(elem, compAttrs, true);
-    }
+    //  Populate any 'compilation attributes' from the request onto the element
+    //  that we're producing (since we don't call up to our supertype here).
+    this.populateCompilationAttrs(aRequest);
 
     return elem;
 });

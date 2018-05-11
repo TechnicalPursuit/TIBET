@@ -590,19 +590,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.Type.defineMethod('getCompilationAttrs',
+TP.dom.UIElementNode.Type.defineMethod('populateCompilationAttrs',
 function(aRequest) {
 
     /**
-     * @method getCompilationAttrs
-     * @summary Returns a TP.core.Hash of any attributes to be added to what is
-     *     produced by this type when it is compiled. The default is to compute
-     *     an XHTML class name from this type's typename and supply it under the
-     *     'class' key.
+     * @method populateCompilationAttrs
+     * @summary Populates attributes on the element that is produced by this
+     *     type when it is compiled.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {TP.core.Hash|null} A hash of attributes to be added to the
-     *     compiled output from this type.
      */
 
     var elem,
@@ -1690,6 +1686,10 @@ function(aRequest) {
         return;
     }
 
+    //  Populate any 'compilation attributes' from the request onto the element
+    //  that we're producing.
+    this.populateCompilationAttrs(aRequest);
+
     //  We may have gotten here because the tag processing system was able
     //  to obtain a 'concrete type' for this node using the 'tibet:ctrl'
     //  attribute (which is really just defining a controller type) not a
@@ -1716,11 +1716,8 @@ function(aRequest) {
     }
 
     //  Create a new XHTML element from elem, using either 'div' or 'span'
-    //  depending on whether the element is block level or not and any
-    //  'compilation attributes' defined by this type.
-    newElem = TP.elementBecome(elem,
-                                this.isBlockLevel() ? 'div' : 'span',
-                                this.getCompilationAttrs(aRequest));
+    //  depending on whether the element is block level or not
+    newElem = TP.elementBecome(elem, this.isBlockLevel() ? 'div' : 'span');
 
     return newElem;
 });
