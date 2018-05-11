@@ -462,7 +462,6 @@ Cmd.prototype.getTag = function(file) {
 Cmd.prototype.processResources = function() {
     var cmd,
         buildpath,
-        // libpath,
         filter,
         helper,
         packagePhase;
@@ -492,16 +491,12 @@ Cmd.prototype.processResources = function() {
     //  list is then used to update the appropriate manifest data file.
     this.products = [];
 
-    // libpath = CLI.expandPath('~lib');
-
     helper = function(resource) {
         var fullpath,
             uri;
-            // stage;
 
         //  Could be a JSON struct with a 'uri' property or a String
         uri = Array.isArray(resource) ? resource[0] : resource;
-        // stage = Array.isArray(resource) ? resource[1] : null;
 
         if (!uri) {
             return false;
@@ -519,44 +514,6 @@ Cmd.prototype.processResources = function() {
             cmd.debug('filtered ' + uri + '. Path did not expand.');
             return false;
         }
-
-        /*
-        //  filter based on context...but note that we can't make assumptions
-        //  about too much...alacarte will load lib resources during phase two
-        //  from the app package for example.
-        if (CLI.inProject()) {
-            //  use package list from ~app_cfg/{{appname}}.xml for filtering
-        } else {
-            //  use package list from ~app_cfg/tibet.xml for filtering
-        }
-        */
-
-        /*
-        if (CLI.inProject() && cmd.options.context !== 'lib') {
-            if (stage) {
-                if (stage === CLI.PHASE_ONE) {
-                    //  In lib...and not explicitly specified in app context...
-                    cmd.debug('filtered ' + uri + '. In project, lib resource.');
-                    return false;
-                }
-            } else if (fullpath.indexOf(libpath) === 0 &&
-                        cmd.specified.indexOf(uri) === -1) {
-                //  In lib...and not explicitly specified in app context...
-                cmd.debug('filtered ' + uri + '. In project, lib resource.');
-                return false;
-            }
-        } else {
-            if (stage) {
-                if (stage === CLI.PHASE_TWO) {
-                    cmd.debug('filtered ' + uri + '. Non-library resource.');
-                    return false;
-                }
-            } else if (fullpath.indexOf(libpath) !== 0) {
-                cmd.debug('filtered ' + uri + '. Non-library resource.');
-                return false;
-            }
-        }
-        */
 
         //  deal with any filtering pattern
         if (CLI.notEmpty(filter)) {
