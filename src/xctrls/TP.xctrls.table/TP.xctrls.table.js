@@ -1178,7 +1178,8 @@ function() {
     var templateTPElem;
 
     templateTPElem = this.get(
-                        TP.cpc('tibet|template', TP.hc('shouldCollapse', true)));
+                        TP.cpc('tibet|template',
+                            TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.
