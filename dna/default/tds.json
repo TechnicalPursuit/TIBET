@@ -24,5 +24,7 @@
             "tds": ["cli", "patch", "tasks", "watch"]
         },
         "use_cli": true
+    },
+    "production": {
     }
 }
