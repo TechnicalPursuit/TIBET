@@ -1954,9 +1954,10 @@ function(wantsShallowScope) {
 
         doc,
 
-        subscopeQuery,
-        allScopes,
-        shallowSubscopes,
+        filterQuery,
+
+        allFilters,
+        ownShallowFilters,
 
         allBoundQuery,
         boundElems;
@@ -1965,53 +1966,54 @@ function(wantsShallowScope) {
 
     doc = TP.nodeGetDocument(elem);
 
-    //  If the caller wants the 'shallow set', then we do *not* want to return
-    //  elements that are under subscopes of the receiver. We need to compute
-    //  the set of subscopes that *are* under the receiver, so that we can use
-    //  them later for filtering.
+    //  Define a query that will filter out binding expressions under elements
+    //  with a tibet:opaque="bind" attribute.
+    filterQuery = '*|*[*|opaque="bind"]';
+
     if (wantsShallowScope) {
-
-        //  Grab all of the scoping elements in the whole document.
-        subscopeQuery = '*[*|scope], *[*|repeat]';
-        allScopes = TP.ac(doc.documentElement.querySelectorAll(subscopeQuery));
-
-        //  Filter all of the scopes in the document so that only those that are
-        //  at the shallowest level (i.e. not containing any other scoping
-        //  elements themselves) are left.
-        shallowSubscopes = allScopes.filter(
-                function(aSubscope) {
-
-                    var k;
-
-                    //  We don't want ourself in the list
-                    if (aSubscope === elem) {
-                        return false;
-                    }
-
-                    if (!elem.contains(aSubscope)) {
-                        return false;
-                    }
-
-                    for (k = 0; k < allScopes.length; k++) {
-                        if (allScopes[k] !== aSubscope &&
-                            allScopes[k].contains(aSubscope)) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                });
+        filterQuery += ', *[*|scope], *[*|repeat]';
     }
 
-    //  Grab all of the bound elements, including scoping element, in the whole
+    //  Grab all of the filtering elements in the whole document.
+    allFilters = TP.ac(doc.documentElement.querySelectorAll(filterQuery));
+
+    //  We need to compute the set of filtering elements that *are* under the
+    //  receiver, so that we can use them later for filtering.
+
+    //  Filter all of the filtering elements in the document so that only those
+    //  that are under the target element and at the shallowest level (i.e. not
+    //  containing any other filtering elements themselves) are left.
+    ownShallowFilters = allFilters.filter(
+            function(aFilter) {
+
+                var k;
+
+                //  We don't want ourself in the list
+                if (aFilter === elem) {
+                    return false;
+                }
+
+                if (!elem.contains(aFilter)) {
+                    return false;
+                }
+
+                for (k = 0; k < allFilters.length; k++) {
+                    if (allFilters[k] !== aFilter &&
+                        allFilters[k].contains(aFilter)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+    //  Grab all of the bound elements, including scoping elements, in the whole
     //  document.
     allBoundQuery = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
     boundElems = TP.ac(doc.documentElement.querySelectorAll(allBoundQuery));
 
     //  Filter all of the bound elements so that they're a) under ourself and
-    //  b) if only shallow scopes are requested that they're only under a
-    //  shallow scope (hence making it so that they're under one of *our*
-    //  shallow scopes).
+    //  b) that they're only under one of *our* filtering elements.
     boundElems = boundElems.filter(
             function(aNewElem) {
 
@@ -2024,15 +2026,12 @@ function(wantsShallowScope) {
 
                 if (elem.contains(aNewElem)) {
 
-                    if (wantsShallowScope) {
+                    for (k = 0; k < ownShallowFilters.length; k++) {
 
-                        for (k = 0; k < shallowSubscopes.length; k++) {
-
-                            //  The element was contained in a subscope - return
-                            //  false to filter it out.
-                            if (shallowSubscopes[k].contains(aNewElem)) {
-                                return false;
-                            }
+                        //  The element was contained in a subscope - return
+                        //  false to filter it out.
+                        if (ownShallowFilters[k].contains(aNewElem)) {
+                            return false;
                         }
                     }
 
@@ -2042,9 +2041,10 @@ function(wantsShallowScope) {
                 return false;
             });
 
-    //  If there are shallow subscopes, then we add them to the result.
-    if (TP.notEmpty(shallowSubscopes)) {
-        boundElems = boundElems.concat(shallowSubscopes);
+    //  If there are shallow filter elements that occurred under the target
+    //  element, then we add them to the result.
+    if (TP.notEmpty(ownShallowFilters)) {
+        boundElems = boundElems.concat(ownShallowFilters);
     }
 
     return boundElems;
