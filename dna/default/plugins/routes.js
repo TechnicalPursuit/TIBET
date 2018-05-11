@@ -108,7 +108,39 @@
             list = list.filter(function(item) {
                 return order.indexOf(item) === -1;
             });
-            list.sort();
+
+            //  With the remaining list we need to sort such that all public
+            //  routes are loaded prior to any private routes. If we don't do
+            //  this we hit https://github.com/expressjs/express/issues/2760
+            //  which means random public routes may end up private.
+            list.sort().sort(function(a, b) {
+                var parts,
+                    aPub,
+                    bPub;
+
+                parts = a.split('_');
+                aPub = parts[parts.length - 1] === 'public.js';
+                parts = b.split('_');
+                bPub = parts[parts.length - 1] === 'public.js';
+
+                if (aPub) {
+                    if (bPub) {
+                        //  a public, b public...
+                        return 0;
+                    } else {
+                        //  a public, b private...
+                        return -1;
+                    }
+                } else {
+                    if (bPub) {
+                        //  a private, b public...
+                        return 1;
+                    } else {
+                        // a private, b private...
+                        return 0;
+                    }
+                }
+            });
             list = order.concat(list);
 
             //  Process each file to produce a route if possible. File names and
