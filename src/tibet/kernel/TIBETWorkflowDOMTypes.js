@@ -1034,18 +1034,39 @@ TP.tag.TagProcessor.Type.defineConstant(
     ));
 
 //  A common query used by some phases to find custom nodes - elements or
-//  attributes.This query returns only nodes that are:
+//  attributes. This query returns only nodes that are:
 //      1. Element-type Nodes OR
 //      2. Attribute-type Nodes that:
 //          a. Have a namespace - most don't
 //          b. Are not in the 'bind:' namespace
 //          c. Are not in the 'ev:' namespace
 //          d. Are not in the 'on:' namespace
+
+//  A version of the expression that filters out elements that have an ancestor
+//  with an attribute of 'tibet:nocompile'.
 TP.tag.TagProcessor.Type.defineConstant(
-    'CUSTOM_NODES_QUERY',
-        'descendant-or-self::*' +
+    'CUSTOM_NODES_QUERY_NO_COMPILE',
+        'descendant-or-self::*[not(ancestor::*[@tibet:nocompile])]' +
         ' | ' +
-        '//@*[' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:nocompile])]/@*[' +
+        'namespace-uri() != ""' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.ON + '"' +
+        ']');
+
+//  A version of the expression that filters out elements that have an ancestor
+//  with an attribute of 'tibet:nocompile'.
+TP.tag.TagProcessor.Type.defineConstant(
+    'CUSTOM_NODES_QUERY_NO_AWAKEN',
+        'descendant-or-self::*[not(ancestor::*[@tibet:noawaken])]' +
+        ' | ' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:noawaken])]/@*[' +
         'namespace-uri() != ""' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
@@ -1894,7 +1915,7 @@ function(aNode) {
     }
 
     //  See the type constants for a description of this query.
-    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY;
+    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY_NO_COMPILE;
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
@@ -2149,7 +2170,7 @@ function(aNode) {
     }
 
     //  See the type constants for a description of this query.
-    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY;
+    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY_NO_AWAKEN;
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
@@ -2217,9 +2238,10 @@ function(aNode) {
     //  or have attributes in the 'ev:' namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+            'not(ancestor::*[@tibet:noawaken]) and ' +
+            '(namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
             ' or ' +
-            '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"]' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -2254,6 +2276,46 @@ function() {
      */
 
     return 'tagAttachData';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.AttachDataPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken])' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
 });
 
 //  ========================================================================
@@ -2317,6 +2379,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
+            'not(ancestor::*[@tibet:noawaken]) and ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
             ']';
 
@@ -2383,7 +2446,11 @@ function(aNode) {
     }
 
     //  We're only interested in elements that have a local name of 'info'.
-    query = 'descendant-or-self::*[local-name() = "info"]';
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'local-name() = "info"' +
+            ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
@@ -2476,6 +2543,15 @@ function(aNode) {
     //  filter further based on containment.
     boundElements = boundElements.filter(
             function(anElem) {
+                var ans;
+
+                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|noawaken]');
+
+                if (TP.isElement(ans) ||
+                    TP.elementHasAttribute(anElem, 'tibet:noawaken', true)) {
+                    return false;
+                }
+
                 return aNode.contains(anElem);
             });
 
@@ -2483,7 +2559,18 @@ function(aNode) {
     boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
             function(aTextNode) {
 
-                var textContent;
+                var ans,
+                    textContent;
+
+                ans = TP.nodeAncestorMatchingCSS(aTextNode.parentNode,
+                                                    '*[tibet|noawaken]');
+
+                if (TP.isElement(ans) ||
+                    TP.elementHasAttribute(aTextNode.parentNode,
+                                            'tibet:noawaken',
+                                            true)) {
+                    return false;
+                }
 
                 textContent = aTextNode.textContent;
 
@@ -2558,6 +2645,46 @@ function() {
     return 'tagAttachStyle';
 });
 
+//  ------------------------------------------------------------------------
+
+TP.tag.AttachStylePhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken])' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
 //  ========================================================================
 //  TP.tag.AttachCompletePhase
 //  ========================================================================
@@ -2585,6 +2712,46 @@ function() {
      */
 
     return 'tagAttachComplete';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.AttachCompletePhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken])' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
 });
 
 //  ========================================================================
@@ -2677,6 +2844,7 @@ function(aNode) {
     //  or have attributes in the 'ev:' namespace
     query = 'descendant-or-self::*' +
             '[' +
+            'not(ancestor::*[@tibet:noawaken]) and ' +
             'namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
             ' or ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"]' +
@@ -2748,6 +2916,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
+            'not(ancestor::*[@tibet:noawaken]) and ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
             ']';
 
@@ -2783,6 +2952,46 @@ function() {
      */
 
     return 'tagDetachData';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.DetachDataPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken])' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
 });
 
 //  ========================================================================
@@ -2843,7 +3052,11 @@ function(aNode) {
     }
 
     //  We're only interested in elements that have a local name of 'info'.
-    query = 'descendant-or-self::*[local-name() = "info"]';
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'local-name() = "info"' +
+            ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
@@ -2936,6 +3149,15 @@ function(aNode) {
     //  filter further based on containment.
     boundElements = boundElements.filter(
             function(anElem) {
+                var ans;
+
+                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|noawaken]');
+
+                if (TP.isElement(ans) ||
+                    TP.elementHasAttribute(anElem, 'tibet:noawaken', true)) {
+                    return false;
+                }
+
                 return aNode.contains(anElem);
             });
 
@@ -2943,7 +3165,18 @@ function(aNode) {
     boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
             function(aTextNode) {
 
-                var textContent;
+                var ans,
+                    textContent;
+
+                ans = TP.nodeAncestorMatchingCSS(aTextNode.parentNode,
+                                                    '*[tibet|noawaken]');
+
+                if (TP.isElement(ans) ||
+                    TP.elementHasAttribute(aTextNode.parentNode,
+                                            'tibet:noawaken',
+                                            true)) {
+                    return false;
+                }
 
                 textContent = aTextNode.textContent;
 
@@ -3018,6 +3251,46 @@ function() {
     return 'tagDetachStyle';
 });
 
+//  ------------------------------------------------------------------------
+
+TP.tag.DetachStylePhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken])' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
 //  ========================================================================
 //  TP.tag.DetachCompletePhase
 //  ========================================================================
@@ -3045,6 +3318,46 @@ function() {
      */
 
     return 'tagDetachComplete';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.DetachCompletePhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'not(ancestor::*[@tibet:noawaken])' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
 });
 
 //  ------------------------------------------------------------------------
