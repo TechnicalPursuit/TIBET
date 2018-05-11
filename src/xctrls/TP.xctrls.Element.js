@@ -113,8 +113,7 @@ function(aRequest) {
 
     var elem,
 
-        reqAttrs,
-        compAttrs;
+        reqAttrs;
 
     elem = aRequest.at('node');
 
