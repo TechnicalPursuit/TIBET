@@ -792,7 +792,8 @@ function() {
      * @returns {TP.dom.D3Tag} The receiver.
      */
 
-    var rootUpdateSelection;
+    var containerSelection,
+        rootUpdateSelection;
 
     //  Note that this is a strict check for the value of 'false' (the Boolean
     //  value of false). This can't just be a 'falsey' value.
@@ -806,7 +807,18 @@ function() {
     //  root itself intact for future updates).
     if (TP.notValid(this.get('data'))) {
 
-        this.get('containerSelection').selectAll('*').remove();
+        containerSelection = this.get('containerSelection');
+
+        //  No valid container selection? Return here.
+        if (TP.notValid(containerSelection)) {
+
+            //  Signal to observers that this control has rendered.
+            this.signal('TP.sig.DidRender');
+
+            return this;
+        }
+
+        containerSelection.selectAll('*').remove();
 
     } else {
 
@@ -815,6 +827,10 @@ function() {
 
         //  No valid root update selection? Return here.
         if (TP.notValid(rootUpdateSelection)) {
+
+            //  Signal to observers that this control has rendered.
+            this.signal('TP.sig.DidRender');
+
             return this;
         }
 
