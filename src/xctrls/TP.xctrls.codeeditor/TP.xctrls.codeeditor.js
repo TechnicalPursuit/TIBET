@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.TemplatedTag.defineSubtype('codeeditor');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:codeeditor');
 
 //  Events:
 //      xctrls-codeeditor-selected

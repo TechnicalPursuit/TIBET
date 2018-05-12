@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.itemset.defineSubtype('pagerbar');
+TP.xctrls.itemset.defineSubtype('xctrls:pagerbar');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -163,7 +163,7 @@ function(aValue, anIndex, shouldSignal) {
 //  TP.xctrls.pageritem
 //  ========================================================================
 
-TP.xctrls.item.defineSubtype('pageritem');
+TP.xctrls.item.defineSubtype('xctrls:pageritem');
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.pageritem.defineAttribute('styleURI', TP.NO_RESULT);

@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.item.defineSubtype('buttonitem');
+TP.xctrls.item.defineSubtype('xctrls:buttonitem');
 
 TP.xctrls.buttonitem.addTraits(TP.xctrls.TemplatedTag);
 

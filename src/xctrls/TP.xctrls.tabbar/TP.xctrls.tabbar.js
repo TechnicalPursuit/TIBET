@@ -37,7 +37,7 @@ TP.xctrls.tabbar.Type.defineAttribute('wantsCloseMarks', true);
 //  TP.xctrls.tabitem
 //  ========================================================================
 
-TP.xctrls.item.defineSubtype('tabitem');
+TP.xctrls.item.defineSubtype('xctrls:tabitem');
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.tabitem.defineAttribute('styleURI', TP.NO_RESULT);
