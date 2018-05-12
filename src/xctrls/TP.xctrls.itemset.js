@@ -155,22 +155,26 @@ TP.xctrls.itemset.Inst.defineAttribute('$dataKeys');
 TP.xctrls.itemset.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.itemset.Inst.defineAttribute(
-    'itemcontent',
+    'content',
     TP.cpc('> span tibet|group xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'items',
-    TP.cpc('> span tibet|group xctrls|content > xctrls|*',
+    TP.cpc('> span tibet|group xctrls|content xctrls|*',
             TP.hc('shouldCollapse', false)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'focusedItem',
-    TP.cpc('> span tibet|group xctrls|content > xctrls|*[pclass|focus]',
+    TP.cpc('> span tibet|group xctrls|content xctrls|*[pclass|focus]',
             TP.hc('shouldCollapse', true)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'group',
     TP.cpc('> span tibet|group', TP.hc('shouldCollapse', true)));
+
+TP.xctrls.itemset.Inst.defineAttribute(
+    'templatedItemContent',
+    TP.cpc('> span tibet|group xctrls|content span.templated', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1101,7 +1105,7 @@ function() {
 
     var content;
 
-    content = this.get('itemcontent');
+    content = this.get('templatedItemContent');
     if (TP.isEmptyArray(content)) {
         return null;
     }

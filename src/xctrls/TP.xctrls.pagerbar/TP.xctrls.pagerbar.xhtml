@@ -3,7 +3,11 @@
 <xctrls:pagerbar tibet:nomutationtracking="true">
     <span tibet:assembly="xctrls:pagerbar">
         <tibet:group wrapWhen="true" id="{{$SOURCE.(@id)}}_group">
-            <xctrls:content tibet:pelem="choices" class="noselect"/>
+            <xctrls:content tibet:pelem="choices" class="noselect">
+            {{$SOURCE.(./*[local-name() = 'template']/preceding-sibling::*[local-name() = 'pageritem'])}}
+            <span class="templated"/>
+            {{$SOURCE.(./*[local-name() = 'template']/following-sibling::*[local-name() = 'pageritem'])}}
+            </xctrls:content>
         </tibet:group>
         {{$SOURCE.(./*[local-name() = 'template'])}}
     </span>
