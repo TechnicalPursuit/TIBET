@@ -1169,11 +1169,27 @@ TP.boot.installPatches = function(aWindow) {
     };
 
     aWindow.NamedNodeMap.prototype.getKeys = function() {
-        return TP.sys.$namednodemapkeys;
+        var result,
+            len,
+            i;
+
+        result = [];
+
+        //  Iterate over the NamedNodeMap and add the full node name of each
+        //  (attribute) node to list.
+        len = this.length;
+        for (i = 0; i < len; i++) {
+            result.push(this.item(i).nodeName);
+        }
+
+        return result;
     };
 
     aWindow.NodeList.prototype.getKeys = function() {
-        return TP.sys.$nodelistkeys;
+
+        //  This will return an Array of integers from 0 to the size of the
+        //  NodeList.
+        return Object.keys(this);
     };
 
     //  String's 'getKeys' is in the kernel
@@ -1183,7 +1199,22 @@ TP.boot.installPatches = function(aWindow) {
     };
 
     aWindow.XMLHttpRequest.prototype.getKeys = function() {
-        return TP.sys.$xhrkeys;
+
+        var xhrProto,
+            keys;
+
+        xhrProto = aWindow.XMLHttpRequest.prototype;
+        keys = Object.keys(xhrProto);
+        keys = keys.filter(
+                function(aKey) {
+                    try {
+                        return typeof xhrProto[aKey] !== 'function';
+                    } catch (e) {
+                        return true;
+                    }
+                });
+
+        return keys;
     };
 };
 
