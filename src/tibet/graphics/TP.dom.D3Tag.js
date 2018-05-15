@@ -820,6 +820,9 @@ function() {
 
         containerSelection.selectAll('*').remove();
 
+        //  Signal to observers that this control has rendered.
+        this.signal('TP.sig.DidRender');
+
     } else {
 
         //  Select any nodes under the 'selection root'
