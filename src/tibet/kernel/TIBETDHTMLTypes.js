@@ -5732,7 +5732,7 @@ function(aValue, anIndex, shouldSignal) {
         return false;
     }
 
-    //  If allowMultiples is false, then we can use a reference to a singular
+    //  If allowsMultiples is false, then we can use a reference to a singular
     //  value that will be used as the selected value.
     if (!this.allowsMultiples()) {
         this.$getSelectionModel().empty();
