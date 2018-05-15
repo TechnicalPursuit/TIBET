@@ -324,24 +324,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('isScalarValued',
-function(aspectName) {
-
-    /**
-     * @method isScalarValued
-     * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.dom.Node's 'isScalarValued()' instance method
-     *     for more information.
-     * @param {String} [aspectName] An optional aspect name that is being used
-     *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For this type, this returns true.
-     */
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
