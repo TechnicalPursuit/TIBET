@@ -1161,6 +1161,8 @@ function(aValue, shouldSignal) {
     var oldValue,
         newValue,
 
+        displayValue,
+
         flag;
 
     //  If we're not signaling, then we don't need to worry about obtaining and
@@ -1187,14 +1189,21 @@ function(aValue, shouldSignal) {
 
     //  signal as needed
 
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
+    displayValue = this.getDisplayValue();
 
-    if (flag) {
-        this.$changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+    //  Sometimes the display value computed from the new value can be equal to
+    //  the old value. If that's *not* the case, then propagate and set the
+    //  bound value.
+    if (!TP.equal(oldValue, displayValue)) {
+        //  NB: Use this construct this way for better performance
+        if (TP.notValid(flag = shouldSignal)) {
+            flag = this.shouldSignalChange();
+        }
+
+        if (flag) {
+            this.$changed('value', TP.UPDATE,
+                            TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+        }
     }
 
     return this;
