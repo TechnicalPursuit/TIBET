@@ -857,10 +857,10 @@ function() {
         if (TP.notFalse(this.getType().get('shouldOrder'))) {
             this.get('updateSelection').order();
         }
-    }
 
-    //  Signal to observers that this control has rendered.
-    this.signal('TP.sig.DidRender');
+        //  Signal to observers that this control has rendered its data.
+        this.signal('TP.sig.DidRenderData');
+    }
 
     return this;
 });

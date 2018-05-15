@@ -3852,6 +3852,7 @@ TP.sig.ServiceException.defineSubtype('RequestNotFound');
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.defineSubtype('DidRender');
+TP.sig.DidRender.defineSubtype('DidRenderData');
 
 //  ------------------------------------------------------------------------
 //  VALIDATION SIGNALS/EXCEPTIONS
