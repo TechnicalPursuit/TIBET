@@ -5580,6 +5580,32 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.SelectingUIElementNode.Inst.defineMethod('isSingleValued',
+function(aspectName) {
+
+    /**
+     * @method isSingleValued
+     * @summary If the aspect is 'value' this method returns true if the
+     *     receiver is configured to *not* allow multiple selection. Otherwise
+     *     it returns whatever the supertype returns.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
+     * @returns {Boolean} If the aspectName is 'value', true if it does *not*
+     *     allow multiple selection, false if otherwise. And false for all other
+     *     aspects.
+     */
+
+    if (aspectName === 'value') {
+        return !this.allowsMultiples();
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 

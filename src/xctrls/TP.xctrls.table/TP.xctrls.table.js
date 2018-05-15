@@ -324,6 +324,25 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('isSingleValued',
+function(aspectName) {
+
+    /**
+     * @method isSingleValued
+     * @summary For this type, since both the data and the value (selection) are
+     *     never single valued, this returns false.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
+     * @returns {Boolean} For this type, always returns false.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
