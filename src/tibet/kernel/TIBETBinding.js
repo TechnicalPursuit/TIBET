@@ -2674,8 +2674,8 @@ function(aSignal) {
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        pagePos = this.getRepeatPagePosition();
-        this.setRepeatPagePosition(pagePos + 1);
+        pagePos = this.getRepeatPagePosition() + 1;
+        this.setRepeatPagePosition(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
