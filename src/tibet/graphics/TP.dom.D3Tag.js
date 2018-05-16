@@ -378,7 +378,10 @@ function(updateSelection) {
         selection = updateSelection;
     }
 
-    if (TP.isValid(selection)) {
+    //  NB: 'selection.empty' is a d3 method which tests if a selection is
+    //  empty. Not to be confused with the TIBET 'empty' method, which empties
+    //  an Array.
+    if (TP.isValid(selection) && !selection.empty()) {
 
         //  Note here how, in both cases, we grab the return value (which should
         //  be a selection that was the initial selection but with content
@@ -437,7 +440,10 @@ function(exitSelection) {
         selection = exitSelection;
     }
 
-    if (TP.isValid(selection)) {
+    //  NB: 'selection.empty' is a d3 method which tests if a selection is
+    //  empty. Not to be confused with the TIBET 'empty' method, which empties
+    //  an Array.
+    if (TP.isValid(selection) && !selection.empty()) {
         this.removeOldContent(selection);
     }
 
@@ -541,7 +547,10 @@ function(updateSelection) {
         selection = updateSelection;
     }
 
-    if (TP.isValid(selection)) {
+    //  NB: 'selection.empty' is a d3 method which tests if a selection is
+    //  empty. Not to be confused with the TIBET 'empty' method, which empties
+    //  an Array.
+    if (TP.isValid(selection) && !selection.empty()) {
 
         //  Note here how, in both cases, we grab the return value (which should
         //  be a selection that was the initial selection may have other
