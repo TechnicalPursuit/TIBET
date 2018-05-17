@@ -164,6 +164,40 @@ function(aDataObject, shouldSignal) {
     return this.callNextMethod(pageData, shouldSignal);
 });
 
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pagerbar.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For a UI element this
+     *     method will ensure any display formatters are invoked. NOTE that this
+     *     method does not update the receiver's bound value if it's a bound
+     *     control. In fact, this method is used in response to a change in the
+     *     bound value to update the display value, so this method should avoid
+     *     changes to the bound value to avoid recursions.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.xctrls.pagerbar} The receiver.
+     */
+
+    var val;
+
+    //  Because this is expecting a 1-based value, but we're driven by a 0-based
+    //  data set, we need to subtract 1.
+    val = aValue.asNumber();
+
+    if (!TP.isNumber(val)) {
+        return this;
+    }
+
+    val -= 1;
+
+    return this.callNextMethod(val, shouldSignal);
+});
+
 //  ========================================================================
 //  TP.xctrls.pageritem
 //  ========================================================================
