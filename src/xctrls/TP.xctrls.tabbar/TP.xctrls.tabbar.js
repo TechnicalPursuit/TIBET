@@ -24,7 +24,8 @@ TP.xctrls.itemset.defineSubtype('xctrls:tabbar');
  * The tag name of the tag to use for each item if there is no template.
  * @type {String}
  */
-TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName', 'xctrls:tabitem');
+TP.xctrls.tabbar.Type.defineAttribute('defaultItemTagName',
+                                        'xctrls:tabitem');
 
 /**
  * Whether or not the tag wants 'close mark' elements to allow individual
