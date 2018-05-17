@@ -4589,6 +4589,10 @@ function(aPosition) {
     //  1-based number.
     this.setAttribute('bind:repeatindex', endIndex + 1);
 
+    //  NB: We pass true here to signal change in case anything in the GUI is
+    //  watching this attribute.
+    this.$setAttribute('bind:repeatpageposition', aPosition, true);
+
     return this;
 });
 
@@ -4694,6 +4698,12 @@ function(aCollection) {
         } else {
             TP.elementHide(allRepeatRows.at(i));
         }
+    }
+
+    if (!TP.isNumber(this.getAttribute('bind:repeatpageposition').asNumber())) {
+        //  NB: We pass true here to signal change in case anything in the GUI
+        //  is watching this attribute.
+        this.$setAttribute('bind:repeatpageposition', 1, true);
     }
 
     return this;
