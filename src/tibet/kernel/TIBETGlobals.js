@@ -3589,10 +3589,10 @@ TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
 TP.regex.XTENSION_POINTER = /css\((.*)\)/;
 
 //  Detect @[anything] as whole
-TP.regex.ATTRIBUTE = /^@\w+$/;
+TP.regex.ATTRIBUTE = /^@(\w+:)?\w+$/;
 
 //  Detect @[anything] at end
-TP.regex.ATTRIBUTE_ENDS = /@\w+$/;
+TP.regex.ATTRIBUTE_ENDS = /@(\w+:)?\w+$/;
 
 //  Detect starts with @*
 TP.regex.ATTRIBUTE_ALL = /^@\*/;
@@ -3611,7 +3611,7 @@ TP.regex.CSS_POINTER = /css\((.*)\)/;
 TP.regex.BARENAME = new RegExp(
                     '^#(' +
                     '(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*' +
-                    '(@(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*)*' +
+                    '(@(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + '|:)*)*' +
                     ')$');
 
 TP.regex.DOCUMENT_ID = /^#document$/;
