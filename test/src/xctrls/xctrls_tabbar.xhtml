@@ -19,8 +19,17 @@
     #tabbar2 {
         top: 60px;
     }
-    #panelbox2 {
-        top: 100px;
+    #tabbar3 {
+        top: 90px;
+    }
+    #tabbar4 {
+        top: 120px;
+    }
+    #tabbar5 {
+        top: 150px;
+    }
+    #tabbar6 {
+        top: 180px;
     }
     ]]>
     </style>
@@ -84,6 +93,15 @@
         ]]>
     </tibet:data>
 
+    <!-- The selection scratch data -->
+    <tibet:data name="urn:tibet:selection_scratch_data">
+        <![CDATA[
+            {
+            "data": "johnson"
+            }
+        ]]>
+    </tibet:data>
+
     <!-- The test data for selection tests -->
     <tibet:data name="urn:tibet:selection_test_data">
         <![CDATA[
@@ -97,12 +115,10 @@
         ]]>
     </tibet:data>
 
-    <!-- The selection scratch data -->
-    <tibet:data name="urn:tibet:selection_scratch_data">
+    <!-- The test data for value bound selection tests -->
+    <tibet:data name="urn:tibet:bound_selection_test_data">
         <![CDATA[
-            {
-            "data": "johnson"
-            }
+        {"selection_set_1": "bar", "selection_set_2": "foo"}
         ]]>
     </tibet:data>
 
@@ -120,70 +136,65 @@
     <br/>
     <br/>
 
+    <br/>
+    tabbar #2:
+    <br/>
+    A standard XControls tabbar showing dynamic content of a two dimensional Array:
     <xctrls:tabbar id="tabbar2" bind:io="{data: urn:tibet:two_dim_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}"/>
 
-    <xctrls:panelbox id="panelbox2" bind:in="urn:tibet:selection_scratch_data#tibet(data)">
-        <xctrls:panel>
-            <xctrls:value>smith</xctrls:value>
-            <xctrls:content>
-                This is content for Smith.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>johnson</xctrls:value>
-            <xctrls:content>
-                This is content for Johnson.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>williams</xctrls:value>
-            <xctrls:content>
-                This is content for Williams.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>jones</xctrls:value>
-            <xctrls:content>
-                This is content for Jones.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>brown</xctrls:value>
-            <xctrls:content>
-                This is content for Brown.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>davis</xctrls:value>
-            <xctrls:content>
-                This is content for Davis.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>miller</xctrls:value>
-            <xctrls:content>
-                This is content for Miller.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>wilson</xctrls:value>
-            <xctrls:content>
-                This is content for Wilson.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>moore</xctrls:value>
-            <xctrls:content>
-                This is content for Moore.
-            </xctrls:content>
-        </xctrls:panel>
-        <xctrls:panel>
-            <xctrls:value>taylor</xctrls:value>
-            <xctrls:content>
-                This is content for Taylor.
-            </xctrls:content>
-        </xctrls:panel>
-    </xctrls:panelbox>
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #3:
+    <br/>
+    A standard XControls tabbar showing dynamic content of an Object hash:
+    <xctrls:tabbar id="tabbar3" bind:in="{data: urn:tibet:object_hash#tibet(names)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #4:
+    <br/>
+
+    A standard XControls tabbar enabled showing dynamic content:
+    <xctrls:tabbar id="tabbar4" bind:io="{data: urn:tibet:selection_test_data#tibet(data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #5:
+    <br/>
+
+    A standard XControls tabbar enabled showing dynamic content and value bound to a selection model:
+    <xctrls:tabbar id="tabbar5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #6:
+    <br/>
+
+    A standard XControls tabbar enabled showing static and templated content and value bound to a selection model:
+    <xctrls:tabbar id="tabbar6" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
+        <xctrls:tabitem tabindex="0">
+            <xctrls:label>Before Content</xctrls:label>
+            <xctrls:value>before</xctrls:value>
+        </xctrls:tabitem>
+        <tibet:template>
+            <xctrls:tabitem>
+                <xctrls:label>[[value.1]]</xctrls:label>
+                <xctrls:value>[[value.0]]</xctrls:value>
+            </xctrls:tabitem>
+        </tibet:template>
+        <xctrls:tabitem tabindex="0">
+            <xctrls:label>After Content</xctrls:label>
+            <xctrls:value>after</xctrls:value>
+        </xctrls:tabitem>
+    </xctrls:tabbar>
 
     <br/>
     <br/>
