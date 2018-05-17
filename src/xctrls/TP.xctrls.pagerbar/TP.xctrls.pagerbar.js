@@ -31,6 +31,91 @@ TP.xctrls.pagerbar.Type.defineAttribute('defaultItemTagName',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.pagerbar.Inst.defineHandler('UIDeactivate',
+function(aSignal) {
+
+    /**
+     * @method handleUIDeactivate
+     * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
+     *     to trip.
+     */
+
+    var domTarget,
+        wrappedDOMTarget,
+
+        valueTPElem,
+
+        newValue;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Get the DOM target as the event system originally sees it. If the
+        //  event happened inside of our element with a '.close_mark' class,
+        //  then we just return here. The signal dispatched from that element
+        //  will handle the rest.
+        domTarget = aSignal.getDOMTarget();
+
+        //  Get the resolved DOM target - this should be the list item that was
+        //  activated (i.e. because of a mouse up or a Enter key up, etc)
+        domTarget = aSignal.getResolvedDOMTarget();
+
+        //  Wrap it and if it's actually us (the list - maybe because the user
+        //  clicked in a tiny area that doesn't contain a list item), we're not
+        //  interested.
+        wrappedDOMTarget = TP.wrap(domTarget);
+        if (wrappedDOMTarget === this) {
+            return;
+        }
+
+        //  Grab the value element of the list item.
+        valueTPElem = wrappedDOMTarget.get('xctrls|value');
+        if (TP.notValid(valueTPElem)) {
+            return;
+        }
+
+        //  And it's text content.
+        newValue = valueTPElem.getTextContent();
+
+        switch (newValue) {
+
+            case 'start':
+                this.dispatch('TP.sig.UIPageStart');
+                break;
+
+            case 'previous':
+                this.dispatch('TP.sig.UIPagePrevious');
+                break;
+
+            case 'next':
+                this.dispatch('TP.sig.UIPageNext');
+                break;
+
+            case 'end':
+                this.dispatch('TP.sig.UIPageEnd');
+                break;
+
+            default:
+                //  Make sure this is a Number before dispatching the signal.
+                newValue = newValue.asNumber();
+                if (TP.isNumber(newValue)) {
+                    this.dispatch('TP.sig.UIPageSet',
+                                    null,
+                                    TP.hc('pageNum', newValue));
+                }
+
+                break;
+        }
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.stopPropagation();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.pagerbar.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal) {
 
@@ -77,78 +162,6 @@ function(aDataObject, shouldSignal) {
             TP.ac('end', 'End'));
 
     return this.callNextMethod(pageData, shouldSignal);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.pagerbar.Inst.defineMethod('select',
-function(aValue, anIndex, shouldSignal) {
-
-    /**
-     * @method select
-     * @summary Selects the element which has the provided value (if found) or
-     *     is at the provided index.
-     *     Note that this method is roughly identical to setDisplayValue() with
-     *     the exception that, if the receiver allows multiple selection, this
-     *     method does not clear existing selections when processing the
-     *     value(s) provided.
-     * @param {Object} [aValue] The value to select. Note that this can be an
-     *     Array.
-     * @param {Number} [anIndex] The index of the value in the receiver's data
-     *     set.
-     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
-     *     If false changes to the selection are not signaled. Defaults to true.
-     * @returns {Boolean} Whether or not a selection was selected. For this
-     *     type, only numeric page items are selected.
-     */
-
-    var value,
-        shouldDeselect;
-
-    this.callNextMethod();
-
-    value = this.get('value');
-
-    shouldDeselect = true;
-
-    switch (value) {
-
-        case 'start':
-            this.dispatch('TP.sig.UIPageStart');
-            break;
-
-        case 'previous':
-            this.dispatch('TP.sig.UIPagePrevious');
-            break;
-
-        case 'next':
-            this.dispatch('TP.sig.UIPageNext');
-            break;
-
-        case 'end':
-            this.dispatch('TP.sig.UIPageEnd');
-            break;
-
-        default:
-            //  Make sure this is a Number before dispatching the signal.
-            value = value.asNumber();
-            if (TP.isNumber(value)) {
-                this.dispatch('TP.sig.UIPageSet',
-                                null,
-                                TP.hc('pageNum', value));
-            }
-
-            shouldDeselect = false;
-            break;
-    }
-
-    if (shouldDeselect) {
-        this.deselectAll();
-    }
-
-    return !shouldDeselect;
-}, {
-    patchCallee: true
 });
 
 //  ========================================================================
