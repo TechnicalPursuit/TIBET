@@ -28,13 +28,6 @@ TP.xctrls.pagerbar.Type.defineAttribute('defaultItemTagName',
                                         'xctrls:pageritem');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.xctrls.pagerbar.Inst.defineAttribute('totalPages');
-TP.xctrls.pagerbar.Inst.defineAttribute('currentPage');
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -66,7 +59,6 @@ function(aDataObject, shouldSignal) {
     }
 
     totalPages = (dataObj.getSize() / pagingSize).ceil();
-    this.set('totalPages', totalPages);
 
     //  Create an Array from a Range, starting at 1.
     pageData = (1).to(totalPages).asArray();
