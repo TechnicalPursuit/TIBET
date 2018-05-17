@@ -4166,8 +4166,12 @@ function(attributeName, attributeValue, shouldSignal) {
 
         url,
 
+        attrNode,
         attrTPNode,
-        attrFlag;
+        attrFlag,
+
+        id,
+        attrURI;
 
     node = this.getNativeNode();
 
@@ -4235,18 +4239,30 @@ function(attributeName, attributeValue, shouldSignal) {
                                 TP.NEWVAL,
                                 attributeValue));
 
+        attrNode = TP.elementGetAttributeNode(node, attributeName, true);
+
         //  Now, in case anyone is bound to this attribute, wrap it, configure
         //  it to signal Change and send it.
-        attrTPNode = TP.wrap(
-                        TP.elementGetAttributeNode(node, attributeName, true));
+        attrTPNode = TP.wrap(attrNode);
 
         //  Capture the value of whether the attribute node is configured to
         //  signal changes and then configure it to definitely signal a Change.
         attrFlag = attrTPNode.shouldSignalChange();
         attrTPNode.shouldSignalChange(true);
 
-        //  Signal the Change and then put the value back to whatever it was.
+        //  Signal the Change
         attrTPNode.$changed('value', TP.UPDATE);
+
+        //  If the attribute is on an Element that's in the UICANVAS, then
+        //  build a URI from it and signal a 'change' from that URI, for any
+        //  data bindings that are using 'direct to GUI' binding.
+        if (TP.nodeGetWindow(attrNode) === TP.sys.getUICanvas(true)) {
+            id = this.getLocalID();
+            attrURI = TP.uc('tibet://uicanvas#' + id + '@' + attributeName);
+            attrURI.$changed();
+        }
+
+        //  Put the 'should signal change' value back to whatever it was.
         attrTPNode.shouldSignalChange(attrFlag);
     }
 
