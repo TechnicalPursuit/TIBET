@@ -151,15 +151,27 @@ function(aDataObject, shouldSignal) {
     //  Get the Array as pairs of Arrays (in the form of: [index, value])
     pageData = pageData.getKVPairs();
 
-    //  Unshift the starting entries on the front
-    pageData.unshift(
-            TP.ac('start', 'Start'),
-            TP.ac('previous', 'Previous'));
+    //  Unshift the starting entries on the front, if the author wanted them.
 
-    //  Push the ending entries on the back
-    pageData.push(
-            TP.ac('next', 'Next'),
-            TP.ac('end', 'End'));
+    //  NB: This looks to be in a strange order, but only because of how unshift
+    //  works.
+    if (this.hasAttribute('nextprevious')) {
+        pageData.unshift(TP.ac('previous', 'Previous'));
+    }
+
+    if (this.hasAttribute('startend')) {
+        pageData.unshift(TP.ac('start', 'Start'));
+    }
+
+    //  Push the ending entries on the back, if the author wanted them.
+
+    if (this.hasAttribute('nextprevious')) {
+        pageData.push(TP.ac('next', 'Next'));
+    }
+
+    if (this.hasAttribute('startend')) {
+        pageData.push(TP.ac('end', 'End'));
+    }
 
     return this.callNextMethod(pageData, shouldSignal);
 });
