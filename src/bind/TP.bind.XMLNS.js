@@ -381,37 +381,41 @@ function(anElement) {
             //  this usually returns the URI itself.
             concreteURI = TP.uc(location).getConcreteURI();
 
-            //  If we have a TIBET URL, then check to see if its canvas (i.e.
-            //  Window) is the same as the current UI canvas Window. If it is,
-            //  configure the GUI control to signal change when its GUI value
-            //  changes.
-            if (TP.isKindOf(concreteURI, TP.uri.TIBETURL)) {
+            if (TP.isValid(concreteURI)) {
+                //  If we have a TIBET URL, then check to see if its canvas (i.e.
+                //  Window) is the same as the current UI canvas Window. If it is,
+                //  configure the GUI control to signal change when its GUI value
+                //  changes.
+                if (TP.isKindOf(concreteURI, TP.uri.TIBETURL)) {
 
-                if (concreteURI.getCanvas() === TP.sys.uiwin(true)) {
+                    if (concreteURI.getCanvas() === TP.sys.uiwin(true)) {
 
-                    if (TP.isValid(resultObj =
-                            concreteURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result'))) {
+                        if (TP.isValid(resultObj =
+                                concreteURI.getResource(
+                                    TP.hc('resultType', TP.WRAP)).get('result'))) {
 
-                        //  If the binding expression was to an Attribute node,
-                        //  then we want to grab the Attribute's owner element.
-                        if (TP.isKindOf(resultObj, TP.dom.AttributeNode)) {
-                            resultObj = resultObj.getOwnerElement();
+                            //  If the binding expression was to an Attribute node,
+                            //  then we want to grab the Attribute's owner element.
+                            if (TP.isKindOf(resultObj, TP.dom.AttributeNode)) {
+                                resultObj = resultObj.getOwnerElement();
+                            }
+
+                            //  Because it's a TIBET *URL* (not *URN*), we assume
+                            //  that it's pointing to another GUI control in the
+                            //  same page, and that we're doing a GUI-to-GUI
+                            //  binding, so we configure it to signal changes.
+                            resultObj.shouldSignalChange(true);
                         }
-
-                        //  Because it's a TIBET *URL* (not *URN*), we assume
-                        //  that it's pointing to another GUI control in the
-                        //  same page, and that we're doing a GUI-to-GUI
-                        //  binding, so we configure it to signal changes.
-                        resultObj.shouldSignalChange(true);
                     }
+                } else {
+                    //  If this isn't a TIBET URL, just grab it's primary URI.
+                    concreteURI = concreteURI.getPrimaryURI();
                 }
-            } else {
-                //  If this isn't a TIBET URL, just grab it's primary URI.
-                concreteURI = concreteURI.getPrimaryURI();
-            }
 
-            concreteLoc = concreteURI.getLocation();
+                concreteLoc = concreteURI.getLocation();
+            } else {
+                concreteLoc = location;
+            }
 
             //  If we already saw this location, then we increment the counter.
             if (observedLocations.containsKey(concreteLoc)) {
