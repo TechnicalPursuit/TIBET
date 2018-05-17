@@ -4304,7 +4304,9 @@ function(index) {
      * @param {Number} index The index to start repeating from.
      */
 
-    this.$setAttribute('bind:repeatindex', index);
+    //  NB: We pass true here to signal change in case anything in the GUI is
+    //  watching this attribute.
+    this.$setAttribute('bind:repeatindex', index, true);
 
     this.$showHideRepeatRows();
 
@@ -4324,7 +4326,9 @@ function(size) {
      * @param {Number} size The size of the data 'page'.
      */
 
-    this.$setAttribute('bind:repeatsize', size);
+    //  NB: We pass true here to signal change in case anything in the GUI is
+    //  watching this attribute.
+    this.$setAttribute('bind:repeatsize', size, true);
 
     this.$showHideRepeatRows();
 
