@@ -159,16 +159,6 @@ TP.xctrls.itemset.Inst.defineAttribute(
     TP.cpc('> span tibet|group xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
-    'items',
-    TP.cpc('> span tibet|group xctrls|content xctrls|*',
-            TP.hc('shouldCollapse', false)));
-
-TP.xctrls.itemset.Inst.defineAttribute(
-    'focusedItem',
-    TP.cpc('> span tibet|group xctrls|content xctrls|*[pclass|focus]',
-            TP.hc('shouldCollapse', true)));
-
-TP.xctrls.itemset.Inst.defineAttribute(
     'group',
     TP.cpc('> span tibet|group', TP.hc('shouldCollapse', true)));
 
@@ -190,6 +180,37 @@ function() {
      */
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getAllItemContent',
+function() {
+
+    /**
+     * @method getAllItemContent
+     * @summary Returns all of the receiver's item content, no matter whether it
+     *     was statically supplied or generated dynamically.
+     * @returns {TP.xctrls.item[]} All of the receiver's item content.
+     */
+
+    var defaultTagName,
+        defaultTagSelector,
+
+        getterPath;
+
+    //  Grab the default tag name and change it into something that can be used
+    //  by a CSS selector.
+    defaultTagName = this.getType().get('defaultItemTagName');
+    defaultTagSelector = defaultTagName.replace(':', '|');
+
+    //  Build a path to all items (descendants somewhere under the
+    //  'xctrls|content' element).
+    getterPath = TP.cpc(
+                    '> span tibet|group xctrls|content ' + defaultTagSelector,
+                    TP.hc('shouldCollapse', false));
+
+    return this.get(getterPath);
 });
 
 //  ------------------------------------------------------------------------
@@ -218,6 +239,98 @@ function() {
     }
 
     return entryArray.first();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getFocusedItem',
+function() {
+
+    /**
+     * @method getFocusedItem
+     * @summary Returns the focused item under the receiver.
+     * @returns {TP.xctrls.item} The focused item.
+     */
+
+    var defaultTagName,
+        defaultTagSelector,
+
+        getterPath;
+
+    //  Grab the default tag name and change it into something that can be used
+    //  by a CSS selector.
+    defaultTagName = this.getType().get('defaultItemTagName');
+    defaultTagSelector = defaultTagName.replace(':', '|');
+
+    getterPath = TP.cpc('> span tibet|group xctrls|content ' +
+                        defaultTagSelector + '[pclass|focus]',
+                    TP.hc('shouldCollapse', true));
+
+    return this.get(getterPath);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getFollowingStaticItemContent',
+function() {
+
+    /**
+     * @method getFollowingStaticItemContent
+     * @summary Returns the receiver's static item content that occurs after
+     *     any dynamic item content.
+     * @returns {TP.xctrls.item[]} The receiver's static item content that
+     *     follows any dynamic item content.
+     */
+
+    var defaultTagName,
+        defaultTagSelector,
+
+        getterPath;
+
+    //  Grab the default tag name and slice off the 'local name' that can be
+    //  used in an XPath.
+    defaultTagName = this.getType().get('defaultItemTagName');
+    defaultTagSelector = defaultTagName.slice(defaultTagName.indexOf(':') + 1);
+
+    //  Build a path to only items that occur after the dynamic, templated
+    //  content.
+    getterPath = TP.xpc('.//*[@class = "templated"]/following-sibling::*/' +
+                        '*[local-name() = "' + defaultTagSelector + '"]',
+                    TP.hc('shouldCollapse', false));
+
+    return this.get(getterPath);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getPrecedingStaticItemContent',
+function() {
+
+    /**
+     * @method getPrecedingStaticItemContent
+     * @summary Returns the receiver's static item content that occurs before
+     *     any dynamic item content.
+     * @returns {TP.xctrls.item[]} The receiver's static item content that
+     *     precedes any dynamic item content.
+     */
+
+    var defaultTagName,
+        defaultTagSelector,
+
+        getterPath;
+
+    //  Grab the default tag name and slice off the 'local name' that can be
+    //  used in an XPath.
+    defaultTagName = this.getType().get('defaultItemTagName');
+    defaultTagSelector = defaultTagName.slice(defaultTagName.indexOf(':') + 1);
+
+    //  Build a path to only items that occur before the dynamic, templated
+    //  content.
+    getterPath = TP.xpc('.//*[@class = "templated"]/preceding-sibling::*/' +
+                        '*[local-name() = "' + defaultTagSelector + '"]',
+                    TP.hc('shouldCollapse', false));
+
+    return this.get(getterPath);
 });
 
 //  ------------------------------------------------------------------------
@@ -598,7 +711,12 @@ function(aDataObject, shouldSignal) {
      */
 
     var dataObj,
-        keys;
+        keys,
+
+        precedingStaticContent,
+        followingStaticContent,
+
+        staticKeys;
 
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
@@ -637,6 +755,28 @@ function(aDataObject, shouldSignal) {
                         //  Note that we want a String here.
                         return item.toString();
                     });
+        }
+
+        //  Grab any static content that precedes the templated, dynamic content
+        //  and add its values to our Array of data keys.
+        precedingStaticContent = this.get('precedingStaticItemContent');
+        if (!TP.isEmptyArray(precedingStaticContent)) {
+            staticKeys = precedingStaticContent.collect(
+                            function(anItem) {
+                                return anItem.get('value');
+                            });
+            Array.prototype.unshift.apply(keys, staticKeys);
+        }
+
+        //  Grab any static content that follows the templated, dynamic content
+        //  and add its values to our Array of data keys.
+        followingStaticContent = this.get('followingStaticItemContent');
+        if (!TP.isEmptyArray(followingStaticContent)) {
+            staticKeys = followingStaticContent.collect(
+                            function(anItem) {
+                                return anItem.get('value');
+                            });
+            Array.prototype.push.apply(keys, staticKeys);
         }
 
         this.set('$dataKeys', keys);
@@ -1203,7 +1343,10 @@ function(selection) {
 
     var selectedValues,
 
-        groupID;
+        groupID,
+
+        precedingStaticContent,
+        followingStaticContent;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1215,6 +1358,8 @@ function(selection) {
     selection.each(
         function(d) {
             var wrappedElem;
+
+            this.__proto__ = this.ownerDocument.defaultView.Element.prototype;
 
             wrappedElem = TP.wrap(this);
 
@@ -1237,6 +1382,36 @@ function(selection) {
         }
     );
 
+    //  Grab any static content that precedes the templated, dynamic content
+    //  and, if its value matches any of the selected values, then toggle it on.
+    //  Otherwise, toggle it off.
+    precedingStaticContent = this.get('precedingStaticItemContent');
+    if (!TP.isEmptyArray(precedingStaticContent)) {
+        precedingStaticContent.forEach(
+            function(anItem) {
+                if (selectedValues.contains(anItem.get('value'))) {
+                    anItem.$setVisualToggle(true);
+                } else {
+                    anItem.$setVisualToggle(false);
+                }
+            });
+    }
+
+    //  Grab any static content that follows the templated, dynamic content
+    //  and, if its value matches any of the selected values, then toggle it on.
+    //  Otherwise, toggle it off.
+    followingStaticContent = this.get('followingStaticItemContent');
+    if (!TP.isEmptyArray(followingStaticContent)) {
+        followingStaticContent.forEach(
+            function(anItem) {
+                if (selectedValues.contains(anItem.get('value'))) {
+                    anItem.$setVisualToggle(true);
+                } else {
+                    anItem.$setVisualToggle(false);
+                }
+            });
+    }
+
     return this;
 });
 
@@ -1256,7 +1431,10 @@ function(selection) {
      * @returns {TP.dom.D3Tag} The receiver.
      */
 
-    var selectedValues;
+    var selectedValues,
+
+        precedingStaticContent,
+        followingStaticContent;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1282,6 +1460,36 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }
         );
+
+    //  Grab any static content that precedes the templated, dynamic content
+    //  and, if its value matches any of the selected values, then toggle it on.
+    //  Otherwise, toggle it off.
+    precedingStaticContent = this.get('precedingStaticItemContent');
+    if (!TP.isEmptyArray(precedingStaticContent)) {
+        precedingStaticContent.forEach(
+            function(anItem) {
+                if (selectedValues.contains(anItem.get('value'))) {
+                    anItem.$setVisualToggle(true);
+                } else {
+                    anItem.$setVisualToggle(false);
+                }
+            });
+    }
+
+    //  Grab any static content that follows the templated, dynamic content
+    //  and, if its value matches any of the selected values, then toggle it on.
+    //  Otherwise, toggle it off.
+    followingStaticContent = this.get('followingStaticItemContent');
+    if (!TP.isEmptyArray(followingStaticContent)) {
+        followingStaticContent.forEach(
+            function(anItem) {
+                if (selectedValues.contains(anItem.get('value'))) {
+                    anItem.$setVisualToggle(true);
+                } else {
+                    anItem.$setVisualToggle(false);
+                }
+            });
+    }
 
     return this;
 });
