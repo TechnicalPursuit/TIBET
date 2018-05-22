@@ -6928,11 +6928,16 @@ function(aSignal) {
         return;
     }
 
+    //  We're blurring... set 'focused' to false.
+    //  NOTE: We *MUST* do this *before* we try to resign the focused responder.
+    //  Otherwise, when that method's machinery tries to compute the currently
+    //  focused element, it will sometimes (depending on whether the new target
+    //  already got a 'pclass:focus' attribute) warn that there are two elements
+    //  that are currently focused.
+    this.setAttrFocused(false);
+
     //  Go ahead and tell ourself to resign from being the focused responder
     this.resignFocusedResponder();
-
-    //  We're blurring... set 'focused' to false
-    this.setAttrFocused(false);
 
     this.signalAfterRepaint('TP.sig.UIDidBlur');
 
