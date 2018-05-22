@@ -698,7 +698,7 @@ function(aSignal) {
     sourceTPElem = TP.byId(peerID);
 
     bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions();
-    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
+    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
 
     if (!TP.isURIString(expandedBindingExpr)) {
         return this;
