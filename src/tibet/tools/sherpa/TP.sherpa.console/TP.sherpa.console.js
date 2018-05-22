@@ -703,13 +703,14 @@ function(aSignal) {
 
     drawerIsOpenFunc = function(transitionSignal) {
 
-        var consoleInput;
+        var consoleInputTPElem;
 
         //  Turn off any future notifications.
         drawerIsOpenFunc.ignore(southDrawer, 'TP.sig.DOMTransitionEnd');
 
-        if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-            consoleInput.focus();
+        consoleInputTPElem = this.get('consoleInput');
+        if (TP.isValid(consoleInputTPElem) && consoleInputTPElem.isVisible()) {
+            consoleInputTPElem.focus();
         }
 
     }.bind(this);
@@ -817,20 +818,24 @@ function(aSignal) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var consoleInput,
+    var consoleInputTPElem,
         readyHandler;
 
-    consoleInput = this.get('consoleInput');
+    consoleInputTPElem = this.get('consoleInput');
 
-    if (!consoleInput.isReadyToRender()) {
+    if (!consoleInputTPElem.isReadyToRender()) {
         readyHandler = function() {
-            readyHandler.ignore(consoleInput, 'TP.sig.DOMReady');
-            consoleInput.focus();
+            readyHandler.ignore(consoleInputTPElem, 'TP.sig.DOMReady');
+            if (consoleInputTPElem.isVisible()) {
+                consoleInputTPElem.focus();
+            }
         };
 
-        readyHandler.observe(consoleInput, 'TP.sig.DOMReady');
+        readyHandler.observe(consoleInputTPElem, 'TP.sig.DOMReady');
     } else {
-        consoleInput.focus();
+        if (consoleInputTPElem.isVisible()) {
+            consoleInputTPElem.focus();
+        }
     }
 
     return this;
@@ -858,7 +863,7 @@ function(aSignal) {
 
         value,
 
-        consoleInput;
+        consoleInputTPElem;
 
     if (aSignal.getOrigin() === TP.uc('urn:tibet:sherpa_consoletabs')) {
 
@@ -883,10 +888,12 @@ function(aSignal) {
         //  the embedded CodeMirror editor to redraw properly.
         if (value === 'TSH') {
 
-            if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+            if (TP.isValid(consoleInputTPElem = this.get('consoleInput'))) {
                 setTimeout(
                     function() {
-                        consoleInput.focus();
+                        if (consoleInputTPElem.isVisible()) {
+                            consoleInputTPElem.focus();
+                        }
                     }, 100);
             }
         }
@@ -1612,6 +1619,14 @@ function(select) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    var consoleInputTPElem;
+
+    consoleInputTPElem = this.get('consoleInput');
+
+    if (!consoleInputTPElem.isVisible()) {
+        return this;
+    }
+
     //  We wrap this in a try...catch that does nothing because, on startup,
     //  it seems like the textfield isn't focusable on IE and this will
     //  throw an exception. It's not a big deal, except that this means that
@@ -1664,11 +1679,19 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    var consoleInputTPElem;
+
     if (TP.isFalse(this.get('allowMouseCursorMovement'))) {
         return this;
     }
 
-    this.get('consoleInput').setCursorToEnd();
+    consoleInputTPElem = this.get('consoleInput');
+
+    if (!consoleInputTPElem.isVisible()) {
+        return this;
+    }
+
+    consoleInputTPElem.setCursorToEnd();
 
     return this;
 });
