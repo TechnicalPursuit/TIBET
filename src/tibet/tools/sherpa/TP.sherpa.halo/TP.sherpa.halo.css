@@ -43,7 +43,8 @@ sherpa|halo:not([pclass|hidden]) {
  * element (note that this is *not* the same as 'non visible') */
 sherpa|halo[nonDisplayedTarget="true"] {
 
-    background: repeating-linear-gradient(142deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 10px, rgba(216, 216, 216, 0.75) 10px, rgba(216, 216, 216, 0.75) 15px);
+    background-color: #fff2aa;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.62' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 sherpa|halo[nonDisplayedTarget="true"][descendantOf="head"] {
