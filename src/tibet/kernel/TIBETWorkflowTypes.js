@@ -6242,7 +6242,10 @@ function(aRoute) {
         targetTPElem,
         canvas,
         type,
-        url;
+        url,
+
+        newTPElem,
+        evt;
 
     route = aRoute;
 
@@ -6363,7 +6366,15 @@ function(aRoute) {
             //  the route name as the 'contentKey'. This can be used by
             //  intelligent elements to decide how to handle content that they
             //  might see more than once.
-            targetTPElem.setContent(content, TP.request('contentKey', route));
+            newTPElem = targetTPElem.setContent(
+                                    content, TP.request('contentKey', route));
+
+            //  Send a custom DOM-level event to allow 3rd party libraries to
+            //  know that the router has transitioned to a new route that has
+            //  been finalized.
+            evt = targetTPElem.getNativeDocument().createEvent('Event');
+            evt.initEvent('TIBETRouteFinalized', true, true);
+            newTPElem.getNativeNode().dispatchEvent(evt);
         }
     }
 
