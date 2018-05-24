@@ -2133,6 +2133,38 @@ function(aTargetElem, anEvent) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.inputSelectable.Inst.defineMethod('getDisplayValue',
+function() {
+
+    /**
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
+     * @returns {String} The receiver's input value.
+     */
+
+    return this.getNativeNode().value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputSelectable.Inst.defineMethod('setDisplayValue',
+function(aValue) {
+
+    /**
+     * @method setDisplayValue
+     * @summary Sets the value of the receiver.
+     * @returns {TP.html.inputSelectable} The receiver.
+     */
+
+    this.getNativeNode().value = TP.str(aValue);
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.html.inputButton
 //  ========================================================================
@@ -2294,37 +2326,9 @@ TP.html.inputSelectable.defineSubtype('inputEmail');
 
 TP.html.inputEmail.addTraits(TP.html.textUtilities);
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputEmail.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputEmail.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver.
-     * @returns {TP.html.inputEmail} The receiver.
-     */
-
-    this.getNativeNode().value = TP.str(aValue);
-
-    return this;
-});
+TP.html.inputEmail.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
 
 //  ========================================================================
 //  TP.html.inputFile
@@ -2367,37 +2371,9 @@ TP.html.inputSelectable.defineSubtype('inputNumber');
 
 TP.html.inputNumber.addTraits(TP.html.textUtilities);
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputNumber.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputNumber.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver.
-     * @returns {TP.html.inputNumber} The receiver.
-     */
-
-    this.getNativeNode().value = TP.str(aValue);
-
-    return this;
-});
+TP.html.inputNumber.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
 
 //  ========================================================================
 //  TP.html.inputImage
@@ -2427,22 +2403,12 @@ TP.html.inputSelectable.defineSubtype('inputPassword');
 
 TP.html.inputPassword.addTraits(TP.html.textUtilities);
 
+TP.html.inputPassword.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputPassword.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.html.inputPassword.Inst.defineMethod('setDisplayValue',
@@ -2479,37 +2445,9 @@ TP.html.inputSelectable.defineSubtype('inputSearch');
 
 TP.html.inputSearch.addTraits(TP.html.textUtilities);
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputSearch.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputSearch.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver.
-     * @returns {TP.html.inputSearch} The receiver.
-     */
-
-    this.getNativeNode().value = TP.str(aValue);
-
-    return this;
-});
+TP.html.inputSearch.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
 
 //  ========================================================================
 //  TP.html.inputRadio
@@ -2583,37 +2521,9 @@ TP.html.inputSelectable.defineSubtype('inputTel');
 
 TP.html.inputTel.addTraits(TP.html.textUtilities);
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputTel.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputTel.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver.
-     * @returns {TP.html.inputTel} The receiver.
-     */
-
-    this.getNativeNode().value = TP.str(aValue);
-
-    return this;
-});
+TP.html.inputTel.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
 
 //  ========================================================================
 //  TP.html.inputText
@@ -2642,37 +2552,9 @@ TP.html.inputText.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.dom.EmptyElementNode);
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputText.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's formatted input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputText.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver.
-     * @returns {TP.html.inputText} The receiver.
-     */
-
-    this.getNativeNode().value = TP.str(aValue);
-
-    return this;
-});
+TP.html.inputText.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
 
 //  ========================================================================
 //  TP.html.inputTime
@@ -2727,37 +2609,9 @@ TP.html.inputUrl.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.dom.EmptyElementNode);
 
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.html.inputUrl.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's formatted input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputUrl.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the value of the receiver.
-     * @returns {TP.html.inputUrl} The receiver.
-     */
-
-    this.getNativeNode().value = TP.str(aValue);
-
-    return this;
-});
+TP.html.inputUrl.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
 
 //  ========================================================================
 //  TP.html.legend
