@@ -598,6 +598,7 @@ TP.totalInitialGetTime = 0;
 
 TP.dom.DocumentNode.Inst.defineAttribute('$signalingBatchID');
 TP.dom.DocumentNode.Inst.defineAttribute('$repeatTemplates');
+TP.dom.DocumentNode.Inst.defineAttribute('$refreshedElements');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -658,7 +659,10 @@ function(aSignal) {
 
         boundAttrNodes,
         attrs,
-        attrVal;
+        attrVal,
+
+        refreshedElements,
+        evt;
 
     //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
     //  that there were specific paths to data that changed and we can more
@@ -1069,6 +1073,21 @@ function(aSignal) {
     //  Set the DOM content loaded signaling whatever it was when we entered
     //  this method.
     TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  TODO: send a signal that let 3rd party libraries know that the bindings
+    //  have been refreshed.
+    refreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(refreshedElements)) {
+        evt = this.getNativeDocument().createEvent('Event');
+        evt.initEvent('TIBETBindingsRefreshed', true, true);
+        evt.data = refreshedElements;
+
+        this.getBody().getNativeNode().dispatchEvent(evt);
+
+        //  Make sure to empty the list of elements that were refreshed so that
+        //  we start fresh when bindings are refreshed again.
+        refreshedElements.empty();
+    }
 
     return;
 });
@@ -3739,7 +3758,9 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var facet,
+    var refreshedElements,
+
+        facet,
 
         attrValue,
 
@@ -3777,6 +3798,13 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
         repeatSource;
 
     //  TIMING: var start = Date.now();
+
+    refreshedElements = this.getDocument().get('$refreshedElements');
+
+    if (TP.notValid(refreshedElements)) {
+        refreshedElements = TP.ac();
+        this.getDocument().set('$refreshedElements', refreshedElements);
+    }
 
     facet = TP.ifInvalid(aFacet, 'value');
 
@@ -4023,6 +4051,8 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                 } else {
                     this.setFacet(aspect, facet, finalVal, true);
                 }
+
+                refreshedElements.push(this.getNativeNode());
             }
         }
     }
@@ -4981,7 +5011,10 @@ function(shouldRender) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var boundDescendants;
+    var boundDescendants,
+
+        refreshedElements,
+        evt;
 
     //  Get the bound descendant elements of the receiver. Note how we pass
     //  'true' here to *just* get elements that are 'shallow'. If we pick up
@@ -5000,6 +5033,21 @@ function(shouldRender) {
             //  refreshed.
             aDescendant.$refresh(shouldRender);
         });
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed
+    refreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(refreshedElements)) {
+        evt = this.getNativeDocument().createEvent('Event');
+        evt.initEvent('TIBETBindingsRefreshed', true, true);
+        evt.data = refreshedElements;
+
+        this.getNativeNode().dispatchEvent(evt);
+
+        //  Make sure to empty the list of elements that were refreshed so that
+        //  we start fresh when bindings are refreshed again.
+        refreshedElements.empty();
+    }
 
     return this;
 });
