@@ -1069,9 +1069,17 @@ function() {
 
     TP.uri.URI.instances.perform(
             function(item) {
-                var loc;
+                var uri,
+                    loc;
 
-                if (!item.last().isDirty()) {
+                uri = item.last();
+                if (!uri.isDirty()) {
+                    return;
+                }
+
+                //  We only display URLs (and not TIBETURLs)
+                if (!TP.isKindOf(uri, TP.uri.URL) ||
+                    TP.isKindOf(uri, TP.uri.TIBETURL)) {
                     return;
                 }
 
