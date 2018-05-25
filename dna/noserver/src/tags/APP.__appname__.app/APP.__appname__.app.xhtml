@@ -1,26 +1,34 @@
 <{{appname}}:app xmlns:{{appname}}="urn:app:{{appname}}" id="app">
 
-    <h1 class="hello">
-        Welcome to your new TIBET application!
-    </h1>
+    <header>
+    </header>
 
-    <div class="startup">
-        \{{:if TP.has.sherpa}}
-        <p><a href="#" onclick="TP.signal(null, 'ToggleSherpa'); return false">Activate the TIBET Sherpa&#8482;</a> to begin your development cycle.</p>
-        \{{/:if}}
+    <nav/>
 
-        <p class="hint">\{{:if TP.has.sherpa}}Click the link above or use\{{:else}}Use \{{/:if}} <code>Alt-UpArrow</code> to toggle the \{{:if TP.has.sherpa}}Sherpa\{{:else}}boot log\{{/:if}}.</p>
+    <main>
+        <h1 class="hello">
+            Welcome to your new TIBET application!
+        </h1>
 
-        <p>This content is found in your application's "app tag" template:</p>
-        \{{:if TP.has.sherpa}}
-        <p>Edit the xhtml template in <a href="#" onclick="TP.sherpa.IDE.hasStarted() ? TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':inspect ~app_tags/APP.{{appname}}.app/APP.{{appname}}.app.xhtml') : 0; return false">public/src/tags/APP.{{appname}}.app</a> to get started.</p>
-        \{{:else}}
-        <p>Edit the xhtml template in <code>public/src/tags/APP.{{appname}}.app</code> to get started.</p>
-        \{{/:if}}
+        <div class="startup">
+            \{{:if TP.has.sherpa}}
+            <p><a href="#" onclick="TP.signal(null, 'ToggleSherpa'); return false">Activate the TIBET Sherpa&#8482;</a> to begin your development cycle.</p>
+            \{{/:if}}
 
-        <br/><br/>
-        <p>For a tutorial introduction see the <a target="_blank" href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.
+            <p class="hint">\{{:if TP.has.sherpa}}Click the link above or use\{{:else}}Use \{{/:if}} <code>Alt-UpArrow</code> to toggle the \{{:if TP.has.sherpa}}Sherpa\{{:else}}boot log\{{/:if}}.</p>
+
+            <p>This content is found in your application's "app tag" template:</p>
+            \{{:if TP.has.sherpa}}
+            <p>Edit the xhtml template in <a href="#" onclick="TP.sherpa.IDE.hasStarted() ? TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':inspect ~app_tags/APP.{{appname}}.app/APP.{{appname}}.app.xhtml') : 0; return false">public/src/tags/APP.{{appname}}.app</a> to get started.</p>
+            \{{:else}}
+            <p>Edit the xhtml template in <code>public/src/tags/APP.{{appname}}.app</code> to get started.</p>
+            \{{/:if}}
+        </div>
+    </main>
+
+    <footer>
+        <p class="info">For a tutorial introduction see the <a target="_blank" href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.
         </p>
-    </div>
+    </footer>
 
 </{{appname}}:app>

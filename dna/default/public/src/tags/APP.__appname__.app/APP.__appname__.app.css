@@ -11,10 +11,35 @@
  * <{{appname}}:app/> form) use rules of this form:
  */
 {{appname}}|app {
-    display: block;
-    position: absolute;
-    height: 100%;
+    display: grid;
+
     width: 100%;
-    margin: 0;
-    padding: 0;
+    height: 100%;
+
+    grid-template-rows: 50px auto 50px;
+    grid-template-columns: minmax(200px, 2fr) 10fr;
+    grid-template-areas:
+        "header header"
+        "nav    main"
+        "nav    footer";
+}
+
+{{appname}}|app > * {
+    outline: solid 1px black;
+}
+
+{{appname}}|app > header {
+    grid-area: header;
+}
+
+{{appname}}|app > nav {
+    grid-area: nav;
+}
+
+{{appname}}|app > main {
+    grid-area: main;
+}
+
+{{appname}}|app > footer {
+    grid-area: footer;
 }
