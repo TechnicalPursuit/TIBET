@@ -12900,6 +12900,10 @@ function(aSignal) {
                 //  'unique query' cache-busting string from it).
                 val = TP.uriRemoveUniqueQuery(attrURI.getLocation());
 
+                //  Make sure to reset the URI reference here - we want the
+                //  original URI in attrURI, not the one with any unique query.
+                attrURI = TP.uc(val);
+
                 //  If that value equals the location that changed, call the
                 //  proper messaging machinery.
                 if (val === originLocation) {
