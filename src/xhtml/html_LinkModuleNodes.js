@@ -129,17 +129,21 @@ function(aRequest) {
     handlerFunc =
         function() {
 
-            var stylesheet,
+            var tpElem,
+
+                stylesheet,
 
                 mainURI,
                 mainDependents,
 
                 importHrefs,
 
-                tpElem;
+                watchingChanges;
 
             //  Remove this handler to avoid memory leaks.
             elem.removeEventListener('load', handlerFunc, false);
+
+            tpElem = TP.wrap(elem);
 
             //  Grab the stylesheet from the element.
             stylesheet = TP.cssElementGetStyleSheet(elem);
@@ -158,14 +162,14 @@ function(aRequest) {
                     mainURI.set('dependentURIs', mainDependents);
                 }
 
-                tpElem = TP.wrap(elem);
+                //  Grab any hrefs from @import statements in the stylesheet
+                //  and, if we're watching remote changes, register ourself as
+                //  observer on them. This will mean that this element will not
+                //  only observe changes to the URI computed from it's 'href'
+                //  attribute, but from all of the @imports referenced
+                //  (recursively) in the sheet for that href.
 
-                //  Grab any hrefs from @import statements in the stylesheet and
-                //  register ourself as observer on them. This will mean that
-                //  this element will not only observe changes to the URI
-                //  computed from it's 'href' attribute, but from all of the
-                //  @imports referenced (recursively) in the sheet for that
-                //  href.
+                watchingChanges = TP.sys.cfg('uri.watch_remote_changes');
 
                 //  Note that this method, by default, will recursively retrieve
                 //  @import hrefs.
@@ -174,10 +178,16 @@ function(aRequest) {
                     function(anHref) {
                         var uri;
 
+                        //  NB: Note that we intern the URI one way or another,
+                        //  whether we're going to watch it or not. This is
+                        //  important.
                         uri = TP.uc(anHref);
+
                         if (TP.isURI(uri)) {
-                            tpElem.observe(uri, 'TP.sig.ValueChange');
-                            uri.watch();
+                            if (watchingChanges) {
+                                tpElem.observe(uri, 'TP.sig.ValueChange');
+                                uri.watch();
+                            }
 
                             //  Track the dependents for the main URI by adding
                             //  this @import URI to its list.
@@ -190,7 +200,7 @@ function(aRequest) {
             //  that dispatch this when their 'dynamic content' is resolved.
             //  Note that we use 'dispatch()' here because this is a DOM signal
             //  and we want all of the characteristics of a DOM signal.
-            TP.wrap(elem).dispatch('TP.sig.DOMReady');
+            tpElem.dispatch('TP.sig.DOMReady');
         };
 
     elem.addEventListener('load', handlerFunc, false);
