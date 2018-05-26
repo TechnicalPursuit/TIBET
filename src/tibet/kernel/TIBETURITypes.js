@@ -1202,6 +1202,9 @@ TP.uri.URI.Inst.defineAttribute('computedMIMEType');
 //  the controller instance for this instance
 TP.uri.URI.Inst.defineAttribute('controller');
 
+//  other URIs that depend on this one (used for reloading, etc.)
+TP.uri.URI.Inst.defineAttribute('dependentURIs');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------

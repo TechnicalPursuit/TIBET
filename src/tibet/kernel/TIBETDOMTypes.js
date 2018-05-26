@@ -12863,7 +12863,12 @@ function(aSignal) {
 
         val,
 
-        methodName;
+        methodName,
+
+        dependentURIs,
+        lenj,
+        j,
+        dependentVal;
 
     //  Grab the signal origin - for changes to observed URI resources (see the
     //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
@@ -12917,6 +12922,30 @@ function(aSignal) {
                     if (TP.canInvoke(this, methodName)) {
                         this[methodName](val);
                         break;
+                    }
+                } else if (TP.notEmpty(dependentURIs =
+                                        attrURI.get('dependentURIs'))) {
+
+                    //  If the URI represented by the attribute value has
+                    //  'dependent URIs' (it may point to a CSS stylesheet that
+                    //  had @imports in it - those @import URIs are dependent
+                    //  URIs), then check them against the origin location and
+                    //  process them as well, if necessary.
+                    lenj = dependentURIs.getSize();
+                    for (j = 0; j < lenj; j++) {
+
+                        dependentVal = TP.uriRemoveUniqueQuery(
+                                dependentURIs.at(j).getLocation());
+
+                        if (dependentVal === originLocation) {
+                            methodName = this.computeAttrMethodName(
+                                                'reloadFromAttr', attrName);
+
+                            if (TP.canInvoke(this, methodName)) {
+                                this[methodName](val);
+                                break;
+                            }
+                        }
                     }
                 }
             }
