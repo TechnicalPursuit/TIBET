@@ -130,7 +130,13 @@ function(aRequest) {
         function() {
 
             var stylesheet,
-                importHrefs;
+
+                mainURI,
+                mainDependents,
+
+                importHrefs,
+
+                tpElem;
 
             //  Remove this handler to avoid memory leaks.
             elem.removeEventListener('load', handlerFunc, false);
@@ -141,20 +147,42 @@ function(aRequest) {
             //  If we have a valid CSSStyleSheet object
             if (TP.isValid(stylesheet)) {
 
-                //  Intern the stylesheet's href as a TP.uri.URI. Note that we
-                //  don't care about the return value here - we're simply
-                //  interested in having a URI object matching the href here.
-                TP.uc(stylesheet.href);
+                //  Grab the stylesheet's href as a TP.uri.URI and any dependent
+                //  URIs it may have.
+                mainURI = TP.uc(stylesheet.href);
+                mainDependents = mainURI.get('dependentURIs');
+
+                //  Make sure the URI has a dependents list.
+                if (TP.notValid(mainDependents)) {
+                    mainDependents = TP.ac();
+                    mainURI.set('dependentURIs', mainDependents);
+                }
+
+                tpElem = TP.wrap(elem);
 
                 //  Grab any hrefs from @import statements in the stylesheet and
-                //  create instances of TP.uri.URIs from them as well. Again,
-                //  we're not interested in the return values here. Note that
-                //  this method, by default, will recursively retrieve @import
-                //  hrefs.
+                //  register ourself as observer on them. This will mean that
+                //  this element will not only observe changes to the URI
+                //  computed from it's 'href' attribute, but from all of the
+                //  @imports referenced (recursively) in the sheet for that
+                //  href.
+
+                //  Note that this method, by default, will recursively retrieve
+                //  @import hrefs.
                 importHrefs = TP.styleSheetGetImportHrefs(stylesheet);
                 importHrefs.forEach(
                     function(anHref) {
-                        TP.uc(anHref);
+                        var uri;
+
+                        uri = TP.uc(anHref);
+                        if (TP.isURI(uri)) {
+                            tpElem.observe(uri, 'TP.sig.ValueChange');
+                            uri.watch();
+
+                            //  Track the dependents for the main URI by adding
+                            //  this @import URI to its list.
+                            mainDependents.push(uri);
+                        }
                     });
             }
 
