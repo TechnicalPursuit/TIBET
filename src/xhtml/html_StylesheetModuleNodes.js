@@ -154,7 +154,7 @@ function(aRequest) {
             }
 
             //  If the element doesn't have a 'dependsOn' attribute (and,
-            //  therefore, doesn't have other resources (usually @imports that
+            //  therefore, doesn't have other resources - usually @imports that
             //  it's waiting on and are being processed separately), dispatch
             //  'TP.sig.DOMReady'. This provides for consistency with other
             //  elements that dispatch this when their 'dynamic content' is
