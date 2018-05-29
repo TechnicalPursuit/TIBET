@@ -17,7 +17,6 @@
 TP.sherpa.TemplatedTag.defineSubtype('uriEditorToolbarContent');
 
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('$editor');
-TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('$editorURI');
 
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('applyButton',
     TP.cpc('> button[action="apply"]', TP.hc('shouldCollapse', true)));
@@ -150,7 +149,7 @@ function() {
     }
 
     isDirty = editorTPElem.isSourceDirty();
-    if (isDirty && TP.isKindOf(this.get('$editorURI'), TP.uri.URL)) {
+    if (isDirty && TP.isKindOf(editorTPElem.get('sourceURI'), TP.uri.URL)) {
         this.get('pushButton').removeAttribute('disabled');
         this.get('refreshButton').removeAttribute('disabled');
     } else {
@@ -172,8 +171,7 @@ function() {
      * @returns {TP.sherpa.uriEditorToolbarContent} The receiver.
      */
 
-    var editorTPElem,
-        uri;
+    var editorTPElem;
 
     //  If the editor is set here, maybe because this toolbar was already in use
     //  someplace. In any case, we want to ignore signals from it before we
@@ -189,14 +187,9 @@ function() {
                             this.getNativeDocument());
     this.$set('$editor', editorTPElem, false);
 
-    uri = editorTPElem.get('sourceURI');
-    this.$set('$editorURI', uri);
-
     this.observe(editorTPElem, 'DirtyChange');
 
-    if (TP.isURI(this.get('sourceURI'))) {
-        this.refreshControls();
-    }
+    this.refreshControls();
 
     return this;
 });
