@@ -4319,6 +4319,23 @@ function(varargs) {
 
 //  ------------------------------------------------------------------------
 
+String.Inst.defineMethod('asCleanString',
+function() {
+
+    /**
+     * @method asCleanString
+     * @summary Returns the 'clean' string representation of the receiver.
+     *     This may have transformations in it to 'clean' the String, such as
+     *     removing unnecessary namespace definitions, etc. For this type, it
+     *     just returns the receiver itself.
+     * @returns {String} The receiver in clean string form.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 String.Inst.defineMethod('asHash',
 function() {
 
