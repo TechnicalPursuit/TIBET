@@ -134,7 +134,12 @@ function(aSignal) {
         return this;
     }
 
+    //  Grab the halo and make sure it's focused. If not, we just bail out here.
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    if (!halo.isFocused()) {
+        return this;
+    }
+
     haloTarget = halo.get('currentTargetTPElem');
 
     this.focusOnTarget(haloTarget);
