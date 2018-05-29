@@ -1538,6 +1538,24 @@ function(beHidden) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineMethod('setCurrentTargetTPElem',
+function(aTPElem) {
+
+    /**
+     * @method setCurrentTargetTPElem
+     * @summary Sets the current target element.
+     * @param {TP.dom.ElementNode} aTPElem The element to set the current target
+     *     to.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    this.$set('currentTargetTPElem', aTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineMethod('setup',
 function() {
 
