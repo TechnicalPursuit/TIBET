@@ -735,7 +735,10 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var recastTPNode;
+    var wasFocused,
+        recastTPNode;
+
+    wasFocused = this.isFocused();
 
     //  Blur ourself. This will remove any focusing that might exist on previous
     //  DOM content that is now gone. Note that we do *not* check here whether
@@ -743,15 +746,14 @@ function(aSignal) {
     //  content - it's probably gone now anyway.
     this.blur();
 
-    //  See if we can get a recasting target from the signal. If so, and it's a
-    //  type of TP.dom.Node, then focus ourself on it.
-    recastTPNode = aSignal.at('recastTarget');
-    if (TP.isKindOf(recastTPNode, TP.dom.Node)) {
-        if (recastTPNode.haloCanFocus(this)) {
-            this.focusOn(recastTPNode);
-        } else {
-            //  This will 'hide' the halo.
-            this.setAttribute('hidden', true);
+    //  If we were focused, see if we can get a recasting target from the
+    //  signal. If so, and it's a type of TP.dom.Node, then focus ourself on it.
+    if (wasFocused) {
+        recastTPNode = aSignal.at('recastTarget');
+        if (TP.isKindOf(recastTPNode, TP.dom.Node)) {
+            if (recastTPNode.haloCanFocus(this)) {
+                this.focusOn(recastTPNode);
+            }
         }
     }
 
