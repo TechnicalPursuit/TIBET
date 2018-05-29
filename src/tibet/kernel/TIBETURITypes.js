@@ -6688,6 +6688,9 @@ function() {
             url.isLoaded(true);
         }
 
+        //  Set the URL to not be dirty.
+        url.isDirty(false);
+
         //  Is the changed location one of our loaded package files? If so we
         //  need to process it as a package, not a random file or script.
         if (TP.boot.$getLoadedPackages().contains(normalizedLoc)) {
