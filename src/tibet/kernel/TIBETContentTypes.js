@@ -1133,14 +1133,24 @@ function(aDataObject, shouldSignal) {
     //  NB: We use '$get()' here because we want access to the real underlying
     //  object - subtypes and local objects might have reprogrammed 'getData()'
     //  to return other objects or have special handling logic.
-    if (TP.isValid(oldDataObject = this.$get('data'))) {
+    oldDataObject = this.$get('data');
+    if (TP.isValid(oldDataObject) && TP.isMutable(oldDataObject)) {
         this.ignore(oldDataObject, 'Change');
     }
 
     this.$set('data', aDataObject, false);
 
+    //  If the data object is mutable, then we observe it for change. NOTE: This
+    //  will also 'turn on' change signaling for this object. That way, change
+    //  signals will propagate 'up' from the data object, through us, to
+    //  observers.
     if (TP.isMutable(aDataObject)) {
         this.observe(aDataObject, 'Change');
+    } else {
+        //  Otherwise, we manually turn on change signaling for this object.
+        //  That way, change signals from our swapping out the non-mutable
+        //  object that is our data will still inform any objects observing us.
+        this.shouldSignalChange(true);
     }
 
     if (TP.notFalse(shouldSignal)) {
