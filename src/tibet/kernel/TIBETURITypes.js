@@ -4063,15 +4063,18 @@ function(aRequest, aResult, aResource) {
                     TP.INHERITANCE_FIRING,
                     TP.sig.ValueChange);
 
-        //  Since we won't have broadcast a 'dirty' change above when we set the
-        //  content (due to the ignore/observe shuffle), we go ahead and send it
-        //  here if the flag has changed.
-        if (isDirty !== wasDirty) {
-            TP.$changed.call(
-                        this,
-                        'dirty',
-                        TP.UPDATE,
-                        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
+        //  If the result isn't a TP.core.Content, then since we won't have
+        //  broadcast a 'dirty' change above when we set the content (due to the
+        //  ignore/observe shuffle), we go ahead and send it here if the flag
+        //  has changed. If the result is a TP.core.Content, then it will send a
+        //  dirty from us when it changes.
+        if (!TP.isKindOf(result, TP.core.Content) &&
+            isDirty !== wasDirty) {
+                TP.$changed.call(
+                            this,
+                            'dirty',
+                            TP.UPDATE,
+                            TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
         }
 
         //  We set the content of the object that we're holding as our resource
