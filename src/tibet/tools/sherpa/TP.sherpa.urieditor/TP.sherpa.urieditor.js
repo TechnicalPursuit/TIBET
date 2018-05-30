@@ -353,10 +353,12 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    this.render();
+    if (this.get('$changingSourceContent')) {
+        return this;
+    }
 
-    //  Update the editor's state, including its dirty state.
-    this.updateEditorState();
+    //  NB: render could be an asynchronous operation
+    this.render();
 
     return this;
 });
@@ -509,7 +511,15 @@ function() {
      *     'dirty'.
      */
 
-    return this.get('sourceURI').isDirty();
+    var uri;
+
+    uri = this.get('sourceURI');
+
+    if (TP.isURI(uri)) {
+        return uri.isDirty();
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -669,11 +679,14 @@ function() {
     //  strange recursions, etc.
     this.set('$changingSourceContent', true);
 
-    //  Grab our source URI's resource. Note that this may be an asynchronous
-    //  fetch. Note also that we specify that we want the result wrapped in some
-    //  sort of TP.core.Content instance.
+    //  Grab our source URI's resource. Note that we *always* configure this to
+    //  be an asynchronous fetch due to the fact that, we're *not* refreshing
+    //  from the server, but we may change the result higher 'up' in the stack
+    //  and we want the result provided to the then() to be the latest. Note
+    //  also that we specify that we want the result wrapped in some sort of
+    //  TP.core.Content instance.
 
-    getParams = TP.hc('resultType', TP.core.Content);
+    getParams = TP.hc('resultType', TP.core.Content, 'async', true);
 
     //  If any extra load headers were configured on ourself as an attribute,
     //  then they'll be in this instance variable. Add them to the get
@@ -769,15 +782,17 @@ function() {
             themeName = TP.sys.cfg('sherpa.rich_input_theme', 'dawn');
             editor.setEditorTheme('ace/theme/' + themeName);
 
+            editor.unsetEditorEventHandler('change', this.get('changeHandler'));
             editor.setValue(sourceStr);
+            editor.setEditorEventHandler('change', this.get('changeHandler'));
 
             //  Initialize our local copy of the content with the source String
             //  and set the dirty flag to false.
             this.set('localSourceContent', sourceStr);
-            this.isDirty(false);
 
             //  Update the editor's state, including its dirty state.
-            this.updateEditorState();
+            this.isDirty(false);
+            this.changed('dirty', TP.UPDATE);
 
             /* eslint-disable no-extra-parens */
             (function() {
@@ -848,15 +863,23 @@ function(shouldRefresh) {
     //  position back to 0,0.
     //  editor.captureCurrentScrollInfo();
 
-    //  Grab our source URI's resource. Note that this may be an asynchronous
-    //  fetch. Note also that we specify that we want the result wrapped in some
-    //  sort of TP.core.Content instance.
+    //  If we're refreshing from the server, then just configure the get
+    //  parameters that way.
+    if (refresh) {
+        getParams = TP.hc('resultType', TP.core.Content, 'refresh', true);
+    } else {
+        //  Grab our source URI's resource. Note that we *always* configure this
+        //  to be an asynchronous fetch due to the fact that, we're *not*
+        //  refreshing from the server, but we may change the result higher 'up'
+        //  in the stack and we want the result provided to the then() to be the
+        //  latest. Note also that we specify that we want the result wrapped in
+        //  some sort of TP.core.Content instance.
+        getParams = TP.hc('resultType', TP.core.Content, 'async', true);
+    }
 
-    getParams = TP.hc('resultType', TP.core.Content, 'refresh', refresh);
-
-    //  If any extra load headers were configured on ourself as an attribute,
-    //  then they'll be in this instance variable. Add them to the get
-    //  parameters.
+    //  If any extra load headers were configured on ourself as an
+    //  attribute, then they'll be in this instance variable. Add them to
+    //  the get parameters.
     extraHeaders = this.get('extraLoadHeaders');
     if (TP.notEmpty(extraHeaders)) {
         getParams.addAll(extraHeaders);
@@ -904,31 +927,30 @@ function(shouldRefresh) {
 
                 this.isDirty(false);
 
-                //  Update the editor's state, including its dirty state.
-                this.updateEditorState();
-
                 return this;
             }
+
+            editor.unsetEditorEventHandler('change', this.get('changeHandler'));
+            editor.setValue(sourceStr);
+            editor.setEditorEventHandler('change', this.get('changeHandler'));
 
             //  Initialize our local copy of the content with the source String
             //  and set the dirty flag to false.
             this.set('localSourceContent', sourceStr);
-            this.isDirty(false);
 
             //  Update the editor's state, including its dirty state.
-            this.updateEditorState();
-
-            editor.setValue(sourceStr);
+            this.isDirty(false);
+            this.changed('dirty', TP.UPDATE);
 
             /* eslint-disable no-extra-parens */
             (function() {
-
+                editor.focus();
                 //  editor.scrollUsingLastScrollInfo();
 
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');
 
-            }).queueForNextRepaint(this.getNativeWindow());
+            }.bind(this)).queueForNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
         }.bind(this),
         function(error) {
