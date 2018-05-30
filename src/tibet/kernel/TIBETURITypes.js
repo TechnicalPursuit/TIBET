@@ -5961,10 +5961,22 @@ function(aRequest, filterResult) {
         //  request mode on us.
         async = this.rewriteRequestMode(subrequest);
     } else {
-        resource = this.$get('resource');
 
-        //  Fake completion of the subrequest and related request.
-        subrequest.complete(resource);
+        if (!async) {
+            resource = this.$get('resource');
+
+            //  Fake completion of the subrequest and related request.
+            subrequest.complete(resource);
+        } else {
+            setTimeout(function() {
+                resource = this.$get('resource');
+
+                //  Fake completion of the subrequest and related request.
+                subrequest.complete(resource);
+            }.bind(this), TP.sys.cfg('fork.delay'));
+        }
+
+        return subrequest.getResponse();
     }
 
     if (async) {
