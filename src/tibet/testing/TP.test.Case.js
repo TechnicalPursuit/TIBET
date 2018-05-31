@@ -286,7 +286,7 @@ function() {
      *     circular reference to eventually occur. Used by asString/asSource to
      *     allow certain types to avoid circular reference issues when
      *     producing simple string representations.
-     * @returns {Array.<String>} For test cases the 'suite' key can be circular.
+     * @returns {String[]} For test cases the 'suite' key can be circular.
      */
 
     //  The test suite will refer to case lists. The 'assert' and 'refute'

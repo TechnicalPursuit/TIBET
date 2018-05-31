@@ -325,8 +325,7 @@ function(aNodeOrId) {
      *     value of the type attribute.
      * @param {Node|String} aNodeOrId The native node to wrap or an ID used to
      *     locate it.
-     * @returns {TP.lang.RootObject.<TP.html.object>} A TP.html.object subtype
-     *     type object.
+     * @returns {TP.meta.html.object} A TP.html.object subtype type object.
      */
 
     var typeName,

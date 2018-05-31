@@ -1659,7 +1659,7 @@ function(anElement, anEvent) {
      * @param {Event} anEvent The native event object.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidEvent
-     * @returns {Array.<Object>} An array of elements and objects.
+     * @returns {Object[]} An array of elements and objects.
      */
 
     var originArray,

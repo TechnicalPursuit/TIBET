@@ -591,7 +591,7 @@ function(options) {
      *     names. Test suite names matching method names serve as tests for that
      *     method.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Array.<String>} An array of method names without tests.
+     * @returns {String[]} An array of method names without tests.
      */
 
     var methods,

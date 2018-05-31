@@ -345,7 +345,7 @@ function(initialState, targetState, transitionDetails) {
      *     Defaults to null since final states may not have target states.
      * @param {TP.core.Hash} [transitionDetails] A hash containing details on
      *     the transition such as triggers and nested machine activation.
-     * @param {String|Array.<String>} [transitionDetails.signal]
+     * @param {String|String[]} [transitionDetails.signal]
      * @param {TP.core.StateMachine|String} [transitionDetails.nested]. The type
      *     name for a nested state machine, or the state machine itself.
      */
@@ -1582,7 +1582,7 @@ function() {
     /**
      * @method getStateMachines
      * @summary Returns the receiver's list of state machines.
-     * @returns {Array.<TP.core.StateMachine>} The list of state machines.
+     * @returns {TP.core.StateMachine[]} The list of state machines.
      */
 
     var machines;
@@ -1632,7 +1632,7 @@ function(anArray) {
      * @method setInputStates
      * @summary Sets an explicit array of input states, states in which the
      *     responder will receive input signals or input-phase trigger signals.
-     * @param {Array.<String>} anArray The array of input states.
+     * @param {String[]} anArray The array of input states.
      * @returns {TP.core.StateResponder} The receiver.
      */
 

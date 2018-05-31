@@ -577,8 +577,7 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
-     *     object.
+     * @returns {TP.meta.dom.Node} A TP.dom.Node subtype type object.
      */
 
     if (!TP.isNode(aNode)) {
@@ -3367,8 +3366,7 @@ function(aNode) {
      *     node provided.
      * @param {Node} aNode The native node to test.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
-     *     object.
+     * @returns {TP.meta.dom.Node} A TP.dom.Node subtype type object.
      */
 
     return TP.dom.Node.getConcreteType(aNode);
@@ -10246,8 +10244,8 @@ function(aNode) {
      *     'info' hash to see if there is a 'defaultNodeType' name registered
      *     under that namespace and attempts to obtain a matching type.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.dom.ElementNode>} A TP.dom.ElementNode
-     *     subtype type object.
+     * @returns {TP.meta.dom.ElementNode} A TP.dom.ElementNode subtype type
+     *     object.
      */
 
     var name,
@@ -14949,8 +14947,8 @@ function(aNode) {
      *     TP.dom.AttributeNode itself. The lookup process calculates a type
      *     name by acquiring the attribute's 'full name' (it's prefix + local
      *     name), and looking up a type based on that.
-     * @returns {TP.lang.RootObject.<TP.dom.AttributeNode>} A
-     *     TP.dom.AttributeNode subtype type object.
+     * @returns {TP.meta.dom.AttributeNode} A TP.dom.AttributeNode subtype type
+     *     object.
      */
 
     var name,
@@ -15224,7 +15222,7 @@ function(aNode) {
      *     punctuation. It then uses that name with a suffix of 'PINode'. For
      *     example, a PI of the form '<?tibet-stylesheet?>' will search for
      *     TP.dom.TibetStylesheetPINode.
-     * @returns {TP.lang.RootObject.<TP.dom.ProcessingInstructionNode>} A
+     * @returns {TP.meta.dom.ProcessingInstructionNode} A
      *     TP.dom.ProcessingInstructionNode subtype type object.
      */
 
@@ -15490,8 +15488,8 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided. In this case
      *     the node is always some form of Document node (type 9).
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.dom.DocumentNode>} A
-     *     TP.dom.DocumentNode subtype type object.
+     * @returns {TP.meta.dom.DocumentNode} A TP.dom.DocumentNode subtype type
+     *     object.
      */
 
     var mime,
@@ -15749,8 +15747,8 @@ function() {
      * @method getDocumentElementType
      * @summary Returns the Type object that TIBET would use to wrap the
      *     receiver's root element as a TP.dom.ElementNode.
-     * @returns {TP.lang.RootObject.<TP.dom.ElementNode>} A TP.dom.ElementNode
-     *     subtype type object.
+     * @returns {TP.meta.dom.ElementNode} A TP.dom.ElementNode subtype type
+     *     object.
      */
 
     return TP.dom.ElementNode.getConcreteType(

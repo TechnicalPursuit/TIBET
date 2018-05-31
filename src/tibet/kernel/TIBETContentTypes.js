@@ -3522,8 +3522,8 @@ function(aPath) {
      * @summary Returns the type to use for a particular access path.
      * @param {String} aPath A path string from which the subtype will be
      *     determined.
-     * @returns {TP.lang.RootObject.<TP.path.AccessPath>} A TP.path.AccessPath
-     *     subtype type object.
+     * @returns {TP.meta.path.AccessPath} A TP.path.AccessPath subtype type
+     *     object.
      */
 
     var path;

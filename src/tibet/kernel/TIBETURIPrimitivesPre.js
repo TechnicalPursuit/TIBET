@@ -400,7 +400,7 @@ function(aURI, textOnly) {
      * @param {String|TP.uri.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just text parameter strings
      *     rather than objects in the result object.
-     * @returns {Object.<String, String>} The URI parts in key/value form.
+     * @returns {TP.core.Hash} The URI parts in key/value form.
      */
 
     var url,

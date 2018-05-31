@@ -693,8 +693,8 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
      * @exception {TP.sig.TypeNotFound}
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object or a type object conforming to that interface.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     or a type object conforming to that interface.
      */
 
     var tname,
@@ -878,8 +878,8 @@ function(aURI, aRequest) {
      * @param {TP.uri.URI|String} aURI The URI to map.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object that can handle the request for the supplied URI.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     that can handle the request for the supplied URI.
      */
 
     var mapper,
@@ -1949,8 +1949,8 @@ function(aRequest) {
      *     which defaults to TP.uri.URIHandler.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the handler assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object or a type object conforming to that interface.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     or a type object conforming to that interface.
      */
 
     return this.getType().$getDefaultHandler(this, aRequest);
@@ -3399,8 +3399,8 @@ function(aRequest) {
      *     that the handler is appropriate for the concrete URI being accessed.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object that can handle the request for the supplied URI.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     that can handle the request for the supplied URI.
      */
 
     return this.getType().remap(this, aRequest);
@@ -6884,8 +6884,8 @@ function(aURI, aRequest) {
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object or a type object conforming to that interface.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     or a type object conforming to that interface.
      */
 
     return TP.uri.FileURLHandler;
@@ -7183,8 +7183,8 @@ function(aURI, aRequest) {
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object or a type object conforming to that interface.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     or a type object conforming to that interface.
      */
 
     var tname,
@@ -7476,8 +7476,8 @@ function(aURI, aRequest) {
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object or a type object conforming to that interface.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     or a type object conforming to that interface.
      */
 
     var tname,
@@ -9217,7 +9217,7 @@ function() {
     /**
      * @method getURIParts
      * @summary Returns the URI in split form.
-     * @returns {Array.<String>} The split parts.
+     * @returns {String[]} The split parts.
      */
 
     var parts,
@@ -10040,8 +10040,8 @@ function(aURI, aRequest) {
      * @param {TP.uri.URI} aURI The URI to map the request for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object that can handle the request for the supplied URI.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type object
+     *     that can handle the request for the supplied URI.
      */
 
     var uri,

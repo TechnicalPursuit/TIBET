@@ -102,8 +102,7 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.xmpp.Node>} A TP.xmpp.Node subtype type
-     *     object.
+     * @returns {TP.meta.xmpp.Node} A TP.xmpp.Node subtype type object.
      */
 
     var stanzaType,

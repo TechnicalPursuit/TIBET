@@ -1972,8 +1972,8 @@ function(aDocument) {
      * @param {Document} aDocument The document to register a Mutation Observer
      *     on.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.sig.MutationSignalSource>} The
-     *     MutationSignalSource type.
+     * @returns {TP.meta.sig.MutationSignalSource} The MutationSignalSource
+     *     type.
      */
 
     var method,
@@ -2208,8 +2208,8 @@ function(aDocument) {
      * @param {Document} aDocument The document to remove a Mutation Observer
      *     from.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.sig.MutationSignalSource>} The
-     *     MutationSignalSource type.
+     * @returns {TP.meta.sig.MutationSignalSource} The MutationSignalSource
+     *     type.
      */
 
     TP.removeMutationObserver('DOCUMENT_OBSERVER_' + TP.gid(aDocument));
@@ -2228,8 +2228,8 @@ function(aMutationRecord) {
      * @summary Responds to notifications that a mutation has occurred.
      * @param {MutationRecord} aMutationRecord The incoming mutation record.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.sig.MutationSignalSource>} The
-     *     MutationSignalSource type.
+     * @returns {TP.meta.sig.MutationSignalSource} The MutationSignalSource
+     *     type.
      */
 
     var targetNode,

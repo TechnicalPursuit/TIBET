@@ -86,9 +86,8 @@ function(docTypeInfo) {
      * @param {TP.core.Hash} docTypeInfo The document type information. The keys
      *     needed to match are 'docTypeName' and 'publicID'.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.lang.RootObject.<TP.w3.DocType>} A TP.w3.DocType subtype
-     *     type object matching the info in docTypeInfo or null if one can't be
-     *     found.
+     * @returns {TP.meta.w3.DocType} A TP.w3.DocType subtype type object
+     *     matching the info in docTypeInfo or null if one can't be found.
      */
 
     var foundItem;
@@ -836,8 +835,7 @@ function(aMIMEType) {
      *     formats. For this to work properly TIBET has to properly discern the
      *     MIME type for the content. See getMIMEType() for more information.
      * @param {String} aMIMEType The MIME type to return a wrapper type for.
-     * @returns {TP.lang.RootObject.<TP.ietf.mime>} A TP.ietf.mime subtype type
-     *     object.
+     * @returns {TP.meta.ietf.mime} A TP.ietf.mime subtype type object.
      */
 
     var info,
@@ -2186,8 +2184,8 @@ function(anNSURI) {
      *     URI is provided, if available.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
-     * @returns {TP.lang.RootObject.<TP.core.XMLNamespace>} A
-     *     TP.core.XMLNamespace subtype type object.
+     * @returns {TP.meta.core.XMLNamespace} A TP.core.XMLNamespace subtype type
+     *     object.
      */
 
     var info,
@@ -3100,8 +3098,8 @@ function(aURI, aRequest) {
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type
+     *     object.
      */
 
     return TP.core.Cookie;

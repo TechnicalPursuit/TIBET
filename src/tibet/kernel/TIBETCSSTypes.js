@@ -39,8 +39,8 @@ function(params) {
      * @summary Returns the type to use for a particular transition.
      * @param {TP.core.Hash} params A TP.core.Hash of the following job control
      *     parameters: delay, interval, limit, count, compute, freeze.
-     * @returns {TP.lang.RootObject.<TP.core.CSSProperty>} A TP.core.CSSProperty
-     *     subtype type object.
+     * @returns {TP.meta.core.CSSProperty} A TP.core.CSSProperty subtype type
+     *     object.
      */
 
     var propertyName;

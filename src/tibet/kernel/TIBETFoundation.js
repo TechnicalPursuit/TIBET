@@ -800,7 +800,7 @@ function() {
      *              line 5 back out
      *          line 6
      *          line 7
-     * @returns {Array.<String>} The comment lines in order from the comment.
+     * @returns {String[]} The comment lines in order from the comment.
      */
 
     var text,

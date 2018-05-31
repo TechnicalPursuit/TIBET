@@ -4,7 +4,7 @@
 
 /**
  * The chain of method names used to process 'expect' style queries
- * @type {Array.<String>}
+ * @type {String[]}
  */
 TP.lang.RootObject.Inst.defineAttribute('$$methodChainNames');
 

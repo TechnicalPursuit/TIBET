@@ -704,7 +704,7 @@ function(aDocument) {
      *     to loadKeyrings to acquire a keyrings document.
      * @param {Document} aDocument A TIBET keyrings document. See the
      *     documentation on TIBET Keyring files for more information.
-     * @returns {Array.<TP.tibet.keyring>} An array of keyring instances created.
+     * @returns {TP.tibet.keyring[]} An array of keyring instances created.
      */
 
     var keyrings,

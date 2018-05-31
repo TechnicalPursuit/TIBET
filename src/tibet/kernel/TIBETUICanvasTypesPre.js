@@ -635,8 +635,7 @@ function() {
      * @method getWindowType
      * @summary Returns the type object which should be used to construct new
      *     instances of OS window wrappers.
-     * @returns {TP.lang.RootObject.<TP.core.Window>} The TP.core.Window type
-     *     object.
+     * @returns {TP.meta.core.Window} The TP.core.Window type object.
      */
 
     return this.$get('defaultWindowType').asType();

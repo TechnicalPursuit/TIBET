@@ -201,7 +201,7 @@ TP.test.Suite.Inst.defineAttribute('beforeEvery');
 
 /**
  * The list of test cases embodied by the suite functions.
- * @type {Array.<TP.test.Case>}
+ * @type {TP.test.Case[]}
  */
 TP.test.Suite.Inst.defineAttribute('caseList');
 
@@ -245,7 +245,7 @@ TP.test.Suite.Inst.defineAttribute('suiteOwner');
 
 /**
  * List of individual suite functions registered under this suite name.
- * @type {Array.<Function>}
+ * @type {Function[]}
  */
 TP.test.Suite.Inst.defineAttribute('suiteList');
 
@@ -321,7 +321,7 @@ function(suiteFunc) {
      * @method addSuite
      * @summary Adds an additional suite function to the current test suite.
      * @param {Function} suiteFunc The test case-generating function.
-     * @returns {Array.<Function>} The updated list of suite functions.
+     * @returns {Function[]} The updated list of suite functions.
      */
 
     var suites;
@@ -785,7 +785,7 @@ function(options) {
      * @param {TP.core.Hash} options A dictionary of test options. For this
      *     method the relevant key is 'cases' which provides a string to match
      *     against case names as a simple filter.
-     * @returns {Array.<TP.test.Case>} The case list.
+     * @returns {TP.test.Case[]} The case list.
      */
 
     var cases,
@@ -896,7 +896,7 @@ function() {
      * @method getSuiteList
      * @summary Returns the list of define functions specific to this test
      *     suite.
-     * @returns {Array.<Function>} An array of suite 'describe' functions.
+     * @returns {Function[]} An array of suite 'describe' functions.
      */
 
     return this.$get('suiteList');

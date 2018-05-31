@@ -276,7 +276,7 @@ function(aName) {
 
 /**
  * The list of ancestors for the receiver. This is computed once and cached.
- * @type {Array.<TP.log.Nestable>}
+ * @type {TP.log.Nestable[]}
  */
 TP.log.Nestable.Inst.defineAttribute('ancestors');
 
@@ -285,7 +285,7 @@ TP.log.Nestable.Inst.defineAttribute('ancestors');
 /**
  * The list of ancestor names for the receiver. This is computed once and
  * cached.
- * @type {Array.<String>}
+ * @type {String[]}
  */
 TP.log.Nestable.Inst.defineAttribute('ancestorNames');
 
@@ -346,7 +346,7 @@ function() {
     /**
      * @method getAncestors
      * @summary Returns a list of all ancestor instances for the receiver.
-     * @returns {Array.<TP.log.Nestable>} The ancestor list.
+     * @returns {TP.log.Nestable[]} The ancestor list.
      */
 
     var ancestors,
@@ -377,7 +377,7 @@ function() {
     /**
      * @method getAncestorNames
      * @summary Returns a list of all ancestor instance names for the receiver.
-     * @returns {Array.<Strings>} The ancestor name list.
+     * @returns {String[]} The ancestor name list.
      */
 
     var str,
@@ -437,9 +437,9 @@ function() {
 //  ============================================================================
 
 /**
- * A trait intended to be leveraged by Logger and Appender which both rely on
- * filtering logic and TP.log.Filter instances.
  * @type {TP.log.Filtered}
+ * @summary A trait intended to be leveraged by Logger and Appender which both
+ *     rely onfiltering logic and TP.log.Filter instances.
  */
 TP.lang.Object.defineSubtype('log.Filtered');
 
@@ -453,7 +453,7 @@ TP.log.Filtered.isAbstract(true);
 
 /**
  * The instance's list of filters. Can be empty.
- @type {Array.<TP.log.Filter>}
+ * @type {TP.log.Filter[]}
  */
 TP.log.Filtered.Inst.defineAttribute('filters');
 
@@ -553,7 +553,7 @@ function() {
      * @method getFilters
      * @summary Returns an array of filters for the receiver. If the receiver
      *     inheritsFilters() the list includes all inherited filters.
-     * @returns {Array.<TP.log.Filter>} The filter list.
+     * @returns {TP.log.Filter[]} The filter list.
      */
 
     var filters;
@@ -799,7 +799,7 @@ TP.log.Logger.Inst.defineAttribute('additiveFilters', true);
 
 /**
  * The logger's list of appenders. Can be empty.
- @type {Array.<TP.log.Appender>}
+ @type {TP.log.Appender[]}
  */
 TP.log.Logger.Inst.defineAttribute('appenders');
 
@@ -818,7 +818,7 @@ TP.log.Logger.Inst.defineAttribute('buffered', false);
  * The logger's list of entries. This will only contain data if the logger has
  * been marked as either persistent or buffered. Both cases require the logger
  * to maintain entries.
- @type {Array.<TP.log.Entry>}
+ @type {TP.log.Entry[]}
  */
 TP.log.Logger.Inst.defineAttribute('entries');
 
@@ -929,7 +929,7 @@ function(localOnly) {
      *     inheritsAppenders() the list includes all inherited appenders.
      * @param {Boolean} [localOnly=false] True to avoid collecting inherited
      *     appenders.
-     * @returns {Array.<TP.log.Appender>} The appender list.
+     * @returns {TP.log.Appender[]} The appender list.
      */
 
     var appenders,
@@ -971,7 +971,7 @@ function(localOnly) {
      *     inheritsFilters() the list includes all inherited filters.
      * @param {Boolean} [localOnly=false] True to avoid collecting inherited
      *     appenders.
-     * @returns {Array.<TP.log.Filter>} The filter list.
+     * @returns {TP.log.Filter[]} The filter list.
      */
 
     var filters,
@@ -1564,7 +1564,7 @@ function() {
     /**
      * @method getArgList
      * @summary Returns the original arguments passed to the logging function.
-     * @returns {Array.<Object>} The argument list in array form.
+     * @returns {Object[]} The argument list in array form.
      */
 
     return this.$get('arglist');
@@ -1640,7 +1640,7 @@ function(aLogger, aLevel, arglist) {
      *     marker it must be the first item in the argument list to be used.
      * @param {TP.log.Logger} aLogger The logger responsible for this entry.
      * @param {TP.log.Level} aLevel The level this entry is relevant for.
-     * @param {Array.<Object>} arglist A list of all message items etc. provided
+     * @param {Object[]} arglist A list of all message items etc. provided
      *     to the initial logging method.
      * @returns {TP.log.Entry} The receiver.
      */
@@ -1784,7 +1784,7 @@ TP.lang.Object.defineSubtype('log.Level');
 
 /**
  * A dictionary of the level instances which have been created, by name.
- * @type {TP.core.Hash.<String, TP.log.Level>}
+ * @type {TP.core.Hash}
  */
 TP.log.Level.defineAttribute('levels', TP.hc());
 
@@ -2029,7 +2029,7 @@ TP.log.Nestable.defineSubtype('log.Marker');
 
 /**
  * A dictionary of the marker instances which have been created, by name.
- * @type {TP.core.Hash.<String, TP.log.Marker>}
+ * @type {TP.core.Hash}
  */
 TP.log.Marker.defineAttribute('markers', TP.hc());
 
@@ -2103,7 +2103,7 @@ function(aName) {
     /**
      * @method getMarkerNames
      * @summary Returns the list of all known marker names.
-     * @returns {Array.<String>} The marker name list.
+     * @returns {String[]} The marker name list.
      */
 
     return TP.log.Marker.markers.getKeys();
@@ -2145,7 +2145,7 @@ TP.lang.Object.defineSubtype('log.Timer');
 
 /**
  * A dictionary of all known timers.
- * @type {TP.core.Hash.<String, TP.log.Timer>}
+ * @type {TP.core.Hash}
  */
 TP.log.Timer.defineAttribute('timers', TP.hc());
 

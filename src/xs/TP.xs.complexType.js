@@ -28,8 +28,8 @@ function() {
      * @method defineType
      * @summary Defines a TIBET type from the XML Schema data found in the
      *     receiver's schema node.
-     * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaComplexCompositeType>} The
-     *     newly defined type (or the existing type if it already exists).
+     * @returns {TP.meta.xs.XMLSchemaComplexCompositeType} The newly defined
+     *     type (or the existing type if it already exists).
      */
 
     var elem,
@@ -71,8 +71,8 @@ function() {
      * @summary Returns a type that this object might be 'representing'. This
      *     is used in here to return the type that the receiver is describing to
      *     the system.
-     * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaComplexCompositeType>} The
-     *     type being represented by the receiver.
+     * @returns {TP.meta.xs.XMLSchemaComplexCompositeType} The type being
+     *     represented by the receiver.
      */
 
     var node,

@@ -46,8 +46,7 @@ function(iso) {
     /**
      * @method getLocale
      * @summary Return the current locale type.
-     * @returns {TP.lang.RootObject.<TP.i18n.Locale>} A TP.i18n.Locale subtype
-     *     type object.
+     * @returns {TP.meta.i18n.Locale} A TP.i18n.Locale subtype type object.
      */
 
     var locale;
@@ -74,8 +73,7 @@ function(aLocale) {
      * @method setLocale
      * @summary Sets the current locale, which is used by numerous types to
      *     provide localization support.
-     * @param {TP.lang.RootObject.<TP.i18n.Locale>} A TP.i18n.Locale subtype
-     *     type object.
+     * @param {TP.meta.i18n.Locale} A TP.i18n.Locale subtype type object.
      */
 
     var lang,
@@ -310,8 +308,7 @@ function(aLocaleID) {
      *     full four-character language code, such as en-us or fr-ca when
      *     possible, to ensure proper resolution.
      * @param {String} aLocaleID The language-country code to look up.
-     * @returns {TP.lang.RootObject.<TP.i18n.Locale>} A TP.i18n.Locale subtype
-     *     type object.
+     * @returns {TP.meta.i18n.Locale} A TP.i18n.Locale subtype type object.
      */
 
     var loc;

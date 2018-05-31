@@ -361,8 +361,7 @@ function(aTagName, aType, aNamespace) {
      *     TP.xmpp.Node.getConcreteType() call to determine which type of
      *     instance to construct.
      * @param {String} aTagName The tag name to be mapped.
-     * @param {TP.lang.RootObject.<TP.xmpp.Node>} The TP.xmpp.Node subtype type
-     *     object to map.
+     * @param {TP.meta.xmpp.Node} The TP.xmpp.Node subtype type object to map.
      * @param {String} aNamespace The namespace to qualify the tag name by.
      *     Default is TP.xmpp.XMLNS.CLIENT.
      * @exception TP.sig.InvalidType

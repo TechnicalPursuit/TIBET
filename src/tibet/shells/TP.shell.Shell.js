@@ -394,8 +394,7 @@ function(aSignal) {
      * @summary Handles when an 'TP.sig.UpdateAvailable' signal is thrown.
      * @param {TP.sig.UpdateAvailable} aSignal The signal that caused this
      *     handler to execute.
-     * @returns {TP.lang.RootObject.<TP.shell.Shell>} The TP.shell.Shell type
-     *     object.
+     * @returns {TP.meta.shell.Shell} The receiver.
      */
 
     var updateInfo,
@@ -843,8 +842,7 @@ function(aSignal) {
      * @summary Handles when an 'TP.sig.AppShutdown' signal is thrown.
      * @param {TP.sig.AppShutdown} aSignal The signal that caused this
      *     handler to execute.
-     * @returns {TP.lang.RootObject.<TP.shell.Shell>} The TP.shell.Shell type
-     *     object.
+     * @returns {TP.meta.shell.Shell} The receiver.
      */
 
     this.logout(aSignal);

@@ -59,8 +59,7 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.lang.RootObject.<TP.xmpp.Pubsub>} A TP.xmpp.Pubsub subtype
-     *     type object.
+     * @returns {TP.meta.xmpp.Pubsub} A TP.xmpp.Pubsub subtype type object.
      */
 
     var pubsubTypePair,

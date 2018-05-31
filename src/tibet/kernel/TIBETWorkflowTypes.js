@@ -79,7 +79,8 @@ function(originSignalPairs) {
      * @method addTriggers
      * @summary Stores a set of trigger definitions (list of ordered pairs with
      *     origin and signal) as part of the receiver's set of triggers.
-     * @param {Array.<Array.<String, String>>} originSignalPairs
+     * @param {String[][]} originSignalPairs The origin/signal pairs to use as
+     *     triggers.
      * @returns {TP.core.Triggered} The receiver.
      */
 
@@ -106,7 +107,7 @@ function() {
      * @method getTriggers
      * @summary Returns one or more trigger signals for the TIBET signaling
      *     system which should cause the receiver to respond to triggers.
-     * @returns {Array.Array} An array of origin/signal ordered pairs.
+     * @returns {String[][]} An array of origin/signal ordered pairs.
      */
 
     var triggers;
@@ -228,7 +229,7 @@ function(originSignalPairs) {
      * @method addTriggers
      * @summary Stores a set of trigger definitions (list of ordered pairs with
      *     origin and signal) as part of the receiver's set of triggers.
-     * @param {Array.<Array.<String, String>>} originSignalPairs
+     * @param {String[][]} originSignalPairs
      * @returns {TP.core.Triggered} The receiver.
      */
 
@@ -629,7 +630,7 @@ function() {
     /**
      * @method getRoles
      * @summary Returns the list of roles in the receiver's vcard, if any.
-     * @returns {Array.<TP.core.Role>} An array of TP.core.Role instances.
+     * @returns {TP.core.Role[]} An array of TP.core.Role instances.
      */
 
     var vcard;
@@ -649,7 +650,7 @@ function() {
     /**
      * @method getUnits
      * @summary Returns the list of units in the receiver's vcard, if any.
-     * @returns {Array.<TP.core.Unit>} An array of TP.core.Unit instances.
+     * @returns {TP.core.Unit[]} An array of TP.core.Unit instances.
      */
 
     var vcard;
@@ -1834,8 +1835,7 @@ function() {
      * @summary Returns the type of response this request expects. By default
      *     this is TP.sig.Response but custom subtypes can be used to provide
      *     specific response processing.
-     * @returns {TP.lang.RootObject.<TP.sig.Response>} A TP.sig.Response
-     *     subtype type object.
+     * @returns {TP.meta.sig.Response} A TP.sig.Response subtype type object.
      */
 
     var typename,
@@ -4089,7 +4089,7 @@ function() {
      * @method getKeyrings
      * @summary Returns the list of keyring instances associated with the
      *     receiver.
-     * @returns {Array.<TP.tibet.keyring>} The array of keyrings.
+     * @returns {TP.tibet.keyring[]} The array of keyrings.
      */
 
     return this.$get('keyrings');
@@ -4455,8 +4455,7 @@ function(aUser) {
      *     This will cause certain UI updates to potentially occur as TIBET
      *     updates the effective role/unit permissions.
      * @param {TP.core.User} aUser The instance to make effective.
-     * @returns {TP.lang.RootObject.<TP.core.User>} The TP.core.User type
-     *     object.
+     * @returns {TP.meta.core.User} The TP.core.User type object.
      */
 
     if (!TP.isKindOf(aUser, this)) {
@@ -4487,8 +4486,7 @@ function(aUser) {
      *     will cause certain UI updates to potentially occur as TIBET updates
      *     the effective role/unit permissions.
      * @param {TP.core.User} aUser The instance to make "real".
-     * @returns {TP.lang.RootObject.<TP.core.User>} The TP.core.User type
-     *     object.
+     * @returns {TP.meta.core.User} The TP.core.User type object.
      */
 
     if (!TP.isKindOf(aUser, this)) {

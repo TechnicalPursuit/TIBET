@@ -100,8 +100,7 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
-     *     object.
+     * @returns {TP.meta.dom.Node} A TP.dom.Node subtype type object.
      */
 
     var localName,
@@ -207,8 +206,7 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
-     *     object.
+     * @returns {TP.meta.dom.Node} A TP.dom.Node subtype type object.
      */
 
     //  not something you see every day, but we need to skip past
@@ -601,8 +599,7 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
-     * @returns {TP.lang.RootObject.<TP.dom.Node>} A TP.dom.Node subtype type
-     *     object.
+     * @returns {TP.meta.dom.Node} A TP.dom.Node subtype type object.
      */
 
     //  not something you see every day, but we need to skip past

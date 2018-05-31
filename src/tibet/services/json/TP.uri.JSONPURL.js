@@ -82,8 +82,8 @@ function(targetURI, aRequest) {
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.uri.URIHandler>} A TP.uri.URIHandler
-     *     subtype type object.
+     * @returns {TP.meta.uri.URIHandler} A TP.uri.URIHandler subtype type
+     *     object.
      */
 
     return TP.uri.JSONPURLHandler;

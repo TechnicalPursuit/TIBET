@@ -10353,7 +10353,7 @@ function() {
      * @method getTypeInitializers
      * @summary Returns an array of functions which will properly initialize
      *     the various types in the system.
-     * @returns {Array.<Function>}
+     * @returns {Function[]}
      */
 
     var own;
