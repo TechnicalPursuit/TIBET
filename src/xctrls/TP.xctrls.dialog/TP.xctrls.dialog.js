@@ -256,14 +256,6 @@ function(info) {
 
                 beforeShowCallback;
 
-            //  If we're running in the Sherpa, then use the UIROOT window.
-            //  Otherwise, use the current UI canvas.
-            if (TP.sys.hasFeature('sherpa')) {
-                win = TP.win('UIROOT');
-            } else {
-                win = TP.sys.uiwin(true);
-            }
-
             //  Default the dialog ID and whether we're displaying in a modal
             //  fashion
             dialogID = info.atIfInvalid('dialogID', 'systemDialog');
@@ -278,8 +270,18 @@ function(info) {
                 }
             }
 
+            win = TP.sys.uiwin(true);
+
             //  Grab the dialog and create one if one isn't present.
             dialogTPElem = TP.byId(dialogID, win);
+
+            //  If we couldn't find the dialog element and we're running the
+            //  Sherpa, then we can try to find it in the UIROOT window.
+            if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('sherpa')) {
+                win = TP.win('UIROOT');
+                dialogTPElem = TP.byId(dialogID, win);
+            }
+
             if (TP.notValid(dialogTPElem)) {
 
                 //  Create a new 'xctrls:dialog' Element and set it's modal
