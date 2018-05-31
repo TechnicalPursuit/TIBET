@@ -9535,7 +9535,7 @@ TP.uri.TIBETURL.Inst.defineMethod('processRefreshedContent',
 function() {
 
     /**
-     * @methoe processRefreshedContent
+     * @method processRefreshedContent
      * @summary Invoked when remote resource changes have been loaded to provide
      *     the receiver with the chance to post-process those changes.
      * @returns {TP.uri.URL} The receiver.
