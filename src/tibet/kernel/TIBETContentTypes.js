@@ -4056,7 +4056,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {Object} targetObj The object to execute the receiver against
      *     to get data.
-     * @param {Array} varargs The arguments to execute the get with. The
+     * @param {arguments} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -4082,7 +4082,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     into the target object.
      * @param {Boolean} shouldSignal If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {Array} varargs Any remaining arguments will be used as values
+     * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
@@ -5149,7 +5149,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {Object} targetObj The object to execute the receiver against to
      *     get data.
-     * @param {Array} varargs The arguments to execute the get with. The
+     * @param {arguments} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -5222,7 +5222,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     into the target object.
      * @param {Boolean} shouldSignal If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {Array} varargs Any remaining arguments will be used as values
+     * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath
@@ -5780,7 +5780,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {Array} varargs The arguments to execute the get with. The
+     * @param {arguments} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -6591,7 +6591,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {Array} varargs Any remaining arguments will be used as values
+     * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath
@@ -7337,7 +7337,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {Array} varargs The arguments to execute the get with. The
+     * @param {arguments} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -7422,7 +7422,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {Array} varargs Any remaining arguments will be used as values
+     * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath
@@ -7887,7 +7887,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {Array} varargs The arguments to execute the get with. The
+     * @param {arguments} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -7965,7 +7965,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {Array} varargs Any remaining arguments will be used as values
+     * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath
@@ -9405,7 +9405,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {Array} varargs The arguments to execute the get with. The
+     * @param {arguments} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -9615,7 +9615,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {Array} varargs Any remaining arguments will be used as values
+     * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidPath

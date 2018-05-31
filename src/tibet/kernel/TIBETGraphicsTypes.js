@@ -7799,8 +7799,8 @@ function() {
      *     handed in (and that should conform to the TP.core.JobStatus
      *     specification which means that they could be TP.core.Jobs or other
      *     TP.core.JobGroups) as children to the new TP.core.JobGroup.
-     * @param {TP.core.JobStatus} varargs 0 to N variable args to add as child
-     *     objects to the constructed job group.
+     * @param {arguments} varargs One or more objects to add as child objects to
+     *     the constructed job group.
      * @returns {TP.core.JobGroup} The newly constructed job group.
      */
 

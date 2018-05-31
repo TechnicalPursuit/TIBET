@@ -606,7 +606,7 @@ function(anIndex, varargs) {
      *     [[0,1],[2,3]]. This is equivalent to the syntax arr[1][1];
      * @param {Number} anIndex The index to access. Note that this value is the
      *     first index in a potential list of indicies.
-     * @param {Array} varargs A variable list of 0 to N additional indexes
+     * @param {arguments} varargs A variable list of 0 to N additional indexes
      *     which descend into nested array children.
      * @returns {Object} The value at the index.
      * @addon Array
@@ -672,7 +672,7 @@ function(anIndex, varargs, aValue) {
      *     the location found by traversing to the last index (arguments.length
      *     - 2) provided.
      * @param {Number} anIndex The index to set/update.
-     * @param {Array} varargs A variable list of 0 to N additional indexes
+     * @param {arguments} varargs A variable list of 0 to N additional indexes
      *     which descend into nested array children.
      * @param {Object} aValue The object to place at anIndex. NOTE that the
      *     position of this attribute may actually vary if multiple indexes are
@@ -1504,7 +1504,7 @@ function(varargs) {
      *     arguments supplied. This routine localizes each argument.
      * @description Note that this method, being on a type that produces
      *     non-mutable instances, will always return its primitive value.
-     * @param {Array} varargs A variable list of 0 to N values to build the
+     * @param {arguments} varargs A variable list of 0 to N values to build the
      *     String from.
      * @returns {String} A new instance.
      */

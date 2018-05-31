@@ -9266,6 +9266,9 @@ function(varargs) {
      * @summary Adds the supplied dependency list to the receiver as a set of
      *     dependencies, such that when packaging computations take place, the
      *     receiver will consider the objects as part of the computation.
+     * @param {arguments} varargs One or more objects to add to the receiver as
+     *     dependencies for the receiver to function properly in the system.
+     * @returns {TP.lang.RootObject} The receiver.
      */
 
     var args;

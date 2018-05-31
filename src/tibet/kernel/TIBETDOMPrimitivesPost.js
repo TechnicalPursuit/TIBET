@@ -8319,7 +8319,7 @@ function(firstNode, varargs) {
      * @description This is derived from code by 'Andy E':
      *     http://jsfiddle.net/AndyE/3FaRr/1/
      * @param {Node} firstNode The first DOM node to operate on.
-     * @param {Array} varargs The rest of DOM nodes to operate on.
+     * @param {arguments} varargs The rest of DOM nodes to operate on.
      * @returns {Node} The common ancestor of the supplied Nodes.
      * @exception TP.sig.InvalidNode Raised when the first node provided to the
      *     method is invalid.

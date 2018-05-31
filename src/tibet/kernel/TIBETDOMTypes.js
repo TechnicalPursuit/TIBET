@@ -97,7 +97,7 @@ function(nodeSpec, varargs) {
      *
      * @param {Node|URI|String|TP.dom.Node} nodeSpec Some suitable object to
      *     construct a source node. See type discussion above. Can also be null.
-     * @param {Array} varargs Optional additional arguments for the
+     * @param {arguments} varargs Optional additional arguments for the
      *     constructor.
      * @returns {TP.dom.Node} A new instance.
      */

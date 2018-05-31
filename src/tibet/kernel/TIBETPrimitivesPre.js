@@ -1812,7 +1812,7 @@ TP.hc = function() {
      * @summary Constructs a simple hash (i.e. "dictionary"), which can be used
      *     to contain key/value pairs. This primitive version is limited to
      *     simple key, value, key, value vararg lists.
-     * @param {Array} varargs A variable list of 0 to N elements to place in
+     * @param {arguments} varargs A variable list of 0 to N elements to place in
      *     the hash.
      * @example Construct a TP.core.Hash:
      *     <code>
@@ -6557,7 +6557,7 @@ function(varargs) {
      *     are subject to localization based on the current source and target
      *     locale information. See TP.i18n.Locale for more information. The
      *     simple version uses TP.msg[key] to look up any mapped values.
-     * @param {Object} varargs A variable list of 0 to N values to build
+     * @param {arguments} varargs A variable list of 0 to N values to build
      *     the String from. Multiple chunks are joined with a single space.
      * @returns {String} A new instance.
      */

@@ -1310,7 +1310,7 @@ function(varargs) {
      *     request's payload, otherwise the object itself becomes the request
      *     payload. When multiple arguments are given they are passed to TP.hc()
      *     and the resulting hash becomes the request's payload.
-     * @param {Object} varargs One or more objects to place in the request. The
+     * @param {arguments} varargs One or more objects to place in the request. The
      *     format is similar to that used by TP.hc() with alternating keys and
      *     values.
      * @returns {TP.sig.Request} A request whose payload is a hash containing

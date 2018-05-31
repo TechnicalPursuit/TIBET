@@ -5194,7 +5194,7 @@ function(transformType, varargs) {
      *     local transformations. This should be one of the following:
      *     TP.ROTATE, TP.SKEW, TP.SCALE,
      *     TP.TRANSLATE.
-     * @param {Array} varargs One or more additional arguments to provide to
+     * @param {arguments} varargs One or more additional arguments to provide to
      *     configure the transform.
      * @returns {TP.dom.UIElementNode} The receiver.
      */
@@ -5522,7 +5522,7 @@ function(transformType, transformIndex, varargs) {
      * @param {Number} transformIndex The index of the transform to set the
      *     values of. If this argument is not supplied or invalid, 0 (the first
      *     transform of the specified type) is assumed.
-     * @param {Array} varargs One or more additional arguments to provide to
+     * @param {arguments} varargs One or more additional arguments to provide to
      *     configure the transform.
      * @returns {TP.dom.UIElementNode} The receiver.
      */

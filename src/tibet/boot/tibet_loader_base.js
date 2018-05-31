@@ -1834,9 +1834,9 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
      * @param {String} targetUrl The request's target URL.
      * @param {String} callType One of the valid HTTP call types such as
      *     TP.HTTP_HEAD, or TP.HTTP_GET.
-     * @param {Array} callHeaders Key/value pairs to be used as request headers.
-     *     Note that this call automatically uses no-cache headers. We use an
-     *     array to avoid issues with loading TIBET and adding additional
+     * @param {String[][]} callHeaders Key/value pairs to be used as request
+     *     headers. Note that this call automatically uses no-cache headers. We
+     *     use an array to avoid issues with loading TIBET and adding additional
      *     elements to Object.prototype. NOTE: that this differs from the
      *     kernel's $httpCall API which uses a hash.
      * @param {String} callUri Optional URI data for the call. Often used for
@@ -4962,7 +4962,7 @@ TP.boot.Annotation.prototype.getSupertypes = function() {
     /**
      * @method getSupertypes
      * @summary Returns an Array of the receiver's supertypes.
-     * @returns {Array} The Array of the receiver's supertypes.
+     * @returns {Object[]} The Array of the receiver's supertypes.
      */
 
     return [Object];
@@ -5096,8 +5096,8 @@ TP.boot.$$formatLogEntry = function(entry, options) {
      * @method $$formatLogEntry
      * @summary A method that generates a String representation of the
      *     supplied entry in 'TIBET standard' format.
-     * @param {Array} entry A log entry with information at indexes that match
-     *     TP.boot.LOG_ENTRY_* constants.
+     * @param {Number[]} entry A log entry with information at indexes that
+     *     match TP.boot.LOG_ENTRY_* constants.
      * @param {Object} options A hash of formatting options:
      *     [options.separator] {String} A String used to separate entries. The
      *         default is '\n'.
@@ -5298,7 +5298,7 @@ TP.boot.$consoleReporter = function(entry) {
      * @summary A reporter method that generates a String representation of the
      *     supplied entry in 'JavaScript console.*() functions standard' format
      *     and outputs that via the appropriate console.*() function.
-     * @param {Array} A log entry with information at indexes that match
+     * @param {Number[]} A log entry with information at indexes that match
      *     TP.boot.LOG_ENTRY_* constants.
      */
 
@@ -5356,7 +5356,7 @@ TP.boot.$bootuiReporter = function(entry) {
      * @summary A reporter method that generates a String representation of the
      *     supplied entry in 'TIBET boot log standard' format and outputs that
      *     to wherever the TIBET boot log is being displayed.
-     * @param {Array} A log entry with information at indexes that match
+     * @param {Number[]} A log entry with information at indexes that match
      *     TP.boot.LOG_ENTRY_* constants.
      */
 
@@ -5454,7 +5454,7 @@ TP.boot.$phantomReporter = function(entry) {
      *     supplied entry in 'JavaScript console.*() functions standard' format
      *     and outputs that to PhantomJS via the appropriate console.*()
      *     function.
-     * @param {Array} A log entry with information at indexes that match
+     * @param {Number[]} A log entry with information at indexes that match
      *     TP.boot.LOG_ENTRY_* constants.
      */
 
@@ -5524,7 +5524,7 @@ TP.boot.$silentReporter = function(entry) {
     /**
      * @method $$phantomReporter
      * @summary A reporter method that reports nothing.
-     * @param {Array} A log entry with information at indexes that match
+     * @param {Number[]} A log entry with information at indexes that match
      *     TP.boot.LOG_ENTRY_* constants.
      */
 
@@ -5825,7 +5825,7 @@ TP.boot.Log.prototype.getEntries = function() {
      * @method getEntries
      * @summary Returns an array containing individual log entries. The array
      *     should be considered read-only.
-     * @returns {Array} The Array containing individual log entries.
+     * @returns {String[][]} The Array containing individual log entries.
      */
 
     return this.messages;
@@ -5864,7 +5864,7 @@ TP.boot.Log.prototype.getSupertypes = function() {
     /**
      * @method getSupertypes
      * @summary Returns an Array of the receiver's supertypes.
-     * @returns {Array} The Array of the receiver's supertypes.
+     * @returns {Object[]} The Array of the receiver's supertypes.
      */
 
     return [Object];
@@ -5877,7 +5877,7 @@ TP.boot.Log.prototype.last = function() {
     /**
      * @method last
      * @summary Returns the last entry made in the log.
-     * @returns {Array} A log entry.
+     * @returns {String[]} A log entry.
      */
 
     return this.messages[this.messages.length - 1];
@@ -5988,8 +5988,8 @@ TP.boot.Log.prototype.report = function(entry) {
     /**
      * @method report
      * @summary Writes a log entry using the currently configured reporter.
-     * @param {Array} entry A log entry with information at indexes that match
-     *     TP.boot.LOG_ENTRY_* constants.
+     * @param {Number[]} entry A log entry with information at indexes that
+     *     match TP.boot.LOG_ENTRY_* constants.
      */
 
     var limit,
@@ -6070,7 +6070,7 @@ TP.boot.Log.prototype.shift = function() {
      * @summary Shifts the first message off the log, allowing the log to
      *     shrink in size by one entry. This method is often called to keep log
      *     sizes from exceeding configured limits.
-     * @returns {Array} A log entry.
+     * @returns {String[]} A log entry.
      */
 
     return this.messages.shift();
@@ -8885,8 +8885,8 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
      * @method $uniqueNodeList
      * @summary Removes any duplicates from the array provided so that
      *     subsequent loads of the list don't try to load things twice.
-     * @param {Array} aNodeArray The Array of Nodes to unique for duplicates.
-     * @returns {Array} The supplied Array of Nodes filtered for duplicates.
+     * @param {Node[]} aNodeArray The Array of Nodes to unique for duplicates.
+     * @returns {Node[]} The supplied Array of Nodes filtered for duplicates.
      */
 
     var i,
@@ -9869,28 +9869,33 @@ TP.boot.$expandConfig = function(anElement, configName) {
                             cfg = child.getAttribute('config') ||
                                 anElement.getAttribute('config');
 
-                            //  First try to find one qualified by the config. We
-                            //  have to clone them if qualified so they can live in
-                            //  the same document.
+                            //  First try to find one qualified by the config.
+                            //  We have to clone them if qualified so they can
+                            //  live in the same document.
                             if (TP.boot.$notEmpty(cfg)) {
                                 config = anElement.ownerDocument.getElementById(
                                     ref + '_' + cfg);
                                 if (TP.boot.$notValid(config)) {
                                     config =
-                                        anElement.ownerDocument.getElementById(ref);
+                                        anElement.ownerDocument.getElementById(
+                                                                        ref);
                                     if (TP.boot.$notValid(config)) {
                                         msg = 'config not found: ' +
-                                            TP.boot.$getCurrentPackage() + '@' + ref;
+                                            TP.boot.$getCurrentPackage() +
+                                                                        '@' +
+                                                                        ref;
                                         throw new Error(msg);
                                     }
                                     config = config.cloneNode(true);
                                     config.setAttribute('id', ref + '_' + cfg);
                                     config.setAttribute('config', cfg);
                                     config = TP.boot.$getPackageNode(
-                                        anElement.ownerDocument).appendChild(config);
+                                        anElement.ownerDocument).appendChild(
+                                                                        config);
                                 }
                             } else {
-                                config = anElement.ownerDocument.getElementById(ref);
+                                config = anElement.ownerDocument.getElementById(
+                                                                        ref);
                             }
 
                             if (TP.boot.$notValid(config)) {
@@ -10403,12 +10408,13 @@ TP.boot.$getLoadedPackages = function() {
     /**
      * @method $getLoadedPackages
      * @summary Returns an array of unique package file names which were loaded.
-     * @returns {Array} The array of unique package names.
+     * @returns {String[]} The array of unique package names.
      */
 
-    return Object.keys(TP.boot.$$paths).map(function(path) {
-        return TP.boot.$uriInTIBETFormat(path);
-    });
+    return Object.keys(TP.boot.$$paths).map(
+                    function(path) {
+                        return TP.boot.$uriInTIBETFormat(path);
+                    });
 };
 
 //  ----------------------------------------------------------------------------
@@ -10420,7 +10426,7 @@ TP.boot.$getLoadedScripts = function() {
      * @summary Returns an array of the JavaScript source paths which have been
      *     loaded. The list is a copy of the core list to avoid inadvertent
      *     changes.
-     * @returns {Array} The array of loaded scripts.
+     * @returns {String[]} The array of loaded scripts.
      */
 
     return TP.boot.$$loadpaths.slice(0);
@@ -10485,7 +10491,7 @@ TP.boot.$isLoadableScript = function(aURI) {
      * @method $isLoadableScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package@config settings.
-     * @returns {Array} The array of loaded scripts.
+     * @returns {String[]} The array of loaded scripts.
      */
 
     var uri,
@@ -10512,9 +10518,10 @@ TP.boot.$isLoadableScript = function(aURI) {
         TP.sys.setcfg('boot.phase_two', phaseTwo);
     }
 
-    loadables = loadables.map(function(node) {
-        return TP.uriExpandPath(node.getAttribute('src'));
-    });
+    loadables = loadables.map(
+                    function(node) {
+                        return TP.uriExpandPath(node.getAttribute('src'));
+                    });
 
     return loadables.indexOf(uri) !== -1;
 };
@@ -10527,7 +10534,7 @@ TP.boot.$isLoadedScript = function(aURI) {
      * @method $isLoadedScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package@config settings.
-     * @returns {Array} The array of loaded scripts.
+     * @returns {String[]} The array of loaded scripts.
      */
 
     var uri;
@@ -10547,11 +10554,11 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
      *     concatenated into aList if the list is provided (aList is used during
      *     recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
-     * @param {Array} aList The array of asset descriptions to expand upon.
+     * @param {String[]} aList The array of asset descriptions to expand upon.
      * @param {String} [configName] Specific config name to expand, if any.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
-     * @returns {Array} The asset array.
+     * @returns {String[]} The asset array.
      */
 
     var list,
@@ -10768,10 +10775,10 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
      *     list).
      * @param {string} aPackage The package name or path to list.
      * @param {string} aConfig The ID of the config in the package to list.
-     * @param {Array} aList The array of asset descriptions to expand upon.
+     * @param {String[]} aList The array of asset descriptions to expand upon.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
-     * @returns {Array} The asset array.
+     * @returns {String[]} The asset array.
      */
 
     var pkg,

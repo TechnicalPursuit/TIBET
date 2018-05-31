@@ -3787,7 +3787,7 @@ function(varargs) {
      * @method max
      * @summary Returns the largest value from the receiver and arguments. Note
      *     that you can pass multiple values to this call.
-     * @param {Array} varargs A variable list of 0 to N elements to place in
+     * @param {arguments} varargs A variable list of 0 to N elements to place in
      *     the array.
      * @exception TP.sig.InvalidParameter
      * @returns {Number} The largest value found.
@@ -3822,7 +3822,7 @@ function(varargs) {
     /**
      * @method min
      * @summary Returns the smallest value from the receiver and arguments.
-     * @param {Array} varargs A variable list of 0 to N elements to place in
+     * @param {arguments} varargs A variable list of 0 to N elements to place in
      *     the array.
      * @exception TP.sig.InvalidParameter
      * @returns {Number} The smallest value found.
@@ -4295,7 +4295,7 @@ function(varargs) {
     /**
      * @method add
      * @summary Adds one or more items, usually strings, to the receiver.
-     * @param {Object} varargs One or more objects to concatentate to the
+     * @param {arguments} varargs One or more objects to concatentate to the
      *     receiver in string form.
      * @returns {String} A newly formed string.
      */

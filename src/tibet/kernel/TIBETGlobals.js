@@ -176,7 +176,7 @@ TP.objectDefineDependencies = function(anObject, varargs) {
      *     object will consider the dependency as part of the computation.
      * @param {Object} anObject The object to register the dependency
      *     information for.
-     * @param {Object[]|String[]} varargs One or more dependencies or dependency
+     * @param {arguments} varargs One or more dependencies or dependency
      *     references provided as a variable argument list.
      * @return {Array} The updated list of object dependencies.
      */

@@ -1199,9 +1199,9 @@ function(varargs) {
      * @method trace
      * @summary Log all arguments provided at trace level. If there is a marker
      *     for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.TRACE)) {
@@ -1220,9 +1220,9 @@ function(varargs) {
      * @method debug
      * @summary Log all arguments provided at debug level. If there is a marker
      *     for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.DEBUG)) {
@@ -1241,9 +1241,9 @@ function(varargs) {
      * @method info
      * @summary Log all arguments provided at info level. If there is a marker
      *     for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.INFO)) {
@@ -1262,9 +1262,9 @@ function(varargs) {
      * @method warn
      * @summary Log all arguments provided at warn level. If there is a marker
      *     for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.WARN)) {
@@ -1283,7 +1283,9 @@ function(varargs) {
      * @method error
      * @summary Log all arguments provided at error level. If there is a marker
      *     for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.ERROR)) {
@@ -1302,9 +1304,9 @@ function(varargs) {
      * @method fatal
      * @summary Log all arguments provided at fatal level. If there is a marker
      *     for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.FATAL)) {
@@ -1323,9 +1325,9 @@ function(varargs) {
      * @method system
      * @summary Log all arguments provided at system level. If there is a
      *     marker for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
+     * @param {arguments} varargs One or more arguments as desired.
+     * @returns {TP.log.Logger|undefined} The receiver or null if the log for
+     *     this level is disabled.
      */
 
     if (!this.isEnabled(TP.log.SYSTEM)) {

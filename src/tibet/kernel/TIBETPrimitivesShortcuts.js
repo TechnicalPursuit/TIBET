@@ -35,8 +35,8 @@ function(varargs) {
      *     windows, documents, or elements which might be used to root a search.
      *     The first true element found is returned, followed by the best
      *     documentElement possible.
-     * @param {Object|String} varargs Zero or more valid objects or IDs to
-     *     choose between.
+     * @param {arguments} varargs Zero or more valid objects or IDs to choose
+     *     between.
      * @returns {Document|Element} The best search root.
      */
 
@@ -106,7 +106,7 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
      *     suitable for TP.byId().
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @param {Object} varargs Optional additional arguments to pass to the
+     * @param {arguments} varargs Optional additional arguments to pass to the
      *     method.
      * @returns {Object} The results of the method invocation, or an array of
      *     such results.
@@ -184,7 +184,7 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
      *     suitable for TP.byId().
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @param {Object} varargs Optional additional arguments to pass to the
+     * @param {arguments} varargs Optional additional arguments to pass to the
      *     method.
      * @returns {Object} The results of the method invocation, or an array of
      *     such results.

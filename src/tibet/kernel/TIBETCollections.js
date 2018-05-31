@@ -314,7 +314,7 @@ TP.api.IterationAPI =
          * @param {TPCollection} anIndexCollection
          * @exception TP.sig.InvalidParameter
          * @exception TP.sig.InvalidCollection
-         * @returns {Array} An array of zero or more items.
+         * @returns {Object[]} An array of zero or more items.
          */
 
         'atAll',
@@ -328,7 +328,7 @@ TP.api.IterationAPI =
          *     results in an array containing the indices whose contents are not
          *     undefined. For Object data stores the result is the set of unique
          *     keys for the object.
-         * @returns {Array} An array of 'keys' for the underlying collection.
+         * @returns {Object[]} An array of 'keys' for the underlying collection.
          */
 
         'getKeys',
@@ -372,7 +372,7 @@ function(fromIndex, toIndex) {
      * @method generateNumericSequence
      * @summary Generates a simple monotonic sequence of numbers from the
            starting index to the ending index (inclusive).
-     * @returns {Array} An Array of Numbers from the start to the end index,
+     * @returns {Number[]} An Array of Numbers from the start to the end index,
      *     inclusive.
      */
 
@@ -450,7 +450,7 @@ function() {
      * @summary Returns the indices of the receiver. That is, all indices that
      *     have an actual value. This is different from getKeys() for an Array,
      *     since the results of that method also include the key 'length'.
-     * @returns {Array} The indices of the receiver.
+     * @returns {Number[]} The indices of the receiver.
      */
 
     var keys;

@@ -850,7 +850,7 @@ function(varargs) {
      * @summary Builds a path, using all of the arguments supplied to the
      *     method, by resolving each alias and then joining it all back together
      *     with TP.PATH_SEP.
-     * @param {String} varargs 0 to N variable args to put together to form a
+     * @param {arguments} varargs 0 to N variable args to put together to form a
      *     path.
      * @returns {String} The path, with aliases resolved, joined together with
      *     TP.PATH_SEP.
