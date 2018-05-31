@@ -5913,6 +5913,8 @@ function(aRequest, filterResult) {
                 //  request response types.
                 if (!TP.equal(aResult, thisref.$get('resource'))) {
                     thisref.$setPrimaryResource(result, request);
+                } else if (TP.isTrue(subrequest.at('refresh'))) {
+                    thisref.isDirty(false, true);
                 }
 
                 //  rewrite the request result object so we hold on to the
