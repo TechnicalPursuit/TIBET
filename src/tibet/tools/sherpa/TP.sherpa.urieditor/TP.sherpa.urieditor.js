@@ -938,6 +938,10 @@ function(shouldRefresh) {
             //  and set the dirty flag to false.
             this.set('localSourceContent', sourceStr);
 
+            if (refresh) {
+                sourceURI.processRefreshedContent();
+            }
+
             //  Update the editor's state, including its dirty state.
             this.isDirty(false);
             this.changed('dirty', TP.UPDATE);
