@@ -16,11 +16,10 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @File path manipulation. These provide a foundation for TIBET to operate on
- *     files accessible via either HTTP or FILE urls. Also, we try to adapt to
- *     platform variations like the need to quote filenames on Windows that may
- *     include spaces in them. Additional functions specific to each browser are
- *     contained in the *Moz.js and *IE.js versions of this file.
+ * File path manipulation. These provide a foundation for TIBET to operate on
+ * files accessible via either HTTP or FILE urls. Also, we try to adapt to
+ * platform variations like the need to quote filenames on Windows that may
+ * include spaces in them.
  */
 
 //  ------------------------------------------------------------------------
