@@ -436,7 +436,7 @@ function() {
         'String',               'bar',
         'Number',               '42',
         'RegExp',               '/foo/g',
-        'Date',                 /^Wed Aug 23 1995 \d{2}:\d{2}:\d{2} GMT[-+]\d{4} \(\.+\)$/,
+        'Date',                 /^Wed Aug 23 1995 \d{2}:\d{2}:\d{2} GMT[-+]\d{4} \(.+\)$/,
         'InvalidDate',          'Invalid Date',
         'Array',                '1,2,3',
         'Object',               '[object Object]',
