@@ -252,6 +252,7 @@ function(aSignal) {
      *     packets such as subscription requests require a response.
      * @param {TP.sig.Signal} aSignal The original inbound signal which
      *     contained the receiver.
+     * @returns {TP.xmpp.Presence} The receiver.
      */
 
     var typ,
@@ -332,7 +333,7 @@ function(aSignal) {
         )).fire(TP.bySystemId('yak'));
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

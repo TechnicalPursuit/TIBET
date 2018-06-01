@@ -134,7 +134,8 @@ function(aRequest) {
 
     //  if we don't have a viable URL, we must fail the request.
     if (TP.notValid(url)) {
-        return request.fail('TP.sig.InvalidURI');
+        request.fail('TP.sig.InvalidURI');
+        return this;
     }
 
     //  Set the 'comm object' of the url to be a plain Object (to emulate an

@@ -1315,7 +1315,7 @@ function(aSignal) {
 
     notifierContent = TP.byId('SherpaNotifierContent', this.get('vWin'));
     if (TP.notValid(notifierContent)) {
-        return;
+        return this;
     }
 
     message = aSignal.at('message');

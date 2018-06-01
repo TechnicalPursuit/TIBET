@@ -128,6 +128,7 @@ function(aSignal) {
      * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.itemgroup} The receiver.
      */
 
     var domTarget,
@@ -149,13 +150,13 @@ function(aSignal) {
         //  interested.
         wrappedDOMTarget = TP.wrap(domTarget);
         if (wrappedDOMTarget === this) {
-            return;
+            return this;
         }
 
         //  Grab the value of the item.
         newValue = wrappedDOMTarget.$getPrimitiveValue();
         if (TP.isEmpty(newValue)) {
-            return;
+            return this;
         }
 
         //  Grab the old value before we set it.
@@ -163,7 +164,7 @@ function(aSignal) {
 
         //  If the two values are equivalent, than just return
         if (TP.equal(oldValue, newValue)) {
-            return;
+            return this;
         }
 
         //  If the item was already selected, then deselect the value.
@@ -195,7 +196,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

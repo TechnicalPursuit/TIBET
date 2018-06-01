@@ -535,10 +535,12 @@ function(aSignal) {
      *     detach ourself into a Sherpa console tab.
      * @param {TP.sig.ResourceApply} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.urieditor} The receiver.
+     * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    return this.$get('$editorObj').resize();
+    this.$get('$editorObj').resize();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

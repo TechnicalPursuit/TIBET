@@ -453,6 +453,7 @@ function(aSignal) {
      *     This implementation makes sure that the receiver's presence is
      *     updated with the content of the presence packet.
      * @param {TP.sig.XMPPPresenceInput} aSignal The triggering signal.
+     * @returns {TP.xmpp.JID} The receiver.
      */
 
     var args,
@@ -463,7 +464,7 @@ function(aSignal) {
             TP.warn('Invalid signal data for TP.sig.XMPPPresence event.',
                     TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notValid(node = args.at('node'))) {
@@ -471,12 +472,12 @@ function(aSignal) {
             TP.warn('Missing stanza data for TP.sig.XMPPPresence event.',
                     TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     this.set('presence', node);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -488,6 +489,7 @@ function(aSignal) {
      * @method handleXMPPPubsubNodeChange
      * @summary Responds to notification that a pubsub node has changed.
      * @param {TP.sig.XMPPPubsubNodeChange} aSignal The triggering signal.
+     * @returns {TP.xmpp.JID} The receiver.
      */
 
     var sigURI,
@@ -542,7 +544,7 @@ function(aSignal) {
     //  Unset the flag
     this.set('ignoreRemoteObservers', false);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -492,6 +492,7 @@ function(aSignal) {
      *                                  invalid
      * @param {TP.sig.UIAttributeChange} aSignal The signal that caused this
      *     handler to trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var attrName,
@@ -501,7 +502,7 @@ function(aSignal) {
 
     if (TP.isEmpty(attrName = aSignal.at('aspect'))) {
         //  TODO: Raise exception
-        return;
+        return this;
     }
 
     //  attrName will be one of the following:
@@ -540,7 +541,7 @@ function(aSignal) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -553,6 +554,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'disabled state'.
      * @param {TP.sig.UIDisabled} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -600,7 +602,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -613,6 +615,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'enabled state'.
      * @param {TP.sig.UIEnabled} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -660,7 +663,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -673,6 +676,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'invalid state'.
      * @param {TP.sig.UIInvalid} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -720,7 +724,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIInvalid', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -733,6 +737,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'optional state'.
      * @param {TP.sig.UIOptional} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -780,7 +785,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIOptional', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -793,6 +798,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'read only state'.
      * @param {TP.sig.UIReadonly} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -840,7 +846,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIReadonly', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -853,6 +859,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'read write state'.
      * @param {TP.sig.UIReadwrite} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -900,7 +907,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIReadwrite', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -913,6 +920,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'required state'.
      * @param {TP.sig.UIRequired} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -960,7 +968,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIRequired', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -973,6 +981,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'valid state'.
      * @param {TP.sig.UIValid} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var conditionAttrVal,
@@ -1020,7 +1029,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIValid', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

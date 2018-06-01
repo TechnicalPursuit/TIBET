@@ -916,11 +916,12 @@ function(aSignal) {
      *     with the data store configured by its remote URL.
      * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.service} The receiver.
      */
 
     this.activate();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

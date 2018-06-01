@@ -473,6 +473,7 @@ function(aSignal) {
      * @method handleDOMDragMove
      * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which
      *     triggered this handler.
+     * @returns {TP.sherpa.workbench} The receiver.
      */
 
     var mousePoint,
@@ -487,7 +488,7 @@ function(aSignal) {
 
     this.updateStatusbar(TP.hc('mousePoint', mousePoint));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

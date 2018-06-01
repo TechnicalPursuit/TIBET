@@ -613,6 +613,7 @@ function(aSignal) {
      *     some components on the receiver surface (i.e. usually GUI widgets)
      *     need to be updated in response to that change.
      * @param {Change} aSignal The signal instance which triggered this handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var changedPaths,
@@ -690,22 +691,22 @@ function(aSignal) {
                 }
 
                 //  At the start of a batch (or a batchID wasn't provided). In
-                //  either case, don't update - just return
-                return;
+                //  either case, don't update - just return.
+                return this;
             }
         } else if (TP.isValid(
                     signalBatchID = aSignal.at(TP.END_SIGNAL_BATCH))) {
             if (ourBatchID !== signalBatchID) {
                 //  The batch is ending, but it didn't match our cached batch ID
-                //  then return
-                return;
+                //  then return.
+                return this;
             }
 
             //  Otherwise, we clear our cached batch ID proceed ahead.
             this.set('$signalingBatchID', null);
         } else {
             //  This wasn't the end of the batch - return.
-            return;
+            return this;
         }
     }
 
@@ -934,7 +935,7 @@ function(aSignal) {
             //  entered this method.
             TP.sys.shouldSignalDOMLoaded(signalFlag);
 
-            return;
+            return this;
         }
 
         //  If we have an aspect and the facet that we're updating is *not*
@@ -1089,7 +1090,7 @@ function(aSignal) {
         refreshedElements.empty();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1102,6 +1103,7 @@ function(aSignal) {
      * @summary Refreshes the receiver's bound data.
      * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
      *     this handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     this.refresh();
@@ -5068,6 +5070,7 @@ function(aSignal) {
      *     simple text field to allow editing.
      * @param {TP.sig.UIEdit} aSignal The signal instance which triggered
      *     this handler.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var targetElem,

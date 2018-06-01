@@ -485,9 +485,10 @@ function(aSignal) {
      *     packets such as subscription requests require a response.
      * @param {TP.sig.Signal} aSignal The original inbound signal which
      *     contained the receiver.
+     * @returns {TP.xmpp.Node} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

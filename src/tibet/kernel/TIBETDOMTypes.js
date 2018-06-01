@@ -10979,7 +10979,7 @@ function(aSignal) {
      *     function just like with instances, but the default method for
      *     handling them defers to an instance rather than the type itself.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
-     * @returns {Object} The function's return value.
+     * @returns {Object|undefined} The function's return value.
      */
 
     var observer;
@@ -12845,6 +12845,7 @@ function(aSignal) {
      *     attributes' has as the reference to its remote resource, then the
      *     'reloadFrom<Attr>' method is invoked on the receiver.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     var origin,
@@ -12882,7 +12883,7 @@ function(aSignal) {
         //  here.
         aspect = aSignal.at('aspect');
         if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
-            return;
+            return this;
         }
 
         //  Grab the fully expanded location of the URI that changed.
@@ -12954,7 +12955,7 @@ function(aSignal) {
         return this.callNextHandler();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -15939,6 +15940,7 @@ function(aSignal) {
      *     for change (because it loaded that URI into itself), then this method
      *     reloads the URI's remote resource into the receiver.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {TP.dom.DocumentNode} The receiver.
      */
 
     var req,
@@ -15957,7 +15959,7 @@ function(aSignal) {
         //  here.
         aspect = aSignal.at('aspect');
         if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
-            return;
+            return this;
         }
 
         req = TP.request();
@@ -15966,7 +15968,7 @@ function(aSignal) {
         return this.callNextMethod();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -16487,6 +16489,7 @@ function(aSignal) {
      *     TP.sig.DOMClose.
      * @param {TP.sig.DOMClose} aSignal The signal instance which triggered this
      *     handler.
+     * @returns {TP.dom.HTMLDocumentNode} The receiver.
      */
 
     //  close our document down so it's empty
@@ -16495,7 +16498,7 @@ function(aSignal) {
     //  and target our window for close as well
     TP.handle(this.getWindow(), aSignal, 'TP.sig.DOMClose');
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -16804,12 +16807,13 @@ function(aSignal) {
      *     TP.sig.DOMClose.
      * @param {TP.sig.DOMClose} aSignal The signal instance which triggered this
      *     handler.
+     * @returns {TP.dom.XHTMLDocumentNode} The receiver.
      */
 
     //  and target our window for close as well
     TP.handle(this.getWindow(), aSignal, 'TP.sig.DOMClose');
 
-    return;
+    return this;
 });
 
 //  ========================================================================

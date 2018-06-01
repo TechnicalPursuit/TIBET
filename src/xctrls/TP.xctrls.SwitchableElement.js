@@ -98,11 +98,12 @@ function(aSignal) {
      * @summary This method is invoked as the 'value' (i.e. which panel is
      *     showing) of the switchable is changed.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
+     * @returns {TP.xctrls.SwitchableElement} The receiver.
      */
 
     this.setDisplayValue(aSignal.getValue());
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -115,7 +116,7 @@ function(aValue) {
      * @summary Sets the display, or visual, value of the receiver's node. You
      *     don't normally call this method directly, instead call setValue().
      * @param {Object} aValue The value to set.
-     * @returns {TP.xctrls.switchable} The receiver.
+     * @returns {TP.xctrls.SwitchableElement} The receiver.
      */
 
     var oldItem,

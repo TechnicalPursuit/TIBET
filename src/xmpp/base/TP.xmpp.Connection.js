@@ -958,6 +958,7 @@ function(aSignal) {
      *     packet-level input signals.
      * @param {TP.sig.XMPPDataAvailable} aSignal The triggering signal.
      * @exception TP.sig.XMPPQueueingException
+     * @returns {TP.xmpp.Connection} The receiver.
      */
 
     var stream,
@@ -972,7 +973,7 @@ function(aSignal) {
 
     if (aSignal.getSignalOrigin() !== stream.getID()) {
         //  not our input stream...
-        return;
+        return this;
     }
 
     //  Read data from the input stream and process it.
@@ -1067,7 +1068,7 @@ function(aSignal) {
         this.raise('TP.sig.XMPPQueueingException', TP.ec(e));
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1079,6 +1080,7 @@ function(aSignal) {
      * @method handleXMPPRosterInput
      * @summary Responds to notifications of roster input.
      * @param {TP.sig.XMPPRosterInput} aSignal The triggering signal.
+     * @returns {TP.xmpp.Connection} The receiver.
      */
 
     var args,
@@ -1090,7 +1092,7 @@ function(aSignal) {
             TP.warn('Invalid signal data for event.',
                     TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notValid(node = args.at('node'))) {
@@ -1098,12 +1100,12 @@ function(aSignal) {
             TP.warn('Missing stanza data for event.',
                     TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notValid(roster = node.getPayload(
                                 'query', TP.xmpp.XMLNS.IQ_ROSTER).at(0))) {
-        return;
+        return this;
     }
 
     //  if this signal is part of an iq/result then we asked for the roster
@@ -1115,10 +1117,10 @@ function(aSignal) {
     //  if this is an iq/set it's being pushed from the server and we need
     //  to respond in a more granular fashion
     if (node.get('tagType') === 'set') {
-        return;
+        return this;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1131,11 +1133,14 @@ function(aSignal) {
      * @summary Responds to notifications of the transport being ready to send
      *     or receive data.
      * @param {TP.sig.XMPPTransportReady} aSignal The triggering signal.
+     * @returns {TP.xmpp.Connection} The receiver.
      */
 
     //  Our default behavior is to turn around and signal
     //  TP.sig.XMPPConnectionReady.
     this.signal('TP.sig.XMPPConnectionReady');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1149,6 +1154,7 @@ function(aSignal) {
      *     problem. This method closes the connection and signals an
      *     TP.sig.XMPPConnectionException.
      * @param {TP.sig.XMPPTransportException} aSignal The triggering signal.
+     * @returns {TP.xmpp.Connection} The receiver.
      */
 
     //  The server closed the connection - a transport exception is pretty
@@ -1158,6 +1164,8 @@ function(aSignal) {
     //  Our default behavior is to turn around and signal
     //  TP.sig.XMPPConnectionException.
     this.signal('TP.sig.XMPPConnectionException');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

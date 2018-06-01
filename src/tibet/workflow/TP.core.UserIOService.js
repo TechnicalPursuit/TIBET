@@ -139,6 +139,7 @@ function(aRequest) {
      *     so any pending requests are handled in FIFO order.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
      *     need to provide information to this process.
+     * @returns {TP.core.UserIOService} The receiver.
      */
 
     var req,
@@ -153,7 +154,7 @@ function(aRequest) {
             //  updating prompt or default value for example)
             this.refreshFromRequest(req);
 
-            return;
+            return this;
         }
     }
 
@@ -173,7 +174,9 @@ function(aRequest) {
         handler.call(this);
     }
 
-    return this.raise('TP.sig.UnhandledInputRequest', req);
+    this.raise('TP.sig.UnhandledInputRequest', req);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -187,9 +190,10 @@ function(aRequest) {
      *     been processed. The default is simply to return.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
      *     need to provide information to this process.
+     * @returns {TP.core.UserIOService} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -217,9 +221,10 @@ function(aSignal) {
      * @summary Responds to input series, either handling them directly or
      *     queuing them for later processing.
      * @param {TP.sig.UserInputSeries} aSignal
+     * @returns {TP.core.UserIOService} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -232,9 +237,10 @@ function(aSignal) {
      * @summary Responds to output requests, either handling them directly or
      *     queuing them for later processing.
      * @param {TP.sig.UserOutputRequest} aSignal
+     * @returns {TP.core.UserIOService} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

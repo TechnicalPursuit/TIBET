@@ -225,6 +225,7 @@ function(aSignal) {
      * @method handleCloseTooltip
      * @param {TP.sig.CloseTooltip} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.tooltip} The receiver.
      */
 
     //  Make sure to clear any existing timeout that we have running and set the
@@ -234,7 +235,7 @@ function(aSignal) {
     this.setAttribute('hidden', true);
     this.setAttribute('active', false);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -246,11 +247,12 @@ function(aSignal) {
      * @method handleDOMClick
      * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.tooltip} The receiver.
      */
 
     this.setAttribute('hidden', true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -262,6 +264,7 @@ function(aSignal) {
      * @method handleDOMTransitionEnd
      * @param {TP.sig.DOMTransitionEnd} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.tooltip} The receiver.
      */
 
     this.setAttribute('hidden', true);

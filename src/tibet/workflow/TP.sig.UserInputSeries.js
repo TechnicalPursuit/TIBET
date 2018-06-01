@@ -576,6 +576,7 @@ function(aSignal) {
      *     it can complete.
      * @param {TP.sig.UserInput} aSignal The signal instance that triggered this
      *     handler.
+     * @returns {TP.sig.UserInputSeries} The receiver.
      */
 
     var pass,
@@ -593,7 +594,7 @@ function(aSignal) {
 
     if (aSignal.get('statusCode') === TP.CANCELLED) {
         this.cancel();
-        return;
+        return this;
     }
 
     //  capture the user's input for validation purposes
@@ -608,7 +609,7 @@ function(aSignal) {
     arr = this.get('queries').at(this.get('queryIndex'));
     if (TP.isEmpty(arr)) {
         this.complete();
-        return;
+        return this;
     }
 
     //  set up to have our retry count limited as defined
@@ -644,7 +645,7 @@ function(aSignal) {
 
                 this.fail();
 
-                return;
+                return this;
             }
 
             err = arr.at(this.getType().get('RETRY_INDEX'));
@@ -669,7 +670,7 @@ function(aSignal) {
             this.setSignalName('TP.sig.RequestModified');
             TP.handle(responder, this);
 
-            return;
+            return this;
         }
     }
 
@@ -680,7 +681,7 @@ function(aSignal) {
     //  having handled this query are we done now?
     if (TP.notValid(arr = this.get('queries').at(ndx))) {
         this.complete();
-        return;
+        return this;
     }
 
     //  clear existing data in the signal regarding request/response info
@@ -724,7 +725,7 @@ function(aSignal) {
     this.setSignalName('TP.sig.RequestModified');
     TP.handle(responder, this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

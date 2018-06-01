@@ -38,6 +38,7 @@ function(aSignal) {
      * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.pagerbar} The receiver.
      */
 
     var domTarget,
@@ -64,13 +65,13 @@ function(aSignal) {
         //  interested.
         wrappedDOMTarget = TP.wrap(domTarget);
         if (wrappedDOMTarget === this) {
-            return;
+            return this;
         }
 
         //  Grab the value element of the list item.
         valueTPElem = wrappedDOMTarget.get('xctrls|value');
         if (TP.notValid(valueTPElem)) {
-            return;
+            return this;
         }
 
         //  And it's text content.
@@ -111,7 +112,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

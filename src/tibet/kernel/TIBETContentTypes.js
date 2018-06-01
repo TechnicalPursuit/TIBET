@@ -798,9 +798,12 @@ function(aSignal) {
      * @summary Handles when the receiver's data is to be cleared.
      * @param {TP.sig.ClearContent} aSignal The signal instance which triggered
      *     this handler.
+     * @returns {TP.core.Content} The receiver.
      */
 
-    return TP.todo();
+    TP.todo();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -816,9 +819,12 @@ function(aSignal) {
      *     this handler.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
+     * @returns {TP.core.Content} The receiver.
      */
 
-    return TP.override();
+    TP.override();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -834,6 +840,7 @@ function(aSignal) {
      *     this handler.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
+     * @returns {TP.core.Content} The receiver.
      */
 
     var scope,
@@ -879,7 +886,7 @@ function(aSignal) {
     //  signal.
     this.removeRowFromAt(scopeURI, index);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -894,6 +901,7 @@ function(aSignal) {
      *     this handler.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
+     * @returns {TP.core.Content} The receiver.
      */
 
     var scope,
@@ -969,7 +977,7 @@ function(aSignal) {
             aSignal.at('copy'),
             aSignal.at('clear'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -989,6 +997,7 @@ function(aSignal) {
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.InvalidSource
+     * @returns {TP.core.Content} The receiver.
      */
 
     var scope,
@@ -1026,7 +1035,7 @@ function(aSignal) {
         TP.hc('signalChange', true),
         TP.bc(aSignal.at('copy')));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2079,6 +2088,7 @@ function(aSignal) {
      *     this handler.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
+     * @returns {TP.core.JSONContent} The receiver.
      */
 
     var scope,
@@ -2133,7 +2143,7 @@ function(aSignal) {
             true,
             true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2679,6 +2689,7 @@ function(aSignal) {
      *     this handler.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidURI
+     * @returns {TP.core.XMLContent} The receiver.
      */
 
     var scope,
@@ -2739,7 +2750,7 @@ function(aSignal) {
             true,
             true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

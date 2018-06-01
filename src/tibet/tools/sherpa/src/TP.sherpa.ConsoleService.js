@@ -387,6 +387,7 @@ function(aSignal) {
      *     SherpaConsole object changes.
      * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
      *     method.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var isHidden;
@@ -416,6 +417,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables.
@@ -440,6 +442,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables to
@@ -522,12 +525,13 @@ function(aSignal) {
      * @method handleDOMModifierKeyChange
      * @param {TP.sig.DOMModifierKeyChange} aSignal The TIBET signal which
      *     triggered this handler.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -541,6 +545,7 @@ function(aSignal) {
      * @method handleDOMMouseMove
      * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which
      *     triggered this handler.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  Update the 'mouseInfo' part of the status.
@@ -553,7 +558,7 @@ function(aSignal) {
         this.get('$consoleGUI').updateStatus(null, 'mouseInfo');
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -681,6 +686,7 @@ function(aRequest) {
      *     clear the input cell to ensure it's ready for input.
      * @param {TP.sig.Request} aRequest The last request, which sometimes will
      *     need to provide information to this process.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     if (!this.isSystemConsole()) {
@@ -692,7 +698,7 @@ function(aRequest) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -706,6 +712,7 @@ function(aSignal) {
      *     often when the receiver was the requestor for the signal.
      * @param {TP.sig.RequestCompleted} aSignal The signal instance that
      *     triggered this call.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var id,
@@ -749,7 +756,7 @@ function(aSignal) {
 
     this[TP.composeHandlerName('NextRequest')]();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -765,13 +772,14 @@ function(aSignal) {
      *     data capture.
      * @param {TP.sig.RequestModified} aSignal The signal instance that
      *     triggered this call.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  NOTE:   we don't ignore() here since this signal can be repeated and
     //          we don't want to miss out on the followups
     this.refreshFromRequest(this.getRequestById(aSignal.getRequestID()));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -785,12 +793,13 @@ function(aSignal) {
      *     typical response is to output the response via the view.
      * @param {TP.sig.ShellRequest} aSignal The signal instance that
      *     triggered this call.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     this.get('$consoleGUI').updateStatus(aSignal.getRequest());
     this[TP.composeHandlerName('NextRequest')](aSignal);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -805,6 +814,7 @@ function(aSignal) {
      *     the input cell is already spoken for.
      * @param {TP.sig.UserInputRequest} aSignal The signal instance which
      *     triggered this call.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var model;
@@ -815,7 +825,7 @@ function(aSignal) {
     //  origin or the requestor
     if (aSignal.get('requestor') !== model &&
         aSignal.getOrigin() !== model) {
-        return;
+        return this;
     }
 
     if (aSignal.get('responder') !== this) {
@@ -831,7 +841,7 @@ function(aSignal) {
 
         //  when we queue we don't complete the signal so things don't get
         //  ahead of themselves
-        return;
+        return this;
     }
 
     //  track the last request so when input is provided we can bind the
@@ -873,7 +883,7 @@ function(aSignal) {
             }.bind(this));
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -888,9 +898,12 @@ function(aSignal) {
      *     input cell is already spoken for.
      * @param {TP.sig.UserInputSeries} aSignal The signal instance which
      *     triggered this call.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    return this[TP.composeHandlerName('UserInputRequest')](aSignal);
+    this[TP.composeHandlerName('UserInputRequest')](aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -904,13 +917,14 @@ function(aRequest) {
      *     output or queuing the request if necessary.
      * @param {TP.sig.UserOutputRequest} aRequest The signal instance which
      *     triggered this call.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  consoles only work in response to their model's ID as either the
     //  origin or the requestor
     if (aRequest.get('requestor') !== this.getModel() &&
         aRequest.getOrigin() !== this.getModel()) {
-        return;
+        return this;
     }
 
     aRequest.set('responder', this);
@@ -930,6 +944,8 @@ function(aRequest) {
     //  NOTE that some shell execution pathways use a TP.sig.UserOutputRequest
     //  as their way of doing all the work, so we update from that request
     this.get('$consoleGUI').updateStatus(aRequest);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1008,6 +1024,7 @@ function(anEvent) {
      * @summary Processes requests to cancel the current job and return control
      *     of the input cell to the shell.
      * @param {Event} anEvent A JS/DOM Event object.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     TP.eventPreventDefault(anEvent);
@@ -1019,7 +1036,7 @@ function(anEvent) {
     //          being ready, so we can cancel it.
     this.cancelUserInputRequest();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1032,6 +1049,7 @@ function(aSignal) {
      * @summary Responds to signals the the model has changed state. This is
      *     typically reflected in the tool/status bar.
      * @param {Change} aSignal The change signal which triggered this method.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     if (aSignal.get('origin') === this.getModel()) {
@@ -1040,7 +1058,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1052,12 +1070,13 @@ function(anEvent) {
      * @method handleClearInput
      * @summary Processes requests to clear the input cell completely.
      * @param {Event} anEvent A JS/DOM Event object.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     TP.eventPreventDefault(anEvent);
     this.get('$consoleGUI').clearInput();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1071,6 +1090,7 @@ function(anEvent) {
      *     position. Note that this operates on the current responder so that
      *     each responder can maintain its own history list.
      * @param {Event} anEvent A JS/DOM Event object.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var model,
@@ -1078,7 +1098,7 @@ function(anEvent) {
         cmd;
 
     if (TP.notValid(model = this.get('model'))) {
-        return;
+        return this;
     }
 
     consoleGUI = this.get('$consoleGUI');
@@ -1092,7 +1112,7 @@ function(anEvent) {
         consoleGUI.clearInput();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1106,6 +1126,7 @@ function(anEvent) {
      *     Note that this operates on the current responder so that each
      *     responder can maintain its own history list.
      * @param {Event} anEvent A JS/DOM Event object.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var model,
@@ -1113,7 +1134,7 @@ function(anEvent) {
         cmd;
 
     if (TP.notValid(model = this.get('model'))) {
-        return;
+        return this;
     }
 
     consoleGUI = this.get('$consoleGUI');
@@ -1127,7 +1148,7 @@ function(anEvent) {
         consoleGUI.clearInput();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1141,6 +1162,7 @@ function(aSignal) {
      *     response.
      * @param {TP.sig.ConsoleInput} aSignal The signal which triggered this
      *     method.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var consoleGUI,
@@ -1155,7 +1177,7 @@ function(aSignal) {
     input = consoleGUI.getInputContent();
     if (TP.notValid(input)) {
         //  oops, not even an empty string value - the value must not be 'ready'
-        return;
+        return this;
     }
 
     //  always clear the input cell to provide visual feedback that we've
@@ -1175,7 +1197,7 @@ function(aSignal) {
 
     this.submitRawInput(input);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2906,13 +2928,15 @@ function(aSignal) {
                 str = ':reflect ' + str;
             }
         } else {
-            return;
+            return this;
         }
     }
 
     if (TP.notEmpty(str)) {
         this.get('$consoleService').sendConsoleRequest(str);
     }
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------

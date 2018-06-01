@@ -97,7 +97,9 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster} The receiver.
      */
 
-    return TP.todo();
+    TP.todo();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -32,9 +32,10 @@ function(aSignal) {
      *     upwards). This is because we're never actually 'toggling the toggle'.
      * @param {TP.sig.UIToggle} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.sherpa.opener} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -58,6 +58,7 @@ function(aSignal) {
      *     attributes' has as the reference to its remote resource, then the
      *     'reloadFrom<Attr>' method is invoked on the receiver.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {TP.meta.tag.CustomTag} The receiver.
      */
 
     var origin,
@@ -76,13 +77,15 @@ function(aSignal) {
         //  here.
         aspect = aSignal.at('aspect');
         if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
-            return;
+            return this;
         }
     }
 
     if (TP.canInvoke(this, 'refreshInstances')) {
         this.refreshInstances();
     }
+
+    return this;
 });
 
 //  ========================================================================
@@ -1681,6 +1684,7 @@ function(aSignal) {
      *     action(s) via the act() method.
      * @param {TP.sig.Signal} aSignal The signal instance which triggered this
      *     call.
+     * @returns {TP.tag.ActionTag} The receiver.
      */
 
     var sig;
@@ -1688,7 +1692,7 @@ function(aSignal) {
     if (this.shouldSignalChange()) {
         sig = this.signal('TP.sig.WillRun');
         if (sig.shouldPrevent()) {
-            return;
+            return this;
         }
     }
 
@@ -1700,7 +1704,7 @@ function(aSignal) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

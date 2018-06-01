@@ -43,6 +43,7 @@ function(aSignal) {
      *     packets such as subscription requests require a response.
      * @param {TP.sig.Signal} aSignal The original inbound signal which
      *     contained the receiver.
+     * @returns {TP.xmpp.IqRegister} The receiver.
      */
 
     return this.callNextMethod();

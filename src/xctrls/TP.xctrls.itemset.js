@@ -414,6 +414,7 @@ function(aSignal) {
      * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.itemset} The receiver.
      */
 
     var domTarget,
@@ -434,7 +435,7 @@ function(aSignal) {
         //  will handle the rest.
         domTarget = aSignal.getDOMTarget();
         if (TP.elementHasClass(domTarget, 'close_mark')) {
-            return;
+            return this;
         }
 
         //  Get the resolved DOM target - this should be the list item that was
@@ -446,13 +447,13 @@ function(aSignal) {
         //  interested.
         wrappedDOMTarget = TP.wrap(domTarget);
         if (wrappedDOMTarget === this) {
-            return;
+            return this;
         }
 
         //  Grab the value element of the list item.
         valueTPElem = wrappedDOMTarget.get('xctrls|value');
         if (TP.notValid(valueTPElem)) {
-            return;
+            return this;
         }
 
         //  And it's text content.
@@ -463,7 +464,7 @@ function(aSignal) {
 
         //  If the two values are equivalent, than just return
         if (TP.equal(oldValue, newValue)) {
-            return;
+            return this;
         }
 
         //  If the item was already selected, then deselect the value.
@@ -493,7 +494,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

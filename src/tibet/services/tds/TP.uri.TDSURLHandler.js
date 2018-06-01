@@ -277,19 +277,19 @@ function(aSignal) {
 
     //  Make sure that we have a payload
     if (TP.notValid(payload = aSignal.getPayload())) {
-        return;
+        return this;
     }
 
     //  And that we have SSE data in that payload
     data = payload.at('data');
     if (TP.notValid(data)) {
-        return;
+        return this;
     }
 
     //  If we can't determine the file path we can't take action in any case.
     path = data.at('path');
     if (TP.isEmpty(path)) {
-        return;
+        return this;
     }
 
     //  Strip any enclosing quotes from the path.

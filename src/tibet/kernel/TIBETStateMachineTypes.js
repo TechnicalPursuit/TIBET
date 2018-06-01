@@ -927,11 +927,12 @@ function(aSignal) {
      *     when you connect a state machine to an event stream via observe()
      *     without providing an explicit handler.
      * @param {TP.sig.Signal} aSignal The signal.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
     this.updateCurrentState(aSignal);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1679,13 +1680,14 @@ function(aSignal) {
      * @method handleStateSignal
      * @summary Responder for top-level StateSignal instance. This method serves
      *     as a common backstop for all StateReponders.
+     * @returns {TP.core.StateResponder} The receiver.
      */
 
     if (TP.sys.shouldLogSignals()) {
         TP.debug('StateSignal: ' + TP.str(aSignal));
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

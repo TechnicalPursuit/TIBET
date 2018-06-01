@@ -61,7 +61,7 @@ function() {
      * @method constructTemplateFromInline
      * @summary Constructs the template used by the receiver to generate
      *     content, if provided by the author.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.table} The receiver.
      */
 
     var doc,
@@ -177,7 +177,7 @@ function() {
      *     the receiver's serialization. Typically, these will be nodes that
      *     will be 'slotted' into the receiver by the author and not nodes that
      *     the template generated 'around' the slotted nodes.
-     * @returns {TP.core.node[]} An Array of descendant nodes to serialize.
+     * @returns {TP.core.Node[]} An Array of descendant nodes to serialize.
      */
 
     var selectedDescendants;
@@ -233,6 +233,7 @@ function(aSignal) {
      * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.table} The receiver.
      */
 
     var domTarget,
@@ -259,7 +260,7 @@ function(aSignal) {
         //  interested.
         wrappedDOMTarget = TP.wrap(domTarget);
         if (wrappedDOMTarget === this) {
-            return;
+            return this;
         }
 
         //  If the event happend on the row itself, then just use that.
@@ -319,7 +320,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

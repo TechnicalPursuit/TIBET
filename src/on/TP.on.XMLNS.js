@@ -90,6 +90,7 @@ function(aSignal) {
      *     specially by the DOM_FIRING firing policy in the notification center
      *     code).
      * @param {TP.sig.Signal} aSignal The signal.
+     * @returns {TP.meta.on.XMLNS} The receiver.
      */
 
     var origin,
@@ -137,7 +138,7 @@ function(aSignal) {
                     TP.sig.ResponderSignal);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

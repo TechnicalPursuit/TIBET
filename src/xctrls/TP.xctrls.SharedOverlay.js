@@ -402,6 +402,7 @@ function(aSignal) {
      * @summary Handles when the overlay is to be closed.
      * @param {TP.sig.CloseOverlay} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
     this.setAttribute('hidden', true);

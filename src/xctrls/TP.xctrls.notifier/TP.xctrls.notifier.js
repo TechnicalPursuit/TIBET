@@ -86,9 +86,12 @@ function(aSignal) {
      * @method handleOpenNotifier
      * @param {TP.sig.OpenNotifier} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.notifier} The receiver.
      */
 
-    return this.openOverlay(aSignal);
+    this.openOverlay(aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -142,12 +145,13 @@ function(aSignal) {
      * @method handleCloseNotifier
      * @param {TP.sig.CloseNotifier} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.notifier} The receiver.
      */
 
     this.setAttribute('active', false);
     this.setAttribute('hidden', true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -159,12 +163,13 @@ function(aSignal) {
      * @method handleDOMClick
      * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.notifier} The receiver.
      */
 
     this.setAttribute('active', false);
     this.setAttribute('hidden', true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -176,6 +181,7 @@ function(aSignal) {
      * @method handleDOMTransitionEnd
      * @param {TP.sig.DOMTransitionEnd} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.notifier} The receiver.
      */
 
     this.setAttribute('active', false);

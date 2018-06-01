@@ -367,6 +367,7 @@ function(aSignal) {
      * @summary Responds to notification of TP.sig.XMPPInput, typically due to
      *     an observation of the receiver's message ID. In this handler the
      *     response node is saved as the receiver's last response.
+     * @returns {TP.xmpp.Stanze} The receiver.
      */
 
     var args,
@@ -377,7 +378,7 @@ function(aSignal) {
             TP.warn('Invalid signal data for event.',
                     TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notValid(node = args.at('node'))) {
@@ -385,7 +386,7 @@ function(aSignal) {
             TP.warn('Missing stanza data for event.',
                     TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     //  got our response, clean up registration so we don't leak
@@ -394,7 +395,7 @@ function(aSignal) {
     //  save the response
     this.set('lastResponse', node);
 
-    return;
+    return this;
 });
 //  ------------------------------------------------------------------------
 

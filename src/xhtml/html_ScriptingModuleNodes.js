@@ -113,9 +113,10 @@ function(aSignal) {
      *     do *not* respond to value changes, as that is handled specially by
      *     the system.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {TP.html.script} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

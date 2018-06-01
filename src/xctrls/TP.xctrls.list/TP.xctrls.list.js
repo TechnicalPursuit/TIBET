@@ -375,6 +375,7 @@ function(aSignal) {
      * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.list} The receiver.
      */
 
     var domTarget,
@@ -401,7 +402,7 @@ function(aSignal) {
         //  interested.
         wrappedDOMTarget = TP.wrap(domTarget);
         if (wrappedDOMTarget === this) {
-            return;
+            return this;
         }
 
         //  See if we have an alternate item tag name that resolves to a TIBET
@@ -421,7 +422,7 @@ function(aSignal) {
         //  types, then return. This typically happens if we're using a template
         //  and there are events happening in embedded controls.
         if (!TP.isKindOf(wrappedDOMTarget, itemType)) {
-            return;
+            return this;
         }
 
         //  If the DOM target has either a 'spacer' or 'grouping' attribute,
@@ -429,13 +430,13 @@ function(aSignal) {
         //  selection - exit here.
         if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
             TP.elementHasAttribute(domTarget, 'grouping', true)) {
-            return;
+            return this;
         }
 
         //  Grab the value element of the list item.
         valueTPElem = wrappedDOMTarget.get('xctrls|value');
         if (TP.notValid(valueTPElem)) {
-            return;
+            return this;
         }
 
         //  And it's text content.
@@ -446,7 +447,7 @@ function(aSignal) {
 
         //  If the two values are equivalent, than just return
         if (TP.equal(oldValue, newValue)) {
-            return;
+            return this;
         }
 
         //  If the item was already selected, then deselect the value.
@@ -476,7 +477,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

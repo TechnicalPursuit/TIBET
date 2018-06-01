@@ -6653,6 +6653,7 @@ function(aSignal) {
      * @method handleUIFocusFirst
      * @param {TP.sig.UIFocusFirst} aSignal The signal that caused this handler
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.FIRST);
@@ -6661,7 +6662,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6673,6 +6674,7 @@ function(aSignal) {
      * @method handleUIFocusLast
      * @param {TP.sig.UIFocusLast} aSignal The signal that caused this handler
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.LAST);
@@ -6681,7 +6683,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6693,6 +6695,7 @@ function(aSignal) {
      * @method handleUIFocusNext
      * @param {TP.sig.UIFocusNext} aSignal The signal that caused this handler
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.NEXT);
@@ -6713,6 +6716,7 @@ function(aSignal) {
      * @method handleUIFocusPrevious
      * @param {TP.sig.UIFocusPrevious} aSignal The signal that caused this
      *     handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.PREVIOUS);
@@ -6721,7 +6725,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6733,6 +6737,7 @@ function(aSignal) {
      * @method handleUIFocusFollowing
      * @param {TP.sig.UIFocusFollowing} aSignal The signal that caused this
      *     handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.FOLLOWING);
@@ -6741,7 +6746,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6753,6 +6758,7 @@ function(aSignal) {
      * @method handleUIFocusPreceding
      * @param {TP.sig.UIFocusPreceding} aSignal The signal that caused this
      *     handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.PRECEDING);
@@ -6761,7 +6767,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6773,6 +6779,7 @@ function(aSignal) {
      * @method handleUIFocusFirstInGroup
      * @param {TP.sig.UIFocusFirstInGroup} aSignal The signal that caused this
      *     handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.FIRST_IN_GROUP);
@@ -6781,7 +6788,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6793,6 +6800,7 @@ function(aSignal) {
      * @method handleUIFocusLastInGroup
      * @param {TP.sig.UIFocusLastInGroup} aSignal The signal that caused this
      *     handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.LAST_IN_GROUP);
@@ -6801,7 +6809,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6813,6 +6821,7 @@ function(aSignal) {
      * @method handleUIFocusFirstInPreviousGroup
      * @param {TP.sig.UIFocusFirstInPreviousGroup} aSignal The signal that
      *     caused this handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.FIRST_IN_PREVIOUS_GROUP);
@@ -6821,7 +6830,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6833,6 +6842,7 @@ function(aSignal) {
      * @method handleUIFocusFirstInNextGroup
      * @param {TP.sig.UIFocusFirstInNextGroup} aSignal The signal that
      *     caused this handler trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     this.moveFocus(TP.FIRST_IN_NEXT_GROUP);
@@ -6841,7 +6851,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6855,6 +6865,7 @@ function(aSignal) {
      * @method handleUIActivate
      * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -6866,7 +6877,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIActivate', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6880,6 +6891,7 @@ function(aSignal) {
      *     alert content should be encoded into the signal payload.
      * @param {TP.sig.UIAlert} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -6897,7 +6909,7 @@ function(aSignal) {
     //  the alert signal.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6911,6 +6923,7 @@ function(aSignal) {
      *     the side-effect of deselecting any selections in the control.
      * @param {TP.sig.UIBlur} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var focusingTPElem;
@@ -6927,7 +6940,7 @@ function(aSignal) {
 
         aSignal.preventDefault();
 
-        return;
+        return this;
     }
 
     //  We're blurring... set 'focused' to false.
@@ -6951,7 +6964,7 @@ function(aSignal) {
     //  Make sure to stop the signal propagation here - we've now blurred.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6964,6 +6977,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'blurred state'.
      * @param {TP.sig.UIBlurred} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -6978,7 +6992,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6993,6 +7007,7 @@ function(aSignal) {
      *     payload.
      * @param {TP.sig.UIBusy} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7004,7 +7019,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIBusy', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7017,6 +7032,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'closed state'.
      * @param {TP.sig.UIClose} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7028,7 +7044,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIClose', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7041,6 +7057,7 @@ function(aSignal) {
      * @summary Collapses the receiver, if that's an appropriate action.
      * @param {TP.sig.UICollapse} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7052,7 +7069,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UICollapse', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7064,6 +7081,7 @@ function(aSignal) {
      * @method handleUIDeactivate
      * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7087,6 +7105,7 @@ function(aSignal) {
      * @method handleUIDelete
      * @param {TP.sig.UIDelete} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7094,7 +7113,9 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDelete', aSignal.at('trigger'));
 
-    return TP.todo();
+    TP.todo();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7107,6 +7128,7 @@ function(aSignal) {
      * @summary Deselects the receiver's native data.
      * @param {TP.sig.UIDeselect} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var node;
@@ -7131,7 +7153,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDeselect', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7143,6 +7165,7 @@ function(aSignal) {
      * @method handleUIDidBlur
      * @param {TP.sig.UIDidBlur} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7150,7 +7173,7 @@ function(aSignal) {
         void 0;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7162,6 +7185,7 @@ function(aSignal) {
      * @method handleUIDidFocus
      * @param {TP.sig.UIDidFocus} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7169,7 +7193,7 @@ function(aSignal) {
         void 0;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7181,6 +7205,7 @@ function(aSignal) {
      * @method handleUIDidPopFocus
      * @param {TP.sig.UIDidPopFocus} aSignal The signal that caused this
      *     handler to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7194,7 +7219,7 @@ function(aSignal) {
         */
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7206,6 +7231,7 @@ function(aSignal) {
      * @method handleUIDidPushFocus
      * @param {TP.sig.UIDidPushFocus} aSignal The signal that caused this
      *     handler to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7219,7 +7245,7 @@ function(aSignal) {
         */
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7232,6 +7258,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'disabled state'.
      * @param {TP.sig.UIDisabled} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7243,7 +7270,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7255,6 +7282,7 @@ function(aSignal) {
      * @method handleUIDuplicate
      * @param {TP.sig.UIDuplicate} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7262,7 +7290,9 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDuplicate', aSignal.at('trigger'));
 
-    return TP.todo();
+    TP.todo();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7275,6 +7305,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'enabled state'.
      * @param {TP.sig.UIEnabled} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7286,7 +7317,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7299,6 +7330,7 @@ function(aSignal) {
      * @summary Expands the receiver, if that's an appropriate action.
      * @param {TP.sig.UIExpand} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7310,7 +7342,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIExpand', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7323,6 +7355,7 @@ function(aSignal) {
      * @summary Focuses the receiver's native control.
      * @param {TP.sig.UIFocus} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (!this.shouldPerformUIHandler(aSignal) ||
@@ -7330,7 +7363,7 @@ function(aSignal) {
 
         aSignal.preventDefault();
 
-        return;
+        return this;
     }
 
     //  Go ahead and tell ourself to become the focused responder
@@ -7349,7 +7382,7 @@ function(aSignal) {
     //  Make sure to stop the signal propagation here - we've now focused.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7362,6 +7395,7 @@ function(aSignal) {
      * @summary Focuses the receiver, and selects its active content.
      * @param {TP.sig.UIFocusAndSelect} aSignal The signal that caused this
      *     handler to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7378,7 +7412,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7391,6 +7425,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'focused state'.
      * @param {TP.sig.UIFocused} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7405,7 +7440,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7419,6 +7454,7 @@ function(aSignal) {
      *     content should be encoded into the signal payload.
      * @param {TP.sig.UIHelp} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7436,7 +7472,7 @@ function(aSignal) {
     //  the help signal.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7449,6 +7485,7 @@ function(aSignal) {
      * @summary Hides the receiver, if that's an appropriate action.
      * @param {TP.sig.UIHide} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7460,7 +7497,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIHide', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7474,6 +7511,7 @@ function(aSignal) {
      *     content should be encoded into the signal payload.
      * @param {TP.sig.UIHint} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7491,7 +7529,7 @@ function(aSignal) {
     //  the hint signal.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7504,6 +7542,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'idle state'.
      * @param {TP.sig.UIIdle} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7515,7 +7554,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIIdle', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7528,6 +7567,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'in range state'.
      * @param {TP.sig.UIInRange} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7539,7 +7579,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIInRange', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7551,6 +7591,7 @@ function(aSignal) {
      * @method handleUIInsert
      * @param {TP.sig.UIInsert} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7558,7 +7599,9 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIInsert', aSignal.at('trigger'));
 
-    return TP.todo();
+    TP.todo();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7571,6 +7614,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'invalid state'.
      * @param {TP.sig.UIInvalid} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7582,7 +7626,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIInvalid', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7595,6 +7639,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'open state'.
      * @param {TP.sig.UIOpen} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7606,7 +7651,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIOpen', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7619,6 +7664,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'optional state'.
      * @param {TP.sig.UIOptional} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7630,7 +7676,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIOptional', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7643,6 +7689,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'out of range state'.
      * @param {TP.sig.UIOutOfRange} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7654,7 +7701,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIOutOfRange', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7667,6 +7714,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'read only state'.
      * @param {TP.sig.UIReadonly} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7678,7 +7726,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIReadonly', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7691,6 +7739,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'read write state'.
      * @param {TP.sig.UIReadwrite} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7702,7 +7751,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIReadwrite', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7715,6 +7764,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'required state'.
      * @param {TP.sig.UIRequired} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7726,7 +7776,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIRequired', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7738,6 +7788,7 @@ function(aSignal) {
      * @method handleUIScroll
      * @param {TP.sig.UIScroll} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7745,7 +7796,9 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIScroll', aSignal.at('trigger'));
 
-    return TP.todo();
+    TP.todo();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7758,6 +7811,7 @@ function(aSignal) {
      * @summary Selects the receiver's native data.
      * @param {TP.sig.UISelect} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var node;
@@ -7782,7 +7836,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UISelect', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7795,6 +7849,7 @@ function(aSignal) {
      * @summary Shows the receiver, if that's an appropriate action.
      * @param {TP.sig.UIShow} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7806,7 +7861,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIShow', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7820,6 +7875,7 @@ function(aSignal) {
      *     the signal payload. This state name is defaulted to 'closed'.
      * @param {TP.sig.UIToggle} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var stateName,
@@ -7849,7 +7905,7 @@ function(aSignal) {
         aSignal.stopPropagation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7862,6 +7918,7 @@ function(aSignal) {
      * @summary Causes the receiver to be put into its 'valid state'.
      * @param {TP.sig.UIValid} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -7873,7 +7930,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIValid', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7885,6 +7942,7 @@ function(aSignal) {
      * @method handleUIValueChange
      * @param {TP.sig.UIValueChange} aSignal The signal that caused this
      *     handler to trip.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.

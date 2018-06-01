@@ -4864,7 +4864,7 @@ function(aSignal) {
      *     constructed the receiver ignores future request signals so that it is
      *     no longer part of the request cycle.
      * @param {TP.sig.Request} aSignal The signal that triggered this handler.
-     * @returns {Object} The result of processing the signal.
+     * @returns {Object|null} The result of processing the signal.
      */
 
     var id,
@@ -4889,6 +4889,8 @@ function(aSignal) {
         //  so the instance can specialize as much as possible
         return TP.handle(inst, aSignal);
     }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -6210,7 +6212,9 @@ function(aSignal) {
      * @returns {TP.core.RouteController} The receiver.
      */
 
-    return this.setContentForRoute(aSignal.at('route'));
+    this.setContentForRoute(aSignal.at('route'));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

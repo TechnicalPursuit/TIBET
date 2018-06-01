@@ -74,9 +74,12 @@ function(aSignal) {
      * @summary Handles when the sticky is to be opened.
      * @param {TP.sig.OpenSticky} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.sticky} The receiver.
      */
 
-    return this.openOverlay(aSignal);
+    this.openOverlay(aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -156,12 +159,13 @@ function(aSignal) {
      * @method handleCloseSticky
      * @param {TP.sig.CloseSticky} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.sticky} The receiver.
      */
 
     this.setAttribute('hidden', true);
     this.setAttribute('active', false);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

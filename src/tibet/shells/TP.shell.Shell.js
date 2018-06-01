@@ -847,7 +847,7 @@ function(aSignal) {
 
     this.logout(aSignal);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1828,8 +1828,8 @@ function(aSignal) {
      *     provided.
      * @param {TP.sig.UserInput} aSignal The signal instance that triggered this
      *     handler.
-     * @returns {TPResult} The result produced when processing the
-     *     TP.sig.ShellRequest constructed by this method.
+     * @returns {TP.shell.ShellResponse} The response produced when processing
+     *     the TP.sig.ShellRequest constructed by this method.
      */
 
     var request,

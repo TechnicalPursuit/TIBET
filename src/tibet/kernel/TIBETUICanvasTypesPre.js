@@ -1485,12 +1485,13 @@ function() {
     /**
      * @method close
      * @summary Closes the receiver.
+     * @returns {TP.core.Window} The receiver.
      */
 
     //  this will close the window, and the unload hook should do the rest
     this.getNativeWindow().close();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1659,9 +1660,12 @@ function(aSignal) {
      * @summary Closes the receiver.
      * @param {TP.sig.DOMClose} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.core.Window} The receiver.
      */
 
-    return this.close();
+    this.close();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

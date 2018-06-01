@@ -83,7 +83,7 @@ function(aRequest) {
 
     if (!TP.isKindOf(aRequest, 'TP.sig.JSONRequest')) {
         this.raise('TP.sig.InvalidRequest');
-        return;
+        return this;
     }
 
     request = TP.request(aRequest);
@@ -93,7 +93,8 @@ function(aRequest) {
 
     //  if we don't have a viable URL, we must fail the request.
     if (TP.notValid(url)) {
-        return request.fail('TP.sig.InvalidURI');
+        request.fail('TP.sig.InvalidURI');
+        return this;
     }
 
     //  rewrite the mode, whether we're async or sync. This will only change

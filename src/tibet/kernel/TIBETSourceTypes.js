@@ -582,7 +582,7 @@ function(aSignal) {
 
     this.deactivate();
 
-    return;
+    return this;
 });
 
 //  ========================================================================
@@ -2280,11 +2280,11 @@ function(aMutationRecord) {
     //  Make sure that the target is in a Window.
     doc = targetNode.ownerDocument;
     if (doc === undefined) {
-        return;
+        return this;
     }
 
     if (!TP.isWindow(doc.defaultView)) {
-        return;
+        return this;
     }
 
     //  Switch on the type of mutation that cause this to trigger.

@@ -1411,9 +1411,12 @@ function(normalizedEvent) {
      * @summary A method which subtypes override to perform key handling
      *     specific to keydown events.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
-    return TP.override();
+    TP.override();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1442,9 +1445,12 @@ function(normalizedEvent) {
      * @summary A method which subtypes override to perform key handling
      *     specific to keypress events.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
-    return TP.override();
+    TP.override();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1475,9 +1481,12 @@ function(normalizedEvent) {
      * @summary A method which subtypes override to perform key handling
      *     specific to keyup events.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
-    return TP.override();
+    TP.override();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2105,6 +2114,7 @@ function(normalizedEvent) {
      * @summary Handles key down events for the TP.core.USAscii101Keyboard
      *     type.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.USAscii101Keyboard} The receiver.
      */
 
     var key;
@@ -2118,7 +2128,7 @@ function(normalizedEvent) {
         if (key === 0) {
             normalizedEvent.$notSignaled = true;
 
-            return;
+            return this;
         }
     }
 
@@ -2132,7 +2142,7 @@ function(normalizedEvent) {
             //  wait for press to decide
             normalizedEvent.$notSignaled = true;
 
-            return;
+            return this;
         } else {
             //  Won't get a press from an arrow on IE or Safari so we have
             //  to hack it a little differently. A non-special key will get
@@ -2144,7 +2154,7 @@ function(normalizedEvent) {
             //  press properly.
             lastDown = TP.core.Keyboard.get('lastDown');
             if (!TP.isEvent(lastDown)) {
-                return;
+                return this;
             }
 
             lastDown.$notSignaled = true;
@@ -2176,7 +2186,7 @@ function(normalizedEvent) {
 
     this.invokeObservers('keydown', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2189,6 +2199,7 @@ function(normalizedEvent) {
      * @summary Handles key press events for the TP.core.USAscii101Keyboard
      *     type.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.USAscii101Keyboard} The receiver.
      */
 
     var lastDown,
@@ -2212,7 +2223,7 @@ function(normalizedEvent) {
             //  suppress to match DOM Level 3 standard and IE/Safari
             TP.core.Keyboard.$set('lastPress', null);
 
-            return;
+            return this;
         }
 
         //  press keys are often wrong...map to what was seen onkeydown
@@ -2267,7 +2278,7 @@ function(normalizedEvent) {
 
     this.invokeObservers('keypress', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2279,6 +2290,7 @@ function(normalizedEvent) {
      * @method handleKeyUp
      * @summary Handles key up events for the TP.core.USAscii101Keyboard type.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.USAscii101Keyboard} The receiver.
      */
 
     var key,
@@ -2336,7 +2348,7 @@ function(normalizedEvent) {
 
     this.invokeObservers('keyup', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

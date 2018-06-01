@@ -695,7 +695,7 @@ function(aSignal) {
      *     overall canvas that the halo is working with.
      * @param {TP.sig.ShowTile} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.consoleoutputitem} The receiver.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
     var tileID,

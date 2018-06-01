@@ -63,9 +63,12 @@ function(aSignal) {
      * @summary Handles when the popup is to be opened.
      * @param {TP.sig.OpenPopup} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.popup} The receiver.
      */
 
-    return this.openOverlay(aSignal);
+    this.openOverlay(aSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -153,11 +156,12 @@ function(aSignal) {
      * @method handleClosePopup
      * @param {TP.sig.ClosePopup} aSignal The signal that caused this handler
      *     to trip.
+     * @returns {TP.xctrls.popup} The receiver.
      */
 
     this.setAttribute('hidden', true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -169,6 +173,7 @@ function(aSignal) {
      * @method handleDOMClick
      * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.xctrls.popup} The receiver.
      */
 
     var targetElem,
@@ -207,7 +212,7 @@ function(aSignal) {
     //  clicks during this 'popup open' session are the triggering click.
     this.set('isTriggeringClick', false);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
