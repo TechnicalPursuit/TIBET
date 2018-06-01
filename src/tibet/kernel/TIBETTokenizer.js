@@ -354,7 +354,7 @@ function(src, ops, tsh, exp, alias, args) {
                                             terminate an ongoing string or URI.
     @param      {Boolean}   [args=false]    True to signify content is being
                                             tokenized for 'shell arguments'.
-    @returns    {Array}     An array of token objects, simple objects which
+    @returns    {Object[]}  An array of token objects, simple objects which
                             represent one token within the source string.
     */
 
@@ -1595,10 +1595,10 @@ function(tokens, separators) {
      *     separated by one or more separator tokens. This routine is used by
      *     $tokenizedSplit for example, to rejoin substrings separated by
      *     whitespace tokens. The result is that identifiers etc. are rebuilt.
-     * @param {Array} tokens A list of tokens from the $tokenize routine.
-     * @param {Array} separators A list of token types which should be
+     * @param {String[]} tokens A list of tokens from the $tokenize routine.
+     * @param {String[]} separators A list of token types which should be
      *     considered separators. Sequences of non-separators are joined.
-     * @returns {Array} An array of strings reconstructed from tokens.
+     * @returns {String[]} An array of strings reconstructed from tokens.
      */
 
     var seps,
@@ -1725,7 +1725,7 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
                                                 string.
     @param      {Boolean}   [tsh=false]         True if TIBET Shell (TSH)
                                                 semantics should be observed.
-    @returns    {String|Array} The condensed source code or token array.
+    @returns    {String|String[]} The condensed source code or token array.
     */
 
     var arr,

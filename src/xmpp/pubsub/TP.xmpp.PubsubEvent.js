@@ -59,7 +59,7 @@ function(aStanza) {
      *     does not want the XMPP connection to send a signal on the receiver's
      *     behalf.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {Object|String|Array} The origin(s) to use when signaling.
+     * @returns {Object|String|Object[]} The origin(s) to use when signaling.
      */
 
     var itemsTPElem,

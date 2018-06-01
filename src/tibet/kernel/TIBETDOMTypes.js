@@ -1711,7 +1711,7 @@ function(includeNode, aPrefix, joinChar) {
      *     observations.
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
-     * @returns {Array} An array of position strings.
+     * @returns {String[]} An array of position strings.
      */
 
     return TP.nodeGetAncestorPositions(this.getNativeNode(),
@@ -2183,7 +2183,7 @@ function(aNamespaceURI, includeDescendants) {
      *     prefixes for. If empty, all defined prefixes will be returned.
      * @param {Boolean} includeDescendants Should the search run across the
      *     entire DOM tree? Default is false.
-     * @returns {Array} An array of namespace prefixes for the supplied
+     * @returns {String[]} An array of namespace prefixes for the supplied
      *     aNamespaceURI in the document.
      */
 
@@ -2218,7 +2218,8 @@ function(includeDescendants) {
      * @summary Returns an Array of unique namespace URIs in the receiver.
      * @param {Boolean} includeDescendants Should the search run across the
      *     entire DOM tree? Default is false.
-     * @returns {Array} An array of unique namespace URIs found in the receiver.
+     * @returns {String[]} An array of unique namespace URIs found in the
+     *     receiver.
      */
 
     return TP.nodeGetNSURIs(this.getNativeNode(), includeDescendants);
@@ -2270,7 +2271,7 @@ function(phaseList, outerElem) {
      * @summary Returns the maximum phase the node should be processed to based
      *     on checking it and its ancestors for phase information. Child content
      *     shouldn't exceed the phase of its enclosing ancestors.
-     * @param {Array} phaseList An optional array in which to find the target
+     * @param {String[]} phaseList An optional array in which to find the target
      *     phase.
      * @param {Element} outerElem An optional 'outermost' element to test.
      *     Testing will not go higher than this element in the DOM tree.
@@ -2347,8 +2348,8 @@ function(targetPhase, targetPhaseList) {
      *     information)
      * @param {String} targetPhase A TIBET content "process phase" constant such
      *     as 'Compile'.
-     * @param {Array} targetPhaseList An optional list of phases to search for
-     *     the target phase. The default is TP.shell.TSH.NOCACHE.
+     * @param {String[]} targetPhaseList An optional list of phases to search
+     *     for the target phase. The default is TP.shell.TSH.NOCACHE.
      * @returns {Boolean} True if the phase has been reached.
      */
 
@@ -2725,7 +2726,7 @@ function(aProperty) {
      *     obtaining the property on each object, starting with the receiver.
      * @param {String} aProperty The property name to use to obtain each return
      *     value.
-     * @returns {Array} An Array of objects obtained by recursing using the
+     * @returns {Object[]} An Array of objects obtained by recursing using the
      *     supplied property.
      */
 
@@ -3036,8 +3037,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @exception TP.sig.InvalidNode
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
@@ -3188,8 +3189,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     method calls.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @exception TP.sig.InvalidNode
      * @returns {Object} The result of invoking the method using the receiver's
      *     native node.
@@ -5500,7 +5501,7 @@ function() {
      * @method getAncestors
      * @summary Returns an Array containing the parent nodes of the receiver.
      *     This list ends with the top level node.
-     * @returns {Array} An Array of the parent nodes of the supplied Node.
+     * @returns {Node[]} An Array of the parent nodes of the supplied Node.
      */
 
     return TP.wrap(TP.nodeGetAncestors(this.getNativeNode()));
@@ -5531,7 +5532,7 @@ function() {
     /**
      * @method getChildNodes
      * @summary Returns an Array of the child nodes of the receiver.
-     * @returns {Array} An Array of the child nodes of the receiver.
+     * @returns {Node[]} An Array of the child nodes of the receiver.
      */
 
     return TP.wrap(TP.nodeGetChildNodes(this.getNativeNode()));
@@ -5565,7 +5566,8 @@ function() {
      * @method getChildElements
      * @summary Returns an Array of the children of the receiver which are
      *     Element nodes.
-     * @returns {Array} An Array of the Element children of the supplied Node.
+     * @returns {Element[]} An Array of the Element children of the supplied
+     *     Node.
      */
 
     return TP.wrap(TP.nodeGetChildElements(this.getNativeNode()));
@@ -5585,7 +5587,7 @@ function(breadthFirst) {
      *     the various DOM parsers.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      */
 
     return TP.wrap(TP.nodeGetDescendants(this.getNativeNode(),
@@ -5606,7 +5608,7 @@ function(aType, breadthFirst) {
      * @param {Number} aType The DOM node type constant to match against.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      */
 
     return TP.wrap(TP.nodeGetDescendantsByType(this.getNativeNode(),
@@ -5625,7 +5627,7 @@ function(breadthFirst) {
      *     the receiver which are Element nodes.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An Array of the Element descendants of the supplied
+     * @returns {Element[]} An Array of the Element descendants of the supplied
      *     Node.
      */
 
@@ -5650,7 +5652,7 @@ function(attrName, attrValue, breadthFirst) {
      * @param {Object} attrValue The attribute value to check.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Element[]} An Array containing the elements found.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByAttribute(
@@ -5678,7 +5680,7 @@ function(attrPrefix, attrValue, breadthFirst) {
      * @param {Object} attrValue The attribute value to check.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Element[]} An Array containing the elements found.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByAttributePrefix(
@@ -5713,8 +5715,8 @@ function(anIdOrName) {
      *     elements with a name value that overlaps with an ID cannot be armed
      *     using normal mechanisms.
      * @param {String} anIdOrName The ID or name of the element to find.
-     * @returns {Array} The objects whose name is equal to anIdOrName or empty
-     *     if there are no objects with that name.
+     * @returns {Element[]} The elements whose name is equal to anIdOrName or
+     *     empty if there are no objects with that name.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByIdOrName(
@@ -5733,7 +5735,7 @@ function(aName) {
      *     which are Element nodes and whose 'name' attributes match the name
      *     provided.
      * @param {String} aName The value of the 'name' attribute to search for.
-     * @returns {Array} An Array containing native elements found.
+     * @returns {Element[]} An Array containing native elements found.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByName(
@@ -5752,7 +5754,7 @@ function(aClassName) {
      *     name matches aClassName.
      * @param {String} aClassName The class name to use to find matching
      *     elements. Multiple class names should be space separated.
-     * @returns {Array} An Array of Elements under anElement whose CSS class
+     * @returns {Element[]} An Array of Elements under anElement whose CSS class
      *     name matches aClassName.
      */
 
@@ -5816,7 +5818,7 @@ function(aSelectorStr) {
      * @param {Node} aNode The node to begin the search. If this parameter is
      *     null, the entire document is searched.
      * @param {String} aSelectorStr The CSS selector to use to search the DOM.
-     * @returns {Array} An Array containing native elements found.
+     * @returns {Element[]} An Array containing native elements found.
      */
 
     return TP.wrap(TP.nodeEvaluateCSS(this.getNativeNode(),
@@ -5840,7 +5842,7 @@ function(aName, aNamespaceURI) {
      *     more information on the capabilities of this method.
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
-     * @returns {Array} An Array containing elements found.
+     * @returns {Element[]} An Array containing elements found.
      */
 
     return TP.wrap(TP.nodeGetElementsByTagName(this.getNativeNode(),
@@ -5858,7 +5860,7 @@ function() {
      * @summary Returns an Array containing the sibling nodes of the receiver.
      *     Order is from the parent's first child to the parent's last child,
      *     with aNode removed from the list.
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      */
 
     return TP.wrap(TP.nodeGetSiblings(this.getNativeNode()));
@@ -6599,7 +6601,7 @@ function(aFunction) {
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @returns {Array} An Array of ancestors found acceptable by aFunction.
+     * @returns {Node[]} An Array of ancestors found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectAncestors(this.getNativeNode(),
@@ -6684,7 +6686,7 @@ function(aFunction, breadthFirst) {
      *     acceptable node.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An array of descendant elements found acceptable by
+     * @returns {Element[]} An array of descendant elements found acceptable by
      *     aFunction.
      */
 
@@ -6706,7 +6708,7 @@ function(aFunction, aSubset) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @returns {Array} An Array of siblings found acceptable by aFunction.
+     * @returns {Node[]} An Array of siblings found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
@@ -7073,8 +7075,8 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {Array} The return values from each iteration of the supplied
-     *     Function.
+     * @returns {TP.dom.Node[]} The return values from each iteration of the
+     *     supplied Function.
      */
 
     var node;
@@ -7085,9 +7087,10 @@ function(aFunction, deep, breadthFirst) {
     //  they very well may not be returning Nodes.
 
     if (TP.ifInvalid(deep, false)) {
-        return TP.nodeGetDescendants(node, breadthFirst).collect(aFunction);
+        return TP.wrap(
+                TP.nodeGetDescendants(node, breadthFirst).collect(aFunction));
     } else {
-        return TP.ac(node.childNodes).collect(aFunction);
+        return TP.wrap(TP.ac(node.childNodes).collect(aFunction));
     }
 });
 
@@ -7229,7 +7232,6 @@ function(aCollection) {
      */
 
     return TP.todo();
-
 });
 
 //  ------------------------------------------------------------------------
@@ -7742,8 +7744,8 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {Array} An Array of TP.dom.Nodes that weren't rejected by the
-     *     supplied Function.
+     * @returns {TP.dom.Node[]} An Array of TP.dom.Nodes that weren't rejected
+     *     by the supplied Function.
      */
 
     var node;
@@ -7856,8 +7858,8 @@ function(aFunction, deep, breadthFirst) {
      *     well? Defaults to false so only direct children are involved.
      * @param {Boolean} breadthFirst True will capture descendants in
      *     breadth-first order. Only used when deep is true.
-     * @returns {Array} An Array of TP.dom.Nodes that were selected by the
-     *     supplied Function.
+     * @returns {TP.dom.Node[]} An Array of TP.dom.Nodes that were selected by
+     *     the supplied Function.
      */
 
     var node;
@@ -11168,7 +11170,7 @@ function(anElement, nodesAdded) {
      *     not be in this list.
      * @param {HTMLElement} anElement The target element computed for this
      *     signal.
-     * @param {Array} nodesAdded The nodes added to the receiver.
+     * @param {Node[]} nodesAdded The nodes added to the receiver.
      * @exception TP.sig.InvalidElement
      * @returns {TP.dom.UIElementNode} The receiver.
      */
@@ -11286,7 +11288,7 @@ function(anElement, nodesRemoved) {
      *     these roots will not be in this list.
      * @param {HTMLElement} anElement The target element computed for this
      *     signal.
-     * @param {Array} nodesRemoved  The nodes removed from the receiver.
+     * @param {Node[]} nodesRemoved  The nodes removed from the receiver.
      * @exception TP.sig.InvalidElement
      * @returns {TP.dom.UIElementNode} The receiver.
      */
@@ -12218,8 +12220,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     globally-unique, ID. By implementing this method, we ensure they have
      *     that before they're registered in the signaling system as signal
      *     sources.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -14542,7 +14544,7 @@ function() {
      *     parent element.
      * @description The returned Array is configured as an 'origin set' for use
      *     by the TIBET notification system.
-     * @returns {Array} An Array containing the event IDs of the receiver.
+     * @returns {String[]} An Array containing the event IDs of the receiver.
      */
 
     //  The TP.elementGetEventIds() call's return value has already been
@@ -15556,8 +15558,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     globally-unique, ID. By implementing this method, we ensure they have
      *     that before they're registered in the signaling system as signal
      *     sources.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.

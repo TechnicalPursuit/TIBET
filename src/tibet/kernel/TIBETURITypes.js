@@ -2740,8 +2740,8 @@ function(onlyShallow) {
      *     set of secondary URIs consisted of 'urn:tibet:stuff#tibet(foo)' and
      *     'urn:tibet:stuff#tibet(foo.bar)', then only the first one will be
      *     returned.
-     * @returns {Array} An Array of TP.uri.URI objects corresponding to the
-     *     'secondary URI's of the receiver.
+     * @returns {TP.uri.URI[]} An Array of TP.uri.URI objects corresponding to
+     *     the 'secondary URI's of the receiver.
      */
 
     var secondaryURIs,
@@ -2786,8 +2786,8 @@ function(onlySecondaries) {
      *     'urn:tibet:fooBar' is not.
      * @param {Boolean} [onlySecondaries=false] Whether or not to only include
      *     secondary resources (i.e. those with a hash)
-     * @returns {Array} An Array of TP.uri.URI objects corresponding to the
-     *     'sub URI's of the receiver.
+     * @returns {TP.uri.URI[]} An Array of TP.uri.URI objects corresponding to
+     *     the 'sub URI's of the receiver.
      */
 
     var loc,
@@ -3439,9 +3439,9 @@ function(oldResource, newResource, pathInfos, primaryOnly) {
      *     had.
      * @param {Object} newResource The new value of the resource that this URI
      *     was set to.
-     * @param {Array} [pathInfos] Optional data detailing which paths changed.
-     *     If this data isn't supplied, then a single notification is sent from
-     *     this URI's primary URI.
+     * @param {String[]} [pathInfos] Optional data detailing which paths
+     *     changed. If this data isn't supplied, then a single notification is
+     *     sent from this URI's primary URI.
      * @param {Boolean} [primaryOnly=false] Should we only signal the primary?
      * @returns {TP.uri.URI} The receiver.
      */
@@ -6305,7 +6305,7 @@ function(targetPhase, targetPhaseList) {
      *     the phase defined, relative to an optional phase list.
      * @param {Constant} targetPhase A TIBET content "process phase" string such
      *     as 'Compile'.
-     * @param {Array} targetPhaseList An array of phase names. The default is
+     * @param {String[]} targetPhaseList An array of phase names. The default is
      *     TP.shell.TSH.NOCACHE.
      * @returns {Boolean} Whether or not the content of the receiver has reached
      *     the supplied phase in its processing.
@@ -10161,7 +10161,7 @@ function(a, b) {
 /**
  * An array of path-matching patterns to be processed coupled to a function
  * to use for translating matched URLs and any token names for parameters.
- * @type {Array[RegExp, Function, String[]]}
+ * @type {Array<RegExp, Function, String[]>}
  */
 TP.uri.URIRouter.Type.defineAttribute('processors');
 
@@ -10212,8 +10212,8 @@ function(pattern) {
      *     assigned to any token segments.
      * @param {String|RegExp} pattern The pattern to process.
      * @exception {TP.sig.InvalidParameter} When pattern isn't a String.
-     * @returns {Array} An array containing the pattern and zero or more string
-     *     names for embedded token values being matched.
+     * @returns {Array<String,String[]>} An array containing the pattern and
+     *     zero or more string names for embedded token values being matched.
      */
 
     var str,
@@ -10661,12 +10661,12 @@ function(signal, match, names) {
      *     default processor for definePath which can produce a signal
      *     name and payload for the majority of use cases.
      * @param {String} [signal] An optional signal name to be used.
-     * @param {Array} match The "match" Array returned by RegExp match() calls.
-     *     The first slot is the "full match" while any parenthesized capture
-     *     portions will populate slots 1 through N.
+     * @param {String[]} match The "match" Array returned by RegExp match()
+     *     calls. The first slot is the "full match" while any parenthesized
+     *     capture portions will populate slots 1 through N.
      * @param {String[]} names An array of token names for any named path
      *     segments in the pattern which matched the path.
-     * @returns {Array[String, TP.core.Hash]} An ordered pair containing the
+     * @returns {Array<String, TP.core.Hash>} An ordered pair containing the
      *     route name and hash containing parameters from the match.
      */
 

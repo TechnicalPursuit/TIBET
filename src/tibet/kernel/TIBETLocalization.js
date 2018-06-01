@@ -629,7 +629,7 @@ function() {
      * @summary Returns the strings used for comparing to the 'false' value. In
      *     this type, this method does nothing. Subtypes should override to
      *     provide real functionality.
-     * @returns {Array} The array of string values that is considered to be
+     * @returns {String[]} The array of string values that is considered to be
      *     'false'.
      */
 
@@ -646,7 +646,7 @@ function() {
      * @summary Returns the strings used for comparing to the 'true' value. In
      *     this type, this method does nothing. Subtypes should override to
      *     provide real functionality.
-     * @returns {Array} The array of string values that is considered to be
+     * @returns {String[]} The array of string values that is considered to be
      *     'true'.
      */
 
@@ -745,7 +745,7 @@ function() {
      *     similar to 'January' to 'December' in this locale corresponding to
      *     integers 0 - 11. In this type, this method does nothing. Subtypes
      *     should override to provide real functionality.
-     * @returns {Array} An array of long month names.
+     * @returns {String[]} An array of long month names.
      */
 
     return this.$get('longMonthNames');
@@ -762,7 +762,7 @@ function() {
      *     similar to 'Sunday' to 'Saturday' in this locale corresponding to
      *     integers 0 - 7. In this type, this method does nothing. Subtypes
      *     should override to provide real functionality.
-     * @returns {Array} An array of long weekday names.
+     * @returns {String[]} An array of long weekday names.
      */
 
     return this.$get('longWeekdayNames');
@@ -779,7 +779,7 @@ function() {
      *     similar to 'Jan' to 'Dec' in this locale corresponding to integers 0
      *     - 11. In this type, this method does nothing. Subtypes should
      *     override to provide real functionality.
-     * @returns {Array} An array of short month names.
+     * @returns {String[]} An array of short month names.
      */
 
     return this.$get('shortMonthNames');
@@ -796,7 +796,7 @@ function() {
      *     similar to 'Sun' to 'Sat' in this locale corresponding to integers 0
      *     - 7. In this type, this method does nothing. Subtypes should override
      *     to provide real functionality.
-     * @returns {Array} An array of short weekday names.
+     * @returns {String[]} An array of short weekday names.
      */
 
     return this.$get('shortWeekdayNames');

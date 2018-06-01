@@ -638,7 +638,7 @@ function(aType) {
      *     type.
      * @param {TP.lang.RootObject} aType The type to produce the handler methods
      *     for.
-     * @returns {Array[]} An Array of Arrays containing the names of the
+     * @returns {String[][]} An Array of Arrays containing the names of the
      *     instance-level 'handler only' methods for the supplied type.
      */
 

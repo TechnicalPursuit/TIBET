@@ -412,7 +412,7 @@ function() {
      *     during shell execution. Standard input is always provided as an array
      *     of 0 to N items provided by the various stdout, stderr, and input
      *     redirection calls related to a request.
-     * @returns {Array} An array of 0 to N input objects.
+     * @returns {Object[]} An array of 0 to N input objects.
      */
 
     var stdin;

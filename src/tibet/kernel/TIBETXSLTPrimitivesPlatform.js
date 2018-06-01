@@ -160,9 +160,8 @@ TP.hc(
          *     the output of (X)HTML 'style' or 'script'.
          * @param {XMLDocument} aDocument The XML document to escape the content
          *     in.
-         * @param {Array} tagNameArray An Array of tag names to escape the
+         * @param {String[]} tagNameArray An Array of tag names to escape the
          *     content of.
-         * @param {Array} tagNameArray
          */
 
         var i,
@@ -225,9 +224,8 @@ TP.hc(
          *     whether Webkit actually needs to do this - it needs testing.
          * @param {XMLDocument} aDocument The XML document to escape the content
          *     in.
-         * @param {Array} tagNameArray An Array of tag names to escape the
+         * @param {String[]} tagNameArray An Array of tag names to escape the
          *     content of.
-         * @param {Array} tagNameArray
          */
 
         var i,

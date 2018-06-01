@@ -533,7 +533,7 @@ function() {
     /**
      * @method getReplies
      * @summary Returns the array of current replies to the receiver's queries.
-     * @returns {Array} The list of response strings acquired so far.
+     * @returns {String[]} The list of response strings acquired so far.
      */
 
     return this.$get('replies');

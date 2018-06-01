@@ -69,7 +69,7 @@ function(anEvent) {
      *     supplied Event object.
      * @param {Event} anEvent The event object to return the property keys
      *     for.
-     * @returns {Array} The Array of property keys.
+     * @returns {String[]} The Array of property keys.
      */
 
     var type;
@@ -628,7 +628,7 @@ function(anEvent) {
      * @method eventGetClientXY
      * @summary Returns the window X,Y coordinate pair for the event.
      * @param {Event} anEvent The native event.
-     * @returns {Array} An array of (window X, window Y).
+     * @returns {Number[]} An array of (window X, window Y).
      */
 
     var evt,
@@ -653,7 +653,7 @@ function(anEvent) {
      * @summary Returns the containing element X,Y coordinate pair for the
      *     event.
      * @param {Event} anEvent The native event.
-     * @returns {Array} An array of (containing element X, containing element
+     * @returns {Number[]} An array of (containing element X, containing element
      *     Y).
      */
 
@@ -679,7 +679,7 @@ function(anEvent) {
      * @summary Returns the document X,Y coordinate pair for the event. This
      *     allows all events to be tracked relative to a common origin.
      * @param {Event} anEvent The native event.
-     * @returns {Array} An array of (document X, document Y).
+     * @returns {Number[]} An array of (document X, document Y).
      */
 
     var evt,
@@ -760,7 +760,7 @@ function(anEvent) {
      * @summary Returns the screen X,Y coordinate pair for the event. This
      *     allows all events to be tracked relative to a common origin.
      * @param {Event} anEvent The native event.
-     * @returns {Array} An array of (screen X, screen Y).
+     * @returns {Number[]} An array of (screen X, screen Y).
      */
 
     var evt,
@@ -1551,7 +1551,7 @@ function(anElement, invalidateIdCache) {
      * @param {Boolean} invalidateIdCache Whether or not to invalidate any
      *     'cached' ids that were computed previously.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} An array containing the event ids of the element.
+     * @returns {String[]} An array containing the event ids of the element.
      */
 
     var eventIdArray,
@@ -1835,8 +1835,8 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
      * @param {Node|String} aNodeOrList The node or list of nodes to arm with
      *     the event(s) specified. This can also be the TP.ANY constant,
      *     indicating that the event is to be observed coming from any node.
-     * @param {String|Array} eventNames The names or types of the events to arm
-     *     the element with.
+     * @param {String|String[]} eventNames The names or types of the events to
+     *     arm the element with.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of sending the event into the TIBET
      *     signaling system.
@@ -1950,7 +1950,7 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
      * @summary Arms the node to fire the events named in eventNameArray.
      * @param {Window} aWindow The window to process.
      * @param {Node} aNode The node to arm.
-     * @param {Array} eventNameArray The array of event names to instrument
+     * @param {String[]} eventNameArray The array of event names to instrument
      *     aNode to fire.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of sending the event into the TIBET
@@ -2073,7 +2073,7 @@ function(aWindow, aNodeOrList, eventNames, aHandler) {
      * @param {Node|String} aNodeOrList The node or list to disarm with the
      *     event(s) specified. This can also be the TP.ANY constant, indicating
      *     that the event is to be ignored coming from any node.
-     * @param {String|Array} eventNames The names or types of the events to
+     * @param {String|String[]} eventNames The names or types of the events to
      *     disarm the element from.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of sending the event into the TIBET
@@ -2167,7 +2167,7 @@ function(aWindow, aNode, eventNameArray, aHandler) {
      *     eventNameArray.
      * @param {Window} aWindow The window to process.
      * @param {Node} aNode A document or element to disarm.
-     * @param {Array} eventNameArray The array of event names to disarm.
+     * @param {String[]} eventNameArray The array of event names to disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.

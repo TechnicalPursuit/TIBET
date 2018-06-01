@@ -30,7 +30,7 @@ function(anElement) {
      * @method $gatherReferencedLocations
      * @param {Element} anElement The element under which to gather referenced
      *     locations.
-     * @returns {Array} An Array of referenced locations.
+     * @returns {String[]} An Array of referenced locations.
      */
 
     var query,

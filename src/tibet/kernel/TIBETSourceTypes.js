@@ -31,8 +31,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @method addObserver
      * @summary Invoked by observe() to add an observation or activate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -54,8 +54,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @method removeObserver
      * @summary Invoked by ignore() to remove an observation or deactivate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -85,7 +85,7 @@ function(aSignal, aHandler, aPolicy) {
      * @method addObserver
      * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -125,7 +125,7 @@ function(aSignal, aHandler, aPolicy) {
      * @method removeObserver
      * @summary Removes a local signal observation which is roughly like a DOM
      *     element adding an event listener.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -259,7 +259,7 @@ function(aSignal, aHandler, aPolicy) {
      * @method addObserver
      * @summary Invoked by observe() to add an observation or activate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -397,7 +397,7 @@ function(aSignal, aHandler, aPolicy) {
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -463,12 +463,15 @@ function(signalTypes) {
      * @method setupCustomHandlers
      * @summary Configures handlers for custom messages coming from a remote
      *     connection.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
      * @returns {TP.sig.MessageSource} The receiver.
      */
 
     TP.override();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -518,8 +521,9 @@ function(signalTypes) {
      * @method teardownCustomHandlers
      * @summary Tears down the 'standard' handlers for messages coming from a
      *     remote connection.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
      * @returns {TP.sig.MessageSource} The receiver.
      */
 
@@ -1008,8 +1012,9 @@ function(signalTypes) {
      *     signal types being observed for a REMOTE_NAME which allows it to
      *     adapt to server event names which should map to that signal type and
      *     register a low-level handler accordingly.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
      * @exception TP.sig.InvalidSource
      * @returns {TP.sig.RemoteMessageSource} The receiver.
      */
@@ -1091,8 +1096,9 @@ function(signalTypes) {
      *     data), we look at the signals being registered and if they have a
      *     'REMOTE_NAME' slot, we use that to unregister a handler with our
      *     private source object.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
      * @returns {TP.sig.RemoteMessageSource} The receiver.
      */
 
@@ -1188,8 +1194,8 @@ function(aURI, protocols) {
      * @summary Initialize a new signal instance.
      * @param {TP.uri.URI} aURI The endpoint URI representing the WebSocket
      *     messaging source.
-     * @param {Array} protocols An Array of custom WebSocket protocols that the
-     *     connection should be configured for.
+     * @param {String[]} protocols An Array of custom WebSocket protocols that
+     *     the connection should be configured for.
      * @returns {TP.core.Socket} A new instance.
      */
 
@@ -1240,7 +1246,7 @@ function() {
      * @method getProtocols
      * @summary The custom protocols that the receiver's WebSocket connection
      *     should be configured for.
-     * @returns {Array} An Array of custom WebSocket protocols that the
+     * @returns {String[]} An Array of custom WebSocket protocols that the
      *     connection is configured for.
      */
 
@@ -1388,8 +1394,9 @@ function(signalTypes) {
      * @summary Configures handlers for custom events from the server. This
      *     method normally does nothing for a Socket. You can use it to support
      *     custom protocols as you require.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
      * @returns {TP.core.Socket} The receiver.
      */
 
@@ -1406,8 +1413,9 @@ function(signalTypes) {
      * @summary Tears down handlers for custom events from the server. This
      *     method normally does nothing for a Socket. You can use it to support
      *     custom protocols as you require.
-     * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
-     *     check for custom handler registration.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
      * @returns {TP.core.Socket} The receiver.
      */
 
@@ -1445,8 +1453,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @method addObserver
      * @summary Invoked by observe() to add an observation or activate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -1571,8 +1579,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @method removeObserver
      * @summary Invoked by ignore() to remove an observation or deactivate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -1705,7 +1713,7 @@ function(aSignal, aHandler, aPolicy) {
      * @method addObserver
      * @summary Adds a local signal observation which is roughly like a DOM
      *     element adding an event listener.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -1763,7 +1771,7 @@ function(aSignal, aHandler, aPolicy) {
      * @method removeObserver
      * @summary Removes a local signal observation which is roughly like a DOM
      *     element removing an event listener.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -2742,8 +2750,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     there is no native browser event for such a thing and so you will use
      *     TIBET's 'resize listener' function to watch the Element(s) for sizing
      *     changes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -2850,8 +2858,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @method removeObserver
      * @summary Invoked by ignore() to remove an observation or deactivate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -2963,8 +2971,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     TP.sig.DOMVisibility signal uses the 'IntersectionObserver' object to
      *     monitor an element's visibility. There is no native browser event for
      *     such a thing.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -3098,8 +3106,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @method removeObserver
      * @summary Invoked by ignore() to remove an observation or deactivate
      *     underlying signaling hooks necessary to ensure proper signaling.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.

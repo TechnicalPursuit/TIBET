@@ -77,7 +77,7 @@ function(anArgArray, aCount, aComment) {
      * @method assertMinArguments
      * @summary Asserts that the supplied argument Array has a minimum number
      *     of items in it.
-     * @param {Array} anArgArray The argument Array to check.
+     * @param {Object[]} anArgArray The argument Array to check.
      * @param {Number} aCount The minimum number of arguments that the supplied
      *     argument Array should have.
      * @param {String} aComment The comment to use when reporting that the

@@ -5297,7 +5297,7 @@ function(aValue, anAspect) {
      *          'label'     ->  The label of the element
      *          'id'        ->  The id of the element
      *          'index'     ->  The numerical index of the element
-     * @param {Object|Array} aValue The value to use when determining the
+     * @param {Object|Object[]} aValue The value to use when determining the
      *      elements to add to the selection. Note that this can be an Array.
      * @param {String} [anAspect=value] The property of the elements to use to
      *      determine which elements should be selected.
@@ -5503,7 +5503,7 @@ function(aValue, anAspect) {
      *          'label'     ->  The label of the element
      *          'id'        ->  The id of the element
      *          'index'     ->  The numerical index of the element
-     * @param {Object|Array} aValue The value to use when determining the
+     * @param {Object|Object[]} aValue The value to use when determining the
      *      whether a particular element is selected. Note that this can be an
      *      Array.
      * @param {String} [anAspect=value] The property of the elements to use to
@@ -5644,7 +5644,7 @@ function(aValue, anAspect) {
      *          'label'     ->  The label of the element
      *          'id'        ->  The id of the element
      *          'index'     ->  The numerical index of the element
-     * @param {Object|Array} aValue The value to use when determining the
+     * @param {Object|Object[]} aValue The value to use when determining the
      *      elements to remove from the selection. Note that this can be an
      *      Array.
      * @param {String} [anAspect=value] The property of the elements to use to
@@ -5957,7 +5957,7 @@ function() {
      * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
      * @exception TP.sig.InvalidValueElements
-     * @returns {String|Array} A String containing the selected value or an
+     * @returns {String|String[]} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
      */

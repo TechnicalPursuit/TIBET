@@ -33,7 +33,7 @@ TP.xctrls.SwitchableElement.isAbstract(true);
 
 /**
  * The collection of items that the receiver switches between.
- * @type {Array}
+ * @type {Element[]}
  */
 
 //  TP.xctrls.switchable.Inst.defineAttribute('subitems');

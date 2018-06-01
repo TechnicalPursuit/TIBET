@@ -19,8 +19,8 @@ function(stepNames, endName) {
      *     receiver will respond to '.foo.bar()' as if '.bar()' was invoked. The
      *     'chain' of names used to invoke '.bar()' will be available under the
      *     private '$$methodChainNames' instance attribute.
-     * @param {Array} stepNames The names of the individual 'steps' that can be
-     *     used in a traversal chain to get to the method named by 'endName'.
+     * @param {String[]} stepNames The names of the individual 'steps' that can
+     *     be used in a traversal chain to get to the method named by 'endName'.
      * @param {String} endName The name of the method that will invoked at the
      *     'end' of the chain.
      * @returns {Object} The receiver.

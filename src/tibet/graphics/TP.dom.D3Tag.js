@@ -633,7 +633,7 @@ function() {
      *     of the receiver.
      *     Therefore, the receiver needs to stamp this attribute and value on
      *     each item in its drawing machinery methods.
-     * @returns {Array} A pair containing the attribute name and value.
+     * @returns {String[]} A pair containing the attribute name and value.
      */
 
     return TP.ac('class', 'item');
@@ -704,10 +704,10 @@ function() {
 
     /**
      * @method getTemplate
-     * @summary Returns the TP.core.Element that will be used as the 'template'
-     *     to generate content under the receiver. This template can include
-     *     data binding expressions that will be used, along with the receiver's
-     *     data, to generate that content.
+     * @summary Returns the TP.dom.ElementNode that will be used as the
+     *     'template' to generate content under the receiver. This template can
+     *     include data binding expressions that will be used, along with the
+     *     receiver's data, to generate that content.
      * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
      *     template for the receiver.
      */
@@ -979,14 +979,14 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
      *     overall data set that is currently being processed.
      * @param {Number} groupIndex The index of the current group. This is useful
      *     when processing nested selections.
-     * @param {Array} allData The receiver's entire data set, provided here as a
-     *     convenience.
+     * @param {Object[]} allData The receiver's entire data set, provided here
+     *     as a convenience.
      * @param {TP.core.Hash} registry The registry of data binding expressions
      *     that was built the first time buildNewContentFromTemplate was called.
      *     This will contain keys of the whole attribute value containing the
-     *     whole expression mapped to an Array of the individual data expressions
-     *     inside and to a transformation Function that would've been generated
-     *     if necessary.
+     *     whole expression mapped to an Array of the individual data
+     *     expressions inside and to a transformation Function that would've
+     *     been generated if necessary.
      * @returns {TP.dom.D3Tag} The receiver.
      */
 

@@ -42,8 +42,8 @@ function() {
      *     The add*Method calls already track 'implementers' but by invoking
      *     $getNeeds() on each method as it goes by the system can capture
      *     senders too.
-     * @returns {Array} The list of functions that the receiver will attempt to
-     *     invoke on itself.
+     * @returns {Function[]} The list of functions that the receiver will attempt
+     *     to invoke on itself.
      */
 
     var re,
@@ -843,7 +843,7 @@ function() {
      *     or available to it via dyna-loading. This list is typically populated
      *     by combining pre-existing metadata with runtime information to
      *     construct a complete list.
-     * @returns {Array} An array of the non-native type names.
+     * @returns {String[]} An array of the non-native type names.
      */
 
     return TP.keys(TP.sys.getMetadata('types'));
@@ -860,7 +860,7 @@ function() {
      *     available to it via dyna-loading. Each method ID is a composite of
      *     the Type.Track.MethodName separated with periods. This information is
      *     used by both the canResolveDNU and method linting routines in TIBET.
-     * @returns {Array} An array of the unique method IDs.
+     * @returns {String[]} An array of the unique method IDs.
      */
 
     return TP.keys(TP.sys.getMetadata('methods'));
@@ -879,7 +879,7 @@ function() {
      *     a complete picture of the methods which are available.
      * @param {Boolean} full True if full metadata is required for this call,
      *     meaning the external metadata cache should be loaded.
-     * @returns {Array} An array of the unique method names.
+     * @returns {String[]} An array of the unique method names.
      */
 
     var methods,
@@ -916,7 +916,7 @@ function(aFunction, namesOnly) {
      * @param {Function|String} aFunction The function being tracked.
      * @param {Boolean} namesOnly True means return the list of owner names
      *     only. Default is false.
-     * @returns {Array} An array of objects/types.
+     * @returns {Object[]} An array of objects/types.
      */
 
     var fname,
@@ -1002,7 +1002,7 @@ function() {
     /**
      * @method getNamespaceNames
      * @summary Returns a list of all of the namespaces available in the system.
-     * @returns {Array} An array of the namespace names.
+     * @returns {String[]} An array of the namespace names.
      */
 
     return TP.keys(TP.sys.getMetadata('namespaces'));

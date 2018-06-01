@@ -46,7 +46,8 @@ function(options) {
      * @param {String} [options.suite] If empty all suites are returned.
      * @param {String} [options.cases] If empty all cases are returned.
      * @param {String} [options.inherit=false] Target plus supertypes.
-     * @returns {Array} A list of appropriate test cases for the options.
+     * @returns {TP.test.Case[]} A list of appropriate test cases for the
+     *     options.
      */
 
     var suites,
@@ -77,7 +78,8 @@ function(options) {
      * @param {String} [options.suite] If empty all suites are returned.
      * @param {String} [options.cases] If empty all cases are returned.
      * @param {String} [options.inherit=false] Target plus supertypes.
-     * @returns {Array} A list of appropriate test suites for the options.
+     * @returns {TP.test.Suite[]} A list of appropriate test suites for the
+     *     options.
      */
 
     var params,
@@ -642,7 +644,8 @@ function(options) {
      * @method getTestSuites
      * @summary Returns an array containing test suites for the receiver.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Array} An array of all suites matching the filter criteria.
+     * @returns {TP.test.Suite[]} An array of all suites matching the filter
+     *     criteria.
      */
 
     var params;

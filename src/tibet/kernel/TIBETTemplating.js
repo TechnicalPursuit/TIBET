@@ -86,9 +86,9 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
      *     has done so before.
      * @param {Boolean} [shouldRegister=true] If false, this method does not
      *     register the template in the template cache.
-     * @param {Array} sourceVarNames An Array of variable names that have a '$'
-     *     as their first character, but that we want the templating engine to
-     *     treat as coming from the data source instead of the params (the
+     * @param {String[]} sourceVarNames An Array of variable names that have a
+     *     '$' as their first character, but that we want the templating engine
+     *     to treat as coming from the data source instead of the params (the
      *     engine will usually treat '$' variables specially and draw their data
      *     from the 'params' argument instead of the source).
      * @param {Boolean} [echoFormat=true] Whether or not to 'echo' the format
@@ -256,12 +256,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
      * @method $compileTemplateTokens
      * @summary Compiles the supplied template tokens into a JavaScript
      *     Function object.
-     * @param {Array} tokenList The list of tokens representing the template.
+     * @param {String[]} tokenList The list of tokens representing the template.
      * @param {String} templateName The template's lookup ID. In this method,
      *     this is used by inline templates to qualify their name.
-     * @param {Array} sourceVarNames An Array of variable names that have a '$'
-     *     as their first character, but that we want the templating engine to
-     *     treat as coming from the data source instead of the params (the
+     * @param {String[]} sourceVarNames An Array of variable names that have a
+     *     '$' as their first character, but that we want the templating engine
+     *     to treat as coming from the data source instead of the params (the
      *     engine will usually treat '$' variables specially and draw their data
      *     from the 'params' argument instead of the source).
      * @param {Boolean} [echoFormat] Whether or not to 'echo' the format out to

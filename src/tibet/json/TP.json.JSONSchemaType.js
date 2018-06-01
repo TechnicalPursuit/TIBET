@@ -117,7 +117,7 @@ function(tree, pojoObj) {
      *     supplied metadata tree object.
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
-     * @param {Array} pojoObj The object to describe in the AST metadata.
+     * @param {Object[]} pojoObj The object to describe in the AST metadata.
      * @returns {TP.json.JSONSchemaType} The receiver.
      */
 

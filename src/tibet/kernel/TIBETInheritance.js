@@ -518,7 +518,7 @@ function() {
      * @summary Returns an array containing the supertypes of the receiver. You
      *     should consider the return value private and make a copy if you're
      *     going to manipulate the array.
-     * @returns {Array} Array of supertypes.
+     * @returns {TP.meta.lang.RootObject[]} Array of supertypes.
      */
 
     var arr,
@@ -2427,8 +2427,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -2450,8 +2450,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -2473,8 +2473,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
      */
 
@@ -2632,8 +2632,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     more and more intelligence in the inferencer over time.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name to invoke if found.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Object} The results of execution if possible.
      */
 
@@ -2847,8 +2847,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     If all else fails the debugging hook is invoked.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name to invoke if found.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Object} The results of execution if possible.
      */
 
@@ -3074,9 +3074,9 @@ function(aFunction, anArgArray, aCount) {
      *     allows direct invocation of functions to occur for performance tuning
      *     purposes.
      * @param {Function} aFunction The function being profiled.
-     * @param {Array} anArgArray The arguments if any.
+     * @param {Object[]} anArgArray The arguments if any.
      * @param {Number} aCount How many iterations do we want?
-     * @returns {Array} [total time, average time];.
+     * @returns {Number[]} [total time, average time];.
      */
 
     var i,
@@ -3116,7 +3116,7 @@ function(aFunction, millisecondCount, stackNames) {
      * @summary Adds a statistic for an invocation of a function.
      * @param {Function} aFunction The function being tracked.
      * @param {Number} millisecondCount A particular "run time" figure.
-     * @param {Array} stackNames An optional call stack array.
+     * @param {String[]} stackNames An optional call stack array.
      */
 
     var d1,
@@ -3197,7 +3197,7 @@ function(aFunction) {
      * @summary Returns any statistics TIBET may have on the particular
      *     function's performance.
      * @param {Function} aFunction The function being tracked.
-     * @returns {Array} An array of millisecond counts.
+     * @returns {Number[]} An array of millisecond counts.
      */
 
     var fn,
@@ -3249,7 +3249,7 @@ function(aName) {
      * @summary Returns an array containing objects which have declared that
      *     they implement the receiver or a function with that name.
      * @param {String} aName The method name to look up owners for.
-     * @returns {Array} An Array of objects that implement the receiver.
+     * @returns {Object[]} An Array of objects that implement the receiver.
      */
 
     //  we support this on the Function object itself as a lookup mechanism
@@ -3667,7 +3667,7 @@ function(anInterface, anObject, shouldForce) {
      *     methods helps ensure proper dnu/infer processing will be triggered as
      *     needed when any of these methods is called for a receiver than can't
      *     process them.
-     * @param {Array|String} anInterface The method name(s) to install.
+     * @param {String|String[]} anInterface The method name(s) to install.
      * @param {Object} anObject An optional target object which should receive
      *     the specified methods. When not provided this defaults to
      *     TP.ObjectProto so that the backstops are global.
@@ -3753,7 +3753,7 @@ function(anInterface, anObject) {
      *     hooks this method works somewhat like TP.backstop() on other
      *     browsers...it installs a function which "deadens" a method so it
      *     emulates "no such method".
-     * @param {Array|String} anInterface The method name(s) to remove.
+     * @param {String|String[]} anInterface The method name(s) to remove.
      * @param {Object} anObject A target object which should have local
      *     backstops removed.
      * @returns {Number} The actual number of backstops removed.
@@ -4376,9 +4376,9 @@ function(propName, sources, track) {
      * @summary 'Auto resolves' the conflicted trait, given the type objects
      *     supplied in sources.
      * @param {String} propName The property name of the conflicted trait.
-     * @param {Array} sources An Array of Type objects that represent both the
-     *     main type and the trait types that the auto resolution machinery will
-     *     use to try to resolve the slot.
+     * @param {TP.meta.lang.RootObject[]} sources An Array of Type objects that
+     *     represent both the main type and the trait types that the auto
+     *     resolution machinery will use to try to resolve the slot.
      * @param {String} track The track that the property is for, instance or
      *     type.
      * @returns {TP.lang.RootObject} The receiving type.
@@ -4754,7 +4754,7 @@ function() {
      *     trait and it does this using the C3 algorithm. Therefore, it's
      *     necessary to be able to compute a 'C3 linearization' of the type,
      *     its supertypes, its traits and all of its traits supertypes.
-     * @returns {Array} A list of type names that forms the list of the
+     * @returns {String[]} A list of type names that forms the list of the
      *     receiver's supertype names and all of the trait type names, sorted
      *     using the C3 linearization algorithm.
      */
@@ -4935,8 +4935,8 @@ function() {
      * @method getAllTraits
      * @summary Returns a list of all of the receiver's trait types, and any
      *     trait types they might have, etc. recursively.
-     * @returns {Array} A complete list of trait types that affect the
-     *     receiver.
+     * @returns {TP.meta.lang.RootObject[]} A complete list of trait types that
+     *     affect the receiver.
      */
 
     var traits,
@@ -5471,8 +5471,8 @@ function(propertyNames, resolution) {
      *     ability to supply an Array of propertyNames, but limited to providing
      *     only a TIBET type as the resolution (which is the only option
      *     that makes sense for a list of property names).
-     * @param {Array} propertyNames An Array of property names of the receiver
-     *     to resolve using the supplied resolution.
+     * @param {String[]} propertyNames An Array of property names of the
+     *     receiver to resolve using the supplied resolution.
      * @param {TP.lang.RootObject} resolution The object to use to resolve
      *     the trait.
      * @returns {TP.lang.RootObject} The receiving type.
@@ -5725,8 +5725,8 @@ function(propertyNames, resolution) {
      *     ability to supply an Array of propertyNames, but limited to providing
      *     only a TIBET type as the resolution (which is the only option
      *     that makes sense for a list of property names).
-     * @param {Array} propertyNames An Array of property names of the receiver
-     *     to resolve using the supplied resolution.
+     * @param {String[]} propertyNames An Array of property names of the
+     *     receiver to resolve using the supplied resolution.
      * @param {TP.lang.RootObject} resolution The object to use to resolve
      *     the trait.
      * @returns {TP.lang.RootObject} The receiving type.
@@ -5924,7 +5924,7 @@ function(aList) {
      * @method removeInstProperties
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @exception TP.sig.InvalidType
      * @returns {Object} The receiver.
      */
@@ -5942,7 +5942,7 @@ function(aList) {
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list. Note that the removal will only occur if
      *     the receiver owns the properties in question.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @returns {Object} The receiver.
      */
 
@@ -5972,7 +5972,7 @@ function(aList) {
      * @method removeTypeProperties
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @exception TP.sig.InvalidType
      * @returns {Object} The receiver.
      */
@@ -5989,7 +5989,7 @@ function(aList) {
      * @method removeInstProperties
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @returns {Object} The receiver.
      */
 
@@ -6021,7 +6021,7 @@ function(aList) {
      * @method removeInstProperties
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @returns {Object} The receiver.
      */
 
@@ -6053,7 +6053,7 @@ function(aList) {
      * @method removeTypeProperties
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @returns {Object} The receiver.
      */
 
@@ -6082,7 +6082,7 @@ function(aList) {
      * @method removeTypeProperties
      * @summary Iterate over aList and remove properties found on receiver
      *     whose keys are in the list.
-     * @param {Array} aList The list of method names to remove.
+     * @param {String[]} aList The list of method names to remove.
      * @returns {Object} The receiver.
      */
 
@@ -6313,7 +6313,7 @@ function(anObject, aspectNames) {
      * @summary Validates the aspects of the supplied object against any
      *     validity facets that are defined by the receiver.
      * @param {Object} anObject The object to test.
-     * @param {Array} aspectNames An array of aspect names to test. If not
+     * @param {String[]} aspectNames An array of aspect names to test. If not
      *     supplied, then all of the aspects of the supplied object are tested.
      * @returns {Boolean} The result of executing all of the validity facets for
      *     the aspect names.
@@ -6989,7 +6989,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as an Array instance.
-     * @returns {Array}
+     * @returns {Array} The receiver.
      */
 
     return this;
@@ -7108,7 +7108,7 @@ function(aNodeList) {
      * @method fromNodeList
      * @summary Returns a new instance constructed from a DOM NodeList
      * @param {NodeList} aNodeList The NodeList object.
-     * @returns {Array}
+     * @returns {Node[]} The node list as an Array.
      */
 
     var i,
@@ -7136,7 +7136,7 @@ function(aString) {
      *     The return value is symmetrical with the behavior of asArray() on
      *     String.
      * @param {String} aString Source string.
-     * @returns {Array}
+     * @returns {String[]} The String as an Array of characters.
      */
 
     return aString.split('');
@@ -7174,7 +7174,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as a single item array [this];
-     * @returns {Array}
+     * @returns {Boolean[]} The receiver as an Array.
      */
 
     var arr;
@@ -7329,7 +7329,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as a single element array [this];
-     * @returns {Array}
+     * @returns {Date[]} The receiver as an Array.
      */
 
     var arr;
@@ -7504,7 +7504,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as a single element array [this];
-     * @returns {Array}
+     * @returns {Number[]} The receiver as an Array.
      */
 
     var arr;
@@ -7596,7 +7596,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as an Array instance.
-     * @returns {Array}
+     * @returns {Object[]} The receiver as an Array.
      */
 
     var arr;
@@ -7693,7 +7693,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as an Array instance.
-     * @returns {Array}
+     * @returns {RegExp[]} The receiver as an Array.
      */
 
     var arr;
@@ -7762,7 +7762,7 @@ function(splitChar) {
      *     using the delimiter provided or the empty string which results in an
      *     array of characters (the default).
      * @param {String} splitChar The delimiter to split on.
-     * @returns {Array}
+     * @returns {String[]} The receiver as an Array.
      */
 
     var delim;
@@ -7844,8 +7844,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -7928,8 +7928,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     string instance that means conversion via asType() would succeed.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
      */
 
@@ -8092,8 +8092,8 @@ function(aPath, includeSupertypes) {
      * @param {Boolean} includeSupertypes Whether or not to include the
      *     receiver's supertypes when looking for path aliases. The default is
      *     true.
-     * @returns {Array|null} An Array of access path aliases for the receiver or
-     *     null.
+     * @returns {String[]|null} An Array of access path aliases for the receiver
+     *     or null.
      */
 
     var entry,
@@ -8147,8 +8147,8 @@ function(aPath, includeSupertypes) {
      * @param {Boolean} includeSupertypes Whether or not to include the
      *     receiver's supertypes when looking for property path aliases. The
      *     default is true.
-     * @returns {Array|null} An Array of access path aliases for the receiver or
-     *     null.
+     * @returns {String[]|null} An Array of access path aliases for the receiver
+     *     or null.
      */
 
     var entry,
@@ -8561,10 +8561,10 @@ function(aspectNames, facetList) {
      *     isn't supplied). If a valid facet value can be computed for a
      *     particular aspect, that facet value is set for that aspect.
      * @description At this level, this method simply returns.
-     * @param {String|Array} aspectNames The name of the aspect to check the
+     * @param {String|String[]} aspectNames The name of the aspect to check the
      *     facets for.
-     * @param {Array} facetList The list of facets to check. This is an optional
-     *     parameter.
+     * @param {String[]} facetList The list of facets to check. This is an
+     *     optional parameter.
      * @returns {Object} The receiver.
      */
 
@@ -8582,10 +8582,10 @@ function(aspectNames, facetList) {
      *     according to the list of facets supplied (or TP.FACET_NAMES if one
      *     isn't supplied). If a valid facet value can be computed for a
      *     particular aspect, that facet value is set for that aspect.
-     * @param {String|Array} aspectNames The name of the aspect to check the
+     * @param {String|String[]} aspectNames The name of the aspect to check the
      *     facets for.
-     * @param {Array} facetList The list of facets to check. This is an optional
-     *     parameter.
+     * @param {String[]} facetList The list of facets to check. This is an
+     *     optional parameter.
      * @returns {TP.lang.RootObject} The receiver.
      */
 
@@ -8727,8 +8727,8 @@ function() {
      * @method getFacetedAspectNames
      * @summary Returns an Array of the names of the aspects that are faceted on
      *     the receiver.
-     * @returns {Array} A list of the names of aspects that are faceted on the
-     *     receiver.
+     * @returns {String[]} A list of the names of aspects that are faceted on
+     *     the receiver.
      */
 
     var aspectsToCheck,
@@ -8913,7 +8913,7 @@ function() {
      * @method getValidatingAspectNames
      * @summary Returns an Array of the names of the aspects to validate on the
      *     receiver.
-     * @returns {Array} A list of the names of aspects to validate on the
+     * @returns {String[]} A list of the names of aspects to validate on the
      *     receiver.
      */
 
@@ -9780,14 +9780,14 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *         this.callBestMethod(
      *              arguments, myString, 'from', '', 'fromObject');
      *     will try to invoke this.fromString, then this.fromObject.
-     * @param {Arguments} callingContext The arguments object of the calling
+     * @param {arguments} callingContext The arguments object of the calling
      *     context.
      * @param {Object} anObject The object to specialize on.
      * @param {String} aPrefix The method prefix to use. No default, must exist.
      * @param {String} aSuffix The method suffix to use. Defaults to ''.
      * @param {String} aFallback A method name to call in its exact form should
      *     no other method be found. No default, just returns without fallback.
-     * @param {Array|arguments} anArgArray An optional argument list. Not
+     * @param {Object[]|arguments} anArgArray An optional argument list. Not
      *     required in most cases since that data is available from
      *         callingContext. Only used when the original arguments should be
      *         altered for the call.
@@ -9819,14 +9819,14 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      * @summary Finds the best method possible which begins with the common
      *     prefix provided. The match is based on the type of anObject, with the
      *     most specific type first. See 'callBestMethod' for an example.
-     * @param {Arguments} callingContext The arguments object of the calling
+     * @param {arguments} callingContext The arguments object of the calling
      *     context.
      * @param {Object} anObject The object to specialize on.
      * @param {String} aPrefix The method prefix to use. No default, must exist.
      * @param {String} aSuffix The method suffix to use. Defaults to ''.
      * @param {String} aFallback A method name to call in its exact form should
      *     no other method be found. No default, just returns without fallback.
-     * @param {Array|arguments} anArgArray An optional argument list. Not
+     * @param {Object[]|arguments} anArgArray An optional argument list. Not
      *     required in most cases since that data is available from
      *     callingContext. Only used when the original arguments should be
      *     altered for the call.
@@ -9857,14 +9857,14 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     with the most specific type first. For example, a call of
      *     this.getBestMethodName(arguments, myString, 'from'); will try to find
      *     this.fromString, then this.fromObject.
-     * @param {Arguments} callingContext The arguments object of the calling
+     * @param {arguments} callingContext The arguments object of the calling
      *     context.
      * @param {Object} anObject The object to specialize on.
      * @param {String} aPrefix The method prefix to use. No default, must exist.
      * @param {String} aSuffix The method suffix to use. Defaults to ''.
      * @param {String} aFallback A method name to call in its exact form should
      *     no other method be found. No default, just returns without fallback.
-     * @param {Array|arguments} anArgArray An optional argument list. Not
+     * @param {Object[]|arguments} anArgArray An optional argument list. Not
      *     required in most cases since that data is available from
      *     callingContext. Only used when the original arguments should be
      *     altered for the call.
@@ -10101,7 +10101,7 @@ function() {
      *     receiver. You should consider this array private and avoid
      *     manipulating it. The first element in this array is the name of the
      *     immediate supertype of the receiver.
-     * @returns {Array}
+     * @returns {String[]} An array of supertype names.
      */
 
     var arr,
@@ -10175,7 +10175,8 @@ function() {
      * @summary Returns an array containing the type and supertype objects of
      *     the receiver. The first element in this array is the type of the
      *     receiver.
-     * @returns {Array}
+     * @returns {TP.meta.lang.RootObject[]} The type and supertype objects of
+     *     the receiver.
      */
 
     var types;
@@ -10477,7 +10478,8 @@ function() {
      * @method getPrototypes
      * @summary Returns an array containing the various objects which affect
      *     inheritance for the receiver via the prototype chain.
-     * @returns {Array}
+     * @returns {Object[]} The objects making up the prototype chain of the
+     *     receiver.
      */
 
     var proto,
@@ -10731,7 +10733,8 @@ function(aTrack) {
      * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
-     * @returns {Array} An Array of Function objects representing the methods.
+     * @returns {Function[]} An Array of Function objects representing the
+     *     methods.
      */
 
     var target,
@@ -10847,7 +10850,8 @@ function(aTrack) {
      * @summary Returns an Array of methods for the receiver.
      * @param {String} aTrack The track to locate the methods on. This is an
      *     optional parameter.
-     * @returns {Array} An Array of Function objects representing the methods.
+     * @returns {Function[]} An Array of Function objects representing the
+     *     methods.
      */
 
     var target,
@@ -11256,8 +11260,8 @@ function(keyArray, forceInvalid) {
      * @summary Generates a '.set()' for each key in the key Array, along with
      *     the receiver's value for that key, obtained by executing a 'get()'
      *     on the receiver.
-     * @param {Array} keyArray An optional parameter listing the keys that the
-     *     '.set()' calls should be generated for. If this parameter is not
+     * @param {String[]} keyArray An optional parameter listing the keys that
+     *     the '.set()' calls should be generated for. If this parameter is not
      *     supplied, it defaults to all the receiver's keys.
      * @param {Boolean} forceInvalid Whether or not to generate a '.set()' call
      *     for a particular key even if the value obtained by calling 'get()' on
@@ -11324,7 +11328,7 @@ function() {
      *     circular reference to eventually occur. Used by asString/asSource
      *     to allow certain types to avoid circular reference issues when
      *     producing simple string representations.
-     * @returns {Array} The default is an empty array.
+     * @returns {String[]} The default is an empty array.
      */
 
     return [];
@@ -11339,7 +11343,7 @@ function() {
      * @method getKeys
      * @summary Returns the objects keys. The keys will be all of the receiver's
      *     attributes, hidden or shown, instance-level or local-level.
-     * @returns {Array} An Array of all attributes of the receiver, hidden or
+     * @returns {String[]} An Array of all attributes of the receiver, hidden or
      *     shown, instance-level or local-level.
      */
 
@@ -11369,7 +11373,7 @@ function() {
      * @summary Returns uniquely-valued* slot on the receiver. That is, any
      *     attributes, hidden or shown, instance-level or local-level, that have
      *     a value different from the receiver's prototype object.
-     * @returns {Array} An Array of all *uniquely-valued* attributes of the
+     * @returns {String[]} An Array of all *uniquely-valued* attributes of the
      *     receiver, hidden or shown, instance-level or local-level.
      */
 
@@ -11674,7 +11678,7 @@ function() {
      * @method getKeys
      * @summary Returns the set of keys which represent attribute values for
      *     the receiver.
-     * @returns {Array} An array containing the keys of the receiver.
+     * @returns {String[]} An array containing the keys of the receiver.
      */
 
     var keys;

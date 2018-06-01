@@ -412,7 +412,7 @@ function() {
      * @method getAccessKeys
      * @summary Returns an array of permission keys defined by the receiver's
      *     role and unit definitions.
-     * @returns {Array} An array of permission keys (strings).
+     * @returns {String[]} An array of permission keys (strings).
      */
 
     var keys,
@@ -461,7 +461,7 @@ function() {
      *     NOTE that TIBET automatically "namespace-qualifies" the content of
      *     the <role> element with the content of the <org> element to produce
      *     these names.
-     * @returns {Array} An array of role names (TP.core.Role subtype names).
+     * @returns {String[]} An array of role names (TP.core.Role subtype names).
      */
 
     var org,
@@ -491,7 +491,8 @@ function() {
      * @summary Returns an array of TP.core.Role types that were found for the
      *     receiver. When a named role can't be loaded it won't be included in
      *     this list, and a warning will be logged.
-     * @returns {Array} An array containing loadable TP.core.Role types.
+     * @returns {TP.core.Role[]} An array containing loadable TP.core.Role
+     *     types.
      */
 
     var names;
@@ -510,12 +511,12 @@ TP.ietf.vcard.Inst.defineMethod('getUnitNames',
 function() {
 
     /**
+     * @method getUnitNames
      * @summary Returns an array of unit names found in the vcard instance.
      *     NOTE that TIBET automatically "namespace-qualifies" the content of
      *     the ORGUNIT element with the content of the ORGNAME element in
      *     producing this list.
-     * @returns {Array} An array of unit names (TP.core.Unit subtype names).
-     * @method
+     * @returns {String[]} An array of unit names (TP.core.Unit subtype names).
      */
 
     var org,
@@ -543,7 +544,7 @@ function() {
     /**
      * @method getUnits
      * @summary
-     * @returns {Array}
+     * @returns {TP.meta.role[]}
      */
 
     var names;
@@ -850,7 +851,7 @@ function() {
     /**
      * @method getAccessKeys
      * @summary Returns an array of the string keys found in the receiver.
-     * @returns {Array} An array containing the string keys of the receiver.
+     * @returns {String[]} An array containing the string keys of the receiver.
      */
 
     var keys,
@@ -918,7 +919,7 @@ function() {
      *     This list's related keys also become part of the overall key set
      *     returned by the getAccessKeys() method so you rarely need to call it
      *     directly.
-     * @returns {Array} An array containing the string keys of the receiver.
+     * @returns {String[]} An array containing the string keys of the receiver.
      */
 
     var arr;
@@ -1100,7 +1101,7 @@ function(phaseTypesArray) {
      * @method constructWithPhaseTypes
      * @summary Returns an instance of a tag processor with a set of instances
      *     of phases constructed from the supplied Array of phase types.
-     * @param {Array} phaseTypesArray The Array of phase type objects to
+     * @param {String[]} phaseTypesArray The Array of phase type objects to
      *     construct the phases from.
      * @returns {TP.tag.TagProcessor} A new instance configured with instances
      *     of the phase types as its phase list.
@@ -1125,7 +1126,7 @@ function(phaseTypesArray) {
 
 /**
  * The list of phases to run over the content when this processor is used
- * @type {Array}
+ * @type {String[]}
  */
 TP.tag.TagProcessor.Inst.defineAttribute('phases');
 
@@ -1139,7 +1140,7 @@ function(phases) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Array} phases The list of phases to use when this processor is
+     * @param {String[]} phases The list of phases to use when this processor is
      *     run over supplied content.
      * @returns {TP.tag.TagProcessor} The receiver.
      */
@@ -1267,7 +1268,7 @@ function(aNode, aProcessor) {
      *     phase.
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} An array containing a set of filtered Nodes.
+     * @returns {Node[]} An array containing a set of filtered Nodes.
      */
 
     var methodName,
@@ -1616,7 +1617,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -1682,7 +1683,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -1748,7 +1749,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -1812,7 +1813,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -1903,7 +1904,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -1966,7 +1967,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2026,7 +2027,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2158,7 +2159,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2221,7 +2222,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2293,7 +2294,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2362,7 +2363,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2432,7 +2433,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2501,7 +2502,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2660,7 +2661,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2729,7 +2730,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2827,7 +2828,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2899,7 +2900,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -2969,7 +2970,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -3038,7 +3039,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -3107,7 +3108,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -3266,7 +3267,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 
@@ -3335,7 +3336,7 @@ function(aNode) {
      *     can be found for each result and b) whether that wrapper type can
      *     respond to this phase's target method.
      * @param {Node} aNode The root node to start the query from.
-     * @returns {Array} An array containing the subset of Nodes from the root
+     * @returns {Node[]} An array containing the subset of Nodes from the root
      *     node that this phase should even consider to try to process.
      */
 

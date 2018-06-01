@@ -275,8 +275,8 @@ TP.canInvokeInterface = function(anObj, anInterface) {
      *     this method, which allows you to check a method name against a
      *     potentially null/undefined parameter or return value.
      * @param {Object} anObj The object to check.
-     * @param {String|Array} anInterface A method name, or list of method names,
-     *     to check.
+     * @param {String|String[]} anInterface A method name, or list of method
+     *     names, to check.
      * @example Testing to see if anObj implements 'getID':
      *     <code>
      *          TP.canInvokeInterface(anObj, 'getID');
@@ -1385,7 +1385,7 @@ TP.boot.PHash = function() {
         /**
          * @method getItems
          * @summary Returns the items [key,value] of the receiver.
-         * @returns {Array} An array containing the receiver's items.
+         * @returns {Object[]} An array containing the receiver's items.
          */
 
         var arr,
@@ -1423,7 +1423,7 @@ TP.boot.PHash = function() {
          * @summary Returns the unique keys of the receiver. NOTE for
          *     consistency with other getKeys() calls you should treat the
          *     returned array as a read-only object.
-         * @returns {Array} An array containing the receiver's keys.
+         * @returns {String[]} An array containing the receiver's keys.
          */
 
         return TP.objectGetKeys(this.$$hash);
@@ -1516,7 +1516,7 @@ TP.boot.PHash = function() {
         /**
          * @method getValues
          * @summary Returns an array containing the values of the receiver.
-         * @returns {Array} An array containing the receiver's values.
+         * @returns {Object[]} An array containing the receiver's values.
          */
 
         var arr,
@@ -3812,7 +3812,7 @@ function(aFlag, shouldSignal) {
          * @summary Returns an Array of methods for the receiver.
          * @param {String} aTrack The track to locate the methods on. This is an
          *     optional parameter.
-         * @returns {Array} An Array of Function objects representing the
+         * @returns {Function[]} An Array of Function objects representing the
          *     methods.
          */
 
@@ -3895,7 +3895,8 @@ function(aFlag, shouldSignal) {
         /**
          * Returns the list of test suites for the receiver matching options.
          * @param {TP.core.Hash} options A dictionary of test options.
-         * @returns {Array} A list of test suite instances matching the options.
+         * @returns {TP.test.Suite[]} A list of test suite instances matching
+         *     the options.
          */
 
         var params;
@@ -4105,7 +4106,7 @@ function(aFlag, shouldSignal) {
          * @summary Returns an Array of methods for the receiver.
          * @param {String} aTrack The track to locate the methods on. This is an
          *     optional parameter.
-         * @returns {Array} An Array of Function objects representing the
+         * @returns {Function[]} An Array of Function objects representing the
          *     methods.
          */
 
@@ -4188,7 +4189,8 @@ function(aFlag, shouldSignal) {
         /**
          * Returns the list of test suites for the receiver matching options.
          * @param {TP.core.Hash} options A dictionary of test options.
-         * @returns {Array} A list of test suite instances matching the options.
+         * @returns {TP.test.Suite[]} A list of test suite instances matching
+         *     the options.
          */
 
         var params;
@@ -5419,7 +5421,8 @@ function(options) {
     /**
      * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Array} A list of test suite instances matching the options.
+     * @returns {TP.test.Suite[]} A list of test suite instances matching the
+     *     options.
      */
 
     var params;
@@ -6854,7 +6857,7 @@ function(anArgArray, aStart, anEnd) {
      * @summary Constructs and returns an Array containing the values from
      *     anArgArray from aStart to anEnd. By default the entire arguments
      *     object is copied into the array.
-     * @param {Arguments} anArgArray A native arguments object.
+     * @param {arguments} anArgArray A native arguments object.
      * @param {Number} aStart A starting offset for the copy. Default is 0.
      * @param {Number} anEnd An ending index for the copy. Default is
      *     anArgArray.length.
@@ -6867,7 +6870,7 @@ function(anArgArray, aStart, anEnd) {
      *     <code>
      *          arr = TP.args(arguments, 1);
      *     </code>
-     * @returns {Array} A new array.
+     * @returns {Object[]} A new array.
      */
 
     var len,
@@ -10237,7 +10240,7 @@ function(anObject) {
      * @summary Returns an Array of the 'own keys' for the supplied object.
      *     Essentially Object.keys, but with a try/catch fallback.
      * @param {Object} anObject The object to obtain the keys for.
-     * @returns {Array} An Array of the supplied Object's own keys.
+     * @returns {String[]} An Array of the supplied Object's own keys.
      */
 
     var keys;
@@ -10263,7 +10266,7 @@ function(anObject, internals) {
      * @param {Object} anObject The object to obtain the keys for.
      * @param {Boolean} [internals=false] Should internal slots be returned as
      *     well?
-     * @returns {Array} An Array of the supplied Object's own keys.
+     * @returns {String[]} An Array of the supplied Object's own keys.
      */
 
     var keys,

@@ -732,7 +732,7 @@ function() {
      *     stylesheet of this type (either it's core stylesheet or it's themed
      *     stylesheet if the receiver is executing in a themed environment) is
      *     currently installed.
-     * @returns {Array} The Array of Document global IDs.
+     * @returns {String[]} The Array of Document global IDs.
      */
 
     var gids;
@@ -796,7 +796,7 @@ function(addedNodes, queryInfo) {
      * @method mutationAddedFilteredNodes
      * @summary Handles when nodes got added to the DOM we're in, filtered by
      *     the query that we registered with the MutationSignalSource.
-     * @param {Array} addedNodes The Array of nodes that got added to the DOM,
+     * @param {Node[]} addedNodes The Array of nodes that got added to the DOM,
      *     then filtered by our query.
      * @param {TP.core.Hash} queryInfo Information that was registered for this
      *     query when it was originally set up.
@@ -1231,7 +1231,7 @@ function(aTargetElem, anEvent) {
         //  then we get the signal name from there.
 
         //  We compute the 'bindings' type (where we might find key bindings)
-        //  from the target TP.core.Element.
+        //  from the target TP.dom.ElementNode.
         if (TP.isType(bindingsType = evtTargetTPElem.getType())) {
 
             //  Query for a signal name via the getKeybinding method. This call
@@ -1243,7 +1243,7 @@ function(aTargetElem, anEvent) {
 
             //  If the signal name is a real TIBET type, then go ahead and
             //  signal using the name, using the currently focused
-            //  TP.core.Element as the 'target' of this signal.
+            //  TP.dom.ElementNode as the 'target' of this signal.
             sigType = TP.sys.getTypeByName(sigName);
             if (TP.isType(sigType)) {
                 if (TP.notValid(focusedTPElem)) {
@@ -1355,7 +1355,7 @@ function(aTargetElem, anEvent) {
         //  then we get the signal name from there.
 
         //  We compute the 'bindings' type (where we might find key bindings)
-        //  from the target TP.core.Element.
+        //  from the target TP.dom.ElementNode.
         if (TP.isType(bindingsType = evtTargetTPElem.getType())) {
 
             //  Query for a signal name via the getKeybinding method. This call
@@ -1367,7 +1367,7 @@ function(aTargetElem, anEvent) {
 
             //  If the signal name is a real TIBET type, then go ahead and
             //  signal using the name, using the currently focused
-            //  TP.core.Element as the 'target' of this signal.
+            //  TP.dom.ElementNode as the 'target' of this signal.
             sigType = TP.sys.getTypeByName(sigName);
             if (TP.isType(sigType)) {
                 if (TP.notValid(focusedTPElem)) {
@@ -1541,9 +1541,9 @@ function() {
 
     /**
      * @method popOffFocusStack
-     * @summary Pops the last entry (which should be a TP.core.Element) from
+     * @summary Pops the last entry (which should be a TP.dom.ElementNode) from
      *     the focus stack and returns it.
-     * @returns {TP.core.Element} The last entry from the focus stack.
+     * @returns {TP.dom.ElementNode} The last entry from the focus stack.
      */
 
     var focusStack,
@@ -1581,8 +1581,9 @@ function(aTPElem) {
 
     /**
      * @method pushOnFocusStack
-     * @summary Pushes the supplied TP.core.Element onto the focus stack.
-     * @param {String} aTPElem The TP.core.Element to push onto the focus stack.
+     * @summary Pushes the supplied TP.dom.ElementNode onto the focus stack.
+     * @param {TP.dom.ElementNode} aTPElem The TP.dom.ElementNode to push onto
+     *     the focus stack.
      */
 
     var focusStack;
@@ -2560,8 +2561,8 @@ function(includesGroups) {
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
      *     elements as 'focusable' elements under the receiver. The default is
      *     false.
-     * @returns {Array} An Array of TP.dom.ElementNodes under the receiver that
-     *     can be focused.
+     * @returns {TP.dom.ElementNode[]} An Array of TP.dom.ElementNodes under the
+     *     receiver that can be focused.
      */
 
     var elem,
@@ -2838,8 +2839,8 @@ function() {
      * @summary Returns an Array of the 'tibet:group' element names that the
      *     receiver is a member of, from the most specific group to the least
      *     specific group (i.e. up the group hierarchy).
-     * @returns {Array} The Array of 'tibet:group' names that the receiver is a
-     *     member of or the empty Array.
+     * @returns {String[]} The Array of 'tibet:group' names that the receiver is
+     *     a member of or the empty Array.
      */
 
     var groupName,
@@ -3469,7 +3470,8 @@ function() {
     /**
      * @method getWidthAndHeight
      * @summary Returns the receiver's width and height as an Array of pixels.
-     * @returns {Array} An Array of the receiver's width and height in pixels.
+     * @returns {Number[]} An Array of the receiver's width and height in
+     *     pixels.
      */
 
     return TP.ac(TP.elementGetWidth(this.getNativeNode()),
@@ -3729,8 +3731,8 @@ function() {
         }
 
         //  If the signal name is a real TIBET type, then go ahead and signal
-        //  using the name, using the currently focused TP.core.Element as the
-        //  'target' of this signal.
+        //  using the name, using the currently focused TP.dom.ElementNode as
+        //  the 'target' of this signal.
         sigType = TP.sys.getTypeByName(sigName);
         if (TP.isType(sigType)) {
             this.signal(sigName, TP.hc('trigger', TP.wrap(evt)));
@@ -4391,7 +4393,7 @@ function(aPointOrObject) {
      *     left style properties. This method expects that these values are
      *     provided *relative to the top-level window containing the receiver*
      *     and that the receiver is positioned in some fashion.
-     * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
+     * @param {TP.gui.Point|TP.core.Hash|Number[]} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.dom.UIElementNode} The receiver.
@@ -4459,7 +4461,7 @@ function(aRectOrObject) {
      *     provided *relative to the top-level window containing the receiver*
      *     and that the receiver is positioned in some fashion. It also sets the
      *     width and height according to the data supplied.
-     * @param {TP.gui.Rect|TP.core.Hash|Array} aRectOrObject A TP.gui.Rect to
+     * @param {TP.gui.Rect|TP.core.Hash|Number[]} aRectOrObject A TP.gui.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
@@ -4540,7 +4542,7 @@ function(aPointOrObject) {
      *     left style properties. This method expects that these values are
      *     provided *relative to the offset parent of the receiver* and that the
      *     receiver is positioned in some fashion.
-     * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
+     * @param {TP.gui.Point|TP.core.Hash|Number[]} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.dom.UIElementNode} The receiver.
@@ -4579,7 +4581,7 @@ function(aRectOrObject) {
      *     provided *relative to the offset parent of the receiver* and that the
      *     receiver is positioned in some fashion. It also sets the width and
      *     height according to the data supplied.
-     * @param {TP.gui.Rect|TP.core.Hash|Array} aRectOrObject A TP.gui.Rect to
+     * @param {TP.gui.Rect|TP.core.Hash|Number[]} aRectOrObject A TP.gui.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.
@@ -4626,7 +4628,7 @@ function(aPointOrObject) {
      *     left style properties. This method expects that these values are
      *     provided *relative to the whole page of the receiver* and that the
      *     receiver is positioned in some fashion.
-     * @param {TP.gui.Point|TP.core.Hash|Array} aPointOrObject A TP.gui.Point
+     * @param {TP.gui.Point|TP.core.Hash|Number[]} aPointOrObject A TP.gui.Point
      *     to use or an object that has 'x' and 'y' slots or an Array that has
      *     x in the first position, and y in the second position.
      * @returns {TP.dom.UIElementNode} The receiver.
@@ -4679,7 +4681,7 @@ function(aRectOrObject) {
      *     provided *relative to the whole page of the receiver* and that the
      *     receiver is positioned in some fashion. It also sets the width and
      *     height according to the data supplied.
-     * @param {TP.gui.Rect|TP.core.Hash|Array} aRectOrObject A TP.gui.Rect to
+     * @param {TP.gui.Rect|TP.core.Hash|Number[]} aRectOrObject A TP.gui.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
      *     width in the third position and height in the fourth position.

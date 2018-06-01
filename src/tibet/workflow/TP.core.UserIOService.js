@@ -70,7 +70,7 @@ function() {
      * @method getRequestQueue
      * @summary Returns the receiver's request queue, the list of requests
      *     which are currently awaiting processing.
-     * @returns {Array}
+     * @returns {TP.sig.Request[]}
      */
 
     return this.$get('requestQueue');

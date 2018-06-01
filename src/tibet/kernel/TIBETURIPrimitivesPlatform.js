@@ -1727,8 +1727,9 @@ TP.hc(
          * @exception TP.sig.InvalidShell
          * @exception TP.sig.ProcessException
          * @exception TP.sig.ExecutionException
-         * @returns {Array} An array containing the result code (0 on success),
-         *     the command output, and any error output, in string form.
+         * @returns {Array<Number,String,String>} An array containing the result
+         *     code (0 on success), the command output, and any error output, in
+         *     string form.
          */
 
         var request,
@@ -2272,8 +2273,9 @@ TP.hc(
          * @exception TP.sig.InvalidShell
          * @exception TP.sig.ProcessException
          * @exception TP.sig.ExecutionException
-         * @returns {Array} An array containing the result code (0 on success),
-         *     the command output, and any error output, in string form.
+         * @returns {Array<Number,String,String>} An array containing the result
+         *     code (0 on success), the command output, and any error output, in
+         *     string form.
          */
 
         var request,
@@ -2684,8 +2686,9 @@ TP.hc(
          * @exception TP.sig.InvalidShell
          * @exception TP.sig.ProcessException
          * @exception TP.sig.ExecutionException
-         * @returns {Array} An array containing the result code (0 on success),
-         *     the command output, and any error output, in string form.
+         * @returns {Array<Number,String,String>} An array containing the result
+         *     code (0 on success), the command output, and any error output, in
+         *     string form.
          */
 
         var request;
@@ -2738,8 +2741,9 @@ TP.hc(
          * @exception TP.sig.InvalidShell
          * @exception TP.sig.ProcessException
          * @exception TP.sig.ExecutionException
-         * @returns {Array} An array containing the result code (0 on success),
-         *     the command output, and any error output, in string form.
+         * @returns {Array<Number,String,String>} An array containing the result
+         *     code (0 on success), the command output, and any error output, in
+         *     string form.
          */
 
         var request;

@@ -227,8 +227,8 @@ function(includesGroups) {
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
      *     elements as 'focusable' elements under the receiver. The default is
      *     false.
-     * @returns {Array} An Array of TP.dom.ElementNodes under the receiver that
-     *     can be focused.
+     * @returns {TP.dom.ElementNode[]} An Array of TP.dom.ElementNodes under the
+     *     receiver that can be focused.
      */
 
     var elem,
@@ -384,8 +384,8 @@ function() {
      *     it is used as the 'context' of the query. If the receiver is empty,
      *     then the document element of the document the receiver is in is used
      *     as the context.
-     * @returns {Array} The Array of member TP.dom.ElementNodes that the
-     *     receiver designates via its query and context.
+     * @returns {TP.dom.ElementNode[]} The Array of member TP.dom.ElementNodes
+     *     that the receiver designates via its query and context.
      */
 
     var query,
@@ -452,7 +452,8 @@ function() {
     /**
      * @method getMemberGroups
      * @summary Returns the members of the group that are themselves groups
-     * @returns {Array} The Array of member 'tibet:group' TP.dom.ElementNodes.
+     * @returns {TP.tibet.group[]} The Array of member 'tibet:group'
+     *     TP.dom.ElementNodes.
      */
 
     var allMembers,
@@ -1046,7 +1047,7 @@ function(addedNodes, queryInfo) {
      * @method mutationAddedFilteredNodes
      * @summary Handles when nodes got added to the DOM we're in, filtered by
      *     the query that we registered with the MutationSignalSource.
-     * @param {Array} addedNodes The Array of nodes that got added to the DOM,
+     * @param {Node[]} addedNodes The Array of nodes that got added to the DOM,
      *     then filtered by our query.
      * @param {TP.core.Hash} queryInfo Information that was registered for this
      *     query when it was originally set up.
@@ -1115,7 +1116,7 @@ function(removedNodes, queryInfo) {
      * @method mutationRemovedFilteredNodes
      * @summary Handles when nodes got removed from the DOM we're in, filtered
      *     bythe query that we registered with the MutationSignalSource.
-     * @param {Array} removedNodes The Array of *all* of the nodes that got
+     * @param {Node[]} removedNodes The Array of *all* of the nodes that got
      *     removed from the DOM. Note that because these nodes have already been
      *     removed from the DOM by the time TIBET's machinery gets called,
      *     unlike mutationAddedFilteredNodes, they will *not* have been filtered

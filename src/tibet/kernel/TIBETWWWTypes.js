@@ -869,7 +869,7 @@ function(aMIMEType) {
      *     For instance, if the MIME type is 'application/xhtml+xml' this method
      *     will return ['xht', 'xhtml'].
      * @param {String} aMIMEType The MIME type to look up.
-     * @returns {Array} An array of strings denoting extensions.
+     * @returns {String[]} An array of strings denoting extensions.
      */
 
     var info,
@@ -2014,7 +2014,7 @@ function() {
      * @method getNativePrefixes
      * @summary Returns an array of canonical prefixes supported natively on
      *     the current browser.
-     * @returns {Array} The list of native prefixes.
+     * @returns {String[]} The list of native prefixes.
      */
 
     var arr;
@@ -2056,7 +2056,7 @@ function() {
      * @method getNativeURIs
      * @summary Returns an array of natively supported namespace URIs on the
      *     current browser.
-     * @returns {Array} The list of native namespace URIs.
+     * @returns {String[]} The list of native namespace URIs.
      */
 
     var arr;
@@ -2098,7 +2098,7 @@ function() {
      * @method getNonNativePrefixes
      * @summary Returns an array of canonical prefixes which are known but not
      *     supported on the current browser.
-     * @returns {Array} The list of non-native prefixes.
+     * @returns {String[]} The list of non-native prefixes.
      */
 
     var arr;
@@ -2140,7 +2140,7 @@ function() {
      * @method getNonNativeURIs
      * @summary Returns an array of known URIs which are not native to the
      *     current browser.
-     * @returns {Array} The list of non-native namespace URIs.
+     * @returns {String[]} The list of non-native namespace URIs.
      */
 
     var arr;
@@ -2256,7 +2256,8 @@ function(anNSURI) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @exception TP.sig.InvalidURI
-     * @returns {Array|null} An array or null if no transforms are registered.
+     * @returns {String[]|null} An array or null if no transforms are
+     *     registered.
      */
 
     var info;
@@ -2316,7 +2317,7 @@ function() {
      * @method getXHTMLURIs
      * @summary Returns an array of namespace URIs which are implicitly part of
      *     the XHTML5 specification.
-     * @returns {Array} The list of XHTML namespace URIs.
+     * @returns {String[]} The list of XHTML namespace URIs.
      */
 
     var nsURIs;
@@ -2561,7 +2562,7 @@ function(declarationName, declarationValue, affectedElements) {
      *     implement this to provide real functionality.
      * @param {String} declarationName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
-     * @param {Array} affectedElements An Array of the elements that were
+     * @param {Element[]} affectedElements An Array of the elements that were
      *     affected that the custom CSS declaration might need to change.
      */
 
@@ -2580,7 +2581,7 @@ function(declarationName, declarationValue, affectedElements) {
      *     implement this to provide real functionality.
      * @param {String} declarationName The name of the declaration.
      * @param {String} declarationValue The value of the declaration.
-     * @param {Array} affectedElements An Array of the elements that were
+     * @param {Element[]} affectedElements An Array of the elements that were
      *     affected that the custom CSS declaration might need to change.
      */
 

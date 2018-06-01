@@ -1206,7 +1206,7 @@ function(aList, aPrefix, aSuffix) {
      * @method regExpConstruct
      * @summary Construct a RegExp using the prefix, an alternation built from
      *     the list and the suffix.
-     * @param {Array} aList An Array of items that will be built up into an
+     * @param {Object[]} aList An Array of items that will be built up into an
      *     alternation.
      * @param {String} aPrefix A regex expression to prepend to the list
      *     alternation.
@@ -2888,7 +2888,7 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
      * @param {Boolean} [includePrototypeProps=false] Whether or not to include
      *     properties that the supplied object inherits through it's prototype
      *     chain.
-     * @returns {Array} The object's keys.
+     * @returns {String[]} The object's keys.
      */
 
     //  no valid source object means no work
@@ -4373,7 +4373,7 @@ function(anObject) {
      *     values returned by these functions is based on the TIBET concept of
      *     types, not the native values returned by typeof.
      * @param {Object} anObject The object to return the list of supertypes for.
-     * @returns {Array} A list of the object's supertypes.
+     * @returns {TP.meta.lang.RootObject[]} A list of the object's supertypes.
      */
 
     var type,
@@ -4499,7 +4499,7 @@ function(anObject) {
      *     types, not the native values returned by typeof.
      * @param {Object} anObject The object to return the list of supertype names
      *     for.
-     * @returns {Array} A list of the object's supertype names.
+     * @returns {String[]} A list of the object's supertype names.
      */
 
     var stypes;
@@ -4958,7 +4958,7 @@ function(aPath, aScheme) {
      * @param {String} [aScheme] An optional scheme that indicates the type of
      *     the supplied path. If this is not supplied, the system attempts to
      *     compute the scheme.
-     * @returns {Array} An Array of path parts.
+     * @returns {String[]} An Array of path parts.
      */
 
     var scheme,
@@ -5375,7 +5375,7 @@ function(pathParts, aPathType) {
      *     TP.XPATH_PATH_TYPE               ->      '/'
      *     TP.XPOINTER_PATH_TYPE            ->      '/'
      *
-     * @param {Array} pathParts The path parts to join together.
+     * @param {String[]} pathParts The path parts to join together.
      * @param {String} aPathType The type of path to join the parts together as.
      * @returns {String} The path obtained by joining the path parts together
      *     using the computed join character.

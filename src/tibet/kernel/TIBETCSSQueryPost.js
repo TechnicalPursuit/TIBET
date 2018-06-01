@@ -263,7 +263,7 @@ function(aNode, aSelector, autoCollapse) {
      *     there's only one item in them. The default is false.
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidString
-     * @returns {Array|Node} A collection of zero or more result nodes or a
+     * @returns {Node[]|Node} A collection of zero or more result nodes or a
      *     single node if we're autoCollapsing.
      */
 

@@ -291,8 +291,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -551,8 +551,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.

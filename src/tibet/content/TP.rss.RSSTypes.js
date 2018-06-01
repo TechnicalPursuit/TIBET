@@ -242,7 +242,7 @@ function() {
      * @summary Returns an Array of TP.rss.RSSItems. Defined this way because
      *     'getItems' is already defined as a method on TP.dom.CollectionNode
      *     and therefore a getter built from a type schema entry won't be built.
-     * @returns {Array} An Array of TP.rss.RSSItems.
+     * @returns {TP.rss.RSSItem[]} An Array of TP.rss.RSSItems.
      */
 
     return this.getElementsByTagName('item');

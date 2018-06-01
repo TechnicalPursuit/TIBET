@@ -1118,7 +1118,7 @@ function(aLevel, arglist) {
      *     format. The result of this method is to invoke $logEntry() after
      *     constructing a logging entry for the inbound level and argument data.
      * @param {TP.log.Level} aLevel The level to log at.
-     * @param {Array} arglist An array of arguments from the invoking function.
+     * @param {Object[]} arglist An array of arguments from the invoking function.
      *     Content should follow [aLevel, aMarkerOrObject, ..., anError]
      *     where the marker and error elements are optional but checked by this
      *     routine and processed if found. All other items are treated as
@@ -1521,7 +1521,7 @@ TP.lang.Object.defineSubtype('log.Entry');
 
 /**
  * An array of the original arguments (not including level) being logged.
- * @type {Arguments}
+ * @type {arguments}
  */
 TP.log.Entry.Inst.defineAttribute('arglist');
 
@@ -2360,7 +2360,7 @@ function(argList, aLogLevel, logRoot) {
      * @method $$log
      * @summary Directs an incoming set of logging parameters to the appropriate
      *     logger for processing.
-     * @param {Arguments} argList A list of arguments from a logging call.
+     * @param {arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
      * @param {Object} logRoot The root to use (TP or APP usually).
      * @returns {Boolean} True if the logging operation succeeded.

@@ -368,7 +368,7 @@ function(enterSelection) {
      *     breadcrumbs. This has to be done since new content can come
      *     incrementally and D3 doesn't store it internally.
      * @param {Object} enterSelection A D3 enter selection object.
-     * @returns {Array} The dataset.
+     * @returns {String[]} The dataset.
      */
 
     var dataset,

@@ -311,8 +311,8 @@ function(aRequest) {
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {Array} An array containing the new node and a TSH loop control
-     *     constant, TP.DESCEND by default.
+     * @returns {Array<Node,Number>} An array containing the new node and a TSH
+     *     loop control constant, TP.DESCEND by default.
      */
 
     var node,

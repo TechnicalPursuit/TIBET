@@ -1343,9 +1343,10 @@ function(attributeValue) {
      * @param {String} attributeValue The attribute value to extract binding
      *     information to compute the transformation function and data
      *     expressions from.
-     * @returns {Array} An Array of a Function, which is the Function that will
-     *     transform the values being updated and an Array which contains all of
-     *     the data expressions that are embedded in the attribute value.
+     * @returns {Array<Function,String[]>} An Array of a Function, which is the
+     *     Function that will transform the values being updated and an Array
+     *     which contains all of the data expressions that are embedded in the
+     *     attribute value.
      */
 
     var finalExpr,
@@ -1871,7 +1872,7 @@ function() {
      *      and traversing the DOM tree up to the #document node, gathering
      *      'bind:scope' attribute values along the way. This will be used to
      *      qualify binding expressions on the receiver.
-     * @returns {Array} An Array of binding scope values.
+     * @returns {String[]} An Array of binding scope values.
      */
 
     var elem,
@@ -2390,7 +2391,8 @@ function() {
      * @summary Returns the repeating data source and index for the receiver if
      *     the receiver is under a 'bind:repeat' and is participating in the
      *     repeating iteration mechanics.
-     * @returns {Array} An Array containing the repeat source and repeat index.
+     * @returns {Array<Object,Number>} An Array containing the repeat source and
+     *     repeat index.
      */
 
     var elem,
@@ -5079,7 +5081,7 @@ function(aSignal) {
         keydownHandler;
 
     //  It is important to remember that this code is shared by all
-    //  TP.core.Element nodes. Therefore, we need to use other checking logic
+    //  TP.dom.ElementNode nodes. Therefore, we need to use other checking logic
     //  (like whether or not we have this attribute) to see if we handle this.
 
     if (!this.hasAttribute('bind:repeat')) {

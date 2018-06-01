@@ -492,8 +492,8 @@ function(aMatrix) {
      *     a 4X4 matrix will be converted into a 3X2 matrix.
      * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
-     * @param {Array} aMatrix An Array of Arrays representing the matrix.
-     * @returns {Array} An Array of Arrays representing the converted matrix.
+     * @param {Number[][]} aMatrix An Array of Arrays representing the matrix.
+     * @returns {Number[][]} An Array of Arrays representing the converted matrix.
      */
 
     var matrix;
@@ -523,8 +523,8 @@ function(aMatrix) {
      *     values for the missing spots).
      * @description This code derived from:
      *     https://gist.github.com/Yaffle/1145197
-     * @param {Array} aMatrix An Array of Arrays representing the matrix.
-     * @returns {Array} An Array of Arrays representing the converted matrix.
+     * @param {Number[][]} aMatrix An Array of Arrays representing the matrix.
+     * @returns {Number[][]} An Array of Arrays representing the converted matrix.
      */
 
     var matrix;
@@ -559,7 +559,7 @@ function(cssStr, wants2DMatrix) {
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
      *     transforms. The default is false.
-     * @returns {Array} An Array of Arrays representing the extracted matrix.
+     * @returns {Number[][]} An Array of Arrays representing the extracted matrix.
      */
 
     var matrixValues,
@@ -612,11 +612,11 @@ function(a, b) {
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
      *     for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
-     * @param {Array} a An Array of Arrays representing the first matrix to be
+     * @param {Number[][]} a An Array of Arrays representing the first matrix to be
      *     multiplied.
-     * @param {Array} b An Array of Arrays representing the first matrix to be
+     * @param {Number[][]} b An Array of Arrays representing the first matrix to be
      *     multiplied.
-     * @returns {Array} An Array of Arrays representing the multiplied matrix.
+     * @returns {Number[][]} An Array of Arrays representing the multiplied matrix.
      */
 
     var r,
@@ -654,9 +654,9 @@ function(m) {
      *     Note that this method assumes it is operating on a 4X4 matrix
      *     suitable for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
-     * @param {Array} m An Array of Arrays representing the matrix to be
+     * @param {Number[][]} m An Array of Arrays representing the matrix to be
      *     translated. Varargs values consist of also tx, ty, tz.
-     * @returns {Array} An Array of Arrays representing the translated matrix.
+     * @returns {Number[][]} An Array of Arrays representing the translated matrix.
      */
 
     var i,
@@ -684,11 +684,11 @@ function(aMatrix, x, y) {
     /**
      * @method matrixTransformPoint
      * @summary Transforms the supplied point values with the supplied matrix.
-     * @param {Array} aMatrix An Array of Arrays representing the matrix to be
+     * @param {Number[][]} aMatrix An Array of Arrays representing the matrix to be
      *     used in transforming the point.
      * @param {Number} x The X coordinate of the point to transform.
      * @param {Number} y The Y coordinate of the point to transform.
-     * @returns {Array} An Array of 2 Numbers representing the transformed
+     * @returns {Number[]} An Array of 2 Numbers representing the transformed
      *     point.
      */
 
@@ -715,13 +715,13 @@ function(aMatrix, x, y, width, height) {
      * @method matrixTransformRect
      * @summary Transforms the supplied rectangle values with the supplied
            matrix.
-     * @param {Array} aMatrix An Array of Arrays representing the matrix to be
-     *     used in transforming the rectangle.
+     * @param {Number[][]} aMatrix An Array of Arrays representing the matrix to
+     *     be used in transforming the rectangle.
      * @param {Number} x The X coordinate of the rectangle to transform.
      * @param {Number} y The Y coordinate of the rectangle to transform.
      * @param {Number} width The width of the rectangle to transform.
      * @param {Number} height The height of the rectangle to transform.
-     * @returns {Array} An Array of 4 Numbers representing the transformed
+     * @returns {Number[]} An Array of 4 Numbers representing the transformed
      *     rectangle.
      */
 

@@ -103,8 +103,8 @@ function(aSignal) {
     origin = aSignal.getOrigin();
 
     if (TP.isString(origin)) {
-        //  Grab the real TP.core.Element that matches the signal origin (which
-        //  will be a full GID).
+        //  Grab the real TP.dom.ElementNode that matches the signal origin
+        //  (which will be a full GID).
         originTPElem = TP.bySystemId(origin);
         originElem = TP.unwrap(originTPElem);
     } else {

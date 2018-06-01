@@ -124,7 +124,7 @@ function(aNode, aCommandList, aRequest) {
      *     input pipe may have been.
      * @param {Node} aNode A native node containing one or more executable child
      *     elements.
-     * @param {Array} aCommandList The run requests for this script.
+     * @param {TP.sig.Request[]} aCommandList The run requests for this script.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
      */
@@ -199,8 +199,8 @@ function(commands, aRequest) {
      * @method $connectPipeSections
      * @summary Joins the various requests involved in processing the pipe so
      *     that the proper workflow semantics are observed.
-     * @param {Array} commands An array of arrays of requests which make up the
-     *     individual sections of command pipeline.
+     * @param {TP.sig.Request[]} commands An array of arrays of requests which
+     *     make up the individual sections of command pipeline.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      */
@@ -550,7 +550,7 @@ function(source, shell, sibling, request) {
      *     NOTE that these transforms are all "compile time" conversions. See
      *     the TP.tsh.eval type for processing specific to "runtime" processing
      *     of shell input.
-     * @param {String|Array} source The input source to translate.
+     * @param {String|String[]} source The input source to translate.
      * @param {TP.shell.Shell} shell The shell instance handling the request
      *     we're processing text for.
      * @param {TP.dom.Node} sibling The previous sibling, which may contain
@@ -3370,7 +3370,7 @@ function() {
      *     during shell execution. Standard input is always provided as an array
      *     of 0 to N items provided by the various stdout, stderr, and input
      *     redirection calls related to a request.
-     * @returns {Array} An array of 0 to N input objects.
+     * @returns {Object[]} An array of 0 to N input objects.
      */
 
     var buffer,

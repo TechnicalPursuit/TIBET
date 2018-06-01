@@ -178,7 +178,7 @@ TP.objectDefineDependencies = function(anObject, varargs) {
      *     information for.
      * @param {arguments} varargs One or more dependencies or dependency
      *     references provided as a variable argument list.
-     * @return {Array} The updated list of object dependencies.
+     * @return {Object[]} The updated list of object dependencies.
      */
 
     var dependencies,
@@ -511,7 +511,7 @@ TP.sys.getGlobals = function(params, windowContext) {
      *     the list is filtered. For details see TP.sys.$getContextGlobals.
      * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
-     * @returns {Array} An array of all registered globals.
+     * @returns {Object[]} An array of all registered globals.
      */
 
     if (typeof TP.sys.$getContextGlobals === 'function') {

@@ -261,7 +261,7 @@ function() {
      *     of the receiver.
      *     Therefore, the receiver needs to stamp this attribute and value on
      *     each item in its drawing machinery methods.
-     * @returns {Array} A pair containing the attribute name and value.
+     * @returns {String[]} A pair containing the attribute name and value.
      */
 
     return TP.ac('class', 'row');

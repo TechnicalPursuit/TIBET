@@ -64,7 +64,7 @@ function(x, y) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.gui.Point|Object|TP.core.Hash|Array} x The x value
+     * @param {Number|TP.gui.Point|Object|TP.core.Hash|Number[]} x The x value
      *     of the receiver or a TP.gui.Point to copy or an object that has 'x'
      *     and 'y' (or 'top' and 'left') slots or an Array that has x in the
      *     first position and y in the last position.
@@ -785,10 +785,10 @@ function(points) {
      * @summary Sorts the supplied Array by comparing the distance of each
      *     point in the Array to the receiver. This returns the same Array with
      *     the points sorted in ascending order (i.e closest one first).
-     * @param {Array} points The Array of TP.gui.Points to sort.
+     * @param {TP.gui.Point[]} points The Array of TP.gui.Points to sort.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} The supplied Array with the points sorted by computing
-     *     the distance between the receiver and each point.
+     * @returns {TP.gui.Point[]} The supplied Array with the points sorted by
+     *     computing the distance between the receiver and each point.
      */
 
     var thisX,
@@ -988,7 +988,7 @@ function(x, y, width, height) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {Number|TP.gui.Rect|Object|TP.core.Hash|Array} x The x value of
+     * @param {Number|TP.gui.Rect|Object|TP.core.Hash|Number[]} x The x value of
      *     the receiver or a TP.gui.Rect to copy or an object that has 'x', 'y'
      *     (or 'top', 'left'), 'width' and 'height' slots or an Array that has x
      *     in the first position, y in the second position, width in the third
@@ -1623,8 +1623,8 @@ function(aRect) {
      *     subtracted.
      * @description This routine is adapted from Google's Closure library.
      * @param {TP.gui.Rect} aRect The rectangle to test.
-     * @returns {Array} An Array of TP.gui.Rectangles containing the remaining
-     *     regions.
+     * @returns {TP.gui.Rect[]} An Array of TP.gui.Rects containing the
+     *     remaining regions.
      */
 
     var intersectingRect,
@@ -3281,7 +3281,7 @@ function(anObj) {
      * @description This type only supports 3X2 matrices, so this method will
      *     only take a 3X2 set of Arrays representing that. 4X4 3D matrices have
      *     to be converted to a 3X2 matrix first.
-     * @param {Array} anObj The Array that an instance of this type will be
+     * @param {Number[][]} anObj The Array that an instance of this type will be
      *     extracted from.
      * @returns {TP.gui.Matrix} An instance of this type as extracted from
      *     anObj.
@@ -3478,9 +3478,9 @@ function(matrixData) {
      *
      *     Note that this example is the 'identity matrix' data that can be
      *     obtained by calling TP.gui.Matrix.cloneIdentityData().
-     * @param {Object|TP.gui.Matrix|Array} matrixData One or more objects of
-     *     matrix data to initialize the matrix with. If this parameter is not
-     *     valid, the matrix is initialized with the 'identity matrix'.
+     * @param {Object|TP.gui.Matrix|Number[][]} matrixData One or more objects
+     *     of matrix data to initialize the matrix with. If this parameter is
+     *     not valid, the matrix is initialized with the 'identity matrix'.
      * @returns {TP.gui.Matrix} The receiver.
      */
 
@@ -4267,7 +4267,7 @@ function(anObj) {
      * @summary Returns an instance of this type as extracted from anObj, which
      *     should be an Array. This Array should be in the format of:
      *     [redNumber, greenNumber, blueNumber, alphaNumber]
-     * @param {Array} anObj The Array that an instance of this type will be
+     * @param {Number[]} anObj The Array that an instance of this type will be
      *     extracted from.
      * @returns {TP.gui.Color} An instance of this type as extracted from
      *     anObj.
@@ -4424,7 +4424,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver as an Array of: [red, green, blue, alpha].
-     * @returns {Array} An Array containing the color expressed in RGB values
+     * @returns {Number[]} An Array containing the color expressed in RGB values
      *     ([red, green, blue, alpha]).
      */
 
@@ -6620,8 +6620,9 @@ function(segmentOpConstant, segmentArgs) {
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
      *     in this type's SEGMENT_INFO hash.
-     * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
-     *     TP.gui.Points that contain the segment arguments.
+     * @param {Array<Number|Boolean|Array|TP.gui.Point>} segmentArgs An Array of
+     *     Numbers, Booleans, Arrays or TP.gui.Points that contain the segment
+     *     arguments.
      * @returns {TP.gui.Path} The receiver.
      */
 
@@ -6660,8 +6661,8 @@ function(operandsArray) {
      * @summary Converts the supplied Array of operands (each of which can be a
      *     Number, a Boolean, an Array or a TP.gui.Point), into a Number
      *     sequence suitable for use in a segment.
-     * @param {Array} operandsArray An Array of objects to convert.
-     * @returns {Array} An Array of Numbers.
+     * @param {Object[]} operandsArray An Array of objects to convert.
+     * @returns {Number[]} An Array of Numbers.
      */
 
     var i,
@@ -6877,8 +6878,8 @@ function(segmentOpConstant, occurrenceCount) {
      *     in this type's SEGMENT_INFO hash.
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be obtained from the path. E.g. 'The 3rd MOVETO'.
-     * @returns {Array} An Array containing the desired segment in the following
-     *     format: [operator, [operand, operand]].
+     * @returns {Array<String,Number[]>} An Array containing the desired segment
+     *     in the following format: [operator, [operand, operand]].
      */
 
     var segmentInfo,
@@ -6963,8 +6964,9 @@ function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
      *     in this type's SEGMENT_INFO hash.
-     * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
-     *     TP.gui.Points that contain the segment arguments.
+     * @param {Array<Number|Boolean|Array|TP.gui.Point>} segmentArgs An Array of
+     *     Numbers, Booleans, Arrays or TP.gui.Points that contain the segment
+     *     arguments.
      * @param {String} insPointSegmentConstant A constant that denotes the
      *     operator of the insertion point path segment. This should be one of
      *     the constant values defined in this type's SEGMENT_INFO hash.
@@ -7032,8 +7034,9 @@ function(segmentOpConstant, segmentArgs, occurrenceCount) {
      * @param {String} segmentOpConstant A constant that denotes the operator of
      *     the path segment. This should be one of the constant values defined
      *     in this type's SEGMENT_INFO hash.
-     * @param {Array} segmentArgs An Array of Numbers, Booleans, Arrays or
-     *     TP.gui.Points that contain the segment arguments.
+     * @param {Array<Number|Boolean|Array|TP.gui.Point>} segmentArgs An Array of
+     *     Numbers, Booleans, Arrays or TP.gui.Points that contain the segment
+     *     arguments.
      * @param {Number} occurrenceCount The occurrence of the particular operator
      *     that should be obtained from the path. E.g. 'The 3rd MOVETO'.
      * @returns {TP.gui.Path} The receiver.
@@ -7267,6 +7270,12 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
     /**
      * @method $updateBBox
      * @summary
+     * @param {String} segmentOperator
+     * @param {Array<Number|Boolean|Array|TP.gui.Point>} segmentArgs An Array of
+     *     Numbers, Booleans, Arrays or TP.gui.Points that contain the segment
+     *     arguments.
+     * @param {TP.gui.Point} trackingPoint
+     * @param {Array} trackingData
      * @returns {TP.gui.SVGPath}
      */
 
@@ -8387,7 +8396,7 @@ function(aTarget, propertyName, aTransitionParams) {
      * @method transition
      * @summary A convenience wrapper for invoking this type of
      *     TP.gui.Transition to do a 'simple transition'.
-     * @param {Array|Element} aTarget The target or targets to transition.
+     * @param {Element|Element[]} aTarget The target or targets to transition.
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.core.Hash} aTransitionParams A hash of parameters to use for
      *     the transition.

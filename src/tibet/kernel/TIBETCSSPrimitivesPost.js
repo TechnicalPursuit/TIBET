@@ -416,7 +416,7 @@ function(aHue, aSaturation, aLightness, anAlpha) {
      *     fractional number between 0 and 1.
      * @param {Number} anAlpha The color alpha information.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} The color expressed as an RGBA value in an Array of [r,
+     * @returns {Number[]} The color expressed as an RGBA value in an Array of [r,
      *     g, b, a].
      */
 
@@ -607,7 +607,7 @@ function(aString) {
      * @param {String} aString The String containing color information to
      *     convert.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} An Array having this color value expressed as 3 Numbers
+     * @returns {Number[]} An Array having this color value expressed as 3 Numbers
      *     [r, g, b].
      */
 
@@ -1220,7 +1220,7 @@ function(anElement, flushCaches) {
      * @param {Boolean} [flushCaches=false] Whether or not to flush the
      *     element's cached ruleset.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} An Array of CSSRule objects.
+     * @returns {CSSStyleRule[]} The native style rules.
      */
 
     var ruleArray,
@@ -1380,7 +1380,7 @@ function(anElement, aProperty) {
      *     TP.core.Hash.fromCSSString(str);
      * @param {HTMLElement} anElement The element to retrieve the computed style
      *     for.
-     * @param {String|Array} aProperty An optional property name or names to
+     * @param {String|String[]} aProperty An optional property name or names to
      *     query for.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidStyleDeclaration
@@ -1487,7 +1487,7 @@ function(anElement, aProperty) {
      *     values using TP.core.Hash.fromCSSString(str);
      * @param {HTMLElement} anElement The element to retrieve the inline CSS
      *     style for.
-     * @param {String|Array} aProperty An optional property name or names to
+     * @param {String|String[]} aProperty An optional property name or names to
      *     query for.
      * @exception TP.sig.InvalidElement
      * @returns {String} The inline CSS style of the supplied element/property,
@@ -1849,7 +1849,8 @@ function(anElement, aProperty) {
      *     from the style of the supplied element.
      * @param {HTMLElement} anElement The element to remove the style property
      *     from.
-     * @param {String|Array} aProperty The name of the style property to remove.
+     * @param {String|String[]} aProperty The name of the style property to
+     *     remove.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
      */

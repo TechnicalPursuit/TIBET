@@ -1442,8 +1442,8 @@ function(aString) {
      *     supplied String, but are currently undefined in TIBET.
      * @param {String} aString The XML string content to find undefined
      *     namespace prefixes in.
-     * @returns {Array} An Array of undefined XML (either element or attribute
-     *     level) prefixes in the supplied String.
+     * @returns {String[]} An Array of undefined XML (either element or
+     *     attribute level) prefixes in the supplied String.
      */
 
     var elemResults,

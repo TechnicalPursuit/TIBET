@@ -397,7 +397,7 @@ function(aDocument) {
      *     embedded iframes in it.
      * @param {Document} aDocument The document to begin searching for iframes.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array} The list of nested iframes.
+     * @returns {iframe[]} The list of nested iframes.
      */
 
     var allIFrames,
@@ -638,7 +638,7 @@ function(aDocument) {
      * @summary Returns an array of any link (<a href="") files referenced in
      *     the document.
      * @param {Document} aDocument The document to search.
-     * @returns {Array}
+     * @returns {String[]} The link file names referenced in the document.
      */
 
     var arr,
@@ -923,7 +923,7 @@ function(aDocument) {
      *     document.
      * @param {Document} aDocument The document to search.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array}
+     * @returns {String[]} The script file names referenced in the document.
      */
 
     var arr,
@@ -963,7 +963,7 @@ function(aDocument) {
      * @summary Returns the enclosing document's script nodes, if any.
      * @param {Document} aDocument The document to use.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array}
+     * @returns {script[]} The script nodes referenced in the document.
      */
 
     if (!TP.isDocument(aDocument)) {
@@ -1683,8 +1683,8 @@ function(anElement, markup, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidString
-     * @returns {Array} The [width, height] pair computed when the content of
-     *     the element is set to the supplied markup.
+     * @returns {Number[]} The [width, height] pair computed when the content
+     *     of the element is set to the supplied markup.
      */
 
     var theBoxType,
@@ -1845,13 +1845,14 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
      *     This defaults to 0.
      * @param {Number} offsetY The Y offset in pixels to use as a 'padding'.
      *     This defaults to 0.
-     * @param {Array} preferredCorners An Array of 'corners' to use to test.
-     *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
-     *     TP.BOTTOM_RIGHT.
+     * @param {String[]} preferredCorners An Array of 'corners' to use to test.
+     *     This should be one or more of: TP.TOP_LEFT TP.BOTTOM_LEFT
+     *     TP.TOP_RIGHT TP.BOTTOM_RIGHT.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidNumber
-     * @returns {Array} An Array of the following return values: [on-screen X,
-     *     on-screen Y, corner used, distanceComputation].
+     * @returns {Array<Number,Number,String,Number>} An Array of the following
+     *     return values: [on-screen X, on-screen Y, corner used,
+     *     distanceComputation].
      */
 
     var desiredOffsetX,
@@ -2508,7 +2509,7 @@ function(anElement) {
      *     rectangle from.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidStyleDeclaration
-     * @returns {Array} An Array of Numbers containing the element's clipping
+     * @returns {Number[]} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
      */
@@ -3304,7 +3305,7 @@ function(anElement, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} An ordered pair containing the X amount in the first
+     * @returns {Number[]} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
 
@@ -3720,7 +3721,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} The page X and Y coordinates of the element in pixels.
+     * @returns {Number[]} The page X and Y coordinates of the element in
+     *     pixels.
      */
 
     var positions,
@@ -3951,7 +3953,8 @@ function(anElement, boxType, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} The offset X and Y coordinates of the element in pixels.
+     * @returns {Number[]} The offset X and Y coordinates of the element in
+     *     pixels.
      */
 
     var offsetAncestor;
@@ -4107,7 +4110,7 @@ function(anElement, anAncestor, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} An ordered pair containing the X amount in the first
+     * @returns {Number[]} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
 
@@ -4180,7 +4183,7 @@ function(anElement, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidStyleDeclaration
-     * @returns {Array} An ordered pair containing the X amount in the first
+     * @returns {Number[]} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
 
@@ -4243,7 +4246,7 @@ function(anElement, wantsTransformed) {
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} The X and Y offset in pixels.
+     * @returns {Number[]} The X and Y offset in pixels.
      */
 
     var vals;
@@ -4278,8 +4281,8 @@ function(anElement, xCoord, yCoord) {
      * @param {Number} yCoord The Y coordinate, expressed in document-level
      *     coordinates.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} Two of the following four values: First position:
-     *     TP.RIGHT or TP.LEFT First position: TP.TOP or TP.BOTTOM.
+     * @returns {Array<String,String>} Two of the following four values: First
+     *     position: TP.RIGHT or TP.LEFT First position: TP.TOP or TP.BOTTOM.
      */
 
     var pageXY,
@@ -5125,7 +5128,7 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
      *     one of the following values: TP.CONTENT_BOX TP.PADDING_BOX
      *     TP.BORDER_BOX TP.MARGIN_BOX If this parameter is not supplied, it
      *     defaults to TP.BORDER_BOX.
-     * @param {Array} preferredCorners An Array of 'corners' to use to test.
+     * @param {String[]} preferredCorners An Array of 'corners' to use to test.
      *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
      *     TP.BOTTOM_RIGHT.
      * @exception TP.sig.InvalidElement
@@ -8310,7 +8313,7 @@ function(aNode, aClassName) {
      * @param {String} aClassName The class name to use to find matching
      *     elements. Multiple class names should be space separated.
      * @exception TP.sig.InvalidNode
-     * @returns {Array} An Array of Elements under anElement whose CSS class
+     * @returns {Element[]} An Array of Elements under anElement whose CSS class
      *     name matches aClassName.
      */
 
@@ -8729,8 +8732,8 @@ function(obj1, obj2) {
      *     event object or an element specification, or element suitable for
      *     TP.byId() or a hash or point with 'x' and 'y' values or an array with
      *     an X 'value' in the first position and a Y value in the second.
-     * @returns {Array} The distance and direction of the vector expressed as an
-     *     Array of: [distance, direction].
+     * @returns {Number[]} The distance and direction of the vector expressed as
+     *     an Array of: [distance, direction].
      */
 
     var coords1,
@@ -9432,7 +9435,7 @@ function(aWindow, otherWindow, wantsTransformed) {
      *     whether to return 'transformed' values if the window's iframe element
      *     has been transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidWindow
-     * @returns {Array} The offsets expressed as [left, top].
+     * @returns {Number[]} The offsets expressed as [left, top].
      */
 
     var frame1OffsetX,
@@ -9507,7 +9510,7 @@ function(aWindow, wants2DMatrix) {
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
      *     transforms. The default is false.
-     * @returns {Array} An Array of Arrays representing the current
+     * @returns {Number[][]} An Array of Arrays representing the current
      *     transformation matrix.
      */
 
@@ -9621,7 +9624,7 @@ function(aWindow) {
      *     provided. This data is used in building a global ID.
      * @param {Window} aWindow The window to fetch parent names for.
      * @exception TP.sig.InvalidWindow
-     * @returns {Array} The names of all of the parent windows of aWindow all
+     * @returns {String[]} The names of all of the parent windows of aWindow all
      *     the way up to the top level window containing it.
      */
 
@@ -9678,8 +9681,8 @@ function(aWindow) {
      * @param {Window} aWindow The window whose screen the width and height will
      *     be obtained.
      * @exception TP.sig.InvalidWindow
-     * @returns {Array} An ordered pair containing the width amount in the first
-     *     position and the height amount in the second position.
+     * @returns {Number[]} An ordered pair containing the width amount in the
+     *     first position and the height amount in the second position.
      */
 
     if (!TP.isWindow(aWindow)) {

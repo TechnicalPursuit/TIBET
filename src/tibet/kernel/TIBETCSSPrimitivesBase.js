@@ -231,8 +231,8 @@ function(cssElements, targetDoc, shouldSignal) {
      * @summary Copies style information from the 'link' and 'style' elements
      *     supplied in the element array and creates new 'link' and 'style'
      *     elements with that information in the target document.
-     * @param {Array} cssElements The Array of 'style' and 'link' elements that
-     *     will have their style information copied and used in the target
+     * @param {Element[]} cssElements The Array of 'style' and 'link' elements
+     *     that will have their style information copied and used in the target
      *     document.
      * @param {Document} targetDoc The document whose style nodes should be
      *     updated.
@@ -439,8 +439,8 @@ function(aDocument) {
      *     Array.
      * @param {Document} aDocument The document to use.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array} An Array of either the 'link' or 'style' elements in the
-     *     supplied document.
+     * @returns {Element[]} An Array of either the 'link' or 'style' elements in
+     *     the supplied document.
      */
 
     var targetHead,
@@ -497,7 +497,7 @@ function(aDocument) {
      * @param {HTMLDocument} aDocument The document to retrieve all style rules
      *     for.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array} The list of CSS rules for the supplied document.
+     * @returns {CSSStyleRule[]} The list of CSS rules for the supplied document.
      */
 
     var allSheets,
@@ -542,8 +542,8 @@ function(aDocument) {
      * @param {HTMLDocument} aDocument The document to retrieve all style rules
      *     for.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array} An Array of either TP.core.Hashes or native browser
-     *     'rule' objects representing the CSS rules for the supplied document.
+     * @returns {CSSStyleRule[]} An Array of native browser 'rule' objects
+     *     representing the CSS rules for the supplied document.
      */
 
     return TP.documentGetNativeStyleRules(aDocument);
@@ -1038,8 +1038,8 @@ function(aDocument) {
      * @param {HTMLDocument} aDocument The document to retrieve all unused style
      *     rules for.
      * @exception TP.sig.InvalidDocument
-     * @returns {Array} An Array of native browser 'rule' objects representing
-     *     the unused CSS rules for the supplied document.
+     * @returns {CSSStyleRule[]} An Array of native browser 'rule' objects
+     *     representing the unused CSS rules for the supplied document.
      */
 
     var unusedRules,
@@ -2456,8 +2456,8 @@ function(aStyleRule, filterNonStyleRules) {
      *     for non-style rules.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidStyleSheet
-     * @returns {Array} An Array of the stylesheet object containing the rule
-     *     and the index the rule can be found in the sheet.
+     * @returns {Array<CSSStyleRule,Number>} An Array of the stylesheet object
+     *     containing the rule and the index the rule can be found in the sheet.
      */
 
     var styleSheet,
@@ -3037,7 +3037,7 @@ function(aStylesheet, expandImports) {
      *     should be recursively 'expanded' and the rules gathered from them
      *     from. This defaults to true.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} A list of CSSStyleRule objects in the supplied
+     * @returns {CSSStyleRule[]} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
      *     @import statement.
      */
@@ -3097,7 +3097,7 @@ function(aStylesheet, selectorText) {
      * @param {String} selectorText The text of the selector to match.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidString
-     * @returns {Array} A list of CSS rules in the supplied style sheet,
+     * @returns {CSSStyleRule[]} A list of CSS rules in the supplied style sheet,
      *     including those that may have been imported using an. @import
      *     statement, whose selector match the supplied selector text.
      */

@@ -233,7 +233,7 @@ function(aTagName, aNamespace) {
      *     'query'.
      * @param {String} aNamespace The namespace any tags should be qualified by,
      *     such as IQ_ROSTER.
-     * @returns {Array}
+     * @returns {Element[]}
      */
 
     var natNode,
@@ -300,7 +300,7 @@ function(aStanza) {
      *     TP.NONE if it does not want the XMPP connection to send a signal on
      *     the receiver's behalf.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {Object|String|Array} The origin(s) to use when signaling.
+     * @returns {Object|String|Object[]} The origin(s) to use when signaling.
      */
 
     return TP.ifEmpty(this.get('msgID'), this.getID());

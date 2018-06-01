@@ -874,8 +874,9 @@ function(pathParts) {
     /**
      * @method resolvePathAliases
      * @summary Resolves aliases in each supplied path part.
-     * @param {Array} pathParts The Array of path parts to resolve aliases in.
-     * @returns {Array} The supplied path parts, with the aliases resolved.
+     * @param {String[]} pathParts The Array of path parts to resolve aliases
+     *     in.
+     * @returns {String[]} The supplied path parts, with the aliases resolved.
      */
 
     var methodInfo,
@@ -1144,8 +1145,8 @@ function(newPathParts) {
      * @method createHistoryEntry
      * @summary Creates a history entry for the receiver using the provided path
      *     parts.
-     * @param {Array} newPathParts The path parts used to create a history entry
-     *     from.
+     * @param {String[]} newPathParts The path parts used to create a history
+     *     entry from.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -2663,8 +2664,8 @@ function() {
      * @method getCurrentHistoryEntry
      * @summary Returns the set of path parts that make up the history entry at
      *     the top of the history path stack.
-     * @returns {Array} The Array of path parts that make up the current history
-     *     entry.
+     * @returns {String[]} The Array of path parts that make up the current
+     *     history entry.
      */
 
     return this.get('pathStack').at(this.get('pathStackIndex'));

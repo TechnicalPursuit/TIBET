@@ -2603,7 +2603,7 @@ function(anElement, stripPrefixes) {
      *          <samp>(array of attribute names, stripped of their prefix, from
      *         the document element)</samp>
      *     </code>
-     * @returns {Array} A collection of name values.
+     * @returns {String[]} A collection of name values.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      */
@@ -2907,7 +2907,7 @@ function(anElement, attributeName) {
      *          <samp>(array of 'bar:*' attribute nodes from the document
      *         element)</samp>
      *     </code>
-     * @returns {Array} An array of zero to N attribute nodes.
+     * @returns {Attribute[]} An array of zero to N attribute nodes.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      */
@@ -2988,7 +2988,7 @@ function(anElement, attributeName, attrNS) {
      *          <samp>(array of 'baz' attribute nodes, which are also in the
      *         'http://www.bar.com' namespace, from the document element)</samp>
      *     </code>
-     * @returns {Array} An array of zero to N attribute nodes.
+     * @returns {Attribute[]} An array of zero to N attribute nodes.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      * @exception TP.sig.InvalidName Raised when the supplied attribute
@@ -5553,8 +5553,8 @@ function(aNodeList) {
      * @description This method filters out any Nodes from the supplied node
      *     list that are descendants of other nodes in the same list, thereby
      *     returning an Array of only 'root' nodes.
-     * @param {NodeList|Array} aNodeList The node list
-     * @returns {Array} The supplied NodeList filtered for non-root nodes.
+     * @param {NodeList|Node[]} aNodeList The node list to filter.
+     * @returns {Node[]} The supplied NodeList filtered for non-root nodes.
      */
 
     var allNodes,
@@ -5949,7 +5949,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
      *     observations.
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
-     * @returns {Array} An array of position strings.
+     * @returns {String[]} An array of position strings.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      */
@@ -7242,7 +7242,7 @@ function(aNode, aPath, autoCollapse, createAttr) {
      * @param {Boolean} createAttr Whether or not we should create Attribute
      *     nodes if the barename uses 'TIBET extended syntax' and references an
      *     attribute, but that attribute doesn't exist.
-     * @returns {Element|Attribute|Array} The element or attribute(s) obtained
+     * @returns {Element|Attribute|Node[]} The element or attribute(s) obtained
      *     by evaluating the supplied path.
      * @exception TP.sig.InvalidPath Raised when an invalid barename is provided
      *     to the method.
@@ -7667,7 +7667,7 @@ function(aNode, anXPath, resultType, logErrors) {
      *         true);
      *          <samp></samp>
      *     </code>
-     * @returns {Array|Node} The XPath execution result.
+     * @returns {Node[]|Node} The XPath execution result.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      * @exception TP.sig.InvalidString Raised when a null or empty XPath
@@ -8056,7 +8056,7 @@ function(aNode, aPath, autoCollapse) {
      *     xpointer(), xpath1(), element(), etc.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
-     * @returns {Array|Node|Object} A collection of zero or more result nodes.
+     * @returns {Node[]|Node|Object} A collection of zero or more result nodes.
      */
 
     var path,
@@ -8136,7 +8136,7 @@ function(aNode, aPath, autoCollapse) {
      * @param {String} aPath An extended path/pointer scheme such as css(), etc.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
-     * @returns {Array|Node} A collection of zero or more result nodes.
+     * @returns {Node[]|Node} A collection of zero or more result nodes.
      */
 
     var query;
@@ -8197,7 +8197,7 @@ function(aNode) {
      *          TP.nodeGetAncestors(TP.documentGetBody(document).firstChild);
      *          <samp>[object HTMLBodyElement], [object HTMLHtmlElement]</samp>
      *     </code>
-     * @returns {Array} An Array of the parent nodes of the supplied Node.
+     * @returns {Node[]} An Array of the parent nodes of the supplied Node.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      */
@@ -8383,7 +8383,7 @@ function(aNode) {
      *          TP.nodeGetChildNodes(document.documentElement);
      *          <samp>[object HTMLHeadElement], [object HTMLBodyElement]</samp>
      *     </code>
-     * @returns {Array} An Array of the child nodes of the supplied Node.
+     * @returns {Node[]} An Array of the child nodes of the supplied Node.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
@@ -8412,7 +8412,7 @@ function(aNode, aType, breadthFirst) {
      * @param {Number} aType The DOM node type constant to match against.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidParameter Raised when an invalid node type is
@@ -8567,7 +8567,8 @@ function(aNode) {
      *          <samp>[object HTMLDivElement] (or the first child element of the
      *         body in the current document)</samp>
      *     </code>
-     * @returns {Array} An Array of the Element children of the supplied Node.
+     * @returns {Element[]} An Array of the Element children of the supplied
+     *     Node.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
@@ -8659,7 +8660,7 @@ function(aNode, breadthFirst) {
      *          <samp>(descendant nodes of the body element in breadth-first
      *         traversal order)</samp>
      *     </code>
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      */
@@ -8843,7 +8844,7 @@ function(aNode, aType, breadthFirst) {
      *          <samp>(descendant text nodes of the body element in
      *         breadth-first traversal order)</samp>
      *     </code>
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidParameter Raised when an invalid node type is
@@ -8901,7 +8902,7 @@ function(aNode, breadthFirst) {
      *          TP.nodeGetDescendantElements(document, true);
      *          <samp>...Array sorted by 'breadth-first'...</samp>
      *     </code>
-     * @returns {Array} An Array of the Element descendants of the supplied
+     * @returns {Element[]} An Array of the Element descendants of the supplied
      *     Node.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
@@ -8973,7 +8974,7 @@ function(aNode, attrName, attrValue, breadthFirst) {
      *          <samp>(descendant element nodes of the body element that have a
      *         'style' attribute)</samp>
      *     </code>
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidName Raised when an invalid attribute name is
@@ -9091,7 +9092,7 @@ function(aNode, attrPrefix, attrValue, breadthFirst) {
      *          TP.nodeGetDescendantElementsByAttributePrefix(xmlDoc, 'xf');
      *          <samp>[object Element], [object Element]</samp>
      *     </code>
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidName Raised when an invalid attribute prefix is
@@ -9201,8 +9202,8 @@ function(aNode, anIdOrName) {
      *          TP.nodeGetDescendantElementsByIdOrName(xmlDoc, 'foo');
      *          <samp>[object Element], [object Element]</samp>
      *     </code>
-     * @returns {Array} The objects whose name is equal to anIdOrName or empty
-     *     if there are no objects with that name.
+     * @returns {Element[]} The elements whose name is equal to anIdOrName or
+     *     empty if there are no objects with that name.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidName Raised when an empty ID or name is provided
@@ -9272,7 +9273,7 @@ function(aNode, aName) {
      *          TP.nodeGetDescendantElementsByName(xmlDoc, 'foo');
      *          <samp>[object Element], [object Element]</samp>
      *     </code>
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Element[]} An Array containing the elements found.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      * @exception TP.sig.InvalidName Raised when an empty name is provided to
@@ -9614,7 +9615,7 @@ function(aNode, aTagName, aNamespaceURI) {
      *          'http://www.w3.org/2002/xforms');
      *          <samp>[object Element]</samp>
      *     </code>
-     * @returns {Array} An Array containing native elements found.
+     * @returns {Element[]} An Array containing native elements found.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidName Raised when an invalid tag name is provided
@@ -10675,7 +10676,7 @@ function(aNode, aSubset) {
      *          TP.nodeGetSiblings(TP.documentGetBody(document));
      *          <samp>[object HTMLHeadElement]</samp>
      *     </code>
-     * @returns {Array} An Array containing the nodes found.
+     * @returns {Node[]} An Array containing the nodes found.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      */
@@ -10942,13 +10943,13 @@ function(aNodeArray, shouldSort) {
      *     These are the nodes for which there is no ancestor *in the supplied
      *     Array* (they very well may have an ancestor, but it's not included in
      *     the Array.
-     * @param {Array} aNodeArray The DOM nodes to operate on.
+     * @param {Node[]} aNodeArray The DOM nodes to operate on.
      * @param {Boolean} [shouldSort=false] Whether or not to sort the supplied
      *     nodes into 'document order'. This flag is defaulted to false, since
      *     most queries (XPath, CSS, etc.) will return 'document order' results
      *     and those are then likely supplied to this method. If this flag is
      *     true, then a sort is performed using the TP.sort.DOCUMENT_ORDER sort.
-     * @returns {Array} An Array of the root nodes of the supplied nodes
+     * @returns {Node[]} An Array of the root nodes of the supplied nodes
      * @exception TP.sig.InvalidArray Raised when an invalid Array is provided
      *     to the method.
      */
@@ -12867,7 +12868,7 @@ function(aNode, aFunction) {
      *          // This is an Array
      *          <samp>[object HTMLHtmlElement]</samp>
      *     </code>
-     * @returns {Array} An Array of ancestors found acceptable by aFunction.
+     * @returns {Node[]} An Array of ancestors found acceptable by aFunction.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      * @exception TP.sig.InvalidFunction Raised when an invalid function is
@@ -12931,7 +12932,7 @@ function(aNode, aProperty) {
      *         'parentNode');
      *          <samp>[object HTMLHtmlElement], [object HTMLDocument]</samp>
      *     </code>
-     * @returns {Array} An Array of objects obtained by recursing using the
+     * @returns {Object[]} An Array of objects obtained by recursing using the
      *     supplied property.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
@@ -13010,7 +13011,7 @@ function(aNode, aFunction) {
      *          // This is an Array
      *          <samp>[object HTMLHeadElement]</samp>
      *     </code>
-     * @returns {Array} An Array of child elements found acceptable by
+     * @returns {Element[]} An Array of child elements found acceptable by
      *     aFunction.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
@@ -13093,7 +13094,7 @@ function(aNode, aFunction) {
      *          // This is an Array
      *          <samp>[object HTMLHeadElement]</samp>
      *     </code>
-     * @returns {Array} An Array of child nodes found acceptable by aFunction.
+     * @returns {Node[]} An Array of child nodes found acceptable by aFunction.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
      * @exception TP.sig.InvalidFunction Raised when an invalid function is
@@ -13183,7 +13184,7 @@ function(aNode, aFunction, breadthFirst) {
      *          <samp>(all of the 'span' elements that are under the document
      *         element)</samp>
      *     </code>
-     * @returns {Array} An Array of descendant nodes found acceptable by
+     * @returns {Node[]} An Array of descendant nodes found acceptable by
      *     aFunction.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
@@ -13280,7 +13281,7 @@ function(aNode, aFunction, breadthFirst) {
      *          <samp>(all of the 'span' elements that are under the document
      *         element)</samp>
      *     </code>
-     * @returns {Array} An Array of descendant elements found acceptable by
+     * @returns {Element[]} An Array of descendant elements found acceptable by
      *     aFunction.
      * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
      *     'collection node' is provided to the method.
@@ -13421,7 +13422,8 @@ function(aNode, aFunction, aSubset) {
      *          });
      *          <samp>(all span elements that are siblings of the body element's
      *         first child)</samp>
-     * @returns {Array} An Array of sibling nodes found acceptable by aFunction.
+     * @returns {Node[]} An Array of sibling nodes found acceptable by
+     *          aFunction.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      * @exception TP.sig.InvalidFunction Raised when an invalid function is
@@ -13508,7 +13510,7 @@ function(aNode, aNamespaceURI, includeDescendants) {
      *          true);
      *          <samp>baz</samp>
      *     </code>
-     * @returns {Array} An array of namespace prefixes for the supplied
+     * @returns {String[]} An array of namespace prefixes for the supplied
      *     aNamespaceURI in the document.
      * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
      *     Node.ELEMENT_NODE or Node.DOCUMENT_NODE is provided to the method.
@@ -13695,7 +13697,7 @@ function(aNode, includeDescendants) {
      *          <samp>http://www.foo.com, http://www.bar.com,
      *         http://www.baz.com</samp>
      *     </code>
-     * @returns {Array} An array of unique namespace URIs found in the node.
+     * @returns {String[]} An array of unique namespace URIs found in the node.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      */
@@ -13979,7 +13981,7 @@ function(aNode, phaseList, outerElem) {
      *     process content multiple times since there's no guarantee that
      *     operations are idempotent.
      * @param {Node} aNode The node to test.
-     * @param {Array} phaseList An optional array in which to find the target
+     * @param {String[]} phaseList An optional array in which to find the target
      *     phase.
      * @param {Element} outerElem An optional 'outermost' element to test.
      *     Testing will not go higher than this element in the DOM tree.
@@ -14054,7 +14056,7 @@ function(aNode, phaseList, outerElem) {
      * @summary Returns the maximum phase aNode should be processed to based on
      *     the phase data of its ancestors.
      * @param {Node} aNode The node to test.
-     * @param {Array} phaseList An optional array in which to find the target
+     * @param {String[]} phaseList An optional array in which to find the target
      *     phase.
      * @param {Element} outerElem An optional 'outermost' element to test.
      *     Testing will not go higher than this element in the DOM tree.
@@ -14132,7 +14134,7 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
      *     processing has reached that phase.
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} targetPhase A content processing phase name.
-     * @param {Array} targetPhaseList An ordered list of phase names used for
+     * @param {String[]} targetPhaseList An ordered list of phase names used for
      *     testing.
      * @param {Boolean} nodeOnly Flag determining whether to check only the node
      *     or the parent chain as well. Default is node only.

@@ -31,7 +31,7 @@ function(anItem) {
      * @method hasCoalesced
      * @summary Returns true if the receiver has reached a coalescing point. If
      *     true the handleSignal method will perform notification.
-     * @param {Array} anItem A 'trigger' array. Used primarily to optimize for
+     * @param {Object[]} anItem A 'trigger' array. Used primarily to optimize for
      *     Or-Join scenarios.
      * @returns {Boolean} True if the receiver should signal it's notifier.
      */

@@ -377,7 +377,7 @@ function(contentInfo) {
 //  The ID of the current trigger that is trying to trigger the overlay
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$currentTriggerID');
 
-//  The last TP.core.Element that triggered the overlay
+//  The last TP.dom.ElementNode that triggered the overlay
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$triggerTPElement');
 
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$$hideOnSignalName');

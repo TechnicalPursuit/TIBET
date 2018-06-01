@@ -52,7 +52,7 @@ function(aString, aShell, aRequest, asTokens) {
      * @param {TP.shell.Shell} aShell The shell instance.
      * @param {TP.sig.Request} aRequest The shell request.
      * @param {Boolean} asTokens True to return the token array.
-     * @returns {String|Array} A desugared string or token list.
+     * @returns {String|String[]} A desugared string or token list.
      */
 
     //  standard "special variables" we're willing to expose to scripts
@@ -612,7 +612,7 @@ function(aliasString, aTokenArray) {
      *     the alias string are consumed while remaining tokens are placed on
      *     the command line.
      * @param {String} aliasString The alias string to interpolate.
-     * @param {Array} aTokenArray An array of the tokens on the command line
+     * @param {String[]} aTokenArray An array of the tokens on the command line
      *     found after the alias.
      * @returns {String} The interpolated command line string.
      */
@@ -795,7 +795,7 @@ function(aTokenArray) {
      *     get call on 'a' of a.get('b.c'); Note that the access path syntax
      *     supported by the tsh:eval tag includes the proposed slicing syntax
      *     for future editions of JavaScript.
-     * @param {Array} aTokenArray A list of tokens to check.
+     * @param {String[]} aTokenArray A list of tokens to check.
      * @returns {Boolean}
      */
 

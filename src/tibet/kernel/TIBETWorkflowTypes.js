@@ -256,7 +256,8 @@ function() {
      * @method getTriggers
      * @summary Returns one or more trigger signals for the TIBET signaling
      *     system which should cause the receiver to respond to triggers.
-     * @returns {Array.Array} An array of origin/signal ordered pairs.
+     * @returns {Array<Object,Object|String>} An array of origin/signal ordered
+     *     pairs.
      */
 
     var triggers;
@@ -2459,7 +2460,7 @@ function() {
      * @summary Returns true if the receiver has no pending child joins haven't
      *     joined, meaning the receiver probably has pending asynchronous child
      *     requests and should not complete.
-     * @returns {Array} The current and-joined or or-joined requests.
+     * @returns {TP.sig.Request[]} The current and-joined or or-joined requests.
      */
 
     var joins,
@@ -2619,7 +2620,7 @@ function(aJoinKey) {
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
-     * @returns {Array} The current and-joined or or-joined requests.
+     * @returns {TP.sig.Request[]} The current and-joined or or-joined requests.
      */
 
     var joins,
@@ -2655,7 +2656,7 @@ function(aJoinKey) {
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
-     * @returns {Array} The current and-joined or or-joined requests.
+     * @returns {TP.sig.Request[]} The current and-joined or or-joined requests.
      */
 
     var childJoins,
@@ -2698,7 +2699,7 @@ function(aJoinKey) {
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant, or a specific wrapup state code.
-     * @returns {Array} The current and-joined or or-joined requests.
+     * @returns {TP.sig.Request[]} The current and-joined or or-joined requests.
      */
 
     var joins,
@@ -2734,7 +2735,7 @@ function(aJoinKey) {
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant.
-     * @returns {Array} The current and-joined or or-joined requests.
+     * @returns {TP.sig.Request[]} The current and-joined or or-joined requests.
      */
 
     var joins,
@@ -4052,7 +4053,7 @@ function() {
      * @method getAccessKeys
      * @summary Returns an array of the permission keys associated with the
      *     receiver by virtue of its associated keyrings.
-     * @returns {Array} An array containing the string keys of the receiver.
+     * @returns {String[]} An array containing the string keys of the receiver.
      */
 
     var keys,
@@ -4331,7 +4332,7 @@ function() {
      * @method getEffectiveAccessKeys
      * @summary Returns the effective access keys, the access keys owned by the
      *     effective user instance if there is one.
-     * @returns {Array} An array of the effective user's access keys.
+     * @returns {String[]} An array of the effective user's access keys.
      */
 
     var keys,
@@ -4402,7 +4403,7 @@ function() {
      * @method getRealAccessKeys
      * @summary Returns the real user access keys, the access keys owned by the
      *     real user instance if there is one.
-     * @returns {Array} An array of the real user's access keys.
+     * @returns {String[]} An array of the real user's access keys.
      */
 
     var keys,
@@ -6466,7 +6467,7 @@ function(aSignal) {
      * @method getControllers
      * @summary Returns a list of controllers that are currently active.
      * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
-     * @returns {Array} The list of controllers.
+     * @returns {Object[]} The list of controllers.
      */
 
     var controllers;
@@ -6490,7 +6491,7 @@ function() {
      * @summary Rebuilds the list of controllers that the system uses as TIBET's
      *     "signal responder chain".
      * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
-     * @returns {Array} The list of controllers.
+     * @returns {Object[]} The list of controllers.
      */
 
     var controllers,
@@ -6736,7 +6737,7 @@ function(aList) {
     /**
      * @method setControllers
      * @summary Defines the list of controllers that are currently active.
-     * @param {Array} aList The new list of controllers.
+     * @param {Object[]} aList The new list of controllers.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -7097,7 +7098,7 @@ function(aDocument) {
      *     typically called in response to document changes in the UICANVAS to
      *     ensure the top-level history reflects the content page.
      * @param {Document} aDocument The native document to capture from.
-     * @returns {Array[Object, String, String]} The history entry with state
+     * @returns {Array<Object, String, String>} The history entry with state
      *     object, title, and url.
      */
 
@@ -7143,7 +7144,7 @@ function(anIndex) {
      *     at the moment of invocation. Used internally to capture state when
      *     a history event occurs which affects the top URL bar value.
      * @param {Number} [anIndex] The index to update. Default is current index.
-     * @returns {Array[Object, String, String]} The history entry with state
+     * @returns {Array<Object, String, String>} The history entry with state
      *     object, title, and url.
      */
 

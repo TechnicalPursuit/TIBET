@@ -745,7 +745,7 @@ function(aURI, aNode, shouldClone) {
      *     rather than returned as is. The default is true.
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.InvalidNode
-     * @returns {Array} An array containing zero or more Nodes.
+     * @returns {Node[]} An array containing zero or more Nodes.
      */
 
     var resultElements,
@@ -2218,8 +2218,8 @@ function(text, type, report) {
      *     provided this method tries to return DOM if possible, otherwise TEXT.
      * @param {Boolean} report True if errors during document creation should be
      *     reported.
-     * @returns {String|Document|Array} An XML document, response text, or an
-     *     array containing the text and DOM node in that order.
+     * @returns {String|Document|Array<String,Node>} An XML document, response
+     *     text, or an Array containing the text and DOM node in that order.
      */
 
     var doc,
@@ -2366,7 +2366,7 @@ function(aFragment, aScheme) {
      *     don't match, the path will be returned unchanged.
      * @param {String} [aScheme] An optional XPointer scheme to use when it
      *     cannot be determined from the supplied fragment.
-     * @returns {Array} The fragment split into its constituent parts.
+     * @returns {String[]} The fragment split into its constituent parts.
      */
 
     var pathFragment,

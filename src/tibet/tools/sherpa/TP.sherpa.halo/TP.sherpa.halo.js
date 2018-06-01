@@ -1245,8 +1245,8 @@ function(aspectPathParts) {
      * @method inspectTargetAspect
      * @summary Shifts the focus of the Sherpa Inspector to the halo target's
      *     aspect pointed to by the supplied path parts.
-     * @param {Array} aspectPathParts The Array of path parts that make up the
-     *     path to the aspect to be inspected.
+     * @param {String[]} aspectPathParts The Array of path parts that make up
+     *     the path to the aspect to be inspected.
      * @returns {String} The TP.TSH_NO_VALUE value to avoid console output.
      */
 

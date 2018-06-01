@@ -616,7 +616,7 @@ TP.boot.$$log = function(argList, aLogLevel) {
      * @method $$log
      * @summary Directs logging output to either stderr or stdout based on
      *     logging level.
-     * @param {Arguments} argList A list of arguments from a logging call.
+     * @param {arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
      */
 
@@ -1107,7 +1107,7 @@ TP.sys.isUA = function(browser, varargs) {
      * @param {String} browser The browser or browser UI string, typically one
      *     of: 'ie', 'safari', 'chrome', 'firefox', 'trident', 'webkit', or
      *     'gecko'.
-     * @param {Array} varargs The remaining arguments can range from 0 to 5
+     * @param {arguments} varargs The remaining arguments can range from 0 to 5
      *     in length where the arguments are major, minor, patchMajor,
      *     patchMinor, and comparison respectively. The first 4 are numbers used
      *     to specify a version to varying degrees of detail. The comparison
@@ -4558,7 +4558,7 @@ TP.boot.$join = function(varargs) {
      * @method $join
      * @summary Returns a string built from joining the various arguments to
      *     the function.
-     * @param {Object} varargs The first of a set of variable arguments.
+     * @param {arguments} varargs The first of a set of variable arguments.
      * @returns {String} A String built from the joined arguments.
      */
 
@@ -6280,7 +6280,7 @@ TP.boot.$getUIElement = function(varargs) {
      *     as arguments. If multiple arguments are provided, they are used to
      *     traverse downward through a chain of iframe documents, with each ID,
      *     except for the final one, matching the IDs of embedded iframes.
-     * @param {String} varargs One or more arguments containing string IDs.
+     * @param {arguments} varargs One or more arguments containing string IDs.
      * @returns {HTMLElement} The HTML element matching the ID or IDs provided.
      */
 
@@ -7194,7 +7194,7 @@ TP.$$log = function(argList, aLogLevel, logRoot) {
      *     either a boot-level routing or a post-startup routine. The final
      *     logging is ultimately handled by TP.boot.$std[out|err] or by the
      *     TP.log infrastructure if the kernel has loaded and started.
-     * @param {Arguments} argList A list of arguments from a logging call.
+     * @param {arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
      * @param {Object} logRoot The root logger to use (TP or APP usually).
      */
@@ -7213,7 +7213,7 @@ TP.trace = function(varargs) {
     /**
      * @method trace
      * @summary Logs anObject at TP.TRACE level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
@@ -7228,7 +7228,7 @@ TP.debug = function(varargs) {
     /**
      * @method debug
      * @summary Logs anObject at TP.DEBUG level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
@@ -7243,7 +7243,7 @@ TP.info = function(varargs) {
     /**
      * @method info
      * @summary Logs anObject at TP.INFO level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
@@ -7258,7 +7258,7 @@ TP.warn = function(varargs) {
     /**
      * @method warn
      * @summary Logs anObject at TP.WARN level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
@@ -7274,7 +7274,7 @@ TP.error = function(varargs) {
     /**
      * @method error
      * @summary Logs anObject at TP.ERROR level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
@@ -7289,7 +7289,7 @@ TP.fatal = function(varargs) {
     /**
      * @method fatal
      * @summary Logs anObject at TP.FATAL level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
@@ -7304,7 +7304,7 @@ TP.system = function(varargs) {
     /**
      * @method system
      * @summary Logs anObject at TP.SYSTEM level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
+     * @param {arguments} varargs One or more arguments. The last argument is
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */

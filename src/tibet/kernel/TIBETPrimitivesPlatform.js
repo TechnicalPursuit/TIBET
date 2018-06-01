@@ -752,7 +752,7 @@ TP.hc(
          *          [function name, file name, line number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
-         * @returns {Array} An Array of Strings containing stack information.
+         * @returns {String[]} An Array of Strings containing stack information.
          */
 
         var err,
@@ -812,7 +812,7 @@ TP.hc(
          *          [function name, file name, line number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
-         * @returns {Array} An Array of Strings containing stack information.
+         * @returns {String[]} An Array of Strings containing stack information.
          */
 
         var err,
@@ -874,7 +874,7 @@ TP.hc(
          *          [function name, file name, line number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
-         * @returns {Array} An Array of Strings containing stack information.
+         * @returns {String[]} An Array of Strings containing stack information.
          */
 
         var err,
@@ -935,7 +935,7 @@ TP.hc(
          *          [function name, file name, line number, character number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
-         * @returns {Array} An Array of Strings containing stack information.
+         * @returns {String[]} An Array of Strings containing stack information.
          */
 
         var err,

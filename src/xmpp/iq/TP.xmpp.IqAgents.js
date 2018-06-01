@@ -35,7 +35,7 @@ function() {
     /**
      * @method getAgents
      * @summary Returns an Array of TP.xmpp.IqAgent nodes from the receiver.
-     * @returns {Array}
+     * @returns {Element[]}
      */
 
     return this.getElementsByTagName('agent');

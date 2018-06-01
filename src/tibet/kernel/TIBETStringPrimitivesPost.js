@@ -602,7 +602,7 @@ function(aString, left, right, flags) {
      * @param {RegExp} right The RegExp to use to match the 'right' side of each
      *     match.
      * @param {String} flags A String that contains the flags used for matching.
-     * @returns {Array} An Array with the matches found.
+     * @returns {String[]} An Array with the matches found.
      */
 
     var theFlags,
@@ -693,7 +693,7 @@ function(pattern) {
      *     components which would normally be passed to 'new RegExp' to create
      *     the related expression.
      * @param {String} pattern The regular expression source string.
-     * @returns {Array} An array containing two strings, the pattern and flags.
+     * @returns {String[]} An array containing two strings, the pattern and flags.
      */
 
     var restr,
@@ -734,7 +734,7 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
      * @param {String} aStr The string to tokenize.
      * @param {String} startDelim The start delimiter.
      * @param {String} endDelim The end delimiter.
-     * @param {Array} exprArray The Array to place the tokenized expressions.
+     * @param {String[]} exprArray The Array to place the tokenized expressions.
      * @param {String} tokenPrefix A prefix to write in before the token's
      *     numeric prefix in the tokenized String.
      * @param {String} tokenSuffix A prefix to write in after the token's
@@ -843,7 +843,7 @@ function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
      * @param {String} aStr The string to untokenize.
      * @param {String} startDelim The start delimiter.
      * @param {String} endDelim The end delimiter.
-     * @param {Array} exprArray The Array to fetch the tokenized expressions
+     * @param {String[]} exprArray The Array to fetch the tokenized expressions
      *     from.
      * @param {String} tokenPrefix The prefix that got written in before the
      *     token's numeric prefix in the tokenized String.

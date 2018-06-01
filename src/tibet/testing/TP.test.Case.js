@@ -471,8 +471,8 @@ function(flags) {
      *          {Boolean} [localID=false] Whether or not to use the local ID
      *                  rather than the global ID for the signal origin. The
      *                  default is false (use the global ID).
-     * @returns {Array} A list of hashes of information about the argument sets
-     *     of the signals fired using the TP.signal spy.
+     * @returns {TP.core.Hash[]} A list of hashes of information about the
+     *     argument sets of the signals fired using the TP.signal spy.
      */
 
     var info;
@@ -554,7 +554,7 @@ function(flags) {
      *          {Boolean} [localID=false] Whether or not to use the local ID
      *                  rather than the global ID for the signal origin. The
      *                  default is false (use the global ID).
-     * @returns {Array} A list of sets of signal arguments fired using the
+     * @returns {Object[]} A list of sets of signal arguments fired using the
      *     TP.signal spy.
      */
 
@@ -697,7 +697,8 @@ function(flags) {
      *          {Boolean} [localID=false] Whether or not to use the local ID
      *                  rather than the global ID for the signal origin. The
      *                  default is false (use the global ID).
-     * @returns {Array} A list of the signal names fired using the TP.signal spy.
+     * @returns {String[]} A list of the signal names fired using the TP.signal
+     *     spy.
      */
 
     return this.getFiredSignals(flags).collect(
@@ -728,7 +729,7 @@ function(flags) {
      *          {Boolean} [localID=false] Whether or not to use the local ID
      *                  rather than the global ID for the signal origin. The
      *                  default is false (use the global ID).
-     * @returns {Array} A list of the signal stack traces fired using the
+     * @returns {Object[][]} A list of the signal stack traces fired using the
      *     TP.signal spy.
      */
 

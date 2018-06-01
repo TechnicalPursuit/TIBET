@@ -43,7 +43,7 @@ function(params, windowContext) {
      *     functions. 'variables' Return global slots that are not functions.
      * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
-     * @returns {Array} The list of Strings representing keys on the JavaScript
+     * @returns {String[]} The list of Strings representing keys on the JavaScript
      *     global object.
      */
 
@@ -1358,7 +1358,7 @@ function() {
      * @method getParameterNames
      * @summary Returns an Array of the formal parameter names of this
      *     function.
-     * @returns {Array} The formal parameter names to this function.
+     * @returns {String[]} The formal parameter names to this function.
      */
 
     var obj,
@@ -1516,7 +1516,7 @@ function(shouldDescend) {
      *     this array private and avoid manipulating it directly.
      * @param {Boolean} shouldDescend A flag controlling whether the list
      *     includes all subtypes or only immediate children.
-     * @returns {Array} An array of subtypes.
+     * @returns {Object[]} An array of subtypes.
      */
 
     var types,
@@ -1585,7 +1585,7 @@ function(shouldDescend) {
      *     The default list contains names of immediate subtypes.
      * @param {Boolean} shouldDescend A flag controlling whether the list
      *     includes all subtypes or only immediate children.
-     * @returns {Array} An array of subtype names.
+     * @returns {String[]} An array of subtype names.
      */
 
     var names,
@@ -1695,7 +1695,7 @@ function() {
      *     manipulating it. The first element in this array is the immediate
      *     supertype of the receiver or, in the case of an instance, it's the
      *     receiver's type.
-     * @returns {Array} An array of root to immediate supertypes.
+     * @returns {Object[]} An array of root to immediate supertypes.
      */
 
     var arr,
@@ -1749,7 +1749,8 @@ function() {
      * @method getSupertypeNames
      * @summary Returns an array containing the supertype names of the
      *     receiver.
-     * @returns {Array} An array containing the supertype names of the receiver.
+     * @returns {String[]} An array containing the supertype names of the
+     *     receiver.
      */
 
     var type,
@@ -2453,8 +2454,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      * @summary Causes notifications to a particular handler to stop. If the
      *     handler is null all notifications from that origin/signal pair are
      *     removed regardless of the handler in question.
-     * @param {Object|Array} anOrigin The originator(s) to be ignored.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to ignore.
+     * @param {Object|Object[]} anOrigin The originator(s) to be ignored.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to ignore.
      * @param {Object} aHandler The handler to disable.
      * @param {Function} aPolicy A "removal" policy that will define how the
      *     handler is removed.
@@ -2483,8 +2485,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler is null all notifications from that origin/signal pair are
      *     removed regardless of the handler in question. If no handler is
      *     provided the receiver is assumed to be the handler.
-     * @param {Object|Array} anOrigin The originator(s) to be ignored.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to ignore.
+     * @param {Object|Object[]} anOrigin The originator(s) to be ignored.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to ignore.
      * @param {Object} aHandler The handler to disable.
      * @param {Function} aPolicy A "removal" policy that will define how the
      *     handler is removed.
@@ -2510,8 +2513,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     either value means "any" and sets up a generic observation. The
      *     policy is a "registration" policy that defines how the observation
      *     will be configured.
-     * @param {Object|Array} anOrigin The originator(s) to be observed.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to observe.
+     * @param {Object|Object[]} anOrigin The originator(s) to be observed.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to observe.
      * @param {Object} aHandler The handler to notify.
      * @param {Function} aPolicy A "registration" policy that will define how
      *     the handler is registered.
@@ -2542,8 +2546,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     policy is a "registration" policy that defines how the observation
      *     will be configured. If no handler is provided the receiver is assumed
      *     and registered.
-     * @param {Object|Array} anOrigin The originator(s) to be observed.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to observe.
+     * @param {Object|Object[]} anOrigin The originator(s) to be observed.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to observe.
      * @param {Object} aHandler The handler to notify.
      * @param {Function} aPolicy A "registration" policy that will define how
      *     the handler is registered.
@@ -2566,8 +2571,9 @@ function(anOrigin, aSignal) {
      * @method resume
      * @summary Causes notifications matching the criteria to resume. Undoes
      *     the effect of having called TP.suspend().
-     * @param {Object|Array} anOrigin The origin(s) for signals to resume.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to resume.
+     * @param {Object|Object[]} anOrigin The origin(s) for signals to resume.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to resume.
      * @returns {Object} The registration.
      */
 
@@ -2591,7 +2597,8 @@ function(aSignal) {
      * @summary Causes notifications of the signal provided to resume. Undoes
      *     the effect of having called suspend(). The origin being resumed is
      *     the receiver.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to resume.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to resume.
      * @returns {Object} The registration.
      */
 
@@ -2613,8 +2620,9 @@ function(anOrigin, aSignal) {
      * @summary Causes notifications matching the criteria to pause. No
      *     registrations are removed but no signaling is performed until a
      *     TP.resume() is called.
-     * @param {Object|Array} anOrigin The origin(s) to suspend.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to suspend.
+     * @param {Object|Object[]} anOrigin The origin(s) to suspend.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to suspend.
      * @returns {Object} The registration.
      */
 
@@ -2637,7 +2645,8 @@ function(aSignal) {
      * @method suspend
      * @summary Causes notifications of aSignal to pause from the receiver.
      *     Calling resume() with the same signal type will turn them back on.
-     * @param {TP.sig.Signal|Array} aSignal The signal(s) to suspend.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to suspend.
      * @returns {Object} The registration.
      */
 
@@ -3115,7 +3124,7 @@ function(aFilter) {
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS. The
      *     default is 'unique_methods'.
-     * @returns {Array} An array containing matching slots.
+     * @returns {String[]} An array containing matching slots.
      */
 
     var obj,
@@ -3312,7 +3321,7 @@ function(aFilter) {
      *     information.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
-     * @returns {Array} Array of slot names matching the filter.
+     * @returns {String[]} Array of slot names matching the filter.
      */
 
     var inheriteds,
@@ -3385,7 +3394,7 @@ function(aFilter) {
      *     match the filter provided.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
-     * @returns {Array} Array of slot names matching the filter.
+     * @returns {String[]} Array of slot names matching the filter.
      */
 
     var type;
@@ -3419,7 +3428,7 @@ function(aFilter) {
      *     match the filter provided.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
-     * @returns {Array} Array of slot names matching the filter.
+     * @returns {String[]} Array of slot names matching the filter.
      */
 
     return this.$getInterface(aFilter);
@@ -3436,7 +3445,7 @@ function(aFilter) {
      *     the filter provided.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS.
-     * @returns {Array} Array of slot names matching the filter.
+     * @returns {String[]} Array of slot names matching the filter.
      */
 
     var type;
@@ -3467,7 +3476,7 @@ function() {
     /**
      * @method getKeys
      * @summary Returns the set of keys requested for the receiver.
-     * @returns {Array} An array containing the keys of the receiver.
+     * @returns {String[]} An array containing the keys of the receiver.
      */
 
     //  non-mutable things like strings etc. can't have had new keys placed
@@ -3491,7 +3500,7 @@ function(includeUndefined) {
      *     alternative is only returning keys whose values are non-null (see
      *     TP.core.Mask.getMasks() for an example).
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
-     * @returns {Array} An array containing the keys of the receiver.
+     * @returns {String[]} An array containing the keys of the receiver.
      */
 
     var includeUndef,
@@ -3523,7 +3532,7 @@ function() {
      * @summary Returns the set of keys which represent attribute values for
      *     the receiver. This is supported on String to allow it to behave as a
      *     collection of characters.
-     * @returns {Array} An array containing the keys of the receiver.
+     * @returns {String[]} An array containing the keys of the receiver.
      */
 
     var i,
@@ -3586,7 +3595,7 @@ function(aFilterName) {
      *     attributes. The filter provided determines which set of keys is used
      *     to acquire the values.
      * @param {String} aFilterName A get*Interface() filter.
-     * @returns {Array} An array of the values for the receiver's keys.
+     * @returns {Object[]} An array of the values for the receiver's keys.
      */
 
     var arr,
@@ -3612,7 +3621,7 @@ function() {
      * @method getValues
      * @summary Top-level value-getter. For Arrays the values are contained in
      *     the array itself.
-     * @returns {Array} An array containing the receiver's values.
+     * @returns {Object[]} An array containing the receiver's values.
      */
 
     return this;
@@ -3626,7 +3635,7 @@ function() {
     /**
      * @method getValues
      * @summary Returns an array containing the characters in the receiver.
-     * @returns {Array} An array of characters.
+     * @returns {String[]} An array of characters.
      */
 
     return this.split('');
@@ -4069,7 +4078,7 @@ function(aSelectFunction) {
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @exception TP.sig.InvalidPairRequest
-     * @returns {Array} The array of ordered pairs.
+     * @returns {Object[]} The array of ordered pairs.
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
@@ -4103,7 +4112,7 @@ function(aSelectFunction) {
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
-     * @returns {Array} A new array containing the pairs.
+     * @returns {Object[]} A new array containing the pairs.
      */
 
     var tmparr,
@@ -4193,7 +4202,7 @@ function(aSelectFunction) {
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
      * @exception TP.sig.InvalidPairRequest
-     * @returns {Array} The array of ordered pairs.
+     * @returns {Object[]} The array of ordered pairs.
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
@@ -4220,7 +4229,7 @@ function(aSelectFunction) {
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
-     * @returns {Array} A new array containing the pairs.
+     * @returns {Object[]} A new array containing the pairs.
      */
 
     var tmparr,
@@ -4760,7 +4769,7 @@ function(aSelectFunction) {
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
-     * @returns {Array} The receiver's items in array key/value form.
+     * @returns {Object[]} The receiver's items in array key/value form.
      */
 
     //  Most objects are associative arrays, so we can work from the
@@ -4789,7 +4798,7 @@ function(aSelectFunction) {
      * @param {Function} aSelectFunction A function used to select items that
      *     will be returned. Each item is passed to this function and if the
      *     function returns true the item is included in the result.
-     * @returns {Array} The receiver or a new Array containing the filtered
+     * @returns {Object[]} The receiver or a new Array containing the filtered
      *     results.
      */
 
@@ -4821,7 +4830,7 @@ function(aSelectFunction) {
      * @param {Function} aSelectFunction A function used to select chars that
      *     will be returned. Each char is passed to this function and if the
      *     function returns true the char is included in the result.
-     * @returns {Array} An array of characters in the receiver.
+     * @returns {String[]} An array of characters in the receiver.
      */
 
     if (TP.isCallable(aSelectFunction)) {
@@ -5931,9 +5940,9 @@ function(objectA, objectB, aStack, bStack) {
      *     needed and that's invoked by TP.equal() as needed.
      * @param {Object} a The first object to compare.
      * @param {Object} b The second object to compare.
-     * @param {Array} aStack A 'stack' of 'a side' comparison objects used to
+     * @param {Object[]} aStack A 'stack' of 'a side' comparison objects used to
      *     track equality as we descend deeply.
-     * @param {Array} bStack A 'stack' of 'b side' comparison objects used to
+     * @param {Object[]} bStack A 'stack' of 'b side' comparison objects used to
      *     track equality as we descend deeply.
      * @returns {Boolean} Whether or not the two objects are equal to one
      *     another.
@@ -6105,9 +6114,9 @@ function(a, b, aStack, bStack) {
      * @summary Returns true if the values of the two objects are 'equal'.
      * @param {Object} a The first object to compare.
      * @param {Object} b The second object to compare.
-     * @param {Array} aStack A 'stack' of 'a side' comparison objects used to
+     * @param {Object[]} aStack A 'stack' of 'a side' comparison objects used to
      *     track equality as we descend deeply.
-     * @param {Array} bStack A 'stack' of 'b side' comparison objects used to
+     * @param {Object[]} bStack A 'stack' of 'b side' comparison objects used to
      *     track equality as we descend deeply.
      * @returns {Boolean} Whether or not the two objects are equal to one
      *     another.
@@ -6550,8 +6559,8 @@ function(aPath) {
      *     aliased names that the receiver uses for a particular path (i.e.
      *     '/person/lastName' might map to 'lastName').
      * @param {String} aPath The path to check for aliases.
-     * @returns {Array|null} An Array of access path aliases for the receiver or
-     *     null.
+     * @returns {String[]|null} An Array of access path aliases for the receiver
+     *     or null.
      */
 
     //  At this level, we just return null. See the implementation on
@@ -7504,7 +7513,7 @@ function(callingContext) {
      * @method runDebugger
      * @summary If there's a TIBET implementation of a debugging tool this
      *     function will run it if possible.
-     * @param {Function|Arguments} callingContext The context to debug.
+     * @param {Function|arguments} callingContext The context to debug.
      */
 
     return;
@@ -7526,7 +7535,7 @@ function(callingContext) {
      *     TP.sys.shouldUseDebugger() is true. Also note that the native
      *     debuggers will only become visible if a) installed and b) are already
      *     open.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Function|arguments} callingContext The calling context.
      */
 
     if (this.hasDebugger()) {
@@ -7568,7 +7577,7 @@ function(aFilterNameOrKeys) {
      * @summary Returns a shallow copy of the receiver. Adequate for dealing
      *     with reference type attribute problems. The filter defines which keys
      *     are used to select from the receiver.
-     * @param {String|Array} aFilterNameOrKeys get*Interface() filter or key
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
      *     array.
      * @returns {Object} A shallow copy of the receiver.
      */
@@ -7608,10 +7617,10 @@ function(aFilterNameOrKeys, contentOnly) {
      *     with reference type attribute problems. If contentOnly is true then
      *     an Array is returned contains only the content values [0, 1, ...N],
      *     and no 'special values' on the receiver are copied.
-     * @param {String|Array} aFilterNameOrKeys get*Interface() filter or key
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
      *     array.
      * @param {Boolean} contentOnly Copy content only? Default is true.
-     * @returns {Array} A shallow copy of the receiver.
+     * @returns {Object[]} A shallow copy of the receiver.
      */
 
     var content,
@@ -7933,7 +7942,7 @@ function(aFunction) {
      *     transformed by the function provided.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
-     * @returns {Array} An array containing the transformed elements.
+     * @returns {Object[]} An array containing the transformed elements.
      */
 
     var tmparr;
@@ -7959,7 +7968,7 @@ function(aFunction) {
      *     transformed by the function provided.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
-     * @returns {Array} An array containing the transformed elements.
+     * @returns {Object[]} An array containing the transformed elements.
      */
 
     return this.map(aFunction);
@@ -7978,9 +7987,9 @@ function(propertyName) {
      *     object doesn't implement get() a direct slot access is attempted.
      * @param {String} propertyName The name of the property to get() from each
      *     item.
-     * @returns {Array} An array containing the return values of the individual
-     *     invocations. Skipped objects have nulls in their return value
-     *     positions.
+     * @returns {Object[]} An array containing the return values of the
+     *     individual invocations. Skipped objects have nulls in their return
+     *     value positions.
      */
 
     return this.collect(
@@ -8011,9 +8020,9 @@ function(aMethodName) {
      *     the method. If any of the objects don't implement the named function
      *     then that object is simply skipped.
      * @param {String} aMethodName The name of the method to invoke.
-     * @returns {Array} An array containing the return values of the individual
-     *     invocations. Skipped objects have nulls in their return value
-     *     positions.
+     * @returns {Object[]} An array containing the return values of the
+     *     individual invocations. Skipped objects have nulls in their return
+     *     value positions.
      */
 
     var args;
@@ -8242,8 +8251,8 @@ function() {
      * @summary Returns an array containing the receiver's key/value items in a
      *     flattened form. For example, TP.hc('a', 1, 'b', 2).flatten() returns
      *     the equivalent of TP.ac('a', 1, 'b', 2);
-     * @returns {Array} A new array containing the elements of the receiver in
-     *     flattened form.
+     * @returns {Object[]} A new array containing the elements of the receiver
+     *     in flattened form.
      */
 
     return this.getItems().flatten();
@@ -8265,7 +8274,7 @@ function(aPattern, aFunction) {
      *     items with.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
-     * @returns {Array} An array containing the matched values.
+     * @returns {Object[]} An array containing the matched values.
      */
 
     var func,
@@ -8305,7 +8314,7 @@ function(aPattern, aFunction) {
      *     items with.
      * @param {Function} aFunction A function which should return the
      *     transformation of the element it is passed.
-     * @returns {Array} An array containing the matched items.
+     * @returns {Object[]} An array containing the matched items.
      */
 
     var func,
@@ -8349,7 +8358,7 @@ function(keyCriteria, selectionCriteria) {
      *     hash.
      * @param {Function} selectionCriteria A function which should return true
      *     for elements that should be grouped.
-     * @returns {Array} A new array containing the elements selected.
+     * @returns {Object[]} A new array containing the elements selected.
      * @example
      *      arr = TP.ac(1,2,3,4,5,6).groupBy(3);
      *
@@ -8486,8 +8495,8 @@ function(aFunction) {
      *     semantics involved in the native sort() routine so you can write sort
      *     functions that are more natural.
      * @param {Function} aFunction The return value function.
-     * @returns {Array} An array containing the items of the receiver sorted as
-     *     requested.
+     * @returns {Object[]} An array containing the items of the receiver sorted
+     *     as requested.
      */
 
     var items;
@@ -8512,7 +8521,7 @@ function(aFunction) {
      *     failed items in the second index.
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
-     * @returns {Array} A new array containing the elements selected.
+     * @returns {Object[]} A new array containing the elements selected.
      */
 
     var good,
@@ -8753,7 +8762,7 @@ function(aFunction) {
      *     be skipped.
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
-     * @returns {Array} A new array containing the elements which weren't
+     * @returns {Object[]} A new array containing the elements which weren't
      *     rejected.
      */
 
@@ -8788,7 +8797,7 @@ function(aFunction) {
      *     be skipped.
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
-     * @returns {Array} A new array containing the elements which weren't
+     * @returns {Object[]} A new array containing the elements which weren't
      *     rejected.
      */
 
@@ -8811,7 +8820,7 @@ function(aFunction) {
      *     be returned.
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
-     * @returns {Array} A new array containing the elements selected.
+     * @returns {Object[]} A new array containing the elements selected.
      */
 
     var tmparr;
@@ -8845,7 +8854,7 @@ function(aFunction) {
      *     be returned.
      * @param {Function} aFunction A function which should return true or false
      *     after testing the element it is passed.
-     * @returns {Array} A new array containing the elements selected.
+     * @returns {Object[]} A new array containing the elements selected.
      */
 
     return this.filter(aFunction);
@@ -8973,8 +8982,8 @@ function(anInterface, inline) {
      *     interface removed. The resulting collection's values will, on
      *     completion of this method, respond to the next iteration
      *     (collectInvoke perhaps) that you want to run.
-     * @param {String|Array} anInterface A method name or collection of them to
-     *     test against.
+     * @param {String|String[]} anInterface A method name or collection of them
+     *     to test against.
      * @param {Boolean} inline False to return a new array instead of collapsing
      *     inline. Default is true.
      * @returns {Array} The receiver.
@@ -9606,7 +9615,7 @@ function() {
      *     method names useful for testing protocol conformance. For general
      *     objects this results in a list of the methods the receiver implements
      *     which could be quite large.
-     * @returns {Array} An array of method names.
+     * @returns {String[]} An array of method names.
      */
 
     return this.getLocalInterface(TP.SLOT_FILTERS.methods);
@@ -9637,7 +9646,7 @@ function() {
      * @summary Returns the receiver as a method interface. For strings this
      *     returns an array containing the string suitable for testing as an
      *     interface.
-     * @returns {Array} An array containing the receiver.
+     * @returns {String[]} An array containing the receiver.
      */
 
     var intArray;

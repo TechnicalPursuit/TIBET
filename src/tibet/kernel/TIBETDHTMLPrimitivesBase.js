@@ -84,8 +84,8 @@ function(anObject) {
      *
      * @param {Object} anObject The object to extract the X and Y for.
      * @exception TP.sig.InvalidObject
-     * @returns {Array} An ordered pair where the first item is the X coordinate
-     *     and the second item is the Y coordinate.
+     * @returns {Number[]} An ordered pair where the first item is the X
+     *     coordinate and the second item is the Y coordinate.
      */
 
     var anX,
@@ -1439,8 +1439,8 @@ function(anElement, styleProperties, wantsTransformed) {
      *     couldn't be computed for that property.
      * @param {HTMLElement} anElement The element to get the numeric property
      *     value of.
-     * @param {Array} styleProperties The names of the style property to obtain
-     *     the value of.
+     * @param {String[]} styleProperties The names of the style property to
+     *     obtain the value of.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
@@ -1508,7 +1508,7 @@ function(anElement, wants2DMatrix) {
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
      *     transforms. The default is false.
      * @exception TP.sig.InvalidElement
-     * @returns {Array} An Array of Arrays representing the current
+     * @returns {Number[][]} An Array of Arrays representing the current
      *     transformation matrix.
      */
 
@@ -2045,8 +2045,8 @@ function(anElement, transformationMatrix) {
      *     https://gist.github.com/Yaffle/1145197
      * @param {Element} anElement The element to compute the bounding client
      *     rect for.
-     * @param {Array} transformationMatrix An Array of Arrays representing the
-     *     transformation matrix.
+     * @param {Number[][]} transformationMatrix An Array of Arrays representing
+     *     the transformation matrix.
      * @exception TP.sig.InvalidElement
      * @returns {Object} An Object with left, top, right and bottom properties
      *     representing the bounding client rect.
@@ -2261,8 +2261,8 @@ function(aWindow, eventNameArray, aHandler) {
      * @summary Arms all elements in the window's document to fire the events
      *     named in eventNameArray.
      * @param {Window} aWindow The window to arm events for.
-     * @param {Array} eventNameArray The array of event names to instrument all
-     *     elements in the document to fire.
+     * @param {String[]} eventNameArray The array of event names to instrument
+     *     all elements in the document to fire.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of the default handler.
      * @exception TP.sig.InvalidWindow
@@ -2392,7 +2392,7 @@ function(aWindow, eventNameArray, aHandler) {
      * @summary Disarms all elements in the window's document for the events
      *     named in eventNameArray.
      * @param {Window} aWindow The window whose element(s) should be disarmed.
-     * @param {Array} eventNameArray The array of event names to disarm.
+     * @param {String[]} eventNameArray The array of event names to disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of the default handler for TIBET.
      * @exception TP.sig.InvalidWindow

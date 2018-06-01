@@ -595,8 +595,8 @@ function() {
                     evt.stop();
                 });
 
-    //  Grab the consoleOutput TP.core.Element and set it up. Note that we need
-    //  to do this *after* we set up the console input above.
+    //  Grab the consoleOutput TP.dom.ElementNode and set it up. Note that we
+    //  need to do this *after* we set up the console input above.
     consoleOutputTPElem = TP.byId('SherpaConsoleOutput', TP.win('UIROOT'));
     consoleOutputTPElem.setup();
 

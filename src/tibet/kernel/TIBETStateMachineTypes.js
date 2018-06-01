@@ -1108,11 +1108,11 @@ function(aState, signalOrParams, childExit) {
      *     the proper transition events to allow observers to update based on
      *     the new state and to run any enter/exit/transition methods they have.
      * @param {String} aState The state to transition to.
+     * @param {TP.sig.Signal|TP.core.Hash|Array} signalOrParams
+     *     Triggering information, usually a signal or parameter data.
      * @param {Boolean} [childExit=false] True if this is being called by the
      *     child during exit processing. This is required to ensure that when
      *     the parent transitions it knows to ignore client state.
-     * @param {TP.sig.Signal|TP.core.Hash|TP.core.Array} signalOrParams
-     *     Triggering information, usually a signal or parameter data.
      */
 
     var oldState,

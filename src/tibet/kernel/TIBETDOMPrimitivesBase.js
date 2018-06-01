@@ -144,7 +144,7 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
      *     URI is not absolute and needs an XML Base value, this is obtained and
      *     the attribute value is rewritten with that value..
      * @param {Element} anElement The element to update any URI attributes of.
-     * @param {Array} uriAttrNames The list of attribute names that should be
+     * @param {String[]} uriAttrNames The list of attribute names that should be
      *     considered for XML Base processing.
      * @param {String} aPrefix An optional prefix that should be stripped before
      *     computing the full URI and prepended back onto the result value.

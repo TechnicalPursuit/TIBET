@@ -38,7 +38,7 @@ function(aGroupName) {
      *     items which belong to the named group provided.
      * @param {String} aGroupName The group to filter by.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array}
+     * @returns {TP.xmpp.IqRosterItem[]}
      */
 
     var tpElems;
@@ -77,7 +77,7 @@ function() {
     /**
      * @method getGroupNames
      * @summary Returns an Array of group names in the roster.
-     * @returns {Array}
+     * @returns {Element[]}
      */
 
     var arr;
@@ -101,7 +101,7 @@ function() {
      * @method getItems
      * @summary Returns an Array of TP.xmpp.IqRosterItem instances for this
      *     roster.
-     * @returns {Array}
+     * @returns {Element[]}
      */
 
     return this.getElementsByTagName('item');

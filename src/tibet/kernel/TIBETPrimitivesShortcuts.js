@@ -270,9 +270,10 @@ function(cssExpr, nodeContext, autoCollapse, shouldWrap) {
      * @param {Boolean} [shouldWrap=true] Whether or not the results should
      *     wrapped into a TIBET wrapper object.
      * @exception TP.sig.InvalidString
-     * @returns {TP.core.Element|Element|Array} The Array of matched wrapped
-     *     elements or unwrapped elements or a single wrapped or unwrapped
-     *     element if single-item Arrays are being collapsed.
+     * @returns {TP.dom.ElementNode|Element|Array<Element,TP.dom.ElementNode>}
+     *     The Array of matched wrapped elements or unwrapped elements or a
+     *     single wrapped or unwrapped element if single-item Arrays are being
+     *     collapsed.
      */
 
     var node;
@@ -306,8 +307,9 @@ function(anID, nodeContext, shouldWrap) {
      * @param {Boolean} [shouldWrap=true] Whether or not the results should
      *     wrapped into a TIBET wrapper object.
      * @exception TP.sig.InvalidID
-     * @returns {TP.core.Element|Element|Array} The wrapped element, unwrapped
-     *     element, if found, or an array when more than one ID was provided.
+     * @returns {TP.dom.ElementNode|Element|Array<Element,TP.dom.ElementNode}
+     *     The wrapped element, unwrapped element, if found, or an array when
+     *     more than one ID was provided.
      */
 
     var id,
@@ -391,12 +393,13 @@ function(anID, nodeContext) {
      *     with the TIBET object registry and proceeds to check the UI
      *     canvas/context only after registrations and other sources have been
      *     tested. Use TP.byId() if you are focused on the UI only.
-     * @param {String|Array} anID The ID to search for. NOTE: one advantage of
-     *     this call is that the ID can be either a String or an Array. In
+     * @param {String|String[]} anID The ID to search for. NOTE: one advantage
+     *     of this call is that the ID can be either a String or an Array. In
      *     String form a space-separated list becomes an array.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @returns {Array} An array of TP.lang.Objects sharing the name provided.
+     * @returns {TP.lang.Object[]} An array of TP.lang.Objects sharing the name
+     *     provided.
      */
 
     var id,
@@ -448,9 +451,10 @@ function(pathExpr, nodeContext, autoCollapse, shouldWrap) {
      * @param {Boolean} [shouldWrap=true] Whether or not the results should
      *     wrapped into a TIBET wrapper object.
      * @exception TP.sig.InvalidString
-     * @returns {TP.core.Element|Element|Array} The Array of matched wrapped
-     *     elements or unwrapped elements or a single wrapped or unwrapped
-     *     element if single-item Arrays are being collapsed.
+     * @returns {TP.dom.ElementNode|Element|Array<Element,TP.dom.ElementNode>}
+     *     The Array of matched wrapped elements or unwrapped elements or a
+     *     single wrapped or unwrapped element if single-item Arrays are being
+     *     collapsed.
      */
 
     var node;
@@ -1247,7 +1251,7 @@ function(anElement, propertyName, animationParams, nodeContext) {
      *     TP.gui.CSSPropertyTransition. The element definition is resolved via
      *     TP.byId(). The resulting element(s) are then used as the targets of
      *     the transition.
-     * @param {Array|String|Element} anElement An element specification, or
+     * @param {String|Element|Element[]} anElement An element specification, or
      *     element, suitable for TP.byId().
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.core.Hash} animationParams A hash of parameters to use for the
@@ -1294,7 +1298,7 @@ function(anElement, effectName, effectParams, nodeContext) {
      *     capitalizing the first letter and then prefixing it with 'TP.core.'
      *     and suffixing it with 'Effect'. E.g. 'puff' becomes
      *     'TP.core.PuffEffect'.
-     * @param {Array|String|Element} anElement An element specification, or
+     * @param {String|Element|Element[]} anElement An element specification, or
      *     element, suitable for TP.byId().
      * @param {String} effectName The name of the effect to use.
      * @param {TP.core.Hash} effectParams A hash of parameters to use for the
@@ -1528,8 +1532,8 @@ function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
      * @param {Node|String} aNodeOrList The node or list of nodes to arm with
      *     the event(s) specified. This can also be the TP.ANY constant,
      *     indicating that the event is to be observed coming from any node.
-     * @param {String|Array} eventNames The names or types of the events to arm
-     *     the element with.
+     * @param {String|String[]} eventNames The names or types of the events to
+     *     arm the element with.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of sending the event into the TIBET
      *     signaling system.
@@ -1616,7 +1620,7 @@ function(anObject, nodeContext) {
      *     value in the second.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
-     * @returns {Array} The X and Y as a point pair.
+     * @returns {Number[]} The X and Y as a point pair.
      */
 
     var elem;
@@ -1657,7 +1661,7 @@ function(aNodeOrList, eventNames, aHandler, nodeContext) {
      * @summary Disarms a node or list of them for the event or events.
      * @param {Node|String} aNodeOrList The node or list of nodes to disarm with
      *     the event(s) specified. This can also be the TP.ANY constant.
-     * @param {String|Array} eventNames The names or types of the events to
+     * @param {String|String[]} eventNames The names or types of the events to
      *     disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of sending the event into the TIBET
@@ -2193,7 +2197,7 @@ function(anObject, aFilter, aDiscriminator) {
      *     TP.SLOT_FILTERS. The default is 'unique_methods'.
      * @param {String|RegExp} aDiscriminator A 'filter' function or a pattern
      *     used to filter the list of returned keys.
-     * @returns {Array} An array of filtered property keys.
+     * @returns {String[]} An array of filtered property keys.
      */
 
     var filter,
@@ -2643,7 +2647,7 @@ function(anObject, aProperty) {
      *     the node's ancestors.
      * @param {Object} anObject The object to root the query at.
      * @param {String} aProperty A property name to query for.
-     * @returns {Array} An array of zero to N result objects.
+     * @returns {Object[]} An array of zero to N result objects.
      */
 
     var arr,

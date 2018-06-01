@@ -197,7 +197,7 @@ function() {
      * @method getElementArray
      * @summary Returns the Array of native elements. In the case of a form
      *     object this is the elements[] Array.
-     * @returns {Array} The array of native items.
+     * @returns {Element[]} The array of native items.
      */
 
     return TP.ac(this.getNativeNode().elements);
@@ -2763,7 +2763,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
-     * @returns {String|Array} A String containing the selected value or an
+     * @returns {String|String[]} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
      */
@@ -2913,7 +2913,7 @@ function(aValue, optionProperty) {
      *          'label'     ->  The label of the option
      *          'id'        ->  The id of the option
      *          'index'     ->  The numerical index of the option
-     * @param {Object|Array} aValue The value to use when determining the
+     * @param {Object|Object[]} aValue The value to use when determining the
      *      options to remove from the selection. Note that this can be an
      *      Array.
      * @param {String} optionProperty The property of the option elements to use

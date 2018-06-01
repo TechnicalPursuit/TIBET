@@ -321,8 +321,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -538,8 +538,8 @@ function() {
      * @method getFacetedAspectNames
      * @summary Returns an Array of the names of the aspects that are faceted on
      *     the receiver.
-     * @returns {Array} A list of the names of aspects that are faceted on the
-     *     receiver.
+     * @returns {String[]} A list of the names of aspects that are faceted on
+     *     the receiver.
      */
 
     var aspectsToCheck,
@@ -637,7 +637,7 @@ function() {
      * @method getValidatingAspectNames
      * @summary Returns an Array of the names of the aspects to validate on the
      *     receiver.
-     * @returns {Array} A list of the names of aspects to validate on the
+     * @returns {String[]} A list of the names of aspects to validate on the
      *     receiver.
      */
 
@@ -1041,8 +1041,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -3685,7 +3685,7 @@ function() {
      * @summary Returns the Array to use to register changed addresses. This
      *     method is supplied to avoid problems with this hash not being
      *     initialized when TIBET is starting up.
-     * @returns {Array} The changed addresses array.
+     * @returns {String[]} The changed addresses array.
      */
 
     var theArray;
@@ -4114,7 +4114,7 @@ function() {
     /**
      * @method getPathParts
      * @summary Returns the receiver's parts.
-     * @returns {Array} An Array of the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
      */
 
     return TP.override();
@@ -4160,13 +4160,14 @@ function(targetObj, filterOutSignalSupertypes) {
      *     computed the last time the receiving path was executed.
      * @param {Object} targetObj The object to use to retrieve the 'last changed
      *     paths' for.
-     * @param {Boolean} [filterOutSignalSupertypes=false] Whether or not to
+     * @param {Boolean} [filterOutSignalSupertypes=true] Whether or not to
      *     filter out records where a signal subtype is already present in
      *     another record in the result set (and, therefore, the signal
      *     supertype will be signaled anyway, assuming INHERITANCE_FIRING). The
      *     default is true.
-     * @returns {Array} An Array of 'path info records' that contain a 'signal
-     *     description' record and
+     * @returns {TP.core.Hash[]} An Array of 'path info records' that could
+     *     contain a signal name, a 'signal description' record, a signal policy
+     *     and a signal type.
      */
 
     var target,
@@ -5275,7 +5276,7 @@ function() {
     /**
      * @method getPathParts
      * @summary Returns the receiver's parts.
-     * @returns {Array} An Array of the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
      */
 
     var paths,
@@ -5376,9 +5377,10 @@ function(srcPath, templateArgs) {
      *     for TIBET's JSONPath support.
      * @param {String} srcPath The source JSONPath string representation to
      *     build an XPath from.
-     * @param {Array} templateArgs An optional Array of template arguments. If
-     *     the receiver is a templated path, these values will be used to fill
-     *     in the template values and the computed XPath will *not* be cached.
+     * @param {Object[]} templateArgs An optional Array of template arguments.
+     *     If the receiver is a templated path, these values will be used to
+     *     fill in the template values and the computed XPath will *not* be
+     *     cached.
      * @returns {String} An XPath representation of the receiver.
      */
 
@@ -6721,7 +6723,7 @@ function() {
     /**
      * @method getPathParts
      * @summary Returns the receiver's parts.
-     * @returns {Array} An Array of the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
      */
 
     return TP.getAccessPathParts(this.get('srcPath'), 'jpath');
@@ -6800,9 +6802,10 @@ function(templateArgs) {
      * @summary Sets up an XML path for the receiver that will represent it when
      *     being executed an XML data source that is used by TP.core.JSONContent
      *     objects when they are accessed with a JSONPath.
-     * @param {Array} templateArgs An optional Array of template arguments. If
-     *     the receiver is a templated path, these values will be used to fill
-     *     in the template values and the computed XPath will *not* be cached.
+     * @param {Object[]} templateArgs An optional Array of template arguments.
+     *     If the receiver is a templated path, these values will be used to
+     *     fill in the template values and the computed XPath will *not* be
+     *     cached.
      * @returns {TP.path.XPathPath} The new instance of the computed XPath pate
      *     object.
      */
@@ -7621,7 +7624,7 @@ function() {
     /**
      * @method getPathParts
      * @summary Returns the receiver's parts.
-     * @returns {Array} An Array of the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
      */
 
     return TP.getAccessPathParts(this.get('srcPath'), 'tibet');
@@ -9133,7 +9136,7 @@ function(aPath) {
      * @method $extractPathHeadAndTail
      * @summary Returns the head and tail of the supplied path.
      * @param {String} aPath The path to extract the head and tail from.
-     * @returns {Array} A pair of the [head, tail].
+     * @returns {String[]} A pair of the [head, tail].
      */
 
     var dottedPath,
@@ -10136,7 +10139,7 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     return TP.override();
@@ -10167,7 +10170,7 @@ function() {
     /**
      * @method getPathParts
      * @summary Returns the receiver's parts.
-     * @returns {Array} An Array of the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
      */
 
     return TP.getAccessPathParts(this.get('srcPath'), 'xpointer');
@@ -10255,7 +10258,7 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     var path,
@@ -10308,7 +10311,7 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     var path,
@@ -10358,7 +10361,7 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     var path,
@@ -10429,7 +10432,7 @@ function() {
     /**
      * @method getPathParts
      * @summary Returns the receiver's parts.
-     * @returns {Array} An Array of the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
      */
 
     return TP.getAccessPathParts(this.get('srcPath'), 'css');
@@ -10470,7 +10473,7 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     var path,
@@ -11064,7 +11067,7 @@ function(aNode, flagChanges) {
      *     the supplied expression.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     var wasNative,
@@ -11297,7 +11300,7 @@ function(aTPNode, shouldSignal) {
      *     against.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @returns {Array} An Array of the changed Node addresses.
+     * @returns {String[]} An Array of the changed Node addresses.
      */
 
     var node,
@@ -11408,7 +11411,7 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
-     * @returns {Array} The array of Nodes that got built.
+     * @returns {Node[]} The array of Nodes that got built.
      */
 
     var shouldMake,
@@ -11585,7 +11588,8 @@ function(aNode) {
      *     path, using aNode as the 'context node' (e.g. starting point).
      * @param {Node|TP.dom.Node} aNode The Node to execute the receiver
      *     against.
-     * @returns {Array} The array of TP.dom.Nodes referenced by the receiver.
+     * @returns {TP.dom.Node[]} The array of TP.dom.Nodes referenced by the
+     *     receiver.
      */
 
     var context,
@@ -11654,7 +11658,7 @@ function() {
      * @method getReferencedLocationPaths
      * @summary Returns an Array of the location path Strings that are used by
      *     this path any place in its expression.
-     * @returns {Array} An array of Strings that represent location paths
+     * @returns {String[]} An array of Strings that represent location paths
      *     referenced by the expression in the receiver.
      */
 
@@ -11682,7 +11686,7 @@ function() {
      * @method $getReferencedLocationPathObjects
      * @summary Returns an Array of the location path objects that are used by
      *     this path any place in its expression.
-     * @returns {Array} The array of PathExpr objects that represent location
+     * @returns {String[]} The array of PathExpr objects that represent location
      *     paths referenced by the expression in the receiver.
      */
 
@@ -11713,7 +11717,7 @@ function(aPathIndex) {
      *     path at the index supplied.
      * @param {Number} aPathIndex The index of the location path to obtain the
      *     steps for. This will default to 0 if not supplied.
-     * @returns {Array} An array of Strings that represent location steps
+     * @returns {String[]} An array of Strings that represent location steps
      *     that make up the location path at the supplied index.
      */
 

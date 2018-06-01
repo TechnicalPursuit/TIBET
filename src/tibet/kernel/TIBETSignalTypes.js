@@ -636,8 +636,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -752,8 +752,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -942,8 +942,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     there is no native browser event for such a thing and so you will use
      *     a shared TP.core.Monitor to monitor the Element(s) for sizing
      *     changes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -987,8 +987,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -1833,7 +1833,7 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
      * @method arm
      * @summary Arms one or more origins to ensure they trigger signals of the
      *     receiver's type.
-     * @param {Array|Object|String} anOrigin The origin or origins to arm.
+     * @param {Object|Object[]|String} anOrigin The origin or origins to arm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of routing the event to TIBET.
      * @param {String|Function} aPolicy An (optional) parameter that defines the
@@ -1893,7 +1893,7 @@ function(anOrigin, aHandler, windowContext) {
      * @summary Disarms an origin so it no longer triggers events of the
      *     receiver's type. NOTE that this doesn't always work if there have
      *     been additional low-level listeners installed.
-     * @param {Array|Object|String} anOrigin The origin or origins to disarm.
+     * @param {Object|Object[]|String} anOrigin The origin or origins to disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of routing the event to TIBET.
      * @param {Window} windowContext An optional window to search for the
@@ -3403,7 +3403,7 @@ function() {
      *     (sometimes) a 'Unicode literal' signal name (i.e.
      *     'TP.sig.DOM_U0062_Up'). Last, there is hierarchy of real type names
      *     of this signal (i.e. 'TP.sig.DOMKeyUp' and higher).
-     * @returns {Array} An Array of signal names.
+     * @returns {String[]} An Array of signal names.
      */
 
     var sigNames,
@@ -3519,7 +3519,7 @@ function() {
      *     to observe things like the Shift key going up, they should observe
      *     'DOM_Shift_Up', etc. which will be sent directly as a result of the
      *     Shift key going up, not as a manufactured event like this one.
-     * @returns {Array} An Array of signal names.
+     * @returns {String[]} An Array of signal names.
      */
 
     return TP.ac(this.getTypeName());

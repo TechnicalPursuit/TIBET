@@ -38,7 +38,7 @@ function() {
     /**
      * @method getGroupNames
      * @summary Returns an Array of group names this item belongs to.
-     * @returns {Array}
+     * @returns {String[]}
      */
 
     var arr;

@@ -1261,10 +1261,10 @@ TP.hc(
          *     default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
-         * @returns {Number|Array} The element's border in pixels. If a side is
-         *     supplied, this will be a Number, otherwise it will be an Array of
-         *     Numbers containing the element's borders. The numbers are
-         *     arranged in the following order: top, right, bottom, left.
+         * @returns {Number|Number[]} The element's border in pixels. If a side
+         *     is supplied, this will be a Number, otherwise it will be an
+         *     Array of Numbers containing the element's borders. The numbers
+         *     are arranged in the following order: top, right, bottom, left.
          */
 
         var values,
@@ -1354,10 +1354,10 @@ TP.hc(
          *     default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidStyleDeclaration
-         * @returns {Number|Array} The element's border in pixels. If a side is
-         *     supplied, this will be a Number, otherwise it will be an Array of
-         *     Numbers containing the element's borders. The numbers are
-         *     arranged in the following order: top, right, bottom, left.
+         * @returns {Number|Number[]} The element's border in pixels. If a side
+         *     is supplied, this will be a Number, otherwise it will be an
+         *     Array of Numbers containing the element's borders. The numbers
+         *     are arranged in the following order: top, right, bottom, left.
          */
 
         var computedStyle,
@@ -1467,10 +1467,10 @@ TP.hc(
          *     default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
-         * @returns {Number|Array} The element's margin in pixels. If a side is
-         *     supplied, this will be a Number, otherwise it will be an Array of
-         *     Numbers containing the element's margins. The numbers are
-         *     arranged in the following order: top, right, bottom, left.
+         * @returns {Number|Number[]} The element's margin in pixels. If a side
+         *     is supplied, this will be a Number, otherwise it will be an
+         *     Array of Numbers containing the element's margins. The numbers
+         *     are arranged in the following order: top, right, bottom, left.
          */
 
         var valueInPixels,
@@ -1557,10 +1557,10 @@ TP.hc(
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
          * @exception TP.sig.InvalidStyleDeclaration
-         * @returns {Number|Array} The element's margin in pixels. If a side is
-         *     supplied, this will be a Number, otherwise it will be an Array of
-         *     Numbers containing the element's margins. The numbers are
-         *     arranged in the following order: top, right, bottom, left.
+         * @returns {Number|Number[]} The element's margin in pixels. If a side
+         *     is supplied, this will be a Number, otherwise it will be an
+         *     Array of Numbers containing the element's margins. The numbers
+         *     are arranged in the following order: top, right, bottom, left.
          */
 
         var computedStyle,
@@ -1671,10 +1671,10 @@ TP.hc(
          *     default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
-         * @returns {Number|Array} The element's padding in pixels. If a side is
-         *     supplied, this will be a Number, otherwise it will be an Array of
-         *     Numbers containing the element's paddings. The numbers are
-         *     arranged in the following order: top, right, bottom, left.
+         * @returns {Number|Number[]} The element's padding in pixels. If a side
+         *     is supplied, this will be a Number, otherwise it will be an
+         *     Array of Numbers containing the element's paddings. The numbers
+         *     are arranged in the following order: top, right, bottom, left.
          */
 
         var valueInPixels,
@@ -1766,10 +1766,10 @@ TP.hc(
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidParameter
          * @exception TP.sig.InvalidStyleDeclaration
-         * @returns {Number|Array} The element's padding in pixels. If a side is
-         *     supplied, this will be a Number, otherwise it will be an Array of
-         *     Numbers containing the element's paddings. The numbers are
-         *     arranged in the following order: top, right, bottom, left.
+         * @returns {Number|Number[]} The element's padding in pixels. If a side
+         *     is supplied, this will be a Number, otherwise it will be an
+         *     Array of Numbers containing the element's paddings. The numbers
+         *     are arranged in the following order: top, right, bottom, left.
          */
 
         var computedStyle,
@@ -1881,7 +1881,7 @@ TP.hc(
          *     transforms. The default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidStyleDeclaration
-         * @returns {Array} The matrix expressed as an Array of Arrays.
+         * @returns {Number[][]} The matrix expressed as an Array of Arrays.
          */
 
         var computedStyle,
@@ -1922,7 +1922,7 @@ TP.hc(
          *     transforms. The default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidStyleDeclaration
-         * @returns {Array} The matrix expressed as an Array of Arrays.
+         * @returns {Number[][]} The matrix expressed as an Array of Arrays.
          */
 
         var computedStyle,
@@ -1963,7 +1963,7 @@ TP.hc(
          *     transforms. The default is false.
          * @exception TP.sig.InvalidElement
          * @exception TP.sig.InvalidStyleDeclaration
-         * @returns {Array} The matrix expressed as an Array of Arrays.
+         * @returns {Number[][]} The matrix expressed as an Array of Arrays.
          */
 
         var computedStyle,
@@ -2010,7 +2010,7 @@ TP.hc(
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'page' coordinates.
          * @exception TP.sig.InvalidElement
-         * @returns {Array} An ordered pair where the first item is the X
+         * @returns {Number[]} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
 
@@ -2042,7 +2042,7 @@ TP.hc(
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'page' coordinates.
          * @exception TP.sig.InvalidElement
-         * @returns {Array} An ordered pair where the first item is the X
+         * @returns {Number[]} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
 
@@ -2103,7 +2103,7 @@ TP.hc(
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'element local' coordinates.
          * @exception TP.sig.InvalidElement
-         * @returns {Array} An ordered pair where the first item is the X
+         * @returns {Number[]} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
 
@@ -2135,7 +2135,7 @@ TP.hc(
          * @param {Number} y The Y coordinate to use to compute the Y from. This
          *     should be specified in 'element local' coordinates.
          * @exception TP.sig.InvalidElement
-         * @returns {Array} An ordered pair where the first item is the X
+         * @returns {Number[]} An ordered pair where the first item is the X
          *     coordinate and the second item is the Y coordinate.
          */
 

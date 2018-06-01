@@ -252,7 +252,7 @@ function(startTPElement) {
      *     'nearest' mutable style sheet that rules affecting the element could
      *     be placed in. By default, this will be the nearest templated tag
      *     ancestor of the supplied element.
-     * @param {TP.core.Element} startTPElement The element to start searching
+     * @param {TP.dom.ElementNode} startTPElement The element to start searching
      *     'upwards' through the ancestor hierarchy for mutable style sheets.
      * @returns {CSSStyleSheet} The nearest mutable style sheet to the supplied
      *      element.
@@ -1365,8 +1365,8 @@ function(aTPElem) {
      * @method makeCustomTagFrom
      * @summary Constructs a custom tag using the supplied element. This will
      *     invoke the 'type assistant' with the 'templatedtag' DNA selected.
-     * @param {TP.core.Element} aTPElem The element content to make a custom tag
-     *     from.
+     * @param {TP.dom.ElementNode} aTPElem The element content to make a custom
+     *     tag from.
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
@@ -1417,7 +1417,7 @@ function(aTPElem) {
         tagType = TP.scriptElementGetType(elem);
 
         //  Now, if it's a templated tag, we have to serialize and save a markup
-        //  representation of supplied TP.core.Element as the new tag's
+        //  representation of supplied TP.dom.ElementNode as the new tag's
         //  template.
         if (TP.isKindOf(tagType, TP.tag.TemplatedTag)) {
 
@@ -1450,7 +1450,7 @@ function(aTPElem) {
             sherpaDoc = this.get('vWin').document;
 
             //  Save the template to the file system. If this succeeds, then
-            //  replace the supplied TP.core.Element with the new custom tag.
+            //  replace the supplied TP.dom.ElementNode with the new custom tag.
             this.saveElementSerialization(
                     serializationStorage,
                     function() {

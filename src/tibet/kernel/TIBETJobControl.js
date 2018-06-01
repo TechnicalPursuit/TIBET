@@ -1374,11 +1374,11 @@ function(anObjectArray, aMethodArray, aParamArray) {
      * @summary Schedules a job with the system that invokes each of the
      *     supplied methods on the supplied objects using parameters given in
      *     the parameters Array.
-     * @param {Array} anObjectArray The Array of target objects to invoke the
+     * @param {Object[]} anObjectArray The Array of target objects to invoke the
      *     methods against.
-     * @param {Array} aMethodArray The Array of method names to invoke against
+     * @param {String[]} aMethodArray The Array of method names to invoke against
      *     each target object.
-     * @param {Array} aParamArray The Array of parameters to use when invoking
+     * @param {Object[]} aParamArray The Array of parameters to use when invoking
      *     the methods.
      * @returns {TP.core.Job} The receiver.
      */
@@ -1486,7 +1486,8 @@ function(allParams) {
      * @param {TP.core.Hash|TP.sig.Request} allParams An object which contains
      *     one or more keys defining job configuration. See init() for more
      *     info.
-     * @returns {Array} The Array containing ctrlParamsHash and stepParamsHash.
+     * @returns {Array<TP.core.Hash,TP.core.Hash>} The Array containing
+     *     ctrlParamsHash and stepParamsHash.
      */
 
     var ctrlParams,
@@ -3365,7 +3366,7 @@ function() {
     /**
      * @method getJobs
      * @summary Returns the list of current jobs.
-     * @returns {Array} The TIBET job list.
+     * @returns {TP.core.Job[]} The TIBET job list.
      */
 
     //  build lazily so we get "best" collection type/implementation
@@ -3385,7 +3386,7 @@ function(aJob) {
      * @method removeJob
      * @summary Removes a job entry from the list of current jobs.
      * @param {TP.core.Job} aJob The job to remove.
-     * @returns {TP.sys}
+     * @returns {TP.sys} The receiver.
      */
 
     this.getJobs().remove(aJob);

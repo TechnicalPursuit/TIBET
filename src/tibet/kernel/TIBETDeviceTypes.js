@@ -57,8 +57,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe() call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -176,7 +176,7 @@ function(aSignal, aHandler) {
      * @summary Adds a local signal observation for a "signal path", which is
      *     effectively a "gesture". Keyboard shortcuts are the primary example
      *     of signal paths. The default implementation simply returns.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -240,8 +240,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     handler provided to an observe call while the signal is a signal or
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to ignore.
-     * @param {Object|Array} aSignal One or more signals to ignore from the
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
@@ -340,7 +340,7 @@ function(aSignal, aHandler) {
      * @summary Removes a local signal observation for a "signal path", which
      *     is effectively a "gesture". Keyboard shortcuts are the primary
      *     example of signal paths. The default implementation simply returns.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
@@ -571,11 +571,11 @@ function(aSignal, aHandler) {
      *     where each hash contains the name of the overall shortcut signal, an
      *     optional hash of shortcuts which extend the current one, and an
      *     optional array of handler objects/functions (observers).
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @returns {Array} The handler array with the new observer added.
+     * @returns {Object[]} The handler array with the new observer added.
      */
 
     var shortcutData,
@@ -679,7 +679,7 @@ function(aSignal, shouldBuild) {
      * @method getShortcutData
      * @summary Returns the hash used to store shortcut information for a
      *     specific signal path.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Boolean} shouldBuild
      * @returns {TP.core.Hash} The shortcut data.
@@ -1220,7 +1220,7 @@ function(aSignal, aHandler) {
      * @summary Removes a local signal observation for a "signal path", which
      *     is effectively a "gesture". Keyboard shortcuts are the primary
      *     example of signal paths.
-     * @param {Object|Array} aSignal One or more signals to observe from the
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off.
      * @returns {Number} The number of handler's that were removed.

@@ -1397,7 +1397,7 @@ function() {
      * @method getDaysOfMonth
      * @summary Returns an array of Date instances for the days of the month
      *     for the receiver's month.
-     * @returns {Array} An array containing instances of Date.
+     * @returns {Date[]} An array containing instances of Date.
      */
 
     var days,
@@ -1425,7 +1425,7 @@ function() {
      * @method getDaysOfWeek
      * @summary Returns an array containing instances of Date for each day in
      *     the receiver's week.
-     * @returns {Array} An array containing instances of Date.
+     * @returns {Date[]} An array containing instances of Date.
      */
 
     var weekdays,
@@ -1932,7 +1932,7 @@ function() {
      * @method getUTCDaysOfMonth
      * @summary Returns an array of Date instances for the days of the
      *     receiver's month.
-     * @returns {Array} An array containing instances of Date.
+     * @returns {Date[]} An array containing instances of Date.
      */
 
     var days,
@@ -1963,7 +1963,7 @@ function() {
      * @method getUTCDaysOfWeek
      * @summary Returns an array containing instances of Date for each day in
      *     the receiver's week.
-     * @returns {Array} An array containing instances of Date.
+     * @returns {Date[]} An array containing instances of Date.
      */
 
     var weekdays,
@@ -4125,7 +4125,7 @@ function(anObject) {
      *     pass either a String or RegExp to methods that need to query based on
      *     string/regex content.
      * @param {Object} anObject The object whose string value should be tested.
-     * @returns {Array} An array identical to the one produced by
+     * @returns {String[]} An array identical to the one produced by
      *     String.match().
      */
 
@@ -4570,7 +4570,7 @@ function(aWidth) {
      *     primitive method used by the splitToWidth method to break apart
      *     substrings without any whitespace.
      * @param {Number} aWidth The width to split the receiver chunks into.
-     * @returns {Array} The receiver split by the width provided.
+     * @returns {String[]} The receiver split by the width provided.
      */
 
     var i,

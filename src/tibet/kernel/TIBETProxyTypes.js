@@ -153,8 +153,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -308,8 +308,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Object} The result of function execution.
      */
 

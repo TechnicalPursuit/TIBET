@@ -679,7 +679,7 @@ function(varargs) {
     /**
      * @method add
      * @summary Adds (appends) the argument(s) provided.
-     * @param {Array} varargs A variable list of arguments.
+     * @param {arguments} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @fires Change
      */
@@ -1214,7 +1214,7 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} The difference between aCollection and the receiver.
+     * @returns {Object[]} The difference between aCollection and the receiver.
      */
 
     var arr;
@@ -1248,7 +1248,7 @@ function(aCollection, aTest) {
      *     receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @returns {Array} The disjunction of aCollection and the receiver.
+     * @returns {Object[]} The disjunction of aCollection and the receiver.
      */
 
     var thisref,
@@ -1306,8 +1306,8 @@ function() {
     /**
      * @method flatten
      * @summary Extracts embedded elements which may exist and flattens them.
-     * @returns {Array} A new array containing the elements of the receiver in
-     *     flattened form.
+     * @returns {Object[]} A new array containing the elements of the receiver
+     *     in flattened form.
      */
 
     var result,
@@ -1398,7 +1398,7 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} An array of elements occurring in both.
+     * @returns {Object[]} An array of elements occurring in both.
      */
 
     if (!TP.canInvoke(aCollection, 'contains')) {
@@ -1443,10 +1443,11 @@ function(varargs) {
      *     collections. In some sense the reverse of partition, using an
      *     optional function to determine which elements of a set of collections
      *     should be grouped into pairs/triplets/quads etc.
-     * @param {Array} varargs Variable-length argument list of ordered
+     * @param {arguments} varargs Variable-length argument list of ordered
      *     pairs.
-     * @returns {Array} An array containing ordered pairs (or triplets, quads,
-     *     etc.) constructed from the receiver and incoming collection elements.
+     * @returns {Object[]} An array containing ordered pairs (or triplets,
+     *     quads, etc.) constructed from the receiver and incoming collection
+     *     elements.
      */
 
     var arr,
@@ -1767,7 +1768,7 @@ function(aCollection) {
      * @param {TPCollection} aCollection The other collection to union this
      *     array against.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} The new array containing elements from both arrays.
+     * @returns {Object[]} The new array containing elements from both arrays.
      */
 
     var arr;
@@ -1919,7 +1920,7 @@ function(aCollection) {
      * @param {TPCollection} aCollection The collection of indexes.
      * @exception TP.sig.InvalidCollection
      * @exception TP.sig.InvalidIndex
-     * @returns {Array} A new array containing the values collected.
+     * @returns {Object[]} A new array containing the values collected.
      */
 
     var arr,
@@ -2150,7 +2151,7 @@ function(aKey, anIndex) {
      * @param {String|RegExp} aKey The string or regular expression selector to
      *     match with.
      * @param {Number} anIndex The "column" index to check in each nested array.
-     * @returns {Array} The nested array whose value at anIndex matches aKey.
+     * @returns {Object[]} The nested array whose value at anIndex matches aKey.
      */
 
     var index;
@@ -2231,7 +2232,7 @@ function(anItem, startIndex, aTest) {
      * @param {Number} startIndex The index to start looking for anItem.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @returns {Array} A new array of indexes.
+     * @returns {Number[]} A new array of indexes.
      */
 
     var tmparr,
@@ -2419,8 +2420,9 @@ function() {
      * @summary Transposes the rows and columns of an array whose elements are
      *     other arrays. For example, [[1,2],[3,4],[5,6]] becomes an array
      *     containing [[1,3,5],[2,4,6]].
-     * @returns {Array} An array containing ordered pairs (or triplets, quads,
-     *     etc.) constructed from the receiver and incoming collection elements.
+     * @returns {Object[]} An array containing ordered pairs (or triplets,
+     *     quads, etc.) constructed from the receiver and incoming collection
+     *     elements.
      */
 
     var items,
@@ -2593,7 +2595,7 @@ function(varargs) {
     /**
      * @method addFirst
      * @summary Adds the values provided to the start of the receiver.
-     * @param {Array} varargs A variable list of arguments.
+     * @param {arguments} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @fires Change
      */
@@ -2619,7 +2621,7 @@ function(varargs) {
     /**
      * @method addLast
      * @summary Appends the values provided to the end of the receiver.
-     * @param {Array} varargs A variable list of arguments.
+     * @param {arguments} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @fires Change
      */
@@ -3025,7 +3027,8 @@ function(aCount, inline) {
      *     content.
      * @param {Boolean} inline False to construct a new instance, otherwise the
      *     receiver is modified.
-     * @returns {Array} The receiver, or a new instance if inline is false.
+     * @returns {Array|Object[]} The receiver, or a new instance if inline is
+     *     false.
      */
 
     var arr,
@@ -3158,7 +3161,7 @@ function(aKeyArray) {
      * @method removeKeys
      * @summary Removes the keys provided if the collection contains them. Note
      *     that this won't remove a key if the key references a method.
-     * @param {Array} aKeyArray The key values to remove.
+     * @param {Object[]} aKeyArray The key values to remove.
      * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @fires Change
@@ -3790,7 +3793,7 @@ function(aCollection) {
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} An array of elements occurring in both.
+     * @returns {Object[]} An array of elements occurring in both.
      */
 
     if (!TP.canInvoke(aCollection, 'contains')) {
@@ -3861,7 +3864,7 @@ function(aCollection) {
      * @param {TPCollection} aCollection The other collection to union this
      *     string against.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} The new string containing elements from both
+     * @returns {Object[]} The new string containing elements from both
      *     collections.
      */
 
@@ -3895,7 +3898,7 @@ function(aCollection) {
      *     use.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} An array of zero or more items.
+     * @returns {String[]} An array of zero or more items.
      */
 
     return this.split('').atAll(aCollection);
@@ -4015,7 +4018,7 @@ function(aKey, anIndex) {
      * @param {String|RegExp} aKey The string or regular expression selector to
      *     match with.
      * @param {Number} anIndex The "column" index to check in each nested array.
-     * @returns {Array} The nested array whose value at anIndex matches aKey.
+     * @returns {String[]} The nested array whose value at anIndex matches aKey.
      */
 
     var index;
@@ -4065,8 +4068,8 @@ function(aValue, startIndex) {
      * @summary Returns a collection of all indexes where the value is found.
      * @param {String} aValue The character to look for.
      * @param {Number} startIndex The index to start looking for aValue.
-     * @returns {Array} An array containing indexes for the value provided. May
-     *     be empty.
+     * @returns {Number[]} An array containing indexes for the value provided.
+     *     May be empty.
      */
 
     var tmparr,
@@ -5916,7 +5919,7 @@ function() {
      * @summary Removes and returns the first element in the hash, as if the
      *     hash had been turned into an array and the shift had been performed
      *     on that collection.
-     * @returns {Array} An ordered pair containing the first item in the hash
+     * @returns {Object[]} An ordered pair containing the first item in the hash
      *     based on the current sort function.
      * @fires Change
      */
@@ -5943,7 +5946,7 @@ function(varargs) {
      *     pairs, an array of key, value sequences, an Object (not recommended
      *     for speed reasons), a hash of key/value pairs, or a simple argument
      *     list of key, value sequences.
-     * @param {Array} varargs Variable-length argument list of ordered
+     * @param {arguments} varargs Variable-length argument list of ordered
      *     pairs.
      * @returns {TP.core.Hash} The receiver.
      * @fires Change
@@ -6136,7 +6139,7 @@ function(anItemOrKey, aValue, varargs) {
      *     key for a pair.
      * @param {Object} aValue Optional value to store when the first argument is
      *     a string.
-     * @param {String} varargs Additional key signifying that more key/value
+     * @param {arguments} varargs Additional key signifying that more key/value
      *     pairs are available. When this is defined the routine will loop
      *     across all input arguments and attempt to add all valid key/value
      *     pairings that can be found.
@@ -6257,7 +6260,7 @@ function() {
      * @summary Returns the receiver as an array of key/value pairs. For
      *     example TP.hc('a',1,'b',2).asArray() returns the equivalent of [['a',
      *     1], ['b', 2]].
-     * @returns {Array} The receiver as an Array.
+     * @returns {Object[]} The receiver as an Array.
      */
 
     return this.getPairs();
@@ -6747,7 +6750,7 @@ function(aHash, aTest) {
      * @param {TP.core.Hash} aHash The hash to be compared.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @returns {Array} The change set from aHash to the receiver.
+     * @returns {Object[]} The change set from aHash to the receiver.
      */
 
     var sourceKeys,
@@ -6865,7 +6868,7 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} An array containing the key/value pairs that differ.
+     * @returns {Object[]} An array containing the key/value pairs that differ.
      *     Since keys might have different values in different hashes we don't
      *     attempt to turn the list back into a hash.
      */
@@ -6907,7 +6910,7 @@ function(aCollection, aTest) {
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} An array containing the key/value pairs that differ.
+     * @returns {Object[]} An array containing the key/value pairs that differ.
      *     Since keys might have different values in different hashes we don't
      *     attempt to turn the list back into a hash.
      */
@@ -7028,7 +7031,7 @@ function() {
      * @method getValues
      * @summary Returns an array containing the values for the objects'
      *     attributes.
-     * @returns {Array} An array of the values for the receiver's keys.
+     * @returns {String[]} An array of the values for the receiver's keys.
      */
 
     var arr,
@@ -7133,7 +7136,7 @@ function(varargs) {
      * @method merge
      * @summary Merge the receiver's elements with elements from one or more
      *     collections.
-     * @param {Array} varargs Variable-length argument list of other
+     * @param {arguments} varargs Variable-length argument list of other
      *     collections
      * @returns {TP.core.Hash} A hash containing the merged values from the
      *     receiver and all of the supplied collections.
@@ -7592,7 +7595,7 @@ function(aCollection) {
      *     provided.
      * @param {TPCollection} aCollection The collection of indexes.
      * @exception TP.sig.InvalidCollection
-     * @returns {Array} A new array containing the values collected.
+     * @returns {Object[]} A new array containing the values collected.
      */
 
     var arr,
@@ -8059,7 +8062,7 @@ function(aKey, anIndex) {
      * @param {String|RegExp} aKey The string or regular expression selector to
      *     match with.
      * @param {Number} anIndex The "column" index to check in each nested array.
-     * @returns {Array} The nested array whose value at anIndex matches aKey.
+     * @returns {Object[]} The nested array whose value at anIndex matches aKey.
      */
 
     return TP.todo();
@@ -8077,7 +8080,7 @@ function() {
      *     sorted. The result is that all methods which use the key array as a
      *     focal point for iteration effectively work to produce output sorted
      *     by the ordering of the keys.
-     * @returns {Array} An array containing the receiver's keys.
+     * @returns {String[]} An array containing the receiver's keys.
      */
 
     var arr,
@@ -8147,7 +8150,7 @@ function(aValue, aTest) {
      * @param {Object} aValue The value to search for.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @returns {Array} A new array of indexes.
+     * @returns {Number[]} A new array of indexes.
      */
 
     var items;
@@ -8288,7 +8291,7 @@ function(aKeyArray) {
      * @method removeKeys
      * @summary Removes the keys provided if the collection contains them. Note
      *     that this won't remove a key if the key references a method.
-     * @param {Array} aKeyArray The key values to remove.
+     * @param {String[]} aKeyArray The key values to remove.
      * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @fires Change
@@ -8442,8 +8445,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -8479,8 +8482,8 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      *     prefix being removed.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {Array} anArgArray Optional arguments to function.
-     * @param {Function|Arguments} callingContext The calling context.
+     * @param {Object[]} anArgArray Optional arguments to function.
+     * @param {Function|arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
      */
 
@@ -8690,7 +8693,7 @@ function() {
      * @name currentItems
      * @summary Returns the current "items" of the iterator. Items consist of a
      *     key/value pair i.e. they are "ordered pairs".
-     * @returns {Array} The items of the underlying collection at the current
+     * @returns {Object[]} The items of the underlying collection at the current
      *     iterator location or undefined.
      * @todo
      */
@@ -8764,7 +8767,7 @@ function() {
      *     iterator has a step of five an array of five keys will be returned.
      *     If the iterator hasn't yet been used via next*(), this method returns
      *     undefined.
-     * @returns {Array} An array of keys or undefined.
+     * @returns {String[]} An array of keys or undefined.
      * @todo
      */
 
@@ -8834,7 +8837,7 @@ function() {
      * @name currentValues
      * @summary Returns an array of elements from the currentKeys(). If the
      *     iterator hasn't yet been used this method returns undefined.
-     * @returns {Array} An array, or undefined.
+     * @returns {Object[]} An array, or undefined.
      * @todo
      */
 
@@ -8873,7 +8876,7 @@ function() {
      * @name nextItems
      * @summary Returns an array of items from the currentKeys() locations in
      *     the underlying collection.
-     * @returns {Array} An array of items or undefined.
+     * @returns {Object[]} An array of items or undefined.
      * @todo
      */
 
@@ -8935,7 +8938,7 @@ function() {
      * @name nextKeys
      * @summary Returns an array containing the next "step" number of keys for
      *     the iterator. If the iterator is atEnd() the result is undefined.
-     * @returns {Array} An array or undefined.
+     * @returns {String[]} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9002,7 +9005,7 @@ function() {
      *     from the collection. This is the preferred method to call when using
      *     a step size other than 1.
      * @exception TP.sig.InvalidIndex
-     * @returns {Array} An array or undefined.
+     * @returns {Object[]} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9030,7 +9033,7 @@ function() {
      *     iterator has a step of five an array of five keys will be returned.
      *     If the iterator hasn't yet been used via next*(), this method returns
      *     undefined.
-     * @returns {Array} An array of keys or undefined.
+     * @returns {String[]} An array of keys or undefined.
      * @todo
      */
 
@@ -9096,7 +9099,7 @@ function() {
      * @name previousItems
      * @summary Returns an array containing the previous items from the
      *     iterators collection.
-     * @returns {Array} An Array or undefined.
+     * @returns {Object[]} An Array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9160,7 +9163,7 @@ function() {
      * @name previousKeys
      * @summary Returns an array containing the previous "step" number of keys
      *     for the iterator. If the iterator is atEnd() the result is undefined.
-     * @returns {Array} An array or undefined.
+     * @returns {String[]} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9226,7 +9229,7 @@ function() {
      * @summary Returns an array containing the previous "step" number of
      *     elements from the collection. If the iterator is atStart() or hasn't
      *     yet be used via next*() this method returns undefined.
-     * @returns {Array} An array or undefined.
+     * @returns {Object[]} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9497,7 +9500,7 @@ function() {
     /**
      * @method asArray
      * @summary Returns the receiver in array form (as an Array of its keys).
-     * @returns {Array} The receiver as an Array.
+     * @returns {Object[]} The receiver as an Array.
      */
 
     var vals;
@@ -9582,7 +9585,7 @@ function() {
     /**
      * @method getKeys
      * @summary Returns an array containing the keys of the receiver.
-     * @returns {Array} The receiver as an array of key values.
+     * @returns {String[]} The receiver as an array of key values.
      */
 
     var keys,

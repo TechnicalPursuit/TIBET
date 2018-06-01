@@ -104,7 +104,7 @@ function(ruleInfo) {
      * @method buildPropertiesModel
      * @summary Builds the model object used for binding the attributes tile
      *     panel GUI controls.
-     * @param {TP.core.Element} targetTPElem The element to obtain the set of
+     * @param {TP.dom.ElementNode} targetTPElem The element to obtain the set of
      *     attributes from.
      * @returns {TP.core.JSONContent} The JSON content object that will be used
      *     as the model.

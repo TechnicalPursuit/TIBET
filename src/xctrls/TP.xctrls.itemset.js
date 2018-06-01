@@ -223,7 +223,7 @@ function() {
      * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
      * @exception TP.sig.InvalidValueElements
-     * @returns {String|Array} A String containing the selected value or an
+     * @returns {String|String[]} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
      */
@@ -1269,10 +1269,10 @@ function() {
 
     /**
      * @method getTemplate
-     * @summary Returns the TP.core.Element that will be used as the 'template'
-     *     to generate content under the receiver. This template can include
-     *     data binding expressions that will be used, along with the receiver's
-     *     data, to generate that content.
+     * @summary Returns the TP.dom.ElementNode that will be used as the
+     *     'template' to generate content under the receiver. This template can
+     *     include data binding expressions that will be used, along with the
+     *     receiver's data, to generate that content.
      * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
      *     template for the receiver.
      */

@@ -931,8 +931,10 @@ function(entries) {
      *     where, if an entry's 'target' reference expands into more than one
      *     target element, an individual entry is made for each one of those
      *     targets.
-     * @param {Array} entries The initial set of sequence entries.
-     * @returns {Array} The fully expanded Array of sequence entries.
+     * @param {Node|TP.dom.Node|TP.path.AccessPath|Array} entries The initial
+     *     set of sequence entries.
+     * @returns {Node[][]|TP.dom.Node[][]} The fully expanded Array of sequence
+     *     entries.
      */
 
     var driver,

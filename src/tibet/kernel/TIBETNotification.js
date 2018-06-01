@@ -335,7 +335,7 @@ function(anOrigin, aPayload, aPolicy) {
      *     response to an empty construct() call. Use construct().fire()
      *     directly if you need to configure the signal instance manually.
      * @param {Object} anOrigin Optional origin for this call.
-     * @param {Array} aPayload Optional signal arguments.
+     * @param {Object[]} aPayload Optional signal arguments.
      * @param {Function} aPolicy A firing policy function.
      * @returns {TP.sig.Signal} The signal.
      */
@@ -367,7 +367,7 @@ function() {
      * @method getPhases
      * @summary Returns the different phases a signal might be at during
      *     firing. These typically correspond to the DOM phases.
-     * @returns {Array}
+     * @returns {String[]} The list of phases that a signal could be in.
      */
 
     return this.phases;
@@ -457,7 +457,7 @@ function() {
      * @method getSupertypeSignalNames
      * @summary Returns the 'supertypes signal names' - that is, each supertype
      *     name encoded as a signal name.
-     * @returns {Array} An Array of supertype signal names.
+     * @returns {String[]} An Array of supertype signal names.
      */
 
     var type;
@@ -1304,7 +1304,7 @@ function(anOrigin, aPayload, aPolicy) {
      *     signal should have been fully configured prior to invocation of this
      *     method.
      * @param {Object} anOrigin Optional origin for this call.
-     * @param {Array} aPayload Optional signal arguments.
+     * @param {Object[]} aPayload Optional signal arguments.
      * @param {Function} aPolicy A firing policy function.
      * @returns {TP.sig.Signal} The signal.
      */
@@ -1580,7 +1580,7 @@ function() {
      *     'getTypeSignalNames()' below in that this method will always use the
      *     signal name, even for the receiving type - which for a spoofed signal
      *     will be different than its type name.
-     * @returns {Array} An Array of signal names.
+     * @returns {String[]} An Array of signal names.
      */
 
     var names;
@@ -1603,7 +1603,7 @@ function() {
      * @method getSupertypeSignalNames
      * @summary Returns the 'supertypes signal names' - that is, each supertype
      *     name encoded as a signal name.
-     * @returns {Array} An Array of supertype signal names.
+     * @returns {String[]} An Array of supertype signal names.
      */
 
     var type;
@@ -1700,7 +1700,7 @@ function() {
      *     type and its supertypes up through TP.sig.Signal. This differs from
      *     getSignalNames in that 'type signal' names will never include
      *     spoofed signal names in the result list.
-     * @returns {Array} An Array of signal type names.
+     * @returns {String[]} An Array of signal type names.
      */
 
     return this.getType().getSignalNames();
@@ -5351,7 +5351,7 @@ function(originSet, aSignal, aPayload, aType) {
      *     NOTE that TIBET supports an extension via the on: namespace which
      *     lets DOM signals use alternative signal names if on:{event} is found
      *     at an element as the DOM is traversed.
-     * @param {Array|Object} originSet The set of origins for the signal. The
+     * @param {Object|Object[]} originSet The set of origins for the signal. The
      *     list should be provided from the document down to the target element.
      *     If a single origin is provided
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -6138,7 +6138,7 @@ function(anOrigin, signalSet, aPayload, aType) {
      *     handler for one of the exception types/supertypes stops signal
      *     propagation.
      * @param {Object} anOrigin The originator of the signal.
-     * @param {Array|TP.sig.Signal} signalSet The signal(s) to fire.
+     * @param {TP.sig.Signal|TP.sig.Signal[]} signalSet The signal(s) to fire.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -6418,7 +6418,7 @@ function(originSet, aSignal, aPayload, aType) {
     /**
      * @method BIND_FIRING
      * @summary
-     * @param {Array|Object} originSet The originator(s) of the signal. Unused
+     * @param {Object|Object[]} originSet The originator(s) of the signal. Unused
      *     for this firing policy.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object.
@@ -6798,9 +6798,9 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
      * @summary The primary observation removal method. This method is
      *     typically invoked via the ignore instance method on most objects, you
      *     don't normally need to invoke it yourself.
-     * @param {Object|Array} anOrigin An origin (or origins) to ignore.
-     * @param {TP.sig.Signal|String|Array} aSignal A signal (or signals) to
-     *     ignore from the origin(s).
+     * @param {Object|Object[]} anOrigin An origin (or origins) to ignore.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to ignore from the origin(s).
      * @param {Function} aHandler The specific handler to turn off, if any.
      * @param {Function} aPolicy The policy if any. Should be 'capture' to
      *     remove capturing handlers. Default is non-capturing.
@@ -6990,8 +6990,8 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
      * @method $invokePolicy
      * @summary General purpose signal invocation method. Each policy gets
      *     invoked from this entry point.
-     * @param {Object|Array} origins An origin or origins.
-     * @param {TP.sig.Signal|Array} signals A signal or signals.
+     * @param {Object|Object[]} origins An origin or origins.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
      * @param {Function} handler The handler if any.
      * @param {Function} policy The policy if any.
      */
@@ -7042,9 +7042,9 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
      * @summary The primary observation installation method. This method is
      *     typically invoked via the observe instance method on most objects,
      *     you don't normally need to invoke it yourself.
-     * @param {Object|Array} anOrigin An origin (or origins) to observe.
-     * @param {TP.sig.Signal|String|Array} aSignal A signal (or signals) to
-     *     observe from the origin(s).
+     * @param {Object|Object[]} anOrigin An origin (or origins) to observe.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to observe from the origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
      * @param {Function} aPolicy The policy if any. Should be 'capture' to
@@ -7245,10 +7245,10 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
      * @method $resume
      * @summary The primary observation resume method. When an observation has
      *     been suspended this method will resume active notifications for it.
-     * @param {Object|Array} anOrigin An origin (or origins) to resume
+     * @param {Object|Object[]} anOrigin An origin (or origins) to resume
      *     notifications for.
-     * @param {TP.sig.Signal|String|Array} aSignal A signal (or signals) to
-     *     resume signaling from the origin(s).
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to resume signaling from the origin(s).
      */
 
     var origins,
@@ -7401,10 +7401,10 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
      * @summary The primary observation suspention method. When an observation
      *     has been suspended the registration is maintained but notifications
      *     are not made until a TP.resume().
-     * @param {Object|Array} anOrigin An origin (or origins) to suspend
+     * @param {Object|Object[]} anOrigin An origin (or origins) to suspend
      *     notifications for.
-     * @param {TP.sig.Signal|String|Array} aSignal A signal (or signals) to
-     *     suspend signaling from the origin(s).
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to suspend signaling from the origin(s).
      */
 
     var origins,
@@ -7595,7 +7595,8 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
      * @param {Object} anOrigin The originator of the signal.
-     * @param {String|TP.sig.Signal} aSignal The signal to fire.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to fire.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -8101,7 +8102,7 @@ function(anOrigin, aPayload, aPolicy) {
      * @summary Creates and activates the signal instance via the policy
      *     specified. The signal name will be set to the string value.
      * @param {Object} anOrigin Optional origin for this call.
-     * @param {Array} aPayload Optional signal arguments.
+     * @param {Object[]} aPayload Optional signal arguments.
      * @param {Function} aPolicy A firing policy function.
      * @returns {TP.sig.Signal} The signal.
      */
