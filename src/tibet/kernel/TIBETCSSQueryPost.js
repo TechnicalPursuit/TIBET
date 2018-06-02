@@ -105,7 +105,7 @@ function(aNode, aSelector, stopAncestor) {
      *     aNode is contained in.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
-     * @returns {?Element} The ancestor element that matches the CSS.
+     * @returns {Element|undefined} The ancestor element that matches the CSS.
      */
 
     var elem,
@@ -127,10 +127,10 @@ function(aNode, aSelector, stopAncestor) {
     } else {
         elem = aNode.parentNode;
 
-        //  If the parent node was either null or a Document, then return null -
-        //  there is no ancestor matching.
+        //  If the parent node was either null or a Document, then return
+        //  undefined - there is no ancestor matching.
         if (!TP.isElement(elem)) {
-            return null;
+            return;
         }
     }
 
@@ -142,13 +142,13 @@ function(aNode, aSelector, stopAncestor) {
     //  If the result element was a 'TIBET generated' element (i.e.
     //  generated content), then we ignore it - even if it matches.
     if (TP.isValid(elem[TP.GENERATED])) {
-        return null;
+        return;
     }
 
     //  It doesn't really matter what platform we're running on - we filter
     //  all 'browser-specific' selectors.
     if (TP.isTrue(TP.regex.CSS_NATIVE_CUSTOM.test(aSelector))) {
-        return null;
+        return;
     }
 
     //  If 'closest' is available and the selector doesn't have a pipe ('|')
@@ -188,7 +188,7 @@ function(aNode, aSelector, stopAncestor) {
                 }
             }
 
-            return null;
+            return;
         };
 
         return closest(elem, aSelector);
@@ -236,7 +236,7 @@ function(aNode, aSelector, stopAncestor) {
             }
         }
 
-        return null;
+        return;
     };
 
     return closest(elem, aSelector);

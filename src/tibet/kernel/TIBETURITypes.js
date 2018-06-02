@@ -5377,7 +5377,7 @@ function(aContent, alternateContent) {
      * @summary Computes a patch between the two data sources and returns a
      *     String that contains the patch in 'unified diff' format.
      * @param {String} aContent The 'new content' to use to generate the diff.
-     * @param {?String} alternateContent The content to use as the 'alternate
+     * @param {String} [alternateContent] The content to use as the 'alternate
      *     content' to generate the diff, if the receiver's current *remote*
      *     content is not to be used. If this is not supplied, the receiver's
      *     current *remote* content is fetched and used.

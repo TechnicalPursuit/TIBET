@@ -1346,7 +1346,7 @@ function(aState) {
      * @summary Returns the proper method name to invoke during wrapup depending
      *      on the state name provided.
      * @param {String} aState The state (TP.FAILED, TP.CANCELLED, etc).
-     * @returns {?String} The method name such as 'cancel' or 'fail'.
+     * @returns {String|undefined} The method name such as 'cancel' or 'fail'.
      */
 
     switch (aState) {

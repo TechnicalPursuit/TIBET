@@ -6300,8 +6300,8 @@ function(aSelector, stopAncestor) {
      * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
      *     this would be identical to the document node of the document that
      *     the receiver is contained in.
-     * @returns {?TP.dom.ElementNode} The ancestor element that matches the
-     *     CSS.
+     * @returns {TP.dom.ElementNode|undefined} The ancestor element that matches
+     *     the CSS.
      */
 
     return TP.wrap(TP.nodeAncestorMatchingCSS(this.getNativeNode(),

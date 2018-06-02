@@ -2059,7 +2059,7 @@ function(aFlag) {
     /**
      * @method isMetaDown
      * @summary Returns true if the Meta key is currently pressed.
-     * @param {?Boolean} aFlag An optional flag to set the value.
+     * @param {Boolean} [aFlag] An optional flag to set the value.
      * @returns {Boolean} True if the Meta key is down.
      */
 
