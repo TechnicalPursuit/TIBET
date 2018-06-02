@@ -208,7 +208,7 @@ function(aProperty, aFlag) {
      *     and/or manipulated.
      * @param {Boolean} [aFlag] The new value to optionally set.
      * @exception {TP.sig.InvalidParameter} When aProperty isn't a String.
-     * @returns {?Boolean} The current flag state.
+     * @returns {Boolean|undefined} The current flag state.
      */
 
     if (!TP.isString(aProperty)) {

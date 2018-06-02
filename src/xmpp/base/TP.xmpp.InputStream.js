@@ -132,7 +132,7 @@ function(anIndex) {
      *     to read.
      * @exception TP.sig.XMPPConnectionNotOpen
      * @exception TP.sig.XMPPReadException
-     * @returns {TP.xmpp.Node} A new packet in the proper wrapper.
+     * @returns {TP.xmpp.Node||undefined} A new packet in the proper wrapper.
      */
 
     var xmppnode,
@@ -319,7 +319,7 @@ function(content, response) {
         this.signal('TP.sig.XMPPDataAvailable');
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

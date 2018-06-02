@@ -43,6 +43,7 @@ function() {
      * @summary Registers the type's information, particularly the tag name,
      *     template, and namespace information which drives the lookup processes
      *     for getConcreteType().
+     * @returns {TP.meta.xmpp.Stanza} The receiver.
      */
 
     var i,
@@ -57,7 +58,7 @@ function() {
         }
     }
 
-    return;
+    return this;
 }, {
     trackInvocations: false
 });
@@ -86,7 +87,7 @@ function(aNode, aType, toJID) {
      * @param {String} aType The stanza type (get, set, etc) for the new
      *     instance.
      * @param {TP.xmpp.JID|String} toJID The JID or JID string to target.
-     * @returns {TP.xmpp.Stanza} A new instance.
+     * @returns {TP.xmpp.Stanza|undefined} A new instance.
      */
 
     this.callNextMethod(aNode);

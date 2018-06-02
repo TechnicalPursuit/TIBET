@@ -221,7 +221,7 @@ function(aURI, aResource) {
      * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
-     * @returns {?TP.uri.URI} The new instance.
+     * @returns {TP.uri.URI|undefined} The new instance.
      */
 
     var url,
@@ -396,7 +396,7 @@ function(aDocument) {
      *     data.
      * @exception {TP.sig.InvalidDocument} When aDocument isn't a valid
      *     Document.
-     * @returns {?TP.uri.URI} A new instance.
+     * @returns {TP.uri.URI|undefined} A new instance.
      */
 
     var path;
@@ -459,7 +459,7 @@ function(aWindow) {
      *     for its location information.
      * @param {Window} aWindow The window to interrogate to make the URI from.
      * @exception {TP.sig.InvalidWindow} When aWindow isn't a valid Window.
-     * @returns {?TP.uri.URI} A new instance.
+     * @returns {TP.uri.URI|undefined} A new instance.
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -514,6 +514,7 @@ function(aScheme) {
      *     instances for a particular scheme.
      * @param {String} aScheme A URI scheme such as http, file, etc.
      * @exception {TP.sig.InvalidParameter} When the scheme isn't a string.
+     * @returns {TP.meta.uri.Type} The receiver.
      */
 
     var theScheme;
@@ -542,7 +543,7 @@ function(aScheme) {
                             '|^(?:\\w+):(?:.*)\\/'));
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -733,7 +734,8 @@ function(aURI) {
      *     will be returned and only if a match is found.
      * @param {TP.uri.URI|String} aURI The URI to locate mapping data for.
      * @exception {TP.sig.InvalidURI}
-     * @returns {?TP.core.Hash} A dictionary of matching key values, if any.
+     * @returns {TP.core.Hash|undefined} A dictionary of matching key values,
+     *     if any.
      */
 
     var url,
@@ -962,7 +964,7 @@ function(aURI) {
      *     URIs that have had their remote resources changed without refreshing.
      * @param {TP.uri.URI|String} aURI The URI that had its remote resource
      *     changed.
-     * @returns {Promise} A promise which resolves based on success.
+     * @returns {Promise|undefined} A promise which resolves based on success.
      */
 
     var shouldProcess,
@@ -1331,7 +1333,7 @@ function(schemeSpecificString) {
      *     done via override.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.core.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash|undefined} The parsed URI 'components'.
      */
 
     var primaryLocation,
@@ -1340,6 +1342,10 @@ function(schemeSpecificString) {
     if (TP.isEmpty(schemeSpecificString)) {
         return;
     }
+
+    //  TODO: Review this entire block of code. It seems that it never gets
+    //  called, since most subtypes override this method. They also return an
+    //  actual TP.core.Hash, when this method does not.
 
     //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
     //  necessary when creating a URI, since otherwise the change notification
@@ -2209,7 +2215,7 @@ function() {
      *     processing it using normal parsing for path vs. parameter data. Note
      *     that the path value is always prefixed with a '/' for consistency
      *     with base URL path values.
-     * @returns {?String} The fragment path if any.
+     * @returns {String|undefined} The fragment path if any.
      */
 
     var text;
@@ -2272,7 +2278,8 @@ function(aHeaderName) {
      * @summary Returns the value of the named header, or null if the header
      *     value isn't found.
      * @param {String} aHeaderName The name of the header to retrieve.
-     * @returns {?String} The value of the header named with the supplied name.
+     * @returns {String|undefined} The value of the header named with the
+     *     supplied name.
      */
 
     var dict;
@@ -2327,7 +2334,7 @@ function() {
      * @method getLastUpdateDate
      * @summary Returns the last update time for the receiver as recorded in
      *     the URI's header content -- specifically the Date header.
-     * @returns {?Date} The date the receiver was last updated.
+     * @returns {Date|undefined} The date the receiver was last updated.
      */
 
     var dateStr,
@@ -3091,7 +3098,7 @@ function(aProperty, aFlag) {
      *     and/or manipulated.
      * @param {Boolean} [aFlag] The new value to optionally set.
      * @exception {TP.sig.InvalidParameter} When aProperty isn't a String.
-     * @returns {?Boolean} The current flag state.
+     * @returns {Boolean|undefined} The current flag state.
      */
 
     if (!TP.isString(aProperty)) {
@@ -3266,8 +3273,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
      * @param {Object} [aResource] Optional data used for set* methods.
      * @exception {TP.sig.InvalidParameter} When the receiver can't invoke the
      *     method named by contentFName.
-     * @returns {?TP.sig.Response} A TP.sig.Response created with the requested
-     *     content set as its result.
+     * @returns {TP.sig.Response|undefined} A TP.sig.Response created with the
+     *     requested content set as its result.
      */
 
     var fragment,
@@ -4070,11 +4077,11 @@ function(aRequest, aResult, aResource) {
         //  dirty from us when it changes.
         if (!TP.isKindOf(result, TP.core.Content) &&
             isDirty !== wasDirty) {
-                TP.$changed.call(
-                            this,
-                            'dirty',
-                            TP.UPDATE,
-                            TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
+            TP.$changed.call(
+                        this,
+                        'dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
         }
 
         //  We set the content of the object that we're holding as our resource
@@ -4610,7 +4617,7 @@ function(aPath) {
      * @summary Returns the type to use for a particular URI path.
      * @param {String} aPath A URI string providing at least a scheme which can
      *     be looked up for a concrete type.
-     * @returns {TP.lang.RootObject} A type object.
+     * @returns {TP.lang.RootObject|undefined} A type object.
      */
 
     var parts,
@@ -4655,6 +4662,7 @@ function(aNID) {
      *     instances for a particular namespace ID (NID).
      * @param {String} aNID A URN namespace ID such as 'oid', or 'tibet'.
      * @exception {TP.sig.InvalidParameter} When the scheme isn't a string.
+     * @returns {TP.meta.uri.URN} The receiver.
      */
 
     var theNID;
@@ -4667,7 +4675,7 @@ function(aNID) {
     theNID = aNID.strip(':');
     TP.uri.URN.$get('nidHandlers').atPut(theNID, this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6797,7 +6805,7 @@ function() {
 
     //  Early exit if we're already set so we avoid request/rewrite/remap work.
     if (TP.isTrue(this.get('watched'))) {
-        return;
+        return this;
     }
 
     //  We need to get a request and go through rewrite/mapping to get the
@@ -6835,7 +6843,7 @@ function() {
 
     //  Early exit if we're already set so we avoid request/rewrite/remap work.
     if (TP.isFalse(this.get('watched'))) {
-        return;
+        return this;
     }
 
     request = this.constructRequest();
@@ -6960,7 +6968,7 @@ function() {
      * @method commDidSucceed
      * @summary Returns true if the last comm request (xhr etc) to the server
      *     was successful based on status information in the comm object.
-     * @returns {Boolean} True for successful communications.
+     * @returns {Boolean|undefined} True for successful communications.
      */
 
     var comm;
@@ -6982,7 +6990,8 @@ function() {
      * @method getCommObject
      * @summary Returns the last communication channel object leveraged by the
      *     receiver.
-     * @returns {XHR|WebSocket} The receiver's last communication object.
+     * @returns {XHR|WebSocket|undefined} The receiver's last communication
+     *     object.
      */
 
     var comm,
@@ -7010,7 +7019,7 @@ function() {
      * @method getCommResponse
      * @summary Returns response data from the last communication object (xhr
      *     etc) used in the receiver's interactions with the server.
-     * @returns {Object} The result data from the last comm request.
+     * @returns {Object|undefined} The result data from the last comm request.
      */
 
     var comm;
@@ -7032,7 +7041,7 @@ function() {
      * @method getCommResponseText
      * @summary Returns response text from the last communication object (xhr
      *     etc) used in the receiver's interactions with the server.
-     * @returns {String} The result text from the last comm request.
+     * @returns {String|undefined} The result text from the last comm request.
      */
 
     var comm;
@@ -7054,9 +7063,9 @@ function() {
      * @method getCommResponseType
      * @summary Returns the response type from the last communication object
      * (xhr etc) used in the receiver's interactions with the server.
-     * @returns {String} A string from the XMLHttpRequest API with one of the
-     *     following values: "", arraybuffer, blob, document, json, or text. The
-     *     default ("") means a DOMString value just as with "text".
+     * @returns {String|undefined} A string from the XMLHttpRequest API with one
+     *     of the following values: "", arraybuffer, blob, document, json, or
+     *     text. The default ("") means a DOMString value just as with "text".
      */
 
     var comm;
@@ -7078,7 +7087,7 @@ function() {
      * @method getCommResponseXML
      * @summary Returns response XML from the last communication object (xhr
      *     etc) used in the receiver's interactions with the server.
-     * @returns {String} The result XML from the last comm request.
+     * @returns {String|undefined} The result XML from the last comm request.
      */
 
     var comm;
@@ -7100,7 +7109,7 @@ function() {
      * @method getCommStatusCode
      * @summary Returns the last comm (usually xhr) status code from the
      *     receiver's interactions with the server.
-     * @returns {Number} The status code from the last comm request.
+     * @returns {Number|undefined} The status code from the last comm request.
      */
 
     var comm;
@@ -7122,7 +7131,8 @@ function() {
      * @method getCommStatusText
      * @summary Returns the last comm (usually xhr) status text from the
      *     receiver's interactions with the server.
-     * @returns {String} The status message from the last comm request.
+     * @returns {String|undefined} The status message from the last comm
+     *     request.
      */
 
     var comm;
@@ -7727,8 +7737,10 @@ function(schemeSpecificString) {
      *     scheme(s) being managed by the receiver.
      * @param {String} schemeSpecificString A String containing the
      *     "scheme-specific-part" of a URI.
-     * @returns {TP.core.Hash} The parsed URI 'components'.
+     * @returns {TP.core.Hash|undefined} The parsed URI 'components'.
      */
+
+    //  TODO: Review this method - shouldn't we be returning a TP.core.Hash?
 
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
@@ -8301,7 +8313,7 @@ function(parts) {
      *     that TP.uri.URI's implementation ensures that the uri, scheme,
      *     primary, and fragment portions of a URI string will be set.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.URI|undefined} The receiver.
      */
 
     //  force ID expansion if it didn't already happen. this will also force
@@ -8468,7 +8480,7 @@ function() {
      *     by traversing any optional 'paths' defined in our canvas name. If no
      *     canvas name is specified the canvas defaults to the current UI canvas
      *     for TIBET.
-     * @returns {Window} The receiver's resource canvas.
+     * @returns {Window|undefined} The receiver's resource canvas.
      */
 
     var name;
@@ -8651,7 +8663,8 @@ function(forceRefresh) {
      *     references.
      * @param {Boolean} forceRefresh True will force any cached value for
      *     resource URI to be ignored.
-     * @returns {TP.uri.URI} A concrete URI if the receiver resolves to one.
+     * @returns {TP.uri.URI|undefined} A concrete URI if the receiver resolves
+     *     to one.
      */
 
     var resource,
@@ -8786,8 +8799,8 @@ function(aRequest, filterResult) {
      * @param {Boolean} filterResult True if the resource result will be used
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
-     *     content set as its result.
+     * @returns {TP.sig.Response|undefined} A TP.sig.Response created with the
+     *     resource's content set as its result.
      */
 
     var request,
@@ -10503,7 +10516,7 @@ function(aURI) {
      *     route is empty.
      * @param {TP.uri.URI|String} [aURI=top.location] The URI to test. Defaults
      *     to the value of TP.uriNormalize(top.location.toString()).
-     * @returns {?String} The route name or empty string.
+     * @returns {String|undefined} The route name or empty string.
      */
 
     var route,
@@ -10741,7 +10754,8 @@ function(path) {
      * @param {String} path The URL fragment path segment (route) to process.
      * @exception {TP.sig.RouteProcessingException} When the system throws an
      *     Error by attempting to navigate to the route.
-     * @returns {?Array[String, TP.core.Hash]} The signal name/payload pair.
+     * @returns {Array<String, TP.core.Hash>|undefined} The signal name/payload
+     *     pair.
      */
 
     var processors,
@@ -10822,6 +10836,7 @@ function(aURIOrPushState, aDirection) {
      * @fires {RouteFinalize} If the URI has changed the fragment path (route).
      * @exception {TP.sig.InvalidOperation} When an operation cannot be computed
      *     by comparing the old route parameters from the new route parameters.
+     * @returns {TP.meta.uri.URIRouter} The receiver.
      */
 
     var history,
@@ -10920,7 +10935,7 @@ function(aURIOrPushState, aDirection) {
 
     //  No change? No work to do.
     if (last === url) {
-        return;
+        return this;
     }
 
     //  ---
@@ -10942,7 +10957,7 @@ function(aURIOrPushState, aDirection) {
         if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
-        return;
+        return this;
     }
 
     //  ---
@@ -10954,7 +10969,7 @@ function(aURIOrPushState, aDirection) {
         if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
-        return;
+        return this;
     }
 
     //  ---
@@ -11018,7 +11033,7 @@ function(aURIOrPushState, aDirection) {
                         });
         }
 
-        return;
+        return this;
     }
 
     //  ---
@@ -11086,7 +11101,7 @@ function(aURIOrPushState, aDirection) {
     }
 
     if (TP.isEmpty(route)) {
-        return;
+        return this;
     }
 
     if (TP.sys.cfg('log.routes')) {
@@ -11108,7 +11123,7 @@ function(aURIOrPushState, aDirection) {
             if (TP.isEmpty(configInfo)) {
                 this.raise('InvalidObject',
                     'Unable to build config data from entry: ' + config);
-                return;
+                return this;
             }
         } else {
             configInfo = config;
@@ -11127,14 +11142,16 @@ function(aURIOrPushState, aDirection) {
             } else {
                 TP.go2(reroute);
             }
-            return;
+
+            return this;
         }
 
         reroute = configInfo.at(routeKey + '.redirect');
         reroute = reroute || configInfo.at('redirect');
         if (TP.notEmpty(reroute)) {
             TP.go2(reroute);
-            return;
+
+            return this;
         }
 
     } else {
@@ -11156,7 +11173,7 @@ function(aURIOrPushState, aDirection) {
             //  will be trapped.
             TP.core.History.set('lastValidIndex', 0);
 
-            return;
+            return this;
         } else {
 
             //  The current route is a deeproot. Make sure that the history's
@@ -11261,7 +11278,7 @@ function(aURIOrPushState, aDirection) {
     //  either RouteFinalize or a subtype of RouteFinalize.
     signal.fire();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -11359,7 +11376,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @returns {TP.sig.Response|undefined} The request's response object.
      */
 
     var subrequest,
@@ -11492,7 +11509,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @returns {TP.sig.Response|undefined} The request's response object.
      */
 
     var subrequest,
@@ -11603,7 +11620,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @returns {TP.sig.Response|undefined} The request's response object.
      */
 
     var subrequest,
@@ -12088,7 +12105,7 @@ function() {
     //  that will cause issues).
     if (TP.sys.cfg('boot.context') === 'phantomjs' ||
         TP.sys.hasFeature('karma')) {
-        return;
+        return this;
     }
 
     TP.sys.setcfg('uri.watch_remote_changes', true);
@@ -12149,6 +12166,7 @@ function(aWatcher) {
      *     activateWatchers/deactivateWatchers methods on this type.
      * @param {Object} aWatcher A potential remote URL watcher. This object must
      *     conform to the receiver's REMOTE_WATCH_API.
+     * @returns {TP.uri.RemoteURLWatchHandler} The receiver.
      */
 
     var watchers;
@@ -12166,7 +12184,7 @@ function(aWatcher) {
     }
 
     if (watchers.contains(aWatcher, TP.IDENTITY)) {
-        return;
+        return this;
     }
 
     watchers.push(aWatcher);
@@ -12219,7 +12237,6 @@ function() {
     }
 
     return;
-
 });
 
 //  ------------------------------------------------------------------------
@@ -12231,6 +12248,7 @@ function() {
      * @method activateRemoteWatch
      * @summary Performs any processing necessary to activate observation of
      *     remote URL changes.
+     * @returns {TP.meta.uri.RemoteURLWatchHandler} The receiver.
      */
 
     var sourceType,
@@ -12249,7 +12267,7 @@ function() {
     signalType = this.getWatcherSignalType();
     this.observe(signalSource, signalType);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -12261,6 +12279,7 @@ function() {
      * @method deactivateRemoteWatch
      * @summary Performs any processing necessary to shut down observation of
      *     remote URL changes.
+     * @returns {TP.meta.uri.RemoteURLWatchHandler} The receiver.
      */
 
     var sourceType,
@@ -12279,7 +12298,7 @@ function() {
     signalType = this.getWatcherSignalType();
     this.ignore(signalSource, signalType);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

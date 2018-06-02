@@ -424,7 +424,7 @@ function(aString, smartConversion, shouldReport) {
      *     JSON into JS. This causes the construction of TP.core.Hashes instead
      *     of Objects. This defaults to true.
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
-     * @returns {Object} A JavaScript object containing the JSON data.
+     * @returns {Object|undefined} A JavaScript object containing the JSON data.
      * @exception InvalidJSON
      */
 

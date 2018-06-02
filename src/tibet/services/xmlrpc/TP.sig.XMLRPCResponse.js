@@ -27,7 +27,7 @@ function() {
     /**
      * @method getFaultCode
      * @summary Returns the XML-RPC fault code if any.
-     * @returns {Number} A fault code.
+     * @returns {Number|undefined} A fault code.
      */
 
     var xml,
@@ -57,7 +57,7 @@ function() {
     /**
      * @method getFaultText
      * @summary Returns the XML-RPC fault message string if any.
-     * @returns {String} A fault message string.
+     * @returns {String|undefined} A fault message string.
      */
 
     var xml,
@@ -89,7 +89,7 @@ function() {
      * @summary Returns the response content in JavaScript object form. If the
      *     receiver represents a failed request then the content of the fault
      *     object is returned.
-     * @returns {Object}
+     * @returns {Object|undefined}
      */
 
     var res,

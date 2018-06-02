@@ -99,7 +99,7 @@ function(nodeSpec, varargs) {
      *     construct a source node. See type discussion above. Can also be null.
      * @param {arguments} varargs Optional additional arguments for the
      *     constructor.
-     * @returns {TP.dom.Node} A new instance.
+     * @returns {TP.dom.Node|undefined} A new instance.
      */
 
     var node,
@@ -346,7 +346,8 @@ function() {
     /**
      * @method constructNativeNode
      * @summary Returns a node suitable for use as an instance of the receiver.
-     * @returns {Node} A new native node, cloned from the receiver's template.
+     * @returns {Node|undefined} A new native node, cloned from the receiver's
+     *     template.
      */
 
     var template,
@@ -430,7 +431,7 @@ function(aString, defaultNS, shouldReport) {
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
      * @exception TP.sig.DOMParseException
-     * @returns {TP.dom.Node} The newly constructed TP.dom.Node.
+     * @returns {TP.dom.Node|undefined} The newly constructed TP.dom.Node.
      */
 
     var node;
@@ -508,7 +509,7 @@ function(aURI, shouldReport) {
      *     strings can be tested for XML compliance without causing exceptions
      *     to be thrown. This is true by default.
      * @exception TP.sig.DOMParseException
-     * @returns {TP.dom.Node} The newly constructed TP.dom.Node.
+     * @returns {TP.dom.Node|undefined} The newly constructed TP.dom.Node.
      */
 
     var resp,
@@ -968,8 +969,8 @@ function(aRequest) {
      *          $@          ->  An alias for $FOCUS
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {TP.core.Hash} The hash containing the substitution info as
-     *     detailed in the description.
+     * @returns {TP.core.Hash|undefined} The hash containing the substitution
+     *     info as detailed in the description.
      */
 
     var node,
@@ -1278,6 +1279,7 @@ function(aContentObject, aRequest) {
      *     override this method to provide a more specific version of this.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     var content;
@@ -1288,7 +1290,7 @@ function(aContentObject, aRequest) {
 
     this.setTextContent(content);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1395,7 +1397,7 @@ function() {
      * @summary Returns a 'plain JavaScript object' version of the receiver.
      *     This uses the JXON standard to convert the receiver's DOM structure
      *     to one or more JavaScript objects.
-     * @returns {Object} The receiver as a plain JavaScript object.
+     * @returns {Object|undefined} The receiver as a plain JavaScript object.
      */
 
     if (TP.isPrototype(this)) {
@@ -2030,7 +2032,7 @@ function() {
      * @method getLocation
      * @summary Returns the location of the node's associated URI, if the node
      *     was loaded on behalf of a URI.
-     * @returns {String} The location of the receiver's URI.
+     * @returns {String|undefined} The location of the receiver's URI.
      */
 
     var url;
@@ -2748,11 +2750,12 @@ function(aContentObject, aRequest) {
      *     to provide a more specific version of this.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.dom.Node} The receiver.
      */
 
     this.setTextContent(aContentObject);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3316,7 +3319,7 @@ function(aFlag) {
      *     manipulations to signal only when a series of changes has been
      *     completed.
      * @param {Boolean} aFlag true/false signaling status.
-     * @returns {Boolean} The current status.
+     * @returns {Boolean|undefined} The current status.
      */
 
     //  NB: Because of all of the machinery around signaling and tracking
@@ -3472,6 +3475,7 @@ function(aDocument) {
      * @param {Document} aDocument The native document containing instances of
      *     this node to refresh instances of. This defaults to the document of
      *     the current uicanvas.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var originals,
@@ -3483,7 +3487,7 @@ function(aDocument) {
     //  Grab our 'originals' registry. This is where we store clones of the
     //  original node.
     if (!TP.isValid(originals = this.get('originals'))) {
-        return;
+        return this;
     }
 
     //  Compute the CSS query path, indicating that we want a path that will
@@ -3605,7 +3609,7 @@ function(aDocument) {
             }
         });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3748,7 +3752,7 @@ function(aURI, force) {
 
     url = aURI || this.get('uri');
     if (TP.notValid(url)) {
-        return;
+        return this;
     }
 
     if (TP.isKindOf(url, TP.uri.URI)) {
@@ -4497,7 +4501,8 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.dom.Node} The result of adding content to the receiver.
+     * @returns {TP.dom.Node|undefined} The result of adding content to the
+     *     receiver.
      */
 
     var request,
@@ -4505,7 +4510,7 @@ function(newContent, aRequest, stdinContent) {
         content;
 
     if (TP.notValid(newContent) || newContent === '') {
-        return this.getNativeNode();
+        return;
     }
 
     request = TP.request(aRequest);
@@ -4564,7 +4569,8 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.dom.Node} The result of adding content to the receiver.
+     * @returns {TP.dom.Node|undefined} The result of adding content to the
+     *     receiver.
      */
 
     var node,
@@ -4585,7 +4591,7 @@ function(newContent, aRequest, shouldSignal) {
     node = this.getNativeNode();
 
     if (TP.notValid(newContent) || newContent === '') {
-        return node;
+        return;
     }
 
     request = TP.request(aRequest);
@@ -4697,9 +4703,10 @@ function(aNode) {
      * @param {Node} aNode The node that content has been appended to. Unless
      *     this node has been altered by the method that is appending the
      *     content, this should be the same as the receiver's native node.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4714,9 +4721,10 @@ function(aNode) {
      * @param {Node} aNode The node that content has been inserted into. Unless
      *     this node has been altered by the method that is inserting the
      *     content, this should be the same as the receiver's native node.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4731,9 +4739,10 @@ function(aNode) {
      * @param {Node} aNode The node that content has been replaced for. Unless
      *     this node has been altered by the method that is replacing the
      *     content, this should be the same as the receiver's native node.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4750,7 +4759,7 @@ function(operation) {
      * @param {String} operation A constant defining the operation. Valid values
      *     include: TP.APPEND TP.INSERT TP.UPDATE.
      * @exception TP.sig.InvalidOperation When the operation isn't a valid one.
-     * @returns {Function} A TP primitive function.
+     * @returns {Function|undefined} A TP primitive function.
      */
 
     switch (operation) {
@@ -4763,6 +4772,8 @@ function(operation) {
         default:
             return this.raise('TP.sig.InvalidOperation');
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -4789,7 +4800,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.dom.Node} The result of setting the content of the
+     * @returns {TP.dom.Node|undefined} The result of setting the content of the
      *     receiver.
      */
 
@@ -4798,7 +4809,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
         content;
 
     if (TP.notValid(newContent) || newContent === '') {
-        return this.getNativeNode();
+        return;
     }
 
     request = TP.request(aRequest);
@@ -4860,7 +4871,8 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.dom.Node} The result of adding content to the receiver.
+     * @returns {TP.dom.Node|undefined} The result of adding content to the
+     *     receiver.
      */
 
     var node,
@@ -4881,7 +4893,7 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
     node = this.getNativeNode();
 
     if (TP.notValid(newContent) || newContent === '') {
-        return node;
+        return;
     }
 
     request = TP.request(aRequest);
@@ -5026,7 +5038,7 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.dom.Node} The result of setting the content of the
+     * @returns {TP.dom.Node|undefined} The result of setting the content of the
      *     receiver.
      */
 
@@ -5146,7 +5158,7 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.dom.Node} The result of setting the content of the
+     * @returns {TP.dom.Node|undefined} The result of setting the content of the
      *     receiver.
      */
 
@@ -5259,7 +5271,7 @@ function(newContent, aRequest, stdinContent) {
      * @param {Object} stdinContent Content to set as the 'stdin' when executing
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
-     * @returns {TP.dom.Node} The result of setting the content of the
+     * @returns {TP.dom.Node|undefined} The result of setting the content of the
      *     receiver.
      */
 
@@ -5379,7 +5391,7 @@ function(newContent, aRequest, shouldSignal) {
      *     further parameters.
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
-     * @returns {TP.dom.Node} The result of setting the content of the
+     * @returns {TP.dom.Node|undefined} The result of setting the content of the
      *     receiver.
      */
 
@@ -5774,8 +5786,8 @@ function(anID, retryWithXPath) {
      * @param {String} anID The unique ID to search for.
      * @param {Boolean} retryWithXPath True will force TIBET to use an XPath
      *     search for id attributes when the native call fails.
-     * @returns {TP.dom.ElementNode} A TP.dom.ElementNode wrapping the node
-     *     with the ID specified.
+     * @returns {TP.dom.ElementNode|undefined} A TP.dom.ElementNode wrapping the
+     *     node with the ID specified.
      */
 
     if (TP.isPrototype(this)) {
@@ -7962,7 +7974,7 @@ function(anObject, anIndex, aPosition) {
     if (TP.regex.XPATH_PATH.test(anIndex)) {
         results = this.evaluateXPath(anIndex);
         if (TP.isEmpty(results)) {
-            return;
+            return this;
         }
 
         //  for each node we need to insert the content, either a node or a
@@ -8917,7 +8929,7 @@ function(aRequest, replaceNode, alternateNode) {
 
         if (!TP.isCollectionNode(workNode)) {
             request.fail('work node is not a collection node', TP.FAILED);
-            return;
+            return this;
         }
 
         //  Process the tree of markup
@@ -8934,7 +8946,7 @@ function(aRequest, replaceNode, alternateNode) {
             request.fail(request.getFaultText(),
                             request.getFaultCode(),
                             request.getFaultInfo());
-            return;
+            return this;
         }
     } else {
 
@@ -8990,7 +9002,7 @@ function() {
      *     processing system, to provide 'post-render' deadening of various
      *     features such as events and CSS styles.
      * @description You don't normally call this - in fact, it's rarely invoked.
-     * @returns {TP.dom.Node} The receiver.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -9053,6 +9065,7 @@ function() {
      *     elements containing external references are escaped before performing
      *     an XSLT operations. Failure to do this can cause Mozilla-based
      *     browsers to crash.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
     var node,
@@ -9067,7 +9080,7 @@ function() {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ========================================================================
@@ -9149,7 +9162,7 @@ function(attributeName) {
      * @summary Returns the value of the attribute provided.
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute to find.
-     * @returns {String} The attribute value, if found.
+     * @returns {undefined} No attributes for DocumentFragments.
      */
 
     return;
@@ -9173,7 +9186,7 @@ function(attributeName, stripPrefixes) {
      * @param {Boolean} stripPrefixes Whether or not to strip any namespace
      *     prefixes from the attribute names as they are populated into the
      *     return value.
-     * @returns {TP.core.Hash} A collection of name/value pairs.
+     * @returns {undefined} No attributes for DocumentFragments.
      */
 
     return;
@@ -9188,7 +9201,7 @@ function() {
      * @method getTemplateName
      * @summary Returns the name of any associated template for the receiver.
      * @description At this level, this method is a no-op.
-     * @returns {String} The template name.
+     * @returns {undefined} No template name for DocumentFragments.
      */
 
     return;
@@ -9245,6 +9258,7 @@ function(attributeName) {
      *     proper namespace management.
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to remove.
+     * @returns {undefined} No attributes for DocumentFragments.
      */
 
     return;
@@ -9264,6 +9278,7 @@ function(attributeName, attributeValue) {
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
+     * @returns {undefined} No attributes for DocumentFragments.
      */
 
     return;
@@ -9281,6 +9296,7 @@ function(attributeHash) {
      *     on the document's documentElement.
      * @description At this level, this method is a no-op.
      * @param {TP.core.Hash} attributeHash The attributes to set.
+     * @returns {undefined} No attributes for DocumentFragments.
      */
 
     return;
@@ -9372,7 +9388,7 @@ function(aRequest) {
             aRequest.fail(request.getFaultText(),
                             request.getFaultCode(),
                             request.getFaultInfo());
-            return;
+            return this;
         }
 
         //  Signal from the node that compile processing is complete.
@@ -9395,7 +9411,7 @@ function(aNode) {
      *     supplied node from the receiver's native node.
      * @description At this level, this method is a no-op.
      * @param {Node|TP.dom.Node} aNode The node to generate the path to.
-     * @returns {String} The generated XPath expression.
+     * @returns {undefined} No path generation for DocumentFragments.
      */
 
     return;
@@ -9555,9 +9571,9 @@ function(resource, mimeType, fallback) {
      *     if the computation returns an empty value (but not TP.NO_RESULT -
      *     those are considered non-empty).  Defaults to the value of
      *     'uri.<resource type>_fallback'.
-     * @returns {String|TP.NO_RESULT} A properly computed URL in string form or
-     *     TP.NO_RESULT if the receiver has specifically determined that it has
-     *     no such resource.
+     * @returns {String|TP.NO_RESULT|undefined} A properly computed URL in
+     *     string form or TP.NO_RESULT if the receiver has specifically
+     *     determined that it has no such resource.
      */
 
     var res,
@@ -10503,7 +10519,7 @@ function(mimeType) {
      *     will only return a valid URI if one is found via configuration
      *     settings. There is no default/fallback logic for key mapping.
      * @param {String} mimeType The mimeType for the resource being looked up.
-     * @returns {TP.uri.URI} The computed resource URI.
+     * @returns {TP.uri.URI|undefined} The computed resource URI.
      */
 
     var uri,
@@ -10541,8 +10557,8 @@ function(mimeType) {
      * @summary Returns the 'namespace' for the receiver. The canonical form of
      *     the name of the namespace type is the namespace root (i.e. 'TP'),
      *     followed by the namespace (i.e. 'html'), followed by 'XMLNS'.
-     * @returns {TP.meta.dom.ElementNode} The type object representing the
-     *     receiver's namespace type.
+     * @returns {TP.meta.dom.ElementNode|undefined} The type object representing
+     *     the receiver's namespace type.
      */
 
     var root,
@@ -10857,8 +10873,9 @@ function(aSignal) {
      * @summary Attempts to extract the actual observer of the signal from the
      *     supplied signal. This is very useful in cases where the target of the
      *     signal has been set to a type.
-     * @param {The} aSignal signal to attempt to extract the observer from.
-     * @returns {Object} The native observer.
+     * @param {TP.sig.Signal} aSignal The signal to attempt to extract the
+     *     observer from.
+     * @returns {Object|undefined} The native observer.
      */
 
     var listener,
@@ -10867,7 +10884,7 @@ function(aSignal) {
 
     listener = aSignal.get('listener');
     if (!TP.isElement(listener)) {
-        return null;
+        return;
     }
 
     if (TP.isEmpty(id = TP.elementGetAttribute(listener, 'observer'))) {
@@ -12758,7 +12775,7 @@ function() {
     /**
      * @method getTemplateName
      * @summary Returns the name of any associated template for the receiver.
-     * @returns {String} The template name.
+     * @returns {String|undefined} The template name.
      */
 
     var urn;
@@ -13495,14 +13512,14 @@ function(storageInfo) {
     //  Grab the element's tag name and convert it to lowercase. It
     //  it's empty, bail out.
     if (TP.isEmpty(elemTagName = elem.tagName.toLowerCase())) {
-        return;
+        return '';
     }
 
     //  If the tag is a 'meta' tag with a 'generator', then its
     //  unnecessary for our produced markup so we exit here.
     if (elemTagName === 'meta') {
         if (elem.name.toLowerCase() === 'generator') {
-            return;
+            return '';
         }
     }
 
@@ -14046,7 +14063,8 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {null} Null according to the spec for DOM 'setAttribute'.
+     * @returns {undefined} Undefined according to the spec for DOM
+     *     'setAttribute'.
      */
 
     var boolAttrs,
@@ -14212,6 +14230,8 @@ function(attributeName, attributeValue) {
      *     nodes as well as proper namespace management.
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
+     * @returns {undefined} Undefined according to the spec for DOM
+     *     'setAttribute'.
      */
 
     var suspendedAttrs,
@@ -14248,12 +14268,15 @@ function(attributeHash) {
      *     TP.core.Hash. For document nodes this operation effectively operates
      *     on the document's documentElement.
      * @param {TP.core.Hash} attributeHash The attributes to set.
+     * @returns {TP.dom.ElementNode} The receiver.
      */
 
     attributeHash.perform(
         function(kvPair) {
             this.setAttribute(kvPair.first(), kvPair.last());
         }.bind(this));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -15805,7 +15828,7 @@ function() {
     /**
      * @method getLocation
      * @summary Returns the location of the documents's associated URI.
-     * @returns {String} The location of the receiver's URI.
+     * @returns {String|undefined} The location of the receiver's URI.
      */
 
     var url;
@@ -16353,6 +16376,7 @@ function() {
      * @summary Closes the document and flushes any write content. This method
      *     will automatically instrument the window as well.
      * @exception TP.sig.InvalidDocument
+     * @returns {TP.dom.HTMLDocumentNode} The receiver.
      */
 
     var doc,
@@ -16379,7 +16403,7 @@ function() {
         TP.core.Window.instrument(win);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -16412,7 +16436,7 @@ function(operation) {
      * @param {String} operation A constant defining the operation. Valid values
      *     include: TP.APPEND TP.INSERT TP.UPDATE.
      * @exception TP.sig.InvalidOperation When the operation isn't a valid one.
-     * @returns {Function} A TP primitive function.
+     * @returns {Function|undefined} A TP primitive function.
      */
 
     switch (operation) {
@@ -16425,6 +16449,8 @@ function(operation) {
         default:
             return this.raise('TP.sig.InvalidOperation');
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -17902,8 +17928,8 @@ function(aNode) {
      * @method objectFromNode
      * @summary Returns aNode as a TIBET/JavaScript object.
      * @param {Node} aNode The Node to reconstitute into a JavaScript object.
-     * @returns {Object} The TIBET/JavaScript object that was reconstituted from
-     *     the supplied Node.
+     * @returns {Object|undefined} The TIBET/JavaScript object that was
+     *     reconstituted from the supplied Node.
      */
 
     var len,

@@ -33,7 +33,8 @@ function(anObject) {
      *     the incoming object after calling replaceWhitespace() on it to remove
      *     tabs, CRs and LFs.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.normalizedString representation
+     *     string.
      */
 
     var str;

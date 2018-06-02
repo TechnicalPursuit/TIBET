@@ -2685,7 +2685,7 @@ function(aWeekNumber) {
     week = this.getISOWeek();
 
     if (week === aWeekNumber) {
-        return;
+        return this;
     }
 
     //  compute the difference in milliseconds
@@ -2740,7 +2740,7 @@ function(aWeekNumber) {
     week = this.getUTCISOWeek();
 
     if (week === aWeekNumber) {
-        return;
+        return this;
     }
 
     //  compute the difference in milliseconds
@@ -2790,7 +2790,7 @@ function(aWeekNumber) {
     week = this.getUTCWeek();
 
     if (week === aWeekNumber) {
-        return;
+        return this;
     }
 
     //  compute the difference in milliseconds
@@ -2840,7 +2840,7 @@ function(aWeekNumber) {
     week = this.getWeek();
 
     if (week === aWeekNumber) {
-        return;
+        return this;
     }
 
     //  compute the difference in milliseconds
@@ -4125,7 +4125,7 @@ function(anObject) {
      *     pass either a String or RegExp to methods that need to query based on
      *     string/regex content.
      * @param {Object} anObject The object whose string value should be tested.
-     * @returns {String[]} An array identical to the one produced by
+     * @returns {String[]|undefined} An array identical to the one produced by
      *     String.match().
      */
 

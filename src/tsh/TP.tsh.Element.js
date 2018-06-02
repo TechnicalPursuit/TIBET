@@ -216,6 +216,7 @@ function(aRequest) {
      *     information is supplied by using the shell's addHelpTopic method.
      * @param {TP.sig.Request} aRequest The shell request to print usage
      *     information for.
+     * @returns {TP.meta.tsh.Element} The receiver.
      */
 
     var root,
@@ -243,13 +244,14 @@ function(aRequest) {
         usageText = commandMethod.$$usage || 'coming soon';
         aRequest.stdout('Usage: ' + usageText);
         aRequest.complete(TP.TSH_NO_VALUE);
-        return;
+
+        return this;
     }
 
     aRequest.stdout('Can\'t find usage for: ' + cmd);
     aRequest.complete(TP.TSH_NO_VALUE);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

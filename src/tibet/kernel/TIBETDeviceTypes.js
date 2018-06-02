@@ -180,9 +180,10 @@ function(aSignal, aHandler) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
+     * @returns {Object[]} The handler array with the new observer added.
      */
 
-    return;
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -344,9 +345,10 @@ function(aSignal, aHandler) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
+     * @returns {Number} The number of handlers that were removed.
      */
 
-    return;
+    return 0;
 });
 
 //  ------------------------------------------------------------------------
@@ -605,6 +607,7 @@ function(filterWindow) {
      *     having obsolete references to old DOM structures.
      * @param {Window} filterWindow The window to filter cached events by. If
      *     the event occurred in this window, it will be cleared.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     var evtTestFunc,
@@ -667,7 +670,7 @@ function(filterWindow) {
         this.get('modifierkeychange').setEvent(null);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -682,7 +685,7 @@ function(aSignal, shouldBuild) {
      * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Boolean} shouldBuild
-     * @returns {TP.core.Hash} The shortcut data.
+     * @returns {TP.core.Hash|undefined} The shortcut data.
      */
 
     var shortcuts,
@@ -768,6 +771,7 @@ function() {
      * @summary Loads the XML keyboard map for the receiving keyboard type.
      * @exception TP.sig.InvalidKeymap When the XML keyboard map file can't be
      *     loaded.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     var req,
@@ -812,7 +816,7 @@ function() {
     //  cache the XML for speed in other lookups
     TP.core.Keyboard.$set('mapxml', xml);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -878,7 +882,8 @@ function(singletonName, normalizedEvent, aSignal) {
      *     object conforming to a set of common and W3-compliant methods.
      * @param {TP.sig.Signal} aSignal Optional signal to use rather than the
      *     singleton/event pair.
-     * @returns {TP.sig.Signal} The signal that was actually triggered.
+     * @returns {TP.sig.Signal|undefined} The signal that was actually
+     *     triggered.
      */
 
     var targetElem,
@@ -1223,7 +1228,7 @@ function(aSignal, aHandler) {
      * @param {Object|Object[]} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off.
-     * @returns {Number} The number of handler's that were removed.
+     * @returns {Number} The number of handlers that were removed.
      */
 
     var sd,
@@ -1231,7 +1236,7 @@ function(aSignal, aHandler) {
 
     sd = this.getShortcutData(aSignal);
     if (TP.notValid(sd) || TP.notValid(handlers = sd.at('handlers'))) {
-        return;
+        return 0;
     }
 
     return handlers.remove(aHandler, TP.IDENTITY);
@@ -1271,6 +1276,7 @@ function(nativeEvent) {
      * @summary Responds to notification of a native keyboard event. This is
      *     the primary entry point for all keyboard event handling.
      * @param {Event} nativeEvent The native event.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     var ev,
@@ -1279,12 +1285,12 @@ function(nativeEvent) {
         timer;
 
     if (!TP.sys.hasInitialized()) {
-        return;
+        return this;
     }
 
     //  Don't come through this handler twice for the same Event
     if (nativeEvent.$captured) {
-        return;
+        return this;
     }
     nativeEvent.$captured = true;
 
@@ -1302,7 +1308,7 @@ function(nativeEvent) {
                 lastEvent = TP.core.Keyboard.get('lastDown');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
-                    return;
+                    return this;
                 }
             }
 
@@ -1336,7 +1342,7 @@ function(nativeEvent) {
                 lastEvent = TP.core.Keyboard.get('lastPress');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
-                    return;
+                    return this;
                 }
             }
 
@@ -1361,7 +1367,7 @@ function(nativeEvent) {
                 lastEvent = TP.core.Keyboard.get('lastUp');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
-                    return;
+                    return this;
                 }
             }
 
@@ -1377,10 +1383,10 @@ function(nativeEvent) {
             break;
 
         default:
-            return;
+            return this;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1392,13 +1398,14 @@ function(normalizedEvent) {
      * @method $$handleKeyDown
      * @summary Responds to notifications that a keydown event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     this.$$updateModifierStates(normalizedEvent);
 
     this[TP.composeHandlerName('KeyDown')](normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1428,11 +1435,12 @@ function(normalizedEvent) {
      * @method $$handleKeyPress
      * @summary Responds to notifications that a keypress event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     this[TP.composeHandlerName('KeyPress')](normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1462,13 +1470,14 @@ function(normalizedEvent) {
      * @method $$handleKeyUp
      * @summary Responds to notifications that a keyup event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     this.$$updateModifierStates(normalizedEvent);
 
     this[TP.composeHandlerName('KeyUp')](normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1498,6 +1507,7 @@ function(normalizedEvent) {
      * @method $$updateModifierStates
      * @summary Updates the modifier status based on the supplied Event.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
     var key,
@@ -1533,7 +1543,7 @@ function(normalizedEvent) {
         this.invokeObservers('modifierkeychange', normalizedEvent);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1657,7 +1667,8 @@ function(anEvent) {
      *     code represents a special key and/or is augmented by use of the Shift
      *     key.
      * @param {Event|Signal} anEvent The event or signal containing the event.
-     * @returns {String} The virtual key name, or null when not found.
+     * @returns {String|undefined} The virtual key name, or undefined when not
+     *     found.
      */
 
     var ev,
@@ -1799,11 +1810,11 @@ function(keyNameOrGlyph) {
 
     if (!TP.isString(keyNameOrGlyph)) {
         this.raise('TP.sig.InvalidParameter');
-        return;
+        return TP.NOT_FOUND;
     }
 
     if (TP.notValid(xml = TP.core.Keyboard.get('mapxml'))) {
-        return;
+        return TP.NOT_FOUND;
     }
 
     path = TP.join(
@@ -1825,7 +1836,7 @@ function(keyNameOrGlyph) {
 
         //  Couldn't find an entry using either 'key' or 'glyph'
         if (TP.isEmpty(elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET))) {
-            return -1;
+            return TP.NOT_FOUND;
         }
     }
 
@@ -1847,7 +1858,7 @@ function(keyNameOrGlyph) {
         return keyCode.slice(1).asNumber();
     }
 
-    return -1;
+    return TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
@@ -2688,6 +2699,7 @@ function(filterWindow) {
      *     having obsolete references to old DOM structures.
      * @param {Window} filterWindow The window to filter cached events by. If
      *     the event occurred in this window, it will be cleared.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var evtTestFunc,
@@ -2830,7 +2842,7 @@ function(filterWindow) {
         this.get('draghover').setEvent(null);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2852,7 +2864,8 @@ function(singletonName, normalizedEvent, aSignal) {
      *     object conforming to a set of common and W3-compliant methods.
      * @param {TP.sig.Signal} aSignal Optional signal to use rather than the
      *     singleton/event pair.
-     * @returns {TP.sig.Signal} The signal that was actually triggered.
+     * @returns {TP.sig.Signal|undefined} The signal that was actually
+     *     triggered.
      */
 
     var targetElem,
@@ -3095,6 +3108,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     click event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var lastDown,
@@ -3106,7 +3120,7 @@ function(normalizedEvent) {
         theEvent;
 
     if (TP.isNumber(TP.core.Mouse.$$clickTimer)) {
-        return;
+        return this;
     }
 
     lastDown = this.get('lastDown');
@@ -3116,12 +3130,12 @@ function(normalizedEvent) {
     if (!TP.isEvent(lastDown)) {
         this.invokeObservers('click', normalizedEvent);
 
-        return;
+        return this;
     }
 
     //  make sure that we're not dragging...
     if (TP.core.Mouse.$$isDragging(normalizedEvent)) {
-        return;
+        return this;
     }
 
     //  The clickDelay is used when a piece of UI has been authored in such a
@@ -3164,7 +3178,7 @@ function(normalizedEvent) {
             TP.core.Mouse.$$clickTimer = undefined;
         }, clickDelay);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3177,6 +3191,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     context menu event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var signal;
@@ -3192,7 +3207,7 @@ function(normalizedEvent) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3205,6 +3220,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     dblclick event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     //  clear any click timer...double-click overrides click at the raw
@@ -3216,7 +3232,7 @@ function(normalizedEvent) {
 
     this.invokeObservers('dblclick', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3228,6 +3244,7 @@ function(nativeEvent) {
      * @method $$handleMouseEvent
      * @summary Responds to notification of a native mouse event.
      * @param {Event} nativeEvent The native event.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var ev,
@@ -3235,7 +3252,7 @@ function(nativeEvent) {
 
     //  Don't come through this handler twice for the same Event
     if (nativeEvent.$captured) {
-        return;
+        return this;
     }
     nativeEvent.$captured = true;
 
@@ -3344,10 +3361,10 @@ function(nativeEvent) {
             break;
 
         default:
-            return;
+            return this;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3360,6 +3377,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse down event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     //  Update button state(s)
@@ -3369,7 +3387,7 @@ function(normalizedEvent) {
     //  computations that need to be done), only 'mousedown'.
     this.invokeObservers('mousedown', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3382,6 +3400,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse move event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var dragDownEvent,
@@ -3430,7 +3449,7 @@ function(normalizedEvent) {
         this.invokeObservers('mousemove', normalizedEvent);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3443,11 +3462,12 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse wheel event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     this.invokeObservers('mousewheel', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3460,6 +3480,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse up event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var wasDragging,
@@ -3509,7 +3530,7 @@ function(normalizedEvent) {
                 TP.error('Unable to clear hover timeout') : 0;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3522,6 +3543,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse over event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var targetElem,
@@ -3655,7 +3677,7 @@ function(normalizedEvent) {
     TP.core.Mouse.$set('overTimer',
                         setTimeout(overHandler, overDelay));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3668,6 +3690,7 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse over event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var targetElem;
@@ -3698,7 +3721,7 @@ function(normalizedEvent) {
                 TP.error('Unable to clear hover timeout') : 0;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3711,11 +3734,12 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse enter event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     this.invokeObservers('mouseenter', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3728,11 +3752,12 @@ function(normalizedEvent) {
      * @summary Responds to notifications from the native event system that a
      *     mouse leave event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     this.invokeObservers('mouseleave', normalizedEvent);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3873,6 +3898,7 @@ function(normalizedEvent) {
      * @method $$updateButtonStates
      * @summary Updates the button status based on the supplied Event.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
+     * @returns {TP.meta.core.Mouse} The receiver.
      */
 
     var button,
@@ -3902,7 +3928,7 @@ function(normalizedEvent) {
             break;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

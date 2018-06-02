@@ -28,7 +28,8 @@ function(anObject) {
      * @method fromObject
      * @summary Creates a new instance from the object provided.
      * @param {Object} anObject The object to use as source data.
-     * @returns {?TP.xs.String} The object converted to a TP.xs.String.
+     * @returns {String|undefined} A valid TP.xforms.card_number representation
+     *     string.
      */
 
     var str;

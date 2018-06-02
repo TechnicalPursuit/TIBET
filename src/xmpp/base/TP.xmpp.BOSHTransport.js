@@ -81,7 +81,7 @@ function(aConnectionInfo) {
      *     This hash should contain values for: 'httpServerURI', 'serverName',
      *     'inStream', 'outStream'.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.xmpp.Transport} A new instance.
+     * @returns {TP.xmpp.BOSHTransport} A new instance.
      */
 
     if (TP.notValid(aConnectionInfo)) {
@@ -104,6 +104,7 @@ function() {
      * @method $computeMessageKeys
      * @summary Computes a 'message key sequence' for use between TIBET and the
      *     server.
+     * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
 
     var seed,
@@ -131,7 +132,7 @@ function() {
 
     this.set('msgKeys', msgKeyArray);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -676,6 +677,7 @@ function(aStr, extraAttrs) {
      * @param {TP.core.Hash} extraAttrs Any extra attributes to be added to the
      *     '<body>' start tag.
      * @exception TP.sig.XMPPTransportException
+     * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
 
     var href,
@@ -738,7 +740,7 @@ function(aStr, extraAttrs) {
         }
 
         //  Exit here. We're just closing the transport.
-        return;
+        return this;
     }
 
     sendStr = this.$wrapWithBody(aStr, extraAttrs);
@@ -859,7 +861,7 @@ function(aStr, extraAttrs) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

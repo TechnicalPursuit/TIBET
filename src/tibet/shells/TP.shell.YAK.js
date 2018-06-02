@@ -148,6 +148,7 @@ function(aMessage) {
      *     This method is typically invoked when the shell has debugging turned
      *     on.
      * @param {TP.xmpp.Message} aMessage The message instance.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var yakService,
@@ -156,14 +157,14 @@ function(aMessage) {
         msgType;
 
     if (TP.notTrue(this.get('debug')) || !this.isRunning()) {
-        return;
+        return this;
     }
 
     yakService = TP.uri.XMPPService.getInstanceById(this.getServiceID());
 
     packet = yakService.get('connection').getOutputStream().getLastPacket();
     if (TP.notValid(packet)) {
-        return;
+        return this;
     }
 
     msgType = TP.isValid(aMessage) ? aMessage.getTypeName() + ':\n' : '';
@@ -180,7 +181,7 @@ function(aMessage) {
         //  empty
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -265,7 +266,7 @@ function(aRequest) {
     if (this.isRunning()) {
         this.stderr('Still logged in. Please log out first.');
 
-        return;
+        return this;
     }
 
     /* eslint-disable consistent-this */
@@ -476,7 +477,7 @@ function(aUserInputSeries) {
     //  server name must match those of the service and it must be
     //  authenticated with a JID.
     if (yakService.hasAuthConnection()) {
-        return;
+        return this;
     }
 
     //  Then try to open a new connection
@@ -488,7 +489,7 @@ function(aUserInputSeries) {
                     'messageType', 'failure'
                     )).fire(this);
 
-        return;
+        return this;
     }
 
     //  now that the connection is open, go ahead and try to establish
@@ -528,7 +529,7 @@ function(aUserInputSeries) {
                     )).fire(this);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -589,6 +590,7 @@ function(aRequest) {
      *     Jabber server.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
      *     this activity.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var shell,
@@ -596,7 +598,7 @@ function(aRequest) {
 
     if (this.isRunning()) {
         this.stderr('Still logged in. Please log out first.');
-        return;
+        return this;
     }
 
     /* eslint-disable consistent-this */
@@ -969,13 +971,14 @@ function(aRequest) {
      *     initiated as part of this method.
      * @param {TP.sig.ShellRequest} aRequest The request which is triggering
      *     this activity.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var req,
         shell;
 
     if (this.isRunning()) {
-        return;
+        return this;
     }
 
     /* eslint-disable consistent-this */
@@ -1035,7 +1038,7 @@ function(aRequest) {
 
     req.fire(shell);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1675,6 +1678,7 @@ function(aSignal) {
      *     the hook between the XMPP data stream and the console, allowing the
      *     console to see packets as they arrive.
      * @param {TP.sig.XMPPInput} aSignal The triggering signal.
+     * @returns {TP.shell.YAK} The receiver.
      */
 
     var str,
@@ -1686,14 +1690,14 @@ function(aSignal) {
         TP.ifWarn() ?
             TP.warn('Invalid signal data for TP.sig.XMPPInput event.') : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notValid(node = args.at('node'))) {
         TP.ifWarn() ?
             TP.warn('Missing stanza data for TP.sig.XMPPInput event.') : 0;
 
-        return;
+        return this;
     }
 
     //  hold node to support :reply
@@ -1747,7 +1751,7 @@ function(aSignal) {
                     )).fire(this);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

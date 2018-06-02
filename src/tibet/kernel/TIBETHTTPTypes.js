@@ -408,7 +408,7 @@ function() {
     /**
      * @method getFaultCode
      * @summary Returns the fault code if any.
-     * @returns {String} A fault code.
+     * @returns {String|undefined} A fault code.
      */
 
     var httpObj,
@@ -442,7 +442,7 @@ function() {
     /**
      * @method getFaultText
      * @summary Returns the fault message string if any.
-     * @returns {String} A fault message string.
+     * @returns {String|undefined} A fault message string.
      */
 
     var httpObj;
@@ -485,7 +485,7 @@ function(headerName) {
      * @method getResponseHeader
      * @summary Returns the value of the named response header.
      * @param {String} headerName The HTTP header to return.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var httpObj,
@@ -515,7 +515,7 @@ function() {
     /**
      * @method getResponseHeaders
      * @summary Returns a hash containing all response header key/value pairs.
-     * @returns {TP.core.Hash}
+     * @returns {TP.core.Hash|undefined}
      */
 
     var httpObj,
@@ -562,7 +562,7 @@ function() {
     /**
      * @method getResponseStatusCode
      * @summary Returns the HTTP status code (200 for success) of the response.
-     * @returns {Number} The status code.
+     * @returns {Number|undefined} The status code.
      */
 
     var httpObj;
@@ -592,7 +592,7 @@ function() {
     /**
      * @method getResponseStatusText
      * @summary Returns the status message (text) of the response.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var httpObj;
@@ -620,7 +620,7 @@ function() {
     /**
      * @method getResponseText
      * @summary Returns the response text.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var httpObj,
@@ -649,7 +649,7 @@ function() {
     /**
      * @method getResponseXML
      * @summary Returns the DOM Node containing the response in XML form.
-     * @returns {XMLDocument}
+     * @returns {XMLDocument|undefined}
      */
 
     var xml,
@@ -886,7 +886,8 @@ function(aRequest) {
      *     the HTTP request.
      * @exception TP.sig.InvalidRequest
      * @exception TP.sig.InvalidURI
-     * @returns {TP.sig.HTTPResponse} The service's response to the request.
+     * @returns {TP.sig.HTTPResponse|undefined} The service's response to the
+     *     request.
      */
 
     var request,
@@ -969,7 +970,7 @@ function(aRequest) {
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.sig.HTTPRequest} The supplied request.
+     * @returns {TP.sig.HTTPRequest|undefined} The supplied request.
      */
 
     var url;
@@ -1011,7 +1012,7 @@ function(aRequest) {
      *     you can put a key of 'noencode' with a value of true in the request.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {String} The string value of the encoded body content.
+     * @returns {String|undefined} The string value of the encoded body content.
      */
 
     var body;

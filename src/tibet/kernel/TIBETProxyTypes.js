@@ -174,8 +174,8 @@ function() {
      *     an _instance_ method, meaning the object being messaged is actually
      *     an instance of TP.lang.Proxy that is ready to fault in the type it is
      *     proxying for and then to construct the instance via that type.
-     * @returns {TP.lang.Object} Returns a new instance of the type the receiver
-     *     is proxying for.
+     * @returns {TP.lang.Object|undefined} Returns a new instance of the type the
+     *     receiver is proxying for.
      */
 
     var type;
@@ -204,7 +204,7 @@ function() {
      * @method from
      * @summary Returns a new instance of the receiver's true type, initialized
      *     from the parameter data.
-     * @returns {TP.lang.Object} A new instance.
+     * @returns {TP.lang.Object|undefined} A new instance.
      */
 
     var type;
@@ -310,7 +310,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {String} aMethodName The method name that failed.
      * @param {Object[]} anArgArray Optional arguments to function.
      * @param {Function|arguments} callingContext The calling context.
-     * @returns {Object} The result of function execution.
+     * @returns {Object|undefined} The result of function execution.
      */
 
     var type;
@@ -338,6 +338,7 @@ function() {
      *     type found in the XML metadata for the app. These proxy instances
      *     will fault in their associated types on demand when construct() is
      *     invoked on them.
+     * @returns {TP.sys} The receiver.
      */
 
     var proto,
@@ -350,7 +351,7 @@ function() {
         type;
 
     if (!TP.sys.cfg('oo.$$use_proxies')) {
-        return;
+        return this;
     }
 
     proto = TP.lang.Proxy.getInstPrototype();
@@ -393,7 +394,7 @@ function() {
     TP.ifTrace() ?
         TP.trace('Initialized ' + len + ' type proxies.') : 0;
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

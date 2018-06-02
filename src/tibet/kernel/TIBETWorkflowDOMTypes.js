@@ -200,7 +200,7 @@ function(aURI) {
      *     vcard path if one is defined. The resulting document can then be
      *     passed to initVCards() which will construct instances for each of
      *     the vcard elements found in the document.
-     * @returns {TP.sig.Response} A TIBET Response object (which is
+     * @returns {TP.sig.Response|undefined} A TIBET Response object (which is
      *     Promise-compatible) which will resolve on completion.
      */
 
@@ -741,7 +741,7 @@ function(aURI) {
      *     keyring path if one is defined. The resulting document can then be
      *     passed to initKeyrings() which will construct instances for each of
      *     the keyring elements found in the document.
-     * @returns {TP.sig.Response} A TIBET Response object (which is
+     * @returns {TP.sig.Response|undefined} A TIBET Response object (which is
      *     Promise-compatible) which will resolve on completion.
      */
 
@@ -788,7 +788,7 @@ function(aKeyring) {
      *     invoked automatically during keyring instance creation so you don't
      *     normally need to call it yourself.
      * @param {TP.tibet.keyring} aKeyring The keyring instance to register.
-     * @returns {TP.tibet.keyring} The registered keyring instance.
+     * @returns {TP.tibet.keyring|undefined} The registered keyring instance.
      */
 
     var id,

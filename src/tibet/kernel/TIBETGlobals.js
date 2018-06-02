@@ -178,7 +178,7 @@ TP.objectDefineDependencies = function(anObject, varargs) {
      *     information for.
      * @param {arguments} varargs One or more dependencies or dependency
      *     references provided as a variable argument list.
-     * @return {Object[]} The updated list of object dependencies.
+     * @return {Object[]|undefined} The updated list of object dependencies.
      */
 
     var dependencies,
@@ -355,7 +355,7 @@ TP.defineNamespace = function(namespaceName) {
      *     namespace name.
      * @param {String} namespaceName A String of 1 or more period-separated
      *     names that will define the name of a namespace.
-     * @returns {Object} The newly defined namespace.
+     * @returns {Object|undefined} The newly defined namespace.
      */
 
     var names,

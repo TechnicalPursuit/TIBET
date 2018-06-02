@@ -189,7 +189,8 @@ function(targetUrl, aRequest) {
      *     parameters. For this method, this includes an additional parameter of
      *     'propertyNames'.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -385,7 +386,8 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 207.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -504,7 +506,8 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'property'.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -561,7 +564,8 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 200.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -604,7 +608,8 @@ function(targetUrl, aRequest, useQuery) {
      * @param {Boolean} useQuery Whether or not to use a TP.$httpQuery() call or
      *     a TP.$httpSend() call (the default).
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -659,7 +664,8 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request;
@@ -686,7 +692,8 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request;
@@ -727,7 +734,8 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 201.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -817,7 +825,8 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 200 and whose
      *     content will contain the lock token.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -900,7 +909,8 @@ function(targetUrl, aRequest) {
      *     TP.uc('http://localhost:8080/TIBET-INF/bin/wdtst/'));
      *
      *     result is an XHR object whose 'status' should be 201.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request;
@@ -943,7 +953,8 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 201.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -1016,7 +1027,8 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes an additional
      *     parameter of 'propertyXML' which should be a string or node
      *     containing the property information being queried for.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -1081,7 +1093,8 @@ function(targetUrl, aRequest) {
      *     additional parameters. For this method, this includes additional
      *     parameters of either 'setList' or 'removeList' (or both) parameters,
      *     containing entries of the form shown in the discussion section.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -1160,7 +1173,8 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request;
@@ -1202,7 +1216,8 @@ function(targetUrl, aRequest) {
      *
      *     result is an XHR object whose 'status' should be 204.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request,
@@ -1246,7 +1261,8 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @returns {TP.sig.Response} The response object for the request used.
+     * @returns {TP.sig.Response|undefined} The response object for the request
+     *     used.
      */
 
     var request;

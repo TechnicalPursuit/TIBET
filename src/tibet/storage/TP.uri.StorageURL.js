@@ -421,7 +421,7 @@ function(parts) {
     this.callNextMethod();
 
     if (TP.isEmpty(parts)) {
-        return;
+        return this;
     }
 
     //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
@@ -458,7 +458,7 @@ function(schemeSpecificString) {
                     'storage:' + schemeSpecificString);
 
     if (TP.notValid(parts)) {
-        return;
+        return TP.hc();
     }
 
     hash = TP.hc();

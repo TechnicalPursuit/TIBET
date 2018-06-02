@@ -31,7 +31,8 @@ function(anObject) {
      *     QName pair (an Array) is returned when the inbound object represents
      *     a valid pair itself or can be used to acquire one.
      * @param {Object} anObject The object to use as source data.
-     * @returns {Array<String,String>} The QName pair in ordered pair form.
+     * @returns {Array<String,String>|undefined} The QName pair in ordered pair
+     *     form.
      */
 
     var pair,

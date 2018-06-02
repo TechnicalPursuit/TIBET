@@ -96,7 +96,7 @@ function() {
     /**
      * @method getHTML
      * @summary Returns the HTML content, if any, of the receiver.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var tpNodes,

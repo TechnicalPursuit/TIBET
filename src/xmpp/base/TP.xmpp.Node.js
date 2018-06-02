@@ -160,6 +160,7 @@ function() {
      * @summary Registers the type's information, particularly the tag name,
      *     template, and namespace information which drives the lookup processes
      *     for getConcreteType().
+     * @returns {TP.meta.xmpp.Node} The receiver.
      */
 
     var tagName,
@@ -172,7 +173,7 @@ function() {
         TP.xmpp.XMLNS.defineNodeType(tagName, this, namespaceURI);
     }
 
-    return;
+    return this;
 }, {
     trackInvocations: false
 });
@@ -344,7 +345,7 @@ function() {
     /**
      * @method getTagName
      * @summary Returns the tag's nodeName.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var natNode;
@@ -365,7 +366,7 @@ function() {
      * @method getTagType
      * @summary Returns the value of any 'type' attribute on the receiver.
      *     Examples are 'get','set','normal','chat', etc.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var natNode;
@@ -439,6 +440,7 @@ function(attributeName, attributeValue) {
                                         true);
     }
 
+    //  setting an attribute returns void according to the spec
     return;
 });
 
@@ -452,7 +454,6 @@ function(aTagType) {
      * @summary Sets the value of any 'type' attribute on the receiver.
      *     Examples are 'get', 'set', 'normal', 'chat', etc.
      * @param {String} aTagType The tag type to use for the receiver.
-     * @returns {String}
      */
 
     var natNode;
@@ -461,6 +462,7 @@ function(aTagType) {
         return TP.elementSetAttribute(natNode, 'type', aTagType);
     }
 
+    //  setting an attribute returns void according to the spec
     return;
 });
 

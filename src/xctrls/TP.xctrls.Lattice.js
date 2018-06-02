@@ -429,6 +429,7 @@ function(anID) {
     //  want to endlessly recurse ;-).
     TP.elementSetAttribute(elem, 'id', anID, true);
 
+    //  setting an attribute returns void according to the spec
     return;
 });
 

@@ -78,7 +78,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @returns {TP.test.Suite} The newly created test suite instance.
+     * @returns {TP.test.Suite|undefined} The newly created test suite instance.
      */
 
     var id,
@@ -928,7 +928,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @returns {TP.core.Hash} The new test suite instance.
+     * @returns {TP.core.Hash|undefined} The new test suite instance.
      */
 
     if (TP.notValid(target) ||
@@ -998,7 +998,7 @@ function(caseName, caseFunc) {
      * @param {String} caseName The name assigned to the case. Should be unique
      *     for the specific test suite.
      * @param {Function} caseFunc The function implementing the test case.
-     * @returns {TP.test.Case} The newly created test case.
+     * @returns {TP.test.Case|undefined} The newly created test case.
      */
 
     var testCase,

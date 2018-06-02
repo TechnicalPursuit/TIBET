@@ -31,7 +31,7 @@ function(anObject) {
      *     For TP.xs.string the return value is simply the string value of the
      *     incoming object.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.string representation string.
      */
 
     if (TP.isNull(anObject)) {

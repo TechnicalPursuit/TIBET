@@ -514,8 +514,8 @@ function(aStatusCode) {
      * @method getStatusText
      * @summary Returns the string representation of an HTTP status code.
      * @param {Number} aStatusCode A numerical HTTP status code.
-     * @returns {String} The status text corresponding to the supplied numerical
-     *     status code.
+     * @returns {String|undefined} The status text corresponding to the supplied
+     *     numerical status code.
      */
 
     if (TP.notValid(aStatusCode)) {
@@ -835,7 +835,7 @@ function(aMIMEType) {
      *     formats. For this to work properly TIBET has to properly discern the
      *     MIME type for the content. See getMIMEType() for more information.
      * @param {String} aMIMEType The MIME type to return a wrapper type for.
-     * @returns {TP.meta.ietf.mime} A TP.ietf.mime subtype type object.
+     * @returns {TP.meta.ietf.mime|undefined} A TP.ietf.mime subtype type object.
      */
 
     var info,
@@ -869,7 +869,7 @@ function(aMIMEType) {
      *     For instance, if the MIME type is 'application/xhtml+xml' this method
      *     will return ['xht', 'xhtml'].
      * @param {String} aMIMEType The MIME type to look up.
-     * @returns {String[]} An array of strings denoting extensions.
+     * @returns {String[]|undefined} An array of strings denoting extensions.
      */
 
     var info,
@@ -1103,6 +1103,7 @@ function(aMIMEType, aHash) {
      * @param {TP.core.Hash} aHash A hash whose keys match those defined for
      *     this type.
      * @exception TP.sig.InvalidParameter
+     * @returns {TP.meta.ietf.mime} The receiver.
      */
 
     var info,
@@ -1142,7 +1143,7 @@ function(aMIMEType, aHash) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ========================================================================
@@ -1674,6 +1675,7 @@ function(anElement) {
      *     type) to the element.
      * @param {Element} anElement The element to install the namespaces on.
      * @exception TP.sig.InvalidElement
+     * @returns {TP.meta.w3.Xmlns} The receiver.
      */
 
     var namespaces,
@@ -1689,7 +1691,7 @@ function(anElement) {
         this.addNamespaceTo(namespaces.at(i), anElement);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1711,6 +1713,7 @@ function(anNSURI, anElement) {
      * @param {Element} anElement The element to install the namespace on.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidURI
+     * @returns {TP.meta.w3.Xmlns} The receiver.
      */
 
     var prefix;
@@ -1724,12 +1727,12 @@ function(anNSURI, anElement) {
     }
 
     if (TP.notValid(prefix = this.getCanonicalPrefix(anNSURI))) {
-        return;
+        return this;
     }
 
     TP.elementAddNamespace(anElement, prefix, anNSURI);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1895,8 +1898,8 @@ function(aMimeType) {
      * @param {String} aMimeType The MIME type to use to retrieve the namespace
      *     data.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Hash} A hash of data corresponding to the 'info'
-     *     entries on this type.
+     * @returns {TP.core.Hash|undefined} A hash of data corresponding to the
+     *     'info' entries on this type.
      */
 
     var info,
@@ -1931,7 +1934,7 @@ function(anNSURI) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @exception TP.sig.InvalidURI
-     * @returns {String} The canonical prefix, if found.
+     * @returns {String|undefined} The canonical prefix, if found.
      */
 
     var info;
@@ -1988,7 +1991,7 @@ function(anNSURI) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @exception TP.sig.InvalidURI
-     * @returns {String} The MIME type, if found.
+     * @returns {String|undefined} The MIME type, if found.
      */
 
     var info;
@@ -2229,7 +2232,7 @@ function(aPrefix) {
      *     one provided.
      * @param {String} aPrefix A canonical prefix such as "xforms".
      * @exception TP.sig.InvalidParameter
-     * @returns {String} The namespace URI.
+     * @returns {String|undefined} The namespace URI.
      */
 
     if (TP.isEmpty(aPrefix)) {
@@ -2256,7 +2259,7 @@ function(anNSURI) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @exception TP.sig.InvalidURI
-     * @returns {String[]|null} An array or null if no transforms are
+     * @returns {String[]|undefined} An array or undefined if no transforms are
      *     registered.
      */
 
@@ -2432,6 +2435,7 @@ function(anNSURI, aHash) {
      *     this type.
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.InvalidParameter
+     * @returns {TP.meta.w3.Xmlns} The receiver.
      */
 
     var uriStr,
@@ -2497,7 +2501,7 @@ function(anNSURI, aHash) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2513,6 +2517,7 @@ function(anNSURI) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @exception TP.sig.InvalidURI
+     * @returns {TP.meta.w3.Xmlns} The receiver.
      */
 
     var info;
@@ -2531,7 +2536,7 @@ function(anNSURI) {
         this.$set('customTagDetectionXPath', null);
     }
 
-    return;
+    return this;
 });
 
 //  ========================================================================
@@ -2711,7 +2716,8 @@ function(aName) {
      *     new instance of the original object -- provided that you are working
      *     primarily with hashes or arrays etc.
      * @param {String} aName The name of the desired cookie.
-     * @returns {String} The value of the cookie matching the supplied name.
+     * @returns {String|undefined} The value of the cookie matching the supplied
+     *     name.
      */
 
     var cooky;
@@ -2735,8 +2741,8 @@ function(aName, aCookieText) {
      * @summary Returns the value of the named cookie or null.
      * @param {String} aName The name of the desired cookie.
      * @param {String} aCookieText The text to extract the cookie from.
-     * @returns {Object} The value of the cookie matching the supplied name and
-     *     the supplied chunk of cookie text.
+     * @returns {Object|undefined} The value of the cookie matching the supplied
+     *     name and the supplied chunk of cookie text.
      */
 
     var start,
@@ -3117,7 +3123,7 @@ function(aURIString) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.uri.CookieURL} A new instance.
+     * @returns {TP.uri.CookieURL|undefined} A new instance.
      */
 
     var results,

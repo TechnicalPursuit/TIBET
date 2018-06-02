@@ -300,8 +300,8 @@ function(aString) {
      *     HH:MM terms.
      * @param {String} aString An TP.iso.ISO8601 string.
      * @exception TP.sig.InvalidParameter
-     * @returns {Date} A new Date object representing the Date encoded in the
-     *     parameter.
+     * @returns {Date|null} A new Date object representing the Date encoded in
+     *     the parameter.
      */
 
     var parts,
@@ -428,7 +428,7 @@ function(aString) {
         timeMatcher = /^(\d{2})(\d{2})?(\d{2})?(\.(\d*))?/;
 
         if (TP.notValid(arr = timeStr.match(timeMatcher))) {
-            return;
+            return null;
         }
 
         //  set hours, minutes, seconds, milliseconds as needed

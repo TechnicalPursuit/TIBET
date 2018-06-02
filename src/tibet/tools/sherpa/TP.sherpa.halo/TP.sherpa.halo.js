@@ -1660,7 +1660,7 @@ function(aSignal) {
 
     if (TP.notValid(currentTargetTPElem)) {
         //  No existing target either - bail out.
-        return;
+        return this;
     }
 
     angle = TP.computeAngleFromEnds(

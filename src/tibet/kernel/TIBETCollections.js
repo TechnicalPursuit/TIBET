@@ -833,7 +833,7 @@ function(anObject, aCount) {
 
     //  no count? no work to do
     if (TP.notValid(aCount)) {
-        return;
+        return this;
     }
 
     //  count, but not a number? won't try to convert, just warn/exit
@@ -3125,7 +3125,7 @@ function(aKey) {
      *     that this won't remove a key if the key references a method.
      * @param {Object} aKey The key value to remove.
      * @exception TP.sig.InvalidParameter
-     * @returns {Object} The receiver.
+     * @returns {Object|undefined} The receiver.
      * @fires Change
      */
 
@@ -4132,7 +4132,7 @@ function(substring) {
      * @summary Returns the portion of the receiver after the substring
      *     provided.
      * @param {String} substring The substring to search for.
-     * @returns {String} The next element or undefined.
+     * @returns {String|undefined} The next element or undefined.
      */
 
     var ind;
@@ -4155,7 +4155,7 @@ function(substring) {
      * @summary Returns the portion of the receiver preceding the substring
      *     provided.
      * @param {String} substring The substring to search for.
-     * @returns {String} The previous substring.
+     * @returns {String|undefined} The previous substring.
      */
 
     var ind;
@@ -4676,7 +4676,7 @@ function(aCollection) {
 
     if (!TP.canInvoke(aCollection, 'getKeys')) {
         this.raise('TP.sig.InvalidCollection');
-        return;
+        return this;
     }
 
     keys = TP.isArray(aCollection) ? aCollection : aCollection.getKeys();
@@ -5605,7 +5605,7 @@ function(aKey) {
 
     //  Make sure that the supplied key matches a property on our internal hash.
     if (!TP.owns(hash, aKey)) {
-        return;
+        return this;
     }
 
     delete hash[aKey];
@@ -5681,7 +5681,7 @@ function(oldKey, newKey) {
 
     //  nothing to do here...
     if (TP.equal(oldKey, newKey)) {
-        return;
+        return this;
     }
 
     val = this.at(oldKey);
@@ -6144,7 +6144,7 @@ function(anItemOrKey, aValue, varargs) {
      *     across all input arguments and attempt to add all valid key/value
      *     pairings that can be found.
      * @exception TP.sig.InvalidParameter
-     * @returns {Object} The key's value after processing.
+     * @returns {Object|undefined} The key's value after processing.
      * @fires Change
      */
 
@@ -6203,7 +6203,8 @@ function(anItem) {
      */
 
     if (!TP.isPair(anItem)) {
-        return this.raise('InvalidPair');
+        this.raise('InvalidPair');
+        return this;
     }
 
     this.atPut(anItem.first(), anItem.last());
@@ -6232,7 +6233,7 @@ function(anObject, aCount) {
 
     //  no count? no work to do
     if (TP.notValid(aCount)) {
-        return;
+        return this;
     }
 
     //  count, but not a number? won't try to convert, just warn/exit
@@ -6243,11 +6244,13 @@ function(anObject, aCount) {
 
     //  number, but less than 1? no work to do
     if (count < 1) {
-        return;
+        return this;
     }
 
     //  this will check for a valid pair for us
-    return this.addItem(anObject);
+    this.addItem(anObject);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7568,7 +7571,7 @@ function(anIndex) {
      *     that this is usually a string, but could be any object. This method
      *     is designed to protect against returning any of the receiver's
      *     methods.
-     * @returns {Object} The item at the index provided or undefined.
+     * @returns {Object|undefined} The item at the index provided or undefined.
      */
 
     var hash;
@@ -7642,9 +7645,9 @@ function(aCollection, aValue) {
         thisref;
 
     if (!TP.canInvoke(aCollection, 'perform')) {
-        return this.raise(
-                    'TP.sig.InvalidCollection',
+        this.raise('TP.sig.InvalidCollection',
                     'Collection must support perform for atAll operation.');
+        return this;
     }
 
     count = 0;
@@ -7765,7 +7768,7 @@ function(anIndex) {
      *     should each match an entry in the dot-separated index.
      * @param {String} anIndex The 'dot separated' path to retrieve the value
      *     from.
-     * @returns {Object} The item at the index provided or undefined.
+     * @returns {Object|undefined} The item at the index provided or undefined.
      */
 
     var entry,
@@ -7855,7 +7858,7 @@ function(anIndex, aValue) {
 
     if (!/\./.test(anIndex)) {
         //  TODO: Throw an exception here?
-        return;
+        return this;
     }
 
     /* eslint-disable consistent-this */
@@ -8114,7 +8117,7 @@ function(aValue, aTest) {
      * @param {Object} aValue What to search for.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @returns {Object} The index of the value or undefined.
+     * @returns {Object|undefined} The index of the value or undefined.
      */
 
     var found;
@@ -8238,7 +8241,7 @@ function(aCollection) {
                     count++;
                 }
 
-                return;
+                return this;
             });
     } finally {
         //  re-enable change notification
@@ -8663,8 +8666,8 @@ function() {
      * @name currentItem
      * @summary Returns the current "item" of the iterator. Items consist of a
      *     key/value pair i.e. they are "ordered pairs".
-     * @returns {Object} The item of the underlying collection at the current
-     *     iterator location or undefined.
+     * @returns {Object|undefined} The item of the underlying collection at the
+     *     current iterator location or undefined.
      */
 
     var arr;
@@ -8693,8 +8696,8 @@ function() {
      * @name currentItems
      * @summary Returns the current "items" of the iterator. Items consist of a
      *     key/value pair i.e. they are "ordered pairs".
-     * @returns {Object[]} The items of the underlying collection at the current
-     *     iterator location or undefined.
+     * @returns {Object[]|undefined} The items of the underlying collection at
+     *     the current iterator location or undefined.
      * @todo
      */
 
@@ -8740,8 +8743,8 @@ function() {
      *     returns undefined; use currentKeys() to get the set of keys. If the
      *     iterator hasn't yet been used via next*(), this method will return
      *     undefined.
-     * @returns {Object} The key/index of the underlying collection at the
-     *     current iterator location or undefined.
+     * @returns {Object|undefined} The key/index of the underlying collection at
+     *     the current iterator location or undefined.
      */
 
     if (!this.get('active')) {
@@ -8767,7 +8770,7 @@ function() {
      *     iterator has a step of five an array of five keys will be returned.
      *     If the iterator hasn't yet been used via next*(), this method returns
      *     undefined.
-     * @returns {String[]} An array of keys or undefined.
+     * @returns {String[]|undefined} An array of keys or undefined.
      * @todo
      */
 
@@ -8814,7 +8817,7 @@ function() {
      *     returns undefined -- use currentValues() for iterators with larger
      *     step sizes.
      * @exception TP.sig.InvalidIndex
-     * @returns {Object} An object or undefined.
+     * @returns {Object|undefined} An object or undefined.
      */
 
     if (!this.get('active')) {
@@ -8837,7 +8840,7 @@ function() {
      * @name currentValues
      * @summary Returns an array of elements from the currentKeys(). If the
      *     iterator hasn't yet been used this method returns undefined.
-     * @returns {Object[]} An array, or undefined.
+     * @returns {Object[]|undefined} An array, or undefined.
      * @todo
      */
 
@@ -8856,7 +8859,7 @@ function() {
     /**
      * @name nextItem
      * @summary Returns the next key/value pair from the iterator.
-     * @returns {Object} An ordered pair/item.
+     * @returns {Object|undefined} An ordered pair/item.
      */
 
     if (TP.notValid(this.nextKey())) {
@@ -8876,7 +8879,7 @@ function() {
      * @name nextItems
      * @summary Returns an array of items from the currentKeys() locations in
      *     the underlying collection.
-     * @returns {Object[]} An array of items or undefined.
+     * @returns {Object[]|undefined} An array of items or undefined.
      * @todo
      */
 
@@ -8899,7 +8902,7 @@ function() {
      *     if atEnd(). If the iterator has a step size > 1 this method returns
      *     undefined. Use nextKeys() in cases where the iterator has a larger
      *     step size.
-     * @returns {Object} An object or undefined.
+     * @returns {Object|undefined} An object or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -8938,7 +8941,7 @@ function() {
      * @name nextKeys
      * @summary Returns an array containing the next "step" number of keys for
      *     the iterator. If the iterator is atEnd() the result is undefined.
-     * @returns {String[]} An array or undefined.
+     * @returns {String[]|undefined} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -8975,7 +8978,7 @@ function() {
      *     undefined if the element doesn't exist. This method also returns
      *     undefined if the iterator has a step size > 1.
      * @exception TP.sig.InvalidIndex
-     * @returns {Object} An object or undefined.
+     * @returns {Object|undefined} An object or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9005,7 +9008,7 @@ function() {
      *     from the collection. This is the preferred method to call when using
      *     a step size other than 1.
      * @exception TP.sig.InvalidIndex
-     * @returns {Object[]} An array or undefined.
+     * @returns {Object[]|undefined} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9033,7 +9036,7 @@ function() {
      *     iterator has a step of five an array of five keys will be returned.
      *     If the iterator hasn't yet been used via next*(), this method returns
      *     undefined.
-     * @returns {String[]} An array of keys or undefined.
+     * @returns {String[]|undefined} An array of keys or undefined.
      * @todo
      */
 
@@ -9077,7 +9080,7 @@ function() {
      * @name previousItem
      * @summary Returns the previous item from the iterator's collection or
      *     undefined.
-     * @returns {Object} An object or undefined.
+     * @returns {Object|undefined} An object or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9099,7 +9102,7 @@ function() {
      * @name previousItems
      * @summary Returns an array containing the previous items from the
      *     iterators collection.
-     * @returns {Object[]} An Array or undefined.
+     * @returns {Object[]|undefined} An Array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9123,7 +9126,7 @@ function() {
      *     undefined if atStart(). If the iterator has a step size > 1 this
      *     method returns undefined. Use previousKeys() in cases where the
      *     iterator has a larger step size.
-     * @returns {Object} An object or undefined.
+     * @returns {Object|undefined} An object or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9163,7 +9166,7 @@ function() {
      * @name previousKeys
      * @summary Returns an array containing the previous "step" number of keys
      *     for the iterator. If the iterator is atEnd() the result is undefined.
-     * @returns {String[]} An array or undefined.
+     * @returns {String[]|undefined} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9200,7 +9203,7 @@ function() {
      * @summary Returns the previous element from the iterator or undefined.
      *     This method also returns undefined if the iterator has a step value >
      *     1.
-     * @returns {Object} An object or undefined.
+     * @returns {Object|undefined} An object or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9229,7 +9232,7 @@ function() {
      * @summary Returns an array containing the previous "step" number of
      *     elements from the collection. If the iterator is atStart() or hasn't
      *     yet be used via next*() this method returns undefined.
-     * @returns {Object[]} An array or undefined.
+     * @returns {Object[]|undefined} An array or undefined.
      * @signals PositionChange
      * @todo
      */
@@ -9259,7 +9262,7 @@ function() {
      */
 
     if (!this.atEnd() && !this.atStart()) {
-        return;
+        return this;
     }
 
     this.get('keys').reverse();
@@ -9365,7 +9368,7 @@ function(aSortFunction) {
      */
 
     if (!this.atEnd() && !this.atStart()) {
-        return;
+        return this;
     }
 
     //  apparently "undefined" isn't a "valid sort argument" :)

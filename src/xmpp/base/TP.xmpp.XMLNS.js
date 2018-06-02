@@ -340,11 +340,12 @@ function(tagType, aType) {
      * @param {String} tagType The tag type for the stanza type.
      * @param {TP.xmpp.Node} aType A node type used for stanzas of the type
      *     provided.
+     * @returns {TP.meta.xmpp.XMLNS} The receiver.
      */
 
     this.get('$stanzatypes').atPut(tagType, aType);
 
-    return;
+    return this;
 }, {
     trackInvocations: false
 });
@@ -365,6 +366,7 @@ function(aTagName, aType, aNamespace) {
      * @param {String} aNamespace The namespace to qualify the tag name by.
      *     Default is TP.xmpp.XMLNS.CLIENT.
      * @exception TP.sig.InvalidType
+     * @returns {TP.meta.xmpp.XMLNS} The receiver.
      */
 
     var nodeTypeNamespace,
@@ -388,7 +390,7 @@ function(aTagName, aType, aNamespace) {
 
     nsHash.atPut(name, aType);
 
-    return;
+    return this;
 }, {
     trackInvocations: false
 });

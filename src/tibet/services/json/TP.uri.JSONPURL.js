@@ -114,7 +114,7 @@ function(aURIString) {
      * @method init
      * @summary Initialize the instance.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.uri.JSONPURL} A new instance.
+     * @returns {TP.uri.JSONPURL|undefined} A new instance.
      */
 
     var results,

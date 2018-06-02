@@ -31,6 +31,7 @@ function(anObject) {
      *     possible. For TP.xs.NOTATION this method raises an exception since
      *     you can't construct a NOTATION in this fashion.
      * @param {Object} anObject The object to use as source data.
+     * @returns {String|undefined} A valid TP.xs.NOTATION representation string.
      */
 
     //  no NOTATION construction methods exist at the moment

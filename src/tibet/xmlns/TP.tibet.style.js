@@ -58,6 +58,7 @@ function() {
      * @summary Updates the object containing global values passed to less
      *     worker thread processes. The values typically involve 'path'
      *     variables from the system configuration dictionary.
+     * @returns {TP.tibet.style} The receiver.
      */
 
     var cfg,
@@ -89,7 +90,7 @@ function() {
 
     this.$set('lessGlobalVars', globalVars);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -158,6 +159,7 @@ function(lessLoc, lessText) {
      *     satisfy the LESS compiler. If its from a 'tibet:style' element with
      *     an href, then it will be that href.
      * @param {String} lessText The source LESS text to compile.
+     * @returns {TP.tibet.style} The receiver.
      */
 
     var ourID,
@@ -293,7 +295,7 @@ function(lessLoc, lessText) {
                                 TP.str(err)) : 0;
             });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -322,7 +324,7 @@ function(anHref) {
      *     href.
      * @param {String} anHref The URL that the receiver will use to reload its
      *     content.
-     * @returns {TP.html.link} The receiver.
+     * @returns {TP.tibet.style} The receiver.
      */
 
     var doc,
@@ -502,7 +504,7 @@ function(anHref) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

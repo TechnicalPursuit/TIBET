@@ -411,7 +411,7 @@ function(anAspect, anAction, aDescription) {
     //  We don't normally do this in TIBET, but this method is used heavily and
     //  is a hotspot.
     if (!this.shouldSignalChange()) {
-        return;
+        return this;
     }
 
     //  when a change has happened we need to adjust to the current index so
@@ -2019,7 +2019,7 @@ function() {
     /**
      * @method getData
      * @summary Returns the underlying data object.
-     * @returns {Object} The receiver's underlying data object.
+     * @returns {Object|undefined} The receiver's underlying data object.
      */
 
     var jsonData;
@@ -3017,7 +3017,7 @@ function() {
     /**
      * @method getData
      * @summary Returns the underlying data object.
-     * @returns {Object} The receiver's underlying data object.
+     * @returns {Object|undefined} The receiver's underlying data object.
      */
 
     var xmlData,
@@ -6101,7 +6101,7 @@ function(targetObj, varargs) {
                     true,
                     true);
 
-            return;
+            return this;
         });
 
         //  ---
@@ -8612,7 +8612,7 @@ function(targetObj, attributeValue, shouldSignal) {
      *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @returns {Array|null} The targetObj or null.
+     * @returns {Array|undefined} The targetObj or undefined.
      */
 
     var path,
@@ -8944,7 +8944,7 @@ function(targetObj, attributeValue, shouldSignal) {
      *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @returns {Object|null} The targetObj or null.
+     * @returns {Object|undefined} The targetObj or undefined.
      */
 
     var path,
@@ -10037,7 +10037,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                     //  to it's prior setting before exiting.
                     TP.sys.shouldSignalDOMLoaded(sigFlag);
 
-                    return;
+                    return this;
                 }
             }
         }
@@ -10055,7 +10055,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  setting before exiting.
         TP.sys.shouldSignalDOMLoaded(sigFlag);
 
-        return;
+        return this;
     }
 
     //  If we 'created structure', that means that all of the previously
@@ -10811,7 +10811,7 @@ function() {
     /**
      * @method getParser
      * @summary Returns the receiver's non-native XPath parser instance.
-     * @returns {TP.extern.XPathParser} A function resolver instance.
+     * @returns {TP.extern.XPathParser|undefined} A function resolver instance.
      */
 
     var parser;

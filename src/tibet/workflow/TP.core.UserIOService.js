@@ -206,9 +206,10 @@ function(aSignal) {
      * @summary Responds to input requests, either handling them directly or
      *     queuing them for later processing.
      * @param {TP.sig.UserInputRequest} aSignal
+     * @returns {TP.core.UserIOService} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

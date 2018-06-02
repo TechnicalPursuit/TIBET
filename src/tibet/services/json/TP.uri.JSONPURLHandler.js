@@ -44,7 +44,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response|undefined} A valid response object for the request.
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.InvalidRequest
      */

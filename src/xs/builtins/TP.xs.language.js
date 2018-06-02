@@ -35,6 +35,7 @@ function(anObject) {
      *     TP.xs.language string it is returned.
      * @param {Object} anObject The object to use as source data.
      * @exception TP.sig.InvalidOperation
+     * @returns {String|undefined} A valid TP.xs.language representation string.
      */
 
     var str;

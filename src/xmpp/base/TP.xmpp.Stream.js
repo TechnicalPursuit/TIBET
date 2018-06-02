@@ -97,7 +97,7 @@ function(aNode, aConnection) {
      * @param {TP.xmpp.Connection} aConnection The stream's connection. This is
      *     a required parameter.
      * @exception TP.sig.InvalidXMPPConnection
-     * @returns {TP.xmpp.Stream} A new instance.
+     * @returns {TP.xmpp.Stream|undefined} A new instance.
      */
 
     var natNode;

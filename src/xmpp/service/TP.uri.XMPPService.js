@@ -289,7 +289,7 @@ function(aRequest) {
         aRequest.fail(
             TP.sc('Missing required server name parameter in request'));
 
-        return;
+        return this;
     }
 
     this.set('serverName', serverName);
@@ -299,7 +299,7 @@ function(aRequest) {
         aRequest.fail(
             TP.sc('Missing required connection type parameter in request'));
 
-        return;
+        return this;
     }
 
     this.set('connectionType', connectionType);

@@ -410,7 +410,7 @@ function() {
      * @method getParent
      * @summary Returns the receiver's parent instance, the instance whose name
      *     is one "level" above the receiver.
-     * @returns {TP.log.Nestable} The parent instance.
+     * @returns {TP.log.Nestable|undefined} The parent instance.
      */
 
     var pname,
@@ -929,7 +929,7 @@ function(localOnly) {
      *     inheritsAppenders() the list includes all inherited appenders.
      * @param {Boolean} [localOnly=false] True to avoid collecting inherited
      *     appenders.
-     * @returns {TP.log.Appender[]} The appender list.
+     * @returns {TP.log.Appender[]|undefined} The appender list.
      */
 
     var appenders,
@@ -971,7 +971,7 @@ function(localOnly) {
      *     inheritsFilters() the list includes all inherited filters.
      * @param {Boolean} [localOnly=false] True to avoid collecting inherited
      *     appenders.
-     * @returns {TP.log.Filter[]} The filter list.
+     * @returns {TP.log.Filter[]|undefined} The filter list.
      */
 
     var filters,
@@ -1039,7 +1039,7 @@ function() {
      * @summary Returns the receiver's parent logger, if any. The root logger
      *     will not have one but all other loggers will ultimately inherit from
      *     the root logger.
-     * @returns {TP.log.Logger} The parent logger.
+     * @returns {TP.log.Logger|undefined} The parent logger.
      */
 
     var pname,
@@ -1144,7 +1144,7 @@ function(anEntry) {
      *     method is invoked via $logArglist after that method constructs a log
      *     Entry owned by the receiver.
      * @param {TP.log.Entry} anEntry The log entry to output.
-     * @returns {TP.log.Logger} The receiver.
+     * @returns {TP.log.Logger|undefined} The receiver.
      */
 
     var appenders;
@@ -1474,7 +1474,7 @@ function(anEntry) {
      * @summary Invokes the receiver's filter method to filter anEntry and then
      *     invokes append() if the entry passes all the filters.
      * @param {TP.log.Entry} anEntry The log entry to output.
-     * @returns {TP.log.Appender} The receiver.
+     * @returns {TP.log.Appender|undefined} The receiver.
      */
 
     if (TP.notTrue(this.filter(anEntry))) {
@@ -1845,7 +1845,7 @@ function(aName) {
      * @method getLevel
      * @summary Returns the Level instance with the given name, if it exists.
      * @param {String} aName The level name to retrieve.
-     * @returns {TP.log.Level} The level instance with the given name.
+     * @returns {TP.log.Level|undefined} The level instance with the given name.
      */
 
     var key;
@@ -2087,7 +2087,7 @@ function(aName) {
      * @method getMarker
      * @summary Returns the Marker instance with the given name, if it exists.
      * @param {String} aName The marker name to search for.
-     * @returns {TP.log.Marker} The marker instance with the given name.
+     * @returns {TP.log.Marker|undefined} The marker instance with the given name.
      */
 
     if (TP.isEmpty(aName)) {

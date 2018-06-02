@@ -65,7 +65,7 @@ function() {
      * @summary Creates an appropriate response object based on the current
      *     packet. For IQ packets the namespace of the current packet is
      *     leveraged to construct a new instance with proper type.
-     * @returns {TP.xmpp.Stanza}
+     * @returns {TP.xmpp.Stanza|undefined}
      */
 
     var inst,

@@ -572,7 +572,7 @@ function() {
      *     here is that the user's roles are defined in order from most-specific
      *     to least-specific (or at least to "least important") so the first
      *     role is considered to be the primary role.
-     * @returns {TP.core.Role} A subtype of TP.core.Role.
+     * @returns {TP.core.Role|undefined} A subtype of TP.core.Role.
      */
 
     var vcard;
@@ -597,7 +597,7 @@ function() {
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
      *     (most-specific) unit.
-     * @returns {TP.core.Unit} A subtype of TP.core.Unit.
+     * @returns {TP.core.Unit|undefined} A subtype of TP.core.Unit.
      */
 
     var vcard;
@@ -691,7 +691,7 @@ function(aSignal) {
      *     quickly as possible with respect to processing requests and
      *     responses.
      * @param {TP.sig.Signal} aSignal The specific signal to handle.
-     * @returns {Object} The handler function's results.
+     * @returns {Object|undefined} The handler function's results.
      */
 
     var request,
@@ -1869,7 +1869,7 @@ function() {
      * @method getResult
      * @summary Returns the request result, the object returned as a result of
      *     processing the receiver's request.
-     * @returns {Object}
+     * @returns {Object|undefined}
      */
 
     var response;
@@ -1891,7 +1891,7 @@ function() {
      * @method getResultNode
      * @summary Returns the receiver's result in TP.dom.Node form if possible.
      *     When the result isn't valid XML this method returns null.
-     * @returns {Node} A valid Node instance.
+     * @returns {Node|undefined} A valid Node instance.
      */
 
     var response;
@@ -1912,7 +1912,7 @@ function() {
     /**
      * @method getResultObject
      * @summary Returns the receiver's result in object form.
-     * @returns {Object}
+     * @returns {Object|undefined}
      */
 
     var response;
@@ -1933,7 +1933,7 @@ function() {
     /**
      * @method getResultText
      * @summary Returns the receiver's content in text (String) form.
-     * @returns {String}
+     * @returns {String|undefined}
      */
 
     var response;
@@ -1999,7 +1999,7 @@ function(aSignal) {
      *     housekeeping here. NOTE that it is still up to the individual
      *     response handling methods to fail, cancel, or complete the request.
      * @param {TP.sig.Signal} aSignal The signal to handle.
-     * @returns {Object} The handler function's results.
+     * @returns {Object|undefined} The handler function's results.
      */
 
     var request,
@@ -2423,7 +2423,7 @@ function(aChildRequest, aFaultString, aFaultCode, aFaultInfo) {
      *     Usually a String or Number instance.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the cancellation.
-     * @returns {TP.sig.Request} The receiver.
+     * @returns {TP.sig.Request|undefined} The receiver.
      */
 
     //  already done? don't go further
@@ -2547,7 +2547,7 @@ function(aChildRequest, aResult) {
      *     request which had one or more child join requests.
      * @param {TP.sig.Request} aChildRequest A child request which completed.
      * @param {Object} aResult An optional result to output.
-     * @returns {TP.sig.Request} The receiver.
+     * @returns {TP.sig.Request|undefined} The receiver.
      */
 
     //  already done? don't go further
@@ -2582,7 +2582,7 @@ function(aChildRequest, aFaultString, aFaultCode, aFaultInfo) {
      *     Usually a String or Number instance.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the failure.
-     * @returns {TP.sig.Request} The receiver.
+     * @returns {TP.sig.Request|undefined} The receiver.
      */
 
     //  already done? don't go further
@@ -3481,7 +3481,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     Usually a String or Number instance.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the cancellation.
-     * @returns {TP.sig.Response} The receiver.
+     * @returns {TP.sig.Response|undefined} The receiver.
      */
 
     var request;
@@ -3505,7 +3505,7 @@ function(aResult) {
      *     needed to get to a proper TP.SUCCEEDED state.
      * @param {Object} aResult An optional object to set as the result of the
      *     request.
-     * @returns {TP.sig.Response} The receiver.
+     * @returns {TP.sig.Response|undefined} The receiver.
      */
 
     var request;
@@ -3538,7 +3538,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     Usually a String or Number instance.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the failure.
-     * @returns {TP.sig.Response} The receiver.
+     * @returns {TP.sig.Response|undefined} The receiver.
      */
 
     var request;
@@ -3654,7 +3654,7 @@ function() {
     /**
      * @method getFaultCode
      * @summary Returns the fault code of the receiver.
-     * @returns {Number} A TIBET fault code constant.
+     * @returns {Number|undefined} A TIBET fault code constant.
      */
 
     var request;
@@ -3675,8 +3675,8 @@ function() {
     /**
      * @method getFaultInfo
      * @summary Returns the fault info of the receiver.
-     * @returns {TP.core.Hash} A hash that will contain additional information
-     *     about the failure.
+     * @returns {TP.core.Hash|undefined} A hash that will contain additional
+     *     information about the failure.
      */
 
     var request;
@@ -3697,7 +3697,7 @@ function() {
     /**
      * @method getFaultText
      * @summary Returns the fault string (description) of the receiver.
-     * @returns {String} A text description of the fault.
+     * @returns {String|undefined} A text description of the fault.
      */
 
     var request;
@@ -3758,7 +3758,7 @@ function() {
      *     request. The default is an OID. The important thing about a request
      *     ID is that they serve as origins for any response signals which are
      *     generated so they should be reasonably unique.
-     * @returns {String} A request ID which can take any form.
+     * @returns {String|undefined} A request ID which can take any form.
      */
 
     var request;
@@ -3837,7 +3837,7 @@ function() {
     /**
      * @method getStatusCode
      * @summary Returns the job status code of the receiver.
-     * @returns {Number} A TIBET status code constant.
+     * @returns {Number|undefined} A TIBET status code constant.
      */
 
     var request;
@@ -3858,7 +3858,7 @@ function() {
     /**
      * @method getStatusText
      * @summary Returns the job status of the receiver in text form.
-     * @returns {String} The current status in text form.
+     * @returns {String|undefined} The current status in text form.
      */
 
     var request;
@@ -4286,6 +4286,7 @@ function() {
      * @summary Updates all open window body elements to contain the current
      *     "effective user" key string value. This method is invoked any time
      *     the effective user is changed, or has its vcard set to a new value.
+     * @returns {TP.meta.core.User} The receiver.
      */
 
     var windows;
@@ -4296,7 +4297,7 @@ function() {
             TP.windowAssignACLKeys(win, TP.ACL_EFFECTIVE);
         });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4309,6 +4310,7 @@ function() {
      * @summary Updates all open window body elements to contain the current
      *     "real user" key string value. This method is invoked any time the
      *     real user is changed, or has its vcard set to a new value.
+     * @returns {TP.meta.core.User} The receiver.
      */
 
     var windows;
@@ -4320,7 +4322,7 @@ function() {
             TP.windowAssignACLKeys(win, TP.ACL_REAL);
         });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4456,7 +4458,7 @@ function(aUser) {
      *     This will cause certain UI updates to potentially occur as TIBET
      *     updates the effective role/unit permissions.
      * @param {TP.core.User} aUser The instance to make effective.
-     * @returns {TP.meta.core.User} The TP.core.User type object.
+     * @returns {TP.meta.core.User|undefined} The TP.core.User type object.
      */
 
     if (!TP.isKindOf(aUser, this)) {
@@ -4487,7 +4489,7 @@ function(aUser) {
      *     will cause certain UI updates to potentially occur as TIBET updates
      *     the effective role/unit permissions.
      * @param {TP.core.User} aUser The instance to make "real".
-     * @returns {TP.meta.core.User} The TP.core.User type object.
+     * @returns {TP.meta.core.User|undefined} The TP.core.User type object.
      */
 
     if (!TP.isKindOf(aUser, this)) {
@@ -4770,8 +4772,8 @@ function(resourceID, aSignal) {
      *     an ID which will not conflict with any other ID registered using
      *     TIBET's object registration methods.
      * @param {TP.sig.Signal} aSignal The signal which triggered this activity.
-     * @returns {TP.core.Service} A valid service instance if one can be
-     *     constructed.
+     * @returns {TP.core.Service|undefined} A valid service instance if one can
+     *     be constructed.
      */
 
     var inst,
@@ -4955,7 +4957,7 @@ function() {
      */
 
     if (!this.isRegistered()) {
-        return;
+        return this;
     }
 
     this.ignoreTriggers();
@@ -5609,7 +5611,7 @@ function() {
 
     //  If we're not already in 'poll mode', bail out.
     if (!this.inPollMode()) {
-        return;
+        return this;
     }
 
     //  complete is the nice way to shut down a job
@@ -5717,7 +5719,7 @@ function() {
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the latter, the URI actually sent to the
      *     service during IO.
-     * @returns {TP.uri.URI} The final request URI.
+     * @returns {TP.uri.URI|undefined} The final request URI.
      */
 
     var request;
@@ -5743,7 +5745,7 @@ function() {
      *     request URI with any uriparams expanded and applied to the URI query
      *     portion. This method returns the former, the URI used as the "root"
      *     of the request.
-     * @returns {TP.uri.URI} The original request URI.
+     * @returns {TP.uri.URI|undefined} The original request URI.
      */
 
     var request;
@@ -5910,7 +5912,7 @@ function(aRequest) {
      *     receiver's serviceURI value if the request doesn't specify a URI of
      *     its own.
      * @param {TP.sig.Request} aRequest The request to check for a URI.
-     * @returns {TPURI} The request URI.
+     * @returns {TP.uri.URI|undefined} The request URI.
      */
 
     var url;
@@ -5954,7 +5956,7 @@ function(aRequest) {
      *     URI and is rewritten to the current concrete location based on
      *     TIBET's rewriting rules.
      * @param {TP.sig.Request} aRequest The request to rewrite.
-     * @returns {TP.uri.URI} The new/updated URI instance.
+     * @returns {TP.uri.URI|undefined} The new/updated URI instance.
      */
 
     var requestURI,
@@ -6138,7 +6140,8 @@ function() {
     /**
      * @method getStateMachine
      * @summary Returns the receiver's state machine, if it has one.
-     * @returns {TP.core.StateMachine} The receiver's state machine instance.
+     * @returns {TP.core.StateMachine|undefined} The receiver's state machine
+     *     instance.
      */
 
     //  During early signaling if we haven't initialized the type yet the state
@@ -6645,7 +6648,7 @@ function() {
      * @summary Pops the current top controller off the controller stack. The
      *     application instance will not be removed if it is the only controller
      *     remaining.
-     * @returns {TP.core.Controller} The controller that was popped.
+     * @returns {TP.core.Controller|undefined} The controller that was popped.
      */
 
     var controllers;
@@ -7102,8 +7105,8 @@ function(aDocument) {
      *     typically called in response to document changes in the UICANVAS to
      *     ensure the top-level history reflects the content page.
      * @param {Document} aDocument The native document to capture from.
-     * @returns {Array<Object, String, String>} The history entry with state
-     *     object, title, and url.
+     * @returns {Array<Object, String, String>|undefined} The history entry with
+     *     state object, title, and url.
      */
 
     var loc,
@@ -7504,7 +7507,7 @@ function(anOffset) {
      *     location in window history.
      * @param {Number} anOffset A positive or negative number of pages to go in
      *     the browser history.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     if (!TP.isNumber(anOffset)) {
@@ -7535,6 +7538,7 @@ function(anEvent) {
      *     has changed the window URL through use of the back or forward buttons
      *     or the developer used back(), forward(), go(), or 'location' slot.
      * @param {Event} anEvent The native event that caused this handler to trip.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var router,
@@ -7544,7 +7548,7 @@ function(anEvent) {
     //  We use a flag to turn off handling on Chrome in particular since it has
     //  a habit of signaling this for a number of incorrect cases.
     if (TP.isFalse(this.get('popstate'))) {
-        return;
+        return this;
     }
 
     state = anEvent.state;
@@ -7563,7 +7567,7 @@ function(anEvent) {
     //  location to the same value it currently holds so we have to verify a
     //  true change to avoid extra overhead/duplicate work.
     if (loc === TP.sys.getHistory().getLocation()) {
-        return;
+        return this;
     }
 
     //  If there is a valid state, then make sure to check its index against the
@@ -7574,7 +7578,7 @@ function(anEvent) {
     if (TP.isValid(state)) {
         if (state.index > this.get('lastValidIndex')) {
             TP.global.history.go(-state.index);
-            return;
+            return this;
         }
     }
 
@@ -7592,10 +7596,10 @@ function(anEvent) {
         anEvent.preventDefault();
     } else {
         //  This is a link anchor target - act accordingly
-        return;
+        return this;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7614,6 +7618,7 @@ function(aURL, fromDoc) {
      *     stack.
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var url,
@@ -7624,7 +7629,7 @@ function(aURL, fromDoc) {
 
     if (TP.notValid(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
-        return;
+        return this;
     }
 
     //  For our expansion testing and history tracking we want a fully-expanded
@@ -7635,7 +7640,7 @@ function(aURL, fromDoc) {
 
     if (!TP.isURIString(url)) {
         TP.raise(this, 'TP.sig.InvalidURI');
-        return;
+        return this;
     }
 
     //  We need launch parameters to be mapped in all cases to avoid changes to
@@ -7688,6 +7693,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
      * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var url,
@@ -7705,7 +7711,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
 
     if (!TP.isURIString(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
-        return;
+        return this;
     }
 
     url = TP.str(aURL);
@@ -7714,7 +7720,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
 
     //  Dampen changes that aren't really changes.
     if (current === url) {
-        return;
+        return this;
     }
 
     this.set('direction', 'forward', false);
@@ -7814,7 +7820,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         //  If we're here due to a direct change via a document being loaded
         //  don't allow further processing.
         if (TP.isTrue(fromDoc)) {
-            return;
+            return this;
         }
 
         //  If the URI we're pushing contains '#' followed by '/' or '?', then
@@ -7835,7 +7841,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         this.reportLocation();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

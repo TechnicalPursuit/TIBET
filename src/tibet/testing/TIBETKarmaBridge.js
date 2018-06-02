@@ -112,8 +112,8 @@ function(anEntry) {
      * @summary Formats a log entry in a format suitable for the Karma result
      *     function. See the Karma documentation for specifics.
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} An object whose keys match the requirements of calling
-     *     Karma output functions such as the result call.
+     * @returns {Object|undefined} An object whose keys match the requirements of
+     *     calling Karma output functions such as the result call.
      */
 
     var arglist,
@@ -316,7 +316,7 @@ function(anEntry) {
      * @summary Formats the entry data using the receiver's layout and then
      *     passes it to the appropriate Karma method.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
-     * @returns {TP.log.Appender} The receiver.
+     * @returns {TP.log.Appender|undefined} The receiver.
      */
 
     var karma,

@@ -42,7 +42,7 @@ function(anObject) {
      *     Letter, an underscore, or a colon. Remaining character values may be
      *     any valid Unicode NameChar.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.name representation string.
      */
 
     var str;

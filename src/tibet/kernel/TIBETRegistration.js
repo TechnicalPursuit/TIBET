@@ -63,9 +63,9 @@ function(anID, regOnly, nodeContext) {
      * @param {Window|Node} nodeContext An optional window or node specification
      *     to use for resolution when no other reference is found. Default is
      *     the current canvas.
-     * @returns {Object} Typically a TIBET object (meaning nodes are wrapped in
-     *     TP.dom.Node instances etc) to maintain encapsulation for as long as
-     *     possible.
+     * @returns {Object|undefined} Typically a TIBET object (meaning nodes are
+     *     wrapped in TP.dom.Node instances etc) to maintain encapsulation for as
+     *     long as possible.
      */
 
     var bits,

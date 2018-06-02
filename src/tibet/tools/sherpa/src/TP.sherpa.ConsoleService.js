@@ -114,7 +114,7 @@ function(aResourceID, aRequest) {
      *     containing parameters including: consoleWindow and consoleNode which
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
-     * @returns {TP.sherpa.ConsoleService} A new instance.
+     * @returns {TP.sherpa.ConsoleService|undefined} A new instance.
      */
 
     var request,
@@ -268,7 +268,7 @@ function() {
 
         aSignal.stopPropagation();
 
-        return;
+        return keyboardSM;
     });
 
     normalResponder.addStateMachine(keyboardSM);
@@ -575,6 +575,7 @@ function(aRequest) {
      *     queued. If no request is provided the last input request is
      *     cancelled.
      * @param {TP.sig.UserInputRequest} aRequest The request to cancel.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var req,
@@ -586,7 +587,7 @@ function(aRequest) {
     if (TP.notValid(req)) {
         req = this.get('lastInputRequest');
         if (TP.notValid(req)) {
-            return;
+            return this;
         }
     }
 
@@ -616,7 +617,7 @@ function(aRequest) {
     //  process whatever might be sitting in the input request queue
     this[TP.composeHandlerName('NextRequest')]();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -632,7 +633,8 @@ function(aRequest) {
      *     console request is the ':clear' command.
      * @param {TP.sig.ConsoleRequest} aRequest The signal instance that
      *     triggered this call.
-     * @returns {TP.sig.ConsoleResponse} The supplied request's response.
+     * @returns {TP.sig.ConsoleResponse|undefined} The supplied request's
+     *     response.
      */
 
     var cmd,
@@ -959,7 +961,8 @@ function(aRequest) {
      *     default data.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
-     */
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+      */
 
     var query,
         consoleGUI,
@@ -986,7 +989,7 @@ function(aRequest) {
         this.shouldConcealInput(hide);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -998,6 +1001,7 @@ function(anInput) {
      * @method submitRawInput
      * @summary Submits the supplied raw input to the shell for execution.
      * @param {String} anInput The text to submit to the shell as input
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     //  Fire off the input content to the shell. Note here how we configure the
@@ -1009,7 +1013,7 @@ function(anInput) {
         anInput,
         TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1274,7 +1278,7 @@ function(rawInput, options) {
      *     be input to the shell.
      * @param {String} rawInput A String of raw input.
      * @param {Request|TP.core.Hash} [options] Options for the request.
-     * @returns {TP.sig.ShellRequest} The newly created request.
+     * @returns {TP.sig.ShellRequest|undefined} The newly created request.
      */
 
     var res,
@@ -1508,6 +1512,7 @@ function(anObject, aRequest) {
      * @param {Object} anObject The message and level source.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var notifier,
@@ -1525,7 +1530,7 @@ function(anObject, aRequest) {
 
     notifierContent = TP.byId('SherpaNotifierContent', TP.win('UIROOT'));
     if (TP.notValid(notifierContent)) {
-        return;
+        return this;
     }
 
     notifierContent.setContent(
@@ -1542,7 +1547,7 @@ function(anObject, aRequest) {
             'noPosition', true,
             'triggerTPDocument', triggerTPDoc));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1558,6 +1563,7 @@ function(anError, aRequest) {
      * @param {String} anError The error to output.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var request,
@@ -1597,7 +1603,7 @@ function(anError, aRequest) {
     //  Clear any 'multi results' that were getting batched
     this.get('$multiResults').empty();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1616,6 +1622,7 @@ function(aQuery, aDefault, aRequest) {
      *     input cell.
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var consoleGUI;
@@ -1631,7 +1638,7 @@ function(aQuery, aDefault, aRequest) {
                                                             'selectAll');
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1661,7 +1668,7 @@ function(anObject, aRequest) {
     //  We should see multiple output calls, at least one of which is the
     //  cmdConstruct notifier which tells us to build our output item.
     if (aRequest && aRequest.at('cmdConstruct') === true) {
-        return;
+        return this;
     }
 
     request = TP.request(aRequest);
@@ -1756,7 +1763,7 @@ function(aRequest) {
 
     //  Don't do this twice
     if (TP.isTrue(request.at('inputWritten'))) {
-        return;
+        return this;
     }
 
     //  Let this request and its handlers know that its input has been written.
@@ -1785,7 +1792,7 @@ function(aRequest) {
     //  We're either not configured to echo input content or we couldn't
     //  generate any - exit here.
     if (TP.isEmpty(str)) {
-        return;
+        return this;
     }
 
     //  Compute the CSS class that we'll use to style the input readout.

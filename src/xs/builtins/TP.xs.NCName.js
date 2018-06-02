@@ -30,7 +30,7 @@ function(anObject) {
      *     For TP.xs.NCName the return value is a string that is a valid
      *     TP.xs.Name with colons removed.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.NCName representation string.
      */
 
     var str;

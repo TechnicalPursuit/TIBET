@@ -39,7 +39,7 @@ function(aNode, aNamespace) {
      * @param {Node} aNode A native node, or null to use the type's default
      *     template.
      * @param {String} aNamespace The namespace to qualify the receiver with.
-     * @returns {TP.xmpp.Query} A new instance.
+     * @returns {TP.xmpp.Query|undefined} A new instance.
      */
 
     var elem,

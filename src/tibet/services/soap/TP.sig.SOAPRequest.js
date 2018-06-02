@@ -45,7 +45,7 @@ function(aRequest) {
      *     its preferable to produce only the content of the <soap:Body>, not
      *     the Body itself.
      * @param {TP.sig.Request} aRequest The request to format for.
-     * @returns {String} A viable SOAP payload in string form.
+     * @returns {String|undefined} A viable SOAP payload in string form.
      */
 
     var request,

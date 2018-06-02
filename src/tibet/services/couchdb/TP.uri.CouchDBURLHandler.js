@@ -75,18 +75,19 @@ function() {
      * @method activateRemoteWatch
      * @summary Performs any processing necessary to activate observation of
      *     remote URL changes.
+     * @returns {TP.meta.uri.CouchDBURLHandler} The receiver.
      */
 
     //  If we're not watching CouchDB changes, then exit here.
     if (TP.notTrue(TP.sys.cfg('couch.watch.changes'))) {
-        return;
+        return this;
     }
 
     //  Push ourself as a controller onto the application's controller stack.
     //  This will allow us to receive the TP.sig.AppDidStart signal below.
     TP.sys.getApplication().pushController(this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -104,7 +105,7 @@ function(aRootLocation, authenticationData) {
      *     authenticated and needs to be tracked.
      * @param {TP.core.Hash} [authenticationData] Data about the authenticated
      *     user returned by the authentication call, such as their role.
-     * @returns {TP.uri.CouchDBURLHandler} The receiver.
+     * @returns {TP.meta.uri.CouchDBURLHandler} The receiver.
      */
 
     var authenticatedRoots;
@@ -273,9 +274,10 @@ function() {
      * @method deactivateRemoteWatch
      * @summary Performs any processing necessary to shut down observation of
      *     remote URL changes.
+     * @returns {TP.meta.uri.CouchDBURLHandler} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -593,13 +595,13 @@ function(aSignal) {
 
     //  Make sure that we have a payload
     if (TP.notValid(payload = aSignal.getPayload())) {
-        return;
+        return this;
     }
 
     //  And that we have SSE data in that payload
     data = payload.at('data');
     if (TP.notValid(data)) {
-        return;
+        return this;
     }
 
     //  If there was a property named 'doc' in the data and it has a property
@@ -636,7 +638,7 @@ function(aSignal) {
         //  URL.
         signalSourceURL = TP.uc(payload.at('sourceURL'));
         if (!TP.isURI(signalSourceURL)) {
-            return;
+            return this;
         }
 
         path = signalSourceURL.getPath();

@@ -26,7 +26,7 @@ function() {
     /**
      * @method getFaultCode
      * @summary Returns the fault code if any.
-     * @returns {String} A fault code.
+     * @returns {String|undefined} A fault code.
      */
 
     var resultTPElem,
@@ -50,7 +50,7 @@ function() {
     /**
      * @method getFaultText
      * @summary Returns the fault message string if any.
-     * @returns {String} A fault message string.
+     * @returns {String|undefined} A fault message string.
      */
 
     var resultTPElem,

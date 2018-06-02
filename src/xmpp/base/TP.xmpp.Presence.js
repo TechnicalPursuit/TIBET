@@ -40,7 +40,7 @@ function() {
      *     response for subscribe and unsubscribe messages. Other presence
      *     packets have no valid response so this method returns null in those
      *     cases.
-     * @returns {TP.xmpp.Stanza}
+     * @returns {TP.xmpp.Stanza|undefined}
      */
 
     var msgID,

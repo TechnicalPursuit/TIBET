@@ -308,7 +308,8 @@ function(aLocaleID) {
      *     full four-character language code, such as en-us or fr-ca when
      *     possible, to ensure proper resolution.
      * @param {String} aLocaleID The language-country code to look up.
-     * @returns {TP.meta.i18n.Locale} A TP.i18n.Locale subtype type object.
+     * @returns {TP.meta.i18n.Locale|undefined} A TP.i18n.Locale subtype type
+     *     object.
      */
 
     var loc;

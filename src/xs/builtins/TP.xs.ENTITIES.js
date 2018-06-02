@@ -39,7 +39,7 @@ function(anObject) {
      *     individual elements in the object's string representation which
      *     aren't valid ENTITY strings are removed in the final string.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.ENTITY representation string.
      */
 
     var str,

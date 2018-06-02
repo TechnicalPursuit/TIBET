@@ -1011,7 +1011,8 @@ function(aKey) {
      *     content of the signal in terms of its control parameters. Don't use
      *     set() to manage parameter data.
      * @param {String} aKey The name/key of the parameter to return.
-     * @returns {Object} The value of the parameter registered under aKey.
+     * @returns {Object|undefined} The value of the parameter registered under
+     *     aKey.
      */
 
     var payload;
@@ -2101,9 +2102,9 @@ function(aHandler, aContext) {
      *     multiple times.
      * @param {String|Object} aHandler The handler or handler ID that was
      *     being skipped due to prior notification for a particular sequence.
-     * @param {Object} aContext The object context that the handler is currently
-     *     executing in. Note that this and the handler can be the same object
-     *     in some circumstances
+     * @param {Object|undefined} aContext The object context that the handler is
+     *     currently executing in. Note that this and the handler can be the same
+     *     object in some circumstances.
      */
 
     var handlerKey,
@@ -2414,9 +2415,9 @@ function(aHandler, aContext) {
      *     during DOM traversals.
      * @param {String|Object} aHandler The handler or handler ID to skip for a
      *     particular signaling sequence.
-     * @param {Object} aContext The object context that the handler is currently
-     *     executing in. Note that this and the handler can be the same object
-     *     in some circumstances
+     * @param {Object|undefined} aContext The object context that the handler is
+     *     currently executing in. Note that this and the handler can be the same
+     *     object in some circumstances.
      */
 
     var handlerKey,
@@ -3049,8 +3050,8 @@ function() {
      * @method getSource
      * @summary Returns the object to be used as the data source to retrieve the
      *     receiver's value from.
-     * @returns {Object} The source to use as the data source to get this
-     *     signal's value.
+     * @returns {Object|undefined} The source to use as the data source to get
+     *     this signal's value.
      */
 
     var source;
@@ -3078,7 +3079,7 @@ function() {
     /**
      * @method getValue
      * @summary Returns the new value.
-     * @returns {String} The value of the receiver.
+     * @returns {String|undefined} The value of the receiver.
      */
 
     var value,
@@ -3522,7 +3523,7 @@ function(aPolicy) {
      * @summary Returns the public name of the policy provided. If the policy
      *     is provided as a string that string is returned.
      * @param {Function|String} aPolicy The policy specification.
-     * @returns {String} The policy's public name.
+     * @returns {String|undefined} The policy's public name.
      */
 
     if (TP.isString(aPolicy)) {
@@ -3775,6 +3776,7 @@ function(aHandlerEntry, quiet) {
      *     of this call.
      * @param {Object} aHandlerEntry A listener entry.
      * @param {Boolean} quiet True to quietly ignore duplicate entries.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var map,
@@ -3878,7 +3880,7 @@ function(aHandlerEntry, quiet) {
     //  really there" because it's in a remove state we can reactivate it
     if (TP.isValid(entry)) {
         if (TP.isTrue(quiet)) {
-            return;
+            return this;
         }
 
         if (!TP.sys.shouldAllowDuplicateInterests()) {
@@ -3890,7 +3892,7 @@ function(aHandlerEntry, quiet) {
                             handlerID, ' ignored.'),
                     TP.SIGNAL_LOG) : 0;
 
-            return;
+            return this;
         }
 
         if (entry.suspend === true) {
@@ -3900,7 +3902,7 @@ function(aHandlerEntry, quiet) {
 
             delete entry.suspend;
 
-            return;
+            return this;
         }
 
         if (entry.remove === true) {
@@ -3910,7 +3912,7 @@ function(aHandlerEntry, quiet) {
 
             delete entry.remove;
 
-            return;
+            return this;
         }
     }
 
@@ -3983,7 +3985,7 @@ function(aHandlerEntry, quiet) {
                             TP.ec(e, 'Problem creating handler function.'),
                             TP.SIGNAL_LOG) : 0;
 
-                    return;
+                    return this;
                 }
             }
         }
@@ -4003,7 +4005,7 @@ function(aHandlerEntry, quiet) {
                         TP.SIGNAL_LOG) : 0;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4015,6 +4017,7 @@ function(aHandlerEntry) {
      * @method $removeHandlerEntry
      * @summary Removes the supplied signal map entry from the signal map.
      * @param {Object} aHandlerEntry A listener entry.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var map,
@@ -4083,7 +4086,7 @@ function(aHandlerEntry) {
             TP.trace('Interest root not found.',
                         TP.SIGNAL_LOG) : 0;
 
-        return;
+        return this;
     }
 
     entry = null;
@@ -4112,7 +4115,7 @@ function(aHandlerEntry) {
                     TP.trace('Listener not found.',
                     TP.SIGNAL_LOG) : 0;
 
-            return;
+            return this;
         }
     }
 
@@ -4125,7 +4128,7 @@ function(aHandlerEntry) {
 
             delete entry.suspend;
 
-            return;
+            return this;
         }
     }
 
@@ -4159,7 +4162,7 @@ function(aHandlerEntry) {
                         TP.SIGNAL_LOG) : 0;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4182,6 +4185,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
      * @param {Object} aHandler What object will get notification?
      * @param {Boolean} isCapturing Should this be considered a capturing
      *     handler?
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var orgid,
@@ -4260,7 +4264,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                             handlerID, ' ignored.'),
                     TP.SIGNAL_LOG) : 0;
 
-            return;
+            return this;
         }
 
         if (entry.suspend === true) {
@@ -4274,7 +4278,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             //  just the same ID by updating the registration
             TP.sys.registerObject(aHandler, handlerID, true, false);
 
-            return;
+            return this;
         }
 
         if (entry.remove === true) {
@@ -4288,7 +4292,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             //  just the same ID by updating the registration
             TP.sys.registerObject(aHandler, handlerID, true, false);
 
-            return;
+            return this;
         }
     }
 
@@ -4349,7 +4353,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                             handlerID, ' with handler: ', aHandler),
                     TP.SIGNAL_LOG) : 0;
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4371,6 +4375,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
      * @param {Object} aHandler What object will get notification?
      * @param {Boolean} isCapturing Should this be considered a capturing
      *     handler?
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var orgid,
@@ -4411,7 +4416,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     root = map[id];
 
     if (TP.notValid(root)) {
-        return;
+        return this;
     }
 
     //  behavior branches based on handler vs. no handler. when no handler
@@ -4504,7 +4509,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         delete map[id];
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4619,6 +4624,7 @@ function(aSignal, handlerFlags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
+     * @returns {TP.meta.sig.SignalMap} The receiver.
      */
 
     var app,
@@ -4632,7 +4638,7 @@ function(aSignal, handlerFlags) {
         oldHandler;
 
     if (!TP.sys.hasLoaded()) {
-        return;
+        return this;
     }
 
     //  Verify this signal type should be propagated through controller chain.
@@ -4656,7 +4662,7 @@ function(aSignal, handlerFlags) {
             ' sig? ' + aSignal.isControllerSignal() + ' root? ' +
             aSignal.isControllerRoot());
         */
-        return;
+        return this;
     }
 
     app = TP.sys.getApplication();
@@ -4665,7 +4671,7 @@ function(aSignal, handlerFlags) {
     len = controllers.getSize();
     for (i = 0; i < len; i++) {
         if (aSignal.shouldStop() || aSignal.shouldStopImmediately()) {
-            return;
+            return this;
         }
 
         //  Find/fire best handler for each controller.
@@ -4692,7 +4698,7 @@ function(aSignal, handlerFlags) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4741,6 +4747,7 @@ function(anOrigin, aSignalName, aSignal, options) {
      *     handleFluffyInput method it won't be called, even if the signal is a
      *     FluffyInput signal. Yeah, it's complicated. We have to identify
      *     handlers by checking the entire supertype list.
+     * @returns {TP.meta.sig.SignalMap} The receiver.
      */
 
     var opts,
@@ -4767,7 +4774,7 @@ function(anOrigin, aSignalName, aSignal, options) {
 
     //  callers need to already have set up a signal instance
     if (TP.notValid(aSignal)) {
-        return;
+        return this;
     }
 
     opts = TP.hc(options);
@@ -4784,7 +4791,7 @@ function(anOrigin, aSignalName, aSignal, options) {
     //  two variant here. if check and "standard shouldStop" are true then we
     //  stop OR if shouldStopImmediately is true, regarless of check state.
     if (check && aSignal.shouldStop() || aSignal.shouldStopImmediately()) {
-        return;
+        return this;
     }
 
     //  don't let signals get passed with TP.ANY as an origin, but ensure we can
@@ -4911,7 +4918,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             if (check && aSignal.shouldStop() ||
                     aSignal.shouldStopImmediately()) {
                 aSignal.setOrigin(originalOrigin);
-                return;
+                return this;
             }
 
             item = items[i];
@@ -5187,7 +5194,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
         TP.$signal_stack.pop();
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5204,7 +5211,7 @@ function(anOrigin, aSignal, aPayload, aType) {
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
-     * @returns {TP.sig.Signal} The signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
      */
 
     var sig,
@@ -5359,7 +5366,7 @@ function(originSet, aSignal, aPayload, aType) {
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
-     * @returns {TP.sig.Signal} The signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
      */
 
     var map,
@@ -5835,7 +5842,7 @@ function(anOrigin, aSignal, aPayload, aType) {
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
-     * @returns {TP.sig.Signal} The signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
      */
 
     var sig,
@@ -6143,7 +6150,7 @@ function(anOrigin, signalSet, aPayload, aType) {
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Exception.
-     * @returns {TP.sig.Signal} The signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
      */
 
     var i,
@@ -6269,7 +6276,7 @@ function(anOrigin, aSignal, aPayload, aType) {
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
-     * @returns {TP.sig.Signal} The signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
      */
 
     var aSig,
@@ -6425,7 +6432,7 @@ function(originSet, aSignal, aPayload, aType) {
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
      *     Defaults to TP.sig.Signal.
-     * @returns {TP.sig.Signal} The signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
      */
 
     var sig,
@@ -6559,6 +6566,7 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
+     * @returns {TP.sig.SignalMap|undefined} The receiver.
      */
 
     var orgid,
@@ -6616,6 +6624,7 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
+     * @returns {TP.sig.SignalMap|undefined} The receiver.
      */
 
     var orgid,
@@ -6674,6 +6683,7 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
+     * @returns {TP.sig.SignalMap|undefined} The receiver.
      */
 
     var orgid,
@@ -6701,6 +6711,7 @@ function(anOrigin, aSignal, aHandler) {
      *     register interest in.
      * @param {Object|String} aHandler The handler or handler ID being
      *     registered.
+     * @returns {TP.sig.SignalMap|undefined} The receiver.
      */
 
     var orgid,
@@ -6724,6 +6735,7 @@ function(anOrigin, aSignal) {
      * @param {String} anOrigin The origin to resume interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to resume
      *     interest in.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var entry,
@@ -6748,7 +6760,7 @@ function(anOrigin, aSignal) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6762,6 +6774,7 @@ function(anOrigin, aSignal) {
      * @param {String} anOrigin The origin to suspend interest in.
      * @param {TP.sig.Signal|String} aSignal The signal or signal name to
      *     suspend interest in.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var entry,
@@ -6786,7 +6799,7 @@ function(anOrigin, aSignal) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6804,6 +6817,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {Function} aHandler The specific handler to turn off, if any.
      * @param {Function} aPolicy The policy if any. Should be 'capture' to
      *     remove capturing handlers. Default is non-capturing.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var origins,
@@ -6831,7 +6845,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
     if (origins.isOriginSet() === false) {
-        return;
+        return this;
     }
 
     len = origins.getSize();
@@ -6870,7 +6884,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
             }
 
             if (!adjustMap) {
-                return;
+                return this;
             }
         }
     }
@@ -6931,7 +6945,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
                 }
 
                 if (!adjustMap) {
-                    return;
+                    return this;
                 }
             }
         }
@@ -6994,6 +7008,7 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
      * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
      * @param {Function} handler The handler if any.
      * @param {Function} policy The policy if any.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var i,
@@ -7030,7 +7045,7 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
         }
     }
 
-    return;
+    return this;
 };
 
 //  ------------------------------------------------------------------------
@@ -7049,6 +7064,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
      *     for.
      * @param {Function} aPolicy The policy if any. Should be 'capture' to
      *     configure a capturing handler. Default is non-capturing.
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var origins,
@@ -7072,7 +7088,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
             TP.error('Invalid signal handler.',
                         TP.SIGNAL_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (!TP.isArray(origins = anOrigin)) {
@@ -7084,7 +7100,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
     if (origins.isOriginSet() === false) {
-        return;
+        return this;
     }
 
     len = origins.getSize();
@@ -7123,7 +7139,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
             }
 
             if (!adjustMap) {
-                return;
+                return this;
             }
         }
     }
@@ -7186,7 +7202,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
                 }
 
                 if (!adjustMap) {
-                    return;
+                    return this;
                 }
             }
         }
@@ -7249,6 +7265,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
      *     notifications for.
      * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
      *     to resume signaling from the origin(s).
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var origins,
@@ -7276,7 +7293,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
     if (origins.isOriginSet() === false) {
-        return;
+        return this;
     }
 
     len = origins.getSize();
@@ -7303,7 +7320,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 
             adjustMap = origin.resumeObserver(origin, signal);
             if (!adjustMap) {
-                return;
+                return this;
             }
         }
     }
@@ -7352,7 +7369,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
             if (owner !== origin && TP.canInvoke(owner, 'resumeObserver')) {
                 adjustMap = owner.resumeObserver(anOrigin, typename);
                 if (!adjustMap) {
-                    return;
+                    return this;
                 }
             }
         }
@@ -7405,6 +7422,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
      *     notifications for.
      * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
      *     to suspend signaling from the origin(s).
+     * @returns {TP.sig.SignalMap} The receiver.
      */
 
     var origins,
@@ -7432,7 +7450,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
     if (origins.isOriginSet() === false) {
-        return;
+        return this;
     }
 
     len = origins.getSize();
@@ -7459,7 +7477,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
             adjustMap = origin.suspendObserver(origin, signal);
             if (!adjustMap) {
-                return;
+                return this;
             }
         }
     }
@@ -7507,7 +7525,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
                 TP.canInvoke(owner, 'suspendObserver')) {
                 adjustMap = owner.suspendObserver(anOrigin, typename);
                 if (!adjustMap) {
-                    return;
+                    return this;
                 }
             }
         }
@@ -7607,7 +7625,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
      *     if they can be cancelled.
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
-     * @returns {TP.sig.Signal} The fired signal.
+     * @returns {TP.sig.Signal|undefined} The fired signal.
      */
 
     var origin,

@@ -44,7 +44,7 @@ function(aPayload) {
      *     properly configured for use.
      * @param {String|TP.core.Hash|TP.sig.Request} aPayload A string, hash, or
      *     other request whose value(s) will populate this new request.
-     * @returns {TP.sig.ShellRequest} A new instance.
+     * @returns {TP.sig.ShellRequest|undefined} A new instance.
      */
 
     var payload;
@@ -218,7 +218,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     reason for the failure.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the failure.
-     * @returns {TP.BREAK}
+     * @returns {TP.BREAK|undefined}
      */
 
     if (this.isCompleting() || this.didComplete()) {
@@ -383,7 +383,7 @@ function(output, request) {
      * @summary Standard function for writing error output during shell
      *     execution.
      * @param {Object} output The object to write to stderr.
-     * @param {TP.sig.Request|TP.core.Hash} request Optional
+     * @param {TP.sig.Request|TP.core.Hash|undefined} request Optional
      *     request/parameters. Defaults to the receiver.
      */
 
@@ -435,7 +435,7 @@ function(output, request) {
      * @summary Standard function for writing valid output during shell
      *     execution.
      * @param {Object} output The object to write to stdout.
-     * @param {TP.sig.Request|TP.core.Hash} request Optional
+     * @param {TP.sig.Request|TP.core.Hash|undefined} request Optional
      *     request/parameters. Defaults to the receiver.
      */
 

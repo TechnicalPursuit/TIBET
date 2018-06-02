@@ -28,7 +28,7 @@ function() {
      * @method getFaultActor
      * @summary Returns the SOAP fault actor, a SOAP-specific identifier of the
      *     service/action which failed.
-     * @returns {String} A fault actor name.
+     * @returns {String|undefined} A fault actor name.
      */
 
     var xml,
@@ -55,7 +55,7 @@ function() {
     /**
      * @method getFaultCode
      * @summary Returns the SOAP fault code if any.
-     * @returns {String} A fault code.
+     * @returns {String|undefined} A fault code.
      */
 
     var xml,
@@ -83,7 +83,7 @@ function() {
      * @method getFaultDetails
      * @summary Returns and SOAP fault details, a SOAP-specific long-text
      *     description of what went wrong.
-     * @returns {String} Fault details.
+     * @returns {String|undefined} Fault details.
      */
 
     var xml,
@@ -110,7 +110,7 @@ function() {
     /**
      * @method getFaultText
      * @summary Returns the SOAPfault message string if any.
-     * @returns {String} A fault message string.
+     * @returns {String|undefined} A fault message string.
      */
 
     var xml,

@@ -388,7 +388,7 @@ function(anObject) {
      *     based on a variety of input object types.
      * @param {Object} anObject A window, node, or other object which can
      *     provide a TP.core.Window or be used to acquire one.
-     * @returns {TP.core.Window} A TIBET window wrapper.
+     * @returns {TP.core.Window|undefined} A TIBET window wrapper.
      */
 
     var win;
@@ -511,6 +511,7 @@ function() {
      * @method closeRegisteredWindows
      * @summary Closes any "auxillary" windows opened by TIBET. Typically
      *     called when you exit the TIBET window.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var dict,
@@ -536,7 +537,7 @@ function() {
             }
         });
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -668,7 +669,7 @@ function(aWindow) {
      *     specific functions.
      * @param {Window} aWindow The window of the document to install the
      *     functions on.
-     * @returns {TP.core.Window} The receiver.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     return this;
@@ -687,6 +688,7 @@ function(aWindow) {
      *     DHTML or event facilties. This also includes setting the opener, the
      *     onerror handler, etc.
      * @param {Window|TP.core.Window} aWindow The window to instrument.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var nativeWindow;
@@ -707,7 +709,7 @@ function(aWindow) {
 
     //  If the native window is already instrumented, return here.
     if (TP.windowIsInstrumented(nativeWindow)) {
-        return;
+        return this;
     }
 
     //  Set the other common TIBET root objects, used for constants etc.
@@ -744,7 +746,7 @@ function(aWindow) {
     //  Register the native window
     TP.core.Window.registerWindow(nativeWindow);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -826,6 +828,7 @@ function(aWindowOrID, aFunction, runFirst) {
      *     when the 'onload' event is triggered for aWindow.
      * @param {Boolean} runFirst Whether or not the function should run before
      *     the other functions in the list.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var shouldRunFirst,
@@ -851,7 +854,7 @@ function(aWindowOrID, aFunction, runFirst) {
         arr.add(aFunction);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -869,7 +872,7 @@ function(aWindow) {
      *     computed). If it isn't found it will be registered and a new
      *     information hash will be constructed for it.
      * @param {Window} aWindow The window to register.
-     * @returns {TP.core.Window} The receiver.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var winID,
@@ -948,6 +951,7 @@ function(aWindowOrID, aKey) {
      * @param {Window|String} aWindowOrID The window, or window ID to use as the
      *     first key.
      * @param {String} aKey The key into the specific window's info hash.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var winID,
@@ -960,7 +964,7 @@ function(aWindowOrID, aKey) {
     registry = TP.core.Window.get('windowRegistry');
 
     if (TP.notValid(dict = registry.at(winID))) {
-        return;
+        return this;
     }
 
     //  no key? remove hash entirely
@@ -973,7 +977,7 @@ function(aWindowOrID, aKey) {
     //  TODO: Should we also remove window info for iframes that may be
     //  embedded in this window?
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -990,6 +994,7 @@ function(aWindowOrID, theContent, aLoadedFunction) {
      * @param {String|URI|Node} theContent The content.
      * @param {Function} aLoadedFunction An optional 'loaded' function that will
      *     execute when the content is finished loading.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var win,
@@ -1002,7 +1007,7 @@ function(aWindowOrID, theContent, aLoadedFunction) {
         this.raise('TP.sig.InvalidWindow',
                     'Unable to find window: ' + aWindowOrID);
 
-        return;
+        return this;
     }
 
     if (TP.isString(theContent)) {
@@ -1023,13 +1028,13 @@ function(aWindowOrID, theContent, aLoadedFunction) {
     } else {
         this.raise('TP.sig.InvalidParameter');
 
-        return;
+        return this;
     }
 
     //  TODO: feed the content to the shell for processing...
     TP.htmlDocumentSetContent(win.document, content, aLoadedFunction);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1045,7 +1050,7 @@ function(aWindowOrID, aKey, aValue) {
      *     first key.
      * @param {String} aKey The key into the specific window's info hash.
      * @param {Object} aValue The value to set for the key.
-     * @returns {Object} The value registered for the key provided.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var winID,
@@ -1064,7 +1069,7 @@ function(aWindowOrID, aKey, aValue) {
 
     dict.atPut(aKey, aValue);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1765,11 +1770,12 @@ function() {
     /**
      * @method blur
      * @summary Blurs the receiver.
+     * @returns {TP.core.Window} The receiver.
      */
 
     this.getNativeWindow().blur();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1967,11 +1973,12 @@ function() {
     /**
      * @method focus
      * @summary Focuses the receiver, possibly bringing it to the front.
+     * @returns {TP.core.Window} The receiver.
      */
 
     this.getNativeWindow().focus();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2003,7 +2010,7 @@ function() {
 
     this.getContentDocument().refresh();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2017,12 +2024,13 @@ function(forceReload) {
      * @param {Boolean} forceReload An optional parameter that determines
      *     whether the browser should reload the page from the server or from
      *     its cache. The default value is false.
+     * @returns {TP.core.Window} The receiver.
      */
 
     //  this will reload the window, and the unload/load hook should do the rest
     this.getNativeWindow().location.reload(forceReload);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

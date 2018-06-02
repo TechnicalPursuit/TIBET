@@ -219,7 +219,7 @@ function(aString, aRequest, aShell, expand) {
      *     the shell.
      * @param {TP.shell.Shell} aShell The shell handling processing and holding
      *     the history list.
-     * @returns {String} The history replacement.
+     * @returns {String|undefined} The history replacement.
      */
 
     var rest,

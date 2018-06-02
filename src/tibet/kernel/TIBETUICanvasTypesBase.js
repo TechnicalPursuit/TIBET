@@ -55,9 +55,8 @@ function(aWindow) {
     }
 
     //  Ignore if already instrumented.
-    if (TP.isValid(aWindow.dclListener) &&
-            TP.isValid(aWindow.unloadListener)) {
-        return;
+    if (TP.isValid(aWindow.dclListener) && TP.isValid(aWindow.unloadListener)) {
+        return this;
     }
 
     if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {

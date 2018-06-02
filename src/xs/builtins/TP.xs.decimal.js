@@ -39,6 +39,7 @@ function(anObject) {
      *     possible. For TP.xs.decimal this method will attempt to construct a
      *     decimal string representation of the incoming object.
      * @param {Object} anObject The object to use as source data.
+     * @returns {String|undefined} A valid TP.xs.decimal representation string.
      */
 
     var n,

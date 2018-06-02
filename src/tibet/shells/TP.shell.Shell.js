@@ -58,7 +58,7 @@ function(aRequest) {
      *          {Function} TP.ONFAIL The Function that should run if the
      *          shell command does not successfully complete.
      *
-     * @returns {TP.sig.ShellRequest} The request instance used.
+     * @returns {TP.sig.ShellRequest|undefined} The request instance used.
      */
 
     var shell,
@@ -810,6 +810,7 @@ function(aRequest) {
      *     etc.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
+     * @returns {TP.meta.shell.Shell} The receiver.
      */
 
     var str,
@@ -829,7 +830,7 @@ function(aRequest) {
 
     req.fire(this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -982,6 +983,7 @@ function() {
     /**
      * @method initProfile
      * @summary Initializes common and user-phase profile data.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var name,
@@ -1152,7 +1154,7 @@ function() {
 
     this.set('$justLoadedProfile', true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1163,6 +1165,7 @@ function() {
     /**
      * @method saveProfile
      * @summary Stores common and user-phase profile data.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var name,
@@ -1178,7 +1181,7 @@ function() {
 
     if (this.get('$justLoadedProfile') === true) {
         this.set('$justLoadedProfile', false);
-        return;
+        return this;
     }
 
     if (TP.notEmpty(name = this.get('username'))) {
@@ -1260,7 +1263,7 @@ function() {
         profileStorage.atPut('user_' + name, TP.js2json(userData));
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1480,7 +1483,7 @@ function(anIndex, afterExpansion) {
      * @param {Number|String|RegExp} anIndex The history index to look up.
      * @param {Boolean} afterExpansion True to work against the expanded form
      *     rather than the original source command text.
-     * @returns {String} The history entry's stored string content.
+     * @returns {String|undefined} The history entry's stored string content.
      */
 
     var expanded,
@@ -1730,7 +1733,7 @@ function(aRequest) {
      *     TP.sig.ShellRequest instances are the typical way commands are
      *     provided to the shell for processing.
      * @param {TP.sig.ShellRequest} aRequest The request to respond to.
-     * @returns {TP.shell.ShellResponse} A response to the request.
+     * @returns {TP.shell.ShellResponse|undefined} A response to the request.
      */
 
     var response,
@@ -1940,7 +1943,7 @@ function() {
      */
 
     if (TP.notValid(this.$origStdin)) {
-        return;
+        return this;
     }
 
     this.notify = this.$origNotify;
@@ -1993,7 +1996,7 @@ function(anObject, aRequest) {
 
     TP.boot.$alert(message);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2032,7 +2035,7 @@ function(anError, aRequest) {
 
     req.fire(this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2050,6 +2053,7 @@ function(aQuery, aDefault, aRequest) {
      * @param {TP.sig.UserInputRequest} aRequest An input request containing
      *     processing instructions. The request should be capable of responding
      *     to TP.sig.UserInput signals so it can process the result when ready.
+     * @returns {TP.shell.Shell} The receiver.
      */
 
     var req;
@@ -2070,7 +2074,7 @@ function(aQuery, aDefault, aRequest) {
 
     req.fire(this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2105,7 +2109,7 @@ function(anObject, aRequest) {
     req.atPut('output', anObject);
     req.fire(this);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2128,7 +2132,7 @@ function(aPath) {
      *     expanded when added so all paths in the stack are absolute paths once
      *     the add has completed.
      * @param {String} aPath The path description to add.
-     * @returns {TP.shell.Shell} The receiver.
+     * @returns {Number|undefined} The index of the path.
      */
 
     var path,
@@ -2344,7 +2348,7 @@ function(anIndex) {
      * @summary Returns the path entry at the index provided, or at the current
      *     index if no value is provided.
      * @param {Number} anIndex The path index to look up.
-     * @returns {String} The path entry.
+     * @returns {String|undefined} The path entry.
      */
 
     var path;
@@ -2394,7 +2398,7 @@ function(anIndex) {
      * @summary Removes the path at anIndex, or the last path in the list if no
      *     index is provided.
      * @param {Number} anIndex The index of the path to remove, if provided.
-     * @returns {String} The path removed.
+     * @returns {String|undefined} The path removed.
      */
 
     var list,
@@ -3031,7 +3035,7 @@ function(aRequest, forms) {
      * @param {TP.sig.ShellRequest} aRequest The request to query.
      * @param {String} [forms=TP.EXPANDED] Which forms (TP.ORIGINAL,
      *     TP.EXPANDED, or TP.ALLFORMS) should be returned.
-     * @returns {TP.core.Hash} The hash of named arguments with either
+     * @returns {TP.core.Hash|undefined} The hash of named arguments with either
      *     individual expanded values, individual original values, or an Array
      *     of values for each entry (original, expanded).
      */
@@ -3493,7 +3497,7 @@ function(aRequest) {
      *     request command node's child <param> names and the values are the
      *     <param> values.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
-     * @returns {TP.core.Hash} The hash of named parameters.
+     * @returns {TP.core.Hash|undefined} The hash of named parameters.
      */
 
     var dict,

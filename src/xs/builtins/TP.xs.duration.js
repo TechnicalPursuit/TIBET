@@ -56,7 +56,7 @@ function(anObject) {
      *     the inbound object's string value is a valid duration string itself.
      * @param {Object} anObject The object to use as source data.
      * @exception TP.sig.InvalidParameter
-     * @returns {?String} The string value.
+     * @returns {String|undefined} A valid duration representation string.
      */
 
     var str;

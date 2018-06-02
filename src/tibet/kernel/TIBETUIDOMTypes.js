@@ -94,9 +94,9 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
      * @param {String} sheetElemID The ID to use as the stylesheet element ID.
      * @param {String} aStyleURI The stylesheet URI to use as the source of the
      *     style content.
-     * @returns {Element|null} The newly inserted style element containing the
-     *     stylesheet resource or null if no new style element was added because
-     *     an existing one was found.
+     * @returns {Element|undefined} The newly inserted style element containing
+     *     the stylesheet resource or null if no new style element was added
+     *     because an existing one was found.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
      */
@@ -322,6 +322,7 @@ function(aDocument) {
      * @param {Document} aDocument Document to add the stylesheet to.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var computeObservationID,
@@ -534,7 +535,7 @@ function(aDocument) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -599,6 +600,7 @@ function(aRequest) {
      *     type when it is compiled.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {TP.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -631,7 +633,7 @@ function(aRequest) {
                 });
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -644,7 +646,7 @@ function(keyname) {
      * @summary Returns a unique binding for a TIBET keyname by seaching the
      *     receiver's type inheritance chain for a matching binding.
      * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
-     * @returns {String} A signal name if a matching binding is found.
+     * @returns {String|undefined} A signal name if a matching binding is found.
      */
 
     var map,
@@ -4153,7 +4155,8 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Object} attributeValue The value to set.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {null} Null according to the spec for DOM 'setAttribute'.
+     * @returns {undefined} Undefined according to the spec for DOM
+     *     'setAttribute'.
      */
 
     var node,
@@ -6704,7 +6707,7 @@ function(aSignal) {
     //  focus.
     aSignal.stopPropagation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7093,7 +7096,7 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDeactivate', aSignal.at('trigger'));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -29,6 +29,8 @@ function(anObject) {
      * @summary Creates a new instance from the object provided, if possible.
      * @param {Object} anObject The object to use as source data.
      * @exception TP.sig.InvalidOperation
+     * @returns {String|undefined} A valid TP.xforms.email representation
+     *     string.
      */
 
     var str;

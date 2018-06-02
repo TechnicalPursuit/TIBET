@@ -370,7 +370,7 @@ function(suite, caseName, caseFunc) {
      * @param {String} caseName The name assigned to the case. Should be unique
      *     for the specific test suite.
      * @param {Function} caseFunc The function implementing the test case.
-     * @returns {TP.test.Case} The newly created test case.
+     * @returns {TP.test.Case|undefined} The newly created test case.
      */
 
     var loadPath,
@@ -772,7 +772,7 @@ function() {
     var msg;
 
     if (this.isCompleting() || this.didComplete()) {
-        return;
+        return this;
     }
 
     this.complete();

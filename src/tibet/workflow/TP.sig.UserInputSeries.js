@@ -470,7 +470,7 @@ function(anOrigin, aPayload, aPolicy) {
         TP.ifWarn() ?
             TP.warn('No queries for TP.sig.UserInputSeries.') : 0;
 
-        return;
+        return this;
     }
 
     //  set up our state for the request
@@ -737,6 +737,7 @@ function() {
      * @method reset
      * @summary Prepares the receiver to be re-fired, leaving certain values in
      *     place to retain continuity.
+     * @returns {TP.sig.UserInputSeries} The receiver.
      */
 
     //  NOTE:   we don't clear origin in particular so that any hook
@@ -754,7 +755,7 @@ function() {
     this.atPut('default', null, false);
     this.atPut('password', null, false);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -189,6 +189,7 @@ function(value) {
     elem = this.getNativeNode();
 
     if (!TP.isElement(elem)) {
+        //  setting an attribute returns void according to the spec
         return;
     }
 
@@ -197,6 +198,7 @@ function(value) {
     //  interfere with normal processing so we don't rewrite.
     if (TP.notEmpty(target = TP.elementGetAttribute(elem, 'target', true))) {
         if (!TP.regex.NON_SIMPLE_PATH.test(target) && target !== '_self') {
+            //  setting an attribute returns void according to the spec
             return;
         }
     }
@@ -207,6 +209,7 @@ function(value) {
     //  exact expressions.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
     if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+        //  setting an attribute returns void according to the spec
         return;
     }
 
@@ -227,12 +230,14 @@ function(value) {
             ' return false;',
             true);
 
+        //  setting an attribute returns void according to the spec
         return;
     }
 
     //  If the link triggers a javascript url (or is javascript: void 0) exit.
     /* eslint-disable no-script-url */
     if (value.startsWith('javascript:')) {
+        //  setting an attribute returns void according to the spec
         return;
     }
     /* eslint-enable no-script-url */

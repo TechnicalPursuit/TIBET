@@ -825,7 +825,7 @@ function(aString) {
      *     method allows symbolic prefixes to be mapped into valid strings for
      *     help reporting and other purposes.
      * @param {String} aString The command prefix.
-     * @returns {String} The translated string.
+     * @returns {String|undefined} The translated string.
      */
 
     var ch,
@@ -1020,7 +1020,7 @@ function(aRequest) {
      *     processed.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
-     * @returns {Constant} A TP.shell.Shell control constant.
+     * @returns {Constant|undefined} A TP.shell.Shell control constant.
      */
 
     var src,
@@ -1437,7 +1437,7 @@ function(aRequest) {
      *     respectively.
      * @param {TP.sig.ShellRequest} aRequest The request containing parameter
      *     data.
-     * @returns {TP.sig.ShellRequest}
+     * @returns {TP.sig.ShellRequest|undefined}
      */
 
     var phases,
@@ -1911,7 +1911,7 @@ function(aRequest) {
 
     req.fire(this);
 
-    return;
+    return req;
 });
 
 TP.shell.TSH.addHelpTopic('logout',
@@ -2414,7 +2414,7 @@ function(aRequest) {
 
     aRequest.complete(url.getLocation());
 
-    return;
+    return aRequest;
 });
 
 TP.shell.TSH.addHelpTopic('source',
@@ -2525,7 +2525,7 @@ function(aRequest) {
             aRequest.complete();
         }, ms);
 
-    return;
+    return aRequest;
 });
 
 TP.shell.TSH.addHelpTopic('sleep',
@@ -2678,7 +2678,9 @@ function(aRequest) {
         var dat;
 
         dat = '' + data;
-        return dat.replace(/\\u001b\[38;5;\d*m/g, '').replace(/\\u001b\[0m/g, '');
+        return dat.
+                replace(/\\u001b\[38;5;\d*m/g, '').
+                replace(/\\u001b\[0m/g, '');
     };
 
     //  Helper function to process a single result object (print/resolve).
@@ -2890,7 +2892,7 @@ function(aRequest) {
                 //  via the configure() call.
             });
 
-        return;
+        return aRequest;
 
     } else {
 
@@ -2904,7 +2906,7 @@ function(aRequest) {
         cliSocket.send(str);
     }
 
-    return;
+    return aRequest;
 });
 
 TP.shell.TSH.addHelpTopic('cli',

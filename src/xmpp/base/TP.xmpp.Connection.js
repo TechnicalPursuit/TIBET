@@ -1233,6 +1233,7 @@ function(anElement) {
      *     supplied element.
      * @param {Element} anElement The element to use as a root to obtain the
      *     SASL mechanisms from.
+     * @returns {TP.xmpp.Connection} The receiver.
      */
 
     var mechanismsElement,
@@ -1270,7 +1271,7 @@ function(anElement) {
         this.set('SASLMechanisms', null);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1284,6 +1285,7 @@ function(anElement) {
      *     supplied element.
      * @param {Element} anElement The element to use as a root to obtain the
      *     stream features from.
+     * @returns {TP.xmpp.Connection} The receiver.
      */
 
     var featuresChild;
@@ -1293,7 +1295,7 @@ function(anElement) {
     //  here.
     if (TP.isValid(this.get('wantsBinding')) &&
         TP.isValid(this.get('wantsSession'))) {
-        return;
+        return this;
     }
 
     //  Make sure that we got a 'features' element back. It will tell us
@@ -1304,7 +1306,7 @@ function(anElement) {
         this.raise('TP.sig.XMPFeatureNegotiationException',
                     'Server did not return supported features list');
 
-        return;
+        return this;
     }
 
     //  See if the server supports 'resource binding'. If so, we'll flag it
@@ -1330,7 +1332,7 @@ function(anElement) {
         this.set('wantsSession', false);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

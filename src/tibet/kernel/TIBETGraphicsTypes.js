@@ -4307,7 +4307,7 @@ function(red, green, blue, alpha) {
      *     supplied.
      * @param {Number} alpha The alpha value of the receiver, if 4 arguments are
      *     supplied.
-     * @returns {TP.gui.Color} The receiver.
+     * @returns {TP.gui.Color|undefined} The receiver.
      */
 
     var theData,
@@ -5199,7 +5199,7 @@ function() {
      * @method normalizeGradientValues
      * @summary Normalizes the receiver's color stops so that there are a
      *     consistent number of stops that match the number of colors.
-     * @returns {TP.gui.Gradient} The receiver.
+     * @returns {TP.gui.Gradient|undefined} The receiver.
      */
 
     var colors,
@@ -7624,9 +7624,10 @@ function(params) {
      * @method clearValues
      * @summary Clears the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.Transition} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7940,9 +7941,10 @@ function(params) {
      * @method preserveValues
      * @summary Preserves the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.Transition} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7971,9 +7973,10 @@ function(params) {
      * @method restoreValues
      * @summary Restores the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.Transition} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7986,8 +7989,8 @@ function(params) {
      * @summary Executes the transition against the supplied element.
      * @param {TP.core.Hash} params A TP.core.Hash of the following stepping
      *     parameters: target.
-     * @returns {TP.core.JobStatus} The job or job group that was forked to
-     *     service the transition.
+     * @returns {TP.core.JobStatus|undefined} The job or job group that was
+     *     forked to service the transition.
      */
 
     var transitionJob;
@@ -8124,6 +8127,7 @@ function(params) {
      * @method clearValues
      * @summary Clears the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.MultiTransition} The receiver.
      */
 
     var transitionEntries,
@@ -8153,7 +8157,7 @@ function(params) {
         transitionEntry.at('transitionInst').clearValues(transitionParams);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -8225,6 +8229,7 @@ function(params) {
      * @method preserveValues
      * @summary Preserves the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.MultiTransition} The receiver.
      */
 
     var transitionEntries,
@@ -8255,7 +8260,7 @@ function(params) {
                                                     transitionParams);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -8267,6 +8272,7 @@ function(params) {
      * @method restoreValues
      * @summary Restores the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.MultiTransition} The receiver.
      */
 
     var transitionEntries,
@@ -8297,7 +8303,7 @@ function(params) {
                                                     transitionParams);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

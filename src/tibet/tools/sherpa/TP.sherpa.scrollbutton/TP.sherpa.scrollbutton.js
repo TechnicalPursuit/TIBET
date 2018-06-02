@@ -96,7 +96,7 @@ function() {
     contentElem = this.get('scrollingContentTPElem');
     if (TP.notValid(contentElem)) {
         //  DO NOT LOG, ERR, ETC.
-        return;
+        return this;
     }
 
     contentElem = contentElem.getNativeNode();

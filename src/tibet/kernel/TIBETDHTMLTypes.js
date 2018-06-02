@@ -203,6 +203,8 @@ function(aDragResponder, aSignal, xyPoint) {
                     TP.elementGetWidth(target));
 
     xyPoint.setX(xVal);
+
+    return;
 });
 
 //  ---
@@ -227,6 +229,8 @@ function(aDragResponder, aSignal, xyPoint) {
                     TP.elementGetHeight(target));
 
     xyPoint.setY(yVal);
+
+    return;
 });
 
 //  ---
@@ -282,6 +286,8 @@ function(aDragResponder, aSignal, xyPoint) {
     }
 
     xyPoint.clampToRect(maxFittedRect);
+
+    return;
 });
 
 //  ---
@@ -383,6 +389,8 @@ function(aDragResponder, aSignal, xyPoint) {
     }
 
     xyPoint.clampToRect(clampRect);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1443,7 +1451,7 @@ function(aSignal) {
 
         this.set('actionElement', null);
 
-        return;
+        return this;
     }
 
     //  Now we repurpose the overlay element to overlay the whole body for
@@ -1497,7 +1505,7 @@ function(aSignal) {
     actionElem = this.get('actionElement');
 
     if (!TP.isElement(actionElem)) {
-        return;
+        return this;
     }
 
     //  Remove the attribute on the action element that indicated we were
@@ -3249,7 +3257,7 @@ function() {
     //  dragging.
 
     if (!TP.isElement(actionElem = this.get('actionElement'))) {
-        return;
+        return this;
     }
 
     startPoint = this.get('startPoint');
@@ -3477,8 +3485,8 @@ function(anElement) {
      *     to those of the supplied element.
      * @param {HTMLElement} anElement The element supplied to use to position
      *     the manufactured element.
-     * @returns {HTMLElement} The element using as a 'dragging element' for use
-     *     in drag and drop operations.
+     * @returns {HTMLElement|undefined} The element using as a 'dragging
+     *     element' for use in drag and drop operations.
      */
 
     var dragDoc,
@@ -4650,6 +4658,7 @@ TP.dnd.DragTracker.Type.defineConstant('GLOBAL_CENTER',
         if (TP.isValid(rect = this.GLOBAL_RECT(target))) {
             return rect.getCenterPoint();
         }
+
         return;
     });
 
@@ -4660,6 +4669,7 @@ TP.dnd.DragTracker.Type.defineConstant('GLOBAL_RECT',
         } else if (TP.isElement(target)) {
             return TP.rtc(TP.elementGetGlobalBox(target));
         }
+
         return;
     });
 
@@ -4670,6 +4680,7 @@ TP.dnd.DragTracker.Type.defineConstant('GLOBAL_X_COORDS',
         if (TP.isValid(rect = this.GLOBAL_RECT(target))) {
             return TP.ac(rect.getX(), rect.getX().addToX(rect.getWidth()));
         }
+
         return;
     });
 
@@ -4680,6 +4691,7 @@ TP.dnd.DragTracker.Type.defineConstant('GLOBAL_Y_COORDS',
         if (TP.isValid(rect = this.GLOBAL_RECT(target))) {
             return TP.ac(rect.getY(), rect.getY().addToY(rect.getHeight()));
         }
+
         return;
     });
 
@@ -4690,6 +4702,7 @@ TP.dnd.DragTracker.Type.defineConstant('PAGE_CENTER',
         if (TP.isValid(rect = this.PAGE_RECT(target))) {
             return rect.getCenterPoint();
         }
+
         return;
     });
 
@@ -4700,6 +4713,7 @@ TP.dnd.DragTracker.Type.defineConstant('PAGE_RECT',
         } else if (TP.isElement(target)) {
             return TP.rtc(TP.elementGetPageBox(target));
         }
+
         return;
     });
 
@@ -4710,6 +4724,7 @@ TP.dnd.DragTracker.Type.defineConstant('PAGE_X_COORDS',
         if (TP.isValid(rect = this.PAGE_RECT(target))) {
             return TP.ac(rect.getX(), rect.getX().addToX(rect.getWidth()));
         }
+
         return;
     });
 
@@ -4720,6 +4735,7 @@ TP.dnd.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
         if (TP.isValid(rect = this.PAGE_RECT(target))) {
             return TP.ac(rect.getY(), rect.getY().addToY(rect.getHeight()));
         }
+
         return;
     });
 

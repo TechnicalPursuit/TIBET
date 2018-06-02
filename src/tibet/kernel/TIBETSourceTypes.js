@@ -335,7 +335,7 @@ function(closed) {
     var source;
 
     if (!this.isActive()) {
-        return;
+        return true;
     }
 
     source = this.get('source');
@@ -719,7 +719,7 @@ function() {
 
     //  If we're active and have a real source object nothing to do.
     if (this.isActive() && TP.isValid(this.get('source'))) {
-        return;
+        return true;
     }
 
     //  Reset any error count so we can reactivate without issues.
@@ -829,6 +829,7 @@ function(evt) {
      *     the receiver is managing has opened a connection to its remote
      *     server.
      * @param {MessageEvent} evt The event sent by the underlying system.
+     * @returns {TP.sig.RemoteMessageSource} The receiver.
      */
 
     var source,
@@ -843,7 +844,7 @@ function(evt) {
 
     this.signal('TP.sig.SourceOpen', payload);
 
-    return;
+    return this;
 });
 
 //  ========================================================================
@@ -908,6 +909,7 @@ function(evt) {
      * @summary The default method that is invoked when the server-sent events
      *     system that the receiver is managing has generated an error.
      * @param {ErrorEvent} evt The event sent by the underlying system.
+     * @returns {TP.sig.SSEMessageSource} The receiver.
      */
 
     var payload,
@@ -921,7 +923,7 @@ function(evt) {
     if (errorCount > TP.sys.cfg('sse.max_errors')) {
         this.raise('TP.sig.UnstableConnection');
         this.deactivate();
-        return;
+        return this;
     }
 
     this.set('errorCount', errorCount++);
@@ -931,7 +933,7 @@ function(evt) {
     //  'TP.sig.SourceClosed' and return.
     if (source.readyState === EventSource.CLOSED) {
         this.deactivate();
-        return;
+        return this;
     }
 
     //  If the readyState is set to EventSource.CONNECTING, then the browser is
@@ -939,7 +941,7 @@ function(evt) {
     //  'TP.sig.SourceReconnecting' and return.
     if (source.readyState === EventSource.CONNECTING) {
         this.signal('TP.sig.SourceReconnecting', payload);
-        return;
+        return this;
     }
 
     //  Otherwise, there was truly some sort of error, so we signal
@@ -954,7 +956,7 @@ function(evt) {
 
     this.deactivate();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -968,6 +970,7 @@ function(evt) {
      *     system that the receiver is managing has received data and has posted
      *     a message back into this content containing that data.
      * @param {MessageEvent} evt The event sent by the underlying system.
+     * @returns {TP.sig.SSEMessageSource} The receiver.
      */
 
     var source,
@@ -995,7 +998,7 @@ function(evt) {
 
     this.signal(signalName, payload);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1304,6 +1307,7 @@ function(evt) {
      * @summary The method that is invoked when the web socket that the receiver
      *     is managing has closed.
      * @param {CloseEvent} evt The event sent by the underlying system.
+     * @returns {TP.core.Socket} The receiver.
      */
 
     var source,
@@ -1325,7 +1329,7 @@ function(evt) {
     //  a recursion.
     this.deactivate(true);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1338,11 +1342,12 @@ function(evt) {
      * @summary The method that is invoked when the web socket that the receiver
      *     is managing has encountered an error.
      * @param {ErrorEvent} evt The event sent by the underlying system.
+     * @returns {TP.core.Socket} The receiver.
      */
 
     TP.error(evt);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1355,11 +1360,12 @@ function(evt) {
      * @summary The method that is invoked when the web socket that the receiver
      *     is managing has data ready to be processed.
      * @param {MessageEvent} evt The event sent by the underlying system.
+     * @returns {TP.core.Socket} The receiver.
      */
 
     TP.info(evt.data);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3408,6 +3414,7 @@ function(evt) {
      * @summary The default method that is invoked when the worker thread that
      *     the receiver is managing has posted a error back into this context.
      * @param {ErrorEvent} evt The event sent by the underlying system.
+     * @returns {TP.core.Worker} The receiver.
      */
 
     var err;
@@ -3417,7 +3424,7 @@ function(evt) {
 
     TP.error(err);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3430,11 +3437,12 @@ function(evt) {
      * @summary The default method that is invoked when the worker thread that
      *     the receiver is managing has posted a message back into this context.
      * @param {MessageEvent} evt The event sent by the underlying system.
+     * @returns {TP.core.Worker} The receiver.
      */
 
     TP.info(evt.data);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3512,7 +3520,7 @@ function(aURI) {
      *     worker thread to use the tibet_helper.js script as the base.
      *     Use the 'import' function of the returned instance to add a target
      *     script with a returned Promise you can chain to.
-     * @returns {TP.core.PromiseWorker} A new instance.
+     * @returns {TP.core.PromiseWorker|undefined} A new instance.
      */
 
     var uri;

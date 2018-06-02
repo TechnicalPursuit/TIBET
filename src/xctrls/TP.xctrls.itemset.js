@@ -694,6 +694,7 @@ function(anID) {
     //  want to endlessly recurse ;-).
     TP.elementSetAttribute(elem, 'id', anID, true);
 
+    //  setting an attribute returns void according to the spec
     return;
 });
 
@@ -1360,6 +1361,7 @@ function(selection) {
         function(d) {
             var wrappedElem;
 
+            //  TODO: This looks like a Chrome bug - investigate.
             this.__proto__ = this.ownerDocument.defaultView.Element.prototype;
 
             wrappedElem = TP.wrap(this);

@@ -1736,6 +1736,7 @@ function() {
      * @summary Clears the internal timer and/or heartbeat scheduling used by
      *     this job. Normally invoked by the public methods for pausing/stopping
      *     job execution.
+     * @returns {TP.core.Job} The receiver.
      */
 
     try {
@@ -1763,7 +1764,7 @@ function() {
         this.$timer = null;
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1999,7 +2000,7 @@ function() {
      *     making this equivalent to "job duration". The one thing to keep in
      *     mind is that unless limit was provided as a duration this value is
      *     purely an estimate and not a limiting factor.
-     * @returns {Number} Milliseconds of projected time.
+     * @returns {Number|undefined} Milliseconds of projected time.
      */
 
     var type;
@@ -3492,9 +3493,9 @@ function(controlParams, stepParams) {
      *     parameters that control the job.
      * @param {TP.core.Hash} stepParams A hash of job-specific parameters passed
      *     to the start() function for the job.
-     * @returns {TP.core.Job} A TP.core.Job instance which represents the
-     *     overall job, regardless of how many individual timeouts may be used
-     *     to implement it.
+     * @returns {TP.core.Job|undefined} A TP.core.Job instance which represents
+     *     the overall job, regardless of how many individual timeouts may be
+     *     used to implement it.
      */
 
     var job;

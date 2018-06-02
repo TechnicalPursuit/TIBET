@@ -35,7 +35,7 @@ function(anObject) {
      *     leading/trailing spaces and to shorten spans of multiple spaces to
      *     single spaces.
      * @param {Object} anObject The object to use as source data.
-     * @returns {?String} The string value.
+     * @returns {String|undefined} A valid TP.xs.token representation string.
      */
 
     var str;

@@ -1303,7 +1303,7 @@ function(aRequest) {
      * @summary Returns either the request's standard input or the receiver's
      *     'primary argument'.
      * @param {TP.sig.Request} aRequest The request to check for stdin.
-     * @returns {Object} The input data.
+     * @returns {Object|undefined} The input data.
      */
 
     var input;
@@ -1337,7 +1337,7 @@ function(aRequest, parameterName) {
      *     value associated with the named parameter if found.
      * @param {TP.sig.Request} aRequest The request being processed.
      * @param {String} parameterName The name of the parameter to find.
-     * @returns {String} The parameter value, if any.
+     * @returns {String|undefined} The parameter value, if any.
      */
 
     var shell;
@@ -1366,7 +1366,7 @@ function(aRequest) {
      *     for getPrimaryArgumentName. Overriding that method to provide a valid
      *     name is usually sufficient.
      * @param {TP.sig.Request} aRequest The request being processed.
-     * @returns {Object} The argument data.
+     * @returns {Object|undefined} The argument data.
      */
 
     var name,
@@ -1396,7 +1396,7 @@ function() {
      *     For action tags this method typically must be overridden or the
      *     getPrimaryArgument() and getActionInput() calls will typically fail
      *     to return useful results.
-     * @returns {String} The argument name.
+     * @returns {undefined} The argument name.
      */
 
     return;
@@ -1479,7 +1479,7 @@ function(aSignal) {
     shell = TP.shell.TSH.getDefaultInstance();
     shell[TP.composeHandlerName('ShellRequest')](request);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1827,7 +1827,7 @@ function(aRequest) {
      * @summary Returns the proper action name to use based on the pipe symbol
      *     being processed.
      * @param {TP.sig.Request} aRequest The request to process.
-     * @returns {String} 'filterInput' or 'transformInput'.
+     * @returns {String|undefined} 'filterInput' or 'transformInput'.
      */
 
     var node,
@@ -1859,7 +1859,7 @@ function(aRequest, functionName) {
      *     transform() to do the real work of the receiving tag.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @param {String} functionName 'filterInput' or 'transformInput'.
+     * @param {String|undefined} functionName 'filterInput' or 'transformInput'.
      */
 
     var node,
@@ -2004,7 +2004,7 @@ function(anInput, cmdNode, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @exception TP.sig.InvalidTransform
-     * @returns {Object} The transformed input.
+     * @returns {undefined} The transformed input.
      */
 
     this.raise('TP.sig.InvalidTransform');

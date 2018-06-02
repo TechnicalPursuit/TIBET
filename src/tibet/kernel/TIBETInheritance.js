@@ -182,7 +182,7 @@ function(name) {
      *     used for the type and instance 'tracks' of TIBET.
      * @param {String} name The name of the subtype, including an optional
      *     namespace prefix and colon separator.
-     * @returns {TP.lang.RootObject} A new type object.
+     * @returns {TP.lang.RootObject|undefined} A new type object.
      */
 
     var parts,
@@ -838,7 +838,7 @@ function() {
      *     as TP.core.IEBrowser. This strategy is used extensively by
      *     TP.dom.Node and TP.uri.URI to return the proper subtypes for your
      *     content.
-     * @returns {Object}
+     * @returns {Object|undefined}
      */
 
     var type,
@@ -869,7 +869,7 @@ function() {
      *     type is abstract this will not be the receiver, but when the receiver
      *     is abstract the type returned is the one that would be used to
      *     construct an instance based on the incoming parameters.
-     * @returns {Object}
+     * @returns {Object|undefined}
      */
 
     var subtypes,
@@ -1405,7 +1405,7 @@ function(typeOrFormat, formatParams) {
      *          <samp>This is a Date: Sat Dec 27 2008 17:31:27 GMT-0600
      *         (CST)</samp>
      *     </code>
-     * @returns {Object} An instance of the desired type/format.
+     * @returns {Object|undefined} An instance of the desired type/format.
      */
 
     var funcName,
@@ -1548,7 +1548,7 @@ function(aFormat, formatParams) {
      * @param {String} aFormat The format specification to format the receiver.
      * @param {TP.core.Hash|TP.sig.Request} formatParams Optional format
      *     parameters. These are parameters to a template transform.
-     * @returns {String} The formatted output.
+     * @returns {String|undefined} The formatted output.
      */
 
     if (TP.isValid(aFormat)) {
@@ -1897,8 +1897,8 @@ function(aSignal, flags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
-     * @returns {Function} The specific function or method that would be (or
-     *     was) invoked.
+     * @returns {Function|undefined} The specific function or method that would
+     *     be (or was) invoked.
      */
 
     var handlerNames,
@@ -1951,7 +1951,8 @@ function(aSignal, flags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
-     * @returns {String|Number} TP.NOT_FOUND or a set of names joined by '|'.
+     * @returns {String|Number|undefined} TP.NOT_FOUND or a set of names joined
+     *     by '|'.
      */
 
     var orgid,
@@ -2475,7 +2476,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {String} aMethodName The method name that failed.
      * @param {Object[]} anArgArray Optional arguments to function.
      * @param {Function|arguments} callingContext The calling context.
-     * @returns {Object} The results of function resolution.
+     * @returns {Object|undefined} The results of function resolution.
      */
 
     //  not implemented? can't do anything
@@ -2634,7 +2635,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {String} aMethodName The method name to invoke if found.
      * @param {Object[]} anArgArray Optional arguments to function.
      * @param {Function|arguments} callingContext The calling context.
-     * @returns {Object} The results of execution if possible.
+     * @returns {Object|undefined} The results of execution if possible.
      */
 
     var str,
@@ -2849,7 +2850,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
      * @param {String} aMethodName The method name to invoke if found.
      * @param {Object[]} anArgArray Optional arguments to function.
      * @param {Function|arguments} callingContext The calling context.
-     * @returns {Object} The results of execution if possible.
+     * @returns {Object|undefined} The results of execution if possible.
      */
 
     var i,
@@ -3117,6 +3118,7 @@ function(aFunction, millisecondCount, stackNames) {
      * @param {Function} aFunction The function being tracked.
      * @param {Number} millisecondCount A particular "run time" figure.
      * @param {String[]} stackNames An optional call stack array.
+     * @returns {TP.core.Hash} The statistics hash for the function.
      */
 
     var d1,
@@ -3197,7 +3199,7 @@ function(aFunction) {
      * @summary Returns any statistics TIBET may have on the particular
      *     function's performance.
      * @param {Function} aFunction The function being tracked.
-     * @returns {Number[]} An array of millisecond counts.
+     * @returns {Number[]|undefined} An array of millisecond counts.
      */
 
     var fn,
@@ -3274,7 +3276,7 @@ function() {
      * @method getSupertype
      * @summary Return the supertype of the receiver. For most native types
      *     this returns Object.
-     * @returns {Object} The supertype of the receiver.
+     * @returns {Object|undefined} The supertype of the receiver.
      */
 
     //  Object doesn't have a supertype thanks ;)
@@ -3302,7 +3304,7 @@ function() {
      * @method getSupertypeName
      * @summary Return the supertype name of the receiver. For most native
      *     types this returns Object.
-     * @returns {String} The supertype name of the receiver.
+     * @returns {String|undefined} The supertype name of the receiver.
      */
 
     //  Object doesn't have a supertype thanks ;)
@@ -3427,10 +3429,10 @@ function() {
      * @method constructViaSubtype
      * @summary Returns a new instance of the receiving type in the form of an
      *     instance of a viable subtype.
-     * @returns {Object}
+     * @returns {undefined}
      */
 
-    //  no default implementation, just return null
+    //  no default implementation, just return undefined
     return;
 });
 
@@ -4064,7 +4066,7 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
         target[targetPropName] = traitTrapGetter();
         TP.$$no_exec_trait_resolution = true;
 
-        return;
+        return this;
     }
 
     //  Define a property on the target under the property name that uses the
@@ -5882,7 +5884,7 @@ function(propName, track) {
     //  No valid resolution and we're not resolving with a defined value?
     //  Exit here.
     if (TP.notValid(resolution) && !entry.hasKey('definedValue')) {
-        return;
+        return this;
     }
 
     //  The resolution could be a type or a Function
@@ -7899,7 +7901,7 @@ function() {
      * @method initialize
      * @summary When the receiver is being treated like a Type this will cause
      *     that type to be loaded and initialized.
-     * @returns {Object} The new instance.
+     * @returns {Object|undefined} The new instance.
      */
 
     var typ;
@@ -8674,7 +8676,7 @@ function(anAspect, aFacet, aDescription) {
         desc;
 
     if (!this.shouldSignalChange()) {
-        return;
+        return this;
     }
 
     //  Build up the signal name we'll be firing.
@@ -8700,7 +8702,7 @@ function(anAspect, aFacet, aDescription) {
         this.raise('TP.sig.InvalidParameter',
                     'Description not a collection.');
 
-        return;
+        return this;
     }
     desc.atPutIfAbsent('aspect', asp);
     desc.atPutIfAbsent('action', TP.UPDATE);
@@ -8708,11 +8710,11 @@ function(anAspect, aFacet, aDescription) {
     desc.atPutIfAbsent('target', this);
 
     //  Fire the signal. Note that we force the firing policy here. This allows
-    //  observers of a generic 'facet change' signal of some sort to see 'aspect'
-    //  facet Change notifications, even if those 'aspect' facet Change signals
-    //  haven't been defined as being subtypes of FacetChange (although we also
-    //  supply the base signal name as the default signal type here so that
-    //  undefined aspect signals will use that type).
+    //  observers of a generic 'facet change' signal of some sort to see
+    //  'aspect' facet Change notifications, even if those 'aspect' facet Change
+    //  signals haven't been defined as being subtypes of FacetChange (although
+    //  we also supply the base signal name as the default signal type here so
+    //  that undefined aspect signals will use that type).
     TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, baseSig);
 
     return this;
@@ -8806,8 +8808,8 @@ function(aspectName, facetName) {
      *      value for.
      * @param {String} facetName The name of the facet to return the facet
      *      value for.
-     * @returns {Object} The value of the named facet of the named aspect on the
-     *      receiver.
+     * @returns {Object|undefined} The value of the named facet of the named
+     *     aspect on the receiver.
      */
 
     var facetSetting,
@@ -9501,7 +9503,7 @@ function() {
      *     instance which has been programmed differently from its standard
      *     instance behavior can use this method to skip the specific local
      *     method and invoke the instance method of its type.
-     * @returns {Object} The function's results.
+     * @returns {Object|undefined} The function's results.
      */
 
     var theFunction,
@@ -9675,7 +9677,7 @@ function() {
      *     instance which has been programmed differently from its standard
      *     instance behavior can use this method to skip the specific local
      *     method and invoke the instance method of its type.
-     * @returns {Object} The function's results.
+     * @returns {Object|undefined} The function's results.
      */
 
     var theFunction,
@@ -9791,7 +9793,7 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     required in most cases since that data is available from
      *         callingContext. Only used when the original arguments should be
      *         altered for the call.
-     * @returns {Object} The result of invoking the method found.
+     * @returns {Object|undefined} The result of invoking the method found.
      */
 
     var name,
@@ -9830,7 +9832,7 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     required in most cases since that data is available from
      *     callingContext. Only used when the original arguments should be
      *     altered for the call.
-     * @returns {Function} The method found, or null.
+     * @returns {Function|undefined} The method found or undefined.
      */
 
     var name;
@@ -9868,7 +9870,7 @@ function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     required in most cases since that data is available from
      *     callingContext. Only used when the original arguments should be
      *     altered for the call.
-     * @returns {String} The method name found, or null.
+     * @returns {String|undefined} The method name found, or null.
      */
 
     var prefix,
@@ -10522,7 +10524,8 @@ function(aTarget, name, aTrack) {
      * @param {Object} aTarget The object to try to locate the method on.
      * @param {String} name The method name to locate.
      * @param {String} aTrack The track to locate the method on.
-     * @returns {Function} The Function object representing the method.
+     * @returns {Function|undefined} The Function object representing the
+     *     method.
      */
 
     var method;

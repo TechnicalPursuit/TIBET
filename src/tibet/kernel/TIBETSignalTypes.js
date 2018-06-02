@@ -153,7 +153,7 @@ function(aTarget, aTest, aSignal) {
         this.raise('TP.sig.InvalidParameter',
                     'Test must be a runnable function.');
 
-        return;
+        return this;
     }
 
     this.$set('test', test);
@@ -169,7 +169,7 @@ function(aTarget, aTest, aSignal) {
         this.raise('TP.sig.InvalidParameter',
                     'Signal must be valid signal name or type.');
 
-        return;
+        return this;
     }
 
     this.$set('notifier', signal);
@@ -1849,7 +1849,7 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
         policy;
 
     if (!this.requiresArming()) {
-        return;
+        return this;
     }
 
     context = windowContext;
@@ -1906,7 +1906,7 @@ function(anOrigin, aHandler, windowContext) {
         handler;
 
     if (!this.requiresArming()) {
-        return;
+        return this;
     }
 
     context = windowContext;

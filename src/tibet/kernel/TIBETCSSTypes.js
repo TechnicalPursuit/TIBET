@@ -92,7 +92,7 @@ function(controlParams, stepParams) {
      *     control parameters: delay, interval, limit, count, compute, freeze.
      * @param {TP.core.Hash} stepParams A TP.core.Hash of the following job
      *     step parameters: target, property.
-     * @returns {TP.gui.CSSPropertyTransition} A new instance.
+     * @returns {TP.gui.CSSPropertyTransition|undefined} A new instance.
      */
 
 
@@ -117,6 +117,7 @@ function(params) {
      * @method clearValues
      * @summary Clears the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.CSSPropertyTransition} The receiver.
      */
 
     /* eslint-disable no-unused-vars */
@@ -127,7 +128,7 @@ function(params) {
         dummyVal;
 
     if (TP.isEmpty(theTargets = params.at('target'))) {
-        return;
+        return this;
     }
 
     styleProperty = params.at('property');
@@ -136,7 +137,7 @@ function(params) {
     }
 
     if (TP.isEmpty(styleProperty)) {
-        return;
+        return this;
     }
 
     //  NB: We assign to dummyVal below to ensure that the JS engine is forced
@@ -158,7 +159,7 @@ function(params) {
                                         theTargets)).offsetHeight;
     }
 
-    return;
+    return this;
 
     /* eslint-enable no-unused-vars */
 });
@@ -297,6 +298,7 @@ function(params) {
      * @method preserveValues
      * @summary Preserves the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.CSSPropertyTransition} The receiver.
      */
 
     var theTargets,
@@ -305,7 +307,7 @@ function(params) {
         oldVal;
 
     if (TP.isEmpty(theTargets = params.at('target'))) {
-        return;
+        return this;
     }
 
     styleProperty = params.at('property');
@@ -314,7 +316,7 @@ function(params) {
     }
 
     if (TP.isEmpty(styleProperty)) {
-        return;
+        return this;
     }
 
     if (TP.isArray(theTargets)) {
@@ -331,7 +333,7 @@ function(params) {
         TP.elementPushStyleProperty(theTargets, styleProperty, oldVal);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -343,6 +345,7 @@ function(params) {
      * @method restoreValues
      * @summary Restores the values for the targets given the property name.
      * @param {TP.core.Hash} params The 'step parameters' supplied to the job.
+     * @returns {TP.gui.CSSPropertyTransition} The receiver.
      */
 
     /* eslint-disable no-unused-vars */
@@ -355,7 +358,7 @@ function(params) {
         dummyVal;
 
     if (TP.isEmpty(theTargets = params.at('target'))) {
-        return;
+        return this;
     }
 
     styleProperty = params.at('property');
@@ -364,7 +367,7 @@ function(params) {
     }
 
     if (TP.isEmpty(styleProperty)) {
-        return;
+        return this;
     }
 
     //  NB: We assign to dummyVal below to ensure that the JS engine is forced
@@ -394,7 +397,7 @@ function(params) {
                                         theTargets)).offsetHeight;
     }
 
-    return;
+    return this;
 
     /* eslint-enable no-unused-vars */
 });

@@ -30,7 +30,7 @@ function(anObject) {
      *     This will be a URI string if the incoming data represents a string in
      *     proper URI format.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.anyUR representation string.
      */
 
     var str;

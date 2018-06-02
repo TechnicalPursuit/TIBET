@@ -233,11 +233,12 @@ function() {
      * @summary Activates the receiver's triggers, typically by invoking
      *     observeTriggers. This method can be overridden as needed to ensure
      *     any other triggering setup occurs.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
     this.observeTriggers();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -306,11 +307,12 @@ function() {
      * @summary Deactivates the receiver's triggers, typically by invoking
      *     ignoreTriggers. This method can be overridden as needed to ensure
      *     any other triggering shutdown occurs.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
     this.ignoreTriggers();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -323,9 +325,10 @@ function() {
      * @summary Invoked by the init method to set up initial states for the
      *     receiver. If this method is not used via a subtype you must use
      *     other direct calls to properly configure the state machine.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -366,7 +369,7 @@ function(initialState, targetState, transitionDetails) {
         this.raise('InvalidOperation',
                     'Cannot modify an active state machine.');
 
-        return;
+        return this;
     }
 
     /* eslint-disable consistent-this */
@@ -567,7 +570,6 @@ function(initialState, targetState, transitionDetails) {
                         }
                     });
             }
-
         });
 
     //  ---
@@ -763,7 +765,7 @@ function(childExit) {
      * @param {Boolean} [childExit=false] True if this is being called by the
      *     child during exit processing. This is required to ensure that when
      *     the parent transitions it knows to ignore client state.
-     * @returns {String} The normalized state name.
+     * @returns {String|undefined} The normalized state name.
      */
 
     var child,
@@ -1114,6 +1116,7 @@ function(aState, signalOrParams, childExit) {
      * @param {Boolean} [childExit=false] True if this is being called by the
      *     child during exit processing. This is required to ensure that when
      *     the parent transitions it knows to ignore client state.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
     var oldState,
@@ -1173,7 +1176,7 @@ function(aState, signalOrParams, childExit) {
         lastTriggerTime = this.get('$lastTriggerTime');
         if (TP.isNumber(lastTriggerTime) &&
             triggerTime === lastTriggerTime) {
-            return;
+            return this;
         }
 
         //  If we are triggered try to directly respond to that triggering
@@ -1377,7 +1380,7 @@ function(aState, signalOrParams, childExit) {
     //  Capture the time that the last trigger signal fired.
     this.set('$lastTriggerTime', triggerTime, false);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1716,7 +1719,7 @@ function(aSignal) {
         //  NOTE we check against 'prior' here since input signals are passed
         //  'prior' (aka current) and 'state' (aka future).
         if (!inputs.contains(aSignal.at('prior'))) {
-            return;
+            return this;
         }
     }
 

@@ -305,7 +305,7 @@ function() {
 
     root = TP.sys.getUICanvas().getDocument().getRoot();
     if (TP.notValid(root)) {
-        return;
+        return this;
     }
 
     root = root.getNativeNode();

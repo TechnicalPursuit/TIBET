@@ -42,7 +42,7 @@ function(anObject) {
      *     incoming object after calling replace() on it to remove characters
      *     not in the Unicode NameChar spec.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {String|undefined} A valid TP.xs.NMTOKEN representation string.
      */
 
     var str;

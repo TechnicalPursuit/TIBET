@@ -315,6 +315,7 @@ function(anHref) {
      *     always inline the content, thereby matching the original action.
      * @param {String} anHref The URL that the receiver will use to fetch its
      *     content.
+     * @returns {TP.html.style} The receiver.
      */
 
     var styleURI,
@@ -345,7 +346,7 @@ function(anHref) {
         if (TP.isElement(inlinedStyleElem) &&
             TP.elementHasAttribute(
                 inlinedStyleElem, 'tibet:dontreload', true)) {
-            return;
+            return this;
         }
 
         //  Fetch the CSS content *synchronously*
@@ -362,8 +363,7 @@ function(anHref) {
                         this.getNativeNode().nextSibling);
     }
 
-    //  setting an attribute returns void according to the spec
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

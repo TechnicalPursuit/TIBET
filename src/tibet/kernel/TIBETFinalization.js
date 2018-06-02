@@ -48,7 +48,7 @@ function(aName, aValue, force) {
      * @param {Object} aValue The value to set for the global.
      * @param {Boolean} force True means an existing value will be forcefully
      *     replaced with the new value. The default is false.
-     * @returns {Object} The value after setting.
+     * @returns {Object|undefined} The value after setting.
      */
 
     //  we prefer explicit tests
@@ -87,7 +87,7 @@ function() {
     /**
      * @method activate
      * @summary Activates the entire TIBET 'system'.
-     * @summary TP.sys's 'activate()' method is called from $activate in the
+     * @description TP.sys's 'activate()' method is called from $activate in the
      *     boot system once the blank page has been loaded and the UI canvas is
      *     read to display initialization messages. The handler here is
      *     responsible for performing all code initialization, initialize the
@@ -100,6 +100,7 @@ function() {
      *     - Initializing the signaling system.
      *     - Checking the TIBET system version.
      *     - Loading the root window with content.
+     * @returns {TP.sys} The receiver.
      */
 
     var locale,
@@ -115,7 +116,7 @@ function() {
 
     // We only do this once.
     if (TP.sys.hasInitialized()) {
-        return;
+        return this;
     }
 
     //  Final signal before UI begins processing.
@@ -405,7 +406,7 @@ function() {
             throw err;
         });
 
-    return;
+    return this;
 }, {
     dependencies: [TP.extern.Promise]
 });
@@ -464,6 +465,7 @@ function() {
     /**
      * @method loadUIRoot
      * @summary Loads the 'ui root' window with the initial content.
+     * @returns {TP.sys} The receiver.
      */
 
     var inPhantom,
@@ -506,7 +508,7 @@ function() {
                             rootName);
         TP.boot.$flushLog(true);
 
-        return;
+        return this;
     }
 
     //  As long as we're not sharing a UI for booting with the final target UI
@@ -649,7 +651,7 @@ function() {
     //  Set the location of the window (wrapping it to be a TP.core.Window).
     TP.wrap(rootWindow).setContent(rootURI, request);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -663,11 +665,12 @@ function() {
      * @method finalizeShutdown
      * @summary Finalizes the shut down of the application by sending the
      *     'TP.sig.AppShutdown' signal.
+     * @returns {TP.sys} The receiver.
      */
 
     TP.signal(TP.sys, 'TP.sig.AppShutdown');
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -686,6 +689,7 @@ function(aURI) {
      *     executed by the application*.
      * @param {String} aURI The URI to navigate to in order to terminate the
      *     application.
+     * @returns {TP.sys} The receiver.
      */
 
     var sig,
@@ -699,7 +703,7 @@ function(aURI) {
 
     //  If the signal has been 'prevent default'ed, then return.
     if (sig.shouldPrevent()) {
-        return;
+        return this;
     }
 
     if (TP.isValid(aURI)) {
@@ -740,7 +744,7 @@ function(aURI) {
     //  through the 'unload' event handler.
     window.location = url.getLocation();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

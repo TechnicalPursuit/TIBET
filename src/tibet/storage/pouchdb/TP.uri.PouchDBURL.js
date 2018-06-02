@@ -266,7 +266,7 @@ function(existingResource, newResource, aRequest) {
 
     this.set('$lastAdded', newResource);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

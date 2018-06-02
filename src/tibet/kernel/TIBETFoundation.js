@@ -258,8 +258,8 @@ function(aName, shouldFault) {
      * @param {Boolean} shouldFault False to turn off testing and conversion of
      *     TP.lang.Proxy instances. This is considered a private parameter used
      *     by the kernel only.
-     * @returns {TP.lang.RootObject} The type object registered under the name
-     *     given.
+     * @returns {TP.lang.RootObject|undefined} The type object registered under
+     *     the name given.
      */
 
     var type,
@@ -612,6 +612,7 @@ function() {
      *     shouldn't be used when waiting for the screen to refresh as the GUI
      *     thread might not have been serviced yet. Instead, use the
      *     queueForNextRepaint() method.
+     * @returns {Function} The receiver.
      */
 
     var thisref,
@@ -704,7 +705,7 @@ function() {
         setTimeout(func, 0);
     }
 
-    return;
+    return this;
 }, {
     dependencies: [TP.extern.Promise]
 });
@@ -816,7 +817,7 @@ function() {
     //  structure can be provided.
     text = this.getCommentText();
     if (TP.isEmpty(text)) {
-        return;
+        return TP.ac();
     }
 
     //  ---
@@ -971,11 +972,11 @@ function(newMethodText, loadedFromSourceFile) {
      * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
      *     was loaded from a source file on startup or is being dynamically
      *     patched during runtime.
-     * @returns {String[]} An Array of Strings consisting of a) the patch as
-     *     computed between the current method text and the supplied method text
-     *     in 'unified diff' format and b) the new content text of the method's
-     *     source file as computed by splicing the current method text into the
-     *     source file (effectively updating it).
+     * @returns {String[]|undefined} An Array of Strings consisting of a) the
+     *     patch as computed between the current method text and the supplied
+     *     method text in 'unified diff' format and b) the new content text of
+     *     the method's source file as computed by splicing the current method
+     *     text into the source file (effectively updating it).
      */
 
     var obj,
@@ -1066,7 +1067,7 @@ function(newMethodText, loadedFromSourceFile) {
                 TP.warn('Unable to generate method patch.' +
                             ' Method index not found.') :
                 0;
-            return null;
+            return;
         }
 
         newContent = currentContent.slice(0, match.index) +
@@ -1643,7 +1644,7 @@ function() {
     /**
      * @method getSupertype
      * @summary Returns the supertype of the receiver.
-     * @returns {Object} The supertype of the receiver.
+     * @returns {Object|undefined} The supertype of the receiver.
      */
 
     //  Object doesn't have a supertype thanks ;)
@@ -1666,7 +1667,7 @@ function() {
     /**
      * @method getSupertypeName
      * @summary Returns the supertype name of the receiver.
-     * @returns {String} The supertype name of the receiver.
+     * @returns {String|undefined} The supertype name of the receiver.
      */
 
     //  Object doesn't have a supertype thanks ;)
@@ -4510,7 +4511,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
 
     //  If this method is invoked before signaling is ready then exit.
     if (!TP.sys.hasInitialized()) {
-        return;
+        return this;
     }
 
     //  Build up the signal name we'll be firing.
@@ -4534,7 +4535,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
         this.raise('TP.sig.InvalidParameter',
                     'Description not a collection.');
 
-        return;
+        return this;
     }
     desc.atPutIfAbsent('aspect', asp);
     desc.atPutIfAbsent('action', anAction || TP.UPDATE);
@@ -4596,7 +4597,7 @@ TP.changed = function(anAspect, anAction, aDescription) {
     //  We don't normally do this in TIBET, but this method is used heavily and
     //  is a hotspot.
     if (!this.shouldSignalChange()) {
-        return;
+        return this;
     }
 
     return this.$changed(anAspect, anAction, aDescription);
@@ -4639,7 +4640,7 @@ function(anAspect, anAction, aDescription) {
     //  We don't normally do this in TIBET, but this method is used heavily and
     //  is a hotspot.
     if (!this.shouldSignalChange()) {
-        return;
+        return this;
     }
 
     //  might need to sort on next get()
@@ -4675,14 +4676,14 @@ function(anAspect, anAction, aDescription) {
 
     //  If this method is invoked before signaling is ready then exit.
     if (!TP.sys.hasInitialized()) {
-        return;
+        return this;
     }
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
     //  We don't normally do this in TIBET, but this method is used heavily and
     //  is a hotspot.
     if (!this.shouldSignalChange()) {
-        return;
+        return this;
     }
 
     //  If we can find the actual object work from there so we allow it more
@@ -4708,7 +4709,7 @@ function(anAspect, anAction, aDescription) {
         this.raise('TP.sig.InvalidParameter',
                     'Description not a collection.');
 
-        return;
+        return this;
     }
     desc.atPutIfAbsent('aspect', asp);
     desc.atPutIfAbsent('action', anAction || TP.UPDATE);
@@ -6427,6 +6428,7 @@ function() {
      * @method dnu
      * @summary The 'backstop' for TIBET inferencing. When inferencing is
      *     enabled this method is the entry point.
+     * @returns {undefined}
      */
 
     return;
@@ -6522,7 +6524,7 @@ function(attributeName) {
      *     method takes over when get() fails to find a specific getter or an
      *     aspect adapted getter.
      * @param {String} attributeName The name of the attribute to get.
-     * @returns {Object} The value of the property on the receiver.
+     * @returns {Object|undefined} The value of the property on the receiver.
      */
 
     var val;
@@ -7514,9 +7516,10 @@ function(callingContext) {
      * @summary If there's a TIBET implementation of a debugging tool this
      *     function will run it if possible.
      * @param {Function|arguments} callingContext The context to debug.
+     * @returns {TP.sys} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7536,6 +7539,7 @@ function(callingContext) {
      *     debuggers will only become visible if a) installed and b) are already
      *     open.
      * @param {Function|arguments} callingContext The calling context.
+     * @returns {TP.sys} The receiver.
      */
 
     if (this.hasDebugger()) {
@@ -7552,7 +7556,7 @@ function(callingContext) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -8438,6 +8442,8 @@ function(keyCriteria, selectionCriteria) {
 
             return this.raise('TP.sig.InvalidParameter');
     }
+
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -9164,6 +9170,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
      *     the list which fails in any way.
      * @param {Boolean} stopOnError True to have the invocation sequence stop
      *     after any error occur. Default is false.
+     * @returns {Array} The receiver.
      */
 
     var thisref,
@@ -9213,7 +9220,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
 
     runner();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -9234,10 +9241,11 @@ function(aValue) {
         return this.raise('InvalidParameter');
     }
 
-    return this.compact(function(val) {
+    this.compact(function(val) {
         return val === aValue;
     });
 
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -9752,7 +9760,7 @@ function(aName) {
      *     deadening part of a global doesNotUnderstand hook.
      * @param {String} aName The name of the function this deadener stands in
      *     for.
-     * @returns {Function} An appropriate "no such method" function.
+     * @returns {Function|undefined} An appropriate "no such method" function.
      */
 
     var nsmFunc;

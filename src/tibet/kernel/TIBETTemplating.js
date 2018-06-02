@@ -97,7 +97,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
      *     output with embedded XHTML 'span' elements that wrap ACP expressions
      *     and contain the ACP expression in a 'tibet:templateexpr' attribute
      *     on that element.
-     * @returns {Function} The compiled template Function.
+     * @returns {Function|undefined} The compiled template Function.
      */
 
     var str,
@@ -1009,7 +1009,8 @@ function(aDataSource, transformParams) {
      *     'true' in order to have 'automatic' iteration occur). Additional keys
      *     of '$REPEAT_START' and '$REPEAT_LIMIT' determine the range of the
      *     iteration.
-     * @returns {String} The string resulting from the transformation process.
+     * @returns {String|undefined} The string resulting from the transformation
+     *     process.
      */
 
     var str,

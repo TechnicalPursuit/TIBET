@@ -214,7 +214,7 @@ function(aURIString) {
      * @method init
      * @summary Initializes a new instance of the receiver.
      * @param {String} aURIString A String containing a proper URI.
-     * @returns {TP.xmpp.URL} A new instance.
+     * @returns {TP.xmpp.URL|undefined} A new instance.
      */
 
     var results,
@@ -495,6 +495,7 @@ function(aSignal) {
      * @summary Responds to notification that a pubsub event packet has
      *     arrived.
      * @param {TP.sig.XMPPPubsubEventInput} aSignal The triggering signal.
+     * @returns {TP.xmpp.URL} The receiver.
      */
 
     var args,
@@ -508,7 +509,7 @@ function(aSignal) {
             'Invalid signal data for TP.sig.XMPPPubsubEventInput event.',
             TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notValid(node = args.at('node'))) {
@@ -517,7 +518,7 @@ function(aSignal) {
             'Missing stanza data for TP.sig.XMPPPubsubEventInput event.',
             TP.IO_LOG) : 0;
 
-        return;
+        return this;
     }
 
     if (TP.notEmpty(contents =
@@ -536,7 +537,7 @@ function(aSignal) {
         this.set('ignoreRemoteObservers', false);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

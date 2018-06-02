@@ -40,7 +40,8 @@ function(anObject) {
      * @summary Returns a base64 encoded string representing the incoming
      *     object.
      * @param {Object} anObject The object to encode.
-     * @returns {String} A valid base64-encoded string.
+     * @returns {String|undefined} A valid TP.xs.base64Binary representation
+     *     string.
      */
 
     var s;

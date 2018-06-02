@@ -1642,7 +1642,7 @@ function(indexes) {
 
     if (!TP.isElement(wrapperElement)) {
         //  TODO: Raise exception
-        return;
+        return this;
     }
 
     //  Loop over all of the supplied indices
@@ -2903,7 +2903,7 @@ function(indexes) {
 
     if (!TP.isElement(wrapperElement)) {
         //  TODO: Raise exception
-        return;
+        return this;
     }
 
     //  Loop over all of the supplied indices
@@ -4109,7 +4109,7 @@ function(aCollection, elems) {
         args;
 
     if (TP.notValid(aCollection)) {
-        return;
+        return this;
     }
 
     //  If we have already generated items and the count of those generated

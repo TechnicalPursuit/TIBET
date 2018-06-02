@@ -291,8 +291,8 @@ function(attributeName) {
      *     well as the 'object keys' normally found on objects. See $get on
      *     Object for more information.
      * @param {String} attributeName The name of the particular attribute.
-     * @returns {Object} The value contained in the named attribute on the
-     *     receiver.
+     * @returns {Object|undefined} The value contained in the named attribute on
+     *     the receiver.
      */
 
     var attr;
@@ -916,7 +916,7 @@ function(aFunction, namesOnly) {
      * @param {Function|String} aFunction The function being tracked.
      * @param {Boolean} namesOnly True means return the list of owner names
      *     only. Default is false.
-     * @returns {Object[]} An array of objects/types.
+     * @returns {Object[]|undefined} An array of objects/types.
      */
 
     var fname,
