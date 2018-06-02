@@ -6115,7 +6115,7 @@ function(aNode, aSignal) {
      *     containment hierarchy for aNode. This method essentially iterates via
      *     nodeGetResponderElement until no more responder elements are found.
      * @param {Node} aNode The DOM node to operate on.
-     * @param {TP.core.Signal} aSignal The signal instance being dispatched.
+     * @param {TP.sig.Signal} aSignal The signal instance being dispatched.
      * @returns {Element[]} The list of responder elements found. The order of
      *     the list is from first (closest to the element) to last (furthest
      *     from element), essentially the order for event bubbling phase
@@ -6152,7 +6152,7 @@ function(aNode, aSignal) {
      *     NOTE that this method will also traverse up through iframe containers
      *     to locate a potential component element.
      * @param {Node} aNode The DOM node to operate on.
-     * @param {TP.core.Signal} aSignal The signal instance being dispatched.
+     * @param {TP.sig.Signal} aSignal The signal instance being dispatched.
      * @returns {Element} A valid element or null.
      */
 

@@ -3493,7 +3493,7 @@ function(aPolicy) {
      *     Default signal types are used by the system for 'spoofed' signals
      *     (i.e. when a real signal type isn't provided).
      * @param {Function|String} aPolicy The policy specification.
-     * @returns {TP.meta.core.Signal} The default signal type for the provided
+     * @returns {TP.meta.sig.Signal} The default signal type for the provided
      *     policy.
      */
 
@@ -3556,7 +3556,7 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
      *     ChangeException is an Exception, not a Change :).
      * @param {TP.sig.Signal} aSignal The signal name/type.
      * @param {Object} aPayload Optional arguments.
-     * @param {TP.meta.core.Signal} defaultType A TP.core.Signal subtype type
+     * @param {TP.meta.sig.Signal} defaultType A TP.sig.Signal subtype type
      *     object.
      * @param {Boolean} isCancelable Optional flag for dynamic signals defining
      *     if they can be cancelled.
@@ -3640,12 +3640,12 @@ function(aSignal, aDefaultType) {
      *     their name to return Change signals, while types with Exception in
      *     their name will return TP.sig.Exception. TP.sig.Exception is tested
      *     first, so a ChangeException is an Exception, not a TP.sig.Change :).
-     * @param {TP.meta.core.Signal|String} aSignal A TP.core.Signal subtype type
+     * @param {TP.meta.sig.Signal|String} aSignal A TP.sig.Signal subtype type
      *     object or name.
-     * @param {TP.meta.core.Signal} aDefaultType An optional type object that
+     * @param {TP.meta.sig.Signal} aDefaultType An optional type object that
      *     will be used as the return type from this method if a real signal
      *     type couldn't be computed.
-     * @returns {TP.meta.core.Signal} A TP.core.Signal subtype type object.
+     * @returns {TP.meta.sig.Signal} A TP.sig.Signal subtype type object.
      */
 
     var aTypeName,

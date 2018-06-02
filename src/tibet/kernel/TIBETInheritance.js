@@ -814,7 +814,7 @@ function(aSignal) {
      *     provided. This method defaults to calling construct() to acquire the
      *     instance and should be overridden for types which require parameters
      *     for successful instance creation.
-     * @param {TP.core.Signal} aSignal The signal instance to build for.
+     * @param {TP.sig.Signal} aSignal The signal instance to build for.
      * @returns {Object} A new instance, if possible.
      */
 
@@ -1878,7 +1878,7 @@ function(aSignal, flags) {
      *     aSignal, but sometimes the caller already knows that it wants to
      *     'skip ahead' to consider signals further down in the chain (the
      *     INHERITANCE_FIRING policy in the notification system does this).
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      * @param {Object} [flags] The 'flags' parameter is a method parameter set.
      *     Properties can be any combination of the following:
      *          {String} [startSignal] The signal name to start considering
@@ -1932,7 +1932,7 @@ function(aSignal, flags) {
      * @method getBestHandlerNames
      * @summary Scans handler metadata and returns a sorted string of handler
      *     names which are viable for the signal and conditions provided.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      * @param {Object} flags The 'flags' parameter is a method parameter set.
      *     Properties can be any combination of the following:
      *          {String} [startSignal] The signal name to start considering
@@ -2261,11 +2261,11 @@ function(aSignal, flags) {
      * @description The implementation of this function on Object instances
      *     looks for a signal-specific handler before defaulting to simply
      *     logging the signal. You shouldn't override this method. Instead,
-     *     create custom handle* methods for the various TP.core.Signal subtypes
+     *     create custom handle* methods for the various TP.sig.Signal subtypes
      *     you're interested in to get custom behavior. Implement handleSignal()
      *     to serve as a generic signal catcher or handleChange() as a generic
      *     Change handler for example.
-     * @param {TP.core.Signal} aSignal The specific signal to handle.
+     * @param {TP.sig.Signal} aSignal The specific signal to handle.
      * @param {Object} [flags] The 'flags' parameter is a method parameter set.
      *     Properties can be any combination of the following:
      *          {String} [startSignal] The signal name to start considering
@@ -3587,7 +3587,7 @@ function(aSignal) {
      *     the signal as the only parameter. This model allows both observers
      *     and handlers to be registered for notification and to handle the
      *     notification in a consistent fashion.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      * @returns {Object} The function's return value.
      */
 
@@ -3633,9 +3633,9 @@ function(aSignal) {
     /**
      * @method fromTP_sig_Signal
      * @summary Common backstop for constructing instances from a
-     *     TP.core.Signal which should normally only occur for types that are
+     *     TP.sig.Signal which should normally only occur for types that are
      *     being used as handlers for signal data.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      * @returns {Object} The function's return value.
      */
 

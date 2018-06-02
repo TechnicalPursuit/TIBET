@@ -962,7 +962,7 @@ function(initialState, targetState, trigger) {
      *     potential transition being suggested.
      * @param {String} initialState The initial state.
      * @param {String} targetState The target state.
-     * @param {String|TP.core.Signal} [trigger] Triggering signal or name.
+     * @param {String|TP.sig.Signal} [trigger] Triggering signal or name.
      * @returns {Boolean} True if the transition isn't blocked by a guard.
      */
 
