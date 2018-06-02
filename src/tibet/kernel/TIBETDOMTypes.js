@@ -4772,8 +4772,6 @@ function(operation) {
         default:
             return this.raise('TP.sig.InvalidOperation');
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -16449,8 +16447,6 @@ function(operation) {
         default:
             return this.raise('TP.sig.InvalidOperation');
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------

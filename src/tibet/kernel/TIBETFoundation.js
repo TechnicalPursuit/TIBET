@@ -8362,7 +8362,7 @@ function(keyCriteria, selectionCriteria) {
      *     hash.
      * @param {Function} selectionCriteria A function which should return true
      *     for elements that should be grouped.
-     * @returns {Object[]} A new array containing the elements selected.
+     * @returns {Object[]|undefined} A new array containing the elements selected.
      * @example
      *      arr = TP.ac(1,2,3,4,5,6).groupBy(3);
      *
@@ -8442,8 +8442,6 @@ function(keyCriteria, selectionCriteria) {
 
             return this.raise('TP.sig.InvalidParameter');
     }
-
-    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
