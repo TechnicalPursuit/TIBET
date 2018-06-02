@@ -5882,9 +5882,9 @@ function(propName, track) {
     }
 
     //  No valid resolution and we're not resolving with a defined value?
-    //  Exit here.
+    //  Exit here with undefined.
     if (TP.notValid(resolution) && !entry.hasKey('definedValue')) {
-        return this;
+        return;
     }
 
     //  The resolution could be a type or a Function
