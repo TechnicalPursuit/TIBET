@@ -31,7 +31,7 @@ function(aRequest) {
      * @summary Executes the command, echoing any arguments for review.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered
      *     this command.
-     * @returns {TP.sig.Request} The request.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     var shell,

@@ -32,9 +32,7 @@ function(aRequest) {
      *     script file named as the target url.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Object} A value which controls how the outer TSH processing
-     *     loop should continue. Common values are TP.CONTINUE, TP.DESCEND, and
-     *     TP.BREAK.
+     * @returns {TP.sig.Request} The request.
      */
 
     var shell,
@@ -103,7 +101,7 @@ function(aRequest) {
 
     url.save(TP.request('method', TP.HTTP_PUT));
 
-    return;
+    return aRequest;
 });
 
 //  ------------------------------------------------------------------------

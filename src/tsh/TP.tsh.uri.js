@@ -340,7 +340,13 @@ TP.tsh.uri.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @inheritDoc
+     * @method tshExecute
+     * @summary Runs the receiver.
+     * @param {TP.sig.Request} aRequest The request containing command
+     *     input for the shell.
+     * @returns {Number} A TSH shell loop control constant which controls how
+     *     the outer TSH processing loop should continue. Common values are
+     *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     return this.cmdRunContent(aRequest);

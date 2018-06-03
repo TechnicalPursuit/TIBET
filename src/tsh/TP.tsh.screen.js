@@ -32,9 +32,7 @@ function(aRequest) {
      * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Object} A value which controls how the outer TSH processing
-     *     loop should continue. Common values are TP.CONTINUE, TP.DESCEND, and
-     *     TP.BREAK.
+     * @returns {TP.sig.Request} The request.
      */
 
     var shell,
@@ -62,7 +60,7 @@ function(aRequest) {
                 'The :screen command requires a loaded and enabled Sherpa');
         aRequest.complete(TP.TSH_NO_VALUE);
 
-        return;
+        return aRequest;
     }
 
     //  No arguments means we dump usage.
@@ -95,12 +93,12 @@ function(aRequest) {
         aRequest.stdout('screen switching requires numeric index');
         aRequest.complete(TP.TSH_NO_VALUE);
 
-        return;
+        return aRequest;
     }
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
-    return;
+    return aRequest;
 });
 
 //  ------------------------------------------------------------------------

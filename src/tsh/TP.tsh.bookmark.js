@@ -32,9 +32,7 @@ function(aRequest) {
      * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.Request} aRequest The request containing path input for
      *     the shell.
-     * @returns {Object} A value which controls how the outer TSH processing
-     *     loop should continue. Common values are TP.CONTINUE, TP.DESCEND, and
-     *     TP.BREAK.
+     * @returns {TP.sig.Request} The request.
      */
 
     var shell,
@@ -72,7 +70,7 @@ function(aRequest) {
                 'The :bookmark command requires a loaded and enabled Sherpa');
         aRequest.complete(TP.TSH_NO_VALUE);
 
-        return;
+        return aRequest;
     }
 
     arg0 = shell.getArgument(aRequest, 'ARG0');
@@ -99,7 +97,7 @@ function(aRequest) {
             aRequest.complete(TP.TSH_NO_VALUE);
         }
 
-        return;
+        return aRequest;
     }
 
     path = arg0;
@@ -178,7 +176,7 @@ function(aRequest) {
 
         //  Note how we do *not* complete the request before returning... we
         //  complete it in the handler above.
-        return;
+        return aRequest;
     }
 
     //  Last form - add the bookmark from scratch:
@@ -194,7 +192,7 @@ function(aRequest) {
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
-    return;
+    return aRequest;
 });
 
 //  ------------------------------------------------------------------------

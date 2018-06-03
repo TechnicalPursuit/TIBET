@@ -32,9 +32,7 @@ function(aRequest) {
      * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Object} A value which controls how the outer TSH processing
-     *     loop should continue. Common values are TP.CONTINUE, TP.DESCEND, and
-     *     TP.BREAK.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     var shell,
@@ -73,7 +71,7 @@ function(aRequest) {
                 'The :snippet command requires a loaded and enabled Sherpa');
         aRequest.complete(TP.TSH_NO_VALUE);
 
-        return;
+        return aRequest;
     }
 
     promptForDescription = function() {
@@ -167,7 +165,7 @@ function(aRequest) {
             aRequest.complete(TP.TSH_NO_VALUE);
         }
 
-        return;
+        return aRequest;
     }
 
     //  Second form - add the snippet based on the 4th history entry:
@@ -197,7 +195,7 @@ function(aRequest) {
 
         //  Note how we do *not* complete the request before returning... we
         //  complete it in the handler above.
-        return;
+        return aRequest;
     }
 
     //  Last form - add the snippet from scratch:
@@ -224,7 +222,7 @@ function(aRequest) {
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
-    return;
+    return aRequest;
 });
 
 //  ------------------------------------------------------------------------

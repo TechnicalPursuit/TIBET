@@ -1437,8 +1437,9 @@ function(aRequest) {
      * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {Object} A value which controls how the outer TSH processing
-     *     loop should continue. TP.CONTINUE and TP.BREAK are common values.
+     * @returns {Number} A TSH shell loop control constant which controls how
+     *     the outer TSH processing loop should continue. Common values are
+     *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     //  Typically this is overridden.
@@ -2024,8 +2025,9 @@ function(aRequest) {
      *     relies on the default action implied by the current pipe symbol to
      *     dispatch to the proper cmd*Input method.
      * @param {TP.sig.Request} aRequest The request to process.
-     * @returns {Object} A value which controls how the outer TSH processing
-     *     loop should continue.
+     * @returns {Number} A TSH shell loop control constant which controls how
+     *     the outer TSH processing loop should continue. Common values are
+     *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     var action;
