@@ -272,6 +272,7 @@ function(aSignal) {
      *     typically invoked automatically by services that are currently
      *     blocked servicing a prior request.
      * @param {TP.sig.UserIORequest} aSignal
+     * @returns {TP.core.UserIOService} The receiver.
      */
 
     this.get('requestQueue').add(aSignal);

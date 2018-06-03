@@ -42,7 +42,7 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.xctrls.notifier} The receiver.
+     * @returns {TP.meta.xctrls.notifier} The receiver.
      */
 
     //  Set up an observation for TP.sig.OpenNotifier
@@ -86,7 +86,7 @@ function(aSignal) {
      * @method handleOpenNotifier
      * @param {TP.sig.OpenNotifier} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.notifier} The receiver.
+     * @returns {TP.meta.xctrls.notifier} The receiver.
      */
 
     this.openOverlay(aSignal);

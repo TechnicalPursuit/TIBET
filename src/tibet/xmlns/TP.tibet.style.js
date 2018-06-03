@@ -58,7 +58,7 @@ function() {
      * @summary Updates the object containing global values passed to less
      *     worker thread processes. The values typically involve 'path'
      *     variables from the system configuration dictionary.
-     * @returns {TP.tibet.style} The receiver.
+     * @returns {TP.meta.tibet.style} The receiver.
      */
 
     var cfg,

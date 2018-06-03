@@ -157,7 +157,7 @@ function(aStanzaType) {
      *     mapped in the type's stanzaTypes array to be valid.
      * @param {String} aStanzaType The stanza type string to set.
      * @exception TP.sig.InvalidXMPPStanzaType
-     * @returns {TP.xmpp.Stanza} The receiver.
+     * @returns {TP.xmpp.Presence} The receiver.
      */
 
     //  In XMPP 1.0, there really isn't a type of 'available' and setting

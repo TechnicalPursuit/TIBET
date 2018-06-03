@@ -39,7 +39,7 @@ function(anEvent) {
      *     supplied event.
      * @param {Event} anEvent The native Event that is causing a TP.sig.UIHint
      *     signal to be dispatched.
-     * @returns {TP.xctrls.hint} The receiver.
+     * @returns {TP.meta.xctrls.hint} The receiver.
      */
 
     var sig,
@@ -141,7 +141,7 @@ function(anElement, hintElement, tooltipParams) {
      * @param {Element} hintElement The corresponding xctrls:hint element.
      * @param {TP.core.Hash} [tooltipParams] A hash of parameters to pass to the
      *     signal that will open the hint in a tooltip.
-     * @returns {TP.xctrls.hint} The receiver.
+     * @returns {TP.meta.xctrls.hint} The receiver.
      */
 
     var hintID,
@@ -216,7 +216,7 @@ function(anElement, hintElement) {
      * @summary Tears down the hint on the supplied element.
      * @param {Element} anElement The element to uninstall the hint behavior
      *     from.
-     * @returns {TP.xctrls.hint} The receiver.
+     * @returns {TP.meta.xctrls.hint} The receiver.
      */
 
     if (!TP.isElement(anElement)) {

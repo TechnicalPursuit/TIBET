@@ -1841,7 +1841,7 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
      * @param {Window} windowContext An optional window to search for the
      *     element(s). If not provided then the TP.context() method is used to
      *     find one.
-     * @returns {TP.sig.Signal} The receiver.
+     * @returns {TP.meta.sig.DOMUISignal} The receiver.
      */
 
     var context,
@@ -1899,7 +1899,7 @@ function(anOrigin, aHandler, windowContext) {
      * @param {Window} windowContext An optional window to search for the
      *     element(s). If not provided then the TP.context() method is used to
      *     find one.
-     * @returns {TP.sig.Signal} The receiver.
+     * @returns {TP.meta.sig.DOMUISignal} The receiver.
      */
 
     var context,

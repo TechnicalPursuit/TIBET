@@ -99,7 +99,7 @@ function() {
     /**
      * @method becomeFocusedResponder
      * @summary Tells the receiver that it is now the 'focused responder'.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.html.body} The receiver.
      */
 
     //  We override this from our supertype because, while we're considered
@@ -118,7 +118,7 @@ function() {
      * @method resignFocusedResponder
      * @summary Tells the receiver that it is no longer the 'focused
      *     responder'.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.html.body} The receiver.
      */
 
     //  We override this from our supertype because, while we're considered

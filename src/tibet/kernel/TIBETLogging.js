@@ -176,7 +176,7 @@ function(aName) {
      * @method initialize
      * @summary Initializes the class, ensuring that the initial root and
      *     primary logger instances are created.
-     * @returns {TP.log.Manager} The receiver.
+     * @returns {TP.meta.log.Manager} The receiver.
      */
 
     //  Force construction of the root logger on startup.
@@ -194,7 +194,7 @@ function(aLogger) {
      * @method registerLogger
      * @summary Registers a logger instance by name.
      * @param {TP.log.Logger} aLogger The logger to register.
-     * @returns {TP.log.Manager} The receiver.
+     * @returns {TP.meta.log.Manager} The receiver.
      */
 
     var name;
@@ -223,7 +223,7 @@ function(aLogger) {
      * @method removeLogger
      * @summary Removes a logger instance by name.
      * @param {TP.log.Logger} aLogger The logger to remove.
-     * @returns {TP.log.Manager} The receiver.
+     * @returns {TP.meta.log.Manager} The receiver.
      */
 
     var name;

@@ -371,7 +371,7 @@ function(aToggleValue) {
      *     to display a 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
      *     'selected' state.
-     * @returns {TP.html.select} The receiver.
+     * @returns {TP.html.li} The receiver.
      */
 
     this.setAttribute('selected', aToggleValue);

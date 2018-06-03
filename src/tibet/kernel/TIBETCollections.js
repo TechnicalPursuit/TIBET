@@ -4512,7 +4512,7 @@ function() {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.core.Hash} The receiver.
+     * @returns {TP.core.Hash} A new instance.
      */
 
     var obj,

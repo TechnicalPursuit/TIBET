@@ -46,7 +46,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.xctrls.list} The receiver.
      */
 
     var listTPElem,
@@ -1466,7 +1466,7 @@ function(selection) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.list} The receiver.
      */
 
     var selectedValues,
@@ -1616,7 +1616,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.list} The receiver.
      */
 
     var selectedValues,

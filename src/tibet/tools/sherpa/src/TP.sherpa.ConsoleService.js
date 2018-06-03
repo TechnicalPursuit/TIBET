@@ -1745,7 +1745,7 @@ function(aRequest) {
      * @summary Writes input content to the console GUI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.tsh.ConsoleService} The receiver.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var request,
@@ -1835,7 +1835,7 @@ function(anObject, aRequest) {
      * @param {Object} anObject The object to output in string form.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.sherpa.Console} The receiver.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var request,

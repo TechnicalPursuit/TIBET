@@ -41,7 +41,7 @@ function(aTargetElem) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.html.style} The receiver.
+     * @returns {TP.meta.html.style} The receiver.
      */
 
     var tpElem;

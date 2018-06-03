@@ -3940,7 +3940,7 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
      * @param {Object} initialValue Any initial value that the trait will have.
      * @param {Boolean} wantsImmediate Whether or not to resolve the trait
      *     immediately.
-     * @returns {TP.lang.RootObject} The receiver.
+     * @returns {TP.meta.lang.RootObject} The receiver.
      */
 
     var desc,
@@ -4096,7 +4096,7 @@ function(varargs) {
      *     trait types to the receiver.
      * @param {arguments} varargs 1...n trait type objects or a Boolean (the
      *     last argument only - see below).
-     * @returns {TP.lang.RootObject} The receiver.
+     * @returns {TP.meta.lang.RootObject} The receiver.
      */
 
     var inImmediateMode,
@@ -4990,7 +4990,7 @@ function(c3Resolver) {
      *     a particular trait.
      * @param {Object} c3Resolver The object used to compute a C3 linearization
      *     of types.
-     * @returns {TP.lang.RootObject} The receiver.
+     * @returns {TP.meta.lang.RootObject} The receiver.
      */
 
     var traits,
@@ -5771,7 +5771,7 @@ function(propName, track) {
      * @param {String} track The track to locate the property on.
      * @exception TP.sig.InvalidTrack This is raised when a track is supplied
      *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
-     * @returns {TP.lang.RootObject} The receiving type.
+     * @returns {TP.lang.RootObject|undefined} The receiving type.
      */
 
     var resolutions,
@@ -9270,7 +9270,7 @@ function(varargs) {
      *     receiver will consider the objects as part of the computation.
      * @param {arguments} varargs One or more objects to add to the receiver as
      *     dependencies for the receiver to function properly in the system.
-     * @returns {TP.lang.RootObject} The receiver.
+     * @returns {TP.meta.lang.RootObject} The receiver.
      */
 
     var args;

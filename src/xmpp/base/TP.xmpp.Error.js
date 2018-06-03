@@ -72,7 +72,7 @@ function() {
      * @method getErrorElement
      * @summary Returns the native node of the receiver since this type is, by
      *     defintion, an error
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {TP.xmp.Error} The receiver.
      */
 
     return this;

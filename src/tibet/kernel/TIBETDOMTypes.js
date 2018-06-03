@@ -3475,7 +3475,7 @@ function(aDocument) {
      * @param {Document} aDocument The native document containing instances of
      *     this node to refresh instances of. This defaults to the document of
      *     the current uicanvas.
-     * @returns {TP.dom.CollectionNode} The receiver.
+     * @returns {TP.meta.dom.CollectionNode} The receiver.
      */
 
     var originals,
@@ -10916,7 +10916,7 @@ function(anElement) {
      *     attribute.
      * @param {Element|TP.dom.ElementNode} anElement The element to guess the
      *     type and location for.
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {TP.meta.dom.ElementNode} The receiver.
      */
 
     var elem,
@@ -11187,7 +11187,7 @@ function(anElement, nodesAdded) {
      *     signal.
      * @param {Node[]} nodesAdded The nodes added to the receiver.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var processor,
@@ -11305,7 +11305,7 @@ function(anElement, nodesRemoved) {
      *     signal.
      * @param {Node[]} nodesRemoved  The nodes removed from the receiver.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var processor,

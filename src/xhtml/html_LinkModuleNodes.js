@@ -49,7 +49,7 @@ function(aTargetElem) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.html.link} The receiver.
+     * @returns {TP.meta.html.link} The receiver.
      */
 
     var tpElem;

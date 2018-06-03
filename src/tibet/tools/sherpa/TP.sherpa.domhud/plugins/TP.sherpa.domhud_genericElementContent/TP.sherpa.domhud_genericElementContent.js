@@ -81,7 +81,7 @@ function(aSignal) {
      *     source.
      * @param {ValueChange} aSignal The signal that caused this update method to
      *     be invoked.
-     * @returns {TP.sherpa.domhud} The receiver.
+     * @returns {TP.sherpa.domhud_genericElementContent} The receiver.
      */
 
     var aspectPath,

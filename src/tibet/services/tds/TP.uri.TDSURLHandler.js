@@ -266,7 +266,7 @@ function(aSignal) {
      * @summary Handles when a TDS-managed resource has changed.
      * @param {TP.sig.TDSFileChange} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
-     * @returns {TP.uri.TDSURLHandler} The receiver.
+     * @returns {TP.meta.uri.TDSURLHandler} The receiver.
      */
 
     var payload,

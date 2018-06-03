@@ -39,7 +39,7 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.xctrls.tooltip} The receiver.
+     * @returns {TP.meta.xctrls.tooltip} The receiver.
      */
 
     var cancellingSignalNames;
@@ -107,7 +107,7 @@ function(aSignal) {
      * @summary Handles notifications of a variety of mouse and key signals.
      * @param {TP.sig.DOMUISignal} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.tooltip} The receiver.
+     * @returns {TP.meta.xctrls.tooltip} The receiver.
      */
 
     //  For the cancelling signals that we subscribed to above, clear the
@@ -128,7 +128,7 @@ function(aSignal) {
      * @method handleOpenTooltip
      * @param {TP.sig.OpenTooltip} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.tooltip} The receiver.
+     * @returns {TP.meta.xctrls.tooltip} The receiver.
      */
 
     var delayVal,
@@ -165,7 +165,7 @@ function(aSignal) {
      * @method handleCancelTooltip
      * @param {TP.sig.CancelTooltip} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.tooltip} The receiver.
+     * @returns {TP.meta.xctrls.tooltip} The receiver.
      */
 
     clearTimeout(this.get('$displayDelayTimer'));

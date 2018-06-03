@@ -929,7 +929,7 @@ function(aStyleTPElem) {
      *     themed environment.
      * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
      *     ready.
-     * @returns {TP.xctrls.Element} The receiver.
+     * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
     //  NB: We override this to do nothing because the version that we inherit

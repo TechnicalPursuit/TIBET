@@ -3187,7 +3187,7 @@ function(aResult) {
      *     the completeJob() method invoked as part of this method's operation.
      * @param {Object} aResult An optional object to set as the result for the
      *     request.
-     * @returns {TP.core.JobStatus} The receiver.
+     * @returns {TP.core.TSHRunRequest} The receiver.
      */
 
     if (this.isCompleting() || this.didComplete()) {

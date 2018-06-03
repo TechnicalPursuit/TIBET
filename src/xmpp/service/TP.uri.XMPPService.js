@@ -219,7 +219,7 @@ function() {
      * @method clearAuthData
      * @summary Clears any stored authentication from the receiver and any
      *     backing store.
-     * @returns {TP.core.Service} The receiver.
+     * @returns {TP.core.XMPPService} The receiver.
      */
 
     this.callNextMethod();
@@ -243,7 +243,7 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
-     * @returns {TP.core.Service} The receiver.
+     * @returns {TP.core.XMPPService} The receiver.
      */
 
     var paramDict,

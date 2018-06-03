@@ -112,7 +112,7 @@ function(aNamespace, xPathExpr, aType) {
      *     order for the supplied type to be a valid match.
      * @param {Type} aType The type object that will be returned when the XPath
      *     expression matches.
-     * @returns {TP.xmpp.Pubsub} The receiver.
+     * @returns {TP.meta.xmpp.Pubsub} The receiver.
      */
 
     this.get('pubsubTypeRegistry').atPut(xPathExpr, aType);

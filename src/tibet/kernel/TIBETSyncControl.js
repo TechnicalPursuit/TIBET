@@ -103,7 +103,7 @@ function(aProcessMode) {
      *     receiving type. The mode must be one of those supported for the type
      *     based on the value of supportedModes.
      * @param {String} aProcessMode A TP.core.SyncAsync constant.
-     * @returns {TP.core.SyncAsync} The receiver.
+     * @returns {TP.meta.core.SyncAsync} The receiver.
      */
 
     var supported;

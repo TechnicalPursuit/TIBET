@@ -28,7 +28,7 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.sherpa.IDE} The receiver.
+     * @returns {TP.meta.sherpa.IDE} The receiver.
      */
 
     var toggleKey;
@@ -114,7 +114,7 @@ function(anElement) {
      *     element) that represents an element type that is not yet known to the
      *     system.
      * @param {Element} anElement The element to replace.
-     * @returns {TP.sherpa.IDE} The receiver.
+     * @returns {TP.meta.sherpa.IDE} The receiver.
      */
 
     var newTagContent,

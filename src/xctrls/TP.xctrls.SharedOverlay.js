@@ -167,7 +167,7 @@ function(aSignal) {
      * @summary Opens an overlay element and displays the content inside.
      * @param {TP.sig.OpenOverlay} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.SharedOverlay} The receiver.
+     * @returns {TP.meta.xctrls.SharedOverlay} The receiver.
      */
 
     var overlayTPElem,
@@ -328,7 +328,7 @@ function(contentInfo) {
      *     overlay is not from the same trigger.
      * @param {TP.core.Hash} contentInfo Information about the content, where to
      *     obtain it, how to render it, where to position it, etc.
-     * @returns {TP.xctrls.SharedOverlay} The receiver.
+     * @returns {TP.meta.xctrls.SharedOverlay} The receiver.
      */
 
     var triggerDoc,

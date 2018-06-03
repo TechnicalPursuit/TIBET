@@ -1909,7 +1909,7 @@ function() {
      * @method getSubmitName
      * @summary Returns the name under which the receiver would be submitted
      *     when used in a forms context.
-     * @returns {TP.html.inputRadio} The receiver.
+     * @returns {TP.html.inputCheckable} The receiver.
      */
 
     var node,
@@ -3277,7 +3277,7 @@ function(aTargetElem, anEvent) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @returns {TP.html.textarea} The receiver.
+     * @returns {TP.meta.html.textarea} The receiver.
      */
 
     var tpElem;

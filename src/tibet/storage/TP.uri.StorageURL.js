@@ -415,7 +415,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.StorageURL} The receiver.
      */
 
     this.callNextMethod();
@@ -481,9 +481,9 @@ function(aResource, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @listens {TP.sig.Change} Observes the primary resource for Change.
-     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
-     *     when the resource must be acquired in an async fashion prior to
-     *     setting any fragment value.
+     * @returns {TP.uri.StorageURL|TP.sig.Response} The receiver or a
+     *     TP.sig.Response when the resource must be acquired in an async fashion
+     *     prior to setting any fragment value.
      */
 
     this.$set('resource', aResource);

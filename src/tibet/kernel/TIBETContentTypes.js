@@ -197,7 +197,8 @@ function(content, aURI) {
      * @summary Returns the type to use for a particular access path.
      * @param {Object} content The data to find a concrete type for.
      * @param {TP.uri.URI} [aURI] The source URI.
-     * @returns {TP.core.Content} A viable subtype for enclosing the content.
+     * @returns {TP.meta.core.Content} A viable subtype for enclosing the
+     *     content.
      */
 
     if (TP.isNode(content) || TP.isKindOf(content, TP.dom.Node)) {
@@ -7187,7 +7188,7 @@ function() {
 
     /**
      * @method endChangedAddress
-     * @returns {TP.path.SimpleTIBETPath} The receiver.
+     * @returns {TP.meta.path.SimpleTIBETPath} The receiver.
      */
 
     this.get('$prefixParts').pop();
@@ -7202,7 +7203,7 @@ function() {
 
     /**
      * @method endObservedAddress
-     * @returns {TP.path.SimpleTIBETPath} The receiver.
+     * @returns {TP.meta.path.SimpleTIBETPath} The receiver.
      */
 
     var srcObj;
@@ -7239,7 +7240,7 @@ function(addressPart) {
     /**
      * @method startChangedAddress
      * @param {String} addressPart
-     * @returns {TP.path.SimpleTIBETPath} The receiver.
+     * @returns {TP.meta.path.SimpleTIBETPath} The receiver.
      */
 
     var prefixParts;
@@ -7259,7 +7260,7 @@ function(addressPart) {
     /**
      * @method startObservedAddress
      * @param {String} addressPart
-     * @returns {TP.path.SimpleTIBETPath} The receiver.
+     * @returns {TP.meta.path.SimpleTIBETPath} The receiver.
      */
 
     var srcObj,

@@ -44,7 +44,7 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.xctrls.popup} The receiver.
+     * @returns {TP.meta.xctrls.popup} The receiver.
      */
 
     //  Set up an observation for TP.sig.OpenPopup
@@ -63,7 +63,7 @@ function(aSignal) {
      * @summary Handles when the popup is to be opened.
      * @param {TP.sig.OpenPopup} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.popup} The receiver.
+     * @returns {TP.meta.xctrls.popup} The receiver.
      */
 
     this.openOverlay(aSignal);
@@ -81,7 +81,7 @@ function(aSignal) {
      * @summary Handles when the popup is to be toggled.
      * @param {TP.sig.TogglePopup} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.popup} The receiver.
+     * @returns {TP.meta.xctrls.popup} The receiver.
      */
 
     var popupTPElem;

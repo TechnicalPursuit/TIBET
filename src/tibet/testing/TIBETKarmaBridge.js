@@ -316,7 +316,7 @@ function(anEntry) {
      * @summary Formats the entry data using the receiver's layout and then
      *     passes it to the appropriate Karma method.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
-     * @returns {TP.log.Appender|undefined} The receiver.
+     * @returns {TP.log.KarmaAppender|undefined} The receiver.
      */
 
     var karma,

@@ -450,7 +450,7 @@ function(command, method, abstract, usage, description) {
      * @param {String} abstract The abstract of the command. Should be a single
      *     line of text maximum.
      * @param {Function} method The method object that implements the command.
-     * @returns {TP.shell.Shell} The receiver.
+     * @returns {TP.meta.shell.Shell} The receiver.
      */
 
     var topics;

@@ -1207,7 +1207,7 @@ function(selection) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.table} The receiver.
      */
 
     var selectedIndexes,
@@ -1371,7 +1371,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.table} The receiver.
      */
 
     var selectedIndexes,

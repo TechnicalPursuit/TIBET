@@ -438,7 +438,7 @@ function(aSignal) {
      * @summary Handles notifications of HUD closed change signals.
      * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.hudsidebar} The receiver.
+     * @returns {TP.sherpa.styleshud} The receiver.
      */
 
     var world,

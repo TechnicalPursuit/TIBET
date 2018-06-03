@@ -34,7 +34,7 @@ function(anEntry) {
      * @summary Formats the entry data using the receiver's layout and writes
      *     it to the console using the best console API method possible.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
-     * @returns {TP.log.Appender} The receiver.
+     * @returns {TP.log.SherpaAppender} The receiver.
      */
 
     var name,

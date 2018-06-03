@@ -4981,7 +4981,7 @@ function(aString) {
      * @param {String} aString The String to extract the color and stop values
      *     from.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.gui.Gradient} The receiver.
+     * @returns {TP.meta.gui.Gradient} The receiver.
      */
 
     var colors,
@@ -5045,7 +5045,7 @@ function(color, opacity) {
      *     between 0.0 and 1.0.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidNumber
-     * @returns {TP.gui.Gradient} The receiver.
+     * @returns {TP.meta.gui.Gradient} The receiver.
      */
 
     var opacityOffset,

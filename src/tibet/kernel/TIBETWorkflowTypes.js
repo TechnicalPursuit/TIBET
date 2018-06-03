@@ -43,7 +43,7 @@ function(anOrigin, aSignal) {
      *     signal) as part of the receiver's set of triggers.
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
-     * @returns {TP.core.Triggered} The receiver.
+     * @returns {TP.meta.core.Triggered} The receiver.
      */
 
     var triggers,
@@ -81,7 +81,7 @@ function(originSignalPairs) {
      *     origin and signal) as part of the receiver's set of triggers.
      * @param {String[][]} originSignalPairs The origin/signal pairs to use as
      *     triggers.
-     * @returns {TP.core.Triggered} The receiver.
+     * @returns {TP.meta.core.Triggered} The receiver.
      */
 
     var thisref;
@@ -128,7 +128,7 @@ function() {
     /**
      * @method ignoreTriggers
      * @summary Turns off registration (ignores) the receivers triggers.
-     * @returns {TP.core.Triggered} The receiver.
+     * @returns {TP.meta.core.Triggered} The receiver.
      */
 
     var triggers,
@@ -156,7 +156,7 @@ function() {
      * @method observeTriggers
      * @summary Tells the receiver to observe its trigger signals so it can
      *     begin to respond to them.
-     * @returns {TP.core.Triggered} The receiver.
+     * @returns {TP.meta.core.Triggered} The receiver.
      */
 
     var triggers,
@@ -4017,7 +4017,7 @@ function(keyRingName) {
      *     definitions to be made with less overhead. The individual keyrings
      *     will be loaded the first time a request is made for the actual keys.
      * @param {String} keyRingName The name of the keyring.
-     * @returns {TP.core.Resource} The receiver.
+     * @returns {TP.meta.core.PermissionGroup} The receiver.
      */
 
     var ring,
@@ -4928,7 +4928,7 @@ function() {
      *     type itself this is done by certain subtypes which want to avoid
      *     explicit instance creation/registration before a request can be
      *     serviced.
-     * @returns {TP.core.Service} The receiver.
+     * @returns {TP.meta.core.Service} The receiver.
      */
 
     //  Make sure to register this object with the system, if necessary, before
@@ -4953,7 +4953,7 @@ function() {
      * @summary Unregisters the receiver observe its trigger signals so that
      *     future requests will no longer trigger the type as a potential
      *     handler.
-     * @returns {TP.core.Service} The receiver.
+     * @returns {TP.meta.core.Service} The receiver.
      */
 
     if (!this.isRegistered()) {
@@ -7083,7 +7083,7 @@ function() {
     /**
      * @method back
      * @summary Causes the receiver to go back a page in browser history.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     this.set('direction', 'back', false);
@@ -7195,7 +7195,7 @@ function() {
     /**
      * @method forward
      * @summary Causes the receiver to go forward a page in browser history.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     this.set('direction', 'forward', false);
@@ -7855,7 +7855,7 @@ function(aURL) {
      *     encoded version of the supplied history value.
      * @param {String} aURL The location to use to replace the state on the
      *     native history object.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     return this.replaceState({}, '', aURL);
@@ -7877,7 +7877,7 @@ function(stateObj, aTitle, aURL) {
      * @param {String} aURL The location to use when displaying this history
      *     entry in the URL bar.
      * @exception {TP.sig.InvalidURI} When an invalid URL string is supplied.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var url,
@@ -7970,7 +7970,7 @@ function(anIndex) {
      * @method reportLocation
      * @summary Logs the history location at an index.
      * @param {Number} [anIndex] An index to report, or the current index.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var index,
@@ -8017,7 +8017,7 @@ function(aJSONString) {
      *     from the supplied JSON string.
      * @param {String} aJSONString The JSON-ified history information that was
      *     generated and stored using the saveSessionHistory method.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var obj;
@@ -8039,7 +8039,7 @@ function() {
      * @method saveSessionHistory
      * @summary Saves the session history (the history index and entries) to the
      *     browser's session storage.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     var info,
@@ -8068,7 +8068,7 @@ function(anIndex) {
      * @param {Number} anIndex The index to set the current index to.
      * @exception {TP.sig.InvalidParameter} If index in not a number.
      * @exception {TP.sig.InvalidIndex} If index would be out of range.
-     * @returns {TP.core.History} The receiver.
+     * @returns {TP.meta.core.History} The receiver.
      */
 
     if (!TP.isNumber(anIndex)) {

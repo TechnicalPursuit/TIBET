@@ -25,7 +25,7 @@ function(aWindow) {
      *     specific functions.
      * @param {Window} aWindow The window of the document to install the
      *     functions on.
-     * @returns {TP.core.Window} The receiver.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     return this;
@@ -42,7 +42,7 @@ function(aWindow) {
      *     supplied native window so that load/unload events on that window can
      *     be caught by TIBET and rebroadcast into the system as signals.
      * @param {Window} aWindow The Window to install the load/unload hooks onto.
-     * @returns {TP.core.Window} The receiver.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     var msg,
@@ -169,7 +169,7 @@ function(aWindow) {
      * @summary Installs a set of common functions onto aWindow to enhance that
      *     window's capability within the TIBET framework.
      * @param {Window} aWindow The window to install the functions on.
-     * @returns {TP.core.Window} The receiver.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     return this;

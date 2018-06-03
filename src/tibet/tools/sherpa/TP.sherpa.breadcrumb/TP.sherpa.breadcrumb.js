@@ -208,7 +208,7 @@ function(containerSelection) {
      *     starting point to begin d3.js drawing operations.
      * @param {TP.extern.d3.selection} containerSelection The selection made by
      *     having d3.js select() the receiver's 'selection container'.
-     * @returns {TP.extern.d3.Selection} The receiver.
+     * @returns {TP.extern.d3.Selection}
      */
 
     return containerSelection.selectAll('div.item');

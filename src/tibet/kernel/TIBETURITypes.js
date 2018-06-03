@@ -597,7 +597,7 @@ function(anInstance, aKey) {
      * @param {TP.uri.URI} anInstance The instance to register.
      * @param {String} [aKey] The optional key to store the instance under.
      * @exception {TP.sig.InvalidURI}
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.meta.uri.URI} The receiver.
      */
 
     var dict,
@@ -636,7 +636,7 @@ function(anInstance) {
      *     under.
      * @param {TP.uri.URI} anInstance The instance to remove.
      * @exception {TP.sig.InvalidURI}
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.meta.uri.URI} The receiver.
      */
 
     var dict,
@@ -6648,7 +6648,7 @@ function(shouldBePatched) {
      *     'patched' property.
      * @param {Boolean} shouldBePatched Whether the URI should be patched or
      *     not.
-     * @returns {TP.uri.TIBETURL} The receiver.
+     * @returns {TP.uri.URL} The receiver.
      */
 
     return this.getConcreteURI().set('$shouldPatch', shouldBePatched);
@@ -7245,7 +7245,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.HTTPURL} The receiver.
      */
 
     this.callNextMethod();
@@ -7529,7 +7529,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.FileURL} The receiver.
      */
 
     var thePath;
@@ -8011,7 +8011,7 @@ function(parts) {
      * @summary Performs any post-parsing initialization appropriate for the
      *     URI components which were parsed during scheme-specific parsing.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.WSURL} The receiver.
      */
 
     this.callNextMethod();
@@ -8282,7 +8282,7 @@ function(aURIString, aResource) {
      *     resolve to different concrete elements during its life.
      * @param {String} aURIString A String containing a proper URI.
      * @param {Object} [aResource] Optional value for the targeted resource.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.TIBETURL} The receiver.
      */
 
     //  make sure we come in with tibet: scheme or that we add it
@@ -8313,7 +8313,7 @@ function(parts) {
      *     that TP.uri.URI's implementation ensures that the uri, scheme,
      *     primary, and fragment portions of a URI string will be set.
      * @param {TP.core.Hash} parts The parsed URI components.
-     * @returns {TP.uri.URI|undefined} The receiver.
+     * @returns {TP.uri.TIBETURL|undefined} The receiver.
      */
 
     //  force ID expansion if it didn't already happen. this will also force
@@ -8663,8 +8663,8 @@ function(forceRefresh) {
      *     references.
      * @param {Boolean} forceRefresh True will force any cached value for
      *     resource URI to be ignored.
-     * @returns {TP.uri.URI|undefined} A concrete URI if the receiver resolves
-     *     to one.
+     * @returns {TP.uri.TIBETURL|undefined} A concrete URI if the receiver
+     *     resolves to one.
      */
 
     var resource,
@@ -9144,7 +9144,7 @@ function() {
      *     resource data for the receiver if the receiver has a fragment, or it
      *     may be an "embedded" URI in the case of schemes which support
      *     embedding URIs such as tibet:.
-     * @returns {TP.uri.URI} The receiver's primary resource URI.
+     * @returns {TP.uri.TIBETURL} The receiver's primary resource URI.
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
@@ -9553,7 +9553,7 @@ function() {
      * @method processRefreshedContent
      * @summary Invoked when remote resource changes have been loaded to provide
      *     the receiver with the chance to post-process those changes.
-     * @returns {TP.uri.URL} The receiver.
+     * @returns {TP.uri.TIBETURL} The receiver.
      */
 
     var concreteURI;
@@ -9680,9 +9680,9 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.uri.URL|TP.sig.Response} The receiver or a TP.sig.Response
-     *     when the resource must be acquired in an async fashion prior to
-     *     setting any fragment value.
+     * @returns {TP.uri.TIBETURL|TP.sig.Response} The receiver or a
+     *     TP.sig.Response when the resource must be acquired in an async
+     *     fashion prior to setting any fragment value.
      */
 
     var parts;
@@ -10308,7 +10308,7 @@ function() {
      * @summary Configures the routes from the tokens and paths that are in the
      *     cfg() data. If the route cfg() data is altered, this method should be
      *     called to update internal structures.
-     * @returns {TP.uri.URIRouter} The receiver.
+     * @returns {TP.meta.uri.URIRouter} The receiver.
      */
 
     var cfg,
@@ -10454,7 +10454,7 @@ function(token, pattern) {
      * @exception {TP.sig.InvalidToken} When the supplied token isn't a String.
      * @exception {TP.sig.InvalidPattern} When the supplied pattern isn't a
      *     RegExp.
-     * @returns {TP.uri.URIRouter} The receiver.
+     * @returns {TP.meta.uri.URIRouter} The receiver.
      */
 
     var regex;

@@ -1380,7 +1380,7 @@ function(anObjectArray, aMethodArray, aParamArray) {
      *     each target object.
      * @param {Object[]} aParamArray The Array of parameters to use when invoking
      *     the methods.
-     * @returns {TP.core.Job} The receiver.
+     * @returns {TP.meta.core.Job} The receiver.
      */
 
     var invokerFunc,

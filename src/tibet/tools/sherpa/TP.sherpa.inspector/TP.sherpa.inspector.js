@@ -480,7 +480,7 @@ function(aSourceObject) {
      * @summary Sets the receiver's 'primary entry to the supplied object.
      * @param {Object} aSourceObject The source object to register as the
      *     primary entry for the receiver.
-     * @returns {TP.sherpa.InspectorSource} The receiver.
+     * @returns {TP.sherpa.SingleEntryInspectorSource} The receiver.
      */
 
     this.addEntry('primary', aSourceObject);

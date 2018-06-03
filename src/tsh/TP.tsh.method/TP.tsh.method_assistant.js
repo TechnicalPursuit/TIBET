@@ -74,7 +74,7 @@ function() {
      * @method getAssistantModelURI
      * @summary Returns the URI containing the model that the assistant is using
      *     to manage all of the selections in its panel.
-     * @returns {TP.uri.URI} The receiver.
+     * @returns {TP.uri.URI}
      */
 
     return TP.uc('urn:tibet:method_cmd_source');

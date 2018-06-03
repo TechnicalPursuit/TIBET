@@ -652,7 +652,7 @@ function(aWindow) {
      * @summary Installs a set of common functions onto aWindow to enhance that
      *     window's capability within the TIBET framework.
      * @param {The} aWindow window to install the TIBET functionality on.
-     * @returns {TP.core.Window} The receiver.
+     * @returns {TP.meta.core.Window} The receiver.
      */
 
     return this;

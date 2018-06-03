@@ -130,7 +130,7 @@ function(aSignal) {
      *     let the rest of the system know that a type has been added.
      * @param {TP.sig.ScriptImported} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.tsh.type} The receiver.
+     * @returns {TP.meta.tsh.type} The receiver.
      */
 
     //  Unsubscribe us from this signal each time we run the handler. We're only

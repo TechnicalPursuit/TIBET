@@ -36,7 +36,7 @@ function() {
      *     data that uses TIBET data binding to bind data to this control. This
      *     method allows the receiver to transform it's 'data binding data' into
      *     data appropriate for d3.js selections.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.sherpa.typedisplay} The receiver.
      */
 
     //  The default version of this just returns the data-binding bound data.
@@ -202,7 +202,7 @@ function(containerSelection) {
      *     starting point to begin d3.js drawing operations.
      * @param {TP.extern.d3.selection} containerSelection The selection made by
      *     having d3.js select() the receiver's 'selection container'.
-     * @returns {TP.extern.d3.Selection} The receiver.
+     * @returns {TP.extern.d3.Selection}
      */
 
     return containerSelection.selectAll('div.section');

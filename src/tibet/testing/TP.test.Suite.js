@@ -114,7 +114,7 @@ function() {
      *     suites in the current run have been executed. It performs any tear
      *     down of 'global' TIBET functionality that the test harness might have
      *     needed during its test run.
-     * @returns {TP.test.Suite} The receiver.
+     * @returns {TP.meta.test.Suite} The receiver.
      */
 
     TP.getDefaultLogger().set('appenders', this.$get('tpAppenders'));
@@ -134,7 +134,7 @@ function() {
      *     suites in the current run have been executed. It performs any set up
      *     of 'global' TIBET functionality that the test harness might need
      *     during its test run.
-     * @returns {TP.test.Suite} The receiver.
+     * @returns {TP.meta.test.Suite} The receiver.
      */
 
     var appender,
@@ -420,7 +420,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     reason for the failure.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the error.
-     * @returns {TP.test.Case} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     var msg,
@@ -723,7 +723,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     reason for the failure.
      * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
      *     additional information about the failure.
-     * @returns {TP.test.Case} The receiver.
+     * @returns {TP.test.Suite} The receiver.
      */
 
     var msg,

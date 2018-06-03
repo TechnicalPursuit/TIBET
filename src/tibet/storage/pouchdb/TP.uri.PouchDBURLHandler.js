@@ -486,7 +486,7 @@ function(aSignal) {
      *     to URLs that represent their resources.
      * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
      *     application is to be shut down.
-     * @returns {TP.uri.PouchDBURLHandler} The receiver.
+     * @returns {TP.meta.uri.PouchDBURLHandler} The receiver.
      */
 
     var watchers;

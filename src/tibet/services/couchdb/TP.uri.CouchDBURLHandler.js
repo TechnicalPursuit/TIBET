@@ -363,7 +363,7 @@ function(aSignal) {
      * @summary Handles when a TDS-managed resource has changed.
      * @param {TP.sig.AppDidStart} aSignal The signal indicating that the
      *     application has completed all of its startup tasks.
-     * @returns {TP.uri.CouchDBURLHandler} The receiver.
+     * @returns {TP.meta.uri.CouchDBURLHandler} The receiver.
      */
 
     var watcherURIs,
@@ -558,7 +558,7 @@ function(aSignal) {
      * @summary Handles when a TDS-managed resource has changed.
      * @param {TP.sig.CouchDBChange} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
-     * @returns {TP.uri.CouchDBURLHandler} The receiver.
+     * @returns {TP.meta.uri.CouchDBURLHandler} The receiver.
      */
 
     var payload,

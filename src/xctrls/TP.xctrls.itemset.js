@@ -1031,7 +1031,7 @@ function(aStyleTPElem) {
      *     themed environment.
      * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
      *     ready.
-     * @returns {TP.sherpa.menucontent} The receiver.
+     * @returns {TP.sherpa.itemset} The receiver.
      */
 
     //  If we're not awakening this tag, then exit - we want none of the
@@ -1228,7 +1228,7 @@ function(containerSelection) {
      *     starting point to begin d3.js drawing operations.
      * @param {TP.extern.d3.selection} containerSelection The selection made by
      *     having d3.js select() the receiver's 'selection container'.
-     * @returns {TP.extern.d3.Selection} The receiver.
+     * @returns {TP.extern.d3.Selection}
      */
 
     var defaultTagName,
@@ -1340,7 +1340,7 @@ function(selection) {
      *     shared code used to build things no matter which method is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
      *     that new content should be appended to or altered.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.itemset} The receiver.
      */
 
     var selectedValues,
@@ -1431,7 +1431,7 @@ function(selection) {
      *     is used.
      * @param {TP.extern.d3.selection} [selection] The d3.js update selection
      *     that new content should be appended to or altered.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {TP.xctrls.itemset} The receiver.
      */
 
     var selectedValues,

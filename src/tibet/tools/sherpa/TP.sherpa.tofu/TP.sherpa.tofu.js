@@ -39,7 +39,7 @@ function(aTagTypeName) {
      *     currently loaded screen document in the Sherpa.
      * @param {String} aTagTypeName The name of the tags to find the proxy
      *     sherpa:tofu tags with and replace.
-     * @returns {TP.sherpa.tofu} The receiver.
+     * @returns {TP.meta.sherpa.tofu} The receiver.
      */
 
     var tagType,

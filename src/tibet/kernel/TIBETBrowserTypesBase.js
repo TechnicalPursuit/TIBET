@@ -21,7 +21,7 @@ function() {
      * @method installNativeNamespaces
      * @summary Installs namespace support for tag processing for namespaces
      *     that are natively supported on this browser.
-     * @returns {TP.core.Browser} The receiver.
+     * @returns {TP.meta.core.Browser} The receiver.
      */
 
     //  We only install the native namespaces if they haven't been installed
@@ -54,7 +54,7 @@ function() {
      * @method installNonNativeNamespaces
      * @summary Installs namespace support for tag processing for namespaces
      *     that are not natively supported on this browser.
-     * @returns {TP.core.Browser} The receiver.
+     * @returns {TP.meta.core.Browser} The receiver.
      */
 
     //  We only install the non-native namespaces if they haven't been

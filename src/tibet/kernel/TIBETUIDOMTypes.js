@@ -322,7 +322,7 @@ function(aDocument) {
      * @param {Document} aDocument Document to add the stylesheet to.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var computeObservationID,
@@ -600,7 +600,7 @@ function(aRequest) {
      *     type when it is compiled.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var elem,
@@ -802,7 +802,7 @@ function(addedNodes, queryInfo) {
      *     then filtered by our query.
      * @param {TP.core.Hash} queryInfo Information that was registered for this
      *     query when it was originally set up.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var queryStr,
@@ -854,7 +854,7 @@ function(styleTPElem) {
      *     (probably) rely on to render is available.
      * @param {TP.html.style} styleTPElem The stylesheet element that got
      *     loaded.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var body,
@@ -903,7 +903,7 @@ function(styleTPElemToObserve) {
      *     (probably) rely on to render is available.
      * @param {TP.html.style} styleTPElemToObserve The stylesheet element to
      *     observe for when it is loaded.
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var loadedHandler;
@@ -950,7 +950,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var manuallyBlurringElement,
@@ -1037,7 +1037,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var focusedElem,
@@ -1152,7 +1152,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var focusedTPElem,
@@ -1283,7 +1283,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -1421,7 +1421,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -1483,7 +1483,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,

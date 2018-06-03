@@ -24,7 +24,7 @@ function() {
     /**
      * @method refreshControls
      * @summary Refreshes the toolbar buttons based on the supplied dirty flags.
-     * @returns {TP.sherpa.uriEditorToolbarContent} The receiver.
+     * @returns {TP.sherpa.methodEditorToolbarContent} The receiver.
      */
 
     var editorTPElem,

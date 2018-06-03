@@ -154,7 +154,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.xctrls.SwitchableElement} The receiver.
      */
 
     var oldValue,

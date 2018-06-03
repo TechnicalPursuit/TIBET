@@ -178,7 +178,7 @@ function(pathPrefix) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.sherpa.InspectorSource} The receiver.
+     * @returns {TP.sherpa.ConfigPropertyAdaptor} The receiver.
      */
 
     this.callNextMethod();

@@ -3697,7 +3697,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -3915,7 +3915,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var dragStateMachine,
@@ -3970,7 +3970,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var evtTargetTPElem,
@@ -4012,7 +4012,7 @@ function(aTargetElem, anEvent) {
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
      * @exception TP.sig.InvalidElement
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
     var targetTPElem;

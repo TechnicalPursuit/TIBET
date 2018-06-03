@@ -118,7 +118,7 @@ function(tree, pojoObj) {
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
      * @param {Object[]} pojoObj The object to describe in the AST metadata.
-     * @returns {TP.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchemaType} The receiver.
      */
 
     var results,
@@ -208,7 +208,7 @@ function(tree, pojoObj) {
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
      * @param {Object} pojoObj The object to describe in the AST metadata.
-     * @returns {TP.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchemaType} The receiver.
      */
 
     var keys,
@@ -272,7 +272,7 @@ function(tree, pojoObj) {
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
      * @param {Object} pojoObj The object to describe in the AST metadata.
-     * @returns {TP.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchemaType} The receiver.
      */
 
     var schemaTypeName;
@@ -377,7 +377,7 @@ function(tree, schema, parent) {
      * @param {Object} schema The JSON Schema object being built.
      * @param {Object} parent The parent of the current JSON Schema object being
      *     built.
-     * @returns {TP.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchemaType} The receiver.
      */
 
     var keys,
@@ -612,7 +612,7 @@ function(aSchema) {
      * @method setSchema
      * @summary Sets the receiver's schema to the supplied hash.
      * @param {TP.core.Hash} aSchema The schema to use for the receiver.
-     * @returns {TP.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchemaType} The receiver.
      */
 
     var schemaJSON;

@@ -353,7 +353,7 @@ function() {
      * @method activate
      * @summary Ensures any resources such as string table content is loaded for
      *     the receiver.
-     * @returns {TP.i18n.Locale} The receiver.
+     * @returns {TP.meta.i18n.Locale} The receiver.
      */
 
     var locales,

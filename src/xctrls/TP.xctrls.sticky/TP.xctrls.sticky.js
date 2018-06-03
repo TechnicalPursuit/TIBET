@@ -41,7 +41,7 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.xctrls.sticky} The receiver.
+     * @returns {TP.meta.xctrls.sticky} The receiver.
      */
 
     //  Set up an observation for TP.sig.OpenSticky
@@ -74,7 +74,7 @@ function(aSignal) {
      * @summary Handles when the sticky is to be opened.
      * @param {TP.sig.OpenSticky} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.sticky} The receiver.
+     * @returns {TP.meta.xctrls.sticky} The receiver.
      */
 
     this.openOverlay(aSignal);
@@ -92,7 +92,7 @@ function(aSignal) {
      * @summary Handles when the sticky is to be toggled.
      * @param {TP.sig.ToggleSticky} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.xctrls.sticky} The receiver.
+     * @returns {TP.meta.xctrls.sticky} The receiver.
      */
 
     var stickyTPElem;
