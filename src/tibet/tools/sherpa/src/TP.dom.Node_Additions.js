@@ -760,7 +760,7 @@ function(insertionPointElement, insertionPosition) {
      *     insertion point to the insertion operation. This, in combination with
      *     the insertion position, will provide the place in the DOM to insert
      *     the new DOM node.
-     * @param {Constant} insertionPosition The insertion position, relative to
+     * @param {String} insertionPosition The insertion position, relative to
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
@@ -783,7 +783,7 @@ function(insertionPointElement, insertionPosition) {
      *     insertion point to the insertion operation. This, in combination with
      *     the insertion position, will provide the place in the DOM to insert
      *     the new DOM node.
-     * @param {Constant} insertionPosition The insertion position, relative to
+     * @param {String} insertionPosition The insertion position, relative to
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
@@ -986,7 +986,7 @@ function(insertionPointElement, insertionPosition) {
      *     insertion point to the reparent operation of the cloned node. This,
      *     in combination with the insertion position, will provide the place in
      *     the DOM to reparent the DOM node.
-     * @param {Constant} insertionPosition The insertion position, relative to
+     * @param {String} insertionPosition The insertion position, relative to
      *     the insertion point element, that the cloned node should be
      *     reparented at. This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN,
      *     TP.BEFORE_END, TP.AFTER_END.
@@ -1041,7 +1041,7 @@ function(insertionPointElement, insertionPosition) {
      *     insertion point to the reparenting operation. This, in combination
      *     with the insertion position, will provide the place in the DOM to
      *     reparent the DOM node.
-     * @param {Constant} insertionPosition The insertion position, relative to
+     * @param {String} insertionPosition The insertion position, relative to
      *     the insertion point element, that the node should be reparented at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
@@ -1601,7 +1601,7 @@ function(insertionPointElement, insertionPosition) {
      *     insertion point to the insertion operation. This, in combination with
      *     the insertion position, will provide the place in the DOM to insert
      *     the new DOM node.
-     * @param {Constant} insertionPosition The insertion position, relative to
+     * @param {String} insertionPosition The insertion position, relative to
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.
@@ -1732,7 +1732,7 @@ function(insertionPointElement, insertionPosition) {
      *     insertion point to the insertion operation. This, in combination with
      *     the insertion position, will provide the place in the DOM to insert
      *     the new DOM node.
-     * @param {Constant} insertionPosition The insertion position, relative to
+     * @param {String} insertionPosition The insertion position, relative to
      *     the insertion point element, that the new node should be inserted at.
      *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
      *     TP.AFTER_END.

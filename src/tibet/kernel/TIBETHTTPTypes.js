@@ -717,7 +717,7 @@ function(aFormat) {
      *     by default it tries to return the XML representation, followed by the
      *     text representation if the XML can't be formed from the response. An
      *     explicit return type can be forced by supplying a format constant.
-     * @param {Constant} aFormat One of the TP constants for low-level result
+     * @param {Number} aFormat One of the TP constants for low-level result
      *     data: TP.DOM, TP.TEXT, or TP.NATIVE.
      * @returns {Object} The object in the requested format.
      */
@@ -850,7 +850,7 @@ function() {
      * @summary Returns the MIME type this service uses for body encoding by
      *     default. This value is only used when a request does not specify a
      *     mimetype directly.
-     * @returns {Constant} A constant suitable for TP.httpEncode.
+     * @returns {String} A constant suitable for TP.httpEncode.
      */
 
     return this.$get('mimetype') || this.getType().get('mimetype');
@@ -866,7 +866,7 @@ function() {
      * @summary Returns the HTTP method used for this service type by default.
      *     In some cases this value isn't simply a default, it's the value used
      *     for all requests made via this service.
-     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
+     * @returns {String} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     return this.$get('httpMethod') || this.getType().get('httpMethod');
@@ -1038,7 +1038,7 @@ function(aRequest) {
      * @method rewriteRequestMIMEType
      * @summary Returns the MIME type this service uses for body encoding.
      * @param {TP.sig.HTTPRequest} aRequest The request to rewrite for.
-     * @returns {Constant} A constant suitable for TP.httpEncode.
+     * @returns {String} A constant suitable for TP.httpEncode.
      */
 
     //  Return the MIME type using the following hierarchy:
@@ -1120,7 +1120,7 @@ function(aRequest) {
      *     a requirement.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
+     * @returns {String} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     return TP.ifEmpty(aRequest.at('method'), this.getHTTPMethod());

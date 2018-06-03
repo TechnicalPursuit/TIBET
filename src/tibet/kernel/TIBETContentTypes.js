@@ -2169,7 +2169,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     collection. Note that this works with the supplied position to
      *     determine whether the insertion should happen before or after. If not
      *     specified, the item will be inserted at the end of the collection.
-     * @param {Constant} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     * @param {String} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
      *     null. This determines the position of the insertion. If no position
      *     is supplied, TP.AFTER is assumed.
      * @param {Boolean} [shouldClone=false] Whether or not to clone the data
@@ -2776,7 +2776,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      *     collection. Note that this works with the supplied position to
      *     determine whether the insertion should happen before or after. If not
      *     specified, the item will be inserted at the end of the collection.
-     * @param {Constant} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     * @param {String} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
      *     null. This determines the position of the insertion. If no position
      *     is supplied, TP.AFTER is assumed.
      * @param {Boolean} [shouldClone=false] Whether or not to clone the data

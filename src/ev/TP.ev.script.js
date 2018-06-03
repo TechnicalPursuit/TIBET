@@ -37,7 +37,9 @@ function(aRequest) {
      *     to avoid potential problems with entity encoding.
      * @param {TP.sig.Request} aRequest The TP.sig.TSHRunRequest or other shell
      *     related request responsible for this tag.
-     * @returns {Constant} A TSH shell loop control constant.
+     * @returns {TP.sig.Request|Number} The request or a TSH shell loop control
+     *     constant which controls how the outer TSH processing loop should
+     *     continue. Common values are TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     var node,

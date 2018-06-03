@@ -5573,7 +5573,7 @@ TP.boot.Log.canLogLevel = function(aLevel) {
     /**
      * @method canLogLevel
      * @summary Returns true if logging is set at or above aLevel.
-     * @param {Constant} aLevel A logging level constant such as TP.INFO
+     * @param {Number} aLevel A logging level constant such as TP.INFO
      *     or TP.DEBUG. The default is TP.WARN.
      * @returns {Boolean} True if logging is active for the given level.
      */
@@ -5631,7 +5631,7 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
     /**
      * @method isErrorLevel
      * @summary Returns true if the level provided represents a form of error.
-     * @param {Constant} aLevel A TP error level such as TP.FATAL.
+     * @param {Number} aLevel A TP error level such as TP.FATAL.
      * @returns {Boolean} True if the given level is considered an error.
      */
 
@@ -5654,9 +5654,9 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
      * @method isFatalCondition
      * @summary Returns true if the level and stage combine to make the
      *     combination represent a fatal boot error.
-     * @param {Constant} aLevel A TP error level such as TP.FATAL.
-     * @param {Constant} aStage A TP boot stage such as 'rendering'. Defaults to
-     *     the current stage.
+     * @param {Number} aLevel A TP error level such as TP.FATAL.
+     * @param {Object} aStage A TP boot stage such as 'rendering'. Possible
+     *     values are found on TP.boot.$$stages. Defaults to the current stage.
      * @returns {Boolean} True if the given pairing is considered fatal.
      */
 

@@ -1290,7 +1290,7 @@ function(aPosition) {
      * @summary Sets the 'insertion position' of the drop target. This is the
      *     position that the insertion will be made at if it is dropped under
      *     the current conditions.
-     * @param {Constant} aPosition The insertion position. This could be
+     * @param {String} aPosition The insertion position. This could be
      *     TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END, TP.AFTER_END.
      * @returns {TP.sherpa.outliner} The receiver.
      */

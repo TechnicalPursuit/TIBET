@@ -1635,7 +1635,7 @@ function() {
      * @method getRedirectionType
      * @summary Returns what kind of redirection type, if any, the receiver
      *     has.
-     * @returns {Constant} One of the following: TP.ADD, TP.GET, TP.SET,
+     * @returns {String} One of the following: TP.ADD, TP.GET, TP.SET,
      *     TP.FILTER, TP.TRANSFORM (or TP.NONE if there is no redirection)
      */
 

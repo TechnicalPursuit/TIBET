@@ -447,7 +447,7 @@ function(moveAction) {
      * @method scrollAndComputeFocusElement
      * @summary Scroll to a particular row based on the supplied move action and
      *     re-render the receiver.
-     * @param {Constant} moveAction The type of 'move' that the user requested.
+     * @param {String} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
      *          TP.LAST
@@ -1256,7 +1256,7 @@ function(selection) {
                  * @param {TP.dom.ElementNode} focusedTPElem The currently
                  *     focused element. This may be null if no element is
                  *     currently focused.
-                 * @param {Constant} moveAction The type of 'move' that the
+                 * @param {String} moveAction The type of 'move' that the
                  *     user requested.
                  *     This can be one of the following:
                  *         TP.FIRST

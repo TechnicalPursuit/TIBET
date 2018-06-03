@@ -1867,7 +1867,7 @@ function(focusedTPElem, moveAction) {
      *     focused element (if there is one) and the move action.
      * @param {TP.dom.ElementNode} focusedTPElem The currently focused element.
      *     This may be null if no element is currently focused.
-     * @param {Constant} moveAction The type of 'move' that the user requested.
+     * @param {String} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *         TP.FIRST
      *         TP.LAST
@@ -3763,7 +3763,7 @@ function(moveAction) {
      * @method moveFocus
      * @summary Moves the focus to a 'successor' element based on the
      *     information contained in the supplied event and on the move action.
-     * @param {Constant} moveAction The type of 'move' that the user requested.
+     * @param {String} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
      *          TP.LAST
@@ -6280,7 +6280,7 @@ function(moveAction) {
     /**
      * @method focus
      * @summary Focuses the receiver for keyboard input.
-     * @param {Constant} moveAction The type of 'move' that the user requested.
+     * @param {String} moveAction The type of 'move' that the user requested.
      *     This can be one of the following:
      *          TP.FIRST
      *          TP.LAST

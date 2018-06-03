@@ -680,7 +680,7 @@ function(mouseLocation, mouseButton) {
      *     constant, in which case the currently focused element will be used.
      *     If this parameter is not supplied or null, the currently focused
      *     element will be used as well.
-     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     * @param {String} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
      * @returns {TP.test.GUISequence} The receiver.
@@ -818,7 +818,7 @@ function(mouseLocation, mouseButton) {
      *     constant, in which case the currently focused element will be used.
      *     If this parameter is not supplied or null, the currently focused
      *     element will be used as well.
-     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     * @param {String} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
      * @returns {TP.test.GUISequence} The receiver.
@@ -1157,7 +1157,7 @@ function(mouseLocation, mouseButton) {
      *     constant, in which case the currently focused element will be used.
      *     If this parameter is not supplied or null, the currently focused
      *     element will be used as well.
-     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     * @param {String} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
      * @returns {TP.test.GUISequence} The receiver.
@@ -1260,7 +1260,7 @@ function(mouseLocation, mouseButton) {
      *     constant, in which case the currently focused element will be used.
      *     If this parameter is not supplied or null, the currently focused
      *     element will be used as well.
-     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     * @param {String} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
      * @returns {TP.test.GUISequence} The receiver.

@@ -139,10 +139,10 @@ function() {
 
     /**
      * @method getMode
-     * @summary Returns the current default processinng mode, sync or async,
+     * @summary Returns the current default processing mode, sync or async,
      *     for the resource. If there is an instance value that is returned,
      *     otherwise any value specified for the type will be used.
-     * @returns {Constant} A TP.core.Resource processing mode constant.
+     * @returns {Number} A TP.core.SyncAsync processing mode constant.
      */
 
     var mode;

@@ -6311,7 +6311,7 @@ function(targetPhase, targetPhaseList) {
      * @method hasReachedPhase
      * @summary Returns true if the receiver's content has been processed to
      *     the phase defined, relative to an optional phase list.
-     * @param {Constant} targetPhase A TIBET content "process phase" string such
+     * @param {String} targetPhase A TIBET content "process phase" string such
      *     as 'Compile'.
      * @param {String[]} targetPhaseList An array of phase names. The default is
      *     TP.shell.TSH.NOCACHE.

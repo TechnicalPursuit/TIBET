@@ -76,7 +76,7 @@ function(aRequest) {
      * @summary Returns the MIME type the request should be using. For a SOAP
      *     service this is always TP.XML_ENCODED.
      * @param {TP.sig.Request} aRequest The request being encoded.
-     * @returns {Constant} A constant suitable for TP.httpEncode.
+     * @returns {String} A constant suitable for TP.httpEncode.
      */
 
     return TP.XML_ENCODED;
@@ -141,7 +141,7 @@ function(aRequest) {
      *     always returns TP.HTTP_POST per the specification.
      * @param {TP.sig.SOAPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
+     * @returns {String} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     return TP.HTTP_POST;

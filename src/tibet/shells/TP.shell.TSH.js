@@ -1020,7 +1020,7 @@ function(aRequest) {
      *     processed.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
-     * @returns {Constant|undefined} A TP.shell.Shell control constant.
+     * @returns {Number|undefined} A TP.shell.Shell control constant.
      */
 
     var src,
