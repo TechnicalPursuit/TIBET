@@ -262,7 +262,7 @@ function(aSignal) {
     currentY = currentPoint.getY();
 
     if (currentX < 0 || currentY < 0) {
-        return null;
+        return this;
     }
 
     //  Draw the connector parts.
@@ -273,7 +273,7 @@ function(aSignal) {
     //  If we have an event target but it's a descendant of the connector
     //  element, that means it's a connector part and we need to ignore that.
     if (this.contains(evtTarget)) {
-        return null;
+        return this;
     }
 
     //  Compute a new connector destination.
@@ -285,7 +285,7 @@ function(aSignal) {
     //  dest element, they're the same element so we just return here.
     if (TP.isElement(currentDestElement) &&
         currentDestElement === destElement) {
-        return null;
+        return this;
     }
 
     //  Hide the connector destination overlay from the current connector
