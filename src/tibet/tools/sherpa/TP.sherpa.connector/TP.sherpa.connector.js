@@ -249,6 +249,7 @@ function(aSignal) {
         evtTarget,
 
         destElement,
+        destTPElement,
         currentDestElement,
 
         srcElement;
@@ -277,7 +278,21 @@ function(aSignal) {
     }
 
     //  Compute a new connector destination.
-    destElement = this.computeValidDestination(aSignal).getNativeNode();
+    destTPElement = this.computeValidDestination(aSignal);
+
+    if (TP.notValid(destTPElement)) {
+        //  Hide the connector destination overlay from the current connector
+        //  destination.
+        this.hideConnectorDest();
+
+        //  No successful destination - make sure to null out destElement.
+        this.set('$destElement', null);
+
+        //  Exit here
+        return this;
+    }
+
+    destElement = destTPElement.getNativeNode();
 
     currentDestElement = this.$get('$destElement');
 
@@ -542,18 +557,18 @@ function(aSignal) {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
-    var srcElement,
+    var srcTPElement,
 
         startPoint;
 
     //  Compute a valid source for the connector. If one cannot be computed,
     //  then we exit here.
-    srcElement = this.computeValidSource(aSignal);
-    if (TP.notValid(srcElement)) {
-        return;
+    srcTPElement = this.computeValidSource(aSignal);
+    if (TP.notValid(srcTPElement)) {
+        return this;
     }
 
-    this.set('$srcElement', srcElement.getNativeNode());
+    this.set('$srcElement', srcTPElement.getNativeNode());
 
     //  Observe the mouse directly for DOMDragMove and DOMDragUp signals, We'll
     //  process those in our instance-level handlers above.
