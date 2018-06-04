@@ -151,7 +151,29 @@ function(destElement) {
      * @returns {Boolean} Whether or not the receiver will allow connection.
      */
 
-    return true;
+    var vendValue,
+        vendValues,
+
+        acceptValue,
+        acceptValues;
+
+    //  Get the vending value for comparison to what the target will accept.
+    //  Note that there can be multiple vending values.
+    vendValue = this.getAttribute('sherpa:connectorvend');
+    vendValues = vendValue.split(' ');
+    if (TP.isEmpty(vendValues)) {
+        return false;
+    }
+
+    //  Get the accepting value to compare against the vending value. Note that
+    //  there can be multiple accepting values.
+    acceptValue = TP.wrap(destElement).getAttribute('sherpa:connectoraccept');
+    acceptValues = acceptValue.split(' ');
+    if (TP.isEmpty(acceptValues)) {
+        return false;
+    }
+
+    return acceptValues.containsAny(vendValues);
 });
 
 //  ------------------------------------------------------------------------
@@ -167,7 +189,29 @@ function(srcElement) {
      * @returns {Boolean} Whether or not the receiver will allow connection.
      */
 
-    return true;
+    var acceptValue,
+        acceptValues,
+
+        vendValue,
+        vendValues;
+
+    //  Get the accepting value for comparison to what the target will accept.
+    //  Note that there can be multiple accepting values.
+    acceptValue = this.getAttribute('sherpa:connectoraccept');
+    acceptValues = acceptValue.split(' ');
+    if (TP.isEmpty(acceptValues)) {
+        return false;
+    }
+
+    //  Get the vending value to compare against the accepting value. Note that
+    //  there can be multiple vending values.
+    vendValue = TP.wrap(srcElement).getAttribute('sherpa:connectorvend');
+    vendValues = vendValue.split(' ');
+    if (TP.isEmpty(vendValues)) {
+        return false;
+    }
+
+    return vendValues.contains(acceptValues);
 });
 
 //  ------------------------------------------------------------------------
@@ -179,14 +223,18 @@ function(aConnector) {
      * @method getConnectorDestination
      * @summary Returns an element to be used as a connector destination. Note
      *     that, at this level, the receiver returns itself as a valid connector
-     *     destination.
+     *     destination (if it has the correct attribute).
      * @param {TP.sherpa.connector} aConnector The connector that is requesting
      *     the destination to drag to.
      * @returns {TP.dom.ElementNode} The element to use as the connector
      *     destination.
      */
 
-    return this;
+    if (this.hasAttribute('sherpa:connectoraccept')) {
+        return this;
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -198,13 +246,17 @@ function(aConnector) {
      * @method getConnectorSource
      * @summary Returns an element to be used as a connector source. Note that,
      *     at this level, the receiver returns itself as a valid connector
-     *     source.
+     *     source (if it has the correct attribute).
      * @param {TP.sherpa.connector} aConnector The connector that is requesting
      *     the source to drag from.
      * @returns {TP.dom.ElementNode} The element to use as the connector source.
      */
 
-    return this;
+    if (this.hasAttribute('sherpa:connectorvend')) {
+        return this;
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
