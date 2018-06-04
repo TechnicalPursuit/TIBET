@@ -341,6 +341,9 @@ function(finalizationFunc) {
     worldTPElem = TP.byId('SherpaWorld', viewDoc);
     worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'ClosedChange');
 
+    //  Set up any signal observations for Sherpa-wide handling.
+    this.setupObservations();
+
     //  Set up the console
     this.setupConsole();
 
@@ -829,6 +832,34 @@ function(aSignal) {
     this.ignore(TP.wrap(canvasDoc), 'TP.sig.MutationStyleChange');
 
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('DOMDragDown',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDragDown
+     * @summary Handles notification of when the receiver might need to start a
+     *     connection session.
+     * @param {TP.sig.DOMDragDown} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var connector;
+
+    connector = TP.byId('SherpaConnector', TP.win('UIROOT'));
+    if (TP.notValid(connector)) {
+        return this;
+    }
+
+    if (aSignal.getShiftKey() && aSignal.getAltKey()) {
+        connector.startConnecting(aSignal);
+    }
 
     return this;
 });
@@ -2828,6 +2859,22 @@ function() {
     menuTPElem = menuTPElem.clone();
 
     TP.byId('center', this.get('vWin')).addRawContent(menuTPElem);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('setupObservations',
+function() {
+
+    /**
+     * @method setupObservations
+     * @summary Sets up any 'IDE-wide' signal observations.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    this.observe(TP.core.Mouse, 'TP.sig.DOMDragDown');
 
     return this;
 });
