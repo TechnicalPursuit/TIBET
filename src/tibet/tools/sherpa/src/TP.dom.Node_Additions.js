@@ -211,7 +211,7 @@ function(srcElement) {
         return false;
     }
 
-    return vendValues.contains(acceptValues);
+    return vendValues.containsAny(acceptValues);
 });
 
 //  ------------------------------------------------------------------------
