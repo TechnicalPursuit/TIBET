@@ -3498,6 +3498,9 @@ function(includeDescendants) {
         hasFocus;
 
     focusedTPElem = this.getFocusedElement();
+    if (TP.notValid(focusedTPElem)) {
+        return false;
+    }
 
     hasFocus = focusedTPElem.identicalTo(this);
     if (!hasFocus && TP.notFalse(includeDescendants)) {
