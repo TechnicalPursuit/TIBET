@@ -37,8 +37,8 @@
 
         <div id="tofuInsertionAssistant_TypeChooser">
             <label for="tofuInsertionAssistant_NewTagNameField">Tag Type:</label>
-            <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.enteredTagName)}"/>
-            <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.chosenTagName)}"/>
+            <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.enteredTagName)}" ui:incremental="model" autocomplete="off"/>
+            <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist, filterValue: urn:tibet:tofuInsertionAssistant_source#jpath($.info.enteredTagName)}" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.chosenTagName)}" filter="true"/>
         </div>
 
         <div class="insertion_details">
