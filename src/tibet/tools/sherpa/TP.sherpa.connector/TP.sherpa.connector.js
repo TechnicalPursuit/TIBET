@@ -70,13 +70,35 @@ function(aSignal) {
      *     destination.
      */
 
-    var targetElement;
+    var targetElement,
+        targetTPElem,
 
+        validTPElemParent;
+
+    //  Grab the real target element at the current page point.
     targetElement = aSignal.getElementAtPagePoint();
+    targetTPElem = TP.wrap(targetElement);
 
-    //  Ask the target element to get the nearest connector destination (which
-    //  may be itself).
-    return TP.wrap(targetElement).getConnectorDestination();
+    //  If the target itself is a valid connector destination, then just return
+    //  it.
+    connectorSource = targetTPElem.getConnectorDestination();
+    if (TP.isValid(connectorSource)) {
+        return connectorSource;
+    }
+
+    //  Otherwise, iterate up the ancestor chain, looking for a valid connector
+    //  destination.
+    validTPElemParent = targetTPElem.detectAncestor(
+        function(aParent) {
+            return TP.isValid(TP.wrap(aParent).getConnectorDestination());
+        });
+
+    //  Found one? Return it's connector destination.
+    if (TP.isValid(validTPElemParent)) {
+        return validTPElemParent.getConnectorDestination();
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -89,16 +111,38 @@ function(aSignal) {
      * @summary Computes a valid connector source based on the supplied signal.
      * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which will be used
      *     to compute a valid connector source.
-     * @returns {TP.dom.ElementNode} The element to use as a connector source.
+     * @returns {TP.dom.ElementNode|null} The element to use as a connector
+     *     source.
      */
 
-    var targetElement;
+    var targetElement,
+        targetTPElem,
 
+        validTPElemParent;
+
+    //  Grab the real target element at the current page point.
     targetElement = aSignal.getElementAtPagePoint();
+    targetTPElem = TP.wrap(targetElement);
 
-    //  Ask the target element to get the nearest connector source (which may be
-    //  itself).
-    return TP.wrap(targetElement).getConnectorSource();
+    //  If the target itself is a valid connector source, then just return it.
+    connectorSource = targetTPElem.getConnectorSource();
+    if (TP.isValid(connectorSource)) {
+        return connectorSource;
+    }
+
+    //  Otherwise, iterate up the ancestor chain, looking for a valid connector
+    //  source.
+    validTPElemParent = targetTPElem.detectAncestor(
+        function(aParent) {
+            return TP.isValid(TP.wrap(aParent).getConnectorSource());
+        });
+
+    //  Found one? Return it's connector source.
+    if (TP.isValid(validTPElemParent)) {
+        return validTPElemParent.getConnectorSource();
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
