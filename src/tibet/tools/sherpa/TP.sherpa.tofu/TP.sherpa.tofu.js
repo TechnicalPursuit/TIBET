@@ -163,7 +163,7 @@ function(aSignal) {
                         ':type --assist' +
                                 ' --name=\'' + newTagName + '\'' +
                                 ' --dna=\'templatedtag\'' +
-                                ' --roottype=\'TP.dom.ElementNode\''
+                                ' --roottype=\'TP.lang.Object\''
                 ));
 
     return this;
