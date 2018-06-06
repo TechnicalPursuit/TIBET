@@ -9199,9 +9199,8 @@ function(anObj) {
     }
 
     try {
-        //  On IE, trying to get the 'frameElement' doesn't return
-        //  undefined, it throws a "No such interface supported"
-        //  exception...
+        //  On IE, trying to get the 'frameElement' doesn't return undefined, it
+        //  throws a "No such interface supported" exception...
         frame = anObj.frameElement;
 
         //  NOTE: the dependency here on TP.elementGetLocalName(), which

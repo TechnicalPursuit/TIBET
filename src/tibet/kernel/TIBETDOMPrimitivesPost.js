@@ -5236,11 +5236,10 @@ function(anElement) {
 
     cname = TP.canonical(anElement);
     ancestor = TP.nodeDetectAncestor(
-        anElement,
-        function(anAncestor) {
-
-            return TP.canonical(anAncestor) === cname;
-        });
+                    anElement,
+                    function(anAncestor) {
+                        return TP.canonical(anAncestor) === cname;
+                    });
 
     return TP.isElement(ancestor);
 });
@@ -9844,7 +9843,6 @@ function(aNode, aTagName, aNamespaceURI) {
     return TP.nodeDetectAncestor(
             aNode,
             function(elem) {
-
                 if (TP.isString(aNamespaceURI)) {
                     if (TP.nodeGetNSURI(elem) !== aNamespaceURI) {
                         return false;
