@@ -2716,6 +2716,79 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMMouseSignal.Inst.defineMethod('getElementAtPagePoint',
+function() {
+
+    /**
+     * @method getElementAtPagePoint
+     * @summary Returns the element currently under the receiver's 'page point'.
+     * @description On occasion, events will be dispatched between nested
+     *     iframes from the 'most nested' iframe - not taking into account the
+     *     nesting even when the mouse is not 'over' the most nested iframe.
+     *     This method allows the caller to consistently compute the element
+     *     that the mouse is over, no matter which iframe it is hosted in.
+     * @returns {Element|null} The element at the receiver's page point.
+     */
+
+    var targetDoc,
+        targetWin,
+
+        pageX,
+        pageY,
+
+        computedTargetElem,
+
+        frameElementWin,
+
+        frameOffsetXAndY;
+
+    targetDoc = this.getDocument().getNativeNode();
+    targetWin = TP.nodeGetWindow(targetDoc);
+
+    pageX = this.at('pageX');
+    pageY = this.at('pageY');
+
+    //  Try to get the element from the original target document. This very well
+    //  may be hosted in the 'most nested iframe'.
+    computedTargetElem = targetDoc.elementFromPoint(pageX, pageY);
+
+    frameElementWin = targetWin;
+
+    //  If we couldn't compute a target element, we iterate up through any
+    //  nested frames to try to compute one from the parent frames.
+    while (!TP.isElement(computedTargetElem)) {
+
+        //  If the current frame element window is not an iframe window, then we
+        //  must have reached 'top' without being able to compute a proper
+        //  element. Just return null.
+        if (!TP.isIFrameWindow(frameElementWin)) {
+            return null;
+        }
+
+        //  Reset the current frame element window by obtaining the window of
+        //  the frame element's window. This will be its 'parent window'.
+        frameElementWin = TP.nodeGetWindow(frameElementWin.frameElement);
+
+        //  We need to offset the pageX/pageY from the original target window to
+        //  the frame window that we're currently processing.
+        frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                            frameElementWin,
+                            targetWin,
+                            false);
+        pageX += frameOffsetXAndY.first();
+        pageY += frameOffsetXAndY.last();
+
+        //  Try to compute a target element using the new current frame element
+        //  window and translated coordinates.
+        computedTargetElem =
+            frameElementWin.document.elementFromPoint(pageX, pageY);
+    }
+
+    return computedTargetElem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMMouseSignal.Inst.defineMethod('getGlobalX',
 function(wantsTransformed) {
 
