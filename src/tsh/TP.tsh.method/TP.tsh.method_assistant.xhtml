@@ -21,7 +21,7 @@
 
                 <li>
                     <label for="methodOwnerTypeNameField">Method Owner:</label>
-                    <input type="text" id="methodOwnerTypeNameField" bind:io="{value: methodOwnerTypeName}" autofocus="autofocus"/>
+                    <input type="text" id="methodOwnerTypeNameField" bind:io="{value: methodOwnerTypeName}" autofocus="autofocus" autocomplete="off"/>
                 </li>
 
                 <li>
@@ -44,7 +44,7 @@
 
                 <li>
                     <label for="methodNameField">Name | Signal:</label>
-                    <input placeholder="method name or signal name" type="text" id="methodNameField" bind:io="{value: methodName}"/>
+                    <input placeholder="method name or signal name" type="text" id="methodNameField" bind:io="{value: methodName}" autocomplete="off"/>
                 </li>
             </ul>
         </form>
