@@ -10,7 +10,7 @@
         </tibet:data>
         <div class="supertype_chooser">
             <label for="SuperTypeFilterField">Supertype Filter:</label>
-            <input type="text" id="SupertypeFilterField" bind:io="{value: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" ui:incremental="model"/>
+            <input type="text" id="SupertypeFilterField" autofocus="autofocus" bind:io="{value: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" ui:incremental="model"/>
             <xctrls:list id="TypeAssistantSupertypes" bind:in="{data: urn:tibet:typelist, filterValue: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" bind:io="{value: urn:tibet:type_cmd_source#jpath($.info.supertype)}" filter="true"/>
         </div>
         <div class="new_type_details">
