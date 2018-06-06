@@ -60,16 +60,16 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  First, make sure that the target element has an 'autocomplete'
-    //  attribute. If not, just 'call up' and bail out.
-    if (!TP.elementHasAttribute(aTargetElem, 'autocomplete')) {
+    //  First, make sure that the target element has a 'filter' attribute. If
+    //  not, just 'call up' and bail out.
+    if (!TP.elementHasAttribute(aTargetElem, 'filter')) {
         return this.callNextMethod();
     }
 
     listTPElem = TP.wrap(aTargetElem);
 
-    //  Grab the value that we're accumulating for autocompletion.
-    accumValue = listTPElem.get('autocompleteValue');
+    //  Grab the value that we're accumulating for filtering.
+    accumValue = listTPElem.get('filterValue');
 
     //  Grab the name of the signal that would be signaled.
     keyname = TP.eventGetDOMSignalName(anEvent);
@@ -98,7 +98,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Set the accumulated value to the newly computed value.
-    listTPElem.set('autocompleteValue', accumValue);
+    listTPElem.set('filterValue', accumValue);
 
     return this.callNextMethod();
 });
@@ -111,11 +111,11 @@ function(aTargetElem, anEvent) {
 TP.xctrls.list.Inst.defineAttribute('$wholeData');
 TP.xctrls.list.Inst.defineAttribute('$dataKeys');
 
-//  The accumulated value being kept by the control for autocomplete purposes.
-TP.xctrls.list.Inst.defineAttribute('autocompleteValue');
+//  The accumulated value being kept by the control for filtering purposes.
+TP.xctrls.list.Inst.defineAttribute('filterValue');
 
-//  The search object being used by the control for autocomplete purposes.
-TP.xctrls.list.Inst.defineAttribute('$autocompleterSearcher');
+//  The search object being used by the control for filtering purposes.
+TP.xctrls.list.Inst.defineAttribute('$filterSearcher');
 
 //  The data as massaged into what this control needs. This is reset whenever
 //  the control's whole data set is reset.
@@ -192,7 +192,7 @@ function(aTerm) {
         //  Otherwise, grab the searcher to search through our data set. The
         //  searcher's matcher's data set is set in the setData call after the
         //  data it uses has been computed.
-        searcher = this.get('$autocompleterSearcher');
+        searcher = this.get('$filterSearcher');
         searcher.get('matchers').first().set(
                         'minMatchCharLength', aTerm.getSize());
 
@@ -763,21 +763,21 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineMethod('setAutocompleteValue',
+TP.xctrls.list.Inst.defineMethod('setFilterValue',
 function(aValue) {
 
     /**
-     * @method setAutocompleteValue
-     * @summary Sets the receiver's value used for autocompletion against its
-     *     data set and runs the filtering function to filter the data. Note
-     *     that if an empty String is supplied here, the filter is cleared and
-     *     the receiver's entire data set is once again displayed.
-     * @param {String} aValue The value to use as the receiver's autocomplete
+     * @method setFilterValue
+     * @summary Sets the receiver's value used for filtering against its data
+     *     set and runs the filtering function to filter the data. Note that if
+     *     an empty String is supplied here, the filter is cleared and the
+     *     receiver's entire data set is once again displayed.
+     * @param {String} aValue The value to use as the receiver's filtering
      *     value.
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    this.$set('autocompleteValue', aValue);
+    this.$set('filterValue', aValue);
 
     if (TP.notEmpty(this.get('data'))) {
         //  Go ahead and run the filter.
@@ -806,10 +806,10 @@ function(aDataObject, shouldSignal, isFiltered) {
     var dataObj,
         keys,
 
-        autoCompleteSource,
+        filteringSource,
         searcher,
 
-        autocompleteValue;
+        filterValue;
 
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
@@ -833,25 +833,25 @@ function(aDataObject, shouldSignal, isFiltered) {
         //  Array is the key and the second item is the value.
         if (TP.isHash(dataObj)) {
             keys = dataObj.getKeys();
-            autoCompleteSource = keys;
+            filteringSource = keys;
         } else if (TP.isPlainObject(dataObj)) {
             //  Make sure to convert a POJO into a TP.core.Hash
             keys = TP.hc(dataObj).getKeys();
-            autoCompleteSource = keys;
+            filteringSource = keys;
         } else if (TP.isPair(dataObj.first())) {
             keys = dataObj.collect(
                     function(item) {
                         //  Note that we want a String here.
                         return item.first().toString();
                     });
-            autoCompleteSource = keys;
+            filteringSource = keys;
         } else if (TP.isArray(dataObj)) {
             keys = dataObj.getIndices().collect(
                     function(item) {
                         //  Note that we want a String here.
                         return item.toString();
                     });
-            autoCompleteSource = dataObj;
+            filteringSource = dataObj;
         }
 
         this.set('$dataKeys', keys);
@@ -875,23 +875,23 @@ function(aDataObject, shouldSignal, isFiltered) {
         this.render();
     }
 
-    //  If we're configured to allow autocomplete, then check to see if we're
+    //  If we're configured to allow filtering, then check to see if we're
     //  setting the filtered data set or not. If we're not, then set the whole
-    //  data to the supplied data and configure the autocompleter searcher, if
-    //  there is one, with the data set that we've computed for it.
-    if (this.hasAttribute('autocomplete')) {
+    //  data to the supplied data and configure the filter searcher, if there is
+    //  one, with the data set that we've computed for it.
+    if (this.hasAttribute('filter')) {
         if (TP.notTrue(isFiltered)) {
             this.$set('$wholeData', dataObj, false);
 
-            searcher = this.get('$autocompleterSearcher');
+            searcher = this.get('$filterSearcher');
             if (TP.isValid(searcher)) {
                 searcher.get('matchers').first().set(
-                                        'dataSet', autoCompleteSource);
+                                        'dataSet', filteringSource);
             }
 
-            autocompleteValue = this.get('autocompleteValue');
-            if (TP.notEmpty(autocompleteValue)) {
-                this.filter(autocompleteValue);
+            filterValue = this.get('filterValue');
+            if (TP.notEmpty(filterValue)) {
+                this.filter(filterValue);
             }
         }
     }
@@ -1083,18 +1083,18 @@ function() {
     //  this makes sure we maintain parent processing
     this.callNextMethod();
 
-    if (this.hasAttribute('autocomplete')) {
+    if (this.hasAttribute('filter')) {
 
         newSearcher = TP.xctrls.Searcher.construct();
         newSearcher.addMatcher(
                             TP.xctrls.ListMatcher.construct(
                                 'XCTRLS_LIST_' + this.getLocalID()));
 
-        this.set('$autocompleterSearcher', newSearcher);
+        this.set('$filterSearcher', newSearcher);
 
         //  NB: We use $set() here or otherwise we end up trying to update
         //  currently non-existent GUI.
-        this.$set('autocompleteValue', '');
+        this.$set('filterValue', '');
     }
 
     return this;
@@ -1115,7 +1115,7 @@ function() {
     //  this makes sure we maintain parent processing
     this.callNextMethod();
 
-    if (this.hasAttribute('autocomplete')) {
+    if (this.hasAttribute('filter')) {
         this.signal('CloseSticky');
     }
 
@@ -1709,9 +1709,9 @@ function(aStyleTPElem) {
     var ourDocument,
         stickyTPElem;
 
-    //  If we're configured for autocomplete, then make sure that we have a
+    //  If we're configured for filtering, then make sure that we have a
     //  'sticky' control available for our use.
-    if (this.hasAttribute('autocomplete')) {
+    if (this.hasAttribute('filter')) {
 
         ourDocument = this.getDocument();
         stickyTPElem = TP.byId('XCtrlsListFilterSticky', ourDocument);
