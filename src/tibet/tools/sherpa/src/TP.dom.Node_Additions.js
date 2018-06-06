@@ -216,6 +216,36 @@ function(srcElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('connectorSessionDidStart',
+function() {
+
+    /**
+     * @method connectorSessionDidStart
+     * @summary Informs the receiver that any connector session it is going to
+     *     be a part of has started.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('connectorSessionDidStop',
+function() {
+
+    /**
+     * @method connectorSessionDidStop
+     * @summary Informs the receiver that any connector session it was currently
+     *     a part of has stopped.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getConnectorDestination',
 function(aConnector) {
 

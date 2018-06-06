@@ -73,6 +73,8 @@ function(aSignal) {
     var targetElement,
         targetTPElem,
 
+        connectorDest,
+
         validTPElemParent;
 
     //  Grab the real target element at the current page point.
@@ -81,9 +83,9 @@ function(aSignal) {
 
     //  If the target itself is a valid connector destination, then just return
     //  it.
-    connectorSource = targetTPElem.getConnectorDestination();
-    if (TP.isValid(connectorSource)) {
-        return connectorSource;
+    connectorDest = targetTPElem.getConnectorDestination();
+    if (TP.isValid(connectorDest)) {
+        return connectorDest;
     }
 
     //  Otherwise, iterate up the ancestor chain, looking for a valid connector
@@ -117,6 +119,8 @@ function(aSignal) {
 
     var targetElement,
         targetTPElem,
+
+        connectorSource,
 
         validTPElemParent;
 
@@ -382,19 +386,44 @@ function(aSignal) {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
+    var srcTPElement,
+
+        destElement,
+        destTPElement;
+
+    //  Ignore drag move and drag up signals from the mouse.
     this.ignore(TP.core.Mouse,
                 TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
-
-    this.hideConnectorDest();
-
-    this.hideConnector();
 
     //  Reset the connector orientation back to NO_ORIENTATION, ready for the
     //  next drag session.
     this.set('$dragOrientation', TP.sherpa.connector.NO_ORIENTATION);
 
-    this.set('$srcElement', null);
-    this.set('$destElement', null);
+    //  Grab the current source element and inform it that the connector did
+    //  stop.
+    srcTPElement = TP.wrap(this.$get('$srcElement'));
+    srcTPElement.connectorSessionDidStop();
+
+    destElement = this.$get('$destElement');
+    if (TP.isElement(destElement)) {
+        //  There was a valid connection destination.
+
+        //  Grab the current destination element and inform it that the
+        //  connector did stop.
+        destTPElement = TP.wrap(destElement);
+        destTPElement.connectorSessionDidStop();
+
+        //  Signal that the connection session succeeded.
+        this.signal('SherpaConnectSucceeded');
+
+    } else {
+        //  Otherwise, there was no connection destination.
+
+        //  Signal that the connection session failed.
+        this.signal('SherpaConnectFailed');
+
+        this.stopConnecting();
+    }
 
     return this;
 });
@@ -623,8 +652,53 @@ function(aSignal) {
     this.setupConnector();
     this.showConnectorUsing(startPoint);
 
+    //  Grab the current source element and inform it that the connector did
+    //  start.
+    srcTPElement.connectorSessionDidStart();
+
     return this;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.connector.Inst.defineMethod('stopConnecting',
+function() {
+
+    /**
+     * @method stopConnecting
+     * @summary Stops a connecting session, resetting the connector back to its
+     *     initial state.
+     * @returns {TP.sherpa.connector} The receiver.
+     */
+
+    this.hideConnectorDest();
+    this.hideConnector();
+
+    this.set('$srcElement', null);
+    this.set('$destElement', null);
+
+    return this;
+});
+
+//  ========================================================================
+//  Sherpa Connector SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('SherpaConnectSignal');
+
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectInitiate');
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectTerminate');
+
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectCancelled');
+
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectCompleted');
+TP.sig.SherpaConnectCompleted.defineSubtype('SherpaConnectFailed');
+TP.sig.SherpaConnectCompleted.defineSubtype('SherpaConnectSucceeded');
+
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectTargetSignal');
+
+TP.sig.SherpaConnectTargetSignal.defineSubtype('SherpaConnectTargetOver');
+TP.sig.SherpaConnectTargetSignal.defineSubtype('SherpaConnectTargetOut');
 
 //  ------------------------------------------------------------------------
 //  end
