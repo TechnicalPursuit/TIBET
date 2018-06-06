@@ -70,17 +70,13 @@ function(aSignal) {
      *     destination.
      */
 
-    var element;
+    var targetElement;
 
-    element = aSignal.getTarget();
-
-    if (!TP.isElement(element)) {
-        element = element.parentNode;
-    }
+    targetElement = aSignal.getElementAtPagePoint();
 
     //  Ask the target element to get the nearest connector destination (which
     //  may be itself).
-    return TP.wrap(element).getConnectorDestination();
+    return TP.wrap(targetElement).getConnectorDestination();
 });
 
 //  ------------------------------------------------------------------------
@@ -96,17 +92,13 @@ function(aSignal) {
      * @returns {TP.dom.ElementNode} The element to use as a connector source.
      */
 
-    var element;
+    var targetElement;
 
-    element = aSignal.getTarget();
-
-    if (!TP.isElement(element)) {
-        element = element.parentNode;
-    }
+    targetElement = aSignal.getElementAtPagePoint();
 
     //  Ask the target element to get the nearest connector source (which may be
     //  itself).
-    return TP.wrap(element).getConnectorSource();
+    return TP.wrap(targetElement).getConnectorSource();
 });
 
 //  ------------------------------------------------------------------------
