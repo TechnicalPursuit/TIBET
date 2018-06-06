@@ -2641,9 +2641,9 @@ function(anElement) {
                     var parentDisplayVal;
 
                     //  Per the spec, if aParent is the (X)HTML 'body', then we
-                    //  return it.
+                    //  use it.
                     if (aParent === doc.body) {
-                        return aParent;
+                        return true;
                     }
 
                     //  Grab the parent's display value.
@@ -2656,7 +2656,7 @@ function(anElement) {
                         parentDisplayVal === 'run-in' ||
                         parentDisplayVal === 'table' ||
                         parentDisplayVal === 'table-cell') {
-                        return aParent;
+                        return true;
                     }
                 });
     }
@@ -2673,9 +2673,9 @@ function(anElement) {
                     var parentPositionVal;
 
                     //  Per the spec, if aParent is the (X)HTML 'body', then we
-                    //  return it.
+                    //  use it.
                     if (aParent === doc.body) {
-                        return aParent;
+                        return true;
                     }
 
                     //  Grab the parent's position value.
@@ -2685,7 +2685,7 @@ function(anElement) {
                     if (parentPositionVal === 'absolute' ||
                         parentPositionVal === 'relative' ||
                         parentPositionVal === 'fixed') {
-                        return aParent;
+                        return true;
                     }
                 });
     }
@@ -4033,9 +4033,9 @@ function(anElement) {
                     parentTagName;
 
                 //  Per the spec, if aParent is the (X)HTML 'body', then we
-                //  return it.
+                //  use it.
                 if (aParent === doc.body) {
-                    return aParent;
+                    return true;
                 }
 
                 //  Grab the parent's position.
@@ -4045,7 +4045,7 @@ function(anElement) {
                 //  Per the spec, if aParent's computed position is not
                 //  'static', then we return it.
                 if (parentPositionVal !== 'static') {
-                    return aParent;
+                    return true;
                 }
 
                 //  Per the spec, if aParent's computed position is 'static',
@@ -4053,7 +4053,7 @@ function(anElement) {
                 //  it.
                 parentTagName = aParent.tagName.toLowerCase();
                 if (/(td|th|table)/.test(parentTagName)) {
-                    return aParent;
+                    return true;
                 }
             });
 
