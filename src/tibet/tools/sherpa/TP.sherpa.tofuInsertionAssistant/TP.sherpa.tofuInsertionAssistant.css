@@ -268,11 +268,6 @@ sherpa|tofuInsertionAssistant > .body .insertion_details .inserter {
     color: black;
 }
 
-tsh|type_assistant > .foot button {
-
-    margin-top: 12px;
-}
-
 sherpa|tofuInsertionAssistant > .foot #generatedTag {
 
     display: inline-block;
