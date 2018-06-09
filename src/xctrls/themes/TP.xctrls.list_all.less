@@ -33,7 +33,7 @@
             margin: 0;
             padding: 0;
 
-            > xctrls|* {
+            & > xctrls|* {
 
                 right: 0;
                 left: 0;
@@ -49,6 +49,18 @@
                 /* Make each cell overflow with an ellipsis */
                 overflow: hidden;
                 text-overflow: ellipsis;
+
+                cursor: pointer;
+            }
+
+            & > xctrls|*[spacer] {
+
+                cursor: default;
+            }
+
+            & > xctrls|*[grouping] {
+
+                cursor: default;
             }
         }
 

@@ -31,14 +31,16 @@
             margin: 0;
             padding: 0;
 
-            > .row {
+            & > .row {
 
                 right: 0;
                 left: 0;
 
                 height: var(--xctrls-item-height);
 
-                > .cell {
+                cursor: pointer;
+
+                & > .cell {
 
                     text-align: left;
 
@@ -48,6 +50,16 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
+            }
+
+            & > .row[spacer] * {
+
+                cursor: default;
+            }
+
+            & > .row[grouping] * {
+
+                cursor: default;
             }
         }
 
