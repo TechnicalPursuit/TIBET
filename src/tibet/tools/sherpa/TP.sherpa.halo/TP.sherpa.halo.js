@@ -839,9 +839,12 @@ function(aSignal) {
     //  In case the popup menu is open, close it.
     this.signal('ClosePopup');
 
-    //  If the Shift key is down and we're not currently hidden, then change our
+    //  If the Shift key is down and the Alt key is not (otherwise we're drawing
+    //  a connector) and we're not currently hidden, then change our
     //  focus based on a variety of key combinations and mouse button states.
-    if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
+    if (aSignal.getShiftKey() &&
+        !aSignal.getAltKey() &&
+        TP.notTrue(this.getAttribute('hidden'))) {
 
         aSignal.preventDefault();
         aSignal.stopPropagation();
