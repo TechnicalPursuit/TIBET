@@ -857,6 +857,8 @@ function(aSignal) {
         return this;
     }
 
+    //  If the Shift key is down and the Alt key is as well, then start a
+    //  connector session.
     if (aSignal.getShiftKey() && aSignal.getAltKey()) {
         connector.startConnecting(aSignal);
     }
