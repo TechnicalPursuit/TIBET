@@ -360,7 +360,9 @@ function(aSignal) {
         typeInfo,
         str;
 
-    result = TP.uc('urn:tibet:tofuInsertionAssistant_source').getResource().get('result');
+    result = TP.uc('urn:tibet:tofuInsertionAssistant_source').
+                getResource().
+                get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -610,11 +612,12 @@ function(anObj) {
     typeData.sort();
     typesObj.push(typeData);
 
-
     //  Flatten the types information and make sure it's not an origin set.
     typesObj = typesObj.flatten();
     typesObj.isOriginSet(false);
 
+    //  Massage the types information into an Array of Arrays with the entry as
+    //  both the key and value.
     typesObj = typesObj.collect(
                 function(entry) {
                     return TP.ac(entry, entry);
