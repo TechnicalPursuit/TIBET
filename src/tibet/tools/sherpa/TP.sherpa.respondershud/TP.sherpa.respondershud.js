@@ -668,8 +668,8 @@ function(aType) {
                     TP.SLOT_FILTERS.known_introduced_methods).sort();
 
     rawData = rawData.filter(
-                    function(anItem) {
-                        return TP.regex.HANDLER_NAME.test(anItem);
+                    function(item) {
+                        return TP.regex.HANDLER_NAME.test(item);
                     });
 
     result.push(rawData);
@@ -684,8 +684,8 @@ function(aType) {
                     TP.SLOT_FILTERS.known_overridden_methods).sort();
 
     rawData = rawData.filter(
-                    function(anItem) {
-                        return TP.regex.HANDLER_NAME.test(anItem);
+                    function(item) {
+                        return TP.regex.HANDLER_NAME.test(item);
                     });
 
     rawData.forEach(
@@ -713,8 +713,8 @@ function(aType) {
                     TP.SLOT_FILTERS.known_inherited_methods).sort();
 
     rawData = rawData.filter(
-                    function(anItem) {
-                        return /^handle/.test(anItem);
+                    function(item) {
+                        return TP.regex.HANDLER_NAME.test(item);
                     });
 
     rawData.forEach(
