@@ -181,6 +181,40 @@ function(aTPElement) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var connector,
+        hudIsClosed;
+
+    connector = TP.byId('SherpaConnector', TP.win('UIROOT'));
+    if (TP.notValid(connector)) {
+        return this;
+    }
+
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (!hudIsClosed) {
+        this.observe(connector, 'TP.sig.SherpaConnectCompleted');
+    } else {
+        this.ignore(connector, 'TP.sig.SherpaConnectCompleted');
+    }
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineHandler('AddSignalHandler',
 function(aSignal) {
 
@@ -482,6 +516,91 @@ function(aSignal) {
     return this;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('SherpaConnectCompleted',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaConnectCompleted
+     * @summary Handles when the Sherpa connector has completed a connection to
+     *     an element.
+     * @param {TP.sig.SherpaConnectCompleted} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var data,
+        srcTPElem,
+        destTPElem,
+
+        indexInData,
+        itemData,
+
+        target,
+
+        assistantContentTPElem,
+        dialogPromise;
+
+    //  Grab our data.
+    data = this.get('data');
+
+    srcTPElem = aSignal.at('sourceElement');
+    destTPElem = aSignal.at('destinationElement');
+
+    //  Get the value of the destination's indexInData attribute.
+    indexInData = destTPElem.getAttribute('indexInData');
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    //  Resolve the type from the type name that will be at the second position
+    //  in the Array.
+    target = TP.sys.getTypeByName(itemData.at(1));
+
+    //  Grab the TP.sherpa.signalConnectionAssistant type's template.
+    assistantContentTPElem =
+        TP.sherpa.signalConnectionAssistant.getResourceElement(
+                        'template',
+                        TP.ietf.mime.XHTML);
+
+    //  Open a dialog with the connection assistant's content.
+    dialogPromise = TP.dialog(
+        TP.hc(
+            'dialogID', 'ConnectionAssistantDialog',
+            'isModal', true,
+            'title', 'Make a connection',
+            'templateContent', assistantContentTPElem));
+
+    //  After the dialog is showing, set the assistant parameters on the content
+    //  object from those defined in the original signal's payload.
+    dialogPromise.then(
+        function(aDialogTPElem) {
+            var contentTPElem;
+
+            contentTPElem = aDialogTPElem.get('bodyGroup').
+                                        getFirstChildElement();
+
+            //  Pass along the insertion position and the peer element
+            //  as the insertion point to the dialog info.
+            contentTPElem.set('data',
+                TP.hc(
+                    'sourceTPElement', srcTPElem,
+                    'destinationTarget', target
+                ));
+
+            return;
+        });
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.respondershud.Inst.defineHandler('ShowHandlerList',
@@ -772,6 +891,10 @@ function(enterSelection) {
                 //  attribute.
                 return null;
             }).attr(
+            'sherpa:connectoraccept',
+            function(d, i) {
+                return 'signalsource';
+            }).attr(
             'indexInData',
             function(d, i) {
                 return i;
@@ -810,6 +933,10 @@ function(updateSelection) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
+            }).attr(
+            'sherpa:connectoraccept',
+            function(d, i) {
+                return 'signalsource';
             }).attr(
             'indexInData',
             function(d, i) {
