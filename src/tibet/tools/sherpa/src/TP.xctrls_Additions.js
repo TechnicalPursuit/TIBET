@@ -34,6 +34,60 @@ function(aHUD, targetTPElem) {
     return false;
 });
 
+//  ========================================================================
+//  TP.xctrls.button Additions
+//  ========================================================================
+
+TP.xctrls.button.Inst.defineMethod('getConnectorSource',
+function(aConnector) {
+
+    /**
+     * @method getConnectorSource
+     * @summary Returns an element to be used as a connector source. Note that,
+     *     at this level, the receiver returns itself as a valid connector
+     *     source (if it has the correct attribute).
+     * @param {TP.sherpa.connector} aConnector The connector that is requesting
+     *     the source to drag from.
+     * @returns {TP.xctrls.button} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.button.Inst.defineMethod('connectorSessionDidStart',
+function() {
+
+    /**
+     * @method connectorSessionDidStart
+     * @summary Informs the receiver that any connector session it is going to
+     *     be a part of has started.
+     * @returns {TP.xctrls.button} The receiver.
+     */
+
+    this.setAttribute('sherpa:connectorvend', 'signalsource');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.button.Inst.defineMethod('connectorSessionDidStop',
+function() {
+
+    /**
+     * @method connectorSessionDidStop
+     * @summary Informs the receiver that any connector session it was currently
+     *     a part of has stopped.
+     * @returns {TP.xctrls.button} The receiver.
+     */
+
+    this.removeAttribute('sherpa:connectorvend');
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
