@@ -1,0 +1,176 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+sherpa|signalConnectionAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    overflow: auto;
+}
+
+sherpa|signalConnectionAssistant > .head {
+}
+
+sherpa|signalConnectionAssistant > .body {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 6em;
+
+    overflow: auto;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser {
+
+    position: absolute;
+
+    display: grid;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 50%;
+
+    grid-template-rows: 2.5em auto;
+    grid-template-columns: 2fr;
+
+    grid-template-areas:
+        "inputlabel inputfield"
+        "inputlist inputlist";
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > label {
+
+    grid-area: inputlabel;
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 10px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > input {
+
+    grid-area: inputfield;
+
+    width: 17em;
+
+    margin-right: 5px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > xctrls|list {
+
+    grid-area: inputlist;
+
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+
+    width: auto;
+
+    line-height: 1.5;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser {
+
+    position: absolute;
+
+    display: grid;
+
+    top: 0;
+    bottom: 0;
+    left: 50%;
+
+    width: 50%;
+
+    grid-template-rows: 2.5em auto;
+    grid-template-columns: 2fr;
+
+    grid-template-areas:
+        "inputlabel inputfield"
+        "inputlist inputlist";
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > label {
+
+    grid-area: inputlabel;
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 10px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > input {
+
+    grid-area: inputfield;
+
+    width: 16.4em;
+
+    margin-right: 5px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > xctrls|list {
+
+    grid-area: inputlist;
+
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+
+    width: auto;
+
+    line-height: 1.5;
+}
+
+sherpa|signalConnectionAssistant > .foot {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    height: 6em;
+}
+
+sherpa|signalConnectionAssistant > .foot #generatedAttr {
+
+    display: inline-block;
+
+    font-size: 100%;
+
+    background-color: cornsilk;
+
+    border: dotted 1px black;
+
+    width: 90%;
+    height: 1.5em;
+
+    line-height: 1.5em;
+
+    padding: 0 12px;
+    margin: 0 20px 12px;
+
+    text-align: left;
+}
+

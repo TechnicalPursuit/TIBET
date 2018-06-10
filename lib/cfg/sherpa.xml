@@ -100,6 +100,8 @@
 
     <script src="./TP.sherpa.tofuInsertionAssistant/TP.sherpa.tofuInsertionAssistant.js"/>
 
+    <script src="./TP.sherpa.signalConnectionAssistant/TP.sherpa.signalConnectionAssistant.js"/>
+
     <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_elementContent.js"/>
     <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_genericElementContent/TP.sherpa.domhud_genericElementContent.js"/>
     <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_TP_tibet_serviceContent/TP.sherpa.domhud_TP_tibet_serviceContent.js"/>

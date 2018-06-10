@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<sherpa:signalConnectionAssistant>
+    <div class="head"/>
+    <div class="body">
+
+        <div id="signalConnectionAssistant_SourceSignalChooser">
+            <label for="signalConnectionAssistant_SourceSignalNameField">Signals:</label>
+            <input type="text" id="signalConnectionAssistant_SourceSignalNameField" autofocus="autofocus" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalName)}" ui:incremental="model" autocomplete="off"/>
+            <xctrls:list id="signalConnectionAssistant_SourceSignals" bind:in="{data: urn:tibet:signalnamelist}" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.chosenSourceSignalName)}"/>
+        </div>
+
+        <div id="signalConnectionAssistant_DestinationHandlersChooser">
+            <label for="signalConnectionAssistant_DestinationHandlerNameField">Handlers:</label>
+            <input type="text" id="signalConnectionAssistant_DestinationHandlerNameField" autofocus="autofocus" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredDestinationHandlerName)}" ui:incremental="model" autocomplete="off"/>
+            <xctrls:list id="signalConnectionAssistant_DestinationHandlers" bind:in="{data: urn:tibet:handlernamelist}" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.chosenDestinationHandlerName)}"/>
+        </div>
+
+    </div>
+
+    <div class="foot">
+        <code id="generatedAttr"/>
+        <br/>
+        <button on:click="DialogCancel">Cancel</button>
+        <button on:click="DialogOk">Make Connection</button>
+    </div>
+</sherpa:signalConnectionAssistant>

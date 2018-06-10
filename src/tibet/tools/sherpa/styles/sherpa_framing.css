@@ -726,6 +726,19 @@ sherpa|hud:not([pclass|closed]) #center {
 }
 
 /* -----------------------------*
+ * Connection assistant dialog
+ * ---------------------------- */
+
+#ConnectionAssistantDialog {
+    width: 600px;
+    height: 370px;
+}
+
+#ConnectionAssistantDialog .header {
+    background: #f9f9f9;
+}
+
+/* -----------------------------*
  * CouchDocumentURI assistant dialog
  * ---------------------------- */
 
