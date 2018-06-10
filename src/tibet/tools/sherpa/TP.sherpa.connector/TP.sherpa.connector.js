@@ -288,11 +288,13 @@ function(aSignal) {
 
         evtTarget,
 
-        destElement,
-        destTPElement,
-        currentDestElement,
+        srcElement,
+        srcTPElement,
 
-        srcElement;
+        newDestTPElement,
+        newDestElement,
+
+        currentDestElement;
 
     startPoint = this.$get('$startPoint');
 
@@ -317,13 +319,28 @@ function(aSignal) {
         return this;
     }
 
-    //  Compute a new connector destination.
-    destTPElement = this.computeValidDestination(aSignal);
+    srcElement = this.$get('$srcElement');
+    srcTPElement = TP.wrap(srcElement);
 
-    if (TP.notValid(destTPElement)) {
+    //  This will be the current destination element (if we have one)
+    currentDestElement = this.$get('$destElement');
+
+    //  Compute a new connector destination.
+    newDestTPElement = this.computeValidDestination(aSignal);
+
+    if (TP.notValid(newDestTPElement)) {
         //  Hide the connector destination overlay from the current connector
         //  destination.
         this.hideConnectorDest();
+
+        if (TP.isElement(currentDestElement)) {
+            //  Signal that the connector is no longer over a valid destination.
+            this.signal('SherpaConnectTargetOut',
+                        TP.hc('sourceElement',
+                                    srcTPElement,
+                                'destinationElement',
+                                    TP.wrap(currentDestElement)));
+        }
 
         //  No successful destination - make sure to null out destElement.
         this.set('$destElement', null);
@@ -332,14 +349,12 @@ function(aSignal) {
         return this;
     }
 
-    destElement = destTPElement.getNativeNode();
-
-    currentDestElement = this.$get('$destElement');
+    newDestElement = newDestTPElement.getNativeNode();
 
     //  If currentDestElement is an Element and its the same as the computed
     //  dest element, they're the same element so we just return here.
     if (TP.isElement(currentDestElement) &&
-        currentDestElement === destElement) {
+        currentDestElement === newDestElement) {
         return this;
     }
 
@@ -347,20 +362,23 @@ function(aSignal) {
     //  destination.
     this.hideConnectorDest();
 
-    srcElement = this.$get('$srcElement');
-
     //  If we have new connector destintation, then make sure that both the
     //  source and the destintation 'agree' that they can connect each over.
-    if (TP.isElement(destElement)) {
+    if (TP.isElement(newDestElement)) {
 
-        if (TP.wrap(srcElement).canConnectTo(destElement) &&
-            TP.wrap(destElement).canConnectFrom(srcElement)) {
+        if (srcTPElement.canConnectTo(newDestElement) &&
+            newDestTPElement.canConnectFrom(srcElement)) {
 
             //  Both elements 'agree' - show the connector destination overlay.
-            this.showConnectorDestOver(destElement);
+            this.showConnectorDestOver(newDestElement);
+
+            //  Signal that the connector is over a valid destination.
+            this.signal('SherpaConnectTargetOver',
+                        TP.hc('sourceElement', srcTPElement,
+                                'destinationElement', newDestTPElement));
 
             //  Got a successful destination.
-            this.set('$destElement', destElement);
+            this.set('$destElement', newDestElement);
 
             return this;
         }
@@ -413,14 +431,16 @@ function(aSignal) {
         destTPElement = TP.wrap(destElement);
         destTPElement.connectorSessionDidStop();
 
-        //  Signal that the connection session succeeded.
-        this.signal('SherpaConnectSucceeded');
-
+        //  Signal that the connection session was completed.
+        this.signal('SherpaConnectCompleted',
+                    TP.hc('sourceElement', srcTPElement,
+                            'destinationElement', destTPElement));
     } else {
         //  Otherwise, there was no connection destination.
 
-        //  Signal that the connection session failed.
-        this.signal('SherpaConnectFailed');
+        //  Signal that the connection session was cancelled.
+        this.signal('SherpaConnectCancelled',
+                    TP.hc('sourceElement', srcTPElement));
 
         this.stopConnecting();
     }
@@ -656,6 +676,10 @@ function(aSignal) {
     //  start.
     srcTPElement.connectorSessionDidStart();
 
+    //  Signal that a connection session has begun.
+    this.signal('SherpaConnectInitiate',
+                TP.hc('sourceElement', srcTPElement));
+
     return this;
 });
 
@@ -677,6 +701,9 @@ function() {
     this.set('$srcElement', null);
     this.set('$destElement', null);
 
+    //  Signal that a connection session has terminated.
+    this.signal('SherpaConnectTerminate');
+
     return this;
 });
 
@@ -690,10 +717,10 @@ TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectInitiate');
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectTerminate');
 
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectCancelled');
-
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectCompleted');
-TP.sig.SherpaConnectCompleted.defineSubtype('SherpaConnectFailed');
-TP.sig.SherpaConnectCompleted.defineSubtype('SherpaConnectSucceeded');
+
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectFailed');
+TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectSucceeded');
 
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectTargetSignal');
 
