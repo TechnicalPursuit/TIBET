@@ -64,7 +64,7 @@ function() {
         syntaxResults,
         result,
 
-        propValueSlots,
+        propValueInfos,
 
         i,
         theMatch,
@@ -82,7 +82,7 @@ function() {
      *
      *  {
      *      "propName": "border",
-     *      "propValueSlots": [
+     *      "propValueInfos": [
      *          {
      *              "value_info": {
      *                  "type": "Identifier",
@@ -146,7 +146,7 @@ function() {
      *
      *  {
      *      "propName": "font-family",
-     *      "propValueSlots": [
+     *      "propValueInfos": [
      *          {
      *              "value_info": {
      *                  "type": "Identifier",
@@ -204,8 +204,8 @@ function() {
     result = TP.hc();
     result.atPut('propName', syntaxResults.syntax.name);
 
-    propValueSlots = TP.ac();
-    result.atPut('propValueSlots', propValueSlots);
+    propValueInfos = TP.ac();
+    result.atPut('propValueInfos', propValueInfos);
 
     for (i = 0; i < syntaxResults.match.length; i++) {
 
@@ -231,7 +231,7 @@ function() {
         propVal = TP.hc('value_info', valueInfo,
                         'slot_info', syntaxes);
 
-        propValueSlots.push(propVal);
+        propValueInfos.push(propVal);
     }
 
     return result;
@@ -254,19 +254,19 @@ function(cssData) {
      */
 
     var propName,
-        propValueSlots,
+        propValueInfos,
 
         len,
 
         str,
 
         i,
-        slotData;
+        infoData;
 
     propName = cssData.at('propName');
-    propValueSlots = cssData.at('propValueSlots');
+    propValueInfos = cssData.at('propValueInfos');
 
-    len = propValueSlots.getSize();
+    len = propValueInfos.getSize();
 
     if (len > 1) {
         str = '<div class="slots" name="' +
@@ -279,8 +279,8 @@ function(cssData) {
     }
 
     for (i = 0; i < len; i++) {
-        slotData = propValueSlots.at(i);
-        str += this.generateValueSlotsMarkup(slotData);
+        infoData = propValueInfos.at(i);
+        str += this.generateValueSlotsMarkup(infoData);
     }
 
     str += '</div>';
@@ -292,7 +292,7 @@ function(cssData) {
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
 'generateValueSlotsMarkup',
-function(slotData) {
+function(infoData) {
 
     var valueInfo,
         slotInfo,
@@ -305,8 +305,8 @@ function(slotData) {
 
         str;
 
-    valueInfo = slotData.at('value_info');
-    slotInfo = slotData.at('slot_info');
+    valueInfo = infoData.at('value_info');
+    slotInfo = infoData.at('slot_info');
 
     slotTypes = TP.ac();
 
@@ -613,10 +613,10 @@ function() {
         val,
 
         slotElems,
-        propValueSlots,
+        propValueInfos,
         len,
         i,
-        slotData;
+        infoData;
 
     val = this.get('value');
     if (TP.isEmpty(val.at('value'))) {
@@ -654,11 +654,11 @@ function() {
 
     //  Iterate over all of the slot elements and set their 'info' to what the
     //  'property value slots' from the CSS data contained.
-    propValueSlots = cssData.at('propValueSlots');
-    len = propValueSlots.getSize();
+    propValueInfos = cssData.at('propValueInfos');
+    len = propValueInfos.getSize();
     for (i = 0; i < len; i++) {
-        slotData = propValueSlots.at(i);
-        slotElems.at(i).set('info', slotData.at('value_info'));
+        infoData = propValueInfos.at(i);
+        slotElems.at(i).set('info', infoData.at('value_info'));
     }
 
     //  Set the 'selector field' markup to the selector of the rule.
