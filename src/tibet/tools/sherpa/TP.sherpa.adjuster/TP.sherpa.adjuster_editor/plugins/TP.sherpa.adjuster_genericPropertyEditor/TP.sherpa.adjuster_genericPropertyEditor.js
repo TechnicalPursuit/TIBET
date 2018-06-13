@@ -1159,8 +1159,7 @@ function(aSignal) {
 
     var wrapperSpan,
 
-        slotTypes,
-        mainFieldType,
+        slotName,
 
         syntaxInfo,
         terms,
@@ -1183,23 +1182,19 @@ function(aSignal) {
     aSignal.at('trigger').stopPropagation();
 
     //  Grab the span that is wrapping the value.
-    wrapperSpan = aSignal.getDOMTarget().parentNode;
+    wrapperSpan = aSignal.getDOMTarget().parentNode.parentNode;
 
-    //  Grab the slot types from that element and exit if there are none - we
+    //  Grab the slot name from that element and exit if there are none - we
     //  can't list anything useful here.
-    slotTypes = TP.elementGetAttribute(wrapperSpan, 'slot_types', true);
-    if (TP.isEmpty(slotTypes)) {
+    slotName = TP.elementGetAttribute(wrapperSpan, 'name', true);
+    if (TP.isEmpty(slotName)) {
         return this;
     }
 
-    //  There might be more than one slot type, but the last one will be the
-    //  'most significant'.
-    slotTypes = slotTypes.split(' ');
-    mainFieldType = slotTypes.last();
-
-    //  Grab the main field type's syntax information from the TP.extern.csstree
+    //  Grab the syntax information associated to the property name from the
+    //  TP.extern.csstree
     //  object.
-    syntaxInfo = TP.extern.csstree.lexer.getType(mainFieldType).syntax;
+    syntaxInfo = TP.extern.csstree.lexer.getProperty(slotName).syntax;
     terms = syntaxInfo.terms;
 
     data = TP.ac();
