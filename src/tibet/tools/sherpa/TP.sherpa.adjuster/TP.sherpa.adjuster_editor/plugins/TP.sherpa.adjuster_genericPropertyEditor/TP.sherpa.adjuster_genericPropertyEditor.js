@@ -30,7 +30,7 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValueSlotEditors',
-    TP.cpc('> *[name="propertyValue"] > .slots', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[name="propertyValue"] > .slots span[slot_type]:not([slot_type="slot_group"])', TP.hc('shouldCollapse', false)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyRuleSelector',
@@ -54,124 +54,33 @@ function() {
     var name,
         val,
 
+        isImportant,
+
         valTree,
 
         defaultSyntax,
         propertySyntax,
 
         match,
-
         syntaxResults,
         result,
 
         propValueInfos,
 
         i,
-        theMatch,
-
-        syntaxes,
-
-        nestedMatch,
-
-        valueInfo,
-
-        propVal;
-
-    /*
-     * border: solid 1px red;
-     *
-     *  {
-     *      "propName": "border",
-     *      "propValueInfos": [
-     *          {
-     *              "value_info": {
-     *                  "type": "Identifier",
-     *                  "loc": null,
-     *                  "name": "solid"
-     *              },
-     *              "slot_info": [
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "br-style"
-     *                  },
-     *                  {
-     *                      "type": "Keyword",
-     *                      "name": "solid"
-     *                  }
-     *              ]
-     *          },
-     *          {
-     *              "value_info": {
-     *                  "type": "Dimension",
-     *                  "loc": null,
-     *                  "value": "1",
-     *                  "unit": "px"
-     *              },
-     *              "slot_info": [
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "br-width"
-     *                  },
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "length"
-     *                  }
-     *              ]
-     *          },
-     *          {
-     *              "value_info": {
-     *                  "type": "Identifier",
-     *                  "loc": null,
-     *                  "name": "red"
-     *              },
-     *              "slot_info": [
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "color"
-     *                  },
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "named-color"
-     *                  },
-     *                  {
-     *                      "type": "Keyword",
-     *                      "name": "red"
-     *                  }
-     *              ]
-     *          }
-     *      ]
-     *  }
-     *
-     * font-family: Helvetica;
-     *
-     *  {
-     *      "propName": "font-family",
-     *      "propValueInfos": [
-     *          {
-     *              "value_info": {
-     *                  "type": "Identifier",
-     *                  "loc": null,
-     *                  "name": "Helvetica"
-     *              },
-     *              "slot_info": [
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "family-name"
-     *                  },
-     *                  {
-     *                      "type": "Type",
-     *                      "name": "custom-ident"
-     *                  }
-     *              ]
-     *          }
-     *      ]
-     *  }
-    */
+        theMatch;
 
     name = this.get('value').at('name');
     val = this.get('value').at('value');
 
-    val = val.strip(/!important/);
+    //name = 'background';
+    //val = 'center / contain no-repeat url("../../media/examples/firefox-logo.svg"), #eee 35% url("../../media/examples/lizard.png")';
+
+    isImportant = false;
+    if (/!important/.test(val)) {
+        isImportant = true;
+        val = val.strip(/!important/);
+    }
 
     valTree = TP.extern.csstree.parse(
         val,
@@ -211,28 +120,10 @@ function() {
 
         theMatch = syntaxResults.match[i];
 
-        syntaxes = TP.ac();
-        syntaxes.push(TP.hc(theMatch.syntax));
-
-        nestedMatch = theMatch.match[0];
-
-        while (TP.isValid(nestedMatch)) {
-            if (TP.isValid(nestedMatch.syntax)) {
-                syntaxes.push(TP.hc(nestedMatch.syntax));
-                nestedMatch = nestedMatch.match[0];
-            } else if (TP.isValid(nestedMatch.node)) {
-                valueInfo = TP.hc(nestedMatch.node);
-                nestedMatch = null;
-            } else {
-                nestedMatch = null;
-            }
-        }
-
-        propVal = TP.hc('value_info', valueInfo,
-                        'slot_info', syntaxes);
-
-        propValueInfos.push(propVal);
+        propValueInfos.push(theMatch);
     }
+
+    result.atPut('important', isImportant);
 
     return result;
 });
@@ -254,33 +145,22 @@ function(cssData) {
      */
 
     var propName,
-        propValueInfos,
-
-        len,
+        propInfos,
 
         str,
 
-        i,
-        infoData;
+        len,
+        i;
 
     propName = cssData.at('propName');
-    propValueInfos = cssData.at('propValueInfos');
+    propInfos = cssData.at('propValueInfos');
 
-    len = propValueInfos.getSize();
+    str = '<div class="slots" name="' + propName + '">';
 
-    if (len > 1) {
-        str = '<div class="slots" name="' +
-                propName +
-                '" output_type="multiple">';
-    } else {
-        str = '<div class="slots" name="' +
-                propName +
-                '" output_type="single">';
-    }
+    len = propInfos.getSize();
 
     for (i = 0; i < len; i++) {
-        infoData = propValueInfos.at(i);
-        str += this.generateValueSlotsMarkup(infoData);
+        str += this.generateSlotsMarkupFromMatches(propInfos.at(i));
     }
 
     str += '</div>';
@@ -291,70 +171,94 @@ function(cssData) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
-'generateValueSlotsMarkup',
+'generateSlotsMarkupFromMatches',
 function(infoData) {
 
-    var valueInfo,
-        slotInfo,
+    var str,
 
-        slotTypes,
         len,
         i,
-        info,
-        slotName,
 
-        str;
+        slotType,
+        slotVal;
 
-    valueInfo = infoData.at('value_info');
-    slotInfo = infoData.at('slot_info');
+    //  If there's a 'match' slot in the infoData, then this data is
+    //  representing more than one chunk.
+    if (infoData.match) {
+        str = '<span';
+        str += ' slot_type="slot_group"' +
+                ' slot_name="' + infoData.syntax.name + '">';
+        len = infoData.match.length;
+        for (i = 0; i < len; i++) {
+            str += this.generateSlotsMarkupFromMatches(infoData.match[i]);
+        }
+    } else {
 
-    slotTypes = TP.ac();
+        //  Otherwise, the infoData should have a 'node' property that describes
+        //  the slot.
 
-    len = slotInfo.getSize();
-    for (i = 0; i < len; i++) {
-        info = slotInfo.at(i);
-        if (info.at('type') === 'Type') {
-            slotTypes.push(info.at('name'));
-        } else if (info.at('type') === 'Property') {
-            slotName = info.at('name');
+        if (infoData.node) {
+            slotType = infoData.node.type;
+            slotVal = TP.ifInvalid(infoData.node.value, infoData.node.name);
+        } else if (infoData.value) {
+            slotType = infoData.value.type;
+            slotVal = infoData.value.value;
+        } else {
+            return '';
+        }
+
+        if (slotType === 'Url' && infoData.token === ')') {
+            return '</span>';
+        }
+
+        str = '<span slot_type="' + slotType + '"';
+
+        switch (slotType) {
+
+            case 'Dimension':
+                str += ' tibet:tag="sherpa:CSSDimensionSlotEditor"';
+                str += ' slot_unit="' + infoData.node.unit + '"';
+
+                break;
+
+            case 'Identifier':
+                str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
+                break;
+
+            case 'Percentage':
+                str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
+                break;
+
+            //  Editable slots
+            case 'Function':
+            case 'HexColor':
+            case 'Number':
+            case 'String':
+                str += ' tibet:tag="sherpa:CSSSlotEditor"';
+                break;
+
+            //  Non-editable slots
+            case 'Operator':
+            case 'Url':
+            default:
+                break;
+        }
+
+        str += '>';
+
+        switch (slotType) {
+
+            case 'Url':
+                return str;
+
+            default:
+                if (TP.isString(slotVal)) {
+                    str += slotVal;
+                }
+
+                break;
         }
     }
-
-    str = '<span value_type="' + valueInfo.at('type') + '"';
-
-    switch (valueInfo.at('type')) {
-
-        case 'Dimension':
-            str += ' tibet:tag="sherpa:CSSDimensionSlotEditor"';
-            break;
-
-        case 'Identifier':
-            str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
-            break;
-
-        case 'Percentage':
-            str += ' tibet:tag="sherpa:CSSPercentageSlotEditor"';
-            break;
-
-        case 'Function':
-        case 'HexColor':
-        case 'Number':
-        case 'String':
-        case 'Url':
-        default:
-            str += ' tibet:tag="sherpa:CSSSlotEditor"';
-            break;
-    }
-
-    if (TP.notEmpty(slotName)) {
-        str += ' slot_name="' + slotName + '"';
-    }
-
-    if (TP.notEmpty(slotTypes)) {
-        str += ' slot_types="' + slotTypes.join(' ') + '"';
-    }
-
-    str += '>';
 
     str += '</span>';
 
@@ -610,13 +514,7 @@ function() {
         valueFieldMarkup,
         valueFieldDOM,
 
-        val,
-
-        slotElems,
-        propValueInfos,
-        len,
-        i,
-        infoData;
+        val;
 
     val = this.get('value');
     if (TP.isEmpty(val.at('value'))) {
@@ -645,21 +543,6 @@ function() {
     //  NB: This will process (i.e. 'compile') any custom slot editor markup
     //  underneath
     this.get('propertyValue').set('value', valueFieldDOM);
-
-    //  Grab the actual live DOM element back that was inserted.
-    valueFieldDOM = this.get('propertyValue');
-
-    //  Grab all of the slot elements.
-    slotElems = valueFieldDOM.get(TP.cpc('*[value_type]'));
-
-    //  Iterate over all of the slot elements and set their 'info' to what the
-    //  'property value slots' from the CSS data contained.
-    propValueInfos = cssData.at('propValueInfos');
-    len = propValueInfos.getSize();
-    for (i = 0; i < len; i++) {
-        infoData = propValueInfos.at(i);
-        slotElems.at(i).set('info', infoData.at('value_info'));
-    }
 
     //  Set the 'selector field' markup to the selector of the rule.
     this.get('propertyRuleSelector').set('value', val.at('selector'));
@@ -730,7 +613,7 @@ function(updateRuleSource) {
 
     //  Iterate over all of the slot editors and build up a space-separated
     //  value.
-    slotEditors = this.get('propertyValueSlotEditors').getChildElements();
+    slotEditors = this.get('propertyValueSlotEditors');
     slotEditors.forEach(
         function(anEditor) {
             val += anEditor.getValueForCSSRule() + ' ';
@@ -822,20 +705,16 @@ function(aRequest) {
         return;
     }
 
-    str = '<span part="value"/>';
+    str = '<span part="value">' +
+            TP.nodeGetTextContent(elem) +
+            '</span>';
 
     newFrag = TP.xhtmlnode(str);
 
-    TP.nodeAppendChild(elem, newFrag, false);
+    TP.elementSetContent(elem, newFrag, null, false);
 
     return elem;
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CSSSlotEditor.Inst.defineAttribute('info');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -894,32 +773,6 @@ function() {
      */
 
     return this.getTextContent();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CSSSlotEditor.Inst.defineMethod('setInfo',
-function(anInfo) {
-
-    /**
-     * @method setInfo
-     * @summary Sets the receiver's information to display, such as it's value
-     *     or units, etc.
-     * @param {TP.core.Hash} anInfo A hash containing information for the
-     *     receiver to display and manipulate, such as it's value or units.
-     * @returns {TP.sherpa.CSSSlotEditor} The receiver.
-     */
-
-    var val;
-
-    this.$set('info', anInfo);
-
-    //  The value that we want to display here comes from our information's
-    //  'value' slot.
-    val = anInfo.at('value');
-    this.get('valuePart').setTextContent(val);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1169,12 +1022,16 @@ function(aRequest) {
         return;
     }
 
-    str = '<span part="value" on:dragdown="StartAdjusting"/>' +
-            '<span part="unit"></span>';
+    str = '<span part="value" on:dragdown="StartAdjusting">' +
+            TP.nodeGetTextContent(elem) +
+            '</span>' +
+            '<span part="unit">' +
+            TP.elementGetAttribute(elem, 'slot_unit', true) +
+            '</span>';
 
     newFrag = TP.xhtmlnode(str);
 
-    TP.nodeAppendChild(elem, newFrag, false);
+    TP.elementSetContent(elem, newFrag, null, false);
 
     return elem;
 });
@@ -1218,42 +1075,6 @@ function(oldX, newX, aDirection) {
 
     //  Set that to be the new value.
     this.get('valuePart').setTextContent(val);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CSSDimensionSlotEditor.Inst.defineMethod('setInfo',
-function(anInfo) {
-
-    /**
-     * @method setInfo
-     * @summary Sets the receiver's information to display, such as it's value
-     *     or units, etc.
-     * @param {TP.core.Hash} anInfo A hash containing information for the
-     *     receiver to display and manipulate, such as it's value or units.
-     * @returns {TP.sherpa.CSSDimensionSlotEditor} The receiver.
-     */
-
-    var val,
-        unit;
-
-    this.$set('info', anInfo);
-
-    //  The value that we want to display here comes from our information's
-    //  'value' slot.
-    val = anInfo.at('value');
-    this.get('valuePart').setTextContent(val);
-
-    //  The unit that we want to display here comes from our information's
-    //  'unit' slot.
-    unit = anInfo.at('unit');
-    if (TP.isEmpty(unit)) {
-        unit = 'px';
-    }
-
-    this.get('unitPart').setTextContent(unit);
 
     return this;
 });
@@ -1304,43 +1125,19 @@ function(aRequest) {
             '<span class="arrowMark" on:mousedown="ShowValueMenu"/>';
     */
 
-    str = '<span part="value" on:click="ShowValueMenu"/>';
+    str = '<span part="value" on:click="ShowValueMenu">' +
+            TP.nodeGetTextContent(elem) +
+            '</span>';
 
     newFrag = TP.xhtmlnode(str);
 
-    TP.nodeAppendChild(elem, newFrag, false);
+    TP.elementSetContent(elem, newFrag, null, false);
 
     return elem;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CSSIdentifierSlotEditor.Inst.defineMethod('setInfo',
-function(anInfo) {
-
-    /**
-     * @method setInfo
-     * @summary Sets the receiver's information to display, such as it's value
-     *     or units, etc.
-     * @param {TP.core.Hash} anInfo A hash containing information for the
-     *     receiver to display and manipulate, such as it's value or units.
-     * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
-     */
-
-    var val;
-
-    this.$set('info', anInfo);
-
-    //  The value that we want to display here comes from our information's
-    //  'name' slot.
-    val = anInfo.at('name');
-    this.get('valuePart').setTextContent(val);
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CSSIdentifierSlotEditor.Inst.defineHandler('ShowValueMenu',
@@ -1575,12 +1372,14 @@ function(aRequest) {
         return;
     }
 
-    str = '<span part="value" on:dragdown="StartAdjusting"/>' +
+    str = '<span part="value" on:dragdown="StartAdjusting">' +
+            TP.nodeGetTextContent(elem) +
+            '</span>' +
             '<span part="unit">%</span>';
 
     newFrag = TP.xhtmlnode(str);
 
-    TP.nodeAppendChild(elem, newFrag, false);
+    TP.elementSetContent(elem, newFrag, null, false);
 
     return elem;
 });
@@ -1625,32 +1424,6 @@ function(oldX, newX, aDirection) {
     }
 
     //  Set that to be the new value.
-    this.get('valuePart').setTextContent(val);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CSSPercentageSlotEditor.Inst.defineMethod('setInfo',
-function(anInfo) {
-
-    /**
-     * @method setInfo
-     * @summary Sets the receiver's information to display, such as it's value
-     *     or units, etc.
-     * @param {TP.core.Hash} anInfo A hash containing information for the
-     *     receiver to display and manipulate, such as it's value or units.
-     * @returns {TP.sherpa.CSSPercentageSlotEditor} The receiver.
-     */
-
-    var val;
-
-    this.$set('info', anInfo);
-
-    //  The value that we want to display here comes from our information's
-    //  'value' slot.
-    val = anInfo.at('value');
     this.get('valuePart').setTextContent(val);
 
     return this;
