@@ -547,6 +547,10 @@ function() {
     //  Set the 'selector field' markup to the selector of the rule.
     this.get('propertyRuleSelector').set('value', val.at('selector'));
 
+    if (TP.isFalse(val.at('mutable'))) {
+        this.setAttribute('nonmutable', true);
+    }
+
     return this;
 });
 

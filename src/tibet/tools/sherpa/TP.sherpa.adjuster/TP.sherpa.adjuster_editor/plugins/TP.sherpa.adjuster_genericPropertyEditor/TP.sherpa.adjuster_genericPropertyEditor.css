@@ -31,6 +31,13 @@ sherpa|adjuster_genericPropertyEditor[current] {
     box-shadow: 3px 3px rgba(0, 0, 0, 0.2);
 }
 
+sherpa|adjuster_genericPropertyEditor[nonmutable] {
+
+    opacity: 0.4;
+
+    pointer-events: none;
+}
+
 sherpa|adjuster_genericPropertyEditor div.field {
 
     color: black;
@@ -95,6 +102,14 @@ sherpa|adjuster_genericPropertyEditor div[name="propertyValue"]:hover span[part]
 sherpa|adjuster_genericPropertyEditor div[name="propertyValue"]:hover span.arrowMark {
 
     outline: dotted 1px black;
+}
+
+sherpa|adjuster_genericPropertyEditor[nonmutable] div[name="propertyRuleSelector"] {
+
+    background-image: url("../../../../media/ic_lock_black_24px.svg");
+    background-size: 9px 9px;
+    background-repeat: no-repeat;
+    background-position: 90% 4px;
 }
 
 sherpa|adjuster_genericPropertyEditor div.info {

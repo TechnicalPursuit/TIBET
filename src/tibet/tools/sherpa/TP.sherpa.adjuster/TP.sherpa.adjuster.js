@@ -340,6 +340,8 @@ function(aValue, shouldSignal) {
 
         editorEntries,
 
+        sherpaMain,
+
         childTPElems;
 
     ruleSource = TP.unwrap(aValue);
@@ -367,11 +369,15 @@ function(aValue, shouldSignal) {
 
     editorEntries = TP.ac();
 
+    sherpaMain = TP.bySystemId('Sherpa');
+
     //  Iterate over each item in the rule information and construct a property
     //  editor element for each one.
     ruleInfo.perform(
         function(aRuleInfo) {
-            var rule,
+            var isMutable,
+
+                rule,
                 info,
                 decls,
 
@@ -382,6 +388,10 @@ function(aValue, shouldSignal) {
                 propVal,
 
                 editorElem;
+
+            //  Compute whether or not a rule is mutable based on its location.
+            isMutable = sherpaMain.styleLocationIsMutable(
+                                        aRuleInfo.at('sheetLocation'));
 
             rule = aRuleInfo.at('rule');
             info = TP.styleRuleGetSourceInfo(rule, TP.hc());
@@ -416,7 +426,8 @@ function(aValue, shouldSignal) {
                             TP.hc('name', propName,
                                     'value', propVal,
                                     'selector', aRuleInfo.at('selector'),
-                                    'rule', aRuleInfo.at('rule')));
+                                    'rule', aRuleInfo.at('rule'),
+                                    'mutable', isMutable));
             }
         }.bind(this));
 
