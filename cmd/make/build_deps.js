@@ -14,7 +14,8 @@
             return;
         }
 
-        make.chain('_rollup_ace',
+        make.chain(
+            '_rollup_ace',
             '_rollup_codemirror',
             '_rollup_cryptojs',
             '_rollup_bluebird',
@@ -32,7 +33,8 @@
             '_rollup_sprintf',
             '_rollup_syn',
             '_rollup_jqueryxpath',
-            '_rollup_xpath').then(resolve, reject);
+            '_rollup_xpath'
+        ).then(resolve, reject);
     };
 
 }());
