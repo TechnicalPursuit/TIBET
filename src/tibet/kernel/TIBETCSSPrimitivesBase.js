@@ -517,9 +517,10 @@ function(aDocument) {
     allRules = TP.ac();
 
     //  Loop over the sheets, grabbing each one's rules and adding them all
-    //  to our overall collection.
+    //  to our overall collection. Note here how we *do* expand imports, but we
+    //  do *not* filter for CSSRule.STYLE_RULE types of rules.
     for (i = 0; i < allSheets.length; i++) {
-        allRules.addAll(TP.styleSheetGetStyleRules(allSheets[i]));
+        allRules.addAll(TP.styleSheetGetStyleRules(allSheets[i]), true, false);
     }
 
     return allRules;
@@ -2475,8 +2476,9 @@ function(aStyleRule, filterNonStyleRules) {
         return TP.raise(this, 'TP.sig.InvalidStyleSheet');
     }
 
-    //  NB: Note how we do *not* expand imports here
-    allRules = TP.styleSheetGetStyleRules(styleSheet, false);
+    //  NB: Note how we do *not* expand imports here and we do *not* filter for
+    //  CSSRule.STYLE_RULE types of rules.
+    allRules = TP.styleSheetGetStyleRules(styleSheet, false, false);
 
     if (TP.isFalse(filterNonStyleRules)) {
         styleRules = allRules;
@@ -3024,7 +3026,7 @@ function(aStylesheet) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('styleSheetGetStyleRules',
-function(aStylesheet, expandImports) {
+function(aStylesheet, expandImports, filterNonStyleRules) {
 
     /**
      * @method styleSheetGetStyleRules
@@ -3036,6 +3038,8 @@ function(aStylesheet, expandImports) {
      * @param {Boolean} [expandImports=true] Whether or not @import statements
      *     should be recursively 'expanded' and the rules gathered from them
      *     from. This defaults to true.
+     * @param {Boolean} [filterNonStyleRules=true] If true, the list is filtered
+     *     for non-style rules.
      * @exception TP.sig.InvalidParameter
      * @returns {CSSStyleRule[]} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
@@ -3071,11 +3075,22 @@ function(aStylesheet, expandImports) {
 
             if (TP.isValid(sheetRules[i].styleSheet)) {
                 resultRules.addAll(
-                    TP.styleSheetGetStyleRules(sheetRules[i].styleSheet));
+                    TP.styleSheetGetStyleRules(
+                        sheetRules[i].styleSheet, true, filterNonStyleRules));
             }
         } else {
             resultRules.push(sheetRules[i]);
         }
+    }
+
+    if (TP.isFalse(filterNonStyleRules)) {
+        //  empty
+    } else {
+        //  Filter out all non CSSRule.STYLE_RULE 'rules'.
+        resultRules = resultRules.filter(
+                        function(aRule) {
+                            return aRule.type === CSSRule.STYLE_RULE;
+                        });
     }
 
     return resultRules;
@@ -3283,8 +3298,9 @@ function(aStylesheet) {
         return;
     }
 
-    //  Grab all the stylesheets's CSS rules.
-    sheetRules = TP.styleSheetGetStyleRules(aStylesheet);
+    //  Grab all the stylesheets's CSS rules. Note here how we *do* expand
+    //  imports, but we do *not* filter for CSSRule.STYLE_RULE types of rules.
+    sheetRules = TP.styleSheetGetStyleRules(aStylesheet, true, false);
 
     doc = TP.nodeGetDocument(styleElem);
 

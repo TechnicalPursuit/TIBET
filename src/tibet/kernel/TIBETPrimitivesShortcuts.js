@@ -2139,7 +2139,10 @@ function(anObject, depth, level) {
 
     //  Stylesheet objects
     if (TP.isStyleSheet(anObject)) {
-        rules = TP.styleSheetGetStyleRules(anObject, false);
+
+        //  NB: Note how we do *not* expand imports here and we do *not* filter
+        //  for CSSRule.STYLE_RULE types of rules.
+        rules = TP.styleSheetGetStyleRules(anObject, false, false);
 
         arr = TP.ac();
 
@@ -2497,7 +2500,10 @@ function(anObject) {
 
     //  Stylesheet objects
     if (TP.isStyleSheet(anObject)) {
-        rules = TP.styleSheetGetStyleRules(anObject, false);
+
+        //  NB: Note how we do *not* expand imports here and we do *not* filter
+        //  for CSSRule.STYLE_RULE types of rules.
+        rules = TP.styleSheetGetStyleRules(anObject, false, false);
 
         arr = TP.ac();
 
