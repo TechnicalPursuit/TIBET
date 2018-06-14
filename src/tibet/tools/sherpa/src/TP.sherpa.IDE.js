@@ -976,6 +976,7 @@ function(aSignal) {
         shouldRefresh,
         currentResource,
         currentContent,
+        finalContent,
 
         lastNSIndex,
         endOfLastNSIndex,
@@ -983,7 +984,7 @@ function(aSignal) {
         afterNSContent,
 
         sheetRules,
-        matchCount,
+        preRuleSelectorCount,
         i,
 
         rules,
@@ -1000,8 +1001,7 @@ function(aSignal) {
 
         newStr,
         newContent,
-        patch,
-        finalContent;
+        patch;
 
     //  The native CSSRule object that mutated is in the signal
     mutatedRule = aSignal.at('mutatedRule');
@@ -1015,7 +1015,10 @@ function(aSignal) {
 
     operation = aSignal.at('operation');
 
-    results = TP.styleRuleGetStyleSheetAndIndex(mutatedRule);
+    //  Make sure we get *all* the rules here (i.e. we do *not* filter for
+    //  CSSRule.STYLE_RULE types of rules). Later on, we grab all of the rules
+    //  from the stylesheet and want the rule index to match up.
+    results = TP.styleRuleGetStyleSheetAndIndex(mutatedRule, false);
 
     ownerSheet = results.first();
     ruleIndex = results.last();
@@ -1096,32 +1099,10 @@ function(aSignal) {
         }
     }
 
-    //  Look for the rule by using the selector text
-
-    //  We need to see if there are rules 'higher up' in the sheet that have the
-    //  same selector as the mutated rule and, therefore, adjust the string that
-    //  we look for to compute the match.
-
-    //  First, iterate on the sheet's rules from 0 to the ruleIndex, checking
-    //  each selector against our mutated rule's selector. If one matches, kick
-    //  the match counter.
-
-    //  NB: Note how we do *not* expand imports here
-    sheetRules = TP.styleSheetGetStyleRules(ownerSheet, false);
-
-    matchCount = 0;
-
-    //  Iterate up *through the rule just before our mutated rule*
-    for (i = 0; i < ruleIndex; i++) {
-        if (sheetRules.at(i).selectorText === mutatedRule.selectorText) {
-            matchCount++;
-        }
-    }
-
     //  If we didn't find a matching rule to update, then if the operation is
     //  TP.CREATE, we can just append the new rule to the URI content matching
     //  the sheet's location.
-    if (matchCount === 0) {
+    if (ruleIndex === TP.NOT_FOUND) {
 
         if (operation === TP.CREATE) {
 
@@ -1155,6 +1136,29 @@ function(aSignal) {
         }
     }
 
+    //  Look for the rule by using the selector text
+
+    //  We need to see if there are rules 'higher up' in the sheet that have the
+    //  same selector as the mutated rule and, therefore, adjust the string that
+    //  we look for to compute the match.
+
+    //  First, iterate on the sheet's rules from 0 to the ruleIndex, checking
+    //  each selector against our mutated rule's selector. If one matches, kick
+    //  the match counter.
+
+    //  NB: Note how we do *not* expand imports here and we do *not* filter for
+    //  CSSRule.STYLE_RULE types of rules.
+    sheetRules = TP.styleSheetGetStyleRules(ownerSheet, false, false);
+
+    preRuleSelectorCount = 0;
+
+    //  Iterate up *through the rule just before our mutated rule*
+    for (i = 0; i < ruleIndex; i++) {
+        if (sheetRules.at(i).selectorText === mutatedRule.selectorText) {
+            preRuleSelectorCount++;
+        }
+    }
+
     str = mutatedRule.selectorText + ' {';
 
     //  Generate a matcher RegExp
@@ -1165,8 +1169,8 @@ function(aSignal) {
     //  Kick the match count once so that, if we didn't find any matching
     //  selectors 'ahead' of us in the file, we'll match our lone selector
     //  occurrence.
-    matchCount++;
-    for (i = 0; i < matchCount; i++) {
+    preRuleSelectorCount++;
+    for (i = 0; i < preRuleSelectorCount; i++) {
         //  Find the rule text start in the content by matching using the
         //  generated RegExp.
         match = matcher.exec(currentContent);
