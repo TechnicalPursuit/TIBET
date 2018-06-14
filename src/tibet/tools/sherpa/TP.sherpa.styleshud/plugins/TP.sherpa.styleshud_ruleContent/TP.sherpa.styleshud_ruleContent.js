@@ -44,7 +44,7 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.observe(TP.uc('urn:tibet:styleshud_prop_source'), 'ValueChange');
+    tpElem.observe(TP.uc('urn:tibet:styleshud_readwrite_prop_source'), 'ValueChange');
 
     return;
 });
@@ -72,7 +72,7 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.ignore(TP.uc('urn:tibet:styleshud_prop_source'), 'ValueChange');
+    tpElem.ignore(TP.uc('urn:tibet:styleshud_readwrite_prop_source'), 'ValueChange');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -279,7 +279,7 @@ function(aSignal) {
 
         //  Grab the model object where our data is located.
         modelObj =
-            TP.uc('urn:tibet:styleshud_prop_source').getResource().get('result');
+            TP.uc('urn:tibet:styleshud_readwrite_prop_source').getResource().get('result');
 
         //  Compute a name aspect path by replacing 'rulePropValue' with
         //  'rulePropName' in the value aspect path.
