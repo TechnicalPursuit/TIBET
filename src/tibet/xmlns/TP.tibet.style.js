@@ -40,7 +40,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Performs one-time type initialization.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.refreshLessGlobals();

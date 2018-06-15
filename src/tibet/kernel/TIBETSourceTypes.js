@@ -3244,7 +3244,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Initializes the type.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.set('$workerPoolDict', TP.hc());
@@ -3816,7 +3816,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Initializes the type.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  We allocate a maximum of 2 workers in our pool to compile LESS.

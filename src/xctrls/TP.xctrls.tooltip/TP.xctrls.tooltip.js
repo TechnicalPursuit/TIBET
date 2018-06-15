@@ -39,7 +39,6 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.meta.xctrls.tooltip} The receiver.
      */
 
     var cancellingSignalNames;
@@ -80,7 +79,7 @@ function() {
         null,
         TP.sig.SignalMap.REGISTER_CAPTURING);
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------

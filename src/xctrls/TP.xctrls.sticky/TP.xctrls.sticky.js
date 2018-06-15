@@ -41,13 +41,12 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.meta.xctrls.sticky} The receiver.
      */
 
     //  Set up an observation for TP.sig.OpenSticky
     this.observe(TP.ANY, TP.ac(TP.sig.OpenSticky, TP.sig.ToggleSticky));
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------

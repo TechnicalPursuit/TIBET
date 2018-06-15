@@ -4124,7 +4124,8 @@ function() {
 
     /**
      * @method initialize
-     * @summary Initializes the type, defining the baseline keyrings.
+     * @summary Performs one-time setup for the type on startup/import.
+     * @description For this type this method defines the baseline keyrings.
      */
 
     this.addKeyRing('public');
@@ -4165,7 +4166,8 @@ function() {
 
     /**
      * @method initialize
-     * @summary Initializes the type, defining the baseline keyrings.
+     * @summary Performs one-time setup for the type on startup/import.
+     * @description For this type this method defines the baseline keyrings.
      */
 
     this.addKeyRing('public');
@@ -6062,7 +6064,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Performs one-time type initialization.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     TP.core.Controller.addTraits(TP.core.StateResponder);
@@ -7039,7 +7041,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Performs one-time type initialization.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     var sessionHistory;

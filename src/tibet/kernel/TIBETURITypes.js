@@ -10193,7 +10193,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Performs one-time type initialization.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.$set('processors', TP.ac());
@@ -12223,9 +12223,10 @@ function() {
 
     /**
      * @method initialize.
-     * @summary Initializes the type once all application code has loaded. For
-     *     this type that includes signing up for AppShutdown and activating
-     *     any registered watchers if uri.watch_remote_changes is set.
+     * @summary Performs one-time setup for the type on startup/import.
+     * @description For this type that includes signing up for AppShutdown and
+     *     activating any registered watchers if uri.watch_remote_changes is
+     *     set.
      */
 
     //  Ensure we always attempt to shut down and active watch channels.

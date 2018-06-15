@@ -44,13 +44,12 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.meta.xctrls.popup} The receiver.
      */
 
     //  Set up an observation for TP.sig.OpenPopup
     this.observe(TP.ANY, TP.ac(TP.sig.OpenPopup, TP.sig.TogglePopup));
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------

@@ -42,13 +42,12 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.meta.xctrls.notifier} The receiver.
      */
 
     //  Set up an observation for TP.sig.OpenNotifier
     this.observe(TP.ANY, TP.sig.OpenNotifier);
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------

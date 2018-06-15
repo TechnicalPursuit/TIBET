@@ -28,7 +28,6 @@ function() {
     /**
      * @method initialize
      * @summary Performs one-time setup for the type on startup/import.
-     * @returns {TP.meta.sherpa.IDE} The receiver.
      */
 
     var toggleKey;
@@ -57,7 +56,7 @@ function() {
         TP.signal(null, 'ToggleSherpa');
     }).observe(TP.core.Keyboard, toggleKey);
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------

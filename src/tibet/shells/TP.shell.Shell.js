@@ -358,8 +358,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Prepares the type for operation by initializing any data
-     *     structures or other components.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     //  these are how virtually all incoming requests are made, but the

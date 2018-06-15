@@ -33,7 +33,7 @@ function() {
 
     /**
      * @method initialize
-     * @summary Initializes the type.
+     * @summary Performs one-time setup for the type on startup/import.
      */
 
     this.defineDependencies('TP.extern.d3');

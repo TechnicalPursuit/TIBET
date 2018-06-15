@@ -174,15 +174,15 @@ function(aName) {
 
     /**
      * @method initialize
-     * @summary Initializes the class, ensuring that the initial root and
-     *     primary logger instances are created.
-     * @returns {TP.meta.log.Manager} The receiver.
+     * @summary Performs one-time setup for the type on startup/import.
+     * @description For this type, this method ensures that the initial root and
+     *     primary logger instances are created
      */
 
     //  Force construction of the root logger on startup.
     TP.log.Manager.getRootLogger();
 
-    return this;
+    return;
 });
 
 //  ----------------------------------------------------------------------------
