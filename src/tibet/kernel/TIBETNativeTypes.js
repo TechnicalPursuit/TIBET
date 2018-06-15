@@ -4157,6 +4157,22 @@ String.Type.defineAttribute('$allHashMarker', TP.rc('[^?0]+', 'g'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ----------------------------------------------------------------------------
+
+String.Type.defineMethod('initialize',
+function(aName) {
+
+    /**
+     * @method initialize
+     * @summary There is no initialization here, but we need a method stub to
+     *     satisfy the runtime system on startup. This is required because of
+     *     ECMAScript6+ type proxies and they're interaction with String when
+     *     String is used to "initialize" a type that can only be found by name.
+     */
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 
 String.Type.defineMethod('getRegisteredSubstitutions',

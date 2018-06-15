@@ -408,6 +408,176 @@ function(name) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('defineNativeClass',
+function(name) {
+
+    /**
+     * @method defineNativeClass
+     * @summary Defines a new subtype of the receiver as an ECMAScript Class,
+     *     Note that this has multiple limitations compared to TIBET types,
+     *     including limited metadata about the class and the inability to
+     *     define multiple inheritance (trait) relationships.
+     * @description This method produces an Object that can act in the stead of
+     *     a regular ECMAScript class and can manage its relationship with the
+     *     TIBET type that it inherits from "adequately". The semantics of the
+     *     ECMAScript 'constructor()' and 'super()' constructs are preserved and
+     *     do "work" when calling 'up' from ECMAScript classes defined this way
+     *     into the TIBET type it inherits from, but there are some subtle
+     *     difference than TIBET's much more powerful callNextMethod()
+     *     mechanism. Therefore, YMMV and it is not recommended to use this
+     *     mechanism.
+     * @param {String} name The name of the class, including an optional
+     *     namespace prefix and colon separator.
+     * @returns {Proxy} A new type object.
+     */
+
+    var subclassTIBETType,
+        classProxy;
+
+    //  See if there is a corresponding TIBET-side type that has the subclass
+    //  name that was supplied. Note that we *cannot* do this by looking at the
+    //  TP.global object or the TP object or whatever. The object that gets put
+    //  into the global scope under the supplied name is *not* the TIBET-side
+    //  type (which can be obtained using this mechanism) - it will be the Proxy
+    //  that we create below that is a stand-in for the ECMAScript class.
+    //  Therefore, unlike regular TIBET types, for this 'type'/'class' the
+    //  following is *not* true:
+
+    //  TP.MyNS.MyType === TP.sys.getTypeByName('TP.MyNS.MyType'); -> false
+
+    subclassTIBETType = TP.sys.getTypeByName(name);
+
+    //  If not, then define a TIBET-side type that will act as this class's
+    //  stand-in on the TIBET-side of the house.
+    if (!TP.isType(subclassTIBETType)) {
+        subclassTIBETType = this.defineSubtype(name);
+    }
+
+    //  Create an ECMAScript Proxy object that will wrap an anonymous Function
+    //  (we *must use a Function here, because according to the ECMAScript spec,
+    //  to trap accesses to 'construct', it must be a [[Callable]])
+    classProxy = new Proxy(
+        /* eslint-disable no-empty-function */
+        function() {},
+        /* eslint-enable no-empty-function */
+        {
+            construct(target, args) {
+
+                var parts,
+                    nonType,
+
+                    propNames,
+
+                    newinst;
+
+                //  Check to see if the proxy (the actual Proxy that we're
+                //  defining above) is initialized, according to a slot that
+                //  we keep on the TIBET-side type.
+                if (TP.notValid(subclassTIBETType.$$esClassInitialized)) {
+
+                    //  Grab the TIBET-side type name, split it and resolve it
+                    //  into a name on the TP.global. Because of the way things
+                    //  are defined, this would normally resolve to the
+                    //  TIBET-side type, but in this *it will not*. It will
+                    //  resolve to the Proxy object that we returned below.
+                    //  Therefore, it's not really a type - it a Proxy.
+                    parts = subclassTIBETType.getName().split('.');
+                    if (parts.length === 2) {
+                        nonType = TP.global[parts[0]][parts[1]];
+                    } else if (parts.length === 3) {
+                        nonType = TP.global[parts[0]][parts[1]][parts[2]];
+                    }
+
+                    //  Grab all of the *class-level* properties off of the
+                    //  ECMAScript class and iterate.
+                    propNames = Object.getOwnPropertyNames(nonType);
+                    propNames.forEach(
+                        function(propName) {
+                            var propVal;
+
+                            //  Don't copy the 'length' or 'prototype' slots.
+                            if (propName === 'length' ||
+                                propName === 'prototype') {
+                                return;
+                            }
+
+                            //  Grab the value - if it's a Function, add it as a
+                            //  method to the TIBET-side type. If it's not, add
+                            //  it as an attribute to the TIBET-side type.
+
+                            propVal = nonType[propName];
+
+                            if (TP.isFunction(propVal)) {
+                                subclassTIBETType.Type.defineMethod(
+                                    propName,
+                                    propVal);
+                            } else {
+                                subclassTIBETType.Type.defineAttribute(
+                                    propName,
+                                    propVal);
+                            }
+                        });
+
+                    //  Grab all of the *instance-level* properties off of the
+                    //  ECMAScript class and iterate.
+                    propNames = Object.getOwnPropertyNames(nonType.prototype);
+                    propNames.forEach(
+                        function(propName) {
+                            var propVal;
+
+                            //  Don't copy the 'constructor' slot.
+                            if (propName === 'constructor') {
+                                return;
+                            }
+
+                            //  Grab the value - if it's a Function, add it as a
+                            //  method to the TIBET-side type. If it's not, add
+                            //  it as an attribute to the TIBET-side type.
+
+                            propVal = nonType.prototype[propName];
+
+                            if (TP.isFunction(propVal)) {
+                                subclassTIBETType.Inst.defineMethod(
+                                    propName,
+                                    propVal);
+                            } else {
+                                subclassTIBETType.Inst.defineAttribute(
+                                    propName,
+                                    propVal);
+                            }
+                        });
+
+                    //  Flag the Proxy non-type as being initialized by setting
+                    //  a flag on the TIBET-side type.
+                    subclassTIBETType.$$esClassInitialized = true;
+                }
+
+                //  Go ahead and construct an instance using the TIBET
+                //  'construct' call.
+                newinst = subclassTIBETType.construct.apply(
+                                            subclassTIBETType,
+                                            args);
+
+                //  Return the new instance of the 'class'.
+                return newinst;
+            }
+        });
+
+    /* eslint-disable no-proto */
+
+    //  Wire up the prototype chains to support calling 'super' from the
+    //  ECMAScript 'class'. The first one wires up the 'instance'-side of the
+    //  chain and the second one wires up the 'class'-side of the chain.
+    classProxy.prototype = this[TP.INSTC].prototype;
+    classProxy.constructor.prototype.__proto__ = this[TP.TYPEC].prototype;
+
+    /* eslint-enable no-proto */
+
+    return classProxy;
+});
+
+//  ------------------------------------------------------------------------
 //  REFLECTION - PART IV
 //  ------------------------------------------------------------------------
 
