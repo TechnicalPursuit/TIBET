@@ -1,5 +1,8 @@
 {
     "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 6
+    },
     "env": {
         "browser": true,
         "node": true
@@ -8,7 +11,8 @@
         "TP": true,
         "APP": true,
         "Window": false,
-        "self": false
+        "self": false,
+        "Proxy": false
     },
     "rules": {
         "array-bracket-spacing": [1, "never"],
