@@ -389,21 +389,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('getPropertyInfo',
-function(propertyName) {
-
-    var info;
-
-    info = TP.hc(
-            'position',
-                TP.hc('description', 'Specifies how an element is positioned in a document.')
-    );
-
-    return info.at(propertyName);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('HidePropertyInfo',
 function(aSignal) {
 
