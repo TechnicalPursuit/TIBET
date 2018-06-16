@@ -58,7 +58,7 @@ function() {
 
         valTree,
 
-        defaultSyntax,
+        cssTreeLexer,
         propertySyntax,
 
         match,
@@ -91,15 +91,15 @@ function() {
             }
         });
 
-    defaultSyntax = TP.extern.csstree.lexer;
+    cssTreeLexer = TP.extern.csstree.lexer;
 
-    propertySyntax = TP.extern.csstree.lexer.getProperty(name);
+    propertySyntax = cssTreeLexer.getProperty(name);
 
-    match = defaultSyntax.match(propertySyntax, valTree);
+    match = cssTreeLexer.match(propertySyntax, valTree);
     syntaxResults = match.matched;
 
     if (TP.notValid(syntaxResults)) {
-        match = defaultSyntax.match(defaultSyntax.valueCommonSyntax, valTree);
+        match = cssTreeLexer.match(cssTreeLexer.valueCommonSyntax, valTree);
         syntaxResults = match.matched;
     }
 
