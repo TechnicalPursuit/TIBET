@@ -346,134 +346,6 @@ TP.regex.JQUERY_EXTENDED_SELECTORS =
 //  COLOR PRIMITIVES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('rgbValuesAsHue',
-function(m1, m2, aHue) {
-
-    /**
-     * @method rgbValuesAsHue
-     * @summary Converts the supplied hue (given by the values) to its RGB
-     *     equivalent.
-     * @description This uses the CSS3 Color Module algorithm for converting
-     *     hsla values to rgba.
-     * @param {Number} m1
-     * @param {Number} m2
-     * @param {Number} aHue The color hue information.
-     * @exception TP.sig.InvalidParameter
-     * @returns {Number} The converted number.
-     */
-
-    var hue,
-        hue6;
-
-    if (!TP.isNumber(m1) || !TP.isNumber(m2) || !TP.isNumber(aHue)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter');
-    }
-
-    hue = aHue;
-
-    if (hue < 0) {
-        hue++;
-    }
-
-    if (hue > 1) {
-        hue--;
-    }
-
-    hue6 = hue * 6;
-
-    if (hue6 < 1) {
-        return m1 + (m2 - m1) * hue6;
-    }
-
-    /* eslint-disable no-extra-parens */
-    if ((hue * 2) < 1) {
-        return m2;
-    }
-
-    if ((hue * 3) < 2) {
-        return m1 + (m2 - m1) * (2 / 3 - hue) * 6;
-    }
-    /* eslint-enable no-extra-parens */
-
-    return m1;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('rgbaValuesAsHSLA',
-function(aHue, aSaturation, aLightness, anAlpha) {
-
-    /**
-     * @method rgbaValuesAsHSLA
-     * @summary Converts the supplied hue, saturation, lightness and alpha
-     *     values to their RGB equivalents.
-     * @description This uses the CSS3 Color Module algorithm for converting
-     *     hsla values to rgba.
-     * @param {Number} aHue The color hue information.
-     * @param {Number} aSaturation The color saturation information, given as a
-     *     fractional number between 0 and 1.
-     * @param {Number} aLightness The color lightness information, given as a
-     *     fractional number between 0 and 1.
-     * @param {Number} anAlpha The color alpha information.
-     * @exception TP.sig.InvalidParameter
-     * @returns {Number[]} The color expressed as an RGBA value in an Array of [r,
-     *     g, b, a].
-     */
-
-    var theHue,
-
-        m1,
-        m2,
-
-        redVal,
-        blueVal,
-        greenVal,
-
-        rgbVal;
-
-    //  NB: We don't check alpha here since it is optional and is just
-    //  copied over anyway.
-    if (!TP.isNumber(aHue) ||
-        !TP.isNumber(aSaturation) ||
-        !TP.isNumber(aLightness)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter');
-    }
-
-    /* eslint-disable no-extra-parens */
-
-    theHue = ((aHue % 360) + 360) % 360 / 360;
-
-    if (aLightness <= 0.5) {
-        m2 = aLightness * (aSaturation + 1);
-    } else {
-        m2 = aLightness + aSaturation - (aLightness * aSaturation);
-    }
-
-    m1 = (aLightness * 2) - m2;
-
-    //  Red value
-    redVal = TP.rgbValuesAsHue(m1, m2, theHue + (1 / 3)) * 256;
-
-    //  Blue value
-    blueVal = TP.rgbValuesAsHue(m1, m2, theHue) * 256;
-
-    //  Green value
-    greenVal = TP.rgbValuesAsHue(m1, m2, theHue - (1 / 3)) * 256;
-
-    /* eslint-enable no-extra-parens */
-
-    rgbVal = TP.ac(redVal, blueVal, greenVal);
-
-    //  If an alpha value was supplied, go ahead and push it here.
-    if (TP.isNumber(anAlpha)) {
-        rgbVal.push(anAlpha);
-    }
-
-    return rgbVal;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('colorStringAsHex',
 function(aString) {
 
@@ -758,43 +630,6 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('longNumberAsColorString',
-function(aLongNumber) {
-
-    /**
-     * @method longNumberAsColorString
-     * @summary Converts a 'long' number representing a color numerically to
-     *     the equivalent 'hex' color (#RRGGBB) used for CSS colors.
-     * @description This algorithm from Oliver Steele (http://osteele.com).
-     * @param {Number} aLongNumber A 'long' number (one between 0 and 16777215 -
-     *     parseInt('FFFFFF',16) ).
-     * @exception TP.sig.InvalidNumber
-     * @returns {String} A color 'hex' String.
-     */
-
-    var hexChars,
-        str,
-
-        i;
-
-    if (!TP.isNumber(aLongNumber)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber');
-    }
-
-    hexChars = '0123456789ABCDEF';
-    str = '#';
-
-    /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
-    for (i = 24; (i -= 4) >= 0;) {
-        str += hexChars.charAt((aLongNumber >> i) & 0xF);
-    }
-    /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('colorValuesInterpolate',
 function(color1, color2, aPercentage) {
 
@@ -840,6 +675,171 @@ function(color1, color2, aPercentage) {
     /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
 
     return n;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('longNumberAsColorString',
+function(aLongNumber) {
+
+    /**
+     * @method longNumberAsColorString
+     * @summary Converts a 'long' number representing a color numerically to
+     *     the equivalent 'hex' color (#RRGGBB) used for CSS colors.
+     * @description This algorithm from Oliver Steele (http://osteele.com).
+     * @param {Number} aLongNumber A 'long' number (one between 0 and 16777215 -
+     *     parseInt('FFFFFF',16) ).
+     * @exception TP.sig.InvalidNumber
+     * @returns {String} A color 'hex' String.
+     */
+
+    var hexChars,
+        str,
+
+        i;
+
+    if (!TP.isNumber(aLongNumber)) {
+        return TP.raise(this, 'TP.sig.InvalidNumber');
+    }
+
+    hexChars = '0123456789ABCDEF';
+    str = '#';
+
+    /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
+    for (i = 24; (i -= 4) >= 0;) {
+        str += hexChars.charAt((aLongNumber >> i) & 0xF);
+    }
+    /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('rgbValuesAsHue',
+function(m1, m2, aHue) {
+
+    /**
+     * @method rgbValuesAsHue
+     * @summary Converts the supplied hue (given by the values) to its RGB
+     *     equivalent.
+     * @description This uses the CSS3 Color Module algorithm for converting
+     *     hsla values to rgba.
+     * @param {Number} m1
+     * @param {Number} m2
+     * @param {Number} aHue The color hue information.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Number} The converted number.
+     */
+
+    var hue,
+        hue6;
+
+    if (!TP.isNumber(m1) || !TP.isNumber(m2) || !TP.isNumber(aHue)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    hue = aHue;
+
+    if (hue < 0) {
+        hue++;
+    }
+
+    if (hue > 1) {
+        hue--;
+    }
+
+    hue6 = hue * 6;
+
+    if (hue6 < 1) {
+        return m1 + (m2 - m1) * hue6;
+    }
+
+    /* eslint-disable no-extra-parens */
+    if ((hue * 2) < 1) {
+        return m2;
+    }
+
+    if ((hue * 3) < 2) {
+        return m1 + (m2 - m1) * (2 / 3 - hue) * 6;
+    }
+    /* eslint-enable no-extra-parens */
+
+    return m1;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('rgbaValuesAsHSLA',
+function(aHue, aSaturation, aLightness, anAlpha) {
+
+    /**
+     * @method rgbaValuesAsHSLA
+     * @summary Converts the supplied hue, saturation, lightness and alpha
+     *     values to their RGB equivalents.
+     * @description This uses the CSS3 Color Module algorithm for converting
+     *     hsla values to rgba.
+     * @param {Number} aHue The color hue information.
+     * @param {Number} aSaturation The color saturation information, given as a
+     *     fractional number between 0 and 1.
+     * @param {Number} aLightness The color lightness information, given as a
+     *     fractional number between 0 and 1.
+     * @param {Number} anAlpha The color alpha information.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Number[]} The color expressed as an RGBA value in an Array of [r,
+     *     g, b, a].
+     */
+
+    var theHue,
+
+        m1,
+        m2,
+
+        redVal,
+        blueVal,
+        greenVal,
+
+        rgbVal;
+
+    //  NB: We don't check alpha here since it is optional and is just
+    //  copied over anyway.
+    if (!TP.isNumber(aHue) ||
+        !TP.isNumber(aSaturation) ||
+        !TP.isNumber(aLightness)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    /* eslint-disable no-extra-parens */
+
+    theHue = ((aHue % 360) + 360) % 360 / 360;
+
+    if (aLightness <= 0.5) {
+        m2 = aLightness * (aSaturation + 1);
+    } else {
+        m2 = aLightness + aSaturation - (aLightness * aSaturation);
+    }
+
+    m1 = (aLightness * 2) - m2;
+
+    //  Red value
+    redVal = TP.rgbValuesAsHue(m1, m2, theHue + (1 / 3)) * 256;
+
+    //  Blue value
+    blueVal = TP.rgbValuesAsHue(m1, m2, theHue) * 256;
+
+    //  Green value
+    greenVal = TP.rgbValuesAsHue(m1, m2, theHue - (1 / 3)) * 256;
+
+    /* eslint-enable no-extra-parens */
+
+    rgbVal = TP.ac(redVal, blueVal, greenVal);
+
+    //  If an alpha value was supplied, go ahead and push it here.
+    if (TP.isNumber(anAlpha)) {
+        rgbVal.push(anAlpha);
+    }
+
+    return rgbVal;
 });
 
 //  ------------------------------------------------------------------------
