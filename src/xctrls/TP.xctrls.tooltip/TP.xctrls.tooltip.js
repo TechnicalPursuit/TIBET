@@ -27,7 +27,7 @@ TP.xctrls.tooltip.Type.defineAttribute('sharedOverlayID',
                                         'systemTooltip');
 
 //  A timeout timer used by tooltips to slightly delay their appearance.
-TP.xctrls.SharedOverlay.Type.defineAttribute('$displayDelayTimer');
+TP.xctrls.tooltip.Type.defineAttribute('$displayDelayTimer');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
