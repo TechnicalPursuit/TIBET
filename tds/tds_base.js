@@ -431,7 +431,8 @@
     /**
      * A common handle to the js-beautify routine for pretty-printing JSON to
      * the console or via the logger.
-     * @type {Function}
+     * @param {Object|String} obj The object or string to beautify.
+     * @returns {String} The beautified string.
      */
     TDS.beautify = function(obj) {
         var str;
@@ -462,6 +463,7 @@
      * copy semantics as well.
      * @param {Object} target The object which will potentially be modified.
      * @param {Object} source The object which provides new property values.
+     * @returns {Object} The blended object.
      */
     TDS.blend = function(target, source) {
 
@@ -530,6 +532,7 @@
      * @param {String} aString The string to colorize.
      * @param {String} aSpec The theme element name (such as 'url' or
      *     'timestamp') whose style spec should be used.
+     * @returns {String} The colorized string.
      */
     TDS.colorize = function(aString, aSpec) {
         if (!this._options.color) {
@@ -543,9 +546,25 @@
      * access for one or more routes.
      * @param {Object} [options] An object providing options to the 'cors'
      *     module. @see https://github.com/expressjs/cors for more info.
+     * @returns {Object} The cors module result.
      */
     TDS.cors = function(options) {
         return cors(options);
+    };
+
+    /**
+     * Helper to remove color codes that may have snuck in to output.
+     * @param {String} data The string to strip color codes from.
+     * @returns {String} The decolorized string.
+     */
+    TDS.decolorize = function(data) {
+        var dat;
+        dat = '' + data;
+        return dat.replace(
+            /\u001b\[38;5;\d*m/g, '').replace(
+            /\\u001b\[38;5;\d*m/g, '').replace(
+            /\u001b\[\d*m/g, '').replace(
+            /\\u001b\[\d*m/g, '');
     };
 
     /**
@@ -553,6 +572,7 @@
      * the environment and if not found an exception is raised. NOTE that the
      * CLI must be configured to use the same parameters or operation may fail.
      * @param {String} text The text to encrypt.
+     * @returns {String} The decrypted string.
      */
     TDS.decrypt = function(text) {
         return crypto.decrypt(text, this);
@@ -565,6 +585,7 @@
      * @param {String} text The text to encrypt.
      * @param {Buffer} [salt] Optional salt used when encrypting to determine a
      *     match with a prior encrypted value.
+     * @returns {String} The encrypted string.
      */
     TDS.encrypt = function(text, salt) {
         return crypto.encrypt(text, salt, this);
@@ -925,6 +946,21 @@
     };
 
     /**
+     */
+    TDS.file_transport = function(options) {
+        var transport,
+
+        transport = new winston.transports.File(options);
+        transport.$$log$$ = transport.log;
+        transport.log = function(level, msg, meta, callback) {
+            return transport.$$log$$(
+                level, TDS.decolorize(msg), meta, callback);
+        }
+
+        return transport;
+    };
+
+    /**
      * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
      * as a result of this call.
      * @param {Logger} logger The logger instance to flush via.
@@ -948,6 +984,7 @@
         this.output = [];
     };
     util.inherits(TDS.log_transport, winston.Transport);
+
 
     /**
      */
