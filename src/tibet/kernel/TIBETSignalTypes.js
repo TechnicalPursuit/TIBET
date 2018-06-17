@@ -1256,6 +1256,43 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sig.ResponderSignal.Inst.defineMethod('getDocument',
+function() {
+
+    /**
+     * @method getDocument
+     * @summary Returns the document from which the signal originated. For
+     *     responder signals, this will be the document that it's trigger signal
+     *     occurred in.
+     * @returns {TP.dom.Document} The document that the signal originated in.
+     */
+
+    var trigger,
+        evt,
+
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
+
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getDocument();
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.ResponderSignal.Inst.defineMethod('getDOMTarget',
 function() {
 
@@ -1329,6 +1366,44 @@ function() {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('getWindow',
+function() {
+
+    /**
+     * @method getWindow
+     * @summary Returns the window from which the signal originated. For
+     *     responder signals, this will be the document that it's trigger signal
+     *     occurred in.
+     * @returns {TP.core.Window} The window object that the receiver occurred
+     *     in.
+     */
+
+    var trigger,
+        evt,
+
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
+
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getWindow();
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
