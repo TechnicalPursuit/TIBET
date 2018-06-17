@@ -1858,6 +1858,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('clearStyleProperty',
+function(aProperty) {
+
+    /**
+     * @method clearStyleProperty
+     * @summary Clears the receiver's style property named by the supplied
+     *     property name.
+     * @param {String} aProperty The name of the style property to clear.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    TP.elementClearStyleProperty(this.getNativeNode(), aProperty);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('computeSuccessorFocusElement',
 function(focusedTPElem, moveAction) {
 
@@ -3837,6 +3855,24 @@ function() {
     this.$removeAttribute('disabled');
 
     return this.$isInState('pclass:disabled', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeStyleProperty',
+function(aProperty) {
+
+    /**
+     * @method removeStyleProperty
+     * @summary Removes the receiver's style property named by the supplied
+     *     property name.
+     * @param {String} aProperty The name of the style property to remove.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    TP.elementRemoveStyleProperty(this.getNativeNode(), aProperty);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
