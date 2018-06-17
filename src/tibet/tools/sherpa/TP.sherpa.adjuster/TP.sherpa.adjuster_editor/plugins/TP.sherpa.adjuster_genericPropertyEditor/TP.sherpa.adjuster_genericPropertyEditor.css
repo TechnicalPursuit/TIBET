@@ -112,19 +112,6 @@ sherpa|adjuster_genericPropertyEditor[nonmutable] div[name="propertyRuleSelector
     background-position: 90% 4px;
 }
 
-sherpa|adjuster_genericPropertyEditor div.info {
-
-    visibility: hidden;
-
-    color: gray;
-
-    font-size: 77%;
-    line-height: 1;
-
-    margin-left: 4px;
-    margin-right: 4px;
-}
-
 span[slot_type] {
 
     white-space: nowrap;

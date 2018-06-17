@@ -61,3 +61,14 @@ sherpa|adjuster {
     background: #f9f9f9;
 }
 
+#Adjuster_Tile > .footer > div.info {
+
+    color: gray;
+
+    font-size: 77%;
+    line-height: 1;
+
+    margin-left: 4px;
+    margin-right: 4px;
+}
+

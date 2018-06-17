@@ -660,7 +660,7 @@ function() {
      * @returns {}
      */
 
-    return TP.xhtmlnode('<button class="inserter" on:click="{signal: AddProperty, origin: \'SherpaAdjuster\'}"/>');
+    return TP.xhtmlnode('<div class="info"/>');
 });
 
 //  ------------------------------------------------------------------------

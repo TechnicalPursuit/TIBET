@@ -600,5 +600,30 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster.Inst.defineMethod('updateInfoText',
+function(content) {
+
+    /**
+     * @method updateInfoText
+     * @summary Updates the info text in the footer bar to the supplied text
+     *     content. Note that this will set the text content of the info text
+     *     and therefore does not support embedded markup.
+     * @param {String} content The text to set the info text to.
+     * @returns {TP.sherpa.adjuster} The receiver.
+     */
+
+    var tileTPElem,
+        infoDiv;
+
+    tileTPElem = TP.byId('Adjuster_Tile', this.getNativeWindow());
+    infoDiv = tileTPElem.get(TP.cpc('> .footer > div.info')).first();
+
+    infoDiv.setTextContent(content);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
