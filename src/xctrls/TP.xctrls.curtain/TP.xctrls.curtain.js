@@ -117,9 +117,28 @@ function(aSignal) {
      * @returns {TP.xctrls.curtain} The receiver.
      */
 
-    //  NB: Unlike the trap for all of the other UI signals, we allow 'drag
-    //  move' to pass, since otherwise drag will be jittery for things like
-    //  dialog panels that overlay the curtain.
+    //  NB: Unlike the trap for almost all of the other UI signals, we allow
+    //  'drag move' to pass, since we use curtain for smooth drag tracking.
+    return this;
+}, {
+    phase: TP.CAPTURING
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.curtain.Inst.defineHandler('DOMDragUp',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDragUp
+     * @summary Handles notifications of 'drag up' signals.
+     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.xctrls.curtain} The receiver.
+     */
+
+    //  NB: Unlike the trap for almost all of the other UI signals, we allow
+    //  'drag up' to pass, since we use curtain for smooth drag tracking.
     return this;
 }, {
     phase: TP.CAPTURING
