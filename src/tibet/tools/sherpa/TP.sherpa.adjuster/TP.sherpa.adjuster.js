@@ -80,6 +80,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.adjuster.Inst.defineAttribute('$updateRulesOnly');
+TP.sherpa.adjuster.Inst.defineAttribute('cssSchema');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -305,11 +306,25 @@ function() {
      * @returns {TP.sherpa.adjuster} The receiver.
      */
 
+    var url;
+
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
 
     this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
 
     this.set('$updateRulesOnly', false);
+
+    //  Preload the CSS info file from this type's directory and set the
+    //  cssSchema instance variable to the result.
+    url = TP.uc(
+            TP.uriJoinPaths(
+                TP.objectGetLoadCollectionPath(this),
+                'css-schema.xml'));
+
+    url.getResource(TP.hc('resultType', TP.DOM)).then(
+        function(result) {
+            this.set('cssSchema', result);
+        }.bind(this));
 
     return this;
 });

@@ -142,6 +142,7 @@
     <resource href="~ide_root/schema/tibet_tooling_types.json"/>
 
     <resource href="~ide_root/TP.sherpa.tofuInsertionAssistant/insertion_templates.xml"/>
+    <resource href="~ide_root/TP.sherpa.adjuster/css-schema.xml"/>
     <script src="./src/TP.sherpa.CouchTools.js"/>
 
 </config>

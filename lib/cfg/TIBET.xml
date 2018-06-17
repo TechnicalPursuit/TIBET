@@ -329,6 +329,7 @@
 
     <script src="~lib_build/lib_src-tibet-tools-sherpa-schema-tibet_tooling_types.json.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.tofuInsertionAssistant-insertion_templates.xml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.adjuster-css-schema.xml.js"/>
 
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.signalConnectionAssistant-TP.sherpa.signalConnectionAssistant.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.signalConnectionAssistant-TP.sherpa.signalConnectionAssistant.css.js"/>
