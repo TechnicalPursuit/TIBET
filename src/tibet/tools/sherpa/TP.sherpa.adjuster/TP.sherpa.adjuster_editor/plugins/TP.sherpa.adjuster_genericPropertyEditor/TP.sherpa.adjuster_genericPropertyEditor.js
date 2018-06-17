@@ -623,8 +623,8 @@ function(updateRuleSource) {
     //  redrawing all of the editors as if the sheet got completely changed.
     TP.byId('SherpaAdjuster', TP.win('UIROOT')).set('$updateRulesOnly', true);
 
-    //  Set the property to the supplied value. Note here how we pass true
-    //  to broadcast a CSSStyleRule change.
+    //  Set the property to the supplied value. Note here how we pass along the
+    //  flag as to whether to broadcast a CSSStyleRule change.
     TP.styleRuleSetProperty(propRule, propName, val, updateRuleSource);
 
     //  Grab the halo and adjust it's size & position in case the property

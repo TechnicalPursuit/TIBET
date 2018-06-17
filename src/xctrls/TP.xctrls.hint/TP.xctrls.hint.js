@@ -155,8 +155,8 @@ function(anElement, hintElement, tooltipParams) {
         return this;
     }
 
-    //  If it's real, then install a listener on it that will call our
-    //  UIHint dispatch method.
+    //  If it's real, then install a listener on it that will call our UIHint
+    //  dispatch method.
     anElement.addEventListener('mouseover',
                                 TP.xctrls.hint.$dispatchHintSignal,
                                 false);

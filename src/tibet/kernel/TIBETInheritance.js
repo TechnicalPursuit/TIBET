@@ -424,9 +424,9 @@ function(name) {
      *     ECMAScript 'constructor()' and 'super()' constructs are preserved and
      *     do "work" when calling 'up' from ECMAScript classes defined this way
      *     into the TIBET type it inherits from, but there are some subtle
-     *     difference than TIBET's much more powerful callNextMethod()
-     *     mechanism. Therefore, YMMV and it is not recommended to use this
-     *     mechanism.
+     *     differences between that and TIBET's much more powerful
+     *     callNextMethod() mechanism. Therefore, YMMV and it is not recommended
+     *     to use this capability.
      * @param {String} name The name of the class, including an optional
      *     namespace prefix and colon separator.
      * @returns {Proxy} A new type object.
