@@ -559,6 +559,7 @@
      */
     TDS.decolorize = function(data) {
         var dat;
+
         dat = '' + data;
         return dat.replace(
             /\u001b\[38;5;\d*m/g, '').replace(
@@ -948,14 +949,14 @@
     /**
      */
     TDS.file_transport = function(options) {
-        var transport,
+        var transport;
 
         transport = new winston.transports.File(options);
         transport.$$log$$ = transport.log;
         transport.log = function(level, msg, meta, callback) {
             return transport.$$log$$(
                 level, TDS.decolorize(msg), meta, callback);
-        }
+        };
 
         return transport;
     };
