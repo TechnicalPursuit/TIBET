@@ -23,8 +23,8 @@ TP.xctrls.SharedOverlay.defineSubtype('xctrls:tooltip');
 
 //  The ID of the shared popup that is used in scenarios where tooltips are
 //  being shared.
-TP.xctrls.SharedOverlay.Type.defineAttribute('sharedOverlayID',
-                                                'systemTooltip');
+TP.xctrls.tooltip.Type.defineAttribute('sharedOverlayID',
+                                        'systemTooltip');
 
 //  A timeout timer used by tooltips to slightly delay their appearance.
 TP.xctrls.SharedOverlay.Type.defineAttribute('$displayDelayTimer');
