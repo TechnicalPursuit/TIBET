@@ -60,6 +60,8 @@
     width: 0;
     height: auto;
 
+    margin: 1px;
+
     border-radius: 4px;
 
     background-color: #d6d6d6;
@@ -137,7 +139,7 @@ body.showlog #BOOT-CONSOLE {
     bottom: 24px;
     left: 0;
 
-    height: 9px;
+    height: 12px;
 
     margin: 0 48px;
 }
@@ -253,6 +255,7 @@ body.showlog #BOOT-SPLASH {
     bottom: 0;
     left: 0;
 
+    border: 1px solid #eee;
     border-radius: 5px;
 }
 
