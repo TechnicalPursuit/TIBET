@@ -26,5 +26,6 @@
         "use_cli": true
     },
     "production": {
+        "https": true
     }
 }

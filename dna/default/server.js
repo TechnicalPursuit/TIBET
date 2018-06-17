@@ -321,7 +321,7 @@
 
         try {
             certKey = path.join(certPath, certKey);
-            key = fs.readFileSync(certKey + 'x');
+            key = fs.readFileSync(certKey);
         } catch (e) {
             TDS.logger.error('Missing cert key for HTTPS: ' + certKey, meta);
         }
