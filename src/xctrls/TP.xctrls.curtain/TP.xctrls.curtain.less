@@ -6,6 +6,7 @@
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 xctrls|curtain {
 
@@ -26,7 +27,16 @@ xctrls|curtain {
     /* When the curtain is not hidden */
 
     &:not([pclass|hidden]) {
+
         visibility: visible;
+    }
+
+    /* When the curtain is acting as a drag layer */
+
+    &[tibet|isdraglayer] {
+
+        background-color: transparent;
+        opacity: 1.0;
     }
 }
 
