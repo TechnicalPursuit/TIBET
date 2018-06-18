@@ -227,6 +227,27 @@ xctrls|list#TSHCompleterList {
     }
 }
 
+/* The adjuster tooltip */
+
+xctrls|tooltip#AdjusterTooltip {
+
+    max-width: 300px;
+
+    font-size: 77%;
+
+    transition: none;
+
+    &[pclass|active] {
+
+        opacity: 1;
+    }
+
+    span.propertyName {
+
+        font-weight: bold;
+    }
+}
+
 sherpa|inspectoritem > div.couchtools {
 
     font-size: 100%;

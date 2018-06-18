@@ -389,60 +389,80 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('HidePropertyInfo',
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler(
+'HidePropertyNameInfo',
 function(aSignal) {
 
     /**
-     * @method handleHidePropertyInfo
-     * @summary Handles notification of when the receiver wants to show the
-     *     property information.
-     * @param {TP.sig.HidePropertyInfo} aSignal The TIBET signal which triggered
-     *     this method.
+     * @method handleHidePropertyNameInfo
+     * @summary Handles notification of when the receiver wants to hide the
+     *     property name information.
+     * @param {TP.sig.HidePropertyNameInfo} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
-    /*
-    var infoTPElem;
+    var adjusterTPElem;
 
-    if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
-        return this;
-    }
+    //  Grab the adjuster element and set it's info text to the empty String.
+    adjusterTPElem = TP.byId('SherpaAdjuster', TP.win('UIROOT'));
+    adjusterTPElem.updateInfoText('');
 
-    infoTPElem = TP.wrap(aSignal.getOrigin()).get('.info');
-
-    if (TP.isValid(infoTPElem)) {
-        infoTPElem.hide(true);
-    }
-    */
+    aSignal.stopPropagation();
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowPropertyInfo',
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler(
+'HidePropertyValueInfo',
 function(aSignal) {
 
     /**
-     * @method handleShowPropertyInfo
-     * @summary Handles notification of when the receiver wants to show the
-     *     property information.
-     * @param {TP.sig.ShowPropertyInfo} aSignal The TIBET signal which triggered
-     *     this method.
+     * @method handleHidePropertyValueInfo
+     * @summary Handles notification of when the receiver wants to hide the
+     *     property value information.
+     * @param {TP.sig.HidePropertyValueInfo} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
-    /*
+    //  Close the tooltip that is showing the property value information.
+    this.signal('TP.sig.CloseTooltip');
+
+    aSignal.stopPropagation();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler(
+'ShowPropertyNameInfo',
+function(aSignal) {
+
+    /**
+     * @method handleShowPropertyNameInfo
+     * @summary Handles notification of when the receiver wants to show the
+     *     property name information.
+     * @param {TP.sig.ShowPropertyNameInfo} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
     var namePart,
         name,
 
-        infoTPElem,
-        info;
+        adjusterTPElem;
 
+    //  Make sure that the target has a class of 'field' or we're over the wrong
+    //  thing.
     if (!TP.wrap(aSignal.getTarget()).hasClass('field')) {
         return this;
     }
 
+    //  Grab the name of slot from the name.
     namePart = TP.wrap(aSignal.getDOMTarget()).get('span[part="name"]');
     if (!TP.isKindOf(namePart, TP.dom.UIElementNode)) {
         return this;
@@ -450,20 +470,75 @@ function(aSignal) {
 
     name = namePart.getTextContent();
 
-    if (TP.notEmpty(name)) {
-        infoTPElem = TP.wrap(aSignal.getOrigin()).get('.info');
+    //  Grab the adjuster element and set it's info text to the property name.
+    adjusterTPElem = TP.byId('SherpaAdjuster', TP.win('UIROOT'));
+    adjusterTPElem.updateInfoText(name);
 
-        if (TP.isValid(infoTPElem)) {
+    aSignal.stopPropagation();
 
-            info = this.getPropertyInfo(name);
+    return this;
+});
 
-            if (TP.isValid(info)) {
-                infoTPElem.setTextContent(info.at('description'));
-                infoTPElem.show();
-            }
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler(
+'ShowPropertyValueInfo',
+function(aSignal) {
+
+    /**
+     * @method handleShowPropertyValueInfo
+     * @summary Handles notification of when the receiver wants to show the
+     *     property value information.
+     * @param {TP.sig.ShowPropertyValueInfo} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
+     */
+
+    var targetTPElem,
+
+        slotName,
+
+        adjusterTPElem,
+        content;
+
+    targetTPElem = TP.wrap(aSignal.getDOMTarget());
+
+    //  If the DOM target doesn't have a 'slot_name' attribute, then try to find
+    //  an ancestor that has one.
+    if (!targetTPElem.hasAttribute('slot_name')) {
+        targetTPElem = targetTPElem.ancestorMatchingCSS('*[slot_name]');
+        if (TP.notValid(targetTPElem)) {
+            return this;
         }
     }
-    */
+
+    //  Grab the slot name.
+    slotName = targetTPElem.getAttribute('slot_name');
+
+    //  Grab the adjuster element and set it's info text to the property name.
+    adjusterTPElem = TP.byId('SherpaAdjuster', TP.win('UIROOT'));
+    adjusterTPElem.updateInfoText(slotName);
+
+    //  Grab the description content for that slot name.
+    content = this.getDescriptionContent(slotName);
+
+    //  Open a tooltip with that content. Note here how we supply:
+    //      The content we want to display
+    //      The 'trigger' signal - which is our responder signal.
+    //      A delay of '0' - we want this to show immediately.
+    //      A different tooltip ID than the standard system-level one. The
+    //      adjuster will have it's own tooltip with an ID of 'AdjusterToolip'.
+    //      This way we can style it independently of the system-level one.
+    //      Lastly, is in that corresponding style declaration that we specify
+    //      that this tooltip never fades out.
+    this.signal('TP.sig.OpenTooltip',
+                TP.hc('content', content,
+                        'trigger', aSignal,
+                        'delay', 0,
+                        'overlayID', 'AdjusterTooltip'
+                        ));
+
+    aSignal.stopPropagation();
 
     return this;
 });
