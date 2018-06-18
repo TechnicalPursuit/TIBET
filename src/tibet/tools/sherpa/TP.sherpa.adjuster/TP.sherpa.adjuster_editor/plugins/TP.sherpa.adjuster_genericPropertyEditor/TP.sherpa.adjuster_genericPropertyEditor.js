@@ -1045,7 +1045,10 @@ function(oldX, newX, aDirection) {
      * @returns {TP.sherpa.CSSDimensionSlotEditor} The receiver.
      */
 
-    var val;
+    var val,
+        diff,
+
+        disallowsNegative;
 
     //  If there wasn't a direction, then exit here.
     if (aDirection === TP.NONE) {
@@ -1055,11 +1058,19 @@ function(oldX, newX, aDirection) {
     //  Grab the current value.
     val = parseInt(this.getTextContent(), 10);
 
+    diff = (newX - oldX).abs();
+
+    //  TODO: Fix this - it's property specific
+    disallowsNegative = false;
+
     //  If the direction is TP.LEFT, then subtract 1 (but stop at 0).
     if (aDirection === TP.LEFT) {
-        val = (val - 1).max(0);
+        val = val - diff;
+        if (disallowsNegative) {
+            val = val.max(0);
+        }
     } else {
-        val = val + 1;
+        val = val + diff;
     }
 
     //  Set that to be the new value.
@@ -1388,7 +1399,9 @@ function(oldX, newX, aDirection) {
      * @returns {TP.sherpa.CSSPercentageSlotEditor} The receiver.
      */
 
-    var val;
+    var val,
+
+        disallowsNegative;
 
     //  If there wasn't a direction, then exit here.
     if (aDirection === TP.NONE) {
@@ -1398,13 +1411,18 @@ function(oldX, newX, aDirection) {
     //  Grab the current value.
     val = parseInt(this.getTextContent(), 10);
 
-    //  If the direction is TP.LEFT, then subtract 1 (but stop at 0).
+    //  TODO: Fix this - it's property specific
+    disallowsNegative = false;
+
+    //  If the direction is TP.LEFT, then subtract 1.
     if (aDirection === TP.LEFT) {
-        val = (val - 1).max(0);
+        val = val - 1;
+        if (disallowsNegative) {
+            val = val.max(0);
+        }
     } else {
-        //  Otherwise, if the direction is TP.RIGHT, then subtract 1 (but stop
-        //  at 100).
-        val = (val + 1).min(100);
+        //  Otherwise, if the direction is TP.RIGHT, then add 1
+        val = val + 1;
     }
 
     //  Set that to be the new value.
