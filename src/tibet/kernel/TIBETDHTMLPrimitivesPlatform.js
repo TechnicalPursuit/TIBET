@@ -707,6 +707,16 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'attrChange', null));
                 break;
 
+            //  Transition Events
+            case 'transitionend':
+                //  Not currently supported to generate these by most browsers.
+                break;
+
+            //  Animation Events
+            case 'animationend':
+                //  Not currently supported to generate these by most browsers.
+                break;
+
             default:
                 evt = doc.createEvent('Events');
                 evt.initEvent(
@@ -919,6 +929,16 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'newValue', null),
                             TP.ifKeyInvalid(spec, 'attrName', null),
                             TP.ifKeyInvalid(spec, 'attrChange', null));
+                break;
+
+            //  Transition Events
+            case 'transitionend':
+                //  Not currently supported to generate these by most browsers.
+                break;
+
+            //  Animation Events
+            case 'animationend':
+                //  Not currently supported to generate these by most browsers.
                 break;
 
             default:
