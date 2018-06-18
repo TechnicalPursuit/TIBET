@@ -28,7 +28,7 @@
 
 **TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a href="https://www.technicalpursuit.com/docs/platform.html#stack">the web's most complete client stack</a>** coupled with **<a href="https://www.technicalpursuit.com/docs/platform.html#tools">revolutionary tooling</a>**.
 
-**TIBET is built for projects that need a turnkey <a href="https://www.technicalpursuit.com/docs/platform.html#client">client</a> OR <a href="https://www.technicalpursuit.com/docs/platform.html#server">full-stack</a> web platform** and the confidence that comes from using **a <a href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
+**TIBET is built for projects that need a <a href="https://www.technicalpursuit.com/docs/platform.html#client">turnkey client</a> OR <a href="https://www.technicalpursuit.com/docs/platform.html#server">full-stack web platform</a>** and the confidence that comes from using **a <a href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
 
 **TIBET is <a href="https://www.technicalpursuit.com/docs/index.html">business focused</a>**, reducing <a href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
 

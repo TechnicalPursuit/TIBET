@@ -164,7 +164,9 @@
         //  If file is listed, or there are no transports defined, then log to
         //  the standard file transport.
         if (transportNames.indexOf('file') !== -1 || transports.length === 0) {
-            fileTransport = new winston.transports.File({
+            //  NOTE that unlike the console transport this isn't a call to
+            //  'new'...invoking this just creates a new instance it patches.
+            fileTransport = TDS.file_transport({
                 level: winston.level,
                 filename: logfile,
                 maxsize: logsize,
