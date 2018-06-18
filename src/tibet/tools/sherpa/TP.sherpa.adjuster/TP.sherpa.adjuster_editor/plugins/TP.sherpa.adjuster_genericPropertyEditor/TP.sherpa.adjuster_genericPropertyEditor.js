@@ -807,6 +807,15 @@ TP.sherpa.CSSSlotEditor.defineSubtype('CSSDraggableSlotEditor');
 
 TP.sherpa.CSSDraggableSlotEditor.Inst.defineAttribute('$lastX');
 
+TP.sherpa.CSSDraggableSlotEditor.Inst.defineAttribute('curtain',
+    TP.xpc('//*[@id="systemCurtain"]',
+        TP.hc('shouldCollapse', true)
+    ).set('fallbackWith', function(tpTarget) {
+        return TP.xctrls.curtain.getSystemCurtainFor(
+            tpTarget.getDocument(),
+            'systemCurtain');
+    }));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -847,6 +856,8 @@ function(aSignal) {
 
     var nativeEvt,
 
+        curtainTPElem,
+
         adjuster,
         ourAdjusterEditorTPElem;
 
@@ -855,11 +866,19 @@ function(aSignal) {
     nativeEvt = aSignal.at('trigger').getPayload();
     this.$set('$lastX', TP.eventGetScreenXY(nativeEvt).first());
 
-    //  Observe the DOMDragMove and DOMDragUp signals coming directly from the
-    //  mouse to make adjustments as our drag session progresses and then to end
-    //  it.
+    //  Grab the curtain as specified by our instance attribute, configure it to
+    //  be a 'tracking drag layer' and have it's own cursor.
+    curtainTPElem = this.get('curtain');
+    curtainTPElem.setAttribute('tibet:isdraglayer', true);
+    curtainTPElem.setStyleProperty('cursor', 'ew-resize');
+
+    //  Observe the DOMDragMove and DOMDragUp signals coming from the curtain to
+    //  make adjustments as our drag session progresses and then to end it.
     this.observe(
-        TP.core.Mouse, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
+        curtainTPElem, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
+
+    //  Show the curtain.
+    curtainTPElem.setAttribute('hidden', false);
 
     //  Tell the adjuster to hide all of the property editors except the one
     //  representing us.
@@ -908,8 +927,12 @@ function(aSignal) {
         direction = TP.NONE;
     }
 
+    //  Adjust the value.
     this.adjustValue(lastX, currentX, direction);
 
+    //  Update the rule. Note that this method does not propagate the rule
+    //  changes to the source document. That is done when the rule update is
+    //  completed in the drag up handler.
     this.updateRule();
 
     //  Reset the last X to whatever we've computed the current X to be.
@@ -934,12 +957,26 @@ function(aSignal) {
 
     var adjuster,
 
+        curtainTPElem,
+
         ourAdjusterEditorTPElem;
 
-    //  Ignore the DOMDragMove and DOMDragUp signals coming directly from the
-    //  mouse now that our drag session is done.
+    //  Grab the curtain as specified by our instance attribute.
+    curtainTPElem = this.get('curtain');
+
+    //  Hide the curtain.
+    curtainTPElem.setAttribute('hidden', true);
+
+    //  Remove the attribute that configures the curtain as a 'tracking drag
+    //  layer' and clear the 'cursor' property that we set when the drag session
+    //  started.
+    curtainTPElem.removeAttribute('tibet:isdraglayer');
+    curtainTPElem.clearStyleProperty('cursor');
+
+    //  Ignore the DOMDragMove and DOMDragUp signals coming from the curtain
+    //  now that our drag session is done.
     this.ignore(
-        TP.core.Mouse, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
+        curtainTPElem, TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
 
     //  Null out the 'last X' so that it's ready for the next dragging session.
     this.$set('$lastX', null);
@@ -954,6 +991,8 @@ function(aSignal) {
     ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
     ourAdjusterEditorTPElem.hideVisualGuides();
 
+    //  After 100ms, go ahead and complete updating the rule. This usually
+    //  entails updating the source document that rule is defined in.
     setTimeout(
         function() {
             this.completeUpdatingRule();
