@@ -2626,7 +2626,7 @@ function() {
 
 //  This isn't the (now deprecated) DOMFocusIn taken from the XForms spec -
 //  this is the TIBET signal wrapper for the (new) 'focusin' event as
-//  specc'ed in DOM Level 3.
+//  spec'ed in DOM Level 3.
 TP.sig.DOMUISignal.defineSubtype('DOMFocusIn');
 
 //  ------------------------------------------------------------------------
@@ -2657,7 +2657,7 @@ function() {
 
 //  This isn't the (now deprecated) DOMFocusOut taken from the XForms spec -
 //  this is the TIBET signal wrapper for the (new) 'focusout' event as
-//  specc'ed in DOM Level 3.
+//  spec'ed in DOM Level 3.
 TP.sig.DOMUISignal.defineSubtype('DOMFocusOut');
 
 //  ------------------------------------------------------------------------
