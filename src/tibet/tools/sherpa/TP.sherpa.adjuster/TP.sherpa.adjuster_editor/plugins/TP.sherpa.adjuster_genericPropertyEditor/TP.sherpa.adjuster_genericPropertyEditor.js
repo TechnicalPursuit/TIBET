@@ -1235,7 +1235,7 @@ TP.sherpa.CSSDraggableSlotEditor.Inst.defineAttribute('curtain',
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CSSDraggableSlotEditor.Inst.defineMethod('adjustValue',
-function(oldX, newX, aDirection) {
+function(oldX, newX, aDirection, aSignal) {
 
     /**
      * @method adjustValue
@@ -1247,6 +1247,8 @@ function(oldX, newX, aDirection) {
      * @param {Number} newX The new value of the 'X' coordinate of the drag.
      * @param {String} aDirection The direction that the drag is occurring in.
      *     TP.LEFT, TP.RIGHT or TP.NONE.
+     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which was generated
+     *     as the dragging process takes place.
      * @returns {TP.sherpa.CSSDraggableSlotEditor} The receiver.
      */
 
@@ -1342,7 +1344,7 @@ function(aSignal) {
     }
 
     //  Adjust the value.
-    this.adjustValue(lastX, currentX, direction);
+    this.adjustValue(lastX, currentX, direction, aSignal);
 
     //  Update the rule. Note that this method does not propagate the rule
     //  changes to the source document. That is done when the rule update is
@@ -1483,7 +1485,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CSSDimensionSlotEditor.Inst.defineMethod('adjustValue',
-function(oldX, newX, aDirection) {
+function(oldX, newX, aDirection, aSignal) {
 
     /**
      * @method adjustValue
@@ -1495,6 +1497,8 @@ function(oldX, newX, aDirection) {
      * @param {Number} newX The new value of the 'X' coordinate of the drag.
      * @param {String} aDirection The direction that the drag is occurring in.
      *     TP.LEFT, TP.RIGHT or TP.NONE.
+     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which was generated
+     *     as the dragging process takes place.
      * @returns {TP.sherpa.CSSDimensionSlotEditor} The receiver.
      */
 
@@ -1837,7 +1841,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CSSPercentageSlotEditor.Inst.defineMethod('adjustValue',
-function(oldX, newX, aDirection) {
+function(oldX, newX, aDirection, aSignal) {
 
     /**
      * @method adjustValue
@@ -1849,6 +1853,8 @@ function(oldX, newX, aDirection) {
      * @param {Number} newX The new value of the 'X' coordinate of the drag.
      * @param {String} aDirection The direction that the drag is occurring in.
      *     TP.LEFT, TP.RIGHT or TP.NONE.
+     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which was generated
+     *     as the dragging process takes place.
      * @returns {TP.sherpa.CSSPercentageSlotEditor} The receiver.
      */
 
