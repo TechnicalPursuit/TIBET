@@ -316,10 +316,7 @@ function() {
 
     //  Preload the CSS info file from this type's directory and set the
     //  cssSchema instance variable to the result.
-    url = TP.uc(
-            TP.uriJoinPaths(
-                TP.objectGetLoadCollectionPath(this),
-                'css-schema.xml'));
+    url = TP.uc('~ide_root/TP.sherpa.adjuster/css-schema.xml');
 
     url.getResource(TP.hc('resultType', TP.DOM)).then(
         function(result) {
