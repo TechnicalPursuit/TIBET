@@ -30,7 +30,7 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValueSlotEditors',
-    TP.cpc('> *[name="propertyValue"] > .slots span[slot_type]:not([slot_type="slot_group"])', TP.hc('shouldCollapse', false)));
+    TP.cpc('> *[name="propertyValue"] > .slots span[slot_type]:not([slot_multi_part])', TP.hc('shouldCollapse', false)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyRuleSelector',
@@ -47,7 +47,7 @@ function() {
      * @method generateCSSData
      * @summary Generates CSS data from the receiver's property name and value.
      *     See the comments in this method as to the format of the data.
-     * @returns {TP.core.Hash} The CSS data generated from the receiver's
+     * @returns {TP.core.Hash|null} The CSS data generated from the receiver's
      *     property name and value.
      */
 
@@ -56,6 +56,7 @@ function() {
 
         isImportant,
 
+        error,
         valTree,
 
         cssTreeLexer,
@@ -67,62 +68,87 @@ function() {
 
         propValueInfos,
 
-        i,
-        theMatch;
+        len,
+        i;
 
+    //  Grab the CSS property name and value.
     name = this.get('value').at('name');
     val = this.get('value').at('value');
 
-    //name = 'background';
-    //val = 'center / contain no-repeat url("../../media/examples/firefox-logo.svg"), #eee 35% url("../../media/examples/lizard.png")';
-
+    //  Track whether the rule was set to '!important' based on testing the
+    //  value. If it is, we keep a Boolean to that effect and strip the
+    //  '!important' from the value.
     isImportant = false;
     if (/!important/.test(val)) {
         isImportant = true;
         val = val.strip(/!important/);
     }
 
+    //  Parse the CSS value into an AST. If there was an error, then log it and
+    //  exit immediately.
+    error = false;
     valTree = TP.extern.csstree.parse(
         val,
         {
             context: 'value',
             onParseError: function(err) {
-                // console.log('there was an error: ' + err);
+                error = true;
+                TP.ifError() ?
+                    TP.error('Error parsing CSS value "' +
+                                val + '": ' + err
+                                ) : 0;
             }
         });
 
+    if (error) {
+        return null;
+    }
+
+    //  Grab a reference to the csstree lexer.
     cssTreeLexer = TP.extern.csstree.lexer;
 
+    //  Get the syntax for the property that we're processing the value of.
     propertySyntax = cssTreeLexer.getProperty(name);
 
+    //  Run a match using the defined syntax and the AST.
     match = cssTreeLexer.match(propertySyntax, valTree);
     syntaxResults = match.matched;
 
+    //  If there were no results, try again with the 'common value syntax' -
+    //  values that all CSS properties can have.
     if (TP.notValid(syntaxResults)) {
         match = cssTreeLexer.match(cssTreeLexer.valueCommonSyntax, valTree);
         syntaxResults = match.matched;
     }
 
+    //  If there are still no results, then exit and warn.
     if (TP.notValid(syntaxResults)) {
         TP.ifWarn() ?
             TP.warn('Could not retrieve syntax for property name: ' + name +
                     ' and value: ' + val + '.') : 0;
+
         return null;
     }
 
+    //  Start building the result hash with the property name and the whole
+    //  property value.
     result = TP.hc();
-    result.atPut('propName', syntaxResults.syntax.name);
 
+    result.atPut('propName', syntaxResults.syntax.name);
+    result.atPut('propValue', val);
+
+    //  Now, put in an Array containing all of the *plain JS objects* that make
+    //  up the parsed value information.
     propValueInfos = TP.ac();
     result.atPut('propValueInfos', propValueInfos);
 
-    for (i = 0; i < syntaxResults.match.length; i++) {
-
-        theMatch = syntaxResults.match[i];
-
-        propValueInfos.push(theMatch);
+    len = syntaxResults.match.length;
+    for (i = 0; i < len; i++) {
+        propValueInfos.push(syntaxResults.match[i]);
     }
 
+    //  Lastly, add the Boolean that tracks whether this declaration is
+    //  '!important' or not.
     result.atPut('important', isImportant);
 
     return result;
@@ -145,22 +171,39 @@ function(cssData) {
      */
 
     var propName,
-        propInfos,
+        propValue,
+        propValueInfos,
+
+        len,
 
         str,
 
-        len,
+        slotNames,
+
         i;
 
     propName = cssData.at('propName');
-    propInfos = cssData.at('propValueInfos');
+    propValue = cssData.at('propValue');
+    propValueInfos = cssData.at('propValueInfos');
 
-    str = '<div class="slots" name="' + propName + '">';
+    //  Create an overall wrapper that will wrap all value slots.
+    str = '<div class="slots"' +
+            ' on:mouseenter="ShowPropertyValueInfo"' +
+            ' on:mouseleave="HidePropertyValueInfo">';
 
-    len = propInfos.getSize();
+    //  Grab the names for the individual slots if the property value is a piece
+    //  of shorthand whose naming is not generated by csstree. If the property
+    //  isn't a shorthand or it can't be computed, this will return an Array
+    //  with a single item - the supplied property name.
+    slotNames = this.getCSSSlotNamesForShorthand(propName, propValue);
 
+    //  Iterate over each chunk of the property value and generate individual
+    //  'slot' markup for each slot.
+    len = propValueInfos.getSize();
     for (i = 0; i < len; i++) {
-        str += this.generateSlotsMarkupFromMatches(propInfos.at(i));
+        str += this.generateSlotsMarkupFromMatches(
+                            propValueInfos.at(i),
+                            slotNames.at(i));
     }
 
     str += '</div>';
@@ -171,26 +214,225 @@ function(cssData) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
+'getCSSNameForCSSTreeType',
+function(typeName) {
+
+    /**
+     * @method getCSSNameForCSSTreeType
+     * @summary Returns the real (i.e. as defined by the specification) CSS name
+     *     to use for a type name generated by the 'csstree' CSS parser.
+     * @param {String} typeName The type name generated by the csstree parser.
+     * @returns {String|null} The real CSS name for the supplied type name.
+     */
+
+    switch (typeName) {
+        case 'bg-position':
+            return 'background-position';
+        case 'bg-size':
+            return 'background-size';
+        case 'repeat-style':
+            return 'background-repeat';
+        case 'bg-image':
+            return 'background-image';
+        default:
+            break;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
+'getCSSSlotNamesForShorthand',
+function(propertyName, propertyValue) {
+
+    /**
+     * @method getCSSSlotNamesForShorthand
+     * @summary Returns an Array of slot names to use for the supplied property
+     *     value, assuming it is a CSS shorthand property value.
+     * @description For some properties, the 'csstree' parser does not assign
+     *     names to parts of a shorthand property declaration. This method will
+     *     attempt to do so, given the supplied property name and property
+     *     value. If no slot names can be computed for the supplied property
+     *     value, an Array will be returned that contains a single value - the
+     *     property name.
+     * @param {String} propertyName The name of the property that is being
+     *     processed.
+     * @param {String} propertyValue The value of the property that is being
+     *     processed.
+     * @returns {String[]} An Array of slot name or a single-valued Array with
+     *     the supplied property name as its sole value.
+     */
+
+    var slotNames,
+
+        parts,
+        len;
+
+    slotNames = TP.ac();
+
+    switch (propertyName) {
+
+        case 'margin':
+
+            //  'margin' is a simple 2, 3 or 4 value property shorthand.
+
+            parts = propertyValue.split(' ');
+            len = parts.getSize();
+
+            //  Note here how we separate some of these with ' / '. This is
+            //  important to displaying information about these properties in
+            //  other parts of the display machinery later, so don't alter this
+            //  format.
+            switch (len) {
+                case 1:
+                    slotNames = TP.ac('margin');
+                    break;
+                case 2:
+                    slotNames = TP.ac('margin-top / margin-bottom',
+                                        'margin-right / margin-left');
+                    break;
+                case 3:
+                    slotNames = TP.ac('margin-top',
+                                        'margin-right / margin-left',
+                                        'margin-bottom');
+                    break;
+                case 4:
+                    slotNames = TP.ac('margin-top',
+                                        'margin-right',
+                                        'margin-bottom',
+                                        'margin-left');
+                    break;
+                default:
+                    break;
+            }
+            break;
+
+        case 'padding':
+
+            //  'padding' is a simple 2, 3 or 4 value property shorthand.
+
+            parts = propertyValue.split(' ');
+            len = parts.getSize();
+
+            //  Note here how we separate some of these with ' / '. This is
+            //  important to displaying information about these properties in
+            //  other parts of the display machinery later, so don't alter this
+            //  format.
+            switch (len) {
+                case 1:
+                    slotNames = TP.ac('padding');
+                    break;
+                case 2:
+                    slotNames = TP.ac('padding-top / padding-bottom',
+                                        'padding-right / padding-left');
+                    break;
+                case 3:
+                    slotNames = TP.ac('padding-top',
+                                        'padding-right / padding-left',
+                                        'padding-bottom');
+                    break;
+                case 4:
+                    slotNames = TP.ac('padding-top',
+                                        'padding-right',
+                                        'padding-bottom',
+                                        'padding-left');
+                    break;
+                default:
+                    break;
+            }
+            break;
+
+        default:
+            slotNames = TP.ac(propertyName);
+            break;
+    }
+
+    return slotNames;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
 'generateSlotsMarkupFromMatches',
-function(infoData) {
+function(infoData, aSlotName) {
+
+    /**
+     * @method generateSlotsMarkupFromMatches
+     * @summary Returns a String of markup that wraps each slot as described in
+     *     the supplied slot information data.
+     * @param {TP.core.Hash} infoData The hash containing the slot information
+     *     data. Note that the values of this hash contain *plain* JS objects
+     *     and could contain nested data.
+     * @param {String} [slotName] An optional slot name to use when describing
+     *     the slot. If this is not defined, this method has mechanisms to try
+     *     to determine the slot name from the slot information data.
+     * @returns {String} A String containing markup that wraps each slot
+     *     contained in the slot information data.
+     */
 
     var str,
+
+        computedSlotName,
+
+        slotType,
+        slotName,
 
         len,
         i,
 
-        slotType,
+        data,
+
         slotVal;
 
-    //  If there's a 'match' slot in the infoData, then this data is
-    //  representing more than one chunk.
-    if (infoData.match) {
-        str = '<span';
-        str += ' slot_type="slot_group"' +
-                ' slot_name="' + infoData.syntax.name + '">';
+    //  If there's a 'match' slot in the infoData, then this data is a
+    //  multi-part chunk.
+    if (TP.isValid(infoData.match)) {
+
+        //  Begin generating a multi-part chunk wrapper.
+        str = '<span slot_multi_part="true"';
+
+        //  If we have a piece of syntax data associated with the supplied data,
+        //  then query it for a name and use that as the sub-property name.
+        if (TP.isValid(infoData.syntax)) {
+
+            //  If it's a Property, then the slot name is what is in the
+            //  'syntax' structure and there is no slot type.
+            if (infoData.syntax.type === 'Property') {
+                computedSlotName = infoData.syntax.name;
+                slotType = null;
+            } else if (infoData.syntax.type === 'Type') {
+                //  Otherwise, we try to use the proper CSS name as translated
+                //  from the name that csstree provides.
+                computedSlotName = this.getCSSNameForCSSTreeType(
+                                            infoData.syntax.name);
+                //  The slot type will be contained in the 'name' field, since
+                //  this is a 'Type' structure.
+                slotType = infoData.syntax.name;
+            }
+        }
+
+        //  We'll use the slot name that is either the supplied one or the
+        //  computed one, if the supplied one is invalid.
+        slotName = TP.ifInvalid(aSlotName, computedSlotName);
+
+        if (TP.notEmpty(slotName)) {
+            str += ' slot_name="' + slotName + '"';
+        }
+
+        if (TP.notEmpty(slotType)) {
+            str += ' slot_type="' + slotType + '"';
+        }
+
+        str += '>';
+
+        //  Iterate over all pieces of the chunk and recursively generate slot
+        //  markup for them.
         len = infoData.match.length;
         for (i = 0; i < len; i++) {
-            str += this.generateSlotsMarkupFromMatches(infoData.match[i]);
+            data = infoData.match[i];
+            str += this.generateSlotsMarkupFromMatches(data);
         }
     } else {
 
@@ -198,20 +440,40 @@ function(infoData) {
         //  the slot.
 
         if (infoData.node) {
+
+            //  Usually the slot type and value can be found under a 'node'
+            //  property.
             slotType = infoData.node.type;
             slotVal = TP.ifInvalid(infoData.node.value, infoData.node.name);
+
+            if (TP.isValid(slotVal.value)) {
+                slotVal = slotVal.value;
+            }
         } else if (infoData.value) {
+
+            //  Sometimes the slot type and value can be found under a 'value'
+            //  property.
             slotType = infoData.value.type;
             slotVal = infoData.value.value;
         } else {
             return '';
         }
 
+        //  We short circuit 'Url' type *end* processing here (hence the token
+        //  check) since we short circuit 'Url' type *begin* processing below to
+        //  avoid generating a bunch of extra markup around Url types.
         if (slotType === 'Url' && infoData.token === ')') {
             return '</span>';
         }
 
-        str = '<span slot_type="' + slotType + '"';
+        //  Begin generating a non-multi-part chunk wrapper.
+        str = '<span';
+
+        if (TP.notEmpty(aSlotName)) {
+            str += ' slot_name="' + aSlotName + '"';
+        }
+
+        str += ' slot_type="' + slotType + '"';
 
         switch (slotType) {
 
@@ -249,6 +511,8 @@ function(infoData) {
         switch (slotType) {
 
             case 'Url':
+                //  We short circuit 'Url' type *begin* processing here to avoid
+                //  generating a bunch of extra markup around Url types.
                 return str;
 
             default:
@@ -263,6 +527,80 @@ function(infoData) {
     str += '</span>';
 
     return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
+'getDescriptionContent',
+function(slotName) {
+
+    /**
+     * @method getDescriptionContent
+     * @summary Returns a XHTML element containing markup with the description
+     *     of the supplied slot name. This is computed using our adjuster's CSS
+     *     schema information.
+     * @param {String} slotName The slot name to generate the description
+     *     content for.
+     * @returns {Element} The XHTML element containing the markup describing the
+     *     property name and description.
+     */
+
+    var adjusterTPElem,
+
+        parts,
+
+        cssInfoDoc,
+
+        str,
+
+        len,
+        i,
+
+        description;
+
+    //  Grab the adjuster element and the CSS schema information it keeps.
+    adjusterTPElem = TP.byId('SherpaAdjuster', TP.win('UIROOT'));
+    cssInfoDoc = adjusterTPElem.get('cssSchema');
+
+    //  Split the slot name along ' / '. This is the format that is generated by
+    //  the getCSSSlotNamesForShorthand method for 'shared' property slots (i.e.
+    //  when you have a 3-valued margin setting, for instance). If there is no
+    //  ' / ', then this will simply have the slot name in it.
+    parts = slotName.split(' / ');
+
+    str = '<span>';
+
+    //  Iterate over the parts.
+    len = parts.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Query the XML document that contains the CSS schema information for
+        //  description text that matches the current part.
+        description =
+            TP.nodeEvaluateXPath(
+                    cssInfoDoc,
+                    '/$def:css/$def:properties/' +
+                    '$def:entry[@name="' + parts.at(i) + '"]/$def:desc/text()');
+
+        //  Make sure to turn the Text node into a String.
+        description = TP.str(description);
+
+        //  Generate markup around the name and the description separately so
+        //  that they can be styled independently.
+        str += '<span class="propertyName">' + parts.at(i) + ': </span>' +
+                '<span class="propertyDescription">' + description + ' </span>';
+
+        //  If there was more than one part and we're not at the last one yet,
+        //  insert a '<br/>'.
+        if (len > 1 && i < len - 1) {
+            str += '<br/>';
+        }
+    }
+
+    str += '</span>';
+
+    return TP.xhtmlnode(str);
 });
 
 //  ------------------------------------------------------------------------
@@ -597,6 +935,7 @@ function() {
     //  Create a DOM structure for it, assuming that non-prefixed elements are
     //  XHTML.
     valueFieldDOM = TP.xhtmlnode(valueFieldMarkup);
+    valueFieldDOM.setAttribute('propName', cssData.at('propName'));
 
     //  Set our 'name field' markup to the DOM structure that we generated from
     //  the markup.
