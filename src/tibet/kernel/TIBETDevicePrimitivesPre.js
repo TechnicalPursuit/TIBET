@@ -157,6 +157,7 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
         'dblclick', 'TP.sig.DOMDblClick',
         'error', 'TP.sig.DOMError',
         'focus', 'TP.sig.DOMFocus',
+        'input', 'TP.sig.DOMInput',
         'keydown', 'TP.sig.DOMKeyDown',
         'keypress', 'TP.sig.DOMKeyPress',
         'keyup', 'TP.sig.DOMKeyUp',

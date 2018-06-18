@@ -1441,6 +1441,10 @@ TP.boot.$$documentSetup = function(aDocument) {
                             TP.core.Keyboard.$$handleKeyEvent);
 
     TP.boot.$$addUIHandler(aDocument,
+                            'input',
+                            TP.$$handleInput);
+
+    TP.boot.$$addUIHandler(aDocument,
                             'load',
                             TP.$$handleLoad);
 
@@ -1571,6 +1575,7 @@ TP.boot.$$documentTeardown = function(aDocument) {
     TP.boot.$$removeUIHandler(aDocument, 'keydown');
     TP.boot.$$removeUIHandler(aDocument, 'keypress');
 
+    TP.boot.$$removeUIHandler(aDocument, 'input');
     TP.boot.$$removeUIHandler(aDocument, 'load');
 
     TP.boot.$$removeUIHandler(aDocument, 'change');

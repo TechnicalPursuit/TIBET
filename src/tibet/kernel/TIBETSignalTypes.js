@@ -2684,6 +2684,18 @@ function() {
     return TP.sys.shouldLogDOMFocusSignals();
 });
 
+//  ------------------------------------------------------------------------
+
+//  This is the TIBET signal wrapper for the (new) 'input' event as spec'ed in
+//  DOM Level 3.
+TP.sig.DOMUISignal.defineSubtype('DOMInput');
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMInput.Type.defineConstant('NATIVE_NAME', 'input');
+
 //  ========================================================================
 //  DOM MOUSE SIGNALS
 //  ========================================================================

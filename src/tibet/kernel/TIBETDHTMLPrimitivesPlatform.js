@@ -347,6 +347,7 @@ TP.hc(
             //  UI Events
             case 'focusin':
             case 'focusout':
+            case 'input':
                 evt = doc.createEvent('UIEvents');
                 evt.initUIEvent(
                             type,
@@ -588,6 +589,7 @@ TP.hc(
             //  UI Events
             case 'focusin':
             case 'focusout':
+            case 'input':
                 evt = doc.createEvent('UIEvents');
                 evt.initUIEvent(
                             type,
@@ -821,6 +823,7 @@ TP.hc(
             //  UI Events
             case 'focusin':
             case 'focusout':
+            case 'input':
                 evt = doc.createEvent('UIEvents');
                 evt.initUIEvent(
                             type,

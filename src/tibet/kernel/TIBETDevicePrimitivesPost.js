@@ -89,6 +89,7 @@ function(anEvent) {
         case 'abort':
         case 'animationend':
         case 'error':
+        case 'input':
         case 'load':
         case 'resize':
         case 'scroll':
@@ -1369,6 +1370,20 @@ function(anEvent) {
     /**
      * @method $$handlePaste
      * @summary Document-level paste handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleInput',
+function(anEvent) {
+
+    /**
+     * @method $$handleInput
+     * @summary Document-level input handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
