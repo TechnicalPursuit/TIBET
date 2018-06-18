@@ -1513,21 +1513,40 @@ function(oldX, newX, aDirection, aSignal) {
     }
 
     //  Grab the current value.
-    val = parseInt(this.getTextContent(), 10);
+    val = parseFloat(this.getTextContent(), 10);
 
+    //  The difference we're going to adjust the value by is the absolute value
+    //  of the new X vs. the old X.
     diff = (newX - oldX).abs();
+
+    //  If both the Shift key and Alt key are down, then adjust the value by an
+    //  order of magnitude greater. If just the Shift key is down, then adjust
+    //  the value by an order of magnitude lesser.
+    if (aSignal.getShiftKey()) {
+        if (aSignal.getAltKey()) {
+            diff *= 10;
+        } else {
+            diff *= 0.1;
+        }
+    }
 
     //  TODO: Fix this - it's property specific
     disallowsNegative = false;
 
-    //  If the direction is TP.LEFT, then subtract 1 (but stop at 0).
+    //  If the direction is TP.LEFT, then subtract the difference.
     if (aDirection === TP.LEFT) {
         val = val - diff;
         if (disallowsNegative) {
             val = val.max(0);
         }
     } else {
+        //  Otherwise, add the difference.
         val = val + diff;
+    }
+
+    //  If the value isn't an integer, then trim it to one decimal place.
+    if (!val.isInteger()) {
+        val = val.toFixed(1);
     }
 
     //  Set that to be the new value.
@@ -1859,6 +1878,7 @@ function(oldX, newX, aDirection, aSignal) {
      */
 
     var val,
+        diff,
 
         disallowsNegative;
 
@@ -1868,20 +1888,40 @@ function(oldX, newX, aDirection, aSignal) {
     }
 
     //  Grab the current value.
-    val = parseInt(this.getTextContent(), 10);
+    val = parseFloat(this.getTextContent(), 10);
+
+    //  The difference we're going to adjust the value by is the absolute value
+    //  of the new X vs. the old X.
+    diff = (newX - oldX).abs();
+
+    //  If both the Shift key and Alt key are down, then adjust the value by an
+    //  order of magnitude greater. If just the Shift key is down, then adjust
+    //  the value by an order of magnitude lesser.
+    if (aSignal.getShiftKey()) {
+        if (aSignal.getAltKey()) {
+            diff *= 10;
+        } else {
+            diff *= 0.1;
+        }
+    }
 
     //  TODO: Fix this - it's property specific
     disallowsNegative = false;
 
-    //  If the direction is TP.LEFT, then subtract 1.
+    //  If the direction is TP.LEFT, then subtract the difference.
     if (aDirection === TP.LEFT) {
-        val = val - 1;
+        val = val - diff;
         if (disallowsNegative) {
             val = val.max(0);
         }
     } else {
-        //  Otherwise, if the direction is TP.RIGHT, then add 1
-        val = val + 1;
+        //  Otherwise, add the difference.
+        val = val + diff;
+    }
+
+    //  If the value isn't an integer, then trim it to one decimal place.
+    if (!val.isInteger()) {
+        val = val.toFixed(1);
     }
 
     //  Set that to be the new value.
