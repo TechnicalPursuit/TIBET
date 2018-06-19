@@ -203,6 +203,7 @@ function(cssData) {
     for (i = 0; i < len; i++) {
         str += this.generateSlotsMarkupFromMatches(
                             propValueInfos.at(i),
+                            propName,
                             slotNames.at(i));
     }
 
@@ -475,7 +476,7 @@ function(propertyName, propertyValue) {
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod(
 'generateSlotsMarkupFromMatches',
-function(infoData, aSlotName) {
+function(infoData, mainPropName, aSlotName) {
 
     /**
      * @method generateSlotsMarkupFromMatches
@@ -484,6 +485,8 @@ function(infoData, aSlotName) {
      * @param {TP.core.Hash} infoData The hash containing the slot information
      *     data. Note that the values of this hash contain *plain* JS objects
      *     and could contain nested data.
+     * @param {String} mainPropName The main property name that is being
+     *     processed.
      * @param {String} [slotName] An optional slot name to use when describing
      *     the slot. If this is not defined, this method has mechanisms to try
      *     to determine the slot name from the slot information data.
@@ -516,16 +519,15 @@ function(infoData, aSlotName) {
         //  then query it for a name and use that as the sub-property name.
         if (TP.isValid(infoData.syntax)) {
 
-            //  If it's a Property, then the slot name is what is in the
-            //  'syntax' structure and there is no slot type.
+            //  Compute a proper CSS name as translated from the name that
+            //  csstree provides.
+            computedSlotName = this.getCSSNameForCSSTreeType(
+                                        mainPropName, infoData.syntax.name);
+
             if (infoData.syntax.type === 'Property') {
-                computedSlotName = infoData.syntax.name;
+                //  If it's a Property, then there is no slot type.
                 slotType = null;
             } else if (infoData.syntax.type === 'Type') {
-                //  Otherwise, we try to use the proper CSS name as translated
-                //  from the name that csstree provides.
-                computedSlotName = this.getCSSNameForCSSTreeType(
-                                            infoData.syntax.name);
                 //  The slot type will be contained in the 'name' field, since
                 //  this is a 'Type' structure.
                 slotType = infoData.syntax.name;
@@ -534,7 +536,7 @@ function(infoData, aSlotName) {
 
         //  We'll use the slot name that is either the supplied one or the
         //  computed one, if the supplied one is invalid.
-        slotName = TP.ifInvalid(aSlotName, computedSlotName);
+        slotName = TP.ifInvalid(computedSlotName, aSlotName);
 
         if (TP.notEmpty(slotName)) {
             str += ' slot_name="' + slotName + '"';
@@ -551,7 +553,8 @@ function(infoData, aSlotName) {
         len = infoData.match.length;
         for (i = 0; i < len; i++) {
             data = infoData.match[i];
-            str += this.generateSlotsMarkupFromMatches(data);
+            str += this.generateSlotsMarkupFromMatches(
+                                        data, mainPropName, null);
         }
     } else {
 
