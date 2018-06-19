@@ -1896,7 +1896,8 @@ function(aSignal) {
      * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
      */
 
-    var val;
+    var val,
+        adjuster;
 
     val = aSignal.at('value');
 
@@ -1907,6 +1908,11 @@ function(aSignal) {
                 this.completeUpdatingRule();
             }.bind(this), 100);
     }
+
+    adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
+    adjuster.showAll();
+
+    TP.sys.getApplication().popController(this);
 
     return this;
 });
