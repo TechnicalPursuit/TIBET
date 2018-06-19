@@ -461,7 +461,10 @@ function(propertyName, propertyValue) {
             break;
 
         default:
-            slotNames = TP.ac(propertyName);
+            parts = propertyValue.split(' ');
+            len = parts.getSize();
+
+            slotNames = TP.ac().pad(len, propertyName);
             break;
     }
 
