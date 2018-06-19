@@ -538,7 +538,7 @@ function(infoData, mainPropName, aSlotName) {
         //  computed one, if the supplied one is invalid.
         slotName = TP.ifInvalid(computedSlotName, aSlotName);
 
-        if (TP.notEmpty(slotName)) {
+        if (TP.notEmpty(slotName) && slotName !== slotType) {
             str += ' slot_name="' + slotName + '"';
         }
 
