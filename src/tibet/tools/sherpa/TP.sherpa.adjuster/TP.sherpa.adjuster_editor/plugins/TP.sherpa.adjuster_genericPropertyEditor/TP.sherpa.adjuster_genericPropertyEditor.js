@@ -1141,7 +1141,13 @@ function(updateRuleSource) {
     slotEditors = this.get('propertyValueSlotEditors');
     slotEditors.forEach(
         function(anEditor) {
-            val += anEditor.getValueForCSSRule() + ' ';
+            //  Sometimes we'll get just a 'span' that contains non-live tokens,
+            //  like Operators. In that case, just use their text content.
+            if (TP.canInvoke(anEditor, 'getValueForCSSRule')) {
+                val += anEditor.getValueForCSSRule() + ' ';
+            } else {
+                val += anEditor.getTextContent() + ' ';
+            }
         });
 
     //  Trim the last space off
