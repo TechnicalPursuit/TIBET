@@ -1761,8 +1761,9 @@ function(aSignal) {
 
         slotName,
 
-        syntaxInfo,
-        terms,
+        adjusterTPElem,
+        cssInfoDoc,
+        valueItems,
 
         data,
         len,
@@ -1786,25 +1787,37 @@ function(aSignal) {
 
     //  Grab the slot name from that element and exit if there are none - we
     //  can't list anything useful here.
-    slotName = TP.elementGetAttribute(wrapperSpan, 'name', true);
+    slotName = TP.elementGetAttribute(wrapperSpan, 'slot_name', true);
     if (TP.isEmpty(slotName)) {
         return this;
     }
 
-    //  Grab the syntax information associated to the property name from the
-    //  TP.extern.csstree
-    //  object.
-    syntaxInfo = TP.extern.csstree.lexer.getProperty(slotName).syntax;
-    terms = syntaxInfo.terms;
+    //  Grab the adjuster element and the CSS schema information it keeps.
+    adjusterTPElem = TP.byId('SherpaAdjuster', TP.win('UIROOT'));
+    cssInfoDoc = adjusterTPElem.get('cssSchema');
+
+    //  Query the XML document that contains the CSS schema information for
+    //  description text that matches the current part.
+    valueItems =
+        TP.nodeEvaluateXPath(
+                cssInfoDoc,
+                '/$def:css/$def:properties/' +
+                '$def:entry[@name="' + slotName + '"]/' +
+                '$def:values/$def:value/@name');
+
+    //  If it couldn't find any 'value' items, then just return here.
+    if (TP.isEmpty(valueItems)) {
+        return this;
+    }
 
     data = TP.ac();
 
     //  Iterate over all of the terms and create an Array for each term, with
     //  the term as both the value and label.
-    len = terms.length;
+    len = valueItems.getSize();
     for (i = 0; i < len; i++) {
         data.push(
-            TP.ac(terms[i].name, terms[i].name)
+            TP.ac(valueItems.at(i).nodeValue, valueItems.at(i).nodeValue)
         );
     }
 
