@@ -86,6 +86,11 @@ function(aSignal) {
     var popupTPElem;
 
     popupTPElem = this.getOverlayElement(aSignal);
+    if (TP.isTrue(aSignal.at('sticky'))) {
+        popupTPElem.set('isSticky', true, false);
+    } else {
+        popupTPElem.set('isSticky', false, false);
+    }
 
     if (popupTPElem.isVisible()) {
         popupTPElem.setAttribute('hidden', true);
@@ -99,6 +104,10 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+//  Whether or not the popup is 'sticky'... that is, showing without the mouse
+//  button being down.
+TP.xctrls.popup.defineAttribute('isSticky');
 
 //  Whether or not the currently processing DOMClick signal is the 'triggering'
 //  signal or is a subsequent DOMClick.
@@ -244,7 +253,16 @@ function(beHidden) {
         this.observe(TP.core.Mouse, 'TP.sig.DOMClick');
         this.observe(TP.ANY, 'TP.sig.ClosePopup');
 
-        this.set('isTriggeringClick', true);
+        //  If this popup is 'sticky', that means it stays visible even after
+        //  mouse up (rather than being shown on click, for example, it might be
+        //  being shown on mouse down). In that case, the current click will
+        //  *never* be the triggering click. It will have been a click that is
+        //  dismissing the popup.
+        if (this.get('isSticky') === true) {
+            this.set('isTriggeringClick', false);
+        } else {
+            this.set('isTriggeringClick', true);
+        }
 
         this.observeKeybindingsDirectly();
 
