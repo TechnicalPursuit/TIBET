@@ -872,7 +872,7 @@ function(aSignal) {
     this.signal('TP.sig.OpenTooltip',
                 TP.hc('content', content,
                         'trigger', aSignal,
-                        'delay', 0,
+                        'delay', 100,
                         'overlayID', 'AdjusterTooltip'
                         ));
 
