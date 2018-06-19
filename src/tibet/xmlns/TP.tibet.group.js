@@ -71,7 +71,10 @@ function(aRequest) {
     //  Note that this calls our 'mutationAddedFilteredNodes' and
     //  'mutationRemovedFilteredNodes' methods below with just the nodes
     //  that got added or removed.
-    TP.sig.MutationSignalSource.addSubtreeQuery(elem);
+    TP.sig.MutationSignalSource.addSubtreeQuery(
+                elem,
+                TP.xpc('.//node()'),
+                elem);
 
     return;
 });
