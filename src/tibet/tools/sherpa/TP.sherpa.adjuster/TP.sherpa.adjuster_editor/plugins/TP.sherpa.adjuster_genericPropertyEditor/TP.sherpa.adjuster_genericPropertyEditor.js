@@ -1864,7 +1864,14 @@ function(aSignal) {
      * @returns {TP.sherpa.CSSIdentifierSlotEditor} The receiver.
      */
 
-    var adjuster;
+    var originID,
+
+        adjuster;
+
+    originID = TP.gid(aSignal.getOrigin());
+    if (!originID.endsWith('AdjusterPopup')) {
+        return this;
+    }
 
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.showAll();
