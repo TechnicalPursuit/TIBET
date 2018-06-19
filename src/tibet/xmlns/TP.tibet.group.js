@@ -37,7 +37,10 @@ function(aRequest) {
      */
 
     var elem,
-        elemTPNode;
+        elemTPNode,
+
+        query,
+        context;
 
     //  NOTE: WE DO *NOT* callNextMethod() here. This method is unusual in that
     //  it can take in Attribute nodes, etc. and our supertype method assumes
@@ -71,10 +74,29 @@ function(aRequest) {
     //  Note that this calls our 'mutationAddedFilteredNodes' and
     //  'mutationRemovedFilteredNodes' methods below with just the nodes
     //  that got added or removed.
+
+    //  If we provided a query, then build a path object from it and set the
+    //  context to be the whole document (since this probably what the author is
+    //  going to be thinking when they write the query).
+    if (TP.notEmpty(query = elemTPNode.getAttribute('query'))) {
+        query = TP.apc(query);
+        context = elemTPNode.getNativeDocument();
+    } else {
+        //  Otherwise, generate an XPath query that will get all nodes under the
+        //  current content element or any Element from the whole document that
+        //  has a 'tibet:group' attribute on it that matches the group element's
+        //  local ID. Also, set the context to the group element.
+        query =
+            TP.xpc('.//node()' +
+                    '|' +
+                    '//*[@tibet:group = "' + elemTPNode.getLocalID() + '"]');
+        context = elem;
+    }
+
     TP.sig.MutationSignalSource.addSubtreeQuery(
-                elem,
-                TP.xpc('.//node()'),
-                elem);
+            elem,
+            query,
+            context);
 
     return;
 });
