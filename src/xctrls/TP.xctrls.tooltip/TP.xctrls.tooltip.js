@@ -150,7 +150,7 @@ function(aSignal) {
             }.bind(this),
             delayVal);
 
-    this.set('$displayDelayTimer', timer);
+    this.set('$displayDelayTimer', timer, false);
 
     return this;
 });
