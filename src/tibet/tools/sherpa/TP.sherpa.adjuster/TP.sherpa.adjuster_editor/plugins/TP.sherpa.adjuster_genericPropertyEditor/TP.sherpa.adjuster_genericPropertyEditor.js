@@ -1837,7 +1837,8 @@ function(aSignal) {
             'triggerPoint', triggerPoint,
             'hideOn', 'UISelect',
             'triggerID', 'valuemenu',
-            'overlayID', 'AdjusterPopup'));
+            'overlayID', 'AdjusterPopup',
+            'sticky', true));
 
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     ourAdjusterEditorTPElem = this.getAdjusterEditorElement();
