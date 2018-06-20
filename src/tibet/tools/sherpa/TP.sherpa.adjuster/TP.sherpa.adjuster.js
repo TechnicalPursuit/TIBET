@@ -81,6 +81,7 @@ function(aRequest) {
 
 TP.sherpa.adjuster.Inst.defineAttribute('$updateRulesOnly');
 TP.sherpa.adjuster.Inst.defineAttribute('cssSchema');
+TP.sherpa.adjuster.Inst.defineAttribute('isAdjusting');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

@@ -1431,6 +1431,9 @@ function(aSignal) {
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.hideAllExceptEditor(ourAdjusterEditorTPElem);
 
+    //  Set the adjuster as being in 'adjusting' mode.
+    adjuster.set('isAdjusting', true);
+
     return this;
 });
 
@@ -1528,6 +1531,10 @@ function(aSignal) {
     //  Tell the adjuster to show all of the property editors.
     adjuster = TP.byId('SherpaAdjuster', this.getNativeDocument());
     adjuster.showAll();
+
+    //  NB: Make sure to do this before trying to hide the visual guides as they
+    //  may be relying on this value.
+    adjuster.set('isAdjusting', false);
 
     //  Grab the adjuster editor and tell it to hide its visual guides. This is
     //  necessary because sometimes the event sequence to show/hide those guides
