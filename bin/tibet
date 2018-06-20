@@ -9,6 +9,15 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-var cli = require('../src/tibet/cli/_cli.js');
+var cli,
+    version;
+
+cli = require('../src/tibet/cli/_cli.js');
+
+version = process.versions.node;
+if (parseInt(version.split('.'), 10) < 8) {
+    console.error('The TIBET CLI requires Node.js version 8 or higher.');
+    return;
+}
 
 cli.run({tibet: {}, npm: {}});
