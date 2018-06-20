@@ -1633,6 +1633,7 @@ function(oldX, newX, aDirection, aSignal) {
     var val,
         diff,
 
+        cssPropName,
         disallowsNegative;
 
     //  If there wasn't a direction, then exit here.
@@ -1658,8 +1659,8 @@ function(oldX, newX, aDirection, aSignal) {
         }
     }
 
-    //  TODO: Fix this - it's property specific
-    disallowsNegative = false;
+    cssPropName = this.getParentNode().getAttribute('slot_name');
+    disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(cssPropName);
 
     //  If the direction is TP.LEFT, then subtract the difference.
     if (aDirection === TP.LEFT) {
@@ -2029,6 +2030,7 @@ function(oldX, newX, aDirection, aSignal) {
     var val,
         diff,
 
+        cssPropName,
         disallowsNegative;
 
     //  If there wasn't a direction, then exit here.
@@ -2054,8 +2056,8 @@ function(oldX, newX, aDirection, aSignal) {
         }
     }
 
-    //  TODO: Fix this - it's property specific
-    disallowsNegative = false;
+    cssPropName = this.getParentNode().getAttribute('slot_name');
+    disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(cssPropName);
 
     //  If the direction is TP.LEFT, then subtract the difference.
     if (aDirection === TP.LEFT) {
