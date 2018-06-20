@@ -727,15 +727,15 @@ function(slotName) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('HideHighlight',
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('HideGuides',
 function(aSignal) {
 
     /**
-     * @method handleHideHighlight
-     * @summary Handles notification of when the receiver wants to hide a
-     *     previously shown highlight of the affected elements for the editor
-     * @param {TP.sig.HideHighlight} aSignal The TIBET signal which triggered
-     *     this method.
+     * @method handleHideGuides
+     * @summary Handles notification of when the receiver wants to hide any
+     *     adjuster guides that are showing.
+     * @param {TP.sig.HideGuides} aSignal The TIBET signal which triggered this
+     *     method.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
@@ -755,15 +755,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowHighlight',
+TP.sherpa.adjuster_genericPropertyEditor.Inst.defineHandler('ShowGuides',
 function(aSignal) {
 
     /**
-     * @method handleShowHighlight
-     * @summary Handles notification of when the receiver wants to show a
-     *     highlight of the affected elements for the editor
-     * @param {TP.sig.ShowHighlight} aSignal The TIBET signal which triggered
-     *     this method.
+     * @method handleShowGuides
+     * @summary Handles notification of when the receiver wants to show any
+     *     adjuster guides.
+     * @param {TP.sig.ShowGuides} aSignal The TIBET signal which triggered this
+     *     method.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 

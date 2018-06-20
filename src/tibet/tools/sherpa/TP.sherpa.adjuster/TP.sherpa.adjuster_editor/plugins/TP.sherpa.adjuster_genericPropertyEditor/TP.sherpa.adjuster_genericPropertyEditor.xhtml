@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<sherpa:adjuster_genericPropertyEditor>
-    <div name="propertyName" class="field" on:mouseenter="ShowPropertyNameInfo" on:mouseleave="HidePropertyNameInfo"><div class="output"><span part="name"/><span class="launchMark" on:mousedown="ShowNameMenu"/></div></div>
+<sherpa:adjuster_genericPropertyEditor on:mouseenter="ShowGuides" on:mouseleave="HideGuides">
+    <div name="propertyName" class="field" on:mouseover="ShowPropertyNameInfo" on:mouseout="HidePropertyNameInfo"><div class="output"><span part="name"/><span class="launchMark" on:mousedown="ShowNameMenu"/></div></div>
     <div name="propertyValue" class="field"/>
     <div name="propertyRuleSelector" class="field"><span class="input"/></div>
 </sherpa:adjuster_genericPropertyEditor>
