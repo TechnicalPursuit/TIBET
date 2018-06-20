@@ -125,6 +125,14 @@ TP.CSS_DISALLOW_NEGATIVE_VALUES = TP.ac('borderWidth',
                                         'paddingTop',
                                         'width');
 
+TP.regex.CSS_NON_NEGATIVE_PROPERTIES = new RegExp(
+    '^' +
+    TP.CSS_DISALLOW_NEGATIVE_VALUES.collect(
+        function(domName) {
+            return domName.asCSSName();
+        }).join('|') +
+    '$');
+
 TP.CSS_INHERITED_PROPERTIES = TP.ac('azimuth',
                                     'borderCollapse',
                                     'borderSpacing',
