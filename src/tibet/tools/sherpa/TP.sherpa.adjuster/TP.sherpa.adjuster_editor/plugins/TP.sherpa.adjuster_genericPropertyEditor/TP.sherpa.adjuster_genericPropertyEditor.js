@@ -307,6 +307,8 @@ function(propertyName, typeName) {
             switch (propertyName) {
                 case 'font':
                     return 'font-size';
+                case 'font-size':
+                    return propertyName;
                 default:
                     return typeName;
             }
@@ -339,6 +341,8 @@ function(propertyName, typeName) {
             switch (propertyName) {
                 case 'background':
                     return 'background-size';
+                case 'font-size':
+                    return propertyName;
                 default:
                     return typeName;
             }
