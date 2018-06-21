@@ -1640,7 +1640,8 @@ function(oldX, newX, aDirection, aSignal) {
     var val,
         diff,
 
-        cssPropName,
+        wrapperSpan,
+        slotName,
         disallowsNegative;
 
     //  If there wasn't a direction, then exit here.
@@ -1666,8 +1667,14 @@ function(oldX, newX, aDirection, aSignal) {
         }
     }
 
-    cssPropName = this.getParentNode().getAttribute('slot_name');
-    disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(cssPropName);
+    //  Grab the closest element that has a 'slot_name' attribute.
+    wrapperSpan = this.ancestorMatchingCSS('*[slot_name]');
+    if (TP.notValid(wrapperSpan)) {
+        return this;
+    }
+    slotName = wrapperSpan.getAttribute('slot_name');
+
+    disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(slotName);
 
     //  If the direction is TP.LEFT, then subtract the difference.
     if (aDirection === TP.LEFT) {
@@ -1790,15 +1797,15 @@ function(aSignal) {
     //  mouse down.
     aSignal.at('trigger').stopPropagation();
 
-    //  Grab the span that is wrapping the value.
-    wrapperSpan = aSignal.getDOMTarget().parentNode.parentNode;
-
-    //  Grab the slot name from that element and exit if there are none - we
-    //  can't list anything useful here.
-    slotName = TP.elementGetAttribute(wrapperSpan, 'slot_name', true);
-    if (TP.isEmpty(slotName)) {
+    //  Grab the closest element that has a 'slot_name' attribute.
+    wrapperSpan = TP.nodeAncestorMatchingCSS(aSignal.getDOMTarget(),
+                                                '*[slot_name]');
+    if (!TP.isElement(wrapperSpan)) {
         return this;
     }
+
+    //  Grab the slot name value.
+    slotName = TP.elementGetAttribute(wrapperSpan, 'slot_name', true);
 
     //  Grab the adjuster element and the CSS schema information it keeps.
     adjusterTPElem = TP.byId('SherpaAdjuster', TP.win('UIROOT'));
@@ -2037,7 +2044,8 @@ function(oldX, newX, aDirection, aSignal) {
     var val,
         diff,
 
-        cssPropName,
+        wrapperSpan,
+        slotName,
         disallowsNegative;
 
     //  If there wasn't a direction, then exit here.
@@ -2063,8 +2071,14 @@ function(oldX, newX, aDirection, aSignal) {
         }
     }
 
-    cssPropName = this.getParentNode().getAttribute('slot_name');
-    disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(cssPropName);
+    //  Grab the closest element that has a 'slot_name' attribute.
+    wrapperSpan = this.ancestorMatchingCSS('*[slot_name]');
+    if (TP.notValid(wrapperSpan)) {
+        return this;
+    }
+    slotName = wrapperSpan.getAttribute('slot_name');
+
+    disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(slotName);
 
     //  If the direction is TP.LEFT, then subtract the difference.
     if (aDirection === TP.LEFT) {
