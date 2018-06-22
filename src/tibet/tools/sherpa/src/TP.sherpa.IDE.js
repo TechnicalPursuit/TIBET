@@ -453,12 +453,12 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.IDE.Inst.defineMethod('getToolsLayerOffsetFromScreen',
+TP.sherpa.IDE.Inst.defineMethod('getToolsLayerOffsetsFromScreen',
 function(aScreenTPElement) {
 
     /**
-     * @method getToolsLayerOffsetFromScreen
-     * @summary Returns the 'offset' from the tools layer to the supplied
+     * @method getToolsLayerOffsetsFromScreen
+     * @summary Returns the X and Y offsets from the tools layer to the supplied
      *     screen. This can used in computations that require drawing on the
      *     tools layer from coordinates computed inside of a particular screen.
      * @param {TP.sherpa.screen} aScreenTPElement The screen element to compute
