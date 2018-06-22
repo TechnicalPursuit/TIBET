@@ -252,8 +252,22 @@ function(propertyName, propertyValue) {
      *     supplied CSS property and value.
      */
 
-    //  For now, all properties use a generic property editor.
-    return TP.elem('<sherpa:adjuster_genericPropertyEditor/>');
+    var str;
+
+    str = '<sherpa:adjuster_genericPropertyEditor';
+
+    switch (propertyName) {
+
+        case 'height':
+            str += ' tibet:tag="sherpa:adjuster_heightPropertyEditor"';
+            break;
+        default:
+            break;
+    }
+
+    str += '/>';
+
+    return TP.elem(str);
 });
 
 //  ------------------------------------------------------------------------
