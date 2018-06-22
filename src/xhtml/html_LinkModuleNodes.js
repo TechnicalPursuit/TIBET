@@ -226,6 +226,12 @@ function(anHref) {
 
     var doc;
 
+    //  If the receiver has a 'tibet:dontreload' attribute, then exit here
+    //  without reloading.
+    if (this.hasAttribute('tibet:dontreload')) {
+        return this;
+    }
+
     if (TP.notEmpty(anHref)) {
 
         //  Use the core primitive routine to reload our href in our native
