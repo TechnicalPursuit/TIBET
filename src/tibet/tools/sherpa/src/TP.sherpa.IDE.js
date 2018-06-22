@@ -1161,9 +1161,13 @@ function(aSignal) {
     str = mutatedRule.selectorText + ' {';
 
     //  Generate a matcher RegExp
-    matcher = TP.rc(RegExp.escapeMetachars(
-                    str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
-                        replace(/SECRET_SAUCE/g, '\\s*'), 'g');
+    matcher = TP.rc(
+                '(^|\\})\\s*(' +
+                RegExp.escapeMetachars(
+                str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
+                    replace(/SECRET_SAUCE/g, '\\s*') +
+                ')',
+                'g');
 
     //  Kick the match count once so that, if we didn't find any matching
     //  selectors 'ahead' of us in the file, we'll match our lone selector
@@ -1175,8 +1179,11 @@ function(aSignal) {
         match = matcher.exec(currentContent);
 
         //  Adjust the lastIndex to start the next exec() after the matched
-        //  rule.
-        matcher.lastIndex = currentContent.indexOf('}', match.index) + 1;
+        //  rule. Note here how we add the difference between the whole match
+        //  and the match at group 1. This gives us the offset from the head of
+        //  the match into just where the selector begins.
+        startIndex = match.index + (match[0].length - match[2].length);
+        matcher.lastIndex = currentContent.indexOf('}', startIndex) + 1;
     }
 
     //  If no match could be found, exit here.
@@ -1185,9 +1192,9 @@ function(aSignal) {
         return this;
     }
 
-    //  The rule text starts where the match was made and ends at the trailing
-    //  bracket ('}');
-    startIndex = match.index;
+    //  The rule text starts where the match was made (plus the offset as
+    //  described above) and ends at the trailing bracket ('}');
+    startIndex = match.index + (match[0].length - match[2].length);
     endIndex = currentContent.indexOf('}', startIndex) + 1;
 
     //  Grab the rule text
