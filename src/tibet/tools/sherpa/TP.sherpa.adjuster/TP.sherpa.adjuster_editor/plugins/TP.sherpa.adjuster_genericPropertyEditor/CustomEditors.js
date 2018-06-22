@@ -373,7 +373,9 @@ function() {
         lineElems,
 
         toolsLayerYOffset,
-        bufferYOffset;
+        bufferYOffset,
+
+        natWindow;
 
     //  Grab our group element. This will contain the 'svg:line' elements that
     //  are representing our guides within the overall SVG content.
@@ -386,12 +388,12 @@ function() {
     toolsLayerYOffset = this.$get('$yOffset');
     bufferYOffset = 3;
 
-    var natWindow = this.getNativeWindow();
+    natWindow = this.getNativeWindow();
 
     lineElems.forEach(
         function(lineElem) {
 
-            var sourceTPElem,
+            var sourceTPElem;
 
             //  This is the element that these lines are representing as guides
             //  in the group.
@@ -419,8 +421,8 @@ function() {
                         (bufferYOffset * 2);
                 /* eslint-enable no-extra-parens */
 
-                    lineElem.setAttribute('y1', y1);
-                    lineElem.setAttribute('y2', y2);
+                lineElem.setAttribute('y1', y1);
+                lineElem.setAttribute('y2', y2);
             }).queueForNextRepaint(natWindow);
         });
 
