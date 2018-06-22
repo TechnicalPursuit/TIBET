@@ -1060,9 +1060,9 @@ function(aDocument) {
 
     for (i = 0; i < allRules.getSize(); i++) {
 
-        //  If this is not a STYLE_RULE, then it's probably some kind of '@'
-        //  rule and we can't determine whether those are unused or not without
-        //  a *much* more sophisticated analysis.
+        //  If this is not a CSSRule.STYLE_RULE, then it's probably some kind of
+        //  '@' rule and we can't determine whether those are unused or not
+        //  without a *much* more sophisticated analysis.
         if (allRules.at(i).type !== CSSRule.STYLE_RULE) {
             continue;
         }
@@ -1741,9 +1741,9 @@ function(anElement) {
     sheet = TP.cssElementGetStyleSheet(anElement);
     rules = sheet.cssRules;
 
-    //  Iterate over them and, if they're of type STYLE_RULE or FONT_FACE_RULE,
-    //  then use the Function above to see if they need to have URI content
-    //  replaced.
+    //  Iterate over them and, if they're of type CSSRule.STYLE_RULE or
+    //  CSSRule.FONT_FACE_RULE, then use the Function above to see if they need
+    //  to have URI content replaced.
     for (i = 0; i < rules.length; i++) {
 
         currentRuleText = rules[i].cssText;
