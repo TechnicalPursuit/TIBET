@@ -6464,8 +6464,8 @@ TP.boot.$flushUIBuffer = function(forceUIUpdate) {
 
     buffer = TP.boot.$$msgBuffer;
     if (TP.boot.$notValid(buffer)) {
-        TP.boot.$$msgBuffer = buffer =
-            elem.ownerDocument.createDocumentFragment();
+        buffer = elem.ownerDocument.createDocumentFragment();
+        TP.boot.$$msgBuffer = buffer;
     }
 
     bufSize = TP.boot.$$logbufsize || TP.boot.$computeLogBufferSize();
@@ -6480,8 +6480,8 @@ TP.boot.$flushUIBuffer = function(forceUIUpdate) {
 
         //  Reset by allocating a new DocumentFragment to hold future log
         //  entries.
-        TP.boot.$$msgBuffer = buffer =
-            elem.ownerDocument.createDocumentFragment();
+        buffer = elem.ownerDocument.createDocumentFragment();
+        TP.boot.$$msgBuffer = buffer;
     }
 
     return buffer;

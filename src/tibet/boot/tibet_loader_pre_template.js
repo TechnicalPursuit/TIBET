@@ -61,7 +61,8 @@ if (root === top) {
 
         //  Even if we exit this function we need to help the rest of
         //  tibet_loader's modules find the TP reference.
-        TP = root.TP = top.TP;
+        root.TP = top.TP;
+        TP = root.TP;
 
         //  See if we can trigger the router to route us based on the URL we're
         //  being loaded from (typically index.html via a "/" or "#" link).

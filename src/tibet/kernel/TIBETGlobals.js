@@ -2463,7 +2463,8 @@ TP.sort.NATURAL_ORDER = function(a, b) {
     while (true) {
         //  only count the number of zeroes leading the last number
         //  compared
-        nza = nzb = 0;
+        nza = 0;
+        nzb = 0;
 
         ca = a.charAt(ia);
         cb = b.charAt(ib);
