@@ -2404,8 +2404,10 @@ function(aStyleRule, sourceASTs) {
             //  have been set dynamically.
             for (j = 0; j < rule.declarations.getSize(); j++) {
                 declaration = rule.declarations.at(j);
-                declaration.value =
+                if (declaration.type === 'declaration') {
+                    declaration.value =
                             aStyleRule.style[declaration.property.asDOMName()];
+                }
             }
 
             ruleInfo = rule;
