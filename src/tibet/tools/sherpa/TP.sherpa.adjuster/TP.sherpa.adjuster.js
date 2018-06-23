@@ -405,47 +405,57 @@ function(aValue, shouldSignal) {
             var isMutable,
 
                 rule,
-                decls;
+                info,
+                decls,
+
+                len,
+                i,
+
+                propName,
+                propVal,
+
+                editorElem;
 
             //  Compute whether or not a rule is mutable based on its location.
             isMutable = sherpaMain.styleLocationIsMutable(
                                         aRuleInfo.at('sheetLocation'));
 
             rule = aRuleInfo.at('rule');
+            info = TP.styleRuleGetSourceInfo(rule, TP.hc());
 
-            //  We don't want non CSSRule.STYLE_RULE rules.
-            if (rule.type !== CSSRule.STYLE_RULE) {
+            //  Sometimes we get entries that are not rules - like '@namespace'
+            //  or '@import' declarations. If that's the case, move on here.
+            if (info.at('type') !== 'rule') {
                 return;
             }
 
-            decls = TP.styleStringAsHash(rule.cssText);
+            decls = info.at('declarations');
 
-            decls.perform(
-                function(kvPair) {
+            len = decls.getSize();
+            for (i = 0; i < len; i++) {
 
-                    var propName,
-                        propVal,
+                //  Declarations can contain a comment - we want to skip those.
+                if (decls.at(i).type === 'comment') {
+                    continue;
+                }
 
-                        editorElem;
+                propName = decls.at(i).property;
+                propVal = decls.at(i).value;
 
-                    propName = kvPair.first().asCSSName();
-                    propVal = kvPair.last();
+                //  Grab a specific editor Element for this property name and
+                //  value.
+                editorElem = this.getEditorForPropertyNameAndValue(
+                                                        propName, propVal);
 
-                    //  Grab a specific editor Element for this property name
-                    //  and value.
-                    editorElem = this.getEditorForPropertyNameAndValue(
-                                                            propName, propVal);
+                editorElem = TP.nodeAppendChild(editorsDiv, editorElem, false);
 
-                    TP.nodeAppendChild(editorsDiv, editorElem, false);
-
-                    editorEntries.push(
-                                TP.hc('name', propName,
-                                        'value', propVal,
-                                        'selector', aRuleInfo.at('selector'),
-                                        'rule', aRuleInfo.at('rule'),
-                                        'mutable', isMutable));
-                }.bind(this));
-
+                editorEntries.push(
+                            TP.hc('name', propName,
+                                    'value', propVal,
+                                    'selector', aRuleInfo.at('selector'),
+                                    'rule', aRuleInfo.at('rule'),
+                                    'mutable', isMutable));
+            }
         }.bind(this));
 
     //  Set the body of the tile to be the div containing all of the editors.
