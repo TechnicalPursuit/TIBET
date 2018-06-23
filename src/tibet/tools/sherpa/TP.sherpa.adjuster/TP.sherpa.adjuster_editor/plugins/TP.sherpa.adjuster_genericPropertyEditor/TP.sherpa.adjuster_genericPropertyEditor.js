@@ -229,6 +229,22 @@ function(propertyName, typeName) {
      */
 
     switch (typeName) {
+        case 'attachment':
+            switch (propertyName) {
+                case 'background-attachment':
+                    return 'background-attachment';
+                default:
+                    return typeName;
+            }
+        case 'box':
+            switch (propertyName) {
+                case 'background-clip':
+                    return 'background-clip';
+                case 'background-origin':
+                    return 'background-origin';
+                default:
+                    return typeName;
+            }
         case 'bg-image':
             return 'background-image';
         case 'bg-position':
@@ -236,6 +252,7 @@ function(propertyName, typeName) {
         case 'bg-size':
             switch (propertyName) {
                 case 'background':
+                case 'background-size':
                     return 'background-size';
                 case 'mask':
                     return 'mask-size';
@@ -245,8 +262,10 @@ function(propertyName, typeName) {
         case 'br-style':
             switch (propertyName) {
                 case 'border':
+                case 'border-style':
                     return 'border-style';
                 case 'outline':
+                case 'outline-style':
                     return 'outline-style';
                 default:
                     return typeName;
@@ -254,17 +273,32 @@ function(propertyName, typeName) {
         case 'br-width':
             switch (propertyName) {
                 case 'border':
+                case 'border-width':
                     return 'border-width';
                 case 'outline':
+                case 'outline-width':
                     return 'outline-width';
                 default:
                     return typeName;
             }
         case 'color':
+        case 'hex-color':
+        case 'hsl()':
+        case 'hsla()':
+        case 'named-color':
+        case 'rgb()':
+        case 'rgba()':
             switch (propertyName) {
+                case 'background':
+                case 'background-color':
+                    return 'background-color';
                 case 'border':
+                case 'border-color':
                     return 'border-color';
+                case 'color':
+                    return 'color';
                 case 'outline':
+                case 'outline-color':
                     return 'outline-color';
                 default:
                     return typeName;
@@ -272,8 +306,10 @@ function(propertyName, typeName) {
         case 'custom-ident':
             switch (propertyName) {
                 case 'font':
+                case 'font-family':
                     return 'font-family';
                 case 'voice':
+                case 'voice-family':
                     return 'voice-family';
                 default:
                     return typeName;
@@ -281,43 +317,54 @@ function(propertyName, typeName) {
         case 'family-name':
             switch (propertyName) {
                 case 'font':
+                case 'font-family':
                     return 'font-family';
                 case 'voice':
+                case 'voice-family':
                     return 'voice-family';
+                default:
+                    return typeName;
+            }
+        case 'filter-function':
+            switch (propertyName) {
+                case 'filter':
+                    return 'filter';
                 default:
                     return typeName;
             }
         case 'font-variant-css21':
             return 'font-variant';
-        case 'hex-color':
+        case 'integer':
             switch (propertyName) {
-                case 'background':
-                    return 'background-color';
+                case 'z-index':
+                    return 'z-index';
                 default:
                     return typeName;
             }
         case 'length':
             switch (propertyName) {
                 case 'font':
+                case 'font-size':
                     return 'font-size';
+                case 'letter-spacing':
+                    return 'letter-spacing';
                 default:
                     return null;
             }
         case 'length-percentage':
             switch (propertyName) {
                 case 'font':
-                    return 'font-size';
                 case 'font-size':
-                    return propertyName;
+                    return 'font-size';
+                case 'letter-spacing':
+                    return 'letter-spacing';
                 default:
                     return typeName;
             }
-        case 'named-color':
+        case 'number':
             switch (propertyName) {
-                case 'border':
-                    return 'border-color';
-                case 'outline':
-                    return 'outline-color';
+                case 'line-height':
+                    return 'line-height';
                 default:
                     return typeName;
             }
@@ -331,8 +378,10 @@ function(propertyName, typeName) {
         case 'repeat-style':
             switch (propertyName) {
                 case 'background':
+                case 'background-repeat':
                     return 'background-repeat';
                 case 'mask':
+                case 'mask-repeat':
                     return 'mask-repeat';
                 default:
                     return typeName;
@@ -343,6 +392,13 @@ function(propertyName, typeName) {
                     return 'background-size';
                 case 'font-size':
                     return propertyName;
+                default:
+                    return typeName;
+            }
+        case 'shape':
+            switch (propertyName) {
+                case 'clip':
+                    return 'clip';
                 default:
                     return typeName;
             }
