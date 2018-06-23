@@ -2241,6 +2241,8 @@ function(aStyleRule, sourceASTs) {
 
         args,
 
+        declaration,
+
         ruleInfo;
 
     if (!TP.isStyleRule(aStyleRule)) {
@@ -2396,7 +2398,18 @@ function(aStyleRule, sourceASTs) {
         //  rule, then we break and exit.
         if (index === nativeRuleIndex) {
 
+            //  Before we return the data, we need to make sure that the values
+            //  for the declarations defined in this ruleInfo are updated with
+            //  any changes that the supplied native style rule has which might
+            //  have been set dynamically.
+            for (j = 0; j < rule.declarations.getSize(); j++) {
+                declaration = rule.declarations.at(j);
+                declaration.value =
+                            aStyleRule.style[declaration.property.asDOMName()];
+            }
+
             ruleInfo = rule;
+
             break;
         }
 
