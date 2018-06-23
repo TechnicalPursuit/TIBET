@@ -1822,7 +1822,8 @@ function(aSignal) {
                 cssInfoDoc,
                 '/$def:css/$def:properties/' +
                 '$def:entry[@name="' + slotName + '"]/' +
-                '$def:values/$def:value/@name');
+                '$def:values/$def:value/@name',
+                TP.NODESET);
 
     //  If it couldn't find any 'value' items, then just return here.
     if (TP.isEmpty(valueItems)) {
