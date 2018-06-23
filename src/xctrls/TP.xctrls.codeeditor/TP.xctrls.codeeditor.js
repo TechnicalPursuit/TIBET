@@ -141,9 +141,9 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        scriptElem,
-
         thisref,
+
+        scriptElem,
 
         loadHandler;
 
@@ -158,6 +158,8 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
+    thisref = this;
+
     //  If the ACE editor isn't loaded, then we must load it *into the target
     //  document of the element that we're processing*.
     if (TP.notValid(TP.extern.ace)) {
@@ -171,7 +173,6 @@ function(aRequest) {
         //  Define a handler that will define the global TIBET 'extern' slot
         //  that will point to the ACE editor and then call setup on the element
         //  that we're processing.
-        thisref = this;
         loadHandler = function() {
             var aceObj;
 

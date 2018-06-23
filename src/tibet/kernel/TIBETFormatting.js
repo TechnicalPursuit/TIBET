@@ -273,8 +273,8 @@ function(depth, level) {
     $depth = TP.ifInvalid(depth, 1);
     $level = TP.ifInvalid(level, 0);
 
+    thisref = this;
     try {
-        thisref = this;
         joinArr = this.collect(
             function(item, index) {
                 if (item === thisref) {

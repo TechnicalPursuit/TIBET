@@ -1735,9 +1735,9 @@ function(aRequest) {
      * @returns {TP.shell.ShellResponse|undefined} A response to the request.
      */
 
-    var response,
+    var thisref,
+        response,
         cmd,
-        thisref,
         constructOutInfo;
 
     aRequest.isActive(true);
@@ -1759,6 +1759,8 @@ function(aRequest) {
 
     this.$set('previous', this.$get('current'));
     this.$set('current', aRequest);
+
+    thisref = this;
 
     //  If there is a GUI and the request does not wish to run silently, we
     //  build a 'construct out UI' request and tie it back to the original
@@ -1796,7 +1798,6 @@ function(aRequest) {
         //  Note here how we fork the execution (but as quickly as
         //  possible so that it goes back on the stack ASAP) so that the GUI
         //  has the chance to draw the output cell before we run.
-        thisref = this;
         setTimeout(
             function() {
                 thisref.execute(aRequest);

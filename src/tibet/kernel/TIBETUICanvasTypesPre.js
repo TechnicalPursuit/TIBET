@@ -1168,6 +1168,8 @@ function(aURL, aRequest) {
 
     win = this.getNativeWindow();
 
+    thisref = this;
+
     //  If the target is an XML rendering surface, which it normally should be,
     //  we can setContent directly. If not we can attempt to "double pump" it by
     //  loading a blank.xhtml file and hooking into the onload (which works if
@@ -1181,7 +1183,6 @@ function(aURL, aRequest) {
 
         //  Capture variable binding references.
         frame = win.frameElement;
-        thisref = this;
 
         handler = function() {
             frame.removeEventListener('load', handler, false);

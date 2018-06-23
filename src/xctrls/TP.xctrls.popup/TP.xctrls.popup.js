@@ -238,6 +238,8 @@ function(beHidden) {
 
     var thisref;
 
+    thisref = this;
+
     if (beHidden) {
 
         //  Blur any focused element that is enclosed within us.
@@ -268,7 +270,6 @@ function(beHidden) {
 
         //  Focus any autofocused element or the first focusable element under
         //  us. Note that we have to fork this for GUI refresh reasons - sigh.
-        thisref = this;
         setTimeout(function() {
             thisref.focusAutofocusedOrFirstFocusableDescendant();
         }, 50);

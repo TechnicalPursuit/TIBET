@@ -715,6 +715,8 @@ function(aCollection) {
 
     len = this.length;
 
+    thisref = this;
+
     if (TP.isArray(aCollection)) {
         this.push.apply(this, aCollection);
     } else {
@@ -722,7 +724,6 @@ function(aCollection) {
             return this.raise('TP.sig.InvalidCollection');
         }
 
-        thisref = this;
         aCollection.perform(
             function(item) {
                 thisref.push(item);
@@ -4528,6 +4529,8 @@ function() {
     //  force a unique ID
     this.$set(TP.ID, TP.genID('TP.core.Hash'), false);
 
+    thisref = this;
+
     //  NB: For performance reasons, there are multiple occurrences of setting
     //  the internal hash to an orphan object here. This is due to the desire to
     //  minimize checking and object creation.
@@ -4552,7 +4555,6 @@ function() {
 
                 if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
                     this.$set('$$hash', TP.constructOrphanObject(), false);
-                    thisref = this;
                     TP.objectGetKeys(obj).forEach(
                             function(key) {
                                 var value;
@@ -7470,14 +7472,14 @@ function(aCollection, aFunction) {
 
     hash = this.copy();
 
+    thisref = this;
+
     if (TP.isCallable(aFunction)) {
         //  going to try to resolve duplicate key issues so we need to
         //  collect the actual values via the function
         dups = this.getKeys().intersection(aCollection.getKeys());
 
         if (TP.notEmpty(dups)) {
-
-            thisref = this;
 
             dups.convert(
                 function(key) {
