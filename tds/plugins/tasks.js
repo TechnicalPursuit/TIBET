@@ -854,10 +854,6 @@
                 TDS.beautify(JSON.stringify(change))) : 0;
 
             process.nextTick(function() {
-                //  Save the change.seq number so we watch based on that
-                //  sequence during any restarts etc. rather than doing all
-                //  the work from the start, or missing work via 'now'.
-                TDS.writeWatchSince(app, 'tasks', change.seq);
                 TDS.workflow(change.doc);
             });
 
@@ -1348,7 +1344,7 @@
         //    initial_retry_delay: TDS.getcfg('tds.tasks.watch.initial_retry_delay') || 1000,
         //    max_retry_seconds: TDS.getcfg('tds.tasks.watch.max_retry_seconds') || 360,
         //    response_grace_time: TDS.getcfg('tds.tasks.watch.response_grace_time') || 5000,
-            since: TDS.readWatchSince(app, 'tasks') || 'now'
+            since: 'now'
         };
 
         feed = new follow.Feed(feedopts);
