@@ -2150,7 +2150,8 @@ TP.SLOT_FILTERS = {
         methods: true,
         hidden: true,
         scope: TP.INTRODUCED,
-        public: true},
+        public: true
+    },
     known_inherited: {
         methods: true,
         hidden: true,

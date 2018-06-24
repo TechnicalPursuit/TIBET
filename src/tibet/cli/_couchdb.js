@@ -67,7 +67,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({
 boolean: ['confirm'],
     default: {
         confirm: true
-    }}, Cmd.Parent.prototype.PARSE_OPTIONS);
+    }
+}, Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 

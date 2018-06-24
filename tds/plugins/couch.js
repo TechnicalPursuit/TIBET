@@ -279,14 +279,22 @@
                         attachment = atts[key];
                         if (!baseline.doc._attachments[key]) {
                             //  Didn't exist at baseline time, assume an add.
-                            list.push({action: 'add', name: key,
-                                type: 'attachment', attachment: attachment});
+                            list.push({
+                                action: 'add',
+                                name: key,
+                                type: 'attachment',
+                                attachment: attachment
+                            });
                         } else if (attachment.revpos > basepos &&
                                 attachment.revpos !== pushpos) {
                             //  Existed at baseline time, but changed since then
                             //  and not due to the last push from the FS watcher.
-                            list.push({action: 'change', name: key,
-                                type: 'attachment', attachment: attachment});
+                            list.push({
+                                action: 'change',
+                                name: key,
+                                type: 'attachment',
+                                attachment: attachment
+                            });
                         }
                     });
 
@@ -298,9 +306,12 @@
                             //  a push position greater than the one we're looking
                             //  at (meaning it was our push that deleted it). Then
                             //  track the change in our list.
-                            list.push({action: 'unlink', name: key,
-                                type: 'attachment', attachment:
-                                    baseline.doc._attachments[key]});
+                            list.push({
+                                action: 'unlink',
+                                name: key,
+                                type: 'attachment',
+                                attachment: baseline.doc._attachments[key]
+                            });
                         }
                     });
 

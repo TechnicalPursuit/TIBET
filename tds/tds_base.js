@@ -389,7 +389,11 @@
                         TDS.colorize(' (production build)', 'dim');
 
                     logger.system(msg,
-                        {comp: 'TDS', type: 'tds', name: 'build'});
+                        {
+                            comp: 'TDS',
+                            type: 'tds',
+                            name: 'build'
+                        });
 
                     if (!TDS.hasConsole()) {
                         process.stdout.write(msg);
@@ -405,7 +409,11 @@
                      '#?boot.profile=development@developer'),
                     'host');
             logger.system(msg,
-                {comp: 'TDS', type: 'tds', name: 'sherpa'});
+                {
+                    comp: 'TDS',
+                    type: 'tds',
+                    name: 'sherpa'
+                });
 
             if (!TDS.hasConsole()) {
                 process.stdout.write(msg);
@@ -420,7 +428,11 @@
                      '#?boot.profile=development'), 'host');
 
             logger.system(msg,
-                {comp: 'TDS', type: 'tds', name: 'dev'});
+                {
+                    comp: 'TDS',
+                    type: 'tds',
+                    name: 'dev'
+                });
 
             if (!TDS.hasConsole()) {
                 process.stdout.write(msg);
@@ -1027,7 +1039,13 @@
     /**
      */
     TDS.log_transport.prototype.log = function(level, msg, meta, callback) {
-        this.output.push({level: level, message: msg, meta: meta, time: Date.now()});
+        this.output.push(
+            {
+                level: level,
+                message: msg,
+                meta: meta,
+                time: Date.now()
+            });
         this.flush();
         callback(null, true);
     };

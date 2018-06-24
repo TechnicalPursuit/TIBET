@@ -232,8 +232,12 @@ Cmd.prototype.executeListall = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options,
-        {requestor: this, needsapp: false, needsdb: false});
+    params = CLI.blend(
+                this.options, {
+                    requestor: this,
+                    needsapp: false,
+                    needsdb: false
+                });
     params = couch.getCouchParameters(params);
     db_url = params.db_url;
 

@@ -243,7 +243,12 @@ Cmd.prototype.execute = function() {
         this.options[key.slice(2)] = true;
     }
 
-    result = {linty: 0, errors: 0, warnings: 0, files: 0};
+    result = {
+        linty: 0,
+        errors: 0,
+        warnings: 0,
+        files: 0
+    };
 
     // Build up the list of files to be processed either by scanning the
     // directory or by leveraging package@config data.
@@ -262,7 +267,12 @@ Cmd.prototype.execute = function() {
             return result.errors;
         } else {
             //  RESET result to avoid counting config files in final output.
-            result = {linty: 0, errors: 0, warnings: 0, files: 0};
+            result = {
+                linty: 0,
+                errors: 0,
+                warnings: 0,
+                files: 0
+            };
         }
 
         this.verbose('reading package list...');
@@ -766,7 +776,13 @@ Cmd.prototype.processEslintResult = function(result) {
         });
     });
 
-    summary = {warnings: warnings, errors: errors, linty: 0, recheck: recheck};
+    summary = {
+        warnings: warnings,
+        errors: errors,
+        linty: 0,
+        recheck: recheck
+    };
+
     if (warnings + errors > 0) {
         summary.linty = 1;
     }
@@ -980,8 +996,12 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         jsonFiles;
 
     cmd = this;
-    res = results ||
-        {linty: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {
+            linty: 0,
+            errors: 0,
+            warnings: 0,
+            files: 0
+        };
     res.recheck = res.recheck || [];
 
     jsonFiles = Array.isArray(files) ? files : [files];
@@ -1049,7 +1069,12 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     opts = this.configureEslintOptions();
     engine = new eslint.CLIEngine(opts);
 
-    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {
+            linty: 0,
+            errors: 0,
+            warnings: 0,
+            files: 0
+        };
     res.recheck = res.recheck || [];
 
     srcFiles = Array.isArray(files) ? files : [files];
@@ -1119,7 +1144,12 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
     stylelint = require('stylelint');
 
     cmd = this;
-    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {
+            linty: 0,
+            errors: 0,
+            warnings: 0,
+            files: 0
+        };
     res.recheck = res.recheck || [];
 
     styleFiles = Array.isArray(files) ? files : [files];
@@ -1204,7 +1234,12 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
         currentText;
 
     cmd = this;
-    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {
+            linty: 0,
+            errors: 0,
+            warnings: 0,
+            files: 0
+        };
 
     xmlFiles = Array.isArray(files) ? files : [files];
     res.files += xmlFiles.length;

@@ -496,10 +496,11 @@
                                 logger.debug('ignoring empty event.data',
                                 meta) : 0;
                             cliSocket.send(JSON.stringify({
-                                ok: false,
-                                error: 'empty_command',
-                                reason: 'unsafe event data',
-                                level: 'error'}));
+                                    ok: false,
+                                    error: 'empty_command',
+                                    reason: 'unsafe event data',
+                                    level: 'error'
+                                }));
                             return;
                         }
 

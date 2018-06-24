@@ -347,7 +347,11 @@
                 guard = job.guards[job.state] || job.guards[task.name];
                 if (TDS.notEmpty(guard)) {
                     if (!TWS.Evaluator.evaluate(guard,
-                            {job: job, step: step, params: step.params})) {
+                            {
+                                job: job,
+                                step: step,
+                                params: step.params
+                            })) {
                         state = '$$skipped';
                     }
                 }
@@ -883,7 +887,11 @@
                 return;
             }
 
-            stepMeta = {comp: 'TWS', type: 'task', name: job.state};
+            stepMeta = {
+                comp: 'TWS',
+                type: 'task',
+                name: job.state
+            };
 
             plugin = step.plugin || step.name;
 
@@ -1305,7 +1313,11 @@
                     return;
                 }
 
-                taskMeta = {comp: 'TWS', type: 'task', name: name};
+                taskMeta = {
+                    comp: 'TWS',
+                    type: 'task',
+                    name: name
+                };
 
                 logger.system('loading task', taskMeta);
 
