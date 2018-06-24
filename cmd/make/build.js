@@ -23,7 +23,7 @@
             make.sh.mkdir(fullpath);
         }
 
-        make.chain('sync_dna_styles', '_lint', 'clean', 'build_tibet').then(resolve, reject);
+        make.chain('sync_dna_styles', '_rollup_loader', '_lint', 'clean', 'build_tibet').then(resolve, reject);
     };
 
 }());
