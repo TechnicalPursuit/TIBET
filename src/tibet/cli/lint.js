@@ -1043,8 +1043,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
         opts,
         engine,
         res,
-        srcFiles,
-        root;
+        srcFiles;
 
     cmd = this;
     opts = this.configureEslintOptions();
@@ -1055,7 +1054,6 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
 
     srcFiles = Array.isArray(files) ? files : [files];
     res.files += srcFiles.length;
-    root = CLI.getAppHead() + path.sep;
 
     try {
         srcFiles.some(
@@ -1063,7 +1061,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                 var result,
                     summary;
 
-                if (engine.isPathIgnored(file.replace(root, ''))) {
+                if (engine.isPathIgnored(file)) {
                     return false;
                 }
 
