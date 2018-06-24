@@ -355,7 +355,7 @@ function(anHref) {
 
         switch (ext) {
 
-            case 'less' :
+            case 'less':
 
                 //  The style is some LESS CSS. Go fetch it and, when it's
                 //  returned, compile and insert it into the document. Note how
