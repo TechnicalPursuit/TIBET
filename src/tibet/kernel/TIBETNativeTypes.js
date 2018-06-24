@@ -5562,7 +5562,9 @@ function(aString) {
 
     replacement = TP.ifInvalid(aString, '\u0020');
 
+    /* eslint-disable no-control-regex */
     return this.replace(/[\u0009\u000A\u000D]/g, replacement);
+    /* eslint-enable no-control-regex */
 });
 
 //  ------------------------------------------------------------------------

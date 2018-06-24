@@ -1161,6 +1161,7 @@ function(aSignal) {
     str = mutatedRule.selectorText + ' {';
 
     //  Generate a matcher RegExp
+    /* eslint-disable no-control-regex */
     matcher = TP.rc(
                 '(^|\\})\\s*(' +
                 RegExp.escapeMetachars(
@@ -1168,6 +1169,7 @@ function(aSignal) {
                     replace(/SECRET_SAUCE/g, '\\s*') +
                 ')',
                 'g');
+    /* eslint-enable no-control-regex */
 
     //  Kick the match count once so that, if we didn't find any matching
     //  selectors 'ahead' of us in the file, we'll match our lone selector

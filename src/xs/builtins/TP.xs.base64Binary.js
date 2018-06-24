@@ -25,8 +25,10 @@ TP.xs.anySimpleType.defineSubtype('base64Binary');
 //  ------------------------------------------------------------------------
 
 //  a regex which matches the lexical character values of a base64 string
+/* eslint-disable no-control-regex */
 TP.xs.base64Binary.Type.defineConstant('BASE64_REGEX',
                 /^[0-9a-zA-Z\+\/\u0009\u000A\u000D\u0020]+[=]*$/);
+/* eslint-enable no-control-regex */
 
 //  ------------------------------------------------------------------------
 //  Type Methods

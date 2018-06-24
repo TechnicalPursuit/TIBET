@@ -1057,9 +1057,11 @@ function(newMethodText, loadedFromSourceFile) {
 
         //  Convert the body text into a RegExp we can use as a way of indexing
         //  into the original source file text.
+        /* eslint-disable no-control-regex */
         matcher = TP.rc(RegExp.escapeMetachars(
                     str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
                         replace(/SECRET_SAUCE/g, '\\s*'));
+        /* eslint-enable no-control-regex */
 
         match = currentContent.match(matcher);
         if (TP.notValid(match)) {

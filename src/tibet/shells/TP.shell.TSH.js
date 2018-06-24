@@ -2678,11 +2678,13 @@ function(aRequest) {
         var dat;
 
         dat = '' + data;
+        /* eslint-disable no-control-regex */
         return dat.
                 replace(/\u001b\[38;5;\d*m/g, '').
                 replace(/\\u001b\[38;5;\d*m/g, '').
                 replace(/\u001b\[\d*m/g, '').
                 replace(/\\u001b\[\d*m/g, '');
+        /* eslint-enable no-control-regex */
     };
 
     //  Helper function to process a single result object (print/resolve).
