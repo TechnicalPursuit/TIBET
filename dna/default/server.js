@@ -280,7 +280,9 @@
                     TDS.logger.flush(true);
                 }
 
+                /* eslint-disable no-process-exit */
                 process.exit(code);
+                /* eslint-enable no-process-exit */
             });
         }
 

@@ -3224,6 +3224,7 @@ function(aFilter) {
             TP.warn('Scanning ' + filter + ' on ' + this) : 0;
     }
 
+    /* eslint-disable guard-for-in */
     for (key in this) {
         //  private/hidden can be masked off quickly
         if (TP.regex.PRIVATE_SLOT.test(key)) {
@@ -3307,6 +3308,7 @@ function(aFilter) {
         //  still valid? add it to the list
         keys.push(key);
     }
+    /* eslint-enable guard-for-in */
 
     return keys;
 });
@@ -5994,12 +5996,14 @@ function(objectA, objectB, aStack, bStack) {
 
         case '[object Number]':
             //  `NaN`s are equivalent, but non-reflexive.
+            /* eslint-disable no-self-compare */
             if (+a !== +a) {
                 //  Object(NaN) is equivalent to NaN.
                 return +b !== +b;
             }
             //  An `egal` comparison is performed for other numeric values.
             return +a === 0 ? 1 / +a === 1 / b : +a === +b;
+            /* eslint-enable no-self-compare */
 
         case '[object Date]':
         case '[object Boolean]':
