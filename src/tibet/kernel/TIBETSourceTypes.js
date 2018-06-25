@@ -3940,8 +3940,8 @@ function(srcText, options) {
             }.bind(this)).then(
             function() {
                 //  Then run the compilation 'worker method'.
-                return this.compileLESS(srcText, opts).
-                                    then(function(results) {
+                return this.compileLESS(srcText, opts).then(
+                                    function(results) {
 
                                         //  After this is executed, the worker
                                         //  is no longer setting up.
@@ -3969,8 +3969,8 @@ function(srcText, options) {
         workerPromise = workerPromise.then(
                 function() {
 
-                    return this.compileLESS(srcText, opts).
-                                    then(function(results) {
+                    return this.compileLESS(srcText, opts).then(
+                                    function(results) {
 
                                         //  Return the worker to the pool when
                                         //  we're done, and make sure to pass
