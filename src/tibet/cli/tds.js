@@ -84,8 +84,9 @@ Cmd.prototype.USAGE = 'tibet tds start [--env <name>] [<tds options>]';
 Cmd.prototype.executeStart = function() {
     var child,      // The child_process module.
         args,       // Argument list for child process.
-        nodeargs,
-        serverargs,
+        nodeargs,   // Subset of arglist that are node-specific.
+        serverargs, // Subset of arglist that are server-specific.
+        version,    // The current Node version.
         server,     // Spawned child process for the server.
         cmd,        // Closure'd var providing access to the command object.
         inuse;      // Flag to trap EADDRINUSE exceptions.
@@ -136,7 +137,12 @@ Cmd.prototype.executeStart = function() {
     }
 
     if (this.options.debugger && nodeargs.length === 0) {
-        nodeargs.push('--inspect', '--debug-brk');
+        version = process.versions.node;
+        if (parseInt(version.split('.'), 10) < 8) {
+            nodeargs.push('--inspect', '--debug-brk');
+        } else {
+            nodeargs.push('--inspect-brk');
+        }
     }
 
     args = nodeargs.slice(0);
