@@ -918,7 +918,7 @@ function(aSignal) {
                     'useTopLevelContentElem', true,
                     'trigger', aSignal,
                     'triggerTPDocument', triggerTPDoc,
-                    'triggerPoint', aSignal.getGlobalPoint()));
+                    'triggerPoint', signalGlobalPoint));
         }
     }
 
