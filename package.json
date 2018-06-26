@@ -113,7 +113,7 @@
   },
   "devDependencies": {},
   "engines": {
-    "node": ">=8",
+    "node": ">=6",
     "npm": ">=3"
   },
   "scripts": {
