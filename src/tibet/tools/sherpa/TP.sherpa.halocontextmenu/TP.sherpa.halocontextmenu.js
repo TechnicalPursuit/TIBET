@@ -33,6 +33,15 @@ TP.sherpa.halocontextmenu.Inst.defineAttribute('menuContent',
 TP.sherpa.halocontextmenu.Inst.defineHandler('SelectMenuItem',
 function(aSignal) {
 
+    /**
+     * @method handleSelectMenuItem
+     * @summary Handles notifications of menu selections over the current
+     *     selection that the halo is working with.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halocontextmenu} The receiver.
+     */
+
     var cmdVal;
 
     cmdVal = aSignal.getDOMTarget().getAttribute('data-cmd');
@@ -81,8 +90,8 @@ function() {
 
     /**
      * @method render
-     * @summary
-     * @returns
+     * @summary Renders the receiver.
+     * @returns {TP.sherpa.halocontextmenu} The receiver.
      */
 
     var haloTarget,
