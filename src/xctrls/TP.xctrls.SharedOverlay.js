@@ -620,6 +620,8 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
         content,
 
+        contentAttributes,
+
         triggerID,
 
         tpContent,
@@ -763,6 +765,17 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     } else {
         //  TODO: Raise an exception
         return this;
+    }
+
+    //  If there were content attributes defined in the signal, then populate
+    //  the content element with them.
+    contentAttributes = contentInfo.at('contentAttributes');
+    if (TP.notEmpty(contentAttributes)) {
+        contentAttributes.perform(
+            function(kvPair) {
+                TP.elementSetAttribute(
+                    content, kvPair.first(), kvPair.last(), true);
+            });
     }
 
     //  Capture the trigger ID in case that same trigger uses this overlay
