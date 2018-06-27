@@ -100,7 +100,7 @@ function(aSignal) {
 
     /**
      * @method addController
-     * @summary Invoked when a user has decided to 'Add Controler' from the
+     * @summary Invoked when a user has decided to 'Add Controller' from the
      *     context menu for hud sidebar panels.
      * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
      *     this method.
