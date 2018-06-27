@@ -38,7 +38,6 @@
     <script src="./TP.sherpa.flex/TP.sherpa.flex.js"/>
     <script src="./TP.sherpa.toggle/TP.sherpa.toggle.js"/>
     <script src="./TP.sherpa.tile/TP.sherpa.tile.js"/>
-    <script src="./TP.sherpa.domhud/TP.sherpa.domhud.js"/>
     <script src="./TP.sherpa.breadcrumb/TP.sherpa.breadcrumb.js"/>
     <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
     <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>
@@ -59,6 +58,11 @@
     <script src="./TP.sherpa.consoleoutput/TP.sherpa.consoleoutput.js"/>
     <script src="./TP.sherpa.halocontextmenu/TP.sherpa.halocontextmenu.js"/>
     <script src="./TP.sherpa.hudcontextmenu/TP.sherpa.hudcontextmenu.js"/>
+
+    <script src="./TP.sherpa.domhud/TP.sherpa.domhud.js"/>
+    <script src="./TP.sherpa.domhudContextMenuContent/TP.sherpa.domhudContextMenuContent.js"/>
+    <script src="./TP.sherpa.domhudItemContextMenuContent/TP.sherpa.domhudItemContextMenuContent.js"/>
+
     <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
     <script src="./TP.sherpa.respondershudContextMenuContent/TP.sherpa.respondershudContextMenuContent.js"/>
     <script src="./TP.sherpa.respondershudItemContextMenuContent/TP.sherpa.respondershudItemContextMenuContent.js"/>
