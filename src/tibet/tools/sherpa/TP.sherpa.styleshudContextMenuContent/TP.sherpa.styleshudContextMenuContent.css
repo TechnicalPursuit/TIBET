@@ -1,0 +1,58 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+sherpa|styleshudContextMenuContent {
+
+    display: block;
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    background-color: #fff;
+
+    min-width: auto;
+
+    overflow: hidden;
+}
+
+sherpa|styleshudContextMenuContent > ul {
+
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    line-height: 29px;
+}
+
+sherpa|styleshudContextMenuContent > ul > li {
+
+    border: 0;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #efefef;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+}
+
+sherpa|styleshudContextMenuContent > ul > li:hover {
+
+    background-color: #ddd;
+
+    border-top: 1px solid #666;
+    border-bottom: 1px solid #666;
+}
+
+sherpa|styleshudContextMenuContent > ul > li:last-child:hover {
+
+    border-bottom: 1px solid #666;
+}
+

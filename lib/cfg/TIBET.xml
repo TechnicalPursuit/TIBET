@@ -264,6 +264,10 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshud-TP.sherpa.styleshud.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshud-plugins-TP.sherpa.styleshud_ruleContent-TP.sherpa.styleshud_ruleContent.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshud-plugins-TP.sherpa.styleshud_ruleContent-TP.sherpa.styleshud_ruleContent.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshudContextMenuContent-TP.sherpa.styleshudContextMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshudContextMenuContent-TP.sherpa.styleshudContextMenuContent.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshudItemContextMenuContent-TP.sherpa.styleshudItemContextMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.styleshudItemContextMenuContent-TP.sherpa.styleshudItemContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindshud-TP.sherpa.bindshud.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindshud-TP.sherpa.bindshud.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.opener-TP.sherpa.opener.xhtml.js"/>

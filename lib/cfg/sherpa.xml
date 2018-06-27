@@ -46,7 +46,6 @@
     <script src="./TP.sherpa.tofu/TP.sherpa.tofu.js"/>
     <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
     <script src="./TP.sherpa.workbench/TP.sherpa.workbench.js"/>
-    <script src="./TP.sherpa.styleshud/TP.sherpa.styleshud.js"/>
     <script src="./TP.sherpa.bindshud/TP.sherpa.bindshud.js"/>
     <script src="./TP.sherpa.opener/TP.sherpa.opener.js"/>
     <script src="./TP.sherpa.scrollbutton/TP.sherpa.scrollbutton.js"/>
@@ -66,6 +65,10 @@
     <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
     <script src="./TP.sherpa.respondershudContextMenuContent/TP.sherpa.respondershudContextMenuContent.js"/>
     <script src="./TP.sherpa.respondershudItemContextMenuContent/TP.sherpa.respondershudItemContextMenuContent.js"/>
+
+    <script src="./TP.sherpa.styleshud/TP.sherpa.styleshud.js"/>
+    <script src="./TP.sherpa.styleshudContextMenuContent/TP.sherpa.styleshudContextMenuContent.js"/>
+    <script src="./TP.sherpa.styleshudItemContextMenuContent/TP.sherpa.styleshudItemContextMenuContent.js"/>
 
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
 
