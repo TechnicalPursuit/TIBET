@@ -166,25 +166,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineMethod('emptyItem',
-function(aSignal) {
-
-    /**
-     * @method emptyItem
-     * @summary Invoked when a user has decided to 'Empty' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.domhud} The receiver.
-     */
-
-    TP.alert('Called emptyItem');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.domhud.Inst.defineMethod('computePeerElement',
 function(sidebarElement) {
 
@@ -247,6 +228,25 @@ function(sidebarElement) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('emptyItem',
+function(aSignal) {
+
+    /**
+     * @method emptyItem
+     * @summary Invoked when a user has decided to 'Empty' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    TP.alert('Called emptyItem');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
