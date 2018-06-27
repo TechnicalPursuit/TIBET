@@ -281,6 +281,10 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hudcontextmenu-TP.sherpa.hudcontextmenu.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.respondershud-TP.sherpa.respondershud.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.respondershud-TP.sherpa.respondershud.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.respondershudContextMenuContent-TP.sherpa.respondershudContextMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.respondershudContextMenuContent-TP.sherpa.respondershudContextMenuContent.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.respondershudItemContextMenuContent-TP.sherpa.respondershudItemContextMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.respondershudItemContextMenuContent-TP.sherpa.respondershudItemContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.inspector-TP.sherpa.inspector.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.inspector-TP.sherpa.inspector.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.inspectoritem-TP.sherpa.inspectoritem.css.js"/>

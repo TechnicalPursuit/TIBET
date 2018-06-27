@@ -603,6 +603,32 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineMethod('getContentTagNameForContextMenu',
+function(aSignal) {
+
+    /**
+     * @method getContentTagNameForContextMenu
+     * @summary Returns the tag name of the content to use in a context menu.
+     *     Note that this should return the plain (possibly namespaced) name
+     *     with no markup bracketing, etc.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     the context menu to show and menu content to be required.
+     * @returns {String} The name of the tag to use as content for the context
+     *     menu.
+     */
+
+    var targetElem;
+
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return 'sherpa:respondershudContextMenuContent';
+    }
+
+    return 'sherpa:respondershudItemContextMenuContent';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineHandler('ShowHandlerList',
 function(aSignal) {
 

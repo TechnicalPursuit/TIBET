@@ -60,6 +60,8 @@
     <script src="./TP.sherpa.halocontextmenu/TP.sherpa.halocontextmenu.js"/>
     <script src="./TP.sherpa.hudcontextmenu/TP.sherpa.hudcontextmenu.js"/>
     <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
+    <script src="./TP.sherpa.respondershudContextMenuContent/TP.sherpa.respondershudContextMenuContent.js"/>
+    <script src="./TP.sherpa.respondershudItemContextMenuContent/TP.sherpa.respondershudItemContextMenuContent.js"/>
 
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
 
