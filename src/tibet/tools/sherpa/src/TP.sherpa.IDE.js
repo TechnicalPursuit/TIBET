@@ -2855,24 +2855,44 @@ function() {
      */
 
     var viewDoc,
+        centerTPElem,
+
+        menuTypes,
+        len,
+        i,
+
+        menuType,
         menuTPElem;
 
     viewDoc = this.get('vWin').document;
+    centerTPElem = TP.byId('center', this.get('vWin'));
 
     //  Add the stylesheet for the TP.xctrls.popup, if it's not there already.
     //  All context menus will use this and we might as well pre-populate it.
     TP.xctrls.popup.addStylesheetTo(viewDoc);
 
-    //  TODO: Make a loop here that will add the other context menus
+    //  Make a list of the all of the context menu types.
+    menuTypes = TP.ac(
+                    TP.sherpa.halocontextmenu,
+                    TP.sherpa.hudcontextmenu
+                    );
 
-    TP.sherpa.halocontextmenu.addStylesheetTo(viewDoc);
+    //  Iterate over that list and set up the menu.
+    len = menuTypes.getSize();
+    for (i = 0; i < len; i++) {
 
-    menuTPElem = TP.sherpa.halocontextmenu.getResourceElement('template',
-                            TP.ietf.mime.XHTML);
+        menuType = menuTypes.at(i);
 
-    menuTPElem = menuTPElem.clone();
+        //  Add the stylesheet
+        menuType.addStylesheetTo(viewDoc);
 
-    TP.byId('center', this.get('vWin')).addRawContent(menuTPElem);
+        //  Grab the template, clone it and add the raw content to the 'center'
+        //  element of the Sherpa.
+        menuTPElem = menuType.getResourceElement(
+                                'template', TP.ietf.mime.XHTML);
+        menuTPElem = menuTPElem.clone();
+        centerTPElem.addRawContent(menuTPElem);
+    }
 
     return this;
 });

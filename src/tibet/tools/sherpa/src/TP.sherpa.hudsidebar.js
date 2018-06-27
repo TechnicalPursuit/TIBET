@@ -115,6 +115,25 @@ function(aTPElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hudsidebar.Inst.defineMethod('getContentTagNameForContextMenu',
+function(aSignal) {
+
+    /**
+     * @method getContentTagNameForContextMenu
+     * @summary Returns the tag name of the content to use in a context menu.
+     *     Note that this should return the plain (possibly namespaced) name
+     *     with no markup bracketing, etc.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     the context menu to show and menu content to be required.
+     * @returns {String} The name of the tag to use as content for the context
+     *     menu.
+     */
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hudsidebar.Inst.defineHandler('CanvasChanged',
 function(aSignal) {
 
@@ -211,6 +230,95 @@ function(aSignal) {
 
     sherpaInst = TP.bySystemId('Sherpa');
     this.ignore(sherpaInst, 'CanvasChanged');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('SelectMenuItem',
+function(aSignal) {
+
+    /**
+     * @method handleSelectMenuItem
+     * @summary Handles notifications of menu selections over the current
+     *     HUD sidebar panel.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var cmdVal;
+
+    //  See if the DOM target has a 'data-cmd' attribute.
+    cmdVal = aSignal.getDOMTarget().getAttribute('data-cmd');
+
+    if (TP.isEmpty(cmdVal)) {
+        return this;
+    }
+
+    //  If there was a 'data-cmd' attribute, see if it contained the name of an
+    //  invocable method.
+    if (TP.canInvoke(this, cmdVal)) {
+        this[cmdVal](aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('ShowContextMenu',
+function(aSignal) {
+
+    /**
+     * @method handleShowContextMenu
+     * @summary Handles notifications of wanting to show the context menu.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var triggerSignal,
+        signalGlobalPoint,
+        contentTagName;
+
+    //  Grab the 'trigger signal' - this will be the DOM-level 'context menu'
+    //  signal.
+    triggerSignal = aSignal.at('trigger');
+
+    //  Make sure to prevent default on that signal to avoid having the context
+    //  menu pop up.
+    triggerSignal.preventDefault();
+    triggerSignal.stopPropagation();
+
+    signalGlobalPoint = triggerSignal.getGlobalPoint();
+
+    //  Grab the tag name for the content tag that we're going to shove into the
+    //  menu. If that's not available, exit here.
+    contentTagName = this.getContentTagNameForContextMenu(aSignal);
+    if (TP.isEmpty(contentTagName)) {
+        return this;
+    }
+
+    this.signal(
+        'OpenPopup',
+        TP.hc(
+            'overlayID', 'SherpaContextMenuPopup',
+            'overlayCSSClass', 'sherpahudcontextmenu',
+            'contentID', 'SherpaHudContextMenu',
+            'contentAttributes',
+                TP.hc(
+                    'tibet:ctrl',
+                        this.getLocalID(),
+                    'contenttagname',
+                        contentTagName
+                ),
+            'hideOn', 'SelectMenuItem',
+            'useTopLevelContentElem', true,
+            'trigger', triggerSignal,
+            'triggerTPDocument', this.getDocument(),
+            'triggerPoint', signalGlobalPoint));
 
     return this;
 });
