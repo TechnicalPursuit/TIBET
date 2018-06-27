@@ -86,6 +86,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.hudsidebar.Inst.defineAttribute('$isRecasting');
+TP.sherpa.hudsidebar.Inst.defineAttribute('$lastContextMenuSignal');
 
 TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
@@ -300,6 +301,9 @@ function(aSignal) {
     if (TP.isEmpty(contentTagName)) {
         return this;
     }
+
+    //  Capture the signal that triggered the context menu.
+    this.set('$lastContextMenuSignal', aSignal);
 
     this.signal(
         'OpenPopup',
