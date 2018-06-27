@@ -22,12 +22,6 @@ TP.sherpa.hudsidebar.isAbstract(true);
 
 TP.sherpa.hudsidebar.addTraits(TP.dom.D3Tag);
 
-TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
-
-TP.sherpa.hudsidebar.Inst.defineAttribute('listitems',
-    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -92,6 +86,12 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.hudsidebar.Inst.defineAttribute('$isRecasting');
+
+TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.hudsidebar.Inst.defineAttribute('listitems',
+    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
