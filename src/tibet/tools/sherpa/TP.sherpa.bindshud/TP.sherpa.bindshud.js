@@ -97,6 +97,82 @@ TP.sherpa.bindshud.Inst.defineAttribute('highlighted');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.bindshud.Inst.defineMethod('addIO',
+function(aSignal) {
+
+    /**
+     * @method addIO
+     * @summary Invoked when a user has decided to 'Add I/O' from the
+     *     context menu for hud sidebar panels.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    TP.alert('Called addIO');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('addScope',
+function(aSignal) {
+
+    /**
+     * @method addScope
+     * @summary Invoked when a user has decided to 'Add Scope' from the
+     *     context menu for hud sidebar panels.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    TP.alert('Called addScope');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('assistItem',
+function(aSignal) {
+
+    /**
+     * @method assistItem
+     * @summary Invoked when a user has decided to 'Assist' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    TP.alert('Called assistItem');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('deleteItem',
+function(aSignal) {
+
+    /**
+     * @method deleteItem
+     * @summary Invoked when a user has decided to 'Delete' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    TP.alert('Called deleteItem');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.bindshud.Inst.defineMethod('focusOnTarget',
 function(aTPElement) {
 
@@ -162,6 +238,217 @@ function(aTPElement) {
 
     //  Scroll our list content to its bottom.
     this.get('listcontent').scrollTo(TP.BOTTOM);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('getContentTagNameForContextMenu',
+function(aSignal) {
+
+    /**
+     * @method getContentTagNameForContextMenu
+     * @summary Returns the tag name of the content to use in a context menu.
+     *     Note that this should return the plain (possibly namespaced) name
+     *     with no markup bracketing, etc.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     the context menu to show and menu content to be required.
+     * @returns {String} The name of the tag to use as content for the context
+     *     menu.
+     */
+
+    var targetElem;
+
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return 'sherpa:bindshudContextMenuContent';
+    }
+
+    return 'sherpa:bindshudItemContextMenuContent';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('inspectItem',
+function(aSignal) {
+
+    /**
+     * @method inspectItem
+     * @summary Invoked when a user has decided to 'Inspect' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var contextMenuSignal,
+
+        targetElem,
+
+        data,
+
+        indexInData,
+        itemData,
+
+        peerID,
+        sourceTPElem,
+
+        bindingExprs,
+        expandedBindingExpr,
+
+        sourceURI,
+        sourceResource,
+
+        centerTPElem,
+        centerTPElemPageRect,
+        targetElemPageRect,
+
+        tileTPElem,
+        newContentTPElem,
+
+        sheet,
+        mainRule,
+
+        tileWidth,
+        xCoord;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    peerID = itemData.at(0);
+    sourceTPElem = TP.byId(peerID);
+
+    bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions();
+    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
+
+    if (!TP.isURIString(expandedBindingExpr)) {
+        return this;
+    }
+
+    sourceURI = TP.uc(expandedBindingExpr);
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal -
+    //  the contextmenu signal) so that any sort of 'right click' menu
+    //  doesn't show.
+    aSignal.at('trigger').preventDefault();
+
+    sourceResource = sourceURI.getResource(
+                                TP.hc('resultType', TP.WRAP));
+    sourceResource.then(
+        function(sourceResult) {
+
+            var mimeType,
+                formattedResult;
+
+            if (TP.notEmpty(sourceResult)) {
+                if (TP.isKindOf(sourceResult, TP.core.Content)) {
+                    mimeType = sourceResult.getContentMIMEType();
+                } else if (TP.isKindOf(sourceResult, TP.dom.Node)) {
+                    mimeType = TP.XML_ENCODED;
+                } else {
+                    mimeType = TP.JSON_ENCODED;
+                }
+
+                if (mimeType === TP.XML_ENCODED) {
+                    formattedResult = TP.sherpa.pp.runXMLModeOn(
+                                        sourceResult.asString());
+                } else if (mimeType === TP.JSON_ENCODED) {
+                    formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
+                                        sourceResult.asJSONSource());
+                } else {
+                    formattedResult = TP.str(sourceResult);
+                }
+            } else {
+                formattedResult = 'No result for:<br/>' +
+                                    sourceURI.getLocation();
+            }
+
+            tileTPElem.setContent(
+                TP.xhtmlnode('<span class="cm-s-elegant">' +
+                                formattedResult +
+                                '</span>'));
+        });
+
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerTPElem = TP.byId('center', this.getNativeWindow());
+    centerTPElemPageRect = centerTPElem.getPageRect();
+
+    //  Use the 'Y' coordinate where the target element is located in the
+    //  page.
+    targetElemPageRect = TP.wrap(targetElem).getPageRect();
+
+    //  ---
+
+    tileTPElem = TP.byId('BindSummary_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
+
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('BindSummary_Tile');
+        tileTPElem.setHeaderText('Bind Source Text');
+
+        newContentTPElem = tileTPElem.setContent(
+                                TP.getContentForTool(
+                                    sourceTPElem,
+                                    'BindsHUDTileBody'));
+
+        newContentTPElem.awaken();
+
+        sheet = this.getStylesheetForStyleResource();
+        mainRule = TP.styleSheetGetStyleRulesMatching(
+                            sheet,
+                            '#BindSummary_Tile').first();
+        tileWidth = mainRule.style.minWidth.asNumber() + 2;
+
+        //  NB: We need to set this because if the tile exists, we set it before
+        //  obtaining the width.
+        tileTPElem.setAttribute('hidden', false);
+
+    } else {
+
+        //  NB: We need to set this before getting the tile's current width
+        tileTPElem.setAttribute('hidden', false);
+
+        tileWidth = tileTPElem.getWidth();
+
+        tileTPElem.setContent(TP.getContentForTool(
+                                sourceTPElem,
+                                'BindsHUDTileBody'));
+    }
+
+    xCoord = centerTPElemPageRect.getX() +
+                centerTPElemPageRect.getWidth() -
+                tileWidth;
+    tileTPElem.setPagePosition(
+                TP.pc(xCoord, targetElemPageRect.getY()));
 
     return this;
 });
@@ -623,182 +910,6 @@ function(aSignal) {
                             'targetAspect', TP.id(sourceURI),
                             'showBusy', true));
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineHandler('ShowBindSource',
-function(aSignal) {
-
-    /**
-     * @method handleShowBindSource
-     * @summary Handles notifications of when the receiver wants to
-     * @param {TP.sig.ShowBindSource} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.bindshud} The receiver.
-     */
-
-    var targetElem,
-
-        data,
-
-        indexInData,
-        itemData,
-
-        peerID,
-        sourceTPElem,
-
-        bindingExprs,
-        expandedBindingExpr,
-
-        sourceURI,
-        sourceResource,
-
-        centerTPElem,
-        centerTPElemPageRect,
-        targetElemPageRect,
-
-        tileTPElem,
-        newContentTPElem,
-
-        sheet,
-        mainRule,
-
-        tileWidth,
-        xCoord;
-
-    //  Grab the target and make sure it's an 'item' tile.
-    targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'item')) {
-        return this;
-    }
-
-    //  Grab our data.
-    data = this.get('data');
-
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
-
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
-        return this;
-    }
-
-    //  Prevent default *on the trigger signal* (which is the GUI signal - the
-    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
-    aSignal.at('trigger').preventDefault();
-
-    //  Convert to a Number and retrieve the entry Array from our data
-    indexInData = indexInData.asNumber();
-    itemData = data.at(indexInData);
-
-    peerID = itemData.at(0);
-    sourceTPElem = TP.byId(peerID);
-
-    bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions();
-    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
-
-    if (!TP.isURIString(expandedBindingExpr)) {
-        return this;
-    }
-
-    sourceURI = TP.uc(expandedBindingExpr);
-
-    //  Prevent default *on the trigger signal* (which is the GUI signal -
-    //  the contextmenu signal) so that any sort of 'right click' menu
-    //  doesn't show.
-    aSignal.at('trigger').preventDefault();
-
-    sourceResource = sourceURI.getResource(
-                                TP.hc('resultType', TP.WRAP));
-    sourceResource.then(
-        function(sourceResult) {
-
-            var mimeType,
-                formattedResult;
-
-            if (TP.notEmpty(sourceResult)) {
-                if (TP.isKindOf(sourceResult, TP.core.Content)) {
-                    mimeType = sourceResult.getContentMIMEType();
-                } else if (TP.isKindOf(sourceResult, TP.dom.Node)) {
-                    mimeType = TP.XML_ENCODED;
-                } else {
-                    mimeType = TP.JSON_ENCODED;
-                }
-
-                if (mimeType === TP.XML_ENCODED) {
-                    formattedResult = TP.sherpa.pp.runXMLModeOn(
-                                        sourceResult.asString());
-                } else if (mimeType === TP.JSON_ENCODED) {
-                    formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
-                                        sourceResult.asJSONSource());
-                } else {
-                    formattedResult = TP.str(sourceResult);
-                }
-            } else {
-                formattedResult = 'No result for:<br/>' +
-                                    sourceURI.getLocation();
-            }
-
-            tileTPElem.setContent(
-                TP.xhtmlnode('<span class="cm-s-elegant">' +
-                                formattedResult +
-                                '</span>'));
-        });
-
-    //  Use the same 'X' coordinate where the 'center' div is located in the
-    //  page.
-    centerTPElem = TP.byId('center', this.getNativeWindow());
-    centerTPElemPageRect = centerTPElem.getPageRect();
-
-    //  Use the 'Y' coordinate where the target element is located in the
-    //  page.
-    targetElemPageRect = TP.wrap(targetElem).getPageRect();
-
-    //  ---
-
-    tileTPElem = TP.byId('BindSummary_Tile', this.getNativeWindow());
-    if (TP.notValid(tileTPElem)) {
-
-        tileTPElem = TP.bySystemId('Sherpa').makeTile('BindSummary_Tile');
-        tileTPElem.setHeaderText('Bind Source Text');
-
-        newContentTPElem = tileTPElem.setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'BindsHUDTileBody'));
-
-        newContentTPElem.awaken();
-
-        sheet = this.getStylesheetForStyleResource();
-        mainRule = TP.styleSheetGetStyleRulesMatching(
-                            sheet,
-                            '#BindSummary_Tile').first();
-        tileWidth = mainRule.style.minWidth.asNumber() + 2;
-
-        //  NB: We need to set this because if the tile exists, we set it before
-        //  obtaining the width.
-        tileTPElem.setAttribute('hidden', false);
-
-    } else {
-
-        //  NB: We need to set this before getting the tile's current width
-        tileTPElem.setAttribute('hidden', false);
-
-        tileWidth = tileTPElem.getWidth();
-
-        tileTPElem.setContent(TP.getContentForTool(
-                                sourceTPElem,
-                                'BindsHUDTileBody'));
-    }
-
-    xCoord = centerTPElemPageRect.getX() +
-                centerTPElemPageRect.getWidth() -
-                tileWidth;
-    tileTPElem.setPagePosition(
-                TP.pc(xCoord, targetElemPageRect.getY()));
 
     return this;
 });
