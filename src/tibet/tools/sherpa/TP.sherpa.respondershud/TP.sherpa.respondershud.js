@@ -95,6 +95,63 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineMethod('addController',
+function(aSignal) {
+
+    /**
+     * @method addController
+     * @summary Invoked when a user has decided to 'Add Controler' from the
+     *     context menu for hud sidebar panels.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    TP.alert('Called addController');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('addItem',
+function(aSignal) {
+
+    /**
+     * @method addItem
+     * @summary Invoked when a user has decided to 'Add' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    TP.alert('Called addItem');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('assistItem',
+function(aSignal) {
+
+    /**
+     * @method assistItem
+     * @summary Invoked when a user has decided to 'Assist' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    TP.alert('Called assistItem');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineMethod('focusOnTarget',
 function(aTPElement) {
 
@@ -173,6 +230,155 @@ function(aTPElement) {
 
     //  Scroll our list content to its bottom.
     this.get('listcontent').scrollTo(TP.BOTTOM);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('inspectItem',
+function(aSignal) {
+
+    /**
+     * @method inspectItem
+     * @summary Invoked when a user has decided to 'Inspect' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var contextMenuSignal,
+
+        targetElem,
+
+        data,
+
+        indexInData,
+        itemData,
+
+        target,
+
+        dataURI,
+        methods,
+
+        centerTPElem,
+        centerTPElemPageRect,
+
+        targetTPElem,
+        targetElemPageRect,
+
+        halo,
+        sourceTPElem,
+
+        tileTPElem,
+
+        newContentTPElem,
+
+        sheet,
+        mainRule,
+
+        tileWidth,
+        xCoord;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    //  Resolve the type from the type name that will be at the second position
+    //  in the Array.
+    target = TP.sys.getTypeByName(itemData.at(1));
+    this.set('currentTarget', target);
+
+    dataURI = TP.uc('urn:tibet:responder_methods');
+    methods = this.getHandlerMethodsFor(target);
+
+    // dataURI.setResource(target.getSupertypeNames());
+
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerTPElem = TP.byId('center', this.getNativeWindow());
+    centerTPElemPageRect = centerTPElem.getPageRect();
+
+    targetTPElem = TP.wrap(targetElem);
+
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    targetElemPageRect = targetTPElem.getPageRect();
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    sourceTPElem = halo.get('currentTargetTPElem');
+
+    //  ---
+
+    tileTPElem = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
+
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('ResponderSummary_Tile');
+        tileTPElem.setHeaderText('Responder Methods');
+
+        newContentTPElem = tileTPElem.setContent(
+                                TP.getContentForTool(
+                                    sourceTPElem,
+                                    'RespondersHUDTileBody',
+                                    TP.hc('dataURI', dataURI)));
+        newContentTPElem.awaken();
+
+        tileTPElem.get('footer').setContent(
+                                TP.getContentForTool(
+                                    sourceTPElem,
+                                    'RespondersHUDTileFooter'));
+
+        sheet = this.getStylesheetForStyleResource();
+        mainRule = TP.styleSheetGetStyleRulesMatching(
+                            sheet,
+                            '#ResponderSummary_Tile').first();
+
+        tileWidth = mainRule.style.minWidth.asNumber() + 2;
+
+        //  NB: We need to set this because if the tile exists, we set it before
+        //  obtaining the width.
+        tileTPElem.setAttribute('hidden', false);
+
+    } else {
+
+        //  NB: We need to set this before getting the tile's current width
+        tileTPElem.setAttribute('hidden', false);
+
+        tileWidth = tileTPElem.getWidth();
+    }
+
+    xCoord = centerTPElemPageRect.getX() +
+                centerTPElemPageRect.getWidth() -
+                tileWidth;
+    tileTPElem.setPagePosition(
+                TP.pc(xCoord, targetElemPageRect.getY()));
+
+    //  Set the model's URI's resource and signal change. This will
+    //  cause the properties to update.
+    dataURI.setResource(methods, TP.hc('signalChange', true));
 
     return this;
 });
@@ -625,151 +831,6 @@ function(aSignal) {
     }
 
     return 'sherpa:respondershudItemContextMenuContent';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.respondershud.Inst.defineHandler('ShowHandlerList',
-function(aSignal) {
-
-    /**
-     * @method handleShowHandlerList
-     * @summary Handles notifications of when the receiver wants to show the
-     *     rule text in a side popup panel.
-     * @param {TP.sig.ShowHandlerList} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.respondershud} The receiver.
-     */
-
-    var targetElem,
-
-        data,
-
-        indexInData,
-        itemData,
-
-        target,
-
-        dataURI,
-        methods,
-
-        centerTPElem,
-        centerTPElemPageRect,
-
-        targetTPElem,
-        targetElemPageRect,
-
-        halo,
-        sourceTPElem,
-
-        tileTPElem,
-
-        newContentTPElem,
-
-        sheet,
-        mainRule,
-
-        tileWidth,
-        xCoord;
-
-    //  Grab the target and make sure it's an 'item' tile.
-    targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'item')) {
-        return this;
-    }
-
-    //  Grab our data.
-    data = this.get('data');
-
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
-
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
-        return this;
-    }
-
-    //  Prevent default *on the trigger signal* (which is the GUI signal - the
-    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
-    aSignal.at('trigger').preventDefault();
-
-    //  Convert to a Number and retrieve the entry Array from our data
-    indexInData = indexInData.asNumber();
-    itemData = data.at(indexInData);
-
-    //  Resolve the type from the type name that will be at the second position
-    //  in the Array.
-    target = TP.sys.getTypeByName(itemData.at(1));
-    this.set('currentTarget', target);
-
-    dataURI = TP.uc('urn:tibet:responder_methods');
-    methods = this.getHandlerMethodsFor(target);
-
-    // dataURI.setResource(target.getSupertypeNames());
-
-    //  Use the same 'X' coordinate where the 'center' div is located in the
-    //  page.
-    centerTPElem = TP.byId('center', this.getNativeWindow());
-    centerTPElemPageRect = centerTPElem.getPageRect();
-
-    targetTPElem = TP.wrap(targetElem);
-
-    //  Use the 'Y' coordinate where the target element is located in the page.
-    targetElemPageRect = targetTPElem.getPageRect();
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    sourceTPElem = halo.get('currentTargetTPElem');
-
-    //  ---
-
-    tileTPElem = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
-    if (TP.notValid(tileTPElem)) {
-
-        tileTPElem = TP.bySystemId('Sherpa').makeTile('ResponderSummary_Tile');
-        tileTPElem.setHeaderText('Responder Methods');
-
-        newContentTPElem = tileTPElem.setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'RespondersHUDTileBody',
-                                    TP.hc('dataURI', dataURI)));
-        newContentTPElem.awaken();
-
-        tileTPElem.get('footer').setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'RespondersHUDTileFooter'));
-
-        sheet = this.getStylesheetForStyleResource();
-        mainRule = TP.styleSheetGetStyleRulesMatching(
-                            sheet,
-                            '#ResponderSummary_Tile').first();
-
-        tileWidth = mainRule.style.minWidth.asNumber() + 2;
-
-        //  NB: We need to set this because if the tile exists, we set it before
-        //  obtaining the width.
-        tileTPElem.setAttribute('hidden', false);
-
-    } else {
-
-        //  NB: We need to set this before getting the tile's current width
-        tileTPElem.setAttribute('hidden', false);
-
-        tileWidth = tileTPElem.getWidth();
-    }
-
-    xCoord = centerTPElemPageRect.getX() +
-                centerTPElemPageRect.getWidth() -
-                tileWidth;
-    tileTPElem.setPagePosition(
-                TP.pc(xCoord, targetElemPageRect.getY()));
-
-    //  Set the model's URI's resource and signal change. This will
-    //  cause the properties to update.
-    dataURI.setResource(methods, TP.hc('signalChange', true));
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
