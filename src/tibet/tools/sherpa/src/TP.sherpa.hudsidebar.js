@@ -306,7 +306,7 @@ function(aSignal) {
     this.set('$lastContextMenuSignal', aSignal);
 
     this.signal(
-        'OpenPopup',
+        'TogglePopup',
         TP.hc(
             'overlayID', 'SherpaContextMenuPopup',
             'overlayCSSClass', 'sherpahudcontextmenu',
@@ -322,7 +322,8 @@ function(aSignal) {
             'useTopLevelContentElem', true,
             'trigger', triggerSignal,
             'triggerTPDocument', this.getDocument(),
-            'triggerPoint', signalGlobalPoint));
+            'triggerPoint', signalGlobalPoint,
+            'sticky', true));
 
     return this;
 });
