@@ -2248,7 +2248,7 @@ function(aMutationRecord) {
 
     var targetNode,
 
-        val,
+        targetShouldTrack,
 
         targetType,
 
@@ -2286,10 +2286,11 @@ function(aMutationRecord) {
     //  ancestors or itself to determine whether or not it should process
     //  mutation signals.
     if (TP.isElement(targetNode)) {
-        val = TP.elementGetAttribute(
+        targetShouldTrack = TP.elementGetAttribute(
                 targetNode, 'tibet:nomutationtracking', true);
 
-        if (val === 'true' || val === TP.ANCESTOR_OR_SELF) {
+        if (targetShouldTrack === 'true' ||
+            targetShouldTrack === TP.ANCESTOR_OR_SELF) {
             return this;
         }
     }
