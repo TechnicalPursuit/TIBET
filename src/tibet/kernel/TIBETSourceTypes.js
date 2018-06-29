@@ -2301,7 +2301,7 @@ function(aMutationRecord) {
 
             //  We can only process attribute changes for Elements - make sure
             //  the target is one.
-            if (!TP.isElement(targetNode = aMutationRecord.target)) {
+            if (!TP.isElement(targetNode)) {
                 return this.raise('TP.sig.InvalidElement');
             }
 
