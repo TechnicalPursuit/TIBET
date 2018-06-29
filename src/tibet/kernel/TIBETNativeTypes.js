@@ -4424,9 +4424,11 @@ function(formatParams) {
      * @returns {String} The receiver as an MD5 hash.
      */
 
-    return TP.hash(this.asString(),
-                    TP.HASH_MD5,
-                    formatParams.at('hashFormat'));
+    var params;
+
+    params = TP.ifInvalid(formatParams, TP.hc('hashFormat', TP.HASH_HEX));
+
+    return TP.hash(this.asString(), TP.HASH_MD5, params);
 });
 
 //  ------------------------------------------------------------------------
@@ -4448,9 +4450,11 @@ function(formatParams) {
      * @returns {String} The receiver as an SHA-1 hash.
      */
 
-    return TP.hash(this.asString(),
-                    TP.HASH_SHA1,
-                    formatParams.at('hashFormat'));
+    var params;
+
+    params = TP.ifInvalid(formatParams, TP.hc('hashFormat', TP.HASH_HEX));
+
+    return TP.hash(this.asString(), TP.HASH_SHA1, params);
 });
 
 //  ------------------------------------------------------------------------
