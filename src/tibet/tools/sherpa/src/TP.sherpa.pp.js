@@ -1113,9 +1113,11 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.pp.Type.defineMethod('runFormattedJSONModeOn',
-function(anObject, optFormat) {
+function(anObject, optFormat, valueFunction) {
 
-    var str,
+    var valFunc,
+
+        str,
 
         level,
         tabSpaces,
@@ -1124,9 +1126,23 @@ function(anObject, optFormat) {
         indentChar,
         newlineCharSize,
 
-        plainText;
+        plainText,
+
+        keyPath,
+
+        shouldPushKey,
+        shouldPopKey;
 
     if (TP.isValid(TP.extern.CodeMirror)) {
+
+        //  Grab the supplied value function. If one isn't supplied, initialize
+        //  one that just escapes what is handed to it and returns that.
+        valFunc = valueFunction;
+        if (!TP.isCallable(valueFunction)) {
+            valFunc = function(srcText) {
+                return srcText.asEscapedXML();
+            };
+        }
 
         str = '';
         level = 0;
@@ -1150,6 +1166,13 @@ function(anObject, optFormat) {
             plainText = false;
         }
 
+        //  We keep track of keys in a 'path' as we traverse, pushing and
+        //  popping them as we go.
+        keyPath = TP.ac();
+
+        shouldPushKey = true;
+        shouldPopKey = true;
+
         TP.extern.CodeMirror.runMode(
             anObject.asString(),
             {
@@ -1171,11 +1194,23 @@ function(anObject, optFormat) {
 
                 if (style) {
 
+                    if (shouldPopKey) {
+                        keyPath.pop();
+                    } else {
+                        shouldPopKey = true;
+                    }
+
+                    if (shouldPushKey) {
+                        keyPath.push(text.unquoted());
+                    } else {
+                        shouldPushKey = true;
+                    }
+
                     if (plainText) {
                         str += text;
                     } else {
                         str += '<span class="cm-' + style + '">' +
-                                 text.asEscapedXML() +
+                                 valFunc(text, keyPath) +
                                  '</span>';
                     }
                 } else {
@@ -1183,12 +1218,22 @@ function(anObject, optFormat) {
                         level++;
                         str += text + newlineChar +
                                 indentChar.times(level * tabSpaces);
+
+                        shouldPushKey = true;
+                        shouldPopKey = false;
                     } else if (text === '}' || text === ']') {
+                        keyPath.pop();
+
+                        shouldPushKey = true;
+                        shouldPopKey = true;
+
                         level--;
                         str += newlineChar +
                                 indentChar.times(level * tabSpaces) + text;
                     } else if (text === ':') {
                         str += indentChar + text + indentChar;
+                        shouldPushKey = false;
+                        shouldPopKey = false;
                     } else if (text === ',') {
                         str += text + newlineChar +
                                 indentChar.times(level * tabSpaces);
