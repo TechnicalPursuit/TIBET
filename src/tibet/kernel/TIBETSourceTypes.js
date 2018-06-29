@@ -2278,6 +2278,19 @@ function(aMutationRecord) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If the target is an Element and it has a 'tibet:nomutationtracking'
+    //  attribute on it that's either set to look at itself or at one of its
+    //  ancestors or itself to determine whether or not it should process
+    //  mutation signals.
+    if (TP.isElement(targetNode)) {
+        val = TP.elementGetAttribute(
+                targetNode, 'tibet:nomutationtracking', true);
+
+        if (val === 'true' || val === TP.ANCESTOR_OR_SELF) {
+            return this;
+        }
+    }
+
     //  And make sure that we can computed a TIBET type for it.
     if (!TP.isType(targetType = TP.wrap(targetNode).getType())) {
         return this;
