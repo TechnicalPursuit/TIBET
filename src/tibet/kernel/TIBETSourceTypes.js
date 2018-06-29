@@ -2247,6 +2247,9 @@ function(aMutationRecord) {
      */
 
     var targetNode,
+
+        val,
+
         targetType,
 
         mutationType,
