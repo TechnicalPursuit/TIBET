@@ -469,7 +469,7 @@ function() {
             editorObj = consoleInputTPElem.$get('$editorObj');
 
             aceTATPElem = TP.byCSSPath(
-                            'textarea.ace_text-input',
+                            '> * textarea.ace_text-input',
                             consoleInputTPElem,
                             true);
             aceTATPElem.defineHandler('UIFocusNext',
@@ -1514,7 +1514,10 @@ function(shouldAnimate) {
     drawerHeight = editorHeight;
 
     //  Grab the xctrls:panelbox element that we're contained in
-    panelboxElem = TP.byCSSPath('xctrls|panelbox', consoleDrawer, true, false);
+    panelboxElem = TP.byCSSPath('> * xctrls|panelbox',
+                                consoleDrawer,
+                                true,
+                                false);
 
     //  Add in the top, bottom, borderTop, borderBottom offsets from ourself.
 
@@ -1564,7 +1567,7 @@ function(shouldAnimate) {
 
             TP.elementSetStyleString(drawerElement, styleStr);
             editorTPElem = TP.byCSSPath(
-                                'xctrls|codeeditor', drawerElement, true);
+                                ' xctrls|codeeditor', drawerElement, true);
             editorObj = editorTPElem.$get('$editorObj');
             if (TP.isValid(editorObj)) {
                 editorObj.resize();

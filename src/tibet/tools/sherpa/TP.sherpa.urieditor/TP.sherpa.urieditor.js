@@ -980,7 +980,10 @@ function(isDetached, aNewURI) {
 
         sourceURI;
 
-    detachMark = TP.byCSSPath('.detach_mark', this.getNativeNode(), true, false);
+    detachMark = TP.byCSSPath('> .detach_mark',
+                                this.getNativeNode(),
+                                true,
+                                false);
     TP.elementHide(detachMark);
 
     //  Rewrite binding URI

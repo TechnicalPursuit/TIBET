@@ -291,7 +291,10 @@ function() {
 
     //  We need to iterate over each one and call it's 'teardown' before we rip
     //  them out of our content wrapper.
-    outputItems = TP.byCSSPath('sherpa|consoleoutputitem', this, false, true);
+    outputItems = TP.byCSSPath('> .wrapper > sherpa|consoleoutputitem',
+                                this,
+                                false,
+                                true);
     outputItems.forEach(
             function(anItem) {
                 anItem.teardown();
@@ -475,7 +478,9 @@ function(itemElem, uniqueID, dataRecord) {
     tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID);
 
     //  Grab the command text from the element's header.
-    cmdText = TP.byCSSPath('.header .content', itemElem, true).getTextContent();
+    cmdText = TP.byCSSPath('> .flex-item .header .content',
+                            itemElem,
+                            true).getTextContent();
 
     //  Set the command text as the tile's header.
     tileTPElem.set('headerText', cmdText);
@@ -899,7 +904,7 @@ function(uniqueID, dataRecord) {
         }
 
         TP.nodeSetTextContent(
-                TP.byCSSPath('.header', itemElem, true, false),
+                TP.byCSSPath('> .flex-item .header', itemElem, true, false),
                 'Log' + msgLevel);
     }
 
@@ -1017,7 +1022,7 @@ function(uniqueID, dataRecord) {
         }
 
         //  Update the result type output information
-        statsElem = TP.byCSSPath('.typeinfo', groupElem, true, false);
+        statsElem = TP.byCSSPath('> .header .typeinfo', groupElem, true, false);
         if (TP.isElement(statsElem)) {
             TP.xmlElementSetContent(
                     statsElem,
@@ -1025,7 +1030,7 @@ function(uniqueID, dataRecord) {
         }
 
         //  Update the result type output information
-        statsElem = TP.byCSSPath('.stats', groupElem, true, false);
+        statsElem = TP.byCSSPath('> .header .stats', groupElem, true, false);
         if (TP.isElement(statsElem)) {
             TP.xmlElementSetContent(
                     statsElem,
@@ -1050,7 +1055,7 @@ function(uniqueID, dataRecord) {
         //  ID, then we create a coalescing fragment and a record holding it,
         //  the data record and the overall output element.
         coalesceFragment = TP.documentConstructFragment(doc);
-        insertionPoint = TP.byCSSPath('.flex-item', itemElem, true, false);
+        insertionPoint = TP.byCSSPath('> .flex-item', itemElem, true, false);
 
         outputCoalesceEntries.atPut(
                 uniqueID,
@@ -1127,7 +1132,7 @@ function(uniqueID, dataRecord) {
             //  cases where there's very long output (i.e. 'history') and we
             //  want to see the bottom of it first.
             rawOutputElem = TP.byCSSPath(
-                                '*[name="raw_outputEntry"]',
+                                '> .flex-item *[name="raw_outputEntry"]',
                                 outElem,
                                 true,
                                 false);
@@ -1139,7 +1144,10 @@ function(uniqueID, dataRecord) {
             //  If there is an embedded iframe element within the output and
             //  there is a valid request with a configured 'cmdLocation', then
             //  set the iframe's 'src' to that location.
-            embeddedIFrameElem = TP.byCSSPath('iframe', outElem, true, false);
+            embeddedIFrameElem = TP.byCSSPath('> * iframe',
+                                                outElem,
+                                                true,
+                                                false);
             if (TP.isElement(embeddedIFrameElem)) {
                 if (TP.isValid(request = dataRecord.at('request'))) {
 
@@ -1212,7 +1220,7 @@ function() {
         arrows;
 
     itemContentTPElem = TP.byCSSPath(
-                            '.flex-item > .content', this, true, true);
+                            '> .flex-item > .content', this, true, true);
 
     //  If we got back more than 1 or none (i.e. a 'header only' output item)
     //  then just skip the rest.
@@ -1220,7 +1228,7 @@ function() {
         return this;
     }
 
-    arrows = TP.byCSSPath('sherpa|scrollbutton',
+    arrows = TP.byCSSPath(' sherpa|scrollbutton',
                             this.getNativeNode(),
                             false,
                             true);
@@ -1267,7 +1275,7 @@ function() {
     var arrows;
 
     //  Grab any scrollbuttons that are under us.
-    arrows = TP.byCSSPath('sherpa|scrollbutton',
+    arrows = TP.byCSSPath(' sherpa|scrollbutton',
                             this.getNativeNode(),
                             false,
                             true);

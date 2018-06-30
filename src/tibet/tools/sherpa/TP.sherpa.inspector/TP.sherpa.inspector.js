@@ -1275,7 +1275,7 @@ function(startBay) {
         len,
         i;
 
-    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    existingBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     startIndex = existingBays.indexOf(startBay, TP.IDENTITY);
 
@@ -1451,7 +1451,7 @@ function(anInfo) {
     }
 
     //  Grab all of the inspector bays in the receiver.
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     //  Pass along any extra targeting information that editors or property
     //  panels would want by putting that onto one of our slots.
@@ -1543,7 +1543,7 @@ function(anInfo) {
         this.populateBayUsing(info);
 
         //  Now that we have more inspector items, obtain the list again.
-        inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+        inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     } else if (TP.isValid(target) && TP.isValid(resolver)) {
 
@@ -1640,7 +1640,7 @@ function(anInfo) {
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
         } else {
             //  No root resolver - can't go any further
@@ -1714,7 +1714,7 @@ function(anInfo) {
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
         } else {
 
@@ -1742,7 +1742,7 @@ function(anInfo) {
                 info.atPut('bayIndex', 2);
 
                 //  Now that we have more inspector items, obtain the list again.
-                inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+                inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
             }
         }
     }
@@ -1787,7 +1787,7 @@ function(anInfo) {
             this.populateBayUsing(rootInfo, false);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
         } else {
             //  If any of these path parts returned an alias, look it up here.
             pathParts = this.getType().resolvePathAliases(pathParts);
@@ -1860,7 +1860,7 @@ function(anInfo) {
 
                 //  Now that we have more inspector items, obtain the list
                 //  again.
-                inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+                inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
             }
         }
     } else {
@@ -1928,7 +1928,7 @@ function(aSlotPosition) {
         return null;
     }
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
     if (aSlotPosition === 0) {
         return inspectorBays.first();
     }
@@ -2009,7 +2009,7 @@ function() {
 
         lastResolver;
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     //  Grab the 'resolver' for the last inspector bay. This is the object that
     //  will be messaged to get the data.
@@ -2040,7 +2040,7 @@ function(aBayNum) {
         bayNum;
 
     if (TP.notEmpty(inspectorBayContentItems =
-                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+                    TP.byCSSPath(' sherpa|inspectoritem > *', this))) {
 
         bayNum = aBayNum;
         if (!TP.isNumber(bayNum)) {
@@ -2132,7 +2132,7 @@ function(aBay) {
         len,
         i;
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
     if (aBay === inspectorBays.first()) {
         return 0;
     }
@@ -2177,7 +2177,7 @@ function() {
 
     totalSlotCount = 0;
 
-    TP.byCSSPath('sherpa|inspectoritem', this).forEach(
+    TP.byCSSPath(' sherpa|inspectoritem', this).forEach(
             function(inspectorBay, index) {
                 totalSlotCount += inspectorBay.getBayMultiplier();
             });
@@ -2721,7 +2721,7 @@ function(info, createHistoryEntry) {
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
 
-    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    existingBays = TP.byCSSPath(' sherpa|inspectoritem', this);
     newBayNum = info.at('bayIndex');
 
     //  The bay we're actually going to put content into. Note that this might
@@ -2917,7 +2917,7 @@ function(aBayNum) {
     }
 
     //  Grab the inspector bay corresponding to that bay number
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
     inspectorBay = inspectorBays.at(bayNum);
 
     if (TP.notValid(inspectorBay)) {
@@ -2984,7 +2984,7 @@ function(aBayNum) {
     }
 
     //  Grab the inspector bay corresponding to that bay number
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
     inspectorBay = inspectorBays.at(bayNum);
 
     if (TP.notValid(inspectorBay)) {
@@ -3101,7 +3101,7 @@ function(startBay) {
         len,
         i;
 
-    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    existingBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     startIndex = existingBays.indexOf(startBay, TP.IDENTITY);
 
@@ -3176,7 +3176,7 @@ function(direction) {
     currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
     currentBay = this.getBayFromSlotPosition(currentFirstVisiblePosition);
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     //  Depending on the direction, grab the bay before or after the leftmost
     //  bay.
@@ -3298,7 +3298,7 @@ function() {
     var arrows;
 
     arrows = TP.byCSSPath(
-                'sherpa|scrollbutton',
+                '> sherpa|scrollbutton',
                 TP.unwrap(TP.byId('SherpaWorkbench', this.getNativeWindow())),
                 false,
                 true);
@@ -3330,7 +3330,7 @@ function(itemLabel, bayNum) {
         bayContent;
 
     if (TP.notEmpty(inspectorBayContentItems =
-                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+                    TP.byCSSPath(' sherpa|inspectoritem > *', this))) {
 
         bayContent = inspectorBayContentItems.at(bayNum);
 
@@ -3465,7 +3465,7 @@ function(shouldRenderBayContent) {
 
     renderBayContent = TP.ifInvalid(shouldRenderBayContent, false);
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     //  We initialize the slot count with the number of inspector items. This
     //  makes the assumption that each one is only 1 'slot' wide. We'll loop
@@ -3689,7 +3689,7 @@ function(pathParts) {
         targetAspect,
         info;
 
-    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     rootEntryResolver = this.getEntryAt(pathParts.first());
 
@@ -3742,7 +3742,7 @@ function(pathParts) {
 
             //  Now that we have more inspector items, obtain the list
             //  again.
-            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
         }
     }
 

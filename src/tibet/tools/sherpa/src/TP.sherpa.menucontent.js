@@ -97,7 +97,7 @@ function(aRequest) {
     menuContentTPElem = tpElem.get('menuContent');
     tpElem.observe(menuContentTPElem, 'TP.sig.DOMScroll');
 
-    arrows = TP.byCSSPath('sherpa|scrollbutton',
+    arrows = TP.byCSSPath('> .footer > sherpa|scrollbutton',
                             elem,
                             false,
                             true);
@@ -298,7 +298,7 @@ function() {
     var arrows;
 
     //  Grab any scrollbuttons that are under us.
-    arrows = TP.byCSSPath('sherpa|scrollbutton',
+    arrows = TP.byCSSPath('> .footer > sherpa|scrollbutton',
                             this.getNativeNode(),
                             false,
                             true);

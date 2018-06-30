@@ -257,7 +257,7 @@ function() {
     //  Query the document head to see if there are any other style elements
     //  that have our ID *anywhere* in the value of their 'dependsOn' attribute.
     dependentElements = TP.byCSSPath(
-                            'style[dependsOn*="' + targetID + '"]',
+                            '> style[dependsOn*="' + targetID + '"]',
                             TP.documentGetHead(natDoc),
                             false,
                             false);

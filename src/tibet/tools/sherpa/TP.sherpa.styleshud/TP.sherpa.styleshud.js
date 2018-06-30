@@ -240,9 +240,9 @@ function(aTPElement) {
         //  Get the currently displayed lozenge given that the peerID should
         //  be the same as it was for the old lozenge.
         currentItemTPElem = TP.byCSSPath(
-                                'li[indexInData="' + currentRuleIndex + '"]',
-                                this.getNativeNode(),
-                                true);
+                            '> ul li[indexInData="' + currentRuleIndex + '"]',
+                            this.getNativeNode(),
+                            true);
 
         //  Grab it's page rect.
         targetElemPageRect = currentItemTPElem.getPageRect();

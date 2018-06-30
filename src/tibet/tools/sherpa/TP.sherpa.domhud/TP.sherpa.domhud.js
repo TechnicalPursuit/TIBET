@@ -367,7 +367,7 @@ function(aTPElement) {
 
         //  Get the currently displayed lozenge given that the peerID should
         //  be the same as it was for the old lozenge.
-        currentItemTPElem = TP.byCSSPath('li[peerID="' + itemID + '"]',
+        currentItemTPElem = TP.byCSSPath('> ul li[peerID="' + itemID + '"]',
                                             this.getNativeNode(),
                                             true);
 

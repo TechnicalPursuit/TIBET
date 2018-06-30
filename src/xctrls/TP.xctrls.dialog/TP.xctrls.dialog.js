@@ -409,7 +409,7 @@ function(aMessage, info) {
             var button,
                 answerPromise;
 
-            button = TP.byCSSPath('.dialogControls button[action="ok"]',
+            button = TP.byCSSPath(' .dialogControls button[action="ok"]',
                                     dialogTPElem,
                                     true);
 
@@ -507,7 +507,7 @@ function(anAction, info) {
 
                 answerPromise;
 
-            button = TP.byCSSPath('.dialogControls button[action="ok"]',
+            button = TP.byCSSPath(' .dialogControls button[action="ok"]',
                                     dialogTPElem,
                                     true);
 
@@ -612,7 +612,7 @@ function(aQuestion, aDefaultAnswer, info) {
 
                 answerPromise;
 
-            inputField = TP.byCSSPath('.dialogContent input[type="text"]',
+            inputField = TP.byCSSPath(' .dialogContent input[type="text"]',
                                         dialogTPElem,
                                         true);
 

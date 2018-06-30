@@ -2203,7 +2203,7 @@ function(anElement) {
     //  attribute on it (the value of that attribute is irrelevant).
     if (TP.isElement(
             autofocusedElem =
-                    TP.byCSSPath('*[autofocus]', anElement, true, false))) {
+                    TP.byCSSPath(' *[autofocus]', anElement, true, false))) {
 
         //  Obtain the currently focused element from the document of the
         //  supplied element. Note how we pass false to *not* return the

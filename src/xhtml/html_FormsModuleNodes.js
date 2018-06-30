@@ -2875,7 +2875,7 @@ function() {
     //  returns the native node of the receiver.
 
     //  So we query by CSS instead. Note here how we don't collapse.
-    return TP.byCSSPath('option', this.getNativeNode(), false);
+    return TP.byCSSPath('> option', this.getNativeNode(), false);
 });
 
 //  ------------------------------------------------------------------------

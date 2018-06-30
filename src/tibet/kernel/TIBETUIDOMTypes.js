@@ -151,7 +151,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
     //  Start by looking for style elements that have a 'tibet:originalhref' on
     //  them - these will have been placed here by the system as part of
     //  processing, possibly inline processing.
-    existingStyleElems = TP.byCSSPath('style[tibet|originalhref]',
+    existingStyleElems = TP.byCSSPath('> style[tibet|originalhref]',
                                         docHead,
                                         false,
                                         false);

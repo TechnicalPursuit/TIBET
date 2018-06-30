@@ -4282,7 +4282,7 @@ function() {
     TP.elementAddClass(repeatContent, 'item');
 
     //  Strip out all 'id's on elements... if an Element has an ID, warn here.
-    elemsWithIDs = TP.byCSSPath('*[id]', elem, false, false);
+    elemsWithIDs = TP.byCSSPath(' *[id]', elem, false, false);
 
     //  Loop over any elements that were found with IDs.
     len = elemsWithIDs.getSize();
@@ -5223,7 +5223,7 @@ function(aSignal) {
 
                 //  Grab all of the elements under the element with the
                 //  'bind:repeat' that have 'bind:in' attributes.
-                allBindIns = TP.byCSSPath('*[bind|in]',
+                allBindIns = TP.byCSSPath(' *[bind|in]',
                                             repeatElem,
                                             false,
                                             false);

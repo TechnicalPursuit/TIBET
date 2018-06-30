@@ -82,7 +82,7 @@ function(anEvent) {
 
     //  Grab the xctrls:hint element under the signal target. Note we supply
     //  true to try to 'autocollapse' an Array of 1 result into just the result.
-    hintTPElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+    hintTPElem = TP.byCSSPath(' xctrls|hint', targetTPElem, true);
 
     //  If there was more than one, then the query was invalid. Return true.
     if (TP.isArray(hintTPElem)) {
@@ -100,7 +100,7 @@ function(anEvent) {
             targetTPElem = TP.wrap(targetElem);
 
             //  Grab the xctrls:hint element under the signal target
-            hintTPElem = TP.byCSSPath('xctrls|hint', targetTPElem, true);
+            hintTPElem = TP.byCSSPath( 'xctrls|hint', targetTPElem, true);
         } else {
 
             //  Couldn't find one by traversing the ancestor chain. See if an

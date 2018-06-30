@@ -240,7 +240,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
     screenHolderTPElem = this.getChildElementAt(0);
     screenHolderElem = TP.unwrap(screenHolderTPElem);
 
-    infoHolderElem = TP.byCSSPath('div.infos', this, true, false);
+    infoHolderElem = TP.byCSSPath('> div.infos', this, true, false);
 
     //  Create a new 'iframe' element, set it's ID to the supplied ID, and its
     //  frameborder to 0.
@@ -497,8 +497,8 @@ function(anIndex) {
     var screenHolderTPElem,
         infoHolderTPElem;
 
-    screenHolderTPElem = TP.byCSSPath('div.screens', this, true);
-    infoHolderTPElem = TP.byCSSPath('div.infos', this, true);
+    screenHolderTPElem = TP.byCSSPath('> div.screens', this, true);
+    infoHolderTPElem = TP.byCSSPath('> div.infos', this, true);
 
     screenHolderTPElem.removeChildElementAt(anIndex);
     infoHolderTPElem.removeChildElementAt(anIndex);

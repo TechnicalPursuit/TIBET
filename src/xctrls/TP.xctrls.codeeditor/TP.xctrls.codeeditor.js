@@ -326,7 +326,7 @@ function() {
     //  Make sure to do a separate 'blur' on the textarea that the ACE editor
     //  uses. This keeps everything in sync for TIBET's focusing machinery.
     nativeTATPElem = TP.byCSSPath(
-                        'textarea.ace_text-input',
+                        ' textarea.ace_text-input',
                         this.getNativeNode(),
                         true);
 
@@ -428,7 +428,7 @@ function(moveAction) {
     //  Make sure to do a separate 'focus' on the textarea that the ACE editor
     //  uses. This keeps everything in sync for TIBET's focusing machinery.
     nativeTATPElem = TP.byCSSPath(
-                        'textarea.ace_text-input',
+                        ' textarea.ace_text-input',
                         this.getNativeNode(),
                         true);
 
@@ -498,7 +498,7 @@ function() {
     //  Dig around in the internals of ACE to find the element that resizes as
     //  the content grows or shrinks vertically - ugh. This is the 'inner part'
     //  of the vertical scrollbar.
-    vertScrollerInner = TP.byCSSPath('.ace_scrollbar-v > .ace_scrollbar-inner',
+    vertScrollerInner = TP.byCSSPath(' .ace_scrollbar-v > .ace_scrollbar-inner',
                                         this.getNativeNode(),
                                         true,
                                         false);
@@ -845,7 +845,7 @@ function() {
     //  Dig around in the internals of ACE to find the element that acts as the
     //  textarea - ugh.
     textareaTPElem = TP.byCSSPath(
-                    'textarea.ace_text-input',
+                    ' textarea.ace_text-input',
                     this.getNativeNode(),
                     true);
     textareaTPElem.defineHandler('UIFocusNext',
@@ -861,7 +861,7 @@ function() {
 
     //  Grab the 'inner part' of the vertical scrollbar. This is the element
     //  that we'll monitor.
-    vertScrollerInner = TP.byCSSPath('.ace_scrollbar-v > .ace_scrollbar-inner',
+    vertScrollerInner = TP.byCSSPath(' .ace_scrollbar-v > .ace_scrollbar-inner',
                                         this.getNativeNode(),
                                         true,
                                         false);
