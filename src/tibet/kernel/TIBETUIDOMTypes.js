@@ -202,7 +202,7 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
     if (inlined) {
 
         //  First, see if we've processed this style URI before.
-        inlinedStyleElem = TP.byCSSPath('style[tibet|originalhref=' +
+        inlinedStyleElem = TP.byCSSPath('html|style[tibet|originalhref=' +
                                             '"' +
                                             styleURI.getOriginalSource() +
                                             '"]',
