@@ -1079,7 +1079,7 @@ function(uniqueID, dataRecord) {
     //  scheduling this refresh function 'upon repaint' - see below.
     if (!(flushLock = this.get('outputCoalesceLock'))) {
         flushLock = function() {
-            var outElem,
+            var uniqueItemElem,
                 rawOutputElem,
 
                 embeddedIFrameElem,
@@ -1098,15 +1098,15 @@ function(uniqueID, dataRecord) {
                 });
 
             //  Grab the output element according to the supplied unique ID
-            outElem = TP.byId(uniqueID,
+            uniqueItemElem = TP.byId(uniqueID,
                                 this.getNativeDocument(),
                                 false);
 
             //  If it doesn't have a 'isSetUp' class, then set it up and add
             //  that class
-            if (!TP.elementHasClass(outElem, 'isSetUp')) {
-                TP.wrap(outElem).setup();
-                TP.elementAddClass(outElem, 'isSetUp');
+            if (!TP.elementHasClass(uniqueItemElem, 'isSetUp')) {
+                TP.wrap(uniqueItemElem).setup();
+                TP.elementAddClass(uniqueItemElem, 'isSetUp');
             }
 
             //  Empty the set of coalescing records. We'll generate more the
@@ -1123,7 +1123,7 @@ function(uniqueID, dataRecord) {
             //  Sherpa HUD configuration.
             this.adjustItemMaxHeight();
 
-            TP.elementBubbleXMLNSAttributesOnDescendants(outElem);
+            TP.elementBubbleXMLNSAttributesOnDescendants(uniqueItemElem);
 
             flushLock = null;
             this.set('outputCoalesceLock', null);
@@ -1133,7 +1133,7 @@ function(uniqueID, dataRecord) {
             //  want to see the bottom of it first.
             rawOutputElem = TP.byCSSPath(
                                 '> .flex-item *[name="raw_outputEntry"]',
-                                outElem,
+                                uniqueItemElem,
                                 true,
                                 false);
 
@@ -1145,7 +1145,7 @@ function(uniqueID, dataRecord) {
             //  there is a valid request with a configured 'cmdLocation', then
             //  set the iframe's 'src' to that location.
             embeddedIFrameElem = TP.byCSSPath('> * iframe',
-                                                outElem,
+                                                uniqueItemElem,
                                                 true,
                                                 false);
             if (TP.isElement(embeddedIFrameElem)) {
