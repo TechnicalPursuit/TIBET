@@ -42,8 +42,25 @@
 
 # Installation
 
-**Check your OS, browser, and Node/npm versions against
-TIBET's <a href="#prereqs">prerequisites</a>.**
+#### Check TIBET's <a href="#prereqs">prerequisites</a> first.
+
+We recommend using `nvm` to install Node.js v6+ (or v8+ if you want
+to use ES7 features like async/await). You can confirm your nvm, node, and npm
+versions using:
+
+```
+nvm --version
+nvm v0.5.0
+
+node --version
+v8.11.1
+
+npm --version
+5.6.0
+```
+
+If you are missing TIBET's node/npm <a href="#prereqs">prerequisites</a> install those first.
+
 
 #### Installing TIBET via `npm`
 
@@ -140,34 +157,9 @@ relates to a topic.
 <a name="prereqs" href="#"></a>
 # Prerequisites
 
-#### Supported platforms
-
-###### TIBET CLI / Server
-
-The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
-components are **fully-supported on MacOS and common Linux variants**.
-
-TIBET's command line and server components are **being ported to Windows**. In
-the meantime we recommend using Docker or similar container technology if you
-are a Windows-based developer. Pre-built Docker images will be available in an
-upcoming release.
-
-
-###### TIBET Client / Sherpa
-
-| Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
-|:---------|:----------------------|:--------------------|:-------------|
-| Google Chrome | Yes | Yes | Yes |
-| Mozilla Firefox | Yes | Yes | Coming Soon |
-| Apple Safari | Yes | Yes | Coming Soon |
-| Electron | Yes | Coming Soon | Coming Soon |
-| Microsoft Edge | Future | Future | Future |
-| Microsoft IE | No | No | No |
-
-
 #### Install Node.js
 
-TIBET requires Node.js version 4+ (6+ is recommended).
+TIBET requires Node.js version 6+
 
 We also recommend using `npm` version `3.x` (some TIBET dependencies have shown
 installation glitches using version `5.x` of npm).
@@ -272,6 +264,33 @@ connection, machine performance, etc. since it's building a large set of
 dependent modules in addition to TIBET itself.
 
 With TIBET cloned, initialized, linked, and built you're ready to rock.
+
+---
+
+# Supported platforms
+
+###### TIBET CLI / Server
+
+The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
+components are **fully-supported on MacOS and common Linux variants**.
+
+TIBET's command line and server components are **being ported to Windows**. In
+the meantime we recommend using Docker or similar container technology if you
+are a Windows-based developer. Pre-built Docker images will be available in an
+upcoming release.
+
+
+###### TIBET Client / Sherpa
+
+| Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
+|:---------|:----------------------|:--------------------|:-------------|
+| Google Chrome | Yes | Yes | Yes |
+| Mozilla Firefox | Yes | Yes | Coming Soon |
+| Apple Safari | Yes | Yes | Coming Soon |
+| Electron | Yes | Coming Soon | Coming Soon |
+| Microsoft Edge | Future | Future | Future |
+| Microsoft IE | No | No | No |
+
 
 ---
 
