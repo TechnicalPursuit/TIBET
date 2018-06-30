@@ -220,7 +220,7 @@ function(lessLoc, lessText) {
                 //  its content.
                 if (!TP.isElement(
                     existingStyleElem =
-                    TP.byCSSPath('[tibet|for="' + cssElemID + '"]',
+                    TP.byCSSPath('*[tibet|for="' + cssElemID + '"]',
                                     natDoc,
                                     true,
                                     false))) {
@@ -454,7 +454,7 @@ function(anHref) {
 
                     //  Grab any existing style element, if available.
                     existingStyleElem = TP.byCSSPath(
-                                        '[tibet|for="' + ourID + '"]',
+                                        '*[tibet|for="' + ourID + '"]',
                                         doc,
                                         true,
                                         false);
@@ -569,7 +569,7 @@ function() {
             //  its content.
             if (!TP.isElement(
                     existingStyleElem =
-                    TP.byCSSPath('[tibet|for="' + ourID + '"]',
+                    TP.byCSSPath('*[tibet|for="' + ourID + '"]',
                                     doc,
                                     true,
                                     false))) {
