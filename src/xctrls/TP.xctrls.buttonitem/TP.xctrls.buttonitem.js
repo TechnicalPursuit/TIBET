@@ -39,6 +39,49 @@ TP.xctrls.buttonitem.Type.defineAttribute('opaqueBubblingSignalNames',
             ));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.buttonitem.Type.defineMethod('isOpaqueBubblerFor',
+function(anElement, aSignal) {
+
+    /**
+     * @method isOpaqueBubblerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque bubbler' for the supplied signal (i.e. it won't let the
+     *     signal 'ascend' further up its parent hierarchy). This means that
+     *     they will handle the signal themselves and not allow ancestors above
+     *     them to handle it.
+     * @description At this level, we override this method because, if we're a
+     *     descendant of a 'grouping element' (like TP.xctrls.itemgroup,
+     *     TP.xctrls.list, etc., then we return false, allowing the grouping
+     *     element to determine whether it's an opaque bubbler or not.
+     *     Otherwise, we just callNextMethod, which uses our
+     *     'opaqueBubblingSignalNames' list and/or a defined attribute on the
+     *     element.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaquebubbling' attribute.
+     * @param {TP.sig.Signal} aSignal The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     bubble phase for the signal.
+     */
+
+    var groupingAncestor;
+
+    groupingAncestor = TP.nodeAncestorMatchingCSS(
+                                        anElement,
+                                        'xctrls|itemgroup,' +
+                                        'xctrls|list,' +
+                                        'xctrls|table');
+
+    if (TP.isElement(groupingAncestor)) {
+        return false;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
