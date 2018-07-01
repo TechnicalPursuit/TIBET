@@ -24,6 +24,9 @@ TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('applyButton',
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('detachMark',
     TP.cpc('> .detach_mark', TP.hc('shouldCollapse', true)));
 
+TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('panelToggleRadios',
+    TP.cpc('> xctrls|itemgroup', TP.hc('shouldCollapse', true)));
+
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('pushButton',
     TP.cpc('> button[action="push"]', TP.hc('shouldCollapse', true)));
 
@@ -155,6 +158,12 @@ function() {
     } else {
         this.get('pushButton').setAttribute('disabled', true);
         this.get('refreshButton').setAttribute('disabled', true);
+    }
+
+    if (TP.isJSONString(editorTPElem.get('value'))) {
+        this.get('panelToggleRadios').removeAttribute('disabled');
+    } else {
+        this.get('panelToggleRadios').setAttribute('disabled', true);
     }
 
     return this;

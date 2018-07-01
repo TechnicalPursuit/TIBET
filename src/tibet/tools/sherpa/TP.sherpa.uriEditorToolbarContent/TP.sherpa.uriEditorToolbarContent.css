@@ -1,9 +1,12 @@
 @namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 sherpa|uriEditorToolbarContent {
+
     display: flex;
+
     flex-direction: row;
     justify-content: flex-end;
 
@@ -23,6 +26,19 @@ sherpa|uriEditorToolbarContent > button {
 }
 
 sherpa|uriEditorToolbarContent > button[action="revert"] {
+}
+
+sherpa|uriEditorToolbarContent > xctrls|itemgroup {
+
+    font-size: 12px;
+
+    margin-right: 5px;
+}
+
+sherpa|uriEditorToolbarContent xctrls|radioitem > xctrls|label,
+sherpa|uriEditorToolbarContent xctrls|radioitem:hover > xctrls|label {
+
+    background-color: initial !important;
 }
 
 sherpa|uriEditorToolbarContent > .detach_mark {

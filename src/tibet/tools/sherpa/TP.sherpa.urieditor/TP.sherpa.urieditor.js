@@ -101,8 +101,14 @@ TP.sherpa.urieditor.Inst.defineAttribute('body',
 TP.sherpa.urieditor.Inst.defineAttribute('foot',
     TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
 
+TP.sherpa.urieditor.Inst.defineAttribute('panelBox',
+    TP.cpc('> .body > xctrls|panelbox', TP.hc('shouldCollapse', true)));
+
 TP.sherpa.urieditor.Inst.defineAttribute('editor',
-    TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .body xctrls|codeeditor', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.urieditor.Inst.defineAttribute('schemaDisplay',
+    TP.cpc('> .body .schemaDisplay', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -429,6 +435,106 @@ function(aSignal) {
 
     //  NB: This is an asynchronous operation.
     this.revertResource(refresh);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ShowData',
+function(aSignal) {
+
+    /**
+     * @method handleShowData
+     * @summary Handles when the user has chose the 'data' radio button to show
+     *     the JSON data in the URI (if the URI has JSON as its content).
+     * @param {TP.sig.ShowData} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    //  Switch the panel box to the 'data' panel.
+    this.get('panelBox').set('value', 'data');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ShowSchema',
+function(aSignal) {
+
+    /**
+     * @method handleShowSchema
+     * @summary Handles when the user has chose the 'schema' radio button to
+     *     show the JSON schema in the URI (if the URI has JSON as its content).
+     * @param {TP.sig.ShowSchema} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var editor,
+        editorValue,
+
+        jsonData,
+
+        pojoSchema,
+
+        schemaText,
+        schemaContent,
+
+        displayElem;
+
+    //  Switch the panel box to the 'data' panel.
+    this.get('panelBox').set('value', 'schema');
+
+    //  Grab the element to display the schema in.
+    displayElem = TP.unwrap(this.get('schemaDisplay'));
+
+    //  Grab the value from the editor
+    editor = this.get('editor');
+    editorValue = editor.getValue();
+
+    //  Create a JavScript version of the JSON editor value.
+    jsonData = TP.json2js(editorValue);
+
+    if (TP.notValid(jsonData)) {
+        displayElem.innerHTML = TP.sc('Not valid JSON');
+        return this;
+    }
+
+    //  Build a 'plain object' full of JSON Schema of that data.
+    pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(
+                                            jsonData, 'Couch_Doc_Foo');
+
+    if (TP.notValid(pojoSchema)) {
+        displayElem.innerHTML = TP.sc('Could not build JSON Schema');
+        return this;
+    }
+
+    //  Grab a JSON String version of it.
+    schemaText = TP.json(pojoSchema);
+
+    //  Run a JSON formatter on the resultant schema text and have XHTML as the
+    //  desired output format.
+    schemaContent = TP.sherpa.pp.runFormattedJSONModeOn(
+                    schemaText,
+                    TP.XHTML_ENCODED,
+                    function(srcText, keyPath) {
+
+                        //  If the second to last item in the key path is the
+                        //  word 'properties', then we tag this source as being
+                        //  a 'property name'.
+                        if (keyPath.slice(-2, -1).first() === 'properties') {
+                            return '<span class="jsonPropName">' +
+                                    srcText.asEscapedXML() +
+                                    '</span>';
+                        }
+
+                        return srcText.asEscapedXML();
+                    });
+
+    displayElem.innerHTML = schemaContent;
 
     return this;
 });
@@ -1121,6 +1227,9 @@ function() {
             this.set('extraSaveHeaders', TP.json2js(attrVal));
         }
     }
+
+    //  Start with the panel box switched to the 'data' panel.
+    this.get('panelBox').set('value', 'data');
 
     return this;
 });

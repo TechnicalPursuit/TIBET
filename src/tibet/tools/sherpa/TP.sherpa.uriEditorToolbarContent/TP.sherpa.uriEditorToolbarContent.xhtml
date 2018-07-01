@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 
 <sherpa:uriEditorToolbarContent>
+    <xctrls:itemgroup>
+        <xctrls:radioitem pclass:checked="true" on:click="ShowData">
+            <xctrls:label>data</xctrls:label>
+            <xctrls:value>data</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem on:click="ShowSchema">
+            <xctrls:label>schema</xctrls:label>
+            <xctrls:value>schema</xctrls:value>
+        </xctrls:radioitem>
+    </xctrls:itemgroup>
     <span class="detach_mark" on:click="TP.sig.DetachIntoConsoleTab">
         <xctrls:hint>Detach editor into tab</xctrls:hint>
     </span>
