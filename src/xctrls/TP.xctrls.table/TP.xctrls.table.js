@@ -20,6 +20,21 @@ TP.xctrls.Lattice.defineSubtype('xctrls:table');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  Signals that we don't allow to bubble outside of ourself. Since we can
+//  process the states associated with these signals, we don't want them to
+//  proceed further up the chain.
+TP.xctrls.table.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac(
+            'TP.sig.UIActivate',
+            'TP.sig.UIDeactivate',
+
+            'TP.sig.UIDeselect',
+            'TP.sig.UISelect',
+
+            'TP.sig.UIDisabled',
+            'TP.sig.UIEnabled'
+            ));
+
 /**
  * The tag name of the tag to use for each item if there is no template.
  * @type {String}

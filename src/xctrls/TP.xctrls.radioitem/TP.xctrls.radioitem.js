@@ -26,6 +26,21 @@ TP.xctrls.radioitem.addTraits(TP.xctrls.TemplatedTag);
 TP.xctrls.radioitem.Inst.defineAttribute('valuePElem',
     TP.cpc('> *[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
 
+//  Signals that we don't allow to bubble outside of ourself. Since we can
+//  process the states associated with these signals, we don't want them to
+//  proceed further up the chain.
+TP.xctrls.radioitem.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac(
+            'TP.sig.UIActivate',
+            'TP.sig.UIDeactivate',
+
+            'TP.sig.UIDeselect',
+            'TP.sig.UISelect',
+
+            'TP.sig.UIDisabled',
+            'TP.sig.UIEnabled'
+            ));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------

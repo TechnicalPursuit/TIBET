@@ -26,9 +26,16 @@ TP.xctrls.dialog.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  Dialogs do not allow UIActivate/UIDeactivate signals to bubble outside of
 //  themselves. This means that all keydown/keyup/mousedown/mouseup/click events
-//  are not allowed to bubble down 'under' the dialog.
+//  are not allowed to bubble down 'under' the dialog. Additionally, we don't
+//  allow UIEnabled/UIDisabled to bubble past us either.
 TP.xctrls.dialog.Type.defineAttribute('opaqueBubblingSignalNames',
-        TP.ac('TP.sig.UIActivate', 'TP.sig.UIDeactivate'));
+        TP.ac(
+            'TP.sig.UIActivate',
+            'TP.sig.UIDeactivate',
+
+            'TP.sig.UIDisabled',
+            'TP.sig.UIEnabled'
+            ));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

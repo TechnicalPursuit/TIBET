@@ -26,6 +26,15 @@ TP.xctrls.panel.addTraits(TP.xctrls.Element);
 //  This type captures no signals - it lets all signals pass through.
 TP.xctrls.panel.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
+//  Signals that we don't allow to bubble outside of ourself. Since we can
+//  process the states associated with these signals, we don't want them to
+//  proceed further up the chain.
+TP.xctrls.panel.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac(
+            'TP.sig.UIDeselect',
+            'TP.sig.UISelect'
+            ));
+
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.xctrls.panel.defineAttribute('styleURI', TP.NO_RESULT);

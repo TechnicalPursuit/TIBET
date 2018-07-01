@@ -26,6 +26,15 @@ TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
 //  This type captures no signals - it lets all signals pass through.
 TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
+//  Signals that we don't allow to bubble outside of ourself. Since we can
+//  process the states associated with these signals, we don't want them to
+//  proceed further up the chain.
+TP.xctrls.panelbox.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac(
+            'TP.sig.UIDisabled',
+            'TP.sig.UIEnabled'
+            ));
+
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
 

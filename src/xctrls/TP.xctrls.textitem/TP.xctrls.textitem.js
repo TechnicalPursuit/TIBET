@@ -20,6 +20,25 @@ TP.xctrls.item.defineSubtype('xctrls:textitem');
 TP.xctrls.textitem.addTraits(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  Signals that we don't allow to bubble outside of ourself. Since we can
+//  process the states associated with these signals, we don't want them to
+//  proceed further up the chain.
+TP.xctrls.textitem.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac(
+            'TP.sig.UIActivate',
+            'TP.sig.UIDeactivate',
+
+            'TP.sig.UIDeselect',
+            'TP.sig.UISelect',
+
+            'TP.sig.UIDisabled',
+            'TP.sig.UIEnabled'
+            ));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
