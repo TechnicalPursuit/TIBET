@@ -128,6 +128,11 @@ function(tabValue, tabLabel) {
     editorTPElem = editorTPElem.clone();
     toolbarTPElem = toolbarTPElem.clone();
 
+    //  Make sure to compile the templates in case they have elements that need
+    //  to be compiled.
+    editorTPElem.compile();
+    toolbarTPElem.compile();
+
     //  We don't want adding the editor and it's toolbar to the DOM to cause
     //  mutation signals to be processed.
     newPanel.setAttribute('tibet:nomutationtracking', 'true');
