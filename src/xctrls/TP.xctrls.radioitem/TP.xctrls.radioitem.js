@@ -24,7 +24,7 @@ TP.xctrls.radioitem.addTraits(TP.xctrls.TemplatedTag);
 //  ------------------------------------------------------------------------
 
 TP.xctrls.radioitem.Inst.defineAttribute('valuePElem',
-    TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> *[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
