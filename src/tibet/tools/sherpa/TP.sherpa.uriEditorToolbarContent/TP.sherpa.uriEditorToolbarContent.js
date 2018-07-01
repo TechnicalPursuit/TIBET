@@ -160,7 +160,7 @@ function() {
         this.get('refreshButton').setAttribute('disabled', true);
     }
 
-    if (TP.isJSONString(editorTPElem.get('value'))) {
+    if (TP.isJSONString(editorTPElem.get('editor').get('value'))) {
         this.get('panelToggleRadios').removeAttribute('disabled');
     } else {
         this.get('panelToggleRadios').setAttribute('disabled', true);
