@@ -197,15 +197,26 @@ function(aTPElement) {
         ruleInfo.perform(
             function(aRuleInfo) {
 
+                var loc;
+
+                //  Grab the sheet location. If it's null, use the word
+                //  '[empty]' as the value of that slot of the info
+                loc = aRuleInfo.at('sheetLocation');
+                if (TP.isEmpty(loc)) {
+                    loc = '[empty]';
+                } else {
+                    loc = TP.uriInTIBETFormat(loc);
+                }
+
                 //  Push the following data into the rule information:
 
-                //  TIBET URI to stylesheet
+                //  TIBET URI to stylesheet (if not null)
                 //  selectorText
                 //  the rule's CSS text
                 //  the original CSSRule object
                 info.push(
                     TP.ac(
-                        TP.uriInTIBETFormat(aRuleInfo.at('sheetLocation')),
+                        loc,
                         aRuleInfo.at('originalSelector'),
                         aRuleInfo.at('rule').cssText,
                         aRuleInfo.at('rule')));
