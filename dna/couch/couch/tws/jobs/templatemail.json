@@ -1,0 +1,15 @@
+{
+    "type": "job",
+    "flow": "templatemail",
+    "owner": "Team TIBET",
+    "params": {
+        "templater": {
+            "stdin": "[[stdin]]"
+        },
+        "smtp": {
+            "to": "[[to]]",
+            "subject": "[[subject]]"
+        }
+    }
+}
+
