@@ -298,6 +298,7 @@
                     logger.error(job,
                         'error: ' + err.message +
                         ' fetching/accepting task: ' + fullname);
+                    logger.error(err);
                 });
             } else if (!isJobComplete(job)) {
                 //  No next task or last task failed so we have an empty Array.
@@ -330,7 +331,13 @@
 
             //  Accepting a task means copying it into the steps list and
             //  putting our process.pid on it along with state info as needed.
-            step = JSON.parse(JSON.stringify(task));
+            try {
+                step = JSON.parse(JSON.stringify(task));
+            } catch (e) {
+                logger.error(job, 'error copying task: ' +
+                    e.message);
+                return;
+            }
             step.pid = process.pid;
             step.start = Date.now();
             step.index = job.steps.length;
@@ -787,7 +794,7 @@
         prepareParams = function(job, step, task) {
 
             var params,
-
+                result,
                 text,
                 template,
                 output;
@@ -817,29 +824,60 @@
                 TDS.blend(params, task.params);
             }
 
-//  TODO: try catch for bad compile/json etc. here...
-
             //  Now, we interpolate any parameter values that we find, using
             //  job, step and params as objects that can be referenced in those
             //  values.
 
             text = JSON.stringify(params);
 
-            template = TDS.template.compile(text);
-            output = template({
-                job: job,
-                step: step,
-                params: params
-            });
+            try {
+                template = TDS.template.compile(text);
+            } catch (e) {
+                logger.error('Error compiling template:\n\n' +
+                    text + '\n');
+                logger.error(e.message);
+                throw e;
+            }
+
+            try {
+                result = template({
+                    job: job,
+                    step: step,
+                    params: params
+                });
+            } catch (e) {
+                logger.error('Error invoking template:\n\n' +
+                    template + '\n');
+                logger.error(e.message);
+                throw e;
+            }
+
+            //  Embedded newlines in the template can cause JSON.parse to have
+            //  issues so make sure we don't have any after template execution.
+            result = result.replace(/\n/g, '\\n');
 
             //  Note here that we allow embedded templates, but because of
             //  escaping issues with JSON and Handlebars, we require these
             //  templates to be written with double square brackets ('[[...]]')
             //  and we need to replace them with double curly brackets
             //  ('{{...}}') before sending them further into the system.
-            output = output.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
+            output = result.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
 
-            params = JSON.parse(output);
+            try {
+                params = JSON.parse(output);
+            } catch (e) {
+                logger.error('Error parsing template:\n\n' + output);
+                logger.error(e.message);
+
+                //  Having JSON.parse problems? Dump the string.
+                if (/Unexpected token/i.test(e.message)) {
+                    output.split('').forEach(function(char, ndx) {
+                        logger.error(ndx + ' => ' + char);
+                    });
+                }
+
+                throw e;
+            }
 
             return params;
         };
@@ -1173,7 +1211,14 @@
 
             //  Create a new step instance, clearing any state etc. and dropping
             //  the retry count by 1.
-            retryStep = JSON.parse(JSON.stringify(task));
+            try {
+                retryStep = JSON.parse(JSON.stringify(task));
+            } catch (e) {
+                logger.error(job, 'error copying task: ' +
+                    e.message);
+
+                return;
+            }
             retryStep.state = '$$ready';
             retryStep.start = Date.now();
             retryStep.end = undefined;
@@ -1298,6 +1343,16 @@
             files = sh.ls(taskdir);
             files.sort().forEach(function(file) {
                 var taskMeta;
+
+                //  Ignore directories
+                if (TDS.shell.test('-d', path.join(taskdir, file))) {
+                    return;
+                }
+
+                //  Ignore files that aren't js source
+                if (!/\./.test(file)) {
+                    return;
+                }
 
                 name = file.slice(0, file.lastIndexOf('.'));
 
@@ -1524,6 +1579,14 @@
                         job = JSON.parse(body);
                     } catch (e) {
                         res.status(400).send(e.message);
+
+                        //  Having JSON.parse problems? Dump the string.
+                        if (/Unexpected token/i.test(e.message)) {
+                            body.split('').forEach(function(char, ndx) {
+                                logger.error(ndx + ' => ' + char);
+                            });
+                        }
+
                         return;
                     }
                     break;

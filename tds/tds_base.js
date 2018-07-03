@@ -167,6 +167,12 @@
     TDS.Promise = Promise;
 
     /**
+     * A common handle to the shelljs library for use in tasks/routes.
+     * @type {Object}
+     */
+    TDS.shell = sh;
+
+    /**
      * A common handle to the handlebars library for templating.
      * @type {Object}
      */
@@ -824,6 +830,11 @@
             };
 
             fullpath = path.join(rootpath, plugin);
+
+            //  Skip directories
+            if (TDS.shell.test('-d', fullpath)) {
+                return;
+            }
 
             //  Once logger is set we can start asking for contextual loggers.
             if (TDS.logger) {
