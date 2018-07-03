@@ -1,0 +1,10 @@
+{
+    "type": "job",
+    "flow": "templater",
+    "owner": "Team TIBET",
+    "params": {
+        "template": "[[template]]",
+        "stdin": "[[stdin]]"
+    }
+}
+

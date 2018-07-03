@@ -1,0 +1,21 @@
+{
+    "type": "flow",
+    "name": "templatemail",
+    "owner": "Team TIBET",
+    "tasks": {
+        "structure": "sequence",
+        "sequence": ["templater", "smtp"],
+        "stdio": [{
+            "result": "text"
+        }]
+    },
+    "guards": {
+        "templater": "/TIBET/i.test('{{params.stdin}}')",
+        "smtp": "'{{job._id}}' != ''"
+    },
+    "params": {
+        "smtp": {
+            "html": "{{params.text}}"
+        }
+    }
+}

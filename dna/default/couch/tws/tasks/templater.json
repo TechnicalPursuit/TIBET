@@ -1,0 +1,10 @@
+{
+    "type": "task",
+    "name": "templater",
+    "owner": "Team TIBET",
+    "plugin": "templater",
+    "params": {
+        "template": "~tds_templates/templateone.html",
+        "stdin": "{{job.params.stdin}}"
+    }
+}
