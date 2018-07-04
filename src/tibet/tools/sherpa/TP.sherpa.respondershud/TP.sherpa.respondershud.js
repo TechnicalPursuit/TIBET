@@ -398,20 +398,14 @@ function(aSignal) {
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
-    var connector,
-        hudIsClosed;
-
-    connector = TP.byId('SherpaConnector', TP.win('UIROOT'));
-    if (TP.notValid(connector)) {
-        return this;
-    }
+    var hudIsClosed;
 
     hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
     if (!hudIsClosed) {
-        this.observe(connector, 'TP.sig.SherpaConnectCompleted');
+        this.observe(this, 'TP.sig.SherpaConnectCompleted');
     } else {
-        this.ignore(connector, 'TP.sig.SherpaConnectCompleted');
+        this.ignore(this, 'TP.sig.SherpaConnectCompleted');
     }
 
     return this;
@@ -752,7 +746,7 @@ function(aSignal) {
     data = this.get('data');
 
     srcTPElem = aSignal.at('sourceElement');
-    destTPElem = aSignal.at('destinationElement');
+    destTPElem = TP.wrap(aSignal.getTarget());
 
     //  Get the value of the destination's indexInData attribute.
     indexInData = destTPElem.getAttribute('indexInData');
