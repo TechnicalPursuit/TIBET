@@ -4248,6 +4248,66 @@ function(anElement, attributeName, checkAttrNSURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementRemoveAttributeValue',
+function(anElement, attrName, attrValue, checkAttrNSURI) {
+
+    /**
+     * @method elementRemoveAttributeValue
+     * @summary Removes one or more occurrences of the attribute value from the
+     *     supplied element.
+     * @param {Element} anElement The element to remove the attribute value
+     *     from.
+     * @param {String} attrName The name of the attribute to remove the value
+     *     from.
+     * @param {String} attrValue The value to remove from the attribute's value.
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
+     * @returns {Element} The element.
+     */
+
+    var existingWholeValue,
+
+        valMatcher;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(attrName)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    //  Note here how we just check to make sure the attribute value is
+    //  'valid', because it might not necessarily be a String (might be a
+    //  Boolean, Number, etc.)
+    if (TP.notValid(attrValue)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    if (TP.notEmpty(
+            existingWholeValue =
+                TP.elementGetAttribute(anElement, attrName, checkAttrNSURI))) {
+        //  We construct a global RegExp where there could be a space and
+        //  then the value we want to strip and then where there could be
+        //  another space. This allows use to strip all occurrences of
+        //  attrValue.
+        valMatcher = TP.rc(' ?' + attrValue + ' ?', 'g');
+        TP.elementSetAttribute(
+                        anElement,
+                        attrName,
+                        existingWholeValue.strip(valMatcher),
+                        checkAttrNSURI);
+    }
+
+    return anElement;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementReplaceAttributeValue',
 function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
 
