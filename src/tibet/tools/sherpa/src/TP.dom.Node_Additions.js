@@ -141,13 +141,13 @@ TP.dom.ElementNode.addTraits(TP.sherpa.ToolAPI);
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('canConnectTo',
-function(destElement) {
+function(destTPElement) {
 
     /**
      * @method canConnectTo
      * @summary Returns whether the receiver will allow connection to the
      *     supplied destination element.
-     * @param {Element} destElement The destination element.
+     * @param {TP.dom.ElementNode} destTPElement The destination element.
      * @returns {Boolean} Whether or not the receiver will allow connection.
      */
 
@@ -167,7 +167,7 @@ function(destElement) {
 
     //  Get the accepting value to compare against the vending value. Note that
     //  there can be multiple accepting values.
-    acceptValue = TP.wrap(destElement).getAttribute('sherpa:connectoraccept');
+    acceptValue = destTPElement.getAttribute('sherpa:connectoraccept');
     acceptValues = acceptValue.split(' ');
     if (TP.isEmpty(acceptValues)) {
         return false;
@@ -179,13 +179,13 @@ function(destElement) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('canConnectFrom',
-function(srcElement) {
+function(srcTPElement) {
 
     /**
      * @method canConnectFrom
      * @summary Returns whether the receiver will allow connection from the
      *     supplied source element.
-     * @param {Element} srcElement The source element.
+     * @param {TP.dom.ElementNode} srcTPElement The source element.
      * @returns {Boolean} Whether or not the receiver will allow connection.
      */
 
@@ -205,7 +205,7 @@ function(srcElement) {
 
     //  Get the vending value to compare against the accepting value. Note that
     //  there can be multiple vending values.
-    vendValue = TP.wrap(srcElement).getAttribute('sherpa:connectorvend');
+    vendValue = srcTPElement.getAttribute('sherpa:connectorvend');
     vendValues = vendValue.split(' ');
     if (TP.isEmpty(vendValues)) {
         return false;

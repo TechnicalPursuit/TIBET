@@ -47,8 +47,8 @@ TP.sherpa.connector.Inst.defineAttribute('$startPoint');
 
 TP.sherpa.connector.Inst.defineAttribute('$dragOrientation');
 
-TP.sherpa.connector.Inst.defineAttribute('$srcElement');
-TP.sherpa.connector.Inst.defineAttribute('$destElement');
+TP.sherpa.connector.Inst.defineAttribute('$srcTPElement');
+TP.sherpa.connector.Inst.defineAttribute('$destTPElement');
 
 TP.sherpa.connector.Inst.defineAttribute('$connectorThickness');
 TP.sherpa.connector.Inst.defineAttribute('$launchSize');
@@ -288,13 +288,12 @@ function(aSignal) {
 
         evtTarget,
 
-        srcElement,
         srcTPElement,
 
         newDestTPElement,
         newDestElement,
 
-        currentDestElement;
+        currentDestTPElement;
 
     startPoint = this.$get('$startPoint');
 
@@ -319,11 +318,10 @@ function(aSignal) {
         return this;
     }
 
-    srcElement = this.$get('$srcElement');
-    srcTPElement = TP.wrap(srcElement);
+    srcTPElement = this.$get('$srcTPElement');
 
-    //  This will be the current destination element (if we have one)
-    currentDestElement = this.$get('$destElement');
+    //  This will be the current destination element (if we have one).
+    currentDestTPElement = this.$get('$destTPElement');
 
     //  Compute a new connector destination.
     newDestTPElement = this.computeValidDestination(aSignal);
@@ -333,17 +331,17 @@ function(aSignal) {
         //  destination.
         this.hideConnectorDest();
 
-        if (TP.isElement(currentDestElement)) {
+        if (TP.isValid(currentDestTPElement)) {
             //  Signal that the connector is no longer over a valid destination.
             this.signal('SherpaConnectTargetOut',
                         TP.hc('sourceElement',
                                     srcTPElement,
                                 'destinationElement',
-                                    TP.wrap(currentDestElement)));
+                                    currentDestTPElement));
         }
 
-        //  No successful destination - make sure to null out destElement.
-        this.set('$destElement', null);
+        //  No successful destination - make sure to null out destTPElement.
+        this.set('$destTPElement', null);
 
         //  Exit here
         return this;
@@ -351,10 +349,11 @@ function(aSignal) {
 
     newDestElement = newDestTPElement.getNativeNode();
 
-    //  If currentDestElement is an Element and its the same as the computed
-    //  dest element, they're the same element so we just return here.
-    if (TP.isElement(currentDestElement) &&
-        currentDestElement === newDestElement) {
+    //  If currentDestTPElement is valid and its unwrapped value is the same as
+    //  the computed dest element, they're the same element so we just return
+    //  here.
+    if (TP.isValid(currentDestTPElement) &&
+        TP.unwrap(currentDestTPElement) === newDestElement) {
         return this;
     }
 
@@ -366,8 +365,8 @@ function(aSignal) {
     //  source and the destintation 'agree' that they can connect each over.
     if (TP.isElement(newDestElement)) {
 
-        if (srcTPElement.canConnectTo(newDestElement) &&
-            newDestTPElement.canConnectFrom(srcElement)) {
+        if (srcTPElement.canConnectTo(newDestTPElement) &&
+            newDestTPElement.canConnectFrom(srcTPElement)) {
 
             //  Both elements 'agree' - show the connector destination overlay.
             this.showConnectorDestOver(newDestElement);
@@ -378,14 +377,14 @@ function(aSignal) {
                                 'destinationElement', newDestTPElement));
 
             //  Got a successful destination.
-            this.set('$destElement', newDestElement);
+            this.set('$destTPElement', newDestTPElement);
 
             return this;
         }
     }
 
-    //  No successful destination - make sure to null out destElement.
-    this.set('$destElement', null);
+    //  No successful destination - make sure to null out destTPElement.
+    this.set('$destTPElement', null);
 
     return this;
 });
@@ -405,8 +404,6 @@ function(aSignal) {
      */
 
     var srcTPElement,
-
-        destElement,
         destTPElement;
 
     //  Ignore drag move and drag up signals from the mouse.
@@ -419,16 +416,15 @@ function(aSignal) {
 
     //  Grab the current source element and inform it that the connector did
     //  stop.
-    srcTPElement = TP.wrap(this.$get('$srcElement'));
+    srcTPElement = this.$get('$srcTPElement');
     srcTPElement.connectorSessionDidStop();
 
-    destElement = this.$get('$destElement');
-    if (TP.isElement(destElement)) {
+    destTPElement = this.$get('$destTPElement');
+    if (TP.isValid(destTPElement)) {
         //  There was a valid connection destination.
 
         //  Grab the current destination element and inform it that the
         //  connector did stop.
-        destTPElement = TP.wrap(destElement);
         destTPElement.connectorSessionDidStop();
 
         //  Signal that the connection session was completed.
@@ -653,7 +649,7 @@ function(aSignal) {
         return this;
     }
 
-    this.set('$srcElement', srcTPElement.getNativeNode());
+    this.set('$srcTPElement', srcTPElement);
 
     //  Observe the mouse directly for DOMDragMove and DOMDragUp signals, We'll
     //  process those in our instance-level handlers above.
@@ -698,14 +694,14 @@ function() {
     var srcTPElement,
         destTPElement;
 
-    srcTPElement = TP.wrap(this.get('$srcElement'));
-    destTPElement = TP.wrap(this.get('$destElement'));
+    srcTPElement = this.get('$srcTPElement');
+    destTPElement = this.get('$destTPElement');
 
     this.hideConnectorDest();
     this.hideConnector();
 
-    this.set('$srcElement', null);
-    this.set('$destElement', null);
+    this.set('$srcTPElement', null);
+    this.set('$destTPElement', null);
 
     //  Signal that a connection session has terminated.
     this.signal('SherpaConnectTerminate',
