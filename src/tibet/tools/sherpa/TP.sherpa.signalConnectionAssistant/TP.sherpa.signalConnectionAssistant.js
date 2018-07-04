@@ -53,20 +53,12 @@ function(anObject) {
      * @returns {TP.tsh.signalConnectionAssistant} The receiver.
      */
 
-    var modelURI,
-        connector;
+    var modelURI;
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
     modelURI = TP.uc('urn:tibet:signalConnectionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
-
-    //  Grab the Sherpa connector and tell it to stop connecting.
-    connector = TP.byId('SherpaConnector', TP.win('UIROOT'));
-    if (TP.notValid(connector)) {
-        return this;
-    }
-    connector.stopConnecting();
 
     //  Signal that the connection has failed.
     this.signal('SherpaConnectFailed');
@@ -103,8 +95,6 @@ function(anObject) {
 
     var modelURI,
 
-        connector,
-
         srcTPElement,
 
         result,
@@ -119,13 +109,6 @@ function(anObject) {
     //  on our way out.
     modelURI = TP.uc('urn:tibet:signalConnectionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
-
-    //  Grab the Sherpa connector and tell it to stop connecting.
-    connector = TP.byId('SherpaConnector', TP.win('UIROOT'));
-    if (TP.notValid(connector)) {
-        return this;
-    }
-    connector.stopConnecting();
 
     //  Signal that the connection has succeeded.
     this.signal('SherpaConnectSucceeded');
