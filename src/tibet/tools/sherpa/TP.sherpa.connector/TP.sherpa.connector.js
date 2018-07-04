@@ -441,9 +441,9 @@ function(aSignal) {
         //  Signal that the connection session was cancelled.
         this.signal('SherpaConnectCancelled',
                     TP.hc('sourceElement', srcTPElement));
-
-        this.stopConnecting();
     }
+
+    this.stopConnecting();
 
     return this;
 });
