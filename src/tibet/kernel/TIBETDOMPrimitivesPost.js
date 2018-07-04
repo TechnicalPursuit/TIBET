@@ -4249,7 +4249,7 @@ function(anElement, attributeName, checkAttrNSURI) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementRemoveAttributeValue',
-function(anElement, attrName, attrValue, checkAttrNSURI) {
+function(anElement, attrName, attrValue, checkAttrNSURI, removeEmptyAttr) {
 
     /**
      * @method elementRemoveAttributeValue
@@ -4264,6 +4264,9 @@ function(anElement, attrName, attrValue, checkAttrNSURI) {
      *     more rigorous in its checks for prefixed attributes, looking via
      *     internal TIBET mechanisms in addition to the standard platform
      *     mechanism. The default is false (to keep things faster).
+     * @param {Boolean} [removeEmptyAttr=true] False will cause this method to
+     *     *not* remove the attribute, even if it's empty after removing the
+     *     value. The default is true.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
@@ -4271,7 +4274,8 @@ function(anElement, attrName, attrValue, checkAttrNSURI) {
 
     var existingWholeValue,
 
-        valMatcher;
+        valMatcher,
+        val;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -4296,11 +4300,13 @@ function(anElement, attrName, attrValue, checkAttrNSURI) {
         //  another space. This allows use to strip all occurrences of
         //  attrValue.
         valMatcher = TP.rc(' ?' + attrValue + ' ?', 'g');
-        TP.elementSetAttribute(
-                        anElement,
-                        attrName,
-                        existingWholeValue.strip(valMatcher),
-                        checkAttrNSURI);
+        val = existingWholeValue.strip(valMatcher);
+
+        if (TP.isEmpty(val) && TP.notFalse(removeEmptyAttr)) {
+            TP.elementRemoveAttribute(anElement, attrName, checkAttrNSURI);
+        } else {
+            TP.elementSetAttribute(anElement, attrName, val, checkAttrNSURI);
+        }
     }
 
     return anElement;
