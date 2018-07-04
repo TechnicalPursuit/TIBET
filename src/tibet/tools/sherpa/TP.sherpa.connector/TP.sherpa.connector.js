@@ -695,6 +695,12 @@ function() {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
+    var srcTPElement,
+        destTPElement;
+
+    srcTPElement = TP.wrap(this.get('$srcElement'));
+    destTPElement = TP.wrap(this.get('$destElement'));
+
     this.hideConnectorDest();
     this.hideConnector();
 
@@ -702,7 +708,11 @@ function() {
     this.set('$destElement', null);
 
     //  Signal that a connection session has terminated.
-    this.signal('SherpaConnectTerminate');
+    this.signal('SherpaConnectTerminate',
+                TP.hc('sourceElement',
+                            srcTPElement,
+                        'destinationElement',
+                            destTPElement));
 
     return this;
 });
