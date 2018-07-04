@@ -410,18 +410,13 @@ function(aSignal) {
     //  next drag session.
     this.set('$dragOrientation', TP.sherpa.connector.NO_ORIENTATION);
 
-    //  Grab the current source element and inform it that the connector did
-    //  stop.
+    //  Grab the current source element
     srcTPElement = this.$get('$srcTPElement');
-    srcTPElement.connectorSessionDidStop();
 
+    //  Grab the current destination element
     destTPElement = this.$get('$destTPElement');
     if (TP.isValid(destTPElement)) {
         //  There was a valid connection destination.
-
-        //  Grab the current destination element and inform it that the
-        //  connector did stop.
-        destTPElement.connectorSessionDidStop();
 
         //  Signal that the connection session was completed.
         destTPElement.signal('SherpaConnectCompleted',
@@ -434,6 +429,16 @@ function(aSignal) {
     }
 
     this.stopConnecting();
+
+    //  Inform the current source element that the connector did stop.
+    srcTPElement.connectorSessionDidStop();
+
+    if (TP.isValid(destTPElement)) {
+        //  There was a valid connection destination.
+
+        //  Inform the current destination element that the connector did stop.
+        destTPElement.connectorSessionDidStop();
+    }
 
     return this;
 });
