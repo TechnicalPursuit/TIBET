@@ -5320,67 +5320,6 @@ function(anElement, attrName, attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementReplaceAttributeValue',
-function(anElement, attrName, oldValue, newValue) {
-
-    /**
-     * @method elementReplaceAttributeValue
-     * @summary Replaces the old attribute value with the new attribute value
-     *     in the supplied element.
-     * @param {Element} anElement The element to remove the attribute value
-     *     from.
-     * @param {String} attrName The name of the attribute to replace the value
-     *     in.
-     * @param {String} oldValue The old value to replace in the attribute's
-     *     value.
-     * @param {String} newValue The new value to put in place of the old value
-     *     in the attribute's value.
-     * @exception TP.sig.InvalidElement
-     * @exception TP.sig.InvalidString
-     * @returns {Element} The element.
-     */
-
-    var wholeValue,
-        oldValueRegExp;
-
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
-    }
-
-    if (TP.isEmpty(oldValue)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
-    }
-
-    //  when being asked to make the new value empty we're really not
-    //  replacing, we're removing
-    if (TP.isEmpty(newValue)) {
-        //  TODO: Code here??
-        void 0;
-    }
-
-    //  If there was no prior value, then just set the attribute to the new
-    //  value and return.
-    if (TP.isEmpty(wholeValue =
-                    TP.elementGetAttribute(anElement, attrName, true))) {
-        TP.elementSetAttribute(anElement, attrName, newValue, true);
-
-        return anElement;
-    }
-
-    //  NOTE: The RegExp here makes sure that the old value is either
-    //  first, last or is surrounded by one character of whitespace.
-    oldValueRegExp = TP.rc('(^|\\s)' + oldValue + '(\\s|$)');
-
-    wholeValue = wholeValue.replace(oldValueRegExp,
-                                            '$1' + newValue + '$2');
-
-    TP.elementSetAttribute(anElement, attrName, wholeValue, true);
-
-    return anElement;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('elementRemoveClass',
 function(anElement, className) {
 
