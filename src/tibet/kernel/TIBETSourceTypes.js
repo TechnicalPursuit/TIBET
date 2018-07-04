@@ -36,8 +36,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -59,8 +60,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */
@@ -89,8 +91,9 @@ function(aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -129,8 +132,9 @@ function(aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */
@@ -263,8 +267,9 @@ function(aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -401,8 +406,9 @@ function(aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */
@@ -1464,8 +1470,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -1590,8 +1597,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */
@@ -1723,8 +1731,9 @@ function(aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -1781,8 +1790,9 @@ function(aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */
@@ -2778,8 +2788,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -2886,8 +2897,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */
@@ -2999,8 +3011,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to add the observation, false otherwise.
      */
@@ -3134,8 +3147,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
      *     for.
-     * @param {Function|String} aPolicy An observation policy, such as 'capture'
-     *     or a specific function to manage the observe process. IGNORED.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
      * @returns {Boolean} True if the observer wants the main notification
      *     engine to remove the observation, false otherwise.
      */

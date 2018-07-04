@@ -6815,7 +6815,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
      * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
      *     to ignore from the origin(s).
      * @param {Function} aHandler The specific handler to turn off, if any.
-     * @param {Function} aPolicy The policy if any. Should be 'capture' to
+     * @param {Function} aPolicy The policy if any. Should be TP.CAPTURING to
      *     remove capturing handlers. Default is non-capturing.
      * @returns {TP.sig.SignalMap} The receiver.
      */
@@ -6986,7 +6986,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
     if (!TP.isCallable(policy)) {
         if (TP.isCallable(TP.sig.SignalMap[policy])) {
             policy = TP.sig.SignalMap[policy];
-        } else if (TP.isString(policy) && policy.toLowerCase() === 'capture') {
+        } else if (TP.isString(policy) && policy === TP.CAPTURING) {
             policy = TP.sig.SignalMap.REMOVE_CAPTURING;
         } else {
             policy = TP.sig.SignalMap.REMOVE_NONCAPTURING;
@@ -7062,7 +7062,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
      *     to observe from the origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
      *     for.
-     * @param {Function} aPolicy The policy if any. Should be 'capture' to
+     * @param {Function} aPolicy The policy if any. Should be TP.CAPTURING to
      *     configure a capturing handler. Default is non-capturing.
      * @returns {TP.sig.SignalMap} The receiver.
      */
@@ -7243,7 +7243,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
     if (!TP.isCallable(policy)) {
         if (TP.isCallable(TP.sig.SignalMap[policy])) {
             policy = TP.sig.SignalMap[policy];
-        } else if (TP.isString(policy) && policy.toLowerCase() === 'capture') {
+        } else if (TP.isString(policy) && policy === TP.CAPTURING) {
             policy = TP.sig.SignalMap.REGISTER_CAPTURING;
         } else {
             policy = TP.sig.SignalMap.REGISTER_NONCAPTURING;
