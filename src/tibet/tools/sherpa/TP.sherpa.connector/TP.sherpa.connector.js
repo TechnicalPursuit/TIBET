@@ -333,11 +333,8 @@ function(aSignal) {
 
         if (TP.isValid(currentDestTPElement)) {
             //  Signal that the connector is no longer over a valid destination.
-            this.signal('SherpaConnectTargetOut',
-                        TP.hc('sourceElement',
-                                    srcTPElement,
-                                'destinationElement',
-                                    currentDestTPElement));
+            currentDestTPElement.signal('SherpaConnectTargetOut',
+                                        TP.hc('sourceElement', srcTPElement));
         }
 
         //  No successful destination - make sure to null out destTPElement.
@@ -372,9 +369,8 @@ function(aSignal) {
             this.showConnectorDestOver(newDestElement);
 
             //  Signal that the connector is over a valid destination.
-            this.signal('SherpaConnectTargetOver',
-                        TP.hc('sourceElement', srcTPElement,
-                                'destinationElement', newDestTPElement));
+            newDestTPElement.signal('SherpaConnectTargetOver',
+                                        TP.hc('sourceElement', srcTPElement));
 
             //  Got a successful destination.
             this.set('$destTPElement', newDestTPElement);
@@ -428,15 +424,13 @@ function(aSignal) {
         destTPElement.connectorSessionDidStop();
 
         //  Signal that the connection session was completed.
-        this.signal('SherpaConnectCompleted',
-                    TP.hc('sourceElement', srcTPElement,
-                            'destinationElement', destTPElement));
+        destTPElement.signal('SherpaConnectCompleted',
+                                TP.hc('sourceElement', srcTPElement));
     } else {
         //  Otherwise, there was no connection destination.
 
         //  Signal that the connection session was cancelled.
-        this.signal('SherpaConnectCancelled',
-                    TP.hc('sourceElement', srcTPElement));
+        srcTPElement.signal('SherpaConnectCancelled');
     }
 
     this.stopConnecting();
@@ -722,13 +716,12 @@ TP.sig.Signal.defineSubtype('SherpaConnectSignal');
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectInitiate');
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectTerminate');
 
-TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectCancelled');
-TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectCompleted');
-
-TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectFailed');
-TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectSucceeded');
-
 TP.sig.SherpaConnectSignal.defineSubtype('SherpaConnectTargetSignal');
+TP.sig.SherpaConnectTargetSignal.Type.defineAttribute(
+                                            'defaultPolicy', TP.DOM_FIRING);
+
+TP.sig.SherpaConnectTargetSignal.defineSubtype('SherpaConnectCancelled');
+TP.sig.SherpaConnectTargetSignal.defineSubtype('SherpaConnectCompleted');
 
 TP.sig.SherpaConnectTargetSignal.defineSubtype('SherpaConnectTargetOver');
 TP.sig.SherpaConnectTargetSignal.defineSubtype('SherpaConnectTargetOut');
