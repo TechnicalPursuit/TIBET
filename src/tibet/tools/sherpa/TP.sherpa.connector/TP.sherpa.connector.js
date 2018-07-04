@@ -66,7 +66,7 @@ function(aSignal) {
      *     signal.
      * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which will be used
      *     to compute a valid connector destination.
-     * @returns {TP.dom.ElementNode} The element to use as a connector
+     * @returns {TP.dom.ElementNode|null} The element to use as a connector
      *     destination.
      */
 
