@@ -1,0 +1,29 @@
+{
+    "type": "flow",
+    "name": "templatemail",
+    "owner": "Team TIBET",
+    "tasks": {
+        "structure": "sequence",
+        "sequence": [{
+            "task": "templater",
+            "guards": [{
+                "test": "/TIBET/i.test('\{{params.stdin}}')",
+                "state": "$$failed"
+            }]
+        }, {
+            "task": "smtp",
+            "params": {
+                "html": "\{{params.text}}"
+            },
+            "stdio": {
+                "result": "text"
+            },
+            "guards": [{
+                "test": "'\{{job._id}}' != ''"
+            }]
+        }]
+    },
+    "params": {
+        "//multi-task": "params go here by task name"
+    }
+}

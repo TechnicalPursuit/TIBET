@@ -276,13 +276,15 @@
          */
         acceptNextTask = function(job) {
             var tasks,
+                taskdef,
                 taskname,
                 fullname;
 
             tasks = getNextTasks(job);
 
-            taskname = tasks[0];
-            if (taskname) {
+            taskdef = tasks[0];
+            if (taskdef) {
+                taskname = taskdef.task;
                 fullname = taskname + '::' + job.owner;
                 retrieveTask(job, taskname, job.owner).then(function(task) {
                     if (!task) {
@@ -292,12 +294,14 @@
                         return;
                     }
 
+                    task.taskdef = taskdef;
                     task.task_index = tasks.task_index;
                     acceptTask(job, task);
                 }).catch(function(err) {
                     logger.error(job,
                         'error: ' + err.message +
                         ' fetching/accepting task: ' + fullname);
+                    logger.error(err);
                 });
             } else if (!isJobComplete(job)) {
                 //  No next task or last task failed so we have an empty Array.
@@ -313,7 +317,6 @@
             var step,
                 plugin,
                 runner,
-                guard,
                 state;
 
             //  See if the task uses a different plugin for require().
@@ -330,7 +333,13 @@
 
             //  Accepting a task means copying it into the steps list and
             //  putting our process.pid on it along with state info as needed.
-            step = JSON.parse(JSON.stringify(task));
+            try {
+                step = JSON.parse(JSON.stringify(task));
+            } catch (e) {
+                logger.error(job, 'error copying task: ' +
+                    e.message);
+                return;
+            }
             step.pid = process.pid;
             step.start = Date.now();
             step.index = job.steps.length;
@@ -338,23 +347,26 @@
             job.state = task.name + '-' + job.steps.length;
 
             step.params = prepareParams(job, step, task);
-
             //  If the task has a guard expression we need to evaluate that.
             //  When it's true we continue processing with a status of ready but
             //  when it's false we set the status to skipped for that task.
             state = '$$ready';
-            if (job.guards) {
-                guard = job.guards[job.state] || job.guards[task.name];
-                if (TDS.notEmpty(guard)) {
-                    if (!TWS.Evaluator.evaluate(guard,
-                            {
-                                job: job,
-                                step: step,
-                                params: step.params
-                            })) {
-                        state = '$$skipped';
+            if (task.taskdef.guards) {
+                task.taskdef.guards.some(function(guard) {
+                    if (TDS.notEmpty(guard.test)) {
+                        if (!TWS.Evaluator.evaluate(guard.test,
+                                {
+                                    job: job,
+                                    step: step,
+                                    params: step.params
+                                })) {
+
+                            state = guard.state || '$$skipped';
+                            return true;
+                        }
                     }
-                }
+                    return false;
+                });
             }
             step.state = state;
 
@@ -387,6 +399,10 @@
                     code = 1;
                     break;
                 case '$$error':
+                    failed = true;
+                    code = 2;
+                    break;
+                case '$$failed':
                     failed = true;
                     code = 2;
                     break;
@@ -589,6 +605,12 @@
                             }
                             break;
 
+                        case '$$failed':
+
+                            //  NOTE no retry attempt here.
+                            cleanupTask(job, last);
+                            break;
+
                         case '$$skipped':
                             //  Fall through. Skipped at the task level is
                             //  equivalent to complete for this check.
@@ -686,15 +708,6 @@
                 job.retry = flow.retry;
                 job.timeout = flow.timeout;
 
-                //  Map any guards for the flow into the job.
-                if (flow.guards) {
-                    if (job.guards) {
-                        TDS.blend(job.guards, flow.guards);
-                    } else {
-                        job.guards = TDS.blend({}, flow.guards);
-                    }
-                }
-
                 //  Map any flow parameter defaults into the job. Additional
                 //  params processing will occur as steps are processed.
                 if (flow.params) {
@@ -741,7 +754,7 @@
             //  task is potentially in the works, or errored out so an error
             //  task is potentially going to be run. In all cases we allow all
             //  processes to compete for whatever work comes next.
-            if (['$$ready', '$$timeout', '$$error'].indexOf(job.state) !== -1) {
+            if (['$$ready', '$$timeout', '$$error', '$$failed'].indexOf(job.state) !== -1) {
                 return true;
             }
 
@@ -758,7 +771,7 @@
             //  Tasks don't proceed after being set to an error or timeout, they
             //  can retry but that creates a new task, it doesn't continue using
             //  the one that errored or timed out.
-            return ['$$skipped', '$$complete', '$$timeout', '$$error'].indexOf(
+            return ['$$skipped', '$$complete', '$$timeout', '$$error', '$$failed'].indexOf(
                 task.state) !== -1;
         };
 
@@ -768,7 +781,7 @@
             //  States like $$ready and $$active could wait forever, but other
             //  concrete states imply the task is finished in some form and can
             //  not be timed out (it might already be..but that's different).
-            if (['$$skipped', '$$complete', '$$error', '$$timeout'].indexOf(
+            if (['$$skipped', '$$complete', '$$error', '$$failed', '$$timeout'].indexOf(
                     task.state) !== -1) {
                 return false;
             }
@@ -787,7 +800,7 @@
         prepareParams = function(job, step, task) {
 
             var params,
-
+                result,
                 text,
                 template,
                 output;
@@ -802,14 +815,14 @@
             //  optionally provided in the task and/or flow definitions.
             params = remapStdioParams(job, step, {});
 
-            //  Blend in state-specific (foo-N) parameters
-            if (job.params && job.params[job.state]) {
-                TDS.blend(params, job.params[job.state]);
-            }
-
             //  Add in any 'general task' (foo) parameters
             if (job.params && job.params[task.name]) {
                 TDS.blend(params, job.params[task.name]);
+            }
+
+            //  Blend in any params defined in the actual task def of the flow.
+            if (task.taskdef && task.taskdef.params) {
+                TDS.blend(params, task.taskdef.params);
             }
 
             //  Blend in anything not specified by job/flow parameters.
@@ -817,29 +830,60 @@
                 TDS.blend(params, task.params);
             }
 
-//  TODO: try catch for bad compile/json etc. here...
-
             //  Now, we interpolate any parameter values that we find, using
             //  job, step and params as objects that can be referenced in those
             //  values.
 
             text = JSON.stringify(params);
 
-            template = TDS.template.compile(text);
-            output = template({
-                job: job,
-                step: step,
-                params: params
-            });
+            try {
+                template = TDS.template.compile(text);
+            } catch (e) {
+                logger.error('Error compiling template:\n\n' +
+                    text + '\n');
+                logger.error(e.message);
+                throw e;
+            }
+
+            try {
+                result = template({
+                    job: job,
+                    step: step,
+                    params: params
+                });
+            } catch (e) {
+                logger.error('Error invoking template:\n\n' +
+                    template + '\n');
+                logger.error(e.message);
+                throw e;
+            }
+
+            //  Embedded newlines in the template can cause JSON.parse to have
+            //  issues so make sure we don't have any after template execution.
+            result = result.replace(/\n/g, '\\n');
 
             //  Note here that we allow embedded templates, but because of
             //  escaping issues with JSON and Handlebars, we require these
             //  templates to be written with double square brackets ('[[...]]')
             //  and we need to replace them with double curly brackets
             //  ('{{...}}') before sending them further into the system.
-            output = output.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
+            output = result.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
 
-            params = JSON.parse(output);
+            try {
+                params = JSON.parse(output);
+            } catch (e) {
+                logger.error('Error parsing template:\n\n' + output);
+                logger.error(e.message);
+
+                //  Having JSON.parse problems? Dump the string.
+                if (/Unexpected token/i.test(e.message)) {
+                    output.split('').forEach(function(char, ndx) {
+                        logger.error(ndx + ' => ' + char);
+                    });
+                }
+
+                throw e;
+            }
 
             return params;
         };
@@ -1003,10 +1047,8 @@
         /*
          */
         remapStdioParams = function(job, step, params) {
-            var stdio,
-                stdout,
+            var stdout,
                 prior,
-                index,
                 map,
                 keys;
 
@@ -1019,16 +1061,7 @@
                 stdout = prior.stdout;
             }
 
-            stdio = job.tasks.stdio;
-            if (!stdio) {
-                return params;
-            }
-
-            //  We're looking for any remapping data for the stdout of the
-            //  prior step, so look to that step for its index.
-            index = prior.task_index;
-
-            map = stdio[index];
+            map = step.taskdef.stdio;
             if (!map) {
                 return params;
             }
@@ -1173,7 +1206,14 @@
 
             //  Create a new step instance, clearing any state etc. and dropping
             //  the retry count by 1.
-            retryStep = JSON.parse(JSON.stringify(task));
+            try {
+                retryStep = JSON.parse(JSON.stringify(task));
+            } catch (e) {
+                logger.error(job, 'error copying task: ' +
+                    e.message);
+
+                return;
+            }
             retryStep.state = '$$ready';
             retryStep.start = Date.now();
             retryStep.end = undefined;
@@ -1298,6 +1338,16 @@
             files = sh.ls(taskdir);
             files.sort().forEach(function(file) {
                 var taskMeta;
+
+                //  Ignore directories
+                if (TDS.shell.test('-d', path.join(taskdir, file))) {
+                    return;
+                }
+
+                //  Ignore files that aren't js source
+                if (!/\./.test(file)) {
+                    return;
+                }
 
                 name = file.slice(0, file.lastIndexOf('.'));
 
@@ -1524,6 +1574,14 @@
                         job = JSON.parse(body);
                     } catch (e) {
                         res.status(400).send(e.message);
+
+                        //  Having JSON.parse problems? Dump the string.
+                        if (/Unexpected token/i.test(e.message)) {
+                            body.split('').forEach(function(char, ndx) {
+                                logger.error(ndx + ' => ' + char);
+                            });
+                        }
+
                         return;
                     }
                     break;
