@@ -286,7 +286,12 @@
             if (taskdef) {
                 taskname = taskdef.task;
                 fullname = taskname + '::' + job.owner;
+                //  NOTE we do NOT pass 'fullname' here, just task name. This
+                //  lets us search for default/shared implementations in
+                //  addition to any owner-specific task.
                 retrieveTask(job, taskname, job.owner).then(function(task) {
+                    var blended;
+
                     if (!task) {
                         logger.error(job,
                             'missing task: ' + fullname);
@@ -294,9 +299,15 @@
                         return;
                     }
 
-                    task.taskdef = taskdef;
-                    task.task_index = tasks.task_index;
-                    acceptTask(job, task);
+                    //  Create a properly configured task entry that uses the
+                    //  flow taskdef as the baseline and then anything new from
+                    //  the task instance (flow params etc. override task).
+                    blended = {};
+                    blended.task_index = tasks.task_index;
+                    blended = TDS.blend(blended, taskdef);
+                    blended = TDS.blend(blended, task);
+
+                    acceptTask(job, blended);
                 }).catch(function(err) {
                     logger.error(job,
                         'error: ' + err.message +
@@ -351,8 +362,8 @@
             //  When it's true we continue processing with a status of ready but
             //  when it's false we set the status to skipped for that task.
             state = '$$ready';
-            if (task.taskdef.guards) {
-                task.taskdef.guards.some(function(guard) {
+            if (task.guards) {
+                task.guards.some(function(guard) {
                     if (TDS.notEmpty(guard.test)) {
                         if (!TWS.Evaluator.evaluate(guard.test,
                                 {
@@ -820,11 +831,6 @@
                 TDS.blend(params, job.params[task.name]);
             }
 
-            //  Blend in any params defined in the actual task def of the flow.
-            if (task.taskdef && task.taskdef.params) {
-                TDS.blend(params, task.taskdef.params);
-            }
-
             //  Blend in anything not specified by job/flow parameters.
             if (task.params) {
                 TDS.blend(params, task.params);
@@ -1061,7 +1067,7 @@
                 stdout = prior.stdout;
             }
 
-            map = step.taskdef.stdio;
+            map = step.stdio;
             if (!map) {
                 return params;
             }
