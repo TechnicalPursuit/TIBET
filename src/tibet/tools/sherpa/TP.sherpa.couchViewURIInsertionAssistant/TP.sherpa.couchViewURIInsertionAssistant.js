@@ -48,7 +48,7 @@ function(anObject) {
      *     proceed without taking any action).
      * @param {TP.sig.DialogCancel} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.tsh.couchViewURIInsertionAssistant} The receiver.
+     * @returns {TP.sherpa.couchViewURIInsertionAssistant} The receiver.
      */
 
     var modelURI;
@@ -85,7 +85,7 @@ function(anObject) {
      *     proceed by taking the default action).
      * @param {TP.sig.DialogOk} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.tsh.couchViewURIInsertionAssistant} The receiver.
+     * @returns {TP.sherpa.couchViewURIInsertionAssistant} The receiver.
      */
 
     var modelURI,

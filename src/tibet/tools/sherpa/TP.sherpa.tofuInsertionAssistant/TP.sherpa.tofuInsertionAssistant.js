@@ -50,7 +50,7 @@ function(anObject) {
      *     proceed without taking any action).
      * @param {TP.sig.DialogCancel} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.tsh.tofuInsertionAssistant} The receiver.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
     var modelURI;
@@ -87,7 +87,7 @@ function(anObject) {
      *     proceed by taking the default action).
      * @param {TP.sig.DialogOk} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.tsh.tofuInsertionAssistant} The receiver.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
     var modelURI,
@@ -352,7 +352,7 @@ function(aSignal) {
      * @method handleValueChange
      * @summary Handles when the user changes the value of the underlying model.
      * @param {ValueChange} aSignal The signal that caused this handler to trip.
-     * @returns {TP.tsh.tofuInsertionAssistant} The receiver.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
     var result,
