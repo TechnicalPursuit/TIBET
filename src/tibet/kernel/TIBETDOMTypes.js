@@ -3490,6 +3490,13 @@ function(aDocument) {
         return this;
     }
 
+    //  If the Sherpa is loaded, we turn *off* processing of DOM mutations so
+    //  that changes to recasting elements below will not propagate into source
+    //  documents.
+    if (TP.sys.hasFeature('sherpa')) {
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', false);
+    }
+
     //  Compute the CSS query path, indicating that we want a path that will
     //  find both 'deep elements' (i.e. elements even under other elements of
     //  this same type) and compiled representations of this element.
