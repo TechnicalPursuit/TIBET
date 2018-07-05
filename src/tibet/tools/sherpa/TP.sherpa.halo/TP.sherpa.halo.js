@@ -22,6 +22,7 @@ TP.sherpa.Element.defineSubtype('halo');
 
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
 TP.sherpa.halo.Inst.defineAttribute('$isRecasting');
+TP.sherpa.halo.Inst.defineAttribute('$wasFocused');
 
 TP.sherpa.halo.Inst.defineAttribute('$lastTargetTPElem');
 
@@ -738,7 +739,7 @@ function(aSignal) {
     var wasFocused,
         recastTPNode;
 
-    wasFocused = this.isFocused();
+    wasFocused = this.get('$wasFocused');
 
     //  Blur ourself. This will remove any focusing that might exist on previous
     //  DOM content that is now gone. Note that we do *not* check here whether
@@ -778,6 +779,7 @@ function(aSignal) {
      */
 
     this.set('$isRecasting', true);
+    this.set('$wasFocused', this.isFocused());
 
     return this;
 });
