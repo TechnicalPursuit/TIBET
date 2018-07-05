@@ -16,7 +16,7 @@ sherpa|templatedTagContextMenuContent {
 
     min-width: auto;
 
-    overflow: hidden;
+    overflow: auto;
 }
 
 sherpa|templatedTagContextMenuContent > ul {
