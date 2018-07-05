@@ -470,8 +470,8 @@ function(anObj) {
 
     signalsObj = TP.ac();
 
-    //  Build a list of the native events that most 'interactive' elements respond
-    //  to.
+    //  Build a list of the native events that most 'interactive' elements
+    //  respond to.
     nativeEventsData = TP.ac(
             'blur',
             'cancel',       //  dialog element
@@ -513,7 +513,7 @@ function(anObj) {
 
     //  Set the resource of the types URI to the computed object containing our
     //  types.
-    signalsURI.setResource(signalsObj);
+    signalsURI.setResource(signalsObj, TP.hc('signalChange', true));
 
     //  ---
 
@@ -527,7 +527,7 @@ function(anObj) {
 
     //  Set the resource of the types URI to the computed object containing our
     //  types.
-    handlersURI.setResource(handlersObj);
+    handlersURI.setResource(handlersObj, TP.hc('signalChange', true));
 
     //  ---
 
