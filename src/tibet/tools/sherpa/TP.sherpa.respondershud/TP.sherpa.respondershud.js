@@ -183,8 +183,8 @@ function(aTPElement) {
             continue;
         }
 
-        //  Tricky part here is that if we're looking at a tag that
-        //  also has a controller we want to push both into list.
+        //  Tricky part here is that if we're looking at a tag that also has a
+        //  controller we want to push both into list.
         attr = node.getAttribute('tibet:ctrl');
         if (TP.notEmpty(attr)) {
             info.push(TP.ac(TP.lid(node, true), attr, 'elem'));

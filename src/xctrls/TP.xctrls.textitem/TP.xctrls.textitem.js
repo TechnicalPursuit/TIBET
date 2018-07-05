@@ -54,7 +54,7 @@ function(anElement, aSignal) {
      *     them to handle it.
      * @description At this level, we override this method because, if we're a
      *     descendant of a 'grouping element' (like TP.xctrls.itemgroup,
-     *     TP.xctrls.list, etc., then we return false, allowing the grouping
+     *     TP.xctrls.list, etc.), then we return false, allowing the grouping
      *     element to determine whether it's an opaque bubbler or not.
      *     Otherwise, we just callNextMethod, which uses our
      *     'opaqueBubblingSignalNames' list and/or a defined attribute on the
