@@ -38,6 +38,60 @@ TP.sherpa.signalConnectionAssistant.Inst.defineAttribute('generatedAttr',
 TP.sherpa.signalConnectionAssistant.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.signalConnectionAssistant.Type.defineMethod('showAssistant',
+function(assistantData) {
+
+    /**
+     * @method showAssistant
+     * @summary Shows the assistant, using the supplied data.
+     * @param {TP.core.Hash} assistantData The data that the assistant will use
+     *     to wire the signal source and target together. This hash should have
+     *     two slot: 'sourceTPElement', the TP.core.ElementNode that the signal
+     *     is going to originate from and 'destinationTarget', which is the
+     *     *type* of the target.
+     * @returns {TP.meta.sherpa.signalConnectionAssistant} The receiver.
+     */
+
+    var assistantContentTPElem,
+        dialogPromise;
+
+    //  Grab the TP.sherpa.signalConnectionAssistant type's template.
+    assistantContentTPElem =
+        TP.sherpa.signalConnectionAssistant.getResourceElement(
+                        'template',
+                        TP.ietf.mime.XHTML);
+
+    //  Open a dialog with the connection assistant's content.
+    dialogPromise = TP.dialog(
+        TP.hc(
+            'dialogID', 'ConnectionAssistantDialog',
+            'isModal', true,
+            'title', 'Make a connection',
+            'templateContent', assistantContentTPElem));
+
+    //  After the dialog is showing, set the assistant parameters on the content
+    //  object from those defined in the original signal's payload.
+    dialogPromise.then(
+        function(aDialogTPElem) {
+            var contentTPElem;
+
+            contentTPElem = aDialogTPElem.get('bodyGroup').
+                                        getFirstChildElement();
+
+            //  Pass along the insertion position and the peer element
+            //  as the insertion point to the dialog info.
+            contentTPElem.set('data', assistantData);
+
+            return;
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

@@ -731,16 +731,14 @@ function(aSignal) {
      */
 
     var data,
+
         srcTPElem,
         destTPElem,
 
         indexInData,
         itemData,
 
-        target,
-
-        assistantContentTPElem,
-        dialogPromise;
+        target;
 
     //  Grab our data.
     data = this.get('data');
@@ -764,39 +762,10 @@ function(aSignal) {
     //  in the Array.
     target = TP.sys.getTypeByName(itemData.at(1));
 
-    //  Grab the TP.sherpa.signalConnectionAssistant type's template.
-    assistantContentTPElem =
-        TP.sherpa.signalConnectionAssistant.getResourceElement(
-                        'template',
-                        TP.ietf.mime.XHTML);
-
-    //  Open a dialog with the connection assistant's content.
-    dialogPromise = TP.dialog(
-        TP.hc(
-            'dialogID', 'ConnectionAssistantDialog',
-            'isModal', true,
-            'title', 'Make a connection',
-            'templateContent', assistantContentTPElem));
-
-    //  After the dialog is showing, set the assistant parameters on the content
-    //  object from those defined in the original signal's payload.
-    dialogPromise.then(
-        function(aDialogTPElem) {
-            var contentTPElem;
-
-            contentTPElem = aDialogTPElem.get('bodyGroup').
-                                        getFirstChildElement();
-
-            //  Pass along the insertion position and the peer element
-            //  as the insertion point to the dialog info.
-            contentTPElem.set('data',
-                TP.hc(
-                    'sourceTPElement', srcTPElem,
-                    'destinationTarget', target
-                ));
-
-            return;
-        });
+    //  Show the assistant.
+    TP.sherpa.signalConnectionAssistant.showAssistant(
+                TP.hc('sourceTPElement', srcTPElem,
+                        'destinationTarget', target));
 
     return this;
 });
