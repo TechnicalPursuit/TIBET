@@ -1179,7 +1179,9 @@ function() {
     var editor,
         readyHandler,
 
-        attrVal;
+        attrVal,
+
+        panelBox;
 
     editor = this.get('editor');
 
@@ -1228,8 +1230,11 @@ function() {
         }
     }
 
-    //  Start with the panel box switched to the 'data' panel.
-    this.get('panelBox').set('value', 'data');
+    //  If we have a panel box, start with it switched to the 'data' panel.
+    panelBox = this.get('panelBox');
+    if (!TP.isEmptyArray(panelBox)) {
+        panelBox.set('value', 'data');
+    }
 
     return this;
 });
