@@ -162,6 +162,17 @@ TP.sherpa.IDE.Inst.defineAttribute('shouldProcessDOMMutations');
 //  whether or not to update the source DOM of the current UI canvas.
 TP.sherpa.IDE.Inst.defineAttribute('$shouldProcessTimeout');
 
+//  A hash of Functions (keyed by 'connection vend type') that 'collect'
+//  elements that should have that vend type added to their 'connection accept
+//  type' dynamically when a connector session starts and removed when it ends.
+TP.sherpa.IDE.Inst.defineAttribute('connectorCollectors');
+
+//  A target element that would have had a 'tibet:nodragtrapping' attribute on
+//  it when the connector session started, but needed to be removed to make the
+//  DOMDrag* signals for connectors work. This needs to be tracked and put back
+//  when the connector session has ended.
+TP.sherpa.IDE.Inst.defineAttribute('$nodragtrapTarget');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -767,8 +778,7 @@ function(aSignal) {
 
     var world,
         currentScreenTPWin,
-
-        canvasDoc;
+        currentCanvasDoc;
 
     //  Set up managed mutation observer machinery that uses our
     //  'processUICanvasMutationRecords' method to manage changes to the UI
@@ -782,19 +792,37 @@ function(aSignal) {
         return this;
     }
 
+    //  Grab the Sherpa's 'world' element and get the currently viewed canvas
+    //  document from it.
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
     currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    currentCanvasDoc = currentScreenTPWin.getDocument();
 
     //  Make sure to refresh all of the descendant document positions for the UI
     //  canvas.
-    canvasDoc = currentScreenTPWin.getNativeDocument();
-    TP.nodeRefreshDescendantDocumentPositions(canvasDoc);
+    TP.nodeRefreshDescendantDocumentPositions(TP.unwrap(currentCanvasDoc));
 
     //  Grab the canvas document and observe mutation style change signals from
     //  it.
-    this.observe(TP.wrap(canvasDoc), 'TP.sig.MutationStyleChange');
+    this.observe(currentCanvasDoc, 'TP.sig.MutationStyleChange');
 
-    TP.activateMutationObserver(canvasDoc, 'BUILDER_OBSERVER');
+    //  Observe the canvas document for DOMDragDown and DOMMouseDown in a
+    //  *capturing* fashion (to avoid having issues with the standard platform's
+    //  implementation of mouse/drag down - in this way, we can preventDefault()
+    //  on these events before they get in the way).
+    this.observe(currentCanvasDoc,
+                    TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                    null,
+                    TP.CAPTURING);
+
+    //  Observe the canvas document for when connections are completed to
+    //  destination elements *within* the UI canvas. Panels in the HUD (which
+    //  are in the UI root document) will observe this method themselves for
+    //  connections made *to* elements in them.
+    this.observe(currentCanvasDoc, 'TP.sig.SherpaConnectCompleted');
+
+    TP.activateMutationObserver(TP.unwrap(currentCanvasDoc),
+                                'BUILDER_OBSERVER');
 
     return this;
 });
@@ -815,20 +843,33 @@ function(aSignal) {
     var world,
         currentScreenTPWin,
 
-        canvasDoc;
+        currentCanvasDoc;
 
     if (TP.sys.isTesting()) {
         return this;
     }
 
+    //  Grab the Sherpa's 'world' element and get the currently viewed canvas
+    //  document from it.
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
     currentScreenTPWin = world.get('selectedScreen').getContentWindow();
-
-    canvasDoc = currentScreenTPWin.getNativeDocument();
+    currentCanvasDoc = currentScreenTPWin.getDocument();
 
     //  Grab the canvas document and ignore mutation style change signals from
     //  it.
-    this.ignore(TP.wrap(canvasDoc), 'TP.sig.MutationStyleChange');
+    this.ignore(currentCanvasDoc, 'TP.sig.MutationStyleChange');
+
+    //  Ignore the canvas document for DOMDragDown and DOMMouseDown in a
+    //  *capturing* fashion (to match our observation in the DocumentLoaded
+    //  handler).
+    this.ignore(currentCanvasDoc,
+                TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                null,
+                TP.CAPTURING);
+
+    //  Ignore the canvas document for when connections are completed to
+    //  destination elements *within* the UI canvas.
+    this.ignore(currentCanvasDoc, 'TP.sig.SherpaConnectCompleted');
 
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
@@ -863,6 +904,52 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    phase: TP.CAPTURING
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('DOMMouseDown',
+function(aSignal) {
+
+    /**
+     * @method handleMouseDown
+     * @summary Handles notification of when the receiver might be starting a
+     *     connection session.
+     * @param {TP.sig.DOMMouseDown} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var target;
+
+    //  If both the Shift and Alt (Option) keys are down.
+    if (aSignal.getShiftKey() && aSignal.getAltKey()) {
+
+        //  First, prevent default on the signal. If we're over something like
+        //  a text input, this is very important to prevent things like focusing
+        //  and selection.
+        aSignal.preventDefault();
+
+        //  Next, grab the target and, if it's an Element and has a
+        //  'tibet:nodragtrapping' attribute on it, remove that attribute and
+        //  track the fact that we had a target that had that attribute.
+        //  Controls like text input fields will have this attribute, because
+        //  during normal production operation we do *not* want to allow
+        //  TIBET-synthesized DOMDrag* signals to be originated from them. In
+        //  this case, though, the 'builder' aspect of the Sherpa is going to
+        //  override that.
+        target = aSignal.getTarget();
+        if (TP.isElement(target)) {
+            TP.elementRemoveAttribute(target, 'tibet:nodragtrapping', true);
+            this.$set('$nodragtrapTarget', target);
+        }
+    }
+
+    return this;
+}, {
+    phase: TP.CAPTURING
 });
 
 //  ------------------------------------------------------------------------
@@ -1257,6 +1344,189 @@ function(aSignal) {
     //  Remove the 'tibet:dontreload' attribute from the owner element so that
     //  it will now reload when its content changes.
     TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('SherpaConnectCompleted',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaConnectCompleted
+     * @summary Handles notifications of the fact that the Sherpa connector
+     *     successfully completed a connection.
+     * @param {TP.sig.SherpaConnectCompleted} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var srcTPElem,
+        destTPElem,
+
+        target;
+
+    srcTPElem = aSignal.at('sourceElement');
+    destTPElem = TP.wrap(aSignal.getTarget());
+
+    target = destTPElem.getType();
+
+    //  Show the assistant.
+    TP.sherpa.signalConnectionAssistant.showAssistant(
+                TP.hc('sourceTPElement', srcTPElem,
+                        'destinationTarget', target));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('SherpaConnectInitiate',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaConnectInitiate
+     * @summary Handles notifications of the fact that the Sherpa connector
+     *     initiated a connection session.
+     * @param {TP.sig.SherpaConnectInitiate} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var sourceTPElem,
+
+        collectors,
+
+        vendValue,
+        vendValues;
+
+    //  Grab the connector source element
+    sourceTPElem = aSignal.at('sourceElement');
+
+    //  Grab the values that determine what type of connection we're vending.
+    vendValue = sourceTPElem.getAttribute('sherpa:connectorvend');
+    vendValues = vendValue.split(' ');
+
+    //  Grab the target collectors for connection sessions.
+    collectors = this.get('connectorCollectors');
+
+    //  Iterate over each vending value, run the collection function and
+    //  manipulate the results.
+    vendValues.forEach(
+        function(aVendValue) {
+
+            var collector,
+                matchingNodes;
+
+            //  Grab the Function in the collectors according to the current
+            //  vend value and make sure it's a Function.
+            collector = collectors.at(aVendValue);
+            if (!TP.isCallable(collector)) {
+                return;
+            }
+
+            //  Run the Function, supplying the source element in case it wants
+            //  to use it for context.
+            matchingNodes = collector(sourceTPElem);
+
+            //  Iterate over each node that matched, which should be an Element,
+            //  and add the vend value to the 'sherpa:connectoraccept'
+            //  attribute.
+            matchingNodes.forEach(
+                function(aNode) {
+
+                    if (TP.isElement(aNode)) {
+                        TP.elementAddAttributeValue(aNode,
+                                                    'sherpa:connectoraccept',
+                                                    aVendValue,
+                                                    true);
+                    }
+                });
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('SherpaConnectTerminate',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaConnectTerminate
+     * @summary Handles notifications of the fact that the Sherpa connector
+     *     terminated a connection session.
+     * @param {TP.sig.SherpaConnectTerminate} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var noTrapTarget,
+
+        sourceTPElem,
+
+        collectors,
+
+        vendValue,
+        vendValues;
+
+    //  If we had a target that used to have a 'tibet:nodragtrapping' attribute
+    //  on it, we need to put that back now that the connector session is
+    //  terminating.
+    noTrapTarget = this.$get('$nodragtrapTarget');
+    if (TP.isValid(noTrapTarget)) {
+        TP.elementSetAttribute(noTrapTarget,
+                                'tibet:nodragtrapping',
+                                'true',
+                                true);
+        this.$set('$nodragtrapTarget', null);
+    }
+
+    //  Grab the connector source element
+    sourceTPElem = aSignal.at('sourceElement');
+
+    //  Grab the values that determine what type of connection we're vending.
+    vendValue = sourceTPElem.getAttribute('sherpa:connectorvend');
+    vendValues = vendValue.split(' ');
+
+    //  Grab the target collectors for connection sessions.
+    collectors = this.get('connectorCollectors');
+
+    //  Iterate over each vending value, run the collection function and
+    //  manipulate the results.
+    vendValues.forEach(
+        function(aVendValue) {
+
+            var collector,
+                matchingNodes;
+
+            //  Grab the Function in the collectors according to the current
+            //  vend value and make sure it's a Function.
+            collector = collectors.at(aVendValue);
+            if (!TP.isCallable(collector)) {
+                return;
+            }
+
+            //  Run the Function, supplying the source element in case it wants
+            //  to use it for context.
+            matchingNodes = collector(sourceTPElem);
+
+            //  Iterate over each node that matched, which should be an Element,
+            //  and remove the vend value from the 'sherpa:connectoraccept'
+            //  attribute.
+            matchingNodes.forEach(
+                function(aNode) {
+
+                    if (TP.isElement(aNode)) {
+                        TP.elementRemoveAttributeValue(
+                                            aNode,
+                                            'sherpa:connectoraccept',
+                                            aVendValue,
+                                            true);
+                    }
+                });
+        });
 
     return this;
 });
@@ -2049,8 +2319,11 @@ function() {
      */
 
     var win,
-        drawerElement,
         thisref,
+
+        connectorCollectors,
+
+        drawerElement,
         sherpaFinishSetupFunc,
 
         contentElem,
@@ -2069,6 +2342,61 @@ function() {
     win = this.get('vWin');
 
     thisref = this;
+
+    //  Build a hash of two 'connector collector' Functions that will be used to
+    //  select elements that should be enabled for that particular connector
+    //  type.
+    connectorCollectors = TP.hc(
+        'bindingsource',
+            function(sourceTPElem) {
+                var uiDoc,
+                    context;
+
+                //  For binding sources, if the source element is not in the
+                //  current UI canvas, then the context should be the UI canvas.
+                uiDoc = TP.sys.uidoc();
+                if (!uiDoc.contains(sourceTPElem)) {
+                    context = uiDoc;
+                } else {
+                    context = sourceTPElem;
+                }
+
+                return TP.byCSSPath('html|input', context, false, false);
+            },
+        'signalsource',
+            function(sourceTPElem) {
+
+                var result,
+                    uiDoc,
+                    node;
+
+                result = TP.ac();
+
+                //  For signal sources, if the source element is not in the
+                //  current UI canvas, then just return the empty Array.
+                uiDoc = TP.sys.uidoc();
+                if (!uiDoc.contains(sourceTPElem)) {
+                    return result;
+                }
+
+                //  Iterate up from the source element to it's document element,
+                //  collecting responders along the way.
+                node = sourceTPElem.getNativeNode();
+                while (TP.isElement(node)) {
+                    if (!TP.nodeIsResponder(node)) {
+                        node = node.parentNode;
+                        continue;
+                    }
+
+                    result.push(node);
+
+                    node = node.parentNode;
+                }
+
+                return result;
+            }
+    );
+    this.set('connectorCollectors', connectorCollectors);
 
     //  If we didn't show the IDE when we first started, the trigger has now
     //  been fired to show it.
@@ -2908,7 +3236,51 @@ function() {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
-    this.observe(TP.core.Mouse, 'TP.sig.DOMDragDown');
+    var world,
+        currentScreenTPWin,
+
+        currentCanvasDoc,
+        rootDoc,
+        docs,
+
+        connector;
+
+    //  Grab the Sherpa's 'world' element and get the currently viewed canvas
+    //  document from it.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    currentCanvasDoc = currentScreenTPWin.getDocument();
+
+    //  Grab the UI root document.
+    rootDoc = TP.sys.getUIRoot().getDocument();
+
+    //  Put both the root and the current canvas document into an Array and
+    //  configure that Array to be an origin set.
+    docs = TP.ac(rootDoc, currentCanvasDoc);
+    docs.isOriginSet(true);
+
+    //  Observe both documents for DOMDragDown and DOMMouseDown in a *capturing*
+    //  fashion (to avoid having issues with the standard platform's
+    //  implementation of mouse/drag down - in this way, we can preventDefault()
+    //  on these events before they get in the way).
+    this.observe(
+            docs,
+            TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+            null,
+            TP.CAPTURING);
+
+    //  Observe just the canvas document for when connections are completed to
+    //  destination elements *within* the UI canvas. Panels in the HUD (which
+    //  are in the UI root document) will observe this method themselves for
+    //  connections made *to* elements in them.
+    this.observe(currentCanvasDoc, 'TP.sig.SherpaConnectCompleted');
+
+    //  Observe the Sherpa's connector itself for connection initiation and
+    //  termination.
+    connector = TP.byId('SherpaConnector', this.get('vWin'));
+    this.observe(connector,
+                    TP.ac('TP.sig.SherpaConnectInitiate',
+                            'TP.sig.SherpaConnectTerminate'));
 
     return this;
 });

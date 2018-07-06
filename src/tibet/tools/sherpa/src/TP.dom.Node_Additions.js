@@ -264,6 +264,12 @@ function(aConnector) {
         return this;
     }
 
+    //  If the receiver's document is the UI canvas, then it could always be a
+    //  connector destination.
+    if (this.getDocument() === TP.sys.uidoc()) {
+        return this;
+    }
+
     return null;
 });
 
@@ -283,6 +289,12 @@ function(aConnector) {
      */
 
     if (this.hasAttribute('sherpa:connectorvend')) {
+        return this;
+    }
+
+    //  If the receiver's document is the UI canvas, then it could always be a
+    //  connector source.
+    if (this.getDocument() === TP.sys.uidoc()) {
         return this;
     }
 
