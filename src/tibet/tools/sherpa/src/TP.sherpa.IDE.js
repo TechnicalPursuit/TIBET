@@ -842,7 +842,7 @@ function(aSignal) {
 
     /**
      * @method handleDOMDragDown
-     * @summary Handles notification of when the receiver might need to start a
+     * @summary Handles notification of when the receiver might be starting a
      *     connection session.
      * @param {TP.sig.DOMDragDown} aSignal The TIBET signal which triggered
      *     this method.
