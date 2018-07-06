@@ -71,14 +71,16 @@
             }
 
             //  If the template reference is a file reference read the template
-            //  conntent from the file and set that as our template content.
+            //  content from the file and set that as our template content.
             if (params.template.startsWith('~')) {
                 templatePath = TDS.expandPath(params.template);
 
                 //  File has to reside _inside_ the project...
-                if (templatePath.indexOf(TDS.expandPath('~tds_templates')) !== 0) {
+                if (templatePath.indexOf(
+                        TDS.expandPath('~tds_templates')) !== 0) {
                     return TDS.Promise.reject(new Error(
-                        'Misconfigured templater task. Template outside project: ' +
+                        'Misconfigured templater task.' +
+                        ' Template outside project: ' +
                         templatePath));
                 }
 
