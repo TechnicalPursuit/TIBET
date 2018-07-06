@@ -5927,11 +5927,13 @@ function(anOrigin, aSignal, aPayload, aType) {
 
                 //  Always check whether we should continue. Any form of stop
                 //  propagation setting will cause responder signals to stop.
+                /* eslint-disable no-extra-parens */
                 if ((!shouldContinue && !responderIsOrigin) ||
                     sig.shouldStop() ||
                     sig.shouldStopImmediately()) {
                     return sig;
                 }
+                /* eslint-enable no-extra-parens */
             }
         }
     }
@@ -5958,11 +5960,13 @@ function(anOrigin, aSignal, aPayload, aType) {
 
         //  if any of the handlers at this origin "level" said to stop
         //  then we stop now before executing the bubbling handlers.
+        /* eslint-disable no-extra-parens */
         if ((!shouldContinue && !responderIsOrigin) ||
             sig.shouldStop() ||
             sig.shouldStopImmediately()) {
             return sig;
         }
+        /* eslint-enable no-extra-parens */
     }
 
     //  ---
@@ -5999,11 +6003,13 @@ function(anOrigin, aSignal, aPayload, aType) {
 
             //  Always check whether we should continue. Any form of stop
             //  propagation setting will cause responder signals to stop.
+            /* eslint-disable no-extra-parens */
             if ((!shouldContinue && !responderIsOrigin) ||
                 sig.shouldStop() ||
                 sig.shouldStopImmediately()) {
                 return sig;
             }
+            /* eslint-enable no-extra-parens */
         }
     }
 
