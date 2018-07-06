@@ -205,6 +205,12 @@
 
     //  ---
 
+    TDS.ifDev = function() {
+        return TDS.getEnv() === 'development';
+    };
+
+    //  ---
+
     TDS.ifTrace = function() {
         var level;
 

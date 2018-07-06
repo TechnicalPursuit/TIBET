@@ -242,6 +242,17 @@
             ].forEach(function(key) {
 
                 obj[key] = function(msg, metadata) {
+                    var level;
+
+                    //  Have these methods filter by log level if test is a
+                    //  valid function (e.g. ifDebug, ifTrace, etc)
+                    level = key.charAt(0).toUpperCase() + key.slice(1);
+                    if (typeof TDS['if' + level] === 'function') {
+                        if (!TDS['if' + level]()) {
+                            return;
+                        }
+                    }
+
                     switch (arguments.length) {
                         case 1:
                             TDS.logger[key](msg, data);

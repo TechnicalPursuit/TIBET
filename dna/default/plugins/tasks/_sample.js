@@ -19,7 +19,8 @@
     module.exports = function(options) {
         var app,
             logger,
-            TDS;
+            TDS,
+            meta;
 
         //  ---
         //  Intro
@@ -28,6 +29,13 @@
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
+
+        meta = {
+            comp: 'TWS',
+            type: 'task',
+            name: 'sample'
+        };
+        logger = logger.getContextualLogger(meta);
 
         //  ---
         //  Task
@@ -39,7 +47,7 @@
          */
         return function(job, step, params) {
 
-            TDS.ifDebug() ? logger.debug(TDS.beautify(step)) : 0;
+            logger.trace(TDS.beautify(step));
 
             //  ---
             //  Check task parameters

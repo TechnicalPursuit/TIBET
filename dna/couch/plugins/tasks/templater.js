@@ -32,9 +32,11 @@
         TDS = app.TDS;
 
         meta = {
-            type: 'TDS',
+            comp: 'TWS',
+            type: 'task',
             name: 'templater'
         };
+        logger = logger.getContextualLogger(meta);
 
         //  See if we have local extensions to the templating engine to process.
         try {
@@ -59,7 +61,7 @@
                 execTemplate,
                 promisifiedExec;
 
-            TDS.ifDebug() ? logger.debug(JSON.stringify(step), meta) : 0;
+            logger.trace(TDS.beautify(step));
 
             //  Ensure we have a template to process. This should be provided
             //  via the job parameters, not via any external input.

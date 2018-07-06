@@ -20,7 +20,8 @@
         var app,
             logger,
             TDS,
-            nodemailer;
+            nodemailer,
+            meta;
 
         //  ---
         //  Loadtime
@@ -29,6 +30,13 @@
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
+
+        meta = {
+            comp: 'TWS',
+            type: 'task',
+            name: 'mail-sendmail'
+        };
+        logger = logger.getContextualLogger(meta);
 
         nodemailer = require('nodemailer');
 
@@ -47,7 +55,7 @@
                 template,
                 send;
 
-            TDS.ifDebug() ? logger.debug(JSON.stringify(step)) : 0;
+            logger.trace(TDS.beautify(step));
 
             //  Basic sendmail option sanity check
             if (!params.transport) {
