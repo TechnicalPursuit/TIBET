@@ -28,6 +28,9 @@ TP.xctrls.table.Type.defineAttribute('opaqueBubblingSignalNames',
             'TP.sig.UIActivate',
             'TP.sig.UIDeactivate',
 
+            'TP.sig.UIDeselect',
+            'TP.sig.UISelect',
+
             'TP.sig.UIDisabled',
             'TP.sig.UIEnabled'
             ));
