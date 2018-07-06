@@ -6069,7 +6069,6 @@ function(target, signal) {
             }
 
             if (TP.canInvoke(responder, 'handle')) {
-                signal.setOrigin(target);
                 responder.handle(signal);
             } else {
                 return this.raise('InvalidController',
@@ -6111,7 +6110,6 @@ function(target, signal) {
                 lastType = type;
 
                 if (TP.canInvoke(responder, 'handle')) {
-                    signal.setOrigin(target);
                     responder.handle(signal);
                 } else {
                     this.raise('InvalidResponder',
@@ -6136,7 +6134,6 @@ function(target, signal) {
     if (type !== lastType) {
         responder = TP.wrap(target);
         if (TP.canInvoke(responder, 'handle')) {
-            signal.setOrigin(target);
             responder.handle(signal);
         } else {
             this.raise('InvalidResponder',
