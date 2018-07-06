@@ -5848,10 +5848,14 @@ function(anOrigin, aSignal, aPayload, aType) {
     var sig,
         target,
         origin,
+
         responders,
+
         i,
         len,
         responder,
+
+        responderIsOrigin,
         shouldContinue;
 
     if (TP.notValid(aSignal)) {
@@ -5909,6 +5913,13 @@ function(anOrigin, aSignal, aPayload, aType) {
             for (i = 0; i < len; i++) {
                 responder = responders.at(i);
 
+                //  We track here whether the currently processing responder and
+                //  origin are the same. If so, we ignore the value of the
+                //  shouldContinue flag, since if it is the origin itself that's
+                //  sending the signal (not a target 'under' it), we need to
+                //  continue executing its handlers.
+                responderIsOrigin = responder === origin;
+
                 //  Each responder is an element. We want to notify any
                 //  tibet:ctrl and tibet:tag found on the element.
                 shouldContinue = TP.sig.SignalMap.$notifyResponders(
@@ -5916,7 +5927,7 @@ function(anOrigin, aSignal, aPayload, aType) {
 
                 //  Always check whether we should continue. Any form of stop
                 //  propagation setting will cause responder signals to stop.
-                if (!shouldContinue ||
+                if ((!shouldContinue && !responderIsOrigin) ||
                     sig.shouldStop() ||
                     sig.shouldStopImmediately()) {
                     return sig;
@@ -5936,12 +5947,18 @@ function(anOrigin, aSignal, aPayload, aType) {
     if (TP.isValid(target) &&
         TP.nodeGetResponderElement(target, sig) === target) {
 
+        //  We track here whether the currently processing responder and origin
+        //  are the same. If so, we ignore the value of the shouldContinue flag,
+        //  since if it is the origin itself that's sending the signal (not a
+        //  target 'under' it), we need to continue executing its handlers.
+        responderIsOrigin = responder === origin;
+
         //  tibet:ctrl and tibet:tag found on the element.
         shouldContinue = TP.sig.SignalMap.$notifyResponders(target, sig);
 
         //  if any of the handlers at this origin "level" said to stop
         //  then we stop now before executing the bubbling handlers.
-        if (!shouldContinue ||
+        if ((!shouldContinue && !responderIsOrigin) ||
             sig.shouldStop() ||
             sig.shouldStopImmediately()) {
             return sig;
@@ -5969,13 +5986,20 @@ function(anOrigin, aSignal, aPayload, aType) {
         for (i = 0; i < len; i++) {
             responder = responders.at(i);
 
+            //  We track here whether the currently processing responder and
+            //  origin are the same. If so, we ignore the value of the
+            //  shouldContinue flag, since if it is the origin itself that's
+            //  sending the signal (not a target 'under' it), we need to
+            //  continue executing its handlers.
+            responderIsOrigin = responder === origin;
+
             //  Each responder is an element. We want to notify any tibet:ctrl
             //  and tibet:tag found on the element.
             shouldContinue = TP.sig.SignalMap.$notifyResponders(responder, sig);
 
             //  Always check whether we should continue. Any form of stop
             //  propagation setting will cause responder signals to stop.
-            if (!shouldContinue ||
+            if ((!shouldContinue && !responderIsOrigin) ||
                 sig.shouldStop() ||
                 sig.shouldStopImmediately()) {
                 return sig;
