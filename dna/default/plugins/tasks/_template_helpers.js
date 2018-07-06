@@ -20,7 +20,7 @@
 
     helpers = {
         /*
-         * Sample. See handlebars documentation for 'registerHandler' to create
+         * Sample. See handlebars documentation for 'registerHelper' to create
          * your own extensions to the handlebars templating engine.
         fluff: function(content) {
             return content;
