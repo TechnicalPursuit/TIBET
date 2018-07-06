@@ -31,6 +31,9 @@ TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 //  proceed further up the chain.
 TP.xctrls.panelbox.Type.defineAttribute('opaqueBubblingSignalNames',
         TP.ac(
+            'TP.sig.UIDeselect',
+            'TP.sig.UISelect',
+
             'TP.sig.UIDisabled',
             'TP.sig.UIEnabled'
             ));
