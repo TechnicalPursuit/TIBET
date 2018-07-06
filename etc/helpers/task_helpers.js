@@ -37,7 +37,6 @@
             type: 'plugin',
             name: 'tasks'
         };
-
         logger = options.logger.getContextualLogger(meta);
 
         safeEval = require('safe-eval');
@@ -186,8 +185,7 @@
                 params: params
             };
 
-            TDS.ifDebug() ?
-                logger.debug('submitting job data: ' + TDS.beautify(job)) : 0;
+            logger.debug('submitting job data: ' + TDS.beautify(job));
 
             db = TDS.getCouchDatabase({
                 db_name: TDS.cfg('tds.tasks.db_name'),
@@ -237,8 +235,7 @@
 
             //  Log the guard and optionally the data we'll use during any
             //  expansion that may be required.
-            logger.info('evaluating: ' + expression);
-            logger.debug('data: ' + TDS.beautify(data));
+            logger.debug('expanding: ' + expression, meta);
 
             try {
                 //  This pair effectively takes any field references to
@@ -248,7 +245,8 @@
                 expr = template(data);
 
                 //  Output the "expanded" expression we'll be evaluating.
-                logger.info('evaluating: ' + expr);
+                logger.debug('evaluating: ' + expr, meta);
+                logger.trace('w/params:\n' + TDS.beautify(data), meta);
 
                 try {
                     result = safeEval(expr);

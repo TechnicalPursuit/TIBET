@@ -20,13 +20,21 @@
         var app,
             logger,
             TDS,
-            AWS;
+            AWS,
+            meta;
 
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
 
         AWS = require('aws-sdk');
+
+        meta = {
+            comp: 'TWS',
+            type: 'task',
+            name: 's3-upload'
+        };
+        logger = logger.getContextualLogger(meta);
 
         //  ---
         //  Task
@@ -44,7 +52,7 @@
                 template,
                 body;
 
-            TDS.ifDebug() ? logger.debug(job, JSON.stringify(step)) : 0;
+            logger.trace(job, TDS.beautify(step));
 
             //  Basic option sanity check
             if (!params.auth) {

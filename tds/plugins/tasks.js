@@ -229,11 +229,13 @@
                     doc._rev = result[0]._rev;
                     return db.insertAsync(doc, params);
                 }).catch(function(err) {
-                    logger.error('Document update error: ' + err);
+                    logger.error('Document update error: ' + err.message);
+                    logger.debug(err);
                 });
             } else {
                 return db.insertAsync(doc, params).catch(function(err) {
-                    logger.error('Document insert error: ' + err);
+                    logger.error('Document insert error: ' + err.message);
+                    logger.debug(err);
                 });
             }
         };
@@ -312,7 +314,7 @@
                     logger.error(job,
                         'error: ' + err.message +
                         ' fetching/accepting task: ' + fullname);
-                    logger.error(err);
+                    logger.debug(err);
                 });
             } else if (!isJobComplete(job)) {
                 //  No next task or last task failed so we have an empty Array.
@@ -349,6 +351,7 @@
             } catch (e) {
                 logger.error(job, 'error copying task: ' +
                     e.message);
+                logger.debug(e);
                 return;
             }
             step.pid = process.pid;
@@ -448,6 +451,8 @@
             job.state = failed ? '$$failed' : '$$complete';
             job.exit = code;
             job.end = Date.now();
+
+            logger.debug(job, TDS.beautify(job));
 
             dbSave(job);
         };
@@ -689,7 +694,7 @@
          */
         initializeJob = function(job) {
 
-            logger.info(job, 'initializing');
+            logger.debug(job, 'initializing');
 
             //  Get the job's flow document. We need to copy the current task
             //  definition for the flow into the job instance.
@@ -900,8 +905,7 @@
          * @param {Object} change The follow library change descriptor.
          */
         processDocumentChange = function(change) {
-            TDS.ifDebug() ? logger.debug('CouchDB change:\n' +
-                TDS.beautify(JSON.stringify(change))) : 0;
+            logger.trace('CouchDB change:\n' + TDS.beautify(change));
 
             process.nextTick(function() {
                 TDS.workflow(change.doc);
@@ -971,7 +975,7 @@
             try {
                 runner(job, step, params).timeout(timeout).then(
                 function(result) {
-                    logger.info(job,
+                    logger.debug(job,
                         'step succeeded', stepMeta);
                 }).catch(
                 function(err) {
@@ -989,15 +993,12 @@
                             logger.error(job,
                                 'db update failed: ' +
                                 err.message, stepMeta);
-                            TDS.ifDebug() ? logger.debug(job,
-                                'step complete', stepMeta) : 0;
+                            logger.debug(job, 'step complete', stepMeta);
                             return;
                         }
 
-                        TDS.ifDebug() ? logger.debug(job,
-                            'db update succeeded', stepMeta) : 0;
-                        TDS.ifDebug() ? logger.debug(job,
-                            'step complete', stepMeta) : 0;
+                        logger.debug(job, 'db update succeeded', stepMeta);
+                        logger.debug(job, 'step complete', stepMeta);
                     });
 
                 }).catch(Promise.TimeoutError, function(err) {
@@ -1193,7 +1194,7 @@
          */
         retryJob = function(job) {
             //  TODO
-            logger.info(job,
+            logger.debug(job,
                 'retryJob');
 
             return;
@@ -1285,7 +1286,7 @@
                 case '$$paused':
                     //  No work to do..at present. Job is paused. Needs state
                     //  change to trigger a new review and job continuation.
-                    logger.info(job, 'paused');
+                    logger.warn(job, 'paused');
                     break;
                 case '$$failed':
                     //  Failed means missing task or error handler, or a
@@ -1381,7 +1382,7 @@
                 } catch (e) {
                     logger.error('Error loading task: ' + name);
                     logger.error(e.message);
-                    TDS.ifDebug() ? logger.debug(e.stack) : 0;
+                    logger.debug(e.stack);
                     return;
                 }
             });
@@ -1439,8 +1440,7 @@
                 if (regex) {
                     result = regex.test(doc._id);
                     if (!result) {
-                        TDS.ifDebug() ? logger.debug('Filtering change: ' +
-                            TDS.beautify(JSON.stringify(doc))) : 0;
+                        logger.debug('Filtering change: ' + TDS.beautify(doc));
                     }
                     return result;
                 }

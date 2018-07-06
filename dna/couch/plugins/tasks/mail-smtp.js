@@ -20,11 +20,19 @@
         var app,
             logger,
             TDS,
-            nodemailer;
+            nodemailer,
+            meta;
 
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
+
+        meta = {
+            comp: 'TWS',
+            type: 'task',
+            name: 'mail-smtp'
+        };
+        logger = logger.getContextualLogger(meta);
 
         nodemailer = require('nodemailer');
 
@@ -46,9 +54,7 @@
                 template,
                 send;
 
-            logger.info(job, JSON.stringify(step));
-
-            TDS.ifDebug() ? logger.debug(job, JSON.stringify(step)) : 0;
+            logger.trace(job, TDS.beautify(step));
 
             //  Basic SMTP option sanity check. These params should include the
             //  service and auth (user/pass) data for the SMTP config.
