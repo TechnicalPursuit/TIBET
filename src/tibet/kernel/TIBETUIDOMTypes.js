@@ -39,12 +39,6 @@ TP.dom.UIElementNode.Type.defineAttribute('resourcesInlined');
 //  The Array of loaded stylesheet element GIDs
 TP.dom.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 
-//  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
-//  bubble outside of themselves. This prevents whole chunks of GUI from being
-//  inadvertently disabled such that they can never be enabled again.
-TP.dom.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
-        TP.ac('TP.sig.UIDisabled', 'TP.sig.UIEnabled'));
-
 //  The attributes that are toggleable on this type and subtypes. By default,
 //  no states are toggleable.
 TP.dom.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
@@ -7312,6 +7306,11 @@ function(aSignal) {
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
 
+    //  By default, all GUI elements do not allow UIDisabled/UIEnabled signals
+    //  to bubble outside of themselves. This prevents whole chunks of GUI from
+    //  being inadvertently disabled such that they can never be enabled again.
+    aSignal.stopPropagation();
+
     return this;
 });
 
@@ -7358,6 +7357,11 @@ function(aSignal) {
     //  'on:UIEnabled'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
+
+    //  By default, all GUI elements do not allow UIDisabled/UIEnabled signals
+    //  to bubble outside of themselves. This prevents whole chunks of GUI from
+    //  being inadvertently disabled such that they can never be enabled again.
+    aSignal.stopPropagation();
 
     return this;
 });
