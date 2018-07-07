@@ -176,6 +176,80 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentCopyTextToClipboard',
+function(aDocument, aText) {
+
+    /**
+     * @method documentCopyTextToClipboard
+     * @summary Copies the supplied text to the system clipboard.
+     * @description This method should be invoked only as part of a
+     *     user-generated event handler. Otherwise, most browsers will throw an
+     *     exception due to security concerns.
+     * @param {Document} aDocument The document to use to stage the text content
+     *     to copy.
+     * @param {String} aText The text to copy to the clipboard.
+     * @exception TP.sig.InvalidDocument
+     */
+
+    var newSpanElement,
+
+        range,
+        selection,
+
+        success;
+
+    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    //  Create a new 'span' element in the document, position it way offscreen,
+    //  set it's text content and append it to the document's documentElement.
+    newSpanElement = TP.documentConstructElement(aDocument,
+                                                'span',
+                                                TP.w3.Xmlns.XHTML);
+
+    TP.elementSetStyleString(
+        newSpanElement,
+        'position: absolute; top: -1000px; left: -1000px; ');
+
+    TP.nodeSetTextContent(newSpanElement, aText);
+
+    TP.nodeAppendChild(aDocument.documentElement, newSpanElement, false);
+
+    //  Now, create a Range to use for selecting the text.
+    range = aDocument.createRange();
+
+    //  Select the span's content into the Range.
+    range.selectNodeContents(newSpanElement);
+
+    //  Grab the Window associated with the document and it's selection object.
+    //  Then clear all of its ranges and add the new range.
+    selection = TP.nodeGetWindow(aDocument).getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    //  Attempt to copy the selection to the clipboard.
+    try {
+        success = aDocument.execCommand('copy', false, null);
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(e, 'Error copying text to clipboard')) : 0;
+    }
+
+    if (!success) {
+        TP.ifWarn() ?
+            TP.warn('Did not copy text to clipboard') : 0;
+    }
+
+    //  Make sure to remove our newly created span from its parent (the
+    //  document's documentElement) before we exit.
+    TP.nodeDetach(newSpanElement);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentGetHeight',
 function(aDocument) {
 
