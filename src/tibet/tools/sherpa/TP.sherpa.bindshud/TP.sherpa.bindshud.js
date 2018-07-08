@@ -147,141 +147,6 @@ function(aSignal) {
      * @returns {TP.sherpa.bindshud} The receiver.
      */
 
-    TP.alert('Called assistItem');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('deleteItem',
-function(aSignal) {
-
-    /**
-     * @method deleteItem
-     * @summary Invoked when a user has decided to 'Delete' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.bindshud} The receiver.
-     */
-
-    TP.alert('Called deleteItem');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('focusOnTarget',
-function(aTPElement) {
-
-    /**
-     * @method focusOnTarget
-     * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
-     *     receiver on.
-     * @returns {TP.sherpa.bindshud} The receiver.
-     */
-
-    var node,
-        bindAncestors,
-
-        bindingAttrNodes,
-
-        select,
-
-        info,
-
-        last;
-
-    node = aTPElement.getNativeNode();
-
-    //  This will find ancestors whose elements are in the BIND namespace or
-    //  which have attributes in the BIND namespace
-    bindAncestors = TP.nodeGetAncestorsWithNS(node, TP.w3.Xmlns.BIND);
-
-    bindingAttrNodes = TP.elementGetAttributeNodesInNS(
-                                    node, null, TP.w3.Xmlns.BIND);
-
-    select = false;
-    if (node.namespaceURI === TP.w3.Xmlns.BIND ||
-        TP.notEmpty(bindingAttrNodes)) {
-        select = true;
-        bindAncestors.unshift(node);
-    }
-    bindAncestors.reverse();
-
-    info = TP.ac();
-
-    bindAncestors.forEach(
-        function(ansElem) {
-            info.push(
-                TP.ac(
-                    TP.lid(ansElem, true),
-                    TP.elementGetFullName(ansElem)));
-        });
-
-    this.setValue(info);
-
-    if (select === true) {
-
-        //  Filter out any spacers...we don't select them.
-        last = this.get('listitems').filter(function(item) {
-            return !TP.elementHasClass(item.getNativeNode(), 'spacer');
-        }).last();
-
-        if (TP.isValid(last)) {
-            last.setAttribute('pclass:selected', 'true');
-        }
-    }
-
-    //  Scroll our list content to its bottom.
-    this.get('listcontent').scrollTo(TP.BOTTOM);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('getContentTagNameForContextMenu',
-function(aSignal) {
-
-    /**
-     * @method getContentTagNameForContextMenu
-     * @summary Returns the tag name of the content to use in a context menu.
-     *     Note that this should return the plain (possibly namespaced) name
-     *     with no markup bracketing, etc.
-     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
-     *     the context menu to show and menu content to be required.
-     * @returns {String} The name of the tag to use as content for the context
-     *     menu.
-     */
-
-    var targetElem;
-
-    targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'item')) {
-        return 'sherpa:bindshudContextMenuContent';
-    }
-
-    return 'sherpa:bindshudItemContextMenuContent';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('inspectItem',
-function(aSignal) {
-
-    /**
-     * @method inspectItem
-     * @summary Invoked when a user has decided to 'Inspect' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.bindshud} The receiver.
-     */
-
     var contextMenuSignal,
 
         targetElem,
@@ -451,6 +316,122 @@ function(aSignal) {
                 TP.pc(xCoord, targetElemPageRect.getY()));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('deleteItem',
+function(aSignal) {
+
+    /**
+     * @method deleteItem
+     * @summary Invoked when a user has decided to 'Delete' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    TP.alert('Called deleteItem');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('focusOnTarget',
+function(aTPElement) {
+
+    /**
+     * @method focusOnTarget
+     * @summary Focuses the receiver onto the supplied target.
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
+     *     receiver on.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var node,
+        bindAncestors,
+
+        bindingAttrNodes,
+
+        select,
+
+        info,
+
+        last;
+
+    node = aTPElement.getNativeNode();
+
+    //  This will find ancestors whose elements are in the BIND namespace or
+    //  which have attributes in the BIND namespace
+    bindAncestors = TP.nodeGetAncestorsWithNS(node, TP.w3.Xmlns.BIND);
+
+    bindingAttrNodes = TP.elementGetAttributeNodesInNS(
+                                    node, null, TP.w3.Xmlns.BIND);
+
+    select = false;
+    if (node.namespaceURI === TP.w3.Xmlns.BIND ||
+        TP.notEmpty(bindingAttrNodes)) {
+        select = true;
+        bindAncestors.unshift(node);
+    }
+    bindAncestors.reverse();
+
+    info = TP.ac();
+
+    bindAncestors.forEach(
+        function(ansElem) {
+            info.push(
+                TP.ac(
+                    TP.lid(ansElem, true),
+                    TP.elementGetFullName(ansElem)));
+        });
+
+    this.setValue(info);
+
+    if (select === true) {
+
+        //  Filter out any spacers...we don't select them.
+        last = this.get('listitems').filter(function(item) {
+            return !TP.elementHasClass(item.getNativeNode(), 'spacer');
+        }).last();
+
+        if (TP.isValid(last)) {
+            last.setAttribute('pclass:selected', 'true');
+        }
+    }
+
+    //  Scroll our list content to its bottom.
+    this.get('listcontent').scrollTo(TP.BOTTOM);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('getContentTagNameForContextMenu',
+function(aSignal) {
+
+    /**
+     * @method getContentTagNameForContextMenu
+     * @summary Returns the tag name of the content to use in a context menu.
+     *     Note that this should return the plain (possibly namespaced) name
+     *     with no markup bracketing, etc.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     the context menu to show and menu content to be required.
+     * @returns {String} The name of the tag to use as content for the context
+     *     menu.
+     */
+
+    var targetElem;
+
+    targetElem = aSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return 'sherpa:bindshudContextMenuContent';
+    }
+
+    return 'sherpa:bindshudItemContextMenuContent';
 });
 
 //  ------------------------------------------------------------------------
