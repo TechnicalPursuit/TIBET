@@ -426,6 +426,71 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineMethod('inspectStyleEntryAt',
+function(anIndex) {
+
+    /**
+     * @method inspectStyleEntryAt
+     * @summary Navigates the inspector to inspect the source of the style at
+     *     the supplied index in our data.
+     * @param {Number} anIndex The index to find the style entry at in our data.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var data,
+        itemData,
+
+        target,
+        ruleMatcher,
+
+        tileTPElem;
+
+    //  No index? Exit here.
+    if (TP.isEmpty(anIndex)) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Retrieve the entry Array from our data
+    itemData = data.at(anIndex);
+
+    //  Resolve the stylesheet URI that will be at the first position in the
+    //  Array. The resultant URI will be our target to inspect.
+    target = TP.bySystemId(itemData.at(0));
+
+    //  Generate a RegExp that will be used to try to find the rule within the
+    //  stylesheet using the selector.
+    //  ruleMatcher = TP.rc(TP.regExpEscape(itemData.at(1)) + '\\w*{');
+    //  TODO: For now, until we sort out issues with the editor searching a
+    //  RegExp, we have to use a simple String :-(
+    ruleMatcher = itemData.at(1);
+
+    //  Hide the tile to get it out of the way.
+    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
+    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+        tileTPElem.setAttribute('hidden', true);
+    }
+
+    //  Fire the inspector signal on the next repaint (which will ensure the
+    //  tile is closed before navigating).
+    (function() {
+        //  Signal to inspect the object with the rule matcher as 'extra
+        //  targeting information' under the 'findContent' key.
+        this.signal('InspectObject',
+                    TP.hc('targetObject', target,
+                            'targetAspect', TP.id(target),
+                            'showBusy', true,
+                            'extraTargetInfo',
+                                TP.hc('findContent', ruleMatcher)));
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineMethod('pathToItem',
 function(aSignal) {
 
@@ -1014,24 +1079,13 @@ function(aSignal) {
      */
 
     var targetElem,
-
-        data,
-        indexInData,
-        itemData,
-
-        target,
-        ruleMatcher,
-
-        tileTPElem;
+        indexInData;
 
     //  Grab the target and make sure it's an 'selector' tile.
     targetElem = aSignal.getDOMTarget();
     if (!TP.elementHasClass(targetElem, 'selector')) {
         return this;
     }
-
-    //  Grab our data.
-    data = this.get('data');
 
     //  Get the value of the target's indexInData attribute.
     indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
@@ -1043,37 +1097,9 @@ function(aSignal) {
 
     //  Convert to a Number and retrieve the entry Array from our data
     indexInData = indexInData.asNumber();
-    itemData = data.at(indexInData);
 
-    //  Resolve the stylesheet URI that will be at the first position in the
-    //  Array. The resultant URI will be our target to inspect.
-    target = TP.bySystemId(itemData.at(0));
-
-    //  Generate a RegExp that will be used to try to find the rule within the
-    //  stylesheet using the selector.
-    //  ruleMatcher = TP.rc(TP.regExpEscape(itemData.at(1)) + '\\w*{');
-    //  TODO: For now, until we sort out issues with the editor searching a
-    //  RegExp, we have to use a simple String :-(
-    ruleMatcher = itemData.at(1);
-
-    //  Hide the tile to get it out of the way.
-    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
-    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
-        tileTPElem.setAttribute('hidden', true);
-    }
-
-    //  Fire the inspector signal on the next repaint (which will ensure the
-    //  tile is closed before navigating).
-    (function() {
-        //  Signal to inspect the object with the rule matcher as 'extra
-        //  targeting information' under the 'findContent' key.
-        this.signal('InspectObject',
-                    TP.hc('targetObject', target,
-                            'targetAspect', TP.id(target),
-                            'showBusy', true,
-                            'extraTargetInfo',
-                                TP.hc('findContent', ruleMatcher)));
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    //  Inspect the entry at the index.
+    this.inspectStyleEntryAt(indexInData);
 
     return this;
 });
