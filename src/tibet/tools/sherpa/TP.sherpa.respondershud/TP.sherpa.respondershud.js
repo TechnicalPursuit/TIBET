@@ -159,10 +159,10 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
 
-    //  Grab our data.
+    //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
     itemData = data.at(indexInData);
 
@@ -205,9 +205,9 @@ function(aSignal) {
 
         targetElem,
 
-        data,
-
         indexInData,
+
+        data,
         itemData,
 
         target,
@@ -246,9 +246,6 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab our data.
-    data = this.get('data');
-
     //  Get the value of the target's indexInData attribute.
     indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
 
@@ -257,13 +254,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
     target = TP.sys.getTypeByName(itemData.at(1));
+    if (!TP.isType(target)) {
+        return this;
+    }
+
     this.set('currentTarget', target);
 
     dataURI = TP.uc('urn:tibet:responder_methods');
@@ -439,9 +443,9 @@ function(aSignal) {
 
         targetElem,
 
-        data,
-
         indexInData,
+
+        data,
         itemData,
 
         target,
@@ -471,11 +475,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab our data.
-    data = this.get('data');
-
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     //  Resolve the type from the type name that will be at the second position
@@ -596,9 +600,9 @@ function(aSignal) {
 
     var targetElem,
 
-        data,
         indexInData,
 
+        data,
         itemData,
 
         peerID,
@@ -614,9 +618,6 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab our data.
-    data = this.get('data');
-
     //  Get the value of the target's indexInData attribute.
     indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
 
@@ -625,8 +626,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     peerID = itemData.at(0);
@@ -702,11 +706,11 @@ function(aSignal) {
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
-    var data,
-
-        targetElem,
+    var targetElem,
 
         indexInData,
+
+        data,
         itemData,
 
         target,
@@ -718,9 +722,6 @@ function(aSignal) {
     if (!TP.elementHasClass(targetElem, 'item')) {
         return this;
     }
-
-    //  Grab our data.
-    data = this.get('data');
 
     //  Get the value of the target's indexInData attribute.
     indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
@@ -734,8 +735,11 @@ function(aSignal) {
     //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
     aSignal.at('trigger').preventDefault();
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     //  Resolve the type from the type name that will be at the second position
@@ -853,18 +857,15 @@ function(aSignal) {
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
-    var data,
-
-        srcTPElem,
+    var srcTPElem,
         destTPElem,
 
         indexInData,
+
+        data,
         itemData,
 
         target;
-
-    //  Grab our data.
-    data = this.get('data');
 
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
@@ -877,8 +878,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     //  Resolve the type from the type name that will be at the second position

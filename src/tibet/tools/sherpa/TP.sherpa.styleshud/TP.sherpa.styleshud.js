@@ -126,8 +126,9 @@ function(aSignal) {
 
         targetElem,
 
-        data,
         indexInData,
+
+        data,
         itemData,
 
         centerElem,
@@ -165,9 +166,6 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab our data.
-    data = this.get('data');
-
     //  Get the value of the target's indexInData attribute.
     indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
 
@@ -180,8 +178,11 @@ function(aSignal) {
     //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
     aSignal.at('trigger').preventDefault();
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     if (itemData.at(0) === '[cascaded]') {
@@ -297,7 +298,7 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
 
     //  Inspect the entry at the index.
@@ -537,8 +538,9 @@ function(aSignal) {
 
         targetElem,
 
-        data,
         indexInData,
+
+        data,
         itemData,
 
         loc,
@@ -565,9 +567,6 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab our data.
-    data = this.get('data');
-
     //  Get the value of the target's indexInData attribute.
     indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
 
@@ -580,8 +579,11 @@ function(aSignal) {
     //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
     aSignal.at('trigger').preventDefault();
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
     itemData = data.at(indexInData);
 
     loc = itemData.at(0);
@@ -968,7 +970,6 @@ function(aSignal) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-
     var dndTargetElem;
 
     dndTargetElem = aSignal.getDOMTarget();
@@ -1124,7 +1125,7 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
 
     //  Inspect the entry at the index.
@@ -1192,7 +1193,7 @@ function(aSignal) {
         return this;
     }
 
-    //  Convert to a Number and retrieve the entry Array from our data
+    //  Convert to a Number.
     indexInData = indexInData.asNumber();
 
     this.set('$currentRuleIndex', indexInData);

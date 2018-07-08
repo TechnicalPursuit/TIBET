@@ -175,7 +175,6 @@ function(aSignal) {
     }
 
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
     if (TP.isEmpty(peerID)) {
         return this;
     }
@@ -304,8 +303,8 @@ function(sidebarElement) {
                             true);
     }
 
-    //  If we succesfully got a peerID, then get the Element it matches
-    //  in the UI canvas DOM.
+    //  If we succesfully got a peerID, then get the Element it matches in the
+    //  UI canvas DOM.
     if (TP.notEmpty(peerID)) {
 
         doc = TP.sys.uidoc(true);
@@ -565,7 +564,9 @@ function(aSignal) {
 
     /**
      * @method pathToItem
-     * @summary
+     * @summary Invoked when the user has decided to obtain the 'path' to an
+     *     item and put it on the clipboard. In the case of this type, this will
+     *     be the path to the 'generator' template or code.
      * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.domhud} The receiver.
