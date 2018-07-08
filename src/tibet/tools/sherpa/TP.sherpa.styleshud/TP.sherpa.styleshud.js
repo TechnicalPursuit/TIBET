@@ -425,6 +425,122 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineMethod('pathToItem',
+function(aSignal) {
+
+    /**
+     * @method pathToItem
+     * @summary Invoked when the user has decided to obtain the 'path' to an
+     *     item and put it on the clipboard. In the case of this type, this will
+     *     be the path to the stylesheet of the (rule) item that was clicked on.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var contextMenuSignal,
+
+        targetElem,
+
+        data,
+        indexInData,
+        itemData,
+
+        loc,
+        uri,
+
+        srcPath,
+        finalPath,
+
+        nativeRule,
+        info,
+        position,
+        lineNum;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'selector') &&
+        !TP.elementHasClass(targetElem, 'cascaded')) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    loc = itemData.at(0);
+    if (TP.isEmpty(loc) || loc === '[cascaded]') {
+        return this;
+    }
+
+    //  The loc will be a virtual location - need to create a URI around that so
+    //  that we can ask for its path.
+    uri = TP.uc(loc);
+
+    //  Get the path to that URI and make sure to slice off the leading '/'.
+    //  This will ensure that the TP.uriJoinPaths call will join the paths
+    //  properly.
+    srcPath = uri.getPath();
+    srcPath = srcPath.slice(srcPath.indexOf('/') + 1);
+
+    //  Join the leading path to the 'TIBET public directory' to the source
+    //  path. This will give us the final *relative* path from the project down
+    //  to the template file.
+    finalPath = TP.uriJoinPaths(TP.sys.cfg('boot.tibet_pub', ''),
+                                srcPath);
+
+    //  Grab the native CSS Rule object, which should be at the 4th position in
+    //  the selected item's data record.
+    nativeRule = itemData.at(3);
+    if (TP.isStyleRule(nativeRule)) {
+
+        //  Grab the 'info' about the style rule. This will parse the style
+        //  sheet containing the original rule and return a hash of information
+        //  about it.
+        info = TP.styleRuleGetSourceInfo(nativeRule, TP.hc());
+        if (TP.isValid(info)) {
+            position = info.at('position');
+
+            //  NB: The information under the top-level key in the info hash is
+            //  a POJO.
+            if (TP.isValid(position)) {
+                lineNum = position.start.line;
+
+                //  Using the standard syntax supported by many editors, append
+                //  a ':' and the line number on the path.
+                finalPath += ':' + lineNum;
+            }
+        }
+    }
+
+    TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
