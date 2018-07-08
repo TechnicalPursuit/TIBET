@@ -272,7 +272,36 @@ function(aSignal) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    TP.alert('Called editItem');
+    var contextMenuSignal,
+
+        targetElem,
+        indexInData;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'selector' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'selector')) {
+        return this;
+    }
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+
+    //  Inspect the entry at the index.
+    this.inspectStyleEntryAt(indexInData);
 
     return this;
 });
