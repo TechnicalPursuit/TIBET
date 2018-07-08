@@ -57,7 +57,7 @@ function(aRequest) {
     //  Grab the east drawer and define a function that, when the drawer
     //  animates back and forth into and out of its collapsed position that, if
     //  a tile is showing, will move the tile to the edge of the drawer.
-    eastDrawer = TP.byId('east', TP.win('UIROOT'));
+    eastDrawer = TP.byId('east', tpElem.getNativeDocument());
 
     moveTileFunc = function(transitionSignal) {
 
@@ -84,8 +84,7 @@ function(aRequest) {
 
             tileTPElem.setPageX(xCoord);
         }
-
-    }.bind(tpElem);
+    };
 
     moveTileFunc.observe(eastDrawer, 'TP.sig.DOMTransitionEnd');
 

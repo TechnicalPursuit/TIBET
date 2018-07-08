@@ -107,8 +107,7 @@ function() {
     existingMethodResource = sourceURI.getResource();
     existingMethodResource.then(
         function(aResult) {
-            var finalContent,
-                owner;
+            var finalContent;
 
             finalContent = TP.extern.JsDiff.applyPatch(aResult, diffPatch);
 

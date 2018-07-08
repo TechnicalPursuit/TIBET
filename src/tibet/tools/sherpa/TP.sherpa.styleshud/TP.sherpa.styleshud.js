@@ -53,7 +53,7 @@ function(aRequest) {
     //  Grab the west drawer and define a function that, when the drawer
     //  animates back and forth into and out of its collapsed position that, if
     //  a tile is showing, will move the tile to the edge of the drawer.
-    eastDrawer = TP.byId('west', TP.win('UIROOT'));
+    westDrawer = TP.byId('west', tpElem.getNativeDocument());
 
     moveTileFunc = function(transitionSignal) {
 
@@ -63,16 +63,15 @@ function(aRequest) {
             centerElemPageRect;
 
         tileTPElem = TP.byId('StyleSummary_Tile',
-                                eastDrawer.getNativeDocument());
+                                westDrawer.getNativeDocument());
         if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
             //  Grab the center element and it's page rectangle.
-            centerElem = TP.byId('center', eastDrawer.getNativeWindow());
+            centerElem = TP.byId('center', westDrawer.getNativeWindow());
             centerElemPageRect = centerElem.getPageRect();
 
             tileTPElem.setPageX(centerElemPageRect.getX());
         }
-
-    }.bind(tpElem);
+    };
 
     moveTileFunc.observe(westDrawer, 'TP.sig.DOMTransitionEnd');
 
