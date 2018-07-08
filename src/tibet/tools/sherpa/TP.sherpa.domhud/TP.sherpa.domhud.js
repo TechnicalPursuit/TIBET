@@ -140,8 +140,116 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    TP.alert('Called assistItem');
+    var contextMenuSignal,
 
+        targetElem,
+        peerID,
+        sourceTPElem,
+
+        centerElem,
+        centerElemPageRect,
+
+        targetElemPageRect,
+
+        modelURI,
+
+        newBodyElem,
+        newFooterElem,
+
+        tileTPElem,
+        newContentTPElem,
+
+        currentBodyElem,
+        currentFooterElem;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'domnode')) {
+        return this;
+    }
+
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
+    sourceTPElem = TP.byId(peerID);
+    if (TP.notValid(sourceTPElem)) {
+        return this;
+    }
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
+
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerElem = TP.byId('center', this.getNativeWindow());
+    centerElemPageRect = centerElem.getPageRect();
+
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    targetElemPageRect = TP.wrap(targetElem).getPageRect();
+
+    //  ---
+
+    //  Set up a model URI and observe it for change ourself. This will allow us
+    //  to regenerate the tag representation as the model changes.
+    modelURI = TP.uc('urn:tibet:domhud_target_source');
+
+    newBodyElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileBody');
+    newFooterElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileFooter');
+
+    //  ---
+
+    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
+
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('DOMInfo_Tile');
+
+        newContentTPElem = tileTPElem.setContent(newBodyElem);
+        newContentTPElem.awaken();
+
+        tileTPElem.get('footer').setContent(newFooterElem);
+    } else {
+        currentBodyElem = TP.unwrap(
+                            tileTPElem.get('body').getFirstChildElement());
+        currentFooterElem = TP.unwrap(
+                            tileTPElem.get('footer').getFirstChildElement());
+
+        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
+            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            newContentTPElem.awaken();
+        }
+        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
+            tileTPElem.get('footer').setContent(newFooterElem);
+        }
+    }
+
+    tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
+
+    modelURI.setResource(
+        sourceTPElem,
+        TP.hc('observeResource', false, 'signalChange', true));
+
+    //  Position the tile
+    tileTPElem.setPagePosition(TP.pc(centerElemPageRect.getX(),
+                                targetElemPageRect.getY()));
+
+    (function() {
+        tileTPElem.get('body').
+            focusAutofocusedOrFirstFocusableDescendant();
+    }).queueForNextRepaint(tileTPElem.getNativeWindow());
+
+    tileTPElem.setAttribute('hidden', false);
     return this;
 });
 
@@ -442,134 +550,6 @@ function(aSignal) {
     }
 
     return 'sherpa:domhudItemContextMenuContent';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.domhud.Inst.defineMethod('inspectItem',
-function(aSignal) {
-
-    /**
-     * @method inspectItem
-     * @summary Invoked when a user has decided to 'Inspect' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.domhud} The receiver.
-     */
-
-    var contextMenuSignal,
-
-        targetElem,
-        peerID,
-        sourceTPElem,
-
-        centerElem,
-        centerElemPageRect,
-
-        targetElemPageRect,
-
-        modelURI,
-
-        newBodyElem,
-        newFooterElem,
-
-        tileTPElem,
-        newContentTPElem,
-
-        currentBodyElem,
-        currentFooterElem;
-
-    //  Although we get the 'item selected' signal as a parameter, what we
-    //  really want was the signal that triggered the opening of the context
-    //  menu. We want the target of that signal (either the hud item or the hud
-    //  panel itself).
-    contextMenuSignal = this.get('$lastContextMenuSignal');
-
-    //  Grab the target and make sure it's an 'item' tile.
-    targetElem = contextMenuSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'domnode')) {
-        return this;
-    }
-
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
-    if (TP.isEmpty(peerID)) {
-        return this;
-    }
-
-    //  NB: We want to query the current UI canvas here - no node context
-    //  necessary.
-    sourceTPElem = TP.byId(peerID);
-    if (TP.notValid(sourceTPElem)) {
-        return this;
-    }
-
-    //  Prevent default *on the trigger signal* (which is the GUI signal - the
-    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
-    aSignal.at('trigger').preventDefault();
-
-    //  Use the same 'X' coordinate where the 'center' div is located in the
-    //  page.
-    centerElem = TP.byId('center', this.getNativeWindow());
-    centerElemPageRect = centerElem.getPageRect();
-
-    //  Use the 'Y' coordinate where the target element is located in the page.
-    targetElemPageRect = TP.wrap(targetElem).getPageRect();
-
-    //  ---
-
-    //  Set up a model URI and observe it for change ourself. This will allow us
-    //  to regenerate the tag representation as the model changes.
-    modelURI = TP.uc('urn:tibet:domhud_target_source');
-
-    newBodyElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileBody');
-    newFooterElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileFooter');
-
-    //  ---
-
-    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeWindow());
-    if (TP.notValid(tileTPElem)) {
-
-        tileTPElem = TP.bySystemId('Sherpa').makeTile('DOMInfo_Tile');
-
-        newContentTPElem = tileTPElem.setContent(newBodyElem);
-        newContentTPElem.awaken();
-
-        tileTPElem.get('footer').setContent(newFooterElem);
-    } else {
-        currentBodyElem = TP.unwrap(
-                            tileTPElem.get('body').getFirstChildElement());
-        currentFooterElem = TP.unwrap(
-                            tileTPElem.get('footer').getFirstChildElement());
-
-        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
-            newContentTPElem = tileTPElem.setContent(newBodyElem);
-            newContentTPElem.awaken();
-        }
-        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
-            tileTPElem.get('footer').setContent(newFooterElem);
-        }
-    }
-
-    tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
-
-    modelURI.setResource(
-        sourceTPElem,
-        TP.hc('observeResource', false, 'signalChange', true));
-
-    //  Position the tile
-    tileTPElem.setPagePosition(TP.pc(centerElemPageRect.getX(),
-                                targetElemPageRect.getY()));
-
-    (function() {
-        tileTPElem.get('body').
-            focusAutofocusedOrFirstFocusableDescendant();
-    }).queueForNextRepaint(tileTPElem.getNativeWindow());
-
-    tileTPElem.setAttribute('hidden', false);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
