@@ -553,6 +553,59 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('pathToItem',
+function(aSignal) {
+
+    /**
+     * @method pathToItem
+     * @summary
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var halo,
+
+        targetTPElem,
+        generatorTPElem,
+
+        uri,
+
+        srcPath,
+        finalPath;
+
+    //  Grab the halo's target element.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    targetTPElem = halo.get('currentTargetTPElem');
+
+    //  Get it's nearest 'generator' (i.e. the source element that generated
+    //  it). If the current target isn't a generator itself, this will find the
+    //  nearest one.
+    generatorTPElem = targetTPElem.getNearestHaloGenerator(halo);
+
+    //  Grab that element's type's template URI.
+    uri = generatorTPElem.getType().getResourceURI('template',
+                                                    TP.ietf.mime.XHTML);
+
+    //  Get the path to that URI and make sure to slice off the leading '/'.
+    //  This will ensure that the TP.uriJoinPaths call will join the paths
+    //  properly.
+    srcPath = uri.getPath();
+    srcPath = srcPath.slice(srcPath.indexOf('/') + 1);
+
+    //  Join the leading path to the 'TIBET public directory' to the source
+    //  path. This will give us the final *relative* path from the project down
+    //  to the template file.
+    finalPath = TP.uriJoinPaths(TP.sys.cfg('boot.tibet_pub', ''),
+                                srcPath);
+
+    TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
