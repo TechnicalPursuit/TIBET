@@ -256,28 +256,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineMethod('deleteItem',
-function(aSignal) {
-
-    /**
-     * @method deleteItem
-     * @summary Invoked when a user has decided to 'Delete' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.domhud} The receiver.
-     */
-
-    var halo;
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    halo.deleteTarget();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.domhud.Inst.defineMethod('computePeerElement',
 function(sidebarElement) {
 
@@ -340,6 +318,28 @@ function(sidebarElement) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('deleteItem',
+function(aSignal) {
+
+    /**
+     * @method deleteItem
+     * @summary Invoked when a user has decided to 'Delete' an item from the
+     *     context menu for hud sidebar items.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var halo;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    halo.deleteTarget();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
