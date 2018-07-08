@@ -268,7 +268,10 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    TP.alert('Called deleteItem');
+    var halo;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    halo.deleteTarget();
 
     return this;
 });
@@ -353,7 +356,10 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    TP.alert('Called emptyItem');
+    var halo;
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    halo.emptyTarget();
 
     return this;
 });
