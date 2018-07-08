@@ -510,7 +510,7 @@ function(aScreenTPElement) {
 
     //  The 'center' element is the common parent for the world and the tools
     //  layer.
-    centerTPElem = TP.byId('center', TP.win('UIROOT'));
+    centerTPElem = TP.byId('center', viewDoc);
 
     //  Grab the center element's global rectangle.
     centerGlobalRect = centerTPElem.getGlobalRect();

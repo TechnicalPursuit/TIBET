@@ -323,7 +323,8 @@ function() {
 
     var url;
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
+    this.observe(TP.byId('SherpaHalo', this.getNativeDocument()),
+                    'TP.sig.HaloDidBlur');
 
     this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
 
@@ -604,7 +605,8 @@ function() {
      * @returns {TP.sherpa.adjuster} The receiver.
      */
 
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
+    this.ignore(TP.byId('SherpaHalo', this.getNativeDocument()),
+                    'TP.sig.HaloDidBlur');
 
     this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
 

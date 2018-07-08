@@ -908,7 +908,7 @@ function(aSignal) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
-            triggerTPDoc = TP.tpdoc(TP.win('UIROOT'));
+            triggerTPDoc = TP.tpdoc(this.getNativeDocument());
 
             this.signal(
                 'OpenPopup',

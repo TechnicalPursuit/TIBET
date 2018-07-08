@@ -65,10 +65,11 @@ function(aRequest) {
             tileWidth,
             xCoord;
 
-        tileTPElem = TP.byId('BindSummary_Tile', this.getNativeDocument());
+        tileTPElem = TP.byId('BindSummary_Tile',
+                                eastDrawer.getNativeDocument());
         if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
             //  Grab the center element and it's page rectangle.
-            centerElem = TP.byId('center', this.getNativeWindow());
+            centerElem = TP.byId('center', eastDrawer.getNativeWindow());
             centerElemPageRect = centerElem.getPageRect();
 
             tileWidth = tileTPElem.getWidth();

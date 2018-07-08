@@ -339,7 +339,7 @@ function() {
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', this.getNativeDocument()),
                     TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
 
     this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
@@ -360,8 +360,8 @@ function() {
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidFocus');
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')), 'TP.sig.HaloDidBlur');
+    this.ignore(TP.byId('SherpaHalo', this.getNativeDocument()),
+                TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
 
     return this;
 });

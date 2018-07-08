@@ -380,7 +380,7 @@ function(aSignal) {
 
     TP.$elementCSSFlush(TP.unwrap(targetTPElem));
 
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
     haloTPElem.moveAndSizeToTarget(targetTPElem);
 
     return this;

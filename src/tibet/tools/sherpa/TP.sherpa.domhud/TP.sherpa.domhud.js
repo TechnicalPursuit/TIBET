@@ -62,10 +62,11 @@ function(aRequest) {
             centerElem,
             centerElemPageRect;
 
-        tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeDocument());
+        tileTPElem = TP.byId('DOMInfo_Tile',
+                                westDrawer.getNativeDocument());
         if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
             //  Grab the center element and it's page rectangle.
-            centerElem = TP.byId('center', this.getNativeWindow());
+            centerElem = TP.byId('center', westDrawer.getNativeWindow());
             centerElemPageRect = centerElem.getPageRect();
 
             tileTPElem.setPageX(centerElemPageRect.getX());
@@ -848,7 +849,7 @@ function(aSignal) {
     hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
     if (!hudIsClosed) {
-        sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
+        sourceTPElem = TP.byId('SherpaHalo', this.getNativeDocument()).
                                             get('currentTargetTPElem');
         if (TP.notValid(sourceTPElem) || sourceTPElem.isDetached()) {
             this.focusOnUICanvasRoot();
@@ -908,7 +909,7 @@ function(aSignal) {
 
         case 'dom_node':
         case 'dom_node_copy':
-            sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
+            sourceTPElem = TP.byId('SherpaHalo', this.getNativeDocument()).
                                                 get('currentTargetTPElem');
             break;
 
@@ -920,7 +921,7 @@ function(aSignal) {
         peerElem = this.computePeerElement(dndTargetElem);
         peerTPElem = TP.wrap(peerElem);
 
-        hudTPElem = TP.byId('SherpaHUD', TP.win('UIROOT'));
+        hudTPElem = TP.byId('SherpaHUD', this.getNativeDocument());
         if (!peerTPElem.hudCanDrop(hudTPElem, sourceTPElem)) {
             this.set('$currentDNDTarget', null);
             return this;

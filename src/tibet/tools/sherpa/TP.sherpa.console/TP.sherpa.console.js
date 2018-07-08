@@ -602,7 +602,8 @@ function() {
 
     //  Grab the consoleOutput TP.dom.ElementNode and set it up. Note that we
     //  need to do this *after* we set up the console input above.
-    consoleOutputTPElem = TP.byId('SherpaConsoleOutput', TP.win('UIROOT'));
+    consoleOutputTPElem = TP.byId('SherpaConsoleOutput',
+                                    this.getNativeDocument());
     consoleOutputTPElem.setup();
 
     this.set('consoleOutput', consoleOutputTPElem);
@@ -630,7 +631,7 @@ function() {
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
     //  Observe the HUD's south drawer for when it opens/closes
-    consoleDrawerTPElem = TP.byId('south', TP.win('UIROOT'));
+    consoleDrawerTPElem = TP.byId('south', this.getNativeDocument());
     this.observe(consoleDrawerTPElem, 'ClosedChange');
 
     //  Set the overall data Array as the resource for the console tabs.
@@ -1488,7 +1489,7 @@ function(shouldAnimate) {
 
         panelboxElem;
 
-    consoleDrawer = TP.byId('south', TP.win('UIROOT'));
+    consoleDrawer = TP.byId('south', this.getNativeDocument());
 
     if (!consoleDrawer.hasAttribute('pclass:closed')) {
         return this;

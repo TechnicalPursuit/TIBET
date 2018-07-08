@@ -53,7 +53,7 @@ function(aRequest) {
     //  Grab the west drawer and define a function that, when the drawer
     //  animates back and forth into and out of its collapsed position that, if
     //  a tile is showing, will move the tile to the edge of the drawer.
-    westDrawer = TP.byId('west', TP.win('UIROOT'));
+    eastDrawer = TP.byId('west', TP.win('UIROOT'));
 
     moveTileFunc = function(transitionSignal) {
 
@@ -62,10 +62,11 @@ function(aRequest) {
             centerElem,
             centerElemPageRect;
 
-        tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
+        tileTPElem = TP.byId('StyleSummary_Tile',
+                                eastDrawer.getNativeDocument());
         if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
             //  Grab the center element and it's page rectangle.
-            centerElem = TP.byId('center', this.getNativeWindow());
+            centerElem = TP.byId('center', eastDrawer.getNativeWindow());
             centerElemPageRect = centerElem.getPageRect();
 
             tileTPElem.setPageX(centerElemPageRect.getX());
@@ -370,7 +371,7 @@ function(aSignal) {
     itemData = data.at(indexInData);
 
     if (itemData.at(0) === '[cascaded]') {
-        TP.byId('SherpaAdjuster', TP.win('UIROOT')).showAdjusterTile();
+        TP.byId('SherpaAdjuster', this.getNativeDocument()).showAdjusterTile();
         return this;
     }
 

@@ -341,7 +341,7 @@ function(aSignal) {
 
     targetTPElem.sherpaSetTextContent(value);
 
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
     haloTPElem.moveAndSizeToTarget(targetTPElem);
 
     return this;

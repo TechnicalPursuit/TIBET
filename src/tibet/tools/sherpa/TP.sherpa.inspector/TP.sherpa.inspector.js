@@ -1335,7 +1335,7 @@ function(info) {
                     'targetObject', target,
                     'pathParts', selectedItems);
 
-    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+    toolbar = TP.byId('SherpaToolbar', this.getNativeDocument());
     toolbarContent = TP.getContentForTool(
                         target,
                         'toolbar',
@@ -3008,7 +3008,7 @@ function(aBayNum) {
 
     //  Update the toolbar (or clear it)
 
-    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+    toolbar = TP.byId('SherpaToolbar', this.getNativeDocument());
     toolbarContent = TP.getContentForTool(
                         info.at('targetObject'),
                         'toolbar',
@@ -3406,10 +3406,10 @@ function() {
                             'TP.sig.TypeAdded',
                             'TP.sig.MethodAdded'));
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', this.getNativeDocument()),
                     TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
 
-    this.observe(TP.byId('SherpaBreadcrumb', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaBreadcrumb', this.getNativeDocument()),
                     'TP.sig.BreadcrumbSelected');
 
     return this;
@@ -3629,7 +3629,7 @@ function(shouldRenderBayContent) {
                 }
             });
 
-    toolbarElem = TP.byId('SherpaToolbar', TP.win('UIROOT'), false);
+    toolbarElem = TP.byId('SherpaToolbar', this.getNativeDocument(), false);
     toolbarStyleObj = TP.elementGetStyleObj(toolbarElem);
 
     /* eslint-disable no-extra-parens */

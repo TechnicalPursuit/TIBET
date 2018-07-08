@@ -118,6 +118,9 @@ function(aResourceID, aRequest) {
      */
 
     var request,
+
+        consoleGUI,
+
         model,
 
         user,
@@ -135,7 +138,8 @@ function(aResourceID, aRequest) {
     //  assist us with producing both our user interface and responses
     request = TP.request(aRequest);
 
-    this.set('$consoleGUI', request.at('consoleView'));
+    consoleGUI = request.at('consoleView');
+    this.set('$consoleGUI', consoleGUI);
 
     //  set up our model -- the shell
     this.set('model', request.at('consoleModel'));
@@ -158,11 +162,11 @@ function(aResourceID, aRequest) {
     model.start(request);
 
     //  update our overall status
-    this.get('$consoleGUI').updateStatus();
+    consoleGUI.updateStatus();
 
     //  put our project identifier in place in the notifier bar
     this.notify(TP.sc(
-            'Welcome to Sherpa&#8482; Shift-Right-Click in page to begin editing.'
+        'Welcome to Sherpa&#8482; Shift-Right-Click in page to begin editing.'
         ));
 
     //  Process whatever initial request(s) might be sitting in the queue
@@ -170,17 +174,17 @@ function(aResourceID, aRequest) {
 
     //  get started by scrolling to the end (causes the scroller to
     //  resize/reposition)
-    this.get('$consoleGUI').scrollOutputToEnd();
+    consoleGUI.scrollOutputToEnd();
 
     //  observe the console GUI for when it's shown/hidden
-    this.observe(this.get('$consoleGUI'), 'HiddenChange');
+    this.observe(consoleGUI, 'HiddenChange');
 
     //  observe the halo for focus/blur
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', consoleGUI.getNativeDocument()),
                     'TP.sig.HaloDidFocus');
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', consoleGUI.getNativeDocument()),
                     'TP.sig.HaloDidBlur');
 
     //  if we're configured to auto-login, try to do that now.
@@ -1515,12 +1519,17 @@ function(anObject, aRequest) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    var notifier,
+    var consoleDoc,
+
+        notifier,
         notifierContent,
 
         triggerTPDoc;
 
-    notifier = TP.byId('SherpaNotifier', TP.win('UIROOT'));
+    consoleDoc = this.get('$consoleGUI').getNativeDocument();
+
+    notifier = TP.byId('SherpaNotifier', consoleDoc);
+
     notifier.setStyleProperty(
                 '--sherpa-notifier-fadeout-duration',
                 TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');
@@ -1528,7 +1537,7 @@ function(anObject, aRequest) {
                 '--sherpa-notifier-fadeout-delay',
                 TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000) + 'ms');
 
-    notifierContent = TP.byId('SherpaNotifierContent', TP.win('UIROOT'));
+    notifierContent = TP.byId('SherpaNotifierContent', consoleDoc);
     if (TP.notValid(notifierContent)) {
         return this;
     }
@@ -1537,7 +1546,7 @@ function(anObject, aRequest) {
         TP.xhtmlnode('<div>' + TP.str(anObject) + '</div>'),
         aRequest);
 
-    triggerTPDoc = TP.tpdoc(TP.win('UIROOT'));
+    triggerTPDoc = TP.wrap(consoleDoc);
 
     this.signal(
         'OpenNotifier',
@@ -2756,7 +2765,7 @@ function(aSignal) {
                                     'change', this.get('$changeHandler'));
     this.set('$changeHandler', null);
 
-    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completerList = TP.byId('TSHCompleterList', consoleGUI.getNativeDocument());
     completerList.setAttribute('hidden', true);
 
     this.removeAutoCompleteEditorRange(aSignal.at('trigger').at('acceptHint'));
@@ -2785,7 +2794,8 @@ function(index) {
 
         newIndex;
 
-    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completerList = TP.byId('TSHCompleterList',
+                            this.get('$consoleGUI').getNativeDocument());
     data = completerList.get('data');
 
     newIndex = index;
@@ -2896,7 +2906,8 @@ function(aSignal) {
 
         isNativeObj;
 
-    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completerList = TP.byId('TSHCompleterList',
+                            this.get('$consoleGUI').getNativeDocument());
 
     isHidden = TP.bc(completerList.getAttribute('hidden'));
     if (isHidden) {
@@ -2962,7 +2973,9 @@ function(sourceText) {
 
         completerValue;
 
-    completerList = TP.byId('TSHCompleterList', TP.win('UIROOT'));
+    completerList = TP.byId('TSHCompleterList',
+                            this.get('$consoleGUI').getNativeDocument());
+
     searcher = this.get('$searcher');
 
     completions = searcher.searchUsing(sourceText);
