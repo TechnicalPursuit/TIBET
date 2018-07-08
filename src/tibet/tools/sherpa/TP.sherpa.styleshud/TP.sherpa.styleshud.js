@@ -122,7 +122,138 @@ function(aSignal) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    TP.alert('Called assistItem');
+    var contextMenuSignal,
+
+        targetElem,
+
+        data,
+        indexInData,
+        itemData,
+
+        centerElem,
+        centerElemPageRect,
+
+        targetTPElem,
+        targetElemPageRect,
+
+        halo,
+        sourceTPElem,
+
+        newBodyElem,
+        newFooterElem,
+
+        tileTPElem,
+        newContentTPElem,
+
+        setResourceParams,
+
+        currentBodyElem,
+        currentFooterElem,
+
+        modelURI;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'selector') &&
+        !TP.elementHasClass(targetElem, 'cascaded')) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Prevent default *on the trigger signal* (which is the GUI signal - the
+    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
+    aSignal.at('trigger').preventDefault();
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    if (itemData.at(0) === '[cascaded]') {
+        TP.byId('SherpaAdjuster', this.getNativeDocument()).showAdjusterTile();
+        return this;
+    }
+
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerElem = TP.byId('center', this.getNativeWindow());
+    centerElemPageRect = centerElem.getPageRect();
+
+    targetTPElem = TP.wrap(targetElem);
+
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    targetElemPageRect = targetTPElem.getPageRect();
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    sourceTPElem = halo.get('currentTargetTPElem');
+
+    newBodyElem = TP.getContentForTool(sourceTPElem, 'StylesHUDTileBody');
+    newFooterElem = TP.getContentForTool(sourceTPElem, 'StylesHUDTileFooter');
+
+    //  ---
+
+    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
+
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('StyleSummary_Tile');
+        tileTPElem.setHeaderText('Rule Properties');
+
+        newContentTPElem = tileTPElem.setContent(newBodyElem);
+        newContentTPElem.awaken();
+
+        tileTPElem.get('footer').setContent(newFooterElem);
+
+        setResourceParams =
+            TP.hc('observeResource', true, 'signalChange', true);
+    } else {
+        currentBodyElem = TP.unwrap(
+                            tileTPElem.get('body').getFirstChildElement());
+        currentFooterElem = TP.unwrap(
+                            tileTPElem.get('footer').getFirstChildElement());
+
+        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
+            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            newContentTPElem.awaken();
+        }
+        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
+            tileTPElem.get('footer').setContent(newFooterElem);
+        }
+
+        setResourceParams = TP.hc('signalChange', true);
+    }
+
+    //  Grab the current rule source.
+    modelURI = TP.uc('urn:tibet:styleshud_rule_source');
+
+    //  Set the model's URI's resource and signal change. This will
+    //  cause the properties to update.
+    modelURI.setResource(itemData, setResourceParams);
+
+    //  Position the tile
+    tileTPElem.setPagePosition(
+        TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+
+    (function() {
+        tileTPElem.get('body').
+            focusAutofocusedOrFirstFocusableDescendant();
+    }).queueForNextRepaint(tileTPElem.getNativeWindow());
+
+    tileTPElem.setAttribute('hidden', false);
 
     return this;
 });
@@ -291,155 +422,6 @@ function(aSignal) {
     }
 
     return 'sherpa:styleshudItemContextMenuContent';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineMethod('inspectItem',
-function(aSignal) {
-
-    /**
-     * @method inspectItem
-     * @summary Invoked when a user has decided to 'Inspect' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.styleshud} The receiver.
-     */
-
-    var contextMenuSignal,
-
-        targetElem,
-
-        data,
-        indexInData,
-        itemData,
-
-        centerElem,
-        centerElemPageRect,
-
-        targetTPElem,
-        targetElemPageRect,
-
-        halo,
-        sourceTPElem,
-
-        newBodyElem,
-        newFooterElem,
-
-        tileTPElem,
-        newContentTPElem,
-
-        setResourceParams,
-
-        currentBodyElem,
-        currentFooterElem,
-
-        modelURI;
-
-    //  Although we get the 'item selected' signal as a parameter, what we
-    //  really want was the signal that triggered the opening of the context
-    //  menu. We want the target of that signal (either the hud item or the hud
-    //  panel itself).
-    contextMenuSignal = this.get('$lastContextMenuSignal');
-
-    //  Grab the target and make sure it's an 'item' tile.
-    targetElem = contextMenuSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'selector') &&
-        !TP.elementHasClass(targetElem, 'cascaded')) {
-        return this;
-    }
-
-    //  Grab our data.
-    data = this.get('data');
-
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
-
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
-        return this;
-    }
-
-    //  Prevent default *on the trigger signal* (which is the GUI signal - the
-    //  contextmenu signal) so that any sort of 'right click' menu doesn't show.
-    aSignal.at('trigger').preventDefault();
-
-    //  Convert to a Number and retrieve the entry Array from our data
-    indexInData = indexInData.asNumber();
-    itemData = data.at(indexInData);
-
-    if (itemData.at(0) === '[cascaded]') {
-        TP.byId('SherpaAdjuster', this.getNativeDocument()).showAdjusterTile();
-        return this;
-    }
-
-    //  Use the same 'X' coordinate where the 'center' div is located in the
-    //  page.
-    centerElem = TP.byId('center', this.getNativeWindow());
-    centerElemPageRect = centerElem.getPageRect();
-
-    targetTPElem = TP.wrap(targetElem);
-
-    //  Use the 'Y' coordinate where the target element is located in the page.
-    targetElemPageRect = targetTPElem.getPageRect();
-
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    sourceTPElem = halo.get('currentTargetTPElem');
-
-    newBodyElem = TP.getContentForTool(sourceTPElem, 'StylesHUDTileBody');
-    newFooterElem = TP.getContentForTool(sourceTPElem, 'StylesHUDTileFooter');
-
-    //  ---
-
-    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeWindow());
-    if (TP.notValid(tileTPElem)) {
-
-        tileTPElem = TP.bySystemId('Sherpa').makeTile('StyleSummary_Tile');
-        tileTPElem.setHeaderText('Rule Properties');
-
-        newContentTPElem = tileTPElem.setContent(newBodyElem);
-        newContentTPElem.awaken();
-
-        tileTPElem.get('footer').setContent(newFooterElem);
-
-        setResourceParams =
-            TP.hc('observeResource', true, 'signalChange', true);
-    } else {
-        currentBodyElem = TP.unwrap(
-                            tileTPElem.get('body').getFirstChildElement());
-        currentFooterElem = TP.unwrap(
-                            tileTPElem.get('footer').getFirstChildElement());
-
-        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
-            newContentTPElem = tileTPElem.setContent(newBodyElem);
-            newContentTPElem.awaken();
-        }
-        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
-            tileTPElem.get('footer').setContent(newFooterElem);
-        }
-
-        setResourceParams = TP.hc('signalChange', true);
-    }
-
-    //  Grab the current rule source.
-    modelURI = TP.uc('urn:tibet:styleshud_rule_source');
-
-    //  Set the model's URI's resource and signal change. This will
-    //  cause the properties to update.
-    modelURI.setResource(itemData, setResourceParams);
-
-    //  Position the tile
-    tileTPElem.setPagePosition(
-        TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
-
-    (function() {
-        tileTPElem.get('body').
-            focusAutofocusedOrFirstFocusableDescendant();
-    }).queueForNextRepaint(tileTPElem.getNativeWindow());
-
-    tileTPElem.setAttribute('hidden', false);
-
 });
 
 //  ------------------------------------------------------------------------
