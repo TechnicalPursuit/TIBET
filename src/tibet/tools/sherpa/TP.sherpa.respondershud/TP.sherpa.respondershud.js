@@ -365,6 +365,92 @@ function(aTPElement) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('pathToItem',
+function(aSignal) {
+
+    /**
+     * @method pathToItem
+     * @summary Invoked when the user has decided to obtain the 'path' to an
+     *     item and put it on the clipboard. In the case of this type, this will
+     *     be the path to the 'generator' template or code.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var contextMenuSignal,
+
+        targetElem,
+
+        data,
+
+        indexInData,
+        itemData,
+
+        target,
+
+        uri,
+
+        srcPath,
+        finalPath;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Grab our data.
+    data = this.get('data');
+
+    //  Convert to a Number and retrieve the entry Array from our data
+    indexInData = indexInData.asNumber();
+    itemData = data.at(indexInData);
+
+    //  Resolve the type from the type name that will be at the second position
+    //  in the Array.
+    target = TP.sys.getTypeByName(itemData.at(1));
+
+    if (!TP.isType(target)) {
+        return this;
+    }
+
+    //  Grab the source path to the target, which should be a type object.
+    uri = TP.uc(TP.objectGetSourcePath(target));
+
+    //  Get the path to that URI and make sure to slice off the leading '/'.
+    //  This will ensure that the TP.uriJoinPaths call will join the paths
+    //  properly.
+    srcPath = uri.getPath();
+    srcPath = srcPath.slice(srcPath.indexOf('/') + 1);
+
+    //  Join the leading path to the 'TIBET public directory' to the source
+    //  path. This will give us the final *relative* path from the project down
+    //  to the template file.
+    finalPath = TP.uriJoinPaths(TP.sys.cfg('boot.tibet_pub', ''),
+                                srcPath);
+
+    TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Handlers
 //  ------------------------------------------------------------------------
 
