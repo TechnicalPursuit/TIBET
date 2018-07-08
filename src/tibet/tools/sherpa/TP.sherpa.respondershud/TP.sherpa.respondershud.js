@@ -145,109 +145,6 @@ function(aSignal) {
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
-    TP.alert('Called assistItem');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.respondershud.Inst.defineMethod('focusOnTarget',
-function(aTPElement) {
-
-    /**
-     * @method focusOnTarget
-     * @summary Focuses the receiver onto the supplied target.
-     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
-     *     receiver on.
-     * @returns {TP.sherpa.respondershud} The receiver.
-     */
-
-    var node,
-        attr,
-        info,
-        last;
-
-    info = TP.ac();
-
-    //  If the element is tofu, then we don't show any responders for it.
-    if (aTPElement.getCanonicalName() === 'sherpa:tofu') {
-        this.setValue(info);
-        return this;
-    }
-
-    node = aTPElement.getNativeNode();
-    while (TP.isNode(node)) {
-        if (!TP.nodeIsResponder(node)) {
-            node = node.parentNode;
-            continue;
-        }
-
-        //  Tricky part here is that if we're looking at a tag that also has a
-        //  controller we want to push both into list.
-        attr = node.getAttribute('tibet:ctrl');
-        if (TP.notEmpty(attr)) {
-            info.push(TP.ac(TP.lid(node, true), attr, 'elem'));
-        }
-
-        attr = node.getAttribute('tibet:tag');
-        if (TP.notEmpty(attr)) {
-            info.push(TP.ac(TP.lid(node, true), attr, 'elem'));
-        } else {
-            info.push(
-                TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node)), 'elem'));
-        }
-
-        node = node.parentNode;
-    }
-
-    //  Add controller stack so we see those as well.
-    TP.sys.getApplication().getControllers().perform(
-        function(item) {
-
-            var tname;
-
-            tname = TP.tname(item);
-
-            //  NB: We filter out the Sherpa here
-            if (tname !== 'TP.sherpa.IDE') {
-                info.push(
-                    TP.ac(TP.lid(item, true), TP.tname(item), 'controller'));
-            }
-        });
-
-    //  The list is from 'most specific to least specific' but we want to
-    //  display 'top down' in the sidebar.
-    info.reverse();
-
-    this.setValue(info);
-
-    //  Halo target is always last in the list, and always considered selected.
-    last = this.get('listitems').last();
-    if (TP.isValid(last)) {
-        last.setAttribute('pclass:selected', 'true');
-    }
-
-    //  Scroll our list content to its bottom.
-    this.get('listcontent').scrollTo(TP.BOTTOM);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.respondershud.Inst.defineMethod('inspectItem',
-function(aSignal) {
-
-    /**
-     * @method inspectItem
-     * @summary Invoked when a user has decided to 'Inspect' an item from the
-     *     context menu for hud sidebar items.
-     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.respondershud} The receiver.
-     */
-
     var contextMenuSignal,
 
         targetElem,
@@ -379,6 +276,90 @@ function(aSignal) {
     //  Set the model's URI's resource and signal change. This will
     //  cause the properties to update.
     dataURI.setResource(methods, TP.hc('signalChange', true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('focusOnTarget',
+function(aTPElement) {
+
+    /**
+     * @method focusOnTarget
+     * @summary Focuses the receiver onto the supplied target.
+     * @param {TP.dom.UIElementNode} aTPElement The element to focus the
+     *     receiver on.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var node,
+        attr,
+        info,
+        last;
+
+    info = TP.ac();
+
+    //  If the element is tofu, then we don't show any responders for it.
+    if (aTPElement.getCanonicalName() === 'sherpa:tofu') {
+        this.setValue(info);
+        return this;
+    }
+
+    node = aTPElement.getNativeNode();
+    while (TP.isNode(node)) {
+        if (!TP.nodeIsResponder(node)) {
+            node = node.parentNode;
+            continue;
+        }
+
+        //  Tricky part here is that if we're looking at a tag that also has a
+        //  controller we want to push both into list.
+        attr = node.getAttribute('tibet:ctrl');
+        if (TP.notEmpty(attr)) {
+            info.push(TP.ac(TP.lid(node, true), attr, 'elem'));
+        }
+
+        attr = node.getAttribute('tibet:tag');
+        if (TP.notEmpty(attr)) {
+            info.push(TP.ac(TP.lid(node, true), attr, 'elem'));
+        } else {
+            info.push(
+                TP.ac(TP.lid(node, true), TP.tname(TP.wrap(node)), 'elem'));
+        }
+
+        node = node.parentNode;
+    }
+
+    //  Add controller stack so we see those as well.
+    TP.sys.getApplication().getControllers().perform(
+        function(item) {
+
+            var tname;
+
+            tname = TP.tname(item);
+
+            //  NB: We filter out the Sherpa here
+            if (tname !== 'TP.sherpa.IDE') {
+                info.push(
+                    TP.ac(TP.lid(item, true), TP.tname(item), 'controller'));
+            }
+        });
+
+    //  The list is from 'most specific to least specific' but we want to
+    //  display 'top down' in the sidebar.
+    info.reverse();
+
+    this.setValue(info);
+
+    //  Halo target is always last in the list, and always considered selected.
+    last = this.get('listitems').last();
+    if (TP.isValid(last)) {
+        last.setAttribute('pclass:selected', 'true');
+    }
+
+    //  Scroll our list content to its bottom.
+    this.get('listcontent').scrollTo(TP.BOTTOM);
 
     return this;
 });
