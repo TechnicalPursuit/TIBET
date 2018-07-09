@@ -507,6 +507,8 @@ function(aSignal) {
 
     TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
 
+    TP.alert('Path copied to clipboard');
+
     return this;
 });
 
