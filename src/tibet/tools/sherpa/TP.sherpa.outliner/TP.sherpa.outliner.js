@@ -133,7 +133,7 @@ function() {
     outlineresponder.addStateMachine(keyboardSM);
     outlineresponder.addInputState('outline');
 
-    this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHUD', consoleGUI.getNativeDocument()),
                     'ClosedChange');
 
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
