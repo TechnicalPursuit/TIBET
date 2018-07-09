@@ -332,7 +332,107 @@ function(aSignal) {
      * @returns {TP.sherpa.bindshud} The receiver.
      */
 
-    TP.alert('Called deleteItem');
+    var contextMenuSignal,
+
+        targetElem,
+
+        indexInData,
+
+        data,
+        itemData,
+
+        peerID,
+        targetTPElem,
+
+        targetElem,
+        bindingAttrs;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number.
+    indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
+    itemData = data.at(indexInData);
+
+    peerID = itemData.at(0);
+    targetTPElem = TP.byId(peerID);
+
+    targetElem = targetTPElem.getNativeNode();
+
+    //  Grab all of the attributes in the 'bind:' namespace.
+    bindingAttrs = TP.elementGetAttributeNodesInNS(
+                            targetElem,
+                            /\w+:(in|io|out|scope|repeat)/,
+                            TP.w3.Xmlns.BIND);
+
+    //  Make sure to confirm this operation, since it's destructive.
+    TP.confirm('Really delete all data bindings of the halo\'ed element?').then(
+        function(shouldDelete) {
+
+            var bindingExprs,
+                expandedBindingExprs;
+
+            if (shouldDelete) {
+
+                //  Grab the fully expanded binding expressions for the source
+                //  element.
+                bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+
+                //  We just need to get the keys and then iterate, calling 'set'
+                //  with an empty value for each one.
+                bindingExprs.getKeys().forEach(
+                    function(aKey) {
+                        targetTPElem.set(aKey, '');
+                    });
+
+                //  Iterate over all of the binding attributes that were present
+                //  and remove them.
+                bindingAttrs.forEach(
+                    function(anAttrNode) {
+                        TP.elementRemoveAttribute(
+                            targetElem,
+                            TP.attributeGetFullName(anAttrNode),
+                            true);
+                    });
+
+                //  Remove special attributes that TIBET uses for binding
+                //  maintenance.
+                TP.elementRemoveAttribute(
+                    targetElem, 'tibet:desugaredAttrExprs', true);
+                TP.elementRemoveAttribute(
+                    targetElem, 'tibet:textbinding', true);
+
+                //  'Deaden' and then re-'awake'n the target element. This
+                //  should cause teardown & setup that was bind-related to be
+                //  flushed.
+                targetTPElem.deaden();
+                targetTPElem.awaken();
+
+                //  'Refresh' the target element, causing whatever data is left
+                //  around data binding to be flushed.
+                targetTPElem.refresh();
+            }
+        });
 
     return this;
 });
