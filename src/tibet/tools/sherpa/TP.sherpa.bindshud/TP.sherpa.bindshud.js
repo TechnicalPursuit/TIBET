@@ -342,9 +342,9 @@ function(aSignal) {
         itemData,
 
         peerID,
-        targetTPElem,
+        peerTPElem,
+        peerElem,
 
-        targetElem,
         bindingAttrs;
 
     //  Although we get the 'item selected' signal as a parameter, what we
@@ -375,13 +375,13 @@ function(aSignal) {
     itemData = data.at(indexInData);
 
     peerID = itemData.at(0);
-    targetTPElem = TP.byId(peerID);
+    peerTPElem = TP.byId(peerID);
 
-    targetElem = targetTPElem.getNativeNode();
+    peerElem = peerTPElem.getNativeNode();
 
     //  Grab all of the attributes in the 'bind:' namespace.
     bindingAttrs = TP.elementGetAttributeNodesInNS(
-                            targetElem,
+                            peerElem,
                             /\w+:(in|io|out|scope|repeat)/,
                             TP.w3.Xmlns.BIND);
 
@@ -389,20 +389,19 @@ function(aSignal) {
     TP.confirm('Really delete all data bindings of the halo\'ed element?').then(
         function(shouldDelete) {
 
-            var bindingExprs,
-                expandedBindingExprs;
+            var bindingExprs;
 
             if (shouldDelete) {
 
                 //  Grab the fully expanded binding expressions for the source
                 //  element.
-                bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+                bindingExprs = peerTPElem.getFullyExpandedBindingExpressions();
 
                 //  We just need to get the keys and then iterate, calling 'set'
                 //  with an empty value for each one.
                 bindingExprs.getKeys().forEach(
                     function(aKey) {
-                        targetTPElem.set(aKey, '');
+                        peerTPElem.set(aKey, '');
                     });
 
                 //  Iterate over all of the binding attributes that were present
@@ -410,7 +409,7 @@ function(aSignal) {
                 bindingAttrs.forEach(
                     function(anAttrNode) {
                         TP.elementRemoveAttribute(
-                            targetElem,
+                            peerElem,
                             TP.attributeGetFullName(anAttrNode),
                             true);
                     });
@@ -418,19 +417,19 @@ function(aSignal) {
                 //  Remove special attributes that TIBET uses for binding
                 //  maintenance.
                 TP.elementRemoveAttribute(
-                    targetElem, 'tibet:desugaredAttrExprs', true);
+                    peerElem, 'tibet:desugaredAttrExprs', true);
                 TP.elementRemoveAttribute(
-                    targetElem, 'tibet:textbinding', true);
+                    peerElem, 'tibet:textbinding', true);
 
                 //  'Deaden' and then re-'awake'n the target element. This
                 //  should cause teardown & setup that was bind-related to be
                 //  flushed.
-                targetTPElem.deaden();
-                targetTPElem.awaken();
+                peerTPElem.deaden();
+                peerTPElem.awaken();
 
                 //  'Refresh' the target element, causing whatever data is left
                 //  around data binding to be flushed.
-                targetTPElem.refresh();
+                peerTPElem.refresh();
             }
         });
 
