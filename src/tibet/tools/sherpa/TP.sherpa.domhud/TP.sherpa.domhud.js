@@ -320,6 +320,34 @@ function(sidebarElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineMethod('customTagItem',
+function(aSignal) {
+
+    /**
+     * @method customTagItem
+     * @summary Invoked when the user has decided to make a custom tag from the
+     *     currently halo'ed element.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var halo,
+
+        targetTPElem;
+
+    //  Grab the halo's target element.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    targetTPElem = halo.get('currentTargetTPElem');
+
+    //  Tell the Sherpa IDE object to make a custom tag from it.
+    TP.bySystemId('Sherpa').makeCustomTagFrom(targetTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineMethod('deleteItem',
 function(aSignal) {
 
