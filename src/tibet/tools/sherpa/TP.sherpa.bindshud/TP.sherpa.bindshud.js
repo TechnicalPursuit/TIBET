@@ -435,6 +435,89 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('pathToItem',
+function(aSignal) {
+
+    /**
+     * @method pathToItem
+     * @summary Invoked when the user has decided to obtain the 'path' to an
+     *     item and put it on the clipboard. In the case of this type, this will
+     *     be the path to the URI that the item is bound to.
+     * @param {TP.sig.SelectMenuItem} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var contextMenuSignal,
+
+        targetElem,
+
+        indexInData,
+
+        data,
+        itemData,
+
+        peerID,
+        targetTPElem,
+
+        bindingExprs,
+        expandedBindingExprs,
+        expandedBindingExpr,
+
+        sourceURI,
+
+        finalPath;
+
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
+
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'item')) {
+        return this;
+    }
+
+    //  Get the value of the target's indexInData attribute.
+    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+
+    //  No indexInData? Exit here.
+    if (TP.isEmpty(indexInData)) {
+        return this;
+    }
+
+    //  Convert to a Number.
+    indexInData = indexInData.asNumber();
+
+    //  Grab our data and retrieve the entry Array from our data.
+    data = this.get('data');
+    itemData = data.at(indexInData);
+
+    peerID = itemData.at(0);
+    targetTPElem = TP.byId(peerID);
+
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    expandedBindingExprs = bindingExprs.at(bindingExprs.getKeys().first());
+
+    //  We're only going to use the first expression.
+    expandedBindingExpr = expandedBindingExprs.first();
+
+    if (TP.isURIString(expandedBindingExpr)) {
+        sourceURI = TP.uc(expandedBindingExpr);
+        finalPath = sourceURI.getPrimaryLocation();
+    } else {
+        return this;
+    }
+
+    TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
@@ -821,76 +904,6 @@ function(aSignal) {
     TP.signal(null,
                 'ConsoleCommand',
                 TP.hc('cmdText', cmdText));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineHandler('InspectTarget',
-function(aSignal) {
-
-    /**
-     * @method handleInspectTarget
-     * @summary Handles notifications of when the receiver wants to inspect the
-     *     current target and shift the Sherpa's inspector to focus it on that
-     *     target.
-     * @param {TP.sig.InspectTarget} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.bindshud} The receiver.
-     */
-
-    var targetElem,
-
-        data,
-
-        indexInData,
-        itemData,
-
-        peerID,
-        targetTPElem,
-
-        bindingExprs,
-        expandedBindingExpr,
-
-        sourceURI;
-
-    //  Grab the target and make sure it's an 'item' tile.
-    targetElem = aSignal.getDOMTarget();
-    if (!TP.elementHasClass(targetElem, 'item')) {
-        return this;
-    }
-
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
-
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
-        return this;
-    }
-
-    //  Convert to a Number.
-    indexInData = indexInData.asNumber();
-
-    //  Grab our data and retrieve the entry Array from our data.
-    data = this.get('data');
-    itemData = data.at(indexInData);
-
-    peerID = itemData.at(0);
-    targetTPElem = TP.byId(peerID);
-
-    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
-    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys().first());
-
-    if (TP.isURIString(expandedBindingExpr)) {
-        sourceURI = TP.uc(expandedBindingExpr);
-        sourceURI = sourceURI.getPrimaryURI();
-
-        this.signal('InspectObject',
-                    TP.hc('targetObject', sourceURI,
-                            'targetAspect', TP.id(sourceURI),
-                            'showBusy', true));
-    }
 
     return this;
 });
