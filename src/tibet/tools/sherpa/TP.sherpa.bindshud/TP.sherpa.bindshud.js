@@ -507,7 +507,7 @@ function(aSignal) {
 
     if (TP.isURIString(expandedBindingExpr)) {
         sourceURI = TP.uc(expandedBindingExpr);
-        finalPath = sourceURI.getPrimaryLocation();
+        finalPath = sourceURI.getLocation();
     } else {
         return this;
     }
