@@ -212,6 +212,8 @@ function(aSignal) {
     peerID = itemData.at(0);
     sourceTPElem = TP.byId(peerID);
 
+    //  Grab all of the fully expanded binding expressions from the element and
+    //  grab the first one, which is what we'll use here.
     bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions();
     expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
 
@@ -219,6 +221,7 @@ function(aSignal) {
         return this;
     }
 
+    //  Create a source URI from the expanded binding expression.
     sourceURI = TP.uc(expandedBindingExpr);
 
     //  Prevent default *on the trigger signal* (which is the GUI signal -
@@ -226,42 +229,45 @@ function(aSignal) {
     //  doesn't show.
     aSignal.at('trigger').preventDefault();
 
+    //  Grab the content of the URI, which will be the output for this
+    //  particular bind.
     sourceResource = sourceURI.getResource(
                                 TP.hc('resultType', TP.WRAP));
     sourceResource.then(
         function(sourceResult) {
 
-            var mimeType,
-                formattedResult;
+            var formattedResult,
 
-            if (TP.notEmpty(sourceResult)) {
-                if (TP.isKindOf(sourceResult, TP.core.Content)) {
-                    mimeType = sourceResult.getContentMIMEType();
-                } else if (TP.isKindOf(sourceResult, TP.dom.Node)) {
-                    mimeType = TP.XML_ENCODED;
-                } else {
-                    mimeType = TP.JSON_ENCODED;
-                }
+                bindingExprInput,
+                val;
 
-                if (mimeType === TP.XML_ENCODED) {
-                    formattedResult = TP.sherpa.pp.runXMLModeOn(
-                                        sourceResult.asString());
-                } else if (mimeType === TP.JSON_ENCODED) {
-                    formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
-                                        sourceResult.asJSONSource());
-                } else {
-                    formattedResult = TP.str(sourceResult);
-                }
-            } else {
-                formattedResult = 'No result for:<br/>' +
-                                    sourceURI.getLocation();
-            }
+            //  Format the result and use it as part of the panel content.
+            formattedResult = this.formatBindOutput(sourceResult, sourceURI);
 
             tileTPElem.setContent(
-                TP.xhtmlnode('<span class="cm-s-elegant">' +
-                                formattedResult +
-                                '</span>'));
-        });
+                TP.xhtmlnode(
+                    '<input type="text"' +
+                        ' class="bindexprinput"' +
+                        ' on:change="SetBindingExpr"/>' +
+                    '<div class="bindoutput cm-s-elegant">' +
+                        formattedResult +
+                    '</div>'));
+
+            //  Grab the binding expression input field.
+            bindingExprInput =
+                TP.byCSSPath(' .bindexprinput', tileTPElem, true, true);
+
+            //  Determine the binding attribute that we're setting based on what
+            //  the element already has and get that value.
+            if (sourceTPElem.hasAttribute('bind:in')) {
+                val = sourceTPElem.getAttribute('bind:in');
+            } else if (sourceTPElem.hasAttribute('bind:io')) {
+                val = sourceTPElem.getAttribute('bind:io');
+            }
+
+            //  Set the value of the input to the binding expression.
+            bindingExprInput.set('value', val);
+        }.bind(this));
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
@@ -279,6 +285,10 @@ function(aSignal) {
 
         tileTPElem = TP.bySystemId('Sherpa').makeTile('BindSummary_Tile');
         tileTPElem.setHeaderText('Bind Source Text');
+
+        //  Set the 'tibet:ctrl' attribute on the tile to be the ID of this
+        //  object. That will cause responder signals to be routed here.
+        tileTPElem.setAttribute('tibet:ctrl', 'BindsHUD');
 
         newContentTPElem = tileTPElem.setContent(
                                 TP.getContentForTool(
@@ -505,6 +515,49 @@ function(aTPElement) {
     this.get('listcontent').scrollTo(TP.BOTTOM);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('formatBindOutput',
+function(sourceContent, sourceURI) {
+
+    /**
+     * @method formatBindOutput
+     * @summary Formats the binding output based on its MIME type, etc.
+     * @param {TP.core.Content} sourceContent The content of the URI.
+     * @param {TP.uri.URI} sourceURI The URI that the content was retrieved
+     *     from.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var mimeType,
+        formattedResult;
+
+    if (TP.notEmpty(sourceContent)) {
+        if (TP.isKindOf(sourceContent, TP.core.Content)) {
+            mimeType = sourceContent.getContentMIMEType();
+        } else if (TP.isKindOf(sourceContent, TP.dom.Node)) {
+            mimeType = TP.XML_ENCODED;
+        } else {
+            mimeType = TP.JSON_ENCODED;
+        }
+
+        if (mimeType === TP.XML_ENCODED) {
+            formattedResult = TP.sherpa.pp.runXMLModeOn(
+                                sourceContent.asString());
+        } else if (mimeType === TP.JSON_ENCODED) {
+            formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
+                                sourceContent.asJSONSource());
+        } else {
+            formattedResult = TP.str(sourceContent);
+        }
+    } else {
+        formattedResult = 'No result for:<br/>' +
+                            sourceURI.getLocation();
+    }
+
+    return formattedResult;
 });
 
 //  ------------------------------------------------------------------------
@@ -848,6 +901,101 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 //  Handlers
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineHandler('SetBindingExpr',
+function(aSignal) {
+
+    /**
+     * @method handleSetBindingExpr
+     * @summary Handles notifications of when the receiver wants to set the
+     *     binding expression of the current halo target.
+     * @param {TP.sig.SetBindingExpr} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var halo,
+
+        targetTPElem,
+
+        attrName,
+        val,
+
+        bindingExprs,
+        expandedBindingExpr,
+
+        sourceURI,
+
+        sourceResource;
+
+    //  Grab the halo's target element.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    targetTPElem = halo.get('currentTargetTPElem');
+
+    //  Determine which binding attribute we're setting here.
+    if (targetTPElem.hasAttribute('bind:in')) {
+        attrName = 'bind:in';
+    } else if (targetTPElem.hasAttribute('bind:io')) {
+        attrName = 'bind:io';
+    }
+
+    //  Grab the value from the origin of the signal (which is probably a text
+    //  field)
+    val = TP.wrap(aSignal.getOrigin()).get('value');
+
+    //  Turn on the Sherpa's 'process DOM mutations' machinery to capture
+    //  modifiations to the source DOM, if possible.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
+    //  Go ahead and set the attribute to the new value.
+    targetTPElem.setAttribute(attrName, val);
+
+    //  Refresh any data bindings.
+    targetTPElem.refresh();
+
+    //  Grab all of the fully expanded binding expressions from the element and
+    //  grab the first one, which is what we'll use here.
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
+
+    if (!TP.isURIString(expandedBindingExpr)) {
+        return this;
+    }
+
+    //  Create a source URI from the expanded binding expression.
+    sourceURI = TP.uc(expandedBindingExpr);
+
+    //  Grab the content of the URI, which will be the output for this
+    //  particular bind.
+    sourceResource = sourceURI.getResource(
+                                TP.hc('resultType', TP.WRAP));
+    sourceResource.then(
+        function(sourceResult) {
+
+            var formattedResult,
+
+                tileTPElem,
+
+                bindingExprOutput;
+
+            //  Format the result and use it as part of the panel content.
+            formattedResult = this.formatBindOutput(sourceResult, sourceURI);
+
+            //  Grab the tile element that we're being displayed in.
+            tileTPElem = TP.byId('BindSummary_Tile', this.getNativeWindow());
+
+            //  Grab the div that represents the binding output and set its
+            //  value.
+            bindingExprOutput =
+                TP.byCSSPath(' .bindoutput', tileTPElem, true, true);
+
+            bindingExprOutput.set('value', formattedResult);
+        }.bind(this));
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.bindshud.Inst.defineHandler('FocusHalo',

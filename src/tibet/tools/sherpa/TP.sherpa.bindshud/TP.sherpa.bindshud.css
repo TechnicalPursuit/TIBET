@@ -36,12 +36,13 @@ sherpa|bindshud > ul {
 /* All items */
 
 sherpa|bindshud > ul.content > li.item {
+
     margin: 1px 8px;
 }
 
 sherpa|bindshud > ul.content > li.domnode {
+
     height: 1.75em;
-    line-height: 1.75em;
 
     padding-left: 0.25em;
 
@@ -49,6 +50,8 @@ sherpa|bindshud > ul.content > li.domnode {
     border-radius: 5px;
 
     overflow: hidden;
+
+    line-height: 1.75em;
     text-overflow: ellipsis;
 
     cursor: pointer;
@@ -63,23 +66,30 @@ sherpa|bindshud > ul.content > li.domnode[pclass|disabled] {
 }
 
 sherpa|bindshud > ul.content > li.domnode:hover {
+
     background-color: #dcb6a2;
+
     color: black;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected] {
+
     background-color: #c88b6b;
+
     border: 1px solid black;
+
     color: black;
 }
 
 sherpa|bindshud > ul.content > li.domnode[pclass|selected]:hover {
+
     background-color: #c88b6b;
 }
 
 /* spacer items */
 
 sherpa|bindshud > ul.content > li.spacer {
+
     background-color: transparent;
 
     height: 4px;
@@ -87,26 +97,33 @@ sherpa|bindshud > ul.content > li.spacer {
     border: none;
 
     overflow: hidden;
+
     text-overflow: ellipsis;
 
     cursor: default;
 }
 
 sherpa|bindshud > ul.content > li.spacer.sherpa-bindshud-droptarget {
+
     background-color: #c88b6b;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget {
+
     font-weight: bold;
+
     border: 1px dashed black;
+
     box-shadow: 2px 2px 2px #e0e0e0;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|selected] {
+
     font-weight: bold;
 }
 
 sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|selected]:hover {
+
     font-weight: bold;
 }
 
@@ -122,13 +139,37 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
 
 #BindSummary_Tile > .body {
 
-    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 100%;
+
     background: white;
-    padding: 8px;
+}
+
+#BindSummary_Tile .bindexprinput {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 88%;
+
+    margin-left: 2px;
+    margin-right: 2px;
+
+    width: 96%;
+}
+
+#BindSummary_Tile .bindoutput {
+
+    position: absolute;
+
+    top: 34px;
+    right: 2px;
+    bottom: 4px;
+    left: 2px;
+
+    border: solid 1px #aaa;
 }
 
 #BindSummary_Tile > .header {
+
     background: #e3c5b5;
 }
 
@@ -138,5 +179,6 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
 }
 
 #BindSummary_Tile > .footer {
+
     background: #f9f9f9;
 }
