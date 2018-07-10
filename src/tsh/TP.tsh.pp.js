@@ -458,11 +458,10 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.pp.Type.defineMethod('fromTP_core_URI',
+TP.tsh.pp.Type.defineMethod('fromTP_uri_URI',
 function(anObject, optFormat) {
 
     return this.fromObject(anObject);
-
 });
 
 //  ------------------------------------------------------------------------

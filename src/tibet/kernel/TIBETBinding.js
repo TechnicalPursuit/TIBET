@@ -3083,7 +3083,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
      *     this will be the signal's 'origin'.
      * @param {Boolean} [originWasURI=false] If a signal initiated the
      *     refreshing process, then this is whether or not the origin of the
-     *     signal that started the refreshing process was a TP.core.URI.
+     *     signal that started the refreshing process was a TP.uri.URI.
      * @param {Object} [changeSource] The source of the change. If a signal
      *     initiated the refreshing process, this will be the signal's 'source'.
      * @param {Number[]} [updateIndexes] If one of the leafs under the receiver
@@ -3756,7 +3756,7 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
      * @param {Number} [aPathType] The path type that is contained in the
      *     binding expression.
      * @param {Boolean} [originWasURI=false] Whether or not the origin of the
-     *     signal that started the refreshing process was a TP.core.URI.
+     *     signal that started the refreshing process was a TP.uri.URI.
      * @param {Object} [changeSource] The source of the change. If a signal
      *     initiated the refreshing process, this will be the signal's 'source'.
      * @returns {TP.dom.ElementNode} The receiver.

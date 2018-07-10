@@ -870,7 +870,7 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('fromTP_core_URI',
+TP.sherpa.pp.Type.defineMethod('fromTP_uri_URI',
 function(anObject, optFormat) {
 
     return this.fromObject(anObject);
