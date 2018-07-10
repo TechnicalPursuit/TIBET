@@ -2718,7 +2718,8 @@ function() {
 
     //  Add a managed Mutation Observer filter Function that will filter all
     //  mutation records for bind:in attribute mutations when the target element
-    //  is a desugared text span.
+    //  is a desugared text span. This is because this 'bind:in' was *generated*
+    //  because of the desugaring and it won't be found in the source document.
 
     TP.addMutationObserverFilter(
         function(aMutationRecord) {
