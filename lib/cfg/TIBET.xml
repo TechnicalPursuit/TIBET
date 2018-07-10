@@ -131,7 +131,6 @@
 <config id="xctrls-inlined" if="boot.phase_one boot.inlined">
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_variables.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls_variables_tpi.css.js"/>
-    <script src="~lib_build/lib_src-xctrls-TP.xctrls_mixins.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_grid.css.js"/>
 
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_common.css.js"/>
