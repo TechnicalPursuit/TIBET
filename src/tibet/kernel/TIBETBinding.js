@@ -3994,6 +3994,10 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                     finalVal = null;
                 } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
                     finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
+                } else if (!TP.isMutable(theVal)) {
+                    //  If it's a String, Number or Boolean, then theVal is the
+                    //  actual value we want to use.
+                    finalVal = theVal;
                 } else {
                     finalVal = theVal.get(expr);
                 }
