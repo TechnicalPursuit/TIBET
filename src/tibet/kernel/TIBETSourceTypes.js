@@ -1949,6 +1949,7 @@ function() {
         function(aMutationRecord) {
 
             var target,
+
                 ans,
                 val;
 
@@ -1956,6 +1957,14 @@ function() {
 
             //  If the target isn't an Element, we allow the mutation.
             if (!TP.isElement(target)) {
+                return true;
+            }
+
+            //  See if the Sherpa is currently processing DOM mutations. If so,
+            //  then that means that we should just return true here.
+            sherpaObj = TP.bySystemId('Sherpa');
+            if (TP.isValid(sherpaObj) &&
+                sherpaObj.get('shouldProcessDOMMutations')) {
                 return true;
             }
 
@@ -2258,6 +2267,9 @@ function(aMutationRecord) {
 
     var targetNode,
 
+        processForSherpa,
+        sherpaObj,
+
         targetShouldTrack,
 
         targetType,
@@ -2291,6 +2303,15 @@ function(aMutationRecord) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  See if the Sherpa is currently processing DOM mutations. If so, then
+    //  that will factor into whether or not we will ignore this event or not.
+    processForSherpa = false;
+    sherpaObj = TP.bySystemId('Sherpa');
+    if (TP.isValid(sherpaObj) &&
+        sherpaObj.get('shouldProcessDOMMutations')) {
+        processForSherpa = true;
+    }
+
     //  If the target is an Element and it has a 'tibet:nomutationtracking'
     //  attribute on it that's either set to look at itself or at one of its
     //  ancestors or itself to determine whether or not it should process
@@ -2299,10 +2320,12 @@ function(aMutationRecord) {
         targetShouldTrack = TP.elementGetAttribute(
                 targetNode, 'tibet:nomutationtracking', true);
 
-        if (targetShouldTrack === 'true' ||
-            targetShouldTrack === TP.ANCESTOR_OR_SELF) {
-            return this;
-        }
+        //  NB: Note how we also take processForSherpa into account here.
+        if ((targetShouldTrack === 'true' ||
+            targetShouldTrack === TP.ANCESTOR_OR_SELF) &&
+            !processForSherpa) {
+                return this;
+            }
     }
 
     //  And make sure that we can computed a TIBET type for it.
@@ -2408,7 +2431,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
 
-                                if (val === TP.ANCESTOR_OR_SELF) {
+                                //  NB: Note how we also take processForSherpa
+                                //  into account here.
+                                if (val === TP.ANCESTOR_OR_SELF &&
+                                    !processForSherpa) {
                                     return false;
                                 }
                             }
@@ -2429,7 +2455,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:nomutationtracking', true);
 
-                                if (val === 'true' || val === TP.ANCESTOR) {
+                                //  NB: Note how we also take processForSherpa
+                                //  into account here.
+                                if ((val === 'true' || val === TP.ANCESTOR) &&
+                                    !processForSherpa) {
                                     return false;
                                 }
                             }
@@ -2483,7 +2512,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
 
-                                if (val === TP.ANCESTOR_OR_SELF) {
+                                //  NB: Note how we also take processForSherpa
+                                //  into account here.
+                                if (val === TP.ANCESTOR_OR_SELF &&
+                                    !processForSherpa) {
                                     return false;
                                 }
                             }
@@ -2504,7 +2536,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:nomutationtracking', true);
 
-                                if (val === 'true' || val === TP.ANCESTOR) {
+                                //  NB: Note how we also take processForSherpa
+                                //  into account here.
+                                if ((val === 'true' || val === TP.ANCESTOR) &&
+                                    !processForSherpa) {
                                     return false;
                                 }
                             }
