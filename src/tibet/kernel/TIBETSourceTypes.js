@@ -1950,6 +1950,8 @@ function() {
 
             var target,
 
+                sherpaObj,
+
                 ans,
                 val;
 
