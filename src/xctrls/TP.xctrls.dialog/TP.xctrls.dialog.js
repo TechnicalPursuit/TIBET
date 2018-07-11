@@ -77,6 +77,8 @@ TP.xctrls.dialog.Inst.defineAttribute('curtain',
             tpTarget.getAttribute('curtainID'));
     }));
 
+TP.xctrls.dialog.Inst.defineAttribute('curtainWasShowing');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -118,9 +120,30 @@ function(beHidden) {
     var curtainTPElem,
         thisref;
 
+    //  If the panel is modal, then we need to manage the curtain appropriately.
     if (this.getAttribute('modal') === 'true') {
+
+        //  If we have a valid curtain element
         if (TP.isValid(curtainTPElem = this.get('curtain'))) {
-            curtainTPElem.setAttribute('hidden', beHidden);
+
+            //  If we're showing the curtain, then we capture whether or not the
+            //  curtain was already showing. This may be if we're displaying a
+            //  'nested' set of dialogs.
+            if (!beHidden) {
+                if (curtainTPElem.getAttribute('hidden') === false) {
+                    this.set('curtainWasShowing', true);
+                }
+
+                //  Go ahead and show the curtain.
+                curtainTPElem.setAttribute('hidden', false);
+            } else {
+
+                //  If the curtain *wasn't* already showing when we first
+                //  appeared, then we go ahead and hide it.
+                if (!this.get('curtainWasShowing')) {
+                    curtainTPElem.setAttribute('hidden', true);
+                }
+            }
         }
     }
 
