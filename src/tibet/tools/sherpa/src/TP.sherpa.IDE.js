@@ -1694,7 +1694,8 @@ function(aTPElem) {
 
     var newTagName,
 
-        handler;
+        additionHandler,
+        cancellationHandler;
 
     //  We start the new tag name out with the application's namespace prefix
     //  and a ':'.
@@ -1713,7 +1714,7 @@ function(aTPElem) {
                 ));
 
     //  Set up a handler that will wait for a 'TypeAdded' signal.
-    handler = function(typeAddedSignal) {
+    additionHandler = function(typeAddedSignal) {
 
         var elem,
             tagType,
@@ -1728,7 +1729,7 @@ function(aTPElem) {
             sherpaDoc;
 
         //  Make sure to unregister the handler - this is a one shot.
-        handler.ignore(TP.ANY, 'TypeAdded');
+        additionHandler.ignore(TP.ANY, 'TypeAdded');
 
         //  Grab the '<script>' node that was added for the newly defined tag
         //  type. This will supply our new tag name.
@@ -1867,7 +1868,16 @@ function(aTPElem) {
         }
     }.bind(this);
 
-    handler.observe(TP.ANY, 'TypeAdded');
+    additionHandler.observe(TP.ANY, 'TypeAdded');
+
+    //  Set up a handler that will wait for a 'TypeAdditionCancelled' signal.
+    cancellationHandler = function(typeAdditionCancelledSignal) {
+
+        additionHandler.ignore(TP.ANY, 'TypeAdded');
+        cancellationHandler.ignore(TP.ANY, 'TypeAdditionCancelled');
+    };
+
+    cancellationHandler.observe(TP.ANY, 'TypeAdditionCancelled');
 
     return this;
 }, {
