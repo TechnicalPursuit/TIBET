@@ -7,7 +7,7 @@
         "sequence": [{
             "task": "templater",
             "guards": [{
-                "test": "/TIBET/i.test('\{{params.stdin}}')",
+                "test": "/TIBET/i.test('\{{params.input}}')",
                 "state": "$$failed"
             }]
         }, {

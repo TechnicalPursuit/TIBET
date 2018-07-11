@@ -817,6 +817,9 @@
 
             var params,
                 result,
+                index,
+                structure,
+                block,
                 text,
                 template,
                 output;
@@ -831,9 +834,40 @@
             //  optionally provided in the task and/or flow definitions.
             params = remapStdioParams(job, step, {});
 
-            //  Add in any 'general task' (foo) parameters
-            if (job.params && job.params[task.name]) {
-                TDS.blend(params, job.params[task.name]);
+            index = step.index;
+            structure = job.tasks.structure;
+
+            switch (structure) {
+                case 'sequence':
+
+                    if (job.params) {
+                        if (job.params.structure) {
+                            if (job.params.structure === structure) {
+                                //  For sequence we expect a block with a task
+                                //  key and params key. the task should match.
+                                block = job.params[structure][index];
+                                if (block.task === task.name) {
+                                    TDS.blend(params, block.params);
+                                } else {
+                                    throw new Error(
+                                        'Job param sequence out of order.' +
+                                        block.task + ' !== ' + task.name + '.');
+                                }
+                            } else {
+                                throw new Error(
+                                    'Job task/param structure mismatch');
+                            }
+                        } else {
+                            //  Not using a structure in params block is how
+                            //  older versions worked...
+                            throw new Error('Invalid job params block.' +
+                                ' No \'structure\' key present.');
+                        }
+                    }
+
+                    break;
+                default:
+                    throw new Error('Unsupported task structure: ' + structure);
             }
 
             //  Blend in anything not specified by job/flow parameters.
@@ -850,7 +884,7 @@
             try {
                 template = TDS.template.compile(text);
             } catch (e) {
-                logger.error('Error compiling template:\n\n' +
+                logger.error('Error compiling job parameter template:\n\n' +
                     text + '\n');
                 logger.error(e.message);
                 throw e;
@@ -863,7 +897,7 @@
                     params: params
                 });
             } catch (e) {
-                logger.error('Error invoking template:\n\n' +
+                logger.error('Error invoking job parameter template:\n\n' +
                     template + '\n');
                 logger.error(e.message);
                 throw e;
@@ -883,7 +917,7 @@
             try {
                 params = JSON.parse(output);
             } catch (e) {
-                logger.error('Error parsing template:\n\n' + output);
+                logger.error('Error parsing job parameter template:\n\n' + output);
                 logger.error(e.message);
 
                 //  Having JSON.parse problems? Dump the string.

@@ -96,11 +96,11 @@
                 template = params.template;
             }
 
-            //  The templating process is defined to run from 'stdin' whatever
+            //  The templating process is defined to run from 'input' whatever
             //  that is set to. So ensure we have access to that value.
-            if (!params.stdin) {
+            if (!params.input) {
                 return TDS.Promise.reject(new Error(
-                    'Misconfigured templater task. Missing params.stdin.'));
+                    'Misconfigured templater task. Missing params.input.'));
             }
 
             //  Simple execution function for running the template.
@@ -122,7 +122,7 @@
 
             promisifiedExec = TDS.Promise.promisify(execTemplate);
 
-            return promisifiedExec(template, {stdin: params.stdin}).then(
+            return promisifiedExec(template, TDS.blend({}, params)).then(
                 function(result) {
                     step.stdout = {result: result};
                 },
