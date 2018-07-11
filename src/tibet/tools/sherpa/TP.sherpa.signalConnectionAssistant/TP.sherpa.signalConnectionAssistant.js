@@ -107,12 +107,20 @@ function(anObject) {
      * @returns {TP.sherpa.signalConnectionAssistant} The receiver.
      */
 
-    var modelURI;
+    var modelURI,
+
+        connector;
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
     modelURI = TP.uc('urn:tibet:signalConnectionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
+
+    //  Hide the connector. Because we're invoked asynchronously, our invoking
+    //  code configured the connector to not hide. Therefore, we need to do it
+    //  here.
+    connector = TP.byId('SherpaConnector', this.getNativeDocument());
+    connector.hideAllConnectorVisuals();
 
     //  Signal that the connection has failed.
     this.signal('SherpaConnectFailed');
@@ -149,6 +157,8 @@ function(anObject) {
 
     var modelURI,
 
+        connector,
+
         srcTPElement,
 
         result,
@@ -163,6 +173,12 @@ function(anObject) {
     //  on our way out.
     modelURI = TP.uc('urn:tibet:signalConnectionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
+
+    //  Hide the connector. Because we're invoked asynchronously, our invoking
+    //  code configured the connector to not hide. Therefore, we need to do it
+    //  here.
+    connector = TP.byId('SherpaConnector', this.getNativeDocument());
+    connector.hideAllConnectorVisuals();
 
     //  Signal that the connection has succeeded.
     this.signal('SherpaConnectSucceeded');

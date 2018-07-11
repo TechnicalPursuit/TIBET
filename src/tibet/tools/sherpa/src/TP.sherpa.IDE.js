@@ -1365,12 +1365,19 @@ function(aSignal) {
     var srcTPElem,
         destTPElem,
 
-        target;
+        target,
+
+        connector;
 
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
 
     target = destTPElem.getType();
+
+    //  Turn off 'autohiding' the connector - we'll hide it when the assisntant
+    //  is done.
+    connector = TP.byId('SherpaConnector', this.get('vWin'));
+    connector.set('autohideConnector', false);
 
     //  Show the assistant.
     TP.sherpa.signalConnectionAssistant.showAssistant(

@@ -867,7 +867,9 @@ function(aSignal) {
         data,
         itemData,
 
-        target;
+        target,
+
+        connector;
 
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
@@ -890,6 +892,11 @@ function(aSignal) {
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
     target = TP.sys.getTypeByName(itemData.at(1));
+
+    //  Turn off 'autohiding' the connector - we'll hide it when the assisntant
+    //  is done.
+    connector = TP.byId('SherpaConnector', this.getNativeDocument());
+    connector.set('autohideConnector', false);
 
     //  Show the assistant.
     TP.sherpa.signalConnectionAssistant.showAssistant(
