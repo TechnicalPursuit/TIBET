@@ -554,7 +554,9 @@ function(aSignal) {
      */
 
     var consoleService,
-        cmdText;
+        cmdText,
+
+        request;
 
     //  Grab the console service. This gives us access to the currently active
     //  shell.
@@ -566,7 +568,8 @@ function(aSignal) {
     //  If it's real and we were able to find the console server, then send the
     //  console request.
     if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
-        consoleService.sendConsoleRequest(cmdText);
+        request = consoleService.sendConsoleRequest(cmdText);
+        aSignal.atPut('consoleRequest', request);
     }
 
     return this;
