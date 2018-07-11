@@ -226,6 +226,14 @@ function() {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
+    var elem;
+
+    elem = this.getNativeNode();
+
+    //  Any element can be a 'signal source' - add the attribute value here.
+    TP.elementAddAttributeValue(
+            elem, 'sherpa:connectorvend', 'signalsource', true);
+
     return this;
 });
 
@@ -240,6 +248,14 @@ function() {
      *     a part of has stopped.
      * @returns {TP.dom.ElementNode} The receiver.
      */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    //  Any element can be a 'signal source' - remove the attribute value here.
+    TP.elementRemoveAttributeValue(
+            elem, 'sherpa:connectorvend', 'signalsource', true);
 
     return this;
 });
