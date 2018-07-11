@@ -82,6 +82,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.method_assistant.Inst.defineHandler('DialogCancel',
+function(anObject) {
+
+    /**
+     * @method handleDialogCancel
+     * @summary Handles when the user has 'canceled' the dialog (i.e. wants to
+     *     proceed without taking any action).
+     * @param {TP.sig.DialogCancel} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.tsh.method_assistant} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.signal('MethodAdditionCancelled');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.method_assistant.Inst.defineMethod('setOriginalRequest',
 function(anObj) {
 
@@ -143,6 +164,10 @@ function(anObj) {
 
     return this;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.defineSubtype('MethodAdditionCancelled');
 
 //  ------------------------------------------------------------------------
 //  end
