@@ -95,6 +95,120 @@ function(assistantData) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.signalConnectionAssistant.Inst.defineHandler('AddSignalHandler',
+function(anObject) {
+
+    /**
+     * @method handleAddSignalHandler
+     * @summary Handles when the user has decided to add a signal handler
+     *     because the one desired couldn't be found in the list of handlers.
+     * @param {TP.sig.AddSignalHandler} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.signalConnectionAssistant} The receiver.
+     */
+
+    var targetType,
+        typeName,
+
+        thisDialog,
+
+        addedFunc,
+        cancelledFunc,
+
+        commandSignal,
+        commandRequest;
+
+    //  The target type that we will adding the handler to can be found in our
+    //  data under 'destinationTarget'
+    targetType = this.get('data').at('destinationTarget');
+
+    if (TP.isType(targetType)) {
+
+        typeName = targetType.getName();
+
+        //  Grab our xctrls:dialog element ancestor so that we can show/hide it
+        //  at will.
+        thisDialog = this.ancestorMatchingCSS('xctrls|dialog');
+
+        //  The TSH's method command will signal MethodAdded when a method has
+        //  been added to the system.
+        this.observe(
+            TP.ANY,
+            'MethodAdded',
+            addedFunc = function(aSignal) {
+                var handlersURI,
+                    handlersObj;
+
+                //  Make sure to ignore both signals here to clean up after
+                //  ourself.
+                this.ignore(TP.ANY, 'MethodAdded', addedFunc);
+                this.ignore(TP.ANY, 'MethodAdditionCancelled', cancelledFunc);
+
+                //  The system added a method. Grab the URI for the handler name
+                //  list, generate the list of handlers and set it. Our panel's
+                //  binding will then refresh.
+
+                handlersURI = TP.uc('urn:tibet:handlernamelist');
+
+                handlersObj = this.getHandlerMethodsFor(targetType);
+                handlersObj.isOriginSet(false);
+
+                handlersURI.setResource(handlersObj,
+                                        TP.hc('signalChange', true));
+
+                //  Call the low-level method to toggle 'pclass:hidden' to false
+                //  to show our own dialog again.
+                thisDialog.$isInState('pclass:hidden', false);
+            }.bind(this));
+
+        this.observe(
+            TP.ANY,
+            'MethodAdditionCancelled',
+            cancelledFunc = function(aSignal) {
+
+                //  Make sure to ignore both signals here to clean up after
+                //  ourself.
+                this.ignore(TP.ANY, 'MethodAdded', addedFunc);
+                this.ignore(TP.ANY, 'MethodAdditionCancelled', cancelledFunc);
+
+                //  Call the low-level method to toggle 'pclass:hidden' to false
+                //  to show our own dialog again.
+                thisDialog.$isInState('pclass:hidden', false);
+            }.bind(this));
+
+        //  Signal the system that we want to execute a TSH console command.
+        commandSignal =
+            TP.signal(null,
+                    'ConsoleCommand',
+                    TP.hc(
+                        'cmdText',
+                            ':method --assist' +
+                                    ' --name=\'SignalName\'' +
+                                    ' --kind=\'handler\'' +
+                                    ' --owner=\'' + typeName + '\''
+                    ));
+
+        //  Grab the console request that was generated to service the command.
+        //  This is put in the returned signal under 'consoleRequest'.
+        commandRequest = commandSignal.at('consoleRequest');
+
+        //  When the request succeeds, then hide our dialog in preparation to
+        //  show the 'Add Method' dialog. Note here how we use a lower-level
+        //  method to toggle 'pclass:hidden' directly. This avoids issues with
+        //  showing/hiding the modal curtain when managing multiple dialog
+        //  boxes.
+        commandRequest.defineHandler(
+                        'RequestSucceeded',
+                        function(aResponse) {
+                            thisDialog.$isInState('pclass:hidden', true);
+                        });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.signalConnectionAssistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
