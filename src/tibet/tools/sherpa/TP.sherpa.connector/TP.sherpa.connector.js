@@ -53,6 +53,8 @@ TP.sherpa.connector.Inst.defineAttribute('$destTPElement');
 TP.sherpa.connector.Inst.defineAttribute('$connectorThickness');
 TP.sherpa.connector.Inst.defineAttribute('$launchSize');
 
+TP.sherpa.connector.Inst.defineAttribute('autoHideConnector');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -445,6 +447,30 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.connector.Inst.defineMethod('hideAllConnectorVisuals',
+function() {
+
+    /**
+     * @method hideAllConnectorVisuals
+     * @summary Hides all of the connector visuals, both the connector itself
+     *     (including the launch point) and the connector destination.
+     * @returns {TP.sherpa.connector} The receiver.
+     */
+
+    this.get('$connectorLaunch').hide();
+
+    this.get('$horizConnector').hide();
+    this.get('$vertConnector').hide();
+
+    this.get('$connectorDest').hide();
+
+    this.set('autoHideConnector', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.connector.Inst.defineMethod('hideConnectorDest',
 function() {
 
@@ -455,24 +481,6 @@ function() {
      */
 
     this.get('$connectorDest').hide();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.connector.Inst.defineMethod('hideConnector',
-function() {
-
-    /**
-     * @method hideConnector
-     * @summary Hides the connector.
-     * @returns {TP.sherpa.connector} The receiver.
-     */
-
-    this.get('$connectorLaunch').hide();
-    this.get('$horizConnector').hide();
-    this.get('$vertConnector').hide();
 
     return this;
 });
@@ -696,8 +704,14 @@ function() {
     srcTPElement = this.get('$srcTPElement');
     destTPElement = this.get('$destTPElement');
 
-    this.hideConnectorDest();
-    this.hideConnector();
+    //  If we're configured to auto hide the connector visuals, do it. This
+    //  defaults to true and specifically has to be set to false by the
+    //  consuming code of a connector, usually because it has something async
+    //  that it wants to do and will call hideAllConnectorVisuals after that's
+    //  done.
+    if (TP.notFalse(this.get('autohideConnector'))) {
+        this.hideAllConnectorVisuals();
+    }
 
     this.set('$srcTPElement', null);
     this.set('$destTPElement', null);
