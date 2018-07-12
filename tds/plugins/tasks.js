@@ -1112,6 +1112,7 @@
             keys = Object.keys(map);
             keys.forEach(function(src) {
                 var obj,
+                    keypath,
                     target,
                     parts,
                     tail,
@@ -1125,19 +1126,20 @@
                 //  Remappings from job.params need to use a different target
                 if (/^job\.params\./.test(src)) {
                     target = job.params;
+                    keypath = src.replace('job.params.', '');
                 } else {
                     //  If we still have a valid obj value the key exists in the
                     //  stdout data. Now we have to use the value in the map to
                     //  determine where it should go in the params.
                     target = map[src];
+                    keypath = src;
                 }
-
                 if (target === null || target === undefined) {
                     //  Empty target value means don't copy it over into params.
                     return;
                 }
 
-                parts = src.split('.');
+                parts = keypath.split('.');
                 len = parts.length;
 
                 //  See if the source key is even found in the export data.
