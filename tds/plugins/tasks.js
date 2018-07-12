@@ -1122,10 +1122,16 @@
 
                 val = stdout;
 
-                //  If we still have a valid obj value the key exists in the
-                //  stdout data. Now we have to use the value in the map to
-                //  determine where it should go in the params.
-                target = map[src];
+                //  Remappings from job.params need to use a different target
+                if (/^job\.params\./.test(src)) {
+                    target = job.params;
+                } else {
+                    //  If we still have a valid obj value the key exists in the
+                    //  stdout data. Now we have to use the value in the map to
+                    //  determine where it should go in the params.
+                    target = map[src];
+                }
+
                 if (target === null || target === undefined) {
                     //  Empty target value means don't copy it over into params.
                     return;
