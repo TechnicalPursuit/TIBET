@@ -1093,12 +1093,12 @@
                 map,
                 keys;
 
-            //  If no prior steps then no stdout to potentially remap.
+            //  Either use stdout from prior step or the top-level job params as
+            //  stdout/stdin for the first step.
             prior = job.steps[job.steps.length - 1];
             if (!prior || !prior.stdout) {
-                return params;
+                stdout = job.params;
             } else {
-                //  Capture any exported data from the prior step.
                 stdout = prior.stdout;
             }
 
