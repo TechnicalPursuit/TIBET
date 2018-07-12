@@ -840,12 +840,12 @@
             switch (structure) {
                 case 'sequence':
 
-                    if (job.params) {
-                        if (job.params.structure) {
-                            if (job.params.structure === structure) {
+                    if (job.params && job.params.tasks) {
+                        if (job.params.tasks.structure) {
+                            if (job.params.tasks.structure === structure) {
                                 //  For sequence we expect a block with a task
                                 //  key and params key. the task should match.
-                                block = job.params[structure][index];
+                                block = job.params.tasks[structure][index];
                                 if (block.task === task.name) {
                                     TDS.blend(params, block.params);
                                 } else {
