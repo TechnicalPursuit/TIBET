@@ -10,9 +10,7 @@ sherpa|methodEditorToolbarContent {
     justify-content: flex-end;
     align-items: center;
 
-    left: 0;
-    right: 0;
-    bottom: 0;
+    height: 100%;
 }
 
 sherpa|methodEditorToolbarContent > button {
@@ -59,6 +57,11 @@ sherpa|methodEditorToolbarContent > .detach_mark {
 sherpa|methodEditorToolbarContent > .detach_mark:hover {
 
     background-color: gold;
+}
+
+sherpa|methodEditorToolbarContent[class~="tabbed"] {
+
+    height: auto;
 }
 
 sherpa|methodEditorToolbarContent[class~="tabbed"] > .detach_mark {

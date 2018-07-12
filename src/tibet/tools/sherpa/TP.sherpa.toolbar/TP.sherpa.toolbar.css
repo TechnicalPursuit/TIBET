@@ -10,10 +10,9 @@ sherpa|toolbar {
     top: 0;
     right: 0;
 
-    height: 18px;
+    height: 30px;
 
     margin-right: 30px;
-    margin-bottom: 5px;
 }
 
 div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|toolbar {

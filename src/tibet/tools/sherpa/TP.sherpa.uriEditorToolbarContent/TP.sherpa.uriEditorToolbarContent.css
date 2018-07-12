@@ -11,9 +11,7 @@ sherpa|uriEditorToolbarContent {
     justify-content: flex-end;
     align-items: center;
 
-    left: 0;
-    right: 0;
-    bottom: 0;
+    height: 100%;
 }
 
 sherpa|uriEditorToolbarContent > button {
@@ -75,7 +73,17 @@ sherpa|uriEditorToolbarContent > .detach_mark:hover {
     background-color: gold;
 }
 
+sherpa|uriEditorToolbarContent[class~="tabbed"] {
+
+    height: auto;
+}
+
 sherpa|uriEditorToolbarContent[class~="tabbed"] > .detach_mark {
 
     display: none;
+}
+
+sherpa|uriEditorToolbarContent[class~="tabbed"] > xctrls|itemgroup {
+
+    margin-top: 2px;
 }

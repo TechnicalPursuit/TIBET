@@ -135,8 +135,12 @@ sherpa|workbench > .footer {
 }
 
 sherpa|workbench > .footer .systemToolbar {
+
     position: absolute;
+
     left: 0;
+
+    height: 30px;
 }
 
 sherpa|workbench > .footer .systemToolbar sherpa|dispenser {
