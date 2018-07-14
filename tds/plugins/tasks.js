@@ -1093,6 +1093,11 @@
                 map,
                 keys;
 
+            map = step.stdio;
+            if (!map) {
+                return params;
+            }
+
             //  Either use stdout from prior step or the top-level job params as
             //  stdout/stdin for the first step.
             prior = job.steps[job.steps.length - 1];
@@ -1100,11 +1105,6 @@
                 stdout = job.params;
             } else {
                 stdout = prior.stdout;
-            }
-
-            map = step.stdio;
-            if (!map) {
-                return params;
             }
 
             //  For each key in the map take any stdout data for that key and
@@ -1121,8 +1121,8 @@
                     val;
 
                 //  Remappings from job.params need to use a different target
-                if (/^job\.params\./.test(src)) {
-                    val = {job: {params: job.params}};
+                if (/^job\./.test(src) || src === 'job') {
+                    val = {job: job};
                 } else {
                     val = stdout;
                 }
