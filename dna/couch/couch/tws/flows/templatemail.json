@@ -24,6 +24,6 @@
         }]
     },
     "params": {
-        "//multi-task": "params go here by task name"
+        "job-level params": "go here"
     }
 }

@@ -384,6 +384,11 @@
             }
             step.state = state;
 
+            //  If guard set the step to a finished state (skipped, failed, etc.)
+            //  then we want to ensure we set an end timestamp.
+            if (isTaskComplete(job, step)) {
+                step.end = Date.now();
+            }
             job.steps.push(step);
 
             dbSave(job);
@@ -428,21 +433,25 @@
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
             if (failed && job.error) {
-                errname = job.error + '::' + job.owner;
-                retrieveTask(job, job.error, job.owner).then(function(errtask) {
-                    if (!errtask) {
+                if (job.error !== job.flow) {
+                    errname = job.error + '::' + job.owner;
+                    retrieveTask(job, job.error, job.owner).then(function(errtask) {
+                        if (!errtask) {
+                            logger.error(job,
+                                'missing task: ' + errname);
+                            failJob(job, 'Missing task ' + errname);
+                            return;
+                        }
+                        acceptTask(job, errtask);
+                    }).catch(function(err) {
                         logger.error(job,
-                            'missing task: ' + errname);
-                        failJob(job, 'Missing task ' + errname);
-                        return;
-                    }
-                    acceptTask(job, errtask);
-                }).catch(function(err) {
-                    logger.error(job,
-                        'error: ' + err.message +
-                        ' fetching task: ' + errname);
-                });
-                return;
+                            'error: ' + err.message +
+                            ' fetching task: ' + errname);
+                    });
+                    return;
+                } else {
+                    logger.error(job, 'error: recursive job error definition.');
+                }
             }
 
             //  No job-level error tasks. We're truly done. Need to update final
@@ -832,6 +841,8 @@
 
             //  We connect step output to step input via 'stdio' mappings
             //  optionally provided in the task and/or flow definitions.
+            //  NOTE: do this first so stdout is in params before templating
+            //  or other parameter assignment operations below.
             params = remapStdioParams(job, step, {});
 
             index = step.index;
@@ -840,6 +851,8 @@
             switch (structure) {
                 case 'sequence':
 
+                    //  Essentially looking for the same structure pattern here
+                    //  as the one used in 'flow' docs. Job should match flow.
                     if (job.params && job.params.tasks) {
                         if (job.params.tasks.structure) {
                             if (job.params.tasks.structure === structure) {
@@ -909,9 +922,9 @@
 
             //  Note here that we allow embedded templates, but because of
             //  escaping issues with JSON and Handlebars, we require these
-            //  templates to be written with double square brackets ('[[...]]')
+            //  to be written with double square brackets ('[[...]]')
             //  and we need to replace them with double curly brackets
-            //  ('{{...}}') before sending them further into the system.
+            //  ('{{...}}') before sending them to the task runners.
             output = result.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
 
             try {
@@ -1123,6 +1136,8 @@
                 //  Remappings from job.params need to use a different target
                 if (/^job\./.test(src) || src === 'job') {
                     val = {job: job};
+                } else if (/^step\./.test(src) || src === 'step') {
+                    val = {step: step};
                 } else {
                     val = stdout;
                 }
