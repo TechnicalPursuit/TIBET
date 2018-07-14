@@ -96,13 +96,6 @@
                 template = params.template;
             }
 
-            //  The templating process is defined to run from 'input' whatever
-            //  that is set to. So ensure we have access to that value.
-            if (!params.input) {
-                return TDS.Promise.reject(new Error(
-                    'Misconfigured templater task. Missing params.input.'));
-            }
-
             //  Simple execution function for running the template.
             execTemplate = function(templ, input, callback) {
                 var templateFunc,
