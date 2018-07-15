@@ -3837,6 +3837,66 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrActive',
+function() {
+
+    /**
+     * @method removeAttrActive
+     * @summary Remove the attribute corresponding to the receiver's active
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:active', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrBusy',
+function() {
+
+    /**
+     * @method removeAttrBusy
+     * @summary Remove the attribute corresponding to the receiver's busy
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:busy', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrClosed',
+function() {
+
+    /**
+     * @method removeAttrClosed
+     * @summary Remove the attribute corresponding to the receiver's closed
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:closed', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrCollapsed',
+function() {
+
+    /**
+     * @method removeAttrCollapsed
+     * @summary Remove the attribute corresponding to the receiver's collapsed
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:collapsed', false);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('removeAttrDisabled',
 function() {
 
@@ -3849,6 +3909,111 @@ function() {
     this.$removeAttribute('disabled');
 
     return this.$isInState('pclass:disabled', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrFocused',
+function() {
+
+    /**
+     * @method removeAttrFocused
+     * @summary Remove the attribute corresponding to the receiver's focused
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:focus', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrHidden',
+function() {
+
+    /**
+     * @method removeAttrHidden
+     * @summary Remove the attribute corresponding to the receiver's hidden
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:hidden', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrInvalid',
+function() {
+
+    /**
+     * @method removeAttrInvalid
+     * @summary Remove the attribute corresponding to the receiver's invalid
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:invalid', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrOutOfRange',
+function() {
+
+    /**
+     * @method removeAttrOutOfRange
+     * @summary Remove the attribute corresponding to the receiver's
+     *     out-of-range state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:out-of-range', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrReadonly',
+function() {
+
+    /**
+     * @method removeAttrReadonly
+     * @summary Remove the attribute corresponding to the receiver's readonly
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:readonly', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrRequired',
+function() {
+
+    /**
+     * @method removeAttrRequired
+     * @summary Remove the attribute corresponding to the receiver's required
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:required', false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('removeAttrSelected',
+function() {
+
+    /**
+     * @method removeAttrSelected
+     * @summary Remove the attribute corresponding to the receiver's selected
+     *     state.
+     * @returns {Boolean} false
+     */
+
+    return this.$isInState('pclass:selected', false);
 });
 
 //  ------------------------------------------------------------------------
