@@ -362,8 +362,31 @@ function() {
             //  If we're not showing cells at all, then set the mode to growl
             //  and force toggle the display to expose the last cell.
             if (mode === 'none') {
+                consoleOutput.removeAttribute('hidden');
+                consoleOutput.removeAttribute('showing_all');
+
                 consoleOutput.setAttribute('mode', 'growl');
                 consoleOutput.growlModeForceDisplayToggle();
+
+                //  Return true so that ACE will *not* process this as a regular
+                //  keystroke.
+                return true;
+            } else if (mode === 'one') {
+                if (consoleOutput.hasAttribute('showing_all')) {
+                    consoleOutput.removeAttribute('showing_all');
+                } else {
+                    consoleOutput.setAttribute('showing_all', 'true');
+                }
+
+                //  Return true so that ACE will *not* process this as a regular
+                //  keystroke.
+                return true;
+            } else if (mode === 'all') {
+                if (consoleOutput.hasAttribute('pclass:hidden')) {
+                    consoleOutput.removeAttribute('hidden');
+                } else {
+                    consoleOutput.setAttribute('hidden', true);
+                }
 
                 //  Return true so that ACE will *not* process this as a regular
                 //  keystroke.
