@@ -3902,7 +3902,8 @@ function() {
 
     /**
      * @method removeAttrDisabled
-     * @summary The remover for the receiver's disabled state.
+     * @summary Remove the attribute corresponding to the receiver's disabled
+     *     state.
      * @returns {Boolean} false
      */
 
