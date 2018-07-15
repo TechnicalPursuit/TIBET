@@ -6294,11 +6294,11 @@ function(beInvalid) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.Inst.defineMethod('setAttrOfOutRange',
+TP.dom.UIElementNode.Inst.defineMethod('setAttrOutOfRange',
 function(beOutOfRange) {
 
     /**
-     * @method setAttrOfOutRange
+     * @method setAttrOutOfRange
      * @summary The setter for the receiver's out-of-range state.
      * @param {Boolean} beOutOfRange Whether or not the receiver is in a
      *     out-of-range state.
