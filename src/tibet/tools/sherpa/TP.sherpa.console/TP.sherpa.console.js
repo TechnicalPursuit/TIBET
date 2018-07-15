@@ -350,6 +350,8 @@ function() {
             //  This should only work if the input is empty.
             currentEditorVal = consoleInputTPElem.getValue();
             if (TP.notEmpty(currentEditorVal)) {
+                //  Return false so that ACE *will* process this as a regular
+                //  keystroke.
                 return false;
             }
 
@@ -357,15 +359,14 @@ function() {
 
             mode = consoleOutput.getAttribute('mode');
 
-            //  If we're not showing cells at all, then set the mode to
-            //  growl and force toggle the display to expose the last
-            //  cell.
+            //  If we're not showing cells at all, then set the mode to growl
+            //  and force toggle the display to expose the last cell.
             if (mode === 'none') {
                 consoleOutput.setAttribute('mode', 'growl');
                 consoleOutput.growlModeForceDisplayToggle();
 
-                //  Return true so that ACE will *not* process this as a
-                //  regular keystroke.
+                //  Return true so that ACE will *not* process this as a regular
+                //  keystroke.
                 return true;
             }
 
@@ -373,30 +374,29 @@ function() {
             //  possibilities.
             if (mode === 'growl') {
 
-                //  If we were already toggling from before (as shown by
-                //  having either 'exposed' or 'concealed' attributes),
-                //  and we were exposed, then we set the mode back to
-                //  'none' and remove the 'exposed' attribute so that
-                //  subsequent outputting will still work.
+                //  If we were already toggling from before (as shown by having
+                //  either 'exposed' or 'concealed' attributes), and we were
+                //  exposed, then we set the mode back to 'none' and remove the
+                //  'exposed' attribute so that subsequent outputting will still
+                //  work.
                 if (consoleOutput.hasAttribute('exposed')) {
                     consoleOutput.setAttribute('mode', 'none');
                     consoleOutput.removeAttribute('exposed');
                 } else {
 
-                    //  Otherwise, we're in growl mode because the
-                    //  *user* (not the toggling code above) put us
-                    //  there and so we just force toggle the display to
-                    //  expose the last cell.
+                    //  Otherwise, we're in growl mode because the *user* (not
+                    //  the toggling code above) put us there and so we just
+                    //  force toggle the display to expose the last cell.
                     consoleOutput.growlModeForceDisplayToggle();
                 }
 
-                //  Return true so that ACE will *not* process this as a
-                //  regular keystroke.
+                //  Return true so that ACE will *not* process this as a regular
+                //  keystroke.
                 return true;
             }
 
-            //  Return false so that ACE *will* process this as a
-            //  regular keystroke.
+            //  Return false so that ACE *will* process this as a regular
+            //  keystroke.
             return false;
         }.bind(this);
 
