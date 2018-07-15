@@ -13018,7 +13018,14 @@ function(attributeName) {
      * @returns {Boolean} Whether or not the receiver has the named attribute.
      */
 
-    var node;
+    var methodName,
+        node;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('hasAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
+    }
 
     node = this.getNativeNode();
 
