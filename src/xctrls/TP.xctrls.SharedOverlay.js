@@ -761,7 +761,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     } else if (TP.isFragment(finalContent)) {
         content = TP.documentConstructElement(
                     this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
-        content = TP.nodeAppendChild(content, finalContent, false);
+        TP.nodeAppendChild(content, finalContent, false);
     } else {
         //  TODO: Raise an exception
         return this;
