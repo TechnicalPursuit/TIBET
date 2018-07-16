@@ -1629,8 +1629,11 @@ function() {
     haloNECorner.defineMethod(
                     'getDragItem',
                     function() {
-                        return TP.byId('SherpaDispenserItem', TP.win('UIROOT'));
-                    });
+                        return TP.byCSSPath(
+                        'sherpa|workbench sherpa|dispenser sherpa|dispenseritem',
+                            this.getNativeDocument(),
+                            true);
+                    }.bind(this));
 
     haloNECorner.setAttribute('dnd:vend', 'dom_node');
 
