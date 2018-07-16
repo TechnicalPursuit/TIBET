@@ -688,8 +688,8 @@ sherpa|hud:not([pclass|closed]) #center {
     position: absolute;
 
     top: 2px;
-    right: 28px;
-    width: 175px;
+    right: 30px;
+    width: 200px;
     height: 22px;
 
     font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
