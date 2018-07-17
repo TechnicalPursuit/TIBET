@@ -440,7 +440,6 @@ function(anOverlayPoint, anAvoidPoint) {
         bodyScrollOffsets,
 
         testPoint,
-        testOffset,
         overlayCorner,
 
         diffX,
@@ -484,7 +483,6 @@ function(anOverlayPoint, anAvoidPoint) {
     if (TP.isValid(anAvoidPoint)) {
 
         testPoint = TP.copy(anAvoidPoint);
-        testOffset = 1;
 
         overlayCorner = this.getOverlayCorner();
 
@@ -494,20 +492,20 @@ function(anOverlayPoint, anAvoidPoint) {
         switch (overlayCorner) {
 
             case TP.NORTHEAST:
-                testPoint.subtractFromX(testOffset);
-                testPoint.addToY(testOffset);
+                testPoint.addToX(1);
+                testPoint.subtractFromY(1);
                 break;
             case TP.NORTHWEST:
-                testPoint.addToX(testOffset);
-                testPoint.addToY(testOffset);
+                testPoint.subtractFromX(1);
+                testPoint.subtractFromY(1);
                 break;
             case TP.SOUTHEAST:
-                testPoint.subtractFromX(testOffset);
-                testPoint.subtractFromY(testOffset);
+                testPoint.addToX(1);
+                testPoint.addToY(1);
                 break;
             case TP.SOUTHWEST:
-                testPoint.addToX(testOffset);
-                testPoint.subtractFromY(testOffset);
+                testPoint.subtractFromX(1);
+                testPoint.addToY(1);
                 break;
             default:
                 break;
