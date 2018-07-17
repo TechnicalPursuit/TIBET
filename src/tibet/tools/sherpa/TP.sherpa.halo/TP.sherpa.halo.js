@@ -93,15 +93,9 @@ function() {
         this.set('currentTargetParentTPElem', null);
     }
 
-    //  If we haven't set the 'don't signal blur/focus signals' flag, then go
-    //  ahead and signal. Note that we only set this flag when we're doing the
-    //  minimal work to reset the focus on top of the current target where it
-    //  has been refreshed from its underlying content.
-    if (TP.notTrue(this.get('$isRecasting'))) {
-        this.signal('TP.sig.HaloDidBlur',
-                    TP.hc('haloTarget', currentTargetTPElem),
-                    TP.OBSERVER_FIRING);
-    }
+    this.signal('TP.sig.HaloDidBlur',
+                TP.hc('haloTarget', currentTargetTPElem),
+                TP.OBSERVER_FIRING);
 
     return this;
 });
@@ -369,15 +363,9 @@ function(newTargetTPElem, shouldUnhide) {
         //  target.
         this.moveAndSizeToTarget(newTargetTPElem, shouldUnhide);
 
-        //  If we haven't set the 'don't signal blur/focus signals' flag, then
-        //  go ahead and signal. Note that we only set this flag when we're
-        //  doing the minimal work to reset the focus on top of the current
-        //  target where it has been refreshed from its underlying content.
-        if (TP.notTrue(this.get('$isRecasting'))) {
-            this.signal('TP.sig.HaloDidFocus',
-                        TP.hc('haloTarget', newTargetTPElem),
-                        TP.OBSERVER_FIRING);
-        }
+        this.signal('TP.sig.HaloDidFocus',
+                    TP.hc('haloTarget', newTargetTPElem),
+                    TP.OBSERVER_FIRING);
 
     } else if (TP.isValid(currentTargetTPElem)) {
 
