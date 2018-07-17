@@ -322,7 +322,7 @@ function(aSignal) {
             'useTopLevelContentElem', true,
             'trigger', triggerSignal,
             'triggerTPDocument', this.getDocument(),
-            'triggerPoint', signalGlobalPoint,
+            'triggerPoint', TP.MOUSE,
             'sticky', true));
 
     return this;
