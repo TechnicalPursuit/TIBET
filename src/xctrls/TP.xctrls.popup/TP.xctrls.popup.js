@@ -307,6 +307,11 @@ function(openSignal, popupContent) {
 
         triggerRect,
         popupPoint,
+
+        lastMoveEvent,
+        lastMoveSignal,
+        mousePoint,
+
         triggerTPElem;
 
     lastTriggerID = this.getType().get('$lastTriggerID');
@@ -330,6 +335,10 @@ function(openSignal, popupContent) {
 
             //  First, see if the open signal provided a popup point.
             popupPoint = openSignal.at('triggerPoint');
+
+            lastMoveEvent = TP.core.Mouse.$get('lastMove');
+            lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
+            mousePoint = lastMoveSignal.getGlobalPoint();
 
             //  If no popup point was given, compute one from the triggering
             //  element.
@@ -355,6 +364,8 @@ function(openSignal, popupContent) {
                 //  The point that the popup should appear at is the 'edge
                 //  point' for that compass edge of the trigger rectangle.
                 popupPoint = triggerRect.getEdgePoint(popupCorner);
+            } else if (popupPoint === TP.MOUSE) {
+                popupPoint = mousePoint;
             }
 
             //  Show the popup and set up signal handlers.
@@ -367,7 +378,7 @@ function(openSignal, popupContent) {
             //  then position the popup relative to the popup point and the
             //  corner.
             if (TP.notTrue(openSignal.at('noPosition'))) {
-                this.positionUsing(popupPoint);
+                this.positionUsing(popupPoint, mousePoint);
             }
 
             return this;
