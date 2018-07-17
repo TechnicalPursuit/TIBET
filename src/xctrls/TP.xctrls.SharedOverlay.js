@@ -524,8 +524,8 @@ function(anOverlayPoint, anAvoidPoint) {
                 } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
                     //  Otherwise, if by adding the difference, we're still less
                     //  than the body's rectangle, then do that (shifting the
-                    //  overlay towards the right)
-                    overlayRect.addToX(diffX);
+                    //  overlay towards the right by 1px)
+                    overlayRect.addToX(1);
                 }
             }
 
@@ -541,8 +541,8 @@ function(anOverlayPoint, anAvoidPoint) {
                 } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
                     //  Otherwise, if by adding the difference, we're still less
                     //  than the body's rectangle, then do that (shifting the
-                    //  overlay towards the bottom)
-                    overlayRect.addToY(diffY);
+                    //  overlay towards the bottom by 1px)
+                    overlayRect.addToY(1);
                 }
             }
         }
