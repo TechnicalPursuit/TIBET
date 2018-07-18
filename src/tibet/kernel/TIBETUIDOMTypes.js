@@ -321,6 +321,8 @@ function(aDocument) {
 
         styleURI,
 
+        resourceTypeName,
+
         observeID,
 
         projectThemes,
@@ -358,12 +360,6 @@ function(aDocument) {
         return TP.elementGetAttribute(aStyleElem, 'id', true);
     };
 
-    //  We compute an 'id' by taking our *resource* type name and escaping it.
-    //  The resource type name is usually the type name, but can be overridden
-    //  for special types that need to supply a different name here for use in
-    //  resource location computations.
-    ourID = TP.escapeTypeName(this.getResourceTypeName());
-
     //  Add any theme name we might be using. The presumption is that a theme
     //  sheet that isn't standalone will @import what it requires.
 
@@ -382,6 +378,21 @@ function(aDocument) {
     //  both the unique identifier for the receiver and as the element ID to use
     //  for this stylesheet.
     styleURI = this.getResourceURI('style', TP.ietf.mime.CSS);
+
+    //  The resource type name is usually the type name, but can be overridden
+    //  for special types that need to supply a different name here for use in
+    //  resource location computations.
+    resourceTypeName = this.getResourceTypeName();
+
+    //  If the style URI contains the resource type name, then the stylesheet is
+    //  specific to this type. Otherwise, it applies to all types in this
+    //  namespace.
+    if (styleURI.getLocation().contains(resourceTypeName)) {
+        ourID = TP.escapeTypeName(resourceTypeName);
+    } else {
+        ourID = TP.escapeTypeName(this.getNamespaceObject().getName()) + '_NS';
+    }
+
     if (TP.isValid(styleURI) && styleURI !== TP.NO_RESULT) {
         newStyleElem = this.$addStylesheetResource(
                                 aDocument, ourID, styleURI);
