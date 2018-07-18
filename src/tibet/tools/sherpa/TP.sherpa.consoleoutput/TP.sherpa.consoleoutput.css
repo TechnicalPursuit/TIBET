@@ -105,6 +105,7 @@ sherpa|consoleoutput[class~="fade_out"] {
 }
 
 sherpa|consoleoutput a {
+
     color: #6a7b8c;
 }
 
@@ -228,10 +229,15 @@ sherpa|consoleoutput .flex-item > .header > .content > span {
 }
 
 sherpa|consoleoutput .flex-item > .header > .typeinfo {
+
     display: inline-block;
+
     float: right;
+
     margin: 0 8px;
+
     color: black;
+
     white-space: pre-wrap;
 }
 

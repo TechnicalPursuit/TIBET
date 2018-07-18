@@ -24,8 +24,8 @@ sherpa|inspector {
 
 sherpa|inspector > .content {
 
-    position: absolute;
     display: flex;
+    position: absolute;
 
     top: 0;
     bottom: 0;

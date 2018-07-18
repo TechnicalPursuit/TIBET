@@ -94,6 +94,7 @@ sherpa|tile > .header > .header_text {
 sherpa|tile > .header > .minimize_mark {
 
     display: inline-block;
+
     float: right;
     margin: 4px 8px;
 

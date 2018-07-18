@@ -4,8 +4,8 @@
 sherpa|world {
 
     display: block;
-
     position: absolute;
+
     box-sizing: border-box;
 
     top: 1px;

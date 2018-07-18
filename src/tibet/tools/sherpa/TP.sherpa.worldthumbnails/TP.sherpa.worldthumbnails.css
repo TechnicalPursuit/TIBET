@@ -78,10 +78,12 @@ sherpa|worldthumbnails > .content > ul > li {
 }
 
 sherpa|worldthumbnails > .content > ul > li[pclass|selected] {
+
     border-color: gold;
 }
 
 sherpa|worldthumbnails > .content > ul > li[pclass|selected]:hover {
+
     border-color: gold;
 }
 
@@ -127,7 +129,6 @@ sherpa|worldthumbnails > .content > ul > li:not([pclass|selected]):hover {
 }
 
 sherpa|worldthumbnails > sherpa|scrollbutton {
-
 }
 
 sherpa|worldthumbnails > sherpa|scrollbutton[orientation="up"] {

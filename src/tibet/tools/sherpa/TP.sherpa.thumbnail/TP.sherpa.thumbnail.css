@@ -12,6 +12,7 @@ sherpa|thumbnail {
 }
 
 sherpa|thumbnail a {
+
     font-size: 131%;
     color: #999;
 }
@@ -66,6 +67,7 @@ sherpa|thumbnail > .header > .trigger {
 }
 
 sherpa|thumbnail > .header > .trigger:hover {
+
     background-color: gold;
 }
 

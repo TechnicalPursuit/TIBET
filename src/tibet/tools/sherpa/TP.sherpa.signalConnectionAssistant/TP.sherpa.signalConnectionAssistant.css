@@ -51,9 +51,9 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser 
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > label {
 
-    grid-area: inputlabel;
-
     display: flex;
+
+    grid-area: inputlabel;
 
     align-items: center;
 
@@ -88,7 +88,6 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser {
 
     position: absolute;
-
     display: grid;
 
     top: 0;
@@ -127,9 +126,9 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersC
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > xctrls|list {
 
-    grid-area: inputlist;
-
     position: absolute;
+
+    grid-area: inputlist;
 
     top: 5px;
     right: 5px;

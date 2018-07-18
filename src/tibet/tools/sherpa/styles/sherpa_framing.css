@@ -342,7 +342,9 @@ hr.clear {
 }
 
 #commonTileLayer {
+
     position: absolute;
+
     top: 0;
     bottom: 0;
     right: 0;
@@ -366,6 +368,7 @@ hr.clear {
 /** HUD customization for Sherpa controls **/
 
 sherpa|*[class="hud"] > ul.content > li {
+
     background-color: #fff;
 }
 
@@ -374,6 +377,7 @@ sherpa|*[class="hud"] > ul.content > li {
  * ---------------------------- */
 
 .v-edge .drawer {
+
     background-color: #f9f9f9;
 }
 
@@ -445,8 +449,10 @@ sherpa|readout:hover > .content.keyboard {
  * ---------------------------- */
 
 .v-edge sherpa|splitbox {
+
     top: 30px;
     bottom: 32px;
+
     border-top: 1px solid #999;
     border-bottom: 1px solid #999;
 }
@@ -591,6 +597,7 @@ sherpa|hud:not([pclass|closed]) #center {
 }
 
 .h-edge .drawer {
+
     background-color: #efefef;
 }
 
@@ -717,11 +724,13 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #TofuAssistantDialog {
+
     width: 600px;
     height: 370px;
 }
 
 #TofuAssistantDialog .header {
+
     background: #f9f9f9;
 }
 
@@ -730,11 +739,13 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #ConnectionAssistantDialog {
+
     width: 600px;
     height: 370px;
 }
 
 #ConnectionAssistantDialog .header {
+
     background: #f9f9f9;
 }
 
@@ -743,6 +754,7 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #CouchDocumentURIAssistantDialog {
+
     width: 560px;
     height: 350px;
 }
@@ -752,6 +764,7 @@ sherpa|hud:not([pclass|closed]) #center {
  * ---------------------------- */
 
 #CouchViewURIAssistantDialog {
+
     width: 560px;
     height: 350px;
 }

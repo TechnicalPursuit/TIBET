@@ -12,7 +12,9 @@ sherpa|settings {
 }
 
 sherpa|settings a {
+
     font-size: 131%;
+
     color: #999;
 }
 
@@ -53,7 +55,9 @@ sherpa|settings > .footer > .trigger.button {
 }
 
 sherpa|settings > .footer > .trigger.button:hover {
+
     background-color: gold;
+
     color: #333;
 }
 

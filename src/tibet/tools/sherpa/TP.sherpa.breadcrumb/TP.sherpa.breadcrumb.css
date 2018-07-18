@@ -107,9 +107,11 @@ sherpa|breadcrumb > .content div.itemcontent {
     user-select: none;
 
     white-space: nowrap;
+
     overflow: hidden;
 
     line-height: 1.35;
+
     padding-top: 0;
 }
 

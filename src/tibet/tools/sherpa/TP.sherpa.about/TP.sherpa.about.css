@@ -76,7 +76,9 @@ sherpa|about > .footer > .trigger.button {
 }
 
 sherpa|about > .footer > .trigger.button:hover {
+
     background-color: gold;
+
     color: #333;
 }
 

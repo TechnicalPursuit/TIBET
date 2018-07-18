@@ -40,6 +40,7 @@ sherpa|splitbar > .handle {
 }
 
 sherpa|splitbar > .handle:hover {
+
     background-color: gold;
 }
 

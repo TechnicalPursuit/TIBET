@@ -45,6 +45,7 @@ sherpa|domhud > ul.content > li.item {
 sherpa|domhud > ul.content > li.domnode {
 
     height: 1.75em;
+
     line-height: 1.75em;
 
     padding-left: 0.25em;
@@ -53,6 +54,7 @@ sherpa|domhud > ul.content > li.domnode {
     border-radius: 5px;
 
     overflow: hidden;
+
     text-overflow: ellipsis;
 
     cursor: pointer;
