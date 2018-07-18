@@ -9696,7 +9696,12 @@ function(resource, mimeType, fallback) {
     type = this.getNamespaceObject();
     if (TP.canInvoke(type, 'get')) {
         if (res !== 'resource') {
-            uri = type.get(res.toLowerCase() + 'URI');
+            //  Must have asked for style_{theme} as the resource value.
+            if (TP.notEmpty(theme)) {
+                uri = type.get('themeURI', theme);
+            } else {
+                uri = type.get(res + 'URI');    // e.g. 'style' + 'URI'
+            }
             if (TP.notEmpty(uri)) {
                 return uri;
             }
