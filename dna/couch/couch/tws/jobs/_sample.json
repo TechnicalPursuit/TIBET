@@ -3,9 +3,13 @@
     "flow": "sample",
     "owner": "Team TIBET",
     "params": {
-        "smtp": {
-            "to": "[[to_address]]",
-            "subject": "[[subject]]"
+        "tasks": {
+            "structure": "sequence",
+            "sequence": [{
+                "task": "sample",
+                "params": {
+                }
+            }]
         }
     }
 }

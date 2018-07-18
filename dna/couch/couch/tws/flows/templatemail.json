@@ -5,11 +5,7 @@
     "tasks": {
         "structure": "sequence",
         "sequence": [{
-            "task": "templater",
-            "guards": [{
-                "test": "/TIBET/i.test('\{{params.input}}')",
-                "state": "$$failed"
-            }]
+            "task": "templater"
         }, {
             "task": "smtp",
             "params": {
@@ -17,10 +13,7 @@
             },
             "stdio": {
                 "result": "text"
-            },
-            "guards": [{
-                "test": "'\{{job._id}}' != ''"
-            }]
+            }
         }]
     },
     "params": {

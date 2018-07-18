@@ -3,9 +3,15 @@
     "flow": "mailtest",
     "owner": "Team TIBET",
     "params": {
-        "smtp": {
-            "to": "[[to_address]]",
-            "subject": "[[subject]]"
+        "tasks": {
+            "structure": "sequence",
+            "sequence": [{
+                "task": "smtp",
+                "params": {
+                    "to": "[[to_address]]",
+                    "subject": "[[subject]]"
+                }
+            }]
         }
     }
 }

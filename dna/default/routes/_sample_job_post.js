@@ -89,7 +89,7 @@
             //  from data in the request body.
             flow = 'test';
             owner = 'test';
-            params = {};
+            params = {};        //  SEE DOCS FOR FORMAT OF THE JOB PARAMS BLOCK.
 
             job = {
                 type: 'job',

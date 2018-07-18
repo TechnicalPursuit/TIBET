@@ -3,9 +3,15 @@
     "flow": "s3",
     "owner": "Team TIBET",
     "params": {
-        "s3": {
-            "key": "[[s3_key]]",
-            "body": "[[s3_body]]"
+        "tasks": {
+            "structure": "sequence",
+            "sequence": [{
+                "task": "s3",
+                "params": {
+                    "key": "[[s3_key]]",
+                    "body": "[[s3_body]]"
+                }
+            }]
         }
     }
 }

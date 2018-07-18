@@ -5,6 +5,7 @@
     "plugin": "templater",
     "params": {
         "template": "~tds_templates/templateone.html",
-        "stdin": "\{{job.params.stdin}}"
+        "//NOTE the 'input' parameter is specific to": "templateone.html",
+        "input": "\{{params.input}}"
     }
 }

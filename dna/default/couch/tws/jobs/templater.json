@@ -3,8 +3,14 @@
     "flow": "templater",
     "owner": "Team TIBET",
     "params": {
-        "template": "[[template]]",
-        "stdin": "[[stdin]]"
+        "tasks": {
+            "structure": "sequence",
+            "sequence": [{
+                "task": "templater",
+                "params": {
+                    "template": "[[template]]"
+                }
+            }]
+        }
     }
 }
-
