@@ -73,7 +73,7 @@ TP.dom.UIElementNode.defineAttribute('$asyncSwitchingContexts');
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('$addStylesheetResource',
-function(aDocument, ourID, sheetElemID, aStyleURI) {
+function(aDocument, sheetElemID, aStyleURI) {
 
     /**
      * @method $addStylesheetResource
@@ -81,10 +81,6 @@ function(aDocument, ourID, sheetElemID, aStyleURI) {
      *     supplied document. If the stylesheet is already present, this method
      *     will *not* add another instance.
      * @param {Document} aDocument Document to add the stylesheet resource to.
-     * @param {String} ourID The unique identifier of the receiver. This is used
-     *     as the stylesheet element ID as well, if a theme was specified but
-     *     the corresponding stylesheet for that theme for the receiver can't be
-     *     found.
      * @param {String} sheetElemID The ID to use as the stylesheet element ID.
      * @param {String} aStyleURI The stylesheet URI to use as the source of the
      *     style content.
@@ -392,7 +388,7 @@ function(aDocument) {
     styleURI = this.getResourceURI('style', TP.ietf.mime.CSS);
     if (TP.isValid(styleURI) && styleURI !== TP.NO_RESULT) {
         newStyleElem = this.$addStylesheetResource(
-                                aDocument, ourID, ourID, styleURI);
+                                aDocument, ourID, styleURI);
     }
 
     observeID = null;
@@ -464,7 +460,6 @@ function(aDocument) {
             if (TP.isValid(styleURI)) {
                 themeNewStyleElem = this.$addStylesheetResource(
                                         aDocument,
-                                        ourID,
                                         ourID + '_' + themeName,
                                         styleURI);
 
