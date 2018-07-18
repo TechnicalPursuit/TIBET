@@ -91,9 +91,7 @@ function(aDocument, sheetElemID, aStyleURI) {
      *     provided to the method.
      */
 
-    var sheetID,
-
-        styleURI,
+    var styleURI,
         styleLoc,
 
         styleElem,
@@ -114,14 +112,12 @@ function(aDocument, sheetElemID, aStyleURI) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    sheetID = sheetElemID;
-
     //  First, see if another occurrence of this UI element node (and which
     //  uses this same stylesheet) has already been processed and has placed
     //  that stylesheet in the document. We don't want the same stylesheet
     //  placed into the document over and over for each occurrence of the
     //  same type of element node.
-    if (TP.isElement(styleElem = TP.byId(sheetID, aDocument, false))) {
+    if (TP.isElement(styleElem = TP.byId(sheetElemID, aDocument, false))) {
         return;
     }
 
@@ -223,7 +219,7 @@ function(aDocument, sheetElemID, aStyleURI) {
                                         inlineStyleContent,
                                         insertionPoint);
 
-        if (TP.notEmpty(sheetID)) {
+        if (TP.notEmpty(sheetElemID)) {
 
             //  Make sure also to set the style element's 'id' attribute, so
             //  that the above 'uniquing' logic will work for future occurrences
@@ -231,7 +227,7 @@ function(aDocument, sheetElemID, aStyleURI) {
             //  the same element more than once).
             TP.elementSetAttribute(inlinedStyleElem,
                                     'id',
-                                    sheetID,
+                                    sheetElemID,
                                     true);
         }
 
@@ -259,7 +255,7 @@ function(aDocument, sheetElemID, aStyleURI) {
         //  the system hasn't started and the content needs to be awakened (see
         //  below), the awaken machinery will set up an observation on this
         //  element's URI - we want that to be set up using the proper ID.
-        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+        TP.elementSetAttribute(styleElem, 'id', sheetElemID, true);
 
         //  Make sure to set the 'shouldAwake' parameter to the inverse of
         //  whether the system has started or not. This is because, if the
