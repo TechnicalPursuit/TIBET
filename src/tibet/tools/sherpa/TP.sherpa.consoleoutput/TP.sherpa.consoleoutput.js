@@ -923,7 +923,7 @@ function(uniqueID, dataRecord) {
     }
 
     //  If the output text is empty and the user is asking for tiled output,
-    //  then created a tile and set the raw data as its source object.
+    //  then create a tile and set the raw data as its source object.
     if (TP.isEmpty(outputObj) && TP.isTrue(dataRecord.at('tiledOutput'))) {
 
         //  Create a tiled output which will exist outside of the main wrapper
