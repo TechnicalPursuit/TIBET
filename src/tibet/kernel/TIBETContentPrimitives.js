@@ -66,8 +66,8 @@ function() {
     if (!TP.isElement(iframeElem =
                         TP.nodeGetElementById(win.document, iframeName))) {
         iframeElem = TP.documentConstructIFrameElement(win.document,
-                                                    null,
-                                                    iframeName);
+                                                        null,
+                                                        iframeName);
         TP.elementSetAttribute(iframeElem, 'style', 'display: none');
     }
 

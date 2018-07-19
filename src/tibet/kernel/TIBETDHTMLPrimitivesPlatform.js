@@ -77,8 +77,8 @@ TP.hc(
 
         if (docMIMEType === TP.ietf.mime.HTML) {
             newIFrameElement = TP.documentConstructElement(aDocument,
-                                                        'iframe',
-                                                        TP.w3.Xmlns.XHTML);
+                                                            'iframe',
+                                                            TP.w3.Xmlns.XHTML);
 
             //  For IE...
             TP.elementSetAttribute(newIFrameElement, 'frameborder', 0);
@@ -110,8 +110,8 @@ TP.hc(
 
             //  First, we create a 'span' element.
             newIFrameElement = TP.documentConstructElement(aDocument,
-                                                        'span',
-                                                        TP.w3.Xmlns.XHTML);
+                                                            'span',
+                                                            TP.w3.Xmlns.XHTML);
 
 
             //  Need to append this iframe to the document to be able to
@@ -206,8 +206,8 @@ TP.hc(
 
         if (docMIMEType === TP.ietf.mime.HTML) {
             newIFrameElement = TP.documentConstructElement(aDocument,
-                                                        'iframe',
-                                                        TP.w3.Xmlns.XHTML);
+                                                            'iframe',
+                                                            TP.w3.Xmlns.XHTML);
 
             //  For IE...
             TP.elementSetAttribute(newIFrameElement, 'frameborder', 0);

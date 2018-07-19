@@ -1099,8 +1099,8 @@ function(uniqueID, dataRecord) {
 
             //  Grab the output element according to the supplied unique ID
             uniqueItemElem = TP.byId(uniqueID,
-                                this.getNativeDocument(),
-                                false);
+                                        this.getNativeDocument(),
+                                        false);
 
             //  If it doesn't have a 'isSetUp' class, then set it up and add
             //  that class
