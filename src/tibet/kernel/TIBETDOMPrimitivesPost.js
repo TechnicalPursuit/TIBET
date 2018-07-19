@@ -3051,8 +3051,8 @@ function(anElement, ignoreSourcetag) {
      *     distinction is important to the TIBET engine.
      * @param {Element} anElement The element to get the canonical name of.
      * @param {Boolean} ignoreSourcetag When true the element will ignore
-     *     'tibet:tag' data and work purely from the node name and
-     *     namespace URI data. Defaults to false.
+     *     'tibet:tag' data and work purely from the node name and namespace URI
+     *     data. Defaults to false.
      * @example Obtain the canonical name for an HTML element whose name doesn't
      *     have a prefix:
      *     <code>
@@ -5318,7 +5318,8 @@ function(aNode) {
     /**
      * @method nodeIsResponder
      * @summary Tests a node to determine if it's a valid responder element.
-     *     Responders have either a tibet:ctrl or tibet:tag attribute.
+     *     Responders have either a tibet:ctrl or tibet:tag attribute (or are
+     *     not in the XHTML namespace).
      * @param {Node} aNode The node to check.
      * @returns {Boolean} True for nodes which are elements having the proper
      *     attribute or tag values to describe a responder.
@@ -14228,10 +14229,10 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
         }
     }
 
-    //  See if the element has a phase. If not, but it has a
-    //  'tibet:tag' attribute, then set its 'tibet:phase' to
-    //  'Compile'. We do this before we traverse the ancestor chain so that
-    //  we can support tags that recursively replace themselves.
+    //  See if the element has a phase. If not, but it has a 'tibet:tag'
+    //  attribute, then set its 'tibet:phase' to 'Compile'. We do this before
+    //  we traverse the ancestor chain so that we can support tags that
+    //  recursively replace themselves.
     currentPhase = TP.elementGetAttribute(elem, 'tibet:phase', true);
     if (TP.isEmpty(currentPhase)) {
         if (TP.elementHasAttribute(elem, 'tibet:tag', true)) {

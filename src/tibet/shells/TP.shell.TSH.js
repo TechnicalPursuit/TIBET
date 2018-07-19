@@ -1494,10 +1494,10 @@ function(aRequest) {
                 cmdRoot,
                 message;
 
-            //  we leverage TP.dom.Node subtypes to manage
-            //  type/tag-specific logic in a coherent fashion, so get a
-            //  viable type. Tags we can't seem to find a type for are
-            //  skipped by simply returning from the block.
+            //  We leverage TP.dom.Node subtypes to manage type/tag-specific
+            //  logic in a coherent fashion, so get a viable type. Tags we can't
+            //  seem to find a type for are skipped by simply returning from the
+            //  block.
             type = TP.dom.Node.getConcreteType(child);
             if (TP.notValid(type)) {
                 //  TODO: Return message to say 'I don't know about this type --
@@ -1506,16 +1506,15 @@ function(aRequest) {
                 return;
             }
 
-            //  so that phases aren't hard-coded into the logic we'll test
-            //  here before we dispatch. this allows new kinds of content to
-            //  define their own phases as long as they stick to the common
-            //  prefixing rule
+            //  So that phases aren't hard-coded into the logic we'll test here
+            //  before we dispatch. this allows new kinds of content to define
+            //  their own phases as long as they stick to the common prefixing
+            //  rule
             if (TP.canInvoke(type, funcName)) {
-                //  if the node is already processed up to the phase in
-                //  question we don't want to work on it again. This can
-                //  occur when a template or similar compilation returns
-                //  compiled elements which refer to concrete types via
-                //  tibet:tag.
+                //  If the node is already processed up to the phase in question
+                //  we don't want to work on it again. This can occur when a
+                //  template or similar compilation returns compiled elements
+                //  which refer to concrete types via tibet:tag.
                 if (TP.nodeHasReachedPhase(child, phase, phases)) {
                     TP.ifTrace() &&
                             TP.$VERBOSE &&
@@ -1543,12 +1542,11 @@ function(aRequest) {
 
                     //  When dealing with generated nodes we'll often have a
                     //  phase placed on the tag to ensure
-                    //  TP.nodeHasReachedPhase. Once we've branched however,
-                    //  we want to clear the flag.
+                    //  TP.nodeHasReachedPhase. Once we've branched however, we
+                    //  want to clear the flag.
 
                     //  TODO: Can't do this here because of compile errors
-                    //  around including templates multiple times... Need a
-                    //  fix.
+                    //  around including templates multiple times... Need a fix.
                     // TP.elementRemoveAttribute(child, 'tibet:phase', true);
                 } else {
                     aRequest.atPut('cmdNode', child);
