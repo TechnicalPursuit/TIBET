@@ -888,6 +888,9 @@
                 TDS.blend(params, task.params);
             }
 
+            //  Remap again to process anything dependent on full param list.
+            params = remapStdioParams(job, step, params);
+
             //  Now, we interpolate any parameter values that we find, using
             //  job, step and params as objects that can be referenced in those
             //  values.
@@ -1135,23 +1138,32 @@
 
                 //  Remappings from job.params need to use a different target
                 if (/^job\./.test(src) || src === 'job') {
-                    val = {job: job};
+                    key = src.slice('job.'.length);
+                    val = job;
                 } else if (/^step\./.test(src) || src === 'step') {
-                    val = {step: step};
+                    key = src.slice('step.'.length);
+                    val = step;
+                } else if (/^params\./.test(src) || src === 'params') {
+                    key = src.slice('params.'.length);
+                    val = params;
                 } else {
+                    key = src;
                     val = stdout;
                 }
 
+                //  See if there's a target mapped for that key...if not then
+                //  the key isn't really mapped or is masked off.
                 target = map[src];
-                if (target === null || target === undefined) {
-                    //  Empty target value means don't copy it over into params.
+                if (target === null || target === undefined || target === '') {
                     return;
                 }
 
-                parts = src.split('.');
+                //  Search the 'val' object for the value of the source key.
+                //  If we find it we have something to map.
+                //  NOTE we use key here since we may have sliced off any prefix
+                //  such as job, step, or params.
+                parts = key.split('.');
                 len = parts.length;
-
-                //  See if the source key is even found in the export data.
                 for (i = 0; i < len; i++) {
                     key = parts[i];
                     if (val !== null && val !== undefined &&
@@ -1163,15 +1175,31 @@
                     }
                 }
 
-                //  If final value was not found there's nothing to map.
-                if (val === null || val === undefined) {
+                //  If final value was undefined there's nothing to map. Other
+                //  values like null, '', etc. are still considered mappable.
+                if (val === undefined) {
                     return;
                 }
 
-                //  We'll be traversing down into params, building as we go
-                //  through the target path, then placing 'val' at that slot.
-                obj = params;
+                //  Based on the target key we alter the target location for the
+                //  mapping. This allows you to map from stdout/params up into
+                //  the job or step for example.
+                if (/^job\.params\./.test(target)) {
+                    target = target.slice('job.params.'.length);
+                    obj = job.params;
+                } else if (/^step\.params\./.test(target)) {
+                    target = target.slice('step.params.'.length);
+                    obj = step.params;
+                } else if (/^params\./.test(target)) {
+                    target = target.slice('params.'.length);
+                    obj = params;
+                } else {
+                    //  NOTE not stdout here...
+                    obj = params;
+                }
 
+                //  We'll be traversing down into 'obj', building as we go
+                //  through the target path, then placing 'val' at that slot.
                 parts = target.split('.');
                 tail = parts[parts.length - 1];
                 parts = parts.slice(0, -1);
@@ -1192,6 +1220,8 @@
                 }
             });
 
+            //  NOTE we do NOT return 'obj' here. It might be anything including
+            //  the job object. We want to return only the true params object.
             return params;
         };
 
