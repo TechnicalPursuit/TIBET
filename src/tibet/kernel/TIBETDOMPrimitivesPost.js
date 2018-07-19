@@ -5327,9 +5327,8 @@ function(aNode) {
 
     if (TP.isElement(aNode)) {
         if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
-                TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
-                !TP.w3.Xmlns.getXHTMLURIs().contains(
-                    TP.nodeGetNSURI(aNode))) {
+            TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
+            !TP.w3.Xmlns.isNative(TP.nodeGetNSURI(aNode))) {
             return true;
         }
     }
