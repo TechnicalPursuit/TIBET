@@ -1729,7 +1729,7 @@ function() {
      */
 
     var node,
-        tag;
+        elemName;
 
     node = this.getNativeNode();
 
@@ -1737,8 +1737,8 @@ function() {
     //  us then we're outermost and should not defer model updating
     while (TP.isElement(node = node.parentNode) &&
             TP.isCallable(node.getAttribute)) {
-        tag = TP.elementGetAttribute(node, 'tibet:tag', true);
-        if (tag === 'xctrls:action' || tag === 'ev:listener') {
+        elemName = TP.elementGetFullName(node);
+        if (elemName === 'xctrls:action' || elemName === 'ev:listener') {
             return false;
         }
     }
