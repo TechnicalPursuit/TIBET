@@ -953,19 +953,28 @@ function(uniqueID, dataRecord) {
             TP.elementAddClass(itemElem, outputClass);
         }
 
-        //  For now, this is special cased to handle iframe results.
+        //  Define the output data that the template wants.
+        outputData = TP.hc('output', outputObj,
+                            'outputclass', outputClass,
+                            'resultclass', resultClass);
+
         resultClass = '';
         if (TP.isValid(request = dataRecord.at('request'))) {
             if (TP.isTrue(request.at('cmdAsIs'))) {
                 resultClass = 'asis-container';
             }
+
+            //  If the originating command requested iframed content, then set
+            //  the 'output' that will be merged into the template to markup
+            //  that will generate an iframe and capture the real output object
+            //  in the data record for later use (see below).
+            if (TP.isTrue(request.at('cmdFramed'))) {
+                outputData.atPut('output', '<iframe/>');
+                dataRecord.atPut('embeddedContent', outputObj);
+            }
         }
 
         //  Run the output template and fill in the data
-        outputData = TP.hc('output', outputObj,
-                            'outputclass', outputClass,
-                            'resultclass', resultClass);
-
         outputStr = rawOutEntryTemplate.transform(outputData);
 
         if (!TP.isString(outputStr)) {
@@ -1083,7 +1092,12 @@ function(uniqueID, dataRecord) {
                 rawOutputElem,
 
                 embeddedIFrameElem,
-                embeddedLoc;
+                embeddedLoc,
+
+                blankURL,
+                embeddedContent,
+
+                handler;
 
             //  Iterate over all of the coalescing records, append whatever
             //  is in the fragment onto the output element and update the
@@ -1141,17 +1155,67 @@ function(uniqueID, dataRecord) {
                 rawOutputElem.scrollTop = rawOutputElem.scrollHeight;
             }
 
-            //  If there is an embedded iframe element within the output and
-            //  there is a valid request with a configured 'cmdLocation', then
-            //  set the iframe's 'src' to that location.
-            embeddedIFrameElem = TP.byCSSPath('> * iframe',
+            //  If there is an embedded iframe element within the output, then
+            //  grab it.
+            embeddedIFrameElem = TP.byCSSPath(' iframe',
                                                 uniqueItemElem,
                                                 true,
                                                 false);
+
             if (TP.isElement(embeddedIFrameElem)) {
                 if (TP.isValid(request = dataRecord.at('request'))) {
 
+                    //  If is a valid request with a configured 'cmdLocation',
+                    //  then use it. Otherwise, there may be content that the
+                    //  originating command wanted to be placed into an iframe.
                     embeddedLoc = request.at('cmdLocation');
+
+                    if (TP.isEmpty(embeddedLoc)) {
+
+                        embeddedContent = dataRecord.at('embeddedContent');
+
+                        if (TP.notEmpty(embeddedContent)) {
+
+                            //  Grab the URL to the standard TIBET system blank
+                            //  page. We will initially set the iframe to this
+                            //  to force an XHTML environment inside of the
+                            //  iframe (the only way, it seems...) and then when
+                            //  that finishes loading, we'll set the body of the
+                            //  iframe's document to our embedded content.
+                            blankURL = TP.uc(TP.sys.cfg('path.blank_page'));
+
+                            //  Define a handler that will run when the blank
+                            //  page is finished loading.
+                            handler = function(evt) {
+                                var iframeDoc,
+                                    iframeBody;
+
+                                embeddedIFrameElem.removeEventListener(
+                                                        'load', handler, false);
+
+                                //  The evt's target is the iframe's window.
+                                iframeDoc = TP.elementGetIFrameDocument(
+                                                                evt.target);
+
+                                //  Grab the body of the iframe document.
+                                iframeBody = TP.documentGetBody(iframeDoc);
+
+                                //  Set the content of the body and make sure to
+                                //  force it to awaken.
+                                TP.wrap(iframeBody).setContent(
+                                                embeddedContent,
+                                                TP.hc('awaken', true));
+                            };
+
+                            embeddedIFrameElem.addEventListener(
+                                                        'load', handler, false);
+                        }
+
+                        embeddedLoc = blankURL.getLocation();
+                    }
+
+                    //  Set the iframe's 'src' to the supplied or computed
+                    //  location.
                     if (TP.notEmpty(embeddedLoc)) {
                         embeddedIFrameElem.src = embeddedLoc;
                     }
