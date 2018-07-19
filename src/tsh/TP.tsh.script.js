@@ -2102,7 +2102,7 @@ function(aRequest) {
     //  see a src attribute it will override any inlined content. We fetch
     //  the referenced URI's content and compile (provided it's valid XML).
     //  The resulting compiled script tag's child nodes are then executed.
-    src = node.ownerDocument[TP.SRC_LOCATION];
+    src = TP.elementGetAttribute(node, 'src', true);
     if (TP.notEmpty(src)) {
         root = node;
         url = TP.uc(src);
@@ -3012,8 +3012,8 @@ function(aSignal) {
     //  different phase sequence if an external file is used. When content
     //  is inlined we presume it has been processed completely prior to
     //  inclusion in the tag's content area.
-    if (TP.notEmpty(this.getNativeNode().ownerDocument[TP.SRC_LOCATION])) {
-        request.atPut('cmdPhases', 'finalize');
+    if (TP.notEmpty(this.hasAttribute('src'))) {
+        request.atPut('cmdPhases', 'cache');
     }
 
     return request;
