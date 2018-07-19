@@ -79,7 +79,7 @@ function(aValue, aContentObject) {
         handler;
 
     panelTPElem = this.addRawContent(
-                    '<xctrls:panel tibet:tag="xctrls:panel">' +
+                    '<xctrls:panel>' +
                         '<xctrls:value>' +
                         aValue +
                         '</xctrls:value>' +
@@ -204,7 +204,7 @@ function(aContentObject, aRequest) {
     //  will allow us to find it later.
     if (TP.isEmpty(panelTPElem)) {
         panelTPElem = this.addRawContent(
-                            '<xctrls:panel tibet:tag="xctrls:panel">' +
+                            '<xctrls:panel>' +
                                 '<xctrls:value>' +
                                 contentKey +
                                 '</xctrls:value>' +

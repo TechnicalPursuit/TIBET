@@ -94,8 +94,7 @@ function(aRequest) {
     //  the original element into a 'tibet:style' tag.
     type = TP.elementGetAttribute(elem, 'type', true);
     if (type === TP.ietf.mime.TIBET_CSS) {
-        elem = TP.elementBecome(
-                    elem, 'tibet:style', TP.hc('tibet:tag', 'tibet:style'));
+        elem = TP.elementBecome(elem, 'tibet:style');
     }
 
     return elem;
