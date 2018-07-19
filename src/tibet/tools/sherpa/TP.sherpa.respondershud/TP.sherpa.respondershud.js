@@ -814,37 +814,6 @@ function(aSignal) {
     return this;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.sherpa.respondershud.Inst.defineHandler('MutationDetach',
-function(aSignal) {
-
-    /**
-     * @method handleMutationDetach
-     * @summary Handles notifications of node detachment from the current UI
-     *     canvas.
-     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.respondershud} The receiver.
-     */
-
-    var tile;
-
-    this.callNextMethod();
-
-    if (this.get('$isRecasting')) {
-        return this;
-    }
-
-    //  Hide the tile.
-    tile = TP.byId('ResponderSummary_Tile', this.getNativeWindow());
-    if (TP.isValid(tile)) {
-        tile.setAttribute('hidden', true);
-    }
-
-    return this;
-});
-
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.respondershud.Inst.defineHandler('SherpaConnectCompleted',
