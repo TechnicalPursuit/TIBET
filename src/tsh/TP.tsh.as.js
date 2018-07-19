@@ -111,6 +111,12 @@ function(aRequest) {
             result = TP.format(item, format, TP.hc('repeat', repeat));
         }
 
+        //  If the result contains element markup, then have the console put it
+        //  into an iframe.
+        if (TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
+            aRequest.atPut('cmdFramed', true);
+        }
+
         aRequest.stdout(result);
     }
 
