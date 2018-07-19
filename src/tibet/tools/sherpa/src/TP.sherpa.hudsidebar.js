@@ -281,7 +281,6 @@ function(aSignal) {
      */
 
     var triggerSignal,
-        signalGlobalPoint,
         contentTagName;
 
     //  Grab the 'trigger signal' - this will be the DOM-level 'context menu'
@@ -292,8 +291,6 @@ function(aSignal) {
     //  menu pop up.
     triggerSignal.preventDefault();
     triggerSignal.stopPropagation();
-
-    signalGlobalPoint = triggerSignal.getGlobalPoint();
 
     //  Grab the tag name for the content tag that we're going to shove into the
     //  menu. If that's not available, exit here.
