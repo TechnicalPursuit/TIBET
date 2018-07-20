@@ -45,3 +45,4 @@ Icon?
 Thumbs.db
 /.tibetlint.json
 /package-lock.json
+/.vscode
