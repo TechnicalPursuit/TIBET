@@ -1548,9 +1548,13 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
         }
     }
 
-    //  If the hash didn't supply a 'tibet:tag' we compute one here.
+    //  If the hash didn't supply a 'tibet:tag' we compute one here. Note that
+    //  the user could've specifically supplied a null value for 'tibet:tag' in
+    //  the hash, which is an indication that they don't want any 'tibet:tag'
+    //  for the resultant element (and which is why we use the TP.isNull check
+    //  for that here).
     if (TP.notValid(attrHash) ||
-        TP.notValid(attrHash.at('tibet:tag'))) {
+        TP.notNull(attrHash.at('tibet:tag'))) {
         if (TP.isEmpty(anElement.prefix)) {
             sourceTagStr = ' tibet:tag="' +
                             TP.canonical(anElement) +
