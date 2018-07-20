@@ -973,7 +973,10 @@ function(aHash) {
 
         keys,
         len,
-        i;
+        i,
+
+        key,
+        val;
 
     if (TP.isEmpty(aHash)) {
         return '';
@@ -985,8 +988,13 @@ function(aHash) {
     len = keys.getSize();
 
     for (i = 0; i < len; i++) {
-        str.push(TP.str(keys.at(i)),
-                    '="', TP.str(aHash.at(keys.at(i))), '" ');
+        key = keys.at(i);
+        val = aHash.at(key);
+
+        //  We only generate an attribute string chunk if the value is valid.
+        if (TP.isValid(val)) {
+            str.push(TP.str(key), '="', TP.str(val), '" ');
+        }
     }
 
     str = str.join('');
