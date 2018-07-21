@@ -433,25 +433,22 @@
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
             if (failed && job.error) {
-                if (job.error !== job.flow) {
-                    errname = job.error + '::' + job.owner;
-                    retrieveTask(job, job.error, job.owner).then(function(errtask) {
-                        if (!errtask) {
-                            logger.error(job,
-                                'missing task: ' + errname);
-                            failJob(job, 'Missing task ' + errname);
-                            return;
-                        }
-                        acceptTask(job, errtask);
-                    }).catch(function(err) {
+                errname = job.error + '::' + job.owner;
+                //  NOTE job.error is a task reference.
+                retrieveTask(job, job.error, job.owner).then(function(errtask) {
+                    if (!errtask) {
                         logger.error(job,
-                            'error: ' + err.message +
-                            ' fetching task: ' + errname);
-                    });
-                    return;
-                } else {
-                    logger.error(job, 'error: recursive job error definition.');
-                }
+                            'missing task: ' + errname);
+                        failJob(job, 'Missing task ' + errname);
+                        return;
+                    }
+                    acceptTask(job, errtask);
+                }).catch(function(err) {
+                    logger.error(job,
+                        'error: ' + err.message +
+                        ' fetching task: ' + errname);
+                });
+                return;
             }
 
             //  No job-level error tasks. We're truly done. Need to update final
@@ -485,6 +482,18 @@
                         failJob(job, 'Missing task ' + errname);
                         return;
                     }
+
+                    //  NOTE since task.error is a task reference if we end up
+                    //  with the same task name and owner we're going to recurse
+                    if (errtask.name === task.name &&
+                            errtask.owner === task.owner) {
+                        logger.error(job,
+                            'recursive task error definition: ' + errname);
+                        failJob(job, 'Recursive task error definition ' +
+                            errname);
+                        return;
+                    }
+
                     acceptTask(job, errtask);
                 }).catch(function(err) {
                     logger.error(job,
