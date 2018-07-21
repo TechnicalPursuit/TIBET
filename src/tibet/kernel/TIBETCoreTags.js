@@ -1503,7 +1503,6 @@ function(aSignal) {
                             'cmdNode', this.getNativeNode(),
                             'cmdExecute', true,
                             'cmdPhases', 'Execute',
-                            'cmdSilent', true,
                             'cmdTrigger', aSignal,
                             TP.STDIN, TP.ac(aSignal.get('payload'))
                     ));
