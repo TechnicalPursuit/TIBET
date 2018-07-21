@@ -248,6 +248,26 @@ sherpa|consoleoutput .flex-item > .header > .stats {
     white-space: pre-wrap;
 }
 
+sherpa|consoleoutput .flex-item > .header > sherpa|dispenser {
+
+    flex: 0 0 auto;
+
+    position: relative;
+
+    width: 34px;
+
+    margin-top: -3px;
+    margin-right: 35px;
+
+    transform: scale(0.7);
+}
+
+sherpa|consoleoutput .flex-item > .header sherpa|dispenseritem {
+
+    height: 14px;
+    width: 24px;
+}
+
 sherpa|consoleoutput .flex-item > .content {
 
     top: 31px;
