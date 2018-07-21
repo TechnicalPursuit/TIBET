@@ -150,6 +150,8 @@
         setcfg('tds.tasks.db_app', 'tws');
         setcfg('tds.tasks.db_name', 'tasks');   //  often a suffix on proj db
 
+        setcfg('tds.tasks.dryrun', false);
+
         setcfg('tds.tasks.watch.feed', 'continuous');
         setcfg('tds.tasks.watch.heartbeat', 500);
         setcfg('tds.tasks.watch.inactivity_ms', null);

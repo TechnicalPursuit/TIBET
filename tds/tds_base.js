@@ -211,6 +211,12 @@
 
     //  ---
 
+    TDS.ifDryrun = function() {
+        return TDS.cfg('tds.tasks.dryrun') === true;
+    };
+
+    //  ---
+
     TDS.ifTrace = function() {
         var level;
 
