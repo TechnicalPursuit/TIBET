@@ -4280,15 +4280,16 @@ function() {
 
         repElem,
 
-        dragClone;
+        dragClone,
+
+        pclassAttrNodes,
+        styleStr;
 
     if (TP.notValid(elem = this.getNativeNode())) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    if (TP.notEmpty(attrVal = TP.elementGetAttribute(elem,
-                                                        'dnd:rep',
-                                                        true))) {
+    if (TP.notEmpty(attrVal = TP.elementGetAttribute(elem, 'dnd:rep', true))) {
         //  Note here how we specify both 'autocollapse' and 'retry with
         //  document', since we only want one element and we want the document
         //  to be retried as the context node - very useful for CSS paths.
@@ -4300,13 +4301,40 @@ function() {
         repElem = elem;
     }
 
+    //  Find any 'pclass:' attributes and remove them. This will affect the
+    //  style that we're going to copy.
+    pclassAttrNodes = TP.elementGetAttributeNodesInNS(
+                                        repElem, null, TP.w3.Xmlns.PCLASS);
+
+    if (TP.notEmpty(pclassAttrNodes)) {
+        pclassAttrNodes.forEach(
+            function(anAttrNode) {
+                TP.elementRemoveAttribute(repElem, anAttrNode.name, true);
+            });
+    }
+
+    //  Now, clone the representation element without the 'pclass:' attributes
+    //  on it.
     dragClone = TP.nodeCloneNode(repElem);
 
-    TP.elementSetStyleString(
-                dragClone,
-                TP.elementGetComputedStyleString(
+    //  And compute the style string to use with the drag clone without the
+    //  affects of any 'pclass:' attributes.
+    styleStr = TP.elementGetComputedStyleString(
                     repElem,
-                    TP.dom.UIElementNode.DRAG_CSS_PROPERTY_NAMES));
+                    TP.dom.UIElementNode.DRAG_CSS_PROPERTY_NAMES);
+
+    //  Put any removed 'pclass:' attributes back onto the representation
+    //  element to leave it untouched.
+    if (TP.notEmpty(pclassAttrNodes)) {
+        pclassAttrNodes.forEach(
+            function(anAttrNode) {
+                TP.elementSetAttribute(
+                    repElem, anAttrNode.name, anAttrNode.value, true);
+            });
+    }
+
+    //  Set the style string on the clone.
+    TP.elementSetStyleString(dragClone, styleStr);
 
     //  Remove the 'id' to make sure the clone is unique in the document.
     TP.elementRemoveAttribute(dragClone, 'id');
