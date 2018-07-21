@@ -3397,23 +3397,24 @@ function(aSignal) {
      * @returns {TP.dnd.DNDResponder} The receiver.
      */
 
-    var targetTPElem,
+    var sourceTPElem,
+
+        targetTPElem,
         sigPayload,
 
         dndElem;
 
+    sourceTPElem = TP.dom.UIElementNode.get('currentDNDSource');
+
     if (TP.isValid(targetTPElem =
                     TP.dom.UIElementNode.get('currentDNDTarget'))) {
-
         sigPayload = TP.hc('dndSource',
-                            TP.dom.UIElementNode.get('currentDNDSource'),
+                            sourceTPElem,
                             'dndTarget',
                             targetTPElem);
 
     } else {
-
-        sigPayload = TP.hc('dndSource',
-                            TP.dom.UIElementNode.get('currentDNDSource'));
+        sigPayload = TP.hc('dndSource', sourceTPElem);
     }
 
     if (TP.isValid(targetTPElem) && targetTPElem.willDrop()) {
