@@ -44,7 +44,12 @@ sherpa|dispenseritem {
     cursor: pointer;
 }
 
-sherpa|dispenseritem:hover {
+/* NB: We use the 'pclass:hover' attribute selector here because otherwise when
+ * this item is used for cloning as a DND source, the gold color will be
+ * permanently set on the inline style when the DND style is computed. The
+ * 'pclass:' attributes are removed before that cloning is done
+ */
+sherpa|dispenseritem[pclass|hover] {
 
     background-color: gold;
 }
