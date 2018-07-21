@@ -859,7 +859,11 @@
                                 //  For sequence we expect a block with a task
                                 //  key and params key. the task should match.
                                 block = job.params.tasks[structure][index];
-                                if (block.task === task.name) {
+                                if (!block) {
+                                    throw new Error(
+                                        'Job param sequence missing index ' +
+                                        index);
+                                } else if (block.task === task.name) {
                                     TDS.blend(params, block.params);
                                 } else {
                                     throw new Error(
