@@ -5829,12 +5829,13 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     /**
      * @method RESPONDER_FIRING
-     * @summary Fires signals across a series of responders. Responder chain
-     *     computation is based on the DOM but is sparse, including only those
-     *     elements with either a tibet:ctrl or tibet:tag (or both). Unlike
-     *     DOM_FIRING the RESPONDER_FIRING policy also includes the application
-     *     controller stack in the capture and bubble phase processing. As a
-     *     result RESPONDER_FIRING is a general purpose policy that can handle
+     * @summary Fires signals across a series of responders.
+     * @description Responder chain computation is based on the DOM but is
+     *     sparse, including only those elements with either a tibet:ctrl or
+     *     tibet:tag (or both) or a 'custom element'. Unlike DOM_FIRING, the
+     *     RESPONDER_FIRING policy also includes the application controller
+     *     stack in the capture and bubble phase processing. As a result
+     *     RESPONDER_FIRING is a general purpose policy that can handle
      *     application widgets and their controllers very effectively.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -6119,8 +6120,8 @@ function(target, signal) {
                     responder.handle(signal);
                 } else {
                     this.raise('InvalidResponder',
-                            TP.sc('Responder: ', id,
-                                    ' cannot handle: ', signal.getSignalName()));
+                        TP.sc('Responder: ', id,
+                                ' cannot handle: ', signal.getSignalName()));
                 }
 
                 //  Don't proceed to tibet:tag without checking for propagation.

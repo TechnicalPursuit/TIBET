@@ -973,7 +973,10 @@ function(aHash) {
 
         keys,
         len,
-        i;
+        i,
+
+        key,
+        val;
 
     if (TP.isEmpty(aHash)) {
         return '';
@@ -985,8 +988,13 @@ function(aHash) {
     len = keys.getSize();
 
     for (i = 0; i < len; i++) {
-        str.push(TP.str(keys.at(i)),
-                    '="', TP.str(aHash.at(keys.at(i))), '" ');
+        key = keys.at(i);
+        val = aHash.at(key);
+
+        //  We only generate an attribute string chunk if the value is valid.
+        if (TP.isValid(val)) {
+            str.push(TP.str(key), '="', TP.str(val), '" ');
+        }
     }
 
     str = str.join('');
@@ -1540,9 +1548,13 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
         }
     }
 
-    //  If the hash didn't supply a 'tibet:tag' we compute one here.
+    //  If the hash didn't supply a 'tibet:tag' we compute one here. Note that
+    //  the user could've specifically supplied a null value for 'tibet:tag' in
+    //  the hash, which is an indication that they don't want any 'tibet:tag'
+    //  for the resultant element (and which is why we use the TP.isNull check
+    //  for that here).
     if (TP.notValid(attrHash) ||
-        TP.notValid(attrHash.at('tibet:tag'))) {
+        TP.notNull(attrHash.at('tibet:tag'))) {
         if (TP.isEmpty(anElement.prefix)) {
             sourceTagStr = ' tibet:tag="' +
                             TP.canonical(anElement) +
@@ -3051,8 +3063,8 @@ function(anElement, ignoreSourcetag) {
      *     distinction is important to the TIBET engine.
      * @param {Element} anElement The element to get the canonical name of.
      * @param {Boolean} ignoreSourcetag When true the element will ignore
-     *     'tibet:tag' data and work purely from the node name and
-     *     namespace URI data. Defaults to false.
+     *     'tibet:tag' data and work purely from the node name and namespace URI
+     *     data. Defaults to false.
      * @example Obtain the canonical name for an HTML element whose name doesn't
      *     have a prefix:
      *     <code>
@@ -5318,7 +5330,8 @@ function(aNode) {
     /**
      * @method nodeIsResponder
      * @summary Tests a node to determine if it's a valid responder element.
-     *     Responders have either a tibet:ctrl or tibet:tag attribute.
+     *     Responders have either a tibet:ctrl or tibet:tag attribute (or are
+     *     not in the XHTML namespace).
      * @param {Node} aNode The node to check.
      * @returns {Boolean} True for nodes which are elements having the proper
      *     attribute or tag values to describe a responder.
@@ -5326,9 +5339,8 @@ function(aNode) {
 
     if (TP.isElement(aNode)) {
         if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
-                TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
-                !TP.w3.Xmlns.getXHTMLURIs().contains(
-                    TP.nodeGetNSURI(aNode))) {
+            TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
+            !TP.w3.Xmlns.isNative(TP.nodeGetNSURI(aNode))) {
             return true;
         }
     }
@@ -14228,10 +14240,10 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
         }
     }
 
-    //  See if the element has a phase. If not, but it has a
-    //  'tibet:tag' attribute, then set its 'tibet:phase' to
-    //  'Compile'. We do this before we traverse the ancestor chain so that
-    //  we can support tags that recursively replace themselves.
+    //  See if the element has a phase. If not, but it has a 'tibet:tag'
+    //  attribute, then set its 'tibet:phase' to 'Compile'. We do this before
+    //  we traverse the ancestor chain so that we can support tags that
+    //  recursively replace themselves.
     currentPhase = TP.elementGetAttribute(elem, 'tibet:phase', true);
     if (TP.isEmpty(currentPhase)) {
         if (TP.elementHasAttribute(elem, 'tibet:tag', true)) {

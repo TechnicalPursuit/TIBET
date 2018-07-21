@@ -1689,15 +1689,15 @@ function(aRequest) {
     //  that we're producing.
     this.populateCompilationAttrs(aRequest);
 
-    //  We may have gotten here because the tag processing system was able
-    //  to obtain a 'concrete type' for this node using the 'tibet:ctrl'
-    //  attribute (which is really just defining a controller type) not a
-    //  'tibet:tag' attribute.
+    //  We may have gotten here because the tag processing system was able to
+    //  obtain a 'concrete type' for this node using the 'tibet:ctrl' attribute
+    //  (which is really just defining a controller type) not a 'tibet:tag'
+    //  attribute.
 
-    //  Therefore, we want to check the namespace URI of the element and if
-    //  its a 'native namespace' (i.e. this element is supported natively on
-    //  the platform) and we don't have a 'tibet:tag' attribute we
-    //  don't want to transform the tag, so we just exit here.
+    //  Therefore, we want to check the namespace URI of the element and if its
+    //  a 'native namespace' (i.e. this element is supported natively on the
+    //  platform) and we don't have a 'tibet:tag' attribute we don't want to
+    //  transform the tag, so we just exit here.
     if (TP.notEmpty(ns = elem.namespaceURI) &&
         TP.w3.Xmlns.isNative(ns) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {

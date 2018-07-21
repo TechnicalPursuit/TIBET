@@ -10255,22 +10255,25 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @description This method determines the 'TP wrapper' type for the
-     *     supplied node by using the following logic cascade. 1. Checks for the
-     *     'tibet:tag' attribute on the node and attempts to obtain a type
-     *     matching that name. 2. If there is a 'tibet:tag' attribute and its
-     *     exact type cannot be found, it computes a name using that name and
-     *     the suffix ':Element' and attempts to obtain a type matching that
-     *     name. 3. Obtains the node's 'full name' (i.e. the name that the
-     *     author used in the source markup) and attempts to obtain a type
-     *     matching that name. 4. Obtains the node's 'canonical name' (i.e. if
-     *     the node has a namespace, it uses the canonical prefix for that
-     *     namespace) and attempts to obtain a type matching that name. 5.
-     *     Obtains the node's 'canonical prefix' (if the node has a namespace)
-     *     and computes a name using that prefix and the suffix ':Element' and
-     *     attempts to obtain a type matching that name. 6. Obtains the node's
-     *     namespace URI (if the node has a namespace) and checks with the XMLNS
-     *     'info' hash to see if there is a 'defaultNodeType' name registered
-     *     under that namespace and attempts to obtain a matching type.
+     *     supplied node by using the following logic cascade:
+     *     1. Checks for the 'tibet:tag' attribute on the node and attempts to
+     *     obtain a type matching that name.
+     *     2. If there is a 'tibet:tag' attribute and its exact type cannot be
+     *     found, it computes a name using that name and the suffix ':Element'
+     *     and attempts to obtain a type matching that name.
+     *     3. Obtains the node's 'full name' (i.e. the name that the author used
+     *     in the source markup) and attempts to obtain a type matching that
+     *     name.
+     *     4. Obtains the node's 'canonical name' (i.e. if the node has a
+     *     namespace, it uses the canonical prefix for that namespace) and
+     *     attempts to obtain a type matching that name.
+     *     5. Obtains the node's 'canonical prefix' (if the node has a
+     *     namespace) and computes a name using that prefix and the suffix
+     *     ':Element' and attempts to obtain a type matching that name.
+     *     6. Obtains the node's namespace URI (if the node has a namespace) and
+     *     checks with the XMLNS 'info' hash to see if there is a
+     *     'defaultNodeType' name registered under that namespace and attempts
+     *     to obtain a matching type.
      * @param {Node} aNode The native node to wrap.
      * @returns {TP.meta.dom.ElementNode} A TP.dom.ElementNode subtype type
      *     object.
@@ -10440,7 +10443,8 @@ function(aNode) {
             //  If that namespace has a 'prefix' associated with it, we'll
             //  try to find a type named '<prefix>:Element'
             if (TP.notEmpty(prefix = info.at('prefix'))) {
-                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
+                if (TP.isType(
+                        type = TP.sys.getTypeByName(prefix + ':Element'))) {
 
                     //  If the type's Type prototype is not the same as this
                     //  one's Type prototype and it owns a 'getConcreteType'
