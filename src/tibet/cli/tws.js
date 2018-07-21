@@ -1028,7 +1028,8 @@ Cmd.prototype.executeRetry = function() {
 /**
  * Submits a specific job template after optionally prompting for parameter
  * data. Prompting occurs if the job template provided contains handlebars
- * substitution values for any of the params content.
+ * substitution slots for any of the params content. There is also a generic
+ * prompt to allow you to enter key/value pairs for unlisted parameters.
  */
 Cmd.prototype.executeSubmit = function() {
     var file,
@@ -1081,24 +1082,28 @@ Cmd.prototype.executeSubmit = function() {
     prompt = function(obj, root) {
         var keys;
 
-        if (!CLI.isPlainObject(obj)) {
+        if (!CLI.isPlainObject(obj) && !Array.isArray(obj)) {
             return;
         }
 
         keys = Object.keys(obj);
+
         keys.forEach(function(key) {
             var val,
                 fullkey,
                 result;
 
-            if (root) {
-                fullkey = root + '.' + key;
+            //  If the key is a number we have a bit of a hack to try and prompt
+            //  by task name rather than task index since it's a common format.
+            if (/^\d+$/.test(key) && obj[key].task) {
+                fullkey = root !== undefined ?
+                    root + '.' + obj[key].task : obj[key].task;
             } else {
-                fullkey = key;
+                fullkey = root !== undefined ? root + '.' + key : key;
             }
 
             val = obj[key];
-            if (CLI.isPlainObject(val)) {
+            if (CLI.isPlainObject(val) || Array.isArray(val)) {
                 prompt(val, fullkey);
             } else if (typeof val === 'string') {
 
