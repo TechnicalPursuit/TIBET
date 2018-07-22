@@ -705,7 +705,7 @@ function(aSignal) {
                     dndSource = aSignal.at('dndSource');
                     tdcOutputItem = dndSource.ancestorMatchingCSS(
                                                 'sherpa|consoleoutputitem');
-                    tdcRequest = tdcOutputItem.get('$originatingRequest');
+                    tdcRequest = tdcOutputItem.get('$creatingRequest');
 
                     //  Message the drop target that we dropped a piece of
                     //  console output into it at the insertion position
