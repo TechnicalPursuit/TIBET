@@ -1142,7 +1142,9 @@ function(insertionPointElement, insertionPosition) {
 TP.dom.ElementNode.Inst.defineMethod('sherpaDidCopyTDCOutputNodeInto',
 function(insertionPointElement, insertionPosition, tdcRequest) {
 
-    debugger;
+    TP.info('Going to insert:' + TP.str(tdcRequest.at('cmdNode')));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
