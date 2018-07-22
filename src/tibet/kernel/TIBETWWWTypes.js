@@ -2422,6 +2422,66 @@ function(anNSURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.w3.Xmlns.Type.defineMethod('isNativeMarkup',
+function(aMarkupString) {
+
+    /**
+     * @method isNative
+     * @summary Returns true if *all* of the namespace URIs in the supplied
+     *     markup are considered to belong to native namespaces. If just one is
+     *     not, then this method will return false.
+     * @param {String} aMarkupString The markup string to test.
+     * @exception TP.sig.InvalidString
+     * @returns {Boolean} True if the markup contains namespaces that are
+     *     natively supported.
+     */
+
+    var testElement,
+
+        isNative,
+
+        allNSURIs,
+        len,
+        i;
+
+    if (TP.notValid(aMarkupString)) {
+        return this.raise('TP.sig.InvalidString');
+    }
+
+    if (!TP.regex.STARTS_WITH_ELEM_MARKUP.test(aMarkupString)) {
+        return false;
+    }
+
+    //  Create an Element from the supplied markup so that we can extract the
+    //  namespace URIs from it. Note how we specify a null default namespace and
+    //  ask *not* to report errors from the parsing process here. We're only
+    //  interested in whether we get a valid Element or not.
+    testElement = TP.elem(aMarkupString, null, false);
+    if (TP.isElement(testElement)) {
+        isNative = true;
+
+        //  Grab all of the namespace URIs, supplying true as the second
+        //  parameter here to get all of the namespace URIs 'deeply'.
+        allNSURIs = TP.nodeGetNSURIs(testElement, true);
+
+        //  Iterate and if any of the detected namespaces are not native, flip
+        //  the flag to false and break.
+        len = allNSURIs.getSize();
+        for (i = 0; i < len; i++) {
+            if (!TP.w3.Xmlns.isNative(allNSURIs.at(i))) {
+                isNative = false;
+                break;
+            }
+        }
+
+        return isNative;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.w3.Xmlns.Type.defineMethod('registerNSInfo',
 function(anNSURI, aHash) {
 
