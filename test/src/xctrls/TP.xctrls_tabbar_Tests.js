@@ -303,7 +303,7 @@ function() {
                 test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -503,7 +503,7 @@ function() {
         test.assert.isEqualTo(value, 'baz');
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -701,7 +701,7 @@ function() {
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac());
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -802,7 +802,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -948,7 +948,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -556,7 +556,7 @@ function() {
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).skip(TP.sys.cfg('boot.context') === 'headless');
 
     //  ------------------------------------------------------------------------
 

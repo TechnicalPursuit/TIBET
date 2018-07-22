@@ -269,8 +269,8 @@ function(aRequest) {
             'Partial results. Some package@config files were minified.');
     }
 
-    //  PhantomJS/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    //  Headless/CLI support requires output line-by-line.
+    if (TP.sys.cfg('boot.context') === 'headless') {
 
         results.forEach(
                 function(result) {

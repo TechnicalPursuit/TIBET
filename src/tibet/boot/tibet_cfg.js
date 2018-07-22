@@ -130,7 +130,7 @@
 
     //  list of supported boot contexts
     TP.sys.setcfg('boot.supported_contexts', [
-        'browser', 'electron', 'phantomjs'
+        'browser', 'electron', 'headless'
     ]);
 
     //  dictionary of data used by the isSupported call in the loader to
@@ -190,8 +190,8 @@
     //  how deep under lib_root is the tibet_loader file?
     TP.sys.setcfg('boot.loader_offset', '../../..');
 
-    //  how far from lib_root is the phantom loader?
-    TP.sys.setcfg('boot.phantom_offset', '../../..');
+    //  how far from lib_root is the headless loader?
+    TP.sys.setcfg('boot.headless_offset', '../../..');
 
     //  Ensure we use the tibet_dir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
@@ -531,7 +531,7 @@
     //  browser context
     //  ---
 
-    // Inadequate, but sufficient to help determine if we're in node, Phantom,
+    // Inadequate, but sufficient to help determine if we're in node, headless,
     // or a browser. Note these tests are unlikely to work in other contexts.
     if (typeof navigator === 'undefined') {
 
@@ -541,10 +541,11 @@
         TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
-    } else if (/PhantomJS/.test(navigator.userAgent)) {
+    } else if (/PhantomJS/.test(navigator.userAgent) ||
+        /Puppeteer/.test(navigator.userAgent)) {
 
-        TP.sys.setcfg('boot.context', 'phantomjs');
-        TP.sys.setcfg('boot.reporter', 'phantom');
+        TP.sys.setcfg('boot.context', 'headless');
+        TP.sys.setcfg('boot.reporter', 'headless');
 
         TP.sys.setcfg('boot.level', 'WARN');
         TP.sys.setcfg('log.level', 'WARN');
@@ -1465,7 +1466,7 @@
 
     TP.sys.setcfg('editor.select.delay', 50);
 
-    TP.sys.setcfg('phantomjs.timeout', 5000);
+    TP.sys.setcfg('headless.timeout', 5000);
 
     TP.sys.setcfg('shell.init.delay', 10);
     TP.sys.setcfg('shell.update.delay', 1000);

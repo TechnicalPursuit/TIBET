@@ -420,9 +420,9 @@ function() {
 
         testKey = testKeys.at(i);
 
-        //  PhantomJS doesn't report HTML document from top level. We have to
+        //  Headless doesn't report HTML document from top level. We have to
         //  manufacture one and it has no window as a result...
-        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        if (TP.sys.cfg('boot.context') === 'headless') {
             if (TP.ac(
                 'HTMLDocument', 'HTMLElement',
                 'TP.dom.HTMLDocumentNode', 'TP.dom.HTMLElementNode').indexOf(
@@ -1332,7 +1332,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -1760,7 +1760,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -1849,7 +1849,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -1929,7 +1929,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -2021,7 +2021,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -2113,7 +2113,7 @@ function() {
     }
 
     /* eslint-enable no-loop-func */
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 

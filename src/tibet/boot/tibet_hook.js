@@ -131,9 +131,7 @@ Object.defineProperty(
         value: tibet.TP, writable: false
     });
 
-if (TP.sys.cfg('log.hook') &&
-        TP.sys.cfg('boot.context') !== 'phantomjs') {
-
+if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
     $$msg = 'TIBET hook in \'' + root.name +
         '\' found TIBET in \'top\'.';
     TP.boot.$stdout($$msg, TP.TRACE);
@@ -142,7 +140,7 @@ if (TP.sys.cfg('log.hook') &&
 root.onerror = tibet.onerror;
 
 //  Output each window/frame and its location data as we process it.
-if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
+if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
     $$msg = 'TIBET hook @ ' + root.name + ' -> ' + $$location;
     TP.boot.$stdout($$msg, TP.INFO);
 }

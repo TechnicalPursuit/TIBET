@@ -477,7 +477,7 @@ function() {
                         tpElem.getComputedStyleProperty('backgroundColor')),
                     TP.gui.Color.fromString('blue'));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).skip(TP.sys.cfg('boot.context') === 'headless');
 });
 
 //  ========================================================================
@@ -613,7 +613,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');//  Crashes on PhantomJS
+    }).skip(TP.sys.cfg('boot.context') === 'headless');//  Crashes on Headless
 
     this.it('partial file inclusion', function(test, options) {
 

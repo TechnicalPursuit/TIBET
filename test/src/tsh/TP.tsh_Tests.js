@@ -6396,7 +6396,7 @@ function() {
 
                 TP.uc(locStr).unregister();
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).skip(TP.sys.cfg('boot.context') === 'headless');
 
     //  ---
 

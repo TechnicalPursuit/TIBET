@@ -361,7 +361,8 @@ function(anHref) {
                 //  returned, compile and insert it into the document. Note how
                 //  we *don't* specify 'refresh' here, since we want the latest
                 //  content as set into the URL.
-                fetchRequest = TP.request('async', true, 'resultType', TP.TEXT);
+                fetchRequest = TP.request('async',
+                    TP.sys.isHTTPBased(), 'resultType', TP.TEXT);
                 fetchRequest.defineHandler(
                         'RequestSucceeded',
                             function(aResponse) {

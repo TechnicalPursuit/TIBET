@@ -252,9 +252,9 @@ function() {
             });
     });
 
-    //  Can't test "submit" in PhantomJS because we're not launching from an
+    //  Can't test "submit" in Headless because we're not launching from an
     //  HTTP server.
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 //  end

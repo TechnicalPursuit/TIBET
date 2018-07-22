@@ -178,12 +178,15 @@ To install Node.js without `nvm` follow the instructions at <a href="http://node
 #### Update/Adjust npm
 
 If you already have a recent version of Node.js installed you should have a
-valid version of `npm`. Unfortunately some older versions (1.x) of `npm` suffer
-from race condition errors and some newer (5.x) versions cause problems with
-certain dependent modules like `phantomjs-prebuilt`. We suggest using npm `3.x`.
+valid version of `npm`. We suggest using at least npm `3.x`. The latest
+versions of npm `5.x` also appear stable.
 
 ```
 npm install -g npm@3
+
+# OR
+
+npm install -g npm@5
 ```
 
 If you see errors from any npm-based operations mentioning `cb() never called!`

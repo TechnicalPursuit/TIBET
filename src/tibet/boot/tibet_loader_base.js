@@ -60,6 +60,11 @@ if (TP.sys.cfg('boot.context') === 'electron') {
     delete root.require;
 }
 
+/*
+console.log(navigator.userAgent);
+console.log(TP.sys.cfg('boot.context'));
+*/
+
 //  ============================================================================
 //  tibet_cfg Overrides / Updates
 //  ============================================================================
@@ -1430,7 +1435,7 @@ TP.sys.isSupported = function() {
         config,
         flag;
 
-    //  PhantomJS and Electron checks are based on boot.context.
+    //  Headless and Electron checks are based on boot.context from tibet_cfg.
     context = TP.sys.cfg('boot.context');
     if (TP.sys.cfg('boot.supported_contexts').indexOf(context) !== -1) {
         //  Don't assume success for browsers. We do further checks below.
@@ -5106,7 +5111,7 @@ TP.boot.$$formatLogEntry = function(entry, options) {
      *     [options.console=false] {Boolean} Whether or not this content is
      *         destined for a plain JS console and should therefore not be
      *         colorized, etc. NOTE that this is normally invoked via either
-     *         PhantomJS or Electron and those components are responsible for
+     *         puppeteer or Electron and those components are responsible for
      *         colorizing text _after_ it is sent from the client.
      * @returns {String} The formatted log entry.
      */
@@ -5446,14 +5451,13 @@ TP.boot.$bootuiReporter = function(entry) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$phantomReporter = function(entry) {
+TP.boot.$headlessReporter = function(entry) {
 
     /**
-     * @method $$phantomReporter
+     * @method $$headlessReporter
      * @summary A reporter method that generates a String representation of the
      *     supplied entry in 'JavaScript console.*() functions standard' format
-     *     and outputs that to PhantomJS via the appropriate console.*()
-     *     function.
+     *     and outputs that via the appropriate console.*() function.
      * @param {Number[]} A log entry with information at indexes that match
      *     TP.boot.LOG_ENTRY_* constants.
      */
@@ -5522,7 +5526,7 @@ TP.boot.$phantomReporter = function(entry) {
 TP.boot.$silentReporter = function(entry) {
 
     /**
-     * @method $$phantomReporter
+     * @method $$silentReporter
      * @summary A reporter method that reports nothing.
      * @param {Number[]} A log entry with information at indexes that match
      *     TP.boot.LOG_ENTRY_* constants.
@@ -6015,8 +6019,8 @@ TP.boot.Log.prototype.report = function(entry) {
             });
     }
 
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        reporterName = 'phantom';
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        reporterName = 'headless';
     } else {
         reporterName = TP.sys.cfg('boot.reporter');
     }
@@ -7747,10 +7751,10 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
-    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  Headless launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    if (TP.sys.cfg('boot.context') === 'headless') {
 
         //  try to locate node_modules on the path...app head should be the
         //  container of that directory
@@ -7759,12 +7763,13 @@ TP.boot.$getAppHead = function() {
             head = path.slice(0, index);
         } else {
             //  Try to use offset.
-            head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.phantom_offset'));
+            head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.headless_offset'));
             if (head.charAt(head.length - 1) === '/') {
                 head = head.slice(0, -1);
             }
         }
         TP.boot.$$apphead = head;
+// console.log('computed TP.boot.$$apphead: ' + TP.boot.$$apphead);
         return TP.boot.$$apphead;
     }
 
@@ -7850,19 +7855,20 @@ TP.boot.$getAppRoot = function() {
     //  Compute from the window location, normally a reference to an index.html
     //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
-
-    //  PhantomJS launches are unique in that they leverage a page that resides
+/*
+    //  Headless launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    if (TP.sys.cfg('boot.context') === 'headless') {
 
-        //  First look for help on the URL. TIBET's phantomtsh.js script is
-        //  often invoked via CLI calls that augement the URI with app_root.
+        //  First look for help on the URL. TIBET's headless launch script is
+        //  often invoked via CLI calls that augment the URI with app_root.
         params = TP.boot.$uriFragmentParameters(path);
         if (params['path.app_root']) {
             TP.boot.$$approot = TP.boot.$uriCollapsePath(
                 TP.boot.$uriJoinPaths(TP.boot.$$apphead,
                     params['path.app_root']));
+console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
             return TP.boot.$$approot;
         }
 
@@ -7876,9 +7882,11 @@ TP.boot.$getAppRoot = function() {
 
         TP.boot.$$approot = TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
+console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
         return TP.boot.$$approot;
     }
 
+*/
     //  Remaining path processing works with just the base path.
     path = path.split(/[#?]/)[0];
 
@@ -7894,6 +7902,7 @@ TP.boot.$getAppRoot = function() {
             if (path.indexOf(key) !== -1) {
                 TP.boot.$$approot = path.slice(0,
                     path.indexOf(key) + key.length);
+// console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
                 return TP.boot.$$approot;
             }
         }

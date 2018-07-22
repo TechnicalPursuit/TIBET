@@ -52,7 +52,7 @@ function(anEntry) {
     }
 
     //  Don't output entities...and do a little (error...) display cleanup.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    if (TP.sys.cfg('boot.context') === 'headless') {
         str = str.replace(/&#(\d+);/g, '').replace(/\) \)\.$/, ')).');
     }
 

@@ -948,8 +948,8 @@ function(aRequest) {
     results.push(prefix + totalErrors + ' errors in ' + errorFiles +
                     ' of ' + totalFiles + ' files.');
 
-    //  PhantomJS/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    //  Headless/CLI support requires output line-by-line.
+    if (TP.sys.cfg('boot.context') === 'headless') {
 
         results.forEach(
                 function(result) {
@@ -961,7 +961,7 @@ function(aRequest) {
         return aRequest;
     }
 
-    //  When outputting outside of PhantomJS/CLI, just join all of the results
+    //  When outputting outside of Headless/CLI, just join all of the results
     //  together with a newline. Because we specified 'cmdTAP' above, this
     //  output will be untouched.
     aRequest.complete(results.join('\n'));

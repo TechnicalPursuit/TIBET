@@ -7536,10 +7536,12 @@ function(parts) {
 
     this.callNextMethod();
 
+    /*
     if (TP.notEmpty(thePath = parts.at('path')) &&
         thePath.startsWith('/')) {
         thePath = thePath.slice(1);
     }
+    */
 
     //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
     //  necessary when creating a URI, since otherwise the change notification
@@ -12101,9 +12103,9 @@ function() {
 
     var watchers;
 
-    //  Don't watch if running in phantomjs or karma (both are test environments
+    //  Don't watch if running in headless or karma (both are test environments
     //  that will cause issues).
-    if (TP.sys.cfg('boot.context') === 'phantomjs' ||
+    if (TP.sys.cfg('boot.context') === 'headless' ||
         TP.sys.hasFeature('karma')) {
         return this;
     }
@@ -12256,6 +12258,10 @@ function() {
         sourceURI,
         signalSource,
         signalType;
+
+    if (!TP.sys.isHTTPBased()) {
+        return this;
+    }
 
     sourceType = this.getWatcherSourceType();
     sourceURI = this.getWatcherSourceURI();

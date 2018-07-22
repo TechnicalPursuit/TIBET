@@ -59,7 +59,7 @@ function(aWindow) {
         return this;
     }
 
-    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
+    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
         msg = 'Arming window: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);
     }
