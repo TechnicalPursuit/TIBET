@@ -488,6 +488,7 @@ function(aSignal) {
     switch (vendType) {
         case 'breadcrumb':
         case 'tofu':
+        case 'tdc_output_node':
 
             break;
 
@@ -595,6 +596,10 @@ function(aSignal) {
         dndSourceTPElem,
         vendType,
 
+        dndSource,
+        tdcOutputItem,
+        tdcRequest,
+
         containingBlockElem;
 
     //  Capture this *before* we hide ourself - it will be nulled out by that
@@ -689,6 +694,27 @@ function(aSignal) {
                     TP.wrap(dndTargetElem).sherpaDidCopyNodeInto(
                                             dndTargetElem,
                                             this.get('insertionPosition'));
+
+                    break;
+
+                case 'tdc_output_node':
+
+                    //  Grab the DND source element. From there, we work our way
+                    //  up to the consoleoutputitem element, which will have had
+                    //  the request that created it programmed onto it.
+                    dndSource = aSignal.at('dndSource');
+                    tdcOutputItem = dndSource.ancestorMatchingCSS(
+                                                'sherpa|consoleoutputitem');
+                    tdcRequest = tdcOutputItem.get('$originatingRequest');
+
+                    //  Message the drop target that we dropped a piece of
+                    //  console output into it at the insertion position
+                    //  determined by the user and that node should be copied
+                    //  into that spot.
+                    TP.wrap(dndTargetElem).sherpaDidCopyTDCOutputNodeInto(
+                                            dndTargetElem,
+                                            this.get('insertionPosition'),
+                                            tdcRequest);
 
                     break;
 

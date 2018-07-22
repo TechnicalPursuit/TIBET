@@ -1139,6 +1139,14 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('sherpaDidCopyTDCOutputNodeInto',
+function(insertionPointElement, insertionPosition, tdcRequest) {
+
+    debugger;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('sherpaDidReparentNode',
 function(insertionPointElement, insertionPosition) {
 
