@@ -328,6 +328,8 @@ function(uniqueID, dataRecord) {
      *                      special way).
      *          'cmdText'   The command that was executed to produce the output
      *                      that this item is being created for.
+     *          'request'   The request that caused the creation of this output
+     *                      item.
      * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
