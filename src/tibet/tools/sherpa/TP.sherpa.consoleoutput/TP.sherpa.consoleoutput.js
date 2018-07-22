@@ -422,6 +422,10 @@ function(uniqueID, dataRecord) {
     //  attributes.
     TP.elementRemoveAttribute(outElem, 'name');
 
+    //  Wrap the output item element that we just created and put a reference to
+    //  the creating request that is in our data record onto it.
+    TP.wrap(outElem).$set('$creatingRequest', dataRecord.at('request'));
+
     return this;
 });
 
@@ -1259,6 +1263,13 @@ TP.sherpa.Element.defineSubtype('consoleoutputitem');
 //  This tag has no associated CSS. It inherits the fact that it has no 'theme'
 //  CSS from TP.sherpa.Element. Note how this property is TYPE_LOCAL, by design.
 TP.sherpa.consoleoutputitem.defineAttribute('styleURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  The request that was responsible for the creation of this output item.
+TP.sherpa.consoleoutputitem.Inst.defineAttribute('$creatingRequest');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
