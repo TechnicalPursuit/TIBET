@@ -307,6 +307,11 @@ sherpa|consoleoutput .flex-item > .content > .result iframe {
 
     position: relative;
 
+    top: 2px;
+
+    font-size: 0;
+    line-height: 0;
+
     width: 100%;
 }
 
