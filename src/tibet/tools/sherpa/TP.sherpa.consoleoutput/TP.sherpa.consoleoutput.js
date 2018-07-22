@@ -238,10 +238,9 @@ function() {
 
     offset =
         20 +    //  sherpa:consoleoutput top & bottom values
-        4 +     //  sherpa:consoleoutputitem top & bottom margin values
+        7 +     //  sherpa:consoleoutputitem top & bottom margin values
         2 +     //  .flex-item top & bottom border values
-        21 +    //  .flex-item > .header height + margin top & bottom +
-                //                          border top & bottom
+        19 +    //  .flex-item > .header height + margin top & bottom
         6;      //  .flex-item > .content margin top & bottom +
                 //                          border top & bottom
 
