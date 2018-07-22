@@ -111,9 +111,11 @@ function(aRequest) {
             result = TP.format(item, format, TP.hc('repeat', repeat));
         }
 
-        //  If the result contains element markup, then have the console put it
-        //  into an iframe.
-        if (TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
+        //  If the output object is a String and starts with markup and contains
+        //  non-native markup anywhere, then frame it.
+        if (TP.isString(result) &&
+            TP.regex.STARTS_WITH_ELEM_MARKUP.test(result) &&
+            !TP.w3.Xmlns.isNativeMarkup(result)) {
             aRequest.atPut('cmdFramed', true);
         }
 

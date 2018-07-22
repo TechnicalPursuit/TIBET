@@ -963,6 +963,14 @@ function(uniqueID, dataRecord) {
                 outputData.atPut('resultclass', 'asis-container');
             }
 
+            //  If the output object is a String and starts with markup and
+            //  contains non-native markup anywhere, then frame it.
+            if (TP.isString(outputObj) &&
+                TP.regex.STARTS_WITH_ELEM_MARKUP.test(outputObj) &&
+                !TP.w3.Xmlns.isNativeMarkup(outputObj)) {
+                request.atPut('cmdFramed', true);
+            }
+
             //  If the originating command requested iframed content, then set
             //  the 'output' that will be merged into the template to markup
             //  that will generate an iframe and capture the real output object
