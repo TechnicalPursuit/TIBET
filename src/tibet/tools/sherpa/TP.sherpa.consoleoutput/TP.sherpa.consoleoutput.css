@@ -272,7 +272,7 @@ sherpa|consoleoutput .flex-item > .content {
 
     top: 31px;
     right: 0;
-    bottom: 9px;
+    bottom: 0;
     left: 0;
 
     background-color: #fff;
@@ -286,6 +286,7 @@ sherpa|consoleoutput .flex-item > .content {
     overflow: auto;
 
     text-align: left;
+    line-height: 0;
 
     color: black;
 }
