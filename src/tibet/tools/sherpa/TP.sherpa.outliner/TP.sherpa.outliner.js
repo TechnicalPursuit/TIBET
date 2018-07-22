@@ -1372,6 +1372,8 @@ function() {
     var targetElement,
         prevValue,
 
+        acceptedDNDTypes,
+
         labelStr;
 
     targetElement = TP.unwrap(this.get('targetTPElement'));
@@ -1388,10 +1390,16 @@ function() {
     //  injected style sheet work as they are qualified by this class.
     TP.elementAddClass(targetElement, 'sherpa-outliner');
 
+    acceptedDNDTypes = TP.ac('tofu',
+                                'dom_node',
+                                'dom_node_copy',
+                                'breadcrumb',
+                                'tdc_output_node');
+
     //  Enable DND by setting this attribute.
     TP.elementSetAttribute(targetElement,
                             'dnd:accept',
-                            'tofu dom_node breadcrumb',
+                            acceptedDNDTypes.join(' '),
                             true);
 
     //  Define a Function that will compute the tag label either by using the
