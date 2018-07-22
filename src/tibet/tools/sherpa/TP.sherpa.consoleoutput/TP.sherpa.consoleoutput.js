@@ -1204,6 +1204,12 @@ function(uniqueID, dataRecord) {
                                 TP.wrap(iframeBody).setContent(
                                                 embeddedContent,
                                                 TP.hc('awaken', true));
+
+                                //  Set the height of the iframe to the height
+                                //  of its body.
+                                TP.elementSetHeight(
+                                    embeddedIFrameElem,
+                                    TP.elementGetHeight(iframeBody));
                             };
 
                             embeddedIFrameElem.addEventListener(
