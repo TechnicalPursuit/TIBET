@@ -960,7 +960,7 @@ function(uniqueID, dataRecord) {
         resultClass = '';
         if (TP.isValid(request = dataRecord.at('request'))) {
             if (TP.isTrue(request.at('cmdAsIs'))) {
-                resultClass = 'asis-container';
+                outputData.atPut('resultclass', 'asis-container');
             }
 
             //  If the originating command requested iframed content, then set
