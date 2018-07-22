@@ -627,7 +627,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 //  end

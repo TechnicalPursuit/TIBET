@@ -70,7 +70,7 @@ function() {
         driver.constructSequence().sendKeys('[Shift]abcd[Shift-up]').run();
         */
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 //  end

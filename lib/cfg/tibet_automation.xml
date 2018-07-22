@@ -19,7 +19,7 @@
 
 <config id="gui" depends="">
     <script>
-    if (TP.sys.cfg('boot.context') !== 'phantomjs') {
+    if (TP.sys.cfg('boot.context') !== 'headless') {
     (function() {
     </script>
     <config ref="syn"/>
@@ -30,7 +30,7 @@
     <script src="automation/TP.test.GUIDriver.js" />
 </config>
 
-<config id="syn" depends="" unless="boot.context=phantomjs">
+<config id="syn" depends="" unless="boot.context=headless">
 
     <script>
         <![CDATA[

@@ -2259,8 +2259,8 @@ function(aRequest) {
             return item;
         });
 
-    //  PhantomJS/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    //  Headless/CLI support requires output line-by-line.
+    if (TP.sys.cfg('boot.context') === 'headless') {
 
         //  Reprocess paths to void ~Type/* format. That won't resolve in CLI.
         arr.forEach(function(result) {

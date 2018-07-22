@@ -53,8 +53,8 @@ function() {
         keyCode,
         val;
 
-    //  The 'syn' library only loads if we're *not* running in PhantomJS.
-    if (TP.sys.cfg('boot.context') !== 'phantomjs') {
+    //  The 'syn' library only loads if we're *not* running in Headless Chrome.
+    if (TP.sys.cfg('boot.context') !== 'headless') {
         this.defineDependencies('TP.extern.syn');
     }
 
@@ -570,7 +570,7 @@ function(aNode) {
      * @description If a Document node is supplied to this method, the whole
      *     Document will be snapshotted. If an Element is supplied, only that
      *     Element will be snapshotted. Note also that this method currently
-     *     only works when this code is being executed in the PhantomJS
+     *     only works when this code is being executed in the Headless
      *     environment.
      * @param {Node} aNode The Node used to determine which portion of the
      *     screen to take a snapshot of. Note that if this is not supplied, the
@@ -578,11 +578,9 @@ function(aNode) {
      * @returns {TP.test.GUIDriver} The receiver.
      */
 
-    if (TP.sys.cfg('boot.context') !== 'phantomjs') {
+    if (TP.sys.cfg('boot.context') !== 'headless') {
         return this.raise('TP.sig.UnsupportedOperation');
     }
-
-    //  http://phantomjs.org/api/webpage/property/clip-rect.html
 
     return TP.todo();
 });

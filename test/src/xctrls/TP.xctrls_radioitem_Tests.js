@@ -275,7 +275,7 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -452,7 +452,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -676,7 +676,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -800,7 +800,7 @@ function() {
         test.assert.isTrue(TP.byId('dataradioitem3', windowContext).isSelected());
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -1011,7 +1011,7 @@ function() {
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -1105,7 +1105,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 
@@ -1217,7 +1217,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).skip(TP.sys.cfg('boot.context') === 'headless');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -976,7 +976,7 @@ function() {
         test.assert.isNull(
             TP.uc('tibet://fluffy/').getResource(params).get('result'),
             TP.sc('tibet://fluffy/ should return undefined.'));
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');//  Crashes on PhantomJS
+    }).skip(TP.sys.cfg('boot.context') === 'headless');//  Crashes on Headless
 
     //  ---
 

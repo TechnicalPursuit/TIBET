@@ -468,7 +468,7 @@ function() {
      * @returns {TP.sys} The receiver.
      */
 
-    var inPhantom,
+    var inHeadless,
 
         rootLoc,
         rootURI,
@@ -483,7 +483,7 @@ function() {
         bootTPFrameElem,
         bootdoc;
 
-    inPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
+    inHeadless = TP.sys.cfg('boot.context') === 'headless';
 
     rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.root_page'));
 
@@ -549,7 +549,7 @@ function() {
             //  start signaling here but we have to let that happen via either
             //  the tibet:root or tibet:sherpa tag processing for proper
             //  sequencing.
-            if (inPhantom) {
+            if (inHeadless) {
                 //  Signal we are starting. This provides a hook for extensions
                 //  etc. to tap into the startup sequence before routing or
                 //  other behaviors but after we're sure the UI is finalized.
@@ -593,13 +593,13 @@ function() {
             TP.boot.$stderr(msg, TP.FATAL);
         });
 
-    //  If we're not running with a UI (not phantom), and we have a properly
+    //  If we're not running with a UI (not headless), and we have a properly
     //  configured 'boot toggle' key, then set up an observation that will cause
     //  that key to toggle between the boot log and the application's user
     //  interface.
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
 
-    if (!inPhantom && hasBootToggle) {
+    if (!inHeadless && hasBootToggle) {
 
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.

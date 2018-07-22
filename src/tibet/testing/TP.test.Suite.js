@@ -147,8 +147,8 @@ function() {
     logger.clearAppenders();
     logger.addAppender(appender);
 
-    //  Don't inherit so we skip the ConsoleAppender when in phantom mode.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    //  Don't inherit so we skip the ConsoleAppender when in headless mode.
+    if (TP.sys.cfg('boot.context') === 'headless') {
         logger.inheritsAppenders(false);
     }
 
@@ -157,8 +157,8 @@ function() {
     logger.clearAppenders();
     logger.addAppender(appender);
 
-    //  Don't inherit so we skip the ConsoleAppender when in phantom mode.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    //  Don't inherit so we skip the ConsoleAppender when in headless mode.
+    if (TP.sys.cfg('boot.context') === 'headless') {
         logger.inheritsAppenders(false);
     }
 
@@ -1270,7 +1270,7 @@ function(options) {
 
     TP.sys.logTest('#', TP.DEBUG);
 
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+    if (TP.sys.cfg('boot.context') === 'headless') {
         TP.sys.logTest('# ' + 'tibet test ' +
                         id +
                         (isAppTarget ? ' ' : ' --context=\'all\' ') +
