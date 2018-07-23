@@ -1110,7 +1110,7 @@ function(uniqueID, dataRecord) {
                 blankURL,
                 embeddedContent,
 
-                handler;
+                loadHandler;
 
             //  Iterate over all of the coalescing records, append whatever
             //  is in the fragment onto the output element and update the
@@ -1199,35 +1199,70 @@ function(uniqueID, dataRecord) {
 
                             //  Define a handler that will run when the blank
                             //  page is finished loading.
-                            handler = function(evt) {
-                                var iframeDoc,
-                                    iframeBody;
+                            loadHandler = function(evt) {
+                                var iframeWin,
+                                    iframeDoc,
+
+                                    iframeBody,
+
+                                    tpDoc,
+
+                                    ignoreTimeout,
+                                    resizeHandler;
 
                                 embeddedIFrameElem.removeEventListener(
-                                                        'load', handler, false);
+                                                    'load', loadHandler, false);
 
                                 //  The evt's target is the iframe's window.
+                                iframeWin = evt.target;
                                 iframeDoc = TP.elementGetIFrameDocument(
-                                                                evt.target);
+                                                                    iframeWin);
 
                                 //  Grab the body of the iframe document.
                                 iframeBody = TP.documentGetBody(iframeDoc);
+
+                                //  Wrap the iframe document
+                                tpDoc = TP.wrap(iframeDoc);
+
+                                //  Set up a handler that will resize the iframe
+                                //  element when the body of the its document
+                                //  resizes.
+                                resizeHandler = function() {
+
+                                    //  Set up a timeout (that will be reset
+                                    //  every time that this resize handler is
+                                    //  called, unless greater than 1000ms has
+                                    //  expired) that will ignore the resize
+                                    //  handler.
+                                    clearTimeout(ignoreTimeout);
+
+                                    ignoreTimeout = setTimeout(
+                                        function() {
+                                            resizeHandler.ignore(
+                                                    tpDoc, 'TP.sig.DOMResize');
+                                        }, 1000);
+
+                                    //  Set the height of the iframe to the
+                                    //  height of its body, including any
+                                    //  margins its body has.
+                                    TP.elementSetHeight(
+                                        embeddedIFrameElem,
+                                        TP.elementGetHeight(
+                                                iframeBody, TP.MARGIN_BOX));
+                                };
+
+                                resizeHandler.observe(
+                                                tpDoc, 'TP.sig.DOMResize');
 
                                 //  Set the content of the body and make sure to
                                 //  force it to awaken.
                                 TP.wrap(iframeBody).setContent(
                                                 embeddedContent,
                                                 TP.hc('awaken', true));
-
-                                //  Set the height of the iframe to the height
-                                //  of its body.
-                                TP.elementSetHeight(
-                                    embeddedIFrameElem,
-                                    TP.elementGetHeight(iframeBody));
                             };
 
                             embeddedIFrameElem.addEventListener(
-                                                        'load', handler, false);
+                                                    'load', loadHandler, false);
                         }
 
                         embeddedLoc = blankURL.getLocation();
