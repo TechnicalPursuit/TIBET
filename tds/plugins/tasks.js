@@ -1151,16 +1151,12 @@
 
                 //  Remappings from job.params need to use a different target
                 if (/^job\./.test(src) || src === 'job') {
-                    key = src.slice('job.'.length);
-                    val = job;
+                    val = {job: job};
                 } else if (/^step\./.test(src) || src === 'step') {
-                    key = src.slice('step.'.length);
-                    val = step;
+                    val = {step: step};
                 } else if (/^params\./.test(src) || src === 'params') {
-                    key = src.slice('params.'.length);
-                    val = params;
+                    val = {params: params};
                 } else {
-                    key = src;
                     val = stdout;
                 }
 
@@ -1173,9 +1169,7 @@
 
                 //  Search the 'val' object for the value of the source key.
                 //  If we find it we have something to map.
-                //  NOTE we use key here since we may have sliced off any prefix
-                //  such as job, step, or params.
-                parts = key.split('.');
+                parts = src.split('.');
                 len = parts.length;
                 for (i = 0; i < len; i++) {
                     key = parts[i];
