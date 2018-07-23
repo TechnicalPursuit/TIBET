@@ -1208,7 +1208,10 @@ function(uniqueID, dataRecord) {
                                     tpDoc,
 
                                     ignoreTimeout,
-                                    resizeHandler;
+                                    resizeHandler,
+
+                                    app,
+                                    theme;
 
                                 embeddedIFrameElem.removeEventListener(
                                                     'load', loadHandler, false);
@@ -1253,6 +1256,17 @@ function(uniqueID, dataRecord) {
 
                                 resizeHandler.observe(
                                                 tpDoc, 'TP.sig.DOMResize');
+
+                                //  Set the iframes document's theme based on
+                                //  the current application theme. The current
+                                //  application theme is computed from the
+                                //  iframe document or system properties if a
+                                //  theme cannot be found there.
+                                app = TP.sys.getApplication();
+                                if (TP.isValid(app) &&
+                                    TP.notEmpty(theme = app.getTheme())) {
+                                    TP.documentSetTheme(iframeDoc, theme);
+                                }
 
                                 //  Set the content of the body and make sure to
                                 //  force it to awaken.
