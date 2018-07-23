@@ -4197,9 +4197,9 @@ function() {
         infoTPElem = sourceTPElem.getDragInfo();
         if (infoTPElem.hasAttribute('drag:item')) {
             if (TP.notEmpty(results = TP.nodeEvaluatePath(
-                                    sourceTPElem.getNativeNode(),
-                                    infoTPElem.getAttribute('drag:item'),
-                                    null))) {
+                                        sourceTPElem.getNativeNode(),
+                                        infoTPElem.getAttribute('drag:item'),
+                                        null))) {
                 //  Confirmed that the receiver does exist within the path
                 //  given as the 'drag:item' on the infoTPElementNode
                 if (results.contains(this.getNativeNode(), TP.IDENTITY)) {
