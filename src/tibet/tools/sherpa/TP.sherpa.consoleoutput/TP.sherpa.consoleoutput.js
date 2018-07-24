@@ -804,6 +804,8 @@ function(uniqueID, dataRecord) {
         outputClass,
         resultClass,
 
+        isTSHNode,
+
         outputData,
         resp,
         outputStr,
@@ -969,9 +971,20 @@ function(uniqueID, dataRecord) {
                 outputData.atPut('resultclass', 'asis-container');
             }
 
-            //  If the output object is a String and starts with markup and
-            //  contains non-native markup anywhere, then frame it.
+            //  If there is a cmdNode, see if it's in the TSH namespace.
+            isTSHNode = false;
+            if (request.at('cmdNode')) {
+                isTSHNode =
+                    TP.nodeGetNSURI(request.at('cmdNode')) === TP.w3.Xmlns.TSH;
+            }
+
+            //  If the output object is;
+            //      a String and
+            //      the cmdNode is not a TSH node and
+            //      starts with markup and
+            //      contains non-native markup anywhere, then frame it.
             if (TP.isString(outputObj) &&
+                !isTSHNode &&
                 TP.regex.STARTS_WITH_ELEM_MARKUP.test(outputObj) &&
                 !TP.w3.Xmlns.isNativeMarkup(outputObj)) {
                 request.atPut('cmdFramed', true);
