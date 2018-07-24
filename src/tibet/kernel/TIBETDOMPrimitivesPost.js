@@ -13822,7 +13822,7 @@ function(aNode, includeDescendants) {
                 str.replace(TP.regex.NS_EXTRACTION,
                             function(wholeMatch, prefix, uri) {
 
-                                if (TP.notEmpty(uri)) {
+                                if (TP.isURIString(uri)) {
                                     arr.push(uri);
                                 }
 
