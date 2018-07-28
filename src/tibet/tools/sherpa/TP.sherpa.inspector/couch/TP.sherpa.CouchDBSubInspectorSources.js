@@ -875,9 +875,7 @@ function(options) {
 
         loc,
 
-        appNames,
-
-        thisType;
+        appNames;
 
     dataURI = TP.uc(options.at('bindLoc'));
     dbName = this.get('databaseName');
