@@ -33,12 +33,10 @@ function(anItem) {
      * @returns {String} The label to be used for the supplied item.
      */
 
-    var serverConfig,
+    var serverNumber,
+        serverName,
 
-        serverNumber,
-        serverName;
-
-    serverConfig = TP.sys.getcfg('couch.known_server_urls');
+        serverConfig;
 
     //  The item will be something like 'CouchDB_Server_1'. We want the number,
     //  so we slice everything else off.
@@ -49,6 +47,7 @@ function(anItem) {
 
     //  The server name is stored in the first position of the config pair of
     //  the computed server number.
+    serverConfig = TP.sys.getcfg('couch.known_server_urls');
     serverName = serverConfig.at(serverNumber).first();
 
     return serverName;
@@ -119,9 +118,9 @@ function(anAspect, options) {
      *     the receiver.
      */
 
-    var serverConfig,
+    var serverNumber,
 
-        serverNumber,
+        serverConfig.
         serverAddress,
 
         newInspector;
@@ -129,8 +128,6 @@ function(anAspect, options) {
     if (!anAspect.startsWith('CouchDB_Server_')) {
         return this.callNextMethod();
     }
-
-    serverConfig = TP.sys.getcfg('couch.known_server_urls');
 
     //  The item will be something like 'CouchDB_Server_1'. We want the number,
     //  so we slice everything else off.
@@ -141,6 +138,7 @@ function(anAspect, options) {
 
     //  The server address is stored in the last position of the config pair of
     //  the computed server number.
+    serverConfig = TP.sys.getcfg('couch.known_server_urls');
     serverAddress = serverConfig.at(serverNumber).last();
 
     newInspector = TP.sherpa.CouchTools.construct();
