@@ -1654,7 +1654,7 @@ function(REQUEST$$, CMDTYPE$$) {
                 return;
             }
 
-            //  If DEFEF$$ is true we're looking at a script that should resolve
+            //  If DEREF$$ is true we're looking at a script that should resolve
             //  a variable reference. The first check here is for the ${foo}
             //  variant, which we need to adjust.
             if (TP.regex.TSH_VARIABLE.test($SCRIPT)) {

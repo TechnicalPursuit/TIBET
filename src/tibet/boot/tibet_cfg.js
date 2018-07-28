@@ -1933,6 +1933,10 @@
     //  should we take action when notified of a remote uri change?
     TP.sys.setcfg('uri.process_remote_changes', false);
 
+    //  ---
+    //  CouchDB
+    //  ---
+
     //  couchdb servers known to the system.
     TP.sys.setcfg('couch.known_server_urls',
         [
