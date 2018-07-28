@@ -31,29 +31,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.CouchTools.Type.defineMethod('fetchURI',
-function(aURI) {
-
-    var params,
-
-        fetchRequest,
-        fetchResponse;
-
-    params = TP.hc('refresh', true,
-                    'async', true,
-                    'resultType', TP.WRAP);
-
-    fetchRequest = TP.sig.HTTPRequest.construct(params);
-
-    aURI.getResource(fetchRequest);
-
-    fetchResponse = fetchRequest.getResponse();
-
-    return fetchResponse;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -751,7 +728,12 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     loc = this.get('serverAddress') + '/_all_dbs';
-    this.getType().fetchURI(TP.uc(loc)).then(
+
+    TP.uc(loc).getResource(
+                TP.hc('refresh', true,
+                        'async', true,
+                        'resultType', TP.WRAP)
+                ).then(
                 function(result) {
                     var dbNames,
                         data;
@@ -793,7 +775,11 @@ function(options) {
             dbName +
             '/_all_docs';
 
-    this.getType().fetchURI(TP.uc(loc)).then(
+    TP.uc(loc).getResource(
+                TP.hc('refresh', true,
+                        'async', true,
+                        'resultType', TP.WRAP)
+                ).then(
                 function(result) {
 
                     var data;
@@ -836,7 +822,11 @@ function(options) {
             dbName +
             '/_all_docs?startkey="_design"&endkey="_design0"';
 
-    this.getType().fetchURI(TP.uc(loc)).then(
+    TP.uc(loc).getResource(
+                TP.hc('refresh', true,
+                        'async', true,
+                        'resultType', TP.WRAP)
+                ).then(
                 function(result) {
 
                     var data;
@@ -891,7 +881,11 @@ function(options) {
 
     thisType = this.getType();
 
-    this.getType().fetchURI(TP.uc(loc)).then(
+    TP.uc(loc).getResource(
+                TP.hc('refresh', true,
+                        'async', true,
+                        'resultType', TP.WRAP)
+                ).then(
                 function(result) {
 
                     var data,
@@ -913,7 +907,13 @@ function(options) {
                                     docID.slice(docID.indexOf('/') + 1));
 
                                 fetchLoc = startLoc + docID;
-                                return thisType.fetchURI(TP.uc(fetchLoc));
+
+                                //  NB: This returns a Promise.
+                                return TP.uc(fetchLoc).getResource(
+                                            TP.hc('refresh', true,
+                                                    'async', true,
+                                                    'resultType', TP.WRAP)
+                                            );
                             });
 
                     return TP.extern.Promise.all(promises);
