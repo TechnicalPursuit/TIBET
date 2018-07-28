@@ -2,22 +2,22 @@
 //  Sherpa Couch Tool API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorPathSource.defineSubtype('sherpa.CouchTools');
+TP.sherpa.InspectorPathSource.defineSubtype('sherpa.CouchDBSubInspectorSources');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineAttribute('serverAddress');
-TP.sherpa.CouchTools.Inst.defineAttribute('databaseName');
-TP.sherpa.CouchTools.Inst.defineAttribute('documentID');
-TP.sherpa.CouchTools.Inst.defineAttribute('appAndViewName');
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineAttribute('serverAddress');
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineAttribute('databaseName');
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineAttribute('documentID');
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineAttribute('appAndViewName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Type.defineMethod('initialize',
+TP.sherpa.CouchDBSubInspectorSources.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -34,13 +34,13 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('init',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @returns {TP.sherpa.CouchTools} The receiver.
+     * @returns {TP.sherpa.CouchDBSubInspectorSources} The receiver.
      */
 
     this.callNextMethod();
@@ -215,7 +215,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('checkAuthentication',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('checkAuthentication',
 function() {
 
     /**
@@ -239,7 +239,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspector',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
     /**
@@ -276,7 +276,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspector',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
@@ -308,7 +308,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspector',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -341,7 +341,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForToolbar',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForToolbar',
 function(options) {
 
     /**
@@ -371,20 +371,20 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('requestAuthentication',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('requestAuthentication',
 function() {
 
     /**
      * @method requestAuthentication
      * @summary Initialize the instance.
-     * @returns {TP.sherpa.CouchTools} The receiver.
+     * @returns {TP.sherpa.CouchDBSubInspectorSources} The receiver.
      */
 
     var elem;
 
     //  TODO:   move this to a template file...and preferably make it a tag
     elem = TP.xhtmlnode(
-        '<div class="couchtools" tibet:ctrl="urn:tibet:sherpa_inspector_target">' +
+        '<div class="couchdbsubinspectorsauth" tibet:ctrl="urn:tibet:sherpa_inspector_target">' +
             '<label for="username_field">Username:</label>' +
             '<input id="username_field" type="text"/>' +
             '<br/>' +
@@ -404,7 +404,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineHandler('AuthenticateConnection',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineHandler('AuthenticateConnection',
 function() {
 
     var inspector,
@@ -461,7 +461,7 @@ function() {
 //  Inspector Config Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDatabases',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForAllDatabases',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -471,7 +471,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDocuments',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForAllDocuments',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -481,7 +481,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDesignDocuments',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDesignDocuments',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -491,7 +491,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForViews',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForViews',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -501,7 +501,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDatabaseDesignation',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDatabaseDesignation',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -511,7 +511,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDatabaseInfo',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDatabaseInfo',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
@@ -521,7 +521,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDocumentContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDocumentContent',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
@@ -531,7 +531,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForServerDesignation',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForServerDesignation',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
@@ -541,7 +541,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForServerInfo',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForServerInfo',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
@@ -553,7 +553,7 @@ function(options) {
 //  Inspector Content Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForAllDatabases',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForAllDatabases',
 function(options) {
 
     var dataURI;
@@ -567,7 +567,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForAllDocuments',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForAllDocuments',
 function(options) {
 
     var dataURI;
@@ -581,7 +581,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDesignDocuments',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForDesignDocuments',
 function(options) {
 
     var dataURI;
@@ -595,7 +595,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForViews',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForViews',
 function(options) {
 
     var dataURI;
@@ -609,7 +609,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDatabaseDesignation',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForDatabaseDesignation',
 function(options) {
 
     var dataURI;
@@ -623,7 +623,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDatabaseInfo',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForDatabaseInfo',
 function(options) {
 
     var loc,
@@ -644,7 +644,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDocumentContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForDocumentContent',
 function(options) {
 
     var loc,
@@ -667,7 +667,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForServerDesignation',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForServerDesignation',
 function(options) {
 
     var dataURI;
@@ -681,7 +681,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForServerInfo',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForInspectorForServerInfo',
 function(options) {
 
     var loc,
@@ -700,7 +700,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentTypeForCanvasForDocumentContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentTypeForCanvasForDocumentContent',
 function(options) {
 
     return 'uri/CouchDB/document';
@@ -708,7 +708,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentTypeForCanvasForViewContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentTypeForCanvasForViewContent',
 function(options) {
 
     return 'uri/CouchDB/view';
@@ -718,7 +718,7 @@ function(options) {
 //  Inspector Data Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForAllDatabases',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForAllDatabases',
 function(options) {
 
     var dataURI,
@@ -759,7 +759,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForAllDocuments',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForAllDocuments',
 function(options) {
 
     var dataURI,
@@ -806,7 +806,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDesignDocuments',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForDesignDocuments',
 function(options) {
 
     var dataURI,
@@ -853,7 +853,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForViews',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForViews',
 function(options) {
 
     var dataURI,
@@ -950,7 +950,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
 function(options) {
 
     this.set('databaseName', options.at('targetAspect'));
@@ -965,7 +965,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseInfo',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForDatabaseInfo',
 function(options) {
 
     var loc;
@@ -979,7 +979,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDocumentContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForDocumentContent',
 function(options) {
 
     var loc;
@@ -999,7 +999,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForServerDesignation',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForServerDesignation',
 function(options) {
 
     return TP.ac(
@@ -1010,7 +1010,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForServerInfo',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForServerInfo',
 function(options) {
 
     var loc;
@@ -1022,7 +1022,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForViewContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getDataForInspectorForViewContent',
 function(options) {
 
     var appAndViewName,
@@ -1051,7 +1051,7 @@ function(options) {
 //  Toolbar API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForToolbarForDocumentContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentForToolbarForDocumentContent',
 function(options) {
 
     return TP.elem(

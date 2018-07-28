@@ -79,8 +79,10 @@
     <script src="./TP.sherpa.inspector/TP.sherpa.TSHRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TDSRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TWSRootInspectorSource.js"/>
-    <script src="./TP.sherpa.inspector/TP.sherpa.CouchDBRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.RESTRootInspectorSource.js"/>
+
+    <script src="./TP.sherpa.inspector/couch/TP.sherpa.CouchDBRootInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/couch/TP.sherpa.CouchDBSubInspectorSources.js"/>
 
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETConfigListInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETLocalStorageListInspectorSource.js"/>
@@ -158,7 +160,6 @@
 
     <resource href="~ide_root/TP.sherpa.tofuInsertionAssistant/insertion_templates.xml"/>
     <resource href="~ide_root/TP.sherpa.adjuster/css-schema.xml"/>
-    <script src="./src/TP.sherpa.CouchTools.js"/>
 
 </config>
 

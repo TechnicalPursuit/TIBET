@@ -120,7 +120,7 @@ function(anAspect, options) {
 
     var serverNumber,
 
-        serverConfig.
+        serverConfig,
         serverAddress,
 
         newInspector;
@@ -141,7 +141,7 @@ function(anAspect, options) {
     serverConfig = TP.sys.getcfg('couch.known_server_urls');
     serverAddress = serverConfig.at(serverNumber).last();
 
-    newInspector = TP.sherpa.CouchTools.construct();
+    newInspector = TP.sherpa.CouchDBSubInspectorSources.construct();
     newInspector.set('serverAddress', serverAddress);
 
     this.addEntry(anAspect, newInspector);
