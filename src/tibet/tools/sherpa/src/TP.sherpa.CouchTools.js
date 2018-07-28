@@ -72,6 +72,8 @@ function() {
 
     //  Servers
 
+    //  What methods will be resolved and queried when the server name (i.e.
+    //  'localhost') is *selected*.
     this.registerMethodSuffixForPath(
             'ServerDesignation',
             TP.ac('REST',
@@ -80,6 +82,8 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB_Server_\.+'));
 
+    //  What methods will be resolved and queried when 'Server Info' is
+    //  *selected*.
     this.registerMethodSuffixForPath(
             'ServerInfo',
             TP.ac('REST',
@@ -91,6 +95,8 @@ function() {
                     'Server Info'
                     ));
 
+    //  What methods will be resolved and queried when 'All Databases' is
+    //  *selected*.
     this.registerMethodSuffixForPath(
             'AllDatabases',
             TP.ac('REST',
@@ -104,6 +110,8 @@ function() {
 
     //  Databases
 
+    //  What methods will be resolved and queried when the database name (i.e.
+    //  'testdb') is *selected*.
     this.registerMethodSuffixForPath(
             'DatabaseDesignation',
             TP.ac('REST',
@@ -116,6 +124,8 @@ function() {
                     '\.+'
                     ));
 
+    //  What methods will be resolved and queried when 'Database Info' is
+    //  *selected*.
     this.registerMethodSuffixForPath(
             'DatabaseInfo',
             TP.ac('REST',
@@ -131,6 +141,8 @@ function() {
                     'Database Info'
                     ));
 
+    //  What methods will be resolved and queried when 'All Documents' is
+    //  *selected*.
     this.registerMethodSuffixForPath(
             'AllDocuments',
             TP.ac('REST',
@@ -146,6 +158,8 @@ function() {
                     'All Documents'
                     ));
 
+    //  What methods will be resolved and queried when 'Design Documents' is
+    //  *selected*.
     this.registerMethodSuffixForPath(
             'DesignDocuments',
             TP.ac('REST',
@@ -161,6 +175,7 @@ function() {
                     'Design Documents'
                     ));
 
+    //  What methods will be resolved and queried when 'Views' is *selected*.
     this.registerMethodSuffixForPath(
             'Views',
             TP.ac('REST',
@@ -178,6 +193,8 @@ function() {
 
     //  Documents
 
+    //  What methods will be resolved and queried when a document under 'All
+    //  Documents' or 'Design Documents' is *selected*.
     this.registerMethodSuffixForPath(
             'DocumentContent',
             TP.ac('REST',
@@ -196,6 +213,8 @@ function() {
 
     //  Views
 
+    //  What methods will be resolved and queried when a view under 'Views'
+    //  is *selected*.
     this.registerMethodSuffixForPath(
             'ViewContent',
             TP.ac('REST',
@@ -221,6 +240,14 @@ function() {
 
 TP.sherpa.CouchTools.Inst.defineMethod('checkAuthentication',
 function() {
+
+    /**
+     * @method checkAuthentication
+     * @summary Returns whether or not this object is authenticated with the
+     *     CouchDB server in its currently configured server address to perform
+     *     its required operations.
+     * @returns {Boolean} Whether or not we're authenticated.
+     */
 
     var serverURI,
         isAuthenticated;
