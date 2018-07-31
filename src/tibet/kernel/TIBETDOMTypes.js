@@ -13556,6 +13556,7 @@ function(storageInfo) {
 
     currentNSPrefixes = TP.ac();
 
+    //  By default, we emit *prefixed* 'xmlns:' attributes.
     wantsPrefixedXMLNSAttrs = storageInfo.atIfInvalid(
                                     'wantsPrefixedXMLNSAttrs', true);
 
