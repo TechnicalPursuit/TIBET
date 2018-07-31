@@ -409,7 +409,11 @@ function(storageInfo) {
             this.set('$serializesAsEmpty', TP.isEmpty(str), false);
         } else {
             str = '';
-            this.set('$serializesAsEmpty', false, false);
+            //  Otherwise, this tag serializes as empty if it really is empty.
+            //  Note that we don't rely on the isSerializationEmpty method here
+            //  since it is the consumer of this flag - we're setting the flag
+            //  for it's usage.
+            this.set('$serializesAsEmpty', this.isEmpty(), false);
         }
 
         //  Call 'super' to get the serialized version of ourself and prepend it
