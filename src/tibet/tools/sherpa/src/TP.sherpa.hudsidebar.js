@@ -85,7 +85,6 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hudsidebar.Inst.defineAttribute('$isRecasting');
 TP.sherpa.hudsidebar.Inst.defineAttribute('$lastContextMenuSignal');
 
 TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
@@ -149,10 +148,6 @@ function(aSignal) {
 
     var halo,
         haloTarget;
-
-    if (this.get('$isRecasting')) {
-        return this;
-    }
 
     //  Grab the halo and make sure it's focused. If not, we just bail out here.
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
