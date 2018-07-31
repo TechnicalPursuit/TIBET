@@ -2331,11 +2331,20 @@ function(aSignal) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var haloTarget,
+    var halo,
+
+        haloTarget,
 
         dynamicEntries,
 
         selection;
+
+    //  If the halo is just recasting the current element, then we do nothing
+    //  here.
+    halo = TP.wrap(aSignal.getOrigin());
+    if (halo.get('$isRecasting')) {
+        return this;
+    }
 
     //  Grab the halo target and install local versions of some methods that the
     //  inspector will use.
@@ -2408,7 +2417,9 @@ function(aSignal) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var haloTarget,
+    var halo,
+
+        haloTarget,
         haloTargetID,
 
         firstSelectedValue,
@@ -2419,6 +2430,13 @@ function(aSignal) {
         targetIndex,
 
         selection;
+
+    //  If the halo is just recasting the current element, then we do nothing
+    //  here.
+    halo = TP.wrap(aSignal.getOrigin());
+    if (halo.get('$isRecasting')) {
+        return this;
+    }
 
     //  Grab the halo target and remove any local versions of methods that the
     //  inspector will use that we would have installed when we focused the
