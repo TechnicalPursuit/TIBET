@@ -8972,9 +8972,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
 
     /**
      * @method $sourceImport
-     * @summary Imports a script text which loads and integrates JS. This
-     *     returns the script node used for the import. Note that the import
-     *     call is synchronous, ensuring that the code is loaded prior to
+     * @summary Synchronously integrates a chunk of JS script text into TIBET.
+     *     This returns the script node used for the import. Note that this
+     *     import call is synchronous, ensuring that the code is loaded prior to
      *     returning.
      * @param {String} jsSrc The JavaScript source to import.
      * @param {Document} targetDoc The HTML document that the script source will
@@ -9031,6 +9031,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
                                     TP.sys.cfg('load.config', ''));
     TP.boot.$$loadNode.setAttribute('load_stage',
                                     TP.sys.cfg('load.stage', ''));
+
     TP.boot.$$loadNode.setAttribute('src_package',
                                     TP.sys.cfg('src.package', ''));
     TP.boot.$$loadNode.setAttribute('src_config',
