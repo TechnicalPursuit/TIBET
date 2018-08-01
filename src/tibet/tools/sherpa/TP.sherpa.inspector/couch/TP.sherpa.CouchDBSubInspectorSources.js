@@ -889,8 +889,6 @@ function(options) {
 
     appNames = TP.ac();
 
-    thisType = this.getType();
-
     TP.uc(loc).getResource(
                 TP.hc('refresh', true,
                         'async', true,
