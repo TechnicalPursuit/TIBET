@@ -8968,6 +8968,176 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 //  IMPORT FUNCTIONS
 //  ============================================================================
 
+TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow) {
+
+    /**
+     * @method $sourceUrlImport
+     * @summary Asynchronously integrates a URL of JS script into TIBET. This
+     *     returns the script node used for the import.
+     * @param {String} scriptUrl The source URL that the script will be loaded
+     *     from.
+     * @param {Document} targetDoc The HTML document that the script source will
+     *     be imported into.
+     * @param {Function} callback A function that will be called when the script
+     *     has completed loading.
+     * @param {Boolean} shouldThrow True to cause errors to throw a native Error
+     *     so outer catch blocks will trigger.
+     * @returns {HTMLElement} The new 'script' element that was created to
+     *     import the code.
+     */
+
+    var elem,
+        scriptDoc,
+        scriptHead,
+        result,
+        handler;
+
+    //  Don't load what we're already processing.
+    /* eslint-disable no-extra-parens */
+    if (scriptUrl &&
+        (TP.boot.$$srcPath == TP.boot.$uriInTIBETFormat(scriptUrl))) {
+    /* eslint-enable no-extra-parens */
+        return;
+    }
+
+    if (scriptUrl == null) {
+        TP.boot.$stderr('Invalid script source.');
+
+        return null;
+    }
+
+    //  load the source the 'DOM way' so we get commented source
+    elem = TP.boot.$$scriptTemplate.cloneNode(true);
+    TP.boot.$$loadNode = elem;
+
+    //  ensure we keep track of the proper package/config information
+    TP.boot.$$loadNode.setAttribute('load_package',
+                                    TP.sys.cfg('load.package', ''));
+    TP.boot.$$loadNode.setAttribute('load_config',
+                                    TP.sys.cfg('load.config', ''));
+    TP.boot.$$loadNode.setAttribute('load_stage',
+                                    TP.sys.cfg('load.stage', ''));
+
+    TP.boot.$$loadNode.setAttribute('src_package',
+                                    TP.sys.cfg('src.package', ''));
+    TP.boot.$$loadNode.setAttribute('src_config',
+                                    TP.sys.cfg('src.config', ''));
+
+    scriptDoc = TP.boot.$isValid(targetDoc) ?
+                        targetDoc :
+                        document;
+
+    scriptHead = TP.boot.$isValid(targetDoc) ?
+                        scriptDoc.getElementsByTagName('head')[0] :
+                        TP.boot.$$head;
+
+    //  set a reference so when/if this errors out we'll get the right url
+    //  reference
+    TP.boot.$$onerrorURL = scriptUrl;
+
+    TP.boot.$$srcPath = TP.boot.$uriInTIBETFormat(scriptUrl);
+    TP.boot.$$loadPath = TP.boot.$uriInTIBETFormat(scriptUrl);
+
+    try {
+        //  Set the 'src' attribute to the supplied script URL.
+        elem.setAttribute('src', scriptUrl);
+
+        //  Append the script element to the head. This will start the script's
+        //  asynchronous loading process.
+        result = TP.boot.$nodeAppendChild(scriptHead, elem);
+    } catch (e) {
+        $ERROR = e;
+    } finally {
+        /* eslint-disable no-unsafe-finally */
+        //  appends with source code that has syntax errors or other issues
+        //  won't trigger Error conditions we can catch, but they will hit
+        //  the onerror hook so we can check $STATUS and proceed from there.
+        if ($ERROR) {
+            if (shouldThrow) {
+                TP.boot.$$loadNode = null;
+                TP.boot.$$srcPath = null;
+                TP.boot.$$loadPath = null;
+
+                throw $ERROR;
+            }
+        } else if (!result || $STATUS !== 0) {
+
+            TP.boot.$$loadNode = null;
+            TP.boot.$$srcPath = null;
+            TP.boot.$$loadPath = null;
+
+            if (shouldThrow === true) {
+                throw new Error('Import failed for: ' + scriptUrl);
+            } else {
+                TP.boot.$stderr('Import failed for: ' + scriptUrl);
+            }
+
+            return null;
+        }
+
+        //  clear the onerror url reference
+        TP.boot.$$onerrorURL = null;
+        /* eslint-enable no-unsafe-finally */
+    }
+
+    handler = function(evt) {
+
+        var postImports,
+            sherpa,
+            type,
+            len,
+            i;
+
+        result.removeEventListener('load', handler, false);
+
+        TP.boot.$$loadNode = null;
+        TP.boot.$$srcPath = null;
+        TP.boot.$$loadPath = null;
+
+        //  if the system is already running we need to initialize any types
+        //  that haven't had that done (invoking it on an previous type won't
+        //  matter). We also signal if the sherpa is active to let it know about
+        //  the type.
+        if (TP.sys.hasStarted()) {
+
+            //  Whether or not the Sherpa is loaded
+            sherpa = TP.sys.hasFeature('sherpa');
+
+            postImports = TP.boot.$$postImports;
+
+            len = postImports.length;
+            for (i = 0; i < len; i++) {
+
+                type = postImports[i];
+
+                try {
+                    if (TP.canInvoke(type, 'initialize')) {
+                        TP.trace('Initializing type ' + type.getName());
+                        type.initialize();
+                    }
+
+                    if (sherpa) {
+                        TP.signal(type, 'TypeLoaded');
+                    }
+                } catch (e) {
+                    TP.error('Type initialization failed: ' + e.message);
+                }
+            }
+            TP.boot.$$postImports.length = 0;
+        }
+
+        if (typeof callback === 'function') {
+            callback();
+        }
+    };
+
+    result.addEventListener('load', handler, false);
+
+    return result;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
 
     /**

@@ -659,7 +659,10 @@ function(aURI, aRequest) {
 
     var url,
         request,
-        callback;
+
+        callback,
+
+        newPromise;
 
     url = TP.uc(aURI);
     if (TP.notValid(url)) {
@@ -680,36 +683,52 @@ function(aURI, aRequest) {
     //  Grab any callback that was defined by the request
     callback = TP.ifKeyInvalid(request, 'callback', null);
 
-    return TP.sys.importSourceText(url.getLocation(), true, false).then(
-        function(scriptNode) {
-            var req;
+    newPromise = TP.extern.Promise.construct(
+            function(resolver, rejector) {
+                var targetLoc,
 
-            if (TP.isCallable(callback)) {
-                callback(scriptNode);
-            }
+                    loadedCB,
+                    scriptNode,
 
-            //  Activate any "awakening logic" specific to the script.
-            req = TP.request();
-            req.atPut('node', scriptNode);
-            TP.html.script.tagAttachDOM(req);
+                    err;
 
-            TP.signal(TP.sys, 'TP.sig.ScriptImported', TP.hc('node', scriptNode));
+                targetLoc = url.getLocation();
 
-            return scriptNode;
-        }
-    ).then(function(result) {
-        request.complete(result);
-    }).catch(function(err) {
-        request.fail(err);
+                loadedCB = function() {
 
-        //  Be sure to throw here or invoking items like importPackage won't
-        //  see the error, it's being caught here.
-        if (TP.isValid(err)) {
-            throw err;
-        } else {
-            throw new Error('ImportScriptError');
-        }
-    });
+                    var req;
+
+                    //  Activate any "awakening logic" specific to the script.
+                    req = TP.request();
+                    req.atPut('node', scriptNode);
+                    TP.html.script.tagAttachDOM(req);
+
+                    TP.signal(TP.sys,
+                                'TP.sig.ScriptImported',
+                                TP.hc('node', scriptNode));
+
+                    if (TP.isCallable(callback)) {
+                        callback(scriptNode);
+                    }
+
+                    request.complete(scriptNode);
+
+                    return resolver(scriptNode);
+                };
+
+                scriptNode = TP.boot.$sourceUrlImport(
+                                        targetLoc, null, loadedCB);
+
+                if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+                    err = new Error('Error importing source text: ' +
+                                        targetLoc);
+                    request.fail(err);
+
+                    return rejector(err);
+                }
+            });
+
+    return newPromise;
 }, {
     dependencies: [TP.extern.Promise]
 });
