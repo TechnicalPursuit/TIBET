@@ -729,27 +729,52 @@ function(targetUrl) {
      *     source.
      */
 
-    var request;
+    var url,
+        request;
 
-    if (TP.notValid(targetUrl)) {
+    url = TP.uc(targetUrl);
+    if (!TP.isURI(url)) {
+        this.raise('TP.sig.InvalidURI');
+
         return TP.extern.Promise.reject(new Error('InvalidURI'));
+    }
+
+    //  Adjust the path per any rewrite rules in place for the URI. Note
+    //  that we only do this if the url is absolute
+    if (TP.uriIsAbsolute(url.getLocation())) {
+        url = url.rewrite();
     }
 
     request = TP.request('async', true,
                             'refresh', true,
                             'resultType', TP.TEXT,
                             'signalChange', false);
+    TP.info('Importing script text: ' + TP.str(url));
 
-    return TP.uc(targetUrl).getResource(request).then(
+    return url.getResource(request).then(
         function(result) {
-            var node;
+            var targetLoc,
 
-            node = TP.boot.$sourceImport(result, null, targetUrl);
-            if (TP.notValid(node) || TP.isError(node)) {
-                throw new Error('Error importing source: ' + targetUrl);
+                scriptNode,
+                req;
+
+            targetLoc = url.getLocation();
+
+            scriptNode = TP.boot.$sourceImport(result, null, targetLoc);
+            if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+                throw new Error('Error importing source text: ' + targetLoc);
             }
 
-            return node;
+            //  Activate any "awakening logic" specific to the script.
+            req = TP.request();
+            req.atPut('node', scriptNode);
+            TP.html.script.tagAttachDOM(req);
+
+            TP.signal(TP.sys,
+                        'TP.sig.ScriptImported',
+                        TP.hc('node', scriptNode));
+
+            return scriptNode;
 
         }).catch(
         function(err) {
@@ -764,7 +789,7 @@ function(targetUrl) {
             if (TP.isValid(err)) {
                 throw err;
             } else {
-                throw new Error('ImportSourceError');
+                throw new Error('ImportSourceTextError');
             }
         });
 }, {
