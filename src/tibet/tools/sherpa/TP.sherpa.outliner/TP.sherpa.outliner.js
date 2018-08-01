@@ -1536,8 +1536,6 @@ function() {
                 TP.elementPushAndSetStyleProperty(
                                     anElement, 'height', height + 'px');
 
-                forcedWidthAndHeight = true;
-
                 TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
             }
         });
