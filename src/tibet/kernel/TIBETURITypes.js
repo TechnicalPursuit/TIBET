@@ -6756,7 +6756,7 @@ function() {
         //  than just loading via simple XHR.
         TP.debug('Sourcing in updates to ' + changedLoc);
 
-        return TP.sys.importSource(changedLoc).then(callback, callback);
+        return TP.sys.importSourceText(changedLoc).then(callback, callback);
     } else {
         TP.debug('Reading in changes to ' + changedLoc);
 

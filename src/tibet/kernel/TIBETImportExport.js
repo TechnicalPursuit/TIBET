@@ -680,7 +680,7 @@ function(aURI, aRequest) {
     //  Grab any callback that was defined by the request
     callback = TP.ifKeyInvalid(request, 'callback', null);
 
-    return TP.sys.importSource(url.getLocation(), true, false).then(
+    return TP.sys.importSourceText(url.getLocation(), true, false).then(
         function(scriptNode) {
             var req;
 
@@ -716,15 +716,17 @@ function(aURI, aRequest) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.defineMethod('importSource',
+TP.sys.defineMethod('importSourceText',
 function(targetUrl) {
 
     /**
-     * @method importSource
-     * @summary Imports a target script which loads and integrates JS with the
-     *     currently running "image".
+     * @method importSourceText
+     * @summary Imports a target script's text *asynchronously* and then adds
+     *     that script source as inlined script source text that integrates the
+     *     *text* of that with the JS with the currently running "image".
      * @param {String} targetUrl URL of the target resource.
-     * @returns {Promise} A promise which resolved based on success.
+     * @returns {Element} The script element that was created to contain the
+     *     source.
      */
 
     var request;
