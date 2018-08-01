@@ -37,51 +37,7 @@
 .sherpa-outliner *.sherpa-outliner-overflowed,
 .sherpa-outliner *[class~="sherpa-outliner-overflowed"] {
 
-    display: inline-block !important;
-    width: 100% !important;
-
     overflow: visible !important;
-}
-
-.sherpa-outliner *.sherpa-outliner-blocked,
-.sherpa-outliner *[class~="sherpa-outliner-blocked"] {
-
-    display: inline-block !important;
-}
-
-.sherpa-outliner b,
-.sherpa-outliner big,
-.sherpa-outliner i,
-.sherpa-outliner small,
-.sherpa-outliner tt,
-.sherpa-outliner abbr,
-.sherpa-outliner acronym,
-.sherpa-outliner cite,
-.sherpa-outliner code,
-.sherpa-outliner dfn,
-.sherpa-outliner em,
-.sherpa-outliner kbd,
-.sherpa-outliner strong,
-.sherpa-outliner samp,
-.sherpa-outliner var,
-.sherpa-outliner a,
-.sherpa-outliner bdo,
-.sherpa-outliner br,
-.sherpa-outliner img,
-.sherpa-outliner map,
-.sherpa-outliner object,
-.sherpa-outliner q,
-.sherpa-outliner script,
-.sherpa-outliner span,
-.sherpa-outliner sub,
-.sherpa-outliner sup,
-.sherpa-outliner button,
-.sherpa-outliner input,
-.sherpa-outliner label,
-.sherpa-outliner select,
-.sherpa-outliner textarea {
-
-    display: inline-block !important;
 }
 
 .sherpa-outliner *.sherpa-outliner-containingblock {

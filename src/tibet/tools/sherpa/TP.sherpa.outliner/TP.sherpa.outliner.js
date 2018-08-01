@@ -908,7 +908,10 @@ function(aSignal) {
         function(anElement) {
 
             var depth,
-                compStyle;
+                compStyle,
+
+                width,
+                height;
 
             TP.elementSetAttribute(
                             anElement,
@@ -928,17 +931,29 @@ function(aSignal) {
 
             //  Grab the computed style of the descendant. If its overflow isn't
             //  visible, then add a class that forces it to be so. This is due
-            //  to how CSS3 transforms work with the Z-axis. Also, if the
-            //  display is inline, then add a class that forces it to be
-            //  'blocked' (normally inline-block).
+            //  to how CSS3 transforms work with the Z-axis.
             compStyle = TP.elementGetComputedStyleObj(anElement);
 
+            //  If overflow on the element is not 'visible' then, due to
+            //  limitations codified in the CSS 3D transform specification, the
+            //  z-transformation will not take place. Here we add a class that
+            //  will force visibility: visible and explicitly set the width and
+            //  height to their current values. This will force the element to
+            //  stay in place. By using the 'push and set' style property
+            //  manipulation methods, if the element already has an explicitly
+            //  computed width or height, those will be preserved and restored
+            //  when the value is 'popped'.
             if (compStyle.overflow !== 'visible') {
-                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
-            }
 
-            if (compStyle.display === 'inline') {
-                TP.elementAddClass(anElement, 'sherpa-outliner-blocked');
+                width = TP.elementGetWidth(anElement);
+                TP.elementPushAndSetStyleProperty(
+                                    anElement, 'width', width + 'px');
+
+                height = TP.elementGetHeight(anElement);
+                TP.elementPushAndSetStyleProperty(
+                                    anElement, 'height', height + 'px');
+
+                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
             }
         });
 
@@ -998,7 +1013,10 @@ function(aSignal) {
         function(anElement) {
 
             var depth,
-                compStyle;
+                compStyle,
+
+                width,
+                height;
 
             TP.elementSetAttribute(
                             anElement,
@@ -1018,17 +1036,29 @@ function(aSignal) {
 
             //  Grab the computed style of the descendant. If its overflow isn't
             //  visible, then add a class that forces it to be so. This is due
-            //  to how CSS3 transforms work with the Z-axis. Also, if the
-            //  display is inline, then add a class that forces it to be
-            //  'blocked' (normally inline-block).
+            //  to how CSS3 transforms work with the Z-axis.
             compStyle = TP.elementGetComputedStyleObj(anElement);
 
+            //  If overflow on the element is not 'visible' then, due to
+            //  limitations codified in the CSS 3D transform specification, the
+            //  z-transformation will not take place. Here we add a class that
+            //  will force visibility: visible and explicitly set the width and
+            //  height to their current values. This will force the element to
+            //  stay in place. By using the 'push and set' style property
+            //  manipulation methods, if the element already has an explicitly
+            //  computed width or height, those will be preserved and restored
+            //  when the value is 'popped'.
             if (compStyle.overflow !== 'visible') {
-                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
-            }
 
-            if (compStyle.display === 'inline') {
-                TP.elementAddClass(anElement, 'sherpa-outliner-blocked');
+                width = TP.elementGetWidth(anElement);
+                TP.elementPushAndSetStyleProperty(
+                                    anElement, 'width', width + 'px');
+
+                height = TP.elementGetHeight(anElement);
+                TP.elementPushAndSetStyleProperty(
+                                    anElement, 'height', height + 'px');
+
+                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
             }
         });
 
@@ -1461,7 +1491,10 @@ function() {
         function(anElement) {
 
             var depth,
-                compStyle;
+                compStyle,
+
+                width,
+                height;
 
             TP.elementSetAttribute(
                             anElement,
@@ -1481,17 +1514,31 @@ function() {
 
             //  Grab the computed style of the descendant. If its overflow isn't
             //  visible, then add a class that forces it to be so. This is due
-            //  to how CSS3 transforms work with the Z-axis. Also, if the
-            //  display is inline, then add a class that forces it to be
-            //  'blocked' (normally inline-block).
+            //  to how CSS3 transforms work with the Z-axis.
             compStyle = TP.elementGetComputedStyleObj(anElement);
 
+            //  If overflow on the element is not 'visible' then, due to
+            //  limitations codified in the CSS 3D transform specification, the
+            //  z-transformation will not take place. Here we add a class that
+            //  will force visibility: visible and explicitly set the width and
+            //  height to their current values. This will force the element to
+            //  stay in place. By using the 'push and set' style property
+            //  manipulation methods, if the element already has an explicitly
+            //  computed width or height, those will be preserved and restored
+            //  when the value is 'popped'.
             if (compStyle.overflow !== 'visible') {
-                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
-            }
 
-            if (compStyle.display === 'inline') {
-                TP.elementAddClass(anElement, 'sherpa-outliner-blocked');
+                width = TP.elementGetWidth(anElement);
+                TP.elementPushAndSetStyleProperty(
+                                    anElement, 'width', width + 'px');
+
+                height = TP.elementGetHeight(anElement);
+                TP.elementPushAndSetStyleProperty(
+                                    anElement, 'height', height + 'px');
+
+                forcedWidthAndHeight = true;
+
+                TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
             }
         });
 
@@ -1630,10 +1677,24 @@ function() {
                             anElement, 'sherpa-outliner-tagname', true);
                         TP.elementRemoveAttribute(
                             anElement, 'sherpa-outliner-depth', true);
-                        TP.elementRemoveClass(
-                            anElement, 'sherpa-outliner-overflowed');
-                        TP.elementRemoveClass(
-                            anElement, 'sherpa-outliner-blocked');
+
+                        //  If the element has a class where it has been set to
+                        //  overflow: visible, remove that class and pop
+                        //  whatever explicit width and height has been set and
+                        //  use the previous value as the width and height. Note
+                        //  that this could very well be the value '', which
+                        //  means the element didn't have an 'inline' width or
+                        //  height.
+                        if (TP.elementHasClass(
+                                anElement, 'sherpa-outliner-overflowed')) {
+
+                            TP.elementRemoveClass(
+                                anElement, 'sherpa-outliner-overflowed');
+                            TP.elementPopAndSetStyleProperty(
+                                anElement, 'width');
+                            TP.elementPopAndSetStyleProperty(
+                                anElement, 'height');
+                        }
                     });
 
     return this;
