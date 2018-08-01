@@ -23,6 +23,8 @@
 <config id="full">
     <config ref="base"/>
 
+    <config ref="aws"/>
+
     <config ref="xctrls"/>
 
     <config ref="svg" unless="ie"/>
@@ -44,6 +46,34 @@
     <script src="ev/TP.ev.info.js"/>
     <script src="ev/TP.ev.listener.js"/>
     <script src="ev/TP.ev.script.js"/>
+</config>
+
+<config id="aws">
+
+    <script>
+        <![CDATA[
+        TP.sys.importScript(
+            'https://sdk.amazonaws.com/js/aws-sdk-2.281.1.min.js').then(
+            function() {
+                TP.registerExternalObject('AWS', window.AWS);
+            });
+
+            //  Register a stub object to satisfy dependencies. When the real
+            //  object finishes loading, it will overlay
+            TP.registerExternalObject('AWS', {});
+        ]]>
+    </script>
+
+    <script src="aws/services/TP.aws.AWSService.js"/>
+
+    <script src="aws/services/s3/TP.sig.AWSS3Request.js"/>
+    <script src="aws/services/s3/TP.sig.AWSS3Response.js"/>
+    <script src="aws/services/s3/TP.aws.AWSS3Service.js"/>
+
+    <script src="aws/services/lambda/TP.sig.AWSLambdaRequest.js"/>
+    <script src="aws/services/lambda/TP.sig.AWSLambdaResponse.js"/>
+    <script src="aws/services/lambda/TP.aws.AWSLambdaService.js"/>
+
 </config>
 
 <config id="html">
