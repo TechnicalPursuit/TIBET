@@ -1598,6 +1598,7 @@
     TP.sys.setcfg('sherpa.inspector_rest_sources',
         [
             ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource'],
+            ['AWS', 'TP.sherpa.AWSRootInspectorSource'],
             ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
             ['TWS', 'TP.sherpa.TWSRootInspectorSource']
         ]);
