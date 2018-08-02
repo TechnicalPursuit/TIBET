@@ -1962,6 +1962,26 @@
     ]);
 
     //  ---
+    //  Amazon Web Services
+    //  ---
+
+    //  AWS services known to the system.
+    TP.sys.setcfg('aws.known_services',
+        [
+            'S3',
+            'Lambda'
+        ]);
+
+    //  AWS identity information for the TIBET 'passthrough' Serverless Lambda
+    //  function
+    TP.sys.setcfg('aws.passthrough.region', 'us-east-1');
+    TP.sys.setcfg('aws.passthrough.apiVersion', '2015-03-31');
+    TP.sys.setcfg('aws.passthrough.roleArn',
+        'arn:aws:iam::164964774525:role/my-service-dev-us-east-1-lambdaRole');
+    TP.sys.setcfg('aws.passthrough.identityPoolID',
+        'us-east-1:01083178-f775-4c66-85e0-cbde9842d409');
+
+    //  ---
     //  xctrls
     //  ---
 
