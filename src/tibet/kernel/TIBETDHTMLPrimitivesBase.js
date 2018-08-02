@@ -1206,30 +1206,29 @@ function(anElement, aHandler, useTrackerElement) {
 
                         entries.forEach(
                             function(anEntry) {
-                                var target;
+                                var target,
+                                    targetWin;
 
                                 //  The target will be the target Element that
                                 //  got resized. Make sure it's an Element and
                                 //  then run the callback functions defined on
                                 //  the Element.
                                 target = anEntry.target;
-                                if (TP.isElement(target)) {
-                                    target[TP.RESIZE_LISTENERS].forEach(
-                                        function(fn) {
+                                targetWin = TP.nodeGetWindow(target);
 
-                                            //  Note here how we put these into
-                                            //  a requestAnimationFrame.
-                                            //  Otherwise, Chrome (at least) has
-                                            //  trouble with servicing the
-                                            //  ResizeObserver loop (it seems
-                                            //  that supposed recursion loop
-                                            //  checks don't work - or not with
-                                            //  deep stacks, anyway).
-                                            TP.nodeGetWindow(target).
-                                                requestAnimationFrame(
-                                                    function() {
-                                                        fn.call(target);
-                                                    });
+                                if (TP.isElement(target)) {
+                                    //  Note here how we put these into a
+                                    //  requestAnimationFrame. Otherwise, Chrome
+                                    //  (at least) has trouble with servicing
+                                    //  the ResizeObserver loop (it seems that
+                                    //  supposed recursion loop checks don't
+                                    //  work - or not with deep stacks, anyway).
+                                    targetWin.requestAnimationFrame(
+                                        function() {
+                                            target[TP.RESIZE_LISTENERS].forEach(
+                                            function(fn) {
+                                                fn.call(target);
+                                            });
                                         });
                                 }
                             });
