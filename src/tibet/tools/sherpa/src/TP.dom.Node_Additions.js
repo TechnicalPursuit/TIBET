@@ -1159,7 +1159,11 @@ function(insertionPointElement, insertionPosition, tdcRequest) {
      */
 
     var cmdNode,
-        newElem;
+        newElem,
+
+        newScriptElem,
+
+        haloTPElem;
 
     cmdNode = tdcRequest.at('cmdNode');
 
@@ -1168,21 +1172,39 @@ function(insertionPointElement, insertionPosition, tdcRequest) {
     newElem = TP.nodeCloneNode(cmdNode);
     TP.elementRemoveAttribute(newElem, 'id', true);
 
+    //  Create a 'tsh:script' wrapper (unless we are already in one)
+    if (this.getCanonicalName() !== 'tsh:script') {
+        newScriptElem = TP.elem('<tsh:script/>');
+        TP.nodeAppendChild(newScriptElem, newElem, false);
+    } else {
+        newScriptElem = newElem;
+    }
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+
     //  NB: We queue this for the next time that the browser wants to repaint
     //  because all of those lovely microtasks that got queued to get us here
     //  (as the caller of this was tearing itself down - removing attributes and
     //  other nodes, etc.) we want to be flushed *before* we set the
     //  'shouldProcessDOMMutations' flag to be true.
     (function() {
+
+        var newScriptTPElem;
+
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
         TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
-        //  Move the target element. The deadening/awakening will be handled by
-        //  the Mutation Observer machinery.
-        TP.nodeInsertContent(insertionPointElement,
-                                newElem,
-                                insertionPosition);
+        //  Insert the content and capture the return element.
+        newScriptTPElem = TP.wrap(insertionPointElement).insertContent(
+                                        newScriptElem, insertionPosition);
+
+        //  Focus the halo on our new element, passing true to actually show the
+        //  halo if it's hidden.
+        if (newScriptTPElem.haloCanFocus(haloTPElem)) {
+            haloTPElem.focusOn(newScriptTPElem, true);
+        }
+
     }).queueForNextRepaint(this.getNativeWindow());
 
     return this;
