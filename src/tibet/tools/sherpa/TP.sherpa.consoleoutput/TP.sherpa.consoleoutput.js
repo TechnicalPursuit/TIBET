@@ -799,6 +799,10 @@ function(uniqueID, dataRecord) {
 
         msgLevel,
 
+        header,
+        existingContent,
+        content,
+
         tileID,
 
         outputClass,
@@ -910,9 +914,21 @@ function(uniqueID, dataRecord) {
             msgLevel = ' (' + msgLevel.get('name') + ')';
         }
 
-        TP.nodeSetTextContent(
-                TP.byCSSPath('> .flex-item .header', itemElem, true, false),
-                'Log' + msgLevel);
+        //  Grab the header and the existing content (the command text that will
+        //  have already been populated in the second element child).
+        header = TP.byCSSPath('> .flex-item .header', itemElem, true, true);
+        existingContent = header.getChildElementAt(1).getTextContent();
+
+        //  Build a new content chunk by preending a 'Log ' and the message
+        //  level to the existing content.
+        content = 'Log ' + msgLevel;
+        if (TP.notEmpty(existingContent)) {
+            content += ':  ' + existingContent;
+        }
+
+        //  Blow away the rest of the head by setting the new content as the
+        //  content.
+        header.setTextContent(content);
     }
 
     //  Grab the output entry template if it hasn't already been cached and
