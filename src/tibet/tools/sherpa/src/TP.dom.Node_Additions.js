@@ -1123,15 +1123,23 @@ function(insertionPointElement, insertionPosition) {
     //  other nodes, etc.) we want to be flushed *before* we set the
     //  'shouldProcessDOMMutations' flag to be true.
     (function() {
+        var newInsertedTPElem;
+
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
         TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
         //  Move the target element. The deadening/awakening will be handled by
         //  the Mutation Observer machinery.
-        TP.nodeInsertContent(insertionPointElement,
-                                TP.unwrap(newTPElem),
+        newInsertedTPElem = TP.wrap(insertionPointElement).insertContent(
+                                newTPElem,
                                 insertionPosition);
+        //  Focus the halo on our new element, passing true to actually show the
+        //  halo if it's hidden.
+        if (newInsertedTPElem.haloCanFocus(haloTPElem)) {
+            haloTPElem.focusOn(newInsertedTPElem, true);
+        }
+
     }).queueForNextRepaint(this.getNativeWindow());
 
     return this;
