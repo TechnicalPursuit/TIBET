@@ -800,6 +800,7 @@ function(uniqueID, dataRecord) {
         msgLevel,
 
         header,
+        cmdTextTPElem,
         existingContent,
         content,
 
@@ -917,7 +918,13 @@ function(uniqueID, dataRecord) {
         //  Grab the header and the existing content (the command text that will
         //  have already been populated in the second element child).
         header = TP.byCSSPath('> .flex-item .header', itemElem, true, true);
-        existingContent = header.getChildElementAt(1).getTextContent();
+        cmdTextTPElem = header.getChildElementAt(1);
+
+        if (TP.isValid(cmdTextTPElem)) {
+            existingContent = cmdTextTPElem.getTextContent();
+        } else {
+            existingContent = '';
+        }
 
         //  Build a new content chunk by preending a 'Log ' and the message
         //  level to the existing content.
