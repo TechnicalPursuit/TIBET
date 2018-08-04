@@ -80,7 +80,8 @@
                 srcfile, {silent: true});
 
             if (result.code !== 0) {
-                //  TODO:   oops
+                make.error('Unable to generate HTML documentation: ' +
+                    result.output);
                 return;
             }
 
