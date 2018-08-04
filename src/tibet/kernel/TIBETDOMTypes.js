@@ -14327,16 +14327,23 @@ function(aValue, shouldSignal) {
 
     var flag,
 
-        newValue;
+        newValue,
+        newValueStr;
+
+    //  If the value isn't valid, just return.
+    if (TP.notValid(aValue)) {
+        return this;
+    }
 
     newValue = this.produceValue('value', aValue);
 
-    //  If the value is a String, but doesn't have Element markup in it, then we
-    //  can just use 'setTextContent'. Otherwise, we have to use the full
+    newValueStr = TP.str(newValue);
+
+    //  If the String value of newValue doesn't have Element markup in it, then
+    //  we can just use 'setTextContent'. Otherwise, we have to use the full
     //  'setContent'.
-    if (TP.isString(newValue) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(newValue)) {
-        this.setTextContent(newValue, shouldSignal);
+    if (!TP.regex.CONTAINS_ELEM_MARKUP.test(newValueStr)) {
+        this.setTextContent(newValueStr, shouldSignal);
     } else {
         this.setContent(newValue);
     }
