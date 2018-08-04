@@ -2537,7 +2537,13 @@ function(aNode) {
             '*[*|scope],' +
             '*[*|repeat]';
 
-    boundElements = TP.ac(aNode.ownerDocument.querySelectorAll(query));
+    boundElements = aNode.ownerDocument.querySelectorAll(query);
+
+    //  Make sure to filter out all non-roots. This will filter out the vast
+    //  majority of bound nodes (esp. in a bind:repeat) but we will still get
+    //  valid results, since we're looking for common ancestors that don't have
+    //  'tibet:noawaken' on them.
+    boundElements = TP.nodeListFilterNonRoots(boundElements);
 
     //  Since querySelectorAll always queries from the Document even though we
     //  messaged the Element (yet another limitation... sigh...) we have to
@@ -3143,7 +3149,13 @@ function(aNode) {
             '*[*|scope],' +
             '*[*|repeat]';
 
-    boundElements = TP.ac(aNode.ownerDocument.querySelectorAll(query));
+    boundElements = aNode.ownerDocument.querySelectorAll(query);
+
+    //  Make sure to filter out all non-roots. This will filter out the vast
+    //  majority of bound nodes (esp. in a bind:repeat) but we will still get
+    //  valid results, since we're looking for common ancestors that don't have
+    //  'tibet:noawaken' on them.
+    boundElements = TP.nodeListFilterNonRoots(boundElements);
 
     //  Since querySelectorAll always queries from the Document even though we
     //  messaged the Element (yet another limitation... sigh...) we have to
