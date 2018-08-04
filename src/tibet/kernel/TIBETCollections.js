@@ -4526,9 +4526,6 @@ function() {
 
     this.callNextMethod();
 
-    //  force a unique ID
-    this.$set(TP.ID, TP.genID('TP.core.Hash'), false);
-
     thisref = this;
 
     //  NB: For performance reasons, there are multiple occurrences of setting
