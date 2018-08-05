@@ -1791,10 +1791,8 @@ function(anEvent) {
 
     /**
      * @method getVirtualKeyName
-     * @summary Returns the current keyboard's virtual key name for the code
-     *     provided. The shift and special values help refine the search when a
-     *     code represents a special key and/or is augmented by use of the Shift
-     *     key.
+     * @summary Returns the current keyboard's virtual key name for the keycode
+     *     in the event provided.
      * @param {Event|Signal} anEvent The event or signal containing the event.
      * @returns {String|undefined} The virtual key name, or undefined when not
      *     found.
