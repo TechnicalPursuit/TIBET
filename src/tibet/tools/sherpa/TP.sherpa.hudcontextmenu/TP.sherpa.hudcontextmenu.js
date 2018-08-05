@@ -97,7 +97,6 @@ function() {
 
     theContent = TP.elem('<' + contextMenuContentTagName + '/>');
     menuContentTPElem = this.get('menuContent').setContent(theContent);
-    menuContentTPElem.awaken();
 
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');

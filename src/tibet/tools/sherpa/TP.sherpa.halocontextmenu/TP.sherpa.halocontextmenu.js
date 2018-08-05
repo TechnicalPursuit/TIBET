@@ -106,7 +106,6 @@ function() {
 
         theContent = haloTarget.getContentForTool('contextMenu');
         menuContentTPElem = this.get('menuContent').setContent(theContent);
-        menuContentTPElem.awaken();
     }
 
     //  Signal to observers that this control has rendered.
