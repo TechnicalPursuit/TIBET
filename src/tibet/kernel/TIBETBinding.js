@@ -4085,9 +4085,9 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                 }
 
                 if (aspect === 'value') {
-                    this.setValue(finalVal, true);
+                    this.setValue(finalVal);
                 } else {
-                    this.setFacet(aspect, facet, finalVal, true);
+                    this.setFacet(aspect, facet, finalVal);
                 }
 
                 refreshedElements.push(this.getNativeNode());
