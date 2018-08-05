@@ -1723,20 +1723,11 @@ function(anEvent) {
                 ' or .]');
 
         elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
+    }
 
-        if (TP.isEmpty(elems)) {
-
-            path = TP.join(
-                    '//*[@keycode="_', key, '"]',
-                    '[(@platform="', TP.$platform,
-                        '" and @browser="', TP.$browser, '")',
-                    ' or (@browser="', TP.$browser, '")',
-                    ' or (@platform="', TP.$platform, '")',
-                    ' or .]');
-
-            elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
-        }
-    } else {
+    //  If either the Shift key wasn't down or it was but we didn't get a valid
+    //  set of entries, then query.
+    if (TP.isEmpty(elems)) {
 
         path = TP.join(
                 '//*[@keycode="_', key, '"]',
@@ -1931,20 +1922,11 @@ function(normalizedEvent) {
                         ' or .]');
 
                 elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
+            }
 
-                if (TP.isEmpty(elems)) {
-
-                    path = TP.join(
-                            '//*[@keycode="_', key, '"]',
-                            '[(@platform="', TP.$platform,
-                                '" and @browser="', TP.$browser, '")',
-                            ' or (@browser="', TP.$browser, '")',
-                            ' or (@platform="', TP.$platform, '")',
-                            ' or .]');
-
-                    elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
-                }
-            } else {
+            //  If either the Shift key wasn't down or it was but we didn't get
+            //  a valid set of entries, then query.
+            if (TP.isEmpty(elems)) {
 
                 path = TP.join(
                         '//*[@keycode="_', key, '"]',
