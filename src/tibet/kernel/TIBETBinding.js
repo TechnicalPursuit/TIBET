@@ -1490,7 +1490,13 @@ function(attributeValue) {
 
             //  Wrap the value - it helps when trying to extract a value from it
             //  to get the most 'intelligent' data type.
-            wrappedVal = TP.wrap(val);
+            //  NB: For performance reasons, we don't do this for Arrays and
+            //  TP.core.Hashes
+            if (!TP.isArray(val) && !TP.isHash(val)) {
+                wrappedVal = TP.wrap(val);
+            } else {
+                wrappedVal = val;
+            }
 
             //  Iterating context
             if (TP.isNumber(index)) {
