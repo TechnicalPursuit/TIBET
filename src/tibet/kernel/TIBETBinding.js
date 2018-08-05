@@ -787,8 +787,9 @@ function(aSignal) {
     //  Query for all elements containing namespaced attributes of 'io', 'in',
     //  'scope' or repeat. This is the most sophisticated 'namespace like' query
     //  we can give the native querySelectorAll() call since it doesn't really
-    //  recognize namespaces... we'll fix that later.
-    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+    //  recognize namespaces... we'll fix that later. Note here how we ignore
+    //  bind:scopes that contain a '[' (and are therefore bind:repeat scopes).
+    query = '*[*|io], *[*|in], *[*|scope]:not(*[*|scope*="["]), *[*|repeat]';
 
     boundElems = TP.ac(doc.documentElement.querySelectorAll(query));
 
@@ -1993,7 +1994,9 @@ function(wantsShallowScope) {
     filterQuery = '*|*[*|opaque="bind"]';
 
     if (wantsShallowScope) {
-        filterQuery += ', *[*|scope], *[*|repeat]';
+        //  Note here how we ignore bind:scopes that contain a '[' (and are
+        //  therefore bind:repeat scopes).
+        filterQuery += ', *[*|scope]:not(*[*|scope*="["]), *[*|repeat]';
     }
 
     //  Grab all of the filtering elements in the whole document.
@@ -2030,8 +2033,11 @@ function(wantsShallowScope) {
             });
 
     //  Grab all of the bound elements, including scoping elements, in the whole
-    //  document.
-    allBoundQuery = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+    //  document. Note here how we ignore bind:scopes that contain a '[' (and
+    //  are therefore bind:repeat scopes).
+    allBoundQuery =
+        '*[*|io], *[*|in], *[*|scope]:not(*[*|scope*="["]), *[*|repeat]';
+
     boundElems = TP.ac(doc.documentElement.querySelectorAll(allBoundQuery));
 
     //  Filter all of the bound elements so that they're a) under ourself and
