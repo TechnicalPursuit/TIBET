@@ -1659,6 +1659,100 @@ function(normalizedEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Keyboard.Type.defineMethod('getVirtualKeyEntry',
+function(anEvent) {
+
+    /**
+     * @method getVirtualKeyEntry
+     * @summary Returns the current keyboard's virtual key entry in its XML
+     *     lookup table for the keycode in the event provided.
+     * @param {Event|Signal} anEvent The event or signal containing the event.
+     * @returns {Element|undefined} The virtual key entry, or undefined when not
+     *     found.
+     */
+
+    var ev,
+        type,
+
+        xml,
+
+        key,
+        shift,
+
+        path,
+        elems,
+        elem;
+
+    if (TP.notValid(anEvent)) {
+        this.raise('TP.sig.InvalidEvent');
+        return;
+    }
+
+    ev = TP.isEvent(anEvent) ? anEvent : anEvent.get('event');
+    type = TP.eventGetType(ev);
+
+    if (!TP.regex.KEY_EVENT.test(type)) {
+        return;
+    }
+
+    if (TP.notValid(xml = TP.core.Keyboard.get('mapxml'))) {
+        return;
+    }
+
+    key = TP.eventGetKeyCode(ev);
+
+    //  bit of a trick here to avoid a Shift_Shift in particular
+    if (key !== TP.SHIFT_KEY) {
+        shift = TP.eventGetShiftKey(ev);
+    }
+
+    //  if the event was 'shift'ed, then we have to query twice, once for the
+    //  'shift'ed code and, if an entry wasn't found, query again for the
+    //  un'shift'ed code.
+    if (shift) {
+        path = TP.join(
+                '//*[@keycode="_', key, '_shifted"]',
+                '[(@platform="', TP.$platform,
+                    '" and @browser="', TP.$browser, '")',
+                ' or (@browser="', TP.$browser, '")',
+                ' or (@platform="', TP.$platform, '")',
+                ' or .]');
+
+        elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
+    }
+
+    //  If either the Shift key wasn't down or it was but we didn't get a valid
+    //  set of entries, then query.
+    if (TP.isEmpty(elems)) {
+
+        path = TP.join(
+                '//*[@keycode="_', key, '"]',
+                '[(@platform="', TP.$platform,
+                    '" and @browser="', TP.$browser, '")',
+                ' or (@browser="', TP.$browser, '")',
+                ' or (@platform="', TP.$platform, '")',
+                ' or .]');
+
+        elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET);
+    }
+
+    //  If more than one element was returned, that means that we must have
+    //  entries for specific browser, platform or both. Sort them so that
+    //  entries with platform, then browser, then browser and platform (least to
+    //  most specific) are towards the end of the list and use the last one.
+    if (elems.getSize() > 1) {
+        elems.sort(TP.sort.KEYMAP_ELEMENT);
+        elem = elems.last();
+    } else {
+        //  There was only one.
+        elem = elems.first();
+    }
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Keyboard.Type.defineMethod('getVirtualKeyName',
 function(anEvent) {
 
@@ -2360,14 +2454,14 @@ function(anEvent) {
      *     printable character given the current keyboard.
      */
 
-    var key;
+    var entry;
 
-    key = TP.eventGetKeyCode(anEvent);
-    if (key >= 32 && key <= 127 && TP.notTrue(anEvent.$special)) {
-        return true;
-    }
+    //  Grab the XML element from the receiver's XML key map.
+    entry = this.getVirtualKeyEntry(anEvent);
 
-    return false;
+    //  If we got a valid entry and that entry has a 'glyph', then it's a
+    //  printable character.
+    return TP.isElement(entry) && TP.elementHasAttribute(entry, 'glyph', true);
 });
 
 //  ========================================================================
