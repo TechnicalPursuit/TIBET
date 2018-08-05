@@ -1659,6 +1659,39 @@ function(normalizedEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Keyboard.Type.defineMethod('getPrintableGlyph',
+function(anEvent) {
+
+    /**
+     * @method getPrintableGlyph
+     * @summary Returns the printable glyph (if available) for the keycode in
+     *     the event provided.
+     * @param {Event} anEvent A native key event.
+     * @returns {String|null} The printable glyph or null if the keycode
+     *     doesn't match a printable glyph.
+     */
+
+    var entry,
+        glyph;
+
+    //  Grab the XML element from the receiver's XML key map.
+    entry = this.getVirtualKeyEntry(anEvent);
+
+    if (!TP.isElement(entry)) {
+        return null;
+    }
+
+    glyph = TP.elementGetAttribute(entry, 'glyph', true);
+
+    if (TP.isEmpty(glyph)) {
+        return null;
+    }
+
+    return glyph;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Keyboard.Type.defineMethod('getVirtualKeyEntry',
 function(anEvent) {
 

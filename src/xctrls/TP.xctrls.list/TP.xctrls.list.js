@@ -69,7 +69,7 @@ function(aTargetElem, anEvent) {
         accumValue,
         keyname,
 
-        key;
+        glyph;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -102,10 +102,15 @@ function(aTargetElem, anEvent) {
         accumValue = '';
     } else if (TP.core.Keyboard.isPrintable(anEvent)) {
 
-        //  If we're dealing with a printable character, then grab the virtual
-        //  key that corresponds to it and append that to the accumulated value.
-        key = TP.core.Keyboard.getVirtualKeyName(anEvent);
-        accumValue = accumValue + key;
+        //  If we're dealing with a printable key, then grab the virtual glyph
+        //  that corresponds to it and append that to the accumulated value.
+        glyph = TP.core.Keyboard.getPrintableGlyph(anEvent);
+        if (TP.isValid(glyph)) {
+            accumValue = accumValue + glyph;
+        } else {
+            //  No matchin glyph - exit here.
+            return this.callNextMethod();
+        }
     } else {
         //  Otherwise, it was a non-printable key that we don't handle, so 'call
         //  up' and exit here.
