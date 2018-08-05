@@ -2537,14 +2537,20 @@ function(aSignal) {
     var pathStack,
         pathStackIndex,
 
-        newPathStackIndex;
+        payload,
+
+        newPathStackIndex,
+
+        showBusy;
 
     pathStack = this.get('pathStack');
     pathStackIndex = this.get('pathStackIndex');
 
+    payload = aSignal.getPayload();
+
     //  Depending on the 'direction' given in the signal, 'navigate' the
     //  receiver.
-    switch (aSignal.at('direction')) {
+    switch (payload.at('direction')) {
 
         case TP.HOME:
             this.focusInspectorOnHome();
@@ -2570,7 +2576,25 @@ function(aSignal) {
 
         this.set('pathStackIndex', newPathStackIndex);
 
-        this.traversePath(pathStack.at(newPathStackIndex));
+        //  See if the payload has a 'showBusy' flag set to true. If so, then
+        //  show the inspector's 'busy' panel before beginning the traversal
+        //  process.
+        showBusy = payload.at('showBusy');
+        if (TP.isTrue(showBusy)) {
+
+            this.displayBusy();
+
+            //  NB: We put this in a setTimeout so that the busy panel has a
+            //  chance to show before proceeding with the traversal process.
+            setTimeout(
+                function() {
+                    this.traversePath(pathStack.at(newPathStackIndex));
+
+                    this.hideBusy();
+                }.bind(this), TP.sys.cfg('fork.delay'));
+        } else {
+            this.traversePath(pathStack.at(newPathStackIndex));
+        }
     }
 
     return this;

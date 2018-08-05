@@ -505,7 +505,8 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    this.signal('NavigateInspector', TP.hc('direction', TP.PREVIOUS));
+    this.signal('NavigateInspector',
+                TP.hc('direction', TP.PREVIOUS, 'showBusy', true));
 
     //  Make sure that the navigation buttons are updated to reflect the new
     //  location.
@@ -528,7 +529,8 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    this.signal('NavigateInspector', TP.hc('direction', TP.NEXT));
+    this.signal('NavigateInspector',
+                TP.hc('direction', TP.NEXT, 'showBusy', true));
 
     //  Make sure that the navigation buttons are updated to reflect the new
     //  location.
