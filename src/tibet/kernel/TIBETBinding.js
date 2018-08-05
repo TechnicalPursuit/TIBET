@@ -4823,7 +4823,7 @@ function(shouldRender) {
         attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
         attrVal = this.getAttribute('bind:in');
     } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
-        return this.refreshBoundDescendants();
+        return this.refreshBoundDescendants(shouldRender);
     } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
         repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
@@ -5027,7 +5027,11 @@ function(shouldRender) {
 
     retVal = this.$refresh(shouldRender);
 
-    this.refreshBoundDescendants(shouldRender);
+    //  If this element has a 'bind:scope', then the '$refresh' call above will
+    //  have already called refreshBoundDescendants on it.
+    if (!this.hasAttribute('bind:scope')) {
+        this.refreshBoundDescendants(shouldRender);
+    }
 
     return retVal;
 });
