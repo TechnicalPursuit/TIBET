@@ -1046,7 +1046,7 @@ function(singletonName, normalizedEvent, aSignal) {
                 'high_level_signame', signame,
                 'specific_signame', this.getDOMSignalName(normalizedEvent),
 
-                'keyname', this.getEventVirtualKey(normalizedEvent),
+                'keyname', this.getVirtualKeyName(normalizedEvent),
                 'special', TP.isValid(normalizedEvent.$special) ?
                             normalizedEvent.$special : false
                 );
@@ -1659,11 +1659,11 @@ function(normalizedEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Keyboard.Type.defineMethod('getEventVirtualKey',
+TP.core.Keyboard.Type.defineMethod('getVirtualKeyName',
 function(anEvent) {
 
     /**
-     * @method getEventVirtualKey
+     * @method getVirtualKeyName
      * @summary Returns the current keyboard's virtual key name for the code
      *     provided. The shift and special values help refine the search when a
      *     code represents a special key and/or is augmented by use of the Shift

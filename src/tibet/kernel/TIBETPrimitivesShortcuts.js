@@ -1763,7 +1763,7 @@ function(anEvent) {
      * @returns {String} The base key name, such as A, Escape, etc.
      */
 
-    return TP.core.Keyboard.getEventVirtualKey(anEvent);
+    return TP.core.Keyboard.getVirtualKeyName(anEvent);
 });
 
 //  ------------------------------------------------------------------------

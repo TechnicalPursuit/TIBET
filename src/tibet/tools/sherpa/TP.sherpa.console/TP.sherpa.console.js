@@ -1391,7 +1391,7 @@ function(aSignal, statusOutID) {
             //  Sometimes the virtual key name will have 'Ctrl', 'Shift', etc.
             //  as part of the name - we don't want to repeat it. So we use this
             //  set of case-insensitive RegExps below.
-            virtKey = TP.core.Keyboard.getEventVirtualKey(evt);
+            virtKey = TP.core.Keyboard.getVirtualKeyName(evt);
             if (!/Ctrl/i.test(virtKey)) {
                 arr.push(TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null);
                 hasModifier = true;
@@ -1414,7 +1414,7 @@ function(aSignal, statusOutID) {
             }
 
             arr.push(
-                TP.core.Keyboard.getEventVirtualKey(evt),
+                TP.core.Keyboard.getVirtualKeyName(evt),
                 keyCode,
                 unicodeCharCode);
 

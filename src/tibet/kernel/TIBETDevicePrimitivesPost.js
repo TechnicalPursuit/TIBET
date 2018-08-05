@@ -446,7 +446,7 @@ function(anEvent) {
      *     been adjusted for cross-browser issues (generally, TIBET normalizes
      *     to the key code sent on 'key down').
      * @description In general, you should not use key codes, but instead use
-     *     the 'getEventVirtualKey()' method of the TP.core.Keyboard type and
+     *     the 'getVirtualKeyName()' method of the TP.core.Keyboard type and
      *     test the result of that method against one of the key identifier
      *     names defined by the W3C (i.e. 'Enter' or 'Spacebar').
      * @param {Event} anEvent The native event.
@@ -534,7 +534,7 @@ function(anEvent) {
      * @method eventGetUnicodeCharCode
      * @summary Returns the Unicode character code for the supplied event.
      * @description In general, you should not use Unicode character codes, but
-     *     instead use the 'getEventVirtualKey()' method of the TP.core.Keyboard
+     *     instead use the 'getVirtualKeyName()' method of the TP.core.Keyboard
      *     type and test the result of that method against one of the key
      *     identifier names defined by the W3C (i.e. 'Enter' or 'Spacebar').
      *     However, there are times when the W3C hasn't defined a virtual key

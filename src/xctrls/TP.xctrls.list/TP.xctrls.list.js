@@ -104,7 +104,7 @@ function(aTargetElem, anEvent) {
 
         //  If we're dealing with a printable character, then grab the virtual
         //  key that corresponds to it and append that to the accumulated value.
-        key = TP.core.Keyboard.getEventVirtualKey(anEvent);
+        key = TP.core.Keyboard.getVirtualKeyName(anEvent);
         accumValue = accumValue + key;
     } else {
         //  Otherwise, it was a non-printable key that we don't handle, so 'call

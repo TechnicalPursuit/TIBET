@@ -3624,11 +3624,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.DOMKeySignal.Inst.defineMethod('getVirtualKey',
+TP.sig.DOMKeySignal.Inst.defineMethod('getVirtualKeyName',
 function() {
 
     /**
-     * @method getVirtualKey
+     * @method getVirtualKeyName
      * @summary Returns the normalized virtual key name for the receiver's
      *     event.
      * @description For example, a TP.sig.DOMKeySignal with a keyCode of 13 will
@@ -3636,7 +3636,7 @@ function() {
      * @returns {String} The virtual key name, such as 'Enter'.
      */
 
-    return TP.core.Keyboard.getEventVirtualKey(this.getEvent());
+    return TP.core.Keyboard.getVirtualKeyName(this.getEvent());
 });
 
 //  ------------------------------------------------------------------------
