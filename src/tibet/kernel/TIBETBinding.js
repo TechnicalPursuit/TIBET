@@ -2405,6 +2405,8 @@ function() {
 
     var elem,
 
+        cachedPropsParent,
+
         repeatElem,
         repeatAttrVal,
 
@@ -2417,6 +2419,22 @@ function() {
         repeatIndex;
 
     elem = this.getNativeNode();
+
+    //  See if there's a parent element where we've cached the repeat source
+    //  (and repeat index) when we generated the repeat.
+    cachedPropsParent = TP.nodeDetectAncestor(
+                        elem,
+                        function(aNode) {
+                            return TP.isValid(aNode[TP.REPEAT_SOURCE]);
+                        });
+
+    //  If we successfully found a cached properties parent, return the value of
+    //  the cached source and cached index for this element.
+    if (TP.isElement(cachedPropsParent)) {
+        //  Return an Array containing the repeat source and repeat index.
+        return TP.ac(cachedPropsParent[TP.REPEAT_SOURCE],
+                        cachedPropsParent[TP.REPEAT_INDEX]);
+    }
 
     //  Iterate up through the ancestor chain, looking for the nearest ancestor
     //  with a 'bind:repeat'. If one is found, then grab the value of the
@@ -4171,6 +4189,11 @@ function(aCollection, elems) {
         //  computations.
         TP.elementSetAttribute(
                 newElement, 'bind:scope', '[' + scopeIndex + ']', true);
+
+        //  Cache the repeating source and index on the element for much better
+        //  bind:repeat performance
+        newElement[TP.REPEAT_SOURCE] = aCollection;
+        newElement[TP.REPEAT_INDEX] = scopeIndex;
 
         //  Append this new chunk of markup to the document fragment we're
         //  building up and then loop to the top to do it again.
