@@ -204,6 +204,9 @@ function(aTerm) {
 
         this.setData(this.$get('$wholeData'), false, true);
 
+        //  Render to show the filter highlighting
+        this.render();
+
         if (hasFocus) {
             this.get('listitems').first().focus();
         }
@@ -321,6 +324,9 @@ function(aTerm) {
 
         //  NB: This will re-render - our focused item will be gone.
         this.setData(filteredData, false, true);
+
+        //  Render to show the filter highlighting
+        this.render();
 
         //  Focus the first item
         if (hasFocus) {
