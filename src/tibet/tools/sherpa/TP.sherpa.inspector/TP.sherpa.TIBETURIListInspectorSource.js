@@ -90,7 +90,7 @@ function(options) {
 
     return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '}" tooltips="true"/>');
+                    '}" tooltips="true" filter="true"/>');
 });
 
 //  ------------------------------------------------------------------------

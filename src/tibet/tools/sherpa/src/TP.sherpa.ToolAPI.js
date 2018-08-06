@@ -430,7 +430,7 @@ function(options) {
 
         contentElem = TP.elem('<xctrls:list bind:in="{data: ' +
                                 dataURI.asString() +
-                                '}"/>');
+                                '}" filter="true"/>');
     } else {
 
         contentElem = TP.xhtmlnode(

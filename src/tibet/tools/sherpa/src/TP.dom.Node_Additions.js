@@ -353,7 +353,7 @@ function(options) {
         dataURI = TP.uc(options.at('bindLoc'));
 
         return TP.elem(
-                '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
+                '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}" filter="true"/>');
     }
 
     return this.callNextMethod();
@@ -1062,7 +1062,7 @@ function(params) {
                         ' bind:in="{data: ' + dataURI.asString() + '}"' +
                         ' on:UISelect="InspectResponderMethod"' +
                         ' tibet:ctrl="RespondersHUD"' +
-                        '/>');
+                        ' filter="true"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -1396,7 +1396,7 @@ function(options) {
         dataURI = TP.uc(options.at('bindLoc'));
 
         return TP.elem(
-                '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
+                '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}" filter="true"/>');
     }
 
     return this.callNextMethod();

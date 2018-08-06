@@ -207,7 +207,7 @@ function(options) {
 
     return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '}"/>');
+                    '}" filter="true"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -3845,7 +3845,7 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     return TP.elem(
-            '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
+            '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}" filter="true"/>');
 });
 
 //  ------------------------------------------------------------------------

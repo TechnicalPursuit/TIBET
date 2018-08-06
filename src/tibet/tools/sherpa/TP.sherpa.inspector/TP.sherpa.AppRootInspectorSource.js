@@ -89,7 +89,7 @@ function(options) {
 
     return TP.elem('<xctrls:list bind:in="{data: ' +
                     dataURI.asString() +
-                    '}"/>');
+                    '}" filter="true"/>');
 });
 
 //  ------------------------------------------------------------------------
