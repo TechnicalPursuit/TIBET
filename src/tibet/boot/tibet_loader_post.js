@@ -1112,7 +1112,7 @@ TP.boot.installPatches = function(aWindow) {
 
     aWindow.Element.prototype.focus = function() {
         var doc,
-            currentlyFocusedElem;
+            evt;
 
         if (TP.elementIsDisabled(this)) {
             return;
@@ -1120,14 +1120,41 @@ TP.boot.installPatches = function(aWindow) {
 
         doc = this.ownerDocument;
 
-        currentlyFocusedElem = TP.documentGetFocusedElement(doc);
+        //  In order to 'force' focus for non-XHTML elements in a browser, it
+        //  seems that we have to 'mousedown'/'mouseup' the element in question,
+        //  so we do that here.
 
-        if (TP.isElement(currentlyFocusedElem)) {
-            TP.elementRemoveAttribute(
-                        currentlyFocusedElem, 'pclass:focus', true);
-        }
+        //  Create a 'mousedown' event with all of the default parameters
+        evt = doc.createEvent('MouseEvents');
+        evt.initMouseEvent('mousedown', true, true,
+                    doc.defaultView,
+                    0, 0, 0, 0, 0,
+                    false, false, false, false,
+                    0);
 
-        TP.elementSetAttribute(this, 'pclass:focus', 'true', true);
+        //  Set the '$captured' flag on the mousedown event *before* we fire it.
+        //  This will cause the normal TIBET machinery to think that this event
+        //  has already been processed and it will ignore it. Since this event
+        //  is purely to shift keyboard focus, we do *not* want TIBET to process
+        //  it.
+        evt.$captured = true;
+
+        //  Fire the mousedown event
+        this.dispatchEvent(evt);
+
+        //  Create a 'mouseup' event with all of the default parameters
+        evt = doc.createEvent('MouseEvents');
+        evt.initMouseEvent('mouseup', true, true,
+                    doc.defaultView,
+                    0, 0, 0, 0, 0,
+                    false, false, false, false,
+                    0);
+
+        //  Set the '$captured' flag on the mouseup event.
+        evt.$captured = true;
+
+        //  Fire the 'up' event
+        this.dispatchEvent(evt);
     };
 
     aWindow.Element.prototype.blur = function() {
