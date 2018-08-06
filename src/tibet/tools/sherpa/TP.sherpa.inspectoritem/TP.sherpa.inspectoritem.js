@@ -26,6 +26,32 @@ TP.sherpa.inspectoritem.Inst.defineAttribute('config');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspectoritem.Inst.defineMethod('focus',
+function(moveAction) {
+
+    /**
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
+     * @param {String} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    return this.getFirstChildElement().focus(moveAction);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspectoritem.Inst.defineMethod('getBayIndex',
 function() {
 
