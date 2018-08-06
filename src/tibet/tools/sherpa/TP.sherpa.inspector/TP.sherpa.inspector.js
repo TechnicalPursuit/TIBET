@@ -1311,7 +1311,9 @@ function(info) {
         params,
 
         toolbar,
-        toolbarContent;
+        toolbarContent,
+
+        inspectorBays;
 
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
@@ -1347,6 +1349,12 @@ function(info) {
     } else {
         toolbar.empty();
     }
+
+    inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    setTimeout(
+        function() {
+            inspectorBays.last().focus();
+        }, 100);
 
     return this;
 });
