@@ -1240,7 +1240,9 @@ function(insertionPointElement, insertionPosition) {
      */
 
     var haloTPElem,
-        haloTargetTPElem;
+        haloTargetTPElem,
+
+        newInsertedTPElem;
 
     //  The target element that we're moving is the halo's current target.
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
@@ -1258,9 +1260,15 @@ function(insertionPointElement, insertionPosition) {
 
         //  Move the target element. The deadening/awakening will be handled by
         //  the Mutation Observer machinery.
-        TP.nodeInsertContent(insertionPointElement,
-                                TP.unwrap(haloTargetTPElem),
+        newInsertedTPElem = TP.wrap(insertionPointElement).insertContent(
+                                haloTargetTPElem,
                                 insertionPosition);
+
+        //  Focus the halo on our new element, passing true to actually show the
+        //  halo if it's hidden.
+        if (newInsertedTPElem.haloCanFocus(haloTPElem)) {
+            haloTPElem.focusOn(newInsertedTPElem, true);
+        }
 
     }).queueForNextRepaint(this.getNativeWindow());
 
