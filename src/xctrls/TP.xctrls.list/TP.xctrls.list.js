@@ -127,6 +127,10 @@ function(aTargetElem, anEvent) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  Whether or not the receiver was focused. This is useful when redrawing items
+//  to determine whether or not this control was focused.
+TP.xctrls.list.Inst.defineAttribute('$wasFocused');
+
 //  The whole (unfiltered) data set being managed by the control.
 TP.xctrls.list.Inst.defineAttribute('$wholeData');
 TP.xctrls.list.Inst.defineAttribute('$dataKeys');
@@ -1123,6 +1127,9 @@ function() {
         this.$set('filterValue', '');
     }
 
+    //  Start with the receiver *not* being focused.
+    this.$set('$wasFocused', false, false);
+
     return this;
 });
 
@@ -1498,7 +1505,11 @@ function(selection) {
     var selectedValues,
         selectAll,
 
-        groupID;
+        groupID,
+
+        hasFocus,
+
+        thisarg;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1508,6 +1519,14 @@ function(selection) {
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
     groupID = this.getLocalID() + '_group';
+
+    //  Grab whether or not we are currently focused. This is important because
+    //  we will lose track as the items get redrawn (the focused one will lose
+    //  it's 'pclass:focus' attribute) and we need to know so that we can
+    //  refocus.
+    hasFocus = this.get('$wasFocused');
+
+    thisarg = this;
 
     selection.each(
         function(d) {
@@ -1556,6 +1575,40 @@ function(selection) {
                 if (TP.isValid(successorTPElem)) {
                     return successorTPElem;
                 }
+
+                return this.callNextMethod();
+            });
+
+            wrappedElem.defineMethod('becomeFocusedResponder',
+            function(moveAction) {
+
+                /**
+                 * @method becomeFocusedResponder
+                 * @summary Tells the receiver that it is now the 'focused
+                 *     responder'.
+                 * @returns {TP.dom.UIElementNode} The receiver.
+                 */
+
+                //  Flip the flag on the list to let it keep track that it was
+                //  focused.
+                thisarg.$set('$wasFocused', true, false);
+
+                return this.callNextMethod();
+            });
+
+            wrappedElem.defineMethod('resignFocusedResponder',
+            function(moveAction) {
+
+                /**
+                 * @method resignFocusedResponder
+                 * @summary Tells the receiver that it is no longer the 'focused
+                 *     responder'.
+                 * @returns {TP.dom.UIElementNode} The receiver.
+                 */
+
+                //  Flip the flag on the list to let it keep track that it is
+                //  no longer focused.
+                thisarg.$set('$wasFocused', false, false);
 
                 return this.callNextMethod();
             });
@@ -1624,6 +1677,11 @@ function(selection) {
         }
     );
 
+    //  If we were focused, the grab the first item and focus it.
+    if (hasFocus) {
+        this.get('listitems').first().focus();
+    }
+
     return this;
 }, {
     patchCallee: false
@@ -1646,7 +1704,9 @@ function(selection) {
      */
 
     var selectedValues,
-        selectAll;
+        selectAll,
+
+        hasFocus;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1654,6 +1714,12 @@ function(selection) {
     }
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
+
+    //  Grab whether or not we are currently focused. This is important because
+    //  we will lose track as the items get redrawn (the focused one will lose
+    //  it's 'pclass:focus' attribute) and we need to know so that we can
+    //  refocus.
+    hasFocus = this.get('$wasFocused');
 
     selection.each(
             function(d) {
@@ -1713,6 +1779,11 @@ function(selection) {
                 return null;
             }
         );
+
+    //  If we were focused, the grab the first item and focus it.
+    if (hasFocus) {
+        this.get('listitems').first().focus();
+    }
 
     return this;
 });
