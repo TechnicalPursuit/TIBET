@@ -7869,7 +7869,7 @@ TP.boot.$getAppRoot = function() {
             TP.boot.$$approot = TP.boot.$uriCollapsePath(
                 TP.boot.$uriJoinPaths(TP.boot.$$apphead,
                     params['path.app_root']));
-console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
+// console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
             return TP.boot.$$approot;
         }
 
@@ -7883,7 +7883,7 @@ console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
 
         TP.boot.$$approot = TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
-console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
+// console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
         return TP.boot.$$approot;
     }
 /*
