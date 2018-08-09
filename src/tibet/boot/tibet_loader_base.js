@@ -7856,6 +7856,7 @@ TP.boot.$getAppRoot = function() {
     //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
 /*
+ */
     //  Headless launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
@@ -7885,7 +7886,7 @@ console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
 console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
         return TP.boot.$$approot;
     }
-
+/*
 */
     //  Remaining path processing works with just the base path.
     path = path.split(/[#?]/)[0];
