@@ -3156,6 +3156,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
         repeatPath,
         repeatFragExpr,
 
+        updateRepeatIndexes,
+
         ownerTPElem,
 
         searchParts,
@@ -3394,8 +3396,14 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     //  NB: This modifies the supplied 'boundElems' Array to add
                     //  the newly generated elements. They will be refreshed
                     //  below.
-                    ownerTPElem.$regenerateRepeat(branchVal, boundElems);
-                    ownerTPElem.$showHideRepeatRows(branchVal);
+                    //  If $regenerateRepeat returns false, then it didn't
+                    //  regenerate any chunks and, therefore, we need to
+                    //  manually update the repeat indexes.
+                    updateRepeatIndexes = !ownerTPElem.$regenerateRepeat(
+                                                        branchVal, boundElems);
+                    if (updateRepeatIndexes) {
+                        ownerTPElem.$updateRepeatRowIndices(branchVal);
+                    }
                 }
 
                 ownerTPElem.$refreshBranches(
@@ -3637,14 +3645,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                         ownerTPElem.$insertRepeatRowAt(
                                                                 updateIndexes);
 
-                                    if (TP.owns(
-                                        ownerTPElem, 'generatedItemCount')) {
-                                        ownerTPElem.set(
-                                        'generatedItemCount',
-                                        ownerTPElem.get('generatedItemCount') +
-                                                1);
-                                    }
-
                                     TP.wrap(newRowElem).
                                         refreshBoundDescendants();
 
@@ -3656,9 +3656,17 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                     //  'boundElems' Array to add the newly
                                     //  generated elements. They will be
                                     //  refreshed below.
-                                    ownerTPElem.$regenerateRepeat(
+                                    updateRepeatIndexes =
+                                        !ownerTPElem.$regenerateRepeat(
                                                     branchVal, boundElems);
-                                    ownerTPElem.$showHideRepeatRows(branchVal);
+                                    //  If $regenerateRepeat returns false, then
+                                    //  it didn't regenerate any chunks and,
+                                    //  therefore, we need to manually update
+                                    //  the repeat indexes.
+                                    if (updateRepeatIndexes) {
+                                        ownerTPElem.$updateRepeatRowIndices(
+                                                        branchVal);
+                                    }
 
                                     TP.wrap(ownerTPElem).
                                             refreshBoundDescendants();
@@ -3673,12 +3681,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                 if (TP.notEmpty(updateIndexes)) {
                                     ownerTPElem.$deleteRepeatRowAt(
                                                             updateIndexes);
-                                    ownerTPElem.set(
-                                    'generatedItemCount',
-                                    ownerTPElem.get('generatedItemCount') - 1);
                                 } else {
                                     ownerTPElem.empty();
-                                    ownerTPElem.set('generatedItemCount', 0);
                                 }
 
                                 needsRefresh = false;
@@ -3734,10 +3738,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 if (TP.notEmpty(updateIndexes)) {
                     newRowElem = this.$insertRepeatRowAt(updateIndexes);
-                    if (TP.owns(this, 'generatedItemCount')) {
-                        this.set('generatedItemCount',
-                                    this.get('generatedItemCount') + 1);
-                    }
 
                     TP.wrap(newRowElem).refreshBoundDescendants();
                 } else {
@@ -3747,8 +3747,15 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     //  NB: This modifies the supplied 'boundElems' Array to add
                     //  the newly generated elements. They will be refreshed
                     //  below.
-                    ownerTPElem.$regenerateRepeat(branchVal, boundElems);
-                    ownerTPElem.$showHideRepeatRows(branchVal);
+                    updateRepeatIndexes = !ownerTPElem.$regenerateRepeat(
+                                                        branchVal, boundElems);
+
+                    //  If $regenerateRepeat returns false, then it didn't
+                    //  regenerate any chunks and, therefore, we need to
+                    //  manually update the repeat indexes.
+                    if (updateRepeatIndexes) {
+                        ownerTPElem.$updateRepeatRowIndices(branchVal);
+                    }
 
                     TP.wrap(ownerTPElem).refreshBoundDescendants();
                 }
@@ -4103,6 +4110,82 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$refreshRepeatData',
+function(regenerateIfNecessary) {
+
+    /**
+     * @method $refreshRepeatData
+     * @summary Refresh (and possibly regenerate) the data that is shown if the
+     *     receiver contains a 'bind:repeat' attribute.
+     * @param {Boolean} [regenerateIfNecessary=false] Whether or not to
+     *     regenerate the UI chunks necessary to display the repeat. This is
+     *     false by default because regeneration is performance intensive.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var scopeVals,
+        repeatFullExpr,
+
+        repeatURI,
+        repeatWholeURI,
+
+        repeatWholeResult,
+        repeatResult,
+
+        boundElems;
+
+    //  Grab our binding scoping values and compute a 'binding repeat'
+    //  expression from them and any local value on us.
+    scopeVals = this.getBindingScopeValues();
+    repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
+
+    //  Grab both the URI that is computed from our binding expression and it's
+    //  'whole source' (i.e. the root collection that contains our bound data).
+    repeatURI = TP.uc(repeatFullExpr);
+    repeatWholeURI = repeatURI.getPrimaryURI();
+
+    //  Grab the results of both URIs.
+
+    //  NB: Note how we do *not* want the getResource() call to collapse
+    //  it's results here - we always want a collection.
+    repeatResult = repeatURI.getResource(
+                    TP.request('shouldCollapse', false)).get('result');
+    repeatWholeResult = repeatWholeURI.getResource(
+                    TP.request('shouldCollapse', false)).get('result');
+
+    if (TP.isCollection(repeatResult)) {
+
+        //  If this flag is true, then go ahead and regenerate (if necessary).
+        //  Note how we pass any empty Array in here, since we're not adding or
+        //  removing rows that need to be recursively processed at this time.
+        if (TP.isTrue(regenerateIfNecessary)) {
+            this.$regenerateRepeat(repeatResult, TP.ac());
+        }
+
+        //  Grab any bound elements and refresh their values.
+
+        boundElems = this.$getBoundElements();
+
+        this.$refreshBranches(
+                repeatWholeResult,
+                'value',
+                repeatResult,
+                boundElems,
+                null,
+                null,
+                null,
+                false,
+                repeatWholeURI,
+                true,
+                this,
+                null);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$regenerateRepeat',
 function(aCollection, elems) {
 
@@ -4115,17 +4198,24 @@ function(aCollection, elems) {
      *     blank repeating rows - it is up to other methods to refresh the data
      *     bindings within them.
      * @param {Element[]} elems The list of elements that the bind engine is
-     *     currently processing, of which is this element. We will splice any
+     *     currently processing, of which is this an element. We will splice any
      *     new content that this method generates into this collection so that
      *     the engine will recursively process into this new content.
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not new items were actually generated.
      */
 
-    var existingItemCount,
+    var repeatContent,
+
+        resourceLength,
 
         elem,
+        allRepeatChunks,
 
-        repeatContent,
+        existingChunkCount,
+
+        pagingSize,
+
+        chunkCount,
 
         bodyFragment,
 
@@ -4143,23 +4233,45 @@ function(aCollection, elems) {
         args;
 
     if (TP.notValid(aCollection)) {
-        return this;
+        //  TODO: Raise an exception
+        return false;
     }
-
-    //  If we have already generated items and the count of those generated
-    //  items is the same as the collection, then we don't need to regenerate so
-    //  we can just exit here.
-    if (TP.isDefined(existingItemCount = this.get('generatedItemCount'))) {
-        if (existingItemCount === aCollection.getSize()) {
-            return this;
-        }
-    }
-
-    elem = this.getNativeNode();
 
     if (TP.notValid(repeatContent = this.$getRepeatTemplate())) {
         //  TODO: Raise an exception
-        return this;
+        return false;
+    }
+
+    resourceLength = aCollection.getSize();
+
+    elem = this.getNativeNode();
+
+    //  Find all of the existing *direct children* bound rows under us that have
+    //  a 'bind:scope' that starts with a '[' and ends with a ']'.
+    allRepeatChunks = TP.byCSSPath(
+                        '> *[bind|scope^="["][bind|scope$="]"]',
+                        elem,
+                        false,
+                        false);
+
+    existingChunkCount = allRepeatChunks.getSize();
+
+    //  If there is actually a defined repeat size, then always use its value.
+    //  Otherwise, default the size value.
+    if (this.hasAttribute('bind:repeatsize')) {
+        pagingSize = this.getAttribute('bind:repeatsize');
+    } else {
+        pagingSize = resourceLength;
+    }
+
+    //  Use either the resource length or the paging size, whichever is smaller.
+    chunkCount = resourceLength.min(pagingSize);
+
+    //  If we have already generated chunks and the count of those generated
+    //  items is the same as the chunks we're going to produce, then we don't
+    //  need to regenerate so we can just exit here.
+    if (existingChunkCount === chunkCount) {
+        return false;
     }
 
     bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
@@ -4174,9 +4286,9 @@ function(aCollection, elems) {
         repeatContent = repeatContent.firstElementChild;
     }
 
-    //  Iterate over the resource and build out a chunk of markup for each
-    //  item in the resource.
-    len = aCollection.getSize();
+    //  Iterate over the chunkCount and build out a chunk of markup for each
+    //  repeat chunk.
+    len = chunkCount;
     for (i = 0; i < len; i++) {
 
         //  Make sure to clone the content.
@@ -4193,8 +4305,10 @@ function(aCollection, elems) {
         //  Stamp a 'bind:scope' with an attribute containing the numeric
         //  scoping index (i.e. '[2]'). This will be used in bind scoping
         //  computations.
-        TP.elementSetAttribute(
-                newElement, 'bind:scope', '[' + scopeIndex + ']', true);
+        TP.elementSetAttribute(newElement,
+                                'bind:scope',
+                                '[' + scopeIndex + ']',
+                                true);
 
         //  Cache the repeating source and index on the element for much better
         //  bind:repeat performance
@@ -4223,7 +4337,9 @@ function(aCollection, elems) {
                 TP.elementBubbleXMLNSAttributes(anElem);
             });
 
-    //  Awaken any content that has been inserted under this element.
+    //  Awaken any content that has been inserted under this element. We have to
+    //  do this manually, since we turned off mutation tracking for this element
+    //  above.
     TP.nodeAwakenContent(elem);
 
     //  Grab any bound elements under this element. We will need to splice them
@@ -4238,13 +4354,7 @@ function(aCollection, elems) {
     args = TP.ac(elemIndex + 1, 0).concat(newElems);
     Array.prototype.splice.apply(elems, args);
 
-    //  Capture how many repeating rows we generated. We'll use that to compare
-    //  above to see if more rows need to be generated when the data set changes
-    //  and we're called on to redraw.
-    this.defineAttribute('generatedItemCount');
-    this.set('generatedItemCount', aCollection.getSize());
-
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -4381,7 +4491,12 @@ function(index) {
     //  watching this attribute.
     this.$setAttribute('bind:repeatindex', index, true);
 
-    this.$showHideRepeatRows();
+    this.$updateRepeatRowIndices();
+
+    //  Refresh the repeating data under us, passing false to *not* regenerate
+    //  repeat chunks. We're merely changing the index here - that will not be
+    //  required.
+    this.$refreshRepeatData(false);
 
     //  setting an attribute returns void according to the spec
     return;
@@ -4403,7 +4518,9 @@ function(size) {
     //  watching this attribute.
     this.$setAttribute('bind:repeatsize', size, true);
 
-    this.$showHideRepeatRows();
+    //  Refresh the repeating data under us, passing true to regenerate any new
+    //  repeat chunks that may be required.
+    this.$refreshRepeatData(true);
 
     //  setting an attribute returns void according to the spec
     return;
@@ -4671,119 +4788,6 @@ function(aPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('$showHideRepeatRows',
-function(aCollection) {
-
-    /**
-     * @method $showHideRepeatRows
-     * @summary This method shows or hides repeating rows based on the values of
-     *     the receiver's 'bind:repeatindex' and 'bind:repeatsize' attribute
-     *     values.
-     * @description Note that the 'bind:repeatindex' is 1-based, so the first
-     *     row is '1', not '0'. Also, this method will default the
-     *     'bind:repeatsize' to the length of the collection, if one isn't
-     *     specified.
-     * @param {Object} aCollection The collection data model that is used for
-     *     the repeating content.
-     * @returns {TP.dom.ElementNode} The receiver.
-     */
-
-    var elem,
-
-        collection,
-        resourceLength,
-
-        allRepeatRows,
-
-        startIndex,
-        endIndex,
-        repeatSize,
-
-        indices,
-
-        len,
-        i;
-
-    elem = this.getNativeNode();
-
-    //  If a collection wasn't supplied, then go obtain the 'repeat source'.
-    if (!TP.isCollection(collection = aCollection)) {
-        collection = this.$getRepeatValue();
-    }
-
-    //  The maximum number of rows.
-    resourceLength = collection.getSize();
-
-    allRepeatRows = TP.byCSSPath(
-                        '> *[bind|scope^="["][bind|scope$="]"]',
-                        elem,
-                        false,
-                        false);
-
-    //  If we have a 'bind:repeatindex', then we can compute a starting index
-    //  from it.
-    if (this.hasAttribute('bind:repeatindex')) {
-        if (!TP.isNumber(startIndex =
-                            this.getAttribute('bind:repeatindex').asNumber())) {
-            startIndex = 1;
-        }
-    } else {
-        startIndex = 1;
-    }
-
-    //  If we have a 'bind:repeatsize', then we can compute how many rows we
-    //  should be displaying.
-    if (this.hasAttribute('bind:repeatsize')) {
-
-        //  If we have a 'bind:repeatsize', then we can compute an ending index
-        //  from that and the startIndex
-        if (TP.isNumber(repeatSize =
-                        this.getAttribute('bind:repeatsize').asNumber())) {
-            endIndex = startIndex + repeatSize;
-        } else {
-            endIndex = resourceLength - startIndex;
-        }
-
-        endIndex -= 1;
-    } else {
-        endIndex = resourceLength;
-    }
-
-    //  The startIndex has to be at least 1.
-    startIndex = startIndex.max(1);
-
-    //  The endIndex cannot be larger than the number of rows.
-    endIndex = endIndex.min(resourceLength);
-
-    //  Generate a list of numbers from startIndex...endIndex.
-    indices = Array.generateNumericSequence(startIndex, endIndex);
-
-    //  Iterate over all of the repeating content rows in the receiver and show
-    //  or hide them, depending on whether their index exists in the numeric
-    //  sequence.
-    len = allRepeatRows.getSize();
-    for (i = 0; i < len; i++) {
-
-        //  NB: We add 1 here to account for the fact that our indexes are
-        //  1-based, but the collection here is 0-based.
-        if (indices.indexOf(i + 1) !== TP.NOT_FOUND) {
-            TP.elementShow(allRepeatRows.at(i));
-        } else {
-            TP.elementHide(allRepeatRows.at(i));
-        }
-    }
-
-    if (!TP.isNumber(this.getAttribute('bind:repeatpageposition').asNumber())) {
-        //  NB: We pass true here to signal change in case anything in the GUI
-        //  is watching this attribute.
-        this.$setAttribute('bind:repeatpageposition', 1, true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.ElementNode.Inst.defineMethod('$refresh',
 function(shouldRender) {
 
@@ -4807,12 +4811,6 @@ function(shouldRender) {
         attrVal,
         bindingInfo,
 
-        repeatFullExpr,
-        repeatWholeURI,
-        repeatResult,
-
-        boundElems,
-
         valChanged,
 
         willRender;
@@ -4832,33 +4830,9 @@ function(shouldRender) {
         return this.refreshBoundDescendants(shouldRender);
     } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
-        repeatWholeURI = TP.uc(repeatFullExpr);
-
-        //  NB: Note how we do *not* want the getResource() call to collapse
-        //  it's results here - we always want a collection.
-        repeatResult = repeatWholeURI.getResource(
-                        TP.request('shouldCollapse', false)).get('result');
-
-        this.$regenerateRepeat(repeatResult, TP.ac());
-
-        boundElems = this.$getBoundElements();
-
-        if (TP.isCollection(repeatResult)) {
-            this.$refreshBranches(
-                    repeatResult,
-                    'value',
-                    repeatResult,
-                    boundElems,
-                    null,
-                    null,
-                    null,
-                    false,
-                    repeatWholeURI,
-                    true,
-                    this,
-                    null);
-        }
+        //  Refresh the repeating data under us, passing true to regenerate any
+        //  new repeat chunks that may be required.
+        this.$refreshRepeatData(true);
 
         return this;
 
@@ -5094,6 +5068,145 @@ function(shouldRender) {
         //  Make sure to empty the list of elements that were refreshed so that
         //  we start fresh when bindings are refreshed again.
         refreshedElements.empty();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('$updateRepeatRowIndices',
+function(aCollection) {
+
+    /**
+     * @method $updateRepeatRowIndices
+     * @summary This method updates repeating rows indices based on the values
+     *     of the receiver's 'bind:repeatindex' and 'bind:repeatsize' attribute
+     *     values.
+     * @description Note that the 'bind:repeatindex' is 1-based, so the first
+     *     row is '1', not '0'. Also, this method will default the
+     *     'bind:repeatsize' to the length of the collection or a maximum row
+     *     value, whichever is less, if one isn't specified.
+     * @param {Object} aCollection The collection data model that is used for
+     *     the repeating content.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        collection,
+        isXMLResource,
+
+        resourceLength,
+
+        allRepeatChunks,
+
+        startIndex,
+        endIndex,
+        repeatSize,
+
+        indices,
+
+        repeatElem,
+        scopeIndex,
+
+        len,
+        i;
+
+    elem = this.getNativeNode();
+
+    //  If a collection wasn't supplied, then go obtain the 'repeat source'.
+    if (!TP.isCollection(collection = aCollection)) {
+        collection = this.$getRepeatValue();
+    }
+
+    //  Detect whether we're drawing GUI for model which is a chunk of XML data
+    //  - we'll use this information later.
+    isXMLResource = TP.isXMLNode(TP.unwrap(collection.first()));
+
+    //  The maximum number of rows.
+    resourceLength = collection.getSize();
+
+    //  Find all of the existing *direct children* bound rows under us that have
+    //  a 'bind:scope' that starts with a '[' and ends with a ']'.
+    allRepeatChunks = TP.byCSSPath(
+                        '> *[bind|scope^="["][bind|scope$="]"]',
+                        elem,
+                        false,
+                        false);
+
+    //  If we have a 'bind:repeatindex', then we can compute a starting index
+    //  from it.
+    if (this.hasAttribute('bind:repeatindex')) {
+        if (!TP.isNumber(startIndex =
+                            this.getAttribute('bind:repeatindex').asNumber())) {
+            startIndex = 1;
+        }
+    } else {
+        startIndex = 1;
+    }
+
+    //  If we have a 'bind:repeatsize', then we can compute how many rows we
+    //  should be displaying.
+    if (this.hasAttribute('bind:repeatsize')) {
+
+        //  If we have a 'bind:repeatsize', then we can compute an ending index
+        //  from that and the startIndex
+        if (TP.isNumber(repeatSize =
+                        this.getAttribute('bind:repeatsize').asNumber())) {
+            endIndex = startIndex + repeatSize;
+        } else {
+            endIndex = resourceLength - startIndex;
+        }
+
+        endIndex -= 1;
+    } else {
+        endIndex = resourceLength;
+    }
+
+    //  The startIndex has to be at least 1.
+    startIndex = startIndex.max(1);
+
+    //  The endIndex cannot be larger than the number of rows.
+    endIndex = endIndex.min(resourceLength);
+
+    //  Generate a list of numbers from startIndex...endIndex.
+    indices = Array.generateNumericSequence(startIndex, endIndex);
+
+    //  Iterate over all of the repeating content rows in the receiver and show
+    //  or hide them, depending on whether their index exists in the numeric
+    //  sequence.
+    len = allRepeatChunks.getSize();
+    for (i = 0; i < len; i++) {
+
+        repeatElem = allRepeatChunks.at(i);
+
+        //  If we're not dealing with an XML resource, then we subtract one from
+        //  the index we're processing (since indices are 1-based, which is fine
+        //  for XML, but not for other 0-based data, like JS or JSON).
+        if (!isXMLResource) {
+            scopeIndex = indices.at(i) - 1;
+        } else {
+            scopeIndex = indices.at(i);
+        }
+
+        //  Update the 'bind:scope' with an attribute containing the numeric
+        //  scoping index (i.e. '[2]'). This will be used in bind scoping
+        //  computations.
+        TP.elementSetAttribute(repeatElem,
+                                'bind:scope',
+                                '[' + scopeIndex + ']',
+                                true);
+
+        //  Update the cached repeating index on the element for much better
+        //  bind:repeat performance
+        repeatElem[TP.REPEAT_INDEX] = scopeIndex;
+    }
+
+    if (!TP.isNumber(this.getAttribute('bind:repeatpageposition').asNumber())) {
+        //  NB: We pass true here to signal change in case anything in the GUI
+        //  is watching this attribute.
+        this.$setAttribute('bind:repeatpageposition', 1, true);
     }
 
     return this;
