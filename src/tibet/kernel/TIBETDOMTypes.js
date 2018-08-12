@@ -12474,7 +12474,8 @@ function(attributeName) {
         //  JS identifier as a simple path String) if there is a getter that
         //  matches the identifier.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+            if (TP.notValid(path = this.getAccessPathFor(
+                                        pathStr, 'value', attributeName))) {
                 //  try common naming convention first
                 funcName = 'get' + TP.makeStartUpper(pathStr);
                 if (TP.canInvoke(this, funcName)) {
@@ -13906,7 +13907,8 @@ function(attributeName, attributeValue, shouldSignal) {
         //  JS identifier as a simple path String) if there is a setter that
         //  matches the identifier.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+            if (TP.notValid(path = this.getAccessPathFor(
+                                        pathStr, 'value', attributeName))) {
                 //  try common naming convention first
                 funcName = 'set' + TP.makeStartUpper(pathStr);
                 if (TP.canInvoke(this, funcName)) {
@@ -15739,7 +15741,8 @@ function(attributeName) {
         //  JS identifier as a simple path String) if there is a getter that
         //  matches the identifier.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
+            if (TP.notValid(path = this.getAccessPathFor(
+                                        pathStr, 'value', attributeName))) {
                 //  try common naming convention first
                 funcName = 'get' + TP.makeStartUpper(pathStr);
                 if (TP.canInvoke(this, funcName)) {
