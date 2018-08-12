@@ -5360,23 +5360,11 @@ function(attributeName) {
         //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
         //  So, here we check to see if there is an access path for this simple
         //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a getter that
-        //  matches the identifier.
+        //  the underlying data. NOTE: Unlike other overrides of 'get', we do
+        //  NOT check for custom getters and setters here - we treat
+        //  TP.core.Hash very specially around get/set and at/atPut.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
             if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
-                //  try common naming convention first
-                funcName = 'get' + TP.makeStartUpper(pathStr);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
                 //  There wasn't a valid access path aliased to that identifier,
                 //  so just use the path we were originally going to use.
                 path = attributeName;
@@ -5818,23 +5806,11 @@ function(attributeName, attributeValue, shouldSignal) {
         //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
         //  So, here we check to see if there is an access path for this simple
         //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a setter that
-        //  matches the identifier.
+        //  the underlying data. NOTE: Unlike other overrides of 'set', we do
+        //  NOT check for custom getters and setters here - we treat
+        //  TP.core.Hash very specially around get/set and at/atPut.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
             if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
-                //  try common naming convention first
-                funcName = 'set' + TP.makeStartUpper(attributeName);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
                 //  There wasn't a valid access path aliased to that identifier,
                 //  so just use the path we were originally going to use.
                 path = attributeName;

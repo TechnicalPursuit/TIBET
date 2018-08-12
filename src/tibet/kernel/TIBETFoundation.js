@@ -6991,7 +6991,6 @@ function(attributeName) {
         //  matches the identifier.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
             if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
-
                 //  try common naming convention first
                 funcName = 'get' + TP.makeStartUpper(pathStr);
                 if (TP.canInvoke(this, funcName)) {
@@ -7346,7 +7345,6 @@ function(attributeName, attributeValue, shouldSignal) {
         //  matches the identifier.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
             if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
-
                 //  try common naming convention first
                 funcName = 'set' + TP.makeStartUpper(pathStr);
                 if (TP.canInvoke(this, funcName)) {
@@ -7468,7 +7466,6 @@ function(attributeName, attributeValue, shouldSignal) {
         //  matches the identifier.
         if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
             if (TP.notValid(path = this.getAccessPathFor(pathStr, 'value'))) {
-
                 //  try common naming convention first
                 funcName = 'set' + TP.makeStartUpper(pathStr);
                 if (TP.canInvoke(this, funcName)) {
