@@ -4870,7 +4870,7 @@ function(aName) {
      * @param {String} aName The name to resolve.
      */
 
-    return TP.override();
+    return this.$get('resource');
 });
 
 //  ------------------------------------------------------------------------
