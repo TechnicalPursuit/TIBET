@@ -71,13 +71,23 @@ Cmd.prototype.execute = function() {
     var cp,
         child,
         target,
+        parts,
         args;
 
     args = [];
     target = process.argv[process.argv.length - 1];
     if (CLI.notEmpty(target) && target !== 'vscode') {
+        //  If we got optional line:char info split so we can expand any virtual
+        //  path reference on the front, then join it back up for final push.
         if (target.indexOf(':') !== -1) {
+            parts = target.split(':');
+            parts[0] = CLI.expandPath(parts[0]);
+            target = parts.join(':');
+
+            //  VSCode requires --goto if there's line:char info, otherwise not.
             args.push('--goto');
+        } else {
+            target = CLI.expandPath(target);
         }
         args.push(target);
     }
