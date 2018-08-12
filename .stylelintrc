@@ -19,8 +19,6 @@
 
         "function-url-quotes": "always",
 
-        "rule-nested-empty-line-before": null,
-
         "selector-attribute-quotes": "always",
 
         "selector-type-no-unknown": [ true, {
