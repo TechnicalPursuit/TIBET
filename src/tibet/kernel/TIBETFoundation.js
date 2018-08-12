@@ -6579,7 +6579,7 @@ function(aPath) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getAccessPathFor',
-function(attributeName, facetName) {
+function(attributeName, facetName, originalPath) {
 
     /**
      * @method getAccessPathFor
@@ -6590,6 +6590,9 @@ function(attributeName, facetName) {
      *     path facet value for.
      * @param {String} facetName The name of the facet to get the access path
      *     facet value for.
+     * @param {TP.core.AccessPath} [originalPath] An optional access path that
+     *     the attribute name might have been derived from. Sometimes it is
+     *     useful to have access to the original path.
      * @returns {Object} Any access path value of the supplied facet of the
      *     supplied attribute. If there is no access path, this method returns
      *     null.
