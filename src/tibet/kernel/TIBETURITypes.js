@@ -3220,6 +3220,25 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Inst.defineMethod('$normalizeRequestedResource',
+function(aResource) {
+
+    /**
+     * @method $normalizeRequestedResource
+     * @summary 'Normalizes' the resource object. This means that certain
+     *     common constructs that this particular type of TP.uri.URI needs will
+     *     be computed and instrumented onto the resource via this method.
+     * @param {Object} aResource The resource object to normalize.
+     * @returns {Object} The normalized resource.
+     */
+
+    //  At this level, there are no constructs that the receiver needs to put
+    //  onto the supplied resource, so we just return it.
+    return aResource;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Inst.defineMethod('refreshFromRemoteResource',
 function() {
 
@@ -6022,31 +6041,6 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URL.Inst.defineMethod('$normalizeRequestedResource',
-function(aResource, Request) {
-
-    var obj;
-
-    obj = TP.wrap(aResource);
-
-    if (TP.canInvokeInterface(
-            obj, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
-        //  place our URI value into the node wrapper and node content
-        obj.$set('uri', this, false);
-
-        //  make sure the node knows where it loaded from.
-        obj.addTIBETSrc(this);
-
-        //  then, an 'xml:base' attribute. this helps ensure that xml:base
-        //  computations will work more consistently during tag processing
-        obj.addXMLBase();
-    }
-
-    return obj;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.uri.URL.Inst.defineMethod('getRequestedResource',
 function(aRequest) {
 
@@ -6302,6 +6296,40 @@ function(aRequest) {
     this.expire(false);
 
     return this.$getFilteredResult(resource, aRequest.at('resultType'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URL.Inst.defineMethod('$normalizeRequestedResource',
+function(aResource) {
+
+    /**
+     * @method $normalizeRequestedResource
+     * @summary 'Normalizes' the resource object. This means that certain
+     *     common constructs that this particular type of TP.uri.URI needs will
+     *     be computed and instrumented onto the resource via this method.
+     * @param {Object} aResource The resource object to normalize.
+     * @returns {Object} The normalized resource.
+     */
+
+    var obj;
+
+    obj = TP.wrap(aResource);
+
+    if (TP.canInvokeInterface(
+            obj, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
+        //  place our URI value into the node wrapper and node content
+        obj.$set('uri', this, false);
+
+        //  make sure the node knows where it loaded from.
+        obj.addTIBETSrc(this);
+
+        //  then, an 'xml:base' attribute. this helps ensure that xml:base
+        //  computations will work more consistently during tag processing
+        obj.addXMLBase();
+    }
+
+    return obj;
 });
 
 //  ------------------------------------------------------------------------
