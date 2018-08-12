@@ -10203,19 +10203,28 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('generateMarkupContent',
-function() {
+function(attrStr) {
 
     /**
      * @method generateMarkupContent
      * @summary Generates the 'empty markup' representation of the receiver.
-     *     The empty representation contains no attributes or child node
-     *     content, but does contain the proper 'xmlns' attribute so that the
-     *     receiver can be properly placed in any document that has that
-     *     namespace defined.
+     * @description The empty representation contains child node content, but
+     *     does contain the proper 'xmlns' attribute so that the receiver can be
+     *     properly placed in any document that has that namespace defined. It
+     *     can also contain any optionally supplied attribute content.
+     * @param {String} [attrStr] The String containing optional attribute
+     *     markup.
      * @returns {String} The 'empty markup' representation of the receiver.
      */
 
-    var str;
+    var attrMarkup,
+        str;
+
+    if (TP.notEmpty(attrStr)) {
+        attrMarkup = ' ' + TP.trim(attrStr);
+    } else {
+        attrMarkup = '';
+    }
 
     str = TP.join('<',
                 this.getNamespacePrefix(),
@@ -10224,7 +10233,9 @@ function() {
                 ' xmlns:', this.getNamespacePrefix(),
                 '="',
                 TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
-                '"/>');
+                '"' +
+                attrMarkup +
+                '/>');
 
     return str;
 });
