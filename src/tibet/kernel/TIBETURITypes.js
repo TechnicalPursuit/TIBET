@@ -4868,6 +4868,8 @@ function(aName) {
      *     $getPrimaryResource call to perform type-specific name resolution
      *     logic.
      * @param {String} aName The name to resolve.
+     * @returns {Object} The resource referenced by the receiver's name or name
+     *     value.
      */
 
     return this.$get('resource');
@@ -5011,6 +5013,8 @@ function(aName) {
      *     $getPrimaryResource call to perform type-specific name resolution
      *     logic.
      * @param {String} aName The name to resolve.
+     * @returns {Object} The resource referenced by the receiver's name or name
+     *     value.
      */
 
     var str,
