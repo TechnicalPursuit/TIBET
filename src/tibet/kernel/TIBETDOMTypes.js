@@ -1697,6 +1697,39 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('getAccessPathFor',
+function(attributeName, facetName, originalPath) {
+
+    /**
+     * @method getAccessPathFor
+     * @summary Returns any access path facet value, if any, for the attribute
+     *     and facet provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about facets.
+     * @param {String} attributeName The name of the attribute to get the access
+     *     path facet value for.
+     * @param {String} facetName The name of the facet to get the access path
+     *     facet value for.
+     * @param {TP.core.AccessPath} [originalPath] An optional access path that
+     *     the attribute name might have been derived from. Sometimes it is
+     *     useful to have access to the original path.
+     * @returns {Object} Any access path value of the supplied facet of the
+     *     supplied attribute. If there is no access path, this method returns
+     *     null.
+     */
+
+    //  If we're trying to get or set the 'value', we always return the original
+    //  path so that the get/set machinery will use this path instead of trying
+    //  to use a custom getter/setter (which will return different results than
+    //  what we desire for this slot).
+    if (attributeName === 'value') {
+        return originalPath;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('getAncestorPositions',
 function(includeNode, aPrefix, joinChar) {
 
