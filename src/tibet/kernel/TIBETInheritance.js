@@ -8664,6 +8664,22 @@ function() {
 //  Attribute Facets
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('getValidatingAspectNames',
+function() {
+
+    /**
+     * @method getValidatingAspectNames
+     * @summary Returns an Array of the names of the aspects to validate on the
+     *     receiver. At this type level, this just returns an empty Array.
+     * @returns {String[]} A list of the names of aspects to validate on the
+     *     receiver.
+     */
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('$addFacetFunction',
 function(aspectName, facetName, facetFunction) {
 
