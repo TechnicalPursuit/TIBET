@@ -1100,10 +1100,14 @@ function(attributeName, attributeValue, shouldSignal) {
     //  This might be an access path
     attrName = attributeName.asString();
 
-    if (attrName !== 'data' &&
-        attrName !== 'sourceURI' &&
-        attrName !== 'transactional') {
-        this.checkFacets(attrName);
+    //  If it's a JS identifier (i.e. simple path), then we can check its
+    //  facets.
+    if (TP.regex.JS_IDENTIFIER.test(attrName)) {
+        if (attrName !== 'data' &&
+            attrName !== 'sourceURI' &&
+            attrName !== 'transactional') {
+            this.checkFacets(attrName);
+        }
     }
 
     return retVal;
