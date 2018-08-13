@@ -19,7 +19,7 @@
 
         "function-url-quotes": "always",
 
-         "rule-empty-line-before": "always",
+        "rule-empty-line-before": "always",
 
         "selector-attribute-quotes": "always",
 
