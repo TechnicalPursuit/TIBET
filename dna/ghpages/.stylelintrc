@@ -16,7 +16,7 @@
 
         "function-url-quotes": "always",
 
-        "rule-nested-empty-line-before": null,
+        "rule-empty-line-before": "always",
 
         "selector-attribute-quotes": "always",
 
