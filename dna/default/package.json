@@ -28,7 +28,7 @@
         "sessionstore": "TechnicalPursuit/sessionstore",
         "shelljs": "TechnicalPursuit/shelljs",
         "stylelint": "^9.4.0",
-        "stylelint-config-standard": "^18.2.0"
+        "stylelint-config-standard": "^18.2.0",
         "winston": "TechnicalPursuit/winston"
     },
     "devDependencies": {},
