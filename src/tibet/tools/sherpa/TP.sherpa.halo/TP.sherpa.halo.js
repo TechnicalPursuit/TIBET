@@ -1455,6 +1455,85 @@ function(newTargetTPElem, shouldUnhide) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineMethod('openExternalEditor',
+function(aspectPathParts) {
+
+    /**
+     * @method openExternalEditor
+     * @summary Opens an external editor on the halo target's aspect pointed to
+     *     by the supplied path parts.
+     * @param {String[]} aspectPathParts The Array of path parts that make up
+     *     the path to the aspect to be inspected.
+     * @returns {String} The TP.TSH_NO_VALUE value to avoid console output.
+     */
+
+    var currentTargetTPElem,
+        newTargetTPElem,
+
+        aspect,
+        uri,
+        
+        virtualLoc,
+        
+        cmdVal;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    //  Note here how we go after the current halo target's nearest 'generator'.
+    //  That will usually be its custom tag. If one cannot be found, it will be
+    //  the current target's nearest 'parent'.
+    newTargetTPElem = currentTargetTPElem.getNearestHaloGenerator(this);
+
+    //  If we acquired a new target, then we blur off of our current target and
+    //  focus on it.
+    if (currentTargetTPElem !== newTargetTPElem && TP.isValid(newTargetTPElem)) {
+
+        if (currentTargetTPElem.haloCanBlur(this)) {
+
+            this.blur();
+
+            if (newTargetTPElem.haloCanFocus(this)) {
+                this.focusOn(newTargetTPElem);
+
+                //  This will 'unhide' the halo.
+                this.setAttribute('hidden', false);
+            }
+        }
+    } else {
+        //  Otherwise, we just keep the same target.
+        newTargetTPElem = currentTargetTPElem;
+    }
+
+    aspect = aspectPathParts.first();
+
+    //  Currently, we support two aspects: structure and style
+    if (aspect === 'Structure') {
+        uri = newTargetTPElem.getType().getResourceURI('template');
+    } else if (aspect === 'Style') {
+        uri = newTargetTPElem.getType().getResourceURI('style');
+    }
+
+    if (!TP.isURI(uri)) {
+        TP.alert('The halo\'ed element \'&lt;' +
+                    currentTargetTPElem.getFullName() +
+                    '/&gt;\' has no external URI for aspect: ' + aspect);
+
+        return TP.TSH_NO_VALUE;
+    }
+
+    virtualLoc = uri.getVirtualLocation();
+
+    cmdVal = ':cli vscode ' + virtualLoc;
+
+    (function() {
+        TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+    }).queueForNextRepaint(this.getNativeWindow());
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
