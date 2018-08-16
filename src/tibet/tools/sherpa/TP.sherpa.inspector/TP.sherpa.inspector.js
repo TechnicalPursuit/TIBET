@@ -1320,7 +1320,9 @@ function(info) {
 
     //  Update the target value holder with the current target object.
     targetURI = TP.uc('urn:tibet:sherpa_inspector_target');
-    targetURI.setResource(target, TP.request('signalChange', false));
+    if (targetURI !== TP.NO_RESULT) {
+        targetURI.setResource(target, TP.request('signalChange', false));
+    }
 
     //  Size the inspector bays. Note that this will not re-render the bays. The
     //  other bays will have already rendered properly and any bays we added or
