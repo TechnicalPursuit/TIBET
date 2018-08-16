@@ -1472,9 +1472,9 @@ function(aspectPathParts) {
 
         aspect,
         uri,
-        
+
         virtualLoc,
-        
+
         cmdVal;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
