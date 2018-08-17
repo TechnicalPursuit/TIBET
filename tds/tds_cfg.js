@@ -113,7 +113,8 @@
 
         setcfg('tds.auth.strategy', 'tds');
 
-        setcfg('tds.cli.commands', ['type', 'build', 'deploy', 'package']);
+        setcfg('tds.cli.commands', ['type', 'build', 'deploy', 'package',
+            'open']);
 
         setcfg('tds.couch.db_app', 'tibet');
         setcfg('tds.couch.db_name', null);
