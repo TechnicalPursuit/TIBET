@@ -62,7 +62,7 @@
     "d3": "https://github.com/TechnicalPursuit/d3/tarball/master",
     "diff": "https://github.com/TechnicalPursuit/jsdiff/tarball/master",
     "escodegen": "^1.11.0",
-    "eslint": "4.19.1",
+    "eslint": "^5.3.0",
     "esmangle": "*",
     "esprima": "^4.0.1",
     "express": "^4.16.3",
