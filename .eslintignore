@@ -3,4 +3,4 @@ node_modules/**
 deps/**
 lib/src/**
 **/build/**
-**/*.__*__.*.js
+**/*__*__*.*
