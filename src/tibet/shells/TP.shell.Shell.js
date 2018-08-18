@@ -2688,6 +2688,11 @@ function(anObjectSpec, aRequest, forArguments) {
             }
 
             try {
+                //  If the spec points to a 'special Window property', then we
+                //  don't resolve it but just return undefined.
+                if (TP.sys.$windowglobals.hasKey(spec)) {
+                    return;
+                }
                 $$inst = execContext.eval(spec);
                 if (TP.notValid($$inst)) {
                     if (TP.regex.NS_QUALIFIED.test(spec)) {

@@ -142,6 +142,13 @@ function(anID, regOnly, nodeContext) {
             context = TP.sys.getLaunchWindow();
 
             parts = id.split('.');
+
+            //  If the first part points to a 'special Window property', then we
+            //  don't resolve it but just return undefined.
+            if (TP.sys.$windowglobals.hasKey(parts.at(0))) {
+                return;
+            }
+
             obj = context[parts.at(0)];
             parts.shift();
 
