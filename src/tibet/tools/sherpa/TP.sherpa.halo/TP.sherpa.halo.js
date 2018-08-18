@@ -1521,7 +1521,8 @@ function(aspectPathParts) {
         return TP.TSH_NO_VALUE;
     }
 
-    virtualLoc = uri.getVirtualLocation();
+    //  Quote the URL in case it has funny characters.
+    virtualLoc = uri.getVirtualLocation().quoted('\'');
 
     //  NOTE we pass the --editor flag here since it can be changed in the client
     //  via Sherpa config panels and only the client will know user's current choice.
