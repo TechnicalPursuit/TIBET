@@ -919,6 +919,8 @@ TP.boot.installPatches = function(aWindow) {
                     if (this.type === 'mousewheel') {
                         return this.detail / 120;
                     }
+
+                    return 0;
                 }
             });
     }
