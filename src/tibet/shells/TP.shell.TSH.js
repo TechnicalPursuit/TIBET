@@ -2589,7 +2589,7 @@ function(aRequest) {
 
     //  TODO: sanity check them for non-alphanumeric 'command line' chars.
 
-    cmd = this.getArgument(aRequest, 'tsh:eval', null, true);
+    cmd = this.getArgument(aRequest, 'ARG0', null, false);
     if (TP.isEmpty(cmd)) {
         cmd = 'help';
     }
