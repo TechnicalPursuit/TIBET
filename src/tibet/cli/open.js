@@ -81,11 +81,8 @@ Cmd.prototype.USAGE = 'tibet open <vpath[:file[:char]]> [--editor <cmd>]';
  */
 Cmd.prototype.execute = function() {
     var files,
-        command,
-        args,
         opts,
-        cmd,
-        editor;
+        cmd;
 
     //  Try to default editor. If not provided we'll rely on the open-editor module to
     //  look at environment instead.
@@ -99,7 +96,7 @@ Cmd.prototype.execute = function() {
 
     opts = {};
     if (this.options.editor) {
-        opts.editor = this.options.editor
+        opts.editor = this.options.editor;
     }
 
     open(files, opts);
