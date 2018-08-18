@@ -1524,10 +1524,13 @@ function(aspectPathParts) {
     //  Quote the URL in case it has funny characters.
     virtualLoc = uri.getVirtualLocation().quoted('\'');
 
-    //  NOTE we pass the --editor flag here since it can be changed in the client
-    //  via Sherpa config panels and only the client will know user's current choice.
-    cmdVal = ':cli open --editor ' +
-        TP.sys.cfg('cli.open.editor') + ' ' + virtualLoc;
+    //  NOTE we pass the --editor flag here since it can be changed in the
+    //  client via Sherpa config panels and only the client will know user's
+    //  current choice.
+    cmdVal = ':cli open --editor=' +
+                TP.sys.cfg('cli.open.editor') +
+                ' ' +
+                virtualLoc;
 
     (function() {
         TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
