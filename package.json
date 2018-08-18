@@ -88,6 +88,7 @@
     "nano": "https://github.com/TechnicalPursuit/couchdb-nano/tarball/master",
     "node-forge": "https://github.com/TechnicalPursuit/forge/tarball/master",
     "node-sass": "^4.9.3",
+    "open-editor": "^1.2.0",
     "opener": "^1.5.0",
     "permessage-deflate": "^0.1.6",
     "phantomjs-prebuilt": "^2.1.16",

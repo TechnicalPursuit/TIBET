@@ -17,9 +17,12 @@
 'use strict';
 
 var CLI,
-    Cmd;
+    Cmd,
+    open;
 
 CLI = require('./_cli');
+open = require('open-editor');
+
 
 //  ---
 //  Type Construction
@@ -65,7 +68,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet open <vpath> [--editor <cmd>]';
+Cmd.prototype.USAGE = 'tibet open <vpath[:file[:char]]> [--editor <cmd>]';
 
 
 //  ---
@@ -77,154 +80,34 @@ Cmd.prototype.USAGE = 'tibet open <vpath> [--editor <cmd>]';
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    var cp,
-        child,
-        cmd,
+    var files,
         command,
         args,
-        opts;
+        opts,
+        cmd,
+        editor;
 
+    //  Try to default editor. If not provided we'll rely on the open-editor module to
+    //  look at environment instead.
     this.options.editor = this.options.editor || CLI.getcfg('cli.open.editor');
 
-    if (CLI.isEmpty(this.options.editor)) {
-        this.error('Unsupported editor for open command: ' + this.options.editor);
-        return -1;
-    }
-
-    command = this.getEditorCommand();
-    if (CLI.isEmpty(command)) {
-        this.error('Unable to determine command for editor: ' + this.options.editor);
-        return -1;
-    }
-
-    args = this.getEditorArglist();
-
-    opts = this.getEditorOptions();
-
-    cp = require('child_process');
-    child = cp.spawn(command, args, opts);
-
+    //  Process all file references provided, expanding any virtual paths.
     cmd = this;
-    child.stderr.on('data', function(data) {
-        cmd.error('' + data);
+    files = this.options._.slice(1).map(function(file) {
+        return cmd.getExpandedPath(file);
     });
 
-    child.unref();
-
-    return 0;
-};
-
-/**
- */
-Cmd.prototype.getEditorCommand = function() {
-    var editor;
-
-    editor = this.options.editor.toLowerCase();
-
-    switch (editor) {
-        case 'code':
-        case 'vscode':
-            return 'code';
-        case 'vi':
-        case 'vim':
-            return 'vim';
-        default:
-            //  NOTE: this will often fail based on arglist variance but it will try.
-            return 'open';
-    }
-};
-
-/**
- */
-Cmd.prototype.getEditorArglist = function() {
-    var editor,
-        method,
-        cmd;
-
-    editor = this.options.editor.toLowerCase();
-    editor = editor.charAt(0).toUpperCase() + editor.slice(1);
-
-    method = 'getArglistFor' + editor;
-    if (typeof this[method] === 'function') {
-        return this['getArglistFor' + editor]();
+    opts = {};
+    if (this.options.editor) {
+        opts.editor = this.options.editor
     }
 
-    //  Default arglist. NOTE: this may not work for editor command.
-    cmd = this;
-    return this.options._.slice(1).map(function(target) {
-        return cmd.getExpandedTarget(target);
-    });
+    open(files, opts);
 };
 
 /**
  */
-Cmd.prototype.getArglistForVim = function() {
-    var cmd;
-
-    cmd = this;
-    return this.options._.slice(1).map(function(target) {
-        return cmd.getExpandedTarget(target);
-    });
-};
-
-/**
- *
- */
-Cmd.prototype.getArglistForVscode = function() {
-    var args,
-        cmd,
-        needsGoto;
-
-    cmd = this;
-    args = this.options._.slice(1).map(function(target) {
-        var arg;
-
-        arg = cmd.getExpandedTarget(target);
-        if (arg.indexOf(':') !== -1) {
-            needsGoto = true;
-        }
-        return arg;
-    });
-
-    args.unshift('--reuse-window');
-
-    if (needsGoto) {
-        //  VSCode requires --goto if there's line:char info, otherwise not.
-        args.unshift('--goto');
-    }
-
-    return args;
-};
-
-/**
- */
-Cmd.prototype.getEditorOptions = function() {
-    var editor;
-
-    editor = this.options.editor.toLowerCase();
-
-    switch (editor) {
-        case 'vi':
-        case 'vim':
-            //  Need terminal etc. for IO in vim. We
-            //  retain stderr for reporting errors on startup.
-            return {
-                detached: true,
-                stdio: ['inherit', 'inherit']
-            }
-        default:
-            //  VSCode and other "apps" can ignore IO. We
-            //  retain stderr for reporting errors on startup.
-            return {
-                detached: true,
-                stdio: ['ignore', 'ignore']
-            };
-    }
-};
-
-/**
- */
-Cmd.prototype.getExpandedTarget = function(target) {
+Cmd.prototype.getExpandedPath = function(target) {
     var parts;
 
     if (/:/.test(target)) {
