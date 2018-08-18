@@ -1030,8 +1030,9 @@
     //  what method (browser or man page) should we try for help display?
     TP.sys.setcfg('cli.help.viewer', 'man');
 
-    //  what is the default editor for the CLI 'open' command.
-    TP.sys.setcfg('cli.open.editor', 'vscode');
+    //  what is the default editor for the CLI 'open' command. Leave null
+    //  to leverage OS environment variable settings.
+    TP.sys.setcfg('cli.open.editor', null);
 
     //  define any additional (beyond the default values) extensions for js
     //  source, style (css, less, sass), and xml files. See the lint command
