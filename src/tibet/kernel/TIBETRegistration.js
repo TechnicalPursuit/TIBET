@@ -143,12 +143,6 @@ function(anID, regOnly, nodeContext) {
 
             parts = id.split('.');
 
-            //  If the first part points to a 'special Window property', then we
-            //  don't resolve it but just return undefined.
-            if (TP.sys.$windowglobals.hasKey(parts.at(0))) {
-                return;
-            }
-
             obj = context[parts.at(0)];
             parts.shift();
 
@@ -172,6 +166,18 @@ function(anID, regOnly, nodeContext) {
                 } else {
                     obj = void 0;
                 }
+            }
+
+            //  Re-split the id so that we can get the first part to do the test
+            //  below
+            parts = id.split('.');
+
+            //  If the first part points to a 'special Window property' that is
+            //  *not* a Window reference itself (i.e. an iframe Window), then we
+            //  don't resolve it but just return undefined.
+            if (TP.sys.$windowglobals.hasKey(parts.at(0)) &&
+                !TP.isWindow(obj)) {
+                return;
             }
 
             if (TP.isValid(obj)) {

@@ -2688,12 +2688,16 @@ function(anObjectSpec, aRequest, forArguments) {
             }
 
             try {
-                //  If the spec points to a 'special Window property', then we
-                //  don't resolve it but just return undefined.
-                if (TP.sys.$windowglobals.hasKey(spec)) {
+                $$inst = execContext.eval(spec);
+
+                //  If the spec points to a 'special Window property' that is
+                //  *not* a Window reference itself (i.e. an iframe Window),
+                //  then we don't resolve it but just return undefined.
+                if (TP.sys.$windowglobals.hasKey(spec) &&
+                    !TP.isWindow($$inst)) {
                     return;
                 }
-                $$inst = execContext.eval(spec);
+
                 if (TP.notValid($$inst)) {
                     if (TP.regex.NS_QUALIFIED.test(spec)) {
                         $$inst = execContext.eval(
