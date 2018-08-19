@@ -39,7 +39,10 @@ TP.hc(
 
         //  Just setting the className to its own value causes the flush to
         //  happen. I guess it's just if the slot is touched.
+
+        /* eslint-disable no-self-assign */
         anElement.className = anElement.className;
+        /* eslint-enable no-self-assign */
 
         return;
     },
