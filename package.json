@@ -98,7 +98,7 @@
     "readline-sync": "^1.4.9",
     "resize-observer-polyfill": "https://github.com/TechnicalPursuit/resize-observer-polyfill/tarball/master",
     "safe-eval": "^0.3.0",
-    "semver": "^5.5.0",
+    "semver": "^5.5.1",
     "shelljs": "https://github.com/TechnicalPursuit/shelljs/tarball/master",
     "shelljs-nodecli": "*",
     "sinon": "TechnicalPursuit/Sinon.JS#v1.12.2",
