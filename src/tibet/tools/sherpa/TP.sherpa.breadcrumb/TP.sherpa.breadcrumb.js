@@ -172,33 +172,6 @@ function(enterSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.breadcrumb.Inst.defineMethod('getKeyFunction',
-function() {
-
-    /**
-     * @method getKeyFunction
-     * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set.
-     * @description This Function should take a single argument, an individual
-     *     item from the receiver's data set, and return a value that will act
-     *     as that item's key in the overall data set. The default version
-     *     returns the item itself.
-     * @returns {Function} A Function that provides a key for the supplied data
-     *     item.
-     */
-
-    var keyFunc;
-
-    keyFunc =
-        function(d, i) {
-            return d + '__' + i;
-        };
-
-    return keyFunc;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.breadcrumb.Inst.defineMethod('getRootUpdateSelection',
 function(containerSelection) {
 
