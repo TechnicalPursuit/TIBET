@@ -311,8 +311,6 @@ function() {
             //  into our URI, triggers the right change notifications etc.
             this.setContent(resourceStr);
         }
-    } else {
-        return this.raise('TP.sig.InvalidNode');
     }
 
     return this;
