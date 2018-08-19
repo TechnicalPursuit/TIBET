@@ -225,7 +225,15 @@ function(aContentObject, aRequest) {
                 //  signal map.
                 handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
 
-                panelTPElem.refresh();
+                //  Grab the content element under the existing panel that we
+                //  found with that content key.
+                contentTPElem = panelTPElem.get('contentElement');
+
+                //  And its first content child.
+                firstContentChildTPElem = contentTPElem.getFirstChildElement();
+
+                //  Refresh the new panel's content's first content child.
+                firstContentChildTPElem.refresh();
             };
 
             handler.observe(panelTPElem, 'TP.sig.AttachComplete');
@@ -237,6 +245,8 @@ function(aContentObject, aRequest) {
         //  Grab the content element under the existing panel that we found with
         //  that content key.
         contentTPElem = panelTPElem.get('contentElement');
+
+        //  And its first content child.
         firstContentChildTPElem = contentTPElem.getFirstChildElement();
 
         skipSettingContent = false;
@@ -271,20 +281,20 @@ function(aContentObject, aRequest) {
         //  If we're not skipping setting the content, then we do so and refresh
         //  any data.
         if (!skipSettingContent) {
-            newContentTPElem =
-                panelTPElem.get('contentElement').setContent(aContentObject);
+            firstContentChildTPElem = contentTPElem.setContent(aContentObject);
 
             handler = function() {
 
                 handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
 
-                newContentTPElem.refresh();
+                firstContentChildTPElem.refresh();
             };
 
-            handler.observe(newContentTPElem, 'TP.sig.AttachComplete');
+            handler.observe(firstContentChildTPElem, 'TP.sig.AttachComplete');
         } else {
-            //  Otherwise, just refresh.
-            contentTPElem.refresh();
+            //  Otherwise, just refresh the content's existing first content
+            //  child.
+            firstContentChildTPElem.refresh();
         }
     }
 
