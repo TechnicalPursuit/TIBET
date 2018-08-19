@@ -6217,7 +6217,20 @@ function(aSignal) {
      * @returns {TP.core.RouteController} The receiver.
      */
 
-    this.setContentForRoute(aSignal.at('route'));
+     var newContentTPElem,
+         evt;
+
+    //  If this route defines content and a target, then set it.
+    newContentTPElem = this.setContentForRoute(aSignal.at('route'));
+
+    if (TP.isValid(newContentTPElem)) {
+        //  Send a custom DOM-level event to allow 3rd party libraries to know
+        //  that the router has transitioned to a new route that has been
+        //  finalized.
+        evt = newContentTPElem.getNativeDocument().createEvent('Event');
+        evt.initEvent('TIBETRouteFinalized', true, true);
+        newContentTPElem.getNativeNode().dispatchEvent(evt);
+    }
 
     return this;
 });
@@ -6377,13 +6390,6 @@ function(aRoute) {
             //  might see more than once.
             newTPElem = targetTPElem.setContent(
                                     content, TP.request('contentKey', route));
-
-            //  Send a custom DOM-level event to allow 3rd party libraries to
-            //  know that the router has transitioned to a new route that has
-            //  been finalized.
-            evt = targetTPElem.getNativeDocument().createEvent('Event');
-            evt.initEvent('TIBETRouteFinalized', true, true);
-            newTPElem.getNativeNode().dispatchEvent(evt);
         }
     }
 
