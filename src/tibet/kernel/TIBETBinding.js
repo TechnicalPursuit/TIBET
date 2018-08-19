@@ -2086,8 +2086,12 @@ function(wantsShallowScope) {
             });
 
     //  If there are shallow filter elements that occurred under the target
-    //  element, then we add them to the result.
+    //  element, then we add them to the result. Note that we filter out any
+    //  non-roots (since we won't want nested shallow filters appended here -
+    //  each filter root will find *all* of the bound nodes under itself,
+    //  including those in a nested filter).
     if (TP.notEmpty(ownShallowFilters)) {
+        ownShallowFilters = TP.nodeListFilterNonRoots(ownShallowFilters);
         boundElems = boundElems.concat(ownShallowFilters);
     }
 
@@ -3271,7 +3275,13 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 return false;
             });
 
-    nextElems = nextElems.concat(subscopes);
+    //  If we have subscopes, filter out any non-roots (since we won't want
+    //  nested subscopes appended here - each subscope root will find *all* of
+    //  the bound nodes under itself, including those in a nested subscope).
+    if (TP.notEmpty(subscopes)) {
+        subscopes = TP.nodeListFilterNonRoots(subscopes);
+        nextElems = nextElems.concat(subscopes);
+    }
 
     //  Iterate over all of those elements containing binding attributes and
     //  grab the attribute nodes that are in the TP.w3.Xmlns.BIND namespace.
