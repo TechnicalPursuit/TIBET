@@ -2029,9 +2029,19 @@ function(wantsShallowScope) {
                 }
 
                 for (k = 0; k < allFilters.length; k++) {
+                    //  If:
+                    //  -   We're not checking ourself as a filter
+                    //  -   The filter we're checking is actually contained in
+                    //      the element
+                    //  -   The iterating filter contains the target filter
+                    //  -   We're at the end of checking all of the filters
+                    //  then return false to filter out the target filter.
                     if (allFilters[k] !== aFilter &&
+                        elem.contains(allFilters[k]) &&
                         allFilters[k].contains(aFilter)) {
-                        return false;
+                            if (k === allFilters.length - 1) {
+                                return false;
+                            }
                     }
                 }
 
@@ -3215,9 +3225,19 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 }
 
                 for (k = 0; k < subscopes.length; k++) {
+                    //  If:
+                    //  -   We're not checking ourself as a subscope
+                    //  -   The subscope we're checking is actually contained in
+                    //      the element
+                    //  -   The iterating subscope contains the target subscope
+                    //  -   We're at the end of checking all of the subscopes
+                    //  then return false to filter out the target subscope.
                     if (subscopes[k] !== aSubscope &&
+                        elem.contains(subscopes[k]) &&
                         subscopes[k].contains(aSubscope)) {
-                        return false;
+                            if (k === subscopes.length - 1) {
+                                return false;
+                            }
                     }
                 }
 
