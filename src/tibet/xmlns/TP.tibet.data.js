@@ -374,15 +374,6 @@ function(aContentObject, aRequest) {
         resultType = String;
     }
 
-    //  Make sure that it's valid for its container. Note that we pass 'false'
-    //  as a second parameter here for content objects that do both trivial and
-    //  full facet checks on their data. We only want trival checks here (i.e.
-    //  is the XML inside of a TP.core.XMLContent really XML - same for JSON)
-    isValid = resultType.validate(aContentObject, false);
-    if (!isValid) {
-        return this.raise('TP.sig.InvalidValue');
-    }
-
     //  If the new resource result is a content object of some sort (highly
     //  likely) then we should initialize it with both the content String and
     //  the URI that it should be associated with. The content object type will
@@ -391,6 +382,15 @@ function(aContentObject, aRequest) {
         newResource = resultType.construct(aContentObject, namedURI);
     } else if (resultType === String) {
         newResource = TP.str(aContentObject);
+    }
+
+    //  Make sure that it's valid for its container. Note that we pass 'false'
+    //  as a second parameter here for content objects that do both trivial and
+    //  full facet checks on their data. We only want trival checks here (i.e.
+    //  is the XML inside of a TP.core.XMLContent really XML - same for JSON)
+    isValid = resultType.validate(newResource, false);
+    if (!isValid) {
+        return this.raise('TP.sig.InvalidValue');
     }
 
     //  If the named URI has existing data, then we signal
