@@ -6236,7 +6236,8 @@ function(aRoute) {
      *     name or template URI which defines the content to be set.
      * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
      *     to the current application route acquired from the URI Router.
-     * @returns {TP.core.RouteController} The receiver.
+     * @returns {TP.dom.ElementNode} The new content element, if one was
+           generated.
      */
 
     var route,
@@ -6280,7 +6281,7 @@ function(aRoute) {
             TP.warn('Unable to find route cfg info for: ' + route);
         }
 
-        return this;
+        return null;
     }
 
     //  Convert any value we find into JSON so we can access values.
@@ -6290,7 +6291,7 @@ function(aRoute) {
         if (TP.isEmpty(configInfo)) {
             this.raise('InvalidObject',
                 'Unable to build config data from entry: ' + config);
-            return this;
+            return null;
         }
     } else {
         configInfo = config;
@@ -6306,7 +6307,7 @@ function(aRoute) {
     content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
                             configInfo.at('content'));
     if (TP.isEmpty(content)) {
-        return this;
+        return null;
     }
 
     //  Grab the current UI canvas - we'll use this below to either obtain a
@@ -6325,7 +6326,7 @@ function(aRoute) {
         if (!TP.isKindOf(targetTPElem, 'TP.dom.ElementNode')) {
             this.raise('InvalidElement',
                         'Unable to find route target: ' + routeTarget);
-            return this;
+            return null;
         }
     }
 
@@ -6386,7 +6387,7 @@ function(aRoute) {
         }
     }
 
-    return this;
+    return newTPElem;
 });
 
 //  ========================================================================
