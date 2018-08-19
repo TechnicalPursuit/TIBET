@@ -590,7 +590,12 @@ Cmd.prototype.filterAssetList = function(list) {
 
 
 /**
- *
+ * Filters an asset list for unchanged files. Any files whose
+ * modified date is earlier than the last time lint was run
+ * or the various package/tool files driving the linter changed
+ * are removed from the list of files to be linted.
+ * @param {Array.<string>} list The asset list to be filtered.
+ * @returns {Array.<string>} The filtered list.
  */
 Cmd.prototype.filterUnchangedAssets = function(list) {
     var data,
@@ -652,6 +657,7 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
         if (data && data.recheck && data.recheck.indexOf(src) !== -1) {
             return true;
         }
+
         newer = CLI.isFileNewer(src, lastrun);
         if (!newer) {
             cmd.verbose(src + ' # filtered (unchanged)');
