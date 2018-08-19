@@ -167,16 +167,10 @@ Cmd.prototype.pkgOpts = null;
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {
-    var arg0,
-        parts,
+    var parts,
         cmd;
 
-    //  If we have an arg0 value (unqualified via flag) it should be the profile
-    //  value, which then overrides any package/config data.
-    arg0 = this.getArgument(0);
-    if (arg0) {
-        this.options.profile = arg0;
-    }
+    this.configureProfile();
 
     if (this.options.profile) {
         parts = this.options.profile.split('@');
@@ -290,6 +284,20 @@ Cmd.prototype.configurePackageOptions = function() {
     return this.pkgOpts;
 };
 
+/**
+ * Sets options.profile value using appropriate logic for the command.
+ */
+Cmd.prototype.configureProfile = function() {
+    var arg0;
+
+    //  If we have an arg0 value (unqualified via flag) it should be the profile
+    //  value, which then overrides any package/config data.
+    arg0 = this.getArgument(0);
+    //  If it doesn't look like a profile don't use it.
+    if (arg0 && /^[-_:@a-zA-Z]+$/.test(arg0)) {
+        this.options.profile = arg0;
+    }
+};
 
 /**
  * Top-level processing of the package to produce an asset list. For this type
