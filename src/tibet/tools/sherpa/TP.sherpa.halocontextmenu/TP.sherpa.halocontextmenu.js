@@ -95,9 +95,7 @@ function() {
      */
 
     var haloTarget,
-        theContent,
-
-        menuContentTPElem;
+        theContent;
 
     haloTarget = TP.byId('SherpaHalo', this.getNativeDocument()).get(
                                                     'currentTargetTPElem');
@@ -105,7 +103,7 @@ function() {
     if (TP.isValid(haloTarget)) {
 
         theContent = haloTarget.getContentForTool('contextMenu');
-        menuContentTPElem = this.get('menuContent').setContent(theContent);
+        this.get('menuContent').setContent(theContent);
     }
 
     //  Signal to observers that this control has rendered.

@@ -90,13 +90,12 @@ function() {
 
     var theContent,
 
-        contextMenuContentTagName,
-        menuContentTPElem;
+        contextMenuContentTagName;
 
     contextMenuContentTagName = this.getAttribute('contenttagname');
 
     theContent = TP.elem('<' + contextMenuContentTagName + '/>');
-    menuContentTPElem = this.get('menuContent').setContent(theContent);
+    this.get('menuContent').setContent(theContent);
 
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');

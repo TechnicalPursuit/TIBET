@@ -1509,7 +1509,7 @@ function(selection) {
 
         hasFocus,
 
-        thisarg;
+        thisref;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1526,7 +1526,7 @@ function(selection) {
     //  refocus.
     hasFocus = this.get('$wasFocused');
 
-    thisarg = this;
+    thisref = this;
 
     selection.each(
         function(d) {
@@ -1591,7 +1591,7 @@ function(selection) {
 
                 //  Flip the flag on the list to let it keep track that it was
                 //  focused.
-                thisarg.$set('$wasFocused', true, false);
+                thisref.$set('$wasFocused', true, false);
 
                 return this.callNextMethod();
             });
@@ -1608,7 +1608,7 @@ function(selection) {
 
                 //  Flip the flag on the list to let it keep track that it is
                 //  no longer focused.
-                thisarg.$set('$wasFocused', false, false);
+                thisref.$set('$wasFocused', false, false);
 
                 return this.callNextMethod();
             });
