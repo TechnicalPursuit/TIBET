@@ -87,7 +87,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'string': ['esconfig', 'esrules', 'esignore', 'styleconfig',
             'package', 'config', 'phase', 'filter', 'context'],
         'default': {
-            context: 'app',
             style: true,
             js: true,
             json: true,
@@ -197,6 +196,22 @@ Cmd.prototype.configureStylelintOptions = function() {
 
 
 /**
+ * Returns a freshly initialized "results" object for use by one or more
+ * linters.
+ */
+Cmd.prototype.constructResults = function() {
+    return {
+        linty: 0,
+        errors: 0,
+        warnings: 0,
+        checked: 0,
+        unchanged: 0,
+        filtered: 0,
+        files: 0
+    };
+};
+
+/**
  * Performs lint processing, verifying TIBET's xml configuration files
  * first, then any assets listed as part of the project in its manifest(s).
  * @returns {Number} A return code. Non-zero indicates an error.
@@ -213,6 +228,23 @@ Cmd.prototype.execute = function() {
     cmd = this;
 
     this.configurePackageOptions();
+
+    if (CLI.isEmpty(this.options.context)) {
+        if (CLI.inLibrary()) {
+            this.options.context = 'lib';
+        } else if (CLI.inProject()) {
+            this.options.context = 'app';
+        } else {
+            this.options.context = 'all';
+        }
+    }
+
+    //  Special case for a single '.' so it behaves like ESLint et. al.
+    if (this.options.filter === '.') {
+        this.options.filter = null;
+        this.options.scan = true;
+        this.options.force = true;
+    }
 
     //  If we have 'only' specified we should be setting all but one value for
     //  'type' to false.
@@ -243,12 +275,7 @@ Cmd.prototype.execute = function() {
         this.options[key.slice(2)] = true;
     }
 
-    result = {
-        linty: 0,
-        errors: 0,
-        warnings: 0,
-        files: 0
-    };
+    result = this.constructResults();
 
     // Build up the list of files to be processed either by scanning the
     // directory or by leveraging package@config data.
@@ -267,19 +294,18 @@ Cmd.prototype.execute = function() {
             return result.errors;
         } else {
             //  RESET result to avoid counting config files in final output.
-            result = {
-                linty: 0,
-                errors: 0,
-                warnings: 0,
-                files: 0
-            };
+            result = this.constructResults();
         }
 
         this.verbose('reading package list...');
         list = this.getPackageAssetList();
     }
 
+    result.files = list.length;
     list = this.filterAssetList(list);
+    result.filtered = result.files - list.length;
+    list = this.filterUnchangedAssets(list);
+    result.unchanged = result.files - result.filtered - list.length;
 
     // Once we have a list we need to pull it apart into lists we can pass to
     // each of the unique parsers. This is a bit more efficient than trying to
@@ -470,9 +496,6 @@ Cmd.prototype.filterAssetList = function(list) {
     var filter,
         pattern,
         prefix,
-        data,
-        lastpath,
-        lastrun,
         cmd;
 
     this.verbose('filtering asset list...');
@@ -492,7 +515,7 @@ Cmd.prototype.filterAssetList = function(list) {
     if (CLI.notEmpty(filter)) {
         //  Simple directory search requires a leading '.' to signify.
         if (filter.charAt(0) === '.') {
-            filter = path.join(process.cwd(), filter);
+            filter = filter === '.' ? process.cwd() : path.join(process.cwd(), filter);
         }
         pattern = CLI.stringAsRegExp(filter);
     }
@@ -505,26 +528,6 @@ Cmd.prototype.filterAssetList = function(list) {
     }
 
     cmd = this;
-
-    //  If we're not forcing lint we can skip files not changed since the last
-    //  run...if we know when the last run occurred.
-    if (!this.options.force) {
-        lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
-        if (CLI.sh.test('-e', lastpath)) {
-            data = CLI.sh.cat(lastpath);
-            if (data) {
-                try {
-                    data = JSON.parse(data);
-                    lastrun = data.lastrun;
-                } catch (e) {
-                    CLI.error('Unable to parse last run info: ' + e.message);
-                    lastrun = 0;
-                }
-            }
-        }
-        lastrun = lastrun === void 0 ? 0 : lastrun;
-        lastrun = new Date(lastrun);
-    }
 
     return list.filter(function(item) {
         var src;
@@ -546,12 +549,24 @@ Cmd.prototype.filterAssetList = function(list) {
         //  NEVER lint the build directory content. It's almost guaranteed to
         //  have lint due to compression tools etc.
         if (CLI.getVirtualPath(src).indexOf('app_build') !== -1) {
+            cmd.verbose(src + ' # filtered (build)');
+            return false;
+        }
+
+        if (CLI.isEmpty(path.extname(src))) {
+            cmd.verbose(src + ' # filtered (no extension)');
             return false;
         }
 
         src = CLI.expandPath(src);
         if (CLI.notEmpty(prefix) && src.indexOf(prefix) !== 0) {
             cmd.verbose(src + ' # filtered (context)');
+            return false;
+        }
+
+        //  Never lint the last run data file... it's always fresh.
+        if (src === CLI.expandPath(Cmd.LAST_RUN_DATA)) {
+            cmd.verbose(src + ' # filtered (internal)');
             return false;
         }
 
@@ -569,19 +584,79 @@ Cmd.prototype.filterAssetList = function(list) {
                 }
             }
         }
+        return true;
+    });
+};
 
-        //  Check modified times if appropriate
-        if (!cmd.options.force) {
-            //  If the file didn't pass cleanly on the last pass we always
-            //  recheck. Yes, the source may not have changed, but this is an
-            //  easy way to ensure each run reminds you what's broken/linty.
-            if (data && data.recheck && data.recheck.indexOf(src) !== -1) {
-                return true;
+
+/**
+ *
+ */
+Cmd.prototype.filterUnchangedAssets = function(list) {
+    var data,
+        lastpath,
+        lastrun,
+        cmd;
+
+    if (this.options.force) {
+        return list;
+    }
+
+    this.verbose('filtering unchanged assets...');
+
+    if (!Array.isArray(list) || list.length < 1) {
+        return [];
+    }
+
+    cmd = this;
+
+    //  If we're not forcing lint we can skip files not changed since the last
+    //  run...if we know when the last run occurred.
+    lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
+    if (CLI.sh.test('-e', lastpath)) {
+        data = CLI.sh.cat(lastpath);
+        if (data) {
+            try {
+                data = JSON.parse(data);
+                lastrun = data.lastrun;
+            } catch (e) {
+                CLI.error('Unable to parse last run info: ' + e.message);
+                lastrun = 0;
             }
-            return CLI.isFileNewer(src, lastrun);
+        }
+    }
+    lastrun = lastrun === void 0 ? 0 : lastrun;
+    lastrun = new Date(lastrun);
+
+    return list.filter(function(item) {
+        var src,
+            newer;
+
+        if (cmd.options.nodes) {
+            // Depending on the nature of the resource there are two
+            // canonical attributes likely to point to the source file.
+            src = item.getAttribute('src') || item.getAttribute('href');
+        } else {
+            src = item;
         }
 
-        return true;
+        if (CLI.isEmpty(src)) {
+            return false;
+        }
+
+        src = CLI.expandPath(src);
+
+        //  If the file didn't pass cleanly on the last pass we always
+        //  recheck. Yes, the source may not have changed, but this is an
+        //  easy way to ensure each run reminds you what's broken/linty.
+        if (data && data.recheck && data.recheck.indexOf(src) !== -1) {
+            return true;
+        }
+        newer = CLI.isFileNewer(src, lastrun);
+        if (!newer) {
+            cmd.verbose(src + ' # filtered (unchanged)');
+        }
+        return newer;
     });
 };
 
@@ -616,9 +691,13 @@ Cmd.prototype.getScannedAssetList = function() {
     //  user properly quoted it to get it past shell expansion.
     root = this.options._[1];
     if (CLI.notEmpty(root)) {
-        dir = CLI.expandPath(root);
-        if (dir.charAt(0) !== '/') {
-            dir = path.join(process.cwd(), root);
+        if (root === '.') {
+            dir = process.cwd();
+        } else {
+            dir = CLI.expandPath(root);
+            if (dir.charAt(0) !== '/') {
+                dir = path.join(process.cwd(), root);
+            }
         }
     }
     this.verbose('scanning ' + dir + '...');
@@ -903,21 +982,23 @@ Cmd.prototype.summarize = function(results) {
         lastpath;
 
     if (!this.options.list) {
-        msg = '' + results.errors + ' errors, ' +
-            results.warnings + ' warnings in ' +
-            results.linty + ' of ' +
-            results.files + ' files.';
+        this.log('');
+        msg = '' + this.colorize(
+            'checked ' + results.checked + ' of ' +
+            results.files + ' total files (' +
+            results.filtered + ' filtered, ' +
+            results.unchanged + ' unchanged)',
+        'dim');
+        this.log(msg);
 
-        if (results.errors !== 0) {
-            this.error('');
-            this.error(msg);
-        } else if (results.warnings !== 0) {
-            this.warn('');
-            this.warn(msg);
-        } else {
-            this.log('');
-            this.log(msg);
-        }
+        msg = '' +
+            this.colorize(results.errors + ' errors', 'error') +
+            ' and ' +
+            this.colorize(results.warnings + ' warnings', 'warn') +
+            ' in ' +
+            results.linty + ' files.';
+
+        this.log(msg);
     }
 
     results.lastrun = Date.now();
@@ -959,6 +1040,9 @@ Cmd.prototype.validateConfigFiles = function() {
         // The options._ object holds non-qualified parameters. [0] is the
         // command name. [1] should be the "filter" if any.
         filter = this.options._[1];
+        if (filter === '.') {
+            filter = '';
+        }
     }
 
     if (CLI.notEmpty(filter)) {
@@ -996,16 +1080,11 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         jsonFiles;
 
     cmd = this;
-    res = results || {
-            linty: 0,
-            errors: 0,
-            warnings: 0,
-            files: 0
-        };
+    res = results || this.constructResults();
     res.recheck = res.recheck || [];
 
     jsonFiles = Array.isArray(files) ? files : [files];
-    res.files += jsonFiles.length;
+    res.checked += jsonFiles.length;
 
     jsonFiles.some(
         function(file) {
@@ -1069,16 +1148,11 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     opts = this.configureEslintOptions();
     engine = new eslint.CLIEngine(opts);
 
-    res = results || {
-            linty: 0,
-            errors: 0,
-            warnings: 0,
-            files: 0
-        };
+    res = results || this.constructResults();
     res.recheck = res.recheck || [];
 
     srcFiles = Array.isArray(files) ? files : [files];
-    res.files += srcFiles.length;
+    res.checked += srcFiles.length;
 
     try {
         srcFiles.some(
@@ -1144,16 +1218,11 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
     stylelint = require('stylelint');
 
     cmd = this;
-    res = results || {
-            linty: 0,
-            errors: 0,
-            warnings: 0,
-            files: 0
-        };
+    res = results || this.constructResults();
     res.recheck = res.recheck || [];
 
     styleFiles = Array.isArray(files) ? files : [files];
-    res.files += files.length;
+    res.checked += styleFiles.length;
 
     //  Configure the rules to be leveraged. This is a bit of a mess so
     //  we've put it in a separate function...
@@ -1234,15 +1303,11 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
         currentText;
 
     cmd = this;
-    res = results || {
-            linty: 0,
-            errors: 0,
-            warnings: 0,
-            files: 0
-        };
+    res = results || this.constructResults();
 
     xmlFiles = Array.isArray(files) ? files : [files];
-    res.files += xmlFiles.length;
+    res.checked += xmlFiles.length;
+
     lib = CLI.inLibrary();
 
     parser = new dom.DOMParser({
