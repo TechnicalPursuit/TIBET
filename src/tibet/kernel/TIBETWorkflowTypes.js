@@ -6956,8 +6956,6 @@ function(aSignal) {
         route,
         targets;
 
-    TP.info('Application RouteFinalize: ' + aSignal.at('route'));
-
     //  Grab the current state machine
     machine = this.getStateMachine();
 
