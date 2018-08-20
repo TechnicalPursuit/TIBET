@@ -85,8 +85,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
-console.log(CLI.beautify(Cmd.prototype.PARSE_OPTIONS));
-
 /**
  * The timeout used for command invocation. Processing TSH requires startup time
  * etc. so default to 15 seconds here.
@@ -306,7 +304,7 @@ Cmd.prototype.execute = function() {
         //  Once TIBET boots run whatever TSH command we're being
         //  asked to execute for this process.
         if (!cmd.options.silent) {
-            console.log('TIBET started in ' + (end - start) + 'ms', 'dim');
+            cmd.log('TIBET started in ' + (end - start) + 'ms', 'dim');
         }
 
         return puppetPage.mainFrame().executionContext();
