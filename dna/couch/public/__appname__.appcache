@@ -173,7 +173,7 @@ styles/app.css
 
 TIBET-INF/cfg/main.xml
 TIBET-INF/cfg/development.xml
-TIBET-INF/cfg/phantom.xml
+TIBET-INF/cfg/headless.xml
 TIBET-INF/cfg/production.xml
 TIBET-INF/cfg/{{appname}}.xml
 TIBET-INF/cfg/tibet.xml

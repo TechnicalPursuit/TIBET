@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="headless" default="headless" basedir="~lib_etc">
+    name="headless" default="base" basedir="~lib_etc">
 
 <config id="properties" if="boot.phase_one">
     <property name="boot.inlined" value="false"/>
@@ -10,7 +10,7 @@
     <property name="uri.watch_remote_changes" value="false"/>
 </config>
 
-<config id="headless">
+<config id="base">
     <config ref="properties"/>
     <package src="~lib_cfg/TIBET.xml" config="testing"/>
 </config>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="phantom" default="phantom" basedir="~lib">
+    name="headless" default="base" basedir="~lib">
 
 
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
@@ -15,7 +15,7 @@
     <property name="uri.watch_remote_changes" value="false"/>
 </config>
 
-<config id="phantom">
+<config id="base">
     <config ref="properties"/>
     <package src="~app_cfg/main.xml" config="developer"/>
 </config>
