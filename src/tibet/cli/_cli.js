@@ -160,7 +160,7 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'initpath', 'completion', 'tds-cli', 'force'],
+        'initpath', 'completion', 'tds-cli', 'force', 'silent'],
     'string': ['app_root', 'lib_root', 'level'],
     'default': {
         color: true,

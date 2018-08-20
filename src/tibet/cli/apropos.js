@@ -5,8 +5,8 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet apropos' command. Runs phantomjs via TIBET's phantomtsh
- *     script runner. The script run is ':apropos' with optional arguments.
+ * @overview The 'tibet apropos' command. Runs the client-side ':apropos'
+ *     command via TIBET's headless tsh processing.
  */
 //  ========================================================================
 
@@ -45,12 +45,6 @@ Cmd.prototype = new Cmd.Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
-
-/**
- * The default path to the TIBET-specific phantomjs script runner.
- * @type {String}
- */
-Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
 
 /**
  * The command name for this type.

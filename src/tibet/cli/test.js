@@ -5,8 +5,8 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet test' command. Runs phantomjs via TIBET's phantomtsh
- *     script runner. The script run is typically the TSH script ':test' which
+ * @overview The 'tibet test' command. Runs TIBET tests via the 'tibet tsh'
+ *     command. The script run is typically the TSH script ':test' which
  *     will run the tsh:test command tag to invoke all test suites.
  */
 //  ========================================================================
@@ -49,12 +49,6 @@ Cmd.prototype = new Cmd.Parent();
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
-
-/**
- * The default path to the TIBET-specific phantomjs test runner.
- * @type {string}
- */
-Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
 
 /**
  * The name of the Karma test runner command used to verify Karma.
@@ -116,7 +110,7 @@ Cmd.prototype.execute = function() {
 
     if (this.options.karma) {
         //  Not really checking as much as calling when available and falling
-        //  through when not so we default back down to phantomjs.
+        //  through when not so we default back down to a headless option.
         karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
         if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
             return this.executeViaKarma();
@@ -124,7 +118,7 @@ Cmd.prototype.execute = function() {
     }
 
     //  Defer back to parent version which will trigger normal invocation of
-    //  things like our finalizeArglist/processScript etc. to run phantomjs.
+    //  things like our finalizeArglist/processScript etc. to run headless.
     Cmd.Parent.prototype.execute.call(this);
 
     return 0;
@@ -281,7 +275,7 @@ Cmd.prototype.getCompletionOptions = function() {
  */
 Cmd.prototype.getBootProfile = function() {
     if (this.options.selftest) {
-        return '~lib_etc/phantom/phantom@selftest';
+        return '~lib_etc/headless/headless@selftest';
     }
 
     return Cmd.Parent.prototype.getBootProfile.call(this);
@@ -349,8 +343,7 @@ Cmd.prototype.getScript = function() {
 
 
 /**
- * Verify any command prerequisites are in place. In this case phantomjs must be
- * a binary we can locate.
+ * Verify any command prerequisites are in place.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.prereqs = function() {
@@ -365,7 +358,7 @@ Cmd.prototype.prereqs = function() {
         this.warn('karma not configured/installed for project.');
     }
 
-    //  Parent will check phantomjs availability.
+    //  Parent will check other prereq availability.
     return Cmd.Parent.prototype.prereqs.call(this);
 };
 

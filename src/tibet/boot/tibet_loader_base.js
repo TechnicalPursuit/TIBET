@@ -7756,21 +7756,24 @@ TP.boot.$getAppHead = function() {
     //  not expose a tibet_pub reference. We have to add that in manually.
     if (TP.sys.cfg('boot.context') === 'headless') {
 
-        //  try to locate node_modules on the path...app head should be the
-        //  container of that directory
-        index = path.indexOf('/node_modules');
+        index = path.indexOf(TP.sys.cfg('boot.libtest', '/etc/headless'));
         if (index !== -1) {
             head = path.slice(0, index);
+            TP.boot.$$apphead = head;
+// console.log('computed TP.boot.$$apphead: ' + TP.boot.$$apphead);
+            return TP.boot.$$apphead;
         } else {
-            //  Try to use offset.
-            head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.headless_offset'));
-            if (head.charAt(head.length - 1) === '/') {
-                head = head.slice(0, -1);
+            index = path.indexOf('/node_modules');
+            if (index !== -1) {
+                head = path.slice(0, index);
+                TP.boot.$$apphead = head;
+// console.log('computed TP.boot.$$apphead: ' + TP.boot.$$apphead);
+                return TP.boot.$$apphead;
             }
         }
-        TP.boot.$$apphead = head;
-// console.log('computed TP.boot.$$apphead: ' + TP.boot.$$apphead);
-        return TP.boot.$$apphead;
+
+        //  Fall through for other cases...headless launches are also file:
+        //  launches so we'll rely on the logic below for remainder.
     }
 
     //  For file: launches the public directory or the node_modules directory
@@ -7836,6 +7839,7 @@ TP.boot.$getAppRoot = function() {
         pub,
         path,
         params,
+        index,
         keys,
         len,
         i,
@@ -7855,8 +7859,7 @@ TP.boot.$getAppRoot = function() {
     //  Compute from the window location, normally a reference to an index.html
     //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
-/*
- */
+
     //  Headless launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
@@ -7869,7 +7872,7 @@ TP.boot.$getAppRoot = function() {
             TP.boot.$$approot = TP.boot.$uriCollapsePath(
                 TP.boot.$uriJoinPaths(TP.boot.$$apphead,
                     params['path.app_root']));
-// console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
+// console.log('supplied TP.boot.$$approot: ' + TP.boot.$$approot);
             return TP.boot.$$approot;
         }
 
@@ -7878,16 +7881,29 @@ TP.boot.$getAppRoot = function() {
                 TP.sys.cfg('boot.karma_root'),
                 TP.sys.getcfg('boot.tibet_pub'));
         } else {
-            pub = TP.sys.getcfg('boot.tibet_pub');
+            index = path.indexOf(TP.sys.cfg('boot.libtest', '/etc/headless'));
+            if (index !== -1) {
+                pub = '';
+            } else {
+                index = path.indexOf('/node_modules');
+                if (index !== -1) {
+                    pub = '';
+                }
+            }
+            pub = TP.boot.$notValid(pub) ? TP.sys.getcfg('boot.tibet_pub') :
+                pub;
         }
 
+        if (!TP.boot.$$apphead) {
+            TP.boot.$getAppHead();
+        }
+// console.log('current TP.boot.$$apphead: ' + TP.boot.$$apphead);
         TP.boot.$$approot = TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
-// console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
+// console.log('computed headless TP.boot.$$approot: ' + TP.boot.$$approot);
         return TP.boot.$$approot;
     }
-/*
-*/
+
     //  Remaining path processing works with just the base path.
     path = path.split(/[#?]/)[0];
 
@@ -7903,7 +7919,7 @@ TP.boot.$getAppRoot = function() {
             if (path.indexOf(key) !== -1) {
                 TP.boot.$$approot = path.slice(0,
                     path.indexOf(key) + key.length);
-// console.log('computed TP.boot.$$approot: ' + TP.boot.$$approot);
+// console.log('adjusted file: TP.boot.$$approot: ' + TP.boot.$$approot);
                 return TP.boot.$$approot;
             }
         }
@@ -8299,10 +8315,14 @@ TP.boot.$configureBootstrap = function() {
         return;
     }
 
+// console.log('~app: ' + TP.boot.$uriExpandPath('~app'));
+
     file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('boot.tibet_file'));
+// console.log('file before: ' + file);
     logpath = TP.boot.$uriInTIBETFormat(file);
 
     file = TP.boot.$uriExpandPath(file);
+// console.log('file after: ' + file);
 
     try {
         TP.boot.$stdout('Loading TIBET project file: ' + logpath, TP.DEBUG);

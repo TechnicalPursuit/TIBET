@@ -6,27 +6,25 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview A base command type which runs TIBET shell within the context of
- *     the phantomtsh script runner. The script to run can be provided as a
- *     quoted string or as the value for the command argument --script. All
- *     remaining arguments are processed and passed to phantomtsh.js for use.
+ *     a headless TIBET environment. The script to run can be provided as a
+ *     quoted string or as the value for the command argument --script.
  */
 //  ========================================================================
 
-/* eslint indent:0, consistent-this:0 */
+/* eslint indent:0, consistent-this:0, no-process-exit: 0, no-console: 0 */
 
 (function() {
 
 'use strict';
 
 var CLI,
-    sh,
-    path,
-    Cmd;
-
+    Cmd,
+    Promise,
+    puppeteer;
 
 CLI = require('./_cli');
-sh = require('shelljs');
-path = require('path');
+puppeteer = require('puppeteer');
+Promise = require('bluebird');
 
 
 //  ---
@@ -52,24 +50,16 @@ Cmd.prototype = new Cmd.Parent();
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 /**
- * The default path to the TIBET-specific phantomjs TSH script runner.
- * @type {String}
- */
-Cmd.DEFAULT_RUNNER = '~lib_etc/phantom/phantomtsh.js';
-
-/**
  * The command name for this type.
  * @type {string}
  */
 Cmd.NAME = 'tsh';
 
+
 /**
- * The path to the *TIBET* version of phantomjs. We make sure to use this to
- * avoid issues with having multiple versions of phantomjs installed on a
- * particular system.
- * @type {String}
+ * Standard value output by TSH to say 'no result/output'.
  */
-Cmd.PHANTOM_PATH = 'tibet/node_modules/phantomjs-prebuilt/bin/phantomjs';
+Cmd.NO_VALUE = '__TSH__NO_VALUE__TSH__';
 
 //  ---
 //  Instance Attributes
@@ -77,8 +67,7 @@ Cmd.PHANTOM_PATH = 'tibet/node_modules/phantomjs-prebuilt/bin/phantomjs';
 
 /**
  * Command argument parsing options. Note that most of these are based on the
- * values suitable for the phantomtsh.js script so they can be parsed properly
- * for passing to that routine.
+ * values suitable for the headless environment so they can be parsed properly.
  * @type {Object}
  */
 
@@ -96,6 +85,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
+console.log(CLI.beautify(Cmd.prototype.PARSE_OPTIONS));
+
 /**
  * The timeout used for command invocation. Processing TSH requires startup time
  * etc. so default to 15 seconds here.
@@ -107,52 +98,19 @@ Cmd.prototype.TIMEOUT = 15000;
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tsh <script> [<phantomtsh_args>]';
+Cmd.prototype.USAGE = 'tibet tsh <script> [<headless_args>]';
 
 //  ---
 //  Instance Methods
 //  ---
 
 /**
- * Perform phantom startup announcement as appropriate for the (sub)command.
+ * Perform startup announcement as appropriate for the (sub)command.
  */
 Cmd.prototype.announce = function() {
 
-    var port,
-        str;
-
-    if (CLI.isValid(port = this.options['remote-debug-port'])) {
-
-        str =
-        'You\'ve configured TIBET to run using a remote debugger.\n' +
-        'To begin a debugging session, follow these steps:\n\n' +
-
-        '1. Navigate to this url using a browser:\n\n' +
-            'http://localhost:' +
-            port +
-            '/webkit/inspector/inspector.html?page=1\n\n' +
-
-        '2. Open the console by clicking the button in the lower\n' +
-        'left corner and evaluate the following source code: \n\n' +
-        '__run()\n\n' +
-        'TIBET will then load and pause in the debugger.\n\n' +
-
-        '3. Open a *second* browser window or tab and navigate to this\n' +
-        'url:\n\n' +
-            'http://localhost:' +
-            port +
-            '/webkit/inspector/inspector.html?page=2\n\n' +
-
-        '4. Return to the *first* browser window or tab and click the\n' +
-        '"Run" button (an arrow in the upper right hand corner)\n\n' +
-
-        '5. Return to the *second* browser window or tab. TIBET will\n' +
-        'be paused, ready for you to set breakpoints, etc.\n\n' +
-
-        '6. Set your breakpoints, etc. and then click the "Run" button\n' +
-        'in this browser window or tab.\n\n';
-
-        this.info(str);
+    if (!this.options.silent) {
+        this.log('launching headless TIBET...', 'dim');
     }
 
     return;
@@ -163,25 +121,16 @@ Cmd.prototype.announce = function() {
  * Perform the actual command processing logic.
  */
 Cmd.prototype.execute = function() {
-
-    var proc,           // The child_process module.
-        child,          // The spawned child process.
-        tshpath,        // Path to the TIBET Shell runner script.
-        cmd,            // Local binding variable.
-        script,         // The command script to run.
-        arglist,        // The argument list to pass to phantomjs.
-        pathToPhantom;  // The path to the PhantomJS executable.
-
-    proc = require('child_process');
-
-    cmd = this;
-
-    // Verify we can find the shell runner script.
-    tshpath = CLI.expandPath(Cmd.DEFAULT_RUNNER);
-    if (!sh.test('-e', tshpath)) {
-        this.error('Cannot find runner at: ' + tshpath);
-        return 1;
-    }
+    var ignoreChromeOutput,
+        puppetBrowser,
+        puppetPage,
+        start,
+        end,
+        cmd,
+        active,
+        profile,
+        script,
+        arglist;
 
     //  Without a script we can't run so verify that we got something useful.
     script = this.getScript();
@@ -209,15 +158,12 @@ Cmd.prototype.execute = function() {
         return 0;
     }
 
-    //  Tell phantomjs which specific boot profile to use. We use a separate
+    //  Determine which specific boot profile to use. We use a separate
     //  routine for this so we can check the prefix/value and avoid pushing a
     //  profile more than once into the argument list.
-    this.finalizeBootProfile(arglist);
+    profile = this.finalizeBootProfile(arglist);
 
-    // Push the path to our script runner onto the front so our command line is
-    // complete.
-    arglist.unshift(tshpath);
-
+/*
     // Push an additional debug flag specific to phantom if set.
     if (this.options['phantom-debug']) {
         arglist.unshift(true);
@@ -228,101 +174,256 @@ Cmd.prototype.execute = function() {
         arglist.unshift('--remote-debugger-port=' +
                         this.options['remote-debug-port']);
     }
+*/
 
-    //  Need to tell phantomjs to be ok with more latency in command
-    //  output...esp for things like resource processing.
+    //  Need to be ok with more latency in command output...esp for things like
+    //  resource processing.
     this.finalizeTimeout(arglist);
 
-    // Push root path values since Phantom can't properly determine that based
+    // Push root path values since headless can't properly determine that based
     // on where it loads (app vs. lib, tibet_pub or not, etc).
     arglist.push('--app-head=\'' + CLI.expandPath('~') + '\'');
     arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
     arglist.push('--lib-root=\'' + CLI.expandPath('~lib') + '\'');
 
-    this.debug('phantomjs ' + arglist.join(' '));
+    // this.debug('headless ' + arglist.join(' '));
 
     this.announce();
 
+    /*
+     * Helper to remove Chrome-initiated messages we don't need to see.
+     */
+    ignoreChromeOutput = function(text) {
+        return /Synchronous XMLHttpRequest on the main thread/i.test(text);
+    };
 
-    // Run the script via phantomjs which should load/execute in a TIBET client
-    // context for us.
+    cmd = this;
 
-    if (sh.test('-e', Cmd.PHANTOM_PATH)) {
-        pathToPhantom = Cmd.PHANTOM_PATH;
-    } else {
-        pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
-    }
+    puppeteer.launch({
+        //  Let us access file urls so we don't have to launch a server.
+        args: ['--disable-web-security', '--allow-file-access-from-files']
 
-    if (!sh.test('-e', pathToPhantom)) {
-        this.error('Cannot find PhantomJS at: ' + pathToPhantom);
-        return 0;
-    }
+        /*
+        devtools: true,         //  For debugging
+        headless: false,        //  For debugging
+        slowMo: true            //  For debugging
+        */
 
-    child = proc.spawn(pathToPhantom, arglist);
+    }).then(function(browser) {
 
-    child.stdout.on('data', function(data) {
-        var msg;
+        puppetBrowser = browser;
+        return browser.newPage();
 
-        if (CLI.isValid(data)) {
+    }).then(function(page) {
 
-            // Copy and remove newline.
-            msg = ('' + data).slice(0, -1).toString('utf-8');
+        puppetPage = page;
 
-            if (/SyntaxError: Parse error/.test(msg)) {
-                // Bug in phantom script itself most likely.
-                cmd.error(msg + ' in ' + tshpath);
+        page.on('close', (evt) => {
+            process.exit(0);
+        });
 
-                /* eslint-disable no-process-exit */
-                process.exit(1);
-                /* eslint-enable no-process-exit */
+        page.on('error', (err) => {
+            cmd.stderr(err);
+            process.exit(1);
+        });
+
+        page.on('pageerror', (err) => {
+            cmd.stderr(err);
+            process.exit(1);
+        });
+
+        page.on('console', (msg) => {
+
+            //  Strip browser messages we don't initiate.
+            if (ignoreChromeOutput(msg.text())) {
+                return;
             }
 
-            cmd.stdout(msg);
-        }
-    });
+            if (!active && !cmd.options.verbose) {
+                return;
+            }
 
-    child.stderr.on('data', function(data) {
-        var msg;
+            switch (msg.type()) {
+                case 'error':
+                    cmd.stderr(msg);
+                    break;
+                default:
+                    cmd.stdout(msg);
+                    break;
+            }
+        });
 
-        if (CLI.notValid(data)) {
-            msg = 'Unspecified error occurred.';
+        return puppetBrowser.userAgent();
+
+    }).then(function(agent) {
+        var fullpath;
+
+        //  You can launch a file path as long as you set the right flags
+        //  for Chrome to avoid issues with cross-origin security glitches.
+        if (CLI.inLibrary()) {
+            fullpath = 'file:' +
+                CLI.expandPath('~lib_etc/headless/headlesstsh.xhtml') +
+                '#?boot.profile=\'' + profile + '\'';
         } else {
-            // Copy and remove newline.
-            msg = ('' + data).slice(0, -1).toString('utf-8');
+            fullpath = 'file:' + CLI.expandPath('~app/index.html') +
+                '#?boot.profile=\'' + profile + '\'';
         }
 
-        // Some leveraged module likes to write error output with empty lines.
-        // Remove those so we can control the output form better.
-        if (msg && typeof msg.trim === 'function' && msg.trim().length === 0) {
-            return;
+        //  NOTE: this value must match the value found in tibet_cfg.js
+        //  for the boot system to properly recognize headless context.
+        puppetPage.setUserAgent(agent + ' Puppeteer');
+
+        start = new Date();
+
+        return puppetPage.goto(fullpath);
+
+    }).then(function(result) {
+
+        //  Once the page loads TIBET will start to load. We need to
+        //  wait for it to finish before we continue.
+        return puppetPage.waitForFunction(() => {
+
+            //  If $$stop isn't falsey it's going to have an error in
+            //  it. Capture and exit.
+            if (TP && TP.boot && TP.boot.$$stop) {
+                throw new Error(TP.boot.$$stop);
+            }
+
+            if (TP && TP.sys && TP.sys.hasStarted) {
+                return TP.sys.hasStarted();
+            }
+
+            return false;
+        }, {
+            polling: 250
+        });
+
+    }).then(() => {
+
+        active = true;
+        end = new Date();
+
+        //  Once TIBET boots run whatever TSH command we're being
+        //  asked to execute for this process.
+        if (!cmd.options.silent) {
+            console.log('TIBET started in ' + (end - start) + 'ms', 'dim');
         }
 
-        // A lot of errors will include what appears to be a common 'header'
-        // output message from events.js:72 etc. which provides no useful
-        // data but clogs up the output. Filter those messages.
-        if (/throw er;/.test(msg)) {
-            return;
-        }
+        return puppetPage.mainFrame().executionContext();
 
-        cmd.stderr(msg);
-    });
+    }).then((context) => {
 
-    child.on('error', function(err) {
+        var input,
+            shouldPause;
+
+        input = cmd.options.script;
+        shouldPause = cmd.options.pause;
+
+        return context.evaluate((tshInput, pauseBeforeExec) => {
+
+            return new Promise(function(resolve, reject) {
+                var handler;
+
+                handler = function(aSignal, stdioResults) {
+                    var result,
+                        found,
+                        results,
+                        str;
+
+                    //  Normalize the result data array. We rely on an array of
+                    //  results so that buffered output can be processed.
+                    if (TP.isValid(stdioResults)) {
+                        if (TP.isArray(stdioResults)) {
+                            results = stdioResults;
+                        } else {
+                            //  Objects in the stdioResults array are supposed
+                            //  to be simple pojos with meta/data keys.
+                            if (TP.notValid(stdioResults.meta)) {
+                                results = [{
+                                    meta: 'stdout',
+                                    data: TP.json(stdioResults)
+                                }];
+                            } else {
+                                results = [stdioResults];
+                            }
+                        }
+                    } else {
+                        results = [];
+                    }
+
+                    //  If we have signal data and it's not already represented
+                    //  in the result array add it before getting to the output
+                    //  sequence.
+                    if (TP.isValid(aSignal)) {
+                        result = aSignal.getResult();
+                        found = results.some(function(item) {
+                            return item.data === result;
+                        });
+                        if (!found) {
+                            results.push({
+                                meta: 'stdout',
+                                data: str
+                            });
+                        }
+                    }
+
+                    //  Normalize all data slots in result set to be string form.
+                    results = results.map(function(item) {
+                        var data;
+
+                        try {
+                            if (TP.isString(item.data)) {
+                                data = item.data;
+                            } else {
+                                data = JSON.stringify(item.data);
+                            }
+                        } catch (e) {
+                            try {
+                                data = TP.str(item.data);
+                            } catch (e2) {
+                                data = item.data;
+                            }
+                        }
+
+                        if (TP.notValid(data)) {
+                            data = TP.boot.$stringify(item.data);
+                        }
+
+                        return {
+                            meta: item.meta,
+                            data: data
+                        };
+                    });
+
+                    resolve(results);
+                };
+
+                if (pauseBeforeExec) {
+                    /* eslint-disable no-debugger */
+                    debugger;
+                    /* eslint-enable no-debugger */
+                }
+
+                TP.shellExec(TP.hc(
+                    'cmdSrc', tshInput,         // the TSH input to run
+                    'cmdEcho', false,           // don't echo the request
+                    'cmdHistory', false,        // don't create a history entry
+                    'cmdSilent', false,         // report output so we can capture it
+                    'onsuccess', handler,       // success handler (same handler)
+                    'onfail', handler));        // failure handler (same handler)
+            });
+        }, input, shouldPause);
+
+    }).then((results) => {
+
+        cmd.stdout(results);
+        cmd.close(0, puppetBrowser);
+
+    }).catch((err) => {
+
         cmd.stderr(err);
+        cmd.close(1, puppetBrowser);
     });
-
-    child.on('exit', function(code) {
-        var msg;
-
-        if (code !== 0) {
-            msg = 'Execution stopped with status: ' + code;
-            cmd.error(msg);
-        }
-
-        cmd.close(code);
-    });
-
-    return 0;
 };
 
 
@@ -345,28 +446,39 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 
 /**
  * Finalize the --boot.profile argument for the command. This requires a search
- * of the current argument list to be sure we don't push a boot profile more
- * than once into the argumnt list.
+ * of the current argument list. We want to use whatever may have been provided
+ * on the command line before we default to some other value.
  */
 Cmd.prototype.finalizeBootProfile = function(arglist) {
-    var found;
+    var found,
+        ndx,
+        profile;
 
-    found = arglist.some(function(item) {
+    found = arglist.some(function(item, index) {
         if (typeof item === 'string') {
             if (item === '--boot.profile' ||
                     item.indexOf('--boot.profile=') === 0) {
+                ndx = index;
                 return true;
             }
         }
-
         return false;
     });
 
-    if (!found) {
-        arglist.push('--boot.profile=' + this.getBootProfile());
+    if (found) {
+        profile = arglist[ndx];
+        if (profile === '--boot.profile') {
+            profile = arglist[ndx + 1];
+            arglist.splice(ndx, 2);
+        } else {
+            profile = profile.replace('--boot.profile=', '');
+            arglist.splice(ndx, 1);
+        }
+
+        return profile;
     }
 
-    return;
+    return this.getBootProfile();
 };
 
 
@@ -494,13 +606,12 @@ Cmd.prototype.getBootProfileRoot = function() {
         return this.options['boot.package'];
     }
 
-    //  NOTE that boot profiles for TSH execution must use a phantom profile.
+    //  NOTE that boot profiles for TSH execution must use a headless profile.
     if (CLI.inProject()) {
-        profile = profile || '~app_cfg/phantom';
+        profile = profile || '~app_cfg/headless';
     } else {
-        profile = profile || '~lib_etc/phantom/phantom';
+        profile = profile || '~lib_etc/headless/headless';
     }
-
 
     return profile;
 };
@@ -569,7 +680,7 @@ Cmd.prototype.getProfileRoot = function() {
     if (CLI.inProject()) {
         profile = profile || '~app_cfg/main';
     } else {
-        profile = profile || '~lib_etc/phantom/phantom';
+        profile = profile || '~lib_etc/headless/headless';
     }
 
     return profile;
@@ -597,47 +708,10 @@ Cmd.prototype.getScript = function() {
 
 
 /**
- * Verify any command prerequisites are in place. In this case phantomjs must be
- * a binary we can locate.
+ * Verify any command prerequisites are in place.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.prereqs = function() {
-    var pathToPhantom;
-
-    //  Initial path is one used when no prior phantomjs is on PATH.
-    pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
-    if (!sh.test('-e', pathToPhantom)) {
-
-        //  If phantomjs was on path then phantomjs-prebuilt uses a different
-        //  path to binary. sigh.
-        pathToPhantom = path.join(CLI.getNpmPath(),
-            'phantomjs-prebuilt/bin/phantomjs');
-
-        if (!sh.test('-e', pathToPhantom)) {
-
-            //  Last chance for prebuilt...we might be frozen...look around.
-            pathToPhantom = path.join(CLI.getNpmPath(),
-                'tibet/phantomjs-prebuilt/bin/phantomjs');
-
-            if (!sh.test('-e', pathToPhantom)) {
-                //  If phantomjs-prebuilt not installed perhaps phantomjs is...
-                pathToPhantom = sh.which('phantomjs');
-                if (!pathToPhantom) {
-                    this.warn('This command requires PhantomJS to be installed.\n' +
-                          'Try using \'npm install --save-dev phantomjs-prebuilt\'.\n' +
-                          'See https://github.com/Medium/phantomjs for more info.');
-                    return 1;
-                } else {
-                    this.warn('Preferred PhantomJS module phantomjs-prebuilt not found.\n' +
-                        'We recommend \'npm install --save-dev phantomjs-prebuilt\'.\n' +
-                        'Defaulting to PhantomJS binary at ' + pathToPhantom + '.');
-                }
-            }
-        }
-    }
-
-    Cmd.PHANTOM_PATH = pathToPhantom;
-
     return 0;
 };
 
@@ -647,8 +721,11 @@ Cmd.prototype.prereqs = function() {
  * simply exit the process but subtypes often use it to process data captured
  * during the stdout call.
  */
-Cmd.prototype.close = function(code) {
+Cmd.prototype.close = function(code, browser) {
     /* eslint-disable no-process-exit */
+    if (CLI.isValid(browser) && browser.close) {
+        browser.close();
+    }
     process.exit(code);
     /* eslint-enable no-process-exit */
 };
@@ -658,8 +735,15 @@ Cmd.prototype.close = function(code) {
  * Invoked any time the stderr channel to the client receives data. The default
  * is simply to log it as an error. Subtypes may do other error handling.
  */
-Cmd.prototype.stderr = function(msg) {
-    this.error(msg);
+Cmd.prototype.stderr = function(err) {
+
+    //  Might be a 'ConsoleMessage' object from puppeteer...
+    if (typeof err.text === 'function') {
+        this.error(err.text());
+        return;
+    }
+
+    this.error(err);
 };
 
 
@@ -668,8 +752,31 @@ Cmd.prototype.stderr = function(msg) {
  * is simply to log the data to the console. Subtypes may use this to capture
  * data for processing upon receipt of the 'exit' event.
  */
-Cmd.prototype.stdout = function(data) {
-    this.log(data);
+Cmd.prototype.stdout = function(obj) {
+    var arr,
+        cmd;
+
+    cmd = this;
+    arr = Array.isArray(obj) ? obj : [obj];
+
+    arr.forEach(function(item) {
+        var val;
+
+        //  Might be a 'ConsoleMessage' object from puppeteer...
+        if (typeof item.text === 'function') {
+            val = item.text();
+        } else if (CLI.isValid(item.data)) {
+            //  Might be 'results' from TIBET ( { meta: ..., data: ...} ).
+            val = item.data;
+        } else {
+            val = CLI.beautify(item);
+        }
+
+        //  Filter TSH no value/output messaging.
+        if (Cmd.NO_VALUE !== val) {
+            cmd.log(val);
+        }
+    });
 };
 
 

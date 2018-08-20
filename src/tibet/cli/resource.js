@@ -67,12 +67,6 @@ helpers.extend(Cmd, CLI);
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 /**
- * The default path to the TIBET-specific phantomjs test runner.
- * @type {String}
- */
-Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
-
-/**
  * The command name for this type.
  * @type {string}
  */
@@ -209,7 +203,7 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 
     args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
 
-    //  Since we use the output from phantomjs to provide data we need it to be
+    //  Since we use the output from headless to provide data we need it to be
     //  no-color, regardless of command setting for the command output itself.
     index = args.indexOf('--color');
     if (index !== -1) {
@@ -930,14 +924,20 @@ Cmd.prototype.processXmlResource = function(options) {
  * in the client. This hook invokes the 'processResources' method to produce
  * either listings or inlined content for the resource list.
  */
-Cmd.prototype.close = function(code) {
+Cmd.prototype.close = function(code, browser) {
 
     /* eslint-disable no-process-exit */
     if (code !== undefined && code !== 0) {
+        if (browser && browser.close) {
+            browser.close();
+        }
         process.exit(code);
     }
 
     this.processResources().then(function(exit) {
+        if (browser && browser.close) {
+            browser.close();
+        }
         if (CLI.isValid(exit)) {
             process.exit(exit);
         }
@@ -953,15 +953,22 @@ Cmd.prototype.close = function(code) {
  * for later processing in the 'close' method.
  */
 Cmd.prototype.stdout = function(data) {
-    var str,
-        arr,
+    var arr,
         cmd;
 
+    if (CLI.notValid(data)) {
+        return;
+    }
+
+    arr = Array.isArray(data) ? data : [data];
+
     cmd = this;
-    str = ('' + data).trim();
-    arr = str.split('\n');
-    arr.forEach(function(line) {
-        var obj;
+
+    arr.forEach(function(item) {
+        var obj,
+            line;
+
+        line = item.data;
 
         //  Obj will be an Array with 3 parts:
         //  - The virtualized filename
@@ -973,7 +980,7 @@ Cmd.prototype.stdout = function(data) {
         if (obj[0].charAt(0) === '~') {
             cmd.computed.push(obj);
         } else {
-            //  NOTE we manually colorize since color is off to phantomjs to
+            //  NOTE we manually colorize since color is off to headless to
             //  avoid problems trying to parse the output data.
             /* eslint-disable no-console */
             console.log(cmd.colorize(line, 'dim'));
