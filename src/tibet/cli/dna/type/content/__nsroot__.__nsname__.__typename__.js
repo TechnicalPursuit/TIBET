@@ -5,7 +5,7 @@
 
 //  ------------------------------------------------------------------------
 
-{{supertype}}.defineSubtype('{{nsroot}}.{{nsname}}:{{typename}}');
+{{supertype}}.defineSubtype('{{nsroot}}.{{nsname}}.{{typename}}');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
