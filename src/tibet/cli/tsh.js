@@ -282,6 +282,11 @@ Cmd.prototype.execute = function() {
         //  wait for it to finish before we continue.
         return puppetPage.waitForFunction(() => {
 
+            //  If TP isn't defined, that means we're in a non-TIBET start page.
+            if (!window['TP']) {
+                throw new Error('TIBET not found in start page.');
+            }
+
             //  If $$stop isn't falsey it's going to have an error in
             //  it. Capture and exit.
             if (TP && TP.boot && TP.boot.$$stop) {
