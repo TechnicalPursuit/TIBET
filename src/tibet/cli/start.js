@@ -119,7 +119,7 @@ Cmd.prototype.execute = function() {
             cmd.system(msg);
             server = child.spawn('electron', ['./electron.js']);
         } else {
-            url = CLI.expandPath(CLI.getcfg('path.start_page'));
+            url = CLI.expandPath(CLI.getcfg('project.start_page'));
             msg = 'No server.js. Opening ' + url;
             cmd.system(msg);
 

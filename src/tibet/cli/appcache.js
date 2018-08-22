@@ -187,7 +187,7 @@ Cmd.prototype.execute = function() {
     }
 
     // If we're enabling or disabling we need to find and check the
-    // path.start_page. We want to confirm that the cache being referenced
+    // project.start_page. We want to confirm that the cache being referenced
     // matches and that the attribute isn't already configured as desired.
     if (this.options.enable || this.options.disable || this.options.status) {
         return this.executeIndexUpdate(cachefile);
@@ -568,7 +568,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
 /**
  * Perform the work specific to enabling/disabling the cache via the
- * path.start_page and/or handlebars html element manifest attribute setting.
+ * project.start_page and/or handlebars html element manifest attribute setting.
  * @param {String} cachefile The name of the cache file being configured.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
@@ -586,7 +586,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     this.log('checking application cache status...');
 
-    startpage = CLI.getcfg('path.start_page');
+    startpage = CLI.getcfg('project.start_page');
 
     file = CLI.expandPath('~/views/index.handlebars');
     if (!sh.test('-e', file)) {

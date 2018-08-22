@@ -612,6 +612,11 @@
     //  the root package file will trigger cache refresh logic
     TP.sys.setcfg('project.version', null);
 
+    //  the project's default start page. This is the page should be opened by
+    //  the 'start' command in the CLI and in other commands/pages in the
+    //  system.
+    TP.sys.setcfg('project.start_page', '~app/index.html');
+
     //  the project's default root page. The default value is UIROOT.xhtml.
     TP.sys.setcfg('project.root_page', null);
 
@@ -1847,9 +1852,6 @@
     //  as well as the theme used by xctrls when dragged in via tofu etc.
     TP.sys.setcfg('tibet.theme.default', 'tpi');
     TP.sys.setcfg('tibet.theme.list', ['tpi']);
-
-    //  what path should be opened by the 'start' command in the CLI?
-    TP.sys.setcfg('path.start_page', '~app/index.html');
 
     //  ---
     //  karma integration
