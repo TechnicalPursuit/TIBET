@@ -283,9 +283,11 @@ Cmd.prototype.execute = function() {
         return puppetPage.waitForFunction(() => {
 
             //  If TP isn't defined, that means we're in a non-TIBET start page.
+            /* eslint-disable dot-notation */
             if (!window['TP']) {
                 throw new Error('TIBET not found in start page.');
             }
+            /* eslint-enable dot-notation */
 
             //  If $$stop isn't falsey it's going to have an error in
             //  it. Capture and exit.

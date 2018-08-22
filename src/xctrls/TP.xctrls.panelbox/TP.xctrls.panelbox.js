@@ -187,8 +187,7 @@ function(aContentObject, aRequest) {
 
         skipSettingContent,
 
-        tagName,
-        newContentTPElem;
+        tagName;
 
     request = TP.request(aRequest);
 

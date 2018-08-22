@@ -6266,8 +6266,7 @@ function(aRoute) {
         type,
         url,
 
-        newTPElem,
-        evt;
+        newTPElem;
 
     route = aRoute;
 
