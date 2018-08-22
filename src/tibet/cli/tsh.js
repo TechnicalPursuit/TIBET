@@ -263,7 +263,8 @@ Cmd.prototype.execute = function() {
                 CLI.expandPath('~lib_etc/headless/headlesstsh.xhtml') +
                 '#?boot.profile=\'' + profile + '\'';
         } else {
-            fullpath = 'file:' + CLI.expandPath('~app/index.html') +
+            fullpath = 'file:' +
+                CLI.expandPath(CLI.getcfg('project.start_page')) +
                 '#?boot.profile=\'' + profile + '\'';
         }
 
