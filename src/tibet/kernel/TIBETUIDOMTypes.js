@@ -4842,6 +4842,8 @@ function(aPointOrObject) {
         yVal,
 
         elem,
+
+        offsetParent,
         offsets,
         styleObj;
 
@@ -4861,7 +4863,13 @@ function(aPointOrObject) {
 
     elem = this.getNativeNode();
 
-    offsets = TP.elementGetOffsetFromContainer(TP.elementGetOffsetParent(elem));
+    //  The offsetParent can be null if the element is position: fixed.
+    offsetParent = TP.elementGetOffsetParent(elem);
+    if (TP.isElement(offsetParent)) {
+        offsets = TP.elementGetOffsetFromContainer(offsetParent);
+    } else {
+        offsets = TP.ac(0, 0);
+    }
 
     styleObj = TP.elementGetStyleObj(elem);
 
@@ -4955,6 +4963,8 @@ function(aPointOrObject) {
     var xVal,
 
         elem,
+
+        offsetParent,
         offsets,
         styleObj;
 
@@ -4972,7 +4982,13 @@ function(aPointOrObject) {
 
     elem = this.getNativeNode();
 
-    offsets = TP.elementGetOffsetFromContainer(TP.elementGetOffsetParent(elem));
+    //  The offsetParent can be null if the element is position: fixed.
+    offsetParent = TP.elementGetOffsetParent(elem);
+    if (TP.isElement(offsetParent)) {
+        offsets = TP.elementGetOffsetFromContainer(offsetParent);
+    } else {
+        offsets = TP.ac(0, 0);
+    }
 
     styleObj = TP.elementGetStyleObj(elem);
 
@@ -5003,6 +5019,8 @@ function(aPointOrObject) {
     var yVal,
 
         elem,
+
+        offsetParent,
         offsets,
         styleObj;
 
@@ -5020,7 +5038,13 @@ function(aPointOrObject) {
 
     elem = this.getNativeNode();
 
-    offsets = TP.elementGetOffsetFromContainer(TP.elementGetOffsetParent(elem));
+    //  The offsetParent can be null if the element is position: fixed.
+    offsetParent = TP.elementGetOffsetParent(elem);
+    if (TP.isElement(offsetParent)) {
+        offsets = TP.elementGetOffsetFromContainer(offsetParent);
+    } else {
+        offsets = TP.ac(0, 0);
+    }
 
     styleObj = TP.elementGetStyleObj(elem);
 

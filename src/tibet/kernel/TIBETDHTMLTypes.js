@@ -45,8 +45,11 @@ function(aDragResponder, aSignal, xyPoint) {
     target = aDragResponder.get('actionElement');
     targetParent = TP.elementGetOffsetParent(target);
 
-    val = TP.elementGetPageX(targetParent) -
-            TP.elementGetPageX(target);
+    if (TP.isElement(targetParent)) {
+        val = TP.elementGetPageX(targetParent) - TP.elementGetPageX(target);
+    } else {
+        val = TP.elementGetPageX(target);
+    }
 
     xyPoint.setX(val);
 
@@ -67,8 +70,11 @@ function(aDragResponder, aSignal, xyPoint) {
     target = aDragResponder.get('actionElement');
     targetParent = TP.elementGetOffsetParent(target);
 
-    val = TP.elementGetPageY(targetParent) -
-            TP.elementGetPageY(target);
+    if (TP.isElement(targetParent)) {
+        val = TP.elementGetPageY(targetParent) - TP.elementGetPageY(target);
+    } else {
+        val = TP.elementGetPageY(target);
+    }
 
     xyPoint.setY(val);
 
@@ -199,8 +205,13 @@ function(aDragResponder, aSignal, xyPoint) {
     xVal = xyPoint.getX();
 
     xVal = xVal.max(0);
-    xVal = xVal.min(TP.elementGetWidth(targetParent) -
-                    TP.elementGetWidth(target));
+
+    if (TP.isElement(targetParent)) {
+        xVal = xVal.min(TP.elementGetWidth(targetParent) -
+                        TP.elementGetWidth(target));
+    } else {
+        xVal = xVal.min(TP.elementGetWidth(target));
+    }
 
     xyPoint.setX(xVal);
 
@@ -225,8 +236,13 @@ function(aDragResponder, aSignal, xyPoint) {
     yVal = xyPoint.getY();
 
     yVal = yVal.max(0);
-    yVal = yVal.min(TP.elementGetHeight(targetParent) -
-                    TP.elementGetHeight(target));
+
+    if (TP.isElement(targetParent)) {
+        yVal = yVal.min(TP.elementGetHeight(targetParent) -
+                        TP.elementGetHeight(target));
+    } else {
+        yVal = yVal.min(TP.elementGetHeight(target));
+    }
 
     xyPoint.setY(yVal);
 
@@ -261,6 +277,10 @@ function(aDragResponder, aSignal, xyPoint) {
         targetContainer = kallee.modifierData.at('container');
         if (TP.notValid(targetContainer)) {
             targetContainer = TP.elementGetOffsetParent(target);
+            if (!TP.isElement(targetContainer)) {
+                targetContainer = TP.documentGetBody(
+                                    TP.nodeGetDocument(target));
+            }
         }
 
         coords = TP.elementGetPageBox(target,
@@ -1699,6 +1719,10 @@ function(aDragResponder, aSignal, xyPoint) {
         targetContainer = kallee.modifierData.at('container');
         if (TP.notValid(targetContainer)) {
             targetContainer = TP.elementGetOffsetParent(target);
+            if (!TP.isElement(targetContainer)) {
+                targetContainer = TP.documentGetBody(
+                                    TP.nodeGetDocument(target));
+            }
         }
 
         containerRect = TP.rtc(TP.elementGetPageBox(targetContainer,
@@ -1827,6 +1851,8 @@ function() {
 
         borderXOffset,
         borderYOffset,
+
+        offsetParent,
 
         rightDiff,
         bottomDiff,
@@ -1985,11 +2011,13 @@ function() {
         /* eslint-enable no-extra-parens */
     }
 
+    offsetParent = TP.elementGetOffsetParent(actionElem);
+
     //  If the action element's offset parent is the document element, then we
     //  want to just set some default values for the 'diff' values that get used
     //  below to adjust the offset value.
-    if (TP.elementGetOffsetParent(actionElem) ===
-        TP.nodeGetDocument(actionElem).documentElement) {
+    if (!TP.isElement(offsetParent) ||
+        offsetParent === TP.nodeGetDocument(actionElem).documentElement) {
 
         topDiff = 0;
         rightDiff = offsetX;
@@ -2136,6 +2164,8 @@ function(aSignal) {
         borderTop,
         borderLeft,
 
+        offsetParent,
+
         parentBorderTop,
         parentBorderLeft,
 
@@ -2186,13 +2216,15 @@ function(aSignal) {
     borderLeft = TP.elementGetBorderInPixels(actionElem, TP.LEFT);
     borderTop = TP.elementGetBorderInPixels(actionElem, TP.TOP);
 
-    parentBorderTop = TP.elementGetBorderInPixels(
-                                TP.elementGetOffsetParent(actionElem),
-                                TP.TOP);
+    offsetParent = TP.elementGetOffsetParent(actionElem);
 
-    parentBorderLeft = TP.elementGetBorderInPixels(
-                                TP.elementGetOffsetParent(actionElem),
-                                TP.LEFT);
+    if (TP.isElement(offsetParent)) {
+        parentBorderTop = TP.elementGetBorderInPixels(offsetParent, TP.TOP);
+        parentBorderLeft = TP.elementGetBorderInPixels(offsetParent, TP.LEFT);
+    } else {
+        parentBorderTop = 0;
+        parentBorderLeft = 0;
+    }
 
     workerFuncs = this.get('workers');
     infoAttrs = this.get('infoAttrs');
@@ -2945,6 +2977,10 @@ function(aDragResponder, aSignal, xyPoint) {
         targetContainer = kallee.modifierData.at('container');
         if (TP.notValid(targetContainer)) {
             targetContainer = TP.elementGetOffsetParent(target);
+            if (!TP.isElement(targetContainer)) {
+                targetContainer = TP.documentGetBody(
+                                    TP.nodeGetDocument(target));
+            }
         }
 
         coords = TP.elementGetPageBox(target,
@@ -3270,7 +3306,7 @@ function() {
     itemPagePoint = this.get('itemPagePoint');
 
     //  We do want to make sure that if the 'body' has a border, we account for
-    //  it though
+    //  it though.
     offsetParent = TP.elementGetOffsetParent(actionElem);
 
     if (TP.isElement(offsetParent)) {

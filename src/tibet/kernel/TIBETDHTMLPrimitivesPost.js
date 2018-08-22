@@ -4724,6 +4724,8 @@ function(anElement, partial, direction, wantsTransformed) {
 
         isDisplayed,
 
+        offsetParent,
+
         viewportBox,
         elementBox,
 
@@ -4765,9 +4767,15 @@ function(anElement, partial, direction, wantsTransformed) {
     }
 
     //  Get the viewport width and height, as defined by our offsetParent
-    viewportBox = TP.elementGetBorderBox(
-                    TP.elementGetOffsetParent(anElement),
-                    wantsTransformed);
+    offsetParent = TP.elementGetOffsetParent(anElement);
+    if (TP.isElement(offsetParent)) {
+        viewportBox = TP.elementGetBorderBox(offsetParent, wantsTransformed);
+    } else {
+        viewportBox = TP.hc('top', 0,
+                            'right', 0,
+                            'bottom', 0,
+                            'left', 0);
+    }
 
     //  Get our own border box
     elementBox = TP.elementGetBorderBox(
