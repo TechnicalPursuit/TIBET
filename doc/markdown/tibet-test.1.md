@@ -14,22 +14,18 @@ testing module and `karma` have been installed in your project. If so the
 command delegates to `karma start` to run your tests.
 
 If `karma` isn't installed or the `--karma` flag is false (the default)
-`phantomjs` is checked and tests will run in the context of `phantomjs` if
-found.
+tests will run in the context of headless chrome if found.
 
-In both cases (karma or phantom) you can specify a particular test target object
-or test suite to run as the first argument to the command. If you need to
+In both cases (karma or headless) you can specify a particular test target
+object or test suite to run as the first argument to the command. If you need to
 specify both a target and suite use `--target` and `--suite` respectively.
 
 You can limit testing to a particular case or set of cases by using the
 `--cases` parameter. Both `--suite` and `--cases` accept either a string or a
 regular expression in JavaScript syntax such as `--cases /foo/i`.
 
-For phantomjs testing output is to the terminal in colorized TAP format by
+For headless testing output is to the terminal in colorized TAP format by
 default. Future versions will support additional test output formatters.
-
-You can use the built-in debugging facilities of PhantomJS by
-specifying `--remote-debug-port` and a port number.
 
 ## OPTIONS
 
@@ -48,7 +44,7 @@ resources. Other values are `lib` and `all`.
 
   * `--karma` :
     Turns on/off the search for a `karma` binary and `karma.conf.js` file. Using
-`--no-karma` will force TIBET's basic PhantomJS-driven test execution. The
+`--no-karma` will force TIBET's basic headless test execution. The
 default value is false.
 
   * `--suite` :
@@ -68,15 +64,14 @@ Assuming you've followed the installation instructions for `karma-tibet` (https:
     30 06 2016 17:32:48.803:INFO [Chrome 51.0.2704 (Mac OS X 10.11.5)]: Connected on socket /#i8jwIIkTNAvAF27lAAAA with id 70331982
     Chrome 51.0.2704 (Mac OS X 10.11.5): Executed 3 of 3 SUCCESS (0.169 secs / 0 secs)
 
-### Run default application tests via phantomjs
+### Run default application tests via Headless Chrome
 
-If you haven't installed `karma` but you do have `phantomjs` available you can
-run tests via the `tibet test` command:
+If you haven't installed `karma` you can run tests via the `tibet test` command:
 
     $ tibet test
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:34:07 MDT
-    # TIBET loaded in 2292 ms. Starting execution.
+    # Loading TIBET at 2018-08-23T13:32:03.632Z
+    # TIBET loaded and active in 6736ms
     # TIBET starting test run
     # 2 suite(s) found.
     1..3
@@ -97,12 +92,12 @@ run tests via the `tibet test` command:
 NOTE that each test is prefixed with a comment of the form `# tibet test ..`
 which allows you to run that specific test suite.
 
-### Force default application tests via phantom in a karma-enabled project
+### Force default application tests via headless in a karma-enabled project
 
     $ tibet test --no-karma
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:34:07 MDT
-    # TIBET loaded in 2292 ms. Starting execution.
+    # Loading TIBET at 2018-08-23T13:32:03.632Z
+    # TIBET loaded and active in 6736ms
     # TIBET starting test run
     # 2 suite(s) found.
     1..3
@@ -135,8 +130,8 @@ which allows you to run that specific test suite.
 
     $ tibet test --suite 'APP suite' --no-karma
 
-    # Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 13:58:25 MDT
-    # TIBET loaded in 2739 ms. Starting execution.
+    # Loading TIBET at 2018-08-23T13:32:03.632Z
+    # TIBET loaded and active in 6736ms
     # TIBET starting test run
     # 1 suite(s) found.
     1..2

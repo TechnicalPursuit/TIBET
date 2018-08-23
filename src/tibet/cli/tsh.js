@@ -108,7 +108,8 @@ Cmd.prototype.USAGE = 'tibet tsh <script> [<headless_args>]';
 Cmd.prototype.announce = function() {
 
     if (!this.options.silent) {
-        this.log('launching headless TIBET...', 'dim');
+        this.log((this.options.tap ? '# ' : '') +
+            'Loading TIBET at ' + new Date().toISOString(), 'dim');
     }
 
     return;
@@ -161,18 +162,7 @@ Cmd.prototype.execute = function() {
     //  profile more than once into the argument list.
     profile = this.finalizeBootProfile(arglist);
 
-/*
-    // Push an additional debug flag specific to phantom if set.
-    if (this.options['phantom-debug']) {
-        arglist.unshift(true);
-        arglist.unshift('--debug');
-    }
-
-    if (CLI.isValid(this.options['remote-debug-port'])) {
-        arglist.unshift('--remote-debugger-port=' +
-                        this.options['remote-debug-port']);
-    }
-*/
+    //  TODO:   headless args?
 
     //  Need to be ok with more latency in command output...esp for things like
     //  resource processing.
@@ -312,7 +302,8 @@ Cmd.prototype.execute = function() {
         //  Once TIBET boots run whatever TSH command we're being
         //  asked to execute for this process.
         if (!cmd.options.silent) {
-            cmd.log('TIBET started in ' + (end - start) + 'ms', 'dim');
+            cmd.log((cmd.options.tap ? '# ' : '') +
+                'TIBET loaded and active in ' + (end - start) + 'ms', 'dim');
         }
 
         return puppetPage.mainFrame().executionContext();

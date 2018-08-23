@@ -281,8 +281,7 @@ Cmd.prototype.execute = function() {
     }
 
     //  We want the project's node_modules/tibet/node_modules dir linked into
-    //  place so CLI commands using phantomjs will find their dependencies. This
-    //  is largely due to phantomjs using its own 'require' call.
+    //  place so CLI commands consistently find their dependencies.
     sh.ln(lnflags, path.join(app_npm, 'tibet', 'node_modules'),
         path.join(infroot, 'node_modules'));
     lnerr = sh.error();
@@ -341,7 +340,7 @@ Cmd.prototype.execute = function() {
 
             // Note that when raw is specified no copies of bundled code are
             // kept, only the hook and loader files which are always pulled from
-            // bundles. (NOTE phantom-based commands retain tibet_developer).
+            // bundles.
             if (cmd.options.raw) {
                 sh.rm('-f', path.join(srcroot, fname));
             } else if (fname.indexOf('tibet_' + bundle + '.') === -1) {

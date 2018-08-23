@@ -13,22 +13,18 @@ testing module and \fBkarma\fP have been installed in your project\. If so the
 command delegates to \fBkarma start\fP to run your tests\.
 .P
 If \fBkarma\fP isn't installed or the \fB\-\-karma\fP flag is false (the default)
-\fBphantomjs\fP is checked and tests will run in the context of \fBphantomjs\fP if
-found\.
+tests will run in the context of headless chrome if found\.
 .P
-In both cases (karma or phantom) you can specify a particular test target object
-or test suite to run as the first argument to the command\. If you need to
+In both cases (karma or headless) you can specify a particular test target
+object or test suite to run as the first argument to the command\. If you need to
 specify both a target and suite use \fB\-\-target\fP and \fB\-\-suite\fP respectively\.
 .P
 You can limit testing to a particular case or set of cases by using the
 \fB\-\-cases\fP parameter\. Both \fB\-\-suite\fP and \fB\-\-cases\fP accept either a string or a
 regular expression in JavaScript syntax such as \fB\-\-cases /foo/i\fP\|\.
 .P
-For phantomjs testing output is to the terminal in colorized TAP format by
+For headless testing output is to the terminal in colorized TAP format by
 default\. Future versions will support additional test output formatters\.
-.P
-You can use the built\-in debugging facilities of PhantomJS by
-specifying \fB\-\-remote\-debug\-port\fP and a port number\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -47,7 +43,7 @@ resources\. Other values are \fBlib\fP and \fBall\fP\|\.
 .IP \(bu 2
 \fB\-\-karma\fP :
 Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\. Using
-\fB\-\-no\-karma\fP will force TIBET's basic PhantomJS\-driven test execution\. The
+\fB\-\-no\-karma\fP will force TIBET's basic headless test execution\. The
 default value is false\.
 .IP \(bu 2
 \fB\-\-suite\fP :
@@ -70,17 +66,16 @@ $ tibet test \-\-karma
 Chrome 51\.0\.2704 (Mac OS X 10\.11\.5): Executed 3 of 3 SUCCESS (0\.169 secs / 0 secs)
 .fi
 .RE
-.SS Run default application tests via phantomjs
+.SS Run default application tests via Headless Chrome
 .P
-If you haven't installed \fBkarma\fP but you do have \fBphantomjs\fP available you can
-run tests via the \fBtibet test\fP command:
+If you haven't installed \fBkarma\fP you can run tests via the \fBtibet test\fP command:
 .P
 .RS 2
 .nf
 $ tibet test
 
-# Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 17:34:07 MDT
-# TIBET loaded in 2292 ms\. Starting execution\.
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
 # TIBET starting test run
 # 2 suite(s) found\.
 1\.\.3
@@ -102,14 +97,14 @@ ok \- Is a templated tag\.
 .P
 NOTE that each test is prefixed with a comment of the form \fB# tibet test \.\.\fP
 which allows you to run that specific test suite\.
-.SS Force default application tests via phantom in a karma\-enabled project
+.SS Force default application tests via headless in a karma\-enabled project
 .P
 .RS 2
 .nf
 $ tibet test \-\-no\-karma
 
-# Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 17:34:07 MDT
-# TIBET loaded in 2292 ms\. Starting execution\.
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
 # TIBET starting test run
 # 2 suite(s) found\.
 1\.\.3
@@ -148,8 +143,8 @@ Chrome 51\.0\.2704 (Mac OS X 10\.11\.5): Executed 1 of 1 SUCCESS (0\.131 secs / 
 .nf
 $ tibet test \-\-suite 'APP suite' \-\-no\-karma
 
-# Loading TIBET via PhantomJS 2\.1\.1 at July 1, 2016 at 13:58:25 MDT
-# TIBET loaded in 2739 ms\. Starting execution\.
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
 # TIBET starting test run
 # 1 suite(s) found\.
 1\.\.2

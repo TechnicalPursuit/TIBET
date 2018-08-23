@@ -3,19 +3,19 @@
 
 ## SYNOPSIS
 
-tibet tsh [--script=]<command> [<phantomtsh_args>]
+tibet tsh [--script=]<command> [<headless_args>]
 
 ## DESCRIPTION
 
-Runs the TIBET `phantomtsh` script runner to execute a TSH script.
+Runs the TIBET headless environment to execute a TSH script.
 
 The script to execute is presumed to be the first argument, quoted as
 needed to ensure that it can be captured as a single string to pass to
 the TIBET Shell. For example: `tibet tsh ':echo "Hello World!"'.`
 You can also use the `--script` argument to provide the TSH script.
 
-`<phantomtsh_args>` refers to the various flags and paramters you can
-provide to TIBET's `phantomtsh.js` script. See `tibet help phantomtsh`.
+`<headless_args>` refers to the various flags and paramters you can
+provide to Headless Chrome.
 
 ## OPTIONS
 
@@ -23,10 +23,9 @@ provide to TIBET's `phantomtsh.js` script. See `tibet help phantomtsh`.
     A properly quoted command line for the TSH, escaped as necessary based on
 the requirements of your shell.
 
-  * `phantomtsh_args`
-    Optional arguments to TIBET's `phantomtsh.js` script which is responsible
-for processing all PhantomJS-based execution of TIBET. See `tibet help
-phantomtsh` for details.
+  * `headless_args`
+    Optional arguments to Headless Chrome which is responsible for processing
+the script.
 
   * `--script` :
     An optional argument used to define the `command`.
@@ -37,8 +36,8 @@ phantomtsh` for details.
 
     $ tibet tsh --script=':echo "Hello World!"'
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:55:53 MDT
-    TIBET loaded in 4094 ms. Starting execution.
+    # Loading TIBET at 2018-08-23T13:32:03.632Z
+    # TIBET loaded and active in 6736ms
     {
         "ARGV": ["Hello World!"],
         "ARG0": "Hello World!"
@@ -53,8 +52,8 @@ tool. As it turns out, this is exactly what the `tibet test` command does. The
 
     $ tibet tsh --script ':test'
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:58:13 MDT
-    TIBET loaded in 4105 ms. Starting execution.
+    # Loading TIBET at 2018-08-23T13:32:03.632Z
+    # TIBET loaded and active in 6736ms
     # TIBET starting test run
     # 2 suite(s) found.
     1..3
@@ -73,5 +72,3 @@ tool. As it turns out, this is exactly what the `tibet test` command does. The
     Finished in 4209 ms w/TSH exec time of 104 ms.
 
 ## SEE ALSO
-
-  * tibet-phantomtsh(1)

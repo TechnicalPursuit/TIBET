@@ -21,25 +21,24 @@
 
 <h1 id="tibet-tsh-1-runs-a-tibet-shell-tsh-expression">tibet-tsh(1) -- runs a TIBET Shell (TSH) expression</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet tsh [--script=]&lt;command&gt; [&lt;phantomtsh_args&gt;]</p>
+<p>tibet tsh [--script=]&lt;command&gt; [&lt;headless_args&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Runs the TIBET <code>phantomtsh</code> script runner to execute a TSH script.</p>
+<p>Runs the TIBET headless environment to execute a TSH script.</p>
 <p>The script to execute is presumed to be the first argument, quoted as
 needed to ensure that it can be captured as a single string to pass to
 the TIBET Shell. For example: <code>tibet tsh &#39;:echo &quot;Hello World!&quot;&#39;.</code>
 You can also use the <code>--script</code> argument to provide the TSH script.</p>
-<p><code>&lt;phantomtsh_args&gt;</code> refers to the various flags and paramters you can
-provide to TIBET&#39;s <code>phantomtsh.js</code> script. See <code>tibet help phantomtsh</code>.</p>
+<p><code>&lt;headless_args&gt;</code> refers to the various flags and paramters you can
+provide to Headless Chrome.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
 <li><p><code>command</code> :
 A properly quoted command line for the TSH, escaped as necessary based on
 the requirements of your shell.</p>
 </li>
-<li><p><code>phantomtsh_args</code>
-Optional arguments to TIBET&#39;s <code>phantomtsh.js</code> script which is responsible
-for processing all PhantomJS-based execution of TIBET. See <code>tibet help
-phantomtsh</code> for details.</p>
+<li><p><code>headless_args</code>
+Optional arguments to Headless Chrome which is responsible for processing
+the script.</p>
 </li>
 <li><p><code>--script</code> :
 An optional argument used to define the <code>command</code>.</p>
@@ -49,8 +48,8 @@ An optional argument used to define the <code>command</code>.</p>
 <h3 id="run-a-simple-tsh-script-via-the-command-line">Run a simple TSH script via the command line</h3>
 <pre><code>$ tibet tsh --script=&#39;:echo &quot;Hello World!&quot;&#39;
 
-Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:55:53 MDT
-TIBET loaded in 4094 ms. Starting execution.
+# Loading TIBET at 2018-08-23T13:32:03.632Z
+# TIBET loaded and active in 6736ms
 {
     &quot;ARGV&quot;: [&quot;Hello World!&quot;],
     &quot;ARG0&quot;: &quot;Hello World!&quot;
@@ -62,8 +61,8 @@ tool. As it turns out, this is exactly what the <code>tibet test</code> command 
 <code>tibet test</code> command is actually a subtype of the <code>tsh</code> command.</p>
 <pre><code>$ tibet tsh --script &#39;:test&#39;
 
-Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 17:58:13 MDT
-TIBET loaded in 4105 ms. Starting execution.
+# Loading TIBET at 2018-08-23T13:32:03.632Z
+# TIBET loaded and active in 6736ms
 # TIBET starting test run
 # 2 suite(s) found.
 1..3
@@ -81,9 +80,6 @@ ok - Is a templated tag.
 
 Finished in 4209 ms w/TSH exec time of 104 ms.
 </code></pre><h2 id="see-also">SEE ALSO</h2>
-<ul>
-<li><a class="crossref" href="./tibet-phantomtsh.1.html">tibet-phantomtsh(1)</a></li>
-</ul>
 
 </div>
 <div id="footer">

@@ -3,18 +3,18 @@
 \fBtibet-tsh\fR \- runs a TIBET Shell (TSH) expression
 .SH SYNOPSIS
 .P
-tibet tsh [\-\-script=]<command> [<phantomtsh_args>]
+tibet tsh [\-\-script=]<command> [<headless_args>]
 .SH DESCRIPTION
 .P
-Runs the TIBET \fBphantomtsh\fP script runner to execute a TSH script\.
+Runs the TIBET headless environment to execute a TSH script\.
 .P
 The script to execute is presumed to be the first argument, quoted as
 needed to ensure that it can be captured as a single string to pass to
 the TIBET Shell\. For example: \fBtibet tsh ':echo "Hello World!"'\.\fP
 You can also use the \fB\-\-script\fP argument to provide the TSH script\.
 .P
-\fB<phantomtsh_args>\fP refers to the various flags and paramters you can
-provide to TIBET's \fBphantomtsh\.js\fP script\. See \fBtibet help phantomtsh\fP\|\.
+\fB<headless_args>\fP refers to the various flags and paramters you can
+provide to Headless Chrome\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -22,10 +22,9 @@ provide to TIBET's \fBphantomtsh\.js\fP script\. See \fBtibet help phantomtsh\fP
 A properly quoted command line for the TSH, escaped as necessary based on
 the requirements of your shell\.
 .IP \(bu 2
-\fBphantomtsh_args\fP
-Optional arguments to TIBET's \fBphantomtsh\.js\fP script which is responsible
-for processing all PhantomJS\-based execution of TIBET\. See \fBtibet help
-phantomtsh\fP for details\.
+\fBheadless_args\fP
+Optional arguments to Headless Chrome which is responsible for processing
+the script\.
 .IP \(bu 2
 \fB\-\-script\fP :
 An optional argument used to define the \fBcommand\fP\|\.
@@ -38,8 +37,8 @@ An optional argument used to define the \fBcommand\fP\|\.
 .nf
 $ tibet tsh \-\-script=':echo "Hello World!"'
 
-Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 17:55:53 MDT
-TIBET loaded in 4094 ms\. Starting execution\.
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
 {
     "ARGV": ["Hello World!"],
     "ARG0": "Hello World!"
@@ -57,8 +56,8 @@ tool\. As it turns out, this is exactly what the \fBtibet test\fP command does\.
 .nf
 $ tibet tsh \-\-script ':test'
 
-Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 17:58:13 MDT
-TIBET loaded in 4105 ms\. Starting execution\.
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
 # TIBET starting test run
 # 2 suite(s) found\.
 1\.\.3
@@ -78,9 +77,4 @@ Finished in 4209 ms w/TSH exec time of 104 ms\.
 .fi
 .RE
 .SH SEE ALSO
-.RS 0
-.IP \(bu 2
-tibet\-phantomtsh(1)
-
-.RE
 
