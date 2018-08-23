@@ -1169,15 +1169,14 @@ CLI.initPackage = function() {
 
     Package = require('../../../etc/common/tibet_package');
     this._package = new Package(this.options);
-
     this.config.tibet = this._package.getProjectConfig();
     this.config.tds = this._package.getServerConfig();
     this.config.npm = this._package.getPackageConfig();
 
     //  Set up options for creating a proper color instance.
-    this.options.scheme = this.options.scheme || process.env.TIBET_CLI_SCHEME ||
+    this.options.scheme = process.env.TIBET_CLI_SCHEME ||
         this._package.getcfg('cli.color.scheme') || 'ttychalk';
-    this.options.theme = this.options.theme || process.env.TIBET_CLI_THEME ||
+    this.options.theme = process.env.TIBET_CLI_THEME ||
         this._package.getcfg('cli.color.theme') || 'default';
 };
 

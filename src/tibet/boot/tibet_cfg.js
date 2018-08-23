@@ -327,27 +327,27 @@
     TP.sys.setcfg('color.ttychalk.fgText', 8);   //  default for bg*
 
     //  TTY colors matching the baseline default colors (standards)
-    TP.sys.setcfg('color.ttycolor.black', 0);
-    TP.sys.setcfg('color.ttycolor.red', 1);
-    TP.sys.setcfg('color.ttycolor.green', 2);
-    TP.sys.setcfg('color.ttycolor.yellow', 3);
-    TP.sys.setcfg('color.ttycolor.blue', 4);
-    TP.sys.setcfg('color.ttycolor.magenta', 5);
-    TP.sys.setcfg('color.ttycolor.cyan', 6);
-    TP.sys.setcfg('color.ttycolor.white', 7);
-    TP.sys.setcfg('color.ttycolor.gray', 8);
+    TP.sys.setcfg('color.default.black', 0);
+    TP.sys.setcfg('color.default.red', 1);
+    TP.sys.setcfg('color.default.green', 2);
+    TP.sys.setcfg('color.default.yellow', 3);
+    TP.sys.setcfg('color.default.blue', 4);
+    TP.sys.setcfg('color.default.magenta', 5);
+    TP.sys.setcfg('color.default.cyan', 6);
+    TP.sys.setcfg('color.default.white', 7);
+    TP.sys.setcfg('color.default.gray', 8);
 
-    TP.sys.setcfg('color.ttycolor.bgBlack', 0);
-    TP.sys.setcfg('color.ttycolor.bgRed', 1);
-    TP.sys.setcfg('color.ttycolor.bgGreen', 2);
-    TP.sys.setcfg('color.ttycolor.bgYellow', 3);
-    TP.sys.setcfg('color.ttycolor.bgBlue', 4);
-    TP.sys.setcfg('color.ttycolor.bgMagenta', 5);
-    TP.sys.setcfg('color.ttycolor.bgCyan', 6);
-    TP.sys.setcfg('color.ttycolor.bgWhite', 7);
+    TP.sys.setcfg('color.default.bgBlack', 0);
+    TP.sys.setcfg('color.default.bgRed', 1);
+    TP.sys.setcfg('color.default.bgGreen', 2);
+    TP.sys.setcfg('color.default.bgYellow', 3);
+    TP.sys.setcfg('color.default.bgBlue', 4);
+    TP.sys.setcfg('color.default.bgMagenta', 5);
+    TP.sys.setcfg('color.default.bgCyan', 6);
+    TP.sys.setcfg('color.default.bgWhite', 7);
 
-    TP.sys.setcfg('color.ttycolor.bgGray', 8);      //  missing
-    TP.sys.setcfg('color.ttycolor.fgText', 8);      //  default for bg*
+    TP.sys.setcfg('color.default.bgGray', 8);      //  missing
+    TP.sys.setcfg('color.default.fgText', 8);      //  default for bg*
 
     //  web* colors should map to web colors in either # or webcolor format.
     //  These colors are typically used by the client-side code and hence map to
@@ -416,12 +416,11 @@
     //  Standard TIBET logging levels
     TP.sys.setcfg('theme.default.trace', 'gray');
     TP.sys.setcfg('theme.default.debug', 'gray');
-    TP.sys.setcfg('theme.default.info', 'white');
+    TP.sys.setcfg('theme.default.info', 'fgText');
     TP.sys.setcfg('theme.default.warn', 'yellow');
     TP.sys.setcfg('theme.default.error', 'red');
     TP.sys.setcfg('theme.default.fatal', 'red');
     TP.sys.setcfg('theme.default.system', 'cyan');
-    TP.sys.setcfg('theme.default.off', 'black');
 
     //  Additional names from cli, npm, syslog from winston
     TP.sys.setcfg('theme.default.emerg', 'red');
@@ -440,7 +439,7 @@
     TP.sys.setcfg('theme.default.dim', 'gray');
 
     //  Common log entry items (datetime, timestamp, time delta, etc.)
-    TP.sys.setcfg('theme.default.bracket', 'white');
+    TP.sys.setcfg('theme.default.bracket', 'gray');
     TP.sys.setcfg('theme.default.time', 'gray');
     TP.sys.setcfg('theme.default.stamp', 'gray');
     TP.sys.setcfg('theme.default.delta', 'gray');
@@ -451,22 +450,22 @@
     //  Standard HTTP logging elements and result codes
     TP.sys.setcfg('theme.default.verb', 'green');
     TP.sys.setcfg('theme.default.url', 'underline.gray');
-    TP.sys.setcfg('theme.default.1xx', 'white');
+    TP.sys.setcfg('theme.default.1xx', 'gray');
     TP.sys.setcfg('theme.default.2xx', 'green');
     TP.sys.setcfg('theme.default.3xx', 'cyan');
     TP.sys.setcfg('theme.default.4xx', 'red');
     TP.sys.setcfg('theme.default.5xx', 'red');
 
     //  Common file/path output formats.
-    TP.sys.setcfg('theme.default.file', 'underline.white');
-    TP.sys.setcfg('theme.default.line', 'bold.white');
+    TP.sys.setcfg('theme.default.file', 'underline.gray');
+    TP.sys.setcfg('theme.default.line', 'bold.gray');
 
     //  Startup information for the TDS
     TP.sys.setcfg('theme.default.logo', 'gray');
     TP.sys.setcfg('theme.default.project', 'green');
-    TP.sys.setcfg('theme.default.version', 'white');
+    TP.sys.setcfg('theme.default.version', 'gray');
     TP.sys.setcfg('theme.default.env', 'green');
-    TP.sys.setcfg('theme.default.host', 'underline.white');
+    TP.sys.setcfg('theme.default.host', 'underline.gray');
 
     //  Common TDS components and data items.
     TP.sys.setcfg('theme.default.tds', 'magenta');
@@ -479,7 +478,7 @@
     //  Common CLI components and data items.
     TP.sys.setcfg('theme.default.command', 'yellow');
     TP.sys.setcfg('theme.default.option', 'yellow');
-    TP.sys.setcfg('theme.default.param', 'white');
+    TP.sys.setcfg('theme.default.param', 'gray');
 
     //  Processing states
     TP.sys.setcfg('theme.default.success', 'green');
@@ -500,19 +499,123 @@
     //  Alert/confirm/prompt and stdio components.
     TP.sys.setcfg('theme.default.notify', 'yellow');
     TP.sys.setcfg('theme.default.stdin', 'green');
-    TP.sys.setcfg('theme.default.stdout', 'white');
+    TP.sys.setcfg('theme.default.stdout', 'gray');
     TP.sys.setcfg('theme.default.stderr', 'red');
 
     //  Markup, JSON, etc.
-    TP.sys.setcfg('theme.default.angle', 'white');
-    TP.sys.setcfg('theme.default.brace', 'white');
-    TP.sys.setcfg('theme.default.tag', 'white');
-    TP.sys.setcfg('theme.default.attr', 'white');
-    TP.sys.setcfg('theme.default.equal', 'white');
-    TP.sys.setcfg('theme.default.quote', 'white');
-    TP.sys.setcfg('theme.default.key', 'white');
-    TP.sys.setcfg('theme.default.colon', 'white');
-    TP.sys.setcfg('theme.default.value', 'white');
+    TP.sys.setcfg('theme.default.angle', 'gray');
+    TP.sys.setcfg('theme.default.brace', 'gray');
+    TP.sys.setcfg('theme.default.tag', 'gray');
+    TP.sys.setcfg('theme.default.attr', 'gray');
+    TP.sys.setcfg('theme.default.equal', 'gray');
+    TP.sys.setcfg('theme.default.quote', 'gray');
+    TP.sys.setcfg('theme.default.key', 'gray');
+    TP.sys.setcfg('theme.default.colon', 'gray');
+    TP.sys.setcfg('theme.default.value', 'gray');
+
+    //  ---
+    //  light background theme
+    //  ---
+
+    //  Standard TIBET logging levels
+    TP.sys.setcfg('theme.light.trace', 'gray');
+    TP.sys.setcfg('theme.light.debug', 'gray');
+    TP.sys.setcfg('theme.light.info', 'fgText');
+    TP.sys.setcfg('theme.light.warn', 'yellow');
+    TP.sys.setcfg('theme.light.error', 'red');
+    TP.sys.setcfg('theme.light.fatal', 'red');
+    TP.sys.setcfg('theme.light.system', 'cyan');
+
+    //  Additional names from cli, npm, syslog from winston
+    TP.sys.setcfg('theme.light.emerg', 'red');
+    TP.sys.setcfg('theme.light.crit', 'red');
+    TP.sys.setcfg('theme.light.warning', 'yellow');
+    TP.sys.setcfg('theme.light.alert', 'yellow');
+    TP.sys.setcfg('theme.light.notice', 'yellow');
+    TP.sys.setcfg('theme.light.help', 'cyan');
+    TP.sys.setcfg('theme.light.silly', 'magenta');
+    TP.sys.setcfg('theme.light.data', 'gray');
+    TP.sys.setcfg('theme.light.prompt', 'gray');
+    TP.sys.setcfg('theme.light.input', 'gray');
+    TP.sys.setcfg('theme.light.verbose', 'magenta');
+
+    //  Chalk et. al. ANSI setting
+    TP.sys.setcfg('theme.light.dim', 'gray');
+
+    //  Common log entry items (datetime, timestamp, time delta, etc.)
+    TP.sys.setcfg('theme.light.bracket', 'black');
+    TP.sys.setcfg('theme.light.time', 'gray');
+    TP.sys.setcfg('theme.light.stamp', 'gray');
+    TP.sys.setcfg('theme.light.delta', 'gray');
+    TP.sys.setcfg('theme.light.slow', 'yellow');
+    TP.sys.setcfg('theme.light.ms', 'magenta');
+    TP.sys.setcfg('theme.light.size', 'magenta');
+
+    //  Standard HTTP logging elements and result codes
+    TP.sys.setcfg('theme.light.verb', 'green');
+    TP.sys.setcfg('theme.light.url', 'underline.gray');
+    TP.sys.setcfg('theme.light.1xx', 'black');
+    TP.sys.setcfg('theme.light.2xx', 'green');
+    TP.sys.setcfg('theme.light.3xx', 'cyan');
+    TP.sys.setcfg('theme.light.4xx', 'red');
+    TP.sys.setcfg('theme.light.5xx', 'red');
+
+    //  Common file/path output formats.
+    TP.sys.setcfg('theme.light.file', 'underline.black');
+    TP.sys.setcfg('theme.light.line', 'bold.black');
+
+    //  Startup information for the TDS
+    TP.sys.setcfg('theme.light.logo', 'gray');
+    TP.sys.setcfg('theme.light.project', 'green');
+    TP.sys.setcfg('theme.light.version', 'black');
+    TP.sys.setcfg('theme.light.env', 'green');
+    TP.sys.setcfg('theme.light.host', 'underline.black');
+
+    //  Common TDS components and data items.
+    TP.sys.setcfg('theme.light.tds', 'magenta');
+    TP.sys.setcfg('theme.light.tws', 'magenta');
+    TP.sys.setcfg('theme.light.plugin', 'magenta');
+    TP.sys.setcfg('theme.light.route', 'green');
+    TP.sys.setcfg('theme.light.mock', 'yellow');
+    TP.sys.setcfg('theme.light.task', 'magenta');
+
+    //  Common CLI components and data items.
+    TP.sys.setcfg('theme.light.command', 'yellow');
+    TP.sys.setcfg('theme.light.option', 'yellow');
+    TP.sys.setcfg('theme.light.param', 'black');
+
+    //  Processing states
+    TP.sys.setcfg('theme.light.success', 'green');
+    TP.sys.setcfg('theme.light.failure', 'red');
+
+    //  TAP output components
+    TP.sys.setcfg('theme.light.comment', 'gray');
+    TP.sys.setcfg('theme.light.pass', 'green');
+    TP.sys.setcfg('theme.light.fail', 'red');
+    TP.sys.setcfg('theme.light.skip', 'cyan');
+    TP.sys.setcfg('theme.light.todo', 'yellow');
+
+    //  Linting output elements.
+    TP.sys.setcfg('theme.light.lintpass', 'underline.green');
+    TP.sys.setcfg('theme.light.lintfail', 'underline.red');
+    TP.sys.setcfg('theme.light.lintwarn', 'underline.yellow');
+
+    //  Alert/confirm/prompt and stdio components.
+    TP.sys.setcfg('theme.light.notify', 'yellow');
+    TP.sys.setcfg('theme.light.stdin', 'green');
+    TP.sys.setcfg('theme.light.stdout', 'black');
+    TP.sys.setcfg('theme.light.stderr', 'red');
+
+    //  Markup, JSON, etc.
+    TP.sys.setcfg('theme.light.angle', 'black');
+    TP.sys.setcfg('theme.light.brace', 'black');
+    TP.sys.setcfg('theme.light.tag', 'black');
+    TP.sys.setcfg('theme.light.attr', 'black');
+    TP.sys.setcfg('theme.light.equal', 'black');
+    TP.sys.setcfg('theme.light.quote', 'black');
+    TP.sys.setcfg('theme.light.key', 'black');
+    TP.sys.setcfg('theme.light.colon', 'black');
+    TP.sys.setcfg('theme.light.value', 'black');
 
     //  ---
     //  scheme/theme defaults
@@ -521,10 +624,10 @@
     TP.sys.setcfg('boot.color.scheme', 'webchalk');
     TP.sys.setcfg('boot.color.theme', 'default');
 
-    TP.sys.setcfg('cli.color.scheme', 'ttychalk');
+    TP.sys.setcfg('cli.color.scheme', 'default');
     TP.sys.setcfg('cli.color.theme', 'default');
 
-    TP.sys.setcfg('tds.color.scheme', 'ttychalk');
+    TP.sys.setcfg('tds.color.scheme', 'default');
     TP.sys.setcfg('tds.color.theme', 'default');
 
     //  ---

@@ -24,7 +24,6 @@
         sh,
         dom,
         Package,
-        Color,
         Logger,
         parser,
         serializer,
@@ -47,7 +46,6 @@
     parser = new dom.DOMParser();
     serializer = new dom.XMLSerializer();
 
-    Color = require('./tibet_color');
     Logger = require('./tibet_logger');
 
     ifInvalid = function(aValue, aDefault) {
@@ -153,6 +151,7 @@
 
     Package = function(options) {
         var pkg,
+            color,
             origTP;
 
         this.packageStack = [];
@@ -169,8 +168,11 @@
         this.npm = {};
         this.tibet = {};
 
-        this.color = new Color(this.options);
-        this.colorize = this.color.colorize.bind(this.color);
+        //  Tricky thing here is we need a logger during startup but we can't
+        //  really colorize it until we've read the config meaning there's a
+        //  window where our logger has no color. We activate color later.
+        color = this.options.color;
+        this.options.color = false;
         this.logger = new Logger(this.options);
 
         pkg = this;
@@ -225,12 +227,13 @@
         };
         TP.sys.cfg = TP.sys.getcfg;
 
-        // NOTE we do this early so command-line can affect debugging output etc for
-        // the later steps and a second time after loading config etc.
+        // NOTE we do this early so command-line can affect debugging output etc
+        // for the later steps and a second time after loading config etc.
         this.setRuntimeOptions(this.options);
 
         try {
-            // Load remaining TIBET configuration data for paths/virtual paths etc.
+            // Load remaining TIBET configuration data for paths/virtual paths
+            // etc.
             this.loadTIBETBaseline();
         } catch (e) {
             // If loading the baseline failed it's typically due to one of two
@@ -245,15 +248,19 @@
             TP = origTP;
         }
 
-        // Process local project file content into proper configuration data. This
-        // step overwrites initial options with npm, default, tibet, and tds config
-        // in that order. This allows config file content to override "defaults"
-        // from the inbound options.
+        // Process local project file content into proper configuration data.
+        // This step overwrites initial options with npm, default, tibet, and
+        // tds config in that order. This allows config file content to override
+        // "defaults" from the inbound options.
         this.setProjectOptions();
 
         // Reapply any configuration data specifically defined on the command line.
         // This final step lets the command line override config data file content.
         this.setRuntimeOptions(this.options, '', true);
+
+        //  Reset color and reconfigure logger now that we have baseline cfg.
+        this.options.color = color;
+        this.logger = new Logger(this.options);
 
         // Expand final option values into working properties.
         this.expandOptions();

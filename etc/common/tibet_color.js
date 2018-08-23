@@ -13,7 +13,9 @@
  */
 //  ========================================================================
 
-/* global TP:true, phantom:true */
+/* global TP:true, */
+
+/* eslint no-console:0 */
 
 (function() {
 
@@ -23,15 +25,8 @@
         ansiStyles;
 
     //  Colors are used for RGB index lookups. Styles are used for modifiers.
-    if (typeof phantom !== 'undefined') {
-        ansi256 = require(phantom.libraryPath +
-            '/../../node_modules/ansi-256-colors');
-        ansiStyles = require(phantom.libraryPath +
-            '/../../node_modules/ansi-styles');
-    } else {
-        ansi256 = require('ansi-256-colors');
-        ansiStyles = require('ansi-styles');
-    }
+    ansi256 = require('ansi-256-colors');
+    ansiStyles = require('ansi-styles');
 
     /**
      * The base color object. Supports a colorize method which is the primary
@@ -41,35 +36,27 @@
      * @returns {Color} A new instance ready for colorizing.
      */
     Color = function(options) {
+        var scheme,
+            theme;
 
         this.options = options || {};
 
-        //  Color module is pulled in by the cli, tds, phantom, package, etc. so
+        //  Color module is pulled in by the cli, tds, package, etc. so
         //  it needs to leverage tibet_config for accessing config data.
-        if (typeof phantom !== 'undefined') {
-            Config = require(phantom.libraryPath +
-                '/../common/tibet_config');
-        } else {
-            Config = require('./tibet_config');
-        }
+        Config = require('./tibet_config');
         this.config = new Config(this.options);
 
         //  Do the scheme and theme updates _after_ we get config in place so
         //  that invoking the setters will also preload the right config data.
-        if (typeof phantom !== 'undefined') {
-            //  Phantom should use the 'cli' settings for scheme/theme.
-            this.scheme(options.scheme ||
-                this.config.getcfg('cli.color.scheme') ||
-                this._scheme);
-            this.theme(options.theme ||
-                this.config.getcfg('cli.color.theme') ||
-                this._theme);
-        } else {
-            this.scheme(options.scheme || process.env.TIBET_CLI_SCHEME ||
-                this._scheme);
-            this.theme(options.theme || process.env.TIBET_CLI_THEME ||
-                this._theme);
-        }
+        scheme = options.scheme ||
+            this.config.getcfg('cli.color.scheme') ||
+            this._scheme;
+        this.scheme(scheme);
+
+        theme = options.theme ||
+            this.config.getcfg('cli.color.theme') ||
+            this._theme;
+        this.theme(theme);
 
         return this;
     };
@@ -193,8 +180,14 @@
         if (aName) {
             name = aName.toLowerCase();
             cfg = this.config.getcfg('color.' + name);
-            if (!cfg) {
-                throw new Error('InvalidColorScheme', name);
+            //  Sanity check here for an fgText key. This helps avoid situations
+            //  where an ambiguous key is given and returns results but they're
+            //  not capable of supplying real colors during lookups.
+            if (!cfg || !cfg['color.' + name + '.fgText']) {
+                console.error('Invalid color scheme \'' + name +
+                '\'. Using default.');
+                cfg = this.config.getcfg('color.default');
+                name = 'default';
             }
             this._colors = cfg;
             this._scheme = name;
@@ -218,8 +211,14 @@
         if (aName) {
             name = aName.toLowerCase();
             cfg = this.config.getcfg('theme.' + name);
-            if (!cfg) {
-                throw new Error('InvalidTheme', name);
+            //  Sanity check here for an fgText key. This helps avoid situations
+            //  where an ambiguous key is given and returns results but they're
+            //  not capable of supplying real colors during lookups.
+            if (!cfg || !cfg['theme.' + name + '.system']) {
+                console.error('Invalid color theme \'' + name +
+                '\'. Using default.');
+                cfg = this.config.getcfg('theme.default');
+                name = 'default';
             }
             this._styles = cfg;
             this._theme = name;

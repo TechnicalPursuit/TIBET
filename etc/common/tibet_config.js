@@ -5,7 +5,7 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview A PhantomJS-friendly configuration loader used by tibet_color (and
+ * @overview A TIBET-friendly configuration loader used by tibet_color (and
  *     perhaps eventually tibet_package) to load TIBET configuration data.
  */
 //  ========================================================================
@@ -21,20 +21,17 @@
         Config;
 
     /**
-     * A configuration loader capable of loading information even within the
-     * somewhat limited environment provided by PhantomJS (which uses its own
-     * require() call etc).
+     * Standard helper for loading TIBET configuration data.
      * @param {Object} options Configuration options which assist the receiver
      *     in computing paths and locating configuration resources.
      * @returns {Config} A newly constructed config instance.
      */
     Config = function(options) {
-        var origTP,
-            my,
+        var my,
             env,
-            root,
             head,
-            app;
+            app,
+            fullpath;
 
         this.options = options || {};
 
@@ -44,8 +41,6 @@
         this.tds = {};
 
         my = this;
-
-        origTP = global.TP;
 
         TP = {};
         TP.sys = {};
@@ -94,142 +89,78 @@
         };
         TP.sys.cfg = TP.sys.getcfg;
 
-        //  File loading varies by whether we're invoked from the phantom side
-        //  or from within Node.
-        if (typeof phantom !== 'undefined') {
+        path = require('path');
+        sh = require('shelljs');
 
-            //  NOTE param values from phantom are quoted string so we slice off
-            root = this.options['lib-root'];
-            if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
-                root = root.slice(1, -1);
+        /**
+         * Removes a module from the npm require cache.
+         */
+        require.uncache = function(moduleName) {
+            // Run over the cache looking for the files
+            // loaded by the specified module name
+            require.searchCache(moduleName, function(mod) {
+                delete require.cache[mod.id];
+            });
+        };
+
+        /**
+         * Runs over the npm cache to search for a cached module.
+         */
+        require.searchCache = function(moduleName, callback) {
+            // Resolve the module identified by the specified name
+            var module;
+
+            module = require.resolve(moduleName);
+
+            // Check if the module has been resolved and found within
+            // the cache
+            if (module && (module = require.cache[module]) !== undefined) {
+                // Recursively go over the results
+                (function run(mod) {
+                    // Go over each of the module's children and
+                    // run over it
+                    mod.children.forEach(function(child) {
+                        run(child);
+                    });
+
+                    // Call the specified callback providing the
+                    // found module
+                    callback(mod);
+                }(module));
             }
+        };
 
-            require(root + '/src/tibet/boot/tibet_cfg');
+        //  NOTE below we uncache to be sure we get a clean/refreshed load
+        //  for each Config instance created.
+        require.uncache('../../src/tibet/boot/tibet_cfg');
+        require('../../src/tibet/boot/tibet_cfg');
 
-            //  Our phantom operations don't require TDS data.
-            //  require(root + '/tds/tds_cfg')(TP.sys.setcfg);
+        require.uncache('../../tds/tds_cfg');
+        require('../../tds/tds_cfg')(TP.sys.setcfg);
 
-            try {
-                root = this.options['app-head'];
-                if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
-                    root = root.slice(1, -1);
-                }
-                this.npm = require(root + '/' + Config.NPM_FILE);
-            } catch (e) {
-                // Make sure we default to some value.
-                this.npm = this.npm || {};
-            }
-            try {
-                root = this.options['app-root'];
-                if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
-                    root = root.slice(1, -1);
-                }
-                this.tibet = require(root + '/' + Config.PROJECT_FILE);
-            } catch (e) {
-                // Make sure we default to some value.
-                this.tibet = this.tibet || {};
-            }
-            try {
-                root = this.options['app-head'];
-                if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
-                    root = root.slice(1, -1);
-                }
+        head = this.getAppHead();
+        app = this.getAppRoot();
 
-                //  Our phantom operations don't require TDS data.
-                if (typeof phantom === 'undefined') {
-                    this.tds = require(root + '/' + Config.SERVER_FILE);
-                } else {
-                    // Make sure we default to some value.
-                    this.tds = this.tds || {};
-                }
-            } catch (e) {
-                // Make sure we default to some value.
-                this.tds = this.tds || {};
-            }
-
-            TP = origTP;
-
-        } else {
-
-            path = require('path');
-            sh = require('shelljs');
-
-            /**
-             * Removes a module from the npm require cache.
-             */
-            require.uncache = function(moduleName) {
-                // Run over the cache looking for the files
-                // loaded by the specified module name
-                require.searchCache(moduleName, function(mod) {
-                    delete require.cache[mod.id];
-                });
-            };
-
-            /**
-             * Runs over the npm cache to search for a cached module.
-             */
-            require.searchCache = function(moduleName, callback) {
-                // Resolve the module identified by the specified name
-                var module;
-
-                module = require.resolve(moduleName);
-
-                // Check if the module has been resolved and found within
-                // the cache
-                if (module && (module = require.cache[module]) !== undefined) {
-                    // Recursively go over the results
-                    (function run(mod) {
-                        // Go over each of the module's children and
-                        // run over it
-                        mod.children.forEach(function(child) {
-                            run(child);
-                        });
-
-                        // Call the specified callback providing the
-                        // found module
-                        callback(mod);
-                    }(module));
-                }
-            };
-
-            //  NOTE below we uncache to be sure we get a clean/refreshed load
-            //  for each Config instance created.
-            require.uncache('../../src/tibet/boot/tibet_cfg');
-            require('../../src/tibet/boot/tibet_cfg');
-
-            //  Our phantom operations don't require TDS data.
-            if (typeof phantom === 'undefined') {
-                require.uncache('../../tds/tds_cfg');
-                require('../../tds/tds_cfg')(TP.sys.setcfg);
-            }
-
-            head = this.getAppHead();
-            app = this.getAppRoot();
-
-            try {
-                this.npm = require(path.join(head, Config.NPM_FILE));
-            } catch (e) {
-                // Make sure we default to some value.
-                this.npm = this.npm || {};
-            }
-            try {
-                this.tibet = require(path.join(app, Config.PROJECT_FILE));
-            } catch (e) {
-                // Make sure we default to some value.
-                this.tibet = this.tibet || {};
-            }
-            try {
-                //  Our phantom operations don't require TDS data.
-                if (typeof phantom === 'undefined') {
-                    this.tds = require(path.join(head, Config.SERVER_FILE));
-                } else {
-                    // Make sure we default to some value.
-                    this.tds = this.tds || {};
-                }
-            } catch (e) {
-                // Make sure we default to some value.
-                this.tds = this.tds || {};
-            }
+        try {
+            fullpath = path.join(head, Config.NPM_FILE);
+            this.npm = require(fullpath);
+        } catch (e) {
+            // Make sure we default to some value.
+            this.npm = this.npm || {};
+        }
+        try {
+            fullpath = path.join(app, Config.PROJECT_FILE);
+            this.tibet = require(fullpath);
+        } catch (e) {
+            // Make sure we default to some value.
+            this.tibet = this.tibet || {};
+        }
+        try {
+            fullpath = path.join(head, Config.SERVER_FILE);
+            this.tds = require(fullpath);
+        } catch (e) {
+            // Make sure we default to some value.
+            this.tds = this.tds || {};
         }
 
         //  Blend in the values from npm and TIBET configuration files.
@@ -402,10 +333,10 @@
 
 
     /**
-     * Returns the application root directory. If path.app_root is set via command
-     * line options that value is used. When not provided app_root typically
-     * defaults to app_head since the majority of application structures don't
-     * separate the two (TIBET's couchapp dna is an exception).
+     * Returns the application root directory. If path.app_root is set via
+     * command line options that value is used. When not provided app_root
+     * typically defaults to app_head since the majority of application
+     * structures don't separate the two (TIBET's couchapp dna is an exception).
      * @returns {String} The application root.
      */
     Config.prototype.getAppRoot = function() {
@@ -413,15 +344,17 @@
             tibet,
             approot,
             fullpath,
-            list;
+            list,
+            found;
 
         // Return cached value if available.
         if (this.app_root) {
             return this.app_root;
         }
 
-        // Check command line options and tibet.json configuration data. NOTE that
-        // we can't use getcfg() here due to ordering/bootstrapping considerations.
+        // Check command line options and tibet.json configuration data. NOTE
+        // that we can't use getcfg() here due to ordering/bootstrapping
+        // considerations.
         if (this.options && this.options.app_root) {
             this.app_root = this.options.app_root;
             return this.app_root;
@@ -441,33 +374,30 @@
         tibet = Config.PROJECT_FILE;
         approot = head;
         fullpath = path.join(head, tibet);
-        if (!sh.test('-f', fullpath)) {
-            //  Not found in the immediate location of package file
-            //  so try to locate it in a direct subdirectory.
-            list = sh.ls(head);
-            list.some(function(file) {
-                var full;
-
-                full = path.join(head, file);
-                if (!sh.test('-d', full)) {
-                    fullpath = null;
-                    return false;
-                }
-
-                approot = file;
-                fullpath = path.join(full, tibet);
-                return sh.test('-f', fullpath);
-            });
+        if (sh.test('-f', fullpath)) {
+            return head;
         }
 
-        if (!fullpath) {
-            return;
-        }
+        //  Not found in the immediate location of package file
+        //  so try to locate it in a direct subdirectory.
+        list = sh.ls(head);
+        found = list.some(function(file) {
+            var testhead;
 
-        if (!this.isAbsolutePath(approot)) {
-            approot = path.join('~/', approot);
+            testhead = path.join(head, file);
+            if (!sh.test('-d', testhead)) {
+                return false;
+            }
+
+            approot = testhead;
+            fullpath = path.join(testhead, tibet);
+
+            return sh.test('-f', fullpath);
+        });
+
+        if (found) {
+            this.app_root = approot;
         }
-        this.app_root = approot;
 
         return this.app_root;
     };

@@ -40,14 +40,20 @@
         }
         this.setLevel(this.options.level || level);
 
-        this.color = new Color(this.options);
-        this.colorize = this.color.colorize.bind(this.color);
+        if (this.options.color) {
+            this.activateColor();
+        } else {
+            this.colorize = function(str) {
+                return str;
+            };
+        }
 
         return this;
     };
 
 
     //  Standard TIBET logging levels. Used to filter based on level.
+    Logger.ALL = 0;
     Logger.TRACE = 1;
     Logger.DEBUG = 2;
     Logger.INFO = 3;
@@ -55,6 +61,7 @@
     Logger.ERROR = 5;
     Logger.FATAL = 6;
     Logger.SYSTEM = 7;
+    Logger.OFF = 8;
 
 
     /**
@@ -62,15 +69,25 @@
      * @type {Array.<String>}
      */
     Logger.LEVELS = [
-        'any',
+        'all',
         'trace',
         'debug',
         'info',
         'warn',
         'error',
         'fatal',
-        'system'
+        'system',
+        'off'
     ];
+
+
+    /**
+     *
+     */
+    Logger.prototype.activateColor = function() {
+        this.color = new Color(this.options);
+        this.colorize = this.color.colorize.bind(this.color);
+    };
 
 
     /**
@@ -163,7 +180,7 @@
         }
 
         lvl = this.getLevelValue(level || Logger.INFO);
-        if (lvl < this.getLevel()) {
+        if (lvl < this.getLevel() || lvl === Logger.OFF) {
             return;
         }
 
