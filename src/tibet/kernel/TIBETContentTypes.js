@@ -2376,6 +2376,12 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     //  Splice it into the collection.
     targetCollection.splice(insertIndex, 0, dataRow);
 
+    /* TODO: This doesn't seem to be necessary and it causes the resource in the
+     * URI to change to be the collection, which is definitely wrong. At worst,
+     * this should replace the URI's resource with a new instance of it's own
+     * class ('this' is the content object and the URI's resource should be
+     * another one). Review this.
+
     //  NB: We *must* reset the targetURI's resource here since we've modified
     //  it 'outside' of the normal set()/get() behavior and observers that are
     //  observing this object for changes will be depending on having a
@@ -2384,6 +2390,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
     //  observers to trigger early, but instead use the richer notification
     //  they'll receive from the code below.
     targetURI.setResource(targetCollection, TP.request('signalChange', false));
+    */
 
     //  The index that changed.
     changedIndex = insertIndex;
