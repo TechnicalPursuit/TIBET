@@ -5411,7 +5411,6 @@ function(aRequest) {
     request.complete(result);
 
     return response;
-
 });
 
 //  ------------------------------------------------------------------------
