@@ -8702,6 +8702,7 @@ function(forceRefresh) {
      */
 
     var resource,
+        retVal,
         url,
         parts,
         path;
@@ -8717,13 +8718,19 @@ function(forceRefresh) {
             //  If it's a Window, hand back a TIBET URI, but pointing to the
             //  'more concrete' URI that includes the Window's global ID.
             if (TP.isKindOf(resource, TP.core.Window)) {
-                return TP.uc('tibet://' + TP.gid(resource));
+                retVal = TP.uc('tibet://' + TP.gid(resource));
             } else {
-                return TP.uc(TP.gid(resource));
+                retVal = TP.uc(TP.gid(resource));
             }
+        } else {
+            return;
         }
 
-        return;
+        //  Make sure that we're not just ending up with ourself. Otherwise,
+        //  we'll be back here again in an endless recursion.
+        if (retVal.getLocation() !== this.getLocation()) {
+            return retVal;
+        }
     }
 
     //  we don't allow runtime alteration to virtual paths largely due to
