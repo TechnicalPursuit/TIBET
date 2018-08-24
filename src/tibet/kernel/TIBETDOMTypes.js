@@ -4542,12 +4542,14 @@ function(newContent, aRequest, stdinContent) {
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.dom.Node|undefined} The result of adding content to the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var request,
         resp,
-        content;
+        content,
+        nativeContent;
 
     if (TP.notValid(newContent) || newContent === '') {
         return;
@@ -4590,6 +4592,23 @@ function(newContent, aRequest, stdinContent) {
 
     content = resp.get('result');
 
+    //  Unwrap the content and, if it's an Element, check to see if its a
+    //  'tibet_root' element (note that this element might have a default
+    //  namespace defined that was used to quality the markup handed in - we
+    //  can't rely on that namespace). This means that the DOM parsing code
+    //  detected a DocumentFragment as the result DOM node and handed us back
+    //  the actual root node it used to parse the content.
+    //  In this case, we extract the child nodes of the content out as a
+    //  fragment and use that to set our content.
+    nativeContent = TP.unwrap(content);
+    if (TP.isElement(nativeContent)) {
+        if (TP.elementGetLocalName(nativeContent) === 'tibet_root') {
+            content = TP.nodeListAsFragment(nativeContent.childNodes);
+        }
+    }
+
+    //  Note that if content was a DocumentFragment here, this call will return
+    //  the *first* DOM node that was added.
     return this.addRawContent(content, request);
 });
 
@@ -4610,7 +4629,8 @@ function(newContent, aRequest, shouldSignal) {
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
      * @returns {TP.dom.Node|undefined} The result of adding content to the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var node,
@@ -4839,12 +4859,14 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.dom.Node|undefined} The result of setting the content of the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var request,
         resp,
-        content;
+        content,
+        nativeContent;
 
     if (TP.notValid(newContent) || newContent === '') {
         return;
@@ -4885,6 +4907,23 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
 
     content = resp.get('result');
 
+    //  Unwrap the content and, if it's an Element, check to see if its a
+    //  'tibet_root' element (note that this element might have a default
+    //  namespace defined that was used to quality the markup handed in - we
+    //  can't rely on that namespace). This means that the DOM parsing code
+    //  detected a DocumentFragment as the result DOM node and handed us back
+    //  the actual root node it used to parse the content.
+    //  In this case, we extract the child nodes of the content out as a
+    //  fragment and use that to set our content.
+    nativeContent = TP.unwrap(content);
+    if (TP.isElement(nativeContent)) {
+        if (TP.elementGetLocalName(nativeContent) === 'tibet_root') {
+            content = TP.nodeListAsFragment(nativeContent.childNodes);
+        }
+    }
+
+    //  Note that if content was a DocumentFragment here, this call will return
+    //  the *first* DOM node that was added.
     return this.insertRawContent(content, aPositionOrPath, request);
 });
 
@@ -4910,7 +4949,8 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
      * @returns {TP.dom.Node|undefined} The result of adding content to the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var node,
@@ -5077,7 +5117,8 @@ function(newContent, aRequest, stdinContent) {
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.dom.Node|undefined} The result of setting the content of the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var request,
@@ -5089,7 +5130,9 @@ function(newContent, aRequest, stdinContent) {
         isElement,
         isURIStr,
         containsElemMarkup,
-        containsEntities;
+        containsEntities,
+
+        nativeContent;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -5177,6 +5220,23 @@ function(newContent, aRequest, stdinContent) {
 
     content = resp.get('result');
 
+    //  Unwrap the content and, if it's an Element, check to see if its a
+    //  'tibet_root' element (note that this element might have a default
+    //  namespace defined that was used to quality the markup handed in - we
+    //  can't rely on that namespace). This means that the DOM parsing code
+    //  detected a DocumentFragment as the result DOM node and handed us back
+    //  the actual root node it used to parse the content.
+    //  In this case, we extract the child nodes of the content out as a
+    //  fragment and use that to set our content.
+    nativeContent = TP.unwrap(content);
+    if (TP.isElement(nativeContent)) {
+        if (TP.elementGetLocalName(nativeContent) === 'tibet_root') {
+            content = TP.nodeListAsFragment(nativeContent.childNodes);
+        }
+    }
+
+    //  Note that if content was a DocumentFragment here, this call will return
+    //  the *first* DOM node that was added.
     return this.replaceRawWith(content, request);
 });
 
@@ -5197,7 +5257,8 @@ function(newContent, aRequest, shouldSignal) {
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
      * @returns {TP.dom.Node|undefined} The result of setting the content of the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var node,
@@ -5310,7 +5371,8 @@ function(newContent, aRequest, stdinContent) {
      *     the supplied content. Note that if this parameter is supplied, the
      *     content is 'executed', as well as processed, by the shell.
      * @returns {TP.dom.Node|undefined} The result of setting the content of the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var request,
@@ -5322,7 +5384,9 @@ function(newContent, aRequest, stdinContent) {
         isElement,
         isURIStr,
         containsElemMarkup,
-        containsEntities;
+        containsEntities,
+
+        nativeContent;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -5410,6 +5474,23 @@ function(newContent, aRequest, stdinContent) {
 
     content = resp.get('result');
 
+    //  Unwrap the content and, if it's an Element, check to see if its a
+    //  'tibet_root' element (note that this element might have a default
+    //  namespace defined that was used to quality the markup handed in - we
+    //  can't rely on that namespace). This means that the DOM parsing code
+    //  detected a DocumentFragment as the result DOM node and handed us back
+    //  the actual root node it used to parse the content.
+    //  In this case, we extract the child nodes of the content out as a
+    //  fragment and use that to set our content.
+    nativeContent = TP.unwrap(content);
+    if (TP.isElement(nativeContent)) {
+        if (TP.elementGetLocalName(nativeContent) === 'tibet_root') {
+            content = TP.nodeListAsFragment(nativeContent.childNodes);
+        }
+    }
+
+    //  Note that if content was a DocumentFragment here, this call will return
+    //  the *first* DOM node that was added.
     return this.setRawContent(content, request);
 });
 
@@ -5430,7 +5511,8 @@ function(newContent, aRequest, shouldSignal) {
      * @param {Boolean} shouldSignal If false this operation will not trigger a
      *     change notification. This defaults to true.
      * @returns {TP.dom.Node|undefined} The result of setting the content of the
-     *     receiver.
+     *     receiver. If a DocumentFragment was supplied in newContent, this
+     *     return value will the *first* DOM node that was added.
      */
 
     var node,

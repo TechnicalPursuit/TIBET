@@ -531,9 +531,9 @@ TP.hc(
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
         if (TP.isString(defaultNS)) {
-            str = '<root xmlns="' + defaultNS + '"';
+            str = '<tibet_root xmlns="' + defaultNS + '"';
         } else {
-            str = '<root';
+            str = '<tibet_root';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -542,11 +542,11 @@ TP.hc(
             TP.notEmpty(defs = TP.w3.Xmlns.get('XMLNSDefs'))) {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + ' ' + defs + '>$&</root>');
+                str + ' ' + defs + '>$&</tibet_root>');
         } else {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + '>$&</root>');
+                str + '>$&</tibet_root>');
         }
 
         //  Detect things like binding expressions here and massage the DOM to
@@ -634,11 +634,18 @@ TP.hc(
             return null;
         }
 
-        //  Need to replace the '<root>' element that we used for XMLNS
-        //  qualification with its first child (which is the real content).
-        xmlDoc.replaceChild(
-                xmlDoc.documentElement.firstChild,
-                xmlDoc.documentElement);
+        //  If there is only 1 element child of the document element (i.e. the
+        //  '<tibet_root>' element that we used for XMLNS qualification) then we
+        //  need to replace that with its first child (which is the real
+        //  content). Note that we do *NOT* do this if there is more than 1
+        //  element child, which would indicate that we were handed a String
+        //  that resolved as a DocumentFragment. In this case, we just hand back
+        //  the <tibet_root> element.
+        if (xmlDoc.documentElement.children.length === 1) {
+            xmlDoc.replaceChild(
+                    xmlDoc.documentElement.firstChild,
+                    xmlDoc.documentElement);
+        }
 
         return xmlDoc;
     },
@@ -714,9 +721,9 @@ TP.hc(
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
         if (TP.isString(defaultNS)) {
-            str = '<root xmlns="' + defaultNS + '"';
+            str = '<tibet_root xmlns="' + defaultNS + '"';
         } else {
-            str = '<root';
+            str = '<tibet_root';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -725,11 +732,11 @@ TP.hc(
             TP.notEmpty(defs = TP.w3.Xmlns.get('XMLNSDefs'))) {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + ' ' + defs + '>$&</root>');
+                str + ' ' + defs + '>$&</tibet_root>');
         } else {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + '>$&</root>');
+                str + '>$&</tibet_root>');
         }
 
         //  Unfortunately, the DOMParser in IE decides to 'help' us by not
@@ -803,11 +810,18 @@ TP.hc(
             TP.elementCopyAttributes(activeXBody, regularBody);
         }
 
-        //  Need to replace the '<root>' element that we used for XMLNS
-        //  qualification with its first child (which is the real content).
-        xmlDoc.replaceChild(
-                xmlDoc.documentElement.firstChild,
-                xmlDoc.documentElement);
+        //  If there is only 1 element child of the document element (i.e. the
+        //  '<tibet_root>' element that we used for XMLNS qualification) then we
+        //  need to replace that with its first child (which is the real
+        //  content). Note that we do *NOT* do this if there is more than 1
+        //  element child, which would indicate that we were handed a String
+        //  that resolved as a DocumentFragment. In this case, we just hand back
+        //  the <tibet_root> element.
+        if (xmlDoc.documentElement.children.length === 1) {
+            xmlDoc.replaceChild(
+                    xmlDoc.documentElement.firstChild,
+                    xmlDoc.documentElement);
+        }
 
         return xmlDoc;
     },
@@ -882,9 +896,9 @@ TP.hc(
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
         if (TP.isString(defaultNS)) {
-            str = '<root xmlns="' + defaultNS + '"';
+            str = '<tibet_root xmlns="' + defaultNS + '"';
         } else {
-            str = '<root';
+            str = '<tibet_root';
         }
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
@@ -893,11 +907,11 @@ TP.hc(
             TP.notEmpty(defs = TP.w3.Xmlns.get('XMLNSDefs'))) {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + ' ' + defs + '>$&</root>');
+                str + ' ' + defs + '>$&</tibet_root>');
         } else {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + '>$&</root>');
+                str + '>$&</tibet_root>');
         }
 
         //  Detect things like binding expressions here and massage the DOM to
@@ -979,11 +993,18 @@ TP.hc(
             return null;
         }
 
-        //  Need to replace the '<root>' element that we used for XMLNS
-        //  qualification with its first child (which is the real content).
-        xmlDoc.replaceChild(
-                xmlDoc.documentElement.firstChild,
-                xmlDoc.documentElement);
+        //  If there is only 1 element child of the document element (i.e. the
+        //  '<tibet_root>' element that we used for XMLNS qualification) then we
+        //  need to replace that with its first child (which is the real
+        //  content). Note that we do *NOT* do this if there is more than 1
+        //  element child, which would indicate that we were handed a String
+        //  that resolved as a DocumentFragment. In this case, we just hand back
+        //  the <tibet_root> element.
+        if (xmlDoc.documentElement.children.length === 1) {
+            xmlDoc.replaceChild(
+                    xmlDoc.documentElement.firstChild,
+                    xmlDoc.documentElement);
+        }
 
         //  Safari has a nasty bug whereby, if the child needs a namespace
         //  definition, but that existed on the document element, then it won't
