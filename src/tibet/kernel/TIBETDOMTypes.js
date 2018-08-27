@@ -1126,35 +1126,43 @@ function(aRequest) {
     //  expressions.
     str = tpNode.getContent();
 
-    //  Run a transform on it.
-    result = str.transform(tpNode, info);
+    if (TP.regex.HAS_ACP.test(str)) {
+        //  Run a transform on it.
+        result = str.transform(tpNode, info);
 
-    //  If the result contains 'element' markup (and does *not* contain more
-    //  ACP expressions), then try to create a Fragment from it and use that
-    //  to replace the node.
-    if (!TP.regex.HAS_ACP.test(result) &&
-        TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
+        //  Only do this if the result came out differently than the source
+        //  string.
+        if (result !== str) {
 
-        elem = TP.elem('<root>' + result + '</root>',
-                        TP.w3.Xmlns.XHTML,
-                        false);
+            //  If the result contains 'element' markup (and does *not* contain
+            //  more ACP expressions), then try to create a Fragment from it and
+            //  use that to replace the node.
+            if (!TP.regex.HAS_ACP.test(result) &&
+                TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
-        //  Note that we convert into a DocumentFragment here since the
-        //  transformed String may contain multiple peer nodes (although we were
-        //  able to parse it due to wrapping it into Element markup above -- but
-        //  that's not the 'real' markup).
-        frag = TP.nodeListAsFragment(elem.childNodes);
+                elem = TP.elem('<root>' + result + '</root>',
+                                TP.w3.Xmlns.XHTML,
+                                false);
 
-        //  This will check for either Elements or DocumentFragments (and
-        //  Documents, too, which is invalid here but highly unlikely).
-        if (TP.isCollectionNode(frag)) {
-            TP.elementSetContent(node, frag, null, false);
+                //  Note that we convert into a DocumentFragment here since the
+                //  transformed String may contain multiple peer nodes
+                //  (although we were able to parse it due to wrapping it into
+                //  Element markup above -- but that's not the 'real' markup).
+                frag = TP.nodeListAsFragment(elem.childNodes);
+
+                //  This will check for either Elements or DocumentFragments
+                //  (and Documents, too, which is invalid here but highly
+                //  unlikely).
+                if (TP.isCollectionNode(frag)) {
+                    TP.elementSetContent(node, frag, null, false);
+                }
+            } else if (TP.notEmpty(result)) {
+                //  Otherwise, it was just a straight templated value (or it
+                //  contained further ACP templating expressions) - just set the
+                //  original node's text content.
+                tpNode.setTextContent(result);
+            }
         }
-    } else if (TP.notEmpty(result)) {
-        //  Otherwise, it was just a straight templated value (or it
-        //  contained further ACP templating expressions) - just set the
-        //  original node's text content.
-        tpNode.setTextContent(result);
     }
 
     //  Process the attribute text.
@@ -1165,10 +1173,11 @@ function(aRequest) {
         //  Grab the text content of the Attribute node.
         str = TP.nodeGetTextContent(attrs.at(j));
         if (TP.regex.HAS_ACP.test(str)) {
-            //  Run a transform on it.
-            TP.nodeSetTextContent(
-                attrs.at(j),
-                str.transform(TP.wrap(attrs.at(j)), info));
+            result = str.transform(TP.wrap(attrs.at(j)), info);
+            if (result !== str) {
+                //  Run a transform on it.
+                TP.nodeSetTextContent(attrs.at(j), result);
+            }
         }
     }
 
