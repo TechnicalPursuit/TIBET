@@ -14747,7 +14747,6 @@ function(aNode, anObject) {
         case Node.PROCESSING_INSTRUCTION_NODE:
         case Node.COMMENT_NODE:
 
-            TP.nodeRefreshDescendantDocumentPositions(aNode);
             aNode.data = content;
 
             break;
