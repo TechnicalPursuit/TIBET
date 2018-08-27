@@ -4603,7 +4603,7 @@ function(newContent, aRequest, stdinContent) {
 
     //  Unwrap the content and, if it's an Element, check to see if its a
     //  'tibet_root' element (note that this element might have a default
-    //  namespace defined that was used to quality the markup handed in - we
+    //  namespace defined that was used to qualify the markup handed in - we
     //  can't rely on that namespace). This means that the DOM parsing code
     //  detected a DocumentFragment as the result DOM node and handed us back
     //  the actual root node it used to parse the content.
@@ -4918,7 +4918,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
 
     //  Unwrap the content and, if it's an Element, check to see if its a
     //  'tibet_root' element (note that this element might have a default
-    //  namespace defined that was used to quality the markup handed in - we
+    //  namespace defined that was used to qualify the markup handed in - we
     //  can't rely on that namespace). This means that the DOM parsing code
     //  detected a DocumentFragment as the result DOM node and handed us back
     //  the actual root node it used to parse the content.
@@ -5231,7 +5231,7 @@ function(newContent, aRequest, stdinContent) {
 
     //  Unwrap the content and, if it's an Element, check to see if its a
     //  'tibet_root' element (note that this element might have a default
-    //  namespace defined that was used to quality the markup handed in - we
+    //  namespace defined that was used to qualify the markup handed in - we
     //  can't rely on that namespace). This means that the DOM parsing code
     //  detected a DocumentFragment as the result DOM node and handed us back
     //  the actual root node it used to parse the content.
@@ -5485,7 +5485,7 @@ function(newContent, aRequest, stdinContent) {
 
     //  Unwrap the content and, if it's an Element, check to see if its a
     //  'tibet_root' element (note that this element might have a default
-    //  namespace defined that was used to quality the markup handed in - we
+    //  namespace defined that was used to qualify the markup handed in - we
     //  can't rely on that namespace). This means that the DOM parsing code
     //  detected a DocumentFragment as the result DOM node and handed us back
     //  the actual root node it used to parse the content.
