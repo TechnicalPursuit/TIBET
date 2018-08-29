@@ -6437,11 +6437,15 @@ function(aFunction) {
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate.
-     * @param {Function} aFunction A function which performs some action with an
-     *     element node.
+     * @param {Function} aFunction A function which performs some action with a
+     *     TP.dom.ElementNode node.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return TP.nodeAncestorsPerform(this.getNativeNode(), aFunction);
+    TP.nodeAncestorsPerform(this.getNativeNode(),
+                            TP.INVOKE_WRAPPED(aFunction));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6461,11 +6465,14 @@ function(aFunction) {
      *     means that, if the first or last node are not elements, the iteration
      *     function will not be called.
      * @param {Function} aFunction A function which performs some action with
-     *     each element provided.
+     *     each TP.dom.ElementNode provided.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return TP.nodeChildElementsPerform(this.getNativeNode(),
-                                        aFunction);
+    TP.nodeChildElementsPerform(this.getNativeNode(),
+                                TP.INVOKE_WRAPPED(aFunction));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6482,11 +6489,14 @@ function(aFunction) {
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
-     *     each node provided.
+     *     each TP.dom.Node provided.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return TP.nodeChildNodesPerform(this.getNativeNode(),
-                                    aFunction);
+    TP.nodeChildNodesPerform(this.getNativeNode(),
+                                TP.INVOKE_WRAPPED(aFunction));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6505,14 +6515,17 @@ function(aFunction, breadthFirst) {
      *     need to reverse the iteration use TP.nodeGetDescendants() to get the
      *     descendant list and then use Array's perform operation.
      * @param {Function} aFunction A function which performs some action with
-     *     each node provided.
+     *     each TP.dom.Node provided.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return TP.nodeDescendantsPerform(this.getNativeNode(),
-                                        aFunction,
-                                        breadthFirst);
+    TP.nodeDescendantsPerform(this.getNativeNode(),
+                                TP.INVOKE_WRAPPED(aFunction),
+                                breadthFirst);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6532,14 +6545,17 @@ function(aFunction, breadthFirst) {
      *     get the descendant element list and then use Array's perform
      *     operation.
      * @param {Function} aFunction A function which performs some action with
-     *     each element provided.
+     *     each TP.dom.ElementNode provided.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return TP.nodeDescendantElementsPerform(this.getNativeNode(),
-                                            aFunction,
-                                            breadthFirst);
+    TP.nodeDescendantElementsPerform(this.getNativeNode(),
+                                        TP.INVOKE_WRAPPED(aFunction),
+                                        breadthFirst);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -6560,11 +6576,14 @@ function(aFunction, aSubset) {
      *     each node provided.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
+     * @returns {TP.dom.CollectionNode} The receiver.
      */
 
-    return TP.nodeSiblingsPerform(this.getNativeNode(),
-                                    aFunction,
-                                    aSubset);
+    TP.nodeSiblingsPerform(this.getNativeNode(),
+                            TP.INVOKE_WRAPPED(aFunction),
+                            aSubset);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
