@@ -1620,7 +1620,7 @@ function() {
     var retVal;
 
     retVal = this.detectSibling(
-                function(aNode) {
+                function(aTPNode) {
                     var node;
 
                     node = TP.unwrap(aTPNode);
