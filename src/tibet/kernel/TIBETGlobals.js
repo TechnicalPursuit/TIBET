@@ -2289,6 +2289,12 @@ TP.RETURN_TOSTRING = function() {
     return this.toString();
 };
 
+TP.INVOKE_WRAPPED = function(aFunction) {
+    return function(anObject) {
+        return aFunction(TP.wrap(anObject));
+    };
+};
+
 //  ------------------------------------------------------------------------
 //  STRING LOCALIZATION / MAPPING
 //  ------------------------------------------------------------------------
