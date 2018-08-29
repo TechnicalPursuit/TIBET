@@ -116,6 +116,12 @@ function(aRequest) {
         return;
     }
 
+    //  Same check for 'on:click'.
+    onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+        return;
+    }
+
     //  Links with an empty HREF will try to reload the page. We really don't
     //  want that, we want to have them do nothing. We set '#' here and let the
     //  check further down add a return false click handler.
@@ -208,6 +214,13 @@ function(value) {
     //  "TP.go2('#')" here - it's a possibility that we might rewrite those
     //  exact expressions.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
+    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+        //  setting an attribute returns void according to the spec
+        return;
+    }
+
+    //  Same check for 'on:click'.
+    onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
     if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
         //  setting an attribute returns void according to the spec
         return;
