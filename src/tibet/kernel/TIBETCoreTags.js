@@ -1588,9 +1588,12 @@ function() {
     var retVal;
 
     retVal = this.detectSibling(
-                function(aNode) {
-                    if (TP.isElement(aNode) &&
-                        TP.elementGetLocalName(aNode) === 'cmd') {
+                function(aTPNode) {
+                    var node;
+
+                    node = TP.unwrap(aTPNode);
+                    if (TP.isElement(node) &&
+                        TP.elementGetLocalName(node) === 'cmd') {
                         return true;
                     }
 
@@ -1618,8 +1621,11 @@ function() {
 
     retVal = this.detectSibling(
                 function(aNode) {
-                    if (TP.isElement(aNode) &&
-                        TP.elementGetLocalName(aNode) === 'cmd') {
+                    var node;
+
+                    node = TP.unwrap(aTPNode);
+                    if (TP.isElement(node) &&
+                        TP.elementGetLocalName(node) === 'cmd') {
                         return true;
                     }
 

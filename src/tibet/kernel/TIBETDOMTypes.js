@@ -6599,12 +6599,12 @@ function(aFunction) {
      *     returns true. The normal direction of this search is from the node
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
+     *     acceptable TP.dom.Node.
      * @returns {TP.dom.ElementNode} An ancestor found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectAncestor(this.getNativeNode(),
-                                            aFunction));
+                                            TP.INVOKE_WRAPPED(aFunction)));
 });
 
 //  ------------------------------------------------------------------------
@@ -6616,14 +6616,14 @@ function(aFunction) {
      * @method detectChildElement
      * @summary Returns the first child element of the receiver for which
      *     aFunction returns true. Iteration is from firstChild to lastChild.
-     * @param {Function} aFunction A function which performs some action with
-     *     each node provided.
+     * @param {Function} aFunction A function returning true when passed an
+     *     acceptable TP.dom.ElementNode.
      * @returns {TP.dom.ElementNode} A child element found acceptable by
      *     aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildElement(this.getNativeNode(),
-                                                aFunction));
+                                            TP.INVOKE_WRAPPED(aFunction)));
 });
 
 //  ------------------------------------------------------------------------
@@ -6636,12 +6636,12 @@ function(aFunction) {
      * @summary Returns the first child node of the node for which aFunction
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
+     *     acceptable TP.dom.Node.
      * @returns {TP.dom.Node} A child node found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildNode(this.getNativeNode(),
-                                            aFunction));
+                                            TP.INVOKE_WRAPPED(aFunction)));
 });
 
 //  ------------------------------------------------------------------------
@@ -6657,14 +6657,14 @@ function(aFunction, breadthFirst) {
      *     perform a reverse detection use nodeGetDescendants() to get the
      *     collection in the order you desire and iterate on that.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
+     *     acceptable TP.dom.Node.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
      * @returns {TP.dom.Node} A descendant found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectDescendant(this.getNativeNode(),
-                                            aFunction,
+                                            TP.INVOKE_WRAPPED(aFunction),
                                             breadthFirst));
 });
 
@@ -6683,16 +6683,17 @@ function(aFunction, breadthFirst) {
      *     the collection in the order you desire and iterate on that
      *     collection.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
+     *     acceptable TP.dom.ElementNode.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
      * @returns {TP.dom.ElementNode} A descendant element found acceptable by
      *     aFunction.
      */
 
-    return TP.wrap(TP.nodeDetectDescendantElement(this.getNativeNode(),
-                                                    aFunction,
-                                                    breadthFirst));
+    return TP.wrap(TP.nodeDetectDescendantElement(
+                                    this.getNativeNode(),
+                                    TP.INVOKE_WRAPPED(aFunction),
+                                    breadthFirst));
 });
 
 //  ------------------------------------------------------------------------
@@ -6705,14 +6706,14 @@ function(aFunction, aSubset) {
      * @summary Returns the first sibling node (next, previous, or any) of the
      *     node for which aFunction returns true.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
+     *     acceptable TP.dom.Node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
      * @returns {TP.dom.Node} A sibling found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectSibling(this.getNativeNode(),
-                                        aFunction,
+                                        TP.INVOKE_WRAPPED(aFunction),
                                         aSubset));
 });
 
@@ -6729,12 +6730,13 @@ function(aFunction) {
      *     returns true. The normal direction of this search is from the node
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
-     * @returns {Node[]} An Array of ancestors found acceptable by aFunction.
+     *     acceptable TP.dom.Node.
+     * @returns {TP.dom.Node[]} An Array of ancestors found acceptable by
+     *     aFunction.
      */
 
     return TP.wrap(TP.nodeSelectAncestors(this.getNativeNode(),
-                                            aFunction));
+                                            TP.INVOKE_WRAPPED(aFunction)));
 });
 
 //  ------------------------------------------------------------------------
@@ -6746,13 +6748,14 @@ function(aFunction) {
      * @method selectChildElements
      * @summary Returns an array of child elements of the receiver for which
      *     aFunction returns true. Iteration is from firstChild to lastChild.
-     * @param {Function} aFunction A function which performs some action with
-     *     each node provided.
-     * @returns {TP.dom.Node} A child element found acceptable by aFunction.
+     * @param {Function} aFunction A function returning true when passed an
+     *     acceptable TP.dom.Node.
+     * @returns {TP.dom.ElementNode[]} An array of child elements found
+     *     acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildElements(this.getNativeNode(),
-                                                aFunction));
+                                                TP.INVOKE_WRAPPED(aFunction)));
 });
 
 //  ------------------------------------------------------------------------
@@ -6765,12 +6768,13 @@ function(aFunction) {
      * @summary Returns an Array of children of the node for which aFunction
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
-     * @returns {Node} A child node found acceptable by aFunction.
+     *     acceptable TP.dom.Node.
+     * @returns {TP.dom.Node[]} An array of child nodes found acceptable by
+     *     aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildNodes(this.getNativeNode(),
-                                            aFunction));
+                                            TP.INVOKE_WRAPPED(aFunction)));
 });
 
 //  ------------------------------------------------------------------------
@@ -6786,14 +6790,15 @@ function(aFunction, breadthFirst) {
      *     perform a reverse selection use nodeGetDescendants() to get the
      *     collection in the order you desire and iterate on that.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
+     *     acceptable TP.dom.Node.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Node} An descendant found acceptable by aFunction.
+     * @returns {TP.dom.Node[]} An array of descendant nodes found acceptable by
+     *     aFunction.
      */
 
     return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
-                                            aFunction,
+                                            TP.INVOKE_WRAPPED(aFunction),
                                             breadthFirst));
 });
 
@@ -6812,16 +6817,17 @@ function(aFunction, breadthFirst) {
      *     the collection in the order you desire and iterate on that
      *     collection.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
+     *     acceptable TP.dom.Node.
      * @param {Boolean} breadthFirst Breadth first if true. Default is false,
      *     meaning depth first.
-     * @returns {Element[]} An array of descendant elements found acceptable by
-     *     aFunction.
+     * @returns {TP.dom.ElementNode[]} An array of descendant elements found
+     *     acceptable by aFunction.
      */
 
-    return TP.wrap(TP.nodeSelectDescendantElements(this.getNativeNode(),
-                                                    aFunction,
-                                                    breadthFirst));
+    return TP.wrap(TP.nodeSelectDescendantElements(
+                                        this.getNativeNode(),
+                                        TP.INVOKE_WRAPPED(aFunction),
+                                        breadthFirst));
 });
 
 //  ------------------------------------------------------------------------
@@ -6834,14 +6840,15 @@ function(aFunction, aSubset) {
      * @summary Returns an array of siblings (next, previous, or any) of the
      *     node for which aFunction returns true.
      * @param {Function} aFunction A function returning true when passed an
-     *     acceptable node.
+     *     acceptable TP.dom.Node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @returns {Node[]} An Array of siblings found acceptable by aFunction.
+     * @returns {TP.dom.Node[]} An Array of siblings found acceptable by
+     *     aFunction.
      */
 
-    return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
-                                            aFunction,
+    return TP.wrap(TP.nodeSelectSiblings(this.getNativeNode(),
+                                            TP.INVOKE_WRAPPED(aFunction),
                                             aSubset));
 });
 
