@@ -1624,8 +1624,6 @@ function() {
     /**
      * @method detach
      * @summary Removes the receiver from its parent.
-     * @returns {Boolean} Whether or not the supplied node is equal to the
-     *     receiver.
      * @returns {TP.dom.Node} The detached node.
      */
 
@@ -5642,7 +5640,8 @@ function() {
      * @method getAncestors
      * @summary Returns an Array containing the parent nodes of the receiver.
      *     This list ends with the top level node.
-     * @returns {Node[]} An Array of the parent nodes of the supplied Node.
+     * @returns {TP.dom.Node[]} An Array of the parent nodes of the supplied
+     *     Node.
      */
 
     return TP.wrap(TP.nodeGetAncestors(this.getNativeNode()));
@@ -5673,7 +5672,7 @@ function() {
     /**
      * @method getChildNodes
      * @summary Returns an Array of the child nodes of the receiver.
-     * @returns {Node[]} An Array of the child nodes of the receiver.
+     * @returns {TP.dom.Node[]} An Array of the child nodes of the receiver.
      */
 
     return TP.wrap(TP.nodeGetChildNodes(this.getNativeNode()));
@@ -5707,8 +5706,8 @@ function() {
      * @method getChildElements
      * @summary Returns an Array of the children of the receiver which are
      *     Element nodes.
-     * @returns {Element[]} An Array of the Element children of the supplied
-     *     Node.
+     * @returns {TP.dom.ElementNode[]} An Array of the Element children of the
+     *     supplied Node.
      */
 
     return TP.wrap(TP.nodeGetChildElements(this.getNativeNode()));
@@ -5726,9 +5725,9 @@ function(breadthFirst) {
      *     from this call are not likely to be the same across browsers,
      *     primarily due to different handling of whitespace (Node.TEXT_NODE) in
      *     the various DOM parsers.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
-     * @returns {Node[]} An Array containing the nodes found.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
+     * @returns {TP.dom.Node[]} An Array containing the nodes found.
      */
 
     return TP.wrap(TP.nodeGetDescendants(this.getNativeNode(),
@@ -5747,9 +5746,9 @@ function(aType, breadthFirst) {
      *     the type is Node.TEXT_NODE a normalize() call is done to return the
      *     largest possible node content.
      * @param {Number} aType The DOM node type constant to match against.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
-     * @returns {Node[]} An Array containing the nodes found.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
+     * @returns {TP.dom.Node[]} An Array containing the nodes found.
      */
 
     return TP.wrap(TP.nodeGetDescendantsByType(this.getNativeNode(),
@@ -5766,10 +5765,10 @@ function(breadthFirst) {
      * @method getDescendantElements
      * @summary Returns an Array of the children, grandchildren, and so on of
      *     the receiver which are Element nodes.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
-     * @returns {Element[]} An Array of the Element descendants of the supplied
-     *     Node.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
+     * @returns {TP.dom.ElementNode[]} An Array of the Element descendants of
+     *     the supplied Node.
      */
 
     return TP.wrap(TP.nodeGetDescendantElements(this.getNativeNode(),
@@ -5791,9 +5790,9 @@ function(attrName, attrValue, breadthFirst) {
      *     matter its value.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The attribute value to check.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
-     * @returns {Element[]} An Array containing the elements found.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
+     * @returns {TP.dom.ElementNode[]} An Array containing the elements found.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByAttribute(
@@ -5819,9 +5818,9 @@ function(attrPrefix, attrValue, breadthFirst) {
      *     matter its value.
      * @param {String} attrPrefix The prefix string to test for.
      * @param {Object} attrValue The attribute value to check.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
-     * @returns {Element[]} An Array containing the elements found.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
+     * @returns {TP.dom.ElementNode[]} An Array containing the elements found.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByAttributePrefix(
@@ -5856,8 +5855,8 @@ function(anIdOrName) {
      *     elements with a name value that overlaps with an ID cannot be armed
      *     using normal mechanisms.
      * @param {String} anIdOrName The ID or name of the element to find.
-     * @returns {Element[]} The elements whose name is equal to anIdOrName or
-     *     empty if there are no objects with that name.
+     * @returns {TP.dom.ElementNode[]} The elements whose name is equal to
+     *     anIdOrName or empty if there are no objects with that name.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByIdOrName(
@@ -5876,7 +5875,8 @@ function(aName) {
      *     which are Element nodes and whose 'name' attributes match the name
      *     provided.
      * @param {String} aName The value of the 'name' attribute to search for.
-     * @returns {Element[]} An Array containing native elements found.
+     * @returns {TP.dom.ElementNode[]} An Array containing native elements
+     *     found.
      */
 
     return TP.wrap(TP.nodeGetDescendantElementsByName(
@@ -5895,8 +5895,8 @@ function(aClassName) {
      *     name matches aClassName.
      * @param {String} aClassName The class name to use to find matching
      *     elements. Multiple class names should be space separated.
-     * @returns {Element[]} An Array of Elements under anElement whose CSS class
-     *     name matches aClassName.
+     * @returns {TP.dom.ElementNode[]} An Array of Elements under anElement
+     *     whose CSS class name matches aClassName.
      */
 
     return TP.wrap(TP.nodeGetElementsByClassName(this.getNativeNode(),
@@ -5959,7 +5959,8 @@ function(aSelectorStr) {
      * @param {Node} aNode The node to begin the search. If this parameter is
      *     null, the entire document is searched.
      * @param {String} aSelectorStr The CSS selector to use to search the DOM.
-     * @returns {Element[]} An Array containing native elements found.
+     * @returns {TP.dom.ElementNode[]} An Array containing native elements
+     *     found.
      */
 
     return TP.wrap(TP.nodeEvaluateCSS(this.getNativeNode(),
@@ -5983,7 +5984,7 @@ function(aName, aNamespaceURI) {
      *     more information on the capabilities of this method.
      * @param {String} aName The string tagname to search for.
      * @param {String} aNamespaceURI The namespace URI to search for.
-     * @returns {Element[]} An Array containing elements found.
+     * @returns {TP.dom.ElementNode[]} An Array containing elements found.
      */
 
     return TP.wrap(TP.nodeGetElementsByTagName(this.getNativeNode(),
@@ -6001,7 +6002,7 @@ function() {
      * @summary Returns an Array containing the sibling nodes of the receiver.
      *     Order is from the parent's first child to the parent's last child,
      *     with aNode removed from the list.
-     * @returns {Node[]} An Array containing the nodes found.
+     * @returns {TP.dom.Node[]} An Array containing the nodes found.
      */
 
     return TP.wrap(TP.nodeGetSiblings(this.getNativeNode()));
