@@ -6427,22 +6427,6 @@ function() {
 //  NODE COLLECTION ITERATION
 //  ------------------------------------------------------------------------
 
-TP.dom.CollectionNode.Inst.defineMethod('ancestorsDetect',
-function(aFunction) {
-
-    /**
-     * @method ancestorsDetect
-     * @summary Returns the first ancestor of the receiver for whom aFunction
-     *     returns true.
-     * @param {Function} aFunction A function taking a node and returning a
-     *     node.
-     */
-
-    return TP.nodeDetectAncestor(this.getNativeNode(), aFunction);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.CollectionNode.Inst.defineMethod('ancestorsPerform',
 function(aFunction) {
 
@@ -6458,22 +6442,6 @@ function(aFunction) {
      */
 
     return TP.nodeAncestorsPerform(this.getNativeNode(), aFunction);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.CollectionNode.Inst.defineMethod('ancestorsSelect',
-function(aFunction) {
-
-    /**
-     * @method ancestorsSelect
-     * @summary Returns a collection of the receiver's ancestors for whom
-     *     aFunction return true.
-     * @param {Function} aFunction A function taking a node and returning a
-     *     node.
-     */
-
-    return TP.nodeSelectAncestors(this.getNativeNode(), aFunction);
 });
 
 //  ------------------------------------------------------------------------
