@@ -128,7 +128,7 @@ function(anObject) {
 
         //  Grab our xctrls:dialog element ancestor so that we can show/hide it
         //  at will.
-        thisDialog = this.ancestorMatchingCSS('xctrls|dialog');
+        thisDialog = this.getAncestorBySelector('xctrls|dialog');
 
         //  The TSH's method command will signal MethodAdded when a method has
         //  been added to the system.

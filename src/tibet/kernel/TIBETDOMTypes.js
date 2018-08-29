@@ -5649,6 +5649,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.CollectionNode.Inst.defineMethod('getAncestorBySelector',
+function(aSelector, stopAncestor) {
+
+    /**
+     * @method getAncestorBySelector
+     * @summary Returns the first ancestor of the receiver for which aSelector
+     *     matches.
+     * @param {String} aSelector The selector to match.
+     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
+     *     this would be identical to the document node of the document that
+     *     the receiver is contained in.
+     * @returns {TP.dom.ElementNode|undefined} The ancestor element that matches
+     *     the CSS.
+     */
+
+    return TP.wrap(TP.nodeAncestorMatchingCSS(this.getNativeNode(),
+                                                aSelector,
+                                                stopAncestor));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.CollectionNode.Inst.defineMethod('getChildIndex',
 function(aChild) {
 
@@ -6417,28 +6439,6 @@ function(aFunction) {
      */
 
     return TP.nodeDetectAncestor(this.getNativeNode(), aFunction);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.CollectionNode.Inst.defineMethod('ancestorMatchingCSS',
-function(aSelector, stopAncestor) {
-
-    /**
-     * @method ancestorMatchingCSS
-     * @summary Returns the first ancestor of the receiver for which aSelector
-     *     matches.
-     * @param {String} aSelector The selector to match.
-     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
-     *     this would be identical to the document node of the document that
-     *     the receiver is contained in.
-     * @returns {TP.dom.ElementNode|undefined} The ancestor element that matches
-     *     the CSS.
-     */
-
-    return TP.wrap(TP.nodeAncestorMatchingCSS(this.getNativeNode(),
-                                                aSelector,
-                                                stopAncestor));
 });
 
 //  ------------------------------------------------------------------------

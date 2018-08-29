@@ -1026,7 +1026,7 @@ function(aSignal) {
     //  If the DOM target doesn't have a 'slot_name' attribute, then try to find
     //  an ancestor that has one.
     if (!targetTPElem.hasAttribute('slot_name')) {
-        targetTPElem = targetTPElem.ancestorMatchingCSS('*[slot_name]');
+        targetTPElem = targetTPElem.getAncestorBySelector('*[slot_name]');
         if (TP.notValid(targetTPElem)) {
             return this;
         }
@@ -1347,7 +1347,7 @@ function() {
      *     the receiver.
      */
 
-    return this.ancestorMatchingCSS('sherpa|adjuster_genericPropertyEditor');
+    return this.getAncestorBySelector('sherpa|adjuster_genericPropertyEditor');
 });
 
 //  ------------------------------------------------------------------------
@@ -1728,7 +1728,7 @@ function(oldX, newX, aDirection, aSignal) {
     }
 
     //  Grab the closest element that has a 'slot_name' attribute.
-    wrapperSpan = this.ancestorMatchingCSS('*[slot_name]');
+    wrapperSpan = this.getAncestorBySelector('*[slot_name]');
     if (TP.notValid(wrapperSpan)) {
         return this;
     }
@@ -2133,7 +2133,7 @@ function(oldX, newX, aDirection, aSignal) {
     }
 
     //  Grab the closest element that has a 'slot_name' attribute.
-    wrapperSpan = this.ancestorMatchingCSS('*[slot_name]');
+    wrapperSpan = this.getAncestorBySelector('*[slot_name]');
     if (TP.notValid(wrapperSpan)) {
         return this;
     }

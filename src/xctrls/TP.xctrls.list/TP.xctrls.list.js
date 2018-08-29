@@ -1540,7 +1540,7 @@ function(selection) {
                 var listTPElem,
                     successorTPElem;
 
-                listTPElem = this.ancestorMatchingCSS('xctrls|list');
+                listTPElem = this.getAncestorBySelector('xctrls|list');
 
                 successorTPElem = listTPElem.scrollAndComputeFocusElement(
                                     moveAction);
