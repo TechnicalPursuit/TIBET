@@ -10604,6 +10604,16 @@ function(aNode, direction) {
 
     dir = TP.ifInvalid(direction, TP.NEXT);
 
+    if (dir === TP.NEXT) {
+        if (TP.isElement(aNode.nextElementSibling)) {
+            return aNode.nextElementSibling;
+        }
+    } else {
+        if (TP.isElement(aNode.previousElementSibling)) {
+            return aNode.previousElementSibling;
+        }
+    }
+
     sibProp = dir === TP.NEXT ? 'nextSibling' : 'previousSibling';
 
     theNode = aNode[sibProp];
