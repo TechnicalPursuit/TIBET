@@ -7204,13 +7204,14 @@ function(aFunction, deep, breadthFirst) {
     /**
      * @method collect
      * @summary Runs aFunction iteratively over each element of the receiver
-     *     and returns an Array containing the return values.
+     *     and returns an Array containing TP.dom.Node return values.
      * @param {Function} aFunction A function taking 2 parameters, the current
-     *     item and index.
-     * @param {Boolean} deep Should the iteration cover all descendant nodes as
-     *     well? Defaults to false so only direct children are involved.
-     * @param {Boolean} breadthFirst True will capture descendants in
-     *     breadth-first order. Only used when deep is true.
+     *     wrapped child or descendant node and index.
+     * @param {Boolean} [deep=false] Should the iteration cover all descendant
+     *     nodes as well? Defaults to false so only direct children are
+     *     involved.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first. Only used when deep is true.
      * @returns {TP.dom.Node[]} The return values from each iteration of the
      *     supplied Function.
      */
@@ -7219,14 +7220,12 @@ function(aFunction, deep, breadthFirst) {
 
     node = this.getNativeNode();
 
-    //  NB: We do *not* wrap the return results of these invocations, since
-    //  they very well may not be returning Nodes.
-
     if (TP.ifInvalid(deep, false)) {
-        return TP.wrap(
-                TP.nodeGetDescendants(node, breadthFirst).collect(aFunction));
+        return TP.wrap(TP.nodeGetDescendants(node, breadthFirst).collect(
+                                        TP.INVOKE_WRAPPED(aFunction)));
     } else {
-        return TP.wrap(TP.ac(node.childNodes).collect(aFunction));
+        return TP.wrap(TP.ac(node.childNodes).collect(
+                                        TP.INVOKE_WRAPPED(aFunction)));
     }
 });
 
@@ -7425,13 +7424,14 @@ function(aFunction, deep, breadthFirst) {
     /**
      * @method detect
      * @summary Runs aFunction iteratively over each element of the receiver
-     *     and returns the first element for which aFunction is true.
+     *     and returns the first TP.dom.ElementNode for which aFunction is true.
      * @param {Function} aFunction A function taking 2 parameters, the current
-     *     item and index.
-     * @param {Boolean} deep Should the iteration cover all descendant nodes as
-     *     well? Defaults to false so only direct children are involved.
-     * @param {Boolean} breadthFirst True will capture descendants in
-     *     breadth-first order. Only used when deep is true.
+     *     wrapped child or descendant node and index.
+     * @param {Boolean} [deep=false] Should the iteration cover all descendant
+     *     nodes as well? Defaults to false so only direct children are
+     *     involved.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first. Only used when deep is true.
      * @returns {TP.dom.Node} The first element detected by the supplied
      *     Function.
      */
@@ -7441,12 +7441,15 @@ function(aFunction, deep, breadthFirst) {
     node = this.getNativeNode();
 
     if (TP.ifInvalid(deep, false)) {
-        return TP.wrap(TP.nodeDetectDescendant(node,
-                                                aFunction,
-                                                null,
-                                                breadthFirst));
+        return TP.wrap(TP.nodeDetectDescendant(
+                                        node,
+                                        TP.INVOKE_WRAPPED(aFunction),
+                                        null,
+                                        breadthFirst));
     } else {
-        return TP.wrap(TP.nodeDetectChildNode(node, aFunction));
+        return TP.wrap(TP.nodeDetectChildNode(
+                                        node,
+                                        TP.INVOKE_WRAPPED(aFunction)));
     }
 });
 
@@ -7696,11 +7699,12 @@ function(aValue, aFunction, deep, breadthFirst) {
      * @param {Object} aValue The value to pass as the second argument to
      *     aFunction.
      * @param {Function} aFunction A function which performs some action with
-     *     the elements it is passed and returns aValue.
-     * @param {Boolean} deep Should the iteration cover all descendant nodes as
-     *     well? Defaults to false so only direct children are involved.
-     * @param {Boolean} breadthFirst True will capture descendants in
-     *     breadth-first order. Only used when deep is true.
+     *     the TP.dom.Nodes it is passed and returns aValue.
+     * @param {Boolean} [deep=false] Should the iteration cover all descendant
+     *     nodes as well? Defaults to false so only direct children are
+     *     involved.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first. Only used when deep is true.
      * @returns {Object} The value of performing aFunction with aValue over the
      *     receiver.
      */
@@ -7711,10 +7715,12 @@ function(aValue, aFunction, deep, breadthFirst) {
 
     if (TP.ifInvalid(deep, false)) {
         return TP.nodeGetDescendants(node, breadthFirst).injectInto(
-                                                            aValue,
-                                                            aFunction);
+                                                aValue,
+                                                TP.INVOKE_WRAPPED(aFunction));
     } else {
-        return TP.ac(node.childNodes).injectInto(aValue, aFunction);
+        return TP.ac(node.childNodes).injectInto(
+                                                aValue,
+                                                TP.INVOKE_WRAPPED(aFunction));
     }
 });
 
@@ -7783,11 +7789,12 @@ function(aFunction, deep, breadthFirst) {
      * @method perform
      * @summary Runs aFunction iteratively over each element of the receiver.
      * @param {Function} aFunction A function taking 2 parameters, the current
-     *     item and index.
-     * @param {Boolean} deep Should the iteration cover all descendant nodes as
-     *     well? Defaults to false so only direct children are involved.
-     * @param {Boolean} breadthFirst True will capture descendants in
-     *     breadth-first order. Only used when deep is true.
+     *     wrapped child or descendant node and index.
+     * @param {Boolean} [deep=false] Should the iteration cover all descendant
+     *     nodes as well? Defaults to false so only direct children are
+     *     involved.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first. Only used when deep is true.
      * @returns {TP.dom.CollectionNode} The receiver.
      */
 
@@ -7796,9 +7803,13 @@ function(aFunction, deep, breadthFirst) {
     node = this.getNativeNode();
 
     if (TP.ifInvalid(deep, false)) {
-        TP.nodeDescendantsPerform(node, aFunction, null, breadthFirst);
+        TP.nodeDescendantsPerform(
+                            node,
+                            TP.INVOKE_WRAPPED(aFunction),
+                            null,
+                            breadthFirst);
     } else {
-        TP.nodeChildNodesPerform(node, aFunction);
+        TP.nodeChildNodesPerform(node, TP.INVOKE_WRAPPED(aFunction));
     }
 
     return this;
@@ -7874,12 +7885,13 @@ function(aFunction, deep, breadthFirst) {
      *     returns false. In other words, the function returns true if the item
      *     should be rejected from the result set.
      * @param {Function} aFunction A function taking 2 parameters, the current
-     *     item and index. This function should return true if the item should
-     *     be removed from the result set.
-     * @param {Boolean} deep Should the iteration cover all descendant nodes as
-     *     well? Defaults to false so only direct children are involved.
-     * @param {Boolean} breadthFirst True will capture descendants in
-     *     breadth-first order. Only used when deep is true.
+     *     wrapped child or descendant node and index. This function should
+     *     return true if the item should be removed from the result set.
+     * @param {Boolean} [deep=false] Should the iteration cover all descendant
+     *     nodes as well? Defaults to false so only direct children are
+     *     involved.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first. Only used when deep is true.
      * @returns {TP.dom.Node[]} An Array of TP.dom.Nodes that weren't rejected
      *     by the supplied Function.
      */
@@ -7890,9 +7902,10 @@ function(aFunction, deep, breadthFirst) {
 
     if (TP.ifInvalid(deep, false)) {
         return TP.wrap(TP.nodeGetDescendants(node, breadthFirst).reject(
-                                                                aFunction));
+                                                TP.INVOKE_WRAPPED(aFunction)));
     } else {
-        return TP.wrap(TP.ac(node.childNodes).reject(aFunction));
+        return TP.wrap(TP.ac(node.childNodes).reject(
+                                                TP.INVOKE_WRAPPED(aFunction)));
     }
 });
 
@@ -7988,12 +8001,13 @@ function(aFunction, deep, breadthFirst) {
      *     and returns an Array containing the elements for which the function
      *     returns true.
      * @param {Function} aFunction A function taking 2 parameters, the current
-     *     item and index. This function should return true if the item should
-     *     be included in the result set.
-     * @param {Boolean} deep Should the iteration cover all descendant nodes as
-     *     well? Defaults to false so only direct children are involved.
-     * @param {Boolean} breadthFirst True will capture descendants in
-     *     breadth-first order. Only used when deep is true.
+     *     wrapped child or descendant node and index. This function should
+     *     return true if the item should be included in the result set.
+     * @param {Boolean} [deep=false] Should the iteration cover all descendant
+     *     nodes as well? Defaults to false so only direct children are
+     *     involved.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first. Only used when deep is true.
      * @returns {TP.dom.Node[]} An Array of TP.dom.Nodes that were selected by
      *     the supplied Function.
      */
@@ -8004,11 +8018,12 @@ function(aFunction, deep, breadthFirst) {
 
     if (TP.ifInvalid(deep, false)) {
         return TP.wrap(TP.nodeSelectDescendants(node,
-                                                aFunction,
+                                                TP.INVOKE_WRAPPED(aFunction),
                                                 null,
                                                 breadthFirst));
     } else {
-        return TP.wrap(TP.nodeSelectChildNodes(node, aFunction));
+        return TP.wrap(TP.nodeSelectChildNodes(node,
+                                                TP.INVOKE_WRAPPED(aFunction)));
     }
 });
 
