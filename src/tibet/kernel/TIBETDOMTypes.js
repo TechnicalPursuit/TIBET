@@ -6791,8 +6791,8 @@ function(aFunction, breadthFirst) {
      *     collection in the order you desire and iterate on that.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable TP.dom.Node.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
      * @returns {TP.dom.Node[]} An array of descendant nodes found acceptable by
      *     aFunction.
      */
@@ -6818,8 +6818,8 @@ function(aFunction, breadthFirst) {
      *     collection.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable TP.dom.Node.
-     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
-     *     meaning depth first.
+     * @param {Boolean} [breadthFirst=false] Breadth first if true. Default is
+     *     false, meaning depth first.
      * @returns {TP.dom.ElementNode[]} An array of descendant elements found
      *     acceptable by aFunction.
      */
@@ -16690,7 +16690,7 @@ function(orActiveElement) {
      */
 
     return TP.wrap(TP.documentGetFocusedElement(
-        this.getNativeNode(), orActiveElement));
+                    this.getNativeNode(), orActiveElement));
 });
 
 //  ------------------------------------------------------------------------
