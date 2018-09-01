@@ -442,7 +442,6 @@ function(aString, smartConversion, shouldReport) {
     //  we default to smart conversion
     shouldConvert = TP.ifInvalid(smartConversion, true);
 
-    /* eslint-disable no-proto */
     try {
 
         //  If we're not doing smart conversion, then we can just return the
@@ -470,20 +469,21 @@ function(aString, smartConversion, shouldReport) {
                     text,
                     function(key, value) {
 
-                        var newVal;
+                        var newVal,
+                            newHashPOJO;
 
                         //  If the value is real and it's an Object (note here
                         //  that we can do this direct test since the JSON parse
                         //  routine is guaranteed to create plain JS objects),
-                        //  then set its '$$type' to TP.core.Hash and rewire its
-                        //  __proto__ to be that of the hash that we created
-                        //  above.
+                        //  then create a new object with its __proto__ to be
+                        //  the TP.core.Hash's instance prototype and set its
+                        //  '$$type' to TP.core.Hash.
                         if (value &&
                             value.constructor.prototype === TP.ObjectProto) {
 
                             //  Create a new value to replace the object handed
                             //  to us by the parse routine and set its prototype
-                            //  to the hash prototype obtained above.
+                            //  to the hash instance prototype obtained above.
                             newVal = Object.create(tpHashInstProto);
 
                             newVal.$$type = TP.core.Hash;
@@ -495,16 +495,18 @@ function(aString, smartConversion, shouldReport) {
                             //  dealing with a 'sort of' TP.core.Hash).
                             newVal.$$id = TP.genID('Pseudo_TP.core.Hash');
 
-                            //  We set the '$$hash' of the new object to the
-                            //  object handed to us.
-                            newVal.$$hash = value;
+                            //  Now, create a new hash object with a null
+                            //  __proto__.
+                            newHashPOJO = Object.create(null);
 
-                            //  Make sure to null out that object's __proto__ so
-                            //  that it's not participating in any prototype
-                            //  chain. This matches the normal TP.core.Hash
-                            //  behavior where it creates an 'orphan' object as
-                            //  it's $$hash.
-                            value.__proto__ = null;
+                            //  Copy all of the enumerable, 'own' slots from the
+                            //  parsed value object onto our null __proto__ hash
+                            //  POJO.
+                            Object.assign(newHashPOJO, value);
+
+                            //  Assign the internal '$$hash' property to the new
+                            //  hash POJO.
+                            newVal.$$hash = newHashPOJO;
 
                             return newVal;
                         }
@@ -521,7 +523,6 @@ function(aString, smartConversion, shouldReport) {
 
         return;
     }
-    /* eslint-disable no-proto */
 });
 
 //  ------------------------------------------------------------------------
