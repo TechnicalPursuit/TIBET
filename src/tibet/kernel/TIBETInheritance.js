@@ -181,7 +181,7 @@ function(name) {
      *     illegal since these are used by TIBET to represent Metatype instances
      *     used for the type and instance 'tracks' of TIBET.
      * @param {String} name The name of the subtype, including an optional
-     *     namespace prefix and colon separator.
+     *     namespace prefix and colon or dot separator.
      * @returns {TP.lang.RootObject|undefined} A new type object.
      */
 
@@ -428,7 +428,7 @@ function(name) {
      *     callNextMethod() mechanism. Therefore, YMMV and it is not recommended
      *     to use this capability.
      * @param {String} name The name of the class, including an optional
-     *     namespace prefix and colon separator.
+     *     namespace prefix and colon or dot separator.
      * @returns {Proxy} A new type object.
      */
 
@@ -3508,7 +3508,7 @@ function(name) {
      *     throws an exception due to restrictions in certain browsers. This
      *     call is therefore only valid for subtypes of TP.FunctionProto.
      * @param {String} name The name of the subtype, including an optional
-     *     namespace prefix and colon separator.
+     *     namespace prefix and colon or dot separator.
      */
 
     return this.raise('TP.sig.InheritanceException',
@@ -7991,7 +7991,7 @@ function(name) {
      * @summary Adds a new subtype to the type represented by the receiving
      *     string.
      * @param {String} name The name of the subtype, including an optional
-     *     namespace prefix and colon separator.
+     *     namespace prefix and colon or dot separator.
      * @returns {TP.lang.RootObject} The new type object representing the
      *     subtype added.
      */
