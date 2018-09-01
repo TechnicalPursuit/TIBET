@@ -422,8 +422,8 @@ function(name) {
      *     a regular ECMAScript class and can manage its relationship with the
      *     TIBET type that it inherits from "adequately". The semantics of the
      *     ECMAScript 'constructor()' and 'super()' constructs are preserved and
-     *     do "work" when calling 'up' from ECMAScript classes defined this way
-     *     into the TIBET type it inherits from, but there are some subtle
+     *     do work when calling 'up' from ECMAScript classes defined this way
+     *     into the TIBET type it inherits from. However, there are some subtle
      *     differences between that and TIBET's much more powerful
      *     callNextMethod() mechanism. Therefore, YMMV and it is not recommended
      *     to use this capability.
@@ -457,8 +457,8 @@ function(name) {
     }
 
     //  Create an ECMAScript Proxy object that will wrap an anonymous Function
-    //  (we *must use a Function here, because according to the ECMAScript spec,
-    //  to trap accesses to 'construct', it must be a [[Callable]])
+    //  (we *must* use a Function here, because according to the ECMAScript
+    //  spec, to trap accesses to 'construct', it must be a [[Callable]])
     proxyConfig = {
         construct: function(target, args) {
 
