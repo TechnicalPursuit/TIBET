@@ -45,7 +45,7 @@ function(radius, angle) {
     x = radius * angle.cosD();
     y = radius * angle.sinD();
 
-    return TP.gui.Point.construct(x, y);
+    return this.construct(x, y);
 });
 
 //  ------------------------------------------------------------------------
@@ -519,8 +519,9 @@ function(aPoint) {
 
     data = this.$get('data');
 
-    return TP.gui.Point.construct((data.x + aPoint.get('x')) / 2,
-                                    (data.y + aPoint.get('y')) / 2);
+    return this.getType().construct(
+                    (data.x + aPoint.get('x')) / 2,
+                    (data.y + aPoint.get('y')) / 2);
 });
 
 //  ------------------------------------------------------------------------
@@ -536,7 +537,7 @@ function() {
      *     receiver.
      */
 
-    return TP.gui.Point.construct(this);
+    return this.getType().construct(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -643,7 +644,7 @@ function(aPoint, t) {
             return a + (b - a) * factor;
         };
 
-    return TP.gui.Point.construct(
+    return this.getType().construct(
                     interpFunc(data.x, otherData.x, t),
                     interpFunc(data.y, otherData.y, t));
 });
@@ -1608,7 +1609,7 @@ function() {
      *     receiver.
      */
 
-    return TP.gui.Rect.construct(this);
+    return this.getType().construct(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -1668,8 +1669,8 @@ function(aRect) {
     //  supplied rectangle.
     if (otherData.y > data.y) {
         result.push(
-            TP.gui.Rect.construct(data.x, data.y,
-                                data.width, otherData.y - data.y));
+            this.getType().construct(data.x, data.y,
+                                        data.width, otherData.y - data.y));
 
         thisY = otherData.y;
 
@@ -1682,8 +1683,8 @@ function(aRect) {
     //  supplied rectangle.
     if (otherBottom < thisBottom) {
         result.push(
-            TP.gui.Rect.construct(data.x, otherBottom,
-                                data.width, thisBottom - otherBottom));
+            this.getType().construct(data.x, otherBottom,
+                                        data.width, thisBottom - otherBottom));
 
         thisHeight = otherBottom - thisY;
     }
@@ -1692,16 +1693,16 @@ function(aRect) {
     //  supplied rectangle.
     if (otherData.x > data.x) {
         result.push(
-            TP.gui.Rect.construct(data.x, thisY,
-                                otherData.x - data.x, thisHeight));
+            this.getType().construct(data.x, thisY,
+                                        otherData.x - data.x, thisHeight));
     }
 
     //  Subtract any area on right where the receiver extends past the
     //  supplied rectangle.
     if (otherRight < thisRight) {
         result.push(
-            TP.gui.Rect.construct(otherRight, thisY,
-                                thisRight - otherRight, thisHeight));
+            this.getType().construct(otherRight, thisY,
+                                        thisRight - otherRight, thisHeight));
     }
 
     return result;
@@ -2095,7 +2096,7 @@ function(aRect, t) {
             return a + (b - a) * factor;
         };
 
-    return TP.gui.Rect.construct(
+    return this.getType().construct(
                     interpFunc(data.x, otherData.x, t),
                     interpFunc(data.y, otherData.y, t),
                     interpFunc(data.width, otherData.width, t),
@@ -2127,11 +2128,11 @@ function(aRect) {
         maxY;
 
     if (this.isEmpty()) {
-        return TP.gui.Rect.construct(aRect);
+        return this.getType().construct(aRect);
     }
 
     if (aRect.isEmpty()) {
-        return TP.gui.Rect.construct(this);
+        return this.getType().construct(this);
     }
 
     data = this.$get('data');
@@ -2145,7 +2146,7 @@ function(aRect) {
         maxY = (data.y + data.height).min(otherData.y + otherData.height);
 
         if (minY <= maxY) {
-            return TP.gui.Rect.construct(minX,
+            return this.getType().construct(minX,
                                             minY,
                                             maxX - minX,
                                             maxY - minY);
@@ -2308,11 +2309,11 @@ function(aRect) {
         newY;
 
     if (this.isEmpty()) {
-        return TP.gui.Rect.construct(aRect);
+        return this.getType().construct(aRect);
     }
 
     if (aRect.isEmpty()) {
-        return TP.gui.Rect.construct(this);
+        return this.getType().construct(this);
     }
 
     data = this.$get('data');
@@ -2321,7 +2322,7 @@ function(aRect) {
     newX = data.x.min(otherData.x);
     newY = data.y.min(otherData.y);
 
-    return TP.gui.Rect.construct(
+    return this.getType().construct(
                 newX,
                 newY,
                 (data.x + data.width - newX).max(
@@ -2370,7 +2371,7 @@ function(xScaleFactor, yScaleFactor) {
         newHeight = data.height * xScaleFactor;
     }
 
-    return TP.gui.Rect.construct(
+    return this.getType().construct(
                     data.x - (newWidth - data.width) / 2,
                     data.y - (newHeight - data.height) / 2,
                     newWidth,
@@ -2784,7 +2785,7 @@ function(aString) {
             yVal = xVal;
         }
 
-        newObj = TP.gui.Matrix.constructTranslationMatrix(
+        newObj = this.constructTranslationMatrix(
                                         parseFloat(xVal), parseFloat(yVal));
     } else if (/scale/.test(aString)) {
         vals = TP.gui.Matrix.SCALE_REGEX.match(aString);
@@ -2796,32 +2797,32 @@ function(aString) {
             yVal = xVal;
         }
 
-        newObj = TP.gui.Matrix.constructScalingMatrix(
+        newObj = this.constructScalingMatrix(
                                         parseFloat(xVal), parseFloat(yVal));
     } else if (/rotate/.test(aString)) {
         vals = TP.gui.Matrix.ROTATE_REGEX.match(aString);
 
-        newObj = TP.gui.Matrix.constructRotationMatrix(
+        newObj = this.constructRotationMatrix(
                                         parseFloat(vals.at(1)));
     } else if (/skewX/.test(aString)) {
         vals = TP.gui.Matrix.SKEWX_REGEX.match(aString);
 
         xVal = vals.at(1);
 
-        newObj = TP.gui.Matrix.constructSkewXMatrix(parseFloat(xVal));
+        newObj = this.constructSkewXMatrix(parseFloat(xVal));
     } else if (/skewY/.test(aString)) {
         vals = TP.gui.Matrix.SKEWY_REGEX.match(aString);
 
         yVal = vals.at(1);
 
-        newObj = TP.gui.Matrix.constructSkewYMatrix(parseFloat(yVal));
+        newObj = this.constructSkewYMatrix(parseFloat(yVal));
     } else if (/matrix/.test(aString)) {
         vals = TP.gui.Matrix.MATRIX_REGEX.match(aString);
 
         if (vals.getSize() < 7) {
             newObj = null;
         } else {
-            newObj = TP.gui.Matrix.construct({
+            newObj = this.construct({
                 xx: parseFloat(vals.at(1)),
                 yx: parseFloat(vals.at(2)),
                 xy: parseFloat(vals.at(3)),
@@ -2877,7 +2878,7 @@ function() {
      */
 
     //  An identity matrix is the default.
-    return TP.gui.Matrix.construct();
+    return this.construct();
 });
 
 //  ------------------------------------------------------------------------
@@ -2893,7 +2894,7 @@ function() {
 
     var newMatrix;
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     newMatrix.$get('data').xx = -1;
 
@@ -2913,7 +2914,7 @@ function() {
 
     var newMatrix;
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     newMatrix.$get('data').yy = -1;
 
@@ -2934,7 +2935,7 @@ function() {
 
     var newMatrix;
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     newMatrix.$get('data').xx = -1;
     newMatrix.$get('data').yy = -1;
@@ -2979,7 +2980,7 @@ function(projectX, projectY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
     newMatrixData = newMatrix.$get('data');
 
     if (arguments.length === 1) {
@@ -3043,7 +3044,7 @@ function(reflectX, reflectY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
     newMatrixData = newMatrix.$get('data');
 
     if (arguments.length === 1) {
@@ -3096,7 +3097,7 @@ function(angle) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
     newMatrixData = newMatrix.$get('data');
 
     angleSine = angle.sin();
@@ -3137,7 +3138,7 @@ function(diffX, diffY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     if (arguments.length === 1) {
         newMatrix.$get('data').xx = diffX.get('data').x;
@@ -3171,7 +3172,7 @@ function(skewAngle) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     newMatrix.$get('data').xy = -skewAngle.tan();
 
@@ -3199,7 +3200,7 @@ function(skewAngle) {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     newMatrix.$get('data').yx = skewAngle.tan();
 
@@ -3232,7 +3233,7 @@ function(diffX, diffY) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    newMatrix = TP.gui.Matrix.construct();
+    newMatrix = this.construct();
 
     if (arguments.length === 1) {
         newMatrix.$get('data').dx = diffX.get('data').x;
@@ -3328,7 +3329,7 @@ function(angle, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    rotationMatrix = TP.gui.Matrix.constructRotationMatrix(angle);
+    rotationMatrix = this.constructRotationMatrix(angle);
 
     return rotationMatrix.applyTransformsUsing(aPoint);
 });
@@ -3360,7 +3361,7 @@ function(aPoint, xFactor, yFactor) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    scalingMatrix = TP.gui.Matrix.constructScalingMatrix(xFactor, yFactor);
+    scalingMatrix = this.constructScalingMatrix(xFactor, yFactor);
 
     return scalingMatrix.applyTransformsUsing(aPoint);
 });
@@ -3389,7 +3390,7 @@ function(angle, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    skewMatrix = TP.gui.Matrix.constructSkewXMatrix(angle);
+    skewMatrix = this.constructSkewXMatrix(angle);
 
     return skewMatrix.applyTransformsUsing(aPoint);
 });
@@ -3418,7 +3419,7 @@ function(angle, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    skewMatrix = TP.gui.Matrix.constructSkewYMatrix(angle);
+    skewMatrix = this.constructSkewYMatrix(angle);
 
     return skewMatrix.applyTransformsUsing(aPoint);
 });
@@ -3448,8 +3449,7 @@ function(diffX, diffY, aPoint) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    translationMatrix = TP.gui.Matrix.constructTranslationMatrix(
-                                                            diffX, diffY);
+    translationMatrix = this.constructTranslationMatrix(diffX, diffY);
 
     return translationMatrix.applyTransformsUsing(aPoint);
 });
@@ -3604,9 +3604,9 @@ function(aPoint) {
 
     pointData = aPoint.get('data');
 
-    matrix1 = TP.gui.Matrix.constructTranslationMatrix(pointData.x,
+    matrix1 = this.getType().constructTranslationMatrix(pointData.x,
                                                         pointData.y);
-    matrix2 = TP.gui.Matrix.constructTranslationMatrix(-pointData.x,
+    matrix2 = this.getType().constructTranslationMatrix(-pointData.x,
                                                         -pointData.y);
 
     resultMatrix = matrix1.multiply(this, matrix2);
@@ -3887,7 +3887,7 @@ function() {
      *     receiver.
      */
 
-    return TP.gui.Matrix.construct(this);
+    return this.getType().construct(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -4722,7 +4722,7 @@ function(toColor, weight) {
                                                     otherColorAsNum,
                                                     balanceWeight));
 
-    return TP.gui.Color.construct(colorVal);
+    return this.getType().construct(colorVal);
 });
 
 //  ------------------------------------------------------------------------
@@ -4738,7 +4738,7 @@ function() {
      *     receiver.
      */
 
-    return TP.gui.Color.construct(this);
+    return this.getType().construct(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -6252,7 +6252,7 @@ function(aString) {
 
         //  Allocate and initialize the new instance.
 
-        newObj = TP.gui.Pattern.construct();
+        newObj = this.construct();
 
         newObj.set('uri', TP.uc(url));
 
@@ -6512,7 +6512,7 @@ function() {
 
     var newPattern;
 
-    newPattern = TP.gui.Pattern.construct();
+    newPattern = this.getType().construct();
 
     newPattern.set('uri', TP.uc(this.get('uri')));
 
@@ -7180,7 +7180,7 @@ function(aString) {
     }
 
     if (TP.notEmpty(newPath)) {
-        newObj = TP.gui.SVGPath.construct();
+        newObj = this.construct();
         newObj.set('pathSegments', newPath);
 
         return newObj;
