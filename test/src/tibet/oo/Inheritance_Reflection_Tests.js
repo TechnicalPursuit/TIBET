@@ -4830,6 +4830,47 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.test.OOTester.describe('Inheritance - defineSubtype',
+function() {
+
+    this.it('TP.lang.RootObject defineSubtype()', function(test, options) {
+
+        TP.lang.Object.defineSubtype('test.TestSubtype');
+
+        test.assert.isType(TP.test.TestSubtype);
+
+        test.assert.isEqualTo(TP.test.TestSubtype.getID(),
+                                'TP.test.TestSubtype');
+        test.assert.isEqualTo(TP.test.TestSubtype.getName(),
+                                'TP.test.TestSubtype');
+        test.assert.isEqualTo(TP.test.TestSubtype.getLocalName(),
+                                'TestSubtype');
+
+        test.assert.isIdenticalTo(TP.test.TestSubtype.getType(),
+                                    TP.meta.test.TestSubtype);
+        test.assert.isEqualTo(TP.test.TestSubtype.getTypeName(),
+                                'TP.meta.test.TestSubtype');
+
+        test.assert.isIdenticalTo(TP.test.TestSubtype.getNamespaceObject(),
+                                    TP.test);
+        test.assert.isEqualTo(TP.test.TestSubtype.getNamespacePrefix(),
+                                'test');
+        test.assert.isEqualTo(TP.test.TestSubtype.getNamespaceRoot(),
+                                'TP');
+
+        test.assert.isIdenticalTo(TP.test.TestSubtype.getSupertype(),
+                                    TP.lang.Object);
+        test.assert.isEqualTo(TP.test.TestSubtype.getSupertypeName(),
+                                'TP.lang.Object');
+        test.assert.isEqualTo(TP.test.TestSubtype.getSupertypeNames(),
+                                TP.ac('TP.lang.Object',
+                                        'TP.lang.RootObject',
+                                        'Object'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.OOTester.describe('Inheritance - callNextMethod',
 function() {
 
