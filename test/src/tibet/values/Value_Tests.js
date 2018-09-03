@@ -2263,6 +2263,100 @@ function() {
 //  TP.format()
 //  TP.validate()
 
+//  ------------------------------------------------------------------------
+
+TP.isMutable.describe('core tests',
+function() {
+
+    this.it('non mutable values - primitives', function(test, options) {
+
+        test.assert.isFalse(TP.isMutable('hi'));
+        test.assert.isFalse(TP.isMutable(42));
+        test.assert.isFalse(TP.isMutable(true));
+
+    });
+
+    this.it('non mutable values - boxed', function(test, options) {
+
+        test.assert.isFalse(TP.isMutable(new String()));
+        test.assert.isFalse(TP.isMutable(new Number()));
+        test.assert.isFalse(TP.isMutable(new Boolean()));
+
+    });
+
+    this.it('mutable reference values - shorthand', function(test, options) {
+
+        test.assert.isTrue(TP.isMutable(function() {alert('hi')}));
+        test.assert.isTrue(TP.isMutable(/foo/));
+
+        test.assert.isTrue(TP.isMutable({}));
+        test.assert.isTrue(TP.isMutable([]));
+
+    });
+
+    this.it('mutable reference values - boxed', function(test, options) {
+
+        test.assert.isTrue(TP.isMutable(new Date()));
+
+        test.assert.isTrue(TP.isMutable(
+                                new Function('a', 'b', 'return a + b')));
+        test.assert.isTrue(TP.isMutable(new RegExp('\\w+')));
+
+        test.assert.isTrue(TP.isMutable(new Object()));
+        test.assert.isTrue(TP.isMutable(new Array()));
+
+        test.assert.isTrue(TP.isMutable(TP.lang.Object.construct()));
+
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.isReferenceType.describe('core reference type tests',
+function() {
+
+    this.it('non mutable values - primitives', function(test, options) {
+
+        test.assert.isFalse(TP.isReferenceType(42));
+        test.assert.isFalse(TP.isReferenceType(true));
+        test.assert.isFalse(TP.isReferenceType('hi'));
+
+    });
+
+    this.it('non mutable values - boxed', function(test, options) {
+
+        test.assert.isFalse(TP.isReferenceType(new String()));
+        test.assert.isFalse(TP.isReferenceType(new Number()));
+        test.assert.isFalse(TP.isReferenceType(new Boolean()));
+
+    });
+
+    this.it('mutable reference values - shorthand', function(test, options) {
+
+        test.assert.isFalse(TP.isReferenceType(function() {alert('hi')}));
+        test.assert.isFalse(TP.isReferenceType(/foo/));
+
+        test.assert.isTrue(TP.isReferenceType({}));
+        test.assert.isTrue(TP.isReferenceType([]));
+
+    });
+
+    this.it('mutable reference values - boxed', function(test, options) {
+
+        test.assert.isFalse(TP.isReferenceType(new Date()));
+
+        test.assert.isFalse(TP.isReferenceType(
+                                new Function('a', 'b', 'return a + b')));
+        test.assert.isFalse(TP.isReferenceType(new RegExp('\\w+')));
+
+        test.assert.isTrue(TP.isReferenceType(new Object()));
+        test.assert.isTrue(TP.isReferenceType(new Array()));
+
+        test.assert.isTrue(TP.isReferenceType(TP.lang.Object.construct()));
+
+    });
+});
+
 //  TP.isSubtypeOf()
 
 //  ------------------------------------------------------------------------
