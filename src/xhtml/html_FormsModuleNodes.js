@@ -228,7 +228,7 @@ function() {
     dict = TP.hc();
     list = node.elements;
     for (i = 0; i < list.length; i++) {
-        el = 'TP.html.Element'.construct(list[i]);
+        el = TP.html.Element.construct(list[i]);
         if (TP.notValid(el)) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(
@@ -273,7 +273,7 @@ function(aValue) {
 
     list = node.elements;
     for (i = 0; i < list.length; i++) {
-        el = 'TP.html.Element'.construct(list[i]);
+        el = TP.html.Element.construct(list[i]);
         if (TP.notValid(el)) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(
