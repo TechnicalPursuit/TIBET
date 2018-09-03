@@ -3493,7 +3493,7 @@ function(anObj) {
      *          <samp>false</samp>
      *          TP.isReferenceType('hi');
      *          <samp>false</samp>
-     *          TP.isReferenceType(Date.now());
+     *          TP.isReferenceType(new Date());
      *          <samp>false</samp>
      *          TP.isReferenceType(function() {alert('hi'));
      *          <samp>false</samp>
@@ -3518,6 +3518,10 @@ function(anObj) {
 
     if (TP.isArray(anObj)) {
         return true;
+    }
+
+    if (!TP.isMutable(anObj)) {
+        return false;
     }
 
     if (TP.isType(anObj) && TP.isCallable(anObj.$$isReferenceType)) {
