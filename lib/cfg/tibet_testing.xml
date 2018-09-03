@@ -170,6 +170,7 @@
 
 <config id="oo">
     <script src="~lib_test/src/tibet/oo/Inheritance_Reflection_Tests.js"/>
+    <script src="~lib_test/src/tibet/oo/NativeClass_Tests.js"/>
 </config>
 
 <config id="permissions">
