@@ -12,7 +12,8 @@
         "APP": true,
         "Window": false,
         "self": false,
-        "Proxy": false
+        "Proxy": false,
+        "Reflect": false
     },
     "rules": {
         "array-bracket-spacing": [1, "never"],
