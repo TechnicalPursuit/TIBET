@@ -446,7 +446,9 @@ function(name, classDefFunction) {
 
         proxyConfig,
 
-        classProxy;
+        classProxy,
+
+        originalProto;
 
     if (TP.isEmpty(name) || !TP.isCallable(classDefFunction)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -598,7 +600,9 @@ function(name, classDefFunction) {
         construct: function(target, args) {
 
             var newinst,
-                optinst;
+                optinst,
+
+                previousProto;
 
             //  Check to see if the proxy (the actual Proxy that we're defining
             //  above) is initialized, according to a slot that we keep on the
@@ -624,8 +628,17 @@ function(name, classDefFunction) {
             //  object. This mechanism is key to allowing the constructor
             //  function to run, but to getting the prototype chain set up
             //  properly for the created instance.
+
+            //  First, swap the __proto__ of the class definition function with
+            //  it's original proto so that the system won't complain.
+            previousProto = Object.getPrototypeOf(classDefFunction);
+            Object.setPrototypeOf(classDefFunction, originalProto);
+
             newinst = Reflect.construct(
-                        target, args, subclassTIBETType[TP.INSTC]);
+                        classDefFunction, args, subclassTIBETType[TP.INSTC]);
+
+            //  Put the __proto__ of the class definition function back.
+            Object.setPrototypeOf(classDefFunction, previousProto);
 
             //  Now we replicate the logic that is in the standard 'construct'
             //  method *after* that method's invocation of '$alloc' (which is
@@ -656,7 +669,12 @@ function(name, classDefFunction) {
     //  'class'-side of the chain.
     Object.setPrototypeOf(classDefFunction.prototype,
                             this[TP.INSTC].prototype);
-    Object.setPrototypeOf(classDefFunction.constructor.prototype,
+
+    //  We have to preserve the original __proto__ from the class definition
+    //  Function instance so that we can put it back before we construct objects
+    //  using the 'construct' trap above. Otherwise, the system will complain.
+    originalProto = Object.getPrototypeOf(classDefFunction);
+    Object.setPrototypeOf(classDefFunction,
                             this[TP.TYPEC].prototype);
 
     //  Define an object that matches the namespace if necessary. Note that we
