@@ -3455,8 +3455,8 @@ function(anObj) {
 
     if (typeof anObj.charAt === 'function' && anObj !== TP.StringProto ||
         typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto ||
-        anObj === true ||
-        anObj === false) {
+        ((anObj.valueOf() === true || anObj.valueOf() === false) &&
+            anObj !== TP.BooleanProto)) {
         return false;
     }
 
