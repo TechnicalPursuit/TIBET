@@ -171,9 +171,7 @@
 <config id="oo">
     <script src="~lib_test/src/tibet/oo/Inheritance_Reflection_Tests.js"/>
     <!-- TODO: Temporary fix for esmangle not supporting ES6 constructs. -->
-    <!--
     <script src="~lib_test/src/tibet/oo/NativeClass_Tests.js" no-minify="no-minify"/>
-    -->
 </config>
 
 <config id="permissions">
