@@ -2286,7 +2286,9 @@ function() {
 
     this.it('mutable reference values - shorthand', function(test, options) {
 
-        test.assert.isTrue(TP.isMutable(function() {alert('hi')}));
+        /* eslint-disable brace-style, max-statements-per-line */
+        test.assert.isTrue(TP.isMutable(function() {alert('hi');}));
+        /* eslint-enable brace-style, max-statements-per-line */
         test.assert.isTrue(TP.isMutable(/foo/));
 
         test.assert.isTrue(TP.isMutable({}));
@@ -2333,7 +2335,9 @@ function() {
 
     this.it('mutable reference values - shorthand', function(test, options) {
 
-        test.assert.isFalse(TP.isReferenceType(function() {alert('hi')}));
+        /* eslint-disable brace-style, max-statements-per-line */
+        test.assert.isFalse(TP.isReferenceType(function() {alert('hi');}));
+        /* eslint-enable brace-style, max-statements-per-line */
         test.assert.isFalse(TP.isReferenceType(/foo/));
 
         test.assert.isTrue(TP.isReferenceType({}));
