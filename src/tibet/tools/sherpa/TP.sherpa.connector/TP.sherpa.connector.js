@@ -94,7 +94,7 @@ function(aSignal) {
     //  destination.
     validTPElemParent = targetTPElem.detectAncestor(
         function(aParent) {
-            return TP.isValid(TP.wrap(aParent).getConnectorDestination());
+            return TP.isValid(aParent.getConnectorDestination());
         });
 
     //  Found one? Return it's connector destination.
@@ -140,7 +140,7 @@ function(aSignal) {
     //  source.
     validTPElemParent = targetTPElem.detectAncestor(
         function(aParent) {
-            return TP.isValid(TP.wrap(aParent).getConnectorSource());
+            return TP.isValid(aParent.getConnectorSource());
         });
 
     //  Found one? Return it's connector source.

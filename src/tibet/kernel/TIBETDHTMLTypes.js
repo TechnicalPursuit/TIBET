@@ -4215,14 +4215,9 @@ function() {
     //  'drag:item' attribute
     sourceTPElem =
         this.detectAncestor(
-            function(ansNatNode) {
-
-                return TP.elementHasAttribute(ansNatNode,
-                                                'drag:mover',
-                                                true) ||
-                        TP.elementHasAttribute(ansNatNode,
-                                                'drag:resizer',
-                                                true);
+            function(ansTPElem) {
+                return ansTPElem.hasAttribute('drag:mover') ||
+                        ansTPElem.hasAttribute('drag:resizer');
             });
 
     //  If we found a valid source TP.dom.ElementNode, get its 'info'
@@ -4406,8 +4401,8 @@ function() {
     //  Otherwise, we need to traverse the parent chain, looking for a
     //  'dnd:vend'.
     return this.detectAncestor(
-                function(ansNatNode) {
-                    return TP.elementHasAttribute(ansNatNode, 'dnd:vend', true);
+                function(ansTPElem) {
+                    return ansTPElem.hasAttribute('dnd:vend');
                 });
 });
 
@@ -4435,10 +4430,8 @@ function() {
     //  Otherwise, we need to traverse the parent chain, looking for a
     //  'dnd:accept'.
     return this.detectAncestor(
-                function(ansNatNode) {
-                    return TP.elementHasAttribute(ansNatNode,
-                                                    'dnd:accept',
-                                                    true);
+                function(ansTPElem) {
+                    return ansTPElem.hasAttribute('dnd:accept');
                 });
 });
 
@@ -4578,11 +4571,8 @@ function() {
     //  'drag:item' attribute
     sourceTPElem =
         this.detectAncestor(
-                function(ansNatNode) {
-
-                    return TP.elementHasAttribute(ansNatNode,
-                                                    'drag:item',
-                                                    true);
+                function(ansTPElem) {
+                    return ansTPElem.hasAttribute('drag:item');
                 });
 
     //  If we found a valid source TP.dom.ElementNode, get its 'info'
@@ -4637,10 +4627,8 @@ function() {
     //  'drag:item' attribute
     sourceTPElem =
         this.detectAncestor(
-                function(ansNatNode) {
-                    return TP.elementHasAttribute(ansNatNode,
-                                                    'drag:item',
-                                                    true);
+                function(ansTPElem) {
+                    return ansTPElem.hasAttribute('drag:item');
                 });
 
     //  If we found a valid source TP.dom.ElementNode, get its 'info'
