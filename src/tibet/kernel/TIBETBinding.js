@@ -1076,8 +1076,8 @@ function(aSignal) {
     //  this method.
     TP.sys.shouldSignalDOMLoaded(signalFlag);
 
-    //  TODO: send a signal that let 3rd party libraries know that the bindings
-    //  have been refreshed.
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
     refreshedElements = this.get('$refreshedElements');
     if (TP.notEmpty(refreshedElements)) {
         evt = this.getNativeDocument().createEvent('Event');
@@ -5086,8 +5086,8 @@ function(shouldRender) {
         });
 
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
-    //  the bindings have been refreshed
-    refreshedElements = this.get('$refreshedElements');
+    //  the bindings have been refreshed.
+    refreshedElements = this.getDocument().get('$refreshedElements');
     if (TP.notEmpty(refreshedElements)) {
         evt = this.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETBindingsRefreshed', true, true);
