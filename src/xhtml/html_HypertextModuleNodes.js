@@ -110,15 +110,20 @@ function(aRequest) {
     //  If there's already a click handler the developer "wins", even if that
     //  means they don't get the benefit of TIBET here. Note the check for
     //  "TP.go2('#')" here - it's a possibility that we might rewrite those
-    //  exact expressions.
+    //  exact expressions. Note that if we have an href, we still want to
+    //  rewrite it.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+    if (TP.notEmpty(onClickVal) &&
+        !onClickVal.contains('TP.go2(\'#') &&
+        TP.isEmpty(href)) {
         return;
     }
 
     //  Same check for 'on:click'.
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+    if (TP.notEmpty(onClickVal) &&
+        !onClickVal.contains('TP.go2(\'#') &&
+        TP.isEmpty(href)) {
         return;
     }
 
@@ -188,6 +193,9 @@ function(value) {
      */
 
     var elem,
+
+        href,
+
         target,
 
         onClickVal;
@@ -209,19 +217,27 @@ function(value) {
         }
     }
 
+    //  Capture the current HREF value.
+    href = TP.elementGetAttribute(elem, 'href', true);
+
     //  If there's already a click handler the developer "wins", even if that
     //  means they don't get the benefit of TIBET here. Note the check for
     //  "TP.go2('#')" here - it's a possibility that we might rewrite those
-    //  exact expressions.
+    //  exact expressions. Note that if we have an href, we still want to
+    //  rewrite it.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+    if (TP.notEmpty(onClickVal) &&
+        !onClickVal.contains('TP.go2(\'#') &&
+        TP.isEmpty(href)) {
         //  setting an attribute returns void according to the spec
         return;
     }
 
     //  Same check for 'on:click'.
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
-    if (TP.notEmpty(onClickVal) && !onClickVal.contains('TP.go2(\'#')) {
+    if (TP.notEmpty(onClickVal) &&
+        !onClickVal.contains('TP.go2(\'#') &&
+        TP.isEmpty(href)) {
         //  setting an attribute returns void according to the spec
         return;
     }
