@@ -183,7 +183,12 @@ li.CodeMirror-hint-active {
 /* Misc content styles, etc */
 
 /* Used when the 'content' div is converted to the tools layer */
-#center #content[isToolsLayer] {
+#content[isToolsLayer] {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 
     background: transparent !important;
 
@@ -191,7 +196,43 @@ li.CodeMirror-hint-active {
     margin: 0;
 
     pointer-events: none;
+
+    z-index: var(--tibet-HUD-TILE-TIER);
 }
+
+/* Resizing the content when HUD drawers open (but only when its been converted
+    to the tools layer) */
+
+#background.edge-north-open #content[isToolsLayer] {
+
+    top: var(--sherpa-drawer-north-open-height);
+}
+
+#background:not(.edge-north-open) #content[isToolsLayer] {
+
+    top: var(--sherpa-drawer-north-closed-height);
+}
+
+#background.edge-south-open #content[isToolsLayer] {
+
+    bottom: var(--sherpa-drawer-south-open-height);
+}
+
+#background:not(.edge-south-open) #content[isToolsLayer] {
+
+    bottom: var(--sherpa-drawer-south-closed-height);
+}
+
+#background.edge-west-open #content[isToolsLayer] {
+
+    left: var(--sherpa-drawer-west-open-width);
+}
+
+#background.edge-east-open #content[isToolsLayer] {
+
+    right: var(--sherpa-drawer-east-open-width);
+}
+
 
 .tagline {
 

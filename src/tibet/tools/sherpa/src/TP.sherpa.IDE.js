@@ -392,7 +392,10 @@ function(finalizationFunc) {
     thisref = this;
     setTimeout(function() {
         var tpElem,
-            consoleService;
+            consoleService,
+
+            hudElem,
+            contentElem;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
         tpElem.setAttribute('tibet:nomutationtracking', false);
@@ -419,6 +422,18 @@ function(finalizationFunc) {
         consoleService.get('model').setVariable(
             'UICANVAS',
             worldTPElem.get('selectedScreen').getContentWindow());
+
+        hudElem = TP.byId('SherpaHUD', viewDoc, false);
+        contentElem = TP.byId('content', viewDoc, false);
+
+        //  Now that we have a valid HUD element, move the 'content' element
+        //  from being under the 'center' element to being under the HUD
+        //  element.
+        TP.nodeAppendChild(hudElem, contentElem, false);
+
+        //  Now that the content element has been moved and is available to be
+        //  the tools layer, set up the property adjuster
+        thisref.setupAdjuster();
 
         thisref.set('setupComplete', true);
 
@@ -509,8 +524,7 @@ function(aScreenTPElement) {
     //  Grab the screen element's global rectangle.
     screenGlobalRect = screenTPElem.getGlobalRect();
 
-    //  The 'center' element is the common parent for the world and the tools
-    //  layer.
+    //  The 'center' element is the parent for the world element.
     centerTPElem = TP.byId('center', viewDoc);
 
     //  Grab the center element's global rectangle.
