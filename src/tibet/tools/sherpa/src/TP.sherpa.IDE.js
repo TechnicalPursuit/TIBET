@@ -449,7 +449,8 @@ function() {
     //  The document that we were installed into.
     viewDoc = this.get('vWin').document;
 
-    //  The 'tools layer' is the 'content' div, until we boot.
+    //  The 'tools layer' is the 'content' div as we boot. We repurpose it
+    //  to be the tools layer.
     contentTPElem = TP.byId('content', viewDoc);
 
     //  If the content element hasn't been 'converted to being the tools layer',
@@ -515,7 +516,7 @@ function(aScreenTPElement) {
     //  Grab the center element's global rectangle.
     centerGlobalRect = centerTPElem.getGlobalRect();
 
-    //  The 'tools layer' is the 'content' div, until we boot.
+    //  The 'tools layer' is the 'content' div, as we boot.
     contentTPElem = TP.byId('content', viewDoc);
 
     //  Grab the tool layer element's global rectangle.
@@ -2459,7 +2460,7 @@ function() {
 
         //  Grab the existing 'content' element, which is now unused since the
         //  world element moved the screens out of it, and use it to show the
-        //  'loading' element. The console will later reuse it for it's output.
+        //  'loading' element. The HUD will use it later for a 'tools layer'.
         contentElem = TP.byId('content', win, false);
 
         //  Show the content element, only so that we can size a 'busy' message
@@ -3235,7 +3236,7 @@ function() {
         //  Add the stylesheet
         menuType.addStylesheetTo(viewDoc);
 
-        //  Grab the template, clone it and add the raw content to the 'center'
+        //  Grab the template, clone it and add the raw content to the HUD
         //  element of the Sherpa.
         menuTPElem = menuType.getResourceElement(
                                 'template', TP.ietf.mime.XHTML);
