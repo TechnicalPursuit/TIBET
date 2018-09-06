@@ -3204,7 +3204,7 @@ function() {
      */
 
     var viewDoc,
-        centerTPElem,
+        hudTPElem,
 
         menuTypes,
         len,
@@ -3214,7 +3214,7 @@ function() {
         menuTPElem;
 
     viewDoc = this.get('vWin').document;
-    centerTPElem = TP.byId('center', this.get('vWin'));
+    hudTPElem = TP.byId('SherpaHUD', this.get('vWin'));
 
     //  Add the stylesheet for the TP.xctrls.popup, if it's not there already.
     //  All context menus will use this and we might as well pre-populate it.
@@ -3240,7 +3240,7 @@ function() {
         menuTPElem = menuType.getResourceElement(
                                 'template', TP.ietf.mime.XHTML);
         menuTPElem = menuTPElem.clone();
-        centerTPElem.addRawContent(menuTPElem);
+        hudTPElem.addRawContent(menuTPElem);
     }
 
     return this;
