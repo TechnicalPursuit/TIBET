@@ -318,7 +318,7 @@ function() {
         pointerOrPath1 = './bar';
         pointerOrPath2 = '/baz';
         result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
-        test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(./bar/baz)');
+        test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(/baz)');
 
         //  Partially formed URI - has scheme but no path, pointers without any
         //  scheme, but the fragment schemes will pick up the scheme from the
