@@ -2474,8 +2474,8 @@ function() {
         //  'loading' element. The HUD will use it later for a 'tools layer'.
         contentElem = TP.byId('content', win, false);
 
-        //  Show the content element, only so that we can size a 'busy' message
-        //  to it properly. Then hide it again.
+        //  Show the content element, only so that we can size its 'busy'
+        //  message layer properly.
         TP.elementShow(contentElem);
         TP.elementShowBusyMessage(contentElem,
                                     '...initializing TIBET Sherpa...');
@@ -3508,7 +3508,8 @@ function() {
 
     //  Grab the 1...n 'prebuilt' iframes that are available in the Sherpa
     //  template. Create a <sherpa:screen> tag and wrap them in it and place
-    //  that screen tag into the world.
+    //  that screen tag into the world. This will move the iframes out of the
+    //  'content' div that originally held them and into the <sherpa:world>.
     uiScreenIFrames = TP.byCSSPath('.center iframe', viewDoc, false, false);
     uiScreenIFrames.forEach(
             function(anIFrameElem, index) {
@@ -3545,7 +3546,7 @@ function() {
     infos = worldTPElem.get('infos');
     infos.first().setSelected(true);
 
-    //  Hide the 'content' div
+    //  Hide the 'content' div - it's empty now anyway.
     TP.elementHide(TP.byId('content', viewDoc, false));
 
     return this;
