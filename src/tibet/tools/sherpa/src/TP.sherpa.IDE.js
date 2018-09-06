@@ -377,9 +377,6 @@ function(finalizationFunc) {
     //  Set up the thumbnail viewer
     this.setupThumbnail();
 
-    //  Set up the property adjuster
-    this.setupAdjuster();
-
     //  Set up the mutation observer that manages keeping all of the DOM and
     //  markup that we're managing in sync.
     this.setupBuilderObserver();
@@ -2704,7 +2701,7 @@ function() {
     adjusterTPElem = TP.tpelem(
         '<sherpa:adjuster id="SherpaAdjuster" pclass:hidden="true"/>');
 
-    TP.byId('center', this.get('vWin')).addContent(adjusterTPElem);
+    this.getToolsLayer().addContent(adjusterTPElem);
 
     return this;
 });
