@@ -3453,12 +3453,14 @@ function(anObj) {
 
     //  Strings, Numbers, Booleans are *not* mutable (but their prototypes are)
 
+    /* eslint-disable no-extra-parens */
     if (typeof anObj.charAt === 'function' && anObj !== TP.StringProto ||
         typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto ||
         ((anObj.valueOf() === true || anObj.valueOf() === false) &&
             anObj !== TP.BooleanProto)) {
         return false;
     }
+    /* eslint-enable no-extra-parens */
 
     if (TP.isCallable(anObj.$$isMutable)) {
         return anObj.$$isMutable();
