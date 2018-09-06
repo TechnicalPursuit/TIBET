@@ -1208,6 +1208,11 @@ function(aPath, aFragment) {
     /**
      * @method uriJoinFragments
      * @summary Joins a URI and a pointer fragment.
+     * @description Note that the fragment has precedence, meaning that if it
+     *     appears to be a whole URI path the path isn't used and the fragment
+     *     is returned unchanged. Also, if the fragment expression (extracted
+     *     from the xpointer type) is an 'absolute one' (per the expression
+     *     path type) it will be returned whole as the fragment expression.
      * @param {String} aPath The URI string used as the prefix.
      * @param {String} aFragment The pointer fragment. Note that this may
      *     contain an XPointer and, if the path contains one as well and they
@@ -1255,6 +1260,12 @@ function(aPath, aFragment) {
     //  path.
     if (aFragment === '.') {
         return aPath;
+    }
+
+    //  If the fragment is a whole URI string, we just return that (per the
+    //  method description).
+    if (TP.isURIString(aFragment)) {
+        return aFragment;
     }
 
     url = '';
@@ -1323,6 +1334,13 @@ function(aPath, aFragment) {
 
             case 'tibet':
             case 'jpath':
+
+                //  If a JSONPath starts with a '$', then it's an absolute path.
+                //  Don't use any of the supplied path.
+                if (expr.charAt(0) === '$') {
+                    return url + '#' + fragmentScheme + '(' + expr + ')';
+                }
+
                 if (expr.charAt(0) === '[') {
                     joinChar = '';
                 } else {
@@ -1333,6 +1351,13 @@ function(aPath, aFragment) {
 
             case 'xpath1':
             case 'xpointer':
+
+                //  If an XPath starts with a '/', then it's an absolute path.
+                //  Don't use any of the supplied path.
+                if (expr.charAt(0) === '/') {
+                    return url + '#' + fragmentScheme + '(' + expr + ')';
+                }
+
                 if (expr.charAt(0) === '[') {
                     joinChar = '';
                 } else {
