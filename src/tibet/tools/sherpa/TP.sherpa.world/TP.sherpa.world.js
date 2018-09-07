@@ -145,8 +145,26 @@ TP.sherpa.world.Inst.defineAttribute('selectedInfo',
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Type.defineMethod('$buildScreenFromIFrame',
-function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
+function(iFrameElement, screenIndex, beforeIndex, screenHolderElement,
          infoHolderElement) {
+
+    /**
+     * @method $buildScreenFromIFrame
+     * @summary Builds a new screen element from an existing iframe element
+     *     and inserts it before the supplied
+     *     beforeIndex (or appends it if beforeIndex isn't supplied).
+     * @param {Element} iFrameElement The iframe element that will be moved
+     *     under the new sherpa:screen element.
+     * @param {Number} screenIndex The index of the new screen.
+     * @param {Number} [beforeIndex] The index of the existing screen that the
+     *     new sherpa:screen will be inserted before. If null, the new screen
+     *     will be appended to the end of the list of screens.
+     * @param {Element} screenHolderElement The element that will hold the newly
+     *     created screen element and act as its parent.
+     * @param {Element} infoHolderElement The element that will hold the newly
+     *      created info element and act as its parent.
+     * @returns {TP.sherpa.screen} The newly created sherpa:screen.
+     */
 
     var doc,
         infoDiv,
@@ -156,27 +174,32 @@ function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
 
     doc = TP.nodeGetDocument(iFrameElement);
 
+    //  Add an 'info div' that will hold some identifying information.
     infoDiv = TP.documentConstructElement(
                                 doc, 'div', TP.w3.Xmlns.XHTML);
-    if (TP.isNumber(insertionIndex)) {
+    if (TP.isNumber(beforeIndex)) {
         insertionElem = TP.nodeGetChildElementAt(infoHolderElement,
-                                                    insertionIndex);
+                                                    beforeIndex);
     }
 
     infoDiv = TP.nodeAppendChild(infoHolderElement, infoDiv, false);
     TP.elementAddClass(infoDiv, 'info');
 
-    //  Create a 'tab' for the info block to hold identifiying information.
+    //  Create a 'tab' for the info block to show the identifying information.
     infoTabDiv = TP.documentConstructElement(
                                 doc, 'div', TP.w3.Xmlns.XHTML);
     infoTabDiv = TP.nodeAppendChild(infoDiv, infoTabDiv, false);
     TP.elementAddClass(infoTabDiv, 'infotab');
+
+    //  Set an 'on:click' handler that will cause this screen to be the
+    //  'focused' screen.
     TP.elementSetAttribute(
         infoTabDiv,
         'on:click',
         '{signal: FocusScreen, payload: {screenIndex: ' + screenIndex + '}}',
         true);
 
+    //  And some identifying information on the info div.
     TP.nodeSetTextContent(infoTabDiv, 'Screen ' + (screenIndex + 1));
 
     //  Wrap each iframe inside of a 'sherpa:screen' element
@@ -186,10 +209,12 @@ function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
 
     //  Now, calculate an insertion point for the screen (if applicable) and
     //  insert it.
-    if (TP.isNumber(insertionIndex)) {
+    if (TP.isNumber(beforeIndex)) {
         insertionElem = TP.nodeGetChildElementAt(screenHolderElement,
-                                                    insertionIndex);
+                                                    beforeIndex);
     }
+
+    //  Go ahead and insert the screen element into the screen holding element.
     screen = TP.nodeInsertBefore(screenHolderElement,
                                     screen,
                                     insertionElem,
