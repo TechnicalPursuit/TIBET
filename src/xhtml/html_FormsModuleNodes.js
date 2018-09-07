@@ -648,7 +648,7 @@ function(aToggleValue) {
      *     to display a 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
      *     'selected' state.
-     * @returns {TP.html.select} The receiver.
+     * @returns {TP.html.option} The receiver.
      */
 
     this.getNativeNode().selected = aToggleValue;
