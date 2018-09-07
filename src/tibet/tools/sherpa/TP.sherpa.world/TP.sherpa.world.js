@@ -250,6 +250,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
     TP.elementSetAttribute(newIFrameElem, 'id', iFrameID);
     TP.elementSetAttribute(newIFrameElem, 'frameborder', '0');
 
+    //  Build a screen using the newly created iframe and the count, index, etc
     newScreenElem = this.getType().$buildScreenFromIFrame(
                             newIFrameElem,
                             screenCount,
@@ -257,14 +258,13 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
                             screenHolderElem,
                             infoHolderElem);
 
+    //  If we were supplied a URL, then load it into the iframe window.
     if (TP.isURI(loadURL)) {
-
         loadRequest = TP.request();
 
         loadRequest.atPut(
             TP.ONLOAD,
             function(evt) {
-
                 if (TP.isCallable(creationCompleteFunc)) {
                     creationCompleteFunc();
                 }
@@ -285,6 +285,11 @@ function(aSignal) {
 
     /**
      * @method handleClosedChange
+     * @summary Handles when the HUD's 'closed' state changes. We track that by
+     *     refocusing ourself.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.world} The receiver.
      */
 
     /*
@@ -322,6 +327,14 @@ function(aSignal) {
 
 TP.sherpa.world.Inst.defineHandler('ToggleScreen',
 function(aSignal) {
+
+    /**
+     * @method handleToggleScreen
+     * @summary Handles notifications of screen toggle signals.
+     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.world} The receiver.
+     */
 
     var consoleService,
 
