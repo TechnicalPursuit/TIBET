@@ -524,7 +524,23 @@ function() {
      * @returns {String} The markup value of the receiver.
      */
 
-    return this.getAttribute('value');
+    var elem,
+
+        attrVal,
+        val;
+
+    elem = this.getNativeNode();
+
+    //  If we have a real value in a 'value' attribute, then we return the value
+    //  of the 'value' attribute.
+    attrVal = TP.elementGetAttribute(elem, 'value', true);
+    if (TP.notEmpty(attrVal)) {
+        return attrVal;
+    } else {
+        //  We either didn't have a 'value' attribute or it was empty. The HTML
+        //  spec says that we return our label text as our value.
+        return this.getLabelText();
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -539,7 +555,24 @@ function() {
      * @returns {String} The primitive value of the receiver.
      */
 
-    return this.getNativeNode().value;
+    var elem,
+
+        attrVal,
+        val;
+
+    elem = this.getNativeNode();
+
+    //  If we have a real value in a 'value' attribute, then we return the value
+    //  of the '.value' property (they should be the same, but since this method
+    //  guarantees the most primitive value, we return it).
+    attrVal = TP.elementGetAttribute(elem, 'value', true);
+    if (TP.notEmpty(attrVal)) {
+        return elem.value;
+    } else {
+        //  We either didn't have a 'value' attribute or it was empty. The HTML
+        //  spec says that we return our label text as our value.
+        return this.getLabelText();
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -2788,7 +2821,7 @@ function() {
             return null;
         }
 
-        return TP.unwrap(valueTPElems.at(theIndex)).value;
+        return valueTPElems.at(theIndex).$getPrimitiveValue();
     }
 
     selectionArray = TP.ac();
@@ -2801,7 +2834,7 @@ function() {
         item = valueTPElems.at(i);
 
         if (item.$getVisualToggle()) {
-            selectionArray.push(TP.unwrap(item).value);
+            selectionArray.push(item.$getPrimitiveValue());
         }
     }
 
