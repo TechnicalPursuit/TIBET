@@ -526,6 +526,27 @@ sherpa|methodeditor[class~="tabbed"] {
  * Middle
  * ---------------------------- */
 
+/* 1424 is computed by taking two panels at 512px each and then adding 400px,
+ * which is the width of west and east drawers (total) */
+@media screen and (min-width: 1424px) {
+
+    #center:not(.fullscreen) sherpa|world#SherpaWorld {
+
+        right: auto;
+
+        width: 512px;
+    }
+
+    #center:not(.fullscreen) sherpa|consoleoutput#SherpaConsoleOutput {
+
+        right: 0px;
+        bottom: 1px;
+        left: 512px;
+
+        max-height: calc(100% - 6px);
+    }
+}
+
 /* NB: Make this selector really specific */
 #center {
 
