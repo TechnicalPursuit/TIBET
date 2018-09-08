@@ -74,6 +74,10 @@ body {
     --sherpa-drawer-north-open-min-height: 207px;
     --sherpa-drawer-south-open-min-height: 200px;
 
+    /* side-by-side widths for the world and consoleoutput */
+    --sherpa-world-SBS-width: 512px;
+    --sherpa-consoleoutput-SBS-width: 768px;
+
     /* stylelint-enable custom-property-empty-line-before */
 
     display: flex;
@@ -526,24 +530,37 @@ sherpa|methodeditor[class~="tabbed"] {
  * Middle
  * ---------------------------- */
 
-/* 1424 is computed by taking two panels at 512px each and then adding 400px,
- * which is the width of west and east drawers (total) */
-@media screen and (min-width: 1424px) {
+/* Unfortunately, CSS Media Queries do not support CSS Variables - sigh.
+ * Therefore, we have maintain the media query breakpoint manually.
+ * This number is computed by summing the following CSS variables:
+ * --sherpa-world-SBS-width
+ * --sherpa-consoleoutput-SBS-width
+ * --sherpa-drawer-east-open-width
+ * --sherpa-drawer-west-open-width
+ */
+
+@media screen and (min-width: 1680px) {
 
     #center:not(.fullscreen) sherpa|world#SherpaWorld {
 
-        right: auto;
+        right: var(--sherpa-consoleoutput-SBS-width);
 
-        width: 512px;
+        min-width: var(--sherpa-world-SBS-width);
     }
 
     #center:not(.fullscreen) sherpa|consoleoutput#SherpaConsoleOutput {
 
-        right: 0px;
+        right: 5px;
+
         bottom: 1px;
-        left: 512px;
+        left: auto;
 
         max-height: calc(100% - 6px);
+
+        width: calc(var(--sherpa-consoleoutput-SBS-width) - 10px);
+
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 
