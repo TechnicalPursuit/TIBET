@@ -1168,6 +1168,24 @@ TP.boot.installPatches = function(aWindow) {
     };
 
     //  --------------------------------------------------------------------
+    //  style Patch
+    //  --------------------------------------------------------------------
+
+    //  Elements at the 'Element' level don't normally get a style object, so
+    //  we fix that here. That way, we can style XML elements at the 'local'
+    //  style level. See the TP.elementGetPseudoInlineStyleObj method for
+    //  more about how this works.
+    aWindow.Object.defineProperty(
+        aWindow.Element.prototype,
+        'style',
+        {
+            configurable: true,
+            get: function() {
+                return TP.elementGetPseudoInlineStyleObj(this);
+            }
+        });
+
+    //  --------------------------------------------------------------------
     //  getKeys Patch
     //  --------------------------------------------------------------------
 
