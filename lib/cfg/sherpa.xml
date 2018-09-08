@@ -5,6 +5,11 @@
 
 <config id="base">
 
+    <script src="~lib_deps/d3-interpolate-tpi.min.js"
+        if="boot.minified"  no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/d3-interpolate-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+
     <script src="./src/TP.sherpa.Element.js"/>
 
     <script src="./src/TP.tibet.sherpa.js"/>

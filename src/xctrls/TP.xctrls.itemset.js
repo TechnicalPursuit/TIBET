@@ -1210,7 +1210,7 @@ function(containerSelection) {
     defaultTagName = this.getType().get('defaultItemTagName');
     defaultTagSelector = defaultTagName.replace(':', '|');
 
-    return containerSelection.selectAll(defaultTagSelector);
+    return containerSelection.selectAll(TP.D3_SELECT_ALL(defaultTagSelector));
 });
 
 //  ------------------------------------------------------------------------

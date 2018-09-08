@@ -795,13 +795,9 @@ TP.extern.d3.VirtualScroller = function() {
             /* eslint-disable no-extra-parens */
             if (endOffset > (allData.length - computedRowCount)) {
             /* eslint-enable no-extra-parens */
-                dispatch.pageDown({
-                    delta: delta
-                });
+                dispatch.call('pageDown', {delta: delta});
             } else if (startOffset < computedRowCount) {
-                dispatch.pageUp({
-                    delta: delta
-                });
+                dispatch.call('pageUp', {delta: delta});
             }
         };
 
@@ -809,10 +805,8 @@ TP.extern.d3.VirtualScroller = function() {
         scrollerFunc.render = render;
 
         //  call render on scrolling event
-        viewport.on('scroll.scrollerFunc',
-                    function() {
-                        render();
-                    }, true);
+        viewport.on('scroll.scrollerFunc', render);
+        viewport.on('mousewheel.scrollerFunc', render);
     };
 
     scrollerFunc.control = function(_) {
@@ -988,7 +982,11 @@ TP.extern.d3.VirtualScroller = function() {
         return delta;
     };
 
-    TP.extern.d3.rebind(scrollerFunc, dispatch, 'on');
+    scrollerFunc.on = function() {
+        var value;
+        value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? scrollerFunc : value;
+    };
 
     return scrollerFunc;
 };

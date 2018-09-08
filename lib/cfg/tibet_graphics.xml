@@ -12,9 +12,14 @@
 </config>
 
 <config id="d3">
-    <script src="~lib_deps/d3-tpi.min.js"
+    <script src="~lib_deps/d3-selection-tpi.min.js"
         if="boot.minified"  no-lint="no-lint" no-minify="no-minify"/>
-    <script src="~lib_deps/d3-tpi.js"
+    <script src="~lib_deps/d3-selection-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+
+    <script src="~lib_deps/d3-dispatch-tpi.min.js"
+        if="boot.minified"  no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/d3-dispatch-tpi.js"
         unless="boot.minified" no-lint="no-lint"/>
 
     <script>
@@ -31,7 +36,7 @@
                                 return;
                             }
 
-                            TP.extern.d3.ns.prefix[item.first()] = item.last();
+                            TP.extern.d3.namespaces[item.first()] = item.last();
                         }
                     });
         ]]>

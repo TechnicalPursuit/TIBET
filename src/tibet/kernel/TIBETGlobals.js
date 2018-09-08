@@ -2295,6 +2295,18 @@ TP.INVOKE_WRAPPED = function(aFunction) {
     };
 };
 
+TP.D3_SELECT = function(aSelector) {
+    return function() {
+        return TP.byCSSPath(aSelector, this, false, false).first();
+    };
+};
+
+TP.D3_SELECT_ALL = function(aSelector) {
+    return function() {
+        return TP.byCSSPath(aSelector, this, false, false);
+    };
+};
+
 //  ------------------------------------------------------------------------
 //  STRING LOCALIZATION / MAPPING
 //  ------------------------------------------------------------------------
