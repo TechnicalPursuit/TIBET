@@ -3455,12 +3455,19 @@ function(anObj) {
 
     /* eslint-disable no-extra-parens */
     if (typeof anObj.charAt === 'function' && anObj !== TP.StringProto ||
-        typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto ||
-        ((anObj.valueOf() === true || anObj.valueOf() === false) &&
-            anObj !== TP.BooleanProto)) {
+        typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto) {
         return false;
     }
     /* eslint-enable no-extra-parens */
+
+    //  Check for Booleans - unfortunately, since this uses valueOf(), we must
+    //  'protect' that against orphan (i.e. __proto__-less objects).
+    if (TP.isCallable(anObj.valueOf)) {
+        if ((anObj.valueOf() === true || anObj.valueOf() === false) &&
+            anObj !== TP.BooleanProto) {
+            return false;
+        }
+    }
 
     if (TP.isCallable(anObj.$$isMutable)) {
         return anObj.$$isMutable();
