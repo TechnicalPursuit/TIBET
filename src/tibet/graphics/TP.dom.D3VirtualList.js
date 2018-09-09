@@ -659,6 +659,10 @@ TP.extern.d3.VirtualScroller = function() {
             var scrollTop,
                 lastPosition;
 
+            if (TP.notDefined(container.node().style)) {
+                return;
+            }
+
             computedRowCount = control.computeGeneratedRowCount();
 
             scrollTop = viewport.node().scrollTop;
