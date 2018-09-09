@@ -868,7 +868,7 @@ function(enterSelection) {
                     attr(itemSelectionInfo.first(), itemSelectionInfo.last()).
                     attr('tibet:tag', 'TP.xctrls.item');
 
-    newCells = newRows.selectAll('xhtml:div').
+    newCells = newRows.selectAll(TP.D3_SELECT_ALL('xhtml:div')).
                     data(function(row) {
                         return row;
                     }).
