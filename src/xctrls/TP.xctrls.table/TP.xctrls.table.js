@@ -1229,6 +1229,9 @@ function(selection) {
         function(d, i) {
             var wrappedElem;
 
+            //  TODO: This looks like a Chrome bug - investigate.
+            this.__proto__ = this.ownerDocument.defaultView.Element.prototype;
+
             wrappedElem = TP.wrap(this);
 
             //  Install a local version of 'computeSuccessorFocusElement' on
