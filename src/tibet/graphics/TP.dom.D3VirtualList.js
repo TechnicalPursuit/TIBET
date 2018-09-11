@@ -988,6 +988,7 @@ TP.extern.d3.VirtualScroller = function() {
 
     scrollerFunc.on = function() {
         var value;
+
         value = dispatch.on.apply(dispatch, arguments);
         return value === dispatch ? scrollerFunc : value;
     };

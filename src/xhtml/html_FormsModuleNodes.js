@@ -526,8 +526,7 @@ function() {
 
     var elem,
 
-        attrVal,
-        val;
+        attrVal;
 
     elem = this.getNativeNode();
 
@@ -557,8 +556,7 @@ function() {
 
     var elem,
 
-        attrVal,
-        val;
+        attrVal;
 
     elem = this.getNativeNode();
 
