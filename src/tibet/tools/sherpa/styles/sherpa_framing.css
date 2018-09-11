@@ -548,6 +548,16 @@ sherpa|methodeditor[class~="tabbed"] {
         min-width: var(--sherpa-world-SBS-width);
     }
 
+    #background.edge-east-open #content[isToolsLayer] {
+
+        right: calc(var(--sherpa-consoleoutput-SBS-width) + var(--sherpa-drawer-east-open-width));
+    }
+
+    #content[isToolsLayer] {
+
+        min-width: var(--sherpa-world-SBS-width);
+    }
+
     #center:not(.fullscreen) sherpa|consoleoutput#SherpaConsoleOutput {
 
         right: 5px;
