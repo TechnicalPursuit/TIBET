@@ -214,12 +214,15 @@ sherpa|changes > .header > .trigger.button:hover {
 }
 
 @keyframes pulse {
+
     0% {
         background: transparent;
     }
+
     50% {
         background: gold;
     }
+
     100% {
         background: transparent;
     }

@@ -46,8 +46,6 @@
 }
 
 .sherpa-outliner::before,
-.sherpa-outliner::before,
-.sherpa-outliner *::before,
 .sherpa-outliner *::before {
 
     position: absolute;
