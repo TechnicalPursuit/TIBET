@@ -7166,9 +7166,8 @@ TP.boot.$$setupMetadata = function(aWindow) {
 
     //  Need to tell our machinery that NaN's *constructor* name is
     //  'Number'
-    /* eslint-disable no-proto */
-    win.NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
-    /* eslint-enable no-proto */
+    Object.getPrototypeOf(win.NaN).$$nonFunctionConstructorConstructorName =
+                                                                     'Number';
 
     //  Browser-specific DOM 'types'
 

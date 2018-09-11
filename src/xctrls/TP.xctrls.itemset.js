@@ -1335,7 +1335,8 @@ function(selection) {
             var wrappedElem;
 
             //  TODO: This looks like a Chrome bug - investigate.
-            this.__proto__ = this.ownerDocument.defaultView.Element.prototype;
+            Object.setPrototypeOf(
+                this, this.ownerDocument.defaultView.Element.prototype);
 
             wrappedElem = TP.wrap(this);
 
