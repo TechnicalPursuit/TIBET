@@ -1460,9 +1460,10 @@ TP.sig.Request.Inst.defineAttribute('parentJoins');
 //  optional hash of peer requests used for simple workflow configurations
 TP.sig.Request.Inst.defineAttribute('peerJoins');
 
-//  optional deferred Promise used for 'then' ('Promises/A+' compatible)
-//  chaining
-TP.sig.Request.Inst.defineAttribute('$deferredPromise');
+//  resolver and rejector for an optional deferred Promise used for 'then'
+//  ('Promises/A+' compatible) chaining
+TP.sig.Request.Inst.defineAttribute('$deferredPromiseResolver');
+TP.sig.Request.Inst.defineAttribute('$deferredPromiseRejector');
 
 /**
  * Whether this request has been logged. Normally not used but if errors occur
@@ -1672,8 +1673,10 @@ function(anOrigin, aPayload, aPolicy) {
     //  clear any response we may have from a prior execution
     this.$set('response', null);
 
-    //  if we had a deferred it should be cleared.
-    this.$set('$deferredPromise', null);
+    //  if we had resolvers and rejectors for a deferred Promise, they should be
+    //  cleared.
+    this.$set('$deferredPromiseResolver', null);
+    this.$set('$deferredPromiseRejector', null);
 
     //  clear status code back to original
     this.set('statusCode', TP.READY);
@@ -3136,7 +3139,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         arglen,
 
         err,
-        deferred;
+
+        resolver,
+        rejector;
 
     //  consider this to be "end of processing" time since what follows is
     //  largely about notifying rather than "real work" for the request
@@ -3377,12 +3382,13 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         }
     }
 
-    //  If we had a deferred Promise hooked up to us, then (depending on success
-    //  or not) resolve it or reject it.
-    deferred = this.get('$deferredPromise');
-    if (TP.isValid(deferred)) {
+    //  If we had a deferred Promise hooked up to us (as indicated by whether
+    //  we have a handle to a Promise's resolver Function), then (depending on
+    //  success or not) resolve it or reject it.
+    resolver = this.get('$deferredPromiseResolver');
+    if (TP.isCallable(resolver)) {
         if (aState === TP.SUCCEEDED) {
-            deferred.resolve(result);
+            resolver(request.getResult());
         } else {
             if (TP.isValid(aFaultInfo)) {
                 err = aFaultInfo.at('error');
@@ -3392,7 +3398,11 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 //  result value from the request. We only want failure data.
                 err = new Error(aResultOrFault || 'UnknownRequestFault');
             }
-            deferred.reject(err);
+
+            //  We know that we have a rejector, since we had a resolver, so we
+            //  don't have to check here.
+            rejector = this.get('$deferredPromiseRejector');
+            rejector(err);
         }
     }
 
@@ -3927,19 +3937,20 @@ function(onFulfilled, onRejected) {
      */
 
     var request,
-        deferred,
         promise,
         fault,
         err;
 
     request = this.getRequest();
 
-    //  Stash away a reference to the *deferred* (not its Promise). We'll need
-    //  to resolve() or reject() this later when the request completes.
-    deferred = TP.extern.Promise.pending();
-    request.set('$deferredPromise', deferred);
-
-    promise = deferred.promise;
+    //  Stash away references to the resolver and rejector of the Promise).
+    //  We'll need them to resolve() or reject() the Promise later when the
+    //  request completes.
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+            request.set('$deferredPromiseResolver', resolver);
+            request.set('$deferredPromiseRejector', rejector);
+        });
 
     if (TP.isCallable(onRejected)) {
         promise = promise.then(onFulfilled, onRejected);
@@ -3949,7 +3960,7 @@ function(onFulfilled, onRejected) {
 
     if (request.didComplete()) {
         if (request.didSucceed()) {
-            deferred.resolve(request.getResult());
+            request.get('$deferredPromiseResolver')(request.getResult());
         } else {
             fault = request.get('faultInfo');
             if (TP.isValid(fault)) {
@@ -3958,7 +3969,7 @@ function(onFulfilled, onRejected) {
             if (TP.notValid(err)) {
                 err = new Error('UnknownRequestFault');
             }
-            deferred.reject(err);
+            request.get('$deferredPromiseRejector')(err);
         }
     }
 
