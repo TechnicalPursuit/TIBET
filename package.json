@@ -93,7 +93,7 @@
     "open-editor": "^1.2.0",
     "opener": "^1.5.0",
     "permessage-deflate": "^0.1.6",
-    "pouchdb": "TechnicalPursuit/pouchdb#5.4.4",
+    "pouchdb": "^7.0.0",
     "pouchdb-all-dbs": "https://github.com/TechnicalPursuit/pouchdb-all-dbs/tarball/master",
     "puppeteer": "^1.7.0",
     "readline-sync": "^1.4.9",
