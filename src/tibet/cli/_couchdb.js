@@ -28,10 +28,8 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./_multi');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./_multi');   //  NOTE we inherit from 'multi' here.
 Cmd.prototype = new Cmd.Parent();
 
 couch = require('../../../etc/helpers/couch_helpers');

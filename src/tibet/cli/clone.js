@@ -27,10 +27,8 @@ path = require('path');
 //  Type Construction
 //  ---
 
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./_dna');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./_dna');     // NOTE we inherit from 'dna' command.
 Cmd.prototype = new Cmd.Parent();
 
 //  ---

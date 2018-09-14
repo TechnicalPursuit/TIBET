@@ -30,10 +30,8 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./_couchdb');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./_couchdb'); // NOTE we inherit from 'couchdb' command.
 Cmd.prototype = new Cmd.Parent();
 
 couch = require('../../../etc/helpers/couch_helpers');

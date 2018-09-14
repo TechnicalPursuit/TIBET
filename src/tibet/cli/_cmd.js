@@ -29,11 +29,10 @@ minimist = require('minimist');
 //  ---
 
 /**
- * Command supertype. All individual commands inherit from this type.
+ * Command supertype. All individual commands inherit from this type or a
+ * subtype of it such as 'tsh', 'couchdb', or 'multi'.
  */
-Cmd = function() {
-    //  empty
-};
+Cmd = function() { /* init */ };
 
 
 /**

@@ -31,11 +31,8 @@ path = require('path');
 //  Type Construction
 //  ---
 
-// NOTE this is a subtype of the 'tsh' command focused on running :test.
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./tsh');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./tsh');      // NOTE we inherit from 'tsh' command.
 Cmd.prototype = new Cmd.Parent();
 
 
