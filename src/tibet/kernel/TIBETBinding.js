@@ -4590,17 +4590,17 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
         //  Grab the list of our 'bidirectional' instance (not DOM) attributes.
         //  This will tell us which aspects can be 'set' from GUI to model.
         bidiAttrs = this.getType().get('bidiAttrs');
-    }
 
-    //  Make sure that the receiver is configured with bidi instance attributes.
-    //  If there are none, that means that we have no GUI to model capable
-    //  aspects, so warn and exit here.
-    if (TP.isEmpty(bidiAttrs)) {
-        TP.ifWarn() ?
-            TP.warn('No bidi attrs defined for bound control: ' +
-                    TP.name(this) + '.') : 0;
+        //  Make sure that the receiver is configured with bidi instance
+        //  attributes. If there are none, that means that we have no GUI to
+        //  model capable aspects, so warn and exit here.
+        if (TP.isEmpty(bidiAttrs)) {
+            TP.ifWarn() ?
+                TP.warn('No bidi attrs defined for bound control: ' +
+                        TP.name(this) + '.') : 0;
 
-        return this;
+            return this;
+        }
     }
 
     //  Iterate over each binding expression in the binding information.
