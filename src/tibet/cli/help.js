@@ -37,9 +37,7 @@ nodecli = require('shelljs-nodecli');
 //  Type Construction
 //  ---
 
-Cmd = function() {
-    //  empty
-};
+Cmd = function() { /* init */ };
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -604,7 +602,7 @@ Cmd.prototype.executeIntro = function() {
     var intro,
         cmds;
 
-    this.info('\nUsage: tibet <command> <options>');
+    this.info('\nUsage: tibet <command> <options>', 'bold');
 
     // ---
     // Introduction
@@ -623,7 +621,7 @@ Cmd.prototype.executeIntro = function() {
     // ---
 
     cmds = this.getCommands(__dirname);
-    this.info('\n<command> built-ins include:\n');
+    this.info('\n<command> built-ins include:\n', 'bold');
     this.logCommands(cmds);
 
     // ---
@@ -633,7 +631,7 @@ Cmd.prototype.executeIntro = function() {
     if (CLI.inProject(Cmd) || CLI.inLibrary()) {
         cmds = this.getCommands(CLI.expandPath('~app_cmd'));
         if (cmds.length > 0) {
-            this.info('\nProject <commands> include:\n');
+            this.info('\nProject <commands> include:\n', 'bold');
             this.logCommands(cmds);
         }
     }
@@ -642,7 +640,7 @@ Cmd.prototype.executeIntro = function() {
         cmds = CLI.getMakeTargets();
 
         if (cmds.length > 0) {
-            this.info('\n`tibet make` targets include:\n');
+            this.info('\nProject `make` targets include:\n', 'bold');
             this.logCommands(cmds);
         }
     }
@@ -651,7 +649,7 @@ Cmd.prototype.executeIntro = function() {
     // Summary
     // ---
 
-    this.info('\n<options> always include:\n');
+    this.info('\n<options> always include:\n', 'bold');
 
     this.info('\t--help         display command help text');
     this.info('\t--usage        display command usage summary');
@@ -660,12 +658,13 @@ Cmd.prototype.executeIntro = function() {
     this.info('\t--debug        turn on debugging output [false]');
     this.info('\t--stack        display stack with error [false]');
 
-    this.info('\nConfigure default parameters via \'tibet config\'.');
+    this.info('\nUse \'tibet config\' to configure TIBET for your project.',
+        'bold');
 
     try {
         this.info('\n' + CLI.getcfg('npm.name') + '@' +
             CLI.getcfg('npm.version').split('+')[0] +
-            ' ' + sh.which('tibet'));
+            ' ' + sh.which('tibet'), 'dim');
     } catch (e) {
         //  empty
     }

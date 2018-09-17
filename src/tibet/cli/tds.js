@@ -30,10 +30,8 @@ TDS = require('../../../tds/tds_base');
 //  Type Construction
 //  ---
 
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./_multi');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./_multi');   // NOTE we inherit from 'multi' here.
 Cmd.prototype = new Cmd.Parent();
 
 sh = require('shelljs');

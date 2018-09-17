@@ -30,9 +30,7 @@ dom = require('xmldom');
 //  Type Construction
 //  ---
 
-Cmd = function() {
-    //  empty
-};
+Cmd = function() { /* init */ };
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 

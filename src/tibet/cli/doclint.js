@@ -26,11 +26,8 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-// NOTE this is a subtype of the 'tsh' command focused on running :doclint.
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./tsh');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./tsh');  //  NOTE we inherit from the 'tsh' command.
 Cmd.prototype = new Cmd.Parent();
 
 

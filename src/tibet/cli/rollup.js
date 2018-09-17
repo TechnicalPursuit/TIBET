@@ -39,11 +39,8 @@ escodegen = require('escodegen');
 //  Type Construction
 //  ---
 
-// NOTE we don't inherit from _cmd, but from package.
-Cmd = function() {
-    //  empty
-};
-Cmd.Parent = require('./package');
+Cmd = function() { /* init */ };
+Cmd.Parent = require('./package'); // NOTE we inherit from package command.
 Cmd.prototype = new Cmd.Parent();
 
 
