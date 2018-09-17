@@ -2199,7 +2199,7 @@ function(scopeVals, bindingInfoValue) {
                     retVal.atPut(aspectName, result);
                 }
             }
-        });
+        }.bind(this));
 
     return retVal;
 });
