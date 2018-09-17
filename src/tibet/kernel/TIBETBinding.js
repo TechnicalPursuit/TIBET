@@ -4729,7 +4729,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('setBoundValueIfBound',
-function(aValue) {
+function(aValue, ignoreBidiInfo) {
 
     /**
      * @method setBoundValueIfBound
@@ -4740,6 +4740,10 @@ function(aValue) {
      *     that assumes that the receiver's binding scope values and binding
      *     attribute value will be used.
      * @param {Object} aValue The value to set onto the model.
+     * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
+     *     receiver's bidirectional attribute information. If this parameter is
+     *     true, this method will always set the bound value whether or not the
+     *     bound attribute is considered to be both a getter and setter.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -4765,7 +4769,8 @@ function(aValue) {
     //  scope values and the value of the found binding attribute.
     this.setBoundValue(aValue,
                         this.getBindingScopeValues(),
-                        this.getAttribute(attrName));
+                        this.getAttribute(attrName),
+                        ignoreBidiInfo);
 
     return this;
 });
