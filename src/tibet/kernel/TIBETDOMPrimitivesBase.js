@@ -219,7 +219,7 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
 
         //  NB: We don't bother to test to make sure baseVal is a URI here
         //  since it could be just 'foo.xml' at this point (which won't pass
-        //  our TP.isURI() test). So we just compute the base and join the
+        //  our TP.isURIString() test). So we just compute the base and join the
         //  paths together.
 
         //  Expand the 'baseVal' path, converting any virtual constructs. If
