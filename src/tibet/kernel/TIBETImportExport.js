@@ -684,49 +684,62 @@ function(aURI, aRequest) {
     callback = TP.ifKeyInvalid(request, 'callback', null);
 
     newPromise = TP.extern.Promise.construct(
-            function(resolver, rejector) {
-                var targetLoc,
+        function(resolver, rejector) {
+            var targetLoc,
 
-                    loadedCB,
-                    scriptNode,
+                loadedCB,
+                scriptNode,
 
-                    err;
+                err;
 
-                targetLoc = url.getLocation();
+            targetLoc = url.getLocation();
 
-                loadedCB = function() {
+            loadedCB = function() {
 
-                    var req;
+                var req;
 
-                    //  Activate any "awakening logic" specific to the script.
-                    req = TP.request();
-                    req.atPut('node', scriptNode);
-                    TP.html.script.tagAttachDOM(req);
+                //  Activate any "awakening logic" specific to the script.
+                req = TP.request();
+                req.atPut('node', scriptNode);
+                TP.html.script.tagAttachDOM(req);
 
-                    TP.signal(TP.sys,
-                                'TP.sig.ScriptImported',
-                                TP.hc('node', scriptNode));
+                TP.signal(TP.sys,
+                            'TP.sig.ScriptImported',
+                            TP.hc('node', scriptNode));
 
-                    if (TP.isCallable(callback)) {
-                        callback(scriptNode);
-                    }
-
-                    request.complete(scriptNode);
-
-                    return resolver(scriptNode);
-                };
-
-                scriptNode = TP.boot.$sourceUrlImport(
-                                        targetLoc, null, loadedCB);
-
-                if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
-                    err = new Error('Error importing source URL: ' +
-                                        targetLoc);
-                    request.fail(err);
-
-                    return rejector(err);
+                if (TP.isCallable(callback)) {
+                    callback(scriptNode);
                 }
-            });
+
+                request.complete(scriptNode);
+
+                return resolver(scriptNode);
+            };
+
+            scriptNode = TP.boot.$sourceUrlImport(targetLoc, null, loadedCB);
+
+            if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+                err = new Error('Error importing source URL: ' + targetLoc);
+                request.fail(err);
+
+                return rejector(err);
+            }
+        }).catch(
+        function(err) {
+            //  Make sure to fail our request in case it didn't get properly
+            //  failed. If it's already completed this will be a no-op.
+            if (TP.isValid(request)) {
+                request.fail(err);
+            }
+
+            //  Be sure to throw here or invoking items like importPackage won't
+            //  see the error, it's being caught here.
+            if (TP.isValid(err)) {
+                throw err;
+            } else {
+                throw new Error('ImportScriptError');
+            }
+        });
 
     return newPromise;
 }, {
