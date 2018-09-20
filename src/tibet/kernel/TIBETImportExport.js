@@ -651,7 +651,7 @@ function(aURI, aRequest) {
      *     function may be provided.
      * @param {TP.uri.URI|String} aURI A TP.uri.URI or String referencing the
      *     script location.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
+     * @param {TP.sig.Request|TP.core.Hash} [aRequest] A optional set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
      * @returns {Promise} A promise which resolved based on success.
@@ -707,9 +707,13 @@ function(aURI, aRequest) {
                             'TP.sig.ScriptImported',
                             TP.hc('node', scriptNode));
 
+                //  If the request provided a callback, then use it.
                 if (TP.isCallable(callback)) {
                     callback(scriptNode);
                 }
+
+                //  Complete the request and resolve the Promise with the script
+                //  element that the script is loaded into.
 
                 request.complete(scriptNode);
 
