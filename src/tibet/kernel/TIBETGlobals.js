@@ -2945,6 +2945,10 @@ TP.regex.NATIVE_TYPENAME = /^[A-Z]+[A-Za-z0-9]+/;
 TP.regex.NATIVE_TYPENAME_MATCH = /^\[object/;
 TP.regex.NATIVE_TYPENAME_EXTRACT = / (.*)\]/;
 
+//  Note here how we make the space optional - it's not required and the code
+//  might be minified.
+TP.regex.ECMA_CLASS = /^class\s*\{/;
+
 TP.regex.VALID_ROOTNAME = /^(TP|APP)\.[a-zA-Z]([a-zA-Z0-9_])+/;
 TP.regex.VALID_TYPENAME = /^[a-zA-Z]([-a-zA-Z0-9_.:]){2,}$/;
 TP.regex.VALID_WINDOWNAME = /^[a-zA-Z]([-a-zA-Z0-9_](\.)*){1,}$/;

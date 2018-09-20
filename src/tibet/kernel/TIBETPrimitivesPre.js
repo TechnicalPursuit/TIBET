@@ -2958,6 +2958,25 @@ function(aSuspectValue, aDefaultValue) {
 //  TYPE CHECKS
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isESClass',
+function(anObj) {
+
+    /**
+     * @method isESClass
+     * @summary Returns true if the object provided is an ECMAScript 'class'
+     *     Function, as distinct from a regular Function.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the supplied object is an ECMAScript
+     *     class Function.
+     */
+
+    return TP.isCallable(anObj) &&
+            TP.regex.ECMA_CLASS.test(Function.prototype.toString.call(anObj));
+
+}, null, 'TP.isESClass');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isNativeFunction',
 function(anObj) {
 
