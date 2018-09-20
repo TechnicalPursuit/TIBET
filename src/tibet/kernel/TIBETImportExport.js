@@ -8,6 +8,122 @@
  */
 //  ========================================================================
 
+TP.sys.defineMethod('fetchScriptInto',
+function(aURI, aDocument, aRequest) {
+
+    /**
+     * @method fetchScriptInfo
+     * @summary Loads the uri provided (which should be a JavaScript uri) into
+     *     the supplied document's context. Note that this call is done in a
+     *     synchronous fashion, even though a callback function may be provided.
+     * @param {TP.uri.URI|String} aURI A TP.uri.URI or String referencing the
+     *     script location.
+     * @param {Document} aDocument The document to add the script code to.
+     * @param {TP.sig.Request|TP.core.Hash} [aRequest] A optional set of request
+     *     parameters. The only meaningful one here is 'callback' which should
+     *     point to a function to call on complete.
+     * @returns {Promise} A promise which resolved based on success.
+     */
+
+    var url,
+        request,
+
+        callback,
+
+        docHead,
+
+        newPromise;
+
+    url = TP.uc(aURI);
+    if (TP.notValid(url)) {
+        this.raise('TP.sig.InvalidURI');
+
+        return TP.extern.Promise.reject(new Error('InvalidURI'));
+    }
+
+    //  Adjust the path per any rewrite rules in place for the URI. Note that we
+    //  only do this if the url is absolute.
+    if (TP.uriIsAbsolute(url.getLocation())) {
+        url = url.rewrite();
+    }
+
+    request = TP.request(aRequest);
+    TP.ifInfo() ? TP.info('Fetching script: ' +
+                            TP.str(url) +
+                            ' into: ' +
+                            TP.gid(aDocument)) : 0;
+
+    //  Grab any callback that was defined by the request
+    callback = TP.ifKeyInvalid(request, 'callback', null);
+
+    docHead = TP.documentEnsureHeadElement(aDocument);
+
+    newPromise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+            var targetLoc,
+
+                loadedCB,
+                scriptNode,
+
+                err;
+
+            targetLoc = url.getLocation();
+
+            loadedCB = function() {
+
+                var req;
+
+                //  Start by removing the 'onload' handler from our script
+                //  element.
+                scriptNode.removeEventListener('load', loadedCB, false);
+
+                //  Activate any "awakening logic" specific to the script.
+                req = TP.request();
+                req.atPut('node', scriptNode);
+                TP.html.script.tagAttachDOM(req);
+
+                //  If the request provided a callback, then use it.
+                if (TP.isCallable(callback)) {
+                    callback(scriptNode);
+                }
+
+                //  Complete the request and resolve the Promise with the script
+                //  element that the script is loaded into.
+
+                request.complete(scriptNode);
+
+                return resolver(scriptNode);
+            };
+
+            //  Construct an XHTML script element on the supplied document
+            //  and will the target location.
+            scriptNode = TP.documentConstructScriptElement(
+                                    aDocument,
+                                    targetLoc);
+
+            //  Set our loaded callback as the 'onload' handler for the
+            //  script element.
+            scriptNode.addEventListener('load', loadedCB, false);
+
+            if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+                err = new Error('Error fetching source URL: ' + targetLoc);
+                request.fail(err);
+
+                return rejector(err);
+            }
+
+            //  Append it into the document head - this will start the
+            //  loading process.
+            TP.nodeAppendChild(docHead, scriptNode, false);
+        });
+
+    return newPromise;
+}, {
+    dependencies: [TP.extern.Promise]
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('getAllScriptPaths',
 function(packageConfig, phase) {
 
