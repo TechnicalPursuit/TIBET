@@ -678,7 +678,7 @@ function(aURI, aRequest) {
     }
 
     request = TP.request(aRequest);
-    TP.info('Importing script: ' + TP.str(url));
+    TP.ifInfo() ? TP.info('Importing script URL: ' + TP.str(url)) : 0;
 
     //  Grab any callback that was defined by the request
     callback = TP.ifKeyInvalid(request, 'callback', null);
@@ -720,7 +720,7 @@ function(aURI, aRequest) {
                                         targetLoc, null, loadedCB);
 
                 if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
-                    err = new Error('Error importing source text: ' +
+                    err = new Error('Error importing source URL: ' +
                                         targetLoc);
                     request.fail(err);
 
@@ -768,7 +768,7 @@ function(targetUrl) {
                             'refresh', true,
                             'resultType', TP.TEXT,
                             'signalChange', false);
-    TP.info('Importing script text: ' + TP.str(url));
+    TP.ifInfo() ? TP.info('Importing script text from URL: ' + TP.str(url)) : 0;
 
     return url.getResource(request).then(
         function(result) {
