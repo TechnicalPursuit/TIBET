@@ -141,11 +141,7 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        thisref,
-
-        scriptElem,
-
-        loadHandler;
+        thisref;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -164,45 +160,34 @@ function(aRequest) {
     //  document of the element that we're processing*.
     if (TP.notValid(TP.extern.ace)) {
 
-        //  Clone the script element template from the boot system and set the
-        //  path to where the ACE editor is located.
-        scriptElem = TP.boot.$$scriptTemplate.cloneNode(true);
-        scriptElem.setAttribute(
-            'src', TP.uc('~lib_deps/ace/ace-tpi.js').getLocation());
+        TP.sys.fetchScriptInto(
+            TP.uc('~lib_deps/ace/ace-tpi.js'),
+            TP.doc(elem),
+            TP.request()
+        ).then(function() {
+                var aceObj;
 
-        //  Define a handler that will define the global TIBET 'extern' slot
-        //  that will point to the ACE editor and then call setup on the element
-        //  that we're processing.
-        loadHandler = function() {
-            var aceObj;
+                aceObj = TP.nodeGetWindow(elem).ace;
 
-            scriptElem.removeEventListener('load', loadHandler, false);
+                TP.registerExternalObject('ace', aceObj);
 
-            aceObj = TP.nodeGetWindow(elem).ace;
+                //  NB: Wire these in *after* the registerExternalObject method
+                //  is executed because it will try to devine these settings
+                //  from the loader, which is no longer involved - the app is
+                //  running.
+                aceObj[TP.LOAD_PATH] = 'inline';
+                aceObj[TP.LOAD_CONFIG] = 'base';
+                aceObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
+                aceObj[TP.LOAD_STAGE] = TP.PHASE_TWO;
 
-            TP.registerExternalObject('ace', aceObj);
+                aceObj[TP.SOURCE_PATH] = 'inline';
+                aceObj[TP.SOURCE_CONFIG] = 'base';
+                aceObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
 
-            //  NB: Wire these in *after* the registerExternalObject method is
-            //  executed because it will try to devine these settings from the
-            //  loader, which is no longer involved - the app is running.
-            aceObj[TP.LOAD_PATH] = 'inline';
-            aceObj[TP.LOAD_CONFIG] = 'base';
-            aceObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
-            aceObj[TP.LOAD_STAGE] = TP.PHASE_TWO;
+                thisref.defineDependencies('TP.extern.ace');
 
-            aceObj[TP.SOURCE_PATH] = 'inline';
-            aceObj[TP.SOURCE_CONFIG] = 'base';
-            aceObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
-
-            thisref.defineDependencies('TP.extern.ace');
-
-            tpElem.setup();
-        };
-
-        scriptElem.addEventListener('load', loadHandler, false);
-
-        //  Appending it into the head will cause it to load.
-        TP.documentEnsureHeadElement(TP.doc(elem)).appendChild(scriptElem);
+                tpElem.setup();
+            });
     } else {
         tpElem.setup();
     }
