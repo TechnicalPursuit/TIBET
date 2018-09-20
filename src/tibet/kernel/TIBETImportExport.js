@@ -632,7 +632,7 @@ function(packageConfig, shouldSignal) {
                 });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
-    //  of them failed.
+    //  of them failed. NOTE THAT FETCHING IS STILL HAPPENING ASYNCHRONOUSLY!
     return TP.extern.Promise.all(promises);
 }, {
     dependencies: [TP.extern.Promise]
@@ -671,8 +671,8 @@ function(aURI, aRequest) {
         return TP.extern.Promise.reject(new Error('InvalidURI'));
     }
 
-    //  Adjust the path per any rewrite rules in place for the URI. Note
-    //  that we only do this if the url is absolute
+    //  Adjust the path per any rewrite rules in place for the URI. Note that we
+    //  only do this if the url is absolute.
     if (TP.uriIsAbsolute(url.getLocation())) {
         url = url.rewrite();
     }
