@@ -97,27 +97,32 @@ function() {
 
         pageTextField = TP.byId('pageTextField', windowContext, false);
 
-        //  Initially, the text field in the page should have focus.
-        test.assert.hasAttribute(pageTextField, 'pclass:focus');
+        test.andWait(500);
 
-        test.assert.didSignal(pageTextField, 'TP.sig.UIFocus');
-        test.assert.didSignal(pageTextField, 'TP.sig.UIDidFocus');
+        test.chain(
+            function() {
+                //  Initially, the text field in the page should have focus.
+                test.assert.hasAttribute(pageTextField, 'pclass:focus');
 
-        focusedElem = driver.getFocusedElement();
-        test.assert.isIdenticalTo(focusedElem, pageTextField);
+                test.assert.didSignal(pageTextField, 'TP.sig.UIFocus');
+                test.assert.didSignal(pageTextField, 'TP.sig.UIDidFocus');
 
-        //  At this point, the focus stack should have one item on it - the
-        //  page field element (wrapped).
-        test.assert.isSizeOf(
-                TP.$focus_stack,
-                1,
-                'Focus stack size of: ' +
-                    TP.$focus_stack.getSize() +
-                    ' is not the correct size in Step #1');
-        test.assert.isIdenticalTo(
+                focusedElem = driver.getFocusedElement();
+                test.assert.isIdenticalTo(focusedElem, pageTextField);
+
+                //  At this point, the focus stack should have one item on it -
+                //  the page field element (wrapped).
+                test.assert.isSizeOf(
+                        TP.$focus_stack,
+                        1,
+                        'Focus stack size of: ' +
+                            TP.$focus_stack.getSize() +
+                            ' is not the correct size in Step #1');
+                test.assert.isIdenticalTo(
                         TP.$focus_stack.last(),
                         pageTextField,
                         'Stack last element not identical to page text field');
+            });
 
         test.chain(
             function() {
