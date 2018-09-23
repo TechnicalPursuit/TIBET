@@ -151,8 +151,8 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
     }
 
     newScriptElement = TP.documentConstructElement(aDocument,
-                                                'script',
-                                                TP.w3.Xmlns.XHTML);
+                                                    'script',
+                                                    TP.w3.Xmlns.XHTML);
 
     //  NOTE!! This *must* be done by using the '.async' property. Setting the
     //  'async' attribute to 'false' here will actually cause the new script
