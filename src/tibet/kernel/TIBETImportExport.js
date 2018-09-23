@@ -65,7 +65,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
             var targetLoc,
 
                 loadedCB,
-                scriptNode,
+                scriptElem,
 
                 err;
 
@@ -77,43 +77,43 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
 
                 //  Start by removing the 'onload' handler from our script
                 //  element.
-                scriptNode.removeEventListener('load', loadedCB, false);
+                scriptElem.removeEventListener('load', loadedCB, false);
 
                 //  Activate any "awakening logic" specific to the script.
                 req = TP.request();
-                req.atPut('node', scriptNode);
+                req.atPut('node', scriptElem);
                 TP.html.script.tagAttachDOM(req);
 
                 //  If the request provided a callback, then use it.
                 if (TP.isCallable(callback)) {
-                    callback(scriptNode);
+                    callback(scriptElem);
                 }
 
                 //  Complete the request and resolve the Promise with the script
                 //  element that the script is loaded into.
 
-                request.complete(scriptNode);
+                request.complete(scriptElem);
 
-                return resolver(scriptNode);
+                return resolver(scriptElem);
             };
 
             //  Construct an XHTML script element on the supplied document
             //  and will the target location.
-            scriptNode = TP.documentConstructScriptElement(
+            scriptElem = TP.documentConstructScriptElement(
                                     aDocument,
                                     targetLoc);
 
             //  If additional script element attributes were supplied, then put
             //  them on the script element.
             if (TP.notEmpty(scriptElemAttrs)) {
-                TP.elementSetAttributes(scriptNode, scriptElemAttrs, true);
+                TP.elementSetAttributes(scriptElem, scriptElemAttrs, true);
             }
 
             //  Set our loaded callback as the 'onload' handler for the
             //  script element.
-            scriptNode.addEventListener('load', loadedCB, false);
+            scriptElem.addEventListener('load', loadedCB, false);
 
-            if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+            if (TP.notValid(scriptElem) || TP.isError(scriptElem)) {
                 err = new Error('Error fetching source URL: ' + targetLoc);
                 request.fail(err);
 
@@ -122,7 +122,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
 
             //  Append it into the document head - this will start the
             //  loading process.
-            TP.nodeAppendChild(docHead, scriptNode, false);
+            TP.nodeAppendChild(docHead, scriptElem, false);
         });
 
     return newPromise;
@@ -812,7 +812,7 @@ function(aURI, aRequest) {
             var targetLoc,
 
                 loadedCB,
-                scriptNode,
+                scriptElem,
 
                 err;
 
@@ -824,29 +824,29 @@ function(aURI, aRequest) {
 
                 //  Activate any "awakening logic" specific to the script.
                 req = TP.request();
-                req.atPut('node', scriptNode);
+                req.atPut('node', scriptElem);
                 TP.html.script.tagAttachDOM(req);
 
                 TP.signal(TP.sys,
                             'TP.sig.ScriptImported',
-                            TP.hc('node', scriptNode));
+                            TP.hc('node', scriptElem));
 
                 //  If the request provided a callback, then use it.
                 if (TP.isCallable(callback)) {
-                    callback(scriptNode);
+                    callback(scriptElem);
                 }
 
                 //  Complete the request and resolve the Promise with the script
                 //  element that the script is loaded into.
 
-                request.complete(scriptNode);
+                request.complete(scriptElem);
 
-                return resolver(scriptNode);
+                return resolver(scriptElem);
             };
 
-            scriptNode = TP.boot.$sourceUrlImport(targetLoc, null, loadedCB);
+            scriptElem = TP.boot.$sourceUrlImport(targetLoc, null, loadedCB);
 
-            if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+            if (TP.notValid(scriptElem) || TP.isError(scriptElem)) {
                 err = new Error('Error importing source URL: ' + targetLoc);
                 request.fail(err);
 
@@ -915,26 +915,26 @@ function(targetUrl) {
         function(result) {
             var targetLoc,
 
-                scriptNode,
+                scriptElem,
                 req;
 
             targetLoc = url.getLocation();
 
-            scriptNode = TP.boot.$sourceImport(result, null, targetLoc);
-            if (TP.notValid(scriptNode) || TP.isError(scriptNode)) {
+            scriptElem = TP.boot.$sourceImport(result, null, targetLoc);
+            if (TP.notValid(scriptElem) || TP.isError(scriptElem)) {
                 throw new Error('Error importing source text: ' + targetLoc);
             }
 
             //  Activate any "awakening logic" specific to the script.
             req = TP.request();
-            req.atPut('node', scriptNode);
+            req.atPut('node', scriptElem);
             TP.html.script.tagAttachDOM(req);
 
             TP.signal(TP.sys,
                         'TP.sig.ScriptImported',
-                        TP.hc('node', scriptNode));
+                        TP.hc('node', scriptElem));
 
-            return scriptNode;
+            return scriptElem;
 
         }).catch(
         function(err) {
