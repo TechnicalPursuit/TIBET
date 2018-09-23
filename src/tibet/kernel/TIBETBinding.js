@@ -2154,7 +2154,11 @@ function(scopeVals, bindingInfoValue) {
             //  compute a model reference.
             dataExprs = bindVal.at('dataExprs');
             for (i = 0; i < dataExprs.getSize(); i++) {
-                dataExpr = dataExprs.at(i);
+                dataExpr = TP.trim(dataExprs.at(i));
+
+                if (TP.isEmpty(dataExpr)) {
+                    continue;
+                }
 
                 if (TP.notEmpty(scopeVals)) {
                     //  Concatenate the binding value onto the scope values
@@ -2271,27 +2275,34 @@ function() {
         info.perform(
             function(kvPair) {
 
-                var exprs,
+                var dataExprs,
                     exprResults,
 
                     len,
                     i,
 
+                    dataExpr,
+
                     allVals,
                     fullExpr;
 
                 //  Get all data expressions for the named aspect.
-                exprs = kvPair.last().at('dataExprs');
+                dataExprs = kvPair.last().at('dataExprs');
 
                 exprResults = TP.ac();
 
-                len = exprs.getSize();
+                len = dataExprs.getSize();
                 for (i = 0; i < len; i++) {
+                    dataExpr = TP.trim(dataExprs.at(i));
+
+                    if (TP.isEmpty(dataExpr)) {
+                        continue;
+                    }
 
                     //  Join together the each expression along with the scoping
                     //  values to calculate the 'fully formed' binding
                     //  expression.
-                    allVals = scopeVals.concat(exprs.at(i));
+                    allVals = scopeVals.concat(dataExpr);
 
                     fullExpr = TP.uriJoinFragments.apply(TP, allVals);
 
@@ -3932,7 +3943,11 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
             }
 
             //  TODO: Support more than 1 expr
-            expr = exprs.at(0);
+            expr = TP.trim(exprs.at(0));
+
+            if (TP.isEmpty(expr)) {
+                continue;
+            }
 
             if (TP.regex.BARENAME.test(expr)) {
                 expr = 'tibet://uicanvas' + expr;
@@ -4642,7 +4657,11 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
             //  compute a model reference.
             dataExprs = bindVal.at('dataExprs');
             for (i = 0; i < dataExprs.getSize(); i++) {
-                dataExpr = dataExprs.at(i);
+                dataExpr = TP.trim(dataExprs.at(i));
+
+                if (TP.isEmpty(dataExpr)) {
+                    continue;
+                }
 
                 if (TP.notEmpty(scopeVals)) {
                     //  Concatenate the binding value onto the scope values
@@ -4924,6 +4943,10 @@ function(shouldRender) {
             dataExprs = bindVal.at('dataExprs');
             for (i = 0; i < dataExprs.getSize(); i++) {
                 dataExpr = TP.trim(dataExprs.at(i));
+
+                if (TP.isEmpty(dataExpr)) {
+                    continue;
+                }
 
                 //  If the data expression is a 'whole URI' (without a
                 //  fragment), then it's not scoped no matter whether we have
