@@ -9,7 +9,7 @@
 //  ========================================================================
 
 TP.sys.defineMethod('fetchScriptInto',
-function(aURI, aDocument, aRequest) {
+function(aURI, aDocument, aRequest, scriptElemAttrs) {
 
     /**
      * @method fetchScriptInfo
@@ -22,6 +22,8 @@ function(aURI, aDocument, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} [aRequest] A optional set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
+     * @param {TP.core.Hash} [scriptElemAttrs] A optional hash of attributes to
+     *     put on generated script elements.
      * @returns {Promise} A promise which resolved based on success.
      */
 
@@ -100,6 +102,12 @@ function(aURI, aDocument, aRequest) {
             scriptNode = TP.documentConstructScriptElement(
                                     aDocument,
                                     targetLoc);
+
+            //  If additional script element attributes were supplied, then put
+            //  them on the script element.
+            if (TP.notEmpty(scriptElemAttrs)) {
+                TP.elementSetAttributes(scriptNode, scriptElemAttrs, true);
+            }
 
             //  Set our loaded callback as the 'onload' handler for the
             //  script element.
