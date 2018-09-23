@@ -226,7 +226,7 @@
             if (TDS.notEmpty(doc._id)) {
                 return dbGet(doc._id).then(function(result) {
                     //  ensure we have the latest rev for update.
-                    doc._rev = result[0]._rev;
+                    doc._rev = result._rev;
                     return db.insertAsync(doc, params);
                 }).catch(function(err) {
                     logger.error('Document update error: ' + err.message);

@@ -576,11 +576,7 @@ helpers.server = function(url) {
 
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
-                    var body;
-
-                    body = result[0];
-
-                    return body.rows;
+                    return result.rows;
                 });
         };
 
@@ -592,11 +588,9 @@ helpers.server = function(url) {
 
             return db.viewAsync(appname, viewname, params).then(
                 function(result) {
-                    var body,
-                        docs;
+                    var docs;
 
-                    body = result[0];
-                    docs = body.rows.map(function(row) {
+                    docs = result.rows.map(function(row) {
                         return row.doc;
                     });
 
@@ -608,11 +602,9 @@ helpers.server = function(url) {
 
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
-                    var body,
-                        keys;
+                    var keys;
 
-                    body = result[0];
-                    keys = body.rows.map(function(row) {
+                    keys = result.rows.map(function(row) {
                         return row.key;
                     });
 
@@ -624,11 +616,9 @@ helpers.server = function(url) {
 
             return db.viewAsync(appname, viewname, viewParams).then(
                 function(result) {
-                    var body,
-                        values;
+                    var values;
 
-                    body = result[0];
-                    values = body.rows.map(function(row) {
+                    values = result.rows.map(function(row) {
                         return row.value;
                     });
 

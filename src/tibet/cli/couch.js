@@ -816,7 +816,7 @@ Cmd.prototype.executeRemoveapp = function() {
     dbGet = Promise.promisify(db.get);
 
     dbGet(doc_name, {att_encoding_info: true, revs_info: true}).then(function(response) {
-        db.destroy(doc_name, response[0]._rev,
+        db.destroy(doc_name, response._rev,
             function(error) {
                 if (error) {
                     CLI.handleError(error, 'removeapp', 'couch');
