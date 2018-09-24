@@ -47,6 +47,11 @@
         return function(job, step, params) {
             var smtpOpts,
                 mailOpts,
+
+                i,
+                fullPath,
+                fileName,
+
                 transporter,
                 srctext,
                 format,
@@ -124,6 +129,21 @@
             mailOpts.from = params.from;
             mailOpts.to = params.to;
 
+            //  Process any file attachments by adding their file paths and file
+            //  names to the 'attachments' Array that nodemailer will use to send
+            //  them.
+            if (params.attachments) {
+                mailOpts.attachments = [];
+                for (i = 0; i < params.attachments.length; i++) {
+                    fullPath = params.attachments[i];
+                    fileName = fullPath.slice(fullPath.lastIndexOf('/') + 1);
+                    mailOpts.attachments.push({
+                            filename: fileName,
+                            path: fullPath
+                        });
+                }
+            }
+
             try {
                 template = TDS.template.compile(srctext);
                 mailOpts[format] = template(
@@ -138,6 +158,13 @@
 
             //  Provide final mail content for any downstream services.
             step.stdout = {mail: mailOpts, format: format};
+
+            //  In a dry run environment, just write the SMTP options to
+            //  stdout and return a resolved Promise.
+            if (TDS.ifDryrun()) {
+                step.stdout = smtpOpts;
+                return TDS.Promise.resolve();
+            }
 
             //  Create the transport instance and verify the connection.
             transporter = nodemailer.createTransport(smtpOpts);

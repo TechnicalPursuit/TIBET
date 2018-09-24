@@ -101,6 +101,13 @@
                 Body: body
             };
 
+            //  In a dry run environment, just write the upload options to
+            //  stdout and return a resolved Promise.
+            if (TDS.ifDryrun()) {
+                step.stdout = uploadOpts;
+                return TDS.Promise.resolve();
+            }
+
             //  build the service and create a promise-driven version of upload.
             service = new AWS.S3(serviceOpts);
             upload = TDS.Promise.promisify(service.upload.bind(service));
