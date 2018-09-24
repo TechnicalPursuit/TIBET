@@ -8719,7 +8719,7 @@ function(forceRefresh) {
             //  'more concrete' URI that includes the Window's global ID.
             if (TP.isKindOf(resource, TP.core.Window)) {
                 retVal = TP.uc('tibet://' + TP.gid(resource));
-            } else {
+            } else if (TP.notEmpty(resource)) {
                 retVal = TP.uc(TP.gid(resource));
             }
         } else {
@@ -8728,7 +8728,7 @@ function(forceRefresh) {
 
         //  Make sure that we're not just ending up with ourself. Otherwise,
         //  we'll be back here again in an endless recursion.
-        if (retVal.getLocation() !== this.getLocation()) {
+        if (TP.isURI(retVal) && retVal.getLocation() !== this.getLocation()) {
             return retVal;
         }
     }
