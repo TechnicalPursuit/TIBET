@@ -8719,7 +8719,7 @@ function(forceRefresh) {
             //  'more concrete' URI that includes the Window's global ID.
             if (TP.isKindOf(resource, TP.core.Window)) {
                 retVal = TP.uc('tibet://' + TP.gid(resource));
-            } else if (TP.notEmpty(resource)) {
+            } else {
                 retVal = TP.uc(TP.gid(resource));
             }
         } else {
