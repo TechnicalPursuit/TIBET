@@ -318,6 +318,54 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.data.Inst.defineMethod('setAttrName',
+function(aName) {
+
+    /**
+     * @method setAttrName
+     * @summary Sets the 'name' value for the receiver. This will cause the
+     *     receiver to reregister it's content under the new name URI.
+     * @param {String} anHref The value to set the 'href' to.
+     */
+
+    var oldName,
+        oldURI,
+
+        resource,
+
+        newURI;
+
+    oldName = this.$getAttribute('name');
+
+    //  NB: We assume 'async' of false here.
+    if (!TP.isURI(oldURI = TP.uc(oldName))) {
+        //  Raise an exception
+        return this.raise('TP.sig.InvalidURI');
+    }
+    resource = oldURI.getResource().get('result');
+    if (TP.canInvoke(resource, 'setData')) {
+        resource.setData(null);
+    }
+    oldURI.unregister();
+
+    //  NB: We assume 'async' of false here.
+    if (!TP.isURI(newURI = TP.uc(aName))) {
+        //  Raise an exception
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    newURI.setResource(
+        resource,
+        TP.hc('observeResource', true, 'signalChange', true));
+
+    this.$setAttribute('name', aName);
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.data.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
