@@ -726,7 +726,7 @@ function(aDataObject, shouldSignal) {
     this.$set('data', dataObj, false);
 
     //  Make sure to clear our converted data.
-    this.set('$convertedData', null);
+    this.set('$convertedData', null, false);
 
     //  This object needs to see keys in 'Array of keys' format. Therefore, the
     //  following conversions are done:
@@ -781,10 +781,10 @@ function(aDataObject, shouldSignal) {
             Array.prototype.push.apply(keys, staticKeys);
         }
 
-        this.set('$dataKeys', keys);
+        this.set('$dataKeys', keys, false);
 
     } else {
-        this.set('$dataKeys', null);
+        this.set('$dataKeys', null, false);
     }
 
     //  Clear the selection model, since we're setting a whole new data set for
@@ -1184,7 +1184,7 @@ function() {
         }
 
         //  Cache our converted data.
-        this.set('$convertedData', selectionData);
+        this.set('$convertedData', selectionData, false);
     }
 
     return selectionData;
@@ -1294,7 +1294,9 @@ function() {
             compiledTemplateContent = prebuiltTemplateTPElem.getNativeNode();
 
             //  Cache that.
-            this.set('$compiledTemplateContent', compiledTemplateContent);
+            this.set('$compiledTemplateContent',
+                        compiledTemplateContent,
+                        false);
         }
     }
 

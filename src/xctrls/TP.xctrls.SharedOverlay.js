@@ -219,7 +219,7 @@ function(aSignal) {
         triggerID = triggerTPElem.getLocalID(true);
     }
 
-    overlayTPElem.set('$currentTriggerID', triggerID);
+    overlayTPElem.set('$currentTriggerID', triggerID, false);
 
     //  NB: At this point, there might not be a triggerTPElem. That's ok, but in
     //  that case, we need to make sure that a trigger point has been supplied.
@@ -227,7 +227,7 @@ function(aSignal) {
         //  TODO: Raise an exception
         return this;
     } else {
-        overlayTPElem.set('$triggerTPElement', triggerTPElem);
+        overlayTPElem.set('$triggerTPElement', triggerTPElem, false);
     }
 
     //  If there's a signal name for when to hide the overlay, set up a handler
@@ -251,7 +251,7 @@ function(aSignal) {
 
         //  Save the signal name so that we can uninstall the local method after
         //  we've hidden.
-        overlayTPElem.set('$hideOnSignalName', hideOn);
+        overlayTPElem.set('$hideOnSignalName', hideOn, false);
     }
 
     //  Set the content of the overlay and activate it.
@@ -360,7 +360,7 @@ function(contentInfo) {
     //  Grab the (possibly shared) overlay element. This will cause whatever
     //  'type-level' setup of the content to take place.
     overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
-    overlayTPElem.set('$currentTriggerID', triggerID);
+    overlayTPElem.set('$currentTriggerID', triggerID, false);
 
     //  Invoke loadContent with contentInfo. This should cause the
     //  'instance-level' setup of the content to take place (as far as it can,
@@ -630,7 +630,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     //  last cached content info to call this method again.
     if (!this.isReadyToRender()) {
         contentInfo.atPut('afterLoadHandler', afterLoadHandler);
-        this.set('$$lastContentInfo', contentInfo);
+        this.set('$$lastContentInfo', contentInfo, false);
         return this;
     }
 
@@ -781,7 +781,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     //  for content refresh, etc.
 
     triggerID = this.get('$currentTriggerID');
-    this.getType().set('$lastTriggerID', triggerID);
+    this.getType().set('$lastTriggerID', triggerID, false);
 
     //  That will be the real element generated from the content that got placed
     //  into our 'content' div.
@@ -865,7 +865,7 @@ function(beHidden) {
                 delete this[handlerName];
             }
 
-            this.set('$hideOnSignalName', null);
+            this.set('$hideOnSignalName', null, false);
         }
 
     } else {
@@ -1018,7 +1018,7 @@ function(aStyleTPElem) {
         //  Load the content of the overlay.
         this.loadContent(lastContentInfo);
 
-        this.set('$$lastContentInfo', null);
+        this.set('$$lastContentInfo', null, false);
     }
 
     return this;

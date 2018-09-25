@@ -3721,7 +3721,7 @@ function(aRequest) {
             originals = this.get('originals');
             if (!TP.isValid(originals)) {
                 originals = TP.hc();
-                this.set('originals', originals);
+                this.set('originals', originals, false);
             } else {
                 //  If we had an originals registry, check to make sure that it
                 //  doesn't already have the local id of the element in it. If
@@ -4455,10 +4455,10 @@ function(anObject, aParamHash) {
                     resultNode = TP.nodeFromString(resultStr, null, true)) &&
                 TP.notTrue(this.get('$alreadyTransforming'))) {
 
-                this.set('$alreadyTransforming', true);
+                this.set('$alreadyTransforming', true, false);
                 resultTPNode = TP.wrap(resultNode);
                 resultTPNode.compile();
-                this.set('$alreadyTransforming', false);
+                this.set('$alreadyTransforming', false, false);
 
                 return resultTPNode.asString();
             } else {
@@ -4506,10 +4506,10 @@ function(anObject, aParamHash) {
                 resultNode = TP.nodeFromString(resultStr, null, true)) &&
             TP.notTrue(this.get('$alreadyTransforming'))) {
 
-            this.set('$alreadyTransforming', true);
+            this.set('$alreadyTransforming', true, false);
             resultTPNode = TP.wrap(resultNode);
             resultTPNode.compile();
-            this.set('$alreadyTransforming', false);
+            this.set('$alreadyTransforming', false, false);
 
             return resultTPNode.asString();
         } else {
@@ -14555,7 +14555,7 @@ function(attributeName) {
     suspendedAttrs = this.get('$suspendedAttributes');
     if (TP.notValid(suspendedAttrs)) {
         suspendedAttrs = TP.ac();
-        this.set('$suspendedAttributes', suspendedAttrs);
+        this.set('$suspendedAttributes', suspendedAttrs, false);
     }
 
     suspendedAttrs.push(attributeName);
@@ -17131,10 +17131,10 @@ function(anObject, aParamHash) {
     if (TP.isElement(result) &&
         TP.notTrue(this.get('$alreadyTransforming'))) {
 
-        this.set('$alreadyTransforming', true);
+        this.set('$alreadyTransforming', true, false);
         resultTPNode = TP.wrap(result);
         resultTPNode.compile();
-        this.set('$alreadyTransforming', false);
+        this.set('$alreadyTransforming', false, false);
 
         return resultTPNode.asString();
 

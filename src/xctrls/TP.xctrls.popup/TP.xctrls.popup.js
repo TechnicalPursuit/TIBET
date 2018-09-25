@@ -218,7 +218,7 @@ function(aSignal) {
 
     //  Flip the isTriggeringClick flag - there's no way that any subsequent
     //  clicks during this 'popup open' session are the triggering click.
-    this.set('isTriggeringClick', false);
+    this.set('isTriggeringClick', false, false);
 
     return this;
 });
@@ -261,9 +261,9 @@ function(beHidden) {
         //  *never* be the triggering click. It will have been a click that is
         //  dismissing the popup.
         if (this.get('isSticky') === true) {
-            this.set('isTriggeringClick', false);
+            this.set('isTriggeringClick', false, false);
         } else {
-            this.set('isTriggeringClick', true);
+            this.set('isTriggeringClick', true, false);
         }
 
         this.observeKeybindingsDirectly();

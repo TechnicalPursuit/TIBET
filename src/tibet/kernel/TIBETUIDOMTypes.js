@@ -183,7 +183,7 @@ function(aDocument, sheetElemID, aStyleURI) {
     }
 
     //  We track whether our resources are inlined or not.
-    this.set('resourcesInlined', inlined);
+    this.set('resourcesInlined', inlined, false);
 
     if (inlined) {
 
@@ -972,7 +972,7 @@ function(aTargetElem, anEvent) {
     if (TP.isElement(manuallyBlurringElement)) {
 
         //  Reset this to null for the next pass.
-        TP.dom.UIElementNode.set('$manuallyBlurringElement', null);
+        TP.dom.UIElementNode.set('$manuallyBlurringElement', null, false);
 
         return this;
     }
@@ -1064,7 +1064,7 @@ function(aTargetElem, anEvent) {
     //  signals from being dispatched.
     if (TP.isValid(TP.dom.UIElementNode.get('$manuallyFocusingElement'))) {
         //  Reset this to null for the next pass.
-        TP.dom.UIElementNode.set('$manuallyFocusingElement', null);
+        TP.dom.UIElementNode.set('$manuallyFocusingElement', null, false);
 
         return this;
     }
@@ -1083,15 +1083,16 @@ function(aTargetElem, anEvent) {
         if (focusingTPElem.getNativeNode() !== aTargetElem) {
 
             oldMFE = TP.dom.UIElementNode.get('$manuallyFocusingElement');
-            TP.dom.UIElementNode.set('$manuallyFocusingElement', aTargetElem);
+            TP.dom.UIElementNode.set(
+                    '$manuallyFocusingElement', aTargetElem, false);
 
             focusingTPElem.focus();
 
-            TP.dom.UIElementNode.set('$manuallyFocusingElement', oldMFE);
+            TP.dom.UIElementNode.set('$manuallyFocusingElement', oldMFE, false);
         }
 
         //  Reset this to null for the next pass.
-        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
+        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null, false);
 
         //  Whether or not this was the calculated element, we return here - the
         //  rest of the machinery will take care of things.
@@ -1200,7 +1201,8 @@ function(aTargetElem, anEvent) {
 
             //  Cache a reference to the target element that we sent the
             //  'TP.sig.UIActivate' signal from.
-            TP.dom.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
+            TP.dom.UIElementNode.set(
+                        '$lastActiveElement', evtTargetTPElem, false);
 
             if (activateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
@@ -1399,7 +1401,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Make sure to null out the last active element for the 'next run'.
-    TP.dom.UIElementNode.set('$lastActiveElement', null);
+    TP.dom.UIElementNode.set('$lastActiveElement', null, false);
 
     return this;
 });
@@ -1444,7 +1446,7 @@ function(aTargetElem, anEvent) {
 
     //  Cache a reference to the target element that we sent the
     //  'TP.sig.UIActivate' signal from.
-    TP.dom.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
+    TP.dom.UIElementNode.set('$lastActiveElement', evtTargetTPElem, false);
 
     if (activateSignal.shouldPrevent()) {
         //  Since the activation signal was cancelled, we cancel the native
@@ -1456,12 +1458,13 @@ function(aTargetElem, anEvent) {
     //  does after it computes a 'successor element to focus' - in this case,
     //  that successor element is the element that is our target.
     if (evtTargetTPElem.canFocus()) {
-        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', evtTargetTPElem);
+        TP.dom.UIElementNode.set(
+                    '$calculatedFocusingTPElem', evtTargetTPElem, false);
     }
 
     //  Set the flag to let the rest of the focusing machinery know that this is
     //  happening due to a mouse event.
-    TP.dom.UIElementNode.set('$focusingViaMouseEvent', true);
+    TP.dom.UIElementNode.set('$focusingViaMouseEvent', true, false);
 
     return this;
 });
@@ -1521,13 +1524,13 @@ function(aTargetElem, anEvent) {
     }
 
     //  Make sure to null out the last active element for the 'next run'.
-    TP.dom.UIElementNode.set('$lastActiveElement', null);
+    TP.dom.UIElementNode.set('$lastActiveElement', null, false);
 
-    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
+    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null, false);
 
     //  Reset the flag that let's the rest of the focusing machinery know that
     //  this is happening due to a mouse event to false.
-    TP.dom.UIElementNode.set('$focusingViaMouseEvent', false);
+    TP.dom.UIElementNode.set('$focusingViaMouseEvent', false, false);
 
     return this;
 });
@@ -3824,7 +3827,8 @@ function(moveAction) {
     //  UIFocus/UIDidFocus to be signaled, etc. etc.
     if (TP.isKindOf(successorTPElem, TP.dom.UIElementNode)) {
 
-        TP.dom.UIElementNode.set('$calculatedFocusingTPElem', successorTPElem);
+        TP.dom.UIElementNode.set(
+                    '$calculatedFocusingTPElem', successorTPElem, false);
 
         //  We do this to match the native focusing behavior that haven't been
         //  sent through this computation routine (i.e. clicks, etc.)
@@ -4084,14 +4088,14 @@ function() {
     //  necessary in case we don't want the focusing to happen on the 'current
     //  new element' that the system thinks it wants to focus on, but another
     //  element of our own choosing.
-    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
+    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null, false);
 
     //  If the system has this flag on, that must mean that a component with a
     //  different focus context will be taking focus, but in an asynchronous
     //  fashion. Therefore, we do *not* want to proceed with manipulating the
     //  focus stack. We want to leave the current element on there.
     if (TP.dom.UIElementNode.get('$asyncSwitchingContexts')) {
-        TP.dom.UIElementNode.set('$asyncSwitchingContexts', false);
+        TP.dom.UIElementNode.set('$asyncSwitchingContexts', false, false);
         return this;
     }
 
@@ -4181,7 +4185,7 @@ function() {
             //  this element *after it is forked* (allowing the stack to
             //  unwind). See 'acceptFocusedResponder' for more information.
             TP.dom.UIElementNode.set(
-                    '$calculatedFocusingTPElem', tpElementToFocus);
+                    '$calculatedFocusingTPElem', tpElementToFocus, false);
         }
     }
 
@@ -6432,7 +6436,7 @@ function() {
      * @returns {TP.dom.UIElementNode} The receiver.
      */
 
-    TP.dom.UIElementNode.set('$asyncSwitchingContexts', true);
+    TP.dom.UIElementNode.set('$asyncSwitchingContexts', true, false);
 
     return this;
 });
@@ -6465,11 +6469,11 @@ function() {
     //  interaction.
 
     oldMBE = TP.dom.UIElementNode.get('$manuallyBlurringElement');
-    TP.dom.UIElementNode.set('$manuallyBlurringElement', node);
+    TP.dom.UIElementNode.set('$manuallyBlurringElement', node, false);
 
     node.blur();
 
-    TP.dom.UIElementNode.set('$manuallyBlurringElement', oldMBE);
+    TP.dom.UIElementNode.set('$manuallyBlurringElement', oldMBE, false);
 
     this.signal('TP.sig.UIBlur');
 
@@ -6539,7 +6543,7 @@ function(moveAction) {
 
     //  Make sure that we reset the 'async switching contexts' flag that might
     //  have been set to let us know about an asynchronous focusing situation.
-    TP.dom.UIElementNode.set('$asyncSwitchingContexts', false);
+    TP.dom.UIElementNode.set('$asyncSwitchingContexts', false, false);
 
     //  If the element is disabled, then just bail here - no sense in going any
     //  further.
@@ -6575,10 +6579,11 @@ function(moveAction) {
         }
 
         TP.dom.UIElementNode.set('$calculatedFocusContext',
-                                    calculatedFocusContext);
+                                    calculatedFocusContext,
+                                    false);
 
         TP.wrap(focusedElem).blur();
-        TP.dom.UIElementNode.set('$calculatedFocusContext', null);
+        TP.dom.UIElementNode.set('$calculatedFocusContext', null, false);
     }
 
     //  Grab whatever TIBET is trying to focus. If it's real, set 'node' to it.
@@ -6590,18 +6595,18 @@ function(moveAction) {
     //  Go ahead and call the native 'focus' routine (and set the 'manually
     //  focusing element' trap to avoid recursion).
     oldMFE = TP.dom.UIElementNode.get('$manuallyFocusingElement');
-    TP.dom.UIElementNode.set('$manuallyFocusingElement', node);
+    TP.dom.UIElementNode.set('$manuallyFocusingElement', node, false);
 
     node.focus();
 
-    TP.dom.UIElementNode.set('$manuallyFocusingElement', oldMFE);
+    TP.dom.UIElementNode.set('$manuallyFocusingElement', oldMFE, false);
 
     //  Signal that the node focused.
     TP.wrap(node).signal('TP.sig.UIFocus');
 
     //  We've done what TIBET asked and we've focused the element - set this to
     //  null.
-    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null);
+    TP.dom.UIElementNode.set('$calculatedFocusingTPElem', null, false);
 
     return this;
 });

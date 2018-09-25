@@ -131,7 +131,7 @@ function(beHidden) {
             //  'nested' set of dialogs.
             if (!beHidden) {
                 if (curtainTPElem.getAttribute('hidden') === false) {
-                    this.set('curtainWasShowing', true);
+                    this.set('curtainWasShowing', true, false);
                 }
 
                 //  Go ahead and show the curtain.

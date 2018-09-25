@@ -229,7 +229,7 @@ function(aSignal) {
 
     //  Make sure to clear any existing timeout that we have running and set the
     //  attribute to null.
-    this.getType().set('$displayDelayTimer', null);
+    this.getType().set('$displayDelayTimer', null, false);
 
     this.setAttribute('hidden', true);
     this.setAttribute('active', false);

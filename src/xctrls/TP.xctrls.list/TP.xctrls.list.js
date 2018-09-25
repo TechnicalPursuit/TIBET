@@ -118,7 +118,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Set the accumulated value to the newly computed value.
-    listTPElem.set('filterValue', accumValue);
+    listTPElem.set('filterValue', accumValue, false);
 
     return this.callNextMethod();
 });
@@ -807,7 +807,7 @@ function(aValue) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    this.$set('filterValue', aValue);
+    this.$set('filterValue', aValue, false);
 
     if (TP.notEmpty(this.get('data'))) {
         //  Go ahead and run the filter.
@@ -847,7 +847,7 @@ function(aDataObject, shouldSignal, isFiltered) {
     this.$set('data', dataObj, false);
 
     //  Make sure to clear our converted data.
-    this.set('$convertedData', null);
+    this.set('$convertedData', null, false);
 
     //  This object needs to see keys in 'Array of keys' format. Therefore, the
     //  following conversions are done:
@@ -884,9 +884,9 @@ function(aDataObject, shouldSignal, isFiltered) {
             filteringSource = dataObj;
         }
 
-        this.set('$dataKeys', keys);
+        this.set('$dataKeys', keys, false);
     } else {
-        this.set('$dataKeys', null);
+        this.set('$dataKeys', null, false);
     }
 
     //  Clear the selection model, since we're setting a whole new data set for
@@ -1120,7 +1120,7 @@ function() {
                             TP.xctrls.ListMatcher.construct(
                                 'XCTRLS_LIST_' + this.getLocalID()));
 
-        this.set('$filterSearcher', newSearcher);
+        this.set('$filterSearcher', newSearcher, false);
 
         //  NB: We use $set() here or otherwise we end up trying to update
         //  currently non-existent GUI.
@@ -1320,10 +1320,10 @@ function() {
         }
 
         //  Cache our converted data.
-        this.set('$convertedData', selectionData);
+        this.set('$convertedData', selectionData, false);
 
         //  Reset the number of spacing rows to 0
-        this.set('$numSpacingRows', 0);
+        this.set('$numSpacingRows', 0, false);
     }
 
     if (TP.isValid(selectionData)) {
@@ -1364,7 +1364,7 @@ function() {
                 }
 
                 //  NB: We never let this drop below 0
-                this.set('$numSpacingRows', newSpacingRowCount.max(0));
+                this.set('$numSpacingRows', newSpacingRowCount.max(0), false);
             }
         }
     }
@@ -1453,7 +1453,9 @@ function() {
             compiledTemplateContent = prebuiltTemplateTPElem.getNativeNode();
 
             //  Cache that.
-            this.set('$compiledTemplateContent', compiledTemplateContent);
+            this.set('$compiledTemplateContent',
+                        compiledTemplateContent,
+                        false);
         }
     }
 

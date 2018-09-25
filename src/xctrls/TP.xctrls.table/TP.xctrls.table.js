@@ -145,7 +145,7 @@ function() {
 
     //  Grab it's native node and cache that.
     compiledTemplateContent = newContentTPElem.getNativeNode();
-    this.set('$compiledTemplateContent', compiledTemplateContent);
+    this.set('$compiledTemplateContent', compiledTemplateContent, false);
 
     return null;
 });
@@ -663,7 +663,7 @@ function(aDataObject, shouldSignal) {
     this.$set('data', dataObj, false);
 
     //  Make sure to clear our converted data.
-    this.set('$convertedData', null);
+    this.set('$convertedData', null, false);
 
     if (TP.isValid(dataObj)) {
         keys = dataObj.getIndices().collect(
@@ -675,7 +675,7 @@ function(aDataObject, shouldSignal) {
         keys = null;
     }
 
-    this.set('$dataKeys', keys);
+    this.set('$dataKeys', keys, false);
 
     //  Clear the selection model, since we're setting a whole new data set for
     //  the receiver.
@@ -1067,10 +1067,10 @@ function() {
         this.setAttribute('colcount', numCols);
 
         //  Cache our converted data.
-        this.set('$convertedData', selectionData);
+        this.set('$convertedData', selectionData, false);
 
         //  Reset the number of spacing rows to 0
-        this.set('$numSpacingRows', 0);
+        this.set('$numSpacingRows', 0, false);
     }
 
     if (TP.isValid(selectionData)) {
@@ -1118,7 +1118,7 @@ function() {
                 }
 
                 //  NB: We never let this drop below 0
-                this.set('$numSpacingRows', newSpacingRowCount.max(0));
+                this.set('$numSpacingRows', newSpacingRowCount.max(0), false);
             }
         }
     }

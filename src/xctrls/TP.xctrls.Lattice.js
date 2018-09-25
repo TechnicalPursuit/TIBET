@@ -85,7 +85,7 @@ function(aRequest) {
     //  Observe ourself for when we're resized
     tpElem.observe(tpElem, TP.ac('TP.sig.DOMResize', 'TP.sig.DOMVisible'));
 
-    tpElem.set('$numSpacingRows', 0);
+    tpElem.set('$numSpacingRows', 0, false);
 
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will trigger the

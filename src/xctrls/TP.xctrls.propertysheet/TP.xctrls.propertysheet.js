@@ -119,7 +119,7 @@ function(topLevelSchema, params) {
                 prefix = '';
             }
 
-            this.set('currentDefinitionName', definitionKey);
+            this.set('currentDefinitionName', definitionKey, false);
 
             //  ---
 
