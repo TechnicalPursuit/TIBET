@@ -327,11 +327,17 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     *     For this method, the most notable parameter is 'shouldSignal'. If
+     *     this is set to false (it defaults to true), then change signaling
+     *     from the receiver will not occur.
      * @returns {null}
      */
 
     var namedHref,
         namedURI,
+
+        req,
+        shouldSignal,
 
         mimeType,
         resultType,
@@ -351,6 +357,9 @@ function(aContentObject, aRequest) {
         //  No 'name' attribute.
         return null;
     }
+
+    req = TP.request(aRequest);
+    shouldSignal = TP.notFalse(req.at('shouldSignal'));
 
     if (TP.isEmpty(mimeType = this.getAttribute('type'))) {
         mimeType = TP.ietf.mime.guessMIMEType(aContentObject);
@@ -396,7 +405,7 @@ function(aContentObject, aRequest) {
     //  If the named URI has existing data, then we signal
     //  'TP.sig.UIDataDestruct'.
     //  NB: We assume 'async' of false here.
-    if (TP.notEmpty(namedURI.getResource().get('result'))) {
+    if (shouldSignal && TP.notEmpty(namedURI.getResource().get('result'))) {
         this.signal('TP.sig.UIDataDestruct');
 
         //  Check and dispatch a signal from our attributes if one exists for
@@ -410,17 +419,19 @@ function(aContentObject, aRequest) {
         newResource,
         TP.hc('observeResource', true, 'signalChange', true));
 
-    this.signal('TP.sig.UIDataConstruct');
+    if (shouldSignal) {
+        this.signal('TP.sig.UIDataConstruct');
 
-    //  Check and dispatch a signal from our attributes if one exists for this
-    //  signal.
-    this.dispatchResponderSignalFromAttr('UIDataConstruct', null);
+        //  Check and dispatch a signal from our attributes if one exists for this
+        //  signal.
+        this.dispatchResponderSignalFromAttr('UIDataConstruct', null);
 
-    //  Dispatch 'TP.sig.DOMReady' for consistency with other elements that
-    //  dispatch this when their 'dynamic content' is resolved. Note that we use
-    //  'dispatch()' here because this is a DOM signal and we want all of the
-    //  characteristics of a DOM signal.
-    this.dispatch('TP.sig.DOMReady');
+        //  Dispatch 'TP.sig.DOMReady' for consistency with other elements that
+        //  dispatch this when their 'dynamic content' is resolved. Note that we use
+        //  'dispatch()' here because this is a DOM signal and we want all of the
+        //  characteristics of a DOM signal.
+        this.dispatch('TP.sig.DOMReady');
+    }
 
     return null;
 });
