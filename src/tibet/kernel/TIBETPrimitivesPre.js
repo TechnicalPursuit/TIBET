@@ -2585,8 +2585,40 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
             //  Set the value of the current args.
             TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
 
-            //  Now, call the method
-            retVal = realMethod.apply(this, TP.$$currentArgs$$);
+            //  Now, call the method, using either call or apply. call tends to
+            //  be quite a bit faster if we can use it.
+            switch (arguments.length) {
+                case 0:
+                    retVal = realMethod.call(this);
+                    break;
+                case 1:
+                    retVal = realMethod.call(this, arguments[0]);
+                    break;
+                case 2:
+                    retVal = realMethod.call(this, arguments[0],
+                                                    arguments[1]);
+                    break;
+                case 3:
+                    retVal = realMethod.call(this, arguments[0],
+                                                    arguments[1],
+                                                    arguments[2]);
+                    break;
+                case 4:
+                    retVal = realMethod.call(this, arguments[0],
+                                                    arguments[1],
+                                                    arguments[2],
+                                                    arguments[3]);
+                    break;
+                case 5:
+                    retVal = realMethod.call(this, arguments[0],
+                                                    arguments[1],
+                                                    arguments[2],
+                                                    arguments[3],
+                                                    arguments[4]);
+                    break;
+                default:
+                    retVal = realMethod.apply(this, arguments);
+            }
 
             //  Restore the old values for callee and args
             TP.$$currentCallee$$ = oldCallee;

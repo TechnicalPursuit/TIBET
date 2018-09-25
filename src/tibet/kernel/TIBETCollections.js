@@ -4690,7 +4690,6 @@ function(aCollection) {
         //  If we don't know about this value, or its a property but not on
         //  us.
         if (TP.notDefined(hash[item]) || !TP.owns(hash, item)) {
-            keyArr.push(item);
             hash[item] = i;
         }
     }
@@ -6962,8 +6961,6 @@ function() {
         delete hash[keys[i]];
     }
 
-    keys.empty();
-
     this.changed('length', TP.DELETE, TP.hc(TP.OLDVAL, len, TP.NEWVAL, 0));
 
     return this;
@@ -7966,7 +7963,6 @@ function(anIndex, aValue) {
         //  If we don't know about this value, or its a property but not on
         //  us, then this is an insert and requires a key array update.
         if (TP.notDefined(hash[anIndex]) || !TP.owns(hash, anIndex)) {
-            this.getKeys().push(anIndex);
             hash[anIndex] = aValue;
 
             op = TP.INSERT;
