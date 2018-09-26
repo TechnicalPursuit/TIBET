@@ -6379,8 +6379,8 @@ function(aRoute) {
      *     name or template URI which defines the content to be set.
      * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
      *     to the current application route acquired from the URI Router.
-     * @returns {TP.dom.ElementNode} The new content element, if one was
-           generated.
+     * @returns {TP.dom.ElementNode} The route's associated target element, if
+     *     one could be found.
      */
 
     var route,
