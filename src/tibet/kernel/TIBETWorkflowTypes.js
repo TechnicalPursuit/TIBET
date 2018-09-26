@@ -6228,19 +6228,47 @@ function(aSignal) {
      * @returns {TP.core.RouteController} The receiver.
      */
 
-     var newContentTPElem,
+     var refreshAction,
+
+         route,
+
+         contentTPElem,
          evt;
 
-    //  If this route defines content and a target, then set it.
-    newContentTPElem = this.setContentForRoute(aSignal.at('route'));
+    //  'finalizeAction' is the action that should be taken when the route is
+    //  finalized. It defaults to 'setcontent'.
+    refreshAction = TP.ifEmpty(aSignal.at('finalizeAction'), 'setcontent');
 
-    if (TP.isValid(newContentTPElem)) {
+    route = aSignal.at('route');
+
+    switch (refreshAction) {
+        case 'setcontent':
+            //  If this route defines content and a target, then set it.
+            contentTPElem = this.setContentForRoute(route);
+            break;
+        case 'refresh':
+            //  If the route is configured to 'refresh only', then we're not
+            //  going to give it new content - we're just going to refresh any
+            //  data bindings under it.
+            contentTPElem = this.getTargetElementForRoute(route);
+            contentTPElem.refresh();
+            contentTPElem.setValue(route);
+            break;
+        case 'norefresh':
+            //  If the route is configured to not refresh, then don't refresh
+            //  or set new content.
+            contentTPElem.setValue(route);
+            break;
+        default:
+            break;
+    }
+    if (TP.isValid(contentTPElem)) {
         //  Send a custom DOM-level event to allow 3rd party libraries to know
         //  that the router has transitioned to a new route that has been
         //  finalized.
-        evt = newContentTPElem.getNativeDocument().createEvent('Event');
+        evt = contentTPElem.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETRouteFinalized', true, true);
-        newContentTPElem.getNativeNode().dispatchEvent(evt);
+        contentTPElem.getNativeNode().dispatchEvent(evt);
     }
 
     return this;
