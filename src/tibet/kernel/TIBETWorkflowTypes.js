@@ -6248,6 +6248,97 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.RouteController.Inst.defineMethod('getTargetElementForRoute',
+function(aRoute) {
+
+    /**
+     * @method getTargetElementForRoute
+     * @summary Returns the target element that is associated with the supplied
+     *     route.
+     * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
+     *     to the current application route acquired from the URI Router.
+     * @returns {TP.dom.ElementNode|null} The target element, if one was
+           associated with the route.
+     */
+
+    var route,
+
+        routeKey,
+        config,
+
+        configInfo,
+        routeTarget,
+        targetTPElem,
+        canvas;
+
+    route = aRoute;
+
+    //  If the route is empty, then set it to the current application route.
+    if (TP.isEmpty(route)) {
+        route = TP.sys.getRouter().getRoute();
+    }
+
+    //  If the route is still empty it's a reference to the home route.
+    if (TP.isEmpty(route) || route === '/') {
+        route = 'Home';
+    }
+
+    //  See if the value is a route configuration key.
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
+
+    //  No configuration means no target/content information.
+    if (TP.isEmpty(config)) {
+
+        //  Don't warn for the Home route - many times, the app won't have a
+        //  defined Home route.
+        if (route !== 'Home') {
+            TP.warn('Unable to find route cfg info for: ' + route);
+        }
+
+        return null;
+    }
+
+    //  Convert any value we find into JSON so we can access values.
+    if (TP.isString(config)) {
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                'Unable to build config data from entry: ' + config);
+            return null;
+        }
+    } else {
+        configInfo = config;
+    }
+
+    //  Grab the current UI canvas - we'll use this below to either obtain a
+    //  target element or to set its location.
+    canvas = TP.sys.getUICanvas();
+
+    //  The target should be a 'path' (CSS selector, XPath, etc.) that can be
+    //  used to obtain a target element.
+    routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
+                                configInfo.at('target'));
+
+    if (TP.notEmpty(routeTarget)) {
+
+        //  NB: We want autocollapsed, but wrapped content here.
+        targetTPElem = TP.byPath(routeTarget, canvas, true);
+        if (!TP.isKindOf(targetTPElem, 'TP.dom.ElementNode')) {
+            this.raise('InvalidElement',
+                        'Unable to find route target: ' + routeTarget);
+            return null;
+        }
+
+        return targetTPElem;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.RouteController.Inst.defineMethod('setContentForRoute',
 function(aRoute) {
 
