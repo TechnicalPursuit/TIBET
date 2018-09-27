@@ -320,6 +320,57 @@
     };
 
     /**
+     * Traverses an object, executing the supplied Functions at the appropriate
+     * time, based on whether it is processing a 'branch' (i.e. a position in
+     * the object that is holding another Object) or a 'leaf' (i.e. a position
+     * in the object that is holding a non-Object).
+     * @param {Object} obj The object whose properties should be traversed.
+     * @param {Function} branchPreFunc The function that will be executed before
+     * a 'branch' is traversed.
+     * @param {Function} leafFunc The function that will be executed when a
+     * 'leaf' is being processed.
+     * @param {Function} branchPostFunc The function that will be executed after
+     * a 'branch' is traversed.
+     */
+    TDS.performDrill = function(obj, branchPreFunc, leafFunc, branchPostFunc) {
+        var traverse;
+
+        if (TDS.notValid(obj)) {
+            return;
+        }
+
+        if (TDS.notValid(branchPreFunc)) {
+            return;
+        }
+
+        if (TDS.notValid(branchPostFunc)) {
+            return;
+        }
+
+        if (TDS.notValid(leafFunc)) {
+            return;
+        }
+
+        traverse = function(anObj) {
+            var keys;
+
+            keys = Object.keys(anObj);
+            keys.forEach(
+                function(aKey) {
+                    if (TDS.isObject(anObj[aKey])) {
+                        branchPreFunc(anObj, aKey);
+                        traverse(anObj[aKey]);
+                        branchPostFunc(anObj, aKey);
+                    } else {
+                        leafFunc(anObj, aKey);
+                    }
+                });
+        };
+
+        traverse(obj);
+    };
+
+    /**
      * Registers a function to be run during TDS.shutdown processing. Normally
      * used to close open connections etc.
      * @param {Function} hook A function taking the TDS instance as its only
