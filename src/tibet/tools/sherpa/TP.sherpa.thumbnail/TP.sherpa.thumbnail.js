@@ -17,5 +17,23 @@
 TP.sherpa.TemplatedTag.defineSubtype('thumbnail');
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.thumbnail.Inst.defineHandler('ShowAllScreens',
+function(aSignal) {
+
+    /**
+     * @method handleShowAllScreens
+     * @summary Handles when the user wants to show all the world's screens.
+     * @param {TP.sig.ShowAllScreens} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.thumbnail} The receiver.
+     */
+
+    TP.info('Showing All Screens');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

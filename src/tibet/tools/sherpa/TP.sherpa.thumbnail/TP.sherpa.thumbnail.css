@@ -71,6 +71,31 @@ sherpa|thumbnail > .header > .content:hover > * {
     background-color: white;
 }
 
+sherpa|thumbnail > .header > .button[name="showall"] {
+
+    position: absolute;
+
+    left: 0;
+    top: 1px;
+
+    width: 28px;
+    height: 30px;
+
+    background-size: 28px;
+    background-repeat: no-repeat;
+
+    background-image: url("~ide_root/media/baseline-view_module-24px.svg");
+
+    cursor: pointer;
+}
+
+sherpa|thumbnail > .header > .button[name="showall"]:hover {
+
+    background-color: gold;
+
+    color: #333;
+}
+
 sherpa|thumbnail > .content {
 
     position: absolute;
@@ -98,7 +123,7 @@ sherpa|thumbnail > .content > div {
 
 /* Rules that trigger when the corner is closed */
 
-.framing.south.west.corner[pclass|closed] sherpa|thumbnail > .header > *:not(.trigger) {
+#background:not(.edge-west-open) sherpa|thumbnail > .header > *:not(.trigger) {
 
     display: none;
 }
@@ -106,5 +131,10 @@ sherpa|thumbnail > .content > div {
 .framing.south.west.corner[pclass|closed] sherpa|thumbnail > .content {
 
     display: none;
+}
+
+#background:not(.edge-west-open) .framing.corner:not([pclass|closed]) sherpa|thumbnail > .header > * {
+
+    display: block;
 }
 
