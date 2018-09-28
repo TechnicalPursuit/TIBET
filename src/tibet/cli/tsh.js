@@ -204,21 +204,21 @@ Cmd.prototype.execute = function() {
 
         puppetPage = page;
 
-        page.on('close', (evt) => {
+        page.on('close', function(evt) {
             process.exit(0);
         });
 
-        page.on('error', (err) => {
+        page.on('error', function(err) {
             cmd.stderr(err);
             process.exit(1);
         });
 
-        page.on('pageerror', (err) => {
+        page.on('pageerror', function(err) {
             cmd.stderr(err);
             process.exit(1);
         });
 
-        page.on('console', (msg) => {
+        page.on('console', function(msg) {
 
             //  Strip browser messages we don't initiate.
             if (ignoreChromeOutput(msg.text())) {
@@ -268,7 +268,7 @@ Cmd.prototype.execute = function() {
 
         //  Once the page loads TIBET will start to load. We need to
         //  wait for it to finish before we continue.
-        return puppetPage.waitForFunction(() => {
+        return puppetPage.waitForFunction(function() {
 
             //  If TP isn't defined, that means we're in a non-TIBET start page.
             /* eslint-disable dot-notation */
@@ -292,7 +292,7 @@ Cmd.prototype.execute = function() {
             polling: 250
         });
 
-    }).then(() => {
+    }).then(function() {
 
         active = true;
         end = new Date();
@@ -306,7 +306,7 @@ Cmd.prototype.execute = function() {
 
         return puppetPage.mainFrame().executionContext();
 
-    }).then((context) => {
+    }).then(function(context) {
 
         var input,
             shouldPause;
@@ -314,7 +314,7 @@ Cmd.prototype.execute = function() {
         input = cmd.options.script;
         shouldPause = cmd.options.pause;
 
-        return context.evaluate((tshInput, pauseBeforeExec) => {
+        return context.evaluate(function(tshInput, pauseBeforeExec) {
 
             return new Promise(function(resolve, reject) {
                 var handler;
@@ -409,12 +409,12 @@ Cmd.prototype.execute = function() {
             });
         }, input, shouldPause);
 
-    }).then((results) => {
+    }).then(function(results) {
 
         cmd.stdout(results);
         cmd.close(0, puppetBrowser);
 
-    }).catch((err) => {
+    }).catch(function(err) {
 
         cmd.stderr(err);
         cmd.close(1, puppetBrowser);
