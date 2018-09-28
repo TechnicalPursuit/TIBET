@@ -14,6 +14,7 @@ sherpa|thumbnail {
 sherpa|thumbnail a {
 
     font-size: 131%;
+
     color: #999;
 }
 
@@ -36,85 +37,33 @@ sherpa|thumbnail > .header {
     text-align: left;
 }
 
-sherpa|thumbnail > .header button {
-
-    position: relative;
-
-    top: 0;
-
-    margin: 0;
-    margin-left: 0.25em;
-}
-
-sherpa|thumbnail > .header > .trigger {
+sherpa|thumbnail > .header > .trigger.button {
 
     position: absolute;
 
     top: 0;
-    right: 8px;
+    right: 0;
 
-    height: 19px;
-    width: 24px;
-    min-width: 0;
+    width: 42px;
+    height: 30px;
 
-    margin: 4px auto;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 
-    border: 1px solid #666;
+    background-size: 20px;
+    background-position: 12px;
+    background-repeat: no-repeat;
 
-    background-color: white;
+    background-image: url("~ide_root/media/baseline-dashboard-24px.svg");
 
     cursor: pointer;
 }
 
-sherpa|thumbnail > .header > .trigger:hover {
+sherpa|thumbnail > .header > .trigger.button:hover {
 
     background-color: gold;
-}
 
-sherpa|thumbnail > .header > .trigger > .one {
-
-    position: relative;
-
-    height: 5px;
-    width: 5px;
-
-    margin: 2px;
-
-    border: 1px solid #666;
-
-    background-color: #ddd;
-}
-
-sherpa|thumbnail > .header > .trigger > .two {
-
-    position: relative;
-
-    top: 0;
-    left: 10px;
-
-    height: 5px;
-    width: 5px;
-
-    margin-top: -1px;
-
-    border: 1px solid #666;
-
-    background-color: #ddd;
-}
-
-sherpa|thumbnail > .header > .trigger > .three {
-
-    position: relative;
-
-    height: 5px;
-    width: 5px;
-
-    margin: 2px;
-    margin-top: -7px;
-
-    border: 1px solid #666;
-
-    background-color: #ddd;
+    color: #333;
 }
 
 sherpa|thumbnail > .header > .content:hover > * {
