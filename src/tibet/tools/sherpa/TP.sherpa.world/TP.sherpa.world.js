@@ -36,6 +36,7 @@ function(aRequest) {
         initialScreenWidth,
         initialScreenHeight,
 
+        screenIFrames,
         firstScreenIFrame,
         homeURL,
 
@@ -61,10 +62,12 @@ function(aRequest) {
     tpElem.set('screenWidth', initialScreenWidth);
     tpElem.set('screenHeight', initialScreenHeight);
 
-    firstScreenIFrame = TP.byCSSPath('sherpa|screen > iframe',
+    screenIFrames = TP.byCSSPath('sherpa|screen > iframe',
                                         tpElem.getNativeWindow(),
-                                        true,
+                                        false,
                                         true);
+
+    firstScreenIFrame = screenIFrames.first();
 
     //  Check for startup home page override if possible. Note that because this
     //  is a startup sequence we need to consider session-level settings for
