@@ -29,7 +29,10 @@ function(aSignal) {
      * @returns {TP.sherpa.thumbnail} The receiver.
      */
 
-    TP.info('Showing All Screens');
+    var world;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    world.setAttribute('mode', 'thumbnail');
 
     return this;
 });
