@@ -74,9 +74,8 @@ function(aRequest) {
     //  home.
     homeURL = TP.sys.getHomeURL(true);
 
-    //  If a specific URL isn't specified for 'path.sherpa_screen_0', then load
-    //  the project root page into screen_0 and put some markup in there that
-    //  will render the core app tag content.
+    //  If a specific URL is specified as the home URL, then load it. The
+    //  content pointed to by this URL should contain the root app tag.
     if (TP.notEmpty(homeURL)) {
 
         defaultURL = TP.uc(homeURL);
