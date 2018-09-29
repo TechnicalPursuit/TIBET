@@ -3,12 +3,8 @@
 
 sherpa|screen {
 
-    position: relative;
-
     display: block;
 
     overflow: auto;
-
-    /* border: dotted 1px black; */
 }
 

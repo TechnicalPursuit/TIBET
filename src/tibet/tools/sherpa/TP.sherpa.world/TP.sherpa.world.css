@@ -29,11 +29,13 @@ sherpa|world {
 
     /* stylelint-disable custom-property-empty-line-before */
 
-    /* NB: currently unused */
+    --sherpa-screen-rows: 2;
+    --sherpa-screen-cols: 2;
+
     --sherpa-screen-width: 1024px;
     --sherpa-screen-height: 768px;
 
-    --sherpa-screen-margin: 5px;
+    --sherpa-screen-thumbnail-margin: 5px;
 
     /* stylelint-enable custom-property-empty-line-before */
 }
@@ -64,7 +66,18 @@ sherpa|world > div.screens {
     padding: 4px;
 
     background-color: #f9f9f9;
+
     border-radius: 3px;
+}
+
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] > div.screens {
+
+    display: grid;
+
+    background-color: initial;
+
+    grid-template-rows: repeat(var(--sherpa-screen-rows), auto);
+    grid-template-columns: repeat(var(--sherpa-screen-cols), auto);
 }
 
 sherpa|world > div.infos {
@@ -80,25 +93,9 @@ sherpa|world > div.infos {
     height: 100%;
 }
 
-sherpa|hud:not([pclass|closed]) sherpa|world[mode*="COL"] > div.infos {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] > div.infos {
 
     display: block;
-}
-
-sherpa|hud:not([pclass|closed]) sherpa|world[mode="2COL"] > div.infos {
-
-    /* Take into account the 5px of margin on the sides of each sherpa:screen
-     * (when the HUD is not hidden - per the rule below)
-     */
-    width: 1034px;
-}
-
-sherpa|hud:not([pclass|closed]) sherpa|world[mode="3COL"] > div.infos {
-
-    /* Take into account the 5px of margin on the sides of each sherpa:screen
-     * (when the HUD is not hidden - per the rule below)
-     */
-    width: 1551px;
 }
 
 sherpa|world div.info {
@@ -111,7 +108,7 @@ sherpa|world div.info {
 
     outline: solid 1px blue;
 
-    margin: 2.5px;
+    margin: calc(var(--sherpa-screen-thumbnail-margin) / 2);
 
     float: left;
 }
@@ -143,31 +140,22 @@ sherpa|world div.info[pclass|selected] div.infotab {
 sherpa|hud:not([pclass|closed]) sherpa|world[mode="normal"] > div.screens {
 
     transform: none;
-
-    /* Take into account the margin on the sides of each sherpa:screen
-     * (when the HUD is not hidden - per the rule below)
-    width: calc(var(--sherpa-screen-width) + (var(--sherpa-screen-margin) * 2));
-     */
 }
 
-sherpa|hud:not([pclass|closed]) sherpa|world[mode="2COL"] > div.screens {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] > div.screens {
 
-    transform: scale(0.5);
-
-    /* Take into account the margin on the sides of each sherpa:screen
-     * (when the HUD is not hidden - per the rule below)
-     */
-    width: calc((var(--sherpa-screen-width) * 2) + (var(--sherpa-screen-margin) * 4));
+    transform: scaleX(calc(1 / var(--sherpa-screen-cols)))
+                scaleY(calc(1 / var(--sherpa-screen-rows)))
 }
 
-sherpa|hud:not([pclass|closed]) sherpa|world[mode="3COL"] > div.screens {
+sherpa|hud sherpa|world sherpa|screen {
 
-    transform: scale(0.5);
+    display: none;
+}
 
-    /* Take into account the margin on the sides of each sherpa:screen
-     * (when the HUD is not hidden - per the rule below)
-     */
-    width: calc((var(--sherpa-screen-width) * 3) + (var(--sherpa-screen-margin) * 6));
+sherpa|hud sherpa|world sherpa|screen[pclass|selected] {
+
+    display: block;
 }
 
 sherpa|hud[pclass|closed] sherpa|world sherpa|screen {
@@ -185,15 +173,6 @@ sherpa|hud[pclass|closed] sherpa|world sherpa|screen {
 
 sherpa|hud:not([pclass|closed]) sherpa|world sherpa|screen {
 
-    /*
-    width: var(--sherpa-screen-width);
-    height: var(--sherpa-screen-height);
-
-    margin: var(--sherpa-screen-margin);
-
-    float: left;
-    */
-
     position: absolute;
 
     top: 8px;
@@ -205,7 +184,28 @@ sherpa|hud:not([pclass|closed]) sherpa|world sherpa|screen {
     box-shadow: 2px 2px 2px #e0e0e0;
 }
 
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] sherpa|screen {
+
+    position: relative;
+
+    display: block;
+
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: auto;
+
+    width: var(--sherpa-screen-width);
+    height: var(--sherpa-screen-height);
+
+    margin: calc(var(--sherpa-screen-thumbnail-margin) / 2);
+
+    grid-column-start: auto;
+    grid-row-start: auto;
+}
+
 /* override tibet_framing */
 #center sherpa|world sherpa|screen > iframe {
+
     border-radius: 0;
 }
