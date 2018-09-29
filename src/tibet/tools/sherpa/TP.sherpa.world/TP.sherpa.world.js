@@ -341,6 +341,14 @@ function(aSignal) {
 TP.sherpa.world.Inst.defineHandler('FocusScreen',
 function(aSignal) {
 
+    /**
+     * @method handleFocusScreen
+     * @summary Handles notifications of screen focus signals.
+     * @param {TP.sig.FocusScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
     this.setAttribute('mode', 'normal');
 
     this.signal('ToggleScreen', aSignal.getPayload());
@@ -367,20 +375,30 @@ function(aSignal) {
         oldInfo,
 
         newScreen,
-        newInfo;
+        newInfo,
 
-    consoleService = TP.bySystemId('SherpaConsoleService');
+        newTPWindow;
 
+    //  Get the old selected screen
     oldScreen = this.get('selectedScreen');
-    oldInfo = this.get('selectedInfo');
 
+    //  Get the new selected screen
     newScreen = this.get('screens').at(aSignal.at('screenIndex'));
-    newInfo = this.get('infos').at(aSignal.at('screenIndex'));
 
     if (newScreen.identicalTo(oldScreen)) {
         return this;
     }
 
+    //  Get the old selected information overlay
+    oldInfo = this.get('selectedInfo');
+
+    //  Get the new selected information overlay
+    newInfo = this.get('infos').at(aSignal.at('screenIndex'));
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
+    //  If there was an old selected screen, deselect it and the associated
+    //  information overlay. Also, set the console's UICANVAS to null.
     if (TP.isValid(oldScreen)) {
         oldScreen.setSelected(false);
         oldInfo.setSelected(false);
@@ -388,14 +406,23 @@ function(aSignal) {
         consoleService.get('model').setVariable('UICANVAS', null);
     }
 
+    //  If there is a new selected screen, select it and the associated
+    //  information overlay. Also, set the console's UICANVAS to that screen's
+    //  content window.
     if (TP.isValid(newScreen)) {
         newScreen.setSelected(true);
         newInfo.setSelected(true);
 
-        consoleService.get('model').setVariable(
-                    'UICANVAS', newScreen.getContentWindow());
+        newTPWindow = newScreen.getContentWindow();
 
+        consoleService.get('model').setVariable('UICANVAS', newTPWindow);
+
+        TP.sys.setUICanvas('UIROOT.' + newTPWindow.getLocalID());
+
+        //  Make sure to scroll it into view.
         this.scrollSelectedScreenIntoView();
+    } else {
+        //  TODO: Raise an exception - there will be no UI canvas.
     }
 
     return this;
