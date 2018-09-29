@@ -6477,7 +6477,7 @@ function(aRoute) {
     if (TP.canInvoke(type, 'generateMarkupContent')) {
 
         if (TP.notValid(targetTPElem)) {
-            targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
+            targetTPElem = canvas.getDocument().getBody();
         }
 
         //  Inject the content.
@@ -6509,8 +6509,7 @@ function(aRoute) {
             //  a target, then use the document's body as the target and
             //  set the content.
             if (TP.notValid(targetTPElem)) {
-                targetTPElem =
-                    TP.sys.getUICanvas().getDocument().getBody();
+                targetTPElem = canvas.getDocument().getBody();
             }
 
             //  Set the content of the target element. Note here how we supply
