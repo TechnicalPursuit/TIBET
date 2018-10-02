@@ -968,6 +968,13 @@ Cmd.prototype.stdout = function(data) {
 
         line = item.data;
 
+        //  Sometimes, there will be no line data because, depending on OS and
+        //  process, undefined lines will have gotten written to stdout. Filter
+        //  for those here.
+        if (!line) {
+            return;
+        }
+
         //  Obj will be an Array with 3 parts:
         //  - The virtualized filename
         //  - The load stage that the file loaded in (CLI.PHASE_ONE or
