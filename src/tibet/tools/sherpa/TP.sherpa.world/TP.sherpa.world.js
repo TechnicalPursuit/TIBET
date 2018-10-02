@@ -410,7 +410,7 @@ function(aSignal) {
 
     //  If there is a new selected screen, select it and the associated
     //  information overlay. Also, set the console's UICANVAS to that screen's
-    //  content window.
+    //  content window and the current UI canvas to be that window.
     if (TP.isValid(newScreen)) {
         newScreen.setSelected(true);
         newInfo.setSelected(true);
@@ -437,6 +437,9 @@ function() {
 
     /**
      * @method getScreenLocations
+     * @summary Returns a list of URLs currently being held by the various
+     *     screens that have content loaded into them from a URL.
+     * @returns {String[]} A list of screen URLs
      */
 
     var screens,
@@ -464,6 +467,11 @@ function(locations) {
 
     /**
      * @method setScreenLocations
+     * @summary Sets the locations of the currently open screens to the supplied
+     *     URLs.
+     * @param {String[]} locations The list of URLs to set the contents of the
+     *     currently open screens to.
+     * @returns {TP.sherpa.world} The receiver.
      */
 
     var locationCount,
@@ -532,6 +540,12 @@ function() {
 
     /**
      * @method refocus
+     * @summary Refocuses the world based on the content in the current focus.
+     * @description If the current focus is an array of Numbers, this method
+     *     will fit the world to include those screens. If the current focus is
+     *     an Element, this method will fit the world to that element. If the
+     *     current focus is TP.SELF, this method will fit the world to itself.
+     * @returns {TP.sherpa.world} The receiver.
      */
 
     var currentFocus;
@@ -577,6 +591,12 @@ function(anIndex) {
 
 TP.sherpa.world.Inst.defineMethod('scrollSelectedScreenIntoView',
 function() {
+
+    /**
+     * @method scrollSelectedScreenIntoView
+     * @summary Scrolls the currently selected screen into view in the world.
+     * @returns {TP.sherpa.world} The receiver.
+     */
 
     var selectedScreen,
         selectedRect,
@@ -800,6 +820,7 @@ function(aPoint) {
 
     /**
      * @method moveToCenterPointAndFitToDocument
+     * @param {TP.core.Point} aPoint
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -833,6 +854,7 @@ function(aRect) {
 
     /**
      * @method setView
+     * @param {TP.core.Rect} aRect
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -891,6 +913,7 @@ function(aValue) {
 
     /**
      * @method zoom
+     * @param {Number} aValue
      * @returns {TP.sherpa.world} The receiver.
      */
 
