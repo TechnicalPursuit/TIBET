@@ -1566,7 +1566,8 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
-    var wasHidden;
+    var wasHidden,
+        doc;
 
     wasHidden = TP.bc(this.getAttribute('hidden'));
 
@@ -1575,6 +1576,9 @@ function(beHidden) {
         //  attribute, since it already has the value we desire.
         return this;
     }
+
+    //  Grab the current UI canvas document.
+    doc = TP.sys.uidoc(true);
 
     if (TP.isTrue(beHidden)) {
         this.ignore(this, 'TP.sig.DOMMouseMove');
@@ -1596,6 +1600,13 @@ function(beHidden) {
         this.ignore(TP.bySystemId('Sherpa'), 'CanvasChanged');
 
         this.set('haloRect', null);
+
+        //  Remove the CSS class from the UI canvas's document element that
+        //  qualifies elements in the injected style element
+        TP.elementRemoveClass(doc.documentElement, 'sherpa-halo');
+
+        TP.bySystemId('Sherpa').getToolsLayer().removeAttribute('activetool');
+
     } else {
 
         //  If we don't have a valid target element, then we exit here *without
@@ -1624,6 +1635,13 @@ function(beHidden) {
         this.observe(TP.bySystemId('Sherpa'), 'CanvasChanged');
 
         this.moveAndSizeToTarget(this.get('currentTargetTPElem'));
+
+        //  Add the CSS class to the UI canvas's document element that qualifies
+        //  elements in the injected style element
+        TP.elementAddClass(doc.documentElement, 'sherpa-halo');
+
+        TP.bySystemId('Sherpa').getToolsLayer().setAttribute(
+                                                'activetool', 'sherpa:halo');
     }
 
     //  Need to 'call up' to make sure the attribute value is actually captured.
