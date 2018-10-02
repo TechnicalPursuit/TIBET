@@ -75,7 +75,7 @@ function(aRequest) {
     screenNum = TP.nc(arg0);
     if (TP.isNumber(screenNum)) {
 
-        screens = TP.byId('SherpaWorld', TP.win('UIROOT')).get('screens');
+        screens = TP.byId('SherpaWorld', TP.sys.getUIRoot()).get('screens');
         if (screenNum < 0 || screenNum > screens.getSize() - 1) {
             aRequest.stdout('screen index is invalid: ' + screenNum);
             aRequest.complete(TP.TSH_NO_VALUE);

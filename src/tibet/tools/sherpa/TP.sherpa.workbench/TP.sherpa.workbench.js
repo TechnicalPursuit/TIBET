@@ -481,7 +481,7 @@ function(aSignal) {
 
     mousePoint = aSignal.getGlobalPoint();
     canvasOffsets = TP.windowComputeWindowOffsets(
-                                TP.win('UIROOT'), TP.win('UICANVAS'));
+                                TP.sys.getUIRoot(), TP.win('UICANVAS'));
 
     mousePoint.setX(mousePoint.getX() - canvasOffsets.at('0'));
     mousePoint.setY(mousePoint.getY() - canvasOffsets.at('1'));

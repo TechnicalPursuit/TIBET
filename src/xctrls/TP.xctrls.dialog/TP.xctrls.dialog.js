@@ -308,7 +308,7 @@ function(info) {
             //  If we couldn't find the dialog element and we're running the
             //  Sherpa, then we can try to find it in the UIROOT window.
             if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('sherpa')) {
-                win = TP.win('UIROOT');
+                win = TP.sys.getUIRoot();
                 dialogTPElem = TP.byId(dialogID, win);
             }
 

@@ -546,7 +546,7 @@ function(options) {
     var halo,
         generator;
 
-    halo = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    halo = TP.byId('SherpaHalo', TP.sys.getUIRoot());
 
     generator = this.getNearestHaloGenerator(halo);
 

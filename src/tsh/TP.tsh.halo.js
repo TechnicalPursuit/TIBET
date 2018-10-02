@@ -67,7 +67,7 @@ function(aRequest) {
         }
 
         if (TP.isKindOf(arg0, TP.dom.Node)) {
-            halo = TP.byId('SherpaHalo', TP.win('UIROOT'));
+            halo = TP.byId('SherpaHalo', TP.sys.getUIRoot());
             if (TP.isValid(halo)) {
 
                 halo.blur();

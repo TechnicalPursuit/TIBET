@@ -1108,7 +1108,7 @@ function() {
             screenEntries = dataSet.at('screens');
 
             if (TP.notEmpty(screenEntries)) {
-                TP.byId('SherpaWorld', TP.win('UIROOT')).setScreenLocations(
+                TP.byId('SherpaWorld', TP.sys.getUIRoot()).setScreenLocations(
                                                                 screenEntries);
             }
 */
@@ -1241,7 +1241,7 @@ function() {
         //  ---
 /*
         screenEntries =
-            TP.byId('SherpaWorld', TP.win('UIROOT')).getScreenLocations();
+            TP.byId('SherpaWorld', TP.sys.getUIRoot()).getScreenLocations();
 
         if (TP.isEmpty(screenEntries)) {
             screenEntries = TP.ac();

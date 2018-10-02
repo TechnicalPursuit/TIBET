@@ -935,7 +935,7 @@ function(pathParts) {
 
     } else if (pathParts.first() === '_HALO_') {
 
-        haloTarget = TP.byId('SherpaHalo', TP.win('UIROOT')).get(
+        haloTarget = TP.byId('SherpaHalo', TP.sys.getUIRoot()).get(
                                                         'currentTargetTPElem');
         if (TP.isValid(haloTarget)) {
             newPathParts = pathParts.slice(1);

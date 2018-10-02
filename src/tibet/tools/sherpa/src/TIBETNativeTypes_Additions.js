@@ -186,7 +186,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 displayName);
 
     //  If so, then we want to return false to force the inspector bay to use
@@ -255,7 +255,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 displayName);
 
     if (tabHasValue) {
@@ -305,15 +305,15 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 displayName);
 
     //  If so, then set the value of both the tabbar and the panel box to our
     //  location, causing them to switch. And return content that points the
     //  user down to the tabbar in the south drawer.
     if (tabHasValue) {
-        TP.byId('SherpaConsoleTabbar', TP.win('UIROOT')).setValue(displayName);
-        TP.byId('SherpaConsolePanelbox', TP.win('UIROOT')).
+        TP.byId('SherpaConsoleTabbar', TP.sys.getUIRoot()).setValue(displayName);
+        TP.byId('SherpaConsolePanelbox', TP.sys.getUIRoot()).
                                                         setValue(displayName);
 
         return TP.xhtmlnode(
@@ -428,7 +428,7 @@ function(options) {
     //  Grab our display name and see if there's already tab representing us in
     //  the inspector.
     displayName = this[TP.DISPLAY];
-    tabHasValue = TP.byId('SherpaConsole', TP.win('UIROOT')).hasTabForValue(
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 displayName);
 
     //  If not, then return the uri toolbar content for placement into the

@@ -414,7 +414,7 @@ function(aSignal) {
         isActive;
 
     //  Grab the HUD and see if it's currently open or closed.
-    hud = TP.byId('SherpaHUD', TP.win('UIROOT'));
+    hud = TP.byId('SherpaHUD', TP.sys.getUIRoot());
     hudIsHidden = TP.bc(hud.getAttribute('closed'));
 
     isActive = this.get('isActive');
@@ -546,7 +546,7 @@ function(aSignal) {
         case 'dom_node':
         case 'dom_node_copy':
 
-            sourceTPElem = TP.byId('SherpaHalo', TP.win('UIROOT')).
+            sourceTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot()).
                                                 get('currentTargetTPElem');
             break;
 
@@ -554,7 +554,7 @@ function(aSignal) {
             break;
     }
 
-    hudTPElem = TP.byId('SherpaHUD', TP.win('UIROOT'));
+    hudTPElem = TP.byId('SherpaHUD', TP.sys.getUIRoot());
     if (!dndTargetTPElem.hudCanDrop(hudTPElem, sourceTPElem)) {
         this.set('$currentDNDTarget', null);
         return this;
@@ -1233,7 +1233,7 @@ function() {
 
     this.teardownTargetElement();
 
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
     if (TP.isValid(haloTargetTPElem)) {
         //  Remove the class on the current halo target that allowed us to apply
@@ -1274,9 +1274,9 @@ function() {
     //  Ignore the halo for when it focuses and blurs. These observations were
     //  made when the outliner was shown.
 
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.ignore(TP.byId('SherpaHalo', TP.sys.getUIRoot()),
                 'TP.sig.HaloDidFocus');
-    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.ignore(TP.byId('SherpaHalo', TP.sys.getUIRoot()),
                 'TP.sig.HaloDidBlur');
 
     //  Null out the target element.
@@ -1443,7 +1443,7 @@ function(aPosition) {
 
     this.$set('insertionPosition', aPosition);
 
-    TP.byId('SherpaWorkbench', TP.win('UIROOT')).updateStatusbar(
+    TP.byId('SherpaWorkbench', TP.sys.getUIRoot()).updateStatusbar(
             TP.hc('insertionPosition', aPosition));
 
     return this;
@@ -1680,7 +1680,7 @@ function() {
 
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
 
     //  Ask the halo to suspend any other object's attempt to show it.
     haloTPElem.suspendSettingOf('hidden');
@@ -1713,9 +1713,9 @@ function() {
     //  Observe the halo for when it focuses and blurs. We'll need to do this to
     //  keep it's style in sync with what we're doing here.
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', TP.sys.getUIRoot()),
                     'TP.sig.HaloDidFocus');
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', TP.sys.getUIRoot()),
                     'TP.sig.HaloDidBlur');
 
     //  We are now officially active.

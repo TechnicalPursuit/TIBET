@@ -92,7 +92,7 @@ function() {
 
     var elem;
 
-    elem = TP.byId('SherpaHUD', TP.win('UIROOT'));
+    elem = TP.byId('SherpaHUD', TP.sys.getUIRoot());
     if (TP.isValid(elem)) {
         return !elem.hasAttribute('pclass:closed');
     }
@@ -199,6 +199,9 @@ function() {
     }
 
     //  Set up our window. By default, the Sherpa exists in the UIROOT window.
+
+    //  NOTE: DO NOT change this reference to TP.sys.getUIROOT(). This gets
+    //  executed too early in the startup process.
     win = TP.win('UIROOT');
     this.set('vWin', win);
 
@@ -907,7 +910,7 @@ function(aSignal) {
 
     var connector;
 
-    connector = TP.byId('SherpaConnector', TP.win('UIROOT'));
+    connector = TP.byId('SherpaConnector', TP.sys.getUIRoot());
     if (TP.notValid(connector)) {
         return this;
     }
@@ -1642,7 +1645,7 @@ function(aSignal) {
 
         triggerTPDoc;
 
-    notifier = TP.byId('SherpaNotifier', TP.win('UIROOT'));
+    notifier = TP.byId('SherpaNotifier', TP.sys.getUIRoot());
     notifier.setStyleProperty(
                 '--sherpa-notifier-fadeout-duration',
                 TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');

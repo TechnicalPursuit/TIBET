@@ -65,7 +65,7 @@ function(aTagTypeName) {
 
     //  Grab all of the screens from the world and iterate over them, looking
     //  for tofus.
-    screens = TP.byId('SherpaWorld', TP.win('UIROOT')).get('screens');
+    screens = TP.byId('SherpaWorld', TP.sys.getUIRoot()).get('screens');
     screens.forEach(
         function(aScreen) {
 

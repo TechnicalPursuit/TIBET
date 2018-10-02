@@ -1109,7 +1109,7 @@ function(insertionPointElement, insertionPosition) {
         newTPElem;
 
     //  The target element that we're moving is the halo's current target.
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
 
     //  Clone the halo target element and remove the 'id' attribute (can't have
@@ -1188,7 +1188,7 @@ function(insertionPointElement, insertionPosition, tdcRequest) {
         newScriptElem = newElem;
     }
 
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
 
     //  NB: We queue this for the next time that the browser wants to repaint
     //  because all of those lovely microtasks that got queued to get us here
@@ -1245,7 +1245,7 @@ function(insertionPointElement, insertionPosition) {
         newInsertedTPElem;
 
     //  The target element that we're moving is the halo's current target.
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
 
     //  NB: We queue this for the next time that the browser wants to repaint
@@ -1813,7 +1813,7 @@ function(insertionPointElement, insertionPosition) {
         assistantContentTPElem,
         dialogPromise;
 
-    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+    inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
 
     contentType = inspector.getCurrentPropertyValueForTool(
                                 'contentType',

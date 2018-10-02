@@ -431,7 +431,7 @@ function() {
 
         authRequest;
 
-    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+    inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
     content = inspector.getInspectorBayContentItem();
 
     username = TP.byId('username_field', content);
