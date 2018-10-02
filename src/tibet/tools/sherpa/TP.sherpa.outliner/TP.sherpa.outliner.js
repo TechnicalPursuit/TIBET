@@ -1678,6 +1678,10 @@ function() {
     this.updateTargetElementStyle();
     this.updateOutlinedDescendantStyle();
 
+    //  The stylesheet has probably already been injected, but this will cause
+    //  it to become enabled if we have already been toggle off and on again.
+    this.setupInjectedStyleSheet();
+
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.
     haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
