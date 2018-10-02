@@ -64,7 +64,10 @@ function() {
         currentKeyboard,
         outlineresponder,
 
-        keyboardSM;
+        keyboardSM,
+
+        world,
+        currentScreenTPWin;
 
     this.callNextMethod();
 
@@ -140,6 +143,20 @@ function() {
                                 'TP.sig.DOMDNDCompleted'));
 
     this.observe(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
+
+    //  Grab the world's current screen TP.core.Window and observe it for when
+    //  it's document unloads & loads so that we can manage our click & context
+    //  menu observations.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    this.observe(world, 'ToggleScreen');
+
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.observe(currentScreenTPWin,
+                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    //  Inject the stylesheet that we need the canvas document to have to
+    //  display the outlines (if it's not already there).
+    this.setupInjectedStyleSheet();
 
     return this;
 });
@@ -421,6 +438,40 @@ function(aSignal) {
     return this;
 }, {
     origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    this.setupInjectedStyleSheet();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -1107,6 +1158,45 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.outliner.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    /**
+     * @method handleToggleScreen
+     * @summary Handles notifications of screen toggle signals.
+     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var world,
+        oldScreenTPWin,
+
+        newScreen,
+        newScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the old screen TP.core.Window and ignore
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    //  Grab the new screen TP.core.Window and observe
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    newScreen = world.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(newScreen)) {
+        newScreenTPWin = newScreen.getContentWindow();
+        this.observe(newScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.outliner.Inst.defineMethod('hideOutliner',
 function() {
 
@@ -1583,10 +1673,6 @@ function() {
 
     //  Set it up.
     this.setupTargetElement();
-
-    //  Inject the stylesheet that we need the canvas document to have to
-    //  display the outlines (if it's not already there).
-    this.setupInjectedStyleSheet();
 
     //  Update both the target element and it's descendants style.
     this.updateTargetElementStyle();
