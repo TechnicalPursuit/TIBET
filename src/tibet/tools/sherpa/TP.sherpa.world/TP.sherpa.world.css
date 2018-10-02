@@ -78,6 +78,8 @@ sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] > div.screens {
 
     grid-template-rows: repeat(var(--sherpa-screen-rows), auto);
     grid-template-columns: repeat(var(--sherpa-screen-cols), auto);
+
+    transform: scaleX(calc(1 / var(--sherpa-screen-cols))) scaleY(calc(1 / var(--sherpa-screen-rows)));
 }
 
 sherpa|world > div.infos {
@@ -140,12 +142,6 @@ sherpa|world div.info[pclass|selected] div.infotab {
 sherpa|hud:not([pclass|closed]) sherpa|world[mode="normal"] > div.screens {
 
     transform: none;
-}
-
-sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] > div.screens {
-
-    transform: scaleX(calc(1 / var(--sherpa-screen-cols)))
-                scaleY(calc(1 / var(--sherpa-screen-rows)))
 }
 
 sherpa|hud sherpa|world sherpa|screen {
