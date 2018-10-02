@@ -33,9 +33,6 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        initialScreenWidth,
-        initialScreenHeight,
-
         screenIFrames,
         firstScreenIFrame,
         homeURL,
@@ -53,14 +50,6 @@ function(aRequest) {
     }
 
     tpElem = TP.wrap(elem);
-
-    //  TODO: This should match the actual width & height of the entry in the
-    //  'sherpa|screen' rule.
-    initialScreenWidth = TP.sys.cfg('sherpa.initial_screen_height', 1024);
-    initialScreenHeight = TP.sys.cfg('sherpa.initial_screen_width', 768);
-
-    tpElem.set('screenWidth', initialScreenWidth);
-    tpElem.set('screenHeight', initialScreenHeight);
 
     screenIFrames = TP.byCSSPath('sherpa|screen > iframe',
                                         tpElem.getNativeWindow(),
@@ -85,6 +74,35 @@ function(aRequest) {
         loadRequest.atPut(
             TP.ONLOAD,
             function(evt) {
+
+                var stylesheet,
+                    stylesheetElem,
+                    val;
+
+                //  Try to grab the CSSStyleSheet object associated with our
+                //  style resource.
+                stylesheet = tpElem.getStylesheetForStyleResource();
+                if (TP.isValid(stylesheet)) {
+                    //  And its Element
+                    stylesheetElem = TP.styleSheetGetOwnerNode(stylesheet);
+
+                    if (TP.isElement(stylesheetElem)) {
+                        val = TP.cssElementGetCustomCSSPropertyValue(
+                                    stylesheetElem,
+                                    'sherpa|world',
+                                    '--sherpa-screen-width');
+                        val = val.asNumber();
+                        tpElem.set('screenWidth', val);
+
+                        val = TP.cssElementGetCustomCSSPropertyValue(
+                                    stylesheetElem,
+                                    'sherpa|world',
+                                    '--sherpa-screen-height');
+                        val = val.asNumber();
+                        tpElem.set('screenHeight', val);
+                    }
+                }
+
                 //  Signal we are starting. This provides a hook for extensions
                 //  etc. to tap into the startup sequence before routing or
                 //  other behaviors but after we're sure the UI is finalized.
