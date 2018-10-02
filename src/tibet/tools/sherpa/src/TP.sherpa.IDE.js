@@ -4052,8 +4052,9 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             currentNode = currentNode.childNodes[address];
         }
 
-        //  NB: This might push 'null'... and for TP.CREATE operations, "that's
-        //  ok" (since it will basically become an 'append' below).
+        //  NB: This might push 'null'... and for non-attribute TP.CREATE
+        //  operations, "that's ok" (since it will basically become an 'append'
+        //  below).
         processingNodes.push(currentNode);
     }
 

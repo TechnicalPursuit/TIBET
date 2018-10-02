@@ -924,6 +924,8 @@ function(options) {
                                             );
                             });
 
+                    //  NOTE THAT FETCHING IS STILL HAPPENING ASYNCHRONOUSLY
+                    //  HERE.
                     return TP.extern.Promise.all(promises);
                 }).then(
                 function(result) {

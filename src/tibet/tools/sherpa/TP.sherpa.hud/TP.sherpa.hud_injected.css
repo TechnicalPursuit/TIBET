@@ -3,6 +3,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 .sherpa-hud {
+
     --sherpa-hud-highlight-color: rgba(254, 214, 49, 0.3);
 }
 
