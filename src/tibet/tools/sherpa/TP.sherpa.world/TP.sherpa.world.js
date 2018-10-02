@@ -534,15 +534,6 @@ function(locations) {
                         loadFunc();
                     });
             screens.at(counter).setLocation(TP.uc(loadURL), loadRequest);
-        } else {
-            /*
-            worldThumbnails = TP.byId('SherpaWorldThumbnails',
-                                        this.getNativeWindow());
-
-            setTimeout(function() {
-                worldThumbnails.render();
-            }, 1000);
-            */
         }
     };
 
@@ -618,8 +609,6 @@ function() {
 
     var selectedScreen,
         selectedRect,
-
-        // elem,
 
         selectedScreenElem;
 
