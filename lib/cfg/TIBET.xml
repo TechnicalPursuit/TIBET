@@ -222,12 +222,15 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.connector-TP.sherpa.connector.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.halo-TP.sherpa.halo.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.halo-TP.sherpa.halo.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.halo-TP.sherpa.halo_injected.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.compiledTagContextMenuContent-TP.sherpa.compiledTagContextMenuContent.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.compiledTagContextMenuContent-TP.sherpa.compiledTagContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.templatedTagContextMenuContent-TP.sherpa.templatedTagContextMenuContent.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.templatedTagContextMenuContent-TP.sherpa.templatedTagContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hud-TP.sherpa.hud.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hud-TP.sherpa.hud.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hud-TP.sherpa.hud_injected.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.outliner-TP.sherpa.outliner_injected.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.world-TP.sherpa.world.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.screen-TP.sherpa.screen.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.flex-TP.sherpa.flex.css.js"/>
