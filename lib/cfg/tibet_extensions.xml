@@ -24,6 +24,7 @@
     <config ref="shells"/>
     <config ref="crypto"/>
     <config ref="text_processing"/>
+    <config ref="react"/>
 </config>
 
 <config id="content">
@@ -138,6 +139,12 @@
         TP.registerExternalObject('Fuse', window.Fuse);
         ]]>
     </script>
+
+</config>
+
+<config id="react" basedir="~lib_src">
+
+    <script src="./react/TP.dom.ReactElement.js"/>
 
 </config>
 
