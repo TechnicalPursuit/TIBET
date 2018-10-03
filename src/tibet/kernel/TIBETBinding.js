@@ -4892,8 +4892,9 @@ function(shouldRender) {
 
     } else {
         //  If this isn't an element around one of those three attributes, then
-        //  just call render() and return
+        //  just call render() and return.
         this.render();
+
         return this;
     }
 
