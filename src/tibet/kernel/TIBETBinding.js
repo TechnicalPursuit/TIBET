@@ -5046,7 +5046,7 @@ function(shouldRender) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('refresh',
-function(shouldRender) {
+function(shouldRender, shouldRefreshBindings) {
 
     /**
      * @method refresh
@@ -5057,18 +5057,37 @@ function(shouldRender) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
+     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
+     *     bindings from the receiver down (in a 'sparse' fashion). If not
+     *     supplied, this parameter will default to true.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
 
     var retVal;
 
-    retVal = this.$refresh(shouldRender);
+    //  First, call refresh on all of the *direct children* of the receiver,
+    //  specifying to *not* refresh data bindings. We'll do that in a more
+    //  efficient way below. In this way, the child refresh will not try to
+    //  refresh bindings, but leave it to the sparse update routine below to do
+    //  it.
+    this.getChildElements().forEach(
+        function(aChildTPElem) {
+            aChildTPElem.refresh(shouldRender, false);
+        });
 
-    //  If this element has a 'bind:scope', then the '$refresh' call above will
-    //  have already called refreshBoundDescendants on it.
-    if (!this.hasAttribute('bind:scope')) {
-        this.refreshBoundDescendants(shouldRender);
+    //  If the caller hasn't explicitly said to refresh data bindings, then we
+    //  do so.
+    if (TP.notFalse(shouldRefreshBindings)) {
+        retVal = this.$refresh(shouldRender);
+
+        //  If this element has a 'bind:scope', then the '$refresh' call above
+        //  will have already called refreshBoundDescendants on it.
+        if (!this.hasAttribute('bind:scope')) {
+            this.refreshBoundDescendants(shouldRender);
+        }
+    } else {
+        retVal = false;
     }
 
     return retVal;

@@ -518,7 +518,7 @@ function(aspectName) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.itemset.Inst.defineMethod('refresh',
-function(shouldRender) {
+function(shouldRender, shouldRefreshBindings) {
 
     /**
      * @method refresh
@@ -530,6 +530,9 @@ function(shouldRender) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
+     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
+     *     bindings from the receiver down (in a 'sparse' fashion). If not
+     *     supplied, this parameter will default to true.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
