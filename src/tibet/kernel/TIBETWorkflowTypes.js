@@ -6251,8 +6251,8 @@ function(aSignal) {
             //  going to give it new content - we're just going to refresh any
             //  data bindings under it.
             contentTPElem = this.getTargetElementForRoute(route);
-            contentTPElem.refresh();
             contentTPElem.setValue(route);
+            contentTPElem.refresh();
             break;
         case 'norefresh':
             //  If the route is configured to not refresh, then don't refresh
