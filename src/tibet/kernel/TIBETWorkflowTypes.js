@@ -6257,6 +6257,7 @@ function(aSignal) {
         case 'norefresh':
             //  If the route is configured to not refresh, then don't refresh
             //  or set new content.
+            contentTPElem = this.getTargetElementForRoute(route);
             contentTPElem.setValue(route);
             break;
         default:
