@@ -186,8 +186,11 @@ Cmd.prototype.execute = function() {
     cmd = this;
 
     puppeteer.launch({
-        //  Let us access file urls so we don't have to launch a server.
-        args: ['--disable-web-security', '--allow-file-access-from-files']
+        //  Let us access file urls so we don't have to launch a server. Also,
+        //  don't specify a sandbox in case we're running as root.
+        args: ['--disable-web-security',
+                '--allow-file-access-from-files',
+                '--no-sandbox']
 
         /*
         devtools: true,         //  For debugging
