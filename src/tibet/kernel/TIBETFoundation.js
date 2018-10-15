@@ -3524,6 +3524,8 @@ function(includeUndefined) {
         tmparr.push(i);
     }
 
+    tmparr = tmparr.concat(TP.$getOwnKeys(this));
+
     return tmparr.concat(TP.sys.$arraykeys);
 });
 
