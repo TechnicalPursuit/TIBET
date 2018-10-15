@@ -9,6 +9,89 @@
 //  ========================================================================
 
 //  ========================================================================
+//  TP.gui.GraphicData
+//  ========================================================================
+
+/**
+ * @type {TP.gui.GraphicData}
+ * @summary A type that acts as the common supertype.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('gui.GraphicData');
+
+//  can't construct concrete instances of this
+TP.gui.GraphicData.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.gui.GraphicData.Inst.defineMethod('copy',
+function(deep, aFilterNameOrKeys, contentOnly) {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
+     * @returns {TP.gui.GraphicData} A new TP.gui.Point which is a copy of the
+     *     receiver.
+     */
+
+    var newinst,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
+
+    newinst = this.getType().construct(this);
+
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        //  content only
+        return newinst;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = this.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return newinst;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.$set(ndx, val, false, true);
+        }
+    }
+
+    return newinst;
+});
+
+//  ========================================================================
 //  TP.gui.Point
 //  ========================================================================
 
@@ -19,7 +102,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Point');
+TP.gui.GraphicData.defineSubtype('gui.Point');
 
 //  ------------------------------------------------------------------------
 
@@ -526,22 +609,6 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Point.Inst.defineMethod('copy',
-function() {
-
-    /**
-     * @method copy
-     * @summary Returns a 'copy' of the receiver. Actually, a new instance
-     *     whose value is equalTo that of the receiver.
-     * @returns {TP.gui.Point} A new TP.gui.Point which is a copy of the
-     *     receiver.
-     */
-
-    return this.getType().construct(this);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.gui.Point.Inst.defineMethod('distanceBetween',
 function(aPoint) {
 
@@ -960,7 +1027,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Rect');
+TP.gui.GraphicData.defineSubtype('gui.Rect');
 
 //  ------------------------------------------------------------------------
 
@@ -1594,22 +1661,6 @@ function(aRect) {
     /* eslint-enable no-extra-parens */
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Rect.Inst.defineMethod('copy',
-function() {
-
-    /**
-     * @method copy
-     * @summary Returns a 'copy' of the receiver. Actually, a new instance
-     *     whose value is equalTo that of the receiver.
-     * @returns {TP.gui.Rect} A new TP.gui.Rect which is a copy of the
-     *     receiver.
-     */
-
-    return this.getType().construct(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -2698,7 +2749,7 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Matrix');
+TP.gui.GraphicData.defineSubtype('gui.Matrix');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -3876,22 +3927,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Matrix.Inst.defineMethod('copy',
-function() {
-
-    /**
-     * @method copy
-     * @summary Returns a 'copy' of the receiver. Actually, a new instance
-     *     whose value is equalTo that of the receiver.
-     * @returns {TP.gui.Matrix} A new TP.gui.Matrix which is a copy of the
-     *     receiver.
-     */
-
-    return this.getType().construct(this);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.gui.Matrix.Inst.defineMethod('invert',
 function() {
 
@@ -4219,7 +4254,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Color');
+TP.gui.GraphicData.defineSubtype('gui.Color');
 
 //  ------------------------------------------------------------------------
 
@@ -4727,22 +4762,6 @@ function(toColor, weight) {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Color.Inst.defineMethod('copy',
-function() {
-
-    /**
-     * @method copy
-     * @summary Returns a 'copy' of the receiver. Actually, a new instance
-     *     whose value is equalTo that of the receiver.
-     * @returns {TP.gui.Color} A new TP.gui.Color which is a copy of the
-     *     receiver.
-     */
-
-    return this.getType().construct(this);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.gui.Color.Inst.defineMethod('getAlpha',
 function() {
 
@@ -4835,7 +4854,7 @@ function(aColor) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Gradient');
+TP.gui.GraphicData.defineSubtype('gui.Gradient');
 
 //  TP.gui.Gradient is an abstract type.
 TP.gui.Gradient.isAbstract(true);
@@ -5182,7 +5201,7 @@ function() {
 
     var newGradient;
 
-    newGradient = this.construct();
+    newGradient = this.callNextMethod();
 
     newGradient.set('colors', this.get('colors').copy());
     newGradient.set('stops', this.get('stops').copy());
@@ -6183,7 +6202,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Pattern');
+TP.gui.GraphicData.defineSubtype('gui.Pattern');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -6512,7 +6531,7 @@ function() {
 
     var newPattern;
 
-    newPattern = this.getType().construct();
+    newPattern = this.callNextMethod();
 
     newPattern.set('uri', TP.uc(this.get('uri')));
 
@@ -6550,7 +6569,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Path');
+TP.gui.GraphicData.defineSubtype('gui.Path');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -7561,7 +7580,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('gui.Transition');
+TP.gui.GraphicData.defineSubtype('gui.Transition');
 
 //  This is an abstract type.
 TP.gui.Transition.isAbstract(true);
