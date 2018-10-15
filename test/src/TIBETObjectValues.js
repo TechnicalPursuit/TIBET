@@ -756,18 +756,18 @@ function(aRequest) {
 
     tibetDocTypeVal = TP.ac(TP.w3.DocType, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPointVal = TP.ac(TP.gui.Point, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetRectVal = TP.ac(TP.gui.Rect, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetMatrixVal = TP.ac(TP.gui.Matrix, TP.lang.Object, TP.lang.RootObject, Object);
-    tibetColorVal = TP.ac(TP.gui.Color, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPointVal = TP.ac(TP.gui.Point, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetRectVal = TP.ac(TP.gui.Rect, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetMatrixVal = TP.ac(TP.gui.Matrix, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetColorVal = TP.ac(TP.gui.Color, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetLinearGradientVal = TP.ac(TP.gui.LinearGradient, TP.gui.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetLinearGradientVal = TP.ac(TP.gui.LinearGradient, TP.gui.Gradient, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetRadialGradientVal = TP.ac(TP.gui.RadialGradient, TP.gui.Gradient, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetRadialGradientVal = TP.ac(TP.gui.RadialGradient, TP.gui.Gradient, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPatternVal = TP.ac(TP.gui.Pattern, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPatternVal = TP.ac(TP.gui.Pattern, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
 
-    tibetPath = TP.ac(TP.gui.SVGPath, TP.gui.Path, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetPath = TP.ac(TP.gui.SVGPath, TP.gui.Path, TP.gui.GraphicData, TP.lang.Object, TP.lang.RootObject, Object);
 
     tibetJob = TP.ac(TP.core.Job, TP.lang.Object, TP.lang.RootObject, Object);
 
