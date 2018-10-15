@@ -426,7 +426,7 @@ Array.prototype.$$set = Array.prototype.$set;
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('$set',
-function(attributeName, attributeValue, shouldSignal) {
+function(attributeName, attributeValue, shouldSignal, allowUndef) {
 
     /**
      * @method $set
@@ -437,6 +437,9 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Object} attributeValue The value to set in that slot.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
+     * @param {Boolean} allowUndef True to let the slot value be set to
+     *     undefined. This isn't normally done except by certain container
+     *     types, especially response objects.
      * @returns {Object} The receiver.
      */
 
@@ -493,7 +496,7 @@ function(attributeName, attributeValue, shouldSignal) {
             this.shouldSignalChange(oldFlag);
         }
     } else {
-        return this.$$set(attributeName, newVal, shouldSignal);
+        return this.$$set(attributeName, newVal, shouldSignal, allowUndef);
     }
 
     return this;
