@@ -328,23 +328,37 @@ function(aNodeOrId) {
      * @returns {TP.meta.html.object} A TP.html.object subtype type object.
      */
 
-    var typeName,
+    var entry,
+
+        typeName,
         type;
 
     if (TP.isString(aNodeOrId)) {
         return TP.byId(aNodeOrId);
     }
 
-    typeName = TP.ietf.mime.get('info').at(
-                TP.elementGetAttribute(aNodeOrId, 'type')).at('objectNodeType');
+    entry = TP.ietf.mime.get('info').at(
+                TP.elementGetAttribute(aNodeOrId, 'type'));
 
-    type = TP.sys.getTypeByName(typeName);
-    if (TP.isType(type) && !type.isAbstract()) {
-        return type;
+    if (TP.isValid(entry)) {
+        typeName = entry.at('objectNodeType');
+
+        type = TP.sys.getTypeByName(typeName);
+        if (TP.isType(type) && !type.isAbstract()) {
+            return type;
+        }
+    } else {
+        return TP.html.objectConcrete;
     }
 
     return this;
 });
+
+//  ========================================================================
+//  TP.html.objectConcrete
+//  ========================================================================
+
+TP.html.object.defineSubtype('objectConcrete');
 
 //  ========================================================================
 //  TP.html.param
