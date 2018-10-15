@@ -4001,7 +4001,8 @@ function(aURI, aRequest, shouldCopy) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
      * @param {Boolean} [shouldCopy=false] Whether or not to make a copy of the
-     *     result before using it as the receiver's resource.
+     *     result before using it as the receiver's resource. Note that this
+     *     will cause a *deep copy* of the receiver's resource to be made.
      * @returns {TP.sig.Response} A TP.sig.Response created with the newly set
      *     content set as its result.
      */
@@ -4013,7 +4014,7 @@ function(aURI, aRequest, shouldCopy) {
     if (TP.isValid(result)) {
 
         if (TP.isTrue(shouldCopy)) {
-            newResult = TP.copy(result);
+            newResult = TP.copy(result, true);
         } else {
             newResult = result;
         }
