@@ -5255,21 +5255,23 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('copy',
-function(aFilterNameOrKeys, contentOnly) {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
-     * @summary Returns a shallow copy of the receiver. Adequate for dealing
-     *     with reference type attribute problems. If contentOnly is true then a
+     * @summary Returns a copy of the receiver. If contentOnly is true then a
      *     TP.core.Hash is returned contains only the content values (key, val,
      *     key, val ...), and no 'special values' on the receiver are copied.
-     * @param {String|Array} aFilterNameOrKeys A get*Interface() filter or key
-     *     array.
-     * @param {Boolean} contentOnly Copy content only? Default is true.
-     * @returns {TP.core.Hash} A shallow copy of the receiver.
+     *     The filter defines which keys are used to select from the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} [aFilterNameOrKeys] get*Interface() filter or
+     *     key array.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     ignored for this type.
+     * @returns {TP.core.Hash} A copy of the receiver.
      */
 
-    var content,
+    var onlyContent,
 
         newinst,
 
@@ -5278,13 +5280,14 @@ function(aFilterNameOrKeys, contentOnly) {
 
         len,
         i,
-        ndx;
+        ndx,
+        val;
 
-    content = TP.ifInvalid(contentOnly, true);
+    onlyContent = TP.ifInvalid(contentOnly, true);
 
     newinst = this.getType().construct();
 
-    if (!content) {
+    if (!onlyContent) {
         //  Any reasonable filter should not include '$$hash' or '$$keys'.
         filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
 
@@ -5301,7 +5304,14 @@ function(aFilterNameOrKeys, contentOnly) {
 
         for (i = 0; i < len; i++) {
             ndx = keys.at(i);
-            newinst.$set(ndx, this.at(ndx), false);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.$set(ndx, val, false);
         }
     } else {
         if (!TP.isArray(keys = aFilterNameOrKeys)) {
@@ -5312,7 +5322,14 @@ function(aFilterNameOrKeys, contentOnly) {
 
         for (i = 0; i < len; i++) {
             ndx = keys.at(i);
-            newinst.atPut(ndx, this.at(ndx), false);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.atPut(ndx, val, false);
         }
     }
 

@@ -2271,19 +2271,23 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('objectCopy',
-function(anObject, shallow) {
+function(anObject, deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method objectCopy
      * @alias copy
      * @summary Returns a copy of the object provided. When the object is a
-     *     Node the copy is deep unless overridden by the shallow flag. When the
+     *     Node the copy is deep unless overridden by the deep flag. When the
      *     object is a standard JS object the clone is shallow. NOTE that window
      *     objects cannot be copied, nor can various ActiveX elements so not all
      *     objects will return a valid value in response to this call.
      * @param {Object} anObject The object to interrogate.
-     * @param {Boolean} shallow True to force node clones to be shallow, or
-     *     reference elements to be shallow copies.
+     * @param {Boolean} [deep=false] True to force node clones to be deep, or
+     *     reference elements to be deep copies.
+     * @param {String|String[]} [aFilterNameOrKeys] get*Interface() filter or
+     *     key array.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     not used for all types.
      * @returns {Node|Object} A Node or Object depending on the nature of the
      *     inbound object.
      */
@@ -2297,9 +2301,9 @@ function(anObject, shallow) {
     if (TP.notValid(anObject) || TP.isWindow(anObject)) {
         return;
     } else if (TP.isNode(anObject)) {
-        return TP.nodeCloneNode(anObject, TP.isTrue(shallow) ? false : true);
+        return TP.nodeCloneNode(anObject, TP.notFalse(deep) ? true : false);
     } else if (TP.canInvoke(anObject, 'copy')) {
-        return anObject.copy(shallow);
+        return anObject.copy(deep, aFilterNameOrKeys, contentOnly);
     } else if (TP.isEvent(anObject)) {
         if (TP.isDocument(eventDocument =
                             TP.eventGetTarget(anObject).document)) {
@@ -2314,8 +2318,11 @@ function(anObject, shallow) {
                     var val;
 
                     val = anObject[aKey];
-                    if (!shallow && TP.isReferenceType(val)) {
-                        newObj[aKey] = TP.objectCopy(val);
+                    if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                        //  NB: We do *not* pass along the filter name or keys
+                        //  here
+                        newObj[aKey] = TP.objectCopy(
+                                            val, deep, null, contentOnly);
                     } else {
                         newObj[aKey] = val;
                     }

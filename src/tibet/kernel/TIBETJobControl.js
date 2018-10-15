@@ -1493,7 +1493,7 @@ function(allParams) {
     var ctrlParams,
         stepParams;
 
-    ctrlParams = allParams.copy(TP.core.Job.CONTROL_PARAM_KEYS);
+    ctrlParams = allParams.copy(false, TP.core.Job.CONTROL_PARAM_KEYS);
     stepParams = allParams.copy().removeKeys(
                                         TP.core.Job.CONTROL_PARAM_KEYS);
 

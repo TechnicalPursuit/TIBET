@@ -2216,11 +2216,317 @@ function() {
     /* eslint-enable no-loop-func */
 });
 
-//  TP.copy()
-//  TP.keys()
-//  TP.loc()
-//  TP.parse()
-//  TP.size()
+//  ------------------------------------------------------------------------
+
+TP.copy.describe('core tests',
+function() {
+
+    this.it('shallow/deep - non mutable values - primitives', function(test, options) {
+
+        var val,
+            copyVal;
+
+        //  For non-mutable values, shallow copying and deep copying are the
+        //  same.
+
+        //  The second parameter to the TP.copy() call forces whether or not
+        //  we're making a *shallow* copy or not.
+
+        val = 'hi';
+        copyVal = TP.copy(val);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, false);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, true);
+        test.assert.isIdenticalTo(val, copyVal);
+
+        val = 42;
+        copyVal = TP.copy(val);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, false);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, true);
+        test.assert.isIdenticalTo(val, copyVal);
+
+        val = true;
+        copyVal = TP.copy(val);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, false);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, true);
+        test.assert.isIdenticalTo(val, copyVal);
+    });
+
+    this.it('shallow/deep - non mutable values - boxed', function(test, options) {
+
+        var val,
+            copyVal;
+
+        //  For non-mutable values, shallow copying and deep copying are the
+        //  same.
+
+        //  The second parameter to the TP.copy() call forces whether or not
+        //  we're making a *shallow* copy or not.
+
+        val = new String('hi');
+        copyVal = TP.copy(val);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, false);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, true);
+        test.assert.isIdenticalTo(val, copyVal);
+
+        val = new Number(42);
+        copyVal = TP.copy(val);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, false);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, true);
+        test.assert.isIdenticalTo(val, copyVal);
+
+        val = new Boolean(true);
+        copyVal = TP.copy(val);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, false);
+        test.assert.isIdenticalTo(val, copyVal);
+        copyVal = TP.copy(val, true);
+        test.assert.isIdenticalTo(val, copyVal);
+    });
+
+    this.it('shallow - mutable reference values - shorthand', function(test, options) {
+
+        var val,
+            copyVal;
+
+        //  For mutable reference values, shallow copying means that the
+        //  reference itself will be different, but nested references will be
+        //  the same.
+
+        //  First, copy a Function without copying anything other than content.
+        /* eslint-disable brace-style, max-statements-per-line */
+        val = function() {alert('hi');};
+        /* eslint-enable brace-style, max-statements-per-line */
+        val.testProp = {};
+        copyVal = TP.copy(val);
+        test.assert.isFunction(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.refute.hasKey(copyVal, 'testProp');
+
+        //  Then, copy a Function and copy additional properties.
+        /* eslint-disable brace-style, max-statements-per-line */
+        val = function() {alert('hi');};
+        /* eslint-enable brace-style, max-statements-per-line */
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isFunction(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        //  First, copy a RegExp without copying anything other than content.
+        val = /foo/;
+        val.testProp = {};
+        copyVal = TP.copy(val);
+        test.assert.isRegExp(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.refute.hasKey(copyVal, 'testProp');
+
+        //  Then, copy a RegExp and copy additional properties.
+        val = /foo/;
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isRegExp(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        //  POJOs will always copy 'additional' properties - since that's all
+        //  they have.
+        val = {};
+        val.testProp = {};
+        copyVal = TP.copy(val, false);
+        test.assert.isPlainObject(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        //  First, copy an Array without copying anything other than content.
+        val = [];
+        val.testProp = {};
+        copyVal = TP.copy(val);
+        test.assert.isArray(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.refute.hasKey(copyVal, 'testProp');
+
+        //  Then, copy an Array and copy additional properties.
+        val = [];
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isArray(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+    });
+
+    this.it('shallow - mutable reference values - boxed', function(test, options) {
+
+        var val,
+            copyVal;
+
+        //  For mutable reference values, shallow copying means that the
+        //  reference itself will be different, but nested references will be
+        //  the same.
+
+        val = new Date();
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isDate(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new Function('a', 'b', 'return a + b');
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isFunction(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new RegExp('\\w+');
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isRegExp(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new Object();
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isPlainObject(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new Array();
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isArray(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = TP.lang.Object.construct();
+        val.testProp = {};
+        copyVal = TP.copy(val, false, null, false);
+        test.assert.isKindOf(copyVal, TP.lang.Object);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.isIdenticalTo(val.testProp, copyVal.testProp);
+    });
+
+    this.it('deep - mutable reference values - shorthand', function(test, options) {
+
+        var val,
+            copyVal;
+
+        //  For mutable reference values, shallow copying means that the
+        //  reference itself will be different, but nested references will be
+        //  the same.
+
+        //  Copy a Function and copy additional properties deeply.
+        /* eslint-disable brace-style, max-statements-per-line */
+        val = function() {alert('hi');};
+        /* eslint-enable brace-style, max-statements-per-line */
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isFunction(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        //  Copy a RegExp and copy additional properties deeply.
+        val = /foo/;
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isRegExp(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        //  POJOs will always copy 'additional' properties - since that's all
+        //  they have.
+        val = {};
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isPlainObject(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        //  Then, copy an Array and copy additional properties deeply.
+        val = [];
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isArray(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+    });
+
+    this.it('deep - mutable reference values - boxed', function(test, options) {
+
+        var val,
+            copyVal;
+
+        //  For mutable reference values, shallow copying means that the
+        //  reference itself will be different, but nested references will be
+        //  the same.
+
+        val = new Date();
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isDate(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new Function('a', 'b', 'return a + b');
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isFunction(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new RegExp('\\w+');
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isRegExp(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new Object();
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isPlainObject(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = new Array();
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isArray(copyVal);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+
+        val = TP.lang.Object.construct();
+        val.testProp = {};
+        copyVal = TP.copy(val, true, null, false);
+        test.assert.isKindOf(copyVal, TP.lang.Object);
+        test.refute.isIdenticalTo(val, copyVal);
+        test.assert.hasKey(copyVal, 'testProp');
+        test.refute.isIdenticalTo(val.testProp, copyVal.testProp);
+    });
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2258,10 +2564,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-//  TP.identical()
-
 //  TP.format()
-//  TP.validate()
+//  TP.identical()
 
 //  ------------------------------------------------------------------------
 
@@ -2273,7 +2577,6 @@ function() {
         test.assert.isFalse(TP.isMutable('hi'));
         test.assert.isFalse(TP.isMutable(42));
         test.assert.isFalse(TP.isMutable(true));
-
     });
 
     this.it('non mutable values - boxed', function(test, options) {
@@ -2281,7 +2584,6 @@ function() {
         test.assert.isFalse(TP.isMutable(new String()));
         test.assert.isFalse(TP.isMutable(new Number()));
         test.assert.isFalse(TP.isMutable(new Boolean()));
-
     });
 
     this.it('mutable reference values - shorthand', function(test, options) {
@@ -2293,7 +2595,6 @@ function() {
 
         test.assert.isTrue(TP.isMutable({}));
         test.assert.isTrue(TP.isMutable([]));
-
     });
 
     this.it('mutable reference values - boxed', function(test, options) {
@@ -2308,7 +2609,6 @@ function() {
         test.assert.isTrue(TP.isMutable(new Array()));
 
         test.assert.isTrue(TP.isMutable(TP.lang.Object.construct()));
-
     });
 });
 
@@ -2322,7 +2622,6 @@ function() {
         test.assert.isFalse(TP.isReferenceType(42));
         test.assert.isFalse(TP.isReferenceType(true));
         test.assert.isFalse(TP.isReferenceType('hi'));
-
     });
 
     this.it('non mutable values - boxed', function(test, options) {
@@ -2330,7 +2629,6 @@ function() {
         test.assert.isFalse(TP.isReferenceType(new String()));
         test.assert.isFalse(TP.isReferenceType(new Number()));
         test.assert.isFalse(TP.isReferenceType(new Boolean()));
-
     });
 
     this.it('mutable reference values - shorthand', function(test, options) {
@@ -2342,7 +2640,6 @@ function() {
 
         test.assert.isTrue(TP.isReferenceType({}));
         test.assert.isTrue(TP.isReferenceType([]));
-
     });
 
     this.it('mutable reference values - boxed', function(test, options) {
@@ -2357,11 +2654,18 @@ function() {
         test.assert.isTrue(TP.isReferenceType(new Array()));
 
         test.assert.isTrue(TP.isReferenceType(TP.lang.Object.construct()));
-
     });
 });
 
+//  ------------------------------------------------------------------------
+
 //  TP.isSubtypeOf()
+//  TP.keys()
+//  TP.loc()
+//  TP.parse()
+//  TP.size()
+
+//  TP.validate()
 
 //  ------------------------------------------------------------------------
 

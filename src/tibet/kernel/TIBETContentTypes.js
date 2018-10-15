@@ -449,19 +449,23 @@ function(anAspect, anAction, aDescription) {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
      * @returns {TP.core.Content} A copy of the receiver.
      */
 
     var dataCopy,
         newinst;
 
-    dataCopy = TP.copy(this.get('data'));
+    dataCopy = TP.copy(this.get('data'), deep, aFilterNameOrKeys, contentOnly);
 
     newinst = this.getType().construct(dataCopy, this.get('sourceURI'));
 

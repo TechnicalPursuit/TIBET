@@ -7658,16 +7658,18 @@ function(callingContext) {
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('copy',
-function(aFilterNameOrKeys) {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
-     * @summary Returns a shallow copy of the receiver. Adequate for dealing
-     *     with reference type attribute problems. The filter defines which keys
+     * @summary Returns a copy of the receiver. The filter defines which keys
      *     are used to select from the receiver.
-     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
-     *     array.
-     * @returns {Object} A shallow copy of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} [aFilterNameOrKeys] get*Interface() filter or
+     *     key array.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     ignored for this type.
+     * @returns {Object} A copy of the receiver.
      */
 
     var i,
@@ -7676,7 +7678,8 @@ function(aFilterNameOrKeys) {
         filter,
 
         len,
-        ndx;
+        ndx,
+        val;
 
     newinst = this.getType().construct();
 
@@ -7688,7 +7691,14 @@ function(aFilterNameOrKeys) {
     len = keys.getSize();
     for (i = 0; i < len; i++) {
         ndx = keys.at(i);
-        newinst.$set(ndx, this.at(ndx), false, true);
+        val = this.at(ndx);
+
+        if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+            //  NB: We do *not* pass along the filter name or keys here
+            val = TP.copy(val, deep, null, contentOnly);
+        }
+
+        newinst.$set(ndx, val, false, true);
     }
 
     return newinst;
@@ -7697,21 +7707,21 @@ function(aFilterNameOrKeys) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('copy',
-function(aFilterNameOrKeys, contentOnly) {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
-     * @summary Returns a shallow copy of the receiver. Adequate for dealing
-     *     with reference type attribute problems. If contentOnly is true then
-     *     an Array is returned contains only the content values [0, 1, ...N],
-     *     and no 'special values' on the receiver are copied.
+     * @summary Returns a copy of the receiver. If contentOnly is true then an
+     *     Array is returned contains only the content values [0, 1, ...N], and
+     *     no 'special values' on the receiver are copied.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
      * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
      *     array.
-     * @param {Boolean} contentOnly Copy content only? Default is true.
-     * @returns {Object[]} A shallow copy of the receiver.
+     * @param {Boolean} [contentOnly=true] Copy content only?
+     * @returns {Object[]} A copy of the receiver.
      */
 
-    var content,
+    var onlyContent,
 
         newinst,
 
@@ -7720,10 +7730,11 @@ function(aFilterNameOrKeys, contentOnly) {
 
         len,
         i,
-        ndx;
+        ndx,
+        val;
 
-    content = TP.ifInvalid(contentOnly, true);
-    if (content && TP.notValid(aFilterNameOrKeys)) {
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
         //  content only, we can optimize with a native call
         return this.slice(0, this.length);
     } else {
@@ -7745,7 +7756,14 @@ function(aFilterNameOrKeys, contentOnly) {
 
         for (i = 0; i < len; i++) {
             ndx = keys.at(i);
-            newinst.$set(ndx, this.at(ndx), false);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.$set(ndx, val, false, true);
         }
     }
 
@@ -7755,12 +7773,18 @@ function(aFilterNameOrKeys, contentOnly) {
 //  ------------------------------------------------------------------------
 
 Boolean.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep. This
+     *     parameter is ignored for this type.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array. This parameter is ignored for this type.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     ignored for this type.
      * @returns {Boolean} A copy of the receiver.
      */
 
@@ -7770,22 +7794,71 @@ function() {
 //  ------------------------------------------------------------------------
 
 Date.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
      * @returns {Date} A copy of the receiver.
      */
 
-    return TP.dc(this.getTime());
+    var newinst,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
+
+    newinst = TP.dc(this.getTime());
+
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        //  content only
+        return newinst;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = this.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return newinst;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.$set(ndx, val, false, true);
+        }
+    }
+
+    return newinst;
 });
 
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
@@ -7794,13 +7867,27 @@ function() {
      *     the original is instrumented to know how many copies have been made
      *     and the new copy has the name of the original with an _n appended
      *     where n is the copy number.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
      * @returns {Function} A copy of the receiver.
      */
 
     var count,
         source,
         $$funcCopy,
-        realFunc;
+        realFunc,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
 
     //  NB: We don't use TP.getRealFunction() here, since we're not interested
     //  in any trait '$resolutionMethod' slots.
@@ -7823,18 +7910,54 @@ function() {
     /* eslint-enable no-eval */
     $$funcCopy.$realFunc = realFunc;
 
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        return $$funcCopy;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = realFunc.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return $$funcCopy;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = realFunc.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            $$funcCopy.$set(ndx, val, false, true);
+        }
+    }
+
     return $$funcCopy;
 });
 
 //  ------------------------------------------------------------------------
 
 Number.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep. This
+     *     parameter is ignored for this type.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array. This parameter is ignored for this type.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     ignored for this type.
      * @returns {Number} A copy of the receiver.
      */
 
@@ -7844,27 +7967,82 @@ function() {
 //  ------------------------------------------------------------------------
 
 RegExp.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
      * @returns {RegExp} A copy of the receiver.
      */
 
-    return TP.rc(this.toString());
+    var newinst,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
+
+    newinst = TP.rc(this.toString());
+
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        //  content only
+        return newinst;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = this.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return newinst;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.$set(ndx, val, false, true);
+        }
+    }
+
+    return newinst;
 });
 
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep. This
+     *     parameter is ignored for this type.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array. This parameter is ignored for this type.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     ignored for this type.
      * @returns {String} A copy of the receiver.
      */
 

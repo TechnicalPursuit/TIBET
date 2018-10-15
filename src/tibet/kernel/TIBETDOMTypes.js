@@ -1637,23 +1637,73 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.Node.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} [aFilterNameOrKeys] get*Interface() filter or
+     *     key array.
+     * @param {Boolean} [contentOnly=true] Copy content only? This parameter is
+     *     ignored for this type.
      * @returns {TP.dom.Node} A copy of the receiver.
      */
 
     var natNode,
-        newNatNode;
+        newNatNode,
+
+        newinst,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
 
     natNode = this.getNativeNode();
 
-    newNatNode = TP.copy(natNode);
+    newNatNode = TP.nodeCloneNode(natNode, deep);
 
-    return this.getType().fromNode(newNatNode);
+    newinst = this.getType().fromNode(newNatNode);
+
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        //  content only
+        return newinst;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = this.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return newinst;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = this.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            newinst.$set(ndx, val, false, true);
+        }
+    }
+
+    return newinst;
 });
 
 //  ------------------------------------------------------------------------

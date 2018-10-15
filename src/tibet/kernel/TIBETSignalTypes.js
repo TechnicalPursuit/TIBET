@@ -2095,13 +2095,17 @@ function(aPayload, noEvent) {
 //  ------------------------------------------------------------------------
 
 TP.sig.DOMUISignal.Inst.defineMethod('copy',
-function() {
+function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**
      * @method copy
      * @summary Returns a 'copy' of the receiver. Actually, a new instance
      *     whose value is equalTo that of the receiver.
-     * @returns {TP.sig.DOMUISignal} A shallow copy of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
+     * @returns {TP.sig.DOMUISignal} A copy of the receiver.
      */
 
     var newinst;
