@@ -941,7 +941,7 @@
             //  to be written with double square brackets ('[[...]]')
             //  and we need to replace them with double curly brackets
             //  ('{{...}}') before sending them to the task runners.
-            output = result.replace(/\[\[(.+?)\]\]/g, '{{$1}}');
+            output = result.replace(/\[\[([^[]+?)\]\]/g, '{{$1}}');
 
             try {
                 params = JSON.parse(output);
