@@ -84,7 +84,43 @@
 
         /**
          */
-        Job.getLastCompleteStep = function(job) {
+        Job.hasWaitStepsPending = function(job) {
+            var steps,
+                len,
+                i,
+                step,
+                j;
+
+            steps = job.steps;
+            if (!steps) {
+                return false;
+            }
+
+            len = steps.length;
+
+            //  Find the last completed step by stepping backwards through the
+            //  list of steps.
+            for (i = len - 1; i >= 0; i--) {
+                step = steps[i];
+                if (Job.isComplete(step)) {
+                    //  Now, see if there is a step *after* the last completed
+                    //  step that has a 'wait' flag configured. If so, return
+                    //  true.
+                    for (j = i + 1; j < len; j++) {
+                        step = steps[j];
+                        if (step.wait) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        /**
+         */
+        Job.getLastCompletedStep = function(job) {
             var steps,
                 len,
                 i,
