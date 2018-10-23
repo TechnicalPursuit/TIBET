@@ -4135,15 +4135,15 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                         finalVal = TP.collapse(finalVal);
                     }
                 }
-
-                if (aspect === 'value') {
-                    this.setValue(finalVal);
-                } else {
-                    this.setFacet(aspect, facet, finalVal);
-                }
-
-                refreshedElements.push(this.getNativeNode());
             }
+
+            if (aspect === 'value') {
+                this.setValue(finalVal);
+            } else {
+                this.setFacet(aspect, facet, finalVal);
+            }
+
+            refreshedElements.push(this.getNativeNode());
         }
     }
 
