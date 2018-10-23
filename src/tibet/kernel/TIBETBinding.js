@@ -4888,6 +4888,13 @@ function(shouldRender) {
         return this.refreshBoundDescendants(shouldRender);
     } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
+        //  If the repeat page position isn't already set to a Number, then
+        //  initialize it to 1.
+        if (!TP.isNumber(
+                this.getAttribute('bind:repeatpageposition').asNumber())) {
+            this.$setAttribute('bind:repeatpageposition', 1, false);
+        }
+
         //  Refresh the repeating data under us, passing true to regenerate any
         //  new repeat chunks that may be required.
         this.$refreshRepeatData(true);
