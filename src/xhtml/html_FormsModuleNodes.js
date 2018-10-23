@@ -3236,6 +3236,8 @@ function(aValue, shouldSignal) {
     var oldValue,
         newValue,
 
+        displayValue,
+
         flag;
 
     oldValue = this.getValue();
