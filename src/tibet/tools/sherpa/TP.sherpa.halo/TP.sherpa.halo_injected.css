@@ -2,7 +2,8 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-.sherpa-halo .sherpa-halo-haloed {
+.sherpa-halo .sherpa-halo-haloed,
+.sherpa-halo *[class~="sherpa-halo-haloed"] {
 
     color: red !important;
 }
