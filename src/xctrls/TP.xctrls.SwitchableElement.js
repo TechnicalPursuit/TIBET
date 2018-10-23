@@ -205,6 +205,9 @@ function(aValue, shouldSignal) {
             this.$changed('value', TP.UPDATE,
                             TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
         }
+
+        //  If the element is bound, then update its bound value.
+        this.setBoundValueIfBound(displayValue);
     }
 
     return this;
