@@ -14557,12 +14557,11 @@ function(aValue, shouldSignal) {
 
     //  If the value isn't valid, just return.
     if (TP.notValid(aValue)) {
-        return this;
+        newValueStr = '';
+    } else {
+        newValue = this.produceValue('value', aValue);
+        newValueStr = TP.str(newValue);
     }
-
-    newValue = this.produceValue('value', aValue);
-
-    newValueStr = TP.str(newValue);
 
     //  If the String value of newValue doesn't have Element markup in it, then
     //  we can just use 'setTextContent'. Otherwise, we have to use the full
