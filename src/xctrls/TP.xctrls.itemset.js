@@ -723,6 +723,10 @@ function(aDataObject, shouldSignal) {
 
         staticKeys;
 
+    if (TP.notValid(aDataObject)) {
+        return this;
+    }
+
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
