@@ -34,7 +34,7 @@ sherpa|snippetMenuContent > .content {
 
     background-color: #fff;
 
-    overflow: hidden;
+    overflow: auto;
 }
 
 sherpa|snippetMenuContent > .content > ul {
@@ -46,8 +46,6 @@ sherpa|snippetMenuContent > .content > ul {
     padding: 0;
 
     line-height: 29px;
-
-    overflow: auto;
 }
 
 sherpa|snippetMenuContent > .content > ul > li {

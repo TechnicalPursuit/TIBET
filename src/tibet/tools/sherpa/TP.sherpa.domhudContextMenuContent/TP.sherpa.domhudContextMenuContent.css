@@ -16,7 +16,7 @@ sherpa|domhudContextMenuContent {
 
     min-width: auto;
 
-    overflow: hidden;
+    overflow: auto;
 }
 
 sherpa|domhudContextMenuContent > ul {

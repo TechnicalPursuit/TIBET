@@ -16,7 +16,7 @@ sherpa|bindshudContextMenuContent {
 
     min-width: auto;
 
-    overflow: hidden;
+    overflow: auto;
 }
 
 sherpa|bindshudContextMenuContent > ul {

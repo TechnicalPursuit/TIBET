@@ -34,7 +34,7 @@ sherpa|bookmarkMenuContent > .content {
 
     background-color: #fff;
 
-    overflow: hidden;
+    overflow: auto;
 }
 
 sherpa|bookmarkMenuContent > .content > ul {
@@ -46,8 +46,6 @@ sherpa|bookmarkMenuContent > .content > ul {
     padding: 0;
 
     line-height: 29px;
-
-    overflow: auto;
 }
 
 sherpa|bookmarkMenuContent > .content > ul > li {

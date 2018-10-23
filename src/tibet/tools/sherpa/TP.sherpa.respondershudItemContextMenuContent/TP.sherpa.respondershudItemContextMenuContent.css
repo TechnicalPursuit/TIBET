@@ -16,7 +16,7 @@ sherpa|respondershudItemContextMenuContent {
 
     min-width: auto;
 
-    overflow: hidden;
+    overflow: auto;
 }
 
 sherpa|respondershudItemContextMenuContent > ul {
