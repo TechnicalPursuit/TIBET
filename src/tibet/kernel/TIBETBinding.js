@@ -3365,6 +3365,10 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     continue;
                 }
 
+                if (attrVal === '[NaN]') {
+                    theVal = null;
+                }
+
                 //  If the attribute value is a whole URI, then just grab the
                 //  result of the URI and use that as the branch value to
                 //  process 'the next level down' in the branching.
