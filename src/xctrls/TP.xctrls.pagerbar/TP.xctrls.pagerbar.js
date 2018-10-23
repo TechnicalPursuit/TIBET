@@ -213,6 +213,10 @@ function(aValue, shouldSignal) {
 
     var val;
 
+    if (TP.notValid(aValue)) {
+        return this;
+    }
+
     //  Because this is expecting a 1-based value, but we're driven by a 0-based
     //  data set, we need to subtract 1.
     val = aValue.asNumber();

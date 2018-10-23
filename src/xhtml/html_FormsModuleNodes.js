@@ -1223,8 +1223,10 @@ function(aValue, shouldSignal) {
     displayValue = this.getDisplayValue();
 
     //  Sometimes the display value computed from the new value can be equal to
-    //  the old value. If that's *not* the case, then propagate and set the
-    //  bound value.
+    //  the old value. If that's *not* the case, then propagate the change
+    //  signal. Note that we do *not* need to set the bound value since that's
+    //  already done for these native controls in the 'onchange' *method* that's
+    //  defined on the individual concrete types.
     if (!TP.equal(oldValue, displayValue)) {
         //  NB: Use this construct this way for better performance
         if (TP.notValid(flag = shouldSignal)) {
@@ -3249,14 +3251,23 @@ function(aValue, shouldSignal) {
 
     //  signal as needed
 
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
+    displayValue = this.getDisplayValue();
 
-    if (flag) {
-        this.$changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+    //  Sometimes the display value computed from the new value can be equal to
+    //  the old value. If that's *not* the case, then propagate the change
+    //  signal. Note that we do *not* need to set the bound value since that's
+    //  already done for these native controls in the 'onchange' *method* that's
+    //  defined on this type.
+    if (!TP.equal(oldValue, displayValue)) {
+        //  NB: Use this construct this way for better performance
+        if (TP.notValid(flag = shouldSignal)) {
+            flag = this.shouldSignalChange();
+        }
+
+        if (flag) {
+            this.$changed('value', TP.UPDATE,
+                            TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+        }
     }
 
     return this;
