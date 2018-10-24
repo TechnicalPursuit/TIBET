@@ -5539,35 +5539,6 @@ function(aSeparator) {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URL.Inst.defineMethod('getHost',
-function() {
-
-    /**
-     * @method getHost
-     * @summary Returns the host portion of the receiver.
-     * @description The value returned from this method will vary between
-     *     subtypes. For 'file' urls it will be the empty String while for
-     *     'http' urls it is the portion containing the host:port before the
-     *     'path' portion.
-     * @returns {String} A scheme-specific host string.
-     */
-
-    var path,
-        loc,
-        host;
-
-    if (TP.notEmpty(path = this.getPath())) {
-        loc = this.getLocation();
-        host = loc.slice(0, -path.getSize());
-    } else {
-        host = '';
-    }
-
-    return host;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.uri.URL.Inst.defineMethod('getMIMEType',
 function(newResource) {
 

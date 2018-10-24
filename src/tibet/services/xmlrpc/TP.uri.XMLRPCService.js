@@ -106,7 +106,7 @@ function(aRequest) {
 
     var headers,
         url,
-        host,
+        hostname,
         port;
 
     headers = this.callNextMethod();
@@ -125,10 +125,10 @@ function(aRequest) {
         port = url.get('port');
         port = port === 80 ? '' : ':' + port;
 
-        host = url.get('host');
-        host = host === 'localhost' ? '127.0.0.1' : host;
+        hostname = url.get('hostname');
+        hostname = hostname === 'localhost' ? '127.0.0.1' : hostname;
 
-        headers.atPut('Host', host + port);
+        headers.atPut('Host', hostname + port);
     }
 
     return headers;

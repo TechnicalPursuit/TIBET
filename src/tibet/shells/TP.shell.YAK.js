@@ -303,19 +303,19 @@ function(aRequest) {
                 function(response, request) {
 
                     var res,
-                        host;
+                        hostname;
 
                     //  note we want to use the response to the first
                     //  question to generate part of our value here
                     res = request.getLastReply();
 
                     try {
-                        host = TP.uc(res).get('host');
+                        hostname = TP.uc(res).get('hostname');
                     } catch (e) {
-                        host = '';
+                        hostname = '';
                     }
 
-                    return host;
+                    return hostname;
                 },
                 'validator',
                 function(response, request) {
@@ -634,19 +634,19 @@ function(aRequest) {
                     function(response, request) {
 
                         var res,
-                            host;
+                            hostname;
 
                         //  note we want to use the response to the first
                         //  question to generate part of our value here
                         res = request.getLastReply();
 
                         try {
-                            host = TP.uc(res).get('host');
+                            hostname = TP.uc(res).get('hostname');
                         } catch (e) {
-                            host = '';
+                            hostname = '';
                         }
 
-                        return host;
+                        return hostname;
                     },
                     'retryPrompt', 'Invalid server name.' +
                                     ' Please re-enter...',
