@@ -193,12 +193,15 @@ function() {
             TP.core.User.getRealUser();
         }
 
-        //  Set up common URIs for the user object and the raw user vCard
-        //  data.
+        //  Set up common URIs for the user object, the raw user vCard data and
+        //  the host data.
         TP.uc('urn:tibet:user').setResource(
                                     TP.sys.getEffectiveUser());
         TP.uc('urn:tibet:userinfo').setResource(
                                     TP.sys.getEffectiveUser().get('vcard'));
+        TP.uc('urn:tibet:hosturi').setResource(
+                                    TP.uc('~').getConcreteURI());
+
     }).queueForNextRepaint(rootWindow);
 
     (function() {
