@@ -4361,7 +4361,7 @@ function(aString) {
                         'scheme',
                         'authority',
                             'userInfo', 'user', 'password',
-                            'host', 'port',
+                            'hostname', 'port',
                         'relative',
                             'path',
                                 'directory',

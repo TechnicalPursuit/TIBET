@@ -7261,7 +7261,7 @@ TP.uri.HTTPURL.Inst.defineAttribute('location');
 //  TP.uri.URI / TP.uri.URL
 TP.uri.HTTPURL.Inst.defineAttribute('user');
 TP.uri.HTTPURL.Inst.defineAttribute('password');
-TP.uri.HTTPURL.Inst.defineAttribute('host');
+TP.uri.HTTPURL.Inst.defineAttribute('hostname');
 TP.uri.HTTPURL.Inst.defineAttribute('port');
 TP.uri.HTTPURL.Inst.defineAttribute('query');
 TP.uri.HTTPURL.Inst.defineAttribute('queryDict');
@@ -7291,7 +7291,7 @@ function(parts) {
     this.set('user', parts.at('user'), false);
     this.set('password', parts.at('password'), false);
 
-    this.set('host', parts.at('host'), false);
+    this.set('hostname', parts.at('hostname'), false);
     this.set('port', parts.at('port'), false);
 
     this.set('path', parts.at('path'), false);
@@ -8031,7 +8031,7 @@ TP.uri.WSURL.Inst.defineAttribute('webSocketObj');
 
 //  note that there are 'scheme', 'path' and 'fragment' ivars on
 //  TP.uri.URI / TP.uri.URL
-TP.uri.WSURL.Inst.defineAttribute('host');
+TP.uri.WSURL.Inst.defineAttribute('hostname');
 TP.uri.WSURL.Inst.defineAttribute('port');
 
 //  ------------------------------------------------------------------------
@@ -8056,7 +8056,7 @@ function(parts) {
     //  mechanism will cause errors trying to get observations set up before
     //  everything is in place.
 
-    this.set('host', parts.at('host'), false);
+    this.set('hostname', parts.at('hostname'), false);
     this.set('port', parts.at('port'), false);
 
     return this;
