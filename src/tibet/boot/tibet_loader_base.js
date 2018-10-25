@@ -11715,7 +11715,7 @@ TP.boot.$uiRootReady = function() {
                                 indexOf('developer') !== -1;
 
             if (TP.sys.cfg('boot.parallel') && loadingDev) {
-                TP.boot.getUIBoot().contentDocument.body.style.opacity = .5;
+                TP.boot.getUIBoot().contentDocument.body.style.opacity = 0.5;
                 TP.boot.getUIBoot().contentWindow.blur();
             }
 
@@ -11729,6 +11729,7 @@ TP.boot.$uiRootReady = function() {
             bootWin = TP.sys.getWindowById(TP.sys.cfg('boot.uiboot'));
             fields = bootWin.document.getElementsByTagName('input');
 
+            /* eslint-disable no-loop-func */
             for (i = 0; i < fields.length; i++) {
                 fields[i].addEventListener(
                     'focus',
@@ -11741,6 +11742,7 @@ TP.boot.$uiRootReady = function() {
                     },
                     true);
             }
+            /* eslint-enable no-loop-func */
 
             //  If login is true then the server will be in control of the pages
             //  we receive. There are two models: single-phase and two-phase.
