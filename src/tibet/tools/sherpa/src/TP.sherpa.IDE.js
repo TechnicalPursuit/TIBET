@@ -2363,6 +2363,9 @@ function() {
 
         contentElem,
 
+        loadingImageLoc,
+        loadingImageReq,
+
         allDrawers,
 
         centerElem,
@@ -2477,12 +2480,30 @@ function() {
         //  'loading' element. The HUD will use it later for a 'tools layer'.
         contentElem = TP.byId('content', win, false);
 
-        //  Show the content element, only so that we can size its 'busy'
-        //  message layer properly.
-        TP.elementShow(contentElem);
-        TP.elementShowBusyMessage(contentElem,
-                                    '...initializing TIBET Sherpa...');
-        TP.elementHide(contentElem);
+        loadingImageLoc = TP.uc('~lib_media/tibet_logo.svg').getLocation();
+
+        loadingImageReq = TP.request('uri', loadingImageLoc, 'async', false);
+        loadingImageReq.defineHandler('IOCompleted',
+            function(aSignal) {
+                var loadingSVGElem;
+
+                loadingSVGElem = aSignal.getResult().documentElement;
+
+                (function() {
+
+                    //  Show the content element, only so that we can size its
+                    //  'busy' message layer properly.
+                    TP.elementShow(contentElem);
+                    TP.elementShowBusyMessage(
+                                contentElem,
+                                null,
+                                loadingSVGElem);
+                    TP.elementHide(contentElem);
+
+                }).queueForNextRepaint(TP.nodeGetWindow(contentElem));
+            });
+
+        TP.httpGet(loadingImageLoc, loadingImageReq);
 
         //  Grab all of the drawer - north, south, east and west
         allDrawers = TP.byCSSPath('.north, .south, .east, .west',
