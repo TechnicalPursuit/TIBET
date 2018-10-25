@@ -9367,6 +9367,8 @@ TP.boot.$$importComplete = function() {
     var stage,
         win,
 
+        loadingDev,
+
         focusedElems,
         focusedElem;
 
@@ -9433,6 +9435,22 @@ TP.boot.$$importComplete = function() {
                     //  singleton to be created from.
 
                     if (TP.sys.cfg('boot.use_login')) {
+
+                        //  Compute whether we're booting the developer target
+                        //  or not.
+                        //  NB: Like other logic in the boot system, we respect
+                        //  the setting of 'boot.profile' first before
+                        //  considering 'boot.package'.
+                        loadingDev =
+                            TP.sys.cfg('boot.profile').
+                                    indexOf('developer') !== -1 ||
+                            TP.sys.cfg('boot.package').
+                                    indexOf('developer') !== -1;
+
+                        if (TP.sys.cfg('boot.parallel') && loadingDev) {
+                            TP.boot.getUIBoot().
+                                    contentDocument.body.style.opacity = '';
+                        }
 
                         //  First, see if we had a focused element while the
                         //  system was loading. We do this by querying for all
@@ -11658,6 +11676,9 @@ TP.boot.$uiRootReady = function() {
 
     var uiRootID,
         win,
+
+        loadingDev,
+
         login,
 
         bootWin,
@@ -11685,6 +11706,19 @@ TP.boot.$uiRootReady = function() {
             win.$$phase_two = true;
             TP.boot.boot();
         } else {
+
+            //  Compute whether we're booting the developer target or not.
+            //  NB: Like other logic in the boot system, we respect the setting
+            //  of 'boot.profile' first before considering 'boot.package'.
+            loadingDev = TP.sys.cfg('boot.profile').
+                                indexOf('developer') !== -1 ||
+                            TP.sys.cfg('boot.package').
+                                indexOf('developer') !== -1;
+
+            if (TP.sys.cfg('boot.parallel') && loadingDev) {
+                TP.boot.getUIBoot().contentDocument.body.style.opacity = .5;
+                TP.boot.getUIBoot().contentWindow.blur();
+            }
 
             //  Grab all of the 'input' elements in the page and install a
             //  capturing focus handler on them that will set their
