@@ -931,6 +931,7 @@ TP.SHERPA_MUTATION = 'tp_sherpa_mutated';
 TP.OLD_OVERFLOW = 'tp_old_overflow';
 TP.BUSY_ELEMENT = 'tp_busy_element';
 TP.BUSY_MSG_ELEMENT = 'tp_busy_msg_element';
+TP.BUSY_BKGD_ELEMENT = 'tp_busy_bkgd_element';
 TP.REPEAT_SOURCE = 'tp_repeat_source';
 TP.REPEAT_INDEX = 'tp_repeat_index';
 

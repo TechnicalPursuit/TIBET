@@ -2413,7 +2413,7 @@ function(anElement) {
      */
 
     var busyElement,
-        busyControlImageElement,
+        busyBackgroundElement,
         busyMessageElement;
 
     if (!TP.isElement(anElement)) {
@@ -2432,11 +2432,11 @@ function(anElement) {
                             'busyFor',
                             TP.elementGetAttribute(anElement, 'id'));
 
-    //  Create a 'busy control' element that will have the busy image set as
+    //  Create a 'busy background' element that will have the busy image set as
     //  its background-image.
-    busyControlImageElement = anElement.ownerDocument.createElement('div');
-    TP.elementSetClass(busyControlImageElement, 'busyImage');
-    TP.nodeAppendChild(busyElement, busyControlImageElement, false);
+    busyBackgroundElement = anElement.ownerDocument.createElement('div');
+    TP.elementSetClass(busyBackgroundElement, 'busyImage');
+    TP.nodeAppendChild(busyElement, busyBackgroundElement, false);
 
     //  Create a 'busy message' element that will display the busy message
     //  and which can be set during busy operation to other messages.
@@ -2456,12 +2456,12 @@ function(anElement) {
                         busyElement,
                         false);
 
-    //  Cache the busy element, the busy control image element and the busy
+    //  Cache the busy element, the busy background element and the busy
     //  message element as slots on the element they were created for for
     //  much faster display next time.
     anElement[TP.BUSY_ELEMENT] = busyElement;
+    anElement[TP.BUSY_BGKD_ELEMENT] = busyBackgroundElement;
     anElement[TP.BUSY_MSG_ELEMENT] = busyMessageElement;
-    anElement.busyControlImageElement = busyControlImageElement;
 
     return busyElement;
 });
