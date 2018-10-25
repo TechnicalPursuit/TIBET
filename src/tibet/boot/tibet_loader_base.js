@@ -9398,6 +9398,12 @@ TP.boot.$$importComplete = function() {
 
                     TP.boot.$stdout('', TP.SYSTEM);
 
+                    //  if we didn't find a phase two page waiting for us
+                    //  then we'll just pause and wait for it. when it
+                    //  arrives it will see that we're paused and it will
+                    //  trigger the final phase of booting
+                    TP.boot.$setStage('import_paused');
+
                     //  basically the question is simply what happens last,
                     //  either we finish with phase one after the phase two
                     //  page has loaded, or we finish before it. if we
@@ -9476,12 +9482,6 @@ TP.boot.$$importComplete = function() {
                     } else {
                         void 0;
                     }
-
-                    //  if we didn't find a phase two page waiting for us
-                    //  then we'll just pause and wait for it. when it
-                    //  arrives it will see that we're paused and it will
-                    //  trigger the final phase of booting
-                    TP.boot.$setStage('import_paused');
                 }
             } else {
                 //  if we've been booting in a single stage then we're
