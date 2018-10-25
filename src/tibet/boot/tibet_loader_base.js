@@ -9514,7 +9514,6 @@ TP.boot.$$importComplete = function() {
             //  boot process has occurred, meaning any newly booted content
             //  is effectively an "add-on"...
             TP.boot.$stdout('Loading add-on components complete.');
-
         }
 
         //  turn off reporting to bootlog via TP.boot.$stderr.
