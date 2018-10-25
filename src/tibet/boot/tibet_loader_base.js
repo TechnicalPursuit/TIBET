@@ -11701,6 +11701,10 @@ TP.boot.$uiRootReady = function() {
                     'focus',
                     function(evt) {
                         evt.target.setAttribute('onceHadFocus', true);
+                        if (TP.boot.$hasReachedStage('import_paused') !==
+                                                                    true) {
+                            evt.target.blur();
+                        }
                     },
                     true);
             }
