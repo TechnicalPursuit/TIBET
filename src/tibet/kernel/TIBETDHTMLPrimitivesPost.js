@@ -2460,7 +2460,7 @@ function(anElement) {
     //  message element as slots on the element they were created for for
     //  much faster display next time.
     anElement[TP.BUSY_ELEMENT] = busyElement;
-    anElement[TP.BUSY_BGKD_ELEMENT] = busyBackgroundElement;
+    anElement[TP.BUSY_BKGD_ELEMENT] = busyBackgroundElement;
     anElement[TP.BUSY_MSG_ELEMENT] = busyMessageElement;
 
     return busyElement;
