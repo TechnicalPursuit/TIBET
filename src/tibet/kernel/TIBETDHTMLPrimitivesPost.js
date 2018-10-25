@@ -4542,11 +4542,13 @@ function(anElement) {
         if (TP.isValid(win)) {
             win.removeEventListener(
                 'resize',
-                busyElement.busyResizeFunction,
+                busyElement[TP.BUSY_RESIZE_FUNC],
                 false);
         }
 
-        busyElement.busyResizeFunction = null;
+
+        //  Clear any resize function for the busy layer.
+        busyElement[TP.BUSY_RESIZE_FUNC] = null;
     }
 
     //  reset the overflow so scrollbars return to their old config. Note how we
@@ -5807,7 +5809,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     //  Set up a resize function, so that if the busy is showing when the
     //  user resizes the window, it will resize also. This function is
     //  detached when the busy element is hidden to avoid memory leaks.
-    busyElement.busyResizeFunction = function() {
+    busyElement[TP.BUSY_RESIZE_FUNC] = function() {
 
         busyWidth = TP.isNumber(width) ?
                         width :
@@ -5824,7 +5826,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     if (TP.isValid(win)) {
         win.addEventListener(
             'resize',
-            busyElement.busyResizeFunction,
+            busyElement[TP.BUSY_RESIZE_FUNC],
             false);
     }
 
