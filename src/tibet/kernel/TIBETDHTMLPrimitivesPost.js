@@ -4546,6 +4546,9 @@ function(anElement) {
                 false);
         }
 
+        //  Empty the busy background element of content in case content was put
+        //  into it when the busy element was shown
+        TP.nodeEmptyContent(busyElement[TP.BUSY_BKGD_ELEMENT]);
 
         //  Clear any resize function for the busy layer.
         busyElement[TP.BUSY_RESIZE_FUNC] = null;
@@ -5839,7 +5842,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementShowBusyMessage',
-function(anElement, aMessage) {
+function(anElement, aMessage, backgroundContentElement) {
 
     /**
      * @method elementShowBusyMessage
@@ -5848,6 +5851,9 @@ function(anElement, aMessage) {
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
      * @param {String} [aMessage=''] The message to use for the busy message.
+     * @param {HTMLElement} [backgroundContentElement] An optional 'background
+     *     content' element that will be added to the background element of the
+     *     supplied element's busy element.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidString
      */
@@ -5861,6 +5867,13 @@ function(anElement, aMessage) {
     //  Call this to create the busy layer element if it's not already created
     //  for anElement, even though we don't capture the return value here.
     TP.$elementGetBusyLayer(anElement);
+
+    if (TP.isElement(backgroundContentElement)) {
+        TP.nodeAppendChild(
+            anElement[TP.BUSY_BKGD_ELEMENT],
+            backgroundContentElement,
+            false);
+    }
 
     styleObj = TP.elementGetStyleObj(anElement);
 
