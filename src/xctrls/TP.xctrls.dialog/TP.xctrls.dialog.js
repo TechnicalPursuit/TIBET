@@ -90,7 +90,7 @@ function(aSignal) {
      * @method handleDialogDismiss
      * @summary Handles notifications of when the receiver is to be dismissed
      * (i.e. hidden).
-     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     * @param {TP.sig.DialogDismiss} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.dialog} The receiver.
      */
