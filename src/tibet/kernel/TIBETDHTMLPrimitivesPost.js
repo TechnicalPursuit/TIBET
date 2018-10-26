@@ -4548,7 +4548,7 @@ function(anElement) {
 
         //  Empty the busy background element of content in case content was put
         //  into it when the busy element was shown
-        TP.nodeEmptyContent(busyElement[TP.BUSY_BKGD_ELEMENT]);
+        TP.nodeEmptyContent(anElement[TP.BUSY_BKGD_ELEMENT]);
 
         //  Clear any resize function for the busy layer.
         busyElement[TP.BUSY_RESIZE_FUNC] = null;
