@@ -570,11 +570,24 @@ function(pathParts, methodPrefix, anArgArray) {
     methodKeys.sort(
             function(key1, key2) {
 
+                var len1,
+                    len2;
+
                 //  Each key points to an entry that has a RegExp in its first
                 //  position and the length of the parts making up the RegExp.
                 //  We want to sort that so that the most specific comes first.
-                return methodRegister.at(key1).last() <
-                        methodRegister.at(key2).last();
+                len1 = methodRegister.at(key1).last();
+                len2 = methodRegister.at(key2).last();
+
+                if (len1 > len2) {
+                    return -1;
+                }
+
+                if (len1 < len2) {
+                    return 1;
+                }
+
+                return 0;
             });
 
     //  Iterate over the entries, looking for a RegExp that matches the supplied
