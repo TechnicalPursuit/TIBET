@@ -69,7 +69,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+'));
+                    'CouchDB_Server_\\d+'));
 
     //  What methods will be resolved and queried when 'Server Info' is
     //  *selected*.
@@ -79,7 +79,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'Server Info'
                     ));
@@ -92,7 +92,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases'
                     ));
@@ -107,7 +107,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     '\.+'
@@ -121,7 +121,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
@@ -138,7 +138,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
@@ -155,7 +155,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
@@ -171,7 +171,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
@@ -190,7 +190,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
@@ -210,7 +210,7 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_SEP,
-                    'CouchDB_Server_\.+',
+                    'CouchDB_Server_\\d+',
                     TP.PATH_SEP,
                     'All Databases',
                     TP.PATH_SEP,
