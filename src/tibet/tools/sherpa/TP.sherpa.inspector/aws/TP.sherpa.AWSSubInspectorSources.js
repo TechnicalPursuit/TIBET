@@ -437,50 +437,5 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getDataForInspectorForLambdaAllFunctionsFoofy',
-function(options) {
-
-    var dataURI,
-
-        serverAddr,
-        loc;
-
-    dataURI = TP.uc(options.at('bindLoc'));
-
-    serverAddr = this.get('serverAddress');
-
-    loc = serverAddr +
-            '?' +
-            'listFunctions';
-
-    TP.uc(loc).getResource(
-                TP.hc('refresh', true,
-                        'async', true,
-                        'resultType', TP.WRAP)
-                ).then(
-                function(result) {
-
-                    var data;
-
-                    data = result.at('Functions').collect(
-                                function(aHash) {
-                                    return TP.ac(
-                                            aHash.at('FunctionName'),
-                                            aHash.at('FunctionName'));
-                                });
-
-                    dataURI.setResource(data);
-                }).catch(
-                function(err) {
-                    TP.ifError() ?
-                        TP.error('Error fetching all buckets for AWS: ' +
-                                    TP.str(err)) : 0;
-                });
-
-    return TP.ac('Data Loading...');
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
