@@ -251,6 +251,83 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getAuthenticationContent',
+function(options) {
+
+    /**
+     * @method getAuthenticationContent
+     * @summary Returns the Element containing user interface content that
+     *     allows the user to authenticate.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The content used for authentication GUI for the user.
+     */
+
+    var authPanelLoc,
+        authPanelReq,
+        authPanelResp,
+
+        win,
+
+        bayNum;
+
+    //  Grab the authenication panel content.
+    authPanelLoc =
+        TP.uc('~ide_root/TP.sherpa.inspector/couch/auth_panel.xhtml').
+        getLocation();
+
+    authPanelReq = TP.request('uri', authPanelLoc, 'async', false);
+    authPanelResp = TP.httpGet(authPanelLoc, authPanelReq);
+
+    win = TP.sys.getUIRoot().getNativeWindow();
+
+    //  The bay that the login panel will be drawn into is one more than what is
+    //  currently there and can be computed by the total number of bays.
+    bayNum = options.at('pathParts').getSize();
+
+    //  After we repaint, and the 'bay inspector item' is real, then set up a
+    //  UIDidFocus handler on that item to focus the username field.
+    (function() {
+
+        var inspector,
+            bayTPElem,
+            usernameTPElem;
+
+        inspector = TP.byId('SherpaInspector', win);
+        bayTPElem = inspector.getBayFromSlotPosition(bayNum);
+
+        //  Set up the UIDidFocus handler directly on the bay inspector item.
+        bayTPElem.defineHandler('UIDidFocus',
+            function(aSignal) {
+
+                //  Make sure to remove this handler because this bay inspector
+                //  item will be reused.
+                delete bayTPElem[TP.composeHandlerName('UIDidFocus')];
+
+                //  Grab the username field and focus it.
+                usernameTPElem = bayTPElem.get('.username');
+                usernameTPElem.focus();
+            });
+
+    }).queueForNextRepaint(win);
+
+    //  Grab the result of the response and return it's documentElement (i.e.
+    //  root element).
+    return authPanelResp.get('result').documentElement;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
@@ -379,83 +456,6 @@ function(options) {
     }
 
     return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getAuthenticationContent',
-function(options) {
-
-    /**
-     * @method getAuthenticationContent
-     * @summary Returns the Element containing user interface content that
-     *     allows the user to authenticate.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the content. This will have the following keys, amongst
-     *     others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     *          'bindLoc':          The URI location where the data for the
-     *                              content can be found.
-     * @returns {Element} The content used for authentication GUI for the user.
-     */
-
-    var authPanelLoc,
-        authPanelReq,
-        authPanelResp,
-
-        win,
-
-        bayNum;
-
-    //  Grab the authenication panel content.
-    authPanelLoc =
-        TP.uc('~ide_root/TP.sherpa.inspector/couch/auth_panel.xhtml').
-        getLocation();
-
-    authPanelReq = TP.request('uri', authPanelLoc, 'async', false);
-    authPanelResp = TP.httpGet(authPanelLoc, authPanelReq);
-
-    win = TP.sys.getUIRoot().getNativeWindow();
-
-    //  The bay that the login panel will be drawn into is one more than what is
-    //  currently there and can be computed by the total number of bays.
-    bayNum = options.at('pathParts').getSize();
-
-    //  After we repaint, and the 'bay inspector item' is real, then set up a
-    //  UIDidFocus handler on that item to focus the username field.
-    (function() {
-
-        var inspector,
-            bayTPElem,
-            usernameTPElem;
-
-        inspector = TP.byId('SherpaInspector', win);
-        bayTPElem = inspector.getBayFromSlotPosition(bayNum);
-
-        //  Set up the UIDidFocus handler directly on the bay inspector item.
-        bayTPElem.defineHandler('UIDidFocus',
-            function(aSignal) {
-
-                //  Make sure to remove this handler because this bay inspector
-                //  item will be reused.
-                delete bayTPElem[TP.composeHandlerName('UIDidFocus')];
-
-                //  Grab the username field and focus it.
-                usernameTPElem = bayTPElem.get('.username');
-                usernameTPElem.focus();
-            });
-
-    }).queueForNextRepaint(win);
-
-    //  Grab the result of the response and return it's documentElement (i.e.
-    //  root element).
-    return authPanelResp.get('result').documentElement;
 });
 
 //  ------------------------------------------------------------------------
