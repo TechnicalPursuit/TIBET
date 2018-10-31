@@ -38,8 +38,7 @@ TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
-TP.dom.D3VirtualList.Inst.defineAttribute('$totalRows');
-TP.dom.D3VirtualList.Inst.defineAttribute('$dataSize');
+TP.dom.D3VirtualList.Inst.defineAttribute('$computedRowCount');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -691,8 +690,7 @@ TP.extern.d3.VirtualScroller = function() {
 
                 oldStartOffset,
                 oldEndOffset,
-                oldTotalRows,
-                oldDataSize,
+                oldcomputedRowCount,
 
                 rowSelector;
 
@@ -706,13 +704,11 @@ TP.extern.d3.VirtualScroller = function() {
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
-            oldTotalRows = control.$get('$totalRows');
-            oldDataSize = control.$get('$dataSize');
+            oldcomputedRowCount = control.$get('$computedRowCount');
 
             if (oldStartOffset === startOffset &&
                 oldEndOffset === endOffset &&
-                oldTotalRows === totalRows &&
-                oldDataSize === dataSize) {
+                oldcomputedRowCount === computedRowCount) {
 
                 container.each(
                     function() {
@@ -747,8 +743,7 @@ TP.extern.d3.VirtualScroller = function() {
 
                 control.$set('$startOffset', startOffset, false);
                 control.$set('$endOffset', endOffset, false);
-                control.$set('$totalRows', totalRows, false);
-                control.$set('$dataSize', allData.getSize(), false);
+                control.$set('$computedRowCount', computedRowCount, false);
 
                 //  build a selector that will be used to 'select' rows.
                 rowSelector = '*[' + selectionInfo.first() +
