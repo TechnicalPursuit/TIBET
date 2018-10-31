@@ -478,10 +478,10 @@ function() {
     inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
     content = inspector.getInspectorBayContentItem();
 
-    username = TP.byCSSPath('.username', content);
-    password = TP.byCSSPath('.password', content);
+    username = TP.byCSSPath('.username', content, true);
+    password = TP.byCSSPath('.password', content, true);
 
-    message = TP.byCSSPath('.login_user_message', content);
+    message = TP.byCSSPath('.login_user_message', content, true);
     message.setAttribute('hidden', true);
 
     serverURI = TP.uc(this.get('serverAddress'));
