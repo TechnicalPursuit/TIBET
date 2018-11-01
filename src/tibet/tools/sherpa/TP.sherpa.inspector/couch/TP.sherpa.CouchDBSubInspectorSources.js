@@ -463,6 +463,15 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineHandler('AuthenticateConnection',
 function() {
 
+    /**
+     * @method handleAuthenticateConnection
+     * @summary Handles when the user has completed authentication information
+     *     in the UI in an attempt to authenticate a CouchDB connection.
+     * @param {TP.sig.AuthenticateConnection} aSignal The signal indicating that
+     *     the user has dismisse
+     * @returns {TP.sherpa.CouchDBSubInspectorSources} The receiver.
+     */
+
     var inspector,
         content,
 
@@ -475,22 +484,32 @@ function() {
 
         authRequest;
 
+    //  Grab the current bay content.
     inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
     content = inspector.getInspectorBayContentItem();
 
+    //  Grab the username and password fields from that content.
     username = TP.byCSSPath('.username', content, true);
     password = TP.byCSSPath('.password', content, true);
 
+    //  Grab the message output to the user from that content, show it and a
+    //  message that we're authenticating.
     message = TP.byCSSPath('.login_user_message', content, true);
-    message.setAttribute('hidden', true);
+    message.setRawContent(TP.sc('Attempting authentication...'));
+    message.setAttribute('hidden', false);
 
     serverURI = TP.uc(this.get('serverAddress'));
 
+    //  Authenticate the server URI that we're using with the CouchDBURLHandler
+    //  using the supplied username and password. Note that this object will
+    //  handle the request itself, such that we won't need to fire it.
     authRequest = TP.uri.CouchDBURLHandler.authenticate(
                             serverURI,
                             username.getValue(),
                             password.getValue());
 
+    //  The authentication succeeded - repopulate the bay we were using to
+    //  display the authentication UI and size the inspector to the new content.
     authRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
             inspector.repopulateBay();
@@ -498,10 +517,12 @@ function() {
             inspector.scrollBaysToEnd();
         });
 
+    //  The authentication failed - let the user know by setting the message
+    //  output. Reset the username and password to empty values and focus the
+    //  username field.
     authRequest.defineHandler('401',
         function(aResponse) {
-            message.setRawContent('Login failed');
-            message.setAttribute('hidden', false);
+            message.setRawContent(TP.sc('Login failed'));
 
             username.setValue('');
             password.setValue('');
