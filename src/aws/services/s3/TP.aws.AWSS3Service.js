@@ -50,7 +50,11 @@ function(aRequest) {
     var request,
 
         action,
-        paramDict;
+        paramDict,
+
+        isAuthenticated,
+
+        promise;
 
     request = TP.request(aRequest);
 
@@ -64,25 +68,17 @@ function(aRequest) {
 
     paramDict = TP.ifInvalid(request.at('params'), TP.hc());
 
-    //  Invoke the TIBET AWS 'passthrough' with 'S3' as the service.
-    this.getType().invokePassthrough(
-            'S3',
-            action,
-            paramDict
-            ).then(
-        function(result) {
-            var jsResults;
+    isAuthenticated = this.isAuthenticated();
 
-            //  Grab the JSON string that is the result, make a TIBET-ized
-            //  JavaScript data structure from it and complete the request with
-            //  that result.
-            jsResults = TP.json2js(result);
-            request.complete(jsResults);
-        }).catch(function(err) {
-            request.fail(err);
-        });
+    if (!isAuthenticated) {
+        promise = TP.extern.Promise.reject();
+    } else {
+        promise = TP.extern.Promise.resolve();
+    }
 
-    return this;
+    //  TODO: Need to finish this
+
+    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
