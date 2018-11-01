@@ -50,21 +50,23 @@
 
 <config id="aws">
 
+    <script src="~lib_deps/aws-sdk-tpi.min.js" no-lint="no-lint" />
     <script>
         <![CDATA[
-        TP.sys.importScript(
-            'https://sdk.amazonaws.com/js/aws-sdk-2.281.1.min.js').then(
-            function() {
-                TP.registerExternalObject('AWS', window.AWS);
-            });
+        TP.registerExternalObject('AWS', window.AWS);
+        ]]>
+    </script>
 
-            //  Register a stub object to satisfy dependencies. When the real
-            //  object finishes loading, it will overlay
-            TP.registerExternalObject('AWS', {});
+    <script src="~lib_deps/amazon-cognito-identity-tpi.min.js" no-lint="no-lint" />
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('AmazonCognitoIdentity', window.AmazonCognitoIdentity);
         ]]>
     </script>
 
     <script src="aws/services/TP.aws.AWSService.js"/>
+    <script src="aws/services/TP.sig.AWSAuthenticationRequest.js"/>
+    <script src="aws/services/TP.sig.AWSAuthenticationResponse.js"/>
 
     <script src="aws/services/s3/TP.sig.AWSS3Request.js"/>
     <script src="aws/services/s3/TP.sig.AWSS3Response.js"/>

@@ -12,11 +12,6 @@
  * @type {TP.aws.AWSService}
  * @summary A subtype of TP.core.IOService that communicates with various Amazon
  *     Web Services.
- * @description This type provides a method that can be invoked as a
- *     'passthrough' mechanism when needing to invoke any of Amazon Web Services
- *     without having to deal with individual authentication, identification or
- *     CORS issues on a 'per method' basis. Note that this is an abstract type
- *     and cannot be instantiated. See one of its concrete subtypes.
  */
 
 //  ------------------------------------------------------------------------
@@ -39,112 +34,327 @@ TP.aws.AWSService.Type.defineAttribute(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.aws.AWSService.Type.defineMethod('invokePassthrough',
-function(serviceName, methodName, methodParams) {
+TP.aws.AWSService.Type.defineMethod('isAuthenticated',
+function(serviceName) {
 
     /**
-     * @method invokePassthrough
-     * @summary Invokes the TIBET 'AWS Passthrough' - a CORS-enabled AWS Lambda
-     *     function that gives access to other AWS services.
-     * @param {String} serviceName The name of the service to invoke (i.e. 'S3',
-     *     'Lambda', etc.).
-     * @param {String} methodName The name of the method to invoke on the
-     *     service (i.e. 'listBuckets', etc.).
-     * @param {TP.core.Hash} methodParams A hash of the parameters to pass to
-     *     the function (i.e. 'Body', 'Key', etc.).
-     * @returns {Promise} The promisified request to the AWS Lambda function.
+     * @method isAuthenticated
+     * @summary Returns whether or not the service is authenticated.
+     * @param {String} serviceName The service name to test to see if its
+     *     authenticated.
+     * @returns {Boolean} true if the service is authenticated.
      */
 
-    var region,
+    var inst;
+
+    inst = this.getResourceById(serviceName);
+
+    if (TP.isValid(inst)) {
+        return inst.isAuthenticated();
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.aws.AWSService.Type.defineMethod('authenticate',
+function(serviceName, username, password) {
+
+    /**
+     * @method authenticate
+     * @summary Authenticate the service associated with the supplied name.
+     * @param {String} serviceName The name of the service to authenticate. This
+     *     should have been already registered with the receiver as a registered
+     *     instance using this name.
+     * @param {String} username The username to use to authenticate.
+     * @param {String} password The password to use to authenticate.
+     * @returns {TP.sig.HTTPRequest} The authentication request.
+     */
+
+    var serviceInfo,
+
+        region,
         apiVersion,
-        roleArn,
+        userPoolID,
+        appID,
         identityPoolID,
 
-        lambda,
-        params,
+        authData,
+        authDetails,
 
-        invocationParams;
+        poolData,
+        userPool,
 
-    //  Make sure that we have a configured passthrough region.
-    region = TP.sys.getcfg('aws.passthrough.region');
+        userData,
+
+        cognitoUser,
+
+        promise,
+
+        thisref,
+
+        authRequest;
+
+    serviceInfo = this.get('serviceInfo');
+
+    //  Make sure that we have service info that we can draw from.
+    if (TP.notValid(serviceInfo)) {
+        return this.raise('InvalidQuery', 'Missing service information.');
+    }
+
+    //  Make sure that we have a configured region.
+    region = serviceInfo.at('region');
     if (TP.isEmpty(region)) {
-        return this.raise('InvalidQuery',
-                            'Missing passthrough region.');
+        return this.raise('InvalidQuery', 'Missing region.');
     }
 
-    //  Make sure that we have a configured passthrough apiVersion.
-    apiVersion = TP.sys.getcfg('aws.passthrough.apiVersion');
+    //  Make sure that we have a configured apiVersion.
+    apiVersion = serviceInfo.at('apiVersion');
     if (TP.isEmpty(apiVersion)) {
-        return this.raise('InvalidQuery',
-                            'Missing passthrough apiVersion.');
+        return this.raise('InvalidQuery', 'Missing apiVersion.');
     }
 
-    //  Make sure that we have a configured passthrough roleArn. This should
-    //  match the role that our passthrough Lambda function has.
-    roleArn = TP.sys.getcfg('aws.passthrough.roleArn');
-    if (TP.isEmpty(roleArn)) {
-        return this.raise('InvalidQuery',
-                            'Missing passthrough roleArn.');
+    //  Make sure that we have a configured userPoolID. This should match the
+    //  user pool that our Lambda function has.
+    userPoolID = serviceInfo.at('userPoolID');
+    if (TP.isEmpty(userPoolID)) {
+        return this.raise('InvalidQuery', 'Missing userPoolID.');
     }
 
-    //  Make sure that we have a configured passthrough identityPoolID.
-    identityPoolID = TP.sys.getcfg('aws.passthrough.identityPoolID');
+    //  Make sure that we have a configured appID.
+    appID = serviceInfo.at('appID');
+    if (TP.isEmpty(appID)) {
+        return this.raise('InvalidQuery', 'Missing appID.');
+    }
+
+    //  Make sure that we have a configured identityPoolID.
+    identityPoolID = serviceInfo.at('identityPoolID');
     if (TP.isEmpty(identityPoolID)) {
-        return this.raise('InvalidQuery',
-                            'Missing passthrough identityPoolID.');
+        return this.raise('InvalidQuery', 'Missing identityPoolID.');
     }
 
-    //  Update the AWS config with the region and credentials computed from
-    //  Cognito.
-    TP.extern.AWS.config.update({
-        region: region,
-        credentials: new TP.extern.AWS.CognitoIdentityCredentials({
-            RoleArn: roleArn,
-            IdentityPoolId: identityPoolID
-          })
-    });
+    //  Authenticate the user, based on username and password
 
-    //  Create a new Lambda client-side invocation stub.
-    lambda = new TP.extern.AWS.Lambda({
-        region: region,
-        apiVersion: apiVersion
-    });
+    authData = TP.hc('Username', username,
+                        'Password', password).asObject();
+    authDetails = new TP.extern.AmazonCognitoIdentity.AuthenticationDetails(
+                                                                    authData);
 
-    //  If method params were supplied, then get a POJO from the Hash.
-    //  Otherwise, just default params to a POJO.
-    if (TP.notEmpty(methodParams)) {
-        params = methodParams.asObject();
-    } else {
-        params = {};
-    }
+    poolData = TP.hc('UserPoolId', userPoolID,
+                        'ClientId', appID).asObject();
+    userPool = new TP.extern.AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-    //  Build a set of invocation params to invoke the Lambda function with.
-    invocationParams = {
-        FunctionName: 'invoker',
-        InvocationType: 'RequestResponse',
-        LogType: 'None',
-        Payload: JSON.stringify({
-            service: serviceName,
-            methodName: methodName,
-            params: params
-        })
-    };
+    userData = TP.hc('Username', username,
+                        'Pool', userPool).asObject();
 
-    //  Invoke the Lambda on the server, returning a Promise and then a Function
-    //  that will parse the payload and return the body, which will be a String.
-    //  That String might contain more JSON-ified data, but it's the callers
-    //  responsibility to further parse that.
-    return lambda.invoke(invocationParams).promise().then(
-            function(aResult) {
-                var payload;
+    cognitoUser = new TP.extern.AmazonCognitoIdentity.CognitoUser(userData);
 
-                payload = JSON.parse(aResult.Payload);
-                if (TP.isValid(payload.body)) {
-                    return payload.body;
+    //  Construct a Promise that will call on the AWS Cognito library to
+    //  authenticate the service given the Cognito User data structure computed
+    //  above. This will resolve the Promise with the JWT token returned if the
+    //  authentication happened and will reject the Promise if it didn't.
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            cognitoUser.authenticateUser(authDetails, {
+                onSuccess: function(result) {
+                    var idToken;
+
+                    idToken = result.getIdToken().getJwtToken();
+                    resolver(idToken);
+                },
+
+                onFailure: function(err) {
+                    rejector(err);
                 }
-
-                return null;
             });
+        });
+
+    thisref = this;
+
+    //  Add a Promise that will take the resultant JWT token and establish a
+    //  session with it.
+    promise = promise.then(
+        function(result) {
+
+            //  'result' here is the JWT token
+
+            var loginInfo,
+
+                authDomain,
+
+                credentialsInfo,
+                credentials,
+
+                sessionPromise;
+
+            //  Compute an authentication domain for use in conjunction with the
+            //  JWT for login information.
+            authDomain = 'cognito-idp.' + region + '.amazonaws.com/' +
+                            userPoolID;
+            loginInfo = TP.hc(authDomain, result);
+
+            //  Now, in conjunction with the Identity Pool ID, compute the login
+            //  credentials.
+            credentialsInfo =
+                TP.hc('IdentityPoolId', identityPoolID,
+                        'Logins', loginInfo);
+
+            //  Convert to a POJO for use with the AWS Cognito library.
+            credentialsInfo = credentialsInfo.asObject();
+
+            credentials = new TP.extern.AWS.CognitoIdentityCredentials(
+                                                            credentialsInfo);
+
+            //  Update the AWS config with the region and credentials computed
+            //  from Cognito.
+            TP.extern.AWS.config.update({
+                region: region,
+                credentials: credentials
+            });
+
+            //  Now that the credentials have been updated, construct a nested
+            //  Promise that will attempt to obtain a session using the Cognito
+            //  user.
+            sessionPromise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+
+                    cognitoUser.getSession(
+                        function(err, session) {
+
+                            var serviceInst;
+
+                            if (TP.isValid(err)) {
+                                return rejector(
+                                        err.message || JSON.stringify(err));
+                            }
+
+                            //  Construct a new service using the supplied
+                            //  service name as the resource ID and register it.
+                            serviceInst = thisref.construct(serviceName);
+                            serviceInst.register();
+
+                            //  Cache our session.
+                            serviceInst.set('$session', session);
+
+                            resolver();
+                        });
+                });
+
+            return sessionPromise;
+        });
+
+    //  Construct an authentication request.
+    authRequest = TP.sig.AWSAuthenticationRequest.construct();
+
+    //  When the above Promise(s) resolve, then complete the authentication
+    //  request with a Boolean value as to whether we have an authenicated
+    //  session.
+    promise.then(
+        function(result) {
+            authRequest.complete(this.isAuthenticated(serviceName));
+        }.bind(this)).catch(
+        function(err) {
+            authRequest.fail(err);
+        });
+
+    return authRequest;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.aws.AWSService.Type.defineMethod('getServiceInfo',
+function() {
+
+    /**
+     * @method getServiceInfo
+     * @summary Returns a hash containing service information needed by AWS to
+     *     identify and work with the service.
+     * @description This hash should contain the following keys that will be
+     *     used by AWS:
+     *          region
+     *          apiVersion
+     *          userPoolID
+     *          appID
+     *          identityPoolID
+     * @returns {TP.core.Hash} A hash of service information.
+     */
+
+    return TP.hc();
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.aws.AWSService.Inst.defineAttribute('$session');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.aws.AWSService.Inst.defineMethod('isAuthenticated',
+function() {
+
+    /**
+     * @method isAuthenticated
+     * @summary Returns whether or not the service is authenticated.
+     * @returns {Boolean} true if the service is authenticated.
+     */
+
+    var serviceInfo,
+
+        userPoolID,
+        appID,
+
+        poolData,
+        userPool,
+
+        cognitoUser,
+
+        session;
+
+    serviceInfo = this.getType().get('serviceInfo');
+
+    //  Make sure that we have service info that we can draw from.
+    if (TP.notValid(serviceInfo)) {
+        return this.raise('InvalidQuery', 'Missing service information.');
+    }
+
+    //  Make sure that we have a configured userPoolID. This should match the
+    //  user pool that our Lambda function has.
+    userPoolID = serviceInfo.at('userPoolID');
+    if (TP.isEmpty(userPoolID)) {
+        return this.raise('InvalidQuery', 'Missing userPoolID.');
+    }
+
+    //  Make sure that we have a configured appID.
+    appID = serviceInfo.at('appID');
+    if (TP.isEmpty(appID)) {
+        return this.raise('InvalidQuery', 'Missing appID.');
+    }
+
+    //  Compute a data structure for the pool and grab the currently associated
+    //  user.
+    poolData = TP.hc('UserPoolId', userPoolID,
+                        'ClientId', appID).asObject();
+    userPool = new TP.extern.AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+    cognitoUser = userPool.getCurrentUser();
+
+    //  If we have a valid user and we have a valid session, then we have an
+    //  authenticated session.
+    if (TP.isValid(cognitoUser)) {
+        session = this.get('$session');
+        if (TP.isValid(session)) {
+            return session.isValid();
+        }
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
