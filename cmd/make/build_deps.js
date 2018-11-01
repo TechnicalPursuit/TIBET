@@ -16,6 +16,8 @@
 
         make.chain(
             '_rollup_ace',
+            '_rollup_amazon_cognito_identity',
+            '_rollup_aws_sdk',
             '_rollup_codemirror',
             '_rollup_cryptojs',
             '_rollup_bluebird',
