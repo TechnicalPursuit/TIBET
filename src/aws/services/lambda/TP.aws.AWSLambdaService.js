@@ -50,7 +50,11 @@ function(aRequest) {
     var request,
 
         action,
-        paramDict;
+        paramDict,
+
+        isAuthenticated,
+
+        promise;
 
     request = TP.request(aRequest);
 
@@ -64,25 +68,129 @@ function(aRequest) {
 
     paramDict = TP.ifInvalid(request.at('params'), TP.hc());
 
-    //  Invoke the TIBET AWS 'passthrough' with 'Lambda' as the service.
-    this.getType().invokePassthrough(
-            'Lambda',
-            action,
-            paramDict
-            ).then(
-        function(result) {
-            var jsResults;
+    isAuthenticated = this.isAuthenticated();
 
-            //  Grab the JSON string that is the result, make a TIBET-ized
-            //  JavaScript data structure from it and complete the request with
-            //  that result.
-            jsResults = TP.json2js(result);
-            request.complete(jsResults);
-        }).catch(function(err) {
-            request.fail(err);
-        });
+    if (!isAuthenticated) {
+        promise = TP.extern.Promise.reject();
+    } else {
+        promise = TP.extern.Promise.resolve();
+    }
+
+    //  Invoke the AWS Lambda function with the name of 'action' and the params
+    //  from the paramsDict as its parameters.
+    promise.then(
+        function() {
+            return this.invoke(
+                    action,
+                    paramDict
+                    ).then(
+                function(result) {
+                    var jsResults;
+
+                    //  Grab the JSON string that is the result, make a
+                    //  TIBET-ized JavaScript data structure from it and
+                    //  complete the request with that result.
+                    jsResults = TP.json2js(result);
+                    request.complete(jsResults);
+                }).catch(function(err) {
+                    request.fail(err);
+                });
+        }.bind(this));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.aws.AWSLambdaService.Inst.defineMethod('invoke',
+function(functionName, functionParams) {
+
+    /**
+     * @method invoke
+     * @summary Invokes specified AWS Lambda function.
+     * @param {String} functionName The name of the Lambda function to invoke.
+     * @param {TP.core.Hash} functionParams A hash of the parameters to pass to
+     *     the function (i.e. 'Body', 'Key', etc.).
+     * @returns {Promise} The promisified request to the AWS Lambda function.
+     */
+
+    var serviceInfo,
+
+        region,
+        apiVersion,
+
+        promise;
+
+    serviceInfo = this.getType().get('serviceInfo');
+
+    //  Make sure that we have service info that we can draw from.
+    if (TP.notValid(serviceInfo)) {
+        return this.raise('InvalidQuery', 'Missing service information.');
+    }
+
+    //  Make sure that we have a configured region.
+    region = serviceInfo.at('region');
+    if (TP.isEmpty(region)) {
+        return this.raise('InvalidQuery', 'Missing region.');
+    }
+
+    //  Make sure that we have a configured apiVersion.
+    apiVersion = serviceInfo.at('apiVersion');
+    if (TP.isEmpty(apiVersion)) {
+        return this.raise('InvalidQuery', 'Missing apiVersion.');
+    }
+
+    //  Create a resolved Promise that will use the AWS.Lambda API to invoke a
+    //  Lambda function on AWS and return result.
+    promise = TP.extern.Promise.resolve().then(
+        function(result) {
+
+            var lambda,
+                params,
+
+                invocationParams;
+
+            //  Create a new Lambda client-side invocation stub.
+            lambda = new TP.extern.AWS.Lambda({
+                region: region,
+                apiVersion: apiVersion
+            });
+
+            //  If function params were supplied, then get a POJO from the Hash.
+            //  Otherwise, just default params to a POJO.
+            if (TP.notEmpty(functionParams)) {
+                params = functionParams.asObject();
+            } else {
+                params = {};
+            }
+
+            //  Build a set of invocation params to invoke the Lambda function
+            //  with.
+            invocationParams = {
+                FunctionName: functionName,
+                InvocationType: 'RequestResponse',
+                LogType: 'None',
+                Payload: JSON.stringify(params)
+            };
+
+            //  Invoke the Lambda on the server, returning a Promise and then a
+            //  Function that will parse the payload and return the body, which
+            //  will be a String. That String might contain more JSON-ified
+            //  data, but it's the callers responsibility to further parse that.
+            return lambda.invoke(invocationParams).promise().then(
+                    function(aResult) {
+                        var payload;
+
+                        payload = JSON.parse(aResult.Payload);
+                        if (TP.isValid(payload.body)) {
+                            return payload.body;
+                        }
+
+                        return null;
+                    });
+    });
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
