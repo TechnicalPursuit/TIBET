@@ -686,7 +686,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             var startOffset,
                 endOffset,
-                dataSize,
 
                 oldStartOffset,
                 oldEndOffset,
