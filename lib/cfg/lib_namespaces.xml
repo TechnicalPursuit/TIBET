@@ -76,6 +76,10 @@
     <script src="aws/services/lambda/TP.sig.AWSLambdaResponse.js"/>
     <script src="aws/services/lambda/TP.aws.AWSLambdaService.js"/>
 
+    <script src="aws/services/passthrough/TP.sig.AWSPassthroughRequest.js"/>
+    <script src="aws/services/passthrough/TP.sig.AWSPassthroughResponse.js"/>
+    <script src="aws/services/passthrough/TP.aws.AWSPassthroughService.js"/>
+
 </config>
 
 <config id="html">
