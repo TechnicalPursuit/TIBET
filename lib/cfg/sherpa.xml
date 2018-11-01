@@ -169,6 +169,7 @@
     <resource href="~ide_root/TP.sherpa.tofuInsertionAssistant/insertion_templates.xml"/>
     <resource href="~ide_root/TP.sherpa.adjuster/css-schema.xml"/>
     <resource href="~ide_root/TP.sherpa.inspector/couch/auth_panel.xhtml"/>
+    <resource href="~ide_root/TP.sherpa.inspector/aws/auth_panel.xhtml"/>
 
     <resource href="~ide_root/TP.sherpa.halo/TP.sherpa.halo_injected.css"/>
     <resource href="~ide_root/TP.sherpa.hud/TP.sherpa.hud_injected.css"/>
