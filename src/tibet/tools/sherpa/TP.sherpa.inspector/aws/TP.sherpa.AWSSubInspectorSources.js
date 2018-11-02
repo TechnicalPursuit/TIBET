@@ -355,8 +355,6 @@ function() {
 
         message,
 
-        serverURI,
-
         authRequest;
 
     //  Grab the current bay content.
@@ -372,8 +370,6 @@ function() {
     message = TP.byCSSPath('.login_user_message', content, true);
     message.setRawContent(TP.sc('Attempting authentication...'));
     message.setAttribute('hidden', false);
-
-    serverURI = TP.uc(this.get('serverAddress'));
 
     //  Authenticate the server URI that we're using with the
     //  AWSPassthroughService using the supplied username and password. Note that

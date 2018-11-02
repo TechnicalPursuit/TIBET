@@ -47,6 +47,10 @@ function(aRequest) {
      * @returns {TP.aws.AWSS3Service} The receiver.
      */
 
+    //  TODO: Until we finish this logic, we turn off eslint 'no-unused-vars'
+
+    /* eslint-disable no-unused-vars */
+
     var request,
 
         action,
@@ -75,6 +79,8 @@ function(aRequest) {
     } else {
         promise = TP.extern.Promise.resolve();
     }
+    /* eslint-enable no-unused-vars */
+
 
     //  TODO: Need to finish this
 

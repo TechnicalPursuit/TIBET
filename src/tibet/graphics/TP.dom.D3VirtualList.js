@@ -699,7 +699,6 @@ TP.extern.d3.VirtualScroller = function() {
                     0,
                     Math.min(scrollPosition, totalRows - computedRowCount + 1));
             endOffset = startOffset + computedRowCount;
-            dataSize = allData.getSize();
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
