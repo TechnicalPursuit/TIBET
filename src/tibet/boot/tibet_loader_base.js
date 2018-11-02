@@ -9367,6 +9367,9 @@ TP.boot.$$importComplete = function() {
     var stage,
         win,
 
+        profile,
+        package,
+
         loadingDev,
 
         focusedElems,
@@ -9441,11 +9444,11 @@ TP.boot.$$importComplete = function() {
                         //  NB: Like other logic in the boot system, we respect
                         //  the setting of 'boot.profile' first before
                         //  considering 'boot.package'.
-                        loadingDev =
-                            TP.sys.cfg('boot.profile').
-                                    indexOf('developer') !== -1 ||
-                            TP.sys.cfg('boot.package').
-                                    indexOf('developer') !== -1;
+                        profile = TP.sys.cfg('boot.profile') || '';
+                        package = TP.sys.cfg('boot.package') || '';
+
+                        loadingDev = profile.indexOf('developer') !== -1 ||
+                                        package.indexOf('developer') !== -1;
 
                         if (TP.sys.cfg('boot.parallel') && loadingDev) {
                             TP.boot.getUIBoot().
@@ -11680,6 +11683,9 @@ TP.boot.$uiRootReady = function() {
 
         login,
 
+        profile,
+        package,
+
         bootWin,
         fields,
         i;
@@ -11709,10 +11715,11 @@ TP.boot.$uiRootReady = function() {
             //  Compute whether we're booting the developer target or not.
             //  NB: Like other logic in the boot system, we respect the setting
             //  of 'boot.profile' first before considering 'boot.package'.
-            loadingDev = TP.sys.cfg('boot.profile').
-                                indexOf('developer') !== -1 ||
-                            TP.sys.cfg('boot.package').
-                                indexOf('developer') !== -1;
+            profile = TP.sys.cfg('boot.profile') || '';
+            package = TP.sys.cfg('boot.package') || '';
+
+            loadingDev = profile.indexOf('developer') !== -1 ||
+                            package.indexOf('developer') !== -1;
 
             if (TP.sys.cfg('boot.parallel') && loadingDev) {
                 TP.boot.getUIBoot().contentDocument.body.style.opacity = 0.5;
