@@ -96,7 +96,7 @@
     "opener": "^1.5.1",
     "permessage-deflate": "^0.1.6",
     "pouchdb": "^7.0.0",
-    "pouchdb-all-dbs": "https://github.com/TechnicalPursuit/pouchdb-all-dbs/tarball/master",
+    "pouchdb-all-dbs": "^1.0.2",
     "puppeteer": "^1.10.0",
     "readline-sync": "^1.4.9",
     "resize-observer-polyfill": "https://github.com/TechnicalPursuit/resize-observer-polyfill/tarball/master",
