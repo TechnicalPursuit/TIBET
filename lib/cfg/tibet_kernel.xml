@@ -89,7 +89,10 @@
     <script src="TIBETDOMPrimitivesPlatform.js"/>
     <script src="TIBETDOMPrimitivesPost.js"/>
 
-    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
+    <script src="~lib_deps/diff-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/diff-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.registerExternalObject('JsDiff', window.JsDiff);
