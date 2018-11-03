@@ -52,6 +52,8 @@
 
     <script src="~lib_deps/aws-sdk-tpi.min.js"
             if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/aws-sdk-tpi.js"
+            unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.registerExternalObject('AWS', window.AWS);
@@ -60,6 +62,8 @@
 
     <script src="~lib_deps/amazon-cognito-identity-tpi.min.js"
             if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/amazon-cognito-identity-tpi.min.js"
+            unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.registerExternalObject('AmazonCognitoIdentity', window.AmazonCognitoIdentity);
