@@ -9,58 +9,26 @@
  */
 
 (function () {
-
-  var MAX_SAFE_INTEGER = 9007199254740991;
-  var isLength = function (value) {
-      return typeof value === 'number' && value > -1 && value % 1 === 0 && value <= MAX_SAFE_INTEGER;
-  };
-
-  var isObjectLike = function (value) {
-      return !!value && typeof value == 'object';
-  };
-
-  var isObject = function (value) {
-      var type = typeof value;
-      return !!value && (type == 'object' || type == 'function');
-  };
-
-  var objProtoToString = Object.prototype.toString;
-
-  var is = {
-      object: isObject,
-      array: Array.isArray || function(value) {
-          return isObjectLike(value) &&
-              isLength(value.length) &&
-              objProtoToString.call(value) == '[object Array]';
-      },
-      regExp: function (value) {
-          return isObject(value) && objProtoToString.call(value) == '[object RegExp]';
-      },
-      date: function (value) {
-          return isObjectLike(value) && objProtoToString.call(value) == '[object Date]';
-      }
-  };
-
   var clone = function (obj) {
       // Handle the 3 simple types (string, number, function), and null or undefined
       if (obj === null || typeof obj !== 'object') return obj;
       var copy;
 
       // Handle Date
-      if (is.date(obj)) {
+      if (obj instanceof Date) {
           copy = new Date();
           copy.setTime(obj.getTime());
           return copy;
       }
 
       // handle RegExp
-      if (is.regExp(obj)) {
+      if (obj instanceof RegExp) {
         copy = new RegExp(obj);
         return copy;
       }
 
       // Handle Array
-      if (is.array(obj)) {
+      if (obj instanceof Array) {
           copy = [];
           for (var i = 0, len = obj.length; i < len; i++)
               copy[i] = clone(obj[i]);
@@ -68,12 +36,11 @@
       }
 
       // Handle Object
-      if (is.object(obj)) {
+      if (obj instanceof Object) {
           copy = {};
-          var hasOwnProperty = copy.hasOwnProperty;
 //           copy = Object.create(Object.getPrototypeOf(obj));
           for (var attr in obj) {
-              if (hasOwnProperty.call(obj, attr))
+              if (obj.hasOwnProperty(attr))
                 copy[attr] = clone(obj[attr]);
           }
           return copy;
@@ -145,7 +112,7 @@
       return Array.isArray(x);
     },
     'date': function (x) {
-      return is.date(x);
+      return x instanceof Date;
     }
   };
 
@@ -183,9 +150,6 @@
     },
     'email': function (v) { // email, ipv4 and ipv6 adapted from node-validator
       return (/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/).test(v);
-    },
-    'phone': function (v) {  // matches most European and US representations like +49 123 999 or 0001 123.456 or +31 (0) 8123
-      return (/^(?:\+\d{1,3}|0\d{1,3}|00\d{1,2})?(?:\s?\(\d+\))?(?:[-\/\s.]|\d)+$/).test(v);
     },
     'ipv4': function (v) {
       if ((/^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$/).test(v)) {
@@ -384,20 +348,13 @@
       if (!schema_stack)
         return {'$ref': schema.$ref};
       else
-        return env.checkValidity(env, schema_stack, object_stack, options);
+        return checkValidity(env, schema_stack, object_stack, options);
     }
 
     if (schema.hasOwnProperty('type')) {
       if (typeof schema.type === 'string') {
         if (options.useCoerce && env.coerceType.hasOwnProperty(schema.type))
           prop = object[name] = env.coerceType[schema.type](prop);
-        if (options.useDefault && schema.default){
-          if ( (prop === undefined || prop === null || prop === '') ||
-            (schema.type === 'array' && !prop.length && Array.isArray(prop)) ||
-            (schema.type === 'object' && JSON.stringify(prop) === JSON.stringify({}))) {
-            prop = object[name] = clone(schema.default);
-          }
-        }
         if (!env.fieldType[schema.type](prop))
           return {'type': schema.type};
       } else {
@@ -412,7 +369,7 @@
 
     if (schema.hasOwnProperty('allOf')) {
       for (i = 0, len = schema.allOf.length; i < len; i++) {
-        objerr = env.checkValidity(env, schema_stack.concat(schema.allOf[i]), object_stack, options);
+        objerr = checkValidity(env, schema_stack.concat(schema.allOf[i]), object_stack, options);
         if (objerr)
           return objerr;
       }
@@ -422,7 +379,7 @@
       if (schema.hasOwnProperty('oneOf')) {
         minErrCount = Infinity;
         for (i = 0, len = schema.oneOf.length, count = 0; i < len; i++) {
-          objerr = env.checkValidity(env, schema_stack.concat(schema.oneOf[i]), object_stack, options);
+          objerr = checkValidity(env, schema_stack.concat(schema.oneOf[i]), object_stack, options);
           if (!objerr) {
             count = count + 1;
             if (count > 1)
@@ -446,7 +403,7 @@
         objerrs = null;
         minErrCount = Infinity;
         for (i = 0, len = schema.anyOf.length; i < len; i++) {
-          objerr = env.checkValidity(env, schema_stack.concat(schema.anyOf[i]), object_stack, options);
+          objerr = checkValidity(env, schema_stack.concat(schema.anyOf[i]), object_stack, options);
           if (!objerr) {
             objerrs = null;
             break;
@@ -464,7 +421,7 @@
       }
 
       if (schema.hasOwnProperty('not')) {
-        objerr = env.checkValidity(env, schema_stack.concat(schema.not), object_stack, options);
+        objerr = checkValidity(env, schema_stack.concat(schema.not), object_stack, options);
         if (!objerr)
           return {'not': true};
       }
@@ -473,7 +430,7 @@
         minErrCount = Infinity;
         for (i = 0, len = schema.oneOf.length, count = 0; i < len; i++) {
           new_stack = clone_stack(object_stack);
-          objerr = env.checkValidity(env, schema_stack.concat(schema.oneOf[i]), new_stack, options);
+          objerr = checkValidity(env, schema_stack.concat(schema.oneOf[i]), new_stack, options);
           if (!objerr) {
             count = count + 1;
             if (count > 1)
@@ -500,7 +457,7 @@
         minErrCount = Infinity;
         for (i = 0, len = schema.anyOf.length; i < len; i++) {
           new_stack = clone_stack(object_stack);
-          objerr = env.checkValidity(env, schema_stack.concat(schema.anyOf[i]), new_stack, options);
+          objerr = checkValidity(env, schema_stack.concat(schema.anyOf[i]), new_stack, options);
           if (!objerr) {
             copy_stack(new_stack, object_stack);
             objerrs = null;
@@ -520,7 +477,7 @@
 
       if (schema.hasOwnProperty('not')) {
         new_stack = clone_stack(object_stack);
-        objerr = env.checkValidity(env, schema_stack.concat(schema.not), new_stack, options);
+        objerr = checkValidity(env, schema_stack.concat(schema.not), new_stack, options);
         if (!objerr)
           return {'not': true};
       }
@@ -535,7 +492,7 @@
                 return {'dependencies': true};
               }
           } else {
-            objerr = env.checkValidity(env, schema_stack.concat(schema.dependencies[p]), object_stack, options);
+            objerr = checkValidity(env, schema_stack.concat(schema.dependencies[p]), object_stack, options);
             if (objerr)
               return objerr;
           }
@@ -565,7 +522,7 @@
           matched = false;
           if (hasProp && schema.properties.hasOwnProperty(props[i])) {
             matched = true;
-            objerr = env.checkValidity(env, schema_stack.concat(schema.properties[props[i]]), object_stack.concat({object: prop, key: props[i]}), options);
+            objerr = checkValidity(env, schema_stack.concat(schema.properties[props[i]]), object_stack.concat({object: prop, key: props[i]}), options);
             if (objerr !== null) {
               objerrs[props[i]] = objerr;
               malformed = true;
@@ -575,7 +532,7 @@
             for (p in schema.patternProperties)
               if (schema.patternProperties.hasOwnProperty(p) && props[i].match(p)) {
                 matched = true;
-                objerr = env.checkValidity(env, schema_stack.concat(schema.patternProperties[p]), object_stack.concat({object: prop, key: props[i]}), options);
+                objerr = checkValidity(env, schema_stack.concat(schema.patternProperties[p]), object_stack.concat({object: prop, key: props[i]}), options);
                 if (objerr !== null) {
                   objerrs[props[i]] = objerr;
                   malformed = true;
@@ -590,9 +547,7 @@
       if (options.useDefault && hasProp && !malformed) {
         for (p in schema.properties)
           if (schema.properties.hasOwnProperty(p) && !prop.hasOwnProperty(p) && schema.properties[p].hasOwnProperty('default'))
-            prop[p] = clone(schema.properties[p]['default']);
-          else if (schema.properties[p] && schema.properties[p].items && !prop.hasOwnProperty(p) && schema.properties[p].items.hasOwnProperty('default'))
-            prop[p] = clone(schema.properties[p].items['default']);
+            prop[p] = schema.properties[p]['default'];
       }
 
       if (options.removeAdditional && hasProp && schema.additionalProperties !== true && typeof schema.additionalProperties !== 'object') {
@@ -609,7 +564,7 @@
             }
           } else {
             for (i = 0, len = props.length; i < len; i++) {
-              objerr = env.checkValidity(env, schema_stack.concat(schema.additionalProperties), object_stack.concat({object: prop, key: props[i]}), options);
+              objerr = checkValidity(env, schema_stack.concat(schema.additionalProperties), object_stack.concat({object: prop, key: props[i]}), options);
               if (objerr !== null) {
                 objerrs[props[i]] = objerr;
                 malformed = true;
@@ -624,7 +579,7 @@
       if (schema.hasOwnProperty('items')) {
         if (Array.isArray(schema.items)) {
           for (i = 0, len = schema.items.length; i < len; i++) {
-            objerr = env.checkValidity(env, schema_stack.concat(schema.items[i]), object_stack.concat({object: prop, key: i}), options);
+            objerr = checkValidity(env, schema_stack.concat(schema.items[i]), object_stack.concat({object: prop, key: i}), options);
             if (objerr !== null) {
               objerrs[i] = objerr;
               malformed = true;
@@ -636,7 +591,7 @@
                 return {'additionalItems': true};
             } else {
               for (i = len, len = prop.length; i < len; i++) {
-                objerr = env.checkValidity(env, schema_stack.concat(schema.additionalItems), object_stack.concat({object: prop, key: i}), options);
+                objerr = checkValidity(env, schema_stack.concat(schema.additionalItems), object_stack.concat({object: prop, key: i}), options);
                 if (objerr !== null) {
                   objerrs[i] = objerr;
                   malformed = true;
@@ -646,7 +601,7 @@
           }
         } else {
           for (i = 0, len = prop.length; i < len; i++) {
-            objerr = env.checkValidity(env, schema_stack.concat(schema.items), object_stack.concat({object: prop, key: i}), options);
+            objerr = checkValidity(env, schema_stack.concat(schema.items), object_stack.concat({object: prop, key: i}), options);
             if (objerr !== null) {
               objerrs[i] = objerr;
               malformed = true;
@@ -656,7 +611,7 @@
       } else if (schema.hasOwnProperty('additionalItems')) {
         if (typeof schema.additionalItems !== 'boolean') {
           for (i = 0, len = prop.length; i < len; i++) {
-            objerr = env.checkValidity(env, schema_stack.concat(schema.additionalItems), object_stack.concat({object: prop, key: i}), options);
+            objerr = checkValidity(env, schema_stack.concat(schema.additionalItems), object_stack.concat({object: prop, key: i}), options);
             if (objerr !== null) {
               objerrs[i] = objerr;
               malformed = true;
@@ -710,7 +665,6 @@
   }
 
   Environment.prototype = {
-    checkValidity: checkValidity,
     validate: function (name, object, options) {
       var schema_stack = [name], errors = null, object_stack = [{object: {'__root__': object}, key: '__root__'}];
 
@@ -728,7 +682,7 @@
             options[p] = this.defaultOptions[p];
       }
 
-      errors = this.checkValidity(this, schema_stack, object_stack, options);
+      errors = checkValidity(this, schema_stack, object_stack, options);
 
       if (errors)
         return {validation: errors.hasOwnProperty('schema') ? errors.schema : errors};
