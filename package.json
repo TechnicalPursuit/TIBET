@@ -77,7 +77,7 @@
     "handlebars": "^4.0.12",
     "has-ansi": "^2.0.0",
     "ip": "^1.1.5",
-    "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
+    "jjv": "^1.0.2",
     "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
     "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",
     "js-beautify": "^1.8.8",
