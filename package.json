@@ -79,7 +79,7 @@
     "ip": "^1.1.5",
     "jjv": "^1.0.2",
     "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
-    "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",
+    "jquery-xpath": "^0.3.1",
     "js-beautify": "^1.8.8",
     "jsDAV": "^0.3.4",
     "less": "https://github.com/TechnicalPursuit/less.js/tarball/master",
