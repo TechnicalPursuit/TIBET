@@ -81,7 +81,7 @@
     "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
     "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",
     "js-beautify": "^1.8.8",
-    "jsDAV": "https://github.com/TechnicalPursuit/jsDAV/tarball/master",
+    "jsDAV": "^0.3.4",
     "less": "https://github.com/TechnicalPursuit/less.js/tarball/master",
     "marked": "^0.4.0",
     "marked-man": "https://github.com/TechnicalPursuit/marked-man/tarball/master",
