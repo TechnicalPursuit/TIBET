@@ -106,7 +106,7 @@
     "shelljs-nodecli": "*",
     "sinon": "TechnicalPursuit/Sinon.JS#v1.12.2",
     "socket.io": "^1.3.5",
-    "sprintf-js": "https://github.com/TechnicalPursuit/sprintf.js/tarball/master",
+    "sprintf-js": "^1.1.1",
     "stylelint": "^9.7.1",
     "stylelint-config-standard": "^18.2.0",
     "supports-color": "^3.1.2",

@@ -4,14 +4,10 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
-        make.sh.exec('npm update sprintf.js');
+        make.sh.exec('npm update sprintf-js');
 
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'sprintf-js'));
-
-        make.sh.exec('npm install -d');
-
-        make.sh.exec('grunt uglify');
 
         make.sh.exec('cp -f ./src/sprintf.js ../../deps/sprintf-tpi.js');
 
