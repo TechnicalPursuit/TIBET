@@ -27,6 +27,7 @@
             '_rollup_fuse',
             '_rollup_jjv',
             '_rollup_jquery',
+            '_rollup_jqueryxpath',
             '_rollup_less',
             '_rollup_pouchdb',
             '_rollup_pouchdb_all_dbs',
@@ -34,7 +35,6 @@
             '_rollup_sinon',
             '_rollup_sprintf',
             '_rollup_syn',
-            '_rollup_jqueryxpath',
             '_rollup_wgxpath',
             '_rollup_xpath'
         ).then(resolve, reject);
