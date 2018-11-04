@@ -9,6 +9,7 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'syn'));
 
+        //  Need this to build minified syn package
         make.sh.exec('npm install -d');
 
         make.sh.exec('grunt build');

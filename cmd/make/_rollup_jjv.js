@@ -9,6 +9,7 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'jjv'));
 
+        //  Need this to build minified jjv package
         make.sh.exec('npm install -d');
 
         make.sh.exec('cp -f lib/jjv.js  ../../deps/jjv-tpi.js');
