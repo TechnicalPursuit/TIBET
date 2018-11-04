@@ -9,8 +9,6 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'ace-builds'));
 
-        make.sh.exec('npm install -d');
-
         make.sh.exec('mkdir ../../deps/ace');
 
         make.sh.exec('cp -f -R src-min-noconflict/ace.js ../../deps/ace/ace-tpi.js');

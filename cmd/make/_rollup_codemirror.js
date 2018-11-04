@@ -9,8 +9,6 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'codemirror'));
 
-        make.sh.exec('npm install -d');
-
         make.sh.exec('mkdir ../../deps/codemirror');
         make.sh.exec('cp -f -R lib ../../deps/codemirror/');
 

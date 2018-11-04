@@ -9,10 +9,6 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'resize-observer-polyfill'));
 
-        make.sh.exec('npm run build');
-
-        make.sh.exec('mkdir ../../deps/resize-observer-polyfill');
-
         make.sh.exec('cp -f -R dist/ResizeObserver.js ../../deps/resize-observer-tpi.js');
 
         resolve();
