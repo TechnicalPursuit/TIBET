@@ -65,7 +65,7 @@
     <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="no-lint"/>
     <script src="TIBETCSSQueryPost.js"/>
 
-    <script src="~lib_deps/wgxpath.install.js"
+    <script src="~lib_deps/wgxpath-tpi.install.min.js"
         no-lint="no-lint" no-minify="no-minify"/>
     <script>
         <![CDATA[

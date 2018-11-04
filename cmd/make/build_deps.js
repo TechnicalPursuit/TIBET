@@ -35,6 +35,7 @@
             '_rollup_sprintf',
             '_rollup_syn',
             '_rollup_jqueryxpath',
+            '_rollup_wgxpath',
             '_rollup_xpath'
         ).then(resolve, reject);
     };
