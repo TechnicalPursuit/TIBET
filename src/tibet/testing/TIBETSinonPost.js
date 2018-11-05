@@ -103,7 +103,7 @@ function(altValue) {
                             'Function is already a stub');
     }
 
-    stub = TP.test.stub(this[TP.OWNER], this[TP.NAME], altValue);
+    stub = TP.test.stub(this[TP.OWNER], this[TP.NAME]).callsFake(altValue);
     stub.$spiedFunc = this;
 
     stub[TP.NAME] = this[TP.NAME];

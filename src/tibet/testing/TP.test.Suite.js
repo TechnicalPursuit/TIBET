@@ -700,7 +700,7 @@ function(currentcase, result, options) {
                     //  Reset the raise invocation counter. See the
                     //  'executeBefore' method as to why we install a spy on
                     //  TP.raise().
-                    TP.raise.reset();
+                    TP.raise.resetHistory();
 
                     if (TP.isThenable(beforeEachRetVal)) {
                         return beforeEachRetVal;
@@ -1183,7 +1183,7 @@ function() {
      * @returns {TP.test.Suite} The receiver.
      */
 
-    TP.signal.reset();
+    TP.signal.resetHistory();
 
     return this;
 });
