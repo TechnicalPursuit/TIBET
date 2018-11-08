@@ -706,12 +706,20 @@ function(aURI) {
         url,
         str;
 
+    //  Put the system in a mode that let's everyone know we're exiting.
+    TP.sys.isExiting(true);
+
     //  Send a TP.sig.AppWillShutdown signal. This can be canceled (i.e.
     //  'prevent default'ed), in which case we just return.
     sig = TP.signal(TP.sys, 'TP.sig.AppWillShutdown');
 
     //  If the signal has been 'prevent default'ed, then return.
     if (sig.shouldPrevent()) {
+
+        //  Put the system in a mode that let's everyone know we're no longer
+        //  exiting.
+        TP.sys.isExiting(false);
+
         return this;
     }
 
