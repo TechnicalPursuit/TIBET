@@ -7063,6 +7063,15 @@ function(aSignal) {
 
     if (TP.notEmpty(exitToURI)) {
         exitToURI = exitToURI.unquoted();
+
+        //  If the URI that the user wants to exit to starts with a '/', then
+        //  prepend the primary location of the concrete URI of '~' onto it.
+        //  Since this value has a trailing slash, we slice off the '/' from the
+        //  supplied value.
+        if (exitToURI.startsWith('/') && exitToURI.getSize() > 1) {
+            exitToURI = TP.uc('~').getConcreteURI().get('primaryLocation') +
+                        exitToURI.slice(1);
+        }
         exitToURI = TP.uc(exitToURI);
     }
 
