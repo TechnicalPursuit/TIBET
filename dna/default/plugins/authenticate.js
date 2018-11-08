@@ -345,9 +345,19 @@
          *
          */
         app.get('/logout', parsers.urlencoded, function(req, res) {
+            var loc;
+
             //  Un-authenticate the user and reset to home route.
             req.logout();
-            res.redirect('/');
+
+            //  If the URL specified a query with a 'goto' parameter, then use
+            //  that as the redirection location. Otherwise, just use '/'.
+            if (req.query.goto) {
+                loc = req.query.goto;
+            } else {
+                loc = '/';
+            }
+            res.redirect(loc);
         });
 
         /**
