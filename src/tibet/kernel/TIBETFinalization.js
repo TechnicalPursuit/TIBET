@@ -740,6 +740,11 @@ function(aURI) {
         url = TP.uc(TP.sys.cfg('path.blank_page'));
     }
 
+    //  Make sure to remove the 'tibet_token' value from sessionStorage. If
+    //  we're running against a server that vended us an authentication token
+    //  (like the TDS), it should be under this storage key.
+    top.sessionStorage.removeItem('tibet_token');
+
     //  close open/registered windows. won't always work, but we can try :)
     TP.core.Window.closeRegisteredWindows();
 
