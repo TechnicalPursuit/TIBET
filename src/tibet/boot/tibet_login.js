@@ -64,14 +64,13 @@
             }
 
             if (xhr.status === 200) {
-                //  Save any token we received so we can send back with any
+                //  Save any JWT token we received so we can send back with any
                 //  calls we make to the server.
                 text = xhr.responseText;
                 try {
                     obj = JSON.parse(text);
                     if (obj.token) {
-                        top.sessionStorage.setItem('tibet_token',
-                            obj.token);
+                        top.sessionStorage.setItem('tibet_token', obj.token);
                     }
                 } catch (e) {
                     void 0;

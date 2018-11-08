@@ -1053,7 +1053,7 @@ function(targetUrl, aRequest, httpObj) {
         }
     }
 
-    //  If there's a client-side JWT token send it as well.
+    //  If there's a client-side JWT token, send it as well.
     token = top.sessionStorage.getItem('tibet_token');
     if (TP.notEmpty(token)) {
         headers.atPut('x-access-token', token);
