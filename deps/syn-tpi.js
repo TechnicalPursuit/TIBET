@@ -2,7 +2,7 @@
  * Syn - 0.0.2
  * 
  * @copyright 2018 Bitovi
- * Sun, 04 Nov 2018 02:28:07 GMT
+ * Sat, 10 Nov 2018 18:40:09 GMT
  * @license MIT
  */
 
