@@ -117,6 +117,7 @@
     <script src="./TP.sherpa.typeToolbarContent/TP.sherpa.typeToolbarContent.js"/>
     <script src="./TP.sherpa.typesToolbarContent/TP.sherpa.typesToolbarContent.js"/>
     <script src="./TP.sherpa.methodsToolbarContent/TP.sherpa.methodsToolbarContent.js"/>
+    <script src="./TP.sherpa.urisToolbarContent/TP.sherpa.urisToolbarContent.js"/>
     <script src="./TP.sherpa.uriEditorToolbarContent/TP.sherpa.uriEditorToolbarContent.js"/>
     <script src="./TP.sherpa.methodEditorToolbarContent/TP.sherpa.methodEditorToolbarContent.js"/>
     <script src="./TP.sherpa.elementContextMenuContent/TP.sherpa.elementContextMenuContent.js"/>
