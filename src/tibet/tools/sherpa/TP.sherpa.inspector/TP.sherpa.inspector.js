@@ -3379,7 +3379,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('selectItemInBay',
-function(itemLabel, bayNum) {
+function(itemLabel, aBayNum) {
 
     /**
      * @method selectItemInBay
@@ -3387,15 +3387,26 @@ function(itemLabel, bayNum) {
      *     supplied bay number. Note that what 'select' means is really up to
      *     the bay content.
      * @param {String} itemLabel The name of the item to select.
-     * @param {Number} bayNum The bay number to select the item in.
+     * @param {Number} [aBayNum] The bay number to select the item in. If this is
+     *     not supplied, the "last" bay is used.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var inspectorBayContentItems,
+
+        bayNum,
         bayContent;
 
     if (TP.notEmpty(inspectorBayContentItems =
                     TP.byCSSPath(' sherpa|inspectoritem > *', this))) {
+
+        bayNum = aBayNum;
+        if (TP.notValid(bayNum)) {
+
+            //  We're interested in refreshing the 'next bay over' where there is
+            //  currently no selection.
+            bayNum = this.get('selectedItems').getSize();
+        }
 
         bayContent = inspectorBayContentItems.at(bayNum);
 
