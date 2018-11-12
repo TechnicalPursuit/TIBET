@@ -3002,7 +3002,7 @@ function(aBayNum) {
     data = TP.getDataForTool(
                     resolver,
                     'inspector',
-                    TP.hc('pathParts', this.get('selectedItems')));
+                    TP.hc('pathParts', selectedItems));
 
     //  Set the resource of the URI holding the bound data for that bay to the
     //  refreshed data that we just obtained.
