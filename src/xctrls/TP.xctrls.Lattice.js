@@ -386,6 +386,10 @@ function(rowNum) {
     //  Adjust the scrolling amount.
     elem.scrollTop = scrollAmount;
 
+    //  When the control scrolls without mouse involvement, we have to
+    //  re-render.
+    this.render();
+
     return this;
 });
 
