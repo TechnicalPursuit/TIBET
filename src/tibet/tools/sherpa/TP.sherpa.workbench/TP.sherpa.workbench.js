@@ -755,7 +755,6 @@ function(aSignal) {
             }
 
             TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
-
         });
 
     return this;
