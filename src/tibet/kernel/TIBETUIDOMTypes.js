@@ -1120,6 +1120,13 @@ function(aTargetElem, anEvent) {
         return this;
     }
 
+    //  If the focused element is valid and is *not* an XHTML node, then
+    //  'manually' blur it. This is because the browser machinery will not do
+    //  this by default, like it does with XHTML elements.
+    if (TP.isValid(focusedElem) && !TP.isXHTMLNode(focusedElem)) {
+        focusedElem.blur();
+    }
+
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
