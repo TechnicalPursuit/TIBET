@@ -3431,7 +3431,10 @@ function() {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var rootSources;
+    var rootSources,
+
+        northDrawer,
+        drawerIsOpenFunc;
 
     //  ---
     //  Set up static roots
@@ -3469,8 +3472,21 @@ function() {
     //  Selected items
     this.set('selectedItems', TP.ac());
 
-    //  Go ahead and 'focus' the inspector, which will show the roots.
-    this.focusUsingInfo(TP.hc('targetObject', this));
+    //  Grab the north drawer and set up a handler on it that will load our root
+    //  content when it is opened for the first time.
+    northDrawer = TP.byId('north', this.getNativeWindow());
+
+    drawerIsOpenFunc = function(transitionSignal) {
+
+        //  Turn off any future notifications.
+        drawerIsOpenFunc.ignore(northDrawer, 'TP.sig.DOMTransitionEnd');
+
+        //  Go ahead and 'focus' the inspector, which will show the roots.
+        this.focusUsingInfo(TP.hc('targetObject', this));
+
+    }.bind(this);
+
+    drawerIsOpenFunc.observe(northDrawer, 'TP.sig.DOMTransitionEnd');
 
     //  Listen for when our document resizes. Note that we actually filter out
     //  other resize events coming from elements under the document. See the
