@@ -1852,7 +1852,13 @@ function() {
      * @returns {Boolean} Whether or not the receiver can be focused.
      */
 
-    return this.hasAttribute('tabindex');
+    var query;
+
+    //  TP.FOCUSABLE_QUERIES contains a CSS query to tell us whether or not an
+    //  Element is focusable.
+    query = TP.FOCUSABLE_QUERIES.join(', ');
+
+    return TP.elementMatchesCSS(this.getNativeNode(), query);
 });
 
 //  ------------------------------------------------------------------------
