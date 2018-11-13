@@ -2924,6 +2924,12 @@ function(info, createHistoryEntry) {
         if (hasMinimumNumberOfBays) {
             this.replaceBayContent(targetBay, bayContent, bayConfig);
         } else {
+            //  If we're creating the root bay, clear any content out of the
+            //  core container.
+            if (newBayNum === 0) {
+                this.get('container').empty();
+            }
+
             //  Otherwise, just add a bay with the new content.
             this.addBay(bayContent, bayConfig);
         }
