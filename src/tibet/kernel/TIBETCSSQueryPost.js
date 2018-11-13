@@ -55,10 +55,9 @@ function(anElement, aSelector) {
         anElement.msMatchesSelector ||
         anElement.matches;
 
-    //  If 'matchesSelector' is available and the selector doesn't have a pipe
-    //  ('|') symbol (i.e. it's not a namespaced query), then use the native
-    //  call.
-    if (TP.isCallable(matchesSelector) && !TP.regex.HAS_PIPE.test(aSelector)) {
+    if (TP.isXHTMLNode(anElement) &&
+        TP.isCallable(matchesSelector) &&
+        !TP.regex.HAS_PIPE.test(aSelector)) {
         return matchesSelector.call(anElement, aSelector);
     }
 
