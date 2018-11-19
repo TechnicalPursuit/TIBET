@@ -200,8 +200,6 @@ li.CodeMirror-hint-active {
     margin: 0;
 
     pointer-events: none;
-
-    z-index: var(--tibet-HUD-TILE-TIER);
 }
 
 /* Resizing the content when HUD drawers open (but only when its been converted
