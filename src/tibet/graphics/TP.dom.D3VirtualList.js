@@ -691,6 +691,8 @@ TP.extern.d3.VirtualScroller = function() {
                 oldEndOffset,
                 oldComputedRowCount,
 
+                initialDataSize,
+
                 rowSelector;
 
             //  calculate positioning (use + 1 to offset 0 position vs
@@ -704,9 +706,15 @@ TP.extern.d3.VirtualScroller = function() {
             oldEndOffset = control.$get('$endOffset');
             oldComputedRowCount = control.$get('$computedRowCount');
 
+            //  compute the new data slice
+            initialDataSize = allData.slice(
+                                startOffset,
+                                Math.min(endOffset, totalRows)).getSize();
+
             if (oldStartOffset === startOffset &&
                 oldEndOffset === endOffset &&
-                oldComputedRowCount === computedRowCount) {
+                oldComputedRowCount === computedRowCount &&
+                initialDataSize === computedRowCount) {
 
                 container.each(
                     function() {
