@@ -79,9 +79,6 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     justify-content: center;
 
     background-color: rgba(68, 68, 68, 0.2);
-
-    /* Note that this matches TP.CURTAIN_TIER in the TIBET kernel */
-    z-index: 32500;
 }
 
 [busyFor]:not([pclass|hidden]) {
