@@ -19,7 +19,7 @@ sherpa|halo {
     min-width: calc((var(--sherpa-halo-corner-size) * 3) + 3px);
     min-height: calc((var(--sherpa-halo-corner-size) * 3) + 2px);
 
-    z-index: var(--tibet-CONSOLE-HALO-TIER);
+    z-index: var(--tibet-HALO-TIER);
 
     outline: dashed 1px #666;
 
