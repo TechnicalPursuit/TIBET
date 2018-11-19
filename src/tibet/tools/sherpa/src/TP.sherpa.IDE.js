@@ -806,6 +806,7 @@ function(aSignal) {
         return this;
     }
 
+    //  If we're testing, then just exit here.
     if (TP.sys.isTesting()) {
         return this;
     }
@@ -863,6 +864,7 @@ function(aSignal) {
 
         currentCanvasDoc;
 
+    //  If we're testing, then just exit here.
     if (TP.sys.isTesting()) {
         return this;
     }
@@ -2747,6 +2749,7 @@ function() {
         world,
         currentScreenTPWin;
 
+    //  If we're testing, then just exit here.
     if (TP.sys.isTesting()) {
         return this;
     }
@@ -2766,6 +2769,7 @@ function() {
 
     TP.addMutationObserverFilter(
         function(aMutationRecord) {
+            //  The builder doesn't process MO events if we're testing.
             if (TP.sys.isTesting()) {
                 return false;
             }
