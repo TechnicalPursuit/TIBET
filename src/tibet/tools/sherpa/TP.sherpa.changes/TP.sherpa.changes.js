@@ -207,6 +207,11 @@ function(aSignal) {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
+    //  If we're testing, then just exit here.
+    if (TP.sys.isTesting()) {
+        return this;
+    }
+
     if (TP.isKindOf(aSignal.getOrigin(), TP.uri.URL)) {
         this.updateURIInfo();
     }
