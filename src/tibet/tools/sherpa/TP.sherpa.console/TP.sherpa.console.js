@@ -1592,7 +1592,7 @@ function(shouldAnimate) {
             //  Set the style String to whatever it is minus the 'transition:
             //  none' value that we put on it above.
             styleStr = TP.elementGetStyleString(drawerElement);
-            styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
+            styleStr = styleStr.replace(/transition:\s*none[^;]*;\s*/, '');
 
             TP.elementSetStyleString(drawerElement, styleStr);
             editorTPElem = TP.byCSSPath(
