@@ -689,7 +689,7 @@ TP.extern.d3.VirtualScroller = function() {
 
                 oldStartOffset,
                 oldEndOffset,
-                oldcomputedRowCount,
+                oldComputedRowCount,
 
                 rowSelector;
 
@@ -702,11 +702,11 @@ TP.extern.d3.VirtualScroller = function() {
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
-            oldcomputedRowCount = control.$get('$computedRowCount');
+            oldComputedRowCount = control.$get('$computedRowCount');
 
             if (oldStartOffset === startOffset &&
                 oldEndOffset === endOffset &&
-                oldcomputedRowCount === computedRowCount) {
+                oldComputedRowCount === computedRowCount) {
 
                 container.each(
                     function() {
