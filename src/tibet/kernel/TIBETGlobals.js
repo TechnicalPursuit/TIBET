@@ -3199,9 +3199,9 @@ TP.regex.TEST_FUNCTION = /test[a-zA-Z0-9$_'"]+/;
 //  ---
 
 TP.regex.XML_IDREF = new RegExp(
-                        TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*');
+                    '^' + TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*' + '$');
 
-TP.regex.XML_NAMEREF = new RegExp(TP.XML_NAME);
+TP.regex.XML_NAMEREF = new RegExp('^' + TP.XML_NAME + '$');
 
 TP.regex.IS_ELEM_MARKUP = new RegExp(
         '^(\\s)*<' + TP.XML_NAME + '>(\\s)*' + '([\\s\\S]*)' + '>(\\s)*$');
