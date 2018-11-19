@@ -2458,6 +2458,7 @@ function(aSignal) {
 
         targetIndex,
 
+        content,
         selection;
 
     //  If the halo is just recasting the current element, then we do nothing
@@ -2509,14 +2510,19 @@ function(aSignal) {
     }
 
     //  Grab the current selection before we refresh
-    selection = this.getInspectorBayContentItem(0).get('value');
+    content = this.getInspectorBayContentItem(0);
+    if (TP.isValid(content)) {
+        selection = content.get('value');
 
-    //  Rebuild the root data entries and refresh bay 0
-    this.buildRootBayData();
-    this.refreshBay(0);
+        //  Rebuild the root data entries and refresh bay 0
+        this.buildRootBayData();
+        this.refreshBay(0);
 
-    //  Set the selection back after we refresh
-    this.getInspectorBayContentItem(0).set('value', selection);
+        //  Set the selection back after we refresh. Note here how we refetch
+        //  the content in bay 0.
+        content = this.getInspectorBayContentItem(0);
+        content.set('value', selection);
+    }
 
     //  Reset the halo target GID tracking attribute that we use to make sure to
     //  not focus on the same object twice in a row.
