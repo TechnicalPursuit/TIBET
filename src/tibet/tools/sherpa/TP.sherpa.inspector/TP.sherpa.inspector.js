@@ -34,7 +34,6 @@ TP.sherpa.InspectorSource.Type.defineConstant('MAX_EDITOR_CONTENT_SIZE',
 //  ------------------------------------------------------------------------
 
 TP.sherpa.InspectorSource.Inst.defineAttribute('entries');
-TP.sherpa.InspectorSource.Inst.defineAttribute('sourceName');
 
 TP.sherpa.InspectorSource.Inst.defineAttribute('additionalConfig');
 
@@ -131,7 +130,7 @@ function(sourcePathParts, newSource) {
 
         if (TP.isMutable(newSource) && TP.canInvoke(newSource, 'set')) {
             //  Set the source's name to be the only item in the path parts.
-            newSource.set('sourceName', pathParts.first());
+            newSource.set('sherpaSourceName', pathParts.first());
         }
 
         this.get('entries').atPut(pathParts.first(), newSource);
@@ -293,7 +292,7 @@ function(anItem) {
         return TP.name(anItem) + ' - #' + TP.lid(anItem);
     }
 
-    sourceName = anItem.$get('sourceName');
+    sourceName = anItem.$get('sherpaSourceName');
     if (TP.notEmpty(sourceName)) {
         return sourceName;
     }

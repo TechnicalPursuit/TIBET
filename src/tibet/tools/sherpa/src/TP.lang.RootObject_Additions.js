@@ -17,7 +17,7 @@
 //  ------------------------------------------------------------------------
 
 //  Define this at a meta level so that even native objects get it.
-TP.defineMetaInstAttribute('sourceName');
+TP.defineMetaInstAttribute('sherpaSourceName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
