@@ -34,6 +34,7 @@ TP.sherpa.InspectorSource.Type.defineConstant('MAX_EDITOR_CONTENT_SIZE',
 //  ------------------------------------------------------------------------
 
 TP.sherpa.InspectorSource.Inst.defineAttribute('entries');
+TP.sherpa.InspectorSource.Inst.defineAttribute('sherpaSourceName');
 
 TP.sherpa.InspectorSource.Inst.defineAttribute('additionalConfig');
 
@@ -129,6 +130,7 @@ function(sourcePathParts, newSource) {
     } else {
 
         if (TP.isMutable(newSource) && TP.canInvoke(newSource, 'set')) {
+            newSource.defineAttribute('sherpaSourceName');
             //  Set the source's name to be the only item in the path parts.
             newSource.set('sherpaSourceName', pathParts.first());
         }
