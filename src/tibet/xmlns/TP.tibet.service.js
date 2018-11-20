@@ -494,7 +494,7 @@ function() {
                 responseBodyContent = TP.copy(responseBodyContent);
 
                 if (TP.isKindOf(responseBodyContent, TP.core.Content)) {
-                    responseBodyContent.set('sourceURI', updateURI);
+                    responseBodyContent.set('sourceURI', updateURI, false);
                 }
 
                 updateURI.setResource(responseBodyContent);
@@ -588,7 +588,7 @@ function() {
                     //  URI to the URI object that we're getting ready to send..
                     bodyContent = TP.copy(bodyContent);
                     if (TP.isKindOf(bodyContent, TP.core.Content)) {
-                        bodyContent.set('sourceURI', uri);
+                        bodyContent.set('sourceURI', uri, false);
                     }
 
                     uri.setResource(bodyContent);
