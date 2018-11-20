@@ -120,7 +120,7 @@ function(anIndex) {
      * @method adjustIterationIndex
      * @summary Adjusts any iteration index that we use when building or
      *     updating templated content.
-     * @param {Number} The initial index as supplied by d3.
+     * @param {Number} anIndex The initial index as supplied by d3.
      * @returns {Number} The adjusted index.
      */
 

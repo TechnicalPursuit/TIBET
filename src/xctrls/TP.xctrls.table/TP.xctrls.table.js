@@ -932,6 +932,9 @@ function(enterSelection) {
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
                 function(d) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
                     if (TP.regex.SPACING.test(d)) {
                         return '&#160;';
                     }
