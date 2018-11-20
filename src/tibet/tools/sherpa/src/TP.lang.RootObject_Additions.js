@@ -16,7 +16,8 @@
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineAttribute('sourceName');
+//  Define this at a meta level so that even native objects get it.
+TP.defineMetaInstAttribute('sourceName');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
