@@ -4476,6 +4476,47 @@ function(methodName, methodBody) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('defineMetaTypeAttribute',
+function(attributeName, attributeValue, attributeDescriptor) {
+
+    /**
+     * @method defineMetaTypeAttribute
+     * @summary Adds the attribute with name and value provided as a 'meta
+     *     type' attribute.
+     * @description Meta type attributes are attributes on the native
+     *     constructor Function objects which provide polymorphic state
+     *     system-wide. Rather than place these attributes on
+     *     Function.prototype, we place them on the other 'core' system
+     *     constructor objects (as listed in the TP.META_TYPE_TARGETS array).
+     * @param {String} attributeName The attribute name.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
+     * @returns {Object} The newly defined attribute value.
+     */
+
+    var i,
+        target,
+
+        result;
+
+    //  Loop over the TP.META_TYPE_TARGETS and install the attribute.
+    for (i = 0; i < TP.META_TYPE_TARGETS.length; i++) {
+        target = TP.META_TYPE_TARGETS[i];
+
+        result = TP.defineAttributeSlot(
+                    target,
+                    attributeName,
+                    attributeValue,
+                    TP.META_TYPE_TRACK,
+                    attributeDescriptor,
+                    TP.META_TYPE_OWNER);
+    }
+
+    return result;
+}, null, 'TP.defineMetaTypeAttribute');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('defineMetaTypeMethod',
 function(methodName, methodBody) {
 
@@ -4502,7 +4543,7 @@ function(methodName, methodBody) {
     //  dictionary for easier reflection.
     TP.META_TYPE_OWNER.meta_methods[methodName] = methodBody;
 
-    //  Then, loop over the TP.META_TYPE_TARGETS and install the method
+    //  Then, loop over the TP.META_TYPE_TARGETS and install the method.
     for (i = 0; i < TP.META_TYPE_TARGETS.length; i++) {
         target = TP.META_TYPE_TARGETS[i];
 
@@ -4526,6 +4567,76 @@ function(methodName, methodBody) {
 
     return null;
 }, null, 'TP.defineMetaTypeMethod');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('defineMetaInstAttribute',
+function(attributeName, attributeValue, attributeDescriptor) {
+
+    /**
+     * @method defineMetaInstAttribute
+     * @summary Adds the attribute with name and value provided as a 'meta
+     *     instance' attribute.
+     * @description Meta instance attributes are attributes on a set of objects
+     *     that provide polymorphic state system-wide. Rather than place these
+     *     attributes on Object.prototype (which is considered bad form), we
+     *     place them on the other 'core' system '.prototype' objects (as listed
+     *     in the TP.META_INST_TARGETS array) and on the top-most TIBET object,
+     *     TP.lang.RootObject.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
+     * @returns {Object} The newly defined attribute value.
+     */
+
+    var i,
+        target,
+
+        result;
+
+    //  Loop over the TP.META_INST_TARGETS and install the attribute.
+    for (i = 0; i < TP.META_INST_TARGETS.length; i++) {
+        target = TP.META_INST_TARGETS[i];
+
+        result = TP.defineAttributeSlot(
+                    target,
+                    attributeName,
+                    attributeValue,
+                    TP.META_INST_TRACK,
+                    attributeDescriptor,
+                    TP.META_INST_OWNER);
+    }
+
+    //  If 'TP.lang' is defined as a namespace and 'TP.lang.RootObject' is
+    //  defined as a type, then go ahead and install this method as *both* a
+    //  type method and an instance method. Since we track it on the same track
+    //  (TP.META_INST_TRACK) and the same owner (TP.META_INST_OWNER), track and
+    //  owner information don't matter here.
+    if (TP.lang && TP.lang.RootObject) {
+
+        target = TP.lang.RootObject$$Type.prototype;
+
+        result = TP.defineAttributeSlot(
+                    target,
+                    attributeName,
+                    attributeValue,
+                    TP.META_INST_TRACK,
+                    attributeDescriptor,
+                    TP.META_INST_OWNER);
+
+        target = TP.lang.RootObject$$Inst.prototype;
+
+        result = TP.defineAttributeSlot(
+                    target,
+                    attributeName,
+                    attributeValue,
+                    TP.META_INST_TRACK,
+                    attributeDescriptor,
+                    TP.META_INST_OWNER);
+    }
+
+    return result;
+}, null, 'TP.defineMetaInstAttribute');
 
 //  ------------------------------------------------------------------------
 
@@ -4556,7 +4667,7 @@ function(methodName, methodBody) {
     //  dictionary for easier reflection.
     TP.META_INST_OWNER.meta_methods[methodName] = methodBody;
 
-    //  Then, loop over the TP.META_INST_TARGETS and install the method
+    //  Then, loop over the TP.META_INST_TARGETS and install the method.
     for (i = 0; i < TP.META_INST_TARGETS.length; i++) {
         target = TP.META_INST_TARGETS[i];
 
