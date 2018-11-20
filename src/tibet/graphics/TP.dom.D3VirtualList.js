@@ -36,6 +36,8 @@ TP.dom.D3VirtualList.Type.set('shouldOrder', false);
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
 
+TP.dom.D3VirtualList.Inst.defineAttribute('$hasBumpRow');
+
 TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$computedRowCount');
@@ -243,6 +245,8 @@ function() {
     //  The current row height.
     rowHeight = this.getRowHeight();
 
+    this.$set('$hasBumpRow', false, false);
+
     //  Viewport height less than row height. Default to 1 row.
     if (viewportHeight < rowHeight) {
         computedRowCount = 1;
@@ -258,6 +262,7 @@ function() {
         //  to avoid 'blank' spaces.
         if ((viewportHeight - borderSize) % rowHeight !== 0) {
             computedRowCount += 1;
+            this.$set('$hasBumpRow', true, false);
         }
     }
 
@@ -700,37 +705,40 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var startOffset,
+            var hasBumpRow,
+
+                startOffset,
                 endOffset,
 
                 oldStartOffset,
                 oldEndOffset,
                 oldComputedRowCount,
 
-                initialDataSize,
-
                 rowSelector;
 
-            //  calculate positioning (use + 1 to offset 0 position vs
-            //  totalRow count diff)
-            startOffset = Math.max(
+            hasBumpRow = control.$get('$hasBumpRow');
+
+            //  Calculate the start offset (if there was a 'bump row', add 1 to
+            //  offset 0 position vs totalRow count diff)
+            if (hasBumpRow) {
+                startOffset = Math.max(
                     0,
                     Math.min(scrollPosition, totalRows - computedRowCount + 1));
+            } else {
+                startOffset = Math.max(
+                    0,
+                    Math.min(scrollPosition, totalRows - computedRowCount));
+            }
+
             endOffset = startOffset + computedRowCount;
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
             oldComputedRowCount = control.$get('$computedRowCount');
 
-            //  compute the new data slice
-            initialDataSize = allData.slice(
-                                startOffset,
-                                Math.min(endOffset, totalRows)).getSize();
-
             if (oldStartOffset === startOffset &&
                 oldEndOffset === endOffset &&
-                oldComputedRowCount === computedRowCount &&
-                initialDataSize === computedRowCount) {
+                oldComputedRowCount === computedRowCount) {
 
                 container.each(
                     function() {
@@ -746,10 +754,22 @@ TP.extern.d3.VirtualScroller = function() {
                                     startOffset,
                                     Math.min(endOffset, totalRows));
 
-                        //  Just update the individual datums for each row
+                        //  Just update the individual datums for each row.
                         rowUpdateSelection.each(
                             function(oldData, index) {
-                                TP.extern.d3.select(this).datum(newData[index]);
+                                var val;
+
+                                //  Grab the new value. If it doesn't exist,
+                                //  then ask the control to create a blank row
+                                //  for the row at our index.
+                                val = newData[index];
+                                if (TP.notValid(val)) {
+                                    val = control.createBlankRowData(index);
+                                }
+
+                                //  Select ourself as the element and set the
+                                //  individual datum.
+                                TP.extern.d3.select(this).datum(val);
                             });
 
                         rowUpdateSelection.call(update);
