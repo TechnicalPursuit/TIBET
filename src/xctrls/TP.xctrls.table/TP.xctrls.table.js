@@ -152,6 +152,39 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('createBlankRowData',
+function(anIndex) {
+
+    /**
+     * @method createBlankRowData
+     * @summary Creates and returns a data object used for 'blank row' for use
+     *     in padding logic.
+     * @param {Number} anIndex The initial index as supplied by d3.
+     * @returns {Object} The data object representing a blank row for this type.
+     */
+
+    var numCols,
+        spacerRow,
+
+        j;
+
+    numCols = this.get('columns').getSize();
+
+    if (numCols === 0) {
+        return null;
+    }
+
+    spacerRow = TP.ac();
+
+    for (j = 0; j < numCols; j++) {
+        spacerRow.push(TP.SPACING + anIndex + '__' + j);
+    }
+
+    return spacerRow;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('getColumns',
 function() {
 
@@ -991,10 +1024,7 @@ function() {
         realDataSize,
         newSpacingRowCount,
 
-        i,
-
-        spacerRow,
-        j;
+        i;
 
     selectionData = this.get('$convertedData');
 
@@ -1112,13 +1142,7 @@ function() {
                         i < realDataSize + newSpacingRowCount;
                             i++) {
 
-                    spacerRow = TP.ac();
-
-                    for (j = 0; j < numCols; j++) {
-                        spacerRow.push(TP.SPACING + i + '__' + j);
-                    }
-
-                    selectionData.atPut(i, spacerRow);
+                    selectionData.atPut(i, this.createBlankRowData(i));
                 }
 
                 //  NB: We never let this drop below 0

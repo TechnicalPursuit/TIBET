@@ -163,6 +163,22 @@ TP.xctrls.list.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('createBlankRowData',
+function(anIndex) {
+
+    /**
+     * @method createBlankRowData
+     * @summary Creates and returns a data object used for 'blank row' for use
+     *     in padding logic.
+     * @param {Number} anIndex The initial index as supplied by d3.
+     * @returns {Object} The data object representing a blank row for this type.
+     */
+
+    return TP.ac(TP.SPACING + anIndex, 'BLANK');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('filter',
 function(aTerm) {
 
@@ -1364,7 +1380,7 @@ function() {
                 for (i = realDataSize;
                         i < realDataSize + newSpacingRowCount;
                             i++) {
-                    selectionData.atPut(i, TP.ac(TP.SPACING + i, i));
+                    selectionData.atPut(i, this.createBlankRowData(i));
                 }
 
                 //  NB: We never let this drop below 0

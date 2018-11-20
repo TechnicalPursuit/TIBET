@@ -129,6 +129,22 @@ function(anIndex) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.D3VirtualList.Inst.defineMethod('createBlankRowData',
+function(anIndex) {
+
+    /**
+     * @method createBlankRowData
+     * @summary Creates and returns a data object used for 'blank row' for use
+     *     in padding logic.
+     * @param {Number} anIndex The initial index as supplied by d3.
+     * @returns {Object} The data object representing a blank row for this type.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.D3VirtualList.Inst.defineMethod('computeHeight',
 function() {
 
