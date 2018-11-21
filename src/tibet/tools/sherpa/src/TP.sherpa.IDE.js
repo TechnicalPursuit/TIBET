@@ -1492,11 +1492,14 @@ function(aSignal) {
     var noTrapTarget,
 
         sourceTPElem,
+        destinationTPElem,
 
         collectors,
 
         vendValue,
-        vendValues;
+        vendValues,
+
+        connector;
 
     //  If we had a target that used to have a 'tibet:nodragtrapping' attribute
     //  on it, we need to put that back now that the connector session is
@@ -1510,8 +1513,9 @@ function(aSignal) {
         this.$set('$nodragtrapTarget', null);
     }
 
-    //  Grab the connector source element
+    //  Grab the connector source and destination elements.
     sourceTPElem = aSignal.at('sourceElement');
+    destinationTPElem = aSignal.at('destinationElement');
 
     //  Grab the values that determine what type of connection we're vending.
     vendValue = sourceTPElem.getAttribute('sherpa:connectorvend');
@@ -1554,6 +1558,15 @@ function(aSignal) {
                     }
                 });
         });
+
+    //  If there was a completed connection, then the assistants (or whatever
+    //  object is handling those) is responsible for hiding the connectors when
+    //  it is completely finished, but in the case of invalid destination
+    //  elements they will never be notified, so we have to hide it here.
+    if (TP.notValid(destinationTPElem)) {
+        connector = TP.byId('SherpaConnector', TP.sys.getUIRoot());
+        connector.hideAllConnectorVisuals();
+    }
 
     return this;
 });
