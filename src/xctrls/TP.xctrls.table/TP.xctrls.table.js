@@ -50,6 +50,7 @@ TP.xctrls.table.Type.set('bidiAttrs', TP.ac('value'));
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineAttribute('$numColumns');
 TP.xctrls.table.Inst.defineAttribute('columns');
 
 TP.xctrls.table.Inst.defineAttribute(
@@ -164,15 +165,12 @@ function(anIndex) {
      */
 
     var numCols,
+
         spacerRow,
 
         j;
 
-    numCols = this.get('columns').getSize();
-
-    if (numCols === 0) {
-        return null;
-    }
+    numCols = TP.ifInvalid(this.get('$numColumns'), 0);
 
     spacerRow = TP.ac();
 
@@ -1102,6 +1100,8 @@ function() {
         }
 
         this.setAttribute('colcount', numCols);
+
+        this.set('$numColumns', numCols, false);
 
         //  Cache our converted data.
         this.set('$convertedData', selectionData, false);
