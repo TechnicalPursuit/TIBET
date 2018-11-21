@@ -863,7 +863,8 @@ function(aSignal) {
     target = TP.sys.getTypeByName(itemData.at(1));
 
     //  Turn off 'autohiding' the connector - we'll hide it when the assisntant
-    //  is done.
+    //  is done. Note that this is reset to 'true' every time the connector is
+    //  hidden.
     connector = TP.byId('SherpaConnector', this.getNativeDocument());
     connector.set('autohideConnector', false);
 
