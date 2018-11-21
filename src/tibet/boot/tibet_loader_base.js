@@ -2362,6 +2362,8 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
         path,
         cfg,
         matches,
+        match,
+        replacement,
         keys;
 
     if (!aPath) {
@@ -2370,7 +2372,7 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
 
     //  Don't try to do this until we've computed the proper root paths.
     if (!TP.boot.$$approot || !TP.boot.$$libroot) {
-      return aPath;
+        return aPath;
     }
 
     path = TP.boot.$$tibetURIS[aPath];
@@ -2406,7 +2408,13 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
         case 0:
             break;
         case 1:
-            path = path.replace(matches[0][1], matches[0][0]);
+            match = matches[0][1];
+            replacement = matches[0][0];
+            if (match.charAt(match.length - 1) === '/') {
+                path = path.replace(match, replacement + '/');
+            } else {
+                path = path.replace(match, replacement);
+            }
             break;
         default:
             //  Sort matches by value length and use the longest one.
@@ -2427,7 +2435,13 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
                     return 0;
                 }
             });
-            path = path.replace(matches[0][1], matches[0][0]);
+            match = matches[0][1];
+            replacement = matches[0][0];
+            if (match.charAt(match.length - 1) === '/') {
+                path = path.replace(match, replacement + '/');
+            } else {
+                path = path.replace(match, replacement);
+            }
             break;
     }
 
