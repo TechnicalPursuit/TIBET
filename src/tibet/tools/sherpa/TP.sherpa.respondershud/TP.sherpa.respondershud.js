@@ -828,35 +828,24 @@ function(aSignal) {
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
-    var srcTPElem,
-        destTPElem,
-
-        indexInData,
-
-        data,
+    var data,
         itemData,
 
         target,
 
         connector;
 
-    srcTPElem = aSignal.at('sourceElement');
-    destTPElem = TP.wrap(aSignal.getTarget());
-
-    //  Get the value of the destination's indexInData attribute.
-    indexInData = destTPElem.getAttribute('indexInData');
-
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
-        return this;
-    }
-
-    //  Convert to a Number.
-    indexInData = indexInData.asNumber();
-
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+
+    //  Since we're connecting to 'the whole responder chain', we can just use
+    //  the last item in the data set.
+    itemData = data.last();
+
+    //  Make sure it's real ;-).
+    if (TP.isEmpty(itemData)) {
+        return this;
+    }
 
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
@@ -870,7 +859,7 @@ function(aSignal) {
 
     //  Show the assistant.
     TP.sherpa.signalConnectionAssistant.showAssistant(
-                TP.hc('sourceTPElement', srcTPElem,
+                TP.hc('sourceTPElement', aSignal.at('sourceElement'),
                         'destinationTarget', target));
 
     return this;
@@ -1047,10 +1036,6 @@ function(enterSelection) {
                 //  attribute.
                 return null;
             }).attr(
-            'sherpa:connectoraccept',
-            function(d, i) {
-                return 'signalsource';
-            }).attr(
             'indexInData',
             function(d, i) {
                 return i;
@@ -1089,10 +1074,6 @@ function(updateSelection) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
-            }).attr(
-            'sherpa:connectoraccept',
-            function(d, i) {
-                return 'signalsource';
             }).attr(
             'indexInData',
             function(d, i) {
