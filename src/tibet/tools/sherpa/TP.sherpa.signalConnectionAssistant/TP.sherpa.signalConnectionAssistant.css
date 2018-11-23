@@ -57,6 +57,8 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser 
     align-items: center;
 
     margin-left: 10px;
+
+    font-weight: bold;
 }
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > input {
@@ -111,6 +113,8 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersC
     align-items: center;
 
     margin-left: 10px;
+
+    font-weight: bold;
 }
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > input {
