@@ -3,7 +3,6 @@
 <sherpa:signalConnectionAssistant>
     <div class="head"/>
     <div class="body">
-
         <div id="signalConnectionAssistant_SourceSignalChooser">
             <label for="signalConnectionAssistant_SourceSignalNameField">Signals:</label>
             <input type="text" id="signalConnectionAssistant_SourceSignalNameField" autofocus="autofocus" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalName)}" ui:incremental="model" autocomplete="off"/>
@@ -16,6 +15,13 @@
             <xctrls:list id="signalConnectionAssistant_DestinationHandlers" bind:in="{data: urn:tibet:handlernamelist}" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.chosenDestinationHandlerName)}"/>
         </div>
 
+        <div id="signalConnectionAssistant_SourceSignalInfo">
+            <label for="signalConnectionAssistant_SourceSignalOriginField">Origin:</label>
+            <input type="text" id="signalConnectionAssistant_SourceSignalOriginField" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalOrigin)}" ui:incremental="model" autocomplete="off"/>
+
+            <label for="signalConnectionAssistant_SourceSignalPolicyField">Policy:</label>
+            <input type="text" id="signalConnectionAssistant_SourceSignalPolicyField" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalPolicy)}" ui:incremental="model" autocomplete="off"/>
+        </div>
     </div>
 
     <div class="foot">

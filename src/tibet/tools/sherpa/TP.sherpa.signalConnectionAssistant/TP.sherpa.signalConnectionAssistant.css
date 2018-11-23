@@ -142,6 +142,35 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersC
     line-height: 1.5;
 }
 
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo {
+
+    position: absolute;
+    display: grid;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    grid-template-rows: 2.5em 2.5em;
+    grid-template-columns: 5em 1fr;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo > label {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 10px;
+
+    font-weight: bold;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo > input {
+
+    width: calc(100% - 1.2em);
+}
+
 sherpa|signalConnectionAssistant > .foot {
 
     position: absolute;

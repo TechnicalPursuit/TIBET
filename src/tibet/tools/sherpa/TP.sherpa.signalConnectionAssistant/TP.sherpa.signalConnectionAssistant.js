@@ -411,6 +411,13 @@ function(info) {
 
     var str,
 
+        extendedForm,
+
+        sigName,
+        sigOrigin,
+        sigPolicy,
+        sigPayload,
+
         val;
 
     str = 'on:';
@@ -425,14 +432,79 @@ function(info) {
 
     str += '=';
 
+    str += '"';
+
+    //  If there is a defined origin, policy or payload, then we need to use a
+    //  'JSON-like' syntax.
+    extendedForm = TP.notEmpty(info.at('enteredSourceSignalOrigin')) ||
+                    TP.notEmpty(info.at('enteredSourceSignalPolicy')) ||
+                    TP.notEmpty(info.at('enteredSourceSignalPayload'));
+
+    if (extendedForm) {
+        str += '{';
+    }
+
+    sigName = '';
+    sigOrigin = '';
+    sigPolicy = '';
+    sigPayload = '';
+
     if (TP.notEmpty(val = info.at('enteredDestinationHandlerName'))) {
-        str += val.quoted('"');
+        sigName = val;
     } else if (TP.notEmpty(val = info.at('chosenDestinationHandlerName'))) {
         if (/ \(/.test(val)) {
             val = val.slice(0, val.indexOf(' ('));
         }
-        str += val.quoted('"');
+        sigName = val;
     }
+
+    if (TP.notEmpty(sigName)) {
+        if (extendedForm) {
+            str += 'signal: ' + sigName + ', ';
+        } else {
+            str += sigName;
+        }
+    }
+
+    if (TP.notEmpty(val = info.at('enteredSourceSignalOrigin'))) {
+        sigOrigin = val;
+    }
+
+    if (TP.notEmpty(sigOrigin)) {
+        if (extendedForm) {
+            str += 'origin: \\\'' + sigOrigin + '\\\', ';
+        }
+    }
+
+    if (TP.notEmpty(val = info.at('enteredSourceSignalPolicy'))) {
+        sigPolicy = val;
+    }
+
+    if (TP.notEmpty(sigPolicy)) {
+        if (extendedForm) {
+            str += 'policy: \\\'' + sigPolicy + '\\\', ';
+        }
+    }
+
+    if (TP.notEmpty(val = info.at('enteredSourceSignalPayload'))) {
+        sigPayload = val;
+    }
+
+    if (TP.notEmpty(sigPayload)) {
+        if (extendedForm) {
+            str += 'payload: {' + sigPayload + '}, ';
+        }
+    }
+
+    if (extendedForm) {
+        if (str.endsWith(', ')) {
+            //  Slice both the trailing comma and space off.
+            str = str.slice(0, -2);
+        }
+        str += '}';
+    }
+
+    str += '"';
 
     return str;
 });
@@ -671,6 +743,12 @@ function(anObj) {
     //  The data for the chosen signal name or entered signal name.
     newSignalInfo.atPut('chosenSourceSignalName', '');
     newSignalInfo.atPut('enteredSourceSignalName', '');
+
+    //  The data for the entered origin.
+    newSignalInfo.atPut('enteredSourceSignalOrigin', '');
+
+    //  The data for the entered policy.
+    newSignalInfo.atPut('enteredSourceSignalPolicy', '');
 
     //  The data for the chosen handler name or entered handler name.
     newSignalInfo.atPut('chosenDestinationHandlerName', '');
