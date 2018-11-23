@@ -5748,8 +5748,10 @@ function(originSet, aSignal, aPayload, aType) {
                                 sigdata,
                                 origin,
                                 sig,
-                                null,   //  payload
-                                null,   //  policy
+                                null,   //  payload - here we use the value in
+                                        //  sigdata, even if it's undefined.
+                                null,   //  policy - here we use the value in
+                                        //  sigdata, even if it's undefined.
                                 TP.sig.ResponderSignal);
                 }
 
