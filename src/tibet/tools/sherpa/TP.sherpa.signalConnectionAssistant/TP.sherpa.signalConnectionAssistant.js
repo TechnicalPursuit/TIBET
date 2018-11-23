@@ -119,7 +119,7 @@ function(anObject) {
         commandRequest;
 
     //  The target type that we will adding the handler to can be found in our
-    //  data under 'destinationTarget'
+    //  data under 'destinationTarget'.
     targetType = this.get('data').at('destinationTarget');
 
     if (TP.isType(targetType)) {

@@ -5632,10 +5632,12 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
      * @param {TP.sig.Signal} [triggerSignal] The signal that triggered this
      *     signal queueing to happen. This will be placed in the firing signal's
      *     payload under the 'trigger' key.
-     * @param {Object} aPayload Optional argument object. Note that this is only
-     *     used if not specified in the signalData.
-     * @param {Function} aPolicy A "firing" policy that will define how the
-     *     signal is fired. Defaults to the policy of the signal instance/type.
+     * @param {Object} [aPayload] Optional argument object. Note that this is
+     *     only used if not specified in the signalData.
+     * @param {Function} [aPolicy] A "firing" policy that will define how the
+     *     signal is fired. Note that this is only used if not specific in the
+     *     signalData. If neither is supplied, this defaults to the policy of
+     *     the signal instance/type.
      * @param {TP.meta.sig.Signal} A signal type that will be used as the 'real'
      *     signal type if the signal name supplied (in some form) in the signal
      *     data is a spoofed signal name.
@@ -5720,8 +5722,7 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
 
     //  Payload is whatever we found in signal data followed by anything
     //  provided explicitly followed by an empty hash we can add to.
-    sigPayload = sigParams.at('payload');
-    sigPayload = TP.ifInvalid(sigPayload, aPayload);
+    sigPayload = TP.ifInvalid(sigParams.at('payload'), aPayload);
     if (TP.notValid(sigPayload)) {
         sigPayload = TP.hc();
     }

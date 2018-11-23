@@ -16,6 +16,10 @@
 
 TP.sherpa.hudsidebar.defineSubtype('respondershud');
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineAttribute('currentTarget');
 
 TP.sherpa.respondershud.Inst.defineAttribute('highlighted');
