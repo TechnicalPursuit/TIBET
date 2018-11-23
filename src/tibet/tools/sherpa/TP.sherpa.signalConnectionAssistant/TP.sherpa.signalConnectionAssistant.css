@@ -36,12 +36,11 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser 
     display: grid;
 
     top: 0;
-    bottom: 0;
     left: 0;
 
     width: 50%;
 
-    grid-template-rows: 2.5em auto;
+    grid-template-rows: 2.5em 12em;
     grid-template-columns: 2fr;
 
     grid-template-areas:
@@ -91,12 +90,11 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersC
     display: grid;
 
     top: 0;
-    bottom: 0;
     left: 50%;
 
     width: 50%;
 
-    grid-template-rows: 2.5em auto;
+    grid-template-rows: 2.5em 12em;
     grid-template-columns: 2fr;
 
     grid-template-areas:
