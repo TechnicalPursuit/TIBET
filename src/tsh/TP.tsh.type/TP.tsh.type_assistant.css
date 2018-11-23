@@ -73,7 +73,9 @@ xctrls|list#TypeAssistantSupertypes {
 }
 
 input#SupertypeFilterField {
+
     width: 19.7em;
+
     margin-left: 0;
     margin-top: 12px;
     margin-bottom: 0;
@@ -87,7 +89,9 @@ tsh|type_assistant > .body .new_type_details {
     left: auto;
     right: 0;
     bottom: 0;
+
     width: 20em;
+
     margin: 8px 20px;
 }
 
@@ -131,15 +135,19 @@ tsh|type_assistant > .body .new_type_details .flex_outer > li > label {
 }
 
 tsh|type_assistant > .body .new_type_details .flex_outer > li > label + * {
+
     flex: 1 0 100px;
+
     width: 9em;
 }
 
 tsh|type_assistant > .body .new_type_details .top_level_ns {
+
     display: flex;
 }
 
 tsh|type_assistant > .body .new_type_details .top_level_ns li {
+
     width: 5em;
 }
 
