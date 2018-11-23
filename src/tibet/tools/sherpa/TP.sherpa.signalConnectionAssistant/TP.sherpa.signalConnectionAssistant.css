@@ -27,6 +27,7 @@ sherpa|signalConnectionAssistant > .body {
     bottom: 6em;
 
     overflow: auto;
+    text-align: left;
 }
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser {

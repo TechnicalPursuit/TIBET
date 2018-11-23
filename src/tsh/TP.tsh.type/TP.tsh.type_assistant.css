@@ -27,6 +27,8 @@ tsh|type_assistant > .body {
     width: auto;
 
     overflow: auto;
+
+    text-align: left;
 }
 
 tsh|type_assistant > .foot {
@@ -53,8 +55,6 @@ tsh|type_assistant > .body .supertype_chooser {
     width: 20em;
 
     margin: 12px 20px;
-
-    text-align: left;
 
     font-weight: bold;
     line-height: 1em;
@@ -114,8 +114,6 @@ tsh|type_assistant > .body .new_type_details form {
 tsh|type_assistant > .body .new_type_details .flex_outer {
 
     margin: 0 0 0 20px;
-
-    text-align: left;
 }
 
 tsh|type_assistant > .body .new_type_details .flex_outer > li {
