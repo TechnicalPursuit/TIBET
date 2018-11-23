@@ -15,7 +15,8 @@ node_js:
     - "8"
 
 notifications:
-    slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
+    slack:
+        secure: cLN6zdiUqhKYFePyw0A129dadjK9Tm56lH/VlY8KTYDl6u7mx6vfCrujGx1d+ZYQlBf8O60jL77EJn/FMiHZMDNz5Q/R29WKBPPAvQUGhZJ0rgyB+XIADimInvX4NKr7r+KcPg4Y6SeJ5PdULba9ZB0vQdLzP8fKZHCHfDmtrL0=
     email: false
 
 before_install:
