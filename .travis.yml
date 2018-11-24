@@ -16,7 +16,7 @@ node_js:
 
 notifications:
     slack:
-        secure: cLN6zdiUqhKYFePyw0A129dadjK9Tm56lH/VlY8KTYDl6u7mx6vfCrujGx1d+ZYQlBf8O60jL77EJn/FMiHZMDNz5Q/R29WKBPPAvQUGhZJ0rgyB+XIADimInvX4NKr7r+KcPg4Y6SeJ5PdULba9ZB0vQdLzP8fKZHCHfDmtrL0=
+        secure: oexqQgAfRP6B5I8+B3lMHri6QxCfPDv1780s2qeoCr11hVBWPmCobpgVYu1F74OoBYAg+w9o1CN4M/df/bRRQ/vgh7ivsUmxFUDffosGsCyIHplXwqB3hKWxoToOvdXhFvBhMJdGOGUsQqmdTLWlZo+mPS0nMcie5kbJi32XDrY=
     email: false
 
 before_install:
