@@ -148,6 +148,10 @@ function(info) {
         sigName = val;
     }
 
+    if (TP.isEmpty(sigName)) {
+        return '';
+    }
+
     if (TP.notEmpty(sigName)) {
         if (extendedForm) {
             str += 'signal: ' + sigName + ', ';
