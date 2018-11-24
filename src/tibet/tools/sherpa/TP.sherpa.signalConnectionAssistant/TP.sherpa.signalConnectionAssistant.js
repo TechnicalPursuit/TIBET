@@ -108,6 +108,7 @@ function(info) {
 
     var str,
 
+        policyVal,
         extendedForm,
 
         sigName,
@@ -119,11 +120,15 @@ function(info) {
 
     str = '';
 
+    policyVal = info.at('enteredSourceSignalPolicy');
+
     //  If there is a defined origin, policy or payload, then we need to use a
     //  'JSON-like' syntax.
+    /* eslint-disable no-extra-parens */
     extendedForm = TP.notEmpty(info.at('enteredSourceSignalOrigin')) ||
-                    TP.notEmpty(info.at('enteredSourceSignalPolicy')) ||
+                    (TP.notEmpty(policyVal) && policyVal !== 'Choose...') ||
                     TP.notEmpty(info.at('enteredSourceSignalPayload'));
+    /* eslint-enable no-extra-parens */
 
     if (extendedForm) {
         str += '{';
@@ -166,8 +171,10 @@ function(info) {
     }
 
     if (TP.notEmpty(sigPolicy)) {
-        if (extendedForm) {
-            str += 'policy: \\\'' + sigPolicy + '\\\', ';
+        if (sigPolicy !== 'Choose...') {
+            if (extendedForm) {
+                str += 'policy: \\\'' + sigPolicy + '\\\', ';
+            }
         }
     }
 

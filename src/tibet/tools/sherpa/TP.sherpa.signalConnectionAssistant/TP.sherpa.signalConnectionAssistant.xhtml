@@ -20,7 +20,16 @@
             <input type="text" id="signalConnectionAssistant_SourceSignalOriginField" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalOrigin)}" ui:incremental="model" autocomplete="off"/>
 
             <label for="signalConnectionAssistant_SourceSignalPolicyField">Policy:</label>
-            <input type="text" id="signalConnectionAssistant_SourceSignalPolicyField" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalPolicy)}" ui:incremental="model" autocomplete="off"/>
+            <select class="policy_select" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalPolicy)}">
+                <option value="">Choose...</option>
+                <option value="OBSERVER_FIRING">OBSERVER_FIRING</option>
+                <option value="DOM_FIRING">DOM_FIRING</option>
+                <option value="RESPONDER_FIRING">RESPONDER_FIRING</option>
+                <option value="BIND_FIRING">BIND_FIRING</option>
+                <option value="EXCEPTION_FIRING">EXCEPTION_FIRING</option>
+                <option value="FIRE_ONE">FIRE_ONE</option>
+                <option value="INHERITANCE_FIRING">INHERITANCE_FIRING</option>
+            </select>
         </div>
     </div>
 
