@@ -5,6 +5,8 @@
 
         var content,
             footer,
+            clean,
+            fullpath,
             genHtml,
             genMan,
             header,
@@ -27,6 +29,19 @@
         //  ---
 
         make.log('building TIBET documentation...');
+
+        clean = make.getArgument('clean');
+        if (clean) {
+            fullpath = make.path.join(make.CLI.expandPath('~'), 'doc', 'html');
+            if (make.sh.test('-d', fullpath)) {
+                make.sh.rm('-rf', make.path.join(fullpath, '*'));
+            }
+
+            fullpath = make.path.join(make.CLI.expandPath('~'), 'doc', 'man');
+            if (make.sh.test('-d', fullpath)) {
+                make.sh.rm('-rf', make.path.join(fullpath, '*'));
+            }
+        }
 
         rootpath = make.path.join(make.CLI.expandPath('~'), 'doc');
         srcpath = make.path.join(rootpath, 'markdown');
