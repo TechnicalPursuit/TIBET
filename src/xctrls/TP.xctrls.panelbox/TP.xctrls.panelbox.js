@@ -114,6 +114,31 @@ function(aValue, aContentObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panelbox.Inst.defineMethod('getContentForRoute',
+function(aRoute) {
+
+    /**
+     * @method getContentForRoute
+     * @summary Returns a content element that the receiver associates with
+     *     the supplied route.
+     * @param {String} aRoute The route that the receiver should return the
+     *     content element for.
+     * @returns {TP.dom.ElementNode} The content element to return for the
+     *     supplied route.
+     */
+
+    var panelTPElem;
+
+    panelTPElem = this.get('itemWithValue', aRoute);
+    if (TP.isEmptyArray(panelTPElem)) {
+        return null;
+    }
+
+    return panelTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.panelbox.Inst.defineMethod('getDescendantsForSerialization',
 function() {
 
