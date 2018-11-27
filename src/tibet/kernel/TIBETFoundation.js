@@ -7566,10 +7566,13 @@ function(aValue) {
      *     The search for variable slots follows value, _value, and $value. This
      *     method calls changed if the value changes.
      * @param {Object} aValue The value to set the value of the receiver to.
-     * @returns {Object} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
-    return this.$set('value', aValue);
+    this.$set('value', aValue);
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------

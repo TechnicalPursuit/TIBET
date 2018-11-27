@@ -1095,7 +1095,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. For this type,
      *     this flag is ignored.
-     * @returns {TP.dom.D3Tag} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     //  Note how we pass 'false' here to not trigger change notification.
@@ -1106,7 +1107,9 @@ function(aValue, shouldSignal) {
 
     this.render();
 
-    return this;
+    //  TODO: Optimize the return value here by comparing the old and new data
+    //  values.
+    return true;
 });
 
 //  ------------------------------------------------------------------------

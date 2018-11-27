@@ -185,7 +185,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.sherpa.domhud_elementContent} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var attributesModel,
@@ -214,7 +215,7 @@ function(aValue, shouldSignal) {
     modelURI = TP.uc('urn:tibet:domhud_content_source');
     modelURI.setResource(textContentModel, TP.hc('signalChange', true));
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

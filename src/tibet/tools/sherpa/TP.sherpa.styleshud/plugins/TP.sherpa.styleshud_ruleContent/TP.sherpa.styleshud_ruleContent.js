@@ -174,7 +174,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.sherpa.styleshud_ruleContent} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var propertiesModel,
@@ -205,7 +206,7 @@ function(aValue, shouldSignal) {
 
     modelURI.setResource(propertiesModel, TP.hc('signalChange', true));
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

@@ -1186,7 +1186,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.UIElementNode} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var oldValue,
@@ -1196,27 +1197,20 @@ function(aValue, shouldSignal) {
 
         flag;
 
-    //  If we're not signaling, then we don't need to worry about obtaining and
-    //  checking the old value, etc. Just produce a new value, set the
-    //  receiver's display value to it and return.
-    if (shouldSignal === false) {
-
-        newValue = this.produceValue('value', aValue);
-        this.setDisplayValue(newValue);
-
-        return this;
-    }
-
     oldValue = this.getValue();
 
     newValue = this.produceValue('value', aValue);
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
-        return this;
+        return false;
     }
 
     this.setDisplayValue(newValue);
+
+    if (shouldSignal === false) {
+        return true;
+    }
 
     //  signal as needed
 
@@ -1239,7 +1233,7 @@ function(aValue, shouldSignal) {
         }
     }
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

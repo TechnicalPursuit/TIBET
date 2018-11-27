@@ -3010,7 +3010,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'content' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.Node} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var node,
@@ -3026,7 +3027,7 @@ function(aValue, shouldSignal) {
 
     //  this test should be adequate for text comparison
     if (aValue === oldValue) {
-        return this;
+        return false;
     }
 
     //  refetch the true native node, preserving crud/deletes so the new
@@ -3065,7 +3066,7 @@ function(aValue, shouldSignal) {
                     'TP.sig.DOMContentLoaded handler generated error.')) : 0;
     }
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -3104,7 +3105,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.Node} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var newValue;
@@ -14547,13 +14549,16 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var flag,
 
         newValue,
-        newValueStr;
+        newValueStr,
+
+        didChange;
 
     //  If the value isn't valid, just return.
     if (TP.notValid(aValue)) {
@@ -14567,9 +14572,10 @@ function(aValue, shouldSignal) {
     //  we can just use 'setTextContent'. Otherwise, we have to use the full
     //  'setContent'.
     if (!TP.regex.CONTAINS_ELEM_MARKUP.test(newValueStr)) {
-        this.setTextContent(newValueStr, shouldSignal);
+        didChange = this.setTextContent(newValueStr, shouldSignal);
     } else {
         this.setContent(newValue);
+        didChange = true;
     }
 
     //  signal as needed
@@ -14583,7 +14589,7 @@ function(aValue, shouldSignal) {
         this.$changed('value', TP.UPDATE);
     }
 
-    return this;
+    return didChange;
 });
 
 //  ------------------------------------------------------------------------
@@ -15312,7 +15318,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.Node} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var newValue;
@@ -15322,7 +15329,9 @@ function(aValue, shouldSignal) {
     this.getOwnerElement().setAttribute(this.getNativeNode().nodeName,
                                         newValue);
 
-    return this;
+    //  TODO: Optimize the return value here by comparing the old and new data
+    //  values.
+    return true;
 });
 
 //  ========================================================================
@@ -16510,7 +16519,8 @@ function(aValue, signalFlag) {
      * @param {Boolean} signalFlag Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @exception TP.sig.InvalidDocument
-     * @returns {TP.dom.Node} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var tpElem;
@@ -16518,9 +16528,7 @@ function(aValue, signalFlag) {
     if (TP.isValid(tpElem = this.getDocumentElement())) {
 
         //  NB: This will signal change
-        tpElem.setValue(aValue, signalFlag);
-
-        return this;
+        return tpElem.setValue(aValue, signalFlag);
     }
 
     return this.raise('TP.sig.InvalidDocument',

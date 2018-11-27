@@ -611,7 +611,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.dom.ReactElement} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var peer,
@@ -621,23 +622,23 @@ function(aValue, shouldSignal) {
 
     //  If the value isn't valid, just return.
     if (TP.notValid(aValue)) {
-        return this;
+        return false;
     }
 
     //  If the peer component isn't mounted, then just return.
     if (TP.notTrue(this.get('$isMounted'))) {
-        return this;
+        return false;
     }
 
     //  If we're updating as part of the React update cycle, just return.
     if (this.get('$$updating')) {
-        return this;
+        return false;
     }
 
     //  If the React peer isn't valid, just return.
     peer = this.get('$reactPeer');
     if (TP.notValid(peer)) {
-        return this;
+        return false;
     }
 
     newValue = this.produceValue('value', aValue);
@@ -653,7 +654,7 @@ function(aValue, shouldSignal) {
         peer.setState({value: newValue});
     }
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

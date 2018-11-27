@@ -4260,10 +4260,13 @@ function(aValue) {
      * @summary Sets the 'value' of the receiver. This method provides
      *     polymorphic behavior by calling the receiver's 'setContent' method.
      * @param {Object} aValue The value to set the value of the receiver to.
-     * @returns {Object} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
-    return this.setContent(aValue);
+    this.setContent(aValue);
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------

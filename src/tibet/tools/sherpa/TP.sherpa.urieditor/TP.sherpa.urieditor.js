@@ -1251,17 +1251,18 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. For this type,
      *     this flag is ignored.
-     * @returns {TP.sherpa.urieditor} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     if (this.get('$changingSourceContent')) {
-        return this;
+        return false;
     }
 
     if (!TP.isValid(aValue)) {
         this.teardown();
 
-        return this;
+        return true;
     }
 
     //  NB: This will call render()
@@ -1297,7 +1298,7 @@ function(aValue, shouldSignal) {
 
         }.bind(this), TP.sys.cfg('editor.select.delay', 50));
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

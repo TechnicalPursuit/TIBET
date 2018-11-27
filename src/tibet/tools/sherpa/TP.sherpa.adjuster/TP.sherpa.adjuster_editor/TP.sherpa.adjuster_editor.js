@@ -64,12 +64,13 @@ function(aValue) {
      *     property) that the receiver will be managing.
      * @param {TP.core.Hash} aValue The hash containing the data that the
      *     receiver will manage.
-     * @returns {TP.sherpa.adjuster_editor} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     this.$set('value', aValue, false);
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

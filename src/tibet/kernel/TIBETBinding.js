@@ -3905,7 +3905,9 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
         isXMLResource,
         repeatInfo,
         repeatIndex,
-        repeatSource;
+        repeatSource,
+
+        didRefresh;
 
     //  TIMING: var start = Date.now();
 
@@ -4166,12 +4168,15 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
             }
 
             if (aspect === 'value') {
-                this.setValue(finalVal);
+                didRefresh = this.setValue(finalVal);
             } else {
                 this.setFacet(aspect, facet, finalVal);
+                didRefresh = true;
             }
 
-            refreshedElements.push(this.getNativeNode());
+            if (didRefresh) {
+                refreshedElements.push(this.getNativeNode());
+            }
         }
     }
 

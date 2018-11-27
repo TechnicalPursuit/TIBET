@@ -354,7 +354,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.sherpa.adjuster} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var ruleSource,
@@ -474,7 +475,7 @@ function(aValue, shouldSignal) {
             aChildTPElem.render();
         });
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

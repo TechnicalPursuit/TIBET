@@ -154,7 +154,8 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.xctrls.SwitchableElement} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var oldValue,
@@ -172,18 +173,18 @@ function(aValue, shouldSignal) {
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
-        return this;
+        return false;
     }
 
     //  If the item that matches the new value is disabled, then bail out.
     newItem = this.get('itemWithValue', newValue);
 
     if (TP.notValid(newItem) || TP.isEmpty(newItem)) {
-        return this;
+        return false;
     }
 
     if (newItem.isDisabled()) {
-        return this;
+        return false;
     }
 
     this.setDisplayValue(newValue);
@@ -210,7 +211,7 @@ function(aValue, shouldSignal) {
         this.setBoundValueIfBound(displayValue);
     }
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------

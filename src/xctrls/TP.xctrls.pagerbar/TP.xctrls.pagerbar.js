@@ -212,13 +212,14 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.xctrls.pagerbar} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var val;
 
     if (TP.notValid(aValue)) {
-        return this;
+        return false;
     }
 
     //  Because this is expecting a 1-based value, but we're driven by a 0-based
@@ -226,7 +227,7 @@ function(aValue, shouldSignal) {
     val = aValue.asNumber();
 
     if (!TP.isNumber(val)) {
-        return this;
+        return false;
     }
 
     val -= 1;
