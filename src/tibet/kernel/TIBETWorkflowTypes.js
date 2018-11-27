@@ -6283,6 +6283,9 @@ function(aSignal) {
         //  finalized.
         evt = contentTPElem.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETRouteFinalized', true, true);
+
+        //  Pass along the refresh action in the custom native event.
+        evt.detail = {'refreshAction': refreshAction};
         contentTPElem.getNativeNode().dispatchEvent(evt);
     }
 
