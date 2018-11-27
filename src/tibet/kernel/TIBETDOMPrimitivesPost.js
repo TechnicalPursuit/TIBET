@@ -5622,7 +5622,7 @@ function(aNodeList, aDocument, shouldClone) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeListFilterNonRoots',
-function(aNodeList) {
+function(aNodeList, aTestFunction) {
 
     /**
      * @method nodeListFilterNonRoots
@@ -5631,10 +5631,19 @@ function(aNodeList) {
      *     list that are descendants of other nodes in the same list, thereby
      *     returning an Array of only 'root' nodes.
      * @param {NodeList|Node[]} aNodeList The node list to filter.
+     * @param {Function} [aTestFunction] The function to use to test. This is
+     *     optional and, if not supplied, a 'node contains' test is used. The
+     *     function takes two parameters: the root node and the node to test
+     *     and should return *true* if the node to test should be excluded from
+     *     the roots list. The default test function will exclude the node to
+     *     test if it is contained within the root node.
      * @returns {Node[]} The supplied NodeList filtered for non-root nodes.
      */
 
     var allNodes,
+
+        testFunc,
+
         rootNodes,
         isDescendant,
         testNode,
@@ -5646,6 +5655,13 @@ function(aNodeList) {
         allNodes = TP.copy(aNodeList);
     }
 
+    if (TP.isCallable(aTestFunction)) {
+        testFunc = aTestFunction;
+    } else {
+        testFunc = function(aRootNode, aTestNode) {
+                        return aRootNode.contains(aTestNode);
+                    };
+    }
     rootNodes = TP.ac();
 
     //  Iterate over all of the nodes.
@@ -5656,10 +5672,10 @@ function(aNodeList) {
         //  Shift off the head of the list.
         testNode = allNodes.shift();
 
-        //  Iterate over all of the already plucked 'root' nodes to see if the
-        //  node is a descendant of any of them
+        //  Iterate over all of the already plucked 'root' nodes and run the
+        //  test function on them. If the test fails, then it's a descendant.
         for (j = 0; j < rootNodes.getSize(); j++) {
-            if (rootNodes.at(j).contains(testNode)) {
+            if (testFunc(rootNodes.at(j), testNode)) {
                 isDescendant = true;
                 break;
             }
