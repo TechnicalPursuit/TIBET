@@ -3286,11 +3286,38 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 return false;
             });
 
+    primaryLocMatcher =
+        TP.rc(TP.regExpEscape(sigOrigin.getPrimaryLocation()));
+
     //  If we have subscopes, filter out any non-roots (since we won't want
     //  nested subscopes appended here - each subscope root will find *all* of
     //  the bound nodes under itself, including those in a nested subscope).
     if (TP.notEmpty(subscopes)) {
-        subscopes = TP.nodeListFilterNonRoots(subscopes);
+        subscopes = TP.nodeListFilterNonRoots(
+                        subscopes,
+                        function(rootNode, testNode) {
+                            var val;
+
+                            if (rootNode.contains(testNode)) {
+                                val = testNode.getAttributeNS(
+                                            TP.w3.Xmlns.BIND, 'scope');
+                                if (TP.isURIString(val) &&
+                                    primaryLocMatcher.test(val)) {
+                                    return false;
+                                }
+
+                                val = testNode.getAttributeNS(
+                                            TP.w3.Xmlns.BIND, 'repeat');
+                                if (TP.isURIString(val) &&
+                                    primaryLocMatcher.test(val)) {
+                                    return false;
+                                }
+
+                                return true;
+                            }
+
+                            return false;
+                        });
         nextElems = nextElems.concat(subscopes);
     }
 
@@ -3336,9 +3363,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
     }
 
     if (TP.isEmpty(pathParts)) {
-
-        primaryLocMatcher =
-            TP.rc(TP.regExpEscape(sigOrigin.getPrimaryLocation()));
 
         //  Loop over all of the found binding attributes.
         len = boundAttrNodes.getSize();
