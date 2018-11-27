@@ -6303,8 +6303,8 @@ function(aRoute) {
      *     route.
      * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
      *     to the current application route acquired from the URI Router.
-     * @returns {TP.dom.ElementNode|null} The target element, if one was
-           associated with the route.
+     * @returns {TP.dom.ElementNode|null} The route's associated target element,
+           if one was associated with the route.
      */
 
     var route,

@@ -3384,6 +3384,11 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
             if (isScopingElement) {
 
+                //  If the attribute value contains a URI, but it's primary
+                //  location doesn't match the primary location that changed
+                //  and that we're refreshing from (which may happen because
+                //  we're querying from the *document* down), then just move
+                //  on.
                 if (TP.isURIString(attrVal) &&
                     !primaryLocMatcher.test(attrVal)) {
                     continue;
