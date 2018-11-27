@@ -6380,8 +6380,8 @@ function(aRoute) {
      *     name or template URI which defines the content to be set.
      * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
      *     to the current application route acquired from the URI Router.
-     * @returns {TP.dom.ElementNode} The route's associated target element, if
-     *     one could be found.
+     * @returns {TP.dom.ElementNode|null} The route's associated target element,
+           if one was associated with the route.
      */
 
     var route,
@@ -6395,9 +6395,7 @@ function(aRoute) {
         targetTPElem,
         canvas,
         type,
-        url,
-
-        newTPElem;
+        url;
 
     route = aRoute;
 
@@ -6517,12 +6515,11 @@ function(aRoute) {
             //  the route name as the 'contentKey'. This can be used by
             //  intelligent elements to decide how to handle content that they
             //  might see more than once.
-            newTPElem = targetTPElem.setContent(
-                                    content, TP.request('contentKey', route));
+            targetTPElem.setContent(content, TP.request('contentKey', route));
         }
     }
 
-    return newTPElem;
+    return targetTPElem;
 });
 
 //  ========================================================================
