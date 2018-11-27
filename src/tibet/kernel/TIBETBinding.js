@@ -4885,7 +4885,7 @@ function(shouldRender) {
         attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
         attrVal = this.getAttribute('bind:in');
     } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
-        return this.refreshBoundDescendants(shouldRender);
+        return this.refreshBoundDescendants(shouldRender, false);
     } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
         //  If the repeat page position isn't already set to a Number, then
@@ -5108,7 +5108,7 @@ function(shouldRender, shouldRefreshBindings) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('refreshBoundDescendants',
-function(shouldRender) {
+function(shouldRender, shouldSendEvent) {
 
     /**
      * @method refreshBoundDescendants
@@ -5118,6 +5118,8 @@ function(shouldRender) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
+     * @param {Boolean} [shouldSendEvent=true] Whether or not we should send a
+     *     custom native event that indicates that we refreshed the bindings.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -5147,7 +5149,7 @@ function(shouldRender) {
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
     //  the bindings have been refreshed.
     refreshedElements = this.getDocument().get('$refreshedElements');
-    if (TP.notEmpty(refreshedElements)) {
+    if (TP.notEmpty(refreshedElements) && TP.notFalse(shouldSendEvent)) {
         evt = this.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETBindingsRefreshed', true, true);
         evt.data = refreshedElements;
