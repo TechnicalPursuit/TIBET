@@ -13,6 +13,7 @@
         "Window": false,
         "self": false,
         "Proxy": false,
+        "React": true,
         "Reflect": false
     },
     "rules": {
