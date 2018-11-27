@@ -1433,6 +1433,13 @@ function(aTargetElem, anEvent) {
 
         activateSignal;
 
+    //  If we're manually focusing an element, then we don't proceed here. It
+    //  probably means that it's a non-XHTML node that's shifting it's focus via
+    //  mousedown/mouseup events.
+    if (TP.isValid(TP.dom.UIElementNode.get('$manuallyFocusingElement'))) {
+        return this;
+    }
+
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
     }
@@ -1495,6 +1502,13 @@ function(aTargetElem, anEvent) {
     var evtTargetTPElem,
 
         deactivateSignal;
+
+    //  If we're manually focusing an element, then we don't proceed here. It
+    //  probably means that it's a non-XHTML node that's shifting it's focus via
+    //  mousedown/mouseup events.
+    if (TP.isValid(TP.dom.UIElementNode.get('$manuallyFocusingElement'))) {
+        return this;
+    }
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
