@@ -174,7 +174,7 @@ function(aRequest) {
                         TP.uc(aScriptLoc),
                         doc,
                         TP.request());
-                        //TP.hc('type', 'module'));
+                        //  TP.hc('type', 'module'));
             }).then(
             function() {
 

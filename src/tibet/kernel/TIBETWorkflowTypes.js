@@ -6285,7 +6285,10 @@ function(aSignal) {
         evt.initEvent('TIBETRouteFinalized', true, true);
 
         //  Pass along the refresh action in the custom native event.
+        /* eslint-disable quote-props,quotes */
         evt.detail = {'refreshAction': refreshAction};
+        /* eslint-enable quote-props,quotes */
+
         contentTPElem.getNativeNode().dispatchEvent(evt);
     }
 
