@@ -6233,6 +6233,8 @@ function(aSignal) {
          route,
 
          contentTPElem,
+         newContentTPElem,
+
          evt;
 
     //  'finalizeAction' is the action that should be taken when the route is
@@ -6263,8 +6265,20 @@ function(aSignal) {
         default:
             break;
     }
+
+    //  If there was a valid content element associate with the route, query it
+    //  to see if it can return a more specific content element.
     if (TP.isValid(contentTPElem)) {
-        //  Send a custom DOM-level event to allow 3rd party libraries to know
+        if (TP.canInvoke(contentTPElem, 'getContentForRoute')) {
+            newContentTPElem = contentTPElem.getContentForRoute(route);
+            if (TP.isValid(newContentTPElem)) {
+                //  The content element had a more specific element to use as
+                //  content - reset contentTPElem to it.
+                contentTPElem = newContentTPElem;
+            }
+        }
+
+        //  Send a custom native event to allow 3rd party libraries to know
         //  that the router has transitioned to a new route that has been
         //  finalized.
         evt = contentTPElem.getNativeDocument().createEvent('Event');
