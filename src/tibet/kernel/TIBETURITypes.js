@@ -10866,6 +10866,8 @@ function(aURIOrPushState, aDirection) {
         payload,
         type,
         signal,
+        lastFragmentPath,
+        lastRoute,
         guard,
         home,
         routeKey,
@@ -11268,6 +11270,20 @@ function(aURIOrPushState, aDirection) {
     }
 
     payload.atPut('route', route);
+
+    //  If there are parts of a 'last route', then use them to populate
+    //  information about the last route into the signal payload.
+    if (TP.notEmpty(lastParts)) {
+        lastFragmentPath = lastParts.at('fragmentPath');
+
+        //  If there was a last route fragment, then 'process' it (to provide
+        //  results consistent with when it was the current route) and put that
+        //  into the signal payload.
+        if (TP.notEmpty(lastFragmentPath)) {
+            lastRoute = this.processRoute(lastFragmentPath);
+            payload.atPut('lastroute', lastRoute);
+        }
+    }
 
     //  Now, we first a series of 3 signals matching the routing sequence:
 
