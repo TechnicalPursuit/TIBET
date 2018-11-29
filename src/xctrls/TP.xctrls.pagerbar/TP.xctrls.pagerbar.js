@@ -268,29 +268,6 @@ TP.xctrls.pageritem.Inst.defineAttribute('label',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.pageritem.Inst.defineMethod('getDescendantsForSerialization',
-function() {
-
-    /**
-     * @method getDescendantsForSerialization
-     * @summary Returns an Array of descendants of the receiver to include in
-     *     the receiver's serialization. Typically, these will be nodes that
-     *     will be 'slotted' into the receiver by the author and not nodes that
-     *     the template generated 'around' the slotted nodes.
-     * @returns {TP.dom.Node[]} An Array of descendant nodes to serialize.
-     */
-
-    var selectedDescendants;
-
-    selectedDescendants = this.get('./*[local-name() = \'template\']');
-
-    selectedDescendants = TP.expand(selectedDescendants);
-
-    return selectedDescendants;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.pageritem.Inst.defineMethod('getValue',
 function() {
 
