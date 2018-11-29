@@ -261,7 +261,7 @@ function(aSignal) {
 
             //  Determine the name of the binding attribute that we're setting
             //  based on what is defined on the target element.
-            attrName = this.computeBindAttrName(sourceTPElem);
+            attrName = sourceTPElem.computeBindingAttributeName();
             if (TP.notValid(attrName)) {
                 return this;
             }
@@ -330,41 +330,6 @@ function(aSignal) {
                 TP.pc(xCoord, targetElemPageRect.getY()));
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindshud.Inst.defineMethod('computeBindAttrName',
-function(aTargetTPElem) {
-
-    /**
-     * @method computeBindAttrName
-     * @summary Computes and returns the name of the binding attribute on the
-     *     supplied target element. Since an element can contain more than one
-     *     binding attribute, this method enforces a common hierarchy.
-     * @param {TP.dom.ElementNode} aTargetTPElem The element to compute the name
-     *     of the binding attribute for.
-     * @returns {String|null} The name of the binding attribute.
-     */
-
-    var attrName;
-
-    attrName = null;
-
-    //  Determine which binding attribute we're setting here.
-    if (aTargetTPElem.hasAttribute('bind:in')) {
-        attrName = 'bind:in';
-    } else if (aTargetTPElem.hasAttribute('bind:out')) {
-        attrName = 'bind:out';
-    } else if (aTargetTPElem.hasAttribute('bind:io')) {
-        attrName = 'bind:io';
-    } else if (aTargetTPElem.hasAttribute('bind:scope')) {
-        attrName = 'bind:scope';
-    } else if (aTargetTPElem.hasAttribute('bind:repeat')) {
-        attrName = 'bind:repeat';
-    }
-
-    return attrName;
 });
 
 //  ------------------------------------------------------------------------
@@ -974,7 +939,7 @@ function(aSignal) {
 
     //  Determine the name of the binding attribute that we're setting based on
     //  what is defined on the target element.
-    attrName = this.computeBindAttrName(targetTPElem);
+    attrName = targetElem.computeBindingAttributeName();
     if (TP.notValid(attrName)) {
         return this;
     }
