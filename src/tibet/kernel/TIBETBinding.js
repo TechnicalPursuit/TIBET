@@ -5004,7 +5004,7 @@ function(shouldRender) {
         return this;
 
     } else {
-        //  If this isn't an element around one of those three attributes, then
+        //  If this isn't an element around one of those four attributes, then
         //  just call render() and return.
         this.render();
 
