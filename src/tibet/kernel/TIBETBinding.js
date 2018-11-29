@@ -5017,7 +5017,9 @@ function(shouldRender) {
                 bindVal,
 
                 dataExprs,
+                len,
                 i,
+
                 dataExpr,
 
                 allVals,
@@ -5040,7 +5042,9 @@ function(shouldRender) {
             //  There will be 1...n data expressions here. Iterate over them and
             //  compute a model reference.
             dataExprs = bindVal.at('dataExprs');
-            for (i = 0; i < dataExprs.getSize(); i++) {
+
+            len = dataExprs.getSize();
+            for (i = 0; i < len; i++) {
                 dataExpr = TP.trim(dataExprs.at(i));
 
                 if (TP.isEmpty(dataExpr)) {
