@@ -959,7 +959,7 @@ function(aSignal) {
 
     //  Determine the name of the binding attribute that we're setting based on
     //  what is defined on the target element.
-    attrName = targetElem.computeBindingAttributeName();
+    attrName = targetTPElem.computeBindingAttributeName();
     if (TP.notValid(attrName)) {
         return this;
     }
