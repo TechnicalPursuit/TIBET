@@ -3226,6 +3226,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
         branchMatcher,
         leafMatcher,
 
+        processedElements,
+
         jsonContent,
 
         remainderParts,
@@ -3639,6 +3641,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 leafMatcher = TP.rc(TP.regExpEscape(searchPath));
             }
 
+            processedElements = TP.ac();
+
             len = boundAttrNodes.getSize();
             for (j = 0; j < len; j++) {
                 boundAttr = boundAttrNodes.at(j);
@@ -3647,6 +3651,17 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 attrVal = boundAttr.value;
 
                 ownerElem = boundAttr.ownerElement;
+
+                //  Check to see if we've already processed this element. If
+                //  there are more than one binding attributes on an element,
+                //  we still don't want to process it more than once.
+                if (processedElements.indexOf(ownerElem) !== TP.NOT_FOUND) {
+                    continue;
+                }
+
+                //  Keep track of already processed elements.
+                processedElements.push(ownerElem);
+
                 ownerTPElem = TP.wrap(ownerElem);
 
                 isScopingElement =
