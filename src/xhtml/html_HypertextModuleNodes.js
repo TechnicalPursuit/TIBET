@@ -265,7 +265,7 @@ function(value) {
 
     //  If the link triggers a javascript url (or is javascript: void 0) exit.
     /* eslint-disable no-script-url */
-    if (value.startsWith('javascript:')) {
+    if (TP.notEmpty(value) && value.startsWith('javascript:')) {
         //  setting an attribute returns void according to the spec
         return;
     }
