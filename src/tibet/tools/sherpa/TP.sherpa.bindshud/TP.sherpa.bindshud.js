@@ -238,6 +238,9 @@ function(aSignal) {
 
             var formattedResult,
 
+                scopeVals,
+                scopeOutput,
+
                 bindingExprInput,
 
                 attrName,
@@ -246,8 +249,32 @@ function(aSignal) {
             //  Format the result and use it as part of the panel content.
             formattedResult = this.formatBindOutput(sourceResult, sourceURI);
 
+            //  Determine the name of the binding attribute that we're setting
+            //  based on what is defined on the target element.
+            attrName = sourceTPElem.computeBindingAttributeName();
+            if (TP.notValid(attrName)) {
+                return this;
+            }
+
+            scopeVals = sourceTPElem.getBindingScopeValues();
+
+            //  If it's either a bind:repeat or a bind:scope, we don't want it's
+            //  own value here - we want 'parent-only' values.
+            if (attrName === 'bind:scope' || attrName === 'bind:repeat') {
+                scopeVals.pop();
+            }
+
+            if (TP.notEmpty(scopeVals)) {
+                scopeOutput = TP.uriJoinFragments.apply(TP, scopeVals);
+            } else {
+                scopeOutput = '';
+            }
+
             tileTPElem.setContent(
                 TP.xhtmlnode(
+                    '<div class="scopeoutput">' +
+                        'Scope: ' + scopeOutput +
+                    '</div>' +
                     '<input type="text"' +
                         ' class="bindexprinput"' +
                         ' on:change="SetBindingExpr"/>' +
@@ -258,13 +285,6 @@ function(aSignal) {
             //  Grab the binding expression input field.
             bindingExprInput =
                 TP.byCSSPath(' .bindexprinput', tileTPElem, true, true);
-
-            //  Determine the name of the binding attribute that we're setting
-            //  based on what is defined on the target element.
-            attrName = sourceTPElem.computeBindingAttributeName();
-            if (TP.notValid(attrName)) {
-                return this;
-            }
 
             //  Get the value of the binding attribute.
             val = sourceTPElem.getAttribute(attrName);

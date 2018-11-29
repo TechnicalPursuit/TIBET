@@ -145,9 +145,26 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
     background: white;
 }
 
+#BindSummary_Tile .scopeoutput {
+
+    position: absolute;
+
+    top: 2px;
+    right: 2px;
+    height: 15px;
+    left: 4px;
+
+    color: #aaa;
+
+    font-size: 88%;
+}
+
 #BindSummary_Tile .bindexprinput {
 
-    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    position: relative;
+
+    top: 17px;
+
     font-size: 88%;
 
     margin-left: 2px;
@@ -160,7 +177,7 @@ sherpa|bindshud > ul.content > li.domnode.sherpa-bindshud-droptarget[pclass|sele
 
     position: absolute;
 
-    top: 34px;
+    top: 48px;
     right: 2px;
     bottom: 4px;
     left: 2px;
