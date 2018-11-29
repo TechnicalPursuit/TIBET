@@ -4260,6 +4260,13 @@ function(regenerateIfNecessary) {
 
     if (TP.isCollection(repeatResult)) {
 
+        //  If repeatResult is a TP.core.Hash, then convert it into an Array of
+        //  key/value pairs. Binding repeats need a collection they can index
+        //  numerically.
+        if (TP.isHash(repeatResult)) {
+            repeatResult = repeatResult.getKVPairs();
+        }
+
         //  If this flag is true, then go ahead and regenerate (if necessary).
         //  Note how we pass any empty Array in here, since we're not adding or
         //  removing rows that need to be recursively processed at this time.
@@ -5262,9 +5269,18 @@ function(aCollection) {
 
     elem = this.getNativeNode();
 
+    collection = aCollection;
+
     //  If a collection wasn't supplied, then go obtain the 'repeat source'.
-    if (!TP.isCollection(collection = aCollection)) {
+    if (!TP.isCollection(collection)) {
         collection = this.$getRepeatValue();
+    }
+
+    //  If collection is a TP.core.Hash, then convert it into an Array of
+    //  key/value pairs. Binding repeats need a collection they can index
+    //  numerically.
+    if (TP.isHash(collection)) {
+        collection = collection.getKVPairs();
     }
 
     //  Detect whether we're drawing GUI for model which is a chunk of XML data
