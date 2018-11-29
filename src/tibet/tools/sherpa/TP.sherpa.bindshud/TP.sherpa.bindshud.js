@@ -239,6 +239,8 @@ function(aSignal) {
             var formattedResult,
 
                 bindingExprInput,
+
+                attrName,
                 val;
 
             //  Format the result and use it as part of the panel content.
@@ -257,13 +259,15 @@ function(aSignal) {
             bindingExprInput =
                 TP.byCSSPath(' .bindexprinput', tileTPElem, true, true);
 
-            //  Determine the binding attribute that we're setting based on what
-            //  the element already has and get that value.
-            if (sourceTPElem.hasAttribute('bind:in')) {
-                val = sourceTPElem.getAttribute('bind:in');
-            } else if (sourceTPElem.hasAttribute('bind:io')) {
-                val = sourceTPElem.getAttribute('bind:io');
+            //  Determine the name of the binding attribute that we're setting
+            //  based on what is defined on the target element.
+            attrName = this.computeBindAttrName(sourceTPElem);
+            if (TP.notValid(attrName)) {
+                return this;
             }
+
+            //  Get the value of the binding attribute.
+            val = sourceTPElem.getAttribute(attrName);
 
             //  Set the value of the input to the binding expression.
             bindingExprInput.set('value', val);
@@ -326,6 +330,41 @@ function(aSignal) {
                 TP.pc(xCoord, targetElemPageRect.getY()));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineMethod('computeBindAttrName',
+function(aTargetTPElem) {
+
+    /**
+     * @method computeBindAttrName
+     * @summary Computes and returns the name of the binding attribute on the
+     *     supplied target element. Since an element can contain more than one
+     *     binding attribute, this method enforces a common hierarchy.
+     * @param {TP.dom.ElementNode} aTargetTPElem The element to compute the name
+     *     of the binding attribute for.
+     * @returns {String|null} The name of the binding attribute.
+     */
+
+    var attrName;
+
+    attrName = null;
+
+    //  Determine which binding attribute we're setting here.
+    if (aTargetTPElem.hasAttribute('bind:in')) {
+        attrName = 'bind:in';
+    } else if (aTargetTPElem.hasAttribute('bind:out')) {
+        attrName = 'bind:out';
+    } else if (aTargetTPElem.hasAttribute('bind:io')) {
+        attrName = 'bind:io';
+    } else if (aTargetTPElem.hasAttribute('bind:scope')) {
+        attrName = 'bind:scope';
+    } else if (aTargetTPElem.hasAttribute('bind:repeat')) {
+        attrName = 'bind:repeat';
+    }
+
+    return attrName;
 });
 
 //  ------------------------------------------------------------------------
@@ -933,11 +972,11 @@ function(aSignal) {
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
     targetTPElem = halo.get('currentTargetTPElem');
 
-    //  Determine which binding attribute we're setting here.
-    if (targetTPElem.hasAttribute('bind:in')) {
-        attrName = 'bind:in';
-    } else if (targetTPElem.hasAttribute('bind:io')) {
-        attrName = 'bind:io';
+    //  Determine the name of the binding attribute that we're setting based on
+    //  what is defined on the target element.
+    attrName = this.computeBindAttrName(targetTPElem);
+    if (TP.notValid(attrName)) {
+        return this;
     }
 
     //  Grab the value from the origin of the signal (which is probably a text
