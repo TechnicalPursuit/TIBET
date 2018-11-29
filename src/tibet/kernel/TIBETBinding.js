@@ -3288,7 +3288,9 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
     nextElems = boundElems.filter(
             function(anElem) {
 
-                var k;
+                var k,
+
+                    bindValue;
 
                 //  We don't want ourself in the list
                 if (anElem === elem) {
@@ -3297,7 +3299,29 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 if (elem.contains(anElem)) {
                     for (k = 0; k < subscopes.length; k++) {
+
+                        //  If the subscope contains the element, then we will
+                        //  normally return false to exclude it from the
+                        //  'this-level' scopes that we're interested in. One
+                        //  exception to this is if the binding value contains
+                        //  'urn:' or '//:' which would indicate some sort of
+                        //  absolute path.
                         if (subscopes[k].contains(anElem)) {
+                            bindValue =  TP.ifEmpty(
+                                anElem.getAttributeNS(
+                                    TP.w3.Xmlns.BIND, 'io'),
+                                    TP.ifEmpty(
+                                        anElem.getAttributeNS(
+                                        TP.w3.Xmlns.BIND, 'in'),
+                                        anElem.getAttributeNS(
+                                        TP.w3.Xmlns.BIND, 'out')));
+
+                            if (TP.notEmpty(bindValue) &&
+                                (bindValue.contains('urn:') ||
+                                    bindValue.contains('://'))) {
+                                    return true;
+                            }
+
                             return false;
                         }
                     }
