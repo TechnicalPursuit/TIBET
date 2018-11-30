@@ -3806,6 +3806,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         insertionParent,
 
+        testNode,
+
         updatingAnsTPElem,
         bindInfo,
         bindExprStr,
@@ -4093,7 +4095,20 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 break;
             }
 
-            currentNode = currentNode.childNodes[address];
+            //  Grab the child of the current node and use it to test to figure
+            //  out where to move next.
+            testNode = currentNode.childNodes[address];
+
+            //  If the test node is a Text node containing only whitespace and
+            //  we're not actually mutating a Text node (i.e. setting it), then
+            //  we skip it and move on to the next node.
+            if (TP.isTextNode(testNode) &&
+                TP.regex.ONLY_WHITESPACE.test(testNode.nodeValue) &&
+                !TP.isTextNode(mutatedNode)) {
+                currentNode = currentNode.childNodes[address + 1];
+            } else {
+                currentNode = testNode;
+            }
         }
 
         //  NB: This might push 'null'... and for non-attribute TP.CREATE
