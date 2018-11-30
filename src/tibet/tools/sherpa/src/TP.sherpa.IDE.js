@@ -1424,7 +1424,7 @@ function(aSignal) {
 
     target = destTPElem.getType();
 
-    //  Turn off 'autohiding' the connector - we'll hide it when the assisntant
+    //  Turn off 'autohiding' the connector - we'll hide it when the assistant
     //  is done. Note that this is reset to 'true' every time the connector is
     //  hidden.
     connector = TP.byId('SherpaConnector', this.get('vWin'));
