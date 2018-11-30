@@ -3469,31 +3469,34 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     }
 
                 } else {
-                    if (TP.isArray(theVal) &&
-                        theVal.first() !== TP.NULL &&
-                        TP.isXMLNode(TP.unwrap(theVal.first()))) {
-                        theVal.unshift(TP.NULL);
-                    }
 
-                    if (TP.isXMLNode(theVal)) {
-                        branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
-                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-                        branchVal = theVal.get(TP.xpc(attrVal));
-                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.regex.JSON_POINTER.test(attrVal) ||
-                                TP.regex.JSON_PATH.test(attrVal)) {
-                        if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                            branchVal = TP.jpc(attrVal).executeGet(theVal);
-                        } else {
-                            jsonContent = TP.core.JSONContent.construct(theVal);
-                            branchVal = TP.jpc(attrVal).executeGet(jsonContent);
+                    if (TP.isValid(theVal)) {
+                        if (TP.isArray(theVal) &&
+                            theVal.first() !== TP.NULL &&
+                            TP.isXMLNode(TP.unwrap(theVal.first()))) {
+                            theVal.unshift(TP.NULL);
                         }
-                        pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
-                    } else if (TP.notValid(theVal)) {
-                        branchVal = null;
-                    } else {
-                        branchVal = theVal.get(attrVal);
+
+                        if (TP.isXMLNode(theVal)) {
+                            branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
+                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                        } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+                            branchVal = theVal.get(TP.xpc(attrVal));
+                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                        } else if (TP.regex.JSON_POINTER.test(attrVal) ||
+                                    TP.regex.JSON_PATH.test(attrVal)) {
+                            if (TP.isKindOf(theVal, TP.core.JSONContent)) {
+                                branchVal = TP.jpc(attrVal).executeGet(theVal);
+                            } else {
+                                jsonContent = TP.core.JSONContent.construct(theVal);
+                                branchVal = TP.jpc(attrVal).executeGet(jsonContent);
+                            }
+                            pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+                        } else if (TP.notValid(theVal)) {
+                            branchVal = null;
+                        } else {
+                            branchVal = theVal.get(attrVal);
+                        }
                     }
                 }
 
@@ -3697,42 +3700,44 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         }
                     } else {
 
-                        if (TP.isArray(theVal) &&
-                            theVal.first() !== TP.NULL &&
-                            TP.isXMLNode(TP.unwrap(theVal.first()))) {
-                            theVal.unshift(TP.NULL);
-                        }
-
-                        if (TP.isXMLNode(theVal)) {
-
-                            branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.XPATH_PATH_TYPE);
-
-                        } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-
-                            branchVal = theVal.get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.XPATH_PATH_TYPE);
-
-                        } else if (TP.regex.JSON_POINTER.test(attrVal) ||
-                                    TP.regex.JSON_PATH.test(attrVal)) {
-
-                            if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                                branchVal = TP.jpc(attrVal).executeGet(theVal);
-                            } else {
-                                jsonContent = TP.core.JSONContent.construct(
-                                                            theVal);
-                                branchVal = TP.jpc(attrVal).executeGet(
-                                                            jsonContent);
+                        if (TP.isValid(theVal)) {
+                            if (TP.isArray(theVal) &&
+                                theVal.first() !== TP.NULL &&
+                                TP.isXMLNode(TP.unwrap(theVal.first()))) {
+                                theVal.unshift(TP.NULL);
                             }
 
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.JSON_PATH_TYPE);
-                        } else {
-                            branchVal = theVal.get(attrVal);
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.TIBET_PATH_TYPE);
+                            if (TP.isXMLNode(theVal)) {
+
+                                branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
+                                pathType = TP.ifInvalid(aPathType,
+                                                        TP.XPATH_PATH_TYPE);
+
+                            } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+
+                                branchVal = theVal.get(TP.xpc(attrVal));
+                                pathType = TP.ifInvalid(aPathType,
+                                                        TP.XPATH_PATH_TYPE);
+
+                            } else if (TP.regex.JSON_POINTER.test(attrVal) ||
+                                        TP.regex.JSON_PATH.test(attrVal)) {
+
+                                if (TP.isKindOf(theVal, TP.core.JSONContent)) {
+                                    branchVal = TP.jpc(attrVal).executeGet(theVal);
+                                } else {
+                                    jsonContent = TP.core.JSONContent.construct(
+                                                                theVal);
+                                    branchVal = TP.jpc(attrVal).executeGet(
+                                                                jsonContent);
+                                }
+
+                                pathType = TP.ifInvalid(aPathType,
+                                                        TP.JSON_PATH_TYPE);
+                            } else {
+                                branchVal = theVal.get(attrVal);
+                                pathType = TP.ifInvalid(aPathType,
+                                                        TP.TIBET_PATH_TYPE);
+                            }
                         }
                     }
 
@@ -4104,80 +4109,83 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
 
             } else if (TP.isValid(pathType)) {
 
-                switch (pathType) {
+                if (TP.isValid(theVal)) {
+                    switch (pathType) {
 
-                    case TP.XPATH_PATH_TYPE:
-                        path = TP.xpc(expr, pathOptions);
+                        case TP.XPATH_PATH_TYPE:
+                            path = TP.xpc(expr, pathOptions);
 
-                        if (TP.isXMLNode(theVal)) {
-                            finalVal = path.executeGet(TP.wrap(theVal));
-                        } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+                            if (TP.isXMLNode(theVal)) {
+                                finalVal = path.executeGet(TP.wrap(theVal));
+                            } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+                                finalVal = path.executeGet(theVal);
+                            }
+                            break;
+
+                        case TP.JSON_PATH_TYPE:
+
+                            if (!/^\$\./.test(expr)) {
+                                expr = '$.' + expr;
+                            }
+
+                            path = TP.jpc(expr, pathOptions);
+
+                            //  Because of the check above, theVal has to be a
+                            //  JSONContent object here.
                             finalVal = path.executeGet(theVal);
-                        }
-                        break;
 
-                    case TP.JSON_PATH_TYPE:
+                            break;
 
-                        if (!/^\$\./.test(expr)) {
-                            expr = '$.' + expr;
-                        }
+                        case TP.TIBET_PATH_TYPE:
+                            path = TP.tpc(expr, pathOptions);
 
-                        path = TP.jpc(expr, pathOptions);
+                            finalVal = path.executeGet(theVal);
+                            break;
 
-                        //  Because of the check above, theVal has to be a
-                        //  JSONContent object here.
-                        finalVal = path.executeGet(theVal);
-
-                        break;
-
-                    case TP.TIBET_PATH_TYPE:
-                        path = TP.tpc(expr, pathOptions);
-
-                        finalVal = path.executeGet(theVal);
-                        break;
-
-                    default:
-                        finalVal = theVal.get(expr);
-                        break;
+                        default:
+                            finalVal = theVal.get(expr);
+                            break;
+                    }
                 }
-
             } else {
 
-                if (TP.regex.COMPOSITE_PATH.test(expr)) {
-                    if (TP.isValid(entry.at('transformFunc'))) {
+                if (TP.isValid(theVal)) {
+                    if (TP.regex.COMPOSITE_PATH.test(expr)) {
+                        if (TP.isValid(entry.at('transformFunc'))) {
+                            finalVal = theVal;
+                        } else {
+                            finalVal =
+                                TP.wrap(theVal).get(TP.apc(expr, pathOptions));
+                        }
+                    } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+                        finalVal = theVal;
+                    } else if (TP.isPlainObject(theVal)) {
+                        finalVal = TP.hc(theVal).get(expr);
+                    } else if (TP.isXMLNode(theVal)) {
+                        finalVal = TP.wrap(theVal).get(TP.xpc(expr, pathOptions));
+                    } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+                        finalVal = theVal.get(TP.xpc(expr, pathOptions));
+                    } else if (TP.regex.JSON_POINTER.test(expr) ||
+                                TP.regex.JSON_PATH.test(expr)) {
+                        if (TP.isKindOf(theVal, TP.core.JSONContent)) {
+                            finalVal =
+                                TP.jpc(expr, pathOptions).executeGet(theVal);
+                        } else {
+                            jsonContent = TP.core.JSONContent.construct(theVal);
+                            finalVal =
+                                TP.jpc(expr, pathOptions).executeGet(jsonContent);
+                        }
+                    } else if (TP.notValid(theVal)) {
+                        finalVal = null;
+                    } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
+                        finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
+                    } else if (!TP.isMutable(theVal)) {
+                        //  If it's a String, Number or Boolean, then theVal is the
+                        //  actual value we want to use.
                         finalVal = theVal;
                     } else {
-                        finalVal =
-                            TP.wrap(theVal).get(TP.apc(expr, pathOptions));
+                        finalVal = theVal.get(expr);
                     }
-                } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
-                    finalVal = theVal;
-                } else if (TP.isPlainObject(theVal)) {
-                    finalVal = TP.hc(theVal).get(expr);
-                } else if (TP.isXMLNode(theVal)) {
-                    finalVal = TP.wrap(theVal).get(TP.xpc(expr, pathOptions));
-                } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-                    finalVal = theVal.get(TP.xpc(expr, pathOptions));
-                } else if (TP.regex.JSON_POINTER.test(expr) ||
-                            TP.regex.JSON_PATH.test(expr)) {
-                    if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                        finalVal =
-                            TP.jpc(expr, pathOptions).executeGet(theVal);
-                    } else {
-                        jsonContent = TP.core.JSONContent.construct(theVal);
-                        finalVal =
-                            TP.jpc(expr, pathOptions).executeGet(jsonContent);
-                    }
-                } else if (TP.notValid(theVal)) {
-                    finalVal = null;
-                } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
-                    finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
-                } else if (!TP.isMutable(theVal)) {
-                    //  If it's a String, Number or Boolean, then theVal is the
-                    //  actual value we want to use.
-                    finalVal = theVal;
-                } else {
-                    finalVal = theVal.get(expr);
                 }
             }
 
