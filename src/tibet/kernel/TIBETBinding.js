@@ -3309,7 +3309,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         //  'urn:' or '//:' which would indicate some sort of
                         //  absolute path.
                         if (subscopes[k].contains(anElem)) {
-                            bindValue =  TP.ifEmpty(
+                            bindValue = TP.ifEmpty(
                                 anElem.getAttributeNS(
                                     TP.w3.Xmlns.BIND, 'io'),
                                     TP.ifEmpty(
