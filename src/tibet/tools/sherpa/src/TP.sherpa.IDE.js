@@ -834,11 +834,13 @@ function(aSignal) {
                     null,
                     TP.CAPTURING);
 
-    //  Observe the canvas document for when connections are completed to
-    //  destination elements *within* the UI canvas. Panels in the HUD (which
-    //  are in the UI root document) will observe this method themselves for
-    //  connections made *to* elements in them.
-    this.observe(currentCanvasDoc, 'TP.sig.SherpaConnectCompleted');
+    //  Observe just the canvas document for when connections are completed to
+    //  destination elements *within* the UI canvas (or are cancelled). Panels
+    //  in the HUD (which  are in the UI root document) will observe this
+    //  method themselves for connections made *to* elements in them.
+    this.observe(currentCanvasDoc, TP.ac(
+                                    'TP.sig.SherpaConnectCancelled',
+                                    'TP.sig.SherpaConnectCompleted'));
 
     TP.activateMutationObserver(TP.unwrap(currentCanvasDoc),
                                 'BUILDER_OBSERVER');
@@ -888,8 +890,10 @@ function(aSignal) {
                 TP.CAPTURING);
 
     //  Ignore the canvas document for when connections are completed to
-    //  destination elements *within* the UI canvas.
-    this.ignore(currentCanvasDoc, 'TP.sig.SherpaConnectCompleted');
+    //  destination elements *within* the UI canvas (or are cancelled).
+    this.ignore(currentCanvasDoc, TP.ac(
+                                    'TP.sig.SherpaConnectCancelled',
+                                    'TP.sig.SherpaConnectCompleted'));
 
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
@@ -1364,6 +1368,32 @@ function(aSignal) {
     //  Remove the 'tibet:dontreload' attribute from the owner element so that
     //  it will now reload when its content changes.
     TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('SherpaConnectCancelled',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaConnectCancelled
+     * @summary Handles notifications of the fact that the Sherpa connector
+     *     did not successfully complete a connection and was cancelled.
+     * @param {TP.sig.SherpaConnectCancelled} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var connector;
+
+    connector = TP.byId('SherpaConnector', this.get('vWin'));
+
+    connector.hideAllConnectorVisuals();
+
+    //  Signal that the connection has failed.
+    this.signal('SherpaConnectFailed');
 
     return this;
 });
@@ -3345,10 +3375,12 @@ function() {
             TP.CAPTURING);
 
     //  Observe just the canvas document for when connections are completed to
-    //  destination elements *within* the UI canvas. Panels in the HUD (which
-    //  are in the UI root document) will observe this method themselves for
-    //  connections made *to* elements in them.
-    this.observe(currentCanvasDoc, 'TP.sig.SherpaConnectCompleted');
+    //  destination elements *within* the UI canvas (or are cancelled). Panels
+    //  in the HUD (which  are in the UI root document) will observe this
+    //  method themselves for connections made *to* elements in them.
+    this.observe(currentCanvasDoc, TP.ac(
+                                    'TP.sig.SherpaConnectCancelled',
+                                    'TP.sig.SherpaConnectCompleted'));
 
     //  Observe the Sherpa's connector itself for connection initiation and
     //  termination.
