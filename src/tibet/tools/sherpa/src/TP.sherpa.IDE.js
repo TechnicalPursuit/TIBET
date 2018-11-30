@@ -4072,17 +4072,22 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
                 insertionParent = currentNode;
 
-                //  If there isn't a Node (even a Text node) at the final
-                //  address, then we're doing a pure append (in the case of the
-                //  operation being a TP.CREATE). Therefore, we set currentNode
-                //  (our insertion point) to null.
-                if (!TP.isNode(currentNode.childNodes[address])) {
-                    currentNode = null;
-                } else {
-                    //  Otherwise, set the currentNode (used as the insertion
-                    //  point in a TP.CREATE) to the childNode at the last
-                    //  address.
-                    currentNode = currentNode.childNodes[address];
+                //  If we're not currently processing an attribute change, then
+                //  set the current node based on whether we're doing a pure
+                //  append or not.
+                if (!isAttrChange) {
+                    //  If there isn't a Node (even a Text node) at the final
+                    //  address, then we're doing a pure append (in the case of
+                    //  the operation being a TP.CREATE). Therefore, we set
+                    //  currentNode (our insertion point) to null.
+                    if (!TP.isNode(currentNode.childNodes[address])) {
+                        currentNode = null;
+                    } else {
+                        //  Otherwise, set the currentNode (used as the
+                        //  insertion point in a TP.CREATE) to the childNode at
+                        //  the last address.
+                        currentNode = currentNode.childNodes[address];
+                    }
                 }
 
                 break;
