@@ -413,6 +413,27 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.ConsoleService.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
+
+    //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables to
+    //  null
+    this.get('model').setVariable('HALO', null);
+    this.get('model').setVariable('HALO_TYPE', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.ConsoleService.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
@@ -432,27 +453,6 @@ function(aSignal) {
 
     this.get('$consoleGUI').focusInput();
     this.get('$consoleGUI').setInputCursorToEnd();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineHandler('HaloDidBlur',
-function(aSignal) {
-
-    /**
-     * @method handleHaloDidBlur
-     * @summary Handles notifications of when the halo blurs on an object.
-     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
-     */
-
-    //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables to
-    //  null
-    this.get('model').setVariable('HALO', null);
-    this.get('model').setVariable('HALO_TYPE', null);
 
     return this;
 });

@@ -182,6 +182,29 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hudsidebar.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var sherpaInst;
+
+    this.setValue(null);
+
+    sherpaInst = TP.bySystemId('Sherpa');
+    this.ignore(sherpaInst, 'CanvasChanged');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hudsidebar.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
@@ -203,29 +226,6 @@ function(aSignal) {
 
     sherpaInst = TP.bySystemId('Sherpa');
     this.observe(sherpaInst, 'CanvasChanged');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hudsidebar.Inst.defineHandler('HaloDidBlur',
-function(aSignal) {
-
-    /**
-     * @method handleHaloDidBlur
-     * @summary Handles notifications of when the halo blurs on an object.
-     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.hudsidebar} The receiver.
-     */
-
-    var sherpaInst;
-
-    this.setValue(null);
-
-    sherpaInst = TP.bySystemId('Sherpa');
-    this.ignore(sherpaInst, 'CanvasChanged');
 
     return this;
 });

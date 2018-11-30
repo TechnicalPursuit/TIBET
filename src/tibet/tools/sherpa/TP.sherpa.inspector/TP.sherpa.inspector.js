@@ -2344,98 +2344,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineHandler('HaloDidFocus',
-function(aSignal) {
-
-    /**
-     * @method handleHaloDidFocus
-     * @summary Handles notifications of when the halo focuses on an object.
-     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var halo,
-
-        haloTarget,
-
-        dynamicEntries,
-
-        content,
-        selection;
-
-    //  If the halo is just recasting the current element, then we do nothing
-    //  here.
-    halo = TP.wrap(aSignal.getOrigin());
-    if (halo.get('$isRecasting')) {
-        return this;
-    }
-
-    //  Grab the halo target and install local versions of some methods that the
-    //  inspector will use.
-
-    haloTarget = aSignal.at('haloTarget');
-
-    //  If the halo is focusing on the same element (as compared by GIDs - the
-    //  element may be being recast, so it might not be '==='), then just
-    //  return. We *don't* want to navigate ourself in this case.
-    if (haloTarget.getID() === this.get('$lastHaloTargetGID')) {
-        return this;
-    }
-
-    //  Cache the global ID of the element that the halo is focusing.
-    this.set('$lastHaloTargetGID', haloTarget.getID());
-
-    haloTarget.defineMethod(
-                'getSherpaInspectorLabel',
-                function() {
-                    return 'HALO - ' +
-                            TP.name(this) +
-                            ' - #' +
-                            TP.lid(this);
-                });
-
-    haloTarget.defineMethod(
-                'getEntryLabel',
-                function(anItem) {
-                    return anItem;
-                });
-
-    //  Make sure that we don't already have the target in our list of dynamic
-    //  entries.
-
-    dynamicEntries = this.get('dynamicContentEntries');
-    if (!dynamicEntries.contains(haloTarget, TP.IDENTITY)) {
-
-        //  Wasn't found - add it.
-        dynamicEntries.unshift(haloTarget);
-
-        //  Track whether or not the halo itself added the target.
-        this.set('$haloAddedTarget', true);
-    } else {
-        this.set('$haloAddedTarget', false);
-    }
-
-    //  Grab the current selection before we refresh
-    content = this.getInspectorBayContentItem(0);
-    if (TP.isValid(content)) {
-        selection = content.get('value');
-
-        //  Rebuild the root data entries and refresh bay 0
-        this.buildRootBayData();
-        this.refreshBay(0);
-
-        //  Set the selection back after we refresh. Note here how we refetch
-        //  the content in bay 0.
-        content = this.getInspectorBayContentItem(0);
-        content.set('value', selection);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
@@ -2528,6 +2436,98 @@ function(aSignal) {
     //  Reset the halo target GID tracking attribute that we use to make sure to
     //  not focus on the same object twice in a row.
     this.set('$lastHaloTargetGID', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var halo,
+
+        haloTarget,
+
+        dynamicEntries,
+
+        content,
+        selection;
+
+    //  If the halo is just recasting the current element, then we do nothing
+    //  here.
+    halo = TP.wrap(aSignal.getOrigin());
+    if (halo.get('$isRecasting')) {
+        return this;
+    }
+
+    //  Grab the halo target and install local versions of some methods that the
+    //  inspector will use.
+
+    haloTarget = aSignal.at('haloTarget');
+
+    //  If the halo is focusing on the same element (as compared by GIDs - the
+    //  element may be being recast, so it might not be '==='), then just
+    //  return. We *don't* want to navigate ourself in this case.
+    if (haloTarget.getID() === this.get('$lastHaloTargetGID')) {
+        return this;
+    }
+
+    //  Cache the global ID of the element that the halo is focusing.
+    this.set('$lastHaloTargetGID', haloTarget.getID());
+
+    haloTarget.defineMethod(
+                'getSherpaInspectorLabel',
+                function() {
+                    return 'HALO - ' +
+                            TP.name(this) +
+                            ' - #' +
+                            TP.lid(this);
+                });
+
+    haloTarget.defineMethod(
+                'getEntryLabel',
+                function(anItem) {
+                    return anItem;
+                });
+
+    //  Make sure that we don't already have the target in our list of dynamic
+    //  entries.
+
+    dynamicEntries = this.get('dynamicContentEntries');
+    if (!dynamicEntries.contains(haloTarget, TP.IDENTITY)) {
+
+        //  Wasn't found - add it.
+        dynamicEntries.unshift(haloTarget);
+
+        //  Track whether or not the halo itself added the target.
+        this.set('$haloAddedTarget', true);
+    } else {
+        this.set('$haloAddedTarget', false);
+    }
+
+    //  Grab the current selection before we refresh
+    content = this.getInspectorBayContentItem(0);
+    if (TP.isValid(content)) {
+        selection = content.get('value');
+
+        //  Rebuild the root data entries and refresh bay 0
+        this.buildRootBayData();
+        this.refreshBay(0);
+
+        //  Set the selection back after we refresh. Note here how we refetch
+        //  the content in bay 0.
+        content = this.getInspectorBayContentItem(0);
+        content.set('value', selection);
+    }
 
     return this;
 });

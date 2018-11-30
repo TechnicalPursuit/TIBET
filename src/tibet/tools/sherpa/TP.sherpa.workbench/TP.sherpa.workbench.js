@@ -378,13 +378,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineHandler('HaloDidFocus',
+TP.sherpa.workbench.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
-     * @method handleHaloDidFocus
-     * @summary Handles notifications of when the halo focuses on an object.
-     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.workbench} The receiver.
      */
@@ -399,13 +399,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineHandler('HaloDidBlur',
+TP.sherpa.workbench.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
-     * @method handleHaloDidBlur
-     * @summary Handles notifications of when the halo blurs on an object.
-     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.workbench} The receiver.
      */
