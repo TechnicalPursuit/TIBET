@@ -694,6 +694,30 @@ function(aSignal) {
         tile.setAttribute('hidden', true);
     }
 
+    //  Turn off our ability to accept signal source connections
+    this.removeAttribute('sherpa:connectoraccept');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    this.callNextMethod();
+
+    //  Turn on our ability to accept signal source connections
+    this.setAttribute('sherpa:connectoraccept', 'signalsource');
+
     return this;
 });
 
