@@ -10805,6 +10805,13 @@ function(aNode, aSubset) {
                 arr.push(node);
                 node = node.previousSibling;
             }
+
+            //  Because we collected the previous siblings by walking backwards
+            //  and the description of this method is that we always return
+            //  results from first to last child, we need to reverse the results
+            //  here.
+            arr.reverse();
+
             break;
 
         case TP.NEXT:
