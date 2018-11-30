@@ -527,6 +527,9 @@ function(storageInfo) {
      */
 
     var selectedDescendants,
+
+        localID,
+
         serializationStorage,
         str;
 
@@ -537,18 +540,54 @@ function(storageInfo) {
         return '';
     }
 
+    localID = this.getLocalID();
+
     //  Set up a serialization storage, with a store registered under our local
-    //  (unique) ID.
-    serializationStorage = TP.hc('store', this.getLocalID());
+    //  (unique) ID. Note that we also copy other 'meta information' about
+    //  serializaton.
+    serializationStorage = TP.hc(
+        'store', localID,
+        'wantsPrefixedXMLNSAttrs', storageInfo.at('wantsPrefixedXMLNSAttrs'));
+
+    str = '';
 
     //  Iterate over the selected descendants and serialize them into the store.
     selectedDescendants.forEach(
         function(aDescendant) {
-            aDescendant.serializeForStorage(serializationStorage);
-        });
+            var siblings;
 
-    //  Grab the result at the store registered under our local ID.
-    str = serializationStorage.at('stores').at(this.getLocalID());
+            //  Grab all of our 'previous' siblings.
+            siblings = aDescendant.getSiblings(TP.PREVIOUS);
+            siblings.forEach(
+                function(aSiblingTPNode) {
+                    //  Make sure the sibling isn't an Element
+                    if (!TP.isKindOf(aSiblingTPNode, TP.dom.ElementNode)) {
+                        str += aSiblingTPNode.serializeNonTag(
+                                            serializationStorage);
+                    }
+                });
+
+            //  Note here how we create a new result for each iteration of this
+            //  loop. This is because we're creating content above and below and
+            //  don't want the serialization routine to use the store, but to
+            //  use a fresh result at each 'level'.
+            serializationStorage.atPut('result', TP.ac());
+            aDescendant.serializeForStorage(serializationStorage);
+
+            //  Grab the result at the store registered under our local ID.
+            str += serializationStorage.at('stores').at(localID);
+
+            //  Grab all of our 'next' siblings.
+            siblings = aDescendant.getSiblings(TP.NEXT);
+            siblings.forEach(
+                function(aSiblingTPNode) {
+                    //  Make sure the sibling isn't an Element
+                    if (!TP.isKindOf(aSiblingTPNode, TP.dom.ElementNode)) {
+                        str += aSiblingTPNode.serializeNonTag(
+                                            serializationStorage);
+                    }
+                });
+        });
 
     return str;
 });
