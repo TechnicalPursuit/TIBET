@@ -2827,6 +2827,39 @@ function(aProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('serializeNonTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeNonTag
+     * @summary Serializes the non tag node receiver.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the non-tag receiver.
+     */
+
+    return TP.unwrap(this).nodeValue;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
@@ -4294,8 +4327,6 @@ function(storageInfo) {
 
     var node,
 
-        str,
-
         storeKey,
         stores,
 
@@ -4376,60 +4407,12 @@ function(storageInfo) {
             }
         },
         function(nonElementNode) {
+            var str;
 
             //  This function gets called when non-element content (i.e. comment
             //  nodes, other text nodes, etc.) of an element is encountered.
-
-            var commentText;
-
-            //  Switch on the node type... we currently support TEXT_NODEs
-            //  and COMMENT_NODEs.
-            switch (nonElementNode.nodeType) {
-                case Node.TEXT_NODE:
-
-                    str = nonElementNode.nodeValue;
-
-                    str = TP.htmlEntitiesToXMLEntities(str, false, false);
-                    str = TP.xmlLiteralsToEntities(str, false, false);
-
-                    //  We make sure to replace any 'special characters' with
-                    //  their entity equivalent. This is because that is
-                    //  probably how things were authored in the original
-                    //  markup.
-                    str = str.replace(
-                            /[\u00A0-\u9999]/gim,
-                            function(char) {
-                                return '&#' + char.charCodeAt(0) + ';';
-                            });
-
-                    storageInfo.at('result').push(str);
-
-                    break;
-
-                case Node.COMMENT_NODE:
-
-                    //  Make sure that any embedded '--' are converted to
-                    //  something benign.
-                    commentText = nonElementNode.nodeValue.replace(
-                                                            /--/g, '__');
-
-                    //  Push on content that has the proper leading and
-                    //  trailing comment characters.
-                    storageInfo.at('result').push('<!--' + commentText + '-->');
-
-                    break;
-
-                case Node.CDATA_SECTION_NODE:
-
-                    str = nonElementNode.nodeValue;
-
-                    storageInfo.at('result').push('<![CDATA[' + str + ']]>');
-
-                    break;
-
-                default:
-                    break;
-            }
+            str = TP.wrap(nonElementNode).serializeNonTag(storageInfo);
+            storageInfo.at('result').push(str);
         }
     );
 
@@ -15455,6 +15438,58 @@ function() {
     return node.nodeValue;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.dom.TextNode.Inst.defineMethod('serializeNonTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeNonTag
+     * @summary Serializes the non tag node receiver.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the non-tag receiver.
+     */
+
+    var node,
+        str;
+
+    node = this.getNativeNode();
+
+    str = node.nodeValue;
+
+    str = TP.htmlEntitiesToXMLEntities(str, false, false);
+    str = TP.xmlLiteralsToEntities(str, false, false);
+
+    //  We make sure to replace any 'special characters' with their entity
+    //  equivalent. This is because that is  probably how things were authored
+    //  in the original markup.
+    str = str.replace(
+            /[\u00A0-\u9999]/gim,
+            function(char) {
+                return '&#' + char.charCodeAt(0) + ';';
+            });
+
+    return str;
+});
+
 //  ========================================================================
 //  TP.dom.CDATASectionNode
 //  ========================================================================
@@ -15477,6 +15512,46 @@ function() {
     node = this.getNativeNode();
 
     return node.nodeValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.CDATASectionNode.Inst.defineMethod('serializeNonTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeNonTag
+     * @summary Serializes the non tag node receiver.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the non-tag receiver.
+     */
+
+    var node,
+        str;
+
+    node = this.getNativeNode();
+
+    str = '<![CDATA[' + node.nodeValue + ']]>';
+
+    return str;
 });
 
 //  ========================================================================
@@ -15763,6 +15838,63 @@ function() {
     node = this.getNativeNode();
 
     return node.nodeValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.CommentNode.Inst.defineMethod('serializeNonTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeNonTag
+     * @summary Serializes the non tag node receiver.
+     * @description This method provides a serialized representation of the
+     *     receiver that can be used to store it in a persistent storage. The
+     *     supplied storageInfo hash should contain a storage key under the
+     *     'store' key that will be used to uniquely identify the content
+     *     produced for this receiver. Note that nested nodes might produce
+     *     their own 'serialization stores'. All of the stores can be found
+     *     under the 'stores' key in the storageInfo after the serialization
+     *     process is complete.
+     *     For this type, serialization means writing an opening tag for the
+     *     element by calling 'serializeOpenTag', then whatever non-Element
+     *     content (i.e. text nodes, comment nodes, etc) and then the closing
+     *     tag for the element by calling 'serializeCloseTag'.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the non-tag receiver.
+     */
+
+    var node,
+        str;
+
+    node = this.getNativeNode();
+
+    //  Make sure that any embedded '--' are converted to something benign.
+    str = node.nodeValue.replace(/--/g, '__');
+
+    //  Push on content that has the proper leading and trailing comment
+    //  characters.
+    str = '<!--' + str + '-->';
+
+    return str;
 });
 
 //  ========================================================================
