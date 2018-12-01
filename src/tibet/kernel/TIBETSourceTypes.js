@@ -2709,6 +2709,9 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
         queryPath,
         queryContext,
 
+        addedNodesInContext,
+        removedNodesInContext,
+
         results,
 
         matchingNodes;
@@ -2733,24 +2736,24 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     //  If there is a real addedNodes Array, make sure all of the nodes in it
     //  exist under the queryContext node.
     if (TP.isArray(addedNodes)) {
-        addedNodes = addedNodes.filter(
-                        function(aNode) {
-                            return queryContext.contains(aNode);
-                        });
+        addedNodesInContext = addedNodes.filter(
+                                function(aNode) {
+                                    return queryContext.contains(aNode);
+                                });
     }
 
     //  If there is a real removedNodes Array, make sure all of the nodes in it
     //  exist under the queryContext node.
     if (TP.isArray(removedNodes)) {
-        removedNodes = removedNodes.filter(
-                        function(aNode) {
-                            return queryContext.contains(aNode);
-                        });
+        removedNodesInContext = removedNodes.filter(
+                                function(aNode) {
+                                    return queryContext.contains(aNode);
+                                });
     }
 
     //  If both of these Arrays are empty, exit here. No need to run a
     //  (relatively expensive) query path.
-    if (TP.isEmpty(addedNodes) && TP.isEmpty(removedNodes)) {
+    if (TP.isEmpty(addedNodesInContext) && TP.isEmpty(removedNodesInContext)) {
         return this;
     }
 
@@ -2760,15 +2763,16 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     }
 
     //  If there are added nodes, invoke that machinery.
-    if (TP.notEmpty(addedNodes)) {
+    if (TP.notEmpty(addedNodesInContext)) {
 
         //  If we had results from our query, intersect them against the added
         //  nodes.
         if (TP.notEmpty(results)) {
-            matchingNodes = results.intersection(addedNodes, TP.IDENTITY);
+            matchingNodes = results.intersection(
+                                        addedNodesInContext, TP.IDENTITY);
         } else if (TP.isEmpty(queryPath)) {
             //  Otherwise, if there is no query, just use all of the added nodes.
-            matchingNodes = addedNodes;
+            matchingNodes = addedNodesInContext;
         }
 
         //  If there are matching nodes and we can invoke
@@ -2781,13 +2785,13 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     }
 
     //  If there are removed nodes, invoke that machinery.
-    if (TP.notEmpty(removedNodes)) {
+    if (TP.notEmpty(removedNodesInContext)) {
 
         //  NOTE: Since we can't run the query against nodes that have already
         //  been removed the DOM, we just pass the entire Array of removed nodes
         //  to the handler. It is up to that method to do whatever filtering is
         //  required.
-        matchingNodes = removedNodes;
+        matchingNodes = removedNodesInContext;
 
         //  If there are matching nodes and we can invoke
         //  'mutationRemovedFilteredNodes' against the observer, then do so.
