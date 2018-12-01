@@ -31,16 +31,16 @@ TP.sherpa.connector.Type.defineConstant('HORIZ_ORIENTATION', 2);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.connector.Inst.defineAttribute('$connectorLaunch',
+TP.sherpa.connector.Inst.defineAttribute('$connectorLaunchElem',
     TP.cpc('> div[part="launchpad"]', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.connector.Inst.defineAttribute('$horizConnector',
+TP.sherpa.connector.Inst.defineAttribute('$horizConnectorElem',
     TP.cpc('> div[part="horizontal"]', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.connector.Inst.defineAttribute('$vertConnector',
+TP.sherpa.connector.Inst.defineAttribute('$vertConnectorElem',
     TP.cpc('> div[part="vertical"]', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.connector.Inst.defineAttribute('$connectorDest',
+TP.sherpa.connector.Inst.defineAttribute('$connectorDestDisplayElem',
     TP.cpc('> div[part="destination"]', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.connector.Inst.defineAttribute('$startPoint');
@@ -173,8 +173,8 @@ function(fromX, fromY, toX, toY) {
 
         dragOrientation,
 
-        horizConnector,
-        vertConnector,
+        horizConnectorElem,
+        vertConnectorElem,
 
         launchTopSideCoord,
         launchRightSideCoord,
@@ -185,8 +185,8 @@ function(fromX, fromY, toX, toY) {
 
     dragOrientation = this.$get('$dragOrientation');
 
-    horizConnector = this.get('$horizConnector').getNativeNode();
-    vertConnector = this.get('$vertConnector').getNativeNode();
+    horizConnectorElem = this.get('$horizConnectorElem').getNativeNode();
+    vertConnectorElem = this.get('$vertConnectorElem').getNativeNode();
 
     /* eslint-disable no-extra-parens */
     //  If the drag orientation hasn't been decided yet, compute it.
@@ -224,43 +224,43 @@ function(fromX, fromY, toX, toY) {
     //  and move the vertical.
     if (dragOrientation === TP.sherpa.connector.HORIZ_ORIENTATION) {
         if (toX >= fromX) {
-            horizConnector.style.left = fromX + 'px';
-            horizConnector.style.width = ((toX - fromX) +
+            horizConnectorElem.style.left = fromX + 'px';
+            horizConnectorElem.style.width = ((toX - fromX) +
                 connectorThickness) + 'px';
         } else {
-            horizConnector.style.left = toX + 'px';
-            horizConnector.style.width = (fromX - toX) + 'px';
+            horizConnectorElem.style.left = toX + 'px';
+            horizConnectorElem.style.width = (fromX - toX) + 'px';
         }
 
         if (toY >= fromY) {
-            vertConnector.style.left = toX + 'px';
-            vertConnector.style.top = fromY + 'px';
-            vertConnector.style.height = (toY - fromY) + 'px';
+            vertConnectorElem.style.left = toX + 'px';
+            vertConnectorElem.style.top = fromY + 'px';
+            vertConnectorElem.style.height = (toY - fromY) + 'px';
         } else {
-            vertConnector.style.left = toX + 'px';
-            vertConnector.style.top = toY + 'px';
-            vertConnector.style.height = (fromY - toY) + 'px';
+            vertConnectorElem.style.left = toX + 'px';
+            vertConnectorElem.style.top = toY + 'px';
+            vertConnectorElem.style.height = (fromY - toY) + 'px';
         }
     } else {
         //  Otherwise we stretch the vertical connector and move the
         //  horizontal.
         if (toX >= fromX) {
-            horizConnector.style.left = fromX + 'px';
-            horizConnector.style.top = toY + 'px';
-            horizConnector.style.width = (toX - fromX) + 'px';
+            horizConnectorElem.style.left = fromX + 'px';
+            horizConnectorElem.style.top = toY + 'px';
+            horizConnectorElem.style.width = (toX - fromX) + 'px';
         } else {
-            horizConnector.style.left = toX + 'px';
-            horizConnector.style.top = toY + 'px';
-            horizConnector.style.width = ((fromX - toX) +
+            horizConnectorElem.style.left = toX + 'px';
+            horizConnectorElem.style.top = toY + 'px';
+            horizConnectorElem.style.width = ((fromX - toX) +
                 connectorThickness) + 'px';
         }
 
         if (toY >= fromY) {
-            vertConnector.style.top = fromY + 'px';
-            vertConnector.style.height = (toY - fromY) + 'px';
+            vertConnectorElem.style.top = fromY + 'px';
+            vertConnectorElem.style.height = (toY - fromY) + 'px';
         } else {
-            vertConnector.style.top = toY + 'px';
-            vertConnector.style.height = (fromY - toY) + 'px';
+            vertConnectorElem.style.top = toY + 'px';
+            vertConnectorElem.style.height = (fromY - toY) + 'px';
         }
     }
     /* eslint-enable no-extra-parens */
@@ -457,12 +457,12 @@ function() {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
-    this.get('$connectorLaunch').hide();
+    this.get('$connectorLaunchElem').hide();
 
-    this.get('$horizConnector').hide();
-    this.get('$vertConnector').hide();
+    this.get('$horizConnectorElem').hide();
+    this.get('$vertConnectorElem').hide();
 
-    this.get('$connectorDest').hide();
+    this.get('$connectorDestDisplayElem').hide();
 
     this.set('autoHideConnector', true);
 
@@ -480,7 +480,7 @@ function() {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
-    this.get('$connectorDest').hide();
+    this.get('$connectorDestDisplayElem').hide();
 
     return this;
 });
@@ -539,22 +539,23 @@ function(destTPElement) {
      */
 
     var destRect,
-        connectorDest;
+        connectorDestDisplayElem;
 
     destRect = destTPElement.getConnectorDestinationRect(this);
 
     //  Grab the connector destination element.
-    connectorDest = this.get('$connectorDest').getNativeNode();
+    connectorDestDisplayElem =
+        this.get('$connectorDestDisplayElem').getNativeNode();
 
     /* eslint-disable no-extra-parens */
-    connectorDest.style.left = destRect.getX() + 'px';
-    connectorDest.style.top = destRect.getY() + 'px';
-    connectorDest.style.width = destRect.getWidth() + 'px';
-    connectorDest.style.height = destRect.getHeight() + 'px';
+    connectorDestDisplayElem.style.left = destRect.getX() + 'px';
+    connectorDestDisplayElem.style.top = destRect.getY() + 'px';
+    connectorDestDisplayElem.style.width = destRect.getWidth() + 'px';
+    connectorDestDisplayElem.style.height = destRect.getHeight() + 'px';
     /* eslint-enable no-extra-parens */
 
     //  Show the connection destination element to the user.
-    TP.elementShow(connectorDest);
+    TP.elementShow(connectorDestDisplayElem);
 
     return this;
 });
@@ -572,10 +573,10 @@ function(aPoint) {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
-    var connectorLaunch,
+    var connectorLaunchElem,
 
-        horizConnector,
-        vertConnector,
+        horizConnectorElem,
+        vertConnectorElem,
 
         connectorThickness,
 
@@ -583,9 +584,9 @@ function(aPoint) {
         connectorStartY;
 
     //  Grab the launch point, horizontal and vertical connector elements.
-    connectorLaunch = this.get('$connectorLaunch').getNativeNode();
-    horizConnector = this.get('$horizConnector').getNativeNode();
-    vertConnector = this.get('$vertConnector').getNativeNode();
+    connectorLaunchElem = this.get('$connectorLaunchElem').getNativeNode();
+    horizConnectorElem = this.get('$horizConnectorElem').getNativeNode();
+    vertConnectorElem = this.get('$vertConnectorElem').getNativeNode();
 
     //  Grab the X and Y from the point and the thickness in preparation for
     //  positioning the 3 elements.
@@ -596,26 +597,26 @@ function(aPoint) {
     //  Position and size the launch point and the horizontal and vertical
     //  connector elements.
     /* eslint-disable no-extra-parens */
-    connectorLaunch.style.left =
+    connectorLaunchElem.style.left =
         (connectorStartX - connectorThickness + 1) + 'px';
-    connectorLaunch.style.top =
+    connectorLaunchElem.style.top =
         (connectorStartY - connectorThickness + 1) + 'px';
     /* eslint-enable no-extra-parens */
 
-    horizConnector.style.left = connectorStartX + 'px';
-    horizConnector.style.top = connectorStartY + 'px';
-    horizConnector.style.width = '1px';
-    horizConnector.style.height = connectorThickness + 'px';
+    horizConnectorElem.style.left = connectorStartX + 'px';
+    horizConnectorElem.style.top = connectorStartY + 'px';
+    horizConnectorElem.style.width = '1px';
+    horizConnectorElem.style.height = connectorThickness + 'px';
 
-    vertConnector.style.left = connectorStartX + 'px';
-    vertConnector.style.top = connectorStartY + 'px';
-    vertConnector.style.width = connectorThickness + 'px';
-    vertConnector.style.height = '1px';
+    vertConnectorElem.style.left = connectorStartX + 'px';
+    vertConnectorElem.style.top = connectorStartY + 'px';
+    vertConnectorElem.style.width = connectorThickness + 'px';
+    vertConnectorElem.style.height = '1px';
 
     //  Show the 3 elements to the user.
-    TP.elementShow(connectorLaunch);
-    TP.elementShow(horizConnector);
-    TP.elementShow(vertConnector);
+    TP.elementShow(connectorLaunchElem);
+    TP.elementShow(horizConnectorElem);
+    TP.elementShow(vertConnectorElem);
 
     return this;
 });
