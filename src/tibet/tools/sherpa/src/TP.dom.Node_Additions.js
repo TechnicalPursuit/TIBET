@@ -319,8 +319,10 @@ function(aConnector) {
 
     connectorThickness = aConnector.get('connectorThickness');
 
-    destRect.subtractByPoint(TP.pc(connectorThickness, connectorThickness));
-    destRect.growByPoint(TP.pc(connectorThickness, connectorThickness));
+    destRect.subtractByPoint(
+                TP.pc(connectorThickness, connectorThickness));
+    destRect.growByPoint(
+                TP.pc(connectorThickness, connectorThickness));
 
     return destRect;
 });
