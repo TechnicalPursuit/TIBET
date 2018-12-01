@@ -2293,6 +2293,7 @@ function(aMutationRecord) {
 
         queryEntries,
 
+        queryContext,
         targetDoc,
         doc,
         queryKeys,
@@ -2575,6 +2576,17 @@ function(aMutationRecord) {
                 for (i = 0; i < len; i++) {
                     entry = queryEntries.at(queryKeys.at(i));
 
+                    //  NB: 'queryContext' won't be used if there is no query
+                    //  path object, but default it to the documentElement if
+                    //  it wasn't supplied.
+                    if (!TP.isElement(queryContext = entry.at('context'))) {
+                        queryContext = targetDoc.documentElement;
+                    }
+
+                    if (!queryContext.contains(targetNode)) {
+                        continue;
+                    }
+
                     //  If the two documents match, execute the query and
                     //  dispatch signals if necessary.
                     if (entry.at('document') === targetDoc) {
@@ -2716,6 +2728,30 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     //  default it to the documentElement if it wasn't supplied.
     if (!TP.isElement(queryContext = queryEntry.at('context'))) {
         queryContext = aDocument.documentElement;
+    }
+
+    //  If there is a real addedNodes Array, make sure all of the nodes in it
+    //  exist under the queryContext node.
+    if (TP.isArray(addedNodes)) {
+        addedNodes = addedNodes.filter(
+                        function(aNode) {
+                            return queryContext.contains(aNode);
+                        });
+    }
+
+    //  If there is a real removedNodes Array, make sure all of the nodes in it
+    //  exist under the queryContext node.
+    if (TP.isArray(removedNodes)) {
+        removedNodes = removedNodes.filter(
+                        function(aNode) {
+                            return queryContext.contains(aNode);
+                        });
+    }
+
+    //  If both of these Arrays are empty, exit here. No need to run a
+    //  (relatively expensive) query path.
+    if (TP.isEmpty(addedNodes) && TP.isEmpty(removedNodes)) {
+        return this;
     }
 
     //  If there is a valid path, then execute it.
