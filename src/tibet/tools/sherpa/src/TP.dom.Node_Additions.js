@@ -291,6 +291,42 @@ function(aConnector) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getConnectorDestinationRect',
+function(aConnector) {
+
+    /**
+     * @method getConnectorDestinationRect
+     * @summary Returns a TP.gui.Rect to be used as the connector destination's
+     *     rectangle to display when it is currently being highlighted as the
+     *     connector destination.
+     * @param {TP.sherpa.connector} aConnector The connector that is requesting
+     *     the destination rectangle.
+     * @returns {TP.gui.Rect} The rectangle to use to draw the connector
+     *     destination.
+     */
+
+    var destRect,
+        connectorThickness;
+
+    if (!this.hasAttribute('sherpa:connectoraccept')) {
+        return TP.rtc(0, 0, 0, 0);
+    }
+
+    destRect = this.getGlobalRect();
+
+    //  The default is to 'outset' the rectangle by the thickness of the
+    //  connector.
+
+    connectorThickness = aConnector.get('connectorThickness');
+
+    destRect.subtractByPoint(TP.pc(connectorThickness, connectorThickness));
+    destRect.growByPoint(TP.pc(connectorThickness, connectorThickness));
+
+    return destRect;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getConnectorSource',
 function(aConnector) {
 

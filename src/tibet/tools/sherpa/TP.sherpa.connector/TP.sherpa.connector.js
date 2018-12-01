@@ -50,7 +50,7 @@ TP.sherpa.connector.Inst.defineAttribute('$dragOrientation');
 TP.sherpa.connector.Inst.defineAttribute('$srcTPElement');
 TP.sherpa.connector.Inst.defineAttribute('$destTPElement');
 
-TP.sherpa.connector.Inst.defineAttribute('$connectorThickness');
+TP.sherpa.connector.Inst.defineAttribute('connectorThickness');
 TP.sherpa.connector.Inst.defineAttribute('$launchSize');
 
 TP.sherpa.connector.Inst.defineAttribute('autoHideConnector');
@@ -181,7 +181,7 @@ function(fromX, fromY, toX, toY) {
         launchBottomSideCoord,
         launchLeftSideCoord;
 
-    connectorThickness = this.$get('$connectorThickness');
+    connectorThickness = this.$get('connectorThickness');
 
     dragOrientation = this.$get('$dragOrientation');
 
@@ -368,7 +368,7 @@ function(aSignal) {
             newDestTPElement.canConnectFrom(srcTPElement)) {
 
             //  Both elements 'agree' - show the connector destination overlay.
-            this.showConnectorDestOver(newDestElement);
+            this.showConnectorDestOver(newDestTPElement);
 
             //  Signal that the connector is over a valid destination.
             newDestTPElement.signal('SherpaConnectTargetOver',
@@ -498,7 +498,7 @@ function() {
 
     var connectorStyleElement;
 
-    this.set('$connectorThickness', 3);
+    this.set('connectorThickness', 3);
     this.set('$launchSize', 7);
 
     //  Grab the style sheet that is associated with the connector.
@@ -527,41 +527,30 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.connector.Inst.defineMethod('showConnectorDestOver',
-function(destElement) {
+function(destTPElement) {
 
     /**
      * @method showConnectorDestOver
      * @summary Shows the 'connector destination' element 'over' the supplied
      *     element.
-     * @param {Element} destElement The element to show the 'connector
-     *     destination' over.
+     * @param {TP.dom.ElementNode} destTPElement The element to show the
+     *     'connector destination' over.
      * @returns {TP.sherpa.connector} The receiver.
      */
 
-    var coords,
+    var destRect,
+        connectorDest;
 
-        connectorDest,
-        connectorThickness;
-
-    //  Grab the global box for the destination element.
-    coords = TP.elementGetGlobalBox(destElement);
+    destRect = destTPElement.getConnectorDestinationRect(this);
 
     //  Grab the connector destination element.
     connectorDest = this.get('$connectorDest').getNativeNode();
 
-    connectorThickness = this.$get('$connectorThickness');
-
-    //  Position and size the connector destination element based on the box
-    //  coordinates and the connector thickness.
     /* eslint-disable no-extra-parens */
-    connectorDest.style.left =
-        (coords.at('left') - connectorThickness) + 'px';
-    connectorDest.style.top =
-        (coords.at('top') - connectorThickness) + 'px';
-    connectorDest.style.width =
-        (coords.at('width') + connectorThickness) + 'px';
-    connectorDest.style.height =
-        (coords.at('height') + connectorThickness) + 'px';
+    connectorDest.style.left = destRect.getX() + 'px';
+    connectorDest.style.top = destRect.getY() + 'px';
+    connectorDest.style.width = destRect.getWidth() + 'px';
+    connectorDest.style.height = destRect.getHeight() + 'px';
     /* eslint-enable no-extra-parens */
 
     //  Show the connection destination element to the user.
@@ -602,7 +591,7 @@ function(aPoint) {
     //  positioning the 3 elements.
     connectorStartX = aPoint.getX();
     connectorStartY = aPoint.getY();
-    connectorThickness = this.$get('$connectorThickness');
+    connectorThickness = this.$get('connectorThickness');
 
     //  Position and size the launch point and the horizontal and vertical
     //  connector elements.
