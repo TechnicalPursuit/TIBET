@@ -346,6 +346,39 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineMethod('getConnectorDestinationRect',
+function(aConnector) {
+
+    /**
+     * @method getConnectorDestinationRect
+     * @summary Returns a TP.gui.Rect to be used as the connector destination's
+     *     rectangle to display when it is currently being highlighted as the
+     *     connector destination.
+     * @param {TP.sherpa.connector} aConnector The connector that is requesting
+     *     the destination rectangle.
+     * @returns {TP.gui.Rect} The rectangle to use to draw the connector
+     *     destination.
+     */
+
+    var destRect,
+        connectorThickness;
+
+    destRect = this.getGlobalRect();
+
+    //  The default is to 'outset' the rectangle by the thickness of the
+    //  connector.
+
+    connectorThickness = aConnector.get('connectorThickness');
+
+    destRect.subtractByPoint(
+                TP.pc(connectorThickness, connectorThickness));
+    destRect.shrink(connectorThickness, 0);
+
+    return destRect;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineMethod('focusOnTarget',
 function(aTPElement) {
 
