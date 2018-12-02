@@ -3696,11 +3696,44 @@ function() {
      */
 
     var styleURI,
+
+        head,
+        loc,
+        styleElems,
+
         gids;
 
+    //  Grab the style (i.e. CSS) URI associated with the receiver.
     styleURI = this.getType().getResourceURI('style', TP.ietf.mime.CSS);
+
+    //  If it's not valid or has been defined a 'NO_RESULT', then return true
+    //  since we're certainly not waiting for a stylesheet to load to be
+    //  considered 'ready to render'.
     if (TP.notValid(styleURI) || styleURI === TP.NO_RESULT) {
         return true;
+    } else {
+        //  Otherwise, in some cases where a single stylesheet contains
+        //  definitions for multiple types, another type will have loaded the
+        //  stylesheet. Check to see if it is in the head of our document
+        //  already.
+        head = TP.documentEnsureHeadElement(this.getNativeDocument());
+        loc = styleURI.getLocation();
+
+        //  Generate a CSS query that looks under the head for any *XHTML* style
+        //  elements (not 'tibet:style' ones) that have an 'originalhref'
+        //  attribute that contains (anywhere in its path) our styleURI's
+        //  location.
+        styleElems = TP.byCSSPath(
+                            '> html|style[tibet|originalhref~="' + loc + '"]',
+                            head,
+                            false,
+                            false);
+
+        //  If we found at least one matching stylesheet, then we're ready to
+        //  render.
+        if (TP.notEmpty(styleElems)) {
+            return true;
+        }
     }
 
     //  Check with the set of global IDs that our type is keeping and see if
