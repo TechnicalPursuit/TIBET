@@ -79,6 +79,8 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     justify-content: center;
 
     background-color: rgba(68, 68, 68, 0.2);
+
+    z-index: var(--tibet-CURTAIN-TIER);
 }
 
 [busyFor]:not([pclass|hidden]) {
