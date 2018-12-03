@@ -20,8 +20,54 @@ TP.sherpa.domhud_elementContent.defineSubtype('domhud_TP_tibet_serviceContent');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud_TP_tibet_serviceContent.Inst.defineHandler('BrowseToURI',
+function(aSignal) {
+
+    /**
+     * @method handleBrowseToURI
+     * @summary Handles when the user wants to browse to the selected URI.
+     * @param {TP.sig.BrowseToURI} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud_TP_tibet_serviceContent} The receiver.
+     */
+
+    var fieldName,
+
+        loc,
+        cmdText;
+
+    fieldName =
+        TP.wrap(aSignal.getTarget()).getParentNode().getAttribute('for');
+
+    loc = TP.byId(fieldName, this).get('value');
+
+    //  Make sure to escape any slashes - this is important as the Sherpa
+    //  inspector can use '/' as a 'path separator' and we want the URI to be
+    //  treated as a 'whole'.
+    loc = TP.stringEscapeSlashes(loc);
+
+    cmdText = ':inspect --path=\'_URIS_/' + loc + '\'';
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc('cmdText', cmdText,
+                        'showBusy', true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud_TP_tibet_serviceContent.Inst.defineHandler('RefreshFromRemote',
 function(aSignal) {
+
+    /**
+     * @method handleRefreshFromRemote
+     * @summary Handles when the user wants to refresh the result from the
+     *     remote URI.
+     * @param {TP.sig.RefreshFromRemote} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.domhud_TP_tibet_serviceContent} The receiver.
+     */
 
     var targetTPElem;
 
