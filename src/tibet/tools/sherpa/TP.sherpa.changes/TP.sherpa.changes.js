@@ -157,7 +157,8 @@ function(aSignal) {
     cmdText = ':inspect --path=\'_URIS_/' + selectedLoc + '\'';
     TP.signal(null,
                 'ConsoleCommand',
-                TP.hc('cmdText', cmdText));
+                TP.hc('cmdText', cmdText,
+                        'showBusy', true));
 
     return this;
 });
