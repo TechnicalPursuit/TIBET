@@ -1222,7 +1222,9 @@ function(anObject, optFormat, valueFunction) {
                         shouldPushKey = true;
                         shouldPopKey = false;
                     } else if (text === '}' || text === ']') {
-                        keyPath.pop();
+                        if (shouldPopKey) {
+                            keyPath.pop();
+                        }
 
                         shouldPushKey = true;
                         shouldPopKey = true;
