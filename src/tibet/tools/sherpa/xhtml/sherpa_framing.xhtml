@@ -49,20 +49,20 @@
 
     <sherpa:hud pclass:closed="true">
 
-        <div id="northwest" tibet:tag="sherpa:drawer" class="framing corner overlay north west" pclass:closed="true" pclass:hidden="true">
+        <div id="northwest" tibet:tag="sherpa:drawer" class="framing corner north west" pclass:closed="true" pclass:hidden="true">
             <sherpa:about/>
         </div>
 
-        <div id="north" tibet:tag="sherpa:drawer" class="framing h-edge overlay north center" pclass:closed="true" pclass:hidden="true">
+        <div id="north" tibet:tag="sherpa:drawer" class="framing h-edge north center" pclass:closed="true" pclass:hidden="true">
             <sherpa:workbench id="SherpaWorkbench"/>
             <div id="northResizer" class="h-resizer" drag:resizer="true" drag:side="BOTTOM" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--sherpa-drawer-north-open-height"/>
         </div>
 
-        <div id="northeast" tibet:tag="sherpa:drawer" class="framing corner overlay north east" pclass:closed="true" pclass:hidden="true">
+        <div id="northeast" tibet:tag="sherpa:drawer" class="framing corner north east" pclass:closed="true" pclass:hidden="true">
            <sherpa:settings/>
         </div>
 
-        <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge overlay middle west" pclass:closed="true" pclass:hidden="true">
+        <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge middle west" pclass:closed="true" pclass:hidden="true">
             <sherpa:opener class="west">
                 <xctrls:hint>DOM</xctrls:hint>
             </sherpa:opener>
@@ -76,14 +76,14 @@
             </sherpa:opener>
         </div>
 
-        <div id="center" class="middle center overlay fullscreen">
+        <div id="center" class="middle center fullscreen">
             <div id="content">
                 <!-- This will be moved with the arrival of the <sherpa:world/> tag. SCREEN_O will remain the default screen. This content div will then be repurposed to be the 'tools layer'. -->
                 <iframe id="SCREEN_0" frameborder="0"></iframe>
             </div>
         </div>
 
-        <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle overlay east" pclass:closed="true" pclass:hidden="true">
+        <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle east" pclass:closed="true" pclass:hidden="true">
             <sherpa:opener class="east">
                 <xctrls:hint>Responders</xctrls:hint>
             </sherpa:opener>
@@ -97,11 +97,11 @@
             </sherpa:opener>
         </div>
 
-        <div id="southwest" tibet:tag="sherpa:drawer" class="framing corner overlay south west" pclass:closed="true" pclass:hidden="true">
+        <div id="southwest" tibet:tag="sherpa:drawer" class="framing corner south west" pclass:closed="true" pclass:hidden="true">
            <sherpa:thumbnail/>
         </div>
 
-        <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
+        <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge south center" pclass:closed="true" pclass:hidden="true">
             <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--sherpa-drawer-south-open-height"/>
             <xctrls:tabbar id="SherpaConsoleTabbar" bind:io="{data: urn:tibet:sherpa_tabs, value: urn:tibet:current_console_tab#tibet(selection)}" tibet:ctrl="SherpaConsole" tooltips="true">
                 <tibet:template>
@@ -137,7 +137,7 @@
             </button>
         </div>
 
-        <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner overlay south east" pclass:closed="true" pclass:hidden="true">
+        <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner south east" pclass:closed="true" pclass:hidden="true">
             <sherpa:changes/>
         </div>
 
