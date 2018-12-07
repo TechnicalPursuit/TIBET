@@ -24,6 +24,13 @@ TP.dom.UIElementNode.defineSubtype('svg:switch');
 //  have to use the 'slot name' version of the type name.
 TP.svg.switch.addTraits(TP.svg.Element);
 
+TP.svg.switch.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.switch.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.switch.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 

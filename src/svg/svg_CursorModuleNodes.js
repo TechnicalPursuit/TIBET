@@ -22,6 +22,13 @@ TP.dom.UIElementNode.defineSubtype('svg:cursor');
 
 TP.svg.cursor.addTraits(TP.svg.Element);
 
+TP.svg.cursor.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.cursor.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.cursor.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------

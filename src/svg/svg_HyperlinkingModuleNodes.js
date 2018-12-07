@@ -22,6 +22,12 @@ TP.dom.UIElementNode.defineSubtype('svg:a');
 
 TP.svg.a.addTraits(TP.svg.Element);
 
+TP.svg.a.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.a.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 TP.svg.a.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'xlink:href'));

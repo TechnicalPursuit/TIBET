@@ -22,6 +22,13 @@ TP.dom.UIElementNode.defineSubtype('svg:mask');
 
 TP.svg.mask.addTraits(TP.svg.Element);
 
+TP.svg.mask.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.mask.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.mask.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 

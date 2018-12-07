@@ -22,6 +22,13 @@ TP.dom.UIElementNode.defineSubtype('svg:animate');
 
 TP.svg.animate.addTraits(TP.svg.Element);
 
+TP.svg.animate.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.animate.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
@@ -37,6 +44,13 @@ TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 TP.dom.UIElementNode.defineSubtype('svg:set');
 
 TP.svg.set.addTraits(TP.svg.Element);
+
+TP.svg.set.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.set.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 TP.svg.set.Type.set('uriAttrs', TP.ac('xlink:href'));
 
@@ -54,6 +68,13 @@ TP.dom.UIElementNode.defineSubtype('svg:animateMotion');
 
 TP.svg.animateMotion.addTraits(TP.svg.Element);
 
+TP.svg.animateMotion.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.animateMotion.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
@@ -69,6 +90,13 @@ TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 TP.dom.UIElementNode.defineSubtype('svg:animateTransform');
 
 TP.svg.animateTransform.addTraits(TP.svg.Element);
+
+TP.svg.animateTransform.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.animateTransform.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 TP.svg.animateTransform.Type.set('uriAttrs', TP.ac('xlink:href'));
 
@@ -86,6 +114,9 @@ TP.dom.UIElementNode.defineSubtype('svg:animateColor');
 
 TP.svg.animateColor.addTraits(TP.svg.Element);
 
+TP.svg.animateColor.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.animateColor.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.mpath
 //  ========================================================================
@@ -99,6 +130,9 @@ TP.svg.animateColor.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:mpath');
 
 TP.svg.mpath.addTraits(TP.svg.Element);
+
+TP.svg.mpath.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.mpath.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end

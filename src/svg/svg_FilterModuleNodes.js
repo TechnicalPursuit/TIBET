@@ -22,6 +22,13 @@ TP.dom.UIElementNode.defineSubtype('svg:filter');
 
 TP.svg.filter.addTraits(TP.svg.Element);
 
+TP.svg.filter.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.filter.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.filter.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
@@ -38,6 +45,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feBlend');
 
 TP.svg.feBlend.addTraits(TP.svg.Element);
 
+TP.svg.feBlend.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feBlend.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feColorMatrix
 //  ========================================================================
@@ -51,6 +61,9 @@ TP.svg.feBlend.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feColorMatrix');
 
 TP.svg.feColorMatrix.addTraits(TP.svg.Element);
+
+TP.svg.feColorMatrix.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feColorMatrix.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feComponentTransfer
@@ -66,6 +79,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feComponentTransfer');
 
 TP.svg.feComponentTransfer.addTraits(TP.svg.Element);
 
+TP.svg.feComponentTransfer.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feComponentTransfer.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feComposite
 //  ========================================================================
@@ -79,6 +95,9 @@ TP.svg.feComponentTransfer.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feComposite');
 
 TP.svg.feComposite.addTraits(TP.svg.Element);
+
+TP.svg.feComposite.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feComposite.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feConvolveMatrix
@@ -94,6 +113,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feConvolveMatrix');
 
 TP.svg.feConvolveMatrix.addTraits(TP.svg.Element);
 
+TP.svg.feConvolveMatrix.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feConvolveMatrix.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feDiffuseLighting
 //  ========================================================================
@@ -107,6 +129,9 @@ TP.svg.feConvolveMatrix.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feDiffuseLighting');
 
 TP.svg.feDiffuseLighting.addTraits(TP.svg.Element);
+
+TP.svg.feDiffuseLighting.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feDiffuseLighting.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feDisplacementMap
@@ -122,6 +147,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feDisplacementMap');
 
 TP.svg.feDisplacementMap.addTraits(TP.svg.Element);
 
+TP.svg.feDisplacementMap.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feDisplacementMap.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feFlood
 //  ========================================================================
@@ -135,6 +163,9 @@ TP.svg.feDisplacementMap.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feFlood');
 
 TP.svg.feFlood.addTraits(TP.svg.Element);
+
+TP.svg.feFlood.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feFlood.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feGaussianBlur
@@ -150,6 +181,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feGaussianBlur');
 
 TP.svg.feGaussianBlur.addTraits(TP.svg.Element);
 
+TP.svg.feGaussianBlur.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feGaussianBlur.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feImage
 //  ========================================================================
@@ -163,6 +197,9 @@ TP.svg.feGaussianBlur.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feImage');
 
 TP.svg.feImage.addTraits(TP.svg.Element);
+
+TP.svg.feImage.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feImage.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feMerge
@@ -178,6 +215,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feMerge');
 
 TP.svg.feMerge.addTraits(TP.svg.Element);
 
+TP.svg.feMerge.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feMerge.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feMergeNode
 //  ========================================================================
@@ -191,6 +231,9 @@ TP.svg.feMerge.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feMergeNode');
 
 TP.svg.feMergeNode.addTraits(TP.svg.Element);
+
+TP.svg.feMergeNode.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feMergeNode.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feMorphology
@@ -206,6 +249,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feMorphology');
 
 TP.svg.feMorphology.addTraits(TP.svg.Element);
 
+TP.svg.feMorphology.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feMorphology.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feOffset
 //  ========================================================================
@@ -219,6 +265,9 @@ TP.svg.feMorphology.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feOffset');
 
 TP.svg.feOffset.addTraits(TP.svg.Element);
+
+TP.svg.feOffset.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feOffset.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feSpecularLighting
@@ -234,6 +283,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feSpecularLighting');
 
 TP.svg.feSpecularLighting.addTraits(TP.svg.Element);
 
+TP.svg.feSpecularLighting.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feSpecularLighting.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feTile
 //  ========================================================================
@@ -247,6 +299,9 @@ TP.svg.feSpecularLighting.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feTile');
 
 TP.svg.feTile.addTraits(TP.svg.Element);
+
+TP.svg.feTile.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feTile.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feTurbulence
@@ -262,6 +317,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feTurbulence');
 
 TP.svg.feTurbulence.addTraits(TP.svg.Element);
 
+TP.svg.feTurbulence.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feTurbulence.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feDistantLight
 //  ========================================================================
@@ -275,6 +333,9 @@ TP.svg.feTurbulence.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feDistantLight');
 
 TP.svg.feDistantLight.addTraits(TP.svg.Element);
+
+TP.svg.feDistantLight.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feDistantLight.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.fePointLight
@@ -290,6 +351,9 @@ TP.dom.UIElementNode.defineSubtype('svg:fePointLight');
 
 TP.svg.fePointLight.addTraits(TP.svg.Element);
 
+TP.svg.fePointLight.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.fePointLight.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feSpotLight
 //  ========================================================================
@@ -303,6 +367,9 @@ TP.svg.fePointLight.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feSpotLight');
 
 TP.svg.feSpotLight.addTraits(TP.svg.Element);
+
+TP.svg.feSpotLight.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feSpotLight.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feFuncR
@@ -318,6 +385,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feFuncR');
 
 TP.svg.feFuncR.addTraits(TP.svg.Element);
 
+TP.svg.feFuncR.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feFuncR.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feFuncG
 //  ========================================================================
@@ -331,6 +401,9 @@ TP.svg.feFuncR.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feFuncG');
 
 TP.svg.feFuncG.addTraits(TP.svg.Element);
+
+TP.svg.feFuncG.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feFuncG.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.feFuncB
@@ -346,6 +419,9 @@ TP.dom.UIElementNode.defineSubtype('svg:feFuncB');
 
 TP.svg.feFuncB.addTraits(TP.svg.Element);
 
+TP.svg.feFuncB.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feFuncB.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
 //  ========================================================================
 //  TP.svg.feFuncA
 //  ========================================================================
@@ -359,6 +435,9 @@ TP.svg.feFuncB.addTraits(TP.svg.Element);
 TP.dom.UIElementNode.defineSubtype('svg:feFuncA');
 
 TP.svg.feFuncA.addTraits(TP.svg.Element);
+
+TP.svg.feFuncA.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.feFuncA.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end

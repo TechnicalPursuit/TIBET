@@ -22,6 +22,13 @@ TP.dom.UIElementNode.defineSubtype('svg:marker');
 
 TP.svg.marker.addTraits(TP.svg.Element);
 
+TP.svg.marker.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.marker.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.marker.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 

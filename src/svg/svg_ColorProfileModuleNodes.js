@@ -22,7 +22,18 @@ TP.dom.UIElementNode.defineSubtype('svg:color_profile');
 
 TP.svg.color_profile.addTraits(TP.svg.Element);
 
+TP.svg.color_profile.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.color_profile.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.color_profile.Type.set('uriAttrs', TP.ac('xlink:href'));
+
+//  ------------------------------------------------------------------------
+//  Type Local Attributes
+//  ------------------------------------------------------------------------
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.

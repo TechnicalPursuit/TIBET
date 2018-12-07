@@ -22,6 +22,13 @@ TP.dom.UIElementNode.defineSubtype('svg:linearGradient');
 
 TP.svg.linearGradient.addTraits(TP.svg.Element);
 
+TP.svg.linearGradient.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.linearGradient.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.linearGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
@@ -38,6 +45,13 @@ TP.dom.UIElementNode.defineSubtype('svg:radialGradient');
 
 TP.svg.radialGradient.addTraits(TP.svg.Element);
 
+TP.svg.radialGradient.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.radialGradient.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 TP.svg.radialGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
@@ -53,6 +67,9 @@ TP.svg.radialGradient.Type.set('uriAttrs', TP.ac('xlink:href'));
 TP.dom.UIElementNode.defineSubtype('svg:stop');
 
 TP.svg.stop.addTraits(TP.svg.Element);
+
+TP.svg.stop.Type.resolveTrait('cmdRunContent', TP.svg.Element);
+TP.svg.stop.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end
