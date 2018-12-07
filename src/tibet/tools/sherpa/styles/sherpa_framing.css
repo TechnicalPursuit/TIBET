@@ -78,6 +78,8 @@ body {
     --sherpa-world-SBS-width: 512px;
     --sherpa-consoleoutput-SBS-width: 768px;
 
+    --sherpa-toolslayer-offset: 4px;
+
     /* stylelint-enable custom-property-empty-line-before */
 
     display: flex;
@@ -207,32 +209,32 @@ li.CodeMirror-hint-active {
 
 #background.edge-north-open #content[isToolsLayer] {
 
-    top: var(--sherpa-drawer-north-open-height);
+    top: calc(var(--sherpa-drawer-north-open-height) + var(--sherpa-toolslayer-offset));
 }
 
 #background:not(.edge-north-open) #content[isToolsLayer] {
 
-    top: var(--sherpa-drawer-north-closed-height);
+    top: calc(var(--sherpa-drawer-north-closed-height) + var(--sherpa-toolslayer-offset));
 }
 
 #background.edge-south-open #content[isToolsLayer] {
 
-    bottom: var(--sherpa-drawer-south-open-height);
+    bottom: calc(var(--sherpa-drawer-south-open-height) + var(--sherpa-toolslayer-offset));
 }
 
 #background:not(.edge-south-open) #content[isToolsLayer] {
 
-    bottom: var(--sherpa-drawer-south-closed-height);
+    bottom: calc(var(--sherpa-drawer-south-closed-height) + var(--sherpa-toolslayer-offset));
 }
 
 #background.edge-west-open #content[isToolsLayer] {
 
-    left: var(--sherpa-drawer-west-open-width);
+    left: calc(var(--sherpa-drawer-west-open-width) + var(--sherpa-toolslayer-offset));
 }
 
 #background.edge-east-open #content[isToolsLayer] {
 
-    right: var(--sherpa-drawer-east-open-width);
+    right: calc(var(--sherpa-drawer-east-open-width) + var(--sherpa-toolslayer-offset));
 }
 
 
