@@ -231,7 +231,7 @@ li.CodeMirror-hint-active {
 
     cursor: pointer;
 
-    z-index: 32767;
+    z-index: var(--tibet-HUD-CORNER-TIER);
 }
 
 /* Position the toolCloser based on whether the HUD drawers are open or not */
