@@ -2436,13 +2436,7 @@ function(aMarkupString) {
      *     natively supported.
      */
 
-    var testElement,
-
-        isNative,
-
-        allNSURIs,
-        len,
-        i;
+    var testElement;
 
     if (TP.notValid(aMarkupString)) {
         return this.raise('TP.sig.InvalidString');
@@ -2458,26 +2452,63 @@ function(aMarkupString) {
     //  interested in whether we get a valid Element or not.
     testElement = TP.elem(aMarkupString, null, false);
     if (TP.isElement(testElement)) {
-        isNative = true;
-
-        //  Grab all of the namespace URIs, supplying true as the second
-        //  parameter here to get all of the namespace URIs 'deeply'.
-        allNSURIs = TP.nodeGetNSURIs(testElement, true);
-
-        //  Iterate and if any of the detected namespaces are not native, flip
-        //  the flag to false and break.
-        len = allNSURIs.getSize();
-        for (i = 0; i < len; i++) {
-            if (!TP.w3.Xmlns.isNative(allNSURIs.at(i))) {
-                isNative = false;
-                break;
-            }
-        }
-
-        return isNative;
+        return this.isNativeNode(testElement);
     }
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.w3.Xmlns.Type.defineMethod('isNativeNode',
+function(aNode) {
+
+    /**
+     * @method isNativeNode
+     * @summary Returns true if *all* of the namespace URIs on the supplied
+     *     node are considered to belong to native namespaces. If just one is
+     *     not, then this method will return false.
+     * @param {Document|Element} aNode The node to test.
+     * @exception TP.sig.InvalidNode
+     * @returns {Boolean} True if the node contains namespaces that are
+     *     natively supported.
+     */
+
+    var testNode,
+
+        isNative,
+
+        allNSURIs,
+        len,
+        i;
+
+    if (!TP.isDocument(aNode) && !TP.isElement(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    if (TP.isDocument(aNode)) {
+        testNode = aNode.documentElement;
+    } else {
+        testNode = aNode;
+    }
+
+    isNative = true;
+
+    //  Grab all of the namespace URIs, supplying true as the second
+    //  parameter here to get all of the namespace URIs 'deeply'.
+    allNSURIs = TP.nodeGetNSURIs(testNode, true);
+
+    //  Iterate and if any of the detected namespaces are not native, flip
+    //  the flag to false and break.
+    len = allNSURIs.getSize();
+    for (i = 0; i < len; i++) {
+        if (!TP.w3.Xmlns.isNativeNS(allNSURIs.at(i))) {
+            isNative = false;
+            break;
+        }
+    }
+
+    return isNative;
 });
 
 //  ------------------------------------------------------------------------
