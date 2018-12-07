@@ -289,7 +289,6 @@ li.CodeMirror-hint-active {
     right: calc(var(--sherpa-drawer-east-open-width) + var(--sherpa-toolslayer-offset));
 }
 
-
 .tagline {
 
     position: relative;
@@ -981,6 +980,7 @@ div[busyFor="content"] > .busyMessage {
 }
 
 @keyframes trace_logo {
+
     to {
         stroke-dashoffset: 0;
     }
@@ -1019,4 +1019,3 @@ div[busyFor="content"] > .busyMessage {
     stroke-dashoffset: 1500;
     stroke-dasharray: 1500;
 }
-
