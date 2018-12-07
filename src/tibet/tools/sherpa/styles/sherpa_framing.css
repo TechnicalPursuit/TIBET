@@ -400,7 +400,7 @@ textarea {
     width: 12em;
     height: 5em;
 
-    font-family: "Inconsolata";
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 
     margin: 0.25em;
 
