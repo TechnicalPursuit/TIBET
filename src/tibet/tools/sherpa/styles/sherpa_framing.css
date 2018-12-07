@@ -204,6 +204,58 @@ li.CodeMirror-hint-active {
     pointer-events: none;
 }
 
+#content[isToolsLayer][activetool]:not([activetool="SherpaHalo"]) {
+
+    background: rgba(0, 0, 0, 0.15) !important;
+}
+
+.toolCloser {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 16px;
+    height: 16px;
+
+    background-size: 16px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+
+    background-image: url("~ide_root/media/baseline-highlight_off-24px.svg");
+
+    background-color: white;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    z-index: 32767;
+}
+
+/* Position the toolCloser based on whether the HUD drawers are open or not */
+
+#background.edge-north-open .toolCloser {
+
+    top: calc(var(--sherpa-drawer-north-open-height) - 8px);
+}
+
+#background:not(.edge-north-open) .toolCloser {
+
+    top: calc(var(--sherpa-drawer-north-closed-height) - 8px);
+}
+
+#background.edge-west-open .toolCloser {
+
+    left: calc(var(--sherpa-drawer-west-open-width) - 8px);
+}
+
+#background:not(.edge-west-open) .toolCloser {
+
+    left: calc(var(--sherpa-drawer-west-closed-width) - 8px);
+}
+
 /* Resizing the content when HUD drawers open (but only when its been converted
     to the tools layer) */
 

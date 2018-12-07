@@ -1641,7 +1641,7 @@ function(beHidden) {
         TP.elementAddClass(doc.documentElement, 'sherpa-halo');
 
         TP.bySystemId('Sherpa').getToolsLayer().setAttribute(
-                                                'activetool', 'sherpa:halo');
+                                                'activetool', this.getLocalID());
     }
 
     //  Need to 'call up' to make sure the attribute value is actually captured.

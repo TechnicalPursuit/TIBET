@@ -395,7 +395,9 @@ function(finalizationFunc) {
             consoleService,
 
             hudElem,
-            contentElem;
+            contentElem,
+
+            closerElem;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
         tpElem.setAttribute('tibet:nomutationtracking', false);
@@ -434,6 +436,14 @@ function(finalizationFunc) {
         //  Now that the content element has been moved and is available to be
         //  the tools layer, set up the property adjuster
         thisref.setupAdjuster();
+
+        //  Insert the 'tools closer' content as a sibling of the content (now
+        //  tools) element and *before* it.
+        closerElem = TP.xhtmlnode(
+                        '<div class="toolCloser"' +
+                        ' pclass:hidden="true"' +
+                        ' on:click="CloseActiveTool"/>');
+        TP.nodeInsertContent(contentElem, closerElem, TP.BEFORE_BEGIN);
 
         thisref.set('setupComplete', true);
 
@@ -553,6 +563,32 @@ function(aScreenTPElement) {
     );
 
     return offset;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('CloseActiveTool',
+function(aSignal) {
+
+    /**
+     * @method handleCloseActiveTool
+     * @summary Handles signals that the user wants to close the active tool.
+     * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var toolsLayer,
+
+        activeToolID;
+
+    toolsLayer = this.getToolsLayer();
+
+    activeToolID = toolsLayer.getAttribute('activetool');
+
+    this.deactivateTool(activeToolID);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1738,6 +1774,76 @@ function(aSignal) {
      */
 
     this.toggle();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('activateTool',
+function(toolID) {
+
+    /**
+     * @method activateTool
+     * @summary Activates the tool with the supplied ID. This will suppress the
+     *     halo from being the primary visual tool.
+     * @param {String} toolID The ID of the tool to activate.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var haloTPElem,
+
+        closerTPElem,
+        toolTPElem;
+
+    //  Hide the halo.
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+    haloTPElem.setAttribute('hidden', true);
+
+    //  Show the closer.
+    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
+    closerTPElem.setAttribute('hidden', false);
+
+    //  Show the tool matching the toolID (if it can be found).
+    toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
+    if (TP.isValid(toolTPElem)) {
+        toolTPElem.setAttribute('hidden', false);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('deactivateTool',
+function(toolID) {
+
+    /**
+     * @method deactivateTool
+     * @summary Deactivates the tool with the supplied ID. This will restore the
+     *     halo to be the primary visual tool.
+     * @param {String} toolID The ID of the tool to deactivate.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var toolTPElem,
+
+        closerTPElem,
+        haloTPElem;
+
+    //  Hide the tool matching the toolID (if it can be found).
+    toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
+    if (TP.isValid(toolTPElem)) {
+        toolTPElem.setAttribute('hidden', true);
+    }
+
+    //  Hide the closer.
+    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
+    closerTPElem.setAttribute('hidden', true);
+
+    //  Show the halo.
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+    haloTPElem.setAttribute('hidden', false);
 
     return this;
 });
@@ -4375,6 +4481,9 @@ TP.sig.ResponderSignal.defineSubtype('SherpaNotify');
 
 //  Sherpa canvas signals
 TP.sig.SherpaSignal.defineSubtype('CanvasChanged');
+
+//  Tools layer signals
+TP.sig.SherpaSignal.defineSubtype('CloseActiveTool');
 
 //  ----------------------------------------------------------------------------
 //  end
