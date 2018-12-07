@@ -2426,7 +2426,7 @@ TP.w3.Xmlns.Type.defineMethod('isNativeMarkup',
 function(aMarkupString) {
 
     /**
-     * @method isNative
+     * @method isNativeMarkup
      * @summary Returns true if *all* of the namespace URIs in the supplied
      *     markup are considered to belong to native namespaces. If just one is
      *     not, then this method will return false.
