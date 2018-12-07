@@ -1723,7 +1723,7 @@ function(aRequest) {
     //  platform) and we don't have a 'tibet:tag' attribute we don't want to
     //  transform the tag, so we just exit here.
     if (TP.notEmpty(ns = elem.namespaceURI) &&
-        TP.w3.Xmlns.isNative(ns) &&
+        TP.w3.Xmlns.isNativeNS(ns) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
         return elem;
     }

@@ -2391,11 +2391,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('isNative',
+TP.w3.Xmlns.Type.defineMethod('isNativeNS',
 function(anNSURI) {
 
     /**
-     * @method isNative
+     * @method isNativeNS
      * @summary Returns true if the namespace URI is natively supported on the
      *     current browser. Note that the result of this call is
      *     browser-specific.
