@@ -1150,6 +1150,10 @@ function(insertionPointElement, insertionPosition) {
     haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
 
+    //  Make sure to blur the halo to remove any highlighting or extra
+    //  attributes from the node that we're copying.
+    haloTPElem.blur();
+
     //  Clone the halo target element and remove the 'id' attribute (can't have
     //  more than 1 element in a document with the same id).
     newTPElem = haloTargetTPElem.clone();
@@ -1161,17 +1165,22 @@ function(insertionPointElement, insertionPosition) {
     //  other nodes, etc.) we want to be flushed *before* we set the
     //  'shouldProcessDOMMutations' flag to be true.
     (function() {
-        var newInsertedTPElem;
+        var newInsertedElem,
+            newInsertedTPElem;
 
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
         TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
-        //  Move the target element. The deadening/awakening will be handled by
-        //  the Mutation Observer machinery.
-        newInsertedTPElem = TP.wrap(insertionPointElement).insertContent(
-                                newTPElem,
+        //  Move the copy of the target element. The deadening/awakening will be
+        //  handled by the Mutation Observer machinery.
+        newInsertedElem = TP.nodeInsertContent(
+                                insertionPointElement,
+                                TP.unwrap(newTPElem),
                                 insertionPosition);
+
+        newInsertedTPElem = TP.wrap(newInsertedElem);
+
         //  Focus the halo on our new element, passing true to actually show the
         //  halo if it's hidden.
         if (newInsertedTPElem.haloCanFocus(haloTPElem)) {
@@ -1266,13 +1275,15 @@ function(insertionPointElement, insertionPosition) {
      */
 
     var haloTPElem,
-        haloTargetTPElem,
-
-        newInsertedTPElem;
+        haloTargetTPElem;
 
     //  The target element that we're moving is the halo's current target.
     haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
     haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+
+    //  Make sure to blur the halo to remove any highlighting or extra
+    //  attributes from the node that we're reparenting.
+    haloTPElem.blur();
 
     //  NB: We queue this for the next time that the browser wants to repaint
     //  because all of those lovely microtasks that got queued to get us here
@@ -1280,15 +1291,22 @@ function(insertionPointElement, insertionPosition) {
     //  other nodes, etc.) we want to be flushed *before* we set the
     //  'shouldProcessDOMMutations' flag to be true.
     (function() {
+
+        var newInsertedElem,
+            newInsertedTPElem;
+
         //  Tell the main Sherpa object that it should go ahead and process DOM
         //  mutations to the source DOM.
         TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
 
         //  Move the target element. The deadening/awakening will be handled by
         //  the Mutation Observer machinery.
-        newInsertedTPElem = TP.wrap(insertionPointElement).insertContent(
-                                haloTargetTPElem,
+        newInsertedElem = TP.nodeInsertContent(
+                                insertionPointElement,
+                                TP.unwrap(haloTargetTPElem),
                                 insertionPosition);
+
+        newInsertedTPElem = TP.wrap(newInsertedElem);
 
         //  Focus the halo on our new element, passing true to actually show the
         //  halo if it's hidden.
