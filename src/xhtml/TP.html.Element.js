@@ -130,7 +130,7 @@ function() {
      */
 
     //  XHTML elements are always ready to render (at least in modern browsers
-    //  ;-)
+    //  ;-))
     return true;
 });
 
