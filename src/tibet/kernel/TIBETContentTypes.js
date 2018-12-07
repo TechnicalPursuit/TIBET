@@ -5881,7 +5881,7 @@ function(targetObj, varargs) {
 
     //  This kind of path will only work against TP.core.JSONContent objects
     if (!TP.isKindOf(target, TP.core.JSONContent)) {
-        target = target.$get('$$realData');
+        target = target.$get('$$realContentObj');
         if (!TP.isKindOf(target, TP.core.JSONContent)) {
             return this.raise('TP.sig.InvalidPath');
         }
@@ -5941,8 +5941,8 @@ function(targetObj, varargs) {
 
                     //  Locally program a reference to ourself on the
                     //  generated XML TP.dom.Document.
-                    someTPXML.defineAttribute('$$realData');
-                    someTPXML.$set('$$realData', this);
+                    someTPXML.defineAttribute('$$realContentObj');
+                    someTPXML.$set('$$realContentObj', this);
 
                     //  NB: In our particular encoding of JS<->XML, we use
                     //  the 'rootObj' slot as a top-level value. See below.
@@ -6044,8 +6044,8 @@ function(targetObj, varargs) {
                 if (TP.isKindOf(tpValueDoc, TP.dom.DocumentNode)) {
                     //  Locally program a reference to ourself on the generated
                     //  XML TP.dom.Document.
-                    tpValueDoc.defineAttribute('$$realData');
-                    tpValueDoc.$set('$$realData', this);
+                    tpValueDoc.defineAttribute('$$realContentObj');
+                    tpValueDoc.$set('$$realContentObj', this);
                 } else {
                     TP.ifWarn() ?
                         TP.warn(TP.annotate(
@@ -7157,10 +7157,10 @@ function(templateArgs) {
                     //  paths that are still valid.
                     executedPaths.removeAtAll(invalidInternalPaths);
 
-                    //  Grab the original JSON object that 'get's will be
-                    //  executed against. This is programmed as a local slot on
-                    //  the object itself in the code above.
-                    jsonObj = targetObj.get('$$realData');
+                    //  Grab the original TP.core.JSONContent object that
+                    //  'get's will be executed against. This is programmed as
+                    //  a local slot on the object itself in the code above.
+                    jsonObj = targetObj.get('$$realContentObj');
 
                     //  Now, we need to go through the invalidated paths and
                     //  rerun their 'get' to re-execute and re-register their
