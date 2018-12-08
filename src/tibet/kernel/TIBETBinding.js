@@ -2683,12 +2683,10 @@ function() {
 
     var elem,
 
-        repeatAttrVal,
-
-        repeatSource,
-
         repeatScopeVals,
-        repeatPath;
+        repeatPath,
+
+        repeatSource;
 
     elem = this.getNativeNode();
 
@@ -2699,24 +2697,15 @@ function() {
         //  Try to calculate a repeat resource
 
         //  NB: Note how we do *not* want the getResource() call to collapse
-        //  it's results for these calls - we always want a collection.
+        //  it's results for this call - we always want a collection.
 
-        //  If it's a URI String, then we can calculate a TP.uri.URI from it
-        //  and just grab that resource's value.
-        if (TP.isURIString(repeatAttrVal)) {
-            repeatSource = TP.uc(repeatAttrVal).getResource(
-                            TP.request('shouldCollapse', false)).get('value');
-        } else {
+        //  Get the 'bind:repeat' ancestor's binding scope values, compute a
+        //  path from them and use that as the URI.
+        repeatScopeVals = this.getBindingScopeValues();
+        repeatPath = TP.uriJoinFragments.apply(TP, repeatScopeVals);
 
-            //  Otherwise, get the 'bind:repeat' ancestor's binding scope
-            //  values, compute a path from them and use that as the URI.
-            repeatScopeVals = this.
-                                getBindingScopeValues().concat(repeatAttrVal);
-            repeatPath = TP.uriJoinFragments.apply(TP, repeatScopeVals);
-
-            repeatSource = TP.uc(repeatPath).getResource(
-                            TP.request('shouldCollapse', false)).get('value');
-        }
+        repeatSource = TP.uc(repeatPath).getResource(
+                        TP.request('shouldCollapse', false)).get('value');
 
         return repeatSource;
     }
