@@ -5932,6 +5932,51 @@ function(targetObj, varargs) {
         //  ---
 
         target.defineMethod(
+            'back',
+            function(aName) {
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
+
+                return this.callNextMethod();
+            });
+
+        //  ---
+
+        target.defineMethod(
+            'checkpoint',
+            function(aName) {
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
+
+                return this.callNextMethod();
+            });
+
+        //  ---
+
+        target.defineMethod(
+            'commit',
+            function() {
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
+
+                return this.callNextMethod();
+            });
+
+        //  ---
+
+        target.defineMethod(
             '$convertXMLValueDocToJSON',
             function(someTPXML) {
                 var result;
@@ -5958,6 +6003,36 @@ function(targetObj, varargs) {
 
         //  ---
 
+        target.defineMethod(
+            'discardCheckpointSnaps',
+            function() {
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
+
+                return this.callNextMethod();
+            });
+
+        //  ---
+
+        target.defineMethod(
+            'forward',
+            function(aName) {
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
+
+                return this.callNextMethod();
+            });
+
+        //  ---
+
         //  Define a local version of 'getData' to return the result of
         //  converting the entire XML data structure to a "plain" JavaScript
         //  object. Note that this is very rarely done - normally a 'slice' of
@@ -5970,35 +6045,67 @@ function(targetObj, varargs) {
 
                     ndx,
                     data,
-                    snaps;
+                    snaps,
 
-                if (this.$get('transactional')) {
+                    cachedData;
 
-                    ndx = this.$get('currentIndex');
-                    snaps = this.$get('snaps');
+                cachedData = this.get('$$cachedJSData');
+                if (TP.isValid(cachedData)) {
+                    return cachedData;
+                } else {
 
-                    //  NOTE:   we use $get here since we don't want to recurse
-                    //  over getProperty() calls that use getNativeNode
-                    if (TP.isValid(ndx)) {
-                        data = snaps.at(ndx);
+                    if (this.$get('transactional')) {
+
+                        ndx = this.$get('currentIndex');
+                        snaps = this.$get('snaps');
+
+                        //  NOTE:   we use $get here since we don't want to
+                        //  recurse over getProperty() calls that use
+                        //  getNativeNode
+                        if (TP.isValid(ndx)) {
+                            data = snaps.at(ndx);
+                        } else {
+                            data = this.$get('data');
+                        }
+
+                        tpValueDoc = data;
                     } else {
-                        data = this.$get('data');
+                        //  Retrieve the XML representation that is sitting in
+                        //  the actual 'data' slot (using $get() to avoid
+                        //  getting recursively called here).
+                        tpValueDoc = this.$get('data');
                     }
 
-                    tpValueDoc = data;
-                } else {
-                    //  Retrieve the XML representation that is sitting in the
-                    //  actual 'data' slot (using $get() to avoid getting
-                    //  recursively called here).
-                    tpValueDoc = this.$get('data');
-                }
+                    if (TP.isValid(tpValueDoc)) {
+                        cachedData = TP.json2js(
+                                    this.$convertXMLValueDocToJSON(tpValueDoc));
 
-                if (TP.isValid(tpValueDoc)) {
-                    return TP.json2js(
-                            this.$convertXMLValueDocToJSON(tpValueDoc));
+                        //  Note here how we pass 'false' to not signal change,
+                        //  since all we're doing is a data conversion and we
+                        //  don't want to test shouldSignalChange, which will
+                        //  go get the original data.
+                        this.set('$$cachedJSData', cachedData, false);
+
+                        return cachedData;
+                    }
                 }
 
                 return;
+            });
+
+        //  ---
+
+        target.defineMethod(
+            'rollback',
+            function(aName) {
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
+
+                return this.callNextMethod();
             });
 
         //  ---
@@ -6024,6 +6131,14 @@ function(targetObj, varargs) {
                 }
 
                 if (TP.notValid(dataObj)) {
+
+                    //  Invalidate the cached JS data.
+
+                    //  Note here how we pass 'false' to not signal change,
+                    //  since all we're doing is data caching and we don't want
+                    //  to test shouldSignalChange, which will go get the
+                    //  original data.
+                    this.set('$$cachedJSData', null, false);
 
                     //  Call 'up' to our super method.
                     this.callNextMethod(dataObj, shouldSignal);
@@ -6053,6 +6168,13 @@ function(targetObj, varargs) {
                                 'Unable to generate underlying XML data' +
                                 ' for path: ' + this.get('srcPath'))) : 0;
                 }
+
+                //  Invalidate the cached JS data.
+
+                //  Note here how we pass 'false' to not signal change, since
+                //  all we're doing is data caching and we don't want to test
+                //  shouldSignalChange, which will go get the original data.
+                this.set('$$cachedJSData', null, false);
 
                 //  Call 'up' to our super method to set the real underlying
                 //  'data' slot to our XML data.
@@ -6103,8 +6225,8 @@ function(targetObj, varargs) {
                 targetElem;
 
             //  The 'scope' should be a URI location to find the overall
-            //  collection to insert the item into. It should be either the whole
-            //  collection representing the data of the receiver or a
+            //  collection to insert the item into. It should be either the
+            //  whole collection representing the data of the receiver or a
             //  subcollection of that data.
             if (TP.isEmpty(scope = aSignal.at('scope'))) {
                 return this.raise('TP.sig.InvalidParameter');
@@ -6365,6 +6487,13 @@ function(targetObj, varargs) {
             changedPaths =
                 TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
 
+            //  Invalidate the cached JS data.
+
+            //  Note here how we pass 'false' to not signal change, since all
+            //  we're doing is data caching and we don't want to test
+            //  shouldSignalChange, which will go get the original data.
+            this.set('$$cachedJSData', null, false);
+
             //  We need this purely so that any machinery that relies on signal
             //  batching (i.e. the markup-based data binding) knows that this
             //  signal represents an entire batch.
@@ -6495,6 +6624,13 @@ function(targetObj, varargs) {
             //  expect to see.
             changedPaths =
                 TP.hc(changedAspect, TP.hc(TP.DELETE, changedAddresses));
+
+            //  Invalidate the cached JS data.
+
+            //  Note here how we pass 'false' to not signal change, since all
+            //  we're doing is data caching and we don't want to test
+            //  shouldSignalChange, which will go get the original data.
+            this.set('$$cachedJSData', null, false);
 
             //  We need this purely so that any machinery that relies on signal
             //  batching (i.e. the markup-based data binding) knows that this
@@ -6673,7 +6809,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         objVal,
         valueXMLDoc,
-        attrVal;
+        attrVal,
+
+        realContentObj;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -6772,6 +6910,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         xmlPath.executeSet.apply(xmlPath, args);
     } else {
         xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
+    }
+
+    realContentObj = tpXMLDoc.$get('$$realContentObj');
+    if (TP.owns(realContentObj, '$$cachedJSData')) {
+        //  Note here how we pass 'false' to not signal change, since all
+        //  we're doing is data caching and we don't want to test
+        //  shouldSignalChange, which will go get the original data.
+        realContentObj.set('$$cachedJSData', null, false);
     }
 
     return this;
