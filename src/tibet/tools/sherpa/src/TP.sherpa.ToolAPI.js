@@ -428,9 +428,10 @@ function(options) {
         dataURI.setResource(data,
                             TP.request('signalChange', false));
 
-        contentElem = TP.elem('<xctrls:list bind:in="{data: ' +
-                                dataURI.asString() +
-                                '}" filter="true"/>');
+        contentElem = TP.elem(
+                '<xctrls:list bind:in="{data: ' +
+                dataURI.asString() +
+                '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
     } else {
 
         contentElem = TP.xhtmlnode(

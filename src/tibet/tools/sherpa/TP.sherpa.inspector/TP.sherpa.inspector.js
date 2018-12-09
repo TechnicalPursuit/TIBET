@@ -206,9 +206,10 @@ function(options) {
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<xctrls:list bind:in="{data: ' +
-                    dataURI.asString() +
-                    '}" filter="true"/>');
+    return TP.elem(
+            '<xctrls:list bind:in="{data: ' +
+            dataURI.asString() +
+            '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -3906,7 +3907,9 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     return TP.elem(
-            '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}" filter="true"/>');
+            '<xctrls:list bind:in="{data: ' +
+            dataURI.asString() +
+            '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
 });
 
 //  ------------------------------------------------------------------------
