@@ -290,9 +290,14 @@ function(aSignal) {
 
         rowIndex,
 
+        oldValue,
+
+        alwaysSignalChange,
+
         wasSignalingChange,
 
-        oldValue,
+        toggleItems,
+
         newValue;
 
     if (this.shouldPerformUIHandler(aSignal)) {
@@ -338,12 +343,30 @@ function(aSignal) {
             //  Grab the old value before we set it.
             oldValue = this.getValue();
 
+            //  If we always signal change, then even if the values are equal,
+            //  we will not exit here.
+            alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
+
+            //  If we don't always signal change and the two values are
+            //  equivalent, than just return.
+            if (!alwaysSignalChange && TP.equal(oldValue, newValue)) {
+                return this;
+            }
+
             //  Note here how we turn off change signaling to avoid multiple
             //  unnecessary calls to render.
             wasSignalingChange = this.shouldSignalChange();
             this.shouldSignalChange(false);
 
-            if (TP.isTrue(wrappedRow.isSelected())) {
+            //  See if we 'toggle' items - if so and the item is selected, we'll
+            //  deselect it. The default is true.
+            if (this.hasAttribute('toggleItems')) {
+                toggleItems = TP.bc(this.getAttribute('toggleItems'));
+            } else {
+                toggleItems = true;
+            }
+
+            if (TP.isTrue(wrappedRow.isSelected()) && toggleItems) {
                 this.deselect(null, rowIndex);
             } else {
                 this.select(null, rowIndex);
