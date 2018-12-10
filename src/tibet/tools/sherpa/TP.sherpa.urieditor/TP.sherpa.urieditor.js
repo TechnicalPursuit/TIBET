@@ -504,8 +504,7 @@ function(aSignal) {
     }
 
     //  Build a 'plain object' full of JSON Schema of that data.
-    pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(
-                                            jsonData, 'Couch_Doc_Foo');
+    pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(jsonData);
 
     if (TP.notValid(pojoSchema)) {
         displayElem.innerHTML = TP.sc('Could not build JSON Schema');
