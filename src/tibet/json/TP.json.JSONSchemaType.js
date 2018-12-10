@@ -69,8 +69,9 @@ function(sourceObject, definitionName) {
      *     JavaScript object.
      * @param {TP.core.Hash|Object} sourceObject The JavaScript object to build
      *     the schema from.
-     * @param {String} definitionName The name to use for the 'definition' in
-     *     the JSON Schema.
+     * @param {String} [definitionName] The name to use for the 'definition' in
+     *     the JSON Schema. If not supplied, a hash of the schema text will be
+     *     used as the definition name.
      * @returns {Object} The top-level JSON schema expressed in a plain
      *     JavaScript object.
      */
@@ -469,14 +470,17 @@ function(tree, definitionName) {
      *     definition name.
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
-     * @param {String} definitionName The name of the JSON Schema 'definition'
-     *     to generate into the schema.
+     * @param {String} [definitionName] The name of the JSON Schema 'definition'
+     *     to generate into the schema. If not supplied, a hash of the schema
+     *     text will be used as the definition name.
      * @returns {Object} The top-level JSON schema expressed in a plain
      *     JavaScript object.
      */
 
     var topSchema,
-        schema;
+        schema,
+
+        defName;
 
     //  NB: This method is one of the few places in TIBET where we use POJO
     //  syntax, because it matches the process of building a JSON schema so
@@ -516,9 +520,17 @@ function(tree, definitionName) {
         this.compile(tree, schema.properties, schema.items);
     }
 
+    //  If no definition name was supplied, then turn the schema into a JSON
+    //  string, get its hashed value as an absolute number and use that.
+    if (TP.isEmpty(definitionName)) {
+        defName = TP.json(schema).asHashedNumber().abs();
+    } else {
+        defName = definitionName;
+    }
+
     //  Register the schema under the top-level schema's 'definition' slot under
     //  the supplied definition name.
-    topSchema.definitions[definitionName] = schema;
+    topSchema.definitions[defName] = schema;
 
     return topSchema;
 });
