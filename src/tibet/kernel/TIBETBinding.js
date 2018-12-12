@@ -3335,7 +3335,14 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         function(rootNode, testNode) {
                             var val;
 
+                            //  If the root node we're testing contains the test
+                            //  node, then check for fully qualified URIs.
                             if (rootNode.contains(testNode)) {
+
+                                //  Grab the 'bind:scope' value - if it's a
+                                //  fully qualified URI and it matches the
+                                //  primary location, then we return false to
+                                //  *not* filter it from the subscopes list.
                                 val = testNode.getAttributeNS(
                                             TP.w3.Xmlns.BIND, 'scope');
                                 if (TP.isURIString(val) &&
@@ -3343,6 +3350,10 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                     return false;
                                 }
 
+                                //  Grab the 'bind:repeat' value - if it's a
+                                //  fully qualified URI and it matches the
+                                //  primary location, then we return false to
+                                //  *not* filter it from the subscopes list.
                                 val = testNode.getAttributeNS(
                                             TP.w3.Xmlns.BIND, 'repeat');
                                 if (TP.isURIString(val) &&
