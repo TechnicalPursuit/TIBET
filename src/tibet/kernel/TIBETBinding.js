@@ -3773,10 +3773,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                     newRowElem =
                                         ownerTPElem.$insertRepeatRowAt(
                                                                 updateIndexes);
-
-                                    TP.wrap(newRowElem).
-                                        refreshBoundDescendants();
-
                                 } else {
 
                                     ownerTPElem.empty();
@@ -3796,10 +3792,9 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                         ownerTPElem.$updateRepeatRowIndices(
                                                         branchVal);
                                     }
-
-                                    TP.wrap(ownerTPElem).
-                                            refreshBoundDescendants();
                                 }
+
+                                ownerTPElem.$refresh(true);
 
                                 needsRefresh = false;
 
