@@ -21,12 +21,20 @@ sherpa|tofuInsertionAssistant > .body {
 
     position: absolute;
 
+    display: grid;
+
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "insertion_data insertion_data"
+        "type_chooser insertion_details";
+
     top: 0;
     left: 0;
     right: 0;
     bottom: 6em;
 
-    overflow: auto;
+    overflow: hidden;
 
     text-align: left;
 }
@@ -45,22 +53,11 @@ sherpa|tofuInsertionAssistant > .foot {
 
 sherpa|tofuInsertionAssistant > .body .insertion_data {
 
-    position: absolute;
+    grid-area: insertion_data;
 
     top: 0;
     left: 0;
     width: 100%;
-    height: 4em;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_data div.insertion_attrs {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 }
 
 sherpa|tofuInsertionAssistant > .body .insertion_point {
@@ -89,6 +86,7 @@ sherpa|tofuInsertionAssistant > .body .insertion_position {
 }
 
 sherpa|tofuInsertionAssistant > .body .insertion_position label {
+
     margin: 0 12px 0 8px;
 }
 
@@ -129,13 +127,12 @@ sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner li label {
 
 sherpa|tofuInsertionAssistant > .body .insertion_details {
 
-    position: absolute;
+    position: relative;
 
-    right: 0;
-    top: 5.25em;
-    left: 250px;
+    grid-area: insertion_details;
 
-    font-size: 102%;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer {
@@ -175,17 +172,27 @@ sherpa|tofuInsertionAssistant > .body .insertion_details input:checked + label {
     font-weight: bold;
 }
 
-sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser {
+sherpa|tofuInsertionAssistant > .body .insertion_details div.insertion_attrs {
 
     position: absolute;
 
-    top: 6em;
-    left: 20px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser {
+
+    grid-area: type_chooser;
+
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser input {
 
-    margin: 0 0 12px;
+    width: calc(100% - 6em);
 }
 
 xctrls|list#tofuInsertionAssistant_TagTypes {
@@ -198,59 +205,81 @@ xctrls|list#tofuInsertionAssistant_TagTypes {
     line-height: 1.5;
 }
 
-#tofuInsertionAssistant_Attributes {
+#tofuInsertionAssistant_AttributesTable {
 
-    margin-top: 16px;
+    width: 100%;
+    height: 100%;
 }
 
 #tofuInsertionAssistant_AttributesTable label {
 
-    margin-bottom: 12px;
+    position: absolute;
+
+    top: 10px;
+    left: 5px;
 }
 
-#tofuInsertionAssistant_AttributesTable input {
-
-    height: 1em;
-    width: 9.5em;
-
-    margin-left: 0;
-    margin-bottom: 2px;
-}
-
-#tofuInsertionAssistant_AttributesTable .deleter {
+#tofuInsertionAssistant_AttributesTable .inserter {
 
     position: absolute;
 
-    width: 24px;
-    height: 24px;
-
-    margin-top: 0;
-
-    cursor: pointer;
-
-    background-size: 50%;
-    background-repeat: no-repeat;
-    background-position-y: center;
-    background-image: url("../media/ic_close_black_24px.svg");
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_details .inserter {
+    top: 2px;
+    right: 0;
 
     width: 24px;
     height: 24px;
 
     cursor: pointer;
-
-    float: right;
-
-    margin-right: 0;
-    margin-top: -3px;
 
     background-size: 75%;
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+#tofuInsertionAssistant_Attributes {
+
+    position: absolute;
+
+    top: 2.5em;
+    right: 0;
+    bottom: 1.5em;
+    left: 0;
+
+    border: dotted 1px gray;
+
+    overflow-y: auto;
+}
+
+#tofuInsertionAssistant_Attributes > span {
+
+    display: flex;
+
+    width: 100%;
+}
+
+#tofuInsertionAssistant_Attributes > span input {
+
+    width: auto;
+    height: 1em;
+
+    margin-left: 0;
+    margin-bottom: 2px;
+}
+
+#tofuInsertionAssistant_Attributes .deleter {
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_close_black_24px.svg");
 }
 
 #tofuInsertionAssistant_InsertionBreadcrumb {
