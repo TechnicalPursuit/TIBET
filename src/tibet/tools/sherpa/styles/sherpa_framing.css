@@ -881,7 +881,9 @@ sherpa|hud:not([pclass|closed]) #center {
 #ConnectionAssistantDialog {
 
     width: 600px;
-    height: 370px;
+    height: 430px;
+
+    max-height: 430px;
 }
 
 #ConnectionAssistantDialog .header {

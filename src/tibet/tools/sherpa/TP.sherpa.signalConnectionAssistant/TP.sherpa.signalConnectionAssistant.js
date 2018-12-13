@@ -69,7 +69,7 @@ function(assistantData) {
         TP.hc(
             'dialogID', 'ConnectionAssistantDialog',
             'isModal', true,
-            'title', 'Make a connection',
+            'title', 'Make a signaling connection',
             'templateContent', assistantContentTPElem));
 
     //  After the dialog is showing, set the assistant parameters on the content
