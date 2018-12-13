@@ -13,7 +13,7 @@
             <div id="styleshud_rw_properties" bind:repeat="ruleProps">
                 <input type="text" class="propName" bind:io="{value: rulePropName}" tabindex="0"/>
                 <input type="text" class="propValue" bind:io="{value: rulePropValue}" tabindex="0"/>
-                <span class="deleter" on:click="{signal: DeleteItem, origin: \'styleshud_rw_properties\', payload: {index:TP.TARGET}}"/>
+                <span class="deleter" on:click="{signal: DeleteItem, origin: styleshud_rw_properties, payload: {index:TP.TARGET}}"/>
                 <br/>
             </div>
         </span>
