@@ -31,9 +31,19 @@
                 <option value="INHERITANCE_FIRING">INHERITANCE_FIRING</option>
             </select>
 
-            <label for="signalConnectionAssistant_SourceSignalPayload">Payload:</label>
-            <div id="signalConnectionAssistant_SourceSignalPayload">
-                Payload stuff
+            <div id="signalConnectionAssistant_SourceSignalPayloadLabel">
+                <label>Payload entries (click + to add):</label>
+                <button class="inserter" on:click="{signal: InsertItem, origin: signalConnectionAssistant_PayloadEntries, payload: {source: 'urn:tibet:sig_payload_data_blank', copy: true}}"></button>
+            </div>
+
+            <div id="signalConnectionAssistant_SourceSignalPayload" bind:scope="urn:tibet:signalConnectionAssistant_source#jpath($.info)">
+                <div id="signalConnectionAssistant_PayloadTable">
+                    <div id="signalConnectionAssistant_PayloadEntries" bind:repeat="signalPayload">
+                            <input type="text" bind:io="{value: payloadEntryName}" tabindex="0"/>
+                            <input type="text" bind:io="{value: payloadEntryValue}" tabindex="0"/>
+                            <span class="deleter" on:click="{signal: DeleteItem, origin: signalConnectionAssistant_PayloadEntries, payload: {index: TP.TARGET}}"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -155,7 +155,7 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo {
     margin-left: 10px;
     margin-right: 10px;
 
-    grid-template-rows: 1.5em auto 1.5em auto;
+    grid-template-rows: 2.5em auto 1.5em auto;
     grid-template-columns: 50% 50%;
 
     grid-template-areas:
@@ -194,11 +194,38 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPolicyFi
     grid-area: sourceinfoselect;
 }
 
-sherpa|signalConnectionAssistant > label[for="signalConnectionAssistant_SourceSignalPayload"] {
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel {
 
     grid-area: sourceinfopayloadlabel;
 
     margin-left: 10px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel {
+
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel label {
+
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel .inserter {
+
+    position: absolute;
+
+    top: 2px;
+    right: 0;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayload {
@@ -213,6 +240,51 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayload 
     left: 0;
 
     margin-bottom: 4px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    border: dotted 1px gray;
+
+    overflow-y: auto;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries > span {
+
+    display: flex;
+
+    width: 100%;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries > span input {
+
+    width: auto;
+    height: 1em;
+
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 2px;
+}
+
+sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries .deleter {
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_close_black_24px.svg");
 }
 
 sherpa|signalConnectionAssistant > .foot {

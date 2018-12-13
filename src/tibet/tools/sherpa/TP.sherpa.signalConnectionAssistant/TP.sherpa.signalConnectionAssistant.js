@@ -116,6 +116,8 @@ function(info) {
         sigPolicy,
         sigPayload,
 
+        formatValue,
+
         val;
 
     str = '';
@@ -127,7 +129,7 @@ function(info) {
     /* eslint-disable no-extra-parens */
     extendedForm = TP.notEmpty(info.at('enteredSourceSignalOrigin')) ||
                     (TP.notEmpty(policyVal) && policyVal !== 'Choose...') ||
-                    TP.notEmpty(info.at('enteredSourceSignalPayload'));
+                    TP.notEmpty(info.at('signalPayload'));
     /* eslint-enable no-extra-parens */
 
     if (extendedForm) {
@@ -138,6 +140,25 @@ function(info) {
     sigOrigin = '';
     sigPolicy = '';
     sigPayload = '';
+
+    //  Define a Function that will format values according to whether or not
+    //  they contain a colon (':'), period ('.') or single quote.
+    formatValue = function(aValue) {
+
+        var val;
+
+        if (TP.regex.HAS_PERIOD.test(aValue) ||
+            TP.regex.HAS_COLON.test(aValue) ||
+            TP.regex.HAS_SINGLE_QUOTE.test(aValue)) {
+
+            //  Escape any embedded quotes
+            val = aValue.replace(/'/g, '\'');
+
+            return val.quoted('\'');
+        }
+
+        return aValue;
+    };
 
     if (TP.notEmpty(val = info.at('enteredDestinationHandlerName'))) {
         sigName = val;
@@ -166,7 +187,7 @@ function(info) {
 
     if (TP.notEmpty(sigOrigin)) {
         if (extendedForm) {
-            str += 'origin: \\\'' + sigOrigin + '\\\', ';
+            str += 'origin: ' + formatValue(sigOrigin) + ', ';
         }
     }
 
@@ -177,18 +198,32 @@ function(info) {
     if (TP.notEmpty(sigPolicy)) {
         if (sigPolicy !== 'Choose...') {
             if (extendedForm) {
-                str += 'policy: \\\'' + sigPolicy + '\\\', ';
+                str += 'policy: ' + formatValue(sigPolicy) + ', ';
             }
         }
     }
 
-    if (TP.notEmpty(val = info.at('enteredSourceSignalPayload'))) {
-        sigPayload = val;
-    }
-
-    if (TP.notEmpty(sigPayload)) {
+    //  If signal payload entries  were defined by the user, add them onto the
+    //  string defining the new element.
+    if (TP.notEmpty(val = info.at('signalPayload'))) {
         if (extendedForm) {
-            str += 'payload: {' + sigPayload + '}, ';
+            str += 'payload: {';
+            val.forEach(
+                function(entryInfo) {
+                    var hash;
+
+                    hash = TP.hc(entryInfo);
+
+                    str +=
+                        hash.at('payloadEntryName') +
+                        ': ' +
+                        formatValue(hash.at('payloadEntryValue')) + ',';
+                });
+
+            //  Slice the trailing comma off.
+            str = str.slice(0, -1);
+
+            str += '}, ';
         }
     }
 
@@ -773,6 +808,9 @@ function(anObj) {
     //  The data for the chosen handler name or entered handler name.
     newSignalInfo.atPut('chosenDestinationHandlerName', '');
     newSignalInfo.atPut('enteredDestinationHandlerName', '');
+
+    //  The payload data.
+    newSignalInfo.atPut('signalPayload', TP.ac());
 
     //  ---
 
