@@ -1,4 +1,4 @@
-/* Sinon.JS 7.1.1, 2018-10-31, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* Sinon.JS 7.2.2, 2018-12-12, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
 var behavior = require("./sinon/behavior");
@@ -14,7 +14,7 @@ var stub = require("./sinon/stub");
 var apiMethods = {
     createSandbox: createSandbox,
     assert: require("./sinon/assert"),
-    match: require("./sinon/match"),
+    match: require("@sinonjs/samsam").createMatcher,
     spyCall: require("./sinon/call"),
 
     expectation: require("./sinon/mock-expectation"),
@@ -57,16 +57,16 @@ var api = extend(sandbox, legacySandboxAPI, apiMethods);
 
 module.exports = api;
 
-},{"./sinon/assert":2,"./sinon/behavior":3,"./sinon/call":4,"./sinon/create-sandbox":7,"./sinon/match":10,"./sinon/mock-expectation":11,"./sinon/sandbox":13,"./sinon/stub":17,"./sinon/util/core/default-config":20,"./sinon/util/core/deprecated":21,"./sinon/util/core/extend":24,"./sinon/util/core/format":25,"./sinon/util/fake-timers":39,"nise":100}],2:[function(require,module,exports){
+},{"./sinon/assert":2,"./sinon/behavior":3,"./sinon/call":4,"./sinon/create-sandbox":7,"./sinon/mock-expectation":10,"./sinon/sandbox":12,"./sinon/stub":16,"./sinon/util/core/default-config":18,"./sinon/util/core/deprecated":19,"./sinon/util/core/extend":21,"./sinon/util/core/format":22,"./sinon/util/fake-timers":34,"@sinonjs/samsam":64,"nise":81}],2:[function(require,module,exports){
 (function (global){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
 var calledInOrder = require("@sinonjs/commons").calledInOrder;
+var createMatcher = require("@sinonjs/samsam").createMatcher;
 var orderByFirstCall = require("@sinonjs/commons").orderByFirstCall;
 var timesInWords = require("./util/core/times-in-words");
 var format = require("./util/core/format");
-var sinonMatch = require("./match");
 var stringSlice = require("@sinonjs/commons").prototypes.string.slice;
 
 var arraySlice = arrayProto.slice;
@@ -231,7 +231,7 @@ assert = {
     },
 
     match: function match(actual, expectation) {
-        var matcher = sinonMatch(expectation);
+        var matcher = createMatcher(expectation);
         if (matcher.test(actual)) {
             assert.pass("match");
         } else {
@@ -275,7 +275,7 @@ mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
 module.exports = assert;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./match":10,"./util/core/format":25,"./util/core/times-in-words":34,"@sinonjs/commons":43}],3:[function(require,module,exports){
+},{"./util/core/format":22,"./util/core/times-in-words":30,"@sinonjs/commons":38,"@sinonjs/samsam":64}],3:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -507,12 +507,12 @@ var asyncBehaviors = exportAsyncBehaviors(proto);
 
 module.exports = extend({}, proto, asyncBehaviors);
 
-},{"./util/core/export-async-behaviors":23,"./util/core/extend":24,"./util/core/next-tick":33,"@sinonjs/commons":43}],4:[function(require,module,exports){
+},{"./util/core/export-async-behaviors":20,"./util/core/extend":21,"./util/core/next-tick":29,"@sinonjs/commons":38}],4:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
-var sinonMatch = require("./match");
-var deepEqual = require("./util/core/deep-equal").use(sinonMatch);
+var match = require("@sinonjs/samsam").createMatcher;
+var deepEqual = require("@sinonjs/samsam").deepEqual;
 var functionName = require("@sinonjs/commons").functionName;
 var sinonFormat = require("./util/core/format");
 var valueToString = require("@sinonjs/commons").valueToString;
@@ -534,7 +534,7 @@ function throwYieldError(proxy, text, args) {
 
 var callProto = {
     calledOn: function calledOn(thisValue) {
-        if (sinonMatch && sinonMatch.isMatcher(thisValue)) {
+        if (match.isMatcher(thisValue)) {
             return thisValue.test(this.thisValue);
         }
         return this.thisValue === thisValue;
@@ -551,7 +551,7 @@ var callProto = {
         return reduce(
             calledWithArgs,
             function(prev, arg, i) {
-                return prev && deepEqual(arg, self.args[i]);
+                return prev && deepEqual(self.args[i], arg);
             },
             true
         );
@@ -570,7 +570,7 @@ var callProto = {
             function(prev, expectation, i) {
                 var actual = self.args[i];
 
-                return prev && (sinonMatch && sinonMatch(expectation).test(actual));
+                return prev && match(expectation).test(actual);
             },
             true
         );
@@ -589,7 +589,7 @@ var callProto = {
     },
 
     returned: function returned(value) {
-        return deepEqual(value, this.returnValue);
+        return deepEqual(this.returnValue, value);
     },
 
     threw: function threw(error) {
@@ -763,7 +763,7 @@ createSpyCall.toString = callProto.toString; // used by mocks
 
 module.exports = createSpyCall;
 
-},{"./match":10,"./util/core/deep-equal":19,"./util/core/format":25,"@sinonjs/commons":43}],5:[function(require,module,exports){
+},{"./util/core/format":22,"@sinonjs/commons":38,"@sinonjs/samsam":64}],5:[function(require,module,exports){
 "use strict";
 
 var walk = require("./util/core/walk");
@@ -788,7 +788,7 @@ function collectOwnMethods(object) {
 
 module.exports = collectOwnMethods;
 
-},{"./util/core/get-property-descriptor":28,"./util/core/walk":37,"@sinonjs/commons":43}],6:[function(require,module,exports){
+},{"./util/core/get-property-descriptor":25,"./util/core/walk":32,"@sinonjs/commons":38}],6:[function(require,module,exports){
 "use strict";
 
 var supportsColor = require("supports-color");
@@ -821,7 +821,7 @@ exports.bold = function(str) {
     return colorize(str, 1);
 };
 
-},{"supports-color":103}],7:[function(require,module,exports){
+},{"supports-color":84}],7:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -890,7 +890,7 @@ function createSandbox(config) {
 
 module.exports = createSandbox;
 
-},{"./sandbox":13,"@sinonjs/commons":43}],8:[function(require,module,exports){
+},{"./sandbox":12,"@sinonjs/commons":38}],8:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1158,7 +1158,7 @@ var asyncBehaviors = exportAsyncBehaviors(defaultBehaviors);
 
 module.exports = extend({}, defaultBehaviors, asyncBehaviors);
 
-},{"./util/core/export-async-behaviors":23,"./util/core/extend":24,"./util/core/is-property-configurable":31,"@sinonjs/commons":43}],9:[function(require,module,exports){
+},{"./util/core/export-async-behaviors":20,"./util/core/extend":21,"./util/core/is-property-configurable":28,"@sinonjs/commons":38}],9:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1284,437 +1284,7 @@ fake.yieldsAsync = function yieldsAsync() {
 
 module.exports = fake;
 
-},{"./spy":15,"./util/core/next-tick":33,"@sinonjs/commons":43}],10:[function(require,module,exports){
-"use strict";
-
-var arrayProto = require("@sinonjs/commons").prototypes.array;
-var deepEqual = require("./util/core/deep-equal").use(match); // eslint-disable-line no-use-before-define
-var every = require("./util/core/every");
-var functionName = require("@sinonjs/commons").functionName;
-var get = require("lodash.get");
-var iterableToString = require("./util/core/iterable-to-string");
-var objectProto = require("@sinonjs/commons").prototypes.object;
-var stringProto = require("@sinonjs/commons").prototypes.string;
-var typeOf = require("./util/core/typeOf");
-var valueToString = require("@sinonjs/commons").valueToString;
-
-var arrayIndexOf = arrayProto.indexOf;
-var arrayEvery = arrayProto.every;
-var join = arrayProto.join;
-var map = arrayProto.map;
-var some = arrayProto.some;
-
-var hasOwnProperty = objectProto.hasOwnProperty;
-var isPrototypeOf = objectProto.isPrototypeOf;
-
-var stringIndexOf = stringProto.indexOf;
-
-function assertType(value, type, name) {
-    var actual = typeOf(value);
-    if (actual !== type) {
-        throw new TypeError("Expected type of " + name + " to be " + type + ", but was " + actual);
-    }
-}
-
-function assertMethodExists(value, method, name, methodPath) {
-    if (typeof value[method] === "undefined") {
-        throw new TypeError("Expected " + name + " to have method " + methodPath);
-    }
-}
-
-var matcher = {
-    toString: function() {
-        return this.message;
-    }
-};
-
-function isMatcher(object) {
-    return isPrototypeOf(matcher, object);
-}
-
-function matchObject(expectation, actual) {
-    if (actual === null || actual === undefined) {
-        return false;
-    }
-
-    return arrayEvery(Object.keys(expectation), function(key) {
-        var exp = expectation[key];
-        var act = actual[key];
-
-        if (isMatcher(exp)) {
-            if (!exp.test(act)) {
-                return false;
-            }
-        } else if (typeOf(exp) === "object") {
-            if (!matchObject(exp, act)) {
-                return false;
-            }
-        } else if (!deepEqual(exp, act)) {
-            return false;
-        }
-
-        return true;
-    });
-}
-
-var TYPE_MAP = {
-    function: function(m, expectation, message) {
-        m.test = expectation;
-        m.message = message || "match(" + functionName(expectation) + ")";
-    },
-    number: function(m, expectation) {
-        m.test = function(actual) {
-            // we need type coercion here
-            return expectation == actual; // eslint-disable-line eqeqeq
-        };
-    },
-    object: function(m, expectation) {
-        var array = [];
-
-        if (typeof expectation.test === "function") {
-            m.test = function(actual) {
-                return expectation.test(actual) === true;
-            };
-            m.message = "match(" + functionName(expectation.test) + ")";
-            return m;
-        }
-
-        array = map(Object.keys(expectation), function(key) {
-            return key + ": " + valueToString(expectation[key]);
-        });
-
-        m.test = function(actual) {
-            return matchObject(expectation, actual);
-        };
-        m.message = "match(" + join(array, ", ") + ")";
-
-        return m;
-    },
-    regexp: function(m, expectation) {
-        m.test = function(actual) {
-            return typeof actual === "string" && expectation.test(actual);
-        };
-    },
-    string: function(m, expectation) {
-        m.test = function(actual) {
-            return typeof actual === "string" && stringIndexOf(actual, expectation) !== -1;
-        };
-        m.message = 'match("' + expectation + '")';
-    }
-};
-
-function match(expectation, message) {
-    var m = Object.create(matcher);
-    var type = typeOf(expectation);
-
-    if (type in TYPE_MAP) {
-        TYPE_MAP[type](m, expectation, message);
-    } else {
-        m.test = function(actual) {
-            return deepEqual(expectation, actual);
-        };
-    }
-
-    if (!m.message) {
-        m.message = "match(" + valueToString(expectation) + ")";
-    }
-
-    return m;
-}
-
-matcher.or = function(m2) {
-    var matcher2 = m2;
-    if (!arguments.length) {
-        throw new TypeError("Matcher expected");
-    } else if (!isMatcher(m2)) {
-        matcher2 = match(m2);
-    }
-    var m1 = this;
-    var or = Object.create(matcher);
-    or.test = function(actual) {
-        return m1.test(actual) || matcher2.test(actual);
-    };
-    or.message = m1.message + ".or(" + matcher2.message + ")";
-    return or;
-};
-
-matcher.and = function(m2) {
-    var matcher2 = m2;
-    if (!arguments.length) {
-        throw new TypeError("Matcher expected");
-    } else if (!isMatcher(m2)) {
-        matcher2 = match(m2);
-    }
-    var m1 = this;
-    var and = Object.create(matcher);
-    and.test = function(actual) {
-        return m1.test(actual) && matcher2.test(actual);
-    };
-    and.message = m1.message + ".and(" + matcher2.message + ")";
-    return and;
-};
-
-match.isMatcher = isMatcher;
-
-match.any = match(function() {
-    return true;
-}, "any");
-
-match.defined = match(function(actual) {
-    return actual !== null && actual !== undefined;
-}, "defined");
-
-match.truthy = match(function(actual) {
-    return Boolean(actual);
-}, "truthy");
-
-match.falsy = match(function(actual) {
-    return !actual;
-}, "falsy");
-
-match.same = function(expectation) {
-    return match(function(actual) {
-        return expectation === actual;
-    }, "same(" + valueToString(expectation) + ")");
-};
-
-match.in = function(arrayOfExpectations) {
-    if (!Array.isArray(arrayOfExpectations)) {
-        throw new TypeError("array expected");
-    }
-
-    return match(function(actual) {
-        return some(arrayOfExpectations, function(expectation) {
-            return expectation === actual;
-        });
-    }, "in(" + valueToString(arrayOfExpectations) + ")");
-};
-
-match.typeOf = function(type) {
-    assertType(type, "string", "type");
-    return match(function(actual) {
-        return typeOf(actual) === type;
-    }, 'typeOf("' + type + '")');
-};
-
-match.instanceOf = function(type) {
-    if (typeof Symbol === "undefined" || typeof Symbol.hasInstance === "undefined") {
-        assertType(type, "function", "type");
-    } else {
-        assertMethodExists(type, Symbol.hasInstance, "type", "[Symbol.hasInstance]");
-    }
-    return match(function(actual) {
-        return actual instanceof type;
-    }, "instanceOf(" + (functionName(type) || Object.prototype.toString.call(type)) + ")");
-};
-
-function createPropertyMatcher(propertyTest, messagePrefix) {
-    return function(property, value) {
-        assertType(property, "string", "property");
-        var onlyProperty = arguments.length === 1;
-        var message = messagePrefix + '("' + property + '"';
-        if (!onlyProperty) {
-            message += ", " + valueToString(value);
-        }
-        message += ")";
-        return match(function(actual) {
-            if (actual === undefined || actual === null || !propertyTest(actual, property)) {
-                return false;
-            }
-            return onlyProperty || deepEqual(value, actual[property]);
-        }, message);
-    };
-}
-
-match.has = createPropertyMatcher(function(actual, property) {
-    if (typeof actual === "object") {
-        return property in actual;
-    }
-    return actual[property] !== undefined;
-}, "has");
-
-match.hasOwn = createPropertyMatcher(function(actual, property) {
-    return hasOwnProperty(actual, property);
-}, "hasOwn");
-
-match.hasNested = function(property, value) {
-    assertType(property, "string", "property");
-    var onlyProperty = arguments.length === 1;
-    var message = 'hasNested("' + property + '"';
-    if (!onlyProperty) {
-        message += ", " + valueToString(value);
-    }
-    message += ")";
-    return match(function(actual) {
-        if (actual === undefined || actual === null || get(actual, property) === undefined) {
-            return false;
-        }
-        return onlyProperty || deepEqual(value, get(actual, property));
-    }, message);
-};
-
-match.every = function(predicate) {
-    if (!isMatcher(predicate)) {
-        throw new TypeError("Matcher expected");
-    }
-
-    return match(function(actual) {
-        if (typeOf(actual) === "object") {
-            return every(Object.keys(actual), function(key) {
-                return predicate.test(actual[key]);
-            });
-        }
-
-        return (
-            Boolean(actual) &&
-            typeOf(actual.forEach) === "function" &&
-            every(actual, function(element) {
-                return predicate.test(element);
-            })
-        );
-    }, "every(" + predicate.message + ")");
-};
-
-match.some = function(predicate) {
-    if (!isMatcher(predicate)) {
-        throw new TypeError("Matcher expected");
-    }
-
-    return match(function(actual) {
-        if (typeOf(actual) === "object") {
-            return !every(Object.keys(actual), function(key) {
-                return !predicate.test(actual[key]);
-            });
-        }
-
-        return (
-            Boolean(actual) &&
-            typeOf(actual.forEach) === "function" &&
-            !every(actual, function(element) {
-                return !predicate.test(element);
-            })
-        );
-    }, "some(" + predicate.message + ")");
-};
-
-match.array = match.typeOf("array");
-
-match.array.deepEquals = function(expectation) {
-    return match(function(actual) {
-        // Comparing lengths is the fastest way to spot a difference before iterating through every item
-        var sameLength = actual.length === expectation.length;
-        return (
-            typeOf(actual) === "array" &&
-            sameLength &&
-            every(actual, function(element, index) {
-                return expectation[index] === element;
-            })
-        );
-    }, "deepEquals([" + iterableToString(expectation) + "])");
-};
-
-match.array.startsWith = function(expectation) {
-    return match(function(actual) {
-        return (
-            typeOf(actual) === "array" &&
-            every(expectation, function(expectedElement, index) {
-                return actual[index] === expectedElement;
-            })
-        );
-    }, "startsWith([" + iterableToString(expectation) + "])");
-};
-
-match.array.endsWith = function(expectation) {
-    return match(function(actual) {
-        // This indicates the index in which we should start matching
-        var offset = actual.length - expectation.length;
-
-        return (
-            typeOf(actual) === "array" &&
-            every(expectation, function(expectedElement, index) {
-                return actual[offset + index] === expectedElement;
-            })
-        );
-    }, "endsWith([" + iterableToString(expectation) + "])");
-};
-
-match.array.contains = function(expectation) {
-    return match(function(actual) {
-        return (
-            typeOf(actual) === "array" &&
-            every(expectation, function(expectedElement) {
-                return arrayIndexOf(actual, expectedElement) !== -1;
-            })
-        );
-    }, "contains([" + iterableToString(expectation) + "])");
-};
-
-match.map = match.typeOf("map");
-
-match.map.deepEquals = function mapDeepEquals(expectation) {
-    return match(function(actual) {
-        // Comparing lengths is the fastest way to spot a difference before iterating through every item
-        var sameLength = actual.size === expectation.size;
-        return (
-            typeOf(actual) === "map" &&
-            sameLength &&
-            every(actual, function(element, key) {
-                return expectation.has(key) && expectation.get(key) === element;
-            })
-        );
-    }, "deepEquals(Map[" + iterableToString(expectation) + "])");
-};
-
-match.map.contains = function mapContains(expectation) {
-    return match(function(actual) {
-        return (
-            typeOf(actual) === "map" &&
-            every(expectation, function(element, key) {
-                return actual.has(key) && actual.get(key) === element;
-            })
-        );
-    }, "contains(Map[" + iterableToString(expectation) + "])");
-};
-
-match.set = match.typeOf("set");
-
-match.set.deepEquals = function setDeepEquals(expectation) {
-    return match(function(actual) {
-        // Comparing lengths is the fastest way to spot a difference before iterating through every item
-        var sameLength = actual.size === expectation.size;
-        return (
-            typeOf(actual) === "set" &&
-            sameLength &&
-            every(actual, function(element) {
-                return expectation.has(element);
-            })
-        );
-    }, "deepEquals(Set[" + iterableToString(expectation) + "])");
-};
-
-match.set.contains = function setContains(expectation) {
-    return match(function(actual) {
-        return (
-            typeOf(actual) === "set" &&
-            every(expectation, function(element) {
-                return actual.has(element);
-            })
-        );
-    }, "contains(Set[" + iterableToString(expectation) + "])");
-};
-
-match.bool = match.typeOf("boolean");
-match.number = match.typeOf("number");
-match.string = match.typeOf("string");
-match.object = match.typeOf("object");
-match.func = match.typeOf("function");
-match.regexp = match.typeOf("regexp");
-match.date = match.typeOf("date");
-match.symbol = match.typeOf("symbol");
-
-module.exports = match;
-
-},{"./util/core/deep-equal":19,"./util/core/every":22,"./util/core/iterable-to-string":32,"./util/core/typeOf":35,"@sinonjs/commons":43,"lodash.get":87}],11:[function(require,module,exports){
+},{"./spy":14,"./util/core/next-tick":29,"@sinonjs/commons":38}],10:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1722,10 +1292,10 @@ var spyInvoke = require("./spy").invoke;
 var spyCallToString = require("./call").toString;
 var timesInWords = require("./util/core/times-in-words");
 var extend = require("./util/core/extend");
-var match = require("./match");
+var match = require("@sinonjs/samsam").createMatcher;
 var stub = require("./stub");
 var assert = require("./assert");
-var deepEqual = require("./util/core/deep-equal").use(match);
+var deepEqual = require("@sinonjs/samsam").deepEqual;
 var format = require("./util/core/format");
 var valueToString = require("@sinonjs/commons").valueToString;
 
@@ -1777,7 +1347,7 @@ function receivedMaxCalls(expectation) {
 }
 
 function verifyMatcher(possibleMatcher, arg) {
-    var isMatcher = match && match.isMatcher(possibleMatcher);
+    var isMatcher = match.isMatcher(possibleMatcher);
 
     return (isMatcher && possibleMatcher.test(arg)) || true;
 }
@@ -1918,7 +1488,7 @@ var mockExpectation = {
                     );
                 }
 
-                if (!deepEqual(expectedArgument, args[i])) {
+                if (!deepEqual(args[i], expectedArgument)) {
                     mockExpectation.fail(
                         this.method +
                             " received wrong arguments " +
@@ -1963,7 +1533,7 @@ var mockExpectation = {
                 return false;
             }
 
-            if (!deepEqual(expectedArgument, _args[i])) {
+            if (!deepEqual(_args[i], expectedArgument)) {
                 return false;
             }
 
@@ -2032,15 +1602,14 @@ var mockExpectation = {
 
 module.exports = mockExpectation;
 
-},{"./assert":2,"./call":4,"./match":10,"./spy":15,"./stub":17,"./util/core/deep-equal":19,"./util/core/extend":24,"./util/core/format":25,"./util/core/times-in-words":34,"@sinonjs/commons":43}],12:[function(require,module,exports){
+},{"./assert":2,"./call":4,"./spy":14,"./stub":16,"./util/core/extend":21,"./util/core/format":22,"./util/core/times-in-words":30,"@sinonjs/commons":38,"@sinonjs/samsam":64}],11:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
 var mockExpectation = require("./mock-expectation");
 var spyCallToString = require("./call").toString;
 var extend = require("./util/core/extend");
-var match = require("./match");
-var deepEqual = require("./util/core/deep-equal").use(match);
+var deepEqual = require("@sinonjs/samsam").deepEqual;
 var wrapMethod = require("./util/core/wrap-method");
 var usePromiseLibrary = require("./util/core/use-promise-library");
 
@@ -2073,7 +1642,7 @@ function arrayEquals(arr1, arr2, compareLength) {
     }
 
     return every(arr1, function(element, i) {
-        return deepEqual(element, arr2[i]);
+        return deepEqual(arr2[i], element);
     });
 }
 
@@ -2236,7 +1805,7 @@ extend(mock, {
 
 module.exports = mock;
 
-},{"./call":4,"./match":10,"./mock-expectation":11,"./util/core/deep-equal":19,"./util/core/extend":24,"./util/core/use-promise-library":36,"./util/core/wrap-method":38,"@sinonjs/commons":43}],13:[function(require,module,exports){
+},{"./call":4,"./mock-expectation":10,"./util/core/extend":21,"./util/core/use-promise-library":31,"./util/core/wrap-method":33,"@sinonjs/commons":38,"@sinonjs/samsam":64}],12:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -2245,7 +1814,7 @@ var getPropertyDescriptor = require("./util/core/get-property-descriptor");
 var isEsModule = require("./util/core/is-es-module");
 var isPropertyConfigurable = require("./util/core/is-property-configurable");
 var isNonExistentOwnProperty = require("./util/core/is-non-existent-own-property");
-var sinonMatch = require("./match");
+var match = require("@sinonjs/samsam").createMatcher;
 var sinonAssert = require("./assert");
 var sinonClock = require("./util/fake-timers");
 var sinonMock = require("./mock");
@@ -2319,7 +1888,7 @@ function Sandbox() {
             obj.requests = sandbox.server.requests;
         }
 
-        obj.match = sinonMatch;
+        obj.match = match;
 
         return obj;
     };
@@ -2625,18 +2194,18 @@ function Sandbox() {
 }
 
 Sandbox.prototype.assert = sinonAssert;
-Sandbox.prototype.match = sinonMatch;
+Sandbox.prototype.match = match;
 
 module.exports = Sandbox;
 
-},{"./assert":2,"./collect-own-methods":5,"./fake":9,"./match":10,"./mock":12,"./spy":15,"./stub":17,"./util/core/get-property-descriptor":28,"./util/core/is-es-module":29,"./util/core/is-non-existent-own-property":30,"./util/core/is-property-configurable":31,"./util/core/use-promise-library":36,"./util/fake-timers":39,"@sinonjs/commons":43,"nise":100}],14:[function(require,module,exports){
+},{"./assert":2,"./collect-own-methods":5,"./fake":9,"./mock":11,"./spy":14,"./stub":16,"./util/core/get-property-descriptor":25,"./util/core/is-es-module":26,"./util/core/is-non-existent-own-property":27,"./util/core/is-property-configurable":28,"./util/core/use-promise-library":31,"./util/fake-timers":34,"@sinonjs/commons":38,"@sinonjs/samsam":64,"nise":81}],13:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
 var color = require("./color");
+var match = require("@sinonjs/samsam").createMatcher;
 var timesInWords = require("./util/core/times-in-words");
 var sinonFormat = require("./util/core/format");
-var sinonMatch = require("./match");
 var jsDiff = require("diff");
 
 var join = arrayProto.join;
@@ -2692,7 +2261,7 @@ module.exports = {
             for (var j = 0; j < calledArgs.length || j < args.length; ++j) {
                 message += "\n";
                 var calledArgMessage = j < calledArgs.length ? sinonFormat(calledArgs[j]) : "";
-                if (sinonMatch.isMatcher(args[j])) {
+                if (match.isMatcher(args[j])) {
                     message += colorSinonMatchText(args[j], calledArgs[j], calledArgMessage);
                 } else {
                     var expectedArgMessage = j < args.length ? sinonFormat(args[j]) : "";
@@ -2740,7 +2309,7 @@ module.exports = {
     }
 };
 
-},{"./color":6,"./match":10,"./util/core/format":25,"./util/core/times-in-words":34,"@sinonjs/commons":43,"diff":84}],15:[function(require,module,exports){
+},{"./color":6,"./util/core/format":22,"./util/core/times-in-words":30,"@sinonjs/commons":38,"@sinonjs/samsam":64,"diff":65}],14:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -2749,8 +2318,7 @@ var extend = require("./util/core/extend");
 var functionName = require("@sinonjs/commons").functionName;
 var functionToString = require("./util/core/function-to-string");
 var getPropertyDescriptor = require("./util/core/get-property-descriptor");
-var sinonMatch = require("./match");
-var deepEqual = require("./util/core/deep-equal").use(sinonMatch);
+var deepEqual = require("@sinonjs/samsam").deepEqual;
 var isEsModule = require("./util/core/is-es-module");
 var spyCall = require("./call");
 var wrapMethod = require("./util/core/wrap-method");
@@ -3174,7 +2742,7 @@ var spyApi = {
     matches: function(args, strict) {
         var margs = this.matchingArguments;
 
-        if (margs.length <= args.length && deepEqual(margs, slice(args, 0, margs.length))) {
+        if (margs.length <= args.length && deepEqual(slice(args, 0, margs.length), margs)) {
             return !strict || margs.length === args.length;
         }
 
@@ -3295,7 +2863,7 @@ extend(spy, spyApi);
 spy.spyCall = spyCall;
 module.exports = spy;
 
-},{"./behavior":3,"./call":4,"./match":10,"./spy-formatters":14,"./util/core/deep-equal":19,"./util/core/extend":24,"./util/core/format":25,"./util/core/function-to-string":26,"./util/core/get-property-descriptor":28,"./util/core/is-es-module":29,"./util/core/wrap-method":38,"@sinonjs/commons":43}],16:[function(require,module,exports){
+},{"./behavior":3,"./call":4,"./spy-formatters":13,"./util/core/extend":21,"./util/core/format":22,"./util/core/function-to-string":23,"./util/core/get-property-descriptor":25,"./util/core/is-es-module":26,"./util/core/wrap-method":33,"@sinonjs/commons":38,"@sinonjs/samsam":64}],15:[function(require,module,exports){
 "use strict";
 
 var getPropertyDescriptor = require("./util/core/get-property-descriptor");
@@ -3319,7 +2887,7 @@ function stubEntireObject(stub, object) {
 
 module.exports = stubEntireObject;
 
-},{"./util/core/get-property-descriptor":28,"./util/core/walk":37}],17:[function(require,module,exports){
+},{"./util/core/get-property-descriptor":25,"./util/core/walk":32}],16:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -3404,7 +2972,7 @@ stub.createStubInstance = function(constructor, overrides) {
     forEach(Object.keys(overrides || {}), function(propertyName) {
         if (propertyName in stubbedObject) {
             var value = overrides[propertyName];
-            if (value.createStubInstance) {
+            if (value && value.createStubInstance) {
                 stubbedObject[propertyName] = value;
             } else {
                 stubbedObject[propertyName].returns(value);
@@ -3532,7 +3100,7 @@ forEach(Object.keys(behaviors), function(method) {
 extend(stub, proto);
 module.exports = stub;
 
-},{"./behavior":3,"./default-behaviors":8,"./spy":15,"./stub-entire-object":16,"./throw-on-falsy-object":18,"./util/core/extend":24,"./util/core/function-to-string":26,"./util/core/get-property-descriptor":28,"./util/core/is-es-module":29,"./util/core/is-non-existent-own-property":30,"./util/core/wrap-method":38,"@sinonjs/commons":43}],18:[function(require,module,exports){
+},{"./behavior":3,"./default-behaviors":8,"./spy":14,"./stub-entire-object":15,"./throw-on-falsy-object":17,"./util/core/extend":21,"./util/core/function-to-string":23,"./util/core/get-property-descriptor":25,"./util/core/is-es-module":26,"./util/core/is-non-existent-own-property":27,"./util/core/wrap-method":33,"@sinonjs/commons":38}],17:[function(require,module,exports){
 "use strict";
 var valueToString = require("@sinonjs/commons").valueToString;
 
@@ -3545,75 +3113,7 @@ function throwOnFalsyObject(object, property) {
 
 module.exports = throwOnFalsyObject;
 
-},{"@sinonjs/commons":43}],19:[function(require,module,exports){
-"use strict";
-
-var arrayProto = require("@sinonjs/commons").prototypes.array;
-var toString = require("@sinonjs/commons").prototypes.object.toString;
-var samsam = require("@sinonjs/samsam");
-
-var every = arrayProto.every;
-var join = arrayProto.join;
-var sort = arrayProto.sort;
-
-function isReallyNaN(val) {
-    // eslint-disable-next-line no-self-compare
-    return val !== val;
-}
-
-var deepEqual = (module.exports = function deepEqual(a, b, matcher) {
-    if (a === null && b === null) {
-        return true;
-    }
-
-    if (typeof a !== "object" || typeof b !== "object") {
-        return (isReallyNaN(a) && isReallyNaN(b)) || a === b;
-    }
-
-    if (a instanceof Error && b instanceof Error) {
-        return a === b;
-    }
-
-    if (toString(a) !== toString(b)) {
-        return false;
-    }
-
-    if (join(sort(Object.keys(a))) !== join(sort(Object.keys(b)))) {
-        return false;
-    }
-
-    if (samsam.deepEqual(a, b)) {
-        return true;
-    }
-
-    if (matcher) {
-        var keys = Object.keys(a);
-        var allKeysMatch = every(keys, function(key) {
-            return matcher(a[key], b[key]);
-        });
-
-        return keys.length > 0 && allKeysMatch;
-    }
-
-    return false;
-});
-
-deepEqual.use = function(match) {
-    return function deepEqual$matcher(a, b) {
-        // If both are matchers they must be the same instance in order to be considered equal
-        // If we didn't do that we would end up running one matcher against the other
-        if (match.isMatcher(a)) {
-            if (match.isMatcher(b)) {
-                return a === b;
-            }
-            return a.test(b);
-        }
-
-        return deepEqual(a, b, deepEqual$matcher);
-    };
-};
-
-},{"@sinonjs/commons":43,"@sinonjs/samsam":81}],20:[function(require,module,exports){
+},{"@sinonjs/commons":38}],18:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3624,7 +3124,7 @@ module.exports = {
     useFakeServer: true
 };
 
-},{}],21:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* eslint-disable no-console */
 "use strict";
 
@@ -3660,29 +3160,7 @@ exports.printWarning = function(msg) {
     }
 };
 
-},{}],22:[function(require,module,exports){
-"use strict";
-
-// This is an `every` implementation that works for all iterables
-module.exports = function every(obj, fn) {
-    var pass = true;
-
-    try {
-        /* eslint-disable-next-line local-rules/no-prototype-methods */
-        obj.forEach(function() {
-            if (!fn.apply(this, arguments)) {
-                // Throwing an error is the only way to break `forEach`
-                throw new Error();
-            }
-        });
-    } catch (e) {
-        pass = false;
-    }
-
-    return pass;
-};
-
-},{}],23:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -3706,7 +3184,7 @@ module.exports = function exportAsyncBehaviors(behaviorMethods) {
     );
 };
 
-},{"@sinonjs/commons":43}],24:[function(require,module,exports){
+},{"@sinonjs/commons":38}],21:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -3819,7 +3297,7 @@ module.exports.nonEnum = function extendNonEnum(target /*, sources */) {
     });
 };
 
-},{"@sinonjs/commons":43}],25:[function(require,module,exports){
+},{"@sinonjs/commons":38}],22:[function(require,module,exports){
 "use strict";
 
 var formatio = require("@sinonjs/formatio");
@@ -3849,7 +3327,7 @@ format.setFormatter = function(aCustomFormatter) {
 
 module.exports = format;
 
-},{"@sinonjs/formatio":53}],26:[function(require,module,exports){
+},{"@sinonjs/formatio":48}],23:[function(require,module,exports){
 "use strict";
 
 module.exports = function toString() {
@@ -3871,7 +3349,7 @@ module.exports = function toString() {
     return this.displayName || "sinon fake";
 };
 
-},{}],27:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 /* istanbul ignore next : not testing that setTimeout works */
@@ -3891,7 +3369,7 @@ module.exports = function getNextTick(process, setImmediate) {
     return nextTick;
 };
 
-},{}],28:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
 module.exports = function getPropertyDescriptor(object, property) {
@@ -3904,7 +3382,7 @@ module.exports = function getPropertyDescriptor(object, property) {
     return descriptor;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 
 /**
@@ -3924,7 +3402,7 @@ module.exports = function(object) {
     );
 };
 
-},{}],30:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 
 function isNonExistentOwnProperty(object, property) {
@@ -3933,7 +3411,7 @@ function isNonExistentOwnProperty(object, property) {
 
 module.exports = isNonExistentOwnProperty;
 
-},{}],31:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 "use strict";
 
 var getPropertyDescriptor = require("./get-property-descriptor");
@@ -3946,47 +3424,7 @@ function isPropertyConfigurable(obj, propName) {
 
 module.exports = isPropertyConfigurable;
 
-},{"./get-property-descriptor":28}],32:[function(require,module,exports){
-"use strict";
-
-var slice = require("@sinonjs/commons").prototypes.string.slice;
-var typeOf = require("./typeOf");
-
-module.exports = function iterableToString(obj) {
-    var representation = "";
-
-    function stringify(item) {
-        return typeof item === "string" ? "'" + item + "'" : String(item);
-    }
-
-    function mapToString(map) {
-        /* eslint-disable-next-line local-rules/no-prototype-methods */
-        map.forEach(function(value, key) {
-            representation += "[" + stringify(key) + "," + stringify(value) + "],";
-        });
-
-        representation = slice(representation, 0, -1);
-        return representation;
-    }
-
-    function genericIterableToString(iterable) {
-        /* eslint-disable-next-line local-rules/no-prototype-methods */
-        iterable.forEach(function(value) {
-            representation += stringify(value) + ",";
-        });
-
-        representation = slice(representation, 0, -1);
-        return representation;
-    }
-
-    if (typeOf(obj) === "map") {
-        return mapToString(obj);
-    }
-
-    return genericIterableToString(obj);
-};
-
-},{"./typeOf":35,"@sinonjs/commons":43}],33:[function(require,module,exports){
+},{"./get-property-descriptor":25}],29:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3998,7 +3436,7 @@ var root = typeof window !== "undefined" ? window : global;
 module.exports = getNextTick(root.process, root.setImmediate);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./get-next-tick":27}],34:[function(require,module,exports){
+},{"./get-next-tick":24}],30:[function(require,module,exports){
 "use strict";
 
 var array = [null, "once", "twice", "thrice"];
@@ -4007,16 +3445,7 @@ module.exports = function timesInWords(count) {
     return array[count] || (count || 0) + " times";
 };
 
-},{}],35:[function(require,module,exports){
-"use strict";
-
-var type = require("type-detect");
-
-module.exports = function typeOf(value) {
-    return type(value).toLowerCase();
-};
-
-},{"type-detect":107}],36:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 
 var forEach = Array.prototype.forEach;
@@ -4039,7 +3468,7 @@ function usePromiseLibrary(library, fakes) {
 
 module.exports = usePromiseLibrary;
 
-},{}],37:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 var forEach = require("@sinonjs/commons").prototypes.array.forEach;
@@ -4086,7 +3515,7 @@ module.exports = function walk(obj, iterator, context) {
     return walkInternal(obj, iterator, context, obj, {});
 };
 
-},{"@sinonjs/commons":43}],38:[function(require,module,exports){
+},{"@sinonjs/commons":38}],33:[function(require,module,exports){
 "use strict";
 
 var getPropertyDescriptor = require("./get-property-descriptor");
@@ -4240,7 +3669,7 @@ module.exports = function wrapMethod(object, property, method) {
     return method;
 };
 
-},{"./get-property-descriptor":28,"@sinonjs/commons":43}],39:[function(require,module,exports){
+},{"./get-property-descriptor":25,"@sinonjs/commons":38}],34:[function(require,module,exports){
 "use strict";
 
 var extend = require("./core/extend");
@@ -4304,7 +3733,7 @@ exports.timers = {
     Date: Date
 };
 
-},{"./core/extend":24,"lolex":88}],40:[function(require,module,exports){
+},{"./core/extend":21,"lolex":69}],35:[function(require,module,exports){
 "use strict";
 
 var every = require("./prototypes/array").every;
@@ -4340,9 +3769,29 @@ module.exports = function calledInOrder(spies) {
     return every(_spies, checkAdjacentCalls.bind(null, callMap));
 };
 
-},{"./prototypes/array":45}],41:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"dup":22}],42:[function(require,module,exports){
+},{"./prototypes/array":40}],36:[function(require,module,exports){
+"use strict";
+
+// This is an `every` implementation that works for all iterables
+module.exports = function every(obj, fn) {
+    var pass = true;
+
+    try {
+        /* eslint-disable-next-line local-rules/no-prototype-methods */
+        obj.forEach(function() {
+            if (!fn.apply(this, arguments)) {
+                // Throwing an error is the only way to break `forEach`
+                throw new Error();
+            }
+        });
+    } catch (e) {
+        pass = false;
+    }
+
+    return pass;
+};
+
+},{}],37:[function(require,module,exports){
 "use strict";
 
 module.exports = function functionName(func) {
@@ -4357,7 +3806,7 @@ module.exports = function functionName(func) {
     );
 };
 
-},{}],43:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -4370,7 +3819,7 @@ module.exports = {
     valueToString: require("./value-to-string")
 };
 
-},{"./called-in-order":40,"./every":41,"./function-name":42,"./order-by-first-call":44,"./prototypes":48,"./type-of":51,"./value-to-string":52}],44:[function(require,module,exports){
+},{"./called-in-order":35,"./every":36,"./function-name":37,"./order-by-first-call":39,"./prototypes":43,"./type-of":46,"./value-to-string":47}],39:[function(require,module,exports){
 "use strict";
 
 var sort = require("./prototypes/array").sort;
@@ -4390,14 +3839,14 @@ module.exports = function orderByFirstCall(spies) {
     return sort(slice(spies), comparator);
 };
 
-},{"./prototypes/array":45}],45:[function(require,module,exports){
+},{"./prototypes/array":40}],40:[function(require,module,exports){
 "use strict";
 
 var copyPrototype = require("./copy-prototype");
 
 module.exports = copyPrototype(Array.prototype);
 
-},{"./copy-prototype":46}],46:[function(require,module,exports){
+},{"./copy-prototype":41}],41:[function(require,module,exports){
 "use strict";
 
 var call = Function.call;
@@ -4420,14 +3869,14 @@ module.exports = function copyPrototypeMethods(prototype) {
     }, Object.create(null));
 };
 
-},{}],47:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
 
 var copyPrototype = require("./copy-prototype");
 
 module.exports = copyPrototype(Function.prototype);
 
-},{"./copy-prototype":46}],48:[function(require,module,exports){
+},{"./copy-prototype":41}],43:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -4437,23 +3886,30 @@ module.exports = {
     string: require("./string")
 };
 
-},{"./array":45,"./function":47,"./object":49,"./string":50}],49:[function(require,module,exports){
+},{"./array":40,"./function":42,"./object":44,"./string":45}],44:[function(require,module,exports){
 "use strict";
 
 var copyPrototype = require("./copy-prototype");
 
 module.exports = copyPrototype(Object.prototype);
 
-},{"./copy-prototype":46}],50:[function(require,module,exports){
+},{"./copy-prototype":41}],45:[function(require,module,exports){
 "use strict";
 
 var copyPrototype = require("./copy-prototype");
 
 module.exports = copyPrototype(String.prototype);
 
-},{"./copy-prototype":46}],51:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"dup":35,"type-detect":107}],52:[function(require,module,exports){
+},{"./copy-prototype":41}],46:[function(require,module,exports){
+"use strict";
+
+var type = require("type-detect");
+
+module.exports = function typeOf(value) {
+    return type(value).toLowerCase();
+};
+
+},{"type-detect":88}],47:[function(require,module,exports){
 "use strict";
 
 function valueToString(value) {
@@ -4466,7 +3922,7 @@ function valueToString(value) {
 
 module.exports = valueToString;
 
-},{}],53:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -4695,7 +4151,7 @@ Formatio.prototype = {
 module.exports = Formatio.prototype;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"@sinonjs/samsam":67}],54:[function(require,module,exports){
+},{"@sinonjs/samsam":64}],49:[function(require,module,exports){
 "use strict";
 
 var getClass = require("./get-class");
@@ -4730,7 +4186,7 @@ var keys = Object.keys;
  *
  * Supports cyclic objects.
  */
-function deepEqualCyclic(first, second) {
+function deepEqualCyclic(first, second, match) {
     // used for cyclic comparison
     // contain already visited objects
     var objects1 = [];
@@ -4746,6 +4202,16 @@ function deepEqualCyclic(first, second) {
 
     // does the recursion for the deep equal check
     return (function deepEqual(obj1, obj2, path1, path2) {
+        // If both are matchers they must be the same instance in order to be
+        // considered equal If we didn't do that we would end up running one
+        // matcher against the other
+        if (match && match.isMatcher(obj2)) {
+            if (match.isMatcher(obj1)) {
+                return obj1 === obj2;
+            }
+            return obj2.test(obj1);
+        }
+
         var type1 = typeof obj1;
         var type2 = typeof obj2;
 
@@ -4786,9 +4252,7 @@ function deepEqualCyclic(first, second) {
         }
 
         if (obj1 instanceof Error && obj2 instanceof Error) {
-            if (obj1.stack !== obj2.stack) {
-                return false;
-            }
+            return obj1 === obj2;
         }
 
         var class1 = getClass(obj1);
@@ -4878,18 +4342,37 @@ function deepEqualCyclic(first, second) {
     })(first, second, "$1", "$2");
 }
 
+deepEqualCyclic.use = function(match) {
+    return function(a, b) {
+        return deepEqualCyclic(a, b, match);
+    };
+};
+
 module.exports = deepEqualCyclic;
 
-},{"./get-class":56,"./get-class-name":55,"./identical":57,"./is-arguments":58,"./is-date":59,"./is-element":60,"./is-nan":61,"./is-object":63,"./is-set":64,"./is-subset":65}],55:[function(require,module,exports){
+},{"./get-class":51,"./get-class-name":50,"./identical":52,"./is-arguments":53,"./is-date":54,"./is-element":55,"./is-nan":56,"./is-object":58,"./is-set":59,"./is-subset":60}],50:[function(require,module,exports){
 "use strict";
 
+var re = /function (\w+)\s*\(/;
+
 function getClassName(value) {
-    return Object.getPrototypeOf(value) ? value.constructor.name : null;
+    if (value.constructor && "name" in value.constructor) {
+        return value.constructor.name;
+    }
+
+    if (typeof value.constructor === "function") {
+        var match = value.constructor.toString().match(re);
+        if (match.length > 1) {
+            return match[1];
+        }
+    }
+
+    return null;
 }
 
 module.exports = getClassName;
 
-},{}],56:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 "use strict";
 
 var o = Object.prototype;
@@ -4903,7 +4386,7 @@ function getClass(value) {
 
 module.exports = getClass;
 
-},{}],57:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 "use strict";
 
 var isNaN = require("./is-nan");
@@ -4930,7 +4413,7 @@ function identical(obj1, obj2) {
 
 module.exports = identical;
 
-},{"./is-nan":61,"./is-neg-zero":62}],58:[function(require,module,exports){
+},{"./is-nan":56,"./is-neg-zero":57}],53:[function(require,module,exports){
 "use strict";
 
 var getClass = require("./get-class");
@@ -4967,7 +4450,7 @@ function isArguments(object) {
 
 module.exports = isArguments;
 
-},{"./get-class":56}],59:[function(require,module,exports){
+},{"./get-class":51}],54:[function(require,module,exports){
 "use strict";
 
 function isDate(value) {
@@ -4976,7 +4459,7 @@ function isDate(value) {
 
 module.exports = isDate;
 
-},{}],60:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 "use strict";
 
 var div = typeof document !== "undefined" && document.createElement("div");
@@ -5005,7 +4488,7 @@ function isElement(object) {
 
 module.exports = isElement;
 
-},{}],61:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 "use strict";
 
 function isNaN(value) {
@@ -5018,7 +4501,7 @@ function isNaN(value) {
 
 module.exports = isNaN;
 
-},{}],62:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 "use strict";
 
 /**
@@ -5033,7 +4516,7 @@ function isNegZero(value) {
 
 module.exports = isNegZero;
 
-},{}],63:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 "use strict";
 
 // Returns true when the value is a regular Object and not a specialized Object
@@ -5059,7 +4542,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],64:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 "use strict";
 
 function isSet(val) {
@@ -5068,46 +4551,76 @@ function isSet(val) {
 
 module.exports = isSet;
 
-},{}],65:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 "use strict";
 
-var from = require("array-from");
-
 function isSubset(s1, s2, compare) {
-    // FIXME: IE11 doesn't support Array.from
-    // Potential solutions:
-    // - contribute a patch to https://github.com/Volox/eslint-plugin-ie11#readme
-    // - https://github.com/mathiasbynens/Array.from (doesn't work with matchers)
-    var values1 = from(s1);
-    var values2 = from(s2);
-
-    for (var i = 0; i < values1.length; i++) {
+    var allContained = true;
+    s1.forEach(function(v1) {
         var includes = false;
-
-        for (var j = 0; j < values2.length; j++) {
-            if (compare(values2[j], values1[i])) {
+        s2.forEach(function(v2) {
+            if (compare(v2, v1)) {
                 includes = true;
-                break;
             }
-        }
+        });
+        allContained = allContained && includes;
+    });
 
-        if (!includes) {
-            return false;
-        }
-    }
-
-    return true;
+    return allContained;
 }
 
 module.exports = isSubset;
 
-},{"array-from":82}],66:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 "use strict";
 
+var slice = require("@sinonjs/commons").prototypes.string.slice;
+var typeOf = require("@sinonjs/commons").typeOf;
+
+module.exports = function iterableToString(obj) {
+    var representation = "";
+
+    function stringify(item) {
+        return typeof item === "string" ? "'" + item + "'" : String(item);
+    }
+
+    function mapToString(map) {
+        /* eslint-disable-next-line local-rules/no-prototype-methods */
+        map.forEach(function(value, key) {
+            representation +=
+                "[" + stringify(key) + "," + stringify(value) + "],";
+        });
+
+        representation = slice(representation, 0, -1);
+        return representation;
+    }
+
+    function genericIterableToString(iterable) {
+        /* eslint-disable-next-line local-rules/no-prototype-methods */
+        iterable.forEach(function(value) {
+            representation += stringify(value) + ",";
+        });
+
+        representation = slice(representation, 0, -1);
+        return representation;
+    }
+
+    if (typeOf(obj) === "map") {
+        return mapToString(obj);
+    }
+
+    return genericIterableToString(obj);
+};
+
+},{"@sinonjs/commons":38}],62:[function(require,module,exports){
+"use strict";
+
+var deepEqual = require("./deep-equal").use(match); // eslint-disable-line no-use-before-define
 var getClass = require("./get-class");
 var isDate = require("./is-date");
 var isSet = require("./is-set");
 var isSubset = require("./is-subset");
+var createMatcher = require("./matcher");
 
 function arrayContains(array, subset, compare) {
     if (subset.length === 0) {
@@ -5173,6 +4686,10 @@ function match(object, matcher) {
         return object === null;
     }
 
+    if (object === null) {
+        return false;
+    }
+
     if (isSet(object)) {
         return isSubset(matcher, object, match);
     }
@@ -5188,6 +4705,9 @@ function match(object, matcher) {
     if (matcher && typeof matcher === "object") {
         if (matcher === object) {
             return true;
+        }
+        if (typeof object !== "object") {
+            return false;
         }
         var prop;
         // eslint-disable-next-line guard-for-in
@@ -5208,7 +4728,7 @@ function match(object, matcher) {
                 }
             } else if (
                 typeof value === "undefined" ||
-                !match(value, matcher[prop])
+                !deepEqual(value, matcher[prop])
             ) {
                 return false;
             }
@@ -5222,501 +4742,492 @@ function match(object, matcher) {
     );
 }
 
+Object.keys(createMatcher).forEach(function(key) {
+    match[key] = createMatcher[key];
+});
+
 module.exports = match;
 
-},{"./get-class":56,"./is-date":59,"./is-set":64,"./is-subset":65}],67:[function(require,module,exports){
+},{"./deep-equal":49,"./get-class":51,"./is-date":54,"./is-set":59,"./is-subset":60,"./matcher":63}],63:[function(require,module,exports){
 "use strict";
 
-var deepEqualCyclic = require("./deep-equal");
+var arrayProto = require("@sinonjs/commons").prototypes.array;
+var deepEqual = require("./deep-equal").use(match); // eslint-disable-line no-use-before-define
+var every = require("@sinonjs/commons").every;
+var functionName = require("@sinonjs/commons").functionName;
+var get = require("lodash.get");
+var iterableToString = require("./iterable-to-string");
+var objectProto = require("@sinonjs/commons").prototypes.object;
+var stringProto = require("@sinonjs/commons").prototypes.string;
+var typeOf = require("@sinonjs/commons").typeOf;
+var valueToString = require("@sinonjs/commons").valueToString;
+
+var arrayIndexOf = arrayProto.indexOf;
+var arrayEvery = arrayProto.every;
+var join = arrayProto.join;
+var map = arrayProto.map;
+var some = arrayProto.some;
+
+var hasOwnProperty = objectProto.hasOwnProperty;
+var isPrototypeOf = objectProto.isPrototypeOf;
+
+var stringIndexOf = stringProto.indexOf;
+
+function assertType(value, type, name) {
+    var actual = typeOf(value);
+    if (actual !== type) {
+        throw new TypeError(
+            "Expected type of " +
+                name +
+                " to be " +
+                type +
+                ", but was " +
+                actual
+        );
+    }
+}
+
+function assertMethodExists(value, method, name, methodPath) {
+    if (value[method] == null) {
+        throw new TypeError(
+            "Expected " + name + " to have method " + methodPath
+        );
+    }
+}
+
+var matcher = {
+    toString: function() {
+        return this.message;
+    }
+};
+
+function isMatcher(object) {
+    return isPrototypeOf(matcher, object);
+}
+
+function matchObject(actual, expectation) {
+    if (actual === null || actual === undefined) {
+        return false;
+    }
+
+    return arrayEvery(Object.keys(expectation), function(key) {
+        var exp = expectation[key];
+        var act = actual[key];
+
+        if (isMatcher(exp)) {
+            if (!exp.test(act)) {
+                return false;
+            }
+        } else if (typeOf(exp) === "object") {
+            if (!matchObject(act, exp)) {
+                return false;
+            }
+        } else if (!deepEqual(act, exp)) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+var TYPE_MAP = {
+    function: function(m, expectation, message) {
+        m.test = expectation;
+        m.message = message || "match(" + functionName(expectation) + ")";
+    },
+    number: function(m, expectation) {
+        m.test = function(actual) {
+            // we need type coercion here
+            return expectation == actual; // eslint-disable-line eqeqeq
+        };
+    },
+    object: function(m, expectation) {
+        var array = [];
+
+        if (typeof expectation.test === "function") {
+            m.test = function(actual) {
+                return expectation.test(actual) === true;
+            };
+            m.message = "match(" + functionName(expectation.test) + ")";
+            return m;
+        }
+
+        array = map(Object.keys(expectation), function(key) {
+            return key + ": " + valueToString(expectation[key]);
+        });
+
+        m.test = function(actual) {
+            return matchObject(actual, expectation);
+        };
+        m.message = "match(" + join(array, ", ") + ")";
+
+        return m;
+    },
+    regexp: function(m, expectation) {
+        m.test = function(actual) {
+            return typeof actual === "string" && expectation.test(actual);
+        };
+    },
+    string: function(m, expectation) {
+        m.test = function(actual) {
+            return (
+                typeof actual === "string" &&
+                stringIndexOf(actual, expectation) !== -1
+            );
+        };
+        m.message = 'match("' + expectation + '")';
+    }
+};
+
+function match(expectation, message) {
+    var m = Object.create(matcher);
+    var type = typeOf(expectation);
+
+    if (type in TYPE_MAP) {
+        TYPE_MAP[type](m, expectation, message);
+    } else {
+        m.test = function(actual) {
+            return deepEqual(actual, expectation);
+        };
+    }
+
+    if (!m.message) {
+        m.message = "match(" + valueToString(expectation) + ")";
+    }
+
+    return m;
+}
+
+matcher.or = function(m2) {
+    if (!arguments.length) {
+        throw new TypeError("Matcher expected");
+    } else if (!isMatcher(m2)) {
+        m2 = match(m2);
+    }
+    var m1 = this;
+    var or = Object.create(matcher);
+    or.test = function(actual) {
+        return m1.test(actual) || m2.test(actual);
+    };
+    or.message = m1.message + ".or(" + m2.message + ")";
+    return or;
+};
+
+matcher.and = function(m2) {
+    if (!arguments.length) {
+        throw new TypeError("Matcher expected");
+    } else if (!isMatcher(m2)) {
+        m2 = match(m2);
+    }
+    var m1 = this;
+    var and = Object.create(matcher);
+    and.test = function(actual) {
+        return m1.test(actual) && m2.test(actual);
+    };
+    and.message = m1.message + ".and(" + m2.message + ")";
+    return and;
+};
+
+match.isMatcher = isMatcher;
+
+match.any = match(function() {
+    return true;
+}, "any");
+
+match.defined = match(function(actual) {
+    return actual !== null && actual !== undefined;
+}, "defined");
+
+match.truthy = match(function(actual) {
+    return !!actual;
+}, "truthy");
+
+match.falsy = match(function(actual) {
+    return !actual;
+}, "falsy");
+
+match.same = function(expectation) {
+    return match(function(actual) {
+        return expectation === actual;
+    }, "same(" + valueToString(expectation) + ")");
+};
+
+match.in = function(arrayOfExpectations) {
+    if (!Array.isArray(arrayOfExpectations)) {
+        throw new TypeError("array expected");
+    }
+
+    return match(function(actual) {
+        return some(arrayOfExpectations, function(expectation) {
+            return expectation === actual;
+        });
+    }, "in(" + valueToString(arrayOfExpectations) + ")");
+};
+
+match.typeOf = function(type) {
+    assertType(type, "string", "type");
+    return match(function(actual) {
+        return typeOf(actual) === type;
+    }, 'typeOf("' + type + '")');
+};
+
+match.instanceOf = function(type) {
+    if (
+        typeof Symbol === "undefined" ||
+        typeof Symbol.hasInstance === "undefined"
+    ) {
+        assertType(type, "function", "type");
+    } else {
+        assertMethodExists(
+            type,
+            Symbol.hasInstance,
+            "type",
+            "[Symbol.hasInstance]"
+        );
+    }
+    return match(function(actual) {
+        return actual instanceof type;
+    }, "instanceOf(" +
+        (functionName(type) || Object.prototype.toString.call(type)) +
+        ")");
+};
+
+function createPropertyMatcher(propertyTest, messagePrefix) {
+    return function(property, value) {
+        assertType(property, "string", "property");
+        var onlyProperty = arguments.length === 1;
+        var message = messagePrefix + '("' + property + '"';
+        if (!onlyProperty) {
+            message += ", " + valueToString(value);
+        }
+        message += ")";
+        return match(function(actual) {
+            if (
+                actual === undefined ||
+                actual === null ||
+                !propertyTest(actual, property)
+            ) {
+                return false;
+            }
+            return onlyProperty || deepEqual(actual[property], value);
+        }, message);
+    };
+}
+
+match.has = createPropertyMatcher(function(actual, property) {
+    if (typeof actual === "object") {
+        return property in actual;
+    }
+    return actual[property] !== undefined;
+}, "has");
+
+match.hasOwn = createPropertyMatcher(function(actual, property) {
+    return hasOwnProperty(actual, property);
+}, "hasOwn");
+
+match.hasNested = function(property, value) {
+    assertType(property, "string", "property");
+    var onlyProperty = arguments.length === 1;
+    var message = 'hasNested("' + property + '"';
+    if (!onlyProperty) {
+        message += ", " + valueToString(value);
+    }
+    message += ")";
+    return match(function(actual) {
+        if (
+            actual === undefined ||
+            actual === null ||
+            get(actual, property) === undefined
+        ) {
+            return false;
+        }
+        return onlyProperty || deepEqual(get(actual, property), value);
+    }, message);
+};
+
+match.every = function(predicate) {
+    if (!isMatcher(predicate)) {
+        throw new TypeError("Matcher expected");
+    }
+
+    return match(function(actual) {
+        if (typeOf(actual) === "object") {
+            return every(Object.keys(actual), function(key) {
+                return predicate.test(actual[key]);
+            });
+        }
+
+        return (
+            !!actual &&
+            typeOf(actual.forEach) === "function" &&
+            every(actual, function(element) {
+                return predicate.test(element);
+            })
+        );
+    }, "every(" + predicate.message + ")");
+};
+
+match.some = function(predicate) {
+    if (!isMatcher(predicate)) {
+        throw new TypeError("Matcher expected");
+    }
+
+    return match(function(actual) {
+        if (typeOf(actual) === "object") {
+            return !every(Object.keys(actual), function(key) {
+                return !predicate.test(actual[key]);
+            });
+        }
+
+        return (
+            !!actual &&
+            typeOf(actual.forEach) === "function" &&
+            !every(actual, function(element) {
+                return !predicate.test(element);
+            })
+        );
+    }, "some(" + predicate.message + ")");
+};
+
+match.array = match.typeOf("array");
+
+match.array.deepEquals = function(expectation) {
+    return match(function(actual) {
+        // Comparing lengths is the fastest way to spot a difference before iterating through every item
+        var sameLength = actual.length === expectation.length;
+        return (
+            typeOf(actual) === "array" &&
+            sameLength &&
+            every(actual, function(element, index) {
+                return expectation[index] === element;
+            })
+        );
+    }, "deepEquals([" + iterableToString(expectation) + "])");
+};
+
+match.array.startsWith = function(expectation) {
+    return match(function(actual) {
+        return (
+            typeOf(actual) === "array" &&
+            every(expectation, function(expectedElement, index) {
+                return actual[index] === expectedElement;
+            })
+        );
+    }, "startsWith([" + iterableToString(expectation) + "])");
+};
+
+match.array.endsWith = function(expectation) {
+    return match(function(actual) {
+        // This indicates the index in which we should start matching
+        var offset = actual.length - expectation.length;
+
+        return (
+            typeOf(actual) === "array" &&
+            every(expectation, function(expectedElement, index) {
+                return actual[offset + index] === expectedElement;
+            })
+        );
+    }, "endsWith([" + iterableToString(expectation) + "])");
+};
+
+match.array.contains = function(expectation) {
+    return match(function(actual) {
+        return (
+            typeOf(actual) === "array" &&
+            every(expectation, function(expectedElement) {
+                return arrayIndexOf(actual, expectedElement) !== -1;
+            })
+        );
+    }, "contains([" + iterableToString(expectation) + "])");
+};
+
+match.map = match.typeOf("map");
+
+match.map.deepEquals = function mapDeepEquals(expectation) {
+    return match(function(actual) {
+        // Comparing lengths is the fastest way to spot a difference before iterating through every item
+        var sameLength = actual.size === expectation.size;
+        return (
+            typeOf(actual) === "map" &&
+            sameLength &&
+            every(actual, function(element, key) {
+                return expectation.has(key) && expectation.get(key) === element;
+            })
+        );
+    }, "deepEquals(Map[" + iterableToString(expectation) + "])");
+};
+
+match.map.contains = function mapContains(expectation) {
+    return match(function(actual) {
+        return (
+            typeOf(actual) === "map" &&
+            every(expectation, function(element, key) {
+                return actual.has(key) && actual.get(key) === element;
+            })
+        );
+    }, "contains(Map[" + iterableToString(expectation) + "])");
+};
+
+match.set = match.typeOf("set");
+
+match.set.deepEquals = function setDeepEquals(expectation) {
+    return match(function(actual) {
+        // Comparing lengths is the fastest way to spot a difference before iterating through every item
+        var sameLength = actual.size === expectation.size;
+        return (
+            typeOf(actual) === "set" &&
+            sameLength &&
+            every(actual, function(element) {
+                return expectation.has(element);
+            })
+        );
+    }, "deepEquals(Set[" + iterableToString(expectation) + "])");
+};
+
+match.set.contains = function setContains(expectation) {
+    return match(function(actual) {
+        return (
+            typeOf(actual) === "set" &&
+            every(expectation, function(element) {
+                return actual.has(element);
+            })
+        );
+    }, "contains(Set[" + iterableToString(expectation) + "])");
+};
+
+match.bool = match.typeOf("boolean");
+match.number = match.typeOf("number");
+match.string = match.typeOf("string");
+match.object = match.typeOf("object");
+match.func = match.typeOf("function");
+match.regexp = match.typeOf("regexp");
+match.date = match.typeOf("date");
+match.symbol = match.typeOf("symbol");
+
+module.exports = match;
+
+},{"./deep-equal":49,"./iterable-to-string":61,"@sinonjs/commons":38,"lodash.get":68}],64:[function(require,module,exports){
+"use strict";
+
 var identical = require("./identical");
 var isArguments = require("./is-arguments");
 var isElement = require("./is-element");
 var isNegZero = require("./is-neg-zero");
 var match = require("./match");
+var deepEqualCyclic = require("./deep-equal").use(match);
+var createMatcher = require("./matcher");
 
 module.exports = {
+    createMatcher: createMatcher,
+    deepEqual: deepEqualCyclic,
     isArguments: isArguments,
     isElement: isElement,
     isNegZero: isNegZero,
     identical: identical,
-    deepEqual: deepEqualCyclic,
     match: match
 };
 
-},{"./deep-equal":54,"./identical":57,"./is-arguments":58,"./is-element":60,"./is-neg-zero":62,"./match":66}],68:[function(require,module,exports){
-"use strict";
-
-var getClass = require("./get-class");
-var identical = require("./identical");
-var isArguments = require("./is-arguments");
-var isDate = require("./is-date");
-var isElement = require("./is-element");
-var isNaN = require("./is-nan");
-var isObject = require("./is-object");
-var isSet = require("./is-set");
-var isSubset = require("./is-subset");
-var getClassName = require("./get-class-name");
-
-var every = Array.prototype.every;
-var getTime = Date.prototype.getTime;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var indexOf = Array.prototype.indexOf;
-var keys = Object.keys;
-
-/**
- * @name samsam.deepEqual
- * @param Object first
- * @param Object second
- *
- * Deep equal comparison. Two values are "deep equal" if:
- *
- *   - They are equal, according to samsam.identical
- *   - They are both date objects representing the same time
- *   - They are both arrays containing elements that are all deepEqual
- *   - They are objects with the same set of properties, and each property
- *     in ``first`` is deepEqual to the corresponding property in ``second``
- *
- * Supports cyclic objects.
- */
-function deepEqualCyclic(first, second) {
-    // used for cyclic comparison
-    // contain already visited objects
-    var objects1 = [];
-    var objects2 = [];
-    // contain pathes (position in the object structure)
-    // of the already visited objects
-    // indexes same as in objects arrays
-    var paths1 = [];
-    var paths2 = [];
-    // contains combinations of already compared objects
-    // in the manner: { "$1['ref']$2['ref']": true }
-    var compared = {};
-
-    // does the recursion for the deep equal check
-    return (function deepEqual(obj1, obj2, path1, path2) {
-        var type1 = typeof obj1;
-        var type2 = typeof obj2;
-
-        // == null also matches undefined
-        if (
-            obj1 === obj2 ||
-            isNaN(obj1) ||
-            isNaN(obj2) ||
-            obj1 == null ||
-            obj2 == null ||
-            type1 !== "object" ||
-            type2 !== "object"
-        ) {
-            return identical(obj1, obj2);
-        }
-
-        // Elements are only equal if identical(expected, actual)
-        if (isElement(obj1) || isElement(obj2)) {
-            return false;
-        }
-
-        var isDate1 = isDate(obj1);
-        var isDate2 = isDate(obj2);
-        if (isDate1 || isDate2) {
-            if (
-                !isDate1 ||
-                !isDate2 ||
-                getTime.call(obj1) !== getTime.call(obj2)
-            ) {
-                return false;
-            }
-        }
-
-        if (obj1 instanceof RegExp && obj2 instanceof RegExp) {
-            if (obj1.toString() !== obj2.toString()) {
-                return false;
-            }
-        }
-
-        if (obj1 instanceof Error && obj2 instanceof Error) {
-            if (
-                obj1.constructor !== obj2.constructor ||
-                obj1.message !== obj2.message ||
-                obj1.stack !== obj2.stack
-            ) {
-                return false;
-            }
-        }
-
-        var class1 = getClass(obj1);
-        var class2 = getClass(obj2);
-        var keys1 = keys(obj1);
-        var keys2 = keys(obj2);
-        var name1 = getClassName(obj1);
-        var name2 = getClassName(obj2);
-
-        if (isArguments(obj1) || isArguments(obj2)) {
-            if (obj1.length !== obj2.length) {
-                return false;
-            }
-        } else {
-            if (
-                type1 !== type2 ||
-                class1 !== class2 ||
-                keys1.length !== keys2.length ||
-                (name1 && name2 && name1 !== name2)
-            ) {
-                return false;
-            }
-        }
-
-        if (isSet(obj1) || isSet(obj2)) {
-            if (!isSet(obj1) || !isSet(obj2) || obj1.size !== obj2.size) {
-                return false;
-            }
-
-            return isSubset(obj1, obj2, deepEqual);
-        }
-
-        return every.call(keys1, function(key) {
-            if (!hasOwnProperty.call(obj2, key)) {
-                return false;
-            }
-
-            var value1 = obj1[key];
-            var value2 = obj2[key];
-            var isObject1 = isObject(value1);
-            var isObject2 = isObject(value2);
-            // determines, if the objects were already visited
-            // (it's faster to check for isObject first, than to
-            // get -1 from getIndex for non objects)
-            var index1 = isObject1 ? indexOf.call(objects1, value1) : -1;
-            var index2 = isObject2 ? indexOf.call(objects2, value2) : -1;
-            // determines the new paths of the objects
-            // - for non cyclic objects the current path will be extended
-            //   by current property name
-            // - for cyclic objects the stored path is taken
-            var newPath1 =
-                index1 !== -1
-                    ? paths1[index1]
-                    : path1 + "[" + JSON.stringify(key) + "]";
-            var newPath2 =
-                index2 !== -1
-                    ? paths2[index2]
-                    : path2 + "[" + JSON.stringify(key) + "]";
-            var combinedPath = newPath1 + newPath2;
-
-            // stop recursion if current objects are already compared
-            if (compared[combinedPath]) {
-                return true;
-            }
-
-            // remember the current objects and their paths
-            if (index1 === -1 && isObject1) {
-                objects1.push(value1);
-                paths1.push(newPath1);
-            }
-            if (index2 === -1 && isObject2) {
-                objects2.push(value2);
-                paths2.push(newPath2);
-            }
-
-            // remember that the current objects are already compared
-            if (isObject1 && isObject2) {
-                compared[combinedPath] = true;
-            }
-
-            // End of cyclic logic
-
-            // neither value1 nor value2 is a cycle
-            // continue with next level
-            return deepEqual(value1, value2, newPath1, newPath2);
-        });
-    })(first, second, "$1", "$2");
-}
-
-module.exports = deepEqualCyclic;
-
-},{"./get-class":70,"./get-class-name":69,"./identical":71,"./is-arguments":72,"./is-date":73,"./is-element":74,"./is-nan":75,"./is-object":77,"./is-set":78,"./is-subset":79}],69:[function(require,module,exports){
-"use strict";
-
-var re = /function (\w+)\s*\(/;
-
-function getClassName(value) {
-    if (value.constructor && "name" in value.constructor) {
-        return value.constructor.name;
-    }
-
-    if (typeof value.constructor === "function") {
-        var match = value.constructor.toString().match(re);
-        if (match.length > 1) {
-            return match[1];
-        }
-    }
-
-    return null;
-}
-
-module.exports = getClassName;
-
-},{}],70:[function(require,module,exports){
-arguments[4][56][0].apply(exports,arguments)
-},{"dup":56}],71:[function(require,module,exports){
-arguments[4][57][0].apply(exports,arguments)
-},{"./is-nan":75,"./is-neg-zero":76,"dup":57}],72:[function(require,module,exports){
-arguments[4][58][0].apply(exports,arguments)
-},{"./get-class":70,"dup":58}],73:[function(require,module,exports){
-arguments[4][59][0].apply(exports,arguments)
-},{"dup":59}],74:[function(require,module,exports){
-arguments[4][60][0].apply(exports,arguments)
-},{"dup":60}],75:[function(require,module,exports){
-arguments[4][61][0].apply(exports,arguments)
-},{"dup":61}],76:[function(require,module,exports){
-arguments[4][62][0].apply(exports,arguments)
-},{"dup":62}],77:[function(require,module,exports){
-arguments[4][63][0].apply(exports,arguments)
-},{"dup":63}],78:[function(require,module,exports){
-arguments[4][64][0].apply(exports,arguments)
-},{"dup":64}],79:[function(require,module,exports){
-"use strict";
-
-function isSubset(s1, s2, compare) {
-    var allContained = true;
-    s1.forEach(function(v1) {
-        var includes = false;
-        s2.forEach(function(v2) {
-            if (compare(v2, v1)) {
-                includes = true;
-            }
-        });
-        allContained = allContained && includes;
-    });
-
-    return allContained;
-}
-
-module.exports = isSubset;
-
-},{}],80:[function(require,module,exports){
-arguments[4][66][0].apply(exports,arguments)
-},{"./get-class":70,"./is-date":73,"./is-set":78,"./is-subset":79,"dup":66}],81:[function(require,module,exports){
-arguments[4][67][0].apply(exports,arguments)
-},{"./deep-equal":68,"./identical":71,"./is-arguments":72,"./is-element":74,"./is-neg-zero":76,"./match":80,"dup":67}],82:[function(require,module,exports){
-module.exports = (typeof Array.from === 'function' ?
-  Array.from :
-  require('./polyfill')
-);
-
-},{"./polyfill":83}],83:[function(require,module,exports){
-// Production steps of ECMA-262, Edition 6, 22.1.2.1
-// Reference: http://www.ecma-international.org/ecma-262/6.0/#sec-array.from
-module.exports = (function() {
-  var isCallable = function(fn) {
-    return typeof fn === 'function';
-  };
-  var toInteger = function (value) {
-    var number = Number(value);
-    if (isNaN(number)) { return 0; }
-    if (number === 0 || !isFinite(number)) { return number; }
-    return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
-  };
-  var maxSafeInteger = Math.pow(2, 53) - 1;
-  var toLength = function (value) {
-    var len = toInteger(value);
-    return Math.min(Math.max(len, 0), maxSafeInteger);
-  };
-  var iteratorProp = function(value) {
-    if(value != null) {
-      if(['string','number','boolean','symbol'].indexOf(typeof value) > -1){
-        return Symbol.iterator;
-      } else if (
-        (typeof Symbol !== 'undefined') &&
-        ('iterator' in Symbol) &&
-        (Symbol.iterator in value)
-      ) {
-        return Symbol.iterator;
-      }
-      // Support "@@iterator" placeholder, Gecko 27 to Gecko 35
-      else if ('@@iterator' in value) {
-        return '@@iterator';
-      }
-    }
-  };
-  var getMethod = function(O, P) {
-    // Assert: IsPropertyKey(P) is true.
-    if (O != null && P != null) {
-      // Let func be GetV(O, P).
-      var func = O[P];
-      // ReturnIfAbrupt(func).
-      // If func is either undefined or null, return undefined.
-      if(func == null) {
-        return void 0;
-      }
-      // If IsCallable(func) is false, throw a TypeError exception.
-      if (!isCallable(func)) {
-        throw new TypeError(func + ' is not a function');
-      }
-      return func;
-    }
-  };
-  var iteratorStep = function(iterator) {
-    // Let result be IteratorNext(iterator).
-    // ReturnIfAbrupt(result).
-    var result = iterator.next();
-    // Let done be IteratorComplete(result).
-    // ReturnIfAbrupt(done).
-    var done = Boolean(result.done);
-    // If done is true, return false.
-    if(done) {
-      return false;
-    }
-    // Return result.
-    return result;
-  };
-
-  // The length property of the from method is 1.
-  return function from(items /*, mapFn, thisArg */ ) {
-    'use strict';
-
-    // 1. Let C be the this value.
-    var C = this;
-
-    // 2. If mapfn is undefined, let mapping be false.
-    var mapFn = arguments.length > 1 ? arguments[1] : void 0;
-
-    var T;
-    if (typeof mapFn !== 'undefined') {
-      // 3. else
-      //   a. If IsCallable(mapfn) is false, throw a TypeError exception.
-      if (!isCallable(mapFn)) {
-        throw new TypeError(
-          'Array.from: when provided, the second argument must be a function'
-        );
-      }
-
-      //   b. If thisArg was supplied, let T be thisArg; else let T
-      //      be undefined.
-      if (arguments.length > 2) {
-        T = arguments[2];
-      }
-      //   c. Let mapping be true (implied by mapFn)
-    }
-
-    var A, k;
-
-    // 4. Let usingIterator be GetMethod(items, @@iterator).
-    // 5. ReturnIfAbrupt(usingIterator).
-    var usingIterator = getMethod(items, iteratorProp(items));
-
-    // 6. If usingIterator is not undefined, then
-    if (usingIterator !== void 0) {
-      // a. If IsConstructor(C) is true, then
-      //   i. Let A be the result of calling the [[Construct]]
-      //      internal method of C with an empty argument list.
-      // b. Else,
-      //   i. Let A be the result of the abstract operation ArrayCreate
-      //      with argument 0.
-      // c. ReturnIfAbrupt(A).
-      A = isCallable(C) ? Object(new C()) : [];
-
-      // d. Let iterator be GetIterator(items, usingIterator).
-      var iterator = usingIterator.call(items);
-
-      // e. ReturnIfAbrupt(iterator).
-      if (iterator == null) {
-        throw new TypeError(
-          'Array.from requires an array-like or iterable object'
-        );
-      }
-
-      // f. Let k be 0.
-      k = 0;
-
-      // g. Repeat
-      var next, nextValue;
-      while (true) {
-        // i. Let Pk be ToString(k).
-        // ii. Let next be IteratorStep(iterator).
-        // iii. ReturnIfAbrupt(next).
-        next = iteratorStep(iterator);
-
-        // iv. If next is false, then
-        if (!next) {
-
-          // 1. Let setStatus be Set(A, "length", k, true).
-          // 2. ReturnIfAbrupt(setStatus).
-          A.length = k;
-
-          // 3. Return A.
-          return A;
-        }
-        // v. Let nextValue be IteratorValue(next).
-        // vi. ReturnIfAbrupt(nextValue)
-        nextValue = next.value;
-
-        // vii. If mapping is true, then
-        //   1. Let mappedValue be Call(mapfn, T, «nextValue, k»).
-        //   2. If mappedValue is an abrupt completion, return
-        //      IteratorClose(iterator, mappedValue).
-        //   3. Let mappedValue be mappedValue.[[value]].
-        // viii. Else, let mappedValue be nextValue.
-        // ix.  Let defineStatus be the result of
-        //      CreateDataPropertyOrThrow(A, Pk, mappedValue).
-        // x. [TODO] If defineStatus is an abrupt completion, return
-        //    IteratorClose(iterator, defineStatus).
-        if (mapFn) {
-          A[k] = mapFn.call(T, nextValue, k);
-        }
-        else {
-          A[k] = nextValue;
-        }
-        // xi. Increase k by 1.
-        k++;
-      }
-      // 7. Assert: items is not an Iterable so assume it is
-      //    an array-like object.
-    } else {
-
-      // 8. Let arrayLike be ToObject(items).
-      var arrayLike = Object(items);
-
-      // 9. ReturnIfAbrupt(items).
-      if (items == null) {
-        throw new TypeError(
-          'Array.from requires an array-like object - not null or undefined'
-        );
-      }
-
-      // 10. Let len be ToLength(Get(arrayLike, "length")).
-      // 11. ReturnIfAbrupt(len).
-      var len = toLength(arrayLike.length);
-
-      // 12. If IsConstructor(C) is true, then
-      //     a. Let A be Construct(C, «len»).
-      // 13. Else
-      //     a. Let A be ArrayCreate(len).
-      // 14. ReturnIfAbrupt(A).
-      A = isCallable(C) ? Object(new C(len)) : new Array(len);
-
-      // 15. Let k be 0.
-      k = 0;
-      // 16. Repeat, while k < len… (also steps a - h)
-      var kValue;
-      while (k < len) {
-        kValue = arrayLike[k];
-        if (mapFn) {
-          A[k] = mapFn.call(T, kValue, k);
-        }
-        else {
-          A[k] = kValue;
-        }
-        k++;
-      }
-      // 17. Let setStatus be Set(A, "length", len, true).
-      // 18. ReturnIfAbrupt(setStatus).
-      A.length = len;
-      // 19. Return A.
-    }
-    return A;
-  };
-})();
-
-},{}],84:[function(require,module,exports){
+},{"./deep-equal":49,"./identical":52,"./is-arguments":53,"./is-element":55,"./is-neg-zero":57,"./match":62,"./matcher":63}],65:[function(require,module,exports){
 /*!
 
  diff v3.5.0
@@ -7560,12 +7071,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{}],85:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],86:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports = extend;
 
 /*
@@ -7629,7 +7140,7 @@ function isCloneable(obj) {
   return Array.isArray(obj) || {}.toString.call(obj) == '[object Object]';
 }
 
-},{}],87:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -8564,7 +8075,7 @@ function get(object, path, defaultValue) {
 module.exports = get;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],88:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -9465,7 +8976,7 @@ exports.install = defaultImplementation.install;
 exports.withGlobal = withGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],89:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 "use strict";
 
 // cache a reference to setTimeout, so that our reference won't be stubbed out
@@ -9514,7 +9025,7 @@ function configureLogger(config) {
 
 module.exports = configureLogger;
 
-},{}],90:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 "use strict";
 
 var Event = require("./event");
@@ -9530,7 +9041,7 @@ CustomEvent.prototype.constructor = CustomEvent;
 
 module.exports = CustomEvent;
 
-},{"./event":92}],91:[function(require,module,exports){
+},{"./event":73}],72:[function(require,module,exports){
 "use strict";
 
 function flattenOptions(options) {
@@ -9639,7 +9150,7 @@ var EventTarget = {
 
 module.exports = EventTarget;
 
-},{}],92:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 "use strict";
 
 function Event(type, bubbles, cancelable, target) {
@@ -9664,7 +9175,7 @@ Event.prototype = {
 
 module.exports = Event;
 
-},{}],93:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -9674,7 +9185,7 @@ module.exports = {
     EventTarget: require("./event-target")
 };
 
-},{"./custom-event":90,"./event":92,"./event-target":91,"./progress-event":94}],94:[function(require,module,exports){
+},{"./custom-event":71,"./event":73,"./event-target":72,"./progress-event":75}],75:[function(require,module,exports){
 "use strict";
 
 var Event = require("./event");
@@ -9692,7 +9203,7 @@ ProgressEvent.prototype.constructor = ProgressEvent;
 
 module.exports = ProgressEvent;
 
-},{"./event":92}],95:[function(require,module,exports){
+},{"./event":73}],76:[function(require,module,exports){
 "use strict";
 
 var lolex = require("lolex");
@@ -9760,7 +9271,7 @@ fakeServerWithClock.restore = function restore() {
 
 module.exports = fakeServerWithClock;
 
-},{"./index":97,"lolex":101}],96:[function(require,module,exports){
+},{"./index":78,"lolex":82}],77:[function(require,module,exports){
 "use strict";
 
 var formatio = require("@sinonjs/formatio");
@@ -9774,7 +9285,7 @@ module.exports = function format() {
     return formatter.ascii.apply(formatter, arguments);
 };
 
-},{"@sinonjs/formatio":53}],97:[function(require,module,exports){
+},{"@sinonjs/formatio":48}],78:[function(require,module,exports){
 "use strict";
 
 var fakeXhr = require("../fake-xhr");
@@ -10070,7 +9581,7 @@ var fakeServer = {
 
 module.exports = fakeServer;
 
-},{"../configure-logger":89,"../fake-xhr":99,"./format":96,"path-to-regexp":102}],98:[function(require,module,exports){
+},{"../configure-logger":70,"../fake-xhr":80,"./format":77,"path-to-regexp":83}],79:[function(require,module,exports){
 /*global Blob */
 "use strict";
 
@@ -10082,7 +9593,7 @@ exports.isSupported = (function () {
     }
 }());
 
-},{}],99:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -10863,7 +10374,7 @@ module.exports = {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../configure-logger":89,"../event":93,"./blob":98,"just-extend":86,"text-encoding":104}],100:[function(require,module,exports){
+},{"../configure-logger":70,"../event":74,"./blob":79,"just-extend":67,"text-encoding":85}],81:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -10872,7 +10383,7 @@ module.exports = {
     fakeXhr: require("./fake-xhr")
 };
 
-},{"./fake-server":97,"./fake-server/fake-server-with-clock":95,"./fake-xhr":99}],101:[function(require,module,exports){
+},{"./fake-server":78,"./fake-server/fake-server-with-clock":76,"./fake-xhr":80}],82:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -11739,7 +11250,7 @@ exports.install = defaultImplementation.install;
 exports.withGlobal = withGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],102:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 var isarray = require('isarray')
 
 /**
@@ -12167,14 +11678,14 @@ function pathToRegexp (path, keys, options) {
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
 
-},{"isarray":85}],103:[function(require,module,exports){
+},{"isarray":66}],84:[function(require,module,exports){
 'use strict';
 module.exports = {
 	stdout: false,
 	stderr: false
 };
 
-},{}],104:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 // This is free and unencumbered software released into the public domain.
 // See LICENSE.md for more information.
 
@@ -12185,7 +11696,7 @@ module.exports = {
   TextDecoder: encoding.TextDecoder,
 };
 
-},{"./lib/encoding.js":106}],105:[function(require,module,exports){
+},{"./lib/encoding.js":87}],86:[function(require,module,exports){
 (function(global) {
   'use strict';
 
@@ -12233,7 +11744,7 @@ module.exports = {
 // For strict environments where `this` inside the global scope
 // is `undefined`, take a pure object instead
 }(this || {}));
-},{}],106:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 // This is free and unencumbered software released into the public domain.
 // See LICENSE.md for more information.
 
@@ -15547,7 +15058,7 @@ module.exports = {
 // For strict environments where `this` inside the global scope
 // is `undefined`, take a pure object instead
 }(this || {}));
-},{"./encoding-indexes.js":105}],107:[function(require,module,exports){
+},{"./encoding-indexes.js":86}],88:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
