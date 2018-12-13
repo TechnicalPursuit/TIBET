@@ -114,7 +114,6 @@ function(info) {
         sigName,
         sigOrigin,
         sigPolicy,
-        sigPayload,
 
         formatValue,
 
@@ -139,22 +138,21 @@ function(info) {
     sigName = '';
     sigOrigin = '';
     sigPolicy = '';
-    sigPayload = '';
 
     //  Define a Function that will format values according to whether or not
     //  they contain a colon (':'), period ('.') or single quote.
     formatValue = function(aValue) {
 
-        var val;
+        var formattedVal;
 
         if (TP.regex.HAS_PERIOD.test(aValue) ||
             TP.regex.HAS_COLON.test(aValue) ||
             TP.regex.HAS_SINGLE_QUOTE.test(aValue)) {
 
             //  Escape any embedded quotes
-            val = aValue.replace(/'/g, '\'');
+            formattedVal = aValue.replace(/'/g, '\'');
 
-            return val.quoted('\'');
+            return formattedVal.quoted('\'');
         }
 
         return aValue;
