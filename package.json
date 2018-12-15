@@ -37,10 +37,10 @@
     },
     "dependencies": {
         "ace-builds": "^1.4.2",
-        "amazon-cognito-identity-js": "^3.0.5",
+        "amazon-cognito-identity-js": "^3.0.6",
         "ansi-256-colors": "^1.1.0",
         "ansi-styles": "^2.2.1",
-        "aws-sdk": "^2.375.0",
+        "aws-sdk": "^2.377.0",
         "bluebird": "^3.5.3",
         "bower": "^1.8.4",
         "chai": "^4.2.0",
