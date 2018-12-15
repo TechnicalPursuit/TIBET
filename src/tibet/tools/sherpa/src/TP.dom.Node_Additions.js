@@ -230,9 +230,12 @@ function() {
 
     elem = this.getNativeNode();
 
-    //  Any element can be a 'signal source' - add the attribute value here.
-    TP.elementAddAttributeValue(
-            elem, 'sherpa:connectorvend', 'signalsource', true);
+    //  Any element that doesn't have an existing 'sherpa:connectorvend' element
+    //  can be a 'signal source' - add the attribute value here.
+    if (!TP.elementHasAttribute(elem, 'sherpa:connectorvend', true)) {
+        TP.elementAddAttributeValue(
+                elem, 'sherpa:connectorvend', 'signalsource', true);
+    }
 
     return this;
 });
