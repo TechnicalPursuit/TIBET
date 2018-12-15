@@ -49,9 +49,12 @@ function(assistantData) {
      * @summary Shows the assistant, using the supplied data.
      * @param {TP.core.Hash} assistantData The data that the assistant will use
      *     to wire the signal source and target together. This hash should have
-     *     two slot: 'sourceTPElement', the TP.core.ElementNode that the signal
-     *     is going to originate from and 'destinationTarget', which is the
-     *     *type* of the target.
+     *     three slots:
+     *          'sourceTPElement': The TP.core.ElementNode that the signal is
+     *          going to originate from.
+     *          'destinationTarget': The *type* of the target.
+     *          'signalOrigin': The initial signal origin.
+     *          'signalPolicy': The initial signal policy.
      * @returns {TP.meta.sherpa.signalConnectionAssistant} The receiver.
      */
 
@@ -713,6 +716,9 @@ function(anObj) {
         handlersObj,
 
         modelObj,
+
+        val,
+
         newSignalInfo,
 
         modelURI;
@@ -776,7 +782,7 @@ function(anObj) {
 
     //  Build a list of the handlers that the destination target can respond to.
 
-    //  NB: This assume that the target is a type.
+    //  NB: This assumes that the target is a type.
     handlersObj = this.getHandlerMethodsFor(anObj.at('destinationTarget'));
     handlersObj.isOriginSet(false);
 
@@ -798,10 +804,12 @@ function(anObj) {
     newSignalInfo.atPut('enteredSourceSignalName', '');
 
     //  The data for the entered origin.
-    newSignalInfo.atPut('enteredSourceSignalOrigin', '');
+    val = TP.ifInvalid(anObj.at('signalOrigin'), '');
+    newSignalInfo.atPut('enteredSourceSignalOrigin', val);
 
     //  The data for the entered policy.
-    newSignalInfo.atPut('enteredSourceSignalPolicy', '');
+    val = TP.ifInvalid(anObj.at('signalPolicy'), '');
+    newSignalInfo.atPut('enteredSourceSignalPolicy', val);
 
     //  The data for the chosen handler name or entered handler name.
     newSignalInfo.atPut('chosenDestinationHandlerName', '');
