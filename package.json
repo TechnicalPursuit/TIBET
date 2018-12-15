@@ -111,7 +111,7 @@
         "npm": ">=3"
     },
     "scripts": {
-        "preinstall": "npm install -g bower",
+        "preinstall": "npm install -g bower --allow-root",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
