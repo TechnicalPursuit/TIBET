@@ -1453,7 +1453,13 @@ function(aSignal) {
 
         target,
 
-        connector;
+        connector,
+
+        vendValue,
+        vendValues,
+
+        acceptValue,
+        acceptValues;
 
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
@@ -1466,10 +1472,24 @@ function(aSignal) {
     connector = TP.byId('SherpaConnector', this.get('vWin'));
     connector.set('autohideConnector', false);
 
-    //  Show the assistant.
-    TP.sherpa.signalConnectionAssistant.showAssistant(
-                TP.hc('sourceTPElement', srcTPElem,
-                        'destinationTarget', target));
+    //  Grab the values that determine what type of connection we're vending.
+    vendValue = srcTPElem.getAttribute('sherpa:connectorvend');
+    vendValues = vendValue.split(' ');
+
+    //  Grab the values that determine what type of connection we're accepting.
+    acceptValue = destTPElem.getAttribute('sherpa:connectoraccept');
+    acceptValues = acceptValue.split(' ');
+
+    //  If both the vended values and the accepted values contained
+    //  'signalsource', then invoke the signal connection assistant.
+    if (vendValues.contains('signalsource') &&
+        acceptValues.contains('signalsource')) {
+        //  Show the assistant.
+        TP.sherpa.signalConnectionAssistant.showAssistant(
+                    TP.hc('sourceTPElement', srcTPElem,
+                            'destinationTarget', target,
+                            'signalOrigin', destTPElem.getLocalID()));
+    }
 
     return this;
 });
