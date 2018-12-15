@@ -921,7 +921,8 @@ function(aSignal) {
     //  Show the assistant.
     TP.sherpa.signalConnectionAssistant.showAssistant(
                 TP.hc('sourceTPElement', aSignal.at('sourceElement'),
-                        'destinationTarget', target));
+                        'destinationTarget', target,
+                        'signalPolicy', TP.RESPONDER_FIRING));
 
     return this;
 });
