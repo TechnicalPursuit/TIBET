@@ -1852,6 +1852,13 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
+    //  We capture this in the outer scope for one of the mutation filter
+    //  functions below. In this way, we don't have to fetch it each time.
+    var hasSherpa,
+        sherpaObj;
+
+    hasSherpa = TP.sys.hasFeature('sherpa');
+
     this.set('queries', TP.hc());
 
     //  Add a managed Mutation Observer filter Function that will suspend all
@@ -1950,8 +1957,6 @@ function() {
 
             var target,
 
-                sherpaObj,
-
                 ans,
                 val;
 
@@ -1964,10 +1969,15 @@ function() {
 
             //  See if the Sherpa is currently processing DOM mutations. If so,
             //  then that means that we should just return true here.
-            sherpaObj = TP.bySystemId('Sherpa');
-            if (TP.isValid(sherpaObj) &&
-                sherpaObj.get('shouldProcessDOMMutations')) {
-                return true;
+            if (hasSherpa) {
+                if (TP.notValid(sherpaObj)) {
+                    sherpaObj = TP.bySystemId('Sherpa');
+                }
+
+                if (TP.isValid(sherpaObj) &&
+                    sherpaObj.get('shouldProcessDOMMutations')) {
+                    return true;
+                }
             }
 
             val = TP.elementGetAttribute(
