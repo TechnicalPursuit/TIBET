@@ -6668,6 +6668,90 @@ function(observerID) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('resumeAllMutationObservers',
+function() {
+
+    /**
+     * @method resumeAllMutationObservers
+     * @summary Resumes all managed Mutation Observers. Any DOM mutations that
+     *     happen between the suspension and the resumption of all managed
+     *     Mutation Observers will *not* be tracked. This provides a synchronous
+     *     way of turning on and off MO behavior for DOM mutations.
+     */
+
+    var registry;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    registry.perform(
+        function(kvPair) {
+            if (kvPair.first() === '$ALL_FILTER_FUNCS') {
+                return;
+            }
+
+            //  If the observer is already active, then just return.
+            if (kvPair.last().at('active') === true) {
+                return;
+            }
+
+            //  Activate it to properly start it up.
+            TP.activateMutationObserver(null, kvPair.first());
+        });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('suspendAllMutationObservers',
+function() {
+
+    /**
+     * @method suspendAllMutationObservers
+     * @summary Suspends all managed Mutation Observers. Any DOM mutations that
+     *     happen between the suspension and the resumption of all managed
+     *     Mutation Observers will *not* be tracked. This provides a synchronous
+     *     way of turning on and off MO behavior for DOM mutations.
+     */
+
+    var registry;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Iterate over each entry in the managed Mutation Observer registry and
+    //  deactivate the managed Mutation Observer if it's not already inactive.
+    registry.perform(
+        function(kvPair) {
+            if (kvPair.first() === '$ALL_FILTER_FUNCS') {
+                return;
+            }
+
+            //  If the observer is already inactive, then just return.
+            if (kvPair.last().at('active') === false) {
+                return;
+            }
+
+            //  Deactivate it to properly shut it down.
+            TP.deactivateMutationObserver(kvPair.first());
+        });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  TIBET - ENVIRONMENT PLUGIN INFORMATION
 //  ------------------------------------------------------------------------
 
