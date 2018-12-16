@@ -2674,6 +2674,12 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     //  capture the descriptor on the method (method body)
     method[TP.DESCRIPTOR] = desc;
+
+    //  There might be a realMethod that's different than method (because we're
+    //  patching for callee or we're tracking invocations). Make sure it gets
+    //  the descriptor too.
+    realMethod[TP.DESCRIPTOR] = desc;
+
     /* eslint-enable no-extra-parens */
 
     //  If the method has dependencies to track, grab the Array from the
