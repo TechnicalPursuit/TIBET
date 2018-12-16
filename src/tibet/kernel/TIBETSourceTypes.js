@@ -1861,14 +1861,6 @@ function() {
 
     this.set('queries', TP.hc());
 
-    //  Add a managed Mutation Observer filter Function that will suspend all
-    //  Mutation Observer notification until the flag is flipped back.
-    TP.addMutationObserverFilter(
-        function(aMutationRecord) {
-            return !TP.sys.$$suspendAllTIBETMutationObservers;
-        },
-        TP.ALL);
-
     //  Add a managed Mutation Observer filter Function that will filter
     //  mutation records for:
     //

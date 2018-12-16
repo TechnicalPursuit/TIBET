@@ -811,14 +811,6 @@ TP.sys.$$contentExpiration = 0;
 TP.sys.$$windowCount = 0;
 
 //  ------------------------------------------------------------------------
-//  MUTATION OBSERVER FLAGS
-//  ------------------------------------------------------------------------
-
-//  Initially set to be false - allow all managed Mutation Observers to be
-//  suspended until this flag is flipped again.
-TP.sys.$$suspendAllTIBETMutationObservers = false;
-
-//  ------------------------------------------------------------------------
 //  "TP" CONSTANTS
 //  ------------------------------------------------------------------------
 
