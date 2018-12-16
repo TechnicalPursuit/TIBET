@@ -1522,6 +1522,10 @@ function() {
 
         labelStr;
 
+    //  Make sure to suspend all mutation observer machinery for performance
+    //  here. There will be no observers of us turning on outlining.
+    TP.sys.$$suspendAllTIBETMutationObservers = true;
+
     targetElement = TP.unwrap(this.get('targetTPElement'));
 
     prevValue = TP.elementPopStyleProperty(targetElement, 'transform');
@@ -1629,6 +1633,12 @@ function() {
                 TP.elementAddClass(anElement, 'sherpa-outliner-overflowed');
             }
         });
+
+    //  Unsuspend all mutation observer machinery on the first repaint now that
+    //  the outliner is showing.
+    (function() {
+        TP.sys.$$suspendAllTIBETMutationObservers = false;
+    }).queueForNextRepaint(TP.nodeGetWindow(targetElement));
 
     return this;
 });
@@ -1742,6 +1752,10 @@ function() {
 
     var targetElement;
 
+    //  Make sure to suspend all mutation observer machinery for performance
+    //  here. There will be no observers of us turning off outlining.
+    TP.sys.$$suspendAllTIBETMutationObservers = true;
+
     //  Grab the target element
     targetElement = TP.unwrap(this.get('targetTPElement'));
 
@@ -1784,6 +1798,12 @@ function() {
                                 anElement, 'height');
                         }
                     });
+
+    //  Unsuspend all mutation observer machinery on the first repaint now that
+    //  the outliner is hidden.
+    (function() {
+        TP.sys.$$suspendAllTIBETMutationObservers = false;
+    }).queueForNextRepaint(TP.nodeGetWindow(targetElement));
 
     return this;
 });
