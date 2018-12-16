@@ -1225,7 +1225,19 @@ function(anElement, aHandler, useTrackerElement) {
                                     //  work - or not with deep stacks, anyway).
                                     targetWin.requestAnimationFrame(
                                         function() {
-                                            target[TP.RESIZE_LISTENERS].forEach(
+                                            var listeners;
+
+                                            listeners =
+                                                target[TP.RESIZE_LISTENERS];
+                                            if (TP.notValid(listeners)) {
+                                                TP.ifWarn() ?
+                                                    TP.warn('Can\'t find' +
+                                                            ' listeners for: ' +
+                                                            TP.str(target)) : 0;
+                                                return;
+                                            }
+
+                                            listeners.forEach(
                                             function(fn) {
                                                 fn.call(target);
                                             });
@@ -1933,8 +1945,10 @@ function(anElement, aHandler) {
 
     //  Grab the Array of resize listeners from the target Element.
     listeners = anElement[TP.RESIZE_LISTENERS];
-
     if (TP.isEmpty(listeners)) {
+        TP.ifWarn() ?
+            TP.warn('Can\'t find listeners for: ' + TP.str(anElement)) : 0;
+
         return;
     }
 
