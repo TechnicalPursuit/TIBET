@@ -1524,7 +1524,7 @@ function() {
 
     //  Make sure to suspend all mutation observer machinery for performance
     //  here. There will be no observers of us turning on outlining.
-    TP.sys.$$suspendAllTIBETMutationObservers = true;
+    TP.suspendAllMutationObservers();
 
     targetElement = TP.unwrap(this.get('targetTPElement'));
 
@@ -1634,11 +1634,8 @@ function() {
             }
         });
 
-    //  Unsuspend all mutation observer machinery on the first repaint now that
-    //  the outliner is showing.
-    (function() {
-        TP.sys.$$suspendAllTIBETMutationObservers = false;
-    }).queueForNextRepaint(TP.nodeGetWindow(targetElement));
+    //  Resume all mutation observer machinery now that the outliner is showing.
+    TP.resumeAllMutationObservers();
 
     return this;
 });
@@ -1753,8 +1750,8 @@ function() {
     var targetElement;
 
     //  Make sure to suspend all mutation observer machinery for performance
-    //  here. There will be no observers of us turning off outlining.
-    TP.sys.$$suspendAllTIBETMutationObservers = true;
+    //  here. There will be no observers of us turning on outlining.
+    TP.suspendAllMutationObservers();
 
     //  Grab the target element
     targetElement = TP.unwrap(this.get('targetTPElement'));
@@ -1799,11 +1796,8 @@ function() {
                         }
                     });
 
-    //  Unsuspend all mutation observer machinery on the first repaint now that
-    //  the outliner is hidden.
-    (function() {
-        TP.sys.$$suspendAllTIBETMutationObservers = false;
-    }).queueForNextRepaint(TP.nodeGetWindow(targetElement));
+    //  Resume all mutation observer machinery now that the outliner is showing.
+    TP.resumeAllMutationObservers();
 
     return this;
 });
