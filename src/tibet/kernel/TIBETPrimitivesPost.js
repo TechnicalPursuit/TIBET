@@ -6331,7 +6331,7 @@ function(recordsHandler, observerConfig, observerID) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('addMutationObserverFilter',
-function(filterFunction, observerID) {
+function(filterFunction, observerID, filterIndex) {
 
     /**
      * @method addMutationObserverFilter
@@ -6345,6 +6345,8 @@ function(filterFunction, observerID) {
      *     record should be processed.
      * @param {String} observerID The ID of the observer to register the filter
      *     function for or TP.ALL.
+     * @param {Number} [filterIndex] The index of filter functions to place the
+     *     filter function. This defaults to just adding the filter to the end.
      */
 
     var registry,
@@ -6382,7 +6384,12 @@ function(filterFunction, observerID) {
             registry.atPut(observerID, registryRecord);
         }
 
-        registryRecord.at('filterFunctions').push(filterFunction);
+        if (TP.isNumber(filterIndex)) {
+            registryRecord.at('filterFunctions').splice(
+                                        filterIndex, 0, filterFunction);
+        } else {
+            registryRecord.at('filterFunctions').push(filterFunction);
+        }
 
         return;
     }
