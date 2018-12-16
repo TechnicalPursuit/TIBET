@@ -3009,6 +3009,9 @@ TP.regex.HAS_OID_SUFFIX = /(\$[a-zA-Z0-9]{12,}|(.*)_([a-zA-Z0-9]{12,})(_[a-zA-Z0
 //  css support
 //  ---
 
+//  CSS 'scoped selector' - cannot be used with standard W3C CSSOM methods
+TP.regex.CSS_CUSTOM_SCOPED_SELECTOR = /^[+>~]/;
+
 TP.regex.CONTAINS_CSS = /\s*[a-zA-Z\-]+\s*[:]{1}\s[a-zA-Z0-9\s.#]+[;]{1}/;
 
 TP.regex.CSS_CLIP_RECT = /rect\s*\((\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)/;

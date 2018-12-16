@@ -55,9 +55,13 @@ function(anElement, aSelector) {
         anElement.msMatchesSelector ||
         anElement.matches;
 
-    if (TP.isXHTMLNode(anElement) &&
-        TP.isCallable(matchesSelector) &&
-        !TP.regex.HAS_PIPE.test(aSelector)) {
+    //  If Function in matchesSelector is available and the selector doesn't have
+    //  a pipe ('|') symbol (i.e. it's not a namespaced query), and it's not a
+    //  'scoped selector' (i.e. starts with a combinator - which is not
+    //  supported by W3C APIs) then use the native call.
+    if (TP.isCallable(matchesSelector) &&
+        !TP.regex.HAS_PIPE.test(aSelector) &&
+        !TP.regex.CSS_CUSTOM_SCOPED_SELECTOR.test(aSelector)) {
         return matchesSelector.call(anElement, aSelector);
     }
 
@@ -150,11 +154,14 @@ function(aNode, aSelector, stopAncestor) {
         return;
     }
 
-    //  If 'closest' is available and the selector doesn't have a pipe ('|')
-    //  symbol (i.e. it's not a namespaced query), and a 'stop ancestor' wasn't
-    //  supplied, then use the native call.
+    //  If the 'closest' method is available and the selector doesn't have a
+    //  pipe ('|') symbol (i.e. it's not a namespaced query), and it's not a
+    //  'scoped selector' (i.e. starts with a combinator - which is not
+    //  supported by W3C APIs) and a 'stop ancestor' wasn't supplied, then use
+    //  the native call.
     if (TP.isCallable(elem.closest) &&
         !TP.regex.HAS_PIPE.test(aSelector) &&
+        !TP.regex.CSS_CUSTOM_SCOPED_SELECTOR.test(aSelector) &&
         !TP.isElement(stopAncestor)) {
         return elem.closest(aSelector);
     }
@@ -291,27 +298,37 @@ function(aNode, aSelector, autoCollapse) {
         return TP.isTrue(autoCollapse) ? null : TP.ac();
     }
 
-    //  Cache the number of namespaces we've installed so that we don't do this
-    //  every time this method gets called.
-    if (TP.notDefined(TP.$$installedCSSNSCount) ||
-        TP.$$installedCSSNSCount !== TP.w3.Xmlns.get('prefixes').getSize()) {
+    //  If the selector doesn't have a pipe ('|') symbol (i.e. it's not a
+    //  namespaced query), and it's not a 'scoped selector' (i.e. starts with a
+    //  combinator - which is not supported by W3C APIs) then use the native
+    //  call.
+    if (!TP.regex.HAS_PIPE.test(aSelector) &&
+        !TP.regex.CSS_CUSTOM_SCOPED_SELECTOR.test(aSelector)) {
+        matchResults = theNode.querySelectorAll(aSelector);
+    } else {
+        //  Cache the number of namespaces we've installed so that we don't do
+        //  this every time this method gets called.
+        if (TP.notDefined(TP.$$installedCSSNSCount) ||
+            TP.$$installedCSSNSCount !==
+                            TP.w3.Xmlns.get('prefixes').getSize()) {
 
-        //  Make sure all of the known namespaces are defined (note this is
-        //  added to the 'xmlns' property of the 'extended jQuery' - see below -
-        //  but since Sizzle functions are just aliased over to jQuery
-        //  functions, we can use the original Sizzle function here).
-        TP.w3.Xmlns.get('prefixes').perform(
-            function(item) {
-                TP.extern.jQuery.xmlns[item.first()] = item.last();
-            });
-    }
+            //  Make sure all of the known namespaces are defined (note this is
+            //  added to the 'xmlns' property of the 'extended jQuery' - see
+            //  below - but since Sizzle functions are just aliased over to
+            //  jQuery functions, we can use the original Sizzle function here).
+            TP.w3.Xmlns.get('prefixes').perform(
+                function(item) {
+                    TP.extern.jQuery.xmlns[item.first()] = item.last();
+                });
+        }
 
-    try {
-        /* eslint-disable new-cap */
-        matchResults = TP.extern.Sizzle(aSelector, theNode);
-        /* eslint-enable new-cap */
-    } catch (e) {
-        return TP.isTrue(autoCollapse) ? null : TP.ac();
+        try {
+            /* eslint-disable new-cap */
+            matchResults = TP.extern.Sizzle(aSelector, theNode);
+            /* eslint-enable new-cap */
+        } catch (e) {
+            return TP.isTrue(autoCollapse) ? null : TP.ac();
+        }
     }
 
     //  First, let's check the length of the results against the
