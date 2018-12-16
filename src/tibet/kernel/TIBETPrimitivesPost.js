@@ -6421,7 +6421,9 @@ function(targetNode, observerID) {
     /**
      * @method activateMutationObserver
      * @summary Activates a previously added managed Mutation Observer.
-     * @param {Node} targetNode The node that will be observed for mutations.
+     * @param {Node|null} targetNode The node that will be observed for
+     *     mutations. If null is supplied, and this observer has been used
+     *     before and had another target node, that target node will be used.
      * @param {String} observerID The ID of the observer to activate.
      */
 
@@ -6430,7 +6432,9 @@ function(targetNode, observerID) {
         registryRecord,
 
         observerCallback,
-        observerObj;
+        observerObj,
+
+        target;
 
     //  Make sure that we have a real managed Mutation Observer registry.
     registry = TP.$$mutationObserverRegistry;
@@ -6450,97 +6454,121 @@ function(targetNode, observerID) {
                 'No managed Mutation Observer entry for: ' + observerID);
     }
 
-    //  Create a Function that will be used as the native Mutation Observer
-    //  callback. This Function will filter mutation records based on whether
-    //  they've been handled or not already (to fix Webkit bug:
-    //  https://bugs.webkit.org/show_bug.cgi?id=103916) and whether they pass
-    //  further filter functions.
+    observerObj = registryRecord.at('$observerObj');
 
-    observerCallback = function(mutationRecords, observer) {
+    if (TP.notValid(observerObj)) {
+        //  No existing MutationObserver object. We need to create one with a
+        //  callback function.
 
-        var handledSlotName,
+        //  Create a Function that will be used as the native Mutation Observer
+        //  callback. This Function will filter mutation records based on whether
+        //  they've been handled or not already (to fix Webkit bug:
+        //  https://bugs.webkit.org/show_bug.cgi?id=103916) and whether they pass
+        //  further filter functions.
 
-            allRecords,
+        observerCallback = function(mutationRecords, observer) {
 
-            records;
+            var handledSlotName,
 
-        //  Compute a 'handled' slot based on the ID of the observer
-        //  that we're processing.
-        handledSlotName = 'HANDLED_FOR_' +
-                            observer.registryRecord.at('observerID');
+                allRecords,
 
-        //  Note that we grab the mutationRecords parameter and then obtain
-        //  *any* remaining currently queued mutation records from the observer
-        //  by calling 'takeRecords'. This significantly speeds processing by
-        //  avoiding multiple callbacks firing as mutation records are serviced
-        //  and allows callbacks to handle the whole block of mutation records
-        //  at once.
-        allRecords = mutationRecords.concat(observer.takeRecords());
+                records;
 
-        records = allRecords.filter(
-            function(aRecord) {
+            //  Compute a 'handled' slot based on the ID of the observer
+            //  that we're processing.
+            handledSlotName = 'HANDLED_FOR_' +
+                                observer.registryRecord.at('observerID');
 
-                var filterFuncs,
+            //  Note that we grab the mutationRecords parameter and then obtain
+            //  *any* remaining currently queued mutation records from the
+            //  observer by calling 'takeRecords'. This significantly speeds
+            //  processing by avoiding multiple callbacks firing as mutation
+            //  records are serviced and allows callbacks to handle the whole
+            //  block of mutation records at once.
+            allRecords = mutationRecords.concat(observer.takeRecords());
 
-                    len,
-                    i;
+            records = allRecords.filter(
+                function(aRecord) {
 
-                //  If the record has already been handled by this observer,
-                //  return false to filter it out. This fixes the Webkit bug
-                //  mentioned above.
-                if (aRecord[handledSlotName]) {
-                    return false;
-                }
+                    var filterFuncs,
 
-                //  Grab the filter functions, iterate through them and if *any
-                //  one* of them returns false, return false from here, thereby
-                //  filtering out that record.
-                filterFuncs =
-                    observer.registryRecord.at('filterFunctions');
+                        len,
+                        i;
 
-                len = filterFuncs.getSize();
-                for (i = 0; i < len; i++) {
-                    if (filterFuncs.at(i)(aRecord) === false) {
+                    //  If the record has already been handled by this observer,
+                    //  return false to filter it out. This fixes the Webkit bug
+                    //  mentioned above.
+                    if (aRecord[handledSlotName]) {
                         return false;
                     }
-                }
 
-                return true;
-            });
+                    //  Grab the filter functions, iterate through them and if
+                    //  *any one* of them returns false, return false from here,
+                    //  thereby filtering out that record.
+                    filterFuncs =
+                        observer.registryRecord.at('filterFunctions');
 
-        //  If we have real records to process, call the records handling
-        //  Function with those records.
-        if (TP.notEmpty(records)) {
-            observer.registryRecord.at('recordsHandler')(records);
+                    len = filterFuncs.getSize();
+                    for (i = 0; i < len; i++) {
+                        if (filterFuncs.at(i)(aRecord) === false) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+            //  If we have real records to process, call the records handling
+            //  Function with those records.
+            if (TP.notEmpty(records)) {
+                observer.registryRecord.at('recordsHandler')(records);
+            }
+
+            records.forEach(
+                function(aRecord) {
+
+                    //  We go ahead and stamp this record as 'handled' for this
+                    //  observer.
+                    aRecord[handledSlotName] = true;
+                });
+        };
+
+        //  Go ahead and install the callback using the native Mutation Observer
+        //  call and begin observation using data found in the record created
+        //  when the caller added the managed Mutation Observer.
+        observerObj = new MutationObserver(observerCallback);
+
+        //  Capture the registry record on the observer object itself for use
+        //  inside of the callback handler above to avoid closure issues.
+        observerObj.registryRecord = registryRecord;
+
+        //  Stash the native Mutation Observer object into the registry record
+        //  for this managed Mutation Observer for use in deactivation.
+        registryRecord.atPut('$observerObj', observerObj);
+    }
+
+    if (TP.notValid(targetNode)) {
+
+        //  No supplied target - see if one had been provided before and was in
+        //  the registry record for this observer.
+
+        target = registryRecord.at('targetNode');
+        if (!TP.isNode(target)) {
+            return TP.raise(this,
+                            'TP.sig.InvalidObject',
+                            'Invalid managed Mutation Observer target node');
         }
+    } else {
+        target = targetNode;
 
-        records.forEach(
-            function(aRecord) {
+        //  Stash the target node into the registry record for this managed
+        //  Mutation Observer for convenience.
+        registryRecord.atPut('targetNode', target);
+    }
 
-                //  We go ahead and stamp this record as 'handled' for this
-                //  observer.
-                aRecord[handledSlotName] = true;
-            });
-    };
+    registryRecord.atPut('active', true);
 
-    //  Go ahead and install the callback using the native Mutation Observer
-    //  call and begin observation using data found in the record created when
-    //  the caller added the managed Mutation Observer.
-    observerObj = new MutationObserver(observerCallback);
-
-    //  Capture the registry record on the observer object itself for use
-    //  inside of the callback handler above to avoid closure issues.
-    observerObj.registryRecord = registryRecord;
-
-    observerObj.observe(targetNode, registryRecord.at('observerConfig'));
-
-    //  Stash the target node into the registry record for this managed Mutation
-    //  Observer for convenience.
-    registryRecord.atPut('targetNode', targetNode);
-
-    //  Stash the native Mutation Observer object into the registry record for
-    //  this managed Mutation Observer for use in deactivation.
-    registryRecord.atPut('$observerObj', observerObj);
+    observerObj.observe(target, registryRecord.at('observerConfig'));
 
     return;
 });
@@ -6592,11 +6620,7 @@ function(observerID) {
         observerObj.disconnect();
     }
 
-    //  The target node is of no use to us now - remove it.
-    registryRecord.removeKey('targetNode');
-
-    //  The native observer object is of no use to us now - remove it.
-    registryRecord.removeKey('$observerObj');
+    registryRecord.atPut('active', false);
 
     return;
 });
@@ -6612,7 +6636,8 @@ function(observerID) {
      * @param {String} observerID The ID of the observer to remove.
      */
 
-    var registry;
+    var registry,
+        registryRecord;
 
     //  Make sure that we have a real managed Mutation Observer registry.
     registry = TP.$$mutationObserverRegistry;
@@ -6624,6 +6649,17 @@ function(observerID) {
 
     //  Deactivate it to properly shut it down.
     TP.deactivateMutationObserver(observerID);
+
+    //  See if we can find the record of the managed Mutation Observer that the
+    //  caller wants.
+    registryRecord = registry.at(observerID);
+    if (TP.isValid(registryRecord)) {
+        //  The target node is of no use to us now - remove it.
+        registryRecord.removeKey('targetNode');
+
+        //  The native observer object is of no use to us now - remove it.
+        registryRecord.removeKey('$observerObj');
+    }
 
     //  The managed Mutation Observer object is of no use to us now - remove it.
     registry.removeKey(observerID);
