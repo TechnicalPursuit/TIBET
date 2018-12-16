@@ -1934,6 +1934,10 @@ function(anElement, aHandler) {
     //  Grab the Array of resize listeners from the target Element.
     listeners = anElement[TP.RESIZE_LISTENERS];
 
+    if (TP.isEmpty(listeners)) {
+        return;
+    }
+
     //  Splice out the handler from the list of listeners
     listeners.splice(listeners.indexOf(aHandler), 1);
 
