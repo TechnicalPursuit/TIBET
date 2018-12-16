@@ -6419,7 +6419,7 @@ TP.definePrimitive('activateMutationObserver',
 function(targetNode, observerID) {
 
     /**
-     * @method activateMutationObserverFilter
+     * @method activateMutationObserver
      * @summary Activates a previously added managed Mutation Observer.
      * @param {Node} targetNode The node that will be observed for mutations.
      * @param {String} observerID The ID of the observer to activate.
