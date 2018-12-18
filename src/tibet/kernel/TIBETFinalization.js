@@ -169,7 +169,7 @@ function() {
             } else {
                 uri = TP.uriExpandPath(uri);
                 req = TP.request('uri', uri, 'async', false);
-                req.defineHandler('IOCompleted',
+                req.defineHandler('IOSucceeded',
                     function(aSignal) {
                         var result;
 
@@ -184,6 +184,12 @@ function() {
                                 TP.warn('Invalid or missing user vcard.') : 0;
                             TP.core.User.getRealUser();
                         }
+                    });
+                req.defineHandler('IOFailed',
+                    function(aSignal) {
+                        TP.ifWarn() ?
+                            TP.warn('Invalid or missing user vcard.') : 0;
+                        TP.core.User.getRealUser();
                     });
                 TP.httpGet(uri, req);
             }
