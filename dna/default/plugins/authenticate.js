@@ -300,8 +300,7 @@
                 //  Passport requires that if we're using a custom
                 //  callback function we need to invoke req.login ourselves.
                 req.login(user, function(err2) {
-                    var token,
-                        payload;
+                    var token;
 
                     if (err2) {
                         return next(err2);
@@ -330,8 +329,9 @@
                     //  Special handling for xhr and/or curl. We just want to
                     //  send back JSON in those cases.
                     if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
-                        payload = user;
-                        token = jwt.sign(payload, secret);
+                        //  Sign the entire user record with the server secret
+                        //  as a JWT and use that as the token.
+                        token = jwt.sign(user, secret);
                         res.json({ok: true, token: token});
                         return;
                     } else {
