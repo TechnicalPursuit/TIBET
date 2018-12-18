@@ -98,32 +98,99 @@ function(userInfo) {
      */
 
     var params,
+
+        role,
+        primaryRole,
+        otherRoles,
+
+        org,
+        primaryOrg,
+        otherOrgs,
+
+        xml,
+
+        i,
+
         node;
 
     params = TP.hc(userInfo);
     params.atPutIfAbsent('fn', TP.sys.cfg('user.default_name'));
     params.atPutIfAbsent('n', params.at('fn'));
     params.atPutIfAbsent('nickname', params.at('fn'));
-    params.atPutIfAbsent('role', TP.sys.cfg('user.default_role'));
-    params.atPutIfAbsent('org', TP.sys.cfg('user.default_org'));
     params.atPutIfAbsent('orgunit', params.at('org'));
 
-    node = TP.elementFromString(TP.join(
+    role = TP.ifEmpty(params.at('role'), TP.sys.cfg('user.default_role'));
+    if (TP.isArray(role)) {
+        primaryRole = role.first();
+        otherRoles = role.slice(1);
+    } else {
+        primaryRole = role;
+    }
+    params.atPut('role', primaryRole);
+
+    org = TP.ifEmpty(params.at('org'), TP.sys.cfg('user.default_org'));
+    if (TP.isArray(org)) {
+        primaryOrg = org.first();
+        otherOrgs = org.slice(1);
+    } else {
+        primaryOrg = org;
+    }
+    params.atPut('org', primaryOrg);
+
+    xml = TP.ac(
         '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
                 ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
-            '<fn><text>', params.at('fn'), '</text></fn>',
-            '<n><text>', params.at('n'), '</text></n>',
-            '<nickname><text>', params.at('nickname'), '</text></nickname>',
-            '<role><text>', params.at('role'), '</text></role>',
-            '<org><text>', params.at('org'), '</text></org>',
+            '<fn><text>' + params.at('fn') + '</text></fn>',
+            '<n><surname/><given/><prefix/></n>',
+            '<nickname><text>' + params.at('nickname') + '</text></nickname>',
+            '<role><text>' + params.at('role') + '</text></role>',
+            '<org><text>' + params.at('org') + '</text></org>',
+            '<tel>',
+                '<parameters>',
+                    '<type><text>work</text><text>voice</text></type>',
+                '</parameters>',
+                '<uri></uri>',
+            '</tel>',
+            '<email><text/></email>',
+            '<url>',
+                '<parameters>',
+                    '<type><text>work</text></type>',
+                '</parameters>',
+                '<uri/>',
+            '</url>',
+            '<tz><text/></tz>',
             '<vcard-ext:x-orgunit>',
-                '<text>', params.at('orgunit'), '</text>',
-            '</vcard-ext:x-orgunit>',
-        '</vcard>'));
+                '<text>' + params.at('orgunit') + '</text>',
+            '</vcard-ext:x-orgunit>');
+
+    if (TP.notEmpty(otherRoles)) {
+        xml.push('<vcard-ext:x-otherroles>');
+        for (i = 0; i < otherRoles.getSize(); i++) {
+            xml.push('<text>' + otherRoles.at(i) + '</text>');
+        }
+        xml.push('</vcard-ext:x-otherroles>');
+    } else {
+        xml.push('<vcard-ext:x-otherroles/>');
+    }
+
+    if (TP.notEmpty(otherOrgs)) {
+        xml.push('<vcard-ext:x-otherorgs>');
+        for (i = 0; i < otherOrgs.getSize(); i++) {
+            xml.push('<text>' + otherOrgs.at(i) + '</text>');
+        }
+        xml.push('</vcard-ext:x-otherorgs>');
+    } else {
+        xml.push('<vcard-ext:x-otherorgs/>');
+    }
+
+    xml.push('</vcard>');
+
+    xml = xml.join('\n');
+
+    node = TP.elementFromString(xml);
 
     return TP.ietf.vcard.construct(node);
 });
-
 
 //  ------------------------------------------------------------------------
 
@@ -329,8 +396,16 @@ TP.ietf.vcard.Inst.defineAttribute('role',
     TP.xpc('./$def:role/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
+TP.ietf.vcard.Inst.defineAttribute('otherroles',
+    TP.xpc('./vcard-ext:x-otherroles/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
 TP.ietf.vcard.Inst.defineAttribute('orgname',
     TP.xpc('./$def:org/$def:text',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+
+TP.ietf.vcard.Inst.defineAttribute('otherorgnames',
+    TP.xpc('./vcard-ext:x-otherorgs/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('orgunit',
@@ -452,33 +527,70 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.ietf.vcard.Inst.defineMethod('getOrgNames',
+function() {
+
+    /**
+     * @method getOrgNames
+     * @summary Returns an array of org names found in the vcard instance.
+     * @returns {String[]} An array of org names.
+     */
+
+    var org,
+        names;
+
+    //  Grab the name of the primary org name.
+    org = this.get('orgname');
+    if (TP.isEmpty(org)) {
+        return TP.ac();
+    }
+
+    //  Get any 'other orgs' that the card might define (using a TIBET-extended)
+    //  vCard schema. If there are no other orgs, just create an empty Array.
+    names = this.get('otherorgnames');
+    if (TP.notValid(names)) {
+        names = TP.ac();
+    }
+
+    //  Set the primary org as the first org by unshifting it onto the front of
+    //  the list of orgs.
+    names.unshift(org);
+
+    return names;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.ietf.vcard.Inst.defineMethod('getRoleNames',
 function() {
 
     /**
      * @method getRoleNames
      * @summary Returns an array of role names found in the vcard instance.
-     *     NOTE that TIBET automatically "namespace-qualifies" the content of
-     *     the <role> element with the content of the <org> element to produce
-     *     these names.
-     * @returns {String[]} An array of role names (TP.core.Role subtype names).
+     * @returns {String[]} An array of role names.
      */
 
-    var org,
-        role,
+    var role,
         names;
 
-    org = this.get('orgname');
+    //  Grab the name of the primary role.
     role = this.get('role');
     if (TP.isEmpty(role)) {
         return TP.ac();
     }
 
-    names = role.split(';');
-    return names.collect(
-            function(name) {
-                return TP.join(org, '-', name);
-            });
+    //  Get any 'other roles' that the card might define (using a TIBET-extended)
+    //  vCard schema. If there are no other roles, just create an empty Array.
+    names = this.get('otherroles');
+    if (TP.notValid(names)) {
+        names = TP.ac();
+    }
+
+    //  Set the primary role as the first role by unshifting it onto the front of
+    //  the list of roles.
+    names.unshift(role);
+
+    return names;
 });
 
 //  ------------------------------------------------------------------------
@@ -495,14 +607,32 @@ function() {
      *     types.
      */
 
-    var names;
+    var orgs,
+        roles,
 
-    names = this.getRoleNames();
+        results,
 
-    return names.collect(
-                function(name) {
-                    return TP.sys.getTypeByName('TP.role.' + name);
-                }).compact();
+        i,
+        j,
+
+        typeName;
+
+    orgs = this.getOrgNames();
+    roles = this.getRoleNames();
+
+    results = TP.ac();
+
+    for (i = 0; i < orgs.getSize(); i++) {
+        for (j = 0; j < roles.getSize(); j++) {
+            typeName = orgs.at(i) + '-' + roles.at(j);
+            results.push(TP.sys.getTypeByName('TP.role.' + typeName));
+        }
+    }
+
+    //  Make sure to remove any null/undefined values
+    results.compact();
+
+    return results;
 });
 
 //  ------------------------------------------------------------------------
