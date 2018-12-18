@@ -62,24 +62,28 @@ function() {
 
     url = TP.sys.cfg('path.lib_vcards');
     if (TP.notEmpty(url)) {
-        TP.ietf.vcard.loadVCards(url).then(function(result) {
-            TP.ietf.vcard.initVCards(result);
-        }).catch(function(err) {
-            TP.ifError() ?
-                TP.error('Error loading library vcards: ' +
-                            TP.str(err)) : 0;
-        });
+        TP.ietf.vcard.loadVCards(url).then(
+            function(result) {
+                TP.ietf.vcard.initVCards(result);
+            }).catch(
+            function(err) {
+                TP.ifError() ?
+                    TP.error('Error loading library vcards: ' +
+                                TP.str(err)) : 0;
+            });
     }
 
     url = TP.sys.cfg('path.app_vcards');
     if (TP.notEmpty(url)) {
-        TP.ietf.vcard.loadVCards(url).then(function(result) {
-            TP.ietf.vcard.initVCards(result);
-        }).catch(function(err) {
-            TP.ifError() ?
-                TP.error('Error loading application vcards: ' +
-                            TP.str(err)) : 0;
-        });
+        TP.ietf.vcard.loadVCards(url).then(
+            function(result) {
+                TP.ietf.vcard.initVCards(result);
+            }).catch(
+            function(err) {
+                TP.ifError() ?
+                    TP.error('Error loading application vcards: ' +
+                                TP.str(err)) : 0;
+            });
     }
 });
 
@@ -239,19 +243,17 @@ function(aDocument) {
      */
 
     var vcards,
-        type,
         list;
 
     if (!TP.isDocument(aDocument)) {
         return this.raise('InvalidDocument', aDocument);
     }
 
-    type = TP.ietf.vcard;
-
     vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vcard', TP.NODESET);
-    list = vcards.collect(function(elem) {
-        return type.construct(elem);
-    });
+    list = vcards.collect(
+                    function(elem) {
+                        return TP.ietf.vcard.construct(elem);
+                    });
 
     return list;
 });
