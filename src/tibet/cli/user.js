@@ -82,7 +82,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] ' +
-    '[--env <env>] [--role <role|roles>] [--org <org>] [--unit unit]';
+    '[--env <env>] [--role <role|roles>] [--org <org|orgs>] [--unit unit]';
 
 
 //  ---
@@ -190,6 +190,17 @@ Cmd.prototype.execute = function() {
             role = data.role;
         }
 
+        //  org update?
+        if (this.options.org) {
+            //  Convert any org input into an array of org names.
+            org = this.options.org.split(',');
+            org = org.map(function(item) {
+                return item.trim();
+            });
+        } else {
+            org = data.org;
+        }
+
         data.org = org;
         data.unit = unit;
         data.role = role;
@@ -232,13 +243,23 @@ Cmd.prototype.execute = function() {
             role = [];
         }
 
-        this.info('Generating vcard in ' + fullpath);
-        this.generateDefaultVCard(user, fullpath);
+        if (this.options.org) {
+            //  Convert any role input into an array of role names.
+            org = this.options.org.split(',');
+            org = org.map(function(item) {
+                return item.trim();
+            });
+        } else {
+            org = [];
+        }
 
         data.org = org;
         data.unit = unit;
         data.role = role;
         data.pass = encrypted;
+
+        this.info('Generating vcard in ' + fullpath);
+        this.generateDefaultVCard(user, data, fullpath);
 
         //  Write out the changes from the top-level json object.
         CLI.beautify(JSON.stringify(json)).to(file);
@@ -252,9 +273,10 @@ Cmd.prototype.execute = function() {
 
 /**
  */
-Cmd.prototype.generateDefaultVCard = function(user, fullpath) {
+Cmd.prototype.generateDefaultVCard = function(user, userData, fullpath) {
     var file,
         data,
+        outdata,
         template,
         content;
 
@@ -273,13 +295,30 @@ Cmd.prototype.generateDefaultVCard = function(user, fullpath) {
         return 1;
     }
 
+    outdata = {
+        username: user,
+        role: userData.role || '',
+        org: userData.org || '',
+        unit: userData.unit || ''
+    };
+
+    if (userData.role.length > 0) {
+        outdata.role = userData.role[0];
+        if (userData.role.length > 1) {
+            outdata.otherroles = userData.role.slice(1);
+        }
+    }
+
+    if (userData.org.length > 0) {
+        outdata.org = userData.org[0];
+        if (userData.org.length > 1) {
+            outdata.otherorgs = userData.org.slice(1);
+        }
+    }
+
     try {
-        content = template({
-            username: user,
-            role: this.options.role || '',
-            org: this.options.org || '',
-            unit: this.options.unit || ''
-        });
+        content = template(outdata);
+
         if (!content) {
             throw new Error('InvalidContent');
         }

@@ -32,4 +32,14 @@
     <vcard-ext:x-orgunit>
         <text>{{unit}}</text>
     </vcard-ext:x-orgunit>
+    <vcard-ext:x-otherroles>
+        {{#each otherroles}}
+        <text>{{this}}</text>
+        {{/each}}
+    </vcard-ext:x-otherroles>
+    <vcard-ext:x-otherorgs>
+        {{#each otherorgs}}
+        <text>{{this}}</text>
+        {{/each}}
+    </vcard-ext:x-otherorgs>
 </vcard>
