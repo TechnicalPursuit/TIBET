@@ -146,7 +146,7 @@ function(userInfo) {
         '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
                 ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
             '<fn><text>' + params.at('fn') + '</text></fn>',
-            '<n><surname/><given/><prefix/></n>',
+            '<n><surname>' + params.at('n') + '</surname><given/><prefix/></n>',
             '<nickname><text>' + params.at('nickname') + '</text></nickname>',
             '<role><text>' + params.at('role') + '</text></role>',
             '<org><text>' + params.at('org') + '</text></org>',
@@ -352,7 +352,7 @@ TP.ietf.vcard.Inst.defineAttribute('fullname',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('shortname',
-    TP.xpc('./$def:n/$def:text',
+    TP.xpc('./$def:n/$def:surname',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('surname',
