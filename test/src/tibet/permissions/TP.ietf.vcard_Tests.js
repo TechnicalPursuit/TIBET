@@ -86,7 +86,7 @@ function() {
         test.assert.isEqualTo(testCard.get('fullname'),
                                 'Bill Test');
         test.assert.isEqualTo(testCard.get('shortname'),
-                                'Bill');
+                                'Edney');
         test.assert.isEqualTo(testCard.get('nickname'),
                                 'bedney');
         test.assert.isEqualTo(testCard.get('jid'),
@@ -111,7 +111,7 @@ function() {
         test.assert.isEqualTo(testCard.get('fullname'),
                                 'Bill Test');
         test.assert.isEqualTo(testCard.get('shortname'),
-                                'Bill');
+                                'Edney');
         test.assert.isEqualTo(testCard.get('jid'),
                                 'bill@test.com');
         test.assert.isEqualTo(testCard.get('role'),

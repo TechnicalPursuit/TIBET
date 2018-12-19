@@ -4,7 +4,7 @@
 
     <vcard>
         <fn><text>Bill Test</text></fn>
-        <n><text>Bill</text></n>
+        <n><surname>Edney</surname><given/><prefix/></n>
         <nickname><text>bedney</text></nickname>
         <impp><uri>bill@test.com</uri></impp>
         <role><text>Developer</text></role>
