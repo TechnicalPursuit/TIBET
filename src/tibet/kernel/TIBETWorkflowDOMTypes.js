@@ -400,7 +400,7 @@ TP.ietf.vcard.Inst.defineAttribute('role',
 
 TP.ietf.vcard.Inst.defineAttribute('otherroles',
     TP.xpc('./vcard-ext:x-otherroles/$def:text',
-        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+        TP.hc('extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('orgname',
     TP.xpc('./$def:org/$def:text',
@@ -408,7 +408,7 @@ TP.ietf.vcard.Inst.defineAttribute('orgname',
 
 TP.ietf.vcard.Inst.defineAttribute('otherorgnames',
     TP.xpc('./vcard-ext:x-otherorgs/$def:text',
-        TP.hc('shouldCollapse', true, 'extractWith', 'value')));
+        TP.hc('extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('orgunit',
     TP.xpc('./vcard-ext:x-orgunit/$def:text',
