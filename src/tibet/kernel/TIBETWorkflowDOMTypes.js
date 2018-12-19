@@ -121,6 +121,7 @@ function(userInfo) {
     params.atPutIfAbsent('fn', TP.sys.cfg('user.default_name'));
     params.atPutIfAbsent('n', params.at('fn'));
     params.atPutIfAbsent('nickname', params.at('fn'));
+    params.atPutIfAbsent('org', TP.sys.cfg('user.default_org'));
     params.atPutIfAbsent('orgunit', params.at('org'));
 
     role = TP.ifEmpty(params.at('role'), TP.sys.cfg('user.default_role'));
