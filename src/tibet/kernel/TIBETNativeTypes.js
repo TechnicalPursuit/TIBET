@@ -4426,9 +4426,10 @@ function(formatParams) {
 
     var params;
 
-    params = TP.ifInvalid(formatParams, TP.hc('hashFormat', TP.HASH_HEX));
+    params = TP.hc(formatParams);
+    params.atPutIfAbsent('hashFormat', TP.HASH_HEX);
 
-    return TP.hash(this.asString(), TP.HASH_MD5, params);
+    return TP.hash(this.asString(), TP.HASH_MD5, params.at('hashFormat'));
 });
 
 //  ------------------------------------------------------------------------
@@ -4452,9 +4453,10 @@ function(formatParams) {
 
     var params;
 
-    params = TP.ifInvalid(formatParams, TP.hc('hashFormat', TP.HASH_HEX));
+    params = TP.hc(formatParams);
+    params.atPutIfAbsent('hashFormat', TP.HASH_HEX);
 
-    return TP.hash(this.asString(), TP.HASH_SHA1, params);
+    return TP.hash(this.asString(), TP.HASH_SHA1, params.at('hashFormat'));
 });
 
 //  ------------------------------------------------------------------------
