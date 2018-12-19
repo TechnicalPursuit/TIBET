@@ -33,7 +33,7 @@ TP.xmpp.XMLNS.Type.defineConstant('PLAINTEXT', 'PLAIN');
 TP.xmpp.XMLNS.Type.defineConstant('CLIENT', 'jabber:client');
 TP.xmpp.XMLNS.Type.defineConstant('SERVER', 'jabber:server');
 TP.xmpp.XMLNS.Type.defineConstant('DIALBACK', 'jabber:server:dialback');
-TP.xmpp.XMLNS.Type.defineConstant('VCARD', 'vcard-temp');
+TP.xmpp.XMLNS.Type.defineConstant('VCARD', TP.w3.Xmlns.VCARD);
 TP.xmpp.XMLNS.Type.defineConstant('XHTML', 'html');
 
 TP.xmpp.XMLNS.Type.defineConstant('IQ_AGENT', 'jabber:iq:agent');

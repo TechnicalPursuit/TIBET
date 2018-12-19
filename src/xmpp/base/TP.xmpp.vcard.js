@@ -26,7 +26,7 @@ TP.xmpp.VCard.set('tagname', 'vcard');
 TP.xmpp.VCard.set('template',
         TP.join('<vcard xmlns="',
         TP.xmpp.XMLNS.VCARD,
-        '" version="3.0"></vcard>'));
+        '"></vcard>'));
 
 TP.xmpp.VCard.register();
 
