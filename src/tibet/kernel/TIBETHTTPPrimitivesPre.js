@@ -294,11 +294,6 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
         data = aPayload;
     }
 
-    //  commonly get nodes for encoding, but we want to unwrap TP.dom.Nodes
-    if (TP.canInvoke(data, 'getNativeNode')) {
-        data = data.getNativeNode();
-    }
-
     //  default mime type is the one used for most GET/POST/PUT calls
     mimetype = TP.ifInvalid(aMIMEType, TP.URL_ENCODED);
 
@@ -313,13 +308,15 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
     switch (mimetype) {
         case TP.JSON_ENCODED:
 
-            //  the format preferred for AJAX mashups and public services
-            //  since it leverages a gaping security hole to get around
-            //  cross-site security restrictions on XMLHttpRequest
-            if (TP.isNode(data)) {
-                return TP.xml2json(data);
+            if (TP.canInvoke(data, 'asJSONSource')) {
+                return data.asJSONSource();
             } else {
-                return TP.js2json(data);
+                data = TP.unwrap(data);
+                if (TP.isNode(data)) {
+                    return TP.xml2json(data);
+                } else {
+                    return TP.js2json(data);
+                }
             }
 
         case TP.URL_ENCODED:
@@ -330,6 +327,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
             //  deprecated format
 
             arr = TP.ac();
+
+            data = TP.unwrap(data);
 
             if (TP.isNode(data)) {
                 //  we follow the XForms approach for encoding here, using
@@ -372,6 +371,18 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
 
         case TP.XML_ENCODED:
 
+            //  If this is a Node wrapper, then see if it responds to
+            //  'asXMLString' to get its XML representation. Otherwise, we're
+            //  going to use either native node stringification or we're going
+            //  to convert from JS to XML below.
+
+            if (TP.isKindOf(data, TP.core.Node) &&
+                TP.canInvoke(data, 'asXMLString')) {
+                return data.asXMLString();
+            }
+
+            data = TP.unwrap(data);
+
             //  we don't do much here other than serialize the content if
             //  it's a node so we get the best rep possible. any filtering
             //  of the XML had to happen at a higher level (i.e. XForms)
@@ -384,6 +395,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
 
         case TP.XMLRPC_ENCODED:
 
+            data = TP.unwrap(data);
+
             //  another common format for server communication, particularly
             //  with several open source applications like OpenGroupware
             return TP.nodeAsString(TP.js2xmlrpc(data));
@@ -395,6 +408,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
             //  This can then be POSTed as form content.
 
             arr = TP.ac();
+
+            data = TP.unwrap(data);
 
             if (TP.isNode(data)) {
                 list = TP.nodeGetElementsByTagName(data, '*');
@@ -447,6 +462,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
             return TP.ifEmpty(arr.join(''), null);
 
         case TP.MP_RELATED_ENCODED:
+
+            data = TP.unwrap(data);
 
             arr = TP.ac();
             boundary = TP.genID('part');
@@ -644,6 +661,8 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
 
             arr = TP.ac();
             boundary = TP.genID('part');
+
+            data = TP.unwrap(data);
 
             //  per XForms spec the default here is application/octet-stream
 
