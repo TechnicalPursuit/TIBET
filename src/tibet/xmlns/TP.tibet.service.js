@@ -266,7 +266,10 @@ function() {
 
         //  If it's multipart, there may be multiple space-separated URIs
         if (TP.notEmpty(href = this.getAttribute('body'))) {
-            href = href.split(' ');
+
+            //  Extract the 1...n URIs that comprise the body content.
+            href = TP.extractURIs(href);
+
             href.perform(
                     function(anHref) {
                         var hrefURI;

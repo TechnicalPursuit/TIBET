@@ -732,6 +732,42 @@ function() {
 //  SUPPORT
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('extractURIs',
+function(aStr) {
+
+    /**
+     * @method extractURIs
+     * @summary Returns URIs extracted from the String. This provided a much
+     *     more sophisticated parsing mechanism than splitting and takes into
+     *     account XPointer schemes embedded in the URI, etc.
+     * @param {String} aStr The string to extract the URIs from.
+     * @returns {String[]} An array of URI strings extracted from the supplied
+     *     String.
+     */
+
+    var tokens,
+        uris;
+
+    //  Extract any 'uri' type tokens from the String. Note the 3rd 'true'
+    //  parameter here denoting that we're parsing for 'TSH' constructs - which
+    //  is what gives us more sophisticated URI parsing.
+    tokens = TP.$tokenize(aStr, null, true).filter(
+            function(tok) {
+                return (tok.name === 'uri');
+            });
+
+    //  Iterate over the tokens and get their value, which is the URI strings
+    //  themselves.
+    uris = tokens.collect(
+            function(aToken) {
+                return aToken.value;
+            });
+
+    return uris;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isSherpaNode',
 function(aNode) {
 
