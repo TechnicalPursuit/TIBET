@@ -2037,6 +2037,22 @@ function(assignIfAbsent) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('asHTTPValue',
+function() {
+
+    /**
+     * @method asHTTPValue
+     * @summary Returns the best value to be used for the receiver to send via
+     *     HTTP.
+     * @returns {TP.dom.Node} The best value for HTTP sending, which in this
+     *     case is the receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('getID',
 function() {
 
