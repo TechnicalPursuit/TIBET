@@ -933,6 +933,9 @@ function(aRequest) {
     //  rewrite/update the request body content
     request.atPut('body', this.rewriteRequestBody(request));
 
+    //  Since we just encoded the body, we don't need to do it again.
+    request.atPut('isencoded', true);
+
     //  rewrite/update the headers as needed for this service
     //  NOTE that we do this last so all body transformations are done in
     //  case we want to manipulate the headers based on body content
