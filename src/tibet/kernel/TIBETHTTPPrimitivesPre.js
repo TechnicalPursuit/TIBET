@@ -754,6 +754,11 @@ function(aRequest) {
         return body;
     }
 
+    //  check for "my body content is already encoded" flag
+    if (TP.isTrue(aRequest.at('isencoded'))) {
+        return body;
+    }
+
     //  REQUIRED value for the encoding process
     mimetype = aRequest.at('mimetype');
 
