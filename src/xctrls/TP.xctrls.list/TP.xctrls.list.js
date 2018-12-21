@@ -2065,6 +2065,10 @@ function(aValue, anIndex, shouldSignal) {
             itemIndex = dataKeys.indexOf(selectVal);
         }
 
+        if (this.hasAttribute('filter')) {
+            this.signal('CloseSticky');
+        }
+
         this.scrollTopToRow(itemIndex);
     }
 
