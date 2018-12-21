@@ -238,6 +238,41 @@ function() {
     return this;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('activateTool',
+function(toolID) {
+
+    /**
+     * @method activateTool
+     * @summary Activates the tool with the supplied ID. This will suppress the
+     *     halo from being the primary visual tool.
+     * @param {String} toolID The ID of the tool to activate.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var haloTPElem,
+
+        closerTPElem,
+        toolTPElem;
+
+    //  Hide the halo.
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+    haloTPElem.setAttribute('hidden', true);
+
+    //  Show the closer.
+    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
+    closerTPElem.setAttribute('hidden', false);
+
+    //  Show the tool matching the toolID (if it can be found).
+    toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
+    if (TP.isValid(toolTPElem)) {
+        toolTPElem.setAttribute('hidden', false);
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('asTP_sherpa_pp',
@@ -322,6 +357,41 @@ function(startTPElement) {
     }
 
     return null;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('deactivateTool',
+function(toolID) {
+
+    /**
+     * @method deactivateTool
+     * @summary Deactivates the tool with the supplied ID. This will restore the
+     *     halo to be the primary visual tool.
+     * @param {String} toolID The ID of the tool to deactivate.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var toolTPElem,
+
+        closerTPElem,
+        haloTPElem;
+
+    //  Hide the tool matching the toolID (if it can be found).
+    toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
+    if (TP.isValid(toolTPElem)) {
+        toolTPElem.setAttribute('hidden', true);
+    }
+
+    //  Hide the closer.
+    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
+    closerTPElem.setAttribute('hidden', true);
+
+    //  Show the halo.
+    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+    haloTPElem.setAttribute('hidden', false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1794,76 +1864,6 @@ function(aSignal) {
      */
 
     this.toggle();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.IDE.Inst.defineMethod('activateTool',
-function(toolID) {
-
-    /**
-     * @method activateTool
-     * @summary Activates the tool with the supplied ID. This will suppress the
-     *     halo from being the primary visual tool.
-     * @param {String} toolID The ID of the tool to activate.
-     * @returns {TP.sherpa.IDE} The receiver.
-     */
-
-    var haloTPElem,
-
-        closerTPElem,
-        toolTPElem;
-
-    //  Hide the halo.
-    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
-    haloTPElem.setAttribute('hidden', true);
-
-    //  Show the closer.
-    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
-    closerTPElem.setAttribute('hidden', false);
-
-    //  Show the tool matching the toolID (if it can be found).
-    toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
-    if (TP.isValid(toolTPElem)) {
-        toolTPElem.setAttribute('hidden', false);
-    }
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.IDE.Inst.defineMethod('deactivateTool',
-function(toolID) {
-
-    /**
-     * @method deactivateTool
-     * @summary Deactivates the tool with the supplied ID. This will restore the
-     *     halo to be the primary visual tool.
-     * @param {String} toolID The ID of the tool to deactivate.
-     * @returns {TP.sherpa.IDE} The receiver.
-     */
-
-    var toolTPElem,
-
-        closerTPElem,
-        haloTPElem;
-
-    //  Hide the tool matching the toolID (if it can be found).
-    toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
-    if (TP.isValid(toolTPElem)) {
-        toolTPElem.setAttribute('hidden', true);
-    }
-
-    //  Hide the closer.
-    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
-    closerTPElem.setAttribute('hidden', true);
-
-    //  Show the halo.
-    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
-    haloTPElem.setAttribute('hidden', false);
 
     return this;
 });
