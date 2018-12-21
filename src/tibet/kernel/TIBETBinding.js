@@ -4184,10 +4184,6 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                             finalVal = this.$extractValue(theVal,
                                                             expr,
                                                             TP.jpc,
-            // if (TP.notValid(finalVal) &&
-            // TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
-            //  finalVal = theVal;
-            // }
                                                             pathOptions);
 
                             break;
