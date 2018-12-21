@@ -643,6 +643,168 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('showAssistant',
+function(aTPElem) {
+
+    /**
+     * @method showAssistant
+     * @summary Shows the DOM HUD assistant. If the element is supplied then the
+     *     assistant will be shown for that element. Otherwise, the element
+     *     represented by the last list item of the receiver will be used (which
+     *     corresponds to the currently haloed element).
+     * @param {TP.dom.ElementNode} [aTPElem] The optional element to show the
+     *     assistant for.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var listItems,
+
+        lastListItem,
+        peerID,
+
+        sourceTPElem,
+
+        itemTPElem,
+
+        i,
+        len,
+        sourceID,
+
+        centerElem,
+        centerElemPageRect,
+
+        itemElemPageRect,
+
+        modelURI,
+
+        newBodyElem,
+        newFooterElem,
+
+        tileTPElem,
+        newContentTPElem,
+
+        currentBodyElem,
+        currentFooterElem;
+
+    //  Grab all of our (non-spacer) list items.
+    listItems = this.get('listitems');
+
+    //  If an element wasn't supplied, then compute the element that is
+    //  represented by the last list item.
+    if (TP.notValid(aTPElem)) {
+
+        lastListItem = listItems.last();
+        if (TP.isValid(lastListItem)) {
+
+            //  The peerID will contain the ID of the element that the list item
+            //  represents.
+            peerID = lastListItem.getAttribute('peerID');
+            if (TP.isEmpty(peerID)) {
+                return this;
+            }
+
+            //  NB: We want to query the current UI canvas here - no node
+            //  context necessary.
+            sourceTPElem = TP.byId(peerID);
+            if (TP.notValid(sourceTPElem)) {
+                return this;
+            }
+        } else {
+            return this;
+        }
+
+        //  Capture the list element itself - we'll use that below to position
+        //  the assistant.
+        itemTPElem = lastListItem;
+    } else {
+
+        //  We were supplied an element - get it's ID and find the list item
+        //  that matches it.
+        sourceTPElem = aTPElem;
+        sourceID = sourceTPElem.getAttribute('id');
+
+        //  Reverse the list so that we search from the bottom up - we're more
+        //  likely to find it towards the bottom.
+        listItems.reverse();
+
+        len = listItems.getSize();
+        for (i = 0; i < len; i++) {
+            if (listItems.at(i).getAttribute('peerID') === sourceID) {
+                itemTPElem = listItems.at(i);
+                break;
+            }
+        }
+
+        if (TP.notValid(itemTPElem)) {
+            return this;
+        }
+    }
+
+    //  Use the same 'X' coordinate where the 'center' div is located in the
+    //  page.
+    centerElem = TP.byId('center', this.getNativeWindow());
+    centerElemPageRect = centerElem.getPageRect();
+
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    itemElemPageRect = itemTPElem.getPageRect();
+
+    //  ---
+
+    //  Set up a model URI and observe it for change ourself. This will allow us
+    //  to regenerate the tag representation as the model changes.
+    modelURI = TP.uc('urn:tibet:domhud_target_source');
+
+    newBodyElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileBody');
+    newFooterElem = TP.getContentForTool(sourceTPElem, 'DomHUDTileFooter');
+
+    //  ---
+
+    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeWindow());
+    if (TP.notValid(tileTPElem)) {
+
+        tileTPElem = TP.bySystemId('Sherpa').makeTile('DOMInfo_Tile');
+
+        newContentTPElem = tileTPElem.setContent(newBodyElem);
+        newContentTPElem.awaken();
+
+        tileTPElem.get('footer').setContent(newFooterElem);
+    } else {
+        currentBodyElem = TP.unwrap(
+                            tileTPElem.get('body').getFirstChildElement());
+        currentFooterElem = TP.unwrap(
+                            tileTPElem.get('footer').getFirstChildElement());
+
+        if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
+            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            newContentTPElem.awaken();
+        }
+        if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
+            tileTPElem.get('footer').setContent(newFooterElem);
+        }
+    }
+
+    tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
+
+    modelURI.setResource(
+        sourceTPElem,
+        TP.hc('observeResource', false, 'signalChange', true));
+
+    //  Position the tile
+    tileTPElem.setPagePosition(TP.pc(centerElemPageRect.getX(),
+                                        itemElemPageRect.getY()));
+
+    (function() {
+        tileTPElem.get('body').
+            focusAutofocusedOrFirstFocusableDescendant();
+    }).queueForNextRepaint(tileTPElem.getNativeWindow());
+
+    tileTPElem.setAttribute('hidden', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
