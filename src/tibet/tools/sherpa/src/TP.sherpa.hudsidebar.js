@@ -91,7 +91,7 @@ TP.sherpa.hudsidebar.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.hudsidebar.Inst.defineAttribute('listitems',
-    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
+    TP.cpc('> .content > li:not(.spacer)', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
