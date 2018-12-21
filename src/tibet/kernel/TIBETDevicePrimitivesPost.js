@@ -289,7 +289,11 @@ function(anEvent) {
      * @returns {The} proper target for the supplied Event object.
      */
 
-    var target,
+    var doc,
+        focusedElems,
+        focusedElem,
+
+        target,
         signalTypeName,
 
         current,
@@ -311,7 +315,6 @@ function(anEvent) {
     //  multiple elements with 'pclass:focus'. Therefore, this code is commented
     //  out for now.
 
-    /*
     //  If the event is a type of 'key' event of some sort, then using the
     //  event's 'target' as the 'starting point' is insufficient. The reason is
     //  that, at least on the Chrome browser platforms, key events will only be
@@ -324,7 +327,24 @@ function(anEvent) {
 
         //  Grab the target document and the focused element *as TIBET sees it*.
         doc = TP.eventGetTargetDocument(anEvent);
-        focusedElem = TP.documentGetFocusedElement(doc);
+
+        //  NB: We don't use TP.documentGetFocusedElement here since that method
+        //  contains checks for multiple elements, etc., that we don't care
+        //  about here.
+
+        //  We query directly using the TIBETan way to find the element that
+        //  currently has focus. Note that since we don't autocollapsed
+        focusedElems = TP.byCSSPath('*[pclass|focus]', doc, false, false);
+
+        //  Since focusing operations are *not* guaranteed by the browser to be
+        //  'in order', we might have more than one element that has the
+        //  'pclass:focus' attribute on it. In that case, we use the focus stack
+        //  and grab its last (i.e. most recently focused element) entry.
+        if (focusedElems.getSize() > 1) {
+            focusedElem = TP.$focus_stack.last();
+        } else {
+            focusedElem = focusedElems.first();
+        }
 
         //  If the focused element isn't the same as the target document's
         //  '.activeElement', then use the focused element as the target.
@@ -332,7 +352,6 @@ function(anEvent) {
             target = focusedElem;
         }
     }
-    */
 
     if (TP.notValid(target)) {
         target = TP.eventGetTarget(anEvent);
