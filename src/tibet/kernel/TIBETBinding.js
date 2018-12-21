@@ -1770,6 +1770,58 @@ function(indexes) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$extractValue',
+function(sourceVal, expression, pathConstructor, pathOptions) {
+
+    /**
+     * @method $extractValue
+     * @summary Extracts a value from the supplied source value using the
+     *     supplied expression. This method will test to see if the source value
+     *     has a custom getter or attribute that matches expression (if
+     *     expression conforms to the definition of a JavaScript identifier).
+     * @param {Object} sourceVal The source value to extract the value from.
+     * @param {String} expression The expression to use to extract the value.
+     * @param {Function} pathConstructor The constructor to use to construct a
+     *     path, if that's necessary
+     * @param {TP.core.Hash} [pathOptions] The hash of options to use when
+     *     constructing a path, if that's necessary.
+     * @returns {Object} The value extracted from the source value.
+     */
+
+    var funcName,
+        resultVal,
+
+        extractPath;
+
+    //  If the expression is just a JavaScript identifier (i.e. alphanum
+    //  characters only), then test to see if the source value has either a
+    //  'getter' or it (or its prototype) has an attribute that matches that
+    //  name.
+    if (TP.regex.JS_IDENTIFIER.test(expression)) {
+        funcName = 'get' + TP.makeStartUpper(expression);
+        if (TP.canInvoke(sourceVal, funcName)) {
+            resultVal = sourceVal[funcName]();
+        } else if (TP.owns(sourceVal, expression)) {
+            resultVal = sourceVal.get(expression);
+        } else if (TP.owns(Object.getPrototypeOf(sourceVal), expression)) {
+            resultVal = sourceVal.get(expression);
+        } else {
+            //  None of the above were true. Build a path and execute it.
+            extractPath = pathConstructor(expression, pathOptions);
+            resultVal = extractPath.executeGet(sourceVal);
+        }
+    } else {
+        //  Otherwise, the expression contained non-alphanumeric characters.
+        //  Build a path and execute it.
+        extractPath = pathConstructor(expression, pathOptions);
+        resultVal = extractPath.executeGet(sourceVal);
+    }
+
+    return resultVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('flushBindingInfoCacheFor',
 function(attributeValue) {
 
@@ -3217,8 +3269,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
         processedElements,
 
-        jsonContent,
-
         remainderParts,
 
         needsRefresh,
@@ -3479,19 +3529,25 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                         if (TP.isXMLNode(theVal)) {
                             branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.XPATH_PATH_TYPE);
                         } else if (TP.isKindOf(theVal, TP.dom.Node)) {
                             branchVal = theVal.get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.XPATH_PATH_TYPE);
                         } else if (TP.regex.JSON_POINTER.test(attrVal) ||
                                     TP.regex.JSON_PATH.test(attrVal)) {
-                            if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                                branchVal = TP.jpc(attrVal).executeGet(theVal);
-                            } else {
-                                jsonContent = TP.core.JSONContent.construct(theVal);
-                                branchVal = TP.jpc(attrVal).executeGet(jsonContent);
+                            if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
+                                theVal = TP.core.JSONContent.construct(theVal);
                             }
-                            pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+
+                            branchVal = this.$extractValue(theVal,
+                                                            attrVal,
+                                                            TP.jpc,
+                                                            null);
+
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.JSON_PATH_TYPE);
                         } else if (TP.notValid(theVal)) {
                             branchVal = null;
                         } else {
@@ -3721,15 +3777,15 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                             } else if (TP.regex.JSON_POINTER.test(attrVal) ||
                                         TP.regex.JSON_PATH.test(attrVal)) {
-
-                                if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                                    branchVal = TP.jpc(attrVal).executeGet(theVal);
-                                } else {
-                                    jsonContent = TP.core.JSONContent.construct(
-                                                                theVal);
-                                    branchVal = TP.jpc(attrVal).executeGet(
-                                                                jsonContent);
+                                if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
+                                    theVal =
+                                        TP.core.JSONContent.construct(theVal);
                                 }
+
+                                branchVal = this.$extractValue(theVal,
+                                                                attrVal,
+                                                                TP.jpc,
+                                                                null);
 
                                 pathType = TP.ifInvalid(aPathType,
                                                         TP.JSON_PATH_TYPE);
@@ -3959,14 +4015,10 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
 
         pathType,
 
-        path,
-
         theVal,
 
         transformFunc,
         finalVal,
-
-        jsonContent,
 
         isXMLResource,
         repeatInfo,
@@ -4108,13 +4160,16 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                     switch (pathType) {
 
                         case TP.XPATH_PATH_TYPE:
-                            path = TP.xpc(expr, pathOptions);
 
                             if (TP.isXMLNode(theVal)) {
-                                finalVal = path.executeGet(TP.wrap(theVal));
-                            } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-                                finalVal = path.executeGet(theVal);
+                                theVal = TP.wrap(theVal);
                             }
+
+                            finalVal = this.$extractValue(theVal,
+                                                            expr,
+                                                            TP.xpc,
+                                                            pathOptions);
+
                             break;
 
                         case TP.JSON_PATH_TYPE:
@@ -4123,22 +4178,32 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                                 expr = '$.' + expr;
                             }
 
-                            path = TP.jpc(expr, pathOptions);
-
                             //  Because of the check above, theVal has to be a
                             //  JSONContent object here.
-                            finalVal = path.executeGet(theVal);
+
+                            finalVal = this.$extractValue(theVal,
+                                                            expr,
+                                                            TP.jpc,
+            // if (TP.notValid(finalVal) &&
+            // TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+            //  finalVal = theVal;
+            // }
+                                                            pathOptions);
 
                             break;
 
                         case TP.TIBET_PATH_TYPE:
-                            path = TP.tpc(expr, pathOptions);
 
-                            finalVal = path.executeGet(theVal);
+                            finalVal = this.$extractValue(theVal,
+                                                            expr,
+                                                            TP.tpc,
+                                                            pathOptions);
+
                             break;
 
                         default:
                             finalVal = theVal.get(expr);
+
                             break;
                     }
                 }
@@ -4157,37 +4222,33 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
                     } else if (TP.isPlainObject(theVal)) {
                         finalVal = TP.hc(theVal).get(expr);
                     } else if (TP.isXMLNode(theVal)) {
-                        finalVal = TP.wrap(theVal).get(TP.xpc(expr, pathOptions));
+                        finalVal = TP.wrap(theVal).get(
+                                                TP.xpc(expr, pathOptions));
                     } else if (TP.isKindOf(theVal, TP.dom.Node)) {
                         finalVal = theVal.get(TP.xpc(expr, pathOptions));
                     } else if (TP.regex.JSON_POINTER.test(expr) ||
                                 TP.regex.JSON_PATH.test(expr)) {
-                        if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                            finalVal =
-                                TP.jpc(expr, pathOptions).executeGet(theVal);
-                        } else {
-                            jsonContent = TP.core.JSONContent.construct(theVal);
-                            finalVal =
-                                TP.jpc(expr, pathOptions).executeGet(jsonContent);
+                        if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
+                            theVal = TP.core.JSONContent.construct(theVal);
                         }
+
+                        finalVal = this.$extractValue(theVal,
+                                                        expr,
+                                                        TP.jpc,
+                                                        pathOptions);
                     } else if (TP.notValid(theVal)) {
                         finalVal = null;
                     } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
                         finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
                     } else if (!TP.isMutable(theVal)) {
-                        //  If it's a String, Number or Boolean, then theVal is the
-                        //  actual value we want to use.
+                        //  If it's a String, Number or Boolean, then theVal is
+                        //  the actual value we want to use.
                         finalVal = theVal;
                     } else {
                         finalVal = theVal.get(expr);
                     }
                 }
             }
-
-            // if (TP.notValid(finalVal) &&
-            // TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
-            //  finalVal = theVal;
-            // }
 
             if (TP.isValid(finalVal)) {
 
