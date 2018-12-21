@@ -97,13 +97,12 @@ function(anObject) {
         info,
 
         targetElem,
-        targetTPElem,
 
         newElem,
-        newTPElem,
 
         localID,
         localLoc,
+
         remoteLoc,
         selectionLoc,
 
@@ -111,8 +110,6 @@ function(anObject) {
 
         newLoadServiceElem,
         newTableElem,
-
-        insertionFunc,
 
         remoteURI,
         loadRequest;
@@ -150,10 +147,7 @@ function(anObject) {
 
     //  ---
 
-    targetTPElem = TP.wrap(targetElem);
-
     newElem = TP.xhtmlnode('<div/>');
-    newTPElem = TP.wrap(newElem);
 
     localID = suppliedData.at('insertionID');
     localLoc = info.at('localLocation');
@@ -193,70 +187,13 @@ function(anObject) {
     //  if we want to generate a detail view, we need to obtain the master data
     //  first.
 
-    insertionFunc = function() {
-
-        //  Tell the main Sherpa object that it should go ahead and process DOM
-        //  mutations to the source DOM.
-        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
-
-        //  Insert the new data table group into target element at the inserted
-        //  position. Note the reassignment here to capture the newly inserted
-        //  content.
-        newTPElem = targetTPElem.insertContent(
-                                    newTPElem,
-                                    suppliedData.at('insertionPosition'));
-
-        newElem = TP.unwrap(newTPElem);
-        newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
-        newElem[TP.SHERPA_MUTATION] = TP.INSERT;
-
-        //  Focus and set the cursor to the end of the Sherpa's input cell after
-        //  500ms
-        setTimeout(
-            function() {
-                var consoleGUI;
-
-                consoleGUI =
-                    TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-                consoleGUI.focusInput();
-                consoleGUI.setInputCursorToEnd();
-            }, 500);
-
-        //  Focus the halo onto the data table of the insertion after 1000ms
-        setTimeout(
-            function() {
-                var halo,
-                    dataTableTPElem;
-
-                halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-                dataTableTPElem = newTPElem.get('xctrls|table');
-
-                //  This will move the halo off of the old element. Note that we
-                //  do *not* check here whether or not we *can* blur - we
-                //  definitely want to blur off of the old DOM content - it's
-                //  probably gone now anyway.
-                halo.blur();
-
-                //  Focus the halo on our new element, passing true to actually
-                //  show the halo if it's hidden.
-                if (dataTableTPElem.haloCanFocus(halo)) {
-                    halo.focusOn(dataTableTPElem, true);
-                }
-
-            }.bind(this), 1000);
-
-        //  Set up a timeout to delete those flags after a set amount of time
-        setTimeout(
-            function() {
-                delete newElem[TP.INSERTION_POSITION];
-                delete newElem[TP.SHERPA_MUTATION];
-            }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
-    }.bind(this);
-
     if (!generateDetailView) {
-        insertionFunc();
+        TP.bySystemId('Sherpa').insertElementIntoCanvas(
+            newElem,
+            targetElem,
+            info.at('insertionPosition'),
+            true,
+            false);
     } else {
 
         remoteURI = TP.uc(remoteLoc);
@@ -293,13 +230,23 @@ function(anObject) {
                     newDetailGroupElem = TP.xhtmlnode(newDetailGroupStr);
                     TP.nodeAppendChild(newElem, newDetailGroupElem, false);
 
-                    insertionFunc();
+                    TP.bySystemId('Sherpa').insertElementIntoCanvas(
+                        newElem,
+                        targetElem,
+                        info.at('insertionPosition'),
+                        true,
+                        false);
                 });
 
         loadRequest.defineHandler(
             'RequestFailed',
                 function(aResponse) {
-                    insertionFunc();
+                    TP.bySystemId('Sherpa').insertElementIntoCanvas(
+                        newElem,
+                        targetElem,
+                        info.at('insertionPosition'),
+                        true,
+                        false);
                 });
 
         remoteURI.load(loadRequest);

@@ -1870,6 +1870,110 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('insertElementIntoCanvas',
+function(newElement, insertionPointElement, aPositionOrPath, shouldFocusHalo,
+shouldShowAssistant) {
+
+    /**
+     * @method insertElementIntoCanvas
+     * @summary Inserts the supplied element into the canvas using the supplied
+     *     insertion element at the supplied insertion point.
+     * @param {Element} newElement The element to insert.
+     * @param {Element} insertionPointElement The element to use as an insertion
+     *     point. Combined with the supplied insertion position, this will
+     *     determine where the element is inserted.
+     * @param {String} aPositionOrPath The position to place the content
+     *     relative to the supplied insertion point element or a path to
+     *     evaluate to get to a node at that position. This should be one of
+     *     four values: TP.BEFORE_BEGIN TP.AFTER_BEGIN TP.BEFORE_END
+     *     TP.AFTER_END or the path to evaluate. Default is TP.BEFORE_END.
+     * @param {Boolean} [shouldFocusHalo=false] Whether or not we should focus
+     *     the halo after insertion.
+     * @param {Boolean} [shouldShowAssistant=false] Whether or not we should
+     *     show the element's DOMHUD assistant after insertion. The default is
+     *     false and is dependent on whether we're focusing the halo as well.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var newTPElem,
+        insertionPointTPElem,
+
+        insertedTPElem,
+        insertedElem;
+
+    newTPElem = TP.wrap(newElement);
+
+    insertionPointTPElem = TP.wrap(insertionPointElement);
+
+    //  ---
+
+    //  Tell ourself that it should go ahead and process DOM mutations to the
+    //  source DOM.
+    this.set('shouldProcessDOMMutations', true);
+
+    //  Insert the new element into target element at the inserted position.
+    insertedTPElem = insertionPointTPElem.insertContent(
+                                newTPElem, aPositionOrPath);
+
+    insertedElem = TP.unwrap(insertedTPElem);
+    insertedElem[TP.INSERTION_POSITION] = aPositionOrPath;
+    insertedElem[TP.SHERPA_MUTATION] = TP.INSERT;
+
+    //  Focus and set the cursor to the end of the Sherpa's input cell after
+    //  500ms
+    setTimeout(
+        function() {
+            var consoleGUI;
+
+            consoleGUI =
+                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+
+            consoleGUI.focusInput();
+            consoleGUI.setInputCursorToEnd();
+        }, 250);
+
+    if (TP.isTrue(shouldFocusHalo)) {
+        //  Focus the halo onto the inserted element after 1000ms
+        setTimeout(
+            function() {
+                var viewDoc,
+                    halo;
+
+                //  The document that we were installed into.
+                viewDoc = this.get('vWin').document;
+
+                halo = TP.byId('SherpaHalo', viewDoc);
+
+                //  This will move the halo off of the old element. Note that we
+                //  do *not* check here whether or not we *can* blur - we
+                //  definitely want to blur off of the old DOM content - it's
+                //  probably gone now anyway.
+                halo.blur();
+
+                //  Focus the halo on our new element, passing true to actually
+                //  show the halo if it's hidden.
+                if (insertedTPElem.haloCanFocus(halo)) {
+                    halo.focusOn(insertedTPElem, true);
+                }
+
+                if (TP.isTrue(shouldShowAssistant)) {
+                    TP.byId('DOMHUD', viewDoc).showAssistant();
+                }
+            }.bind(this), 250);
+    }
+
+    //  Set up a timeout to delete those flags after a set amount of time
+    setTimeout(
+        function() {
+            delete insertedElem[TP.INSERTION_POSITION];
+            delete insertedElem[TP.SHERPA_MUTATION];
+        }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('makeCustomTagFrom',
 function(aTPElem) {
 

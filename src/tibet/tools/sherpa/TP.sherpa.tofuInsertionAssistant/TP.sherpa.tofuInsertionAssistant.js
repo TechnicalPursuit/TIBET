@@ -101,7 +101,11 @@ function(anObject) {
         tagName,
         tagType,
 
-        autodefineMissingTags,
+        targetElem,
+
+        templateURL,
+        resp,
+        tagTemplate,
 
         tagParts,
         tagXmlns,
@@ -109,16 +113,9 @@ function(anObject) {
 
         str,
 
-        targetElem,
+        newElem,
 
-        templateURL,
-        resp,
-        tagTemplate,
-
-        targetTPElem,
-
-        newTPElem,
-        newElem;
+        autodefineMissingTags;
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
@@ -281,64 +278,15 @@ function(anObject) {
         TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
     }
 
-    //  Tell the main Sherpa object that it should go ahead and process DOM
-    //  mutations to the source DOM.
-    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
-
-    //  Go ahead and insert the content. Because we're using the wrapper method
-    //  here, this *will* compile the content into the markup necessary for the
-    //  canvas.
-    targetTPElem = TP.wrap(targetElem);
-    newTPElem = targetTPElem.insertContent(
-                        newElem,
-                        info.at('insertionPosition'));
+    TP.bySystemId('Sherpa').insertElementIntoCanvas(
+        newElem,
+        targetElem,
+        info.at('insertionPosition'),
+        true,
+        true);
 
     //  Put the autodefine setting back to what it was.
     TP.sys.setcfg('sherpa.autodefine_missing_tags', autodefineMissingTags);
-
-    newElem = TP.unwrap(newTPElem);
-    newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
-    newElem[TP.SHERPA_MUTATION] = TP.INSERT;
-
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  500ms
-    setTimeout(
-        function() {
-            var consoleGUI;
-
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 1000);
-
-    //  Focus the halo onto the inserted element after 1000ms
-    setTimeout(
-        function() {
-            var halo;
-
-            halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-            //  This will move the halo off of the old element. Note that we do
-            //  *not* check here whether or not we *can* blur - we definitely
-            //  want to blur off of the old DOM content - it's probably gone now
-            //  anyway.
-            halo.blur();
-
-            //  Focus the halo on our new element, passing true to actually
-            //  show the halo if it's hidden.
-            if (newTPElem.haloCanFocus(halo)) {
-                halo.focusOn(newTPElem, true);
-            }
-        }.bind(this), 1000);
-
-    //  Set up a timeout to delete those flags after a set amount of time
-    setTimeout(
-        function() {
-            delete newElem[TP.INSERTION_POSITION];
-            delete newElem[TP.SHERPA_MUTATION];
-        }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
 
     return this;
 });

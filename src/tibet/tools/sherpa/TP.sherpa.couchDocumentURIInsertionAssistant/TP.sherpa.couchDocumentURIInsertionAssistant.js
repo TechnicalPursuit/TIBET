@@ -102,24 +102,21 @@ function(anObject) {
 
         schemaFile,
 
+        targetElem,
+
         newTPElem,
         newElem,
 
-        targetElem,
-        targetTPElem,
-
-        remoteLoc,
-
         localID,
         localLoc,
+
+        remoteLoc,
 
         doc,
 
         newLoadServiceElem,
         newSaveServiceElem,
         newSaveButtonElem,
-
-        insertionFunc,
 
         schemaURI,
 
@@ -173,8 +170,6 @@ function(anObject) {
         return this;
     }
 
-    targetTPElem = TP.wrap(targetElem);
-
     //  Create a new xctrls:propertysheet element from the computed JSON schema.
     newTPElem = TP.xctrls.propertysheet.from(schemaObj);
     newElem = TP.unwrap(newTPElem);
@@ -224,73 +219,16 @@ function(anObject) {
 
     //  ---
 
-    //  Create a function that will perform the insertion. We do this because,
-    //  if we have a schema file path defined, we need to save it before we
-    //  insert the new element.
-
-    insertionFunc = function() {
-
-        //  Tell the main Sherpa object that it should go ahead and process DOM
-        //  mutations to the source DOM.
-        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
-
-        //  Insert the new property sheet into target element at the inserted
-        //  position.
-        newTPElem = targetTPElem.insertContent(
-                                    newTPElem, info.at('insertionPosition'));
-
-        newElem = TP.unwrap(newTPElem);
-        newElem[TP.INSERTION_POSITION] = info.at('insertionPosition');
-        newElem[TP.SHERPA_MUTATION] = TP.INSERT;
-
-        //  Focus and set the cursor to the end of the Sherpa's input cell after
-        //  500ms
-        setTimeout(
-            function() {
-                var consoleGUI;
-
-                consoleGUI =
-                    TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-                consoleGUI.focusInput();
-                consoleGUI.setInputCursorToEnd();
-            }, 500);
-
-        //  Focus the halo onto the inserted element after 1000ms
-        setTimeout(
-            function() {
-                var halo;
-
-                halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-                //  This will move the halo off of the old element. Note that we
-                //  do *not* check here whether or not we *can* blur - we
-                //  definitely want to blur off of the old DOM content - it's
-                //  probably gone now anyway.
-                halo.blur();
-
-                //  Focus the halo on our new element, passing true to actually
-                //  show the halo if it's hidden.
-                if (newTPElem.haloCanFocus(halo)) {
-                    halo.focusOn(newTPElem, true);
-                }
-            }.bind(this), 1000);
-
-        //  Set up a timeout to delete those flags after a set amount of time
-        setTimeout(
-            function() {
-                delete newElem[TP.INSERTION_POSITION];
-                delete newElem[TP.SHERPA_MUTATION];
-            }, TP.sys.cfg('sherpa.mutation_flag_clear_timeout', 5000));
-    }.bind(this);
-
-    //  ---
-
     //  Now, check to see if we have a schema file path defined. If not, execute
     //  the insertion function immediately. If so, save the schema file and then
     //  execute the insertion function
     if (TP.isEmpty(schemaFile)) {
-        insertionFunc();
+        TP.bySystemId('Sherpa').insertElementIntoCanvas(
+            newElem,
+            targetElem,
+            info.at('insertionPosition'),
+            true,
+            false);
     } else {
 
         schemaURI = TP.uc(schemaFile);
@@ -299,9 +237,13 @@ function(anObject) {
         schemaURI.setContent(schemaText);
 
         if (!TP.isURI(schemaURI)) {
-            insertionFunc();
+            TP.bySystemId('Sherpa').insertElementIntoCanvas(
+                newElem,
+                targetElem,
+                info.at('insertionPosition'),
+                true,
+                false);
         } else {
-
             saveRequest = schemaURI.constructRequest(
                                         TP.hc('method', TP.HTTP_PUT));
 
@@ -320,13 +262,23 @@ function(anObject) {
                         TP.nodeInsertBefore(
                             newElem, newContentElem, newLoadServiceElem, false);
 
-                        insertionFunc();
+                        TP.bySystemId('Sherpa').insertElementIntoCanvas(
+                            newElem,
+                            targetElem,
+                            info.at('insertionPosition'),
+                            true,
+                            false);
                     });
 
             saveRequest.defineHandler(
                 'RequestFailed',
                     function(aResponse) {
-                        insertionFunc();
+                        TP.bySystemId('Sherpa').insertElementIntoCanvas(
+                            newElem,
+                            targetElem,
+                            info.at('insertionPosition'),
+                            true,
+                            false);
                     });
 
             schemaURI.save(saveRequest);
