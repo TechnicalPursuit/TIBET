@@ -753,7 +753,7 @@ function(aStr) {
     //  is what gives us more sophisticated URI parsing.
     tokens = TP.$tokenize(aStr, null, true).filter(
             function(tok) {
-                return (tok.name === 'uri');
+                return tok.name === 'uri';
             });
 
     //  Iterate over the tokens and get their value, which is the URI strings

@@ -289,10 +289,7 @@ function(anEvent) {
      * @returns {The} proper target for the supplied Event object.
      */
 
-    var doc,
-        focusedElem,
-
-        target,
+    var target,
         signalTypeName,
 
         current,
