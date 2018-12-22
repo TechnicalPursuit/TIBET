@@ -41,6 +41,7 @@ function(aRequest) {
         arg1,
 
         isRemove,
+        isRemoveAll,
 
         bookmarks,
         bookmarkNum,
@@ -77,10 +78,23 @@ function(aRequest) {
     arg1 = shell.getArgument(aRequest, 'ARG1');
 
     isRemove = shell.getArgument(aRequest, 'tsh:remove', false);
+    isRemoveAll = shell.getArgument(aRequest, 'tsh:removeall', false);
 
     bookmarks = TP.uc('urn:tibet:sherpa_bookmarks').getResource().get('result');
 
-    //  First form - remove the 3rd bookmark:
+    //  First form - remove all bookmarks:
+    //  :bookmark --removeall
+
+    if (TP.isTrue(isRemoveAll)) {
+        bookmarks.empty();
+
+        aRequest.stdout('all bookmarks removed');
+        aRequest.complete(TP.TSH_NO_VALUE);
+
+        return aRequest;
+    }
+
+    //  Second form - remove the 3rd bookmark:
     //  :bookmark --remove 3
 
     bookmarkNum = TP.nc(arg0);
@@ -103,7 +117,7 @@ function(aRequest) {
     path = arg0;
     description = arg1;
 
-    //  Second form - add the bookmark and prompt for the description
+    //  Third form - add the bookmark and prompt for the description
     //  :bookmark 'pathPart1/pathPart2'
 
     if (TP.isEmpty(description) && TP.notEmpty(path)) {
@@ -201,7 +215,7 @@ TP.shell.TSH.addHelpTopic('bookmark',
     TP.tsh.bookmark.Type.getMethod('tshExecute'),
     'Allows addition and removal of commonly used bookmarks of the Sherpa' +
         ' Inspector.',
-    ':bookmark [<path> [<description>]] [--delete=N]',
+    ':bookmark [<path> [<description>]] [--remove=N] [--removeall]',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------
