@@ -1863,7 +1863,7 @@ function(aURI) {
 
     if (TP.isURIString(aURI)) {
         uri = aURI;
-    } else if (TP.isURI(aURI)) {
+    } else if (!TP.isString(aURI) && TP.isURI(aURI)) {
         uri = aURI.getLocation();
     } else {
         return false;
