@@ -192,7 +192,7 @@ function(options) {
                                 entry,
                                 TP.uriInTIBETFormat(entry));
                     });
-        data.sort(TP.sort.FIRST_ITEM);
+        data.sort(TP.sort.SECOND_ITEM);
     } else {
         data = TP.ac();
     }
