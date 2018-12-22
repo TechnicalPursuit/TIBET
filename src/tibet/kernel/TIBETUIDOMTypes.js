@@ -4801,6 +4801,132 @@ function(aRectOrObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('setGlobalX',
+function(aPointOrObject) {
+
+    /**
+     * @method setOffsetX
+     * @summary Sets the X position of the receiver by manipulating its left
+     *     style property. This method expects that this value is provided
+     *     *relative to the top-level window containing the receiver* and that
+     *     the receiver is positioned in some fashion.
+     * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.gui.Point to use or an object that has an 'x' slot or an Array
+     *     that has x in the first position or a Number.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var elem,
+        elemWin,
+
+        xVal,
+
+        winFrameElem,
+        frameOffsetXAndY,
+
+        pageX;
+
+    elem = this.getNativeNode();
+
+    if (!TP.isWindow(elemWin = TP.nodeGetWindow(elem))) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
+        xVal = aPointOrObject.getX();
+    } else if (TP.isHash(aPointOrObject)) {
+        xVal = aPointOrObject.at('x');
+    } else if (TP.isArray(aPointOrObject)) {
+        xVal = aPointOrObject.at(0);
+    } else if (TP.isPlainObject(aPointOrObject)) {
+        xVal = aPointOrObject.x;
+    } else {
+        xVal = aPointOrObject;
+    }
+
+    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+        //  Note here that we pass 'top' as the first argument since we
+        //  really just want the offset of winFrameElem from the top (which
+        //  will be 0,0 offset from itself).
+        frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                            top,
+                            TP.elementGetIFrameWindow(winFrameElem));
+    } else {
+        frameOffsetXAndY = TP.ac(0, 0);
+    }
+
+    pageX = xVal - frameOffsetXAndY.first();
+
+    this.setPageX(pageX);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('setGlobalY',
+function(aPointOrObject) {
+
+    /**
+     * @method setOffsetY
+     * @summary Sets the Y position of the receiver by manipulating its top
+     *     style property. This method expects that this value is provided
+     *     *relative to the top-level window containing the receiver* and that
+     *     the receiver is positioned in some fashion.
+     * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.gui.Point to use or an object that has an 'y' slot or an Array
+     *     that has y in the first position or a Number.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var elem,
+        elemWin,
+
+        yVal,
+
+        winFrameElem,
+        frameOffsetXAndY,
+
+        pageY;
+
+    elem = this.getNativeNode();
+
+    if (!TP.isWindow(elemWin = TP.nodeGetWindow(elem))) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
+        yVal = aPointOrObject.getY();
+    } else if (TP.isHash(aPointOrObject)) {
+        yVal = aPointOrObject.at('y');
+    } else if (TP.isArray(aPointOrObject)) {
+        yVal = aPointOrObject.at(1);
+    } else if (TP.isPlainObject(aPointOrObject)) {
+        yVal = aPointOrObject.y;
+    } else {
+        yVal = aPointOrObject;
+    }
+
+    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+        //  Note here that we pass 'top' as the first argument since we
+        //  really just want the offset of winFrameElem from the top (which
+        //  will be 0,0 offset from itself).
+        frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                            top,
+                            TP.elementGetIFrameWindow(winFrameElem));
+    } else {
+        frameOffsetXAndY = TP.ac(0, 0);
+    }
+
+    pageY = yVal - frameOffsetXAndY.last();
+
+    this.setPageY(pageY);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('setOffsetPosition',
 function(aPointOrObject) {
 
@@ -4881,6 +5007,98 @@ function(aRectOrObject) {
         styleObj.width = aRectOrObject.width + 'px';
         styleObj.height = aRectOrObject.height + 'px';
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('setOffsetX',
+function(aPointOrObject) {
+
+    /**
+     * @method setOffsetX
+     * @summary Sets the X position of the receiver by manipulating its left
+     *     style property. This method expects that this value is provided
+     *     *relative to the offset parent of the receiver* and that the receiver
+     *     is positioned in some fashion.
+     * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.gui.Point to use or an object that has an 'x' slot or an Array
+     *     that has x in the first position or a Number.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var xVal,
+
+        elem,
+
+        styleObj;
+
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
+        xVal = aPointOrObject.getX();
+    } else if (TP.isHash(aPointOrObject)) {
+        xVal = aPointOrObject.at('x');
+    } else if (TP.isArray(aPointOrObject)) {
+        xVal = aPointOrObject.at(0);
+    } else if (TP.isPlainObject(aPointOrObject)) {
+        xVal = aPointOrObject.x;
+    } else {
+        xVal = aPointOrObject;
+    }
+
+    elem = this.getNativeNode();
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    /* eslint-disable no-extra-parens */
+    styleObj.left = xVal + 'px';
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('setOffsetY',
+function(aPointOrObject) {
+
+    /**
+     * @method setOffsetY
+     * @summary Sets the Y position of the receiver by manipulating its top
+     *     style property. This method expects that this value is provided
+     *     *relative to the offset parent of the receiver* and that the receiver
+     *     is positioned in some fashion.
+     * @param {TP.gui.Point|TP.core.Hash|Array|Number} aPointOrObject A
+     *     TP.gui.Point to use or an object that has an 'y' slot or an Array
+     *     that has y in the first position or a Number.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var yVal,
+
+        elem,
+
+        styleObj;
+
+    if (TP.isKindOf(aPointOrObject, TP.gui.Point)) {
+        yVal = aPointOrObject.getY();
+    } else if (TP.isHash(aPointOrObject)) {
+        yVal = aPointOrObject.at('y');
+    } else if (TP.isArray(aPointOrObject)) {
+        yVal = aPointOrObject.at(1);
+    } else if (TP.isPlainObject(aPointOrObject)) {
+        yVal = aPointOrObject.y;
+    } else {
+        yVal = aPointOrObject;
+    }
+
+    elem = this.getNativeNode();
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    /* eslint-disable no-extra-parens */
+    styleObj.top = yVal + 'px';
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
