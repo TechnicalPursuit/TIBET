@@ -401,12 +401,37 @@ function(aSignal) {
      * @returns {TP.sherpa.connector} The receiver.
      */
 
-    var srcTPElement,
-        destTPElement;
+    var dragOrientation,
+
+        srcTPElement,
+        destTPElement,
+
+        connectorDestDisplayTPElem,
+
+        connectorDestRect,
+        connectorDestCenterPoint,
+
+        horizConnectorTPElem,
+        vertConnectorTPElem,
+
+        currentPoint,
+
+        currentX,
+        currentY,
+
+        diffX,
+        diffY,
+
+        newX,
+        newY,
+        newWidth,
+        newHeight;
 
     //  Ignore drag move and drag up signals from the mouse.
     this.ignore(TP.core.Mouse,
                 TP.ac('TP.sig.DOMDragMove', 'TP.sig.DOMDragUp'));
+
+    dragOrientation = this.get('$dragOrientation');
 
     //  Reset the connector orientation back to NO_ORIENTATION, ready for the
     //  next drag session.
@@ -418,7 +443,59 @@ function(aSignal) {
     //  Grab the current destination element
     destTPElement = this.$get('$destTPElement');
     if (TP.isValid(destTPElement)) {
-        //  There was a valid connection destination.
+
+        //  There was a valid connection destination. Move/resize the connectors
+        //  so that they 'snap' to a side of the connector destination element.
+
+        connectorDestDisplayTPElem = this.get('$connectorDestDisplayElem');
+
+        connectorDestRect = connectorDestDisplayTPElem.getGlobalRect();
+        connectorDestCenterPoint = connectorDestRect.getCenterPoint();
+
+        vertConnectorTPElem = this.get('$vertConnectorElem');
+        horizConnectorTPElem = this.get('$horizConnectorElem');
+
+        currentPoint = aSignal.getGlobalPoint();
+
+        currentX = currentPoint.getX();
+        currentY = currentPoint.getY();
+
+        //  If the orientation was horizontal, that means that the second part
+        //  of the connector is vertical and needs to have it's length adjusted.
+        if (dragOrientation === TP.sherpa.connector.HORIZ_ORIENTATION) {
+
+            if (horizConnectorTPElem.getGlobalPoint().getY() <
+                connectorDestCenterPoint.getY()) {
+                //  The horizontal connector is to the top of the connector
+                //  destination.
+                diffY = currentY - connectorDestRect.getY();
+            } else {
+                //  The vertical connector is to the bottom of the connector
+                //  destination.
+                newY = connectorDestRect.getY() + connectorDestRect.getHeight();
+                vertConnectorTPElem.setOffsetY(newY);
+                diffY = newY - currentY;
+            }
+
+            newHeight = vertConnectorTPElem.getHeight() - diffY;
+            vertConnectorTPElem.setHeight(newHeight + 'px');
+        } else {
+            if (vertConnectorTPElem.getGlobalPoint().getX() <
+                connectorDestCenterPoint.getX()) {
+                //  The vertical connector is to the left of the connector
+                //  destination.
+                diffX = currentX - connectorDestRect.getX();
+            } else {
+                //  The vertical connector is to the right of the connector
+                //  destination.
+                newX = connectorDestRect.getX() + connectorDestRect.getWidth();
+                horizConnectorTPElem.setOffsetX(newX);
+                diffX = newX - currentX;
+            }
+
+            newWidth = horizConnectorTPElem.getWidth() - diffX;
+            horizConnectorTPElem.setWidth(newWidth + 'px');
+        }
 
         //  Signal that the connection session was completed.
         destTPElement.signal('SherpaConnectCompleted',
