@@ -148,7 +148,12 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    return TP.sys.getMetadata('namespaces').at(aSourceName);
+    var srcName;
+
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    return TP.sys.getMetadata('namespaces').at(srcName);
 });
 
 //  ------------------------------------------------------------------------

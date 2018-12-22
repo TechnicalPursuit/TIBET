@@ -232,7 +232,9 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    var result;
+    var result,
+
+        srcName;
 
     result = this.getResource().get('result');
 
@@ -244,14 +246,17 @@ function(aSourceName) {
         result = result.get('data');
     }
 
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
     if (TP.isString(result) ||
         TP.isNode(result) ||
         TP.isKindOf(result, TP.dom.Node)) {
 
-        return this.getEntryAt(aSourceName);
+        return this.getEntryAt(srcName);
     }
 
-    return result.getEntryAt(aSourceName);
+    return result.getEntryAt(srcName);
 });
 
 //  ------------------------------------------------------------------------

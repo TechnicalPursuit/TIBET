@@ -351,9 +351,14 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    var source;
+    var srcName,
 
-    switch (aSourceName) {
+        source;
+
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    switch (srcName) {
 
         case 'Instance Attributes':
 

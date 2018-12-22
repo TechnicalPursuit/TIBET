@@ -317,7 +317,12 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    return this.get('entries').at(aSourceName);
+    var srcName;
+
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    return this.get('entries').at(srcName);
 });
 
 //  ------------------------------------------------------------------------
@@ -3987,7 +3992,9 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    var target,
+    var srcName,
+
+        target,
         dynamicContentEntries;
 
     //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
@@ -3996,23 +4003,26 @@ function(aSourceName) {
         return null;
     }
 
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
     dynamicContentEntries = this.get('dynamicContentEntries');
     target = dynamicContentEntries.detect(
                     function(anItem) {
-                        return TP.id(anItem) === aSourceName;
+                        return TP.id(anItem) === srcName;
                     });
 
     if (TP.notValid(target)) {
-        target = this.get('entries').at(aSourceName);
+        target = this.get('entries').at(srcName);
     }
 
     if (TP.notValid(target)) {
-        target = TP.bySystemId(aSourceName);
+        target = TP.bySystemId(srcName);
     }
 
     if (TP.notValid(target)) {
         target = TP.bySystemId('TSH').resolveObjectReference(
-                                                aSourceName, TP.request());
+                                                srcName, TP.request());
     }
 
     return target;

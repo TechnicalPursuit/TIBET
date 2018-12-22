@@ -214,10 +214,15 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    var fullURIStr,
+    var srcName,
+
+        fullURIStr,
         source;
 
-    fullURIStr = TP.uriResolveVirtualPath(aSourceName);
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    fullURIStr = TP.uriResolveVirtualPath(srcName);
 
     source = TP.uri.URI.get('instances').at(fullURIStr);
 

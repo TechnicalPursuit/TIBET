@@ -105,7 +105,12 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    return TP.sys.getCustomTypes().at(aSourceName);
+    var srcName;
+
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    return TP.sys.getCustomTypes().at(srcName);
 });
 
 //  ------------------------------------------------------------------------

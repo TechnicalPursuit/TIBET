@@ -480,9 +480,14 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    var source;
+    var srcName,
 
-    if (aSourceName === 'Node Type') {
+        source;
+
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    if (srcName === 'Node Type') {
         source = this.getType();
     } else {
         /* eslint-disable consistent-this */
@@ -1617,9 +1622,14 @@ function(aSourceName) {
      *     name in the receiver.
      */
 
-    var source;
+    var srcName,
 
-    switch (aSourceName) {
+        source;
+
+    //  Sometimes entries come in with escaped slashes. Unescape that.
+    srcName = aSourceName.replace(/\\\//g, '\/');
+
+    switch (srcName) {
 
         case 'Structure':
             //  NB: We're returning the TP.uri.URI instance itself here.
