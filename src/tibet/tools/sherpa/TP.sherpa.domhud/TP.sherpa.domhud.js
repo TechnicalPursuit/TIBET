@@ -527,9 +527,13 @@ function(aSignal) {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var halo,
+    var contextMenuSignal,
 
-        targetTPElem,
+        targetElem,
+        peerID,
+        sourceTPElem,
+
+        halo,
         generatorTPElem,
 
         uri,
@@ -537,18 +541,44 @@ function(aSignal) {
         srcPath,
         finalPath;
 
-    //  Grab the halo's target element.
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    targetTPElem = halo.get('currentTargetTPElem');
+    //  Although we get the 'item selected' signal as a parameter, what we
+    //  really want was the signal that triggered the opening of the context
+    //  menu. We want the target of that signal (either the hud item or the hud
+    //  panel itself).
+    contextMenuSignal = this.get('$lastContextMenuSignal');
 
-    //  Get it's nearest 'generator' (i.e. the source element that generated
-    //  it). If the current target isn't a generator itself, this will find the
-    //  nearest one.
-    generatorTPElem = targetTPElem.getNearestHaloGenerator(halo);
+    //  Grab the target and make sure it's an 'item' tile.
+    targetElem = contextMenuSignal.getDOMTarget();
+    if (!TP.elementHasClass(targetElem, 'domnode')) {
+        return this;
+    }
+
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    //  NB: We want to query the current UI canvas here - no node context
+    //  necessary.
+    sourceTPElem = TP.byId(peerID);
+    if (TP.notValid(sourceTPElem)) {
+        return this;
+    }
+
+    //  Get the source element's nearest 'generator' (i.e. the source element
+    //  that generated it). If the current target isn't a generator itself, this
+    //  will find the nearest one.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    generatorTPElem = sourceTPElem.getNearestHaloGenerator(halo);
 
     //  Grab that element's type's template URI.
     uri = generatorTPElem.getType().getResourceURI('template',
                                                     TP.ietf.mime.XHTML);
+
+    //  No valid URI? We must be on a tag that is outside of the application.
+    if (TP.notValid(uri)) {
+        return this;
+    }
 
     //  Get the path to that URI and make sure to slice off the leading '/'.
     //  This will ensure that the TP.uriJoinPaths call will join the paths
