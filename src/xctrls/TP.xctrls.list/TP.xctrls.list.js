@@ -868,6 +868,7 @@ function(aDataObject, shouldSignal, isFiltered) {
 
     var dataObj,
         keys,
+        obj,
 
         filteringSource,
         searcher,
@@ -900,18 +901,21 @@ function(aDataObject, shouldSignal, isFiltered) {
         //  Array is the key and the second item is the value.
         if (TP.isHash(dataObj)) {
             keys = dataObj.getKeys();
-            filteringSource = keys;
+            filteringSource = dataObj.getValues();
         } else if (TP.isPlainObject(dataObj)) {
+            obj = TP.hc(dataObj);
             //  Make sure to convert a POJO into a TP.core.Hash
-            keys = TP.hc(dataObj).getKeys();
-            filteringSource = keys;
+            keys = obj.getKeys();
+            filteringSource = obj.getValues();
         } else if (TP.isPair(dataObj.first())) {
-            keys = dataObj.collect(
+            keys = TP.ac();
+            filteringSource = TP.ac();
+            dataObj.perform(
                     function(item) {
                         //  Note that we want a String here.
-                        return item.first().toString();
+                        keys.push(item.first().toString());
+                        filteringSource.push(item.last().toString());
                     });
-            filteringSource = keys;
         } else if (TP.isArray(dataObj)) {
             keys = dataObj.getIndices().collect(
                     function(item) {
