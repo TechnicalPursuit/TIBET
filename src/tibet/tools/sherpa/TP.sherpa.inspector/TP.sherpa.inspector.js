@@ -1296,6 +1296,9 @@ function(startBay) {
         i;
 
     existingBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(existingBays)) {
+        return this;
+    }
 
     startIndex = existingBays.indexOf(startBay, TP.IDENTITY);
 
@@ -1373,10 +1376,12 @@ function(info) {
     }
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
-    setTimeout(
-        function() {
-            inspectorBays.last().focus();
-        }, 100);
+    if (TP.notEmpty(inspectorBays)) {
+        setTimeout(
+            function() {
+                inspectorBays.last().focus();
+            }, 100);
+    }
 
     return this;
 });
@@ -1481,6 +1486,7 @@ function(anInfo) {
     }
 
     //  Grab all of the inspector bays in the receiver.
+    //  NB: inspectorBays could be empty here, and that's ok.
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
 
     //  Pass along any extra targeting information that editors or property
@@ -1959,11 +1965,15 @@ function(aSlotPosition) {
     }
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return null;
+    }
+
     if (aSlotPosition === 0) {
         return inspectorBays.first();
     }
 
-    //  Grab the first bay 'multiplier'
+    //  Grab the first bay 'multiplier'.
     currentSlotCount = inspectorBays.first().getBayMultiplier();
 
     //  Iterate over the remaining bays, summing up the bay 'multiplier's across
@@ -2040,6 +2050,9 @@ function() {
         lastResolver;
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return null;
+    }
 
     //  Grab the 'resolver' for the last inspector bay. This is the object that
     //  will be messaged to get the data.
@@ -2163,6 +2176,10 @@ function(aBay) {
         i;
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return TP.NOT_FOUND;
+    }
+
     if (aBay === inspectorBays.first()) {
         return 0;
     }
@@ -2185,7 +2202,7 @@ function(aBay) {
         }
     }
 
-    return -1;
+    return TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
@@ -2805,7 +2822,9 @@ function(info, createHistoryEntry) {
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
 
+    //  NB: existingBays could be empty here, and that's ok.
     existingBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+
     newBayNum = info.at('bayIndex');
 
     //  The bay we're actually going to put content into. Note that this might
@@ -3008,6 +3027,10 @@ function(aBayNum) {
 
     //  Grab the inspector bay corresponding to that bay number
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
+
     inspectorBay = inspectorBays.at(bayNum);
 
     if (TP.notValid(inspectorBay)) {
@@ -3075,6 +3098,10 @@ function(aBayNum) {
 
     //  Grab the inspector bay corresponding to that bay number
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
+
     inspectorBay = inspectorBays.at(bayNum);
 
     if (TP.notValid(inspectorBay)) {
@@ -3192,6 +3219,9 @@ function(startBay) {
         i;
 
     existingBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(existingBays)) {
+        return this;
+    }
 
     startIndex = existingBays.indexOf(startBay, TP.IDENTITY);
 
@@ -3267,6 +3297,9 @@ function(direction) {
     currentBay = this.getBayFromSlotPosition(currentFirstVisiblePosition);
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
 
     //  Depending on the direction, grab the bay before or after the leftmost
     //  bay.
@@ -3590,6 +3623,9 @@ function(shouldRenderBayContent) {
     renderBayContent = TP.ifInvalid(shouldRenderBayContent, false);
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
 
     //  We initialize the slot count with the number of inspector items. This
     //  makes the assumption that each one is only 1 'slot' wide. We'll loop
@@ -3814,6 +3850,9 @@ function(pathParts) {
         info;
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
 
     rootEntryResolver = this.getEntryAt(pathParts.first());
 
