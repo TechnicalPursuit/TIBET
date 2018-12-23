@@ -2082,5 +2082,90 @@ function(aValue, anIndex, shouldSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('selectLabel',
+function(aLabel, anIndex, shouldSignal) {
+
+    /**
+     * @method selectLabel
+     * @summary Selects the element which has the provided label (if found) or
+     *     is at the provided index.
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aLabel] The label to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var wholeData,
+
+        value,
+
+        obj;
+
+    wholeData = this.get('$wholeData');
+
+    if (!this.allowsMultiples()) {
+        if (TP.isHash(wholeData)) {
+            value = wholeData.detect(
+                        function(aPair) {
+                            return aPair.last() === aLabel;
+                        });
+            value = value.first();
+        } else if (TP.isPlainObject(wholeData)) {
+            obj = TP.hc(wholeData);
+            value = obj.detect(
+                        function(aPair) {
+                            return aPair.last() === aLabel;
+                        });
+            value = value.first();
+        } else if (TP.isPair(wholeData.first())) {
+            value = wholeData.detect(
+                        function(anEntry) {
+                            return anEntry.last() === aLabel;
+                        });
+        } else if (TP.isArray(wholeData)) {
+            value = aLabel;
+        }
+    } else {
+        if (TP.isHash(wholeData)) {
+            value = wholeData.collect(
+                        function(aPair) {
+                            if (aPair.last() === aLabel) {
+                                return aPair.first();
+                            }
+                        });
+        } else if (TP.isPlainObject(wholeData)) {
+            obj = TP.hc(wholeData);
+            value = obj.collect(
+                        function(aPair) {
+                            if (aPair.last() === aLabel) {
+                                return aPair.first();
+                            }
+                        });
+        } else if (TP.isPair(wholeData.first())) {
+            value = wholeData.collect(
+                        function(anEntry) {
+                            return anEntry.last() === aLabel;
+                        });
+        } else if (TP.isArray(wholeData)) {
+            value = TP.ac(aLabel);
+        }
+    }
+
+    if (TP.notEmpty(value)) {
+        return this.select(value, anIndex, shouldSignal);
+    }
+
+    return TP.NOT_FOUND;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
