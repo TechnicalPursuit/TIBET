@@ -308,7 +308,7 @@ function(aSignal) {
     if (TP.notValid(tileTPElem)) {
 
         tileTPElem = TP.bySystemId('Sherpa').makeTile('BindSummary_Tile');
-        tileTPElem.setHeaderText('Bind Source Text');
+        tileTPElem.setHeaderText('Bind Source Text - ' + itemData.at(1));
 
         //  Set the 'tibet:ctrl' attribute on the tile to be the ID of this
         //  object. That will cause responder signals to be routed here.
@@ -332,6 +332,8 @@ function(aSignal) {
         tileTPElem.setAttribute('hidden', false);
 
     } else {
+
+        tileTPElem.setHeaderText('Bind Source Text - ' + itemData.at(1));
 
         //  NB: We need to set this before getting the tile's current width
         tileTPElem.setAttribute('hidden', false);

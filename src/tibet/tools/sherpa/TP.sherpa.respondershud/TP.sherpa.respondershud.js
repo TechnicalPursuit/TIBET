@@ -298,7 +298,7 @@ function(aSignal) {
     if (TP.notValid(tileTPElem)) {
 
         tileTPElem = TP.bySystemId('Sherpa').makeTile('ResponderSummary_Tile');
-        tileTPElem.setHeaderText('Responder Methods');
+        tileTPElem.setHeaderText('Responder Methods - ' + itemData.at(1));
 
         newContentTPElem = tileTPElem.setContent(
                                 TP.getContentForTool(
@@ -324,6 +324,8 @@ function(aSignal) {
         tileTPElem.setAttribute('hidden', false);
 
     } else {
+
+        tileTPElem.setHeaderText('Responder Methods - ' + itemData.at(1));
 
         //  NB: We need to set this before getting the tile's current width
         tileTPElem.setAttribute('hidden', false);
