@@ -3420,7 +3420,9 @@ function(itemLabel, aBayNum) {
     var inspectorBayContentItems,
 
         bayNum,
-        bayContent;
+        bayContent,
+
+        label;
 
     if (TP.notEmpty(inspectorBayContentItems =
                     TP.byCSSPath(' sherpa|inspectoritem > *', this))) {
@@ -3435,10 +3437,15 @@ function(itemLabel, aBayNum) {
 
         bayContent = inspectorBayContentItems.at(bayNum);
 
-        if (TP.canInvoke(bayContent, 'select')) {
-            //  This will have already been re-rendered because of data binding,
-            //  but we need to select what the new item will be.
-            bayContent.select(itemLabel, null, false);
+        //  Sometimes entries come in with escaped slashes. Unescape that.
+        label = itemLabel.replace(/\\\//g, '\/');
+
+        //  The bay content here will have already been re-rendered because of
+        //  data binding, but we need to select what the new item will be.
+        if (TP.canInvoke(bayContent, 'selectLabel')) {
+            bayContent.selectLabel(label, null, false);
+        } else if (TP.canInvoke(bayContent, 'select')) {
+            bayContent.select(label, null, false);
         }
     }
 
