@@ -52,13 +52,21 @@ function(targetTPElem) {
     tagAttrs = TP.ac();
     targetTPElem.getAttributes().perform(
         function(kvPair) {
+            var newAttrVal;
+
+            newAttrVal = this.rewriteAttributeValue(
+                                targetTPElem, kvPair.first(), kvPair.last());
+
+            if (TP.isEmpty(newAttrVal)) {
+                return;
+            }
+
             tagAttrs.push(
                 TP.hc('tagAttrName', kvPair.first(),
-                        'tagAttrValue', kvPair.last())
-            );
+                        'tagAttrValue', newAttrVal));
 
             names.push(kvPair.first());
-        });
+        }.bind(this));
     this.set('$attributeNames', names);
 
     newInsertionInfo.atPut('tagAttrs', tagAttrs);
@@ -68,6 +76,164 @@ function(targetTPElem) {
     modelObj = TP.core.JSONContent.construct(TP.js2json(modelObj));
 
     return modelObj;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericElementContent.Inst.defineMethod('removeAttributeNamed',
+function(sourceTPElem, attributeName) {
+
+    /**
+     * @method removeAttributeNamed
+     * @summary Removes the attribute named by the supplied attribute name.
+     *     Note that this method will take into account attributes, like
+     *     'class', that need to be handled specially (i.e. not actually
+     *     removed, but retained with only the values that are 'special').
+     * @param {TP.dom.ElementNode} sourceTPElem The element to remove the
+     *     attribute from.
+     * @param {String} attributeName The name of the attribute to remove.
+     * @returns {TP.sherpa.domhud_genericElementContent} The receiver.
+     */
+
+    var existingClasses,
+        sherpaClasses,
+
+        wholeValue;
+
+    //  If the attribute being set is 'class', then we need to work around the
+    //  fact that the Sherpa likes to put 'sherpa-' classes on.
+    if (/^class$/.test(attributeName)) {
+
+        //  Grab all existing classes and filter out the 'sherpa-' class values.
+        existingClasses = sourceTPElem.getAttribute('class').split(' ');
+        sherpaClasses = existingClasses.filter(
+            function(aClass) {
+                TP.regex.SHERPA_CSS_CLASS.lastIndex = 0;
+                return TP.regex.SHERPA_CSS_CLASS.test(aClass);
+            });
+
+        //  If 'sherpa-' classes were part of the value, compute a value
+        //  containing just them and set that on the element.
+        if (TP.notEmpty(sherpaClasses)) {
+            wholeValue = sherpaClasses.join(' ');
+            sourceTPElem.setClass(wholeValue);
+        } else {
+            //  Otherwise, just remove the attribute altogether.
+            sourceTPElem.removeAttribute(attributeName);
+        }
+
+        return this;
+    }
+
+    sourceTPElem.removeAttribute(attributeName);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericElementContent.Inst.defineMethod('rewriteAttributeValue',
+function(sourceTPElem, attributeName, attributeValue) {
+
+    /**
+     * @method rewriteAttributeValue
+     * @summary Rewrites the attribute named by the supplied attribute name with
+     *     a possibly rewritten value from the supplied attribute value. Note
+     *     that this method will take into account attributes, like 'class',
+     *     that need to be handled specially.
+     * @param {TP.dom.ElementNode} sourceTPElem The element that is the source
+     *     of the attribute.
+     * @param {String} attributeName The name of the attribute to get.
+     * @param {String} attributeValue The value of the attribute to possibly
+     *     rewrite.
+     * @returns {TP.sherpa.domhud_genericElementContent} The receiver.
+     */
+
+    //  Filters both default and prefixed namespaces.
+    if (TP.regex.XMLNS_ATTR.test(attributeName)) {
+        return null;
+    }
+
+    if (/^pclass:/.test(attributeName)) {
+        return null;
+    }
+
+    if (/^tibet:/.test(attributeName)) {
+        return null;
+    }
+
+    if (/^xml:/.test(attributeName)) {
+        return null;
+    }
+
+    //  If the attribute being set is 'class', then we need to work around the
+    //  fact that the Sherpa likes to put 'sherpa-' classes on.
+    if (/^class$/.test(attributeName)) {
+        //  Strip out any 'sherpa-' classes.
+        TP.regex.SHERPA_CSS_CLASS.lastIndex = 0;
+        return attributeValue.strip(TP.regex.SHERPA_CSS_CLASS);
+    }
+
+    return attributeValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud_genericElementContent.Inst.defineMethod('setAttributeValue',
+function(sourceTPElem, attributeName, attributeValue) {
+
+    /**
+     * @method setAttributeValue
+     * @summary Sets the attribute named by the supplied attribute name to the
+     *     value in the supplied attribute value. Note that this method will
+     *     take into account attributes, like 'class', that need to be handled
+     *     specially.
+     * @param {TP.dom.ElementNode} sourceTPElem The element to set the attribute
+     *     on.
+     * @param {String} attributeName The name of the attribute to set.
+     * @param {String} attributeValue The value of the attribute to use.
+     * @returns {TP.sherpa.domhud_genericElementContent} The receiver.
+     */
+
+    var existingClasses,
+        sherpaClasses,
+
+        wholeValue;
+
+    //  If the attribute being set is 'class', then we need to work around the
+    //  fact that the Sherpa likes to put 'sherpa-' classes on.
+    if (/^class$/.test(attributeName)) {
+
+        //  Grab all existing classes and filter out the 'sherpa-' class values.
+        existingClasses = sourceTPElem.getAttribute('class').split(' ');
+        sherpaClasses = existingClasses.filter(
+            function(aClass) {
+                TP.regex.SHERPA_CSS_CLASS.lastIndex = 0;
+                return TP.regex.SHERPA_CSS_CLASS.test(aClass);
+            });
+
+        //  If the supplied attribute value is empty, then the whole 'class'
+        //  value will just be the 'sherpa-' classes, if there are any.
+        if (TP.isEmpty(attributeValue)) {
+            wholeValue = sherpaClasses.join(' ');
+        } else if (TP.notEmpty(sherpaClasses)) {
+            //  Otherwise, if there were both a supplied value and 'sherpa-'
+            //  classes, compute a value containing both.
+            wholeValue = attributeValue + ' ' + sherpaClasses.join(' ');
+        } else {
+            //  Otherwise, there were no 'sherpa-' classes - just use the
+            //  supplied value.
+            wholeValue = attributeValue;
+        }
+
+        sourceTPElem.setClass(wholeValue);
+
+        return this;
+    }
+
+    sourceTPElem.setAttribute(attributeName, attributeValue);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -184,22 +350,19 @@ function(aSignal) {
             //  Replace the old name with the new name in our list of
             //  attributes.
             allAttrNames.replace(oldAttrName, name);
-
-            //  Set the value using the new name.
-            targetTPElem.setAttribute(name, value);
-
         } else {
-
             hadAttribute = targetTPElem.hasAttribute(name);
 
-            //  Set the attribute named by the name to the value
+            //  If we didn't already have an attribute named the same as the
+            //  attribute being set, add it to the list of attribute names that
+            //  we're tracking.
             if (!hadAttribute) {
                 allAttrNames.push(name);
             }
-
-            //  Set the value using the computed name and value.
-            targetTPElem.setAttribute(name, value);
         }
+
+        //  Set the value using the computed (possibly new) name and value.
+        this.setAttributeValue(targetTPElem, name, value);
 
         if (hadAttribute) {
             targetTPElem.deaden();
@@ -221,8 +384,8 @@ function(aSignal) {
                 //  Remove the name from our list of attribute names.
                 allAttrNames.remove(name);
 
-                //  Remove the attribute itself.
-                targetTPElem.removeAttribute(name);
+                //  Remove the attribute.
+                this.removeAttributeNamed(targetTPElem, name);
             }
         }
 
