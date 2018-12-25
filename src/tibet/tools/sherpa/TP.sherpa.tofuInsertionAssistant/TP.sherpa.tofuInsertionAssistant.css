@@ -192,7 +192,7 @@ sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser {
 
 sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser input {
 
-    width: calc(100% - 6em);
+    width: calc(100% - 7em);
 }
 
 xctrls|list#tofuInsertionAssistant_TagTypes {
