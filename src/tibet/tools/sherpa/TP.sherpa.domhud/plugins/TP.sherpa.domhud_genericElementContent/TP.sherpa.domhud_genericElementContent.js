@@ -149,6 +149,8 @@ function(sourceTPElem, attributeName, attributeValue) {
      * @returns {TP.sherpa.domhud_genericElementContent} The receiver.
      */
 
+    var otherAttrValue;
+
     //  Filters both default and prefixed namespaces.
     if (TP.regex.XMLNS_ATTR.test(attributeName)) {
         return null;
@@ -174,6 +176,30 @@ function(sourceTPElem, attributeName, attributeValue) {
         return attributeValue.strip(TP.regex.SHERPA_CSS_CLASS);
     }
 
+    if (/^href$/.test(attributeName)) {
+        //  If the attribute value is '#' and there is an 'onclick' on the
+        //  element that has a 'TP.core.Mouse.invokeObservers' call, then this
+        //  is a rewritten binding and we need to filter it.
+        otherAttrValue = sourceTPElem.getAttribute('onclick');
+
+        if (attributeValue === '#' &&
+            otherAttrValue.contains('TP.core.Mouse.invokeObservers')) {
+            return null;
+        }
+    }
+
+    if (/^onclick$/.test(attributeName)) {
+        //  If the attribute value contains a 'TP.core.Mouse.invokeObservers'
+        //  call and there is an 'href' on the element that has a value of '#',
+        //  then this is a rewritten binding and we need to filter it.
+        otherAttrValue = sourceTPElem.getAttribute('href');
+
+        if (attributeValue.contains('TP.core.Mouse.invokeObservers') &&
+            otherAttrValue === '#') {
+            return null;
+        }
+    }
+
     return attributeValue;
 });
 
@@ -192,13 +218,18 @@ function(sourceTPElem, attributeName, attributeValue) {
      *     on.
      * @param {String} attributeName The name of the attribute to set.
      * @param {String} attributeValue The value of the attribute to use.
-     * @returns {TP.sherpa.domhud_genericElementContent} The receiver.
+     * @returns {Boolean} Whether or not to allow the data value in the
+     *     attributes data model to change to the desired value.
      */
 
     var existingClasses,
         sherpaClasses,
 
-        wholeValue;
+        wholeValue,
+
+        currentValue,
+
+        otherAttrValue;
 
     //  If the attribute being set is 'class', then we need to work around the
     //  fact that the Sherpa likes to put 'sherpa-' classes on.
@@ -228,12 +259,43 @@ function(sourceTPElem, attributeName, attributeValue) {
 
         sourceTPElem.setClass(wholeValue);
 
-        return this;
+        return true;
+    }
+
+    if (/^href$/.test(attributeName)) {
+
+        currentValue = sourceTPElem.getAttribute(attributeName);
+
+        //  If the attribute value is '#' and there is an 'onclick' on the
+        //  element that has a 'TP.core.Mouse.invokeObservers' call, then this
+        //  is a rewritten binding and we need to filter it.
+        otherAttrValue = sourceTPElem.getAttribute('onclick');
+
+        if (currentValue === '#' &&
+            otherAttrValue.contains('TP.core.Mouse.invokeObservers')) {
+
+            return false;
+        }
+    }
+
+    if (/^onclick$/.test(attributeName)) {
+
+        currentValue = sourceTPElem.getAttribute(attributeName);
+
+        //  If the attribute value contains a 'TP.core.Mouse.invokeObservers'
+        //  call and there is an 'href' on the element that has a value of '#',
+        //  then this is a rewritten binding and we need to filter it.
+        otherAttrValue = sourceTPElem.getAttribute('href');
+
+        if (currentValue.contains('TP.core.Mouse.invokeObservers') &&
+            otherAttrValue === '#') {
+            return false;
+        }
     }
 
     sourceTPElem.setAttribute(attributeName, attributeValue);
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -255,6 +317,7 @@ function(aSignal) {
         targetTPElem,
 
         modelObj,
+        lastIndex,
 
         nameAspectPath,
         valueAspectPath,
@@ -268,6 +331,8 @@ function(aSignal) {
 
         attrIndex,
         oldAttrName,
+
+        allowChange,
 
         hadAttribute,
 
@@ -307,6 +372,8 @@ function(aSignal) {
         //  Grab the model object where our data is located.
         modelObj =
             TP.uc('urn:tibet:domhud_attr_source').getResource().get('result');
+        lastIndex =
+            modelObj.get('data').at('info').at('tagAttrs').getSize() - 1;
 
         //  Compute a name aspect path by replacing 'tagAttrValue' with
         //  'tagAttrName' in the value aspect path.
@@ -362,7 +429,18 @@ function(aSignal) {
         }
 
         //  Set the value using the computed (possibly new) name and value.
-        this.setAttributeValue(targetTPElem, name, value);
+        allowChange = this.setAttributeValue(targetTPElem, name, value);
+
+        //  If we don't allow the change, then set the value in the data model
+        //  to the empty value.
+        if (!allowChange) {
+            TP.alert('Cannot change: ' + name + ' as, for this element, TIBET' +
+                        ' is already using this attribute internally');
+
+            modelObj.set('jpath($.info.tagAttrs[' +
+                            lastIndex +
+                            '].tagAttrValue)', '');
+        }
 
         if (hadAttribute) {
             targetTPElem.deaden();
