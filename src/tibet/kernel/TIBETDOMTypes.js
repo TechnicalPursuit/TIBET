@@ -10396,7 +10396,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('generateMarkupContent',
-function(attrStr) {
+function(attrStr, wantsXMLNS) {
 
     /**
      * @method generateMarkupContent
@@ -10407,6 +10407,8 @@ function(attrStr) {
      *     can also contain any optionally supplied attribute content.
      * @param {String} [attrStr] The String containing optional attribute
      *     markup.
+     * @param {Boolean} [wantsXMLNS=true] Whether or not the caller wants an
+     *     'xmlns:' namespace definition generated into the result.
      * @returns {String} The 'empty markup' representation of the receiver.
      */
 
@@ -10419,16 +10421,25 @@ function(attrStr) {
         attrMarkup = '';
     }
 
-    str = TP.join('<',
-                this.getNamespacePrefix(),
-                ':',
-                this.getLocalName(),
-                ' xmlns:', this.getNamespacePrefix(),
-                '="',
-                TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
-                '"' +
-                attrMarkup +
-                '/>');
+    if (TP.notFalse(wantsXMLNS)) {
+        str = TP.join('<',
+                    this.getNamespacePrefix(),
+                    ':',
+                    this.getLocalName(),
+                    ' xmlns:', this.getNamespacePrefix(),
+                    '="',
+                    TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                    '"' +
+                    attrMarkup +
+                    '/>');
+    } else {
+        str = TP.join('<',
+                    this.getNamespacePrefix(),
+                    ':',
+                    this.getLocalName(),
+                    attrMarkup +
+                    '/>');
+    }
 
     return str;
 });
