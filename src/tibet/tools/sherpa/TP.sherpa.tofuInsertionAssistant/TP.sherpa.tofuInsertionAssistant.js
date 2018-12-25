@@ -509,6 +509,10 @@ function(anObj) {
                     });
     typeData = typeData.filter(
                     function(aType) {
+                        return !aType.isAbstract();
+                    });
+    typeData = typeData.filter(
+                    function(aType) {
                         return TP.isKindOf(aType, TP.dom.ElementNode);
                     });
     typeData = typeData.collect(
@@ -557,6 +561,10 @@ function(anObj) {
     //  XHTML tags
     typesObj.push(TP.GROUPING_PREFIX + ' - xhtml tags');
     typeData = TP.html.Attrs.getSubtypes(true);
+    typeData = typeData.filter(
+                    function(aType) {
+                        return !aType.isAbstract();
+                    });
     typeData = typeData.collect(
                     function(item) {
                         return item.getCanonicalName();
@@ -567,6 +575,10 @@ function(anObj) {
     //  SVG tags
     typesObj.push(TP.GROUPING_PREFIX + ' - svg tags');
     typeData = TP.svg.Shape.getSubtypes(true);
+    typeData = typeData.filter(
+                    function(aType) {
+                        return !aType.isAbstract();
+                    });
     typeData = typeData.collect(
                     function(item) {
                         return item.getCanonicalName();
