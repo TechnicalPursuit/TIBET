@@ -195,6 +195,8 @@ function(anObject) {
 
     tagTemplate = resp.get('result');
 
+    autodefineMissingTags = TP.sys.cfg('sherpa.autodefine_missing_tags');
+
     //  If we found a valid tag template, then clone it's first child (which
     //  will be the content that we actually want to insert).
     if (TP.isKindOf(tagTemplate, TP.dom.ElementNode)) {
@@ -274,7 +276,6 @@ function(anObject) {
 
         //  If the user has entered a tag that we don't know about, we force the
         //  system to autodefine missing tags here.
-        autodefineMissingTags = TP.sys.cfg('sherpa.autodefine_missing_tags');
         TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
     }
 
