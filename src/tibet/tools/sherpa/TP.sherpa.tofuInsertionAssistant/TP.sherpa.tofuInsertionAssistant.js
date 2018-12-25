@@ -342,18 +342,14 @@ function(info) {
      */
 
     var str,
+        attrStr,
 
-        val;
+        val,
 
-    str = '<';
+        tagType;
 
-    if (TP.notEmpty(val = info.at('enteredTagName'))) {
-        str += val;
-    } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
-        str += val;
-    } else {
-        return '';
-    }
+    str = '';
+    attrStr = '';
 
     if (TP.notEmpty(val = info.at('tagAttrs'))) {
         val.forEach(
@@ -365,14 +361,32 @@ function(info) {
                     return;
                 }
 
-                str +=
+                attrStr +=
                     ' ' + hash.at('tagAttrName') +
                     '=' +
                     '"' + hash.at('tagAttrValue') + '"';
             });
     }
 
-    str += '/>';
+    if (TP.notEmpty(val = info.at('enteredTagName'))) {
+        str = '<' + val + attrStr + '/>';
+    } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
+        tagType = TP.sys.getTypeByName(val);
+        if (TP.isType(tagType)) {
+            //  If the resolved type is not a subtype of TP.dom.ElementNode,
+            //  then it's an error. Warn the user and return.
+            if (!TP.isSubtypeOf(tagType, TP.dom.ElementNode)) {
+                TP.alert('Type matching tag: ' +
+                            val +
+                            ' is not an Element.' +
+                            ' Element not inserted.');
+
+                return '';
+            }
+        }
+
+        str = tagType.generateMarkupContent(attrStr, false);
+    }
 
     return str;
 });
