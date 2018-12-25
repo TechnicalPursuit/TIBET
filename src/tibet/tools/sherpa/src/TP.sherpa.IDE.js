@@ -2339,7 +2339,8 @@ function(mutationRecords) {
                         //  Add this record to the proper sorting Array for its
                         //  particular kind of operation.
                         attrCreatedRecords.push(record);
-                    } else if (!attrIsEmpty && !attrWasEmpty) {
+                    } else if (!attrIsEmpty && !attrWasEmpty &&
+                                attrValue !== attrOldValue) {
 
                         //  Capture the attributeName, attributeValue and
                         //  oldAttributeValue directly onto the record Object
