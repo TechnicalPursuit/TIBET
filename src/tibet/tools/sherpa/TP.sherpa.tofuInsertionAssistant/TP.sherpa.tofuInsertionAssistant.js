@@ -313,6 +313,10 @@ function(aSignal) {
     tagName = TP.ifEmpty(typeInfo.at('enteredTagName'),
                             typeInfo.at('chosenTagName'));
 
+    if (!TP.regex.HAS_COLON.test(tagName)) {
+        tagName = 'html:' + tagName;
+    }
+
     str = this.generateTag(tagName, typeInfo.at('tagAttrs'));
 
     this.get('generatedTag').setTextContent(str);
