@@ -1578,6 +1578,41 @@ function(aNodeOrId) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.input.Type.defineMethod('getTypeAttributeValue',
+function() {
+
+    /**
+     * @method getTypeAttributeValue
+     * @summary Returns the value of the 'type' attribute for the receiver.
+     * @description (X)HTML 'input' tags all use the same tag name with
+     *     different values for the 'type' attribute (i.e. 'text', 'color',
+     *     etc). This method returns the value of the 'type' attribute based on
+     *     the receiving tag type..
+     * @returns {String|null} The value of the 'type' attribute.
+     */
+
+    var ourTypeName,
+        entry;
+
+    //  Compute the 'type' attribute from the hash of type attribute values to
+    //  type names.
+    ourTypeName = this.getName();
+    entry = TP.html.form.NODE_TYPE_NAMES.detect(
+                function(kvPair) {
+                    return kvPair.last() === ourTypeName;
+                });
+
+    //  If we got a valid value, return the key - this will be the value of the
+    //  'type' attribute.
+    if (TP.isValid(entry)) {
+        return entry.first();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.input.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
