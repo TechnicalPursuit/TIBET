@@ -19,6 +19,9 @@
 
         "function-url-quotes": "always",
 
+        "no-descending-specificity": false,
+        "no-duplicate-selectors": false,
+
         "rule-empty-line-before": ["always", { ignore: "after-comment" }],
 
         "selector-attribute-quotes": "always",
