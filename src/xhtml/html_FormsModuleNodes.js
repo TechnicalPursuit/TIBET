@@ -1537,6 +1537,67 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
+TP.html.input.Type.defineMethod('generateMarkupContent',
+function(attrStr, wantsXMLNS) {
+
+    /**
+     * @method generateMarkupContent
+     * @summary Generates the 'empty markup' representation of the receiver.
+     * @description The empty representation contains child node content, but
+     *     does contain the proper 'xmlns' attribute so that the receiver can be
+     *     properly placed in any document that has that namespace defined. It
+     *     can also contain any optionally supplied attribute content.
+     * @param {String} [attrStr] The String containing optional attribute
+     *     markup.
+     * @param {Boolean} [wantsXMLNS=true] Whether or not the caller wants an
+     *     'xmlns:' namespace definition generated into the result.
+     * @returns {String} The 'empty markup' representation of the receiver.
+     */
+
+    var attrMarkup,
+
+        typeAttrValue,
+
+        str;
+
+    if (TP.notEmpty(attrStr)) {
+        attrMarkup = ' ' + TP.trim(attrStr);
+    } else {
+        attrMarkup = '';
+    }
+
+    typeAttrValue = this.getTypeAttributeValue();
+    if (TP.notValid(typeAttrValue)) {
+        return '';
+    }
+
+    attrMarkup = ' type="' + typeAttrValue + '"' + attrMarkup;
+
+    if (TP.notFalse(wantsXMLNS)) {
+        str = TP.join('<',
+                    this.getNamespacePrefix(),
+                    ':',
+                    'input',
+                    ' xmlns:', this.getNamespacePrefix(),
+                    '="',
+                    TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                    '"' +
+                    attrMarkup +
+                    '/>');
+    } else {
+        str = TP.join('<',
+                    this.getNamespacePrefix(),
+                    ':',
+                    'input',
+                    attrMarkup +
+                    '/>');
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.input.Type.defineMethod('getConcreteType',
 function(aNodeOrId) {
 
