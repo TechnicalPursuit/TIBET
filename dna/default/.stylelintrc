@@ -5,7 +5,10 @@
 
         "comment-empty-line-before": null,
 
-        "block-no-empty": [true, { "severity": "warning" }],
+        "custom-property-empty-line-before": null,
+
+        "block-no-empty": null,
+
         "block-opening-brace-newline-after": "always",
 
         "declaration-empty-line-before": null,
@@ -16,14 +19,15 @@
 
         "function-url-quotes": "always",
 
+        "no-descending-specificity": false,
+        "no-duplicate-selectors": false,
+
         "rule-empty-line-before": ["always", { ignore: "after-comment" }],
 
         "selector-attribute-quotes": "always",
 
         "selector-type-no-unknown": [ true, {
-            "ignoreNamespaces": [
-                "{{appname}}", "tibet", "tsh", "sherpa", "xctrls"
-            ]
+            "ignoreNamespaces": [ "tibet", "tsh", "sherpa", "xctrls" ]
         }],
 
         "selector-type-case": null,
@@ -31,5 +35,15 @@
         "string-quotes": "double",
 
         "value-keyword-case": "lower"
-    }
+    },
+    "ignoreFiles": [
+        "node_modules/**",
+        "**/node_modules/**",
+        "deps/**",
+        "lib/src/**",
+        "**/sherpa/cm_theme/*",
+        "**/build/**",
+        "**/*.__*__.*.js",
+        "**/boot/styles/**"
+    ]
 }
