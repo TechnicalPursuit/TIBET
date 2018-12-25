@@ -33,4 +33,3 @@ div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge.
 
     width: var(--sherpa-drawer-west-open-width);
 }
-
