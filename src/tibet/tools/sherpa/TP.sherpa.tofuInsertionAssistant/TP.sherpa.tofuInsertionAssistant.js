@@ -145,6 +145,15 @@ function(anObject) {
             tagName = 'html:' + tagName;
         }
 
+        //  NB: This might be undefined if the tag is a new type that we haven't
+        //  seen yet.
+        tagType = TP.sys.getTypeByName(tagName);
+
+    } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
+        //  After checking for an entered tag name, see if one was chosen from
+        //  the list.
+        tagName = val;
+
         //  Make sure that if the tagName resolves to a type, that that type is
         //  a subtype of TP.dom.ElementNode
         tagType = TP.sys.getTypeByName(tagName);
@@ -163,10 +172,6 @@ function(anObject) {
             }
         }
 
-    } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
-        //  After checking for an entered tag name, see if one was chosen from
-        //  the list.
-        tagName = val;
     } else {
 
         //  No entered tag name and nothing chosen. Can't proceed - exit here.
