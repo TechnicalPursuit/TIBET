@@ -145,10 +145,6 @@ function(anObject) {
             tagName = 'html:' + tagName;
         }
 
-        //  NB: This might be undefined if the tag is a new type that we haven't
-        //  seen yet.
-        tagType = TP.sys.getTypeByName(tagName);
-
     } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
         //  After checking for an entered tag name, see if one was chosen from
         //  the list.
@@ -251,25 +247,7 @@ function(anObject) {
             }
         }
 
-        str = '<' + tagName;
-
-        //  If attributes were defined by the user, add them onto the string
-        //  defining the new element.
-        if (TP.notEmpty(val = info.at('tagAttrs'))) {
-            val.forEach(
-                function(attrInfo) {
-                    var hash;
-
-                    hash = TP.hc(attrInfo);
-
-                    str +=
-                        ' ' + hash.at('tagAttrName') +
-                        '=' +
-                        '"' + hash.at('tagAttrValue') + '"';
-                });
-        }
-
-        str += '/>';
+        str = this.generateTag(tagName, info.at('tagAttrs'));
 
         newElem = TP.nodeFromString(str);
 
@@ -311,7 +289,11 @@ function(aSignal) {
 
     var result,
         data,
+
         typeInfo,
+
+        tagName,
+
         str;
 
     result = TP.uc('urn:tibet:tofuInsertionAssistant_source').
@@ -328,7 +310,11 @@ function(aSignal) {
 
     typeInfo = TP.hc(data).at('info');
 
-    str = this.generateTag(typeInfo);
+    tagName = TP.ifEmpty(typeInfo.at('enteredTagName'),
+                            typeInfo.at('chosenTagName'));
+
+    str = this.generateTag(tagName, typeInfo.at('tagAttrs'));
+
     this.get('generatedTag').setTextContent(str);
 
     return this;
@@ -390,28 +376,28 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generateTag',
-function(info) {
+function(tagName, attributes) {
 
     /**
      * @method generateTag
      * @summary Generates the tag text that will be used to create a new Element
      *     and insert it if user dismisses the assistant by clicking 'ok'.
-     * @param {TP.core.Hash} info The hash containing the tag information.
+     * @param {String} tagName The tagname to use in the markup.
+     * @param {Array[]} attributes An Array of Arrays containing attribute
+     *     name / attribute value pairs.
      * @returns {String} The tag markup text.
      */
 
     var str,
         attrStr,
 
-        val,
-
         tagType;
 
     str = '';
     attrStr = '';
 
-    if (TP.notEmpty(val = info.at('tagAttrs'))) {
-        val.forEach(
+    if (TP.notEmpty(attributes)) {
+        attributes.forEach(
             function(attrInfo) {
                 var hash;
 
@@ -427,24 +413,17 @@ function(info) {
             });
     }
 
-    if (TP.notEmpty(val = info.at('enteredTagName'))) {
-        str = '<' + val + attrStr + '/>';
-    } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
-        tagType = TP.sys.getTypeByName(val);
-        if (TP.isType(tagType)) {
-            //  If the resolved type is not a subtype of TP.dom.ElementNode,
-            //  then it's an error. Warn the user and return.
-            if (!TP.isSubtypeOf(tagType, TP.dom.ElementNode)) {
-                TP.alert('Type matching tag: ' +
-                            val +
-                            ' is not an Element.' +
-                            ' Element not inserted.');
-
-                return '';
-            }
+    tagType = TP.sys.getTypeByName(tagName);
+    if (TP.isType(tagType)) {
+        //  If the resolved type is not a subtype of TP.dom.ElementNode,
+        //  then it's an error. Warn the user and return.
+        if (!TP.isSubtypeOf(tagType, TP.dom.ElementNode)) {
+            return '';
         }
 
         str = tagType.generateMarkupContent(attrStr, false);
+    } else if (TP.notEmpty(tagName)) {
+        str = '<' + tagName + attrStr + '/>';
     }
 
     return str;
