@@ -3029,6 +3029,10 @@ TP.regex.STYLE_STRING = /([-\w]+)\s*:\s*([^/]+?)\s*($|;)/g; //  needs reset
 //  Used by the CSS processor
 TP.EMPTY_ARRAY = [];
 
+//  CSS classes used by the Sherpa to visually manipulate elements on its
+//  canvas.
+TP.regex.SHERPA_CSS_CLASS = /sherpa-[A-Za-z0-9-]+ ?/g;  //  needs reset
+
 //  ---
 //  data binding
 //  ---
