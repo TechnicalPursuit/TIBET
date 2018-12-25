@@ -6899,6 +6899,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         attrVal = attributeValue;
     }
 
+    realContentObj = tpXMLDoc.$get('$$realContentObj');
+    if (TP.owns(realContentObj, '$$cachedJSData')) {
+        //  Note here how we pass 'false' to not signal change, since all
+        //  we're doing is data caching and we don't want to test
+        //  shouldSignalChange, which will go get the original data.
+        realContentObj.set('$$cachedJSData', null, false);
+    }
+
     //  If there are more than 3 args, then we have to gather them up,
     //  substitute the first two for the arguments that we computed here and
     //  apply.
@@ -6910,14 +6918,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         xmlPath.executeSet.apply(xmlPath, args);
     } else {
         xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
-    }
-
-    realContentObj = tpXMLDoc.$get('$$realContentObj');
-    if (TP.owns(realContentObj, '$$cachedJSData')) {
-        //  Note here how we pass 'false' to not signal change, since all
-        //  we're doing is data caching and we don't want to test
-        //  shouldSignalChange, which will go get the original data.
-        realContentObj.set('$$cachedJSData', null, false);
     }
 
     return this;
