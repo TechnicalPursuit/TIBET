@@ -20,8 +20,11 @@ TP.sherpa.menucontent.defineSubtype('adjusterValueMenuContent');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjusterValueMenuContent.Inst.defineAttribute('bodyContent',
+    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
+
 TP.sherpa.adjusterValueMenuContent.Inst.defineAttribute('menuContent',
-    TP.cpc('> .content > ul', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .body > ul', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

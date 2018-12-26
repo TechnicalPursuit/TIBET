@@ -26,11 +26,11 @@ sherpa|adjusterValueMenuContent {
     overflow: auto;
 }
 
-sherpa|adjusterValueMenuContent > .content {
+sherpa|adjusterValueMenuContent > .body {
 
 }
 
-sherpa|adjusterValueMenuContent > .content > ul {
+sherpa|adjusterValueMenuContent > .body > ul {
 
     display: grid;
 
@@ -41,7 +41,7 @@ sherpa|adjusterValueMenuContent > .content > ul {
     padding: 0;
 }
 
-sherpa|adjusterValueMenuContent > .content > ul > li {
+sherpa|adjusterValueMenuContent > .body > ul > li {
 
     display: block;
 
@@ -54,13 +54,13 @@ sherpa|adjusterValueMenuContent > .content > ul > li {
     cursor: pointer;
 }
 
-sherpa|adjusterValueMenuContent > .content > ul > li:hover {
+sherpa|adjusterValueMenuContent > .body > ul > li:hover {
 
     text-decoration: underline;
 }
 
 /*
-sherpa|adjusterValueMenuContent > .content > ul > li:hover {
+sherpa|adjusterValueMenuContent > .body > ul > li:hover {
 
     background-color: #ddd;
 
@@ -68,7 +68,7 @@ sherpa|adjusterValueMenuContent > .content > ul > li:hover {
     border-bottom: 1px solid #666;
 }
 
-sherpa|adjusterValueMenuContent > .content > ul > li:last-child:hover {
+sherpa|adjusterValueMenuContent > .body > ul > li:last-child:hover {
 
     border-bottom: 1px solid #666;
 }

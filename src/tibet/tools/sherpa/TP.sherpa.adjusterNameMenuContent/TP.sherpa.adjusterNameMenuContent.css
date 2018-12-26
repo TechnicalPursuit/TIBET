@@ -21,7 +21,7 @@ sherpa|adjusterNameMenuContent {
     box-shadow: 3px 3px 3px #aaa;
 }
 
-sherpa|adjusterNameMenuContent > .content {
+sherpa|adjusterNameMenuContent > .body {
 
     position: absolute;
 
@@ -39,7 +39,7 @@ sherpa|adjusterNameMenuContent > .content {
     overflow: auto;
 }
 
-sherpa|adjusterNameMenuContent > .content > ul {
+sherpa|adjusterNameMenuContent > .body > ul {
 
     height: 100%;
     width: 100%;
@@ -50,7 +50,7 @@ sherpa|adjusterNameMenuContent > .content > ul {
     line-height: 29px;
 }
 
-sherpa|adjusterNameMenuContent > .content > ul > li {
+sherpa|adjusterNameMenuContent > .body > ul > li {
 
     border: 0;
     border-top: 1px solid transparent;
@@ -68,19 +68,19 @@ sherpa|adjusterNameMenuContent > .content > ul > li {
     cursor: pointer;
 }
 
-sherpa|adjusterNameMenuContent > .content > ul > li a {
+sherpa|adjusterNameMenuContent > .body > ul > li a {
 
     color: initial;
 
     text-decoration: none;
 }
 
-sherpa|adjusterNameMenuContent > .content > ul > li a:focus {
+sherpa|adjusterNameMenuContent > .body > ul > li a:focus {
 
     outline: none;
 }
 
-sherpa|adjusterNameMenuContent > .content > ul > li:hover {
+sherpa|adjusterNameMenuContent > .body > ul > li:hover {
 
     background-color: #ddd;
 
@@ -88,7 +88,7 @@ sherpa|adjusterNameMenuContent > .content > ul > li:hover {
     border-bottom: 1px solid #666;
 }
 
-sherpa|adjusterNameMenuContent > .content > ul > li:last-child:hover {
+sherpa|adjusterNameMenuContent > .body > ul > li:last-child:hover {
 
     border-bottom: 1px solid #666;
 }

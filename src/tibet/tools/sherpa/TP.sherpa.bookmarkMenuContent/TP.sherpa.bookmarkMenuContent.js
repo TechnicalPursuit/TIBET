@@ -20,8 +20,11 @@ TP.sherpa.menucontent.defineSubtype('bookmarkMenuContent');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.bookmarkMenuContent.Inst.defineAttribute('bodyContent',
+    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
+
 TP.sherpa.bookmarkMenuContent.Inst.defineAttribute('menuContent',
-    TP.cpc('> .content > ul', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .body > ul', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

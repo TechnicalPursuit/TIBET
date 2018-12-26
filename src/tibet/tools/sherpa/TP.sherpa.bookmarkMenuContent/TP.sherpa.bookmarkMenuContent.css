@@ -17,7 +17,7 @@ sherpa|bookmarkMenuContent {
     box-shadow: 3px 3px 3px #aaa;
 }
 
-sherpa|bookmarkMenuContent > .content {
+sherpa|bookmarkMenuContent > .body {
 
     position: absolute;
 
@@ -37,7 +37,7 @@ sherpa|bookmarkMenuContent > .content {
     overflow: auto;
 }
 
-sherpa|bookmarkMenuContent > .content > ul {
+sherpa|bookmarkMenuContent > .body > ul {
 
     height: 100%;
     width: 100%;
@@ -48,7 +48,7 @@ sherpa|bookmarkMenuContent > .content > ul {
     line-height: 29px;
 }
 
-sherpa|bookmarkMenuContent > .content > ul > li {
+sherpa|bookmarkMenuContent > .body > ul > li {
 
     border: 0;
     border-top: 1px solid transparent;
@@ -66,7 +66,7 @@ sherpa|bookmarkMenuContent > .content > ul > li {
     cursor: pointer;
 }
 
-sherpa|bookmarkMenuContent > .content > ul > li:hover {
+sherpa|bookmarkMenuContent > .body > ul > li:hover {
 
     background-color: #ddd;
 
@@ -74,7 +74,7 @@ sherpa|bookmarkMenuContent > .content > ul > li:hover {
     border-bottom: 1px solid #666;
 }
 
-sherpa|bookmarkMenuContent > .content > ul > li:last-child:hover {
+sherpa|bookmarkMenuContent > .body > ul > li:last-child:hover {
 
     border-bottom: 1px solid #666;
 }
