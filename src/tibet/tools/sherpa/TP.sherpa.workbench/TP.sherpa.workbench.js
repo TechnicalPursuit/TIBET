@@ -572,20 +572,6 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    //  Preload the snippets menu
-    TP.xctrls.popup.preload(
-            TP.hc('triggerTPDocument', this.getDocument(),
-                    'overlayID', 'SnippetsPopup',
-                    'triggerID', 'snippetMenuTrigger',
-                    'contentURI', 'urn:tibet:TP.sherpa.snippetMenuContent'));
-
-    //  Preload the bookmarks menu
-    TP.xctrls.popup.preload(
-            TP.hc('triggerTPDocument', this.getDocument(),
-                    'overlayID', 'BookmarksPopup',
-                    'triggerID', 'showbookmarks',
-                    'contentURI', 'urn:tibet:TP.sherpa.bookmarkMenuContent'));
-
     return this;
 });
 
