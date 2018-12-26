@@ -3,7 +3,7 @@
 <xctrls:popup
         class="POPUP_TIER {{$SOURCE.(@class)}}"
         tibet:assembly="xctrls:popup"
-        pclass:hidden="true">
+        pclass:hidden="true" tibet:nomutationtracking="ansorself">
     <xctrls:content tibet:focuscontext="true">
         {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:popup')])}}
     </xctrls:content>
