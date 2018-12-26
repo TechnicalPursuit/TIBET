@@ -79,9 +79,7 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        menuContentTPElem,
-
-        arrows;
+        bodyContentTPElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -94,18 +92,9 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    menuContentTPElem = tpElem.get('menuContent');
-    tpElem.observe(menuContentTPElem, 'TP.sig.DOMScroll');
-
-    arrows = TP.byCSSPath('> .footer > sherpa|scrollbutton',
-                            elem,
-                            false,
-                            true);
-
-    arrows.forEach(
-            function(anArrow) {
-                anArrow.set('scrollingContentTPElem', menuContentTPElem);
-            });
+    //  Grab the body content and set up scrolling on it.
+    bodyContentTPElem = tpElem.get('bodyContent');
+    tpElem.setupScrollingOn(bodyContentTPElem);
 
     return;
 });
@@ -125,7 +114,7 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        menuContentTPElem;
+        bodyContentTPElem;
 
     //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -135,8 +124,9 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    menuContentTPElem = tpElem.get('menuContent');
-    tpElem.ignore(menuContentTPElem, 'TP.sig.DOMScroll');
+    //  Grab the body content and tear down scrolling on it.
+    bodyContentTPElem = tpElem.get('bodyContent');
+    tpElem.teardownScrollingOn(bodyContentTPElem);
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -218,7 +208,8 @@ function() {
 
     menuContentTPElem = this.get('menuContent');
 
-    //  Update the scrolling buttons based whether our content is overflowing.
+    //  Update the scrolling buttons based whether our *menu* (not body) content
+    //  is overflowing.
     //  Note how we do this on the next repaint so that our overflow
     //  calculations are based on our size after layout has taken place.
     (function() {
@@ -233,6 +224,39 @@ function() {
         this.signal('TP.sig.DidRender');
 
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.menucontent.Inst.defineMethod('setupScrollingOn',
+function(aContentTPElem) {
+
+    /**
+     * @method setupScrollingOn
+     * @summary Sets up scrolling on the supplied content element. This method
+     *     sets up the receiver to listen to DOMScroll signals from the supplied
+     *     content element and wires the scrolling arrows to highlight the
+     *     arrows as the scroll position moves.
+     * @param {TP.dom.ElementNode} aContentTPElem The content element to set up
+     *     scrolling on.
+     * @returns {TP.sherpa.menucontent} The receiver.
+     */
+
+    var arrows;
+
+    this.observe(aContentTPElem, 'TP.sig.DOMScroll');
+
+    arrows = TP.byCSSPath('> .footer > sherpa|scrollbutton',
+                            this.getNativeNode(),
+                            false,
+                            true);
+
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.set('scrollingContentTPElem', aContentTPElem);
+            });
 
     return this;
 });
@@ -285,6 +309,38 @@ function(aStyleTPElem) {
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.menucontent.Inst.defineMethod('teardownScrollingOn',
+function(aContentTPElem) {
+
+    /**
+     * @method teardownScrollingOn
+     * @summary Tears down scrolling on the supplied content element. This
+     *     method is used in conjunction with the 'setupScrollingOn' method.
+     *     Look for more detail there.
+     * @param {TP.dom.ElementNode} aContentTPElem The content element to tear
+     *     down scrolling on.
+     * @returns {TP.sherpa.menucontent} The receiver.
+     */
+
+    var arrows;
+
+    this.ignore(aContentTPElem, 'TP.sig.DOMScroll');
+
+    arrows = TP.byCSSPath('> .footer > sherpa|scrollbutton',
+                            this.getNativeNode(),
+                            false,
+                            true);
+
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.set('scrollingContentTPElem', null);
+            });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
