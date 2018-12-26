@@ -127,6 +127,32 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.type_assistant.Inst.defineHandler('ResetSupertype',
+function(anObject) {
+
+    /**
+     * @method handleResetSupertype
+     * @summary Handles when the user wants to reset the supertype.
+     * @param {TP.sig.ResetSupertype} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.tsh.type_assistant} The receiver.
+     */
+
+    var result;
+
+    result = this.get('assistantModelURI').getResource().get('result');
+
+    if (TP.notValid(result)) {
+        return this;
+    }
+
+    result.set('$.info.supertype', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.type_assistant.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
