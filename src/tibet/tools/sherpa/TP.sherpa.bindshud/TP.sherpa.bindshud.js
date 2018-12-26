@@ -929,101 +929,6 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.bindshud.Inst.defineHandler('SetBindingExpr',
-function(aSignal) {
-
-    /**
-     * @method handleSetBindingExpr
-     * @summary Handles notifications of when the receiver wants to set the
-     *     binding expression of the current halo target.
-     * @param {TP.sig.SetBindingExpr} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.bindshud} The receiver.
-     */
-
-    var halo,
-
-        targetTPElem,
-
-        attrName,
-        val,
-
-        bindingExprs,
-        expandedBindingExpr,
-
-        sourceURI,
-
-        sourceResource;
-
-    //  Grab the halo's target element.
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    targetTPElem = halo.get('currentTargetTPElem');
-
-    //  Determine the name of the binding attribute that we're setting based on
-    //  what is defined on the target element.
-    attrName = targetTPElem.computeBindingAttributeName();
-    if (TP.notValid(attrName)) {
-        return this;
-    }
-
-    //  Grab the value from the origin of the signal (which is probably a text
-    //  field)
-    val = TP.wrap(aSignal.getOrigin()).get('value');
-
-    //  Turn on the Sherpa's 'process DOM mutations' machinery to capture
-    //  modifiations to the source DOM, if possible.
-    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
-
-    //  Go ahead and set the attribute to the new value.
-    targetTPElem.setAttribute(attrName, val);
-
-    //  Refresh any data bindings.
-    targetTPElem.refresh();
-
-    //  Grab all of the fully expanded binding expressions from the element and
-    //  grab the first one, which is what we'll use here.
-    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
-    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
-
-    if (!TP.isURIString(expandedBindingExpr)) {
-        return this;
-    }
-
-    //  Create a source URI from the expanded binding expression.
-    sourceURI = TP.uc(expandedBindingExpr);
-
-    //  Grab the content of the URI, which will be the output for this
-    //  particular bind.
-    sourceResource = sourceURI.getResource(
-                                TP.hc('resultType', TP.WRAP));
-    sourceResource.then(
-        function(sourceResult) {
-
-            var formattedResult,
-
-                tileTPElem,
-
-                bindingExprOutput;
-
-            //  Format the result and use it as part of the panel content.
-            formattedResult = this.formatBindOutput(sourceResult, sourceURI);
-
-            //  Grab the tile element that we're being displayed in.
-            tileTPElem = TP.byId('BindSummary_Tile', this.getNativeWindow());
-
-            //  Grab the div that represents the binding output and set its
-            //  value.
-            bindingExprOutput =
-                TP.byCSSPath(' .bindoutput', tileTPElem, true, true);
-
-            bindingExprOutput.set('value', formattedResult);
-        }.bind(this));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.bindshud.Inst.defineHandler('FocusHalo',
 function(aSignal) {
 
@@ -1180,6 +1085,101 @@ function(aSignal) {
                 'ConsoleCommand',
                 TP.hc('cmdText', cmdText,
                         'showBusy', true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineHandler('SetBindingExpr',
+function(aSignal) {
+
+    /**
+     * @method handleSetBindingExpr
+     * @summary Handles notifications of when the receiver wants to set the
+     *     binding expression of the current halo target.
+     * @param {TP.sig.SetBindingExpr} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var halo,
+
+        targetTPElem,
+
+        attrName,
+        val,
+
+        bindingExprs,
+        expandedBindingExpr,
+
+        sourceURI,
+
+        sourceResource;
+
+    //  Grab the halo's target element.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    targetTPElem = halo.get('currentTargetTPElem');
+
+    //  Determine the name of the binding attribute that we're setting based on
+    //  what is defined on the target element.
+    attrName = targetTPElem.computeBindingAttributeName();
+    if (TP.notValid(attrName)) {
+        return this;
+    }
+
+    //  Grab the value from the origin of the signal (which is probably a text
+    //  field)
+    val = TP.wrap(aSignal.getOrigin()).get('value');
+
+    //  Turn on the Sherpa's 'process DOM mutations' machinery to capture
+    //  modifiations to the source DOM, if possible.
+    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
+    //  Go ahead and set the attribute to the new value.
+    targetTPElem.setAttribute(attrName, val);
+
+    //  Refresh any data bindings.
+    targetTPElem.refresh();
+
+    //  Grab all of the fully expanded binding expressions from the element and
+    //  grab the first one, which is what we'll use here.
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
+
+    if (!TP.isURIString(expandedBindingExpr)) {
+        return this;
+    }
+
+    //  Create a source URI from the expanded binding expression.
+    sourceURI = TP.uc(expandedBindingExpr);
+
+    //  Grab the content of the URI, which will be the output for this
+    //  particular bind.
+    sourceResource = sourceURI.getResource(
+                                TP.hc('resultType', TP.WRAP));
+    sourceResource.then(
+        function(sourceResult) {
+
+            var formattedResult,
+
+                tileTPElem,
+
+                bindingExprOutput;
+
+            //  Format the result and use it as part of the panel content.
+            formattedResult = this.formatBindOutput(sourceResult, sourceURI);
+
+            //  Grab the tile element that we're being displayed in.
+            tileTPElem = TP.byId('BindSummary_Tile', this.getNativeWindow());
+
+            //  Grab the div that represents the binding output and set its
+            //  value.
+            bindingExprOutput =
+                TP.byCSSPath(' .bindoutput', tileTPElem, true, true);
+
+            bindingExprOutput.set('value', formattedResult);
+        }.bind(this));
 
     return this;
 });
