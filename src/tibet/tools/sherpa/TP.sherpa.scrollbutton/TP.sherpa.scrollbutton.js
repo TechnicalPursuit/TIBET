@@ -29,6 +29,15 @@ TP.sherpa.scrollbutton.Inst.defineAttribute('scrollingContentTPElem');
 TP.sherpa.scrollbutton.Inst.defineHandler('ScrollDown',
 function(aSignal) {
 
+    /**
+     * @method handleScrollDown
+     * @summary Handles when the user wants to scroll the content the receiver
+     *     is connected to down.
+     * @param {TP.sig.ScrollDown} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.scrollbutton} The receiver.
+     */
+
     this.get('scrollingContentTPElem').scrollBy(TP.DOWN, TP.PAGE, 'height');
 
     //  Stop propagation on the triggering signal (i.e. the DOM signal) so that
@@ -42,6 +51,15 @@ function(aSignal) {
 
 TP.sherpa.scrollbutton.Inst.defineHandler('ScrollUp',
 function(aSignal) {
+
+    /**
+     * @method handleScrollUp
+     * @summary Handles when the user wants to scroll the content the receiver
+     *     is connected to up.
+     * @param {TP.sig.ScrollUp} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.scrollbutton} The receiver.
+     */
 
     this.get('scrollingContentTPElem').scrollBy(TP.UP, TP.PAGE, 'height');
 
@@ -57,6 +75,15 @@ function(aSignal) {
 TP.sherpa.scrollbutton.Inst.defineHandler('ScrollLeft',
 function(aSignal) {
 
+    /**
+     * @method handleScrollLeft
+     * @summary Handles when the user wants to scroll the content the receiver
+     *     is connected to left.
+     * @param {TP.sig.ScrollLeft} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.scrollbutton} The receiver.
+     */
+
     this.get('scrollingContentTPElem').scrollBy(TP.LEFT, TP.PAGE, 'width');
 
     //  Stop propagation on the triggering signal (i.e. the DOM signal) so that
@@ -71,6 +98,15 @@ function(aSignal) {
 TP.sherpa.scrollbutton.Inst.defineHandler('ScrollRight',
 function(aSignal) {
 
+    /**
+     * @method handleScrollRight
+     * @summary Handles when the user wants to scroll the content the receiver
+     *     is connected to right.
+     * @param {TP.sig.ScrollRight} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.scrollbutton} The receiver.
+     */
+
     this.get('scrollingContentTPElem').scrollBy(TP.RIGHT, TP.PAGE, 'width');
 
     //  Stop propagation on the triggering signal (i.e. the DOM signal) so that
@@ -84,6 +120,13 @@ function(aSignal) {
 
 TP.sherpa.scrollbutton.Inst.defineMethod('updateForScrollingContent',
 function() {
+
+    /**
+     * @method updateForScrollingContent
+     * @summary Updates the receiver to accurately reflect the scroll position
+     *     of the content it is connected to.
+     * @returns {TP.sherpa.scrollbutton} The receiver.
+     */
 
     var elem,
         orientation,
@@ -100,6 +143,10 @@ function() {
     }
 
     contentElem = contentElem.getNativeNode();
+
+    //  Tweak the receiver's 'class' attribute, adding or removing the 'more'
+    //  class depending on whether the content it is connected to has more
+    //  content in that direction.
 
     if (orientation === 'down') {
 
