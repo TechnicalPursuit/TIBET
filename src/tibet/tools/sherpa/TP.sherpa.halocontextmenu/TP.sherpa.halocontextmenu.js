@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('halocontextmenu');
+TP.sherpa.menucontent.defineSubtype('halocontextmenu');
 
 TP.sherpa.halocontextmenu.Inst.defineAttribute('title',
     TP.cpc('> .header > .title', TP.hc('shouldCollapse', true)));
@@ -23,8 +23,11 @@ TP.sherpa.halocontextmenu.Inst.defineAttribute('title',
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halocontextmenu.Inst.defineAttribute('bodyContent',
+    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
+
 TP.sherpa.halocontextmenu.Inst.defineAttribute('menuContent',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
+    TP.cpc('> .body > *', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -95,21 +98,53 @@ function() {
      */
 
     var haloTarget,
-        theContent;
+
+        oldContent,
+        newContent,
+
+        menuContentTPElem;
 
     haloTarget = TP.byId('SherpaHalo', this.getNativeDocument()).get(
                                                     'currentTargetTPElem');
 
+    //  If there is a valid target, then get the context menu for it.
     if (TP.isValid(haloTarget)) {
 
-        theContent = haloTarget.getContentForTool('contextMenu');
-        this.get('menuContent').setContent(theContent);
+        //  First, we need to teardown any scrolling on the current *body*
+        //  content.
+        oldContent = this.get('bodyContent').getFirstChildElement();
+        this.teardownScrollingOn(oldContent);
+
+        //  Then, grab the contextMenu content from the current halo target.
+        newContent = haloTarget.getContentForTool('contextMenu');
+
+        //  If the new content is valid, then set the body content to it. Also,
+        //  set up scrolling on the *menu* content.
+        if (TP.isValid(newContent)) {
+            this.get('bodyContent').setContent(newContent);
+
+            menuContentTPElem = this.get('menuContent');
+            if (TP.isValid(menuContentTPElem)) {
+                this.setupScrollingOn(this.get('menuContent'));
+            }
+        }
     }
 
     //  Signal to observers that this control has rendered.
     this.signal('TP.sig.DidRender');
 
-    return this;
+    if (TP.isValid(haloTarget)) {
+
+        //  If we have valid menu content, scroll it to the top.
+        menuContentTPElem = this.get('menuContent');
+        if (TP.isValid(menuContentTPElem)) {
+            (function() {
+                menuContentTPElem.scrollTo(TP.TOP);
+            }).queueForNextRepaint(this.getNativeWindow());
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

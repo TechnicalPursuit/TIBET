@@ -63,7 +63,7 @@ sherpa|halocontextmenu > .body {
     position: absolute;
 
     top: 31px;
-    bottom: 0;
+    bottom: 31px;
     right: 0;
     left: 0;
 
@@ -77,7 +77,57 @@ sherpa|halocontextmenu > .body {
 
     background-color: #fff;
 
-    overflow: hidden;
-
     text-align: center;
+}
+
+sherpa|halocontextmenu > .footer {
+
+    position: absolute;
+
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    height: 32px;
+
+    background-color: #efefef;
+
+    border-top: solid 1px #666;
+
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-bottom: 2px;
+}
+
+sherpa|halocontextmenu > .footer > sherpa|scrollbutton {
+
+}
+
+sherpa|halocontextmenu > .footer > sherpa|scrollbutton[orientation="up"] {
+
+    top: 5px;
+    right: 5em;
+}
+
+sherpa|halocontextmenu > .footer > sherpa|scrollbutton[orientation="up"] .icon::after {
+
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
+sherpa|halocontextmenu > .footer > sherpa|scrollbutton[orientation="down"] {
+
+    top: 5px;
+    right: 3em;
+}
+
+sherpa|halocontextmenu > .footer > sherpa|scrollbutton[orientation="down"] .icon::after {
+
+    /* This is the same as '&#8595' */
+    content: "\2193";
+}
+
+sherpa|halocontextmenu[class~="overflowing"] .footer > sherpa|scrollbutton {
+
+    display: block;
 }
