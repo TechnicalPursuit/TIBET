@@ -93,6 +93,9 @@ function(aRequest) {
 
 TP.sherpa.bindshud.Inst.defineAttribute('highlighted');
 
+TP.sherpa.bindshud.Inst.defineAttribute('assistantFocusedItem',
+    TP.cpc('> .content li.assistantfocus', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -167,6 +170,8 @@ function(aSignal) {
 
         centerTPElem,
         centerTPElemPageRect,
+
+        targetTPElem,
         targetElemPageRect,
 
         tileTPElem,
@@ -176,6 +181,9 @@ function(aSignal) {
         mainRule,
 
         tileWidth,
+
+        assistantFocusedItem,
+
         xCoord;
 
     //  Although we get the 'item selected' signal as a parameter, what we
@@ -298,9 +306,11 @@ function(aSignal) {
     centerTPElem = TP.byId('center', this.getNativeWindow());
     centerTPElemPageRect = centerTPElem.getPageRect();
 
+    targetTPElem = TP.wrap(targetElem);
+
     //  Use the 'Y' coordinate where the target element is located in the
     //  page.
-    targetElemPageRect = TP.wrap(targetElem).getPageRect();
+    targetElemPageRect = targetTPElem.getPageRect();
 
     //  ---
 
@@ -320,6 +330,9 @@ function(aSignal) {
                                     'BindsHUDTileBody'));
 
         newContentTPElem.awaken();
+
+        //  Observe the tile for HiddenChange so that we can tell when it hides.
+        this.observe(tileTPElem, 'HiddenChange');
 
         sheet = this.getStylesheetForStyleResource();
         mainRule = TP.styleSheetGetStyleRulesMatching(
@@ -344,6 +357,16 @@ function(aSignal) {
                                 sourceTPElem,
                                 'BindsHUDTileBody'));
     }
+
+    //  If the assistant is already focused on another item, then remove the
+    //  'assistantfocus' class on that item.
+    assistantFocusedItem = this.get('assistantFocusedItem');
+    if (!TP.isEmptyArray(assistantFocusedItem)) {
+        assistantFocusedItem.removeClass('assistantfocus');
+    }
+
+    //  Add the 'assistantfocus' class to the item that we're focusing.
+    targetTPElem.addClass('assistantfocus');
 
     xCoord = centerTPElemPageRect.getX() +
                 centerTPElemPageRect.getWidth() -
@@ -1087,6 +1110,40 @@ function(aSignal) {
                         'showBusy', true));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindshud.Inst.defineHandler('HiddenChange',
+function(aSignal) {
+
+    /**
+     * @method handleHiddenChangeFromSherpaConsole
+     * @summary Handles notifications of when the 'hidden' state of the
+     *     assistant tile associated with this panel changes.
+     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.bindshud} The receiver.
+     */
+
+    var isHidden,
+
+        assistantFocusedItem;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    //  If we're hiding, and there is an assistant focused item, then remove the
+    //  'assistantfocus' class.
+    if (isHidden) {
+        assistantFocusedItem = this.get('assistantFocusedItem');
+        if (TP.isValid(assistantFocusedItem)) {
+            assistantFocusedItem.removeClass('assistantfocus');
+        }
+    }
+
+    return this;
+}, {
+    origin: 'BindSummary_Tile'
 });
 
 //  ------------------------------------------------------------------------

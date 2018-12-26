@@ -79,6 +79,11 @@ sherpa|respondershud > ul.content > li[pclass|selected]:hover {
     background-color: #86af9b;
 }
 
+sherpa|respondershud > ul.content > li.assistantfocus {
+
+    font-weight: bold;
+}
+
 sherpa|respondershud > ul.content > li[type="element"] {
 }
 

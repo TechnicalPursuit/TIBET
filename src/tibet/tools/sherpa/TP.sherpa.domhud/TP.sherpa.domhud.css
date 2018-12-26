@@ -68,6 +68,11 @@ sherpa|domhud > ul.content > li.domnode[pclass|disabled] {
     opacity: 0.3;
 }
 
+sherpa|domhud > ul.content > li.domnode.assistantfocus {
+
+    font-weight: bold;
+}
+
 sherpa|domhud > ul.content > li.domnode[child] {
 
     margin-left: 2em;

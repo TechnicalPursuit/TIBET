@@ -86,6 +86,9 @@ TP.sherpa.domhud.Inst.defineAttribute('$currentDNDTarget');
 
 TP.sherpa.domhud.Inst.defineAttribute('highlighted');
 
+TP.sherpa.domhud.Inst.defineAttribute('assistantFocusedItem',
+    TP.cpc('> .content li.assistantfocus', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -642,7 +645,9 @@ function(aTPElem) {
         newContentTPElem,
 
         currentBodyElem,
-        currentFooterElem;
+        currentFooterElem,
+
+        assistantFocusedItem;
 
     //  Grab all of our (non-spacer) list items.
     listItems = this.get('listitems');
@@ -726,6 +731,10 @@ function(aTPElem) {
         newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(newFooterElem);
+
+        //  Observe the tile for HiddenChange so that we can tell when it hides.
+        this.observe(tileTPElem, 'HiddenChange');
+
     } else {
         currentBodyElem = TP.unwrap(
                             tileTPElem.get('body').getFirstChildElement());
@@ -755,6 +764,16 @@ function(aTPElem) {
         tileTPElem.get('body').
             focusAutofocusedOrFirstFocusableDescendant();
     }).queueForNextRepaint(tileTPElem.getNativeWindow());
+
+    //  If the assistant is already focused on another item, then remove the
+    //  'assistantfocus' class on that item.
+    assistantFocusedItem = this.get('assistantFocusedItem');
+    if (!TP.isEmptyArray(assistantFocusedItem)) {
+        assistantFocusedItem.removeClass('assistantfocus');
+    }
+
+    //  Add the 'assistantfocus' class to the item that we're focusing.
+    itemTPElem.addClass('assistantfocus');
 
     tileTPElem.setAttribute('hidden', false);
 
@@ -1462,6 +1481,40 @@ function(aSignal) {
             TP.hc('observeResource', false, 'signalChange', true));
 
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('HiddenChange',
+function(aSignal) {
+
+    /**
+     * @method handleHiddenChangeFromSherpaConsole
+     * @summary Handles notifications of when the 'hidden' state of the
+     *     assistant tile associated with this panel changes.
+     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var isHidden,
+
+        assistantFocusedItem;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    //  If we're hiding, and there is an assistant focused item, then remove the
+    //  'assistantfocus' class.
+    if (isHidden) {
+        assistantFocusedItem = this.get('assistantFocusedItem');
+        if (TP.isValid(assistantFocusedItem)) {
+            assistantFocusedItem.removeClass('assistantfocus');
+        }
+    }
+
+    return this;
+}, {
+    origin: 'DOMInfo_Tile'
 });
 
 //  ------------------------------------------------------------------------

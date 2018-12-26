@@ -86,6 +86,11 @@ sherpa|bindshud > ul.content > li.domnode[pclass|selected]:hover {
     background-color: #c88b6b;
 }
 
+sherpa|bindshud > ul.content > li.domnode.assistantfocus {
+
+    font-weight: bold;
+}
+
 /* spacer items */
 
 sherpa|bindshud > ul.content > li.spacer {
