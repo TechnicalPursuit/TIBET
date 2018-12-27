@@ -20,198 +20,182 @@ sherpa|signalConnectionAssistant > .head {
 sherpa|signalConnectionAssistant > .body {
 
     position: absolute;
+    display: grid;
+
+    grid-template-rows: 3em 1fr 3em 3em 5em;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "source_field_group destination_field_group"
+        "source_input_list destination_input_list"
+        "source_origin_field_group source_payload_control_group"
+        "source_policy_field_group source_payload_group"
+        "source_policy_field_group source_payload_group";
 
     top: 0;
-    left: 0;
     right: 0;
+    left: 0;
     bottom: 6em;
 
     text-align: left;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser {
+sherpa|signalConnectionAssistant .sourceSignalFieldGroup {
+
+    grid-area: source_field_group;
 
     position: absolute;
-
-    display: grid;
-
-    top: 0;
-    left: 0;
-
-    width: 50%;
-
-    grid-template-rows: 2.5em 12em;
-    grid-template-columns: 2fr;
-
-    grid-template-areas:
-        "inputlabel inputfield"
-        "inputlist inputlist";
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > label {
-
     display: flex;
 
-    grid-area: inputlabel;
+    left: 5px;
+    right: 5px;
 
     align-items: center;
+}
 
-    margin-left: 10px;
+sherpa|signalConnectionAssistant .sourceSignalFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > input {
+sherpa|signalConnectionAssistant .sourceSignalFieldGroup > input {
 
-    grid-area: inputfield;
+    width: 100%;
 
-    width: 17em;
-
-    margin-right: 5px;
+    margin-left: 5px;
+    margin-right: 0;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalChooser > xctrls|list {
+sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalList {
 
-    grid-area: inputlist;
-
-    position: absolute;
-
-    top: 5px;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
-
-    width: auto;
-
-    line-height: 1.5;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser {
+    grid-area: source_input_list;
 
     position: absolute;
-    display: grid;
 
     top: 0;
-    left: 50%;
-
-    width: 50%;
-
-    grid-template-rows: 2.5em 12em;
-    grid-template-columns: 2fr;
-
-    grid-template-areas:
-        "inputlabel inputfield"
-        "inputlist inputlist";
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > label {
-
-    grid-area: inputlabel;
-
-    display: flex;
-
-    align-items: center;
-
-    margin-left: 10px;
-
-    font-weight: bold;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > input {
-
-    grid-area: inputfield;
-
-    width: 16.4em;
-
-    margin-right: 5px;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationHandlersChooser > xctrls|list {
-
-    position: absolute;
-
-    grid-area: inputlist;
-
-    top: 5px;
     right: 5px;
-    bottom: 5px;
-    left: 5px;
-
-    width: auto;
-
-    line-height: 1.5;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo {
-
-    position: absolute;
-    display: grid;
-
-    top: 60%;
-    right: 0;
     bottom: 0;
-    left: 0;
+    left: 5px;
 
-    margin-left: 10px;
-    margin-right: 10px;
+    width: auto;
 
-    grid-template-rows: 2.5em auto 1.5em auto;
-    grid-template-columns: 50% 50%;
+    line-height: 1.5;
+}
 
-    grid-template-areas:
-        "sourceinfoinputlabel sourceinfopayloadlabel"
-        "sourceinfoinput sourceinfopayload"
-        "sourceinfoselectlabel sourceinfopayload"
-        "sourceinfoselect sourceinfopayload";
+sherpa|signalConnectionAssistant .destinationSignalFieldGroup {
+
+    grid-area: destination_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
 
     align-items: center;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo label {
+sherpa|signalConnectionAssistant .destinationSignalFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo > label[for="signalConnectionAssistant_SourceSignalOriginField"] {
+sherpa|signalConnectionAssistant .destinationSignalFieldGroup > input {
 
-    grid-area: sourceinfoinputlabel;
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalOriginField {
+sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationSignalList {
 
-    grid-area: sourceinfoinput;
-
-    width: auto;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalInfo > label[for="signalConnectionAssistant_SourceSignalPolicyField"] {
-
-    grid-area: sourceinfoselectlabel;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPolicyField {
-
-    grid-area: sourceinfoselect;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel {
-
-    grid-area: sourceinfopayloadlabel;
-
-    margin-left: 10px;
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel {
-
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel label {
-
-}
-
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadLabel .inserter {
+    grid-area: destination_input_list;
 
     position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 0;
+    left: 5px;
+
+    width: auto;
+
+    line-height: 1.5;
+}
+
+sherpa|signalConnectionAssistant .signalOriginFieldGroup {
+
+    grid-area: source_origin_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+sherpa|signalConnectionAssistant .signalOriginFieldGroup > label {
+
+    font-weight: bold;
+}
+
+sherpa|signalConnectionAssistant .signalOriginFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+sherpa|signalConnectionAssistant .signalPolicyFieldGroup {
+
+    grid-area: source_policy_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+sherpa|signalConnectionAssistant .signalPolicyFieldGroup > label {
+
+    font-weight: bold;
+}
+
+sherpa|signalConnectionAssistant .signalPolicyFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+sherpa|signalConnectionAssistant .signalPayloadControlGroup {
+
+    grid-area: source_payload_control_group;
+
+    position: absolute;
+    display: flex;
+
+    top: 8px;
+    right: 5px;
+    left: 5px;
+
+    align-items: center;
+    justify-content: flex-end;
+}
+
+sherpa|signalConnectionAssistant .signalPayloadControlGroup > label {
+
+    font-weight: bold;
+}
+
+sherpa|signalConnectionAssistant .signalPayloadControlGroup > .inserter {
 
     top: 2px;
     right: 0;
@@ -228,18 +212,16 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayloadL
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalPayload {
+sherpa|signalConnectionAssistant .signalPayloadGroup {
 
-    grid-area: sourceinfopayload;
+    grid-area: source_payload_group;
 
     position: absolute;
 
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-
-    margin-bottom: 4px;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
 }
 
 sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries {
@@ -325,7 +307,7 @@ sherpa|signalConnectionAssistant > .foot .inserter {
 
     float: right;
 
-    margin: 3px 6px;
+    margin: 6px;
     cursor: pointer;
 
     width: 20px;
