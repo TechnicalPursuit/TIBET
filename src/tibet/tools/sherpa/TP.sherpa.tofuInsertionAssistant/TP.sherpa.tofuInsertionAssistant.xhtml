@@ -4,55 +4,50 @@
     <div class="head"/>
     <div class="body">
 
-        <div class="insertion_data">
-            <div bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
-                <div class="insertion_point">
-                    <label>Ancestors:</label>
-                    <sherpa:breadcrumb id="tofuInsertionAssistant_InsertionBreadcrumb"/>
-                </div>
-
-                <div class="insertion_position">
-                    <label>Insertion:</label>
-                    <ul class="flex_inner">
-                        <li>
-                            <input type="radio" name="insertion_radio" value="BeforeBegin" id="tofuInsertionAssistant_InsertionPositionRadio1" bind:io="{checked: insertionPosition}"/>
-                            <label for="tofuInsertionAssistant_InsertionPositionRadio1">Previous Sibling</label>
-                        </li>
-                        <li>
-                            <input type="radio" name="insertion_radio" value="AfterBegin" id="tofuInsertionAssistant_InsertionPositionRadio2"/>
-                            <label for="tofuInsertionAssistant_InsertionPositionRadio2">First Child</label>
-                        </li>
-                        <li>
-                            <input type="radio" name="insertion_radio" value="BeforeEnd" id="tofuInsertionAssistant_InsertionPositionRadio3"/>
-                            <label for="tofuInsertionAssistant_InsertionPositionRadio3">Last Child</label>
-                        </li>
-                        <li>
-                            <input type="radio" name="insertion_radio" value="AfterEnd" id="tofuInsertionAssistant_InsertionPositionRadio4"/>
-                            <label for="tofuInsertionAssistant_InsertionPositionRadio4">Next Sibling</label>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <div class="insertionPointGroup">
+            <label>Ancestors:</label>
+            <sherpa:breadcrumb id="tofuInsertionAssistant_InsertionBreadcrumb"/>
         </div>
 
-        <div id="tofuInsertionAssistant_TypeChooser">
+        <div class="insertionPositionGroup" bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
+            <label>Insertion:</label>
+            <ul class="insertionRadios">
+                <li>
+                    <input type="radio" name="insertion_radio" value="BeforeBegin" id="tofuInsertionAssistant_InsertionPositionRadio1" bind:io="{checked: insertionPosition}"/>
+                    <label for="tofuInsertionAssistant_InsertionPositionRadio1">Previous Sibling</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="AfterBegin" id="tofuInsertionAssistant_InsertionPositionRadio2"/>
+                    <label for="tofuInsertionAssistant_InsertionPositionRadio2">First Child</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="BeforeEnd" id="tofuInsertionAssistant_InsertionPositionRadio3"/>
+                    <label for="tofuInsertionAssistant_InsertionPositionRadio3">Last Child</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="AfterEnd" id="tofuInsertionAssistant_InsertionPositionRadio4"/>
+                    <label for="tofuInsertionAssistant_InsertionPositionRadio4">Next Sibling</label>
+                </li>
+            </ul>
+        </div>
+
+        <div class="typeChooserFieldGroup">
             <label for="tofuInsertionAssistant_NewTagNameField">New Type:</label>
             <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.enteredTagName)}" ui:incremental="model" autocomplete="off"/>
-            <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.chosenTagName)}" filter="true"/>
+        </div>
+        <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.chosenTagName)}" filter="true"/>
+
+        <div class="attributesControlGroup">
+            <label>Attributes (click + to add):</label>
+            <button class="inserter" on:click="{signal: InsertItem, origin: tofuInsertionAssistant_AttributeEntries, payload: {source: 'urn:tibet:dom_attr_data_blank', copy: true}}"></button>
         </div>
 
-        <div class="insertion_details">
-            <div class="insertion_attrs" bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
-                <div id="tofuInsertionAssistant_AttributesTable">
-                    <label>Attributes (click + to add):</label>
-                    <button class="inserter" on:click="{signal: InsertItem, origin: tofuInsertionAssistant_Attributes, payload: {source: 'urn:tibet:dom_attr_data_blank', copy: true}}"></button>
-                    <tibet:group wrapWhen="true" id="tofuInsertionAssistant_Attributes" bind:repeat="tagAttrs">
-                            <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
-                            <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
-                            <span class="deleter" on:click="{signal: DeleteItem, origin: tofuInsertionAssistant_Attributes, payload: {index: TP.TARGET}}"/>
-                    </tibet:group>
-                </div>
-            </div>
+        <div class="attributesGroup" bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
+            <tibet:group wrapWhen="true" id="tofuInsertionAssistant_AttributeEntries" bind:repeat="tagAttrs">
+                <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
+                <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
+                <span class="deleter" on:click="{signal: DeleteItem, origin: tofuInsertionAssistant_AttributeEntries, payload: {index: TP.TARGET}}"/>
+            </tibet:group>
         </div>
 
     </div>

@@ -20,208 +20,169 @@ sherpa|tofuInsertionAssistant > .head {
 sherpa|tofuInsertionAssistant > .body {
 
     position: absolute;
-
     display: grid;
 
     grid-template-columns: 50% 50%;
-    grid-template-rows: auto;
+    grid-template-rows: 2em 2em 3em 1fr;
     grid-template-areas:
-        "insertion_data insertion_data"
-        "type_chooser insertion_details";
+        "insertion_point_group insertion_point_group"
+        "insertion_position_group insertion_position_group"
+        "type_chooser_field_group attributes_control_group"
+        "type_chooser_list attributes_group";
 
     top: 0;
     left: 0;
     right: 0;
     bottom: 6em;
 
-    overflow: hidden;
-
     text-align: left;
 }
 
-sherpa|tofuInsertionAssistant > .foot {
+sherpa|tofuInsertionAssistant > .body .insertionPointGroup {
+
+    grid-area: insertion_point_group;
 
     position: absolute;
-
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-
-    height: 6em;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_data {
-
-    grid-area: insertion_data;
-
-    top: 0;
-    left: 0;
-    width: 100%;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_point {
-
-    height: 1.5em;
-
-    line-height: 1.5em;
-
-    margin: 12px;
-    padding: 0;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_point label {
-
-    margin: 12px 0 0 8px;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_position {
-
-    display: flex;
-    position: relative;
-
-    align-items: center;
-
-    margin-left: 12px;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_position label {
-
-    margin: 0 12px 0 8px;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner {
-
     display: flex;
 
-    align-items: center;
-
-    height: 1.5em;
-    width: 100%;
-
-    line-height: 1.5em;
-
-    margin: 0;
-    padding: 0;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner li {
-
-    display: flex;
+    left: 5px;
+    right: 5px;
 
     align-items: center;
-
-    margin-right: 2em;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner li input {
+sherpa|tofuInsertionAssistant > .body .insertionPointGroup label {
 
-    margin-right: 4px;
+    font-weight: bold;
+
+    margin-top: 5px;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_position .flex_inner li label {
-
-    margin-left: 0;
-    margin-right: 4px;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_details {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb {
 
     position: relative;
 
-    grid-area: insertion_details;
+    display: block;
 
-    padding-left: 5px;
-    padding-right: 5px;
+    top: 5px;
+    left: 5px;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb > .content div.item {
 
-    margin-left: 0;
+    color: black;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer li,
-.flex-inner {
+sherpa|tofuInsertionAssistant > .body .insertionPositionGroup {
 
-    position: relative;
+    grid-area: insertion_position_group;
 
+    position: absolute;
     display: flex;
-    flex-wrap: wrap;
+
+    left: 5px;
+    right: 5px;
+
     align-items: center;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer > li > label {
-
-    flex: 1 0 100px;
-
-    max-width: 100px;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_details .flex_outer > li > label + * {
-
-    margin: 0;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_details input {
-
-    margin-left: 10px;
-}
-
-sherpa|tofuInsertionAssistant > .body .insertion_details input:checked + label {
+sherpa|tofuInsertionAssistant > .body .insertionPositionGroup label {
 
     font-weight: bold;
 }
 
-sherpa|tofuInsertionAssistant > .body .insertion_details div.insertion_attrs {
+sherpa|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios {
+
+    display: flex;
+
+    margin: 0;
+}
+
+sherpa|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios li {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
+}
+
+sherpa|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios li input {
+
+    margin-right: 4px;
+}
+
+sherpa|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios li label {
+
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
+}
+
+sherpa|tofuInsertionAssistant .typeChooserFieldGroup {
+
+    grid-area: type_chooser_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+sherpa|tofuInsertionAssistant .typeChooserFieldGroup > label {
+
+    font-weight: bold;
+}
+
+sherpa|tofuInsertionAssistant .typeChooserFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+sherpa|tofuInsertionAssistant #tofuInsertionAssistant_TagTypes {
+
+    grid-area: type_chooser_list;
 
     position: absolute;
 
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
 
-sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser {
-
-    grid-area: type_chooser;
-
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TypeChooser input {
-
-    width: calc(100% - 7em);
-}
-
-xctrls|list#tofuInsertionAssistant_TagTypes {
-
-    width: 100%;
-    height: 9em;
-
-    overflow-y: auto;
+    width: auto;
 
     line-height: 1.5;
 }
 
-#tofuInsertionAssistant_AttributesTable {
+sherpa|tofuInsertionAssistant .attributesControlGroup {
 
-    width: 100%;
-    height: 100%;
-}
-
-#tofuInsertionAssistant_AttributesTable label {
+    grid-area: attributes_control_group;
 
     position: absolute;
+    display: flex;
 
-    top: 10px;
+    top: 8px;
+    right: 5px;
     left: 5px;
+
+    align-items: center;
+    justify-content: flex-end;
 }
 
-#tofuInsertionAssistant_AttributesTable .inserter {
+sherpa|tofuInsertionAssistant .attributesControlGroup > label {
 
-    position: absolute;
+    font-weight: bold;
+}
+
+sherpa|tofuInsertionAssistant .attributesControlGroup > .inserter {
 
     top: 2px;
     right: 0;
@@ -238,13 +199,25 @@ xctrls|list#tofuInsertionAssistant_TagTypes {
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
-#tofuInsertionAssistant_Attributes {
+sherpa|tofuInsertionAssistant .attributesGroup {
+
+    grid-area: attributes_group;
 
     position: absolute;
 
-    top: 2.5em;
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+}
+
+sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries {
+
+    position: absolute;
+
+    top: 0;
     right: 0;
-    bottom: 1.5em;
+    bottom: 0;
     left: 0;
 
     border: dotted 1px gray;
@@ -252,14 +225,14 @@ xctrls|list#tofuInsertionAssistant_TagTypes {
     overflow-y: auto;
 }
 
-#tofuInsertionAssistant_Attributes > span {
+sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-#tofuInsertionAssistant_Attributes > span input {
+sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries > span input {
 
     width: auto;
     height: 1em;
@@ -269,7 +242,7 @@ xctrls|list#tofuInsertionAssistant_TagTypes {
     margin-bottom: 2px;
 }
 
-#tofuInsertionAssistant_Attributes .deleter {
+sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries .deleter {
 
     width: 24px;
     height: 24px;
@@ -283,36 +256,35 @@ xctrls|list#tofuInsertionAssistant_TagTypes {
     background-image: url("../media/ic_close_black_24px.svg");
 }
 
-#tofuInsertionAssistant_InsertionBreadcrumb {
+sherpa|tofuInsertionAssistant > .foot {
 
-    display: block;
+    position: absolute;
 
-    top: 12px;
-    left: 7em;
-}
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
 
-#tofuInsertionAssistant_InsertionBreadcrumb > .content div.item {
-
-    color: black;
+    height: 6em;
 }
 
 sherpa|tofuInsertionAssistant > .foot #generatedTag {
 
     display: inline-block;
 
-    font-size: 100%;
-
-    background-color: cornsilk;
-
-    border: dotted 1px black;
-
     width: 90%;
-    height: 1.5em;
-
-    line-height: 1.5em;
+    height: 3em;
 
     padding: 0 12px;
     margin: 0 12px;
 
+    font-size: 100%;
+    line-height: 1.2em;
+
+    border: dotted 1px black;
+
     text-align: left;
+
+    background-color: cornsilk;
 }
+
