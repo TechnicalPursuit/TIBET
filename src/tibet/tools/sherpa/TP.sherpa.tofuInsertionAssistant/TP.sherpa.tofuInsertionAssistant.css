@@ -11,7 +11,7 @@ sherpa|tofuInsertionAssistant {
     bottom: 0;
     right: 0;
 
-    overflow: auto;
+    overflow: hidden;
 }
 
 sherpa|tofuInsertionAssistant > .head {
@@ -286,5 +286,7 @@ sherpa|tofuInsertionAssistant > .foot #generatedTag {
     text-align: left;
 
     background-color: cornsilk;
+
+    overflow: auto;
 }
 

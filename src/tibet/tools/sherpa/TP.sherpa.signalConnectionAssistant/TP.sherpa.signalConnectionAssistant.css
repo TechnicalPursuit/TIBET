@@ -11,7 +11,7 @@ sherpa|signalConnectionAssistant {
     bottom: 0;
     right: 0;
 
-    overflow: auto;
+    overflow: hidden;
 }
 
 sherpa|signalConnectionAssistant > .head {
@@ -299,6 +299,8 @@ sherpa|signalConnectionAssistant > .foot #generatedAttr {
     text-align: left;
 
     background-color: cornsilk;
+
+    overflow: auto;
 }
 
 sherpa|signalConnectionAssistant > .foot .inserter {
