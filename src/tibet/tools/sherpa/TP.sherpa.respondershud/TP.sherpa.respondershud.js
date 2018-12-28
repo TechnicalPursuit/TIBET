@@ -24,6 +24,9 @@ TP.sherpa.respondershud.Inst.defineAttribute('currentTarget');
 
 TP.sherpa.respondershud.Inst.defineAttribute('highlighted');
 
+TP.sherpa.respondershud.Inst.defineAttribute('assistantFocusedItem',
+    TP.cpc('> .content li.assistantfocus', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -236,6 +239,9 @@ function(aSignal) {
         mainRule,
 
         tileWidth,
+
+        assistantFocusedItem,
+
         xCoord;
 
     //  Although we get the 'item selected' signal as a parameter, what we
@@ -312,6 +318,9 @@ function(aSignal) {
                                     sourceTPElem,
                                     'RespondersHUDTileFooter'));
 
+        //  Observe the tile for HiddenChange so that we can tell when it hides.
+        this.observe(tileTPElem, 'HiddenChange');
+
         sheet = this.getStylesheetForStyleResource();
         mainRule = TP.styleSheetGetStyleRulesMatching(
                             sheet,
@@ -332,6 +341,16 @@ function(aSignal) {
 
         tileWidth = tileTPElem.getWidth();
     }
+
+    //  If the assistant is already focused on another item, then remove the
+    //  'assistantfocus' class on that item.
+    assistantFocusedItem = this.get('assistantFocusedItem');
+    if (!TP.isEmptyArray(assistantFocusedItem)) {
+        assistantFocusedItem.removeClass('assistantfocus');
+    }
+
+    //  Add the 'assistantfocus' class to the item that we're focusing.
+    targetTPElem.addClass('assistantfocus');
 
     xCoord = centerTPElemPageRect.getX() +
                 centerTPElemPageRect.getWidth() -
@@ -754,6 +773,40 @@ function(aSignal) {
     this.setAttribute('sherpa:connectoraccept', 'signalsource');
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('HiddenChange',
+function(aSignal) {
+
+    /**
+     * @method handleHiddenChangeFromSherpaConsole
+     * @summary Handles notifications of when the 'hidden' state of the
+     *     assistant tile associated with this panel changes.
+     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    var isHidden,
+
+        assistantFocusedItem;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    //  If we're hiding, and there is an assistant focused item, then remove the
+    //  'assistantfocus' class.
+    if (isHidden) {
+        assistantFocusedItem = this.get('assistantFocusedItem');
+        if (TP.isValid(assistantFocusedItem)) {
+            assistantFocusedItem.removeClass('assistantfocus');
+        }
+    }
+
+    return this;
+}, {
+    origin: 'ResponderSummary_Tile'
 });
 
 //  ------------------------------------------------------------------------
