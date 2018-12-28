@@ -163,8 +163,7 @@ function(packageConfig, phase) {
         packageScriptPaths,
 
         phaseOne,
-        phaseTwo,
-        teamTIBET;
+        phaseTwo;
 
     //  Process the incoming package@config value.
     packageParts = packageConfig.split('@');
@@ -194,13 +193,11 @@ function(packageConfig, phase) {
     try {
         phaseOne = TP.sys.cfg('boot.phase_one');
         phaseTwo = TP.sys.cfg('boot.phase_two');
-        teamTIBET = TP.sys.cfg('boot.teamtibet');
 
         TP.sys.setcfg('boot.phase_one',
             TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
         TP.sys.setcfg('boot.phase_two',
             TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
-        TP.sys.setcfg('boot.teamtibet', true);
         packageAssets = TP.boot.$listPackageAssets(uri, cfgName);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
@@ -209,7 +206,6 @@ function(packageConfig, phase) {
     } finally {
         TP.sys.setcfg('boot.phase_one', phaseOne);
         TP.sys.setcfg('boot.phase_two', phaseTwo);
-        TP.sys.setcfg('boot.teamtibet', teamTIBET);
     }
 
     //  Normalize the list of scripts (and filter out any asset that doesn't
