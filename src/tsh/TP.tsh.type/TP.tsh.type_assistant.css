@@ -121,7 +121,7 @@ tsh|type_assistant > .body .typeInfoFieldGroup {
 tsh|type_assistant > .body .typeInfoFieldGroup > input[type="text"],
 tsh|type_assistant > .body .typeInfoFieldGroup > select {
 
-    width: calc(100% - 1em);
+    width: calc(100% - 1.5em);
 }
 
 tsh|type_assistant > .body .typeInfoFieldGroup > label {
