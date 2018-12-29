@@ -115,6 +115,7 @@ sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="up"] .ico
 }
 
 sherpa|snippetMenuContent > .footer > sherpa|scrollbutton[orientation="down"] {
+
     top: 5px;
     right: 3em;
 }
