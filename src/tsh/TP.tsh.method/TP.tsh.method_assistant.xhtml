@@ -2,57 +2,43 @@
 
 <tsh:method_assistant>
     <div class="head"/>
-    <div class="body">
-        <form bind:scope="urn:tibet:method_cmd_source#jpath($.info)">
-            <ul class="flex_outer">
-                <li>
-                    <label>Method | Handler:</label>
-                    <ul class="flex_inner">
-                        <li>
-                            <label for="methodKindRadio1">Method</label>
-                            <input type="radio" name="methodkind_radio" value="method" id="methodKindRadio1" bind:io="{checked: methodKind}"/>
-                        </li>
-                        <li>
-                            <label for="methodKindRadio2">Handler</label>
-                            <input type="radio" name="methodkind_radio" value="handler" id="methodKindRadio2"/>
-                        </li>
-                    </ul>
-                </li>
+    <div class="body" bind:scope="urn:tibet:method_cmd_source#jpath($.info)">
+        <label for="method_assistant_MethodKindRadios">Method | Handler:</label>
+        <ul id="method_assistant_MethodKindRadios" class="methodKindRadios">
+            <li>
+                <input type="radio" name="methodkind_radio" value="method" id="methodKindRadio1" bind:io="{checked: methodKind}"/>
+                <label for="methodKindRadio1">Method</label>
+            </li>
+            <li>
+                <input type="radio" name="methodkind_radio" value="handler" id="methodKindRadio2"/>
+                <label for="methodKindRadio2">Handler</label>
+            </li>
+        </ul>
 
-                <li>
-                    <label for="methodOwnerTypeNameField">Method Owner:</label>
-                    <input type="text" id="methodOwnerTypeNameField" bind:io="{value: methodOwnerTypeName}" autofocus="autofocus" autocomplete="off"/>
-                </li>
+        <label for="method_assistant_MethodOwnerTypeNameField">Method Owner:</label>
+        <input type="text" id="method_assistant_MethodOwnerTypeNameField" bind:io="{value: methodOwnerTypeName}" autofocus="autofocus" autocomplete="off"/>
 
-                <li>
-                    <label>Method Track:</label>
-                    <ul class="flex_inner">
-                        <li>
-                            <label for="methodTrackRadio2">Instance</label>
-                            <input type="radio" name="methodtrack_radio" value="instance" id="methodTrackRadio1" bind:io="{checked: methodTrack}"/>
-                        </li>
-                        <li>
-                            <label for="methodTrackRadio1">Type</label>
-                            <input type="radio" name="methodtrack_radio" value="type" id="methodTrackRadio2"/>
-                        </li>
-                        <li>
-                            <label for="methodTrackRadio3">Type Local</label>
-                            <input type="radio" name="methodtrack_radio" value="typelocal" id="methodTrackRadio3"/>
-                        </li>
-                    </ul>
-                </li>
+        <label for="method_assistant_MethodTrackRadios">Method Track:</label>
+        <ul id="method_assistant_MethodTrackRadios" class="methodTrackRadios">
+            <li>
+                <input type="radio" name="methodTrack_radio" value="instance" id="methodTrackRadio1" bind:io="{checked: methodTrack}"/>
+                <label for="methodTrackRadio1">Instance</label>
+            </li>
+            <li>
+                <input type="radio" name="methodTrack_radio" value="type" id="methodTrackRadio2"/>
+                <label for="methodTrackRadio2">Type</label>
+            </li>
+            <li>
+                <input type="radio" name="methodTrack_radio" value="typelocal" id="methodTrackRadio3"/>
+                <label for="methodTrackRadio3">Type Local</label>
+            </li>
+        </ul>
 
-                <li>
-                    <label for="methodNameField">Name | Signal:</label>
-                    <input placeholder="method name or signal name" type="text" id="methodNameField" bind:io="{value: methodName}" autocomplete="off"/>
-                </li>
-            </ul>
-        </form>
+        <label for="method_assistant_MethodNameField">Name | Signal:</label>
+        <input type="text" id="method_assistant_MethodNameField" bind:io="{value: methodName}" autofocus="autofocus" autocomplete="off"/>
     </div>
     <div class="foot">
         <code id="generatedCmdLine"/>
-        <br/>
-        <br/>
         <button on:click="DialogCancel">Cancel</button>
         <button on:click="DialogOk">Create</button>
     </div>

@@ -8,68 +8,56 @@
             {"value":""}
             ]]>
         </tibet:data>
-        <div class="supertype_chooser">
-            <label for="SuperTypeFilterField">Supertype:</label>
-            <input type="text" id="SupertypeFilterField" autofocus="autofocus" bind:io="{value: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" ui:incremental="model" autocomplete="off"/>
-            <xctrls:list id="TypeAssistantSupertypes" bind:in="{data: urn:tibet:typelist, filterValue: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" bind:io="{value: urn:tibet:type_cmd_source#jpath($.info.supertype)}" filter="true"/>
-            <button on:click="ResetSupertype">Reset</button>
+
+        <div class="supertypeFieldGroup">
+            <label for="type_assistant_SupertypeFilterField">Supertype:</label>
+            <input type="text" id="type_assistant_SupertypeFilterField" autofocus="autofocus" bind:io="{value: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" ui:incremental="model" autocomplete="off"/>
         </div>
-        <div class="new_type_details">
-            <form bind:scope="urn:tibet:type_cmd_source#jpath($.info)">
-                <ul class="flex_outer">
-                    <li>
-                        <label>DNA:</label>
-                        <select class="dna_select" bind:io="{value: dna}">
-                            <option value="templatedtag">Templated Tag</option>
-                            <option value="compiledtag">Compiled Tag</option>
-                            <option value="actiontag">Action Tag</option>
-                            <option value="infotag">Info Tag</option>
-                            <option value="controller">Controller</option>
-                            <option value="content">Content</option>
-                            <option value="default">Object</option>
-                        </select>
-                    </li>
-                    <li id="typeAssistantRootNS">
-                        <label>Root NS:</label>
-                        <ul class="top_level_ns">
-                            <li>
-                                <label for="topLevelNSRadio2">APP</label>
-                                <input type="radio" name="namespace_radio" value="APP" id="topLevelNSRadio2"/>
-                            </li>
-                            <li>
-                                <label for="topLevelNSRadio1">TP</label>
-                                <input type="radio" name="namespace_radio" value="TP" id="topLevelNSRadio1" bind:io="{checked: topLevelNS}"/>
-                            </li>
-                        </ul>
-                    </li>
 
-                    <li>
-                        <label for="typeNameField">Type name:</label>
-                        <input type="text" id="typeNameField" bind:io="{value: typeNSAndName}" autofocus="autofocus"/>
-                    </li>
+        <xctrls:list id="type_assistant_SupertypeList" bind:in="{data: urn:tibet:typelist, filterValue: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" bind:io="{value: urn:tibet:type_cmd_source#jpath($.info.supertype)}" filter="true"/>
 
-                    <li>
-                        <label for="packageField">Package:</label>
-                        <input type="text" id="packageField" bind:io="{value: package}"/>
-                    </li>
+        <button class="supertypeResetButton" on:click="ResetSupertype">Reset</button>
 
-                    <li>
-                        <label for="configField">Config:</label>
-                        <input type="text" id="configField" bind:io="{value: config}"/>
-                    </li>
+        <div class="typeInfoFieldGroup" bind:scope="urn:tibet:type_cmd_source#jpath($.info)">
+            <label for="type_assistant_DNASelect">DNA:</label>
+            <select id="type_assistant_DNASelect" class="dna_select" bind:io="{value: dna}">
+                <option value="templatedtag">Templated Tag</option>
+                <option value="compiledtag">Compiled Tag</option>
+                <option value="actiontag">Action Tag</option>
+                <option value="infotag">Info Tag</option>
+                <option value="controller">Controller</option>
+                <option value="content">Content</option>
+                <option value="default">Object</option>
+            </select>
 
-                    <li>
-                        <label for="directoryField">Directory:</label>
-                        <input type="text" id="directoryField" bind:io="{value: dir}"/>
-                    </li>
+            <label for="type_assistant_TopLevelNS">Root NS:</label>
+            <ul id="type_assistant_TopLevelNS" class="nsRadios">
+                <li>
+                    <label for="type_assistant_TopLevelNSRadio2">APP</label>
+                    <input type="radio" name="namespace_radio" value="APP" id="type_assistant_TopLevelNSRadio2"/>
+                </li>
+                <li>
+                    <label for="type_assistant_TopLevelNSRadio1">TP</label>
+                    <input type="radio" name="namespace_radio" value="TP" id="type_assistant_TopLevelNSRadio1" bind:io="{checked: topLevelNS}"/>
+                </li>
+            </ul>
 
-                </ul>
-            </form>
+            <label for="type_assistant_TypeNameField">Type name:</label>
+            <input type="text" id="type_assistant_TypeNameField" bind:io="{value: typeNSAndName}" autofocus="autofocus"/>
+
+            <label for="type_assistant_PackageNameField">Package:</label>
+            <input type="text" id="type_assistant_PackageNameField" bind:io="{value: package}" autofocus="autofocus"/>
+
+            <label for="type_assistant_ConfigNameField">Config:</label>
+            <input type="text" id="type_assistant_ConfigNameField" bind:io="{value: config}" autofocus="autofocus"/>
+
+            <label for="type_assistant_DirectoryField">Directory:</label>
+            <input type="text" id="type_assistant_DirectoryField" bind:io="{value: dir}" autofocus="autofocus"/>
         </div>
+
     </div>
     <div class="foot">
         <code id="generatedCmdLine"/>
-            <br/>
         <button on:click="DialogCancel">Cancel</button>
         <button on:click="DialogOk">Create</button>
     </div>

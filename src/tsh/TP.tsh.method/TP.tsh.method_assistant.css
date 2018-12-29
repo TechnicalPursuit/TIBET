@@ -3,15 +3,14 @@
 
 tsh|method_assistant {
 
-    display: flex;
-    flex-direction: column;
-
     position: absolute;
 
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
+
+    overflow: hidden;
 }
 
 tsh|method_assistant > .head {
@@ -20,19 +19,134 @@ tsh|method_assistant > .head {
 tsh|method_assistant > .body {
 
     position: absolute;
+    display: grid;
+
+    grid-template-rows: 3em 3em 3em 3em;
+    grid-template-columns: 9em 1fr;
+    grid-template-areas:
+        "methodkind_field_label methodkind_field_group"
+        "methodowner_field_label methodowner_field_input"
+        "methodtrack_field_label methodtrack_field_group"
+        "methodname_field_label methodname_field_input";
 
     top: 0;
-    right: auto;
-    bottom: 7em;
+    right: 0;
     left: 0;
-
-    width: 100%;
-
-    overflow: auto;
+    bottom: 7em;
 
     text-align: left;
 
-    margin-bottom: 12px;
+    align-items: center;
+}
+
+tsh|method_assistant > .body label {
+
+    font-weight: bold;
+
+    margin-left: 5px;
+
+    justify-self: end;
+}
+
+tsh|method_assistant > .body input[type="text"] {
+
+    width: calc(100% - 1.5em);
+
+    margin-left: 5px;
+}
+
+tsh|method_assistant > .body label[for="method_assistant_MethodKindRadios"] {
+
+    grid-area: methodkind_field_label;
+}
+
+tsh|method_assistant > .body .methodKindRadios#method_assistant_MethodKindRadios {
+
+    grid-area: methodkind_field_group;
+
+    position: absolute;
+    display: flex;
+
+    margin: 0;
+}
+
+tsh|method_assistant > .body > .methodKindRadios li {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
+}
+
+tsh|method_assistant > .body > .methodKindRadios li input {
+
+    margin-right: 4px;
+}
+
+tsh|method_assistant > .body > .methodKindRadios li label {
+
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
+}
+
+tsh|method_assistant > .body label[for="method_assistant_MethodOwnerTypeNameField"] {
+
+    grid-area: methodowner_field_label;
+}
+
+tsh|method_assistant > .body input#method_assistant_MethodOwnerTypeNameField {
+
+    grid-area: methodowner_field_input;
+}
+
+tsh|method_assistant > .body label[for="method_assistant_MethodTrackRadios"] {
+
+    grid-area: methodtrack_field_label;
+}
+
+tsh|method_assistant > .body .methodTrackRadios#method_assistant_MethodTrackRadios {
+
+    grid-area: methodtrack_field_group;
+
+    position: absolute;
+    display: flex;
+
+    margin: 0;
+}
+
+tsh|method_assistant > .body > .methodTrackRadios li {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
+}
+
+tsh|method_assistant > .body > .methodTrackRadios li input {
+
+    margin-right: 4px;
+}
+
+tsh|method_assistant > .body > .methodTrackRadios li label {
+
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
+}
+
+tsh|method_assistant > .body label[for="method_assistant_MethodNameField"] {
+
+    grid-area: methodname_field_label;
+}
+
+tsh|method_assistant > .body input#method_assistant_MethodNameField {
+
+    grid-area: methodname_field_input;
 }
 
 tsh|method_assistant > .foot {
@@ -41,63 +155,10 @@ tsh|method_assistant > .foot {
 
     bottom: 0;
     left: 0;
+    right: 0;
     width: 100%;
+
     height: 7em;
-
-    margin-bottom: 18px;
-}
-
-tsh|method_assistant > .body form {
-
-    position: absolute;
-
-    width: 100%;
-    height: 100%;
-}
-
-tsh|method_assistant > .body .flex_outer {
-
-    margin: 12px 20px;
-}
-
-tsh|method_assistant > .body .flex_outer li,
-.flex-inner {
-
-    display: flex;
-
-    align-items: center;
-    flex-wrap: wrap;
-    flex-grow: 1;
-
-    margin: 6px 0;
-    padding: 0;
-}
-
-tsh|method_assistant > .body .flex_outer > li > label {
-
-    flex: 1 0 120px;
-
-    max-width: 220px;
-
-    font-weight: bold;
-}
-
-tsh|method_assistant > .body .flex_outer > li > label + * {
-
-    flex: 1 0 220px;
-}
-
-tsh|method_assistant > .body .flex_inner {
-
-    display: flex;
-
-    margin: 0;
-    padding: 0;
-}
-
-tsh|method_assistant > .body .flex_inner li {
-
-    width: 100px;
 }
 
 tsh|method_assistant > .foot #generatedCmdLine {
@@ -107,14 +168,18 @@ tsh|method_assistant > .foot #generatedCmdLine {
     height: 4em;
 
     padding: 0 12px;
-    margin: 0 20px;
-
-    border: dashed 1px black;
-
-    background-color: cornsilk;
-
-    text-align: left;
+    margin: 0 12px;
 
     font-size: 100%;
     line-height: 1.2em;
+
+    border: dashed 1px black;
+
+    text-align: left;
+
+    background-color: cornsilk;
+
+    overflow: auto;
+
+    user-select: text;
 }

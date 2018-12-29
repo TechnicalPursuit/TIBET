@@ -10,6 +10,8 @@ tsh|type_assistant {
     left: 0;
     bottom: 0;
     right: 0;
+
+    overflow: hidden;
 }
 
 tsh|type_assistant > .head {
@@ -19,16 +21,218 @@ tsh|type_assistant > .body {
 
     position: absolute;
 
+    display: grid;
+
+    grid-template-rows: 3em 2.5em 3em 3em 3em 3em;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "supertype_field_group typeinfo_field_group"
+        "supertype_list typeinfo_field_group"
+        "supertype_list typeinfo_field_group"
+        "supertype_list typeinfo_field_group"
+        "supertype_list typeinfo_field_group"
+        "supertype_reset_button typeinfo_field_group";
+
     top: 0;
-    left: 0;
     right: 0;
-    bottom: 8em;
+    left: 0;
+    bottom: 7em;
+
+    text-align: left;
+}
+
+tsh|type_assistant > .body .supertypeFieldGroup {
+
+    grid-area: supertype_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+tsh|type_assistant > .body .supertypeFieldGroup > label {
+
+    font-weight: bold;
+}
+
+tsh|type_assistant > .body .supertypeFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+tsh|type_assistant > .body #type_assistant_SupertypeList {
+
+    grid-area: supertype_list;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 0;
+    left: 5px;
 
     width: auto;
 
-    overflow: auto;
+    line-height: 1.5;
+}
 
-    text-align: left;
+tsh|type_assistant > .body .supertypeResetButton {
+
+    grid-area: supertype_reset_button;
+
+    margin-left: 5px;
+
+    align-self: center;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup {
+
+    grid-area: typeinfo_field_group;
+
+    position: absolute;
+
+    display: grid;
+
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 6em 1fr;
+    grid-template-areas:
+        "dna_field_label dna_field_select"
+        "rootns_field_label rootns_field_group"
+        "typename_field_label typename_field_input"
+        "packagename_field_label packagename_field_input"
+        "configname_field_label configname_field_input"
+        "directory_field_label directory_field_input";
+
+    top: 0;
+    right: 0;
+    left: 5px;
+    bottom: 0;
+
+    align-items: center;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > input[type="text"],
+tsh|type_assistant > .body .typeInfoFieldGroup > select {
+
+    width: calc(100% - 1em);
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label {
+
+    font-weight: bold;
+}
+
+tsh|type_assistant > .body .dnaFieldGroup {
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label[for="type_assistant_DNASelect"] {
+
+    grid-area: dna_field_label;
+
+    font-weight: bold;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > select#type_assistant_DNASelect {
+
+    grid-area: dna_field_select;
+
+    width: calc(100% - 1em);
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label[for="type_assistant_TopLevelNS"] {
+
+    grid-area: rootns_field_label;
+
+    font-weight: bold;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup .nsRadios#type_assistant_TopLevelNS {
+
+    grid-area: rootns_field_group;
+
+    display: flex;
+
+    margin: 0;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup .nsRadios li {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup .nsRadios li input {
+
+    margin-right: 4px;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup .nsRadios li label {
+
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label[for="type_assistant_TypeNameField"] {
+
+    grid-area: typename_field_label;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > input#type_assistant_TypeNameField {
+
+    grid-area: typename_field_input;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label[for="type_assistant_PackageNameField"] {
+
+    grid-area: packagename_field_label;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > input#type_assistant_PackageNameField {
+
+    grid-area: packagename_field_input;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label[for="type_assistant_ConfigNameField"] {
+
+    grid-area: configname_field_label;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > input#type_assistant_ConfigNameField {
+
+    grid-area: configname_field_input;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > label[for="type_assistant_DirectoryField"] {
+
+    grid-area: directory_field_label;
+}
+
+tsh|type_assistant > .body .typeInfoFieldGroup > input#type_assistant_DirectoryField {
+
+    grid-area: directory_field_input;
 }
 
 tsh|type_assistant > .foot {
@@ -38,161 +242,29 @@ tsh|type_assistant > .foot {
     bottom: 0;
     left: 0;
     right: 0;
-    top: auto;
+    width: 100%;
 
     height: 7em;
-}
-
-tsh|type_assistant > .body .supertype_chooser {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: auto;
-    bottom: 0;
-
-    width: 20em;
-
-    margin: 12px 20px;
-
-    font-weight: bold;
-    line-height: 1em;
-}
-
-xctrls|list#TypeAssistantSupertypes {
-
-    font-weight: normal;
-
-    width: 100%;
-    height: 11em;
-
-    line-height: 1.5;
-
-    margin-top: 8px;
-}
-
-input#SupertypeFilterField {
-
-    width: 13.7em;
-
-    margin-left: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-tsh|type_assistant > .body .new_type_details {
-
-    position: absolute;
-
-    top: 0;
-    left: auto;
-    right: 0;
-    bottom: 0;
-
-    width: 20em;
-
-    margin: 8px 20px;
-}
-
-tsh|type_assistant > .body .new_type_details form {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-}
-
-#typeAssistantRootNS {
-
-    margin: 11px 0;
-}
-
-#typeAssistantRootNS ul {
-
-    margin: 0;
-}
-
-tsh|type_assistant > .body .new_type_details .flex_outer {
-
-    margin: 0 0 0 20px;
-}
-
-tsh|type_assistant > .body .new_type_details .flex_outer > li {
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-tsh|type_assistant > .body .new_type_details .flex_outer > li > label {
-
-    flex: 1 0 100px;
-
-    max-width: 100px;
-}
-
-tsh|type_assistant > .body .new_type_details .flex_outer > li > label + * {
-
-    flex: 1 0 100px;
-
-    width: 9em;
-}
-
-tsh|type_assistant > .body .new_type_details .top_level_ns {
-
-    display: flex;
-}
-
-tsh|type_assistant > .body .new_type_details .top_level_ns li {
-
-    width: 5em;
-}
-
-tsh|type_assistant > .body ul.dna_radios {
-
-    margin: 0;
-}
-
-tsh|type_assistant > .body ul.dna_radios > li {
-
-    display: inline;
-
-    white-space: nowrap;
-}
-
-tsh|type_assistant > .body ul.dna_radios > li > label {
-
-    margin-left: 10px;
-}
-
-tsh|type_assistant > .body ul.dna_radios > li > label + * {
-
-    vertical-align: middle;
-}
-
-tsh|type_assistant > .foot button {
-
-    margin-top: 12px;
 }
 
 tsh|type_assistant > .foot #generatedCmdLine {
 
     display: inline-block;
 
+    width: 90%;
     height: 3em;
 
     padding: 0 12px;
     margin: 0 20px;
 
-    border: dotted 1px black;
+    font-size: 100%;
+    line-height: 1.2em;
 
-    background-color: cornsilk;
+    border: dotted 1px black;
 
     text-align: left;
 
-    font-size: 100%;
-    line-height: 1.2em;
+    background-color: cornsilk;
+
+    overflow: auto;
 }
