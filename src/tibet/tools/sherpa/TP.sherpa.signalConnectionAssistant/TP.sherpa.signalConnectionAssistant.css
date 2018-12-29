@@ -39,7 +39,7 @@ sherpa|signalConnectionAssistant > .body {
     text-align: left;
 }
 
-sherpa|signalConnectionAssistant .sourceSignalFieldGroup {
+sherpa|signalConnectionAssistant > .body .sourceSignalFieldGroup {
 
     grid-area: source_field_group;
 
@@ -52,12 +52,12 @@ sherpa|signalConnectionAssistant .sourceSignalFieldGroup {
     align-items: center;
 }
 
-sherpa|signalConnectionAssistant .sourceSignalFieldGroup > label {
+sherpa|signalConnectionAssistant > .body .sourceSignalFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant .sourceSignalFieldGroup > input {
+sherpa|signalConnectionAssistant > .body .sourceSignalFieldGroup > input {
 
     width: 100%;
 
@@ -65,7 +65,7 @@ sherpa|signalConnectionAssistant .sourceSignalFieldGroup > input {
     margin-right: 0;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalList {
+sherpa|signalConnectionAssistant > .body #signalConnectionAssistant_SourceSignalList {
 
     grid-area: source_input_list;
 
@@ -81,7 +81,7 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_SourceSignalList {
     line-height: 1.5;
 }
 
-sherpa|signalConnectionAssistant .destinationSignalFieldGroup {
+sherpa|signalConnectionAssistant > .body .destinationSignalFieldGroup {
 
     grid-area: destination_field_group;
 
@@ -94,12 +94,12 @@ sherpa|signalConnectionAssistant .destinationSignalFieldGroup {
     align-items: center;
 }
 
-sherpa|signalConnectionAssistant .destinationSignalFieldGroup > label {
+sherpa|signalConnectionAssistant > .body .destinationSignalFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant .destinationSignalFieldGroup > input {
+sherpa|signalConnectionAssistant > .body .destinationSignalFieldGroup > input {
 
     width: 100%;
 
@@ -107,7 +107,7 @@ sherpa|signalConnectionAssistant .destinationSignalFieldGroup > input {
     margin-right: 0;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationSignalList {
+sherpa|signalConnectionAssistant > .body #signalConnectionAssistant_DestinationSignalList {
 
     grid-area: destination_input_list;
 
@@ -123,7 +123,7 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_DestinationSignalLis
     line-height: 1.5;
 }
 
-sherpa|signalConnectionAssistant .signalOriginFieldGroup {
+sherpa|signalConnectionAssistant > .body .signalOriginFieldGroup {
 
     grid-area: source_origin_field_group;
 
@@ -136,12 +136,12 @@ sherpa|signalConnectionAssistant .signalOriginFieldGroup {
     align-items: center;
 }
 
-sherpa|signalConnectionAssistant .signalOriginFieldGroup > label {
+sherpa|signalConnectionAssistant > .body .signalOriginFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant .signalOriginFieldGroup > input {
+sherpa|signalConnectionAssistant > .body .signalOriginFieldGroup > input {
 
     width: 100%;
 
@@ -149,7 +149,7 @@ sherpa|signalConnectionAssistant .signalOriginFieldGroup > input {
     margin-right: 0;
 }
 
-sherpa|signalConnectionAssistant .signalPolicyFieldGroup {
+sherpa|signalConnectionAssistant > .body .signalPolicyFieldGroup {
 
     grid-area: source_policy_field_group;
 
@@ -162,12 +162,12 @@ sherpa|signalConnectionAssistant .signalPolicyFieldGroup {
     align-items: center;
 }
 
-sherpa|signalConnectionAssistant .signalPolicyFieldGroup > label {
+sherpa|signalConnectionAssistant > .body .signalPolicyFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant .signalPolicyFieldGroup > input {
+sherpa|signalConnectionAssistant > .body .signalPolicyFieldGroup > input {
 
     width: 100%;
 
@@ -175,7 +175,7 @@ sherpa|signalConnectionAssistant .signalPolicyFieldGroup > input {
     margin-right: 0;
 }
 
-sherpa|signalConnectionAssistant .signalPayloadControlGroup {
+sherpa|signalConnectionAssistant > .body .signalPayloadControlGroup {
 
     grid-area: source_payload_control_group;
 
@@ -190,12 +190,12 @@ sherpa|signalConnectionAssistant .signalPayloadControlGroup {
     justify-content: flex-end;
 }
 
-sherpa|signalConnectionAssistant .signalPayloadControlGroup > label {
+sherpa|signalConnectionAssistant > .body .signalPayloadControlGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|signalConnectionAssistant .signalPayloadControlGroup > .inserter {
+sherpa|signalConnectionAssistant > .body .signalPayloadControlGroup > .inserter {
 
     top: 2px;
     right: 0;
@@ -212,7 +212,7 @@ sherpa|signalConnectionAssistant .signalPayloadControlGroup > .inserter {
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
-sherpa|signalConnectionAssistant .signalPayloadGroup {
+sherpa|signalConnectionAssistant > .body .signalPayloadGroup {
 
     grid-area: source_payload_group;
 
@@ -224,7 +224,7 @@ sherpa|signalConnectionAssistant .signalPayloadGroup {
     left: 5px;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries {
+sherpa|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries {
 
     position: absolute;
 
@@ -238,14 +238,14 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries {
     overflow-y: auto;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries > span {
+sherpa|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries > span input {
+sherpa|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries > span input {
 
     width: auto;
     height: 1em;
@@ -255,7 +255,7 @@ sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries > spa
     margin-bottom: 2px;
 }
 
-sherpa|signalConnectionAssistant #signalConnectionAssistant_PayloadEntries .deleter {
+sherpa|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries .deleter {
 
     width: 24px;
     height: 24px;

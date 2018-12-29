@@ -120,7 +120,7 @@ sherpa|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios l
     font-weight: normal;
 }
 
-sherpa|tofuInsertionAssistant .typeChooserFieldGroup {
+sherpa|tofuInsertionAssistant > .body .typeChooserFieldGroup {
 
     grid-area: type_chooser_field_group;
 
@@ -133,12 +133,12 @@ sherpa|tofuInsertionAssistant .typeChooserFieldGroup {
     align-items: center;
 }
 
-sherpa|tofuInsertionAssistant .typeChooserFieldGroup > label {
+sherpa|tofuInsertionAssistant > .body .typeChooserFieldGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|tofuInsertionAssistant .typeChooserFieldGroup > input {
+sherpa|tofuInsertionAssistant > .body .typeChooserFieldGroup > input {
 
     width: 100%;
 
@@ -146,7 +146,7 @@ sherpa|tofuInsertionAssistant .typeChooserFieldGroup > input {
     margin-right: 0;
 }
 
-sherpa|tofuInsertionAssistant #tofuInsertionAssistant_TagTypes {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_TagTypes {
 
     grid-area: type_chooser_list;
 
@@ -162,7 +162,7 @@ sherpa|tofuInsertionAssistant #tofuInsertionAssistant_TagTypes {
     line-height: 1.5;
 }
 
-sherpa|tofuInsertionAssistant .attributesControlGroup {
+sherpa|tofuInsertionAssistant > .body .attributesControlGroup {
 
     grid-area: attributes_control_group;
 
@@ -177,12 +177,12 @@ sherpa|tofuInsertionAssistant .attributesControlGroup {
     justify-content: flex-end;
 }
 
-sherpa|tofuInsertionAssistant .attributesControlGroup > label {
+sherpa|tofuInsertionAssistant > .body .attributesControlGroup > label {
 
     font-weight: bold;
 }
 
-sherpa|tofuInsertionAssistant .attributesControlGroup > .inserter {
+sherpa|tofuInsertionAssistant > .body .attributesControlGroup > .inserter {
 
     top: 2px;
     right: 0;
@@ -199,7 +199,7 @@ sherpa|tofuInsertionAssistant .attributesControlGroup > .inserter {
     background-image: url("../media/ic_add_circle_outline_black_24px.svg");
 }
 
-sherpa|tofuInsertionAssistant .attributesGroup {
+sherpa|tofuInsertionAssistant > .body .attributesGroup {
 
     grid-area: attributes_group;
 
@@ -211,7 +211,7 @@ sherpa|tofuInsertionAssistant .attributesGroup {
     left: 5px;
 }
 
-sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries {
 
     position: absolute;
 
@@ -225,14 +225,14 @@ sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries {
     overflow-y: auto;
 }
 
-sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries > span {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries > span input {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > span input {
 
     width: auto;
     height: 1em;
@@ -242,7 +242,7 @@ sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries > span in
     margin-bottom: 2px;
 }
 
-sherpa|tofuInsertionAssistant #tofuInsertionAssistant_AttributeEntries .deleter {
+sherpa|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries .deleter {
 
     width: 24px;
     height: 24px;
