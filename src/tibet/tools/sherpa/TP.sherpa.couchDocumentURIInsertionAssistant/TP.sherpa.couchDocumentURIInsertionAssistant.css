@@ -10,6 +10,8 @@ sherpa|couchDocumentURIInsertionAssistant {
     left: 0;
     bottom: 0;
     right: 0;
+
+    overflow: hidden;
 }
 
 sherpa|couchDocumentURIInsertionAssistant > .head {
@@ -17,128 +19,148 @@ sherpa|couchDocumentURIInsertionAssistant > .head {
 
 sherpa|couchDocumentURIInsertionAssistant > .body {
 
-    margin-left: 10px;
+    position: absolute;
+    display: grid;
+
+    grid-template-rows: 2em 2em 2em 1fr;
+    grid-template-areas:
+        "insertion_point_group"
+        "insertion_position_group"
+        "editor_field_label"
+        "editor_field_wrapper";
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 3em;
 
     text-align: left;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body > #couchDocumentURIAssistant_Schema {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPointGroup {
 
-    width: 80%;
-    height: 185px;
+    grid-area: insertion_point_group;
 
-    margin-top: 20px;
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body > label[for="couchDocumentURIAssistant_Schema"] {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPointGroup label {
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+sherpa|couchDocumentURIInsertionAssistant > .body #couchDocumentURIInsertionAssistant_InsertionBreadcrumb {
 
     position: relative;
-    top: -92px;
+
+    display: block;
+
+    top: 5px;
+    left: 5px;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body > #couchDocumentURIAssistant_Schemafile {
+sherpa|couchDocumentURIInsertionAssistant > .body #couchDocumentURIInsertionAssistant_InsertionBreadcrumb > .content div.item {
 
-    margin: 13px;
+    color: black;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup {
 
-    width: 100%;
+    grid-area: insertion_position_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer {
-    margin: 0;
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup label {
+
+    font-weight: bold;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer li,
-.flex-inner {
-
-    position: relative;
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup .insertionRadios {
 
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-
-    min-height: 2em;
-}
-
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer > li > label {
-    margin: 12px;
-}
-
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer > li > label + *,
-.flex_inner {
 
     margin: 0;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_outer li#couchDocumentURIAssistant_Schemafile_row {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup .insertionRadios li {
 
-    min-height: 3em;
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_inner {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup .insertionRadios li input {
 
-    justify-content: space-between;
+    margin-right: 4px;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details .flex_inner li {
+sherpa|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup .insertionRadios li label {
 
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .foot {
+sherpa|couchDocumentURIInsertionAssistant > .body .editorFieldLabel {
 
-    margin-top: 12px;
+    grid-area: editor_field_label;
+
+    position: absolute;
+
+    top: 5px;
+    left: 5px;
+
+    font-weight: bold;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input[type="text"] {
+sherpa|couchDocumentURIInsertionAssistant > .body .editorFieldWrapper {
 
-    width: 50em;
+    grid-area: editor_field_wrapper;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details div.editor {
-
-    position: relative;
-
-    flex: 1 0;
-
-    margin: 0 28px 12px 12px;
-
-    height: 9em;
-}
-
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details textarea {
+sherpa|couchDocumentURIInsertionAssistant > .body .editorFieldWrapper > textarea {
 
     width: 100%;
     height: 100%;
 
     margin: 0;
+
+    box-sizing: border-box;
 }
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input {
+sherpa|couchDocumentURIInsertionAssistant > .foot {
 
-    margin-left: 10px;
-}
+    position: absolute;
 
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input:first-child {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
 
-    margin-left: 0;
-}
-
-sherpa|couchDocumentURIInsertionAssistant > .body .insertion_details input:checked + label {
-
-    font-weight: normal;
-}
-
-#couchDocumentURIInsertionAssistant_InsertionBreadcrumb {
-
-    position: relative;
-    display: block;
-
-    top: 0;
-}
-
-#couchDocumentURIInsertionAssistant_InsertionBreadcrumb > .content div.item {
-
-    color: black;
+    height: 3em;
 }

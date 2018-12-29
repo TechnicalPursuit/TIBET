@@ -3,42 +3,48 @@
 <sherpa:couchViewURIInsertionAssistant>
     <div class="head"/>
     <div class="body" bind:scope="urn:tibet:couchViewURIInsertionAssistant_source#jpath($.info)">
-        <div class="insertion_details">
-            <div>
-                <ul class="flex_outer">
-                    <li>
-                        <label>Ancestors:</label>
-                        <sherpa:breadcrumb id="couchViewURIInsertionAssistant_InsertionBreadcrumb"/>
-                    </li>
-                    <li>
-                        <label>Insertion:</label>
-                        <ul class="flex_inner">
-                            <li>
-                                <input type="radio" name="insertion_radio" value="BeforeBegin" id="couchViewURIInsertionAssistant_InsertionPositionRadio1" bind:io="{checked: insertionPosition}"/>
-                                <label for="couchViewURIInsertionAssistant_InsertionPositionRadio1">Previous Sibling</label>
-                                <input type="radio" name="insertion_radio" value="AfterBegin" id="couchViewURIInsertionAssistant_InsertionPositionRadio2"/>
-                                <label for="couchViewURIInsertionAssistant_InsertionPositionRadio2">First Child</label>
-                                <input type="radio" name="insertion_radio" value="BeforeEnd" id="couchViewURIInsertionAssistant_InsertionPositionRadio3"/>
-                                <label for="couchViewURIInsertionAssistant_InsertionPositionRadio3">Last Child</label>
-                                <input type="radio" name="insertion_radio" value="AfterEnd" id="couchViewURIInsertionAssistant_InsertionPositionRadio4"/>
-                                <label for="couchViewURIInsertionAssistant_InsertionPositionRadio4">Next Sibling</label>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <label for="couchViewURIInsertionAssistant_RemoteLocation">Remote URL:</label>
-                        <input type="text" id="couchViewURIInsertionAssistant_RemoteLocation" bind:io="remoteLocation"/>
-                    </li>
-                    <li>
-                        <label for="couchViewURIInsertionAssistant_LocalLocation">Result URL:</label>
-                        <input type="text" id="couchViewURIInsertionAssistant_LocalLocation" bind:io="localLocation"/>
-                    </li>
-                    <li>
-                        <label for="couchViewURIInsertionAssistant_GenerateDetailView">Generate linked detail:</label>
-                        <input type="checkbox" id="couchViewURIInsertionAssistant_GenerateDetailView" bind:io="{checked: generateDetailView}"/>
-                    </li>
-                </ul>
-            </div>
+        <div class="insertionPointGroup">
+            <label>Ancestors:</label>
+            <sherpa:breadcrumb id="couchViewURIInsertionAssistant_InsertionBreadcrumb"/>
+        </div>
+
+        <div class="insertionPositionGroup">
+            <label>Insertion:</label>
+            <ul class="insertionRadios">
+                <li>
+                    <input type="radio" name="insertion_radio" value="BeforeBegin" id="couchViewURIInsertionAssistant_InsertionPositionRadio1" bind:io="{checked: insertionPosition}"/>
+                    <label for="couchViewURIInsertionAssistant_InsertionPositionRadio1">Previous Sibling</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="AfterBegin" id="couchViewURIInsertionAssistant_InsertionPositionRadio2"/>
+                    <label for="couchViewURIInsertionAssistant_InsertionPositionRadio2">First Child</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="BeforeEnd" id="couchViewURIInsertionAssistant_InsertionPositionRadio3"/>
+                    <label for="couchViewURIInsertionAssistant_InsertionPositionRadio3">Last Child</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="AfterEnd" id="couchViewURIInsertionAssistant_InsertionPositionRadio4"/>
+                    <label for="couchViewURIInsertionAssistant_InsertionPositionRadio4">Next Sibling</label>
+                </li>
+            </ul>
+        </div>
+
+        <label for="couchViewURIInsertionAssistant_RemoteLocation" class="remoteURLFieldLabel">Remote URL:</label>
+
+        <div class="remoteURLFieldWrapper">
+            <input type="text" id="couchViewURIInsertionAssistant_RemoteLocation" bind:io="remoteLocation"/>
+        </div>
+
+        <label for="couchViewURIInsertionAssistant_LocalLocation" class="localURLFieldLabel">Result URL:</label>
+
+        <div class="localURLFieldWrapper">
+            <input type="text" id="couchViewURIInsertionAssistant_LocalLocation" bind:io="localLocation"/>
+        </div>
+
+        <div class="generateDetailGroup">
+            <label for="couchViewURIInsertionAssistant_GenerateDetailView">Generate linked detail:</label>
+            <input type="checkbox" id="couchViewURIInsertionAssistant_GenerateDetailView" bind:io="{checked: generateDetailView}"/>
         </div>
     </div>
     <div class="foot">

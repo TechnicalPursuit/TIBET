@@ -3,44 +3,37 @@
 <sherpa:couchDocumentURIInsertionAssistant>
     <div class="head"/>
     <div class="body" bind:scope="urn:tibet:couchDocumentURIInsertionAssistant_source#jpath($.info)">
-        <div class="insertion_details">
-            <div>
-                <ul class="flex_outer">
-                    <li>
-                        <label>Ancestors:</label>
-                        <sherpa:breadcrumb id="couchDocumentURIInsertionAssistant_InsertionBreadcrumb"/>
-                    </li>
-                    <li>
-                        <label>Insertion:</label>
-                        <ul class="flex_inner">
-                            <li>
-                                <input type="radio" name="insertion_radio" value="BeforeBegin" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio1" bind:io="{checked: insertionPosition}"/>
-                                <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio1">Previous Sibling</label>
-                                <input type="radio" name="insertion_radio" value="AfterBegin" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio2"/>
-                                <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio2">First Child</label>
-                                <input type="radio" name="insertion_radio" value="BeforeEnd" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio3"/>
-                                <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio3">Last Child</label>
-                                <input type="radio" name="insertion_radio" value="AfterEnd" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio4"/>
-                                <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio4">Next Sibling</label>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                    <label for="couchDocumentURIAssistant_Schema">Derived JSON Schema:</label>
-                    </li>
-                    <li>
-                    <div class="editor">
-                        <textarea id="couchDocumentURIAssistant_Schema" bind:io="schema"/>
-                    </div>
-                    </li>
-                    <!--
-                    <li id="couchDocumentURIAssistant_Schemafile_row">
-                    <label for="couchDocumentURIAssistant_Schemafile">Save Schema To:</label>
-                    <input type="text" id="couchDocumentURIAssistant_Schemafile" bind:io="schemaFile"/>
-                    </li>
-                    -->
-                </ul>
-            </div>
+        <div class="insertionPointGroup">
+            <label>Ancestors:</label>
+            <sherpa:breadcrumb id="couchDocumentURIInsertionAssistant_InsertionBreadcrumb"/>
+        </div>
+
+        <div class="insertionPositionGroup">
+            <label>Insertion:</label>
+            <ul class="insertionRadios">
+                <li>
+                    <input type="radio" name="insertion_radio" value="BeforeBegin" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio1" bind:io="{checked: insertionPosition}"/>
+                    <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio1">Previous Sibling</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="AfterBegin" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio2"/>
+                    <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio2">First Child</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="BeforeEnd" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio3"/>
+                    <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio3">Last Child</label>
+                </li>
+                <li>
+                    <input type="radio" name="insertion_radio" value="AfterEnd" id="couchDocumentURIInsertionAssistant_InsertionPositionRadio4"/>
+                    <label for="couchDocumentURIInsertionAssistant_InsertionPositionRadio4">Next Sibling</label>
+                </li>
+            </ul>
+        </div>
+
+        <label for="couchDocumentURIInsertionAssistant_Schema" class="editorFieldLabel">Derived JSON Schema:</label>
+
+        <div class="editorFieldWrapper">
+            <textarea id="couchDocumentURIInsertionAssistant_Schema" bind:io="schema"/>
         </div>
     </div>
     <div class="foot">
