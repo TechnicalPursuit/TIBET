@@ -288,4 +288,6 @@ sherpa|tofuInsertionAssistant > .foot #generatedTag {
     background-color: cornsilk;
 
     overflow: auto;
+
+    user-select: text;
 }

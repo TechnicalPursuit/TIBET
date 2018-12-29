@@ -301,6 +301,8 @@ sherpa|signalConnectionAssistant > .foot #generatedAttr {
     background-color: cornsilk;
 
     overflow: auto;
+
+    user-select: text;
 }
 
 sherpa|signalConnectionAssistant > .foot .inserter {
