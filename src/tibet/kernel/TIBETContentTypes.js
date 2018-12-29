@@ -2114,6 +2114,9 @@ function(aPath) {
         return this;
     }
 
+    //  TODO: Put a warning here that this conversion should really only be used
+    //  in 'get' operations using this path.
+
     //  Make sure to call the specific getData() handler here so that any
     //  necessary conversion takes place.
     return this.getData();
@@ -5395,7 +5398,7 @@ function(aPath, config) {
      * @summary Returns a newly initialized JSONPath instance. Note that if
      * @param {String} aPath The JSONPath as a String.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.path.XPathPath} The new instance.
+     * @returns {TP.path.JSONPath} The new instance.
      */
 
     return TP.path.JSONPath.construct.apply(TP.path.JSONPath, arguments);
