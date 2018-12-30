@@ -2136,41 +2136,6 @@ function(anElement, locationPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetDefaultXMLNS',
-function(anElement, includeDefault) {
-
-    /**
-     * @method elementGetDefaultXMLNS
-     * @summary Returns the default namespace that the element is in.
-     * @description If the supplied element is unprefixed, its namespace URI
-     *     will be returned. If the element is prefixed, this method will
-     *     continue to search its ancestor chain, looking for the first
-     *     unprefixed element.
-     * @param {Element} anElement The element to return the current default
-     *     namespace URI of.
-     * @returns {String|null} The default namespace of the supplied Element.
-     */
-
-    var ancestor;
-
-    if (TP.isEmpty(anElement.prefix)) {
-        return anElement.namespaceURI;
-    }
-
-    ancestor = anElement.parentNode;
-    while (TP.isElement(ancestor)) {
-        if (TP.isEmpty(ancestor.prefix)) {
-            return ancestor.namespaceURI;
-        }
-
-        ancestor = ancestor.parentNode;
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('elementGetLocalName',
 function(anElement) {
 
@@ -13566,6 +13531,41 @@ function(aNode, aFunction, aSubset) {
 
 //  ------------------------------------------------------------------------
 //  NODE NAMESPACE SUPPORT
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetDefaultNSURI',
+function(aNode, includeDefault) {
+
+    /**
+     * @method nodeGetDefaultNSURI
+     * @summary Returns the default namespace that the node is in.
+     * @description If the supplied element is an Element and is unprefixed,
+     *     its namespace URI will be returned. If it is an Element and is
+     *     prefixed, this method will continue to search its ancestor chain,
+     *     looking for the first unprefixed element and return its namespace.
+     * @param {Node} aNode The node to return the current default namespace URI
+     *     of.
+     * @returns {String|null} The default namespace of the supplied Node.
+     */
+
+    var ancestor;
+
+    if (TP.isElement(aNode) && TP.isEmpty(aNode.prefix)) {
+        return aNode.namespaceURI;
+    }
+
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor)) {
+        if (TP.isEmpty(ancestor.prefix)) {
+            return ancestor.namespaceURI;
+        }
+
+        ancestor = ancestor.parentNode;
+    }
+
+    return null;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetNSPrefixes',

@@ -143,7 +143,7 @@ function(anObject) {
     //  Grab the default namespace for the target environment that we'll be
     //  inserting this tag into. This helps with more intelligent markup
     //  generation.
-    targetXMLNS = TP.elementGetDefaultXMLNS(targetElem);
+    targetXMLNS = TP.nodeGetDefaultNSURI(targetElem);
 
     //  Grab the insertion target element's prefix (or the prefix matching its
     //  default XMLNS if it doesn't have one).
@@ -320,7 +320,7 @@ function(aSignal) {
     //  Grab the default namespace for the target environment that we'll be
     //  inserting this tag into. This helps with more intelligent markup
     //  generation.
-    targetXMLNS = TP.elementGetDefaultXMLNS(targetElem);
+    targetXMLNS = TP.nodeGetDefaultNSURI(targetElem);
 
     //  Grab the insertion target element's prefix (or the prefix matching its
     //  default XMLNS if it doesn't have one).
