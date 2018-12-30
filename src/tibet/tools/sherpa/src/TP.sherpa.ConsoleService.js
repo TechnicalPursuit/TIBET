@@ -1913,7 +1913,7 @@ function(anObject, aRequest) {
                 anObject.set('delimiter', '');
                 data = anObject.asString();
             } else if (TP.isElement(possibleElem = TP.unwrap(anObject)) &&
-                        TP.w3.Xmlns.getNativeURIs().contains(
+                        TP.w3.Xmlns.getNativeNSURIs().contains(
                                                 possibleElem.namespaceURI)) {
                 //  It's an element in a namespace that we support native
                 //  rendering of. Just pass it through.

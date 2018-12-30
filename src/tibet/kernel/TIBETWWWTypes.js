@@ -1800,7 +1800,7 @@ function() {
 
     //  Grab all of the namespaces that are handled natively by this
     //  browser and generate a 'namespace-uri() !=' query around them.
-    TP.w3.Xmlns.getNativeURIs().perform(
+    TP.w3.Xmlns.getNativeNSURIs().perform(
         function(nativeXMLNS) {
 
             nsStr.push('(namespace-uri() != "', nativeXMLNS, '") and ');
@@ -1862,7 +1862,7 @@ function() {
 
     //  Grab all of the namespaces that are handled natively by this
     //  browser and generate a 'not namespace-uri()' query around them.
-    TP.w3.Xmlns.getNativeURIs().perform(
+    TP.w3.Xmlns.getNativeNSURIs().perform(
             function(nativeXMLNS) {
 
                 path.push('(namespace-uri() != "', nativeXMLNS, '") and ');
@@ -2052,11 +2052,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('getNativeURIs',
+TP.w3.Xmlns.Type.defineMethod('getNativeNSURIs',
 function() {
 
     /**
-     * @method getNativeURIs
+     * @method getNativeNSURIs
      * @summary Returns an array of natively supported namespace URIs on the
      *     current browser.
      * @returns {String[]} The list of native namespace URIs.
