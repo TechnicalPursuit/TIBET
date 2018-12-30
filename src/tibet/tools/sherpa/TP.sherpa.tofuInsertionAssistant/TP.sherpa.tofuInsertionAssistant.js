@@ -96,20 +96,18 @@ function(anObject) {
         data,
         info,
 
+        targetElem,
+        targetXMLNS,
+        targetPrefix,
+
         val,
 
         tagName,
         tagType,
 
-        targetElem,
-
         templateURL,
         resp,
         tagTemplate,
-
-        tagParts,
-        tagXmlns,
-        currentDefaultXmlns,
 
         str,
 
@@ -135,14 +133,36 @@ function(anObject) {
 
     info = TP.hc(data).at('info');
 
+    targetElem = this.get('data').at('insertionPoint');
+    if (!TP.isElement(targetElem)) {
+        //  No insertion point? Exit here.
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  Grab the default namespace for the target environment that we'll be
+    //  inserting this tag into. This helps with more intelligent markup
+    //  generation.
+    targetXMLNS = TP.elementGetDefaultXMLNS(targetElem);
+
+    //  Grab the insertion target element's prefix (or the prefix matching its
+    //  default XMLNS if it doesn't have one).
+    targetPrefix = targetElem.prefix;
+    if (TP.isEmpty(targetPrefix)) {
+        targetPrefix = TP.w3.Xmlns.getURIPrefix(targetXMLNS, targetElem);
+    }
+
     //  If the user entered a tag name, make sure it is prefixed, defaulting to
     //  'html:' if they didn't supply it. This takes precedence over the
     //  'chosen' (from the list) tag name.
     if (TP.notEmpty(val = info.at('enteredTagName'))) {
         tagName = val;
 
+        //  If the user isn't specifying a prefixed tag name, then use the
+        //  prefix from the insertion element, if it has one. The generateTag
+        //  method will massage this into a more canonical form.
         if (!TP.regex.HAS_COLON.test(tagName)) {
-            tagName = 'html:' + tagName;
+            tagName = targetPrefix + ':' + tagName;
         }
 
     } else if (TP.notEmpty(val = info.at('chosenTagName'))) {
@@ -172,13 +192,6 @@ function(anObject) {
 
         //  No entered tag name and nothing chosen. Can't proceed - exit here.
         //  TODO: Need an error message here.
-        return this;
-    }
-
-    targetElem = this.get('data').at('insertionPoint');
-    if (!TP.isElement(targetElem)) {
-        //  No insertion point? Exit here.
-        //  TODO: Raise an exception
         return this;
     }
 
@@ -226,28 +239,8 @@ function(anObject) {
 
         //  Otherwise, there was no pre-defined template for the tag.
 
-        //  If the tagName has a colon, then we try to match its namespace to
-        //  the namespace of the insertion target. If they're the same, then we
-        //  insert an Element with that tag name, minus its prefix.
-        if (TP.regex.HAS_COLON.test(tagName)) {
-
-            //  Grab the namespace of the inserted tag.
-            tagParts = tagName.split(':');
-            tagXmlns = TP.w3.Xmlns.getPrefixURI(tagParts.first());
-
-            //  Grab the namespaces of the element at the insertion point.
-            currentDefaultXmlns = TP.elementGetDefaultXMLNS(targetElem);
-
-            //  If they're the same, then strip off the prefix, but add an
-            //  'xmlns="..."' with that namespace so that the element goes into
-            //  the correct namespace.
-            if (tagXmlns === currentDefaultXmlns) {
-                tagName = tagName.slice(tagName.indexOf(':') + 1);
-                tagName += ' xmlns="' + currentDefaultXmlns + '"';
-            }
-        }
-
-        str = this.generateTag(tagName, info.at('tagAttrs'));
+        //  Generate the tag using the parameters as set by the user.
+        str = this.generateTag(tagName, info.at('tagAttrs'), targetXMLNS);
 
         newElem = TP.nodeFromString(str);
 
@@ -294,6 +287,10 @@ function(aSignal) {
 
         tagName,
 
+        targetElem,
+        targetXMLNS,
+        targetPrefix,
+
         str;
 
     result = TP.uc('urn:tibet:tofuInsertionAssistant_source').
@@ -313,11 +310,34 @@ function(aSignal) {
     tagName = TP.ifEmpty(typeInfo.at('enteredTagName'),
                             typeInfo.at('chosenTagName'));
 
-    if (!TP.regex.HAS_COLON.test(tagName)) {
-        tagName = 'html:' + tagName;
+    targetElem = this.get('data').at('insertionPoint');
+    if (!TP.isElement(targetElem)) {
+        //  No insertion point? Exit here.
+        //  TODO: Raise an exception
+        return this;
     }
 
-    str = this.generateTag(tagName, typeInfo.at('tagAttrs'));
+    //  Grab the default namespace for the target environment that we'll be
+    //  inserting this tag into. This helps with more intelligent markup
+    //  generation.
+    targetXMLNS = TP.elementGetDefaultXMLNS(targetElem);
+
+    //  Grab the insertion target element's prefix (or the prefix matching its
+    //  default XMLNS if it doesn't have one).
+    targetPrefix = targetElem.prefix;
+    if (TP.isEmpty(targetPrefix)) {
+        targetPrefix = TP.w3.Xmlns.getURIPrefix(targetXMLNS, targetElem);
+    }
+
+    //  If the user isn't specifying a prefixed tag name, then use the
+    //  prefix from the insertion element, if it has one. The generateTag
+    //  method will massage this into a more canonical form.
+    if (!TP.regex.HAS_COLON.test(tagName)) {
+        tagName = targetPrefix + ':' + tagName;
+    }
+
+    //  Generate the tag using the parameters as set by the user.
+    str = this.generateTag(tagName, typeInfo.at('tagAttrs'), targetXMLNS);
 
     this.get('generatedTag').setTextContent(str);
 
@@ -380,7 +400,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generateTag',
-function(tagName, attributes) {
+function(tagName, attributes, defaultNS) {
 
     /**
      * @method generateTag
@@ -389,13 +409,18 @@ function(tagName, attributes) {
      * @param {String} tagName The tagname to use in the markup.
      * @param {Array[]} attributes An Array of Arrays containing attribute
      *     name / attribute value pairs.
+     * @param {String} defaultNS The default namespace that the markup Strin
+     *     will be inserted into.
      * @returns {String} The tag markup text.
      */
 
     var str,
         attrStr,
 
-        tagType;
+        tagType,
+
+        tagParts,
+        tagXmlns;
 
     str = '';
     attrStr = '';
@@ -425,8 +450,20 @@ function(tagName, attributes) {
             return '';
         }
 
-        str = tagType.generateMarkupContent(attrStr, false);
+        str = tagType.generateMarkupContent(attrStr, true, defaultNS);
     } else if (TP.notEmpty(tagName)) {
+        if (TP.regex.HAS_COLON.test(tagName)) {
+            //  Grab the namespace of the inserted tag.
+            tagParts = tagName.split(':');
+            tagXmlns = TP.w3.Xmlns.getPrefixURI(tagParts.first());
+            if (tagXmlns !== defaultNS) {
+                attrStr = ' xmlns:' + tagParts.first() + '="' + tagXmlns + '"' +
+                            attrStr;
+            } else {
+                attrStr = ' xmlns="' + tagXmlns + '"' + attrStr;
+            }
+        }
+
         str = '<' + tagName + attrStr + '/>';
     }
 
