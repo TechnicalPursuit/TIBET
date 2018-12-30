@@ -2597,11 +2597,11 @@ function(anNSURI, aHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('unregisterNamespace',
+TP.w3.Xmlns.Type.defineMethod('unregisterNSInfo',
 function(anNSURI) {
 
     /**
-     * @method unregisterNamespace
+     * @method unregisterNSInfo
      * @summary Removes any information about the namespaceURI provided. This
      *     method can be used prior to a registerNamespace call to clear any
      *     pre-existing registration data.
