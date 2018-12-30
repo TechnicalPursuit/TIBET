@@ -2313,11 +2313,11 @@ function(anNSURI, aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('getXHTMLURIs',
+TP.w3.Xmlns.Type.defineMethod('getXHTMLNSURIs',
 function() {
 
     /**
-     * @method getXHTMLURIs
+     * @method getXHTMLNSURIs
      * @summary Returns an array of namespace URIs which are implicitly part of
      *     the XHTML5 specification.
      * @returns {String[]} The list of XHTML namespace URIs.
