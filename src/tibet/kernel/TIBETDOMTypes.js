@@ -10396,7 +10396,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('generateMarkupContent',
-function(attrStr, wantsXMLNS) {
+function(attrStr, wantsXMLNS, targetDefaultNS) {
 
     /**
      * @method generateMarkupContent
@@ -10409,10 +10409,15 @@ function(attrStr, wantsXMLNS) {
      *     markup.
      * @param {Boolean} [wantsXMLNS=true] Whether or not the caller wants an
      *     'xmlns:' namespace definition generated into the result.
+     * @param {String} [targetDefaultNS] The default NS of the target
+     *     environment that the markup String will be inserted into.
      * @returns {String} The 'empty markup' representation of the receiver.
      */
 
     var attrMarkup,
+
+        ourNSURI,
+
         str;
 
     if (TP.notEmpty(attrStr)) {
@@ -10421,24 +10426,58 @@ function(attrStr, wantsXMLNS) {
         attrMarkup = '';
     }
 
+    //  Grab our namespace URI. We'll use this to compare against the default
+    //  namespace that the markup we generate is being placed into.
+    ourNSURI = this.getNSURI();
+
+    //  If the caller wants an 'xmlns' generated into the markup.
     if (TP.notFalse(wantsXMLNS)) {
-        str = TP.join('<',
-                    this.getNamespacePrefix(),
-                    ':',
-                    this.getLocalName(),
-                    ' xmlns:', this.getNamespacePrefix(),
-                    '="',
-                    TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
-                    '"' +
-                    attrMarkup +
-                    '/>');
+        //  If we got passed a target default namespace and its the same as our
+        //  own namespace, then just generate an unprefixed tag name and a
+        //  default 'xmlns' definition
+        if (TP.notEmpty(targetDefaultNS) && ourNSURI === targetDefaultNS) {
+            str = TP.join('<',
+                        this.getLocalName(),
+                        ' xmlns',
+                        '="',
+                        ourNSURI +
+                        '"' +
+                        attrMarkup +
+                        '/>');
+        } else {
+            //  Otherwise, generate a prefixed tag name and a prefixed 'xmlns:'
+            //  definition to match.
+            str = TP.join('<',
+                        this.getNamespacePrefix(),
+                        ':',
+                        this.getLocalName(),
+                        ' xmlns:', this.getNamespacePrefix(),
+                        '="',
+                        TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                        '"' +
+                        attrMarkup +
+                        '/>');
+        }
     } else {
-        str = TP.join('<',
-                    this.getNamespacePrefix(),
-                    ':',
-                    this.getLocalName(),
-                    attrMarkup +
-                    '/>');
+        //  Otherwise, the caller did not want an 'xmlns' generated into the
+        //  markup.
+
+        //  If we got passed a target default namespace and its the same as our
+        //  own namespace, then just generate an unprefixed tag name.
+        if (TP.notEmpty(targetDefaultNS) && ourNSURI === targetDefaultNS) {
+            str = TP.join('<',
+                        this.getLocalName(),
+                        attrMarkup +
+                        '/>');
+        } else {
+            //  Otherwise, generate a prefixed tag name.
+            str = TP.join('<',
+                        this.getNamespacePrefix(),
+                        ':',
+                        this.getLocalName(),
+                        attrMarkup +
+                        '/>');
+        }
     }
 
     return str;
