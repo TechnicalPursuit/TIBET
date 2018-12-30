@@ -8891,7 +8891,7 @@ function(aWindow) {
 
     //  Add common namespaces to the document element to further reduce
     //  namespace clutter.
-    TP.w3.Xmlns.addCommonNamespacesTo(aWindow.document.documentElement);
+    TP.w3.Xmlns.addCommonNSURIsTo(aWindow.document.documentElement);
 
     //  update ACL content if possible so that subsequent CSS processing and
     //  awakening can work with an awareness of the ACL context

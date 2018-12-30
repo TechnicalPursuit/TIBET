@@ -1666,11 +1666,11 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('addCommonNamespacesTo',
+TP.w3.Xmlns.Type.defineMethod('addCommonNSURIsTo',
 function(anElement) {
 
     /**
-     * @method addCommonNamespacesTo
+     * @method addCommonNSURIsTo
      * @summary Adds commonly used namespaces (the list is defined on this
      *     type) to the element.
      * @param {Element} anElement The element to install the namespaces on.
