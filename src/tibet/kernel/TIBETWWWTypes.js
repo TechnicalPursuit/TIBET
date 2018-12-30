@@ -2136,11 +2136,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('getNonNativeURIs',
+TP.w3.Xmlns.Type.defineMethod('getNonNativeNSURIs',
 function() {
 
     /**
-     * @method getNonNativeURIs
+     * @method getNonNativeNSURIs
      * @summary Returns an array of known URIs which are not native to the
      *     current browser.
      * @returns {String[]} The list of non-native namespace URIs.
