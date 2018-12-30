@@ -121,7 +121,7 @@ function(aNode, aConnection) {
                                 TP.sys.getTargetLanguage(),
                                 TP.w3.Xmlns.XML);
 
-    TP.elementAddNamespace(natNode, 'xml', TP.w3.Xmlns.XML);
+    TP.elementAddNSURI(natNode, 'xml', TP.w3.Xmlns.XML);
 
     if (TP.notValid(aConnection)) {
         return this.raise('TP.sig.InvalidXMPPConnection');

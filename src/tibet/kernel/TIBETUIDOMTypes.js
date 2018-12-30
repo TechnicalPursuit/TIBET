@@ -4472,9 +4472,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
             //  Otherwise, they're trying to add a prefixed namespace
             //  definition.
-            TP.elementAddNamespace(node,
-                                    prefix + ':' + name,
-                                    attributeValue);
+            TP.elementAddNSURI(node, prefix + ':' + name, attributeValue);
 
             if (flag) {
                 this.$changed('@' + attributeName, TP.UPDATE);

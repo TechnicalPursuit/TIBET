@@ -1515,7 +1515,7 @@ TP.hc(
                             }
                         }
 
-                        //  NOTE: We cannot use elementAddNamespace() here since
+                        //  NOTE: We cannot use elementAddNSURI() here since
                         //  that call uses this call :-).
                         anElement.setAttributeNS(TP.w3.Xmlns.XMLNS,
                                                     xmlnsAttrName,

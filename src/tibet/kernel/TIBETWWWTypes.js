@@ -1706,7 +1706,7 @@ function(anNSURI, anElement) {
      *     be used as the URI as this method will try to determine the canonical
      *     prefix to install the namespace under. Otherwise, if a canonical
      *     prefix cannot be found this method will fail. See the lower-level
-     *     TP.elementAddNamespace() function to install namespaces (including
+     *     TP.elementAddNSURI() function to install namespaces (including
      *     default namespaces) that are unknown to the TP.w3.Xmlns type.
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
@@ -1730,7 +1730,7 @@ function(anNSURI, anElement) {
         return this;
     }
 
-    TP.elementAddNamespace(anElement, prefix, anNSURI);
+    TP.elementAddNSURI(anElement, prefix, anNSURI);
 
     return this;
 });

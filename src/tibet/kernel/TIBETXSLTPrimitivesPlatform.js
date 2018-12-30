@@ -992,9 +992,7 @@ TP.hc(
 
         //  Because we added 'html:script' and 'html:style' to our 'output
         //  element', we need to make sure the namespace is defined here.
-        TP.elementAddNamespace(styleDoc.documentElement,
-                                'html',
-                                TP.w3.Xmlns.XHTML);
+        TP.elementAddNSURI(styleDoc.documentElement, 'html', TP.w3.Xmlns.XHTML);
 
         if (!TP.isDocument(inputNode)) {
             node = TP.constructDocument();

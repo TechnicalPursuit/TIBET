@@ -1364,11 +1364,11 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementAddNamespace',
+TP.definePrimitive('elementAddNSURI',
 function(anElement, aPrefix, aURI) {
 
     /**
-     * @method elementAddNamespace
+     * @method elementAddNSURI
      * @summary Adds an 'xmlns:<aPrefix>' attribute to the element. Note that
      *     'aPrefix' *must* be valid (i.e. you cannot use this mechanism to
      *     change the default namespace - no current DOM environment supports
@@ -1383,7 +1383,7 @@ function(anElement, aPrefix, aURI) {
      *          xmlDoc = TP.documentFromString(
      *          '<foo xmlns="http://www.foo.com"/>');
      *          <samp>[object XMLDocument]</samp>
-     *          TP.elementAddNamespace(xmlDoc.documentElement,
+     *          TP.elementAddNSURI(xmlDoc.documentElement,
      *          'svg',
      *          TP.w3.Xmlns.SVG);
      *          TP.nodeAsString(xmlDoc);
@@ -1767,7 +1767,7 @@ function(anElement) {
                     } else {
                         //  If it is the document element, then go ahead and
                         //  place the attribute, and remove it from ourself.
-                        TP.elementAddNamespace(ancestor, wholeName, nsURIVal);
+                        TP.elementAddNSURI(ancestor, wholeName, nsURIVal);
                         TP.elementRemoveNamespace(anElement, wholeName);
                         return;
                     }
@@ -1789,7 +1789,7 @@ function(anElement) {
                 //  remove it from ourself.
                 if (nsVal !== nsURIVal && i > 0) {
 
-                    TP.elementAddNamespace(
+                    TP.elementAddNSURI(
                             ancestors.at(i - 1), wholeName, nsURIVal);
                     TP.elementRemoveNamespace(anElement, wholeName);
 
@@ -1991,9 +1991,7 @@ function(fromElement, toElement) {
             //  NB: We only add prefixed namespaces here, not default
             //  namespaces.
             if (/xmlns:/g.test(fromAttr.name)) {
-                TP.elementAddNamespace(toElement,
-                                        fromAttr.name,
-                                        fromAttr.value);
+                TP.elementAddNSURI(toElement, fromAttr.name, fromAttr.value);
             }
         }
     }
