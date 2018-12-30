@@ -8278,11 +8278,11 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeGetAncestorsInNS',
+TP.definePrimitive('nodeGetAncestorsInNSURI',
 function(aNode, aNamespaceURI) {
 
     /**
-     * @method nodeGetAncestorsInNS
+     * @method nodeGetAncestorsInNSURI
      * @summary Returns an array of ancestors of the current element which are
      *     in the namespace provided. Note that this method only checks the
      *     elements themselves, not the attributes. If you want to also return
