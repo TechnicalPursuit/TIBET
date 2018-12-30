@@ -4353,9 +4353,9 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                         //  the last address.
                         currentNode = currentNode.childNodes[address];
                     }
-                }
 
-                break;
+                    break;
+                }
             }
 
             //  Grab the child of the current node and use it to test to figure
