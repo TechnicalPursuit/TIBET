@@ -1688,7 +1688,7 @@ function(anElement) {
     namespaces = this.get('commonNamespaces');
 
     for (i = 0; i < namespaces.getSize(); i++) {
-        this.addNamespaceTo(namespaces.at(i), anElement);
+        this.addNSURITo(namespaces.at(i), anElement);
     }
 
     return this;
@@ -1696,11 +1696,11 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('addNamespaceTo',
+TP.w3.Xmlns.Type.defineMethod('addNSURITo',
 function(anNSURI, anElement) {
 
     /**
-     * @method addNamespaceTo
+     * @method addNSURITo
      * @summary Adds the namespace supplied in anNSURI to the element.
      * @description One of the constants available on the TP.w3.Xmlns type must
      *     be used as the URI as this method will try to determine the canonical
