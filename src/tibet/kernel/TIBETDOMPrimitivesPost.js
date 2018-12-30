@@ -1741,7 +1741,7 @@ function(anElement) {
             //  the same value) then it has this namespace attribute and we can
             //  remove it from ourself.
             if (TP.isValid(entry) && entry === nsURIVal) {
-                TP.elementRemoveNamespace(anElement, wholeName);
+                TP.elementRemoveNSURI(anElement, wholeName);
 
                 return;
             }
@@ -1768,7 +1768,7 @@ function(anElement) {
                         //  If it is the document element, then go ahead and
                         //  place the attribute, and remove it from ourself.
                         TP.elementAddNSURI(ancestor, wholeName, nsURIVal);
-                        TP.elementRemoveNamespace(anElement, wholeName);
+                        TP.elementRemoveNSURI(anElement, wholeName);
                         return;
                     }
                 }
@@ -1778,7 +1778,7 @@ function(anElement) {
                 //  ourself and take no further action.
                 if (nsVal === nsURIVal) {
 
-                    TP.elementRemoveNamespace(anElement, wholeName);
+                    TP.elementRemoveNSURI(anElement, wholeName);
 
                     return;
                 }
@@ -1791,7 +1791,7 @@ function(anElement) {
 
                     TP.elementAddNSURI(
                             ancestors.at(i - 1), wholeName, nsURIVal);
-                    TP.elementRemoveNamespace(anElement, wholeName);
+                    TP.elementRemoveNSURI(anElement, wholeName);
 
                     return;
                 }
@@ -4340,11 +4340,11 @@ function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementRemoveNamespace',
+TP.definePrimitive('elementRemoveNSURI',
 function(anElement, aPrefix) {
 
     /**
-     * @method elementRemoveNamespace
+     * @method elementRemoveNSURI
      * @summary Removes an 'xmlns:<aPrefix>' attribute from the element. Note
      *     that 'aPrefix' *must* be valid (i.e. you can use this
      *     mechanism to remove a default namespace attribute (i.e. a standalone
@@ -4361,7 +4361,7 @@ function(anElement, aPrefix) {
      *          '<foo xmlns="http://www.foo.com"
      *          xmlns:svg="http://www.w3.org/2000/svg"/>');
      *          <samp>[object XMLDocument]</samp>
-     *          TP.elementRemoveNamespace(xmlDoc.documentElement,
+     *          TP.elementRemoveNSURI(xmlDoc.documentElement,
      *          'svg');
      *          TP.nodeAsString(xmlDoc);
      *          <samp>&lt;foo xmlns="http://www.foo.com"/&gt;</samp>
