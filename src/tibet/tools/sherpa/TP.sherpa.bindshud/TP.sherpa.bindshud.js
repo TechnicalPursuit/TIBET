@@ -523,7 +523,7 @@ function(aTPElement) {
 
     //  This will find ancestors whose elements are in the BIND namespace or
     //  which have attributes in the BIND namespace
-    bindAncestors = TP.nodeGetAncestorsWithNS(node, TP.w3.Xmlns.BIND);
+    bindAncestors = TP.nodeGetAncestorsWithNSURI(node, TP.w3.Xmlns.BIND);
 
     bindingAttrNodes = TP.elementGetAttributeNodesInNS(
                                     node, null, TP.w3.Xmlns.BIND);

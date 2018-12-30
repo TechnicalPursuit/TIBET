@@ -8287,7 +8287,7 @@ function(aNode, aNamespaceURI) {
      *     in the namespace provided. Note that this method only checks the
      *     elements themselves, not the attributes. If you want to also return
      *     elements that have attributes are in that namespace, use
-     *     nodeGetAncestorsWithNS.
+     *     nodeGetAncestorsWithNSURI.
      * @param {Node} aNode The node to start traversal from.
      * @param {String} aNamespaceURI The URI for the namespace to check.
      * @returns {Element[]} An array of ancestors.
@@ -8319,11 +8319,11 @@ function(aNode, aNamespaceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeGetAncestorsWithNS',
+TP.definePrimitive('nodeGetAncestorsWithNSURI',
 function(aNode, aNamespaceURI) {
 
     /**
-     * @method nodeGetAncestorsWithNS
+     * @method nodeGetAncestorsWithNSURI
      * @summary Returns an array of elements with either a namespaceURI or
      *     that has one or more attributes which are part of the namespace
      *     provided.
