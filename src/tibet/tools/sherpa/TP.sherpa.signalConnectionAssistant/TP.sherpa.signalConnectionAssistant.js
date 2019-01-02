@@ -204,7 +204,7 @@ function(info) {
         }
     }
 
-    //  If signal payload entries  were defined by the user, add them onto the
+    //  If signal payload entries were defined by the user, add them onto the
     //  string defining the new element.
     if (TP.notEmpty(val = info.at('signalPayload'))) {
         if (extendedForm) {

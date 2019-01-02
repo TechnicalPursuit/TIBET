@@ -567,7 +567,7 @@ function(aValue) {
 
     /**
      * @method getSchemaType
-     * @summary Returns the JSON Schema type of the supplied object
+     * @summary Returns the JSON Schema type of the supplied object.
      * @param {Object} aValue The object to determine the JSON Schema type of.
      * @returns {String} The JSON Schema type of the supplied object.
      */

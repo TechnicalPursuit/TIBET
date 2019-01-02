@@ -8767,7 +8767,7 @@ function(anObj) {
     }
 
     //  have to rely on an internal method on the object to say so (which
-    //  we add to Array, TP.core.Hash, etc.
+    //  we add to Array, TP.core.Hash, etc.)
     if (TP.canInvoke(anObj, '$$isCollection')) {
         return anObj.$$isCollection();
     }
