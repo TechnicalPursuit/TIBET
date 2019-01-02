@@ -115,5 +115,61 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaContent.Inst.defineMethod('getSchemaTypeOfProperty',
+function(aPropertyPath) {
+
+    /**
+     * @method getSchemaTypeOfProperty
+     * @summary Returns the JSON schema type of the property at the 'end' of the
+     *     supplied property path.
+     * @description This method expects a dot-separated property path (i.e
+     *     'foo.bar.baz') to return the type.
+     * @param {String} aPropertyPath The path 'down to' the property to return
+     *     the type of.
+     * @returns {String} The JSON schema type name. Values include: 'boolean',
+     *     'null', 'number', 'string', 'object', 'array'.
+     */
+
+    var queryPath,
+
+        defName,
+
+        pathParts,
+        query,
+
+        dataType;
+
+    if (TP.isEmpty(aPropertyPath)) {
+        return this.raise('TP.sig.InvalidValue',
+                            'Property path is empty.');
+    }
+
+    //  First, get the schema definition name - this is a unique value that
+    //  could be different for each schema.
+    queryPath = TP.jpc('$.definitions');
+    defName = this.get(queryPath).getKeys().first();
+
+    //  Grab the supplied property path and split on '.' to obtain the path
+    //  parts.
+    pathParts = aPropertyPath.split('.');
+
+    //  Put the definition name on the front and join all of the parts together
+    //  with a '.properties.' separator. This will build the proper query path
+    //  to the definition of the property.
+    pathParts.unshift(defName);
+    query = pathParts.join('.properties.');
+
+    //  Build a query using the computed path prepended by the necessary
+    //  prologue and appended with '.type' to get to the type definition.
+    query = '$.definitions.' + query + '.type';
+    queryPath = TP.jpc(query);
+
+    dataType = this.get(queryPath);
+
+    return dataType;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
