@@ -5500,28 +5500,6 @@ function(pathParts, aPathType) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('prefixAssignmentStatements',
-function(prefixStr, aScriptStr) {
-
-    /**
-     * @method prefixAssignmentStatements
-     * @summary Prefixes assignment statements ('x = 2') in aScriptStr with the
-     *     prefix supplied in prefixStr.
-     * @param {String} prefixStr The String to prefix onto assignment statements
-     *     within the script String.
-     * @param {String} aScriptStr The String to extract and prefix assignment
-     *     statements in.
-     * @returns {String} The supplied script String with the assignments
-     *     prefixed by the supplied prefix.
-     */
-
-    TP.regex.JS_ASSIGNMENT.lastIndex = 0;
-    return aScriptStr.replace(TP.regex.JS_ASSIGNMENT,
-                                '$1' + prefixStr + '$2$3');
-});
-
-//  ------------------------------------------------------------------------
 //  Signaling
 //  ------------------------------------------------------------------------
 
