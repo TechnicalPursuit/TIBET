@@ -523,7 +523,7 @@ function(tree, definitionName) {
     //  If no definition name was supplied, then turn the schema into a JSON
     //  string, get its hashed value as an absolute number and use that.
     if (TP.isEmpty(definitionName)) {
-        defName = TP.json(schema).asHashedNumber().abs();
+        defName = 'Schema_' + TP.json(schema).asHashedNumber().abs();
     } else {
         defName = definitionName;
     }
