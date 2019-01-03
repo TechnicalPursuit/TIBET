@@ -33,6 +33,7 @@
 
         setcfg('path.tds_file', '~/tds.json');
         setcfg('path.tds_plugins', '~/plugins');
+        setcfg('path.tds_processors', '~tds_plugins/processors');
         setcfg('path.tds_tasks', '~tds_plugins/tasks');
         setcfg('path.tds_templates', '~tds_tasks/templates');
 

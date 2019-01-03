@@ -38,6 +38,7 @@
             pattern,
             startSSE,
             TDS,
+            meta,
             watcher,
             watchRoot;
 
@@ -46,6 +47,11 @@
 
         localDev = options.localDev;
         logger = options.logger;
+
+        meta = {
+            comp: 'TDS',
+            type: 'watch'
+        };
 
         //  ---
         //  Requires
@@ -253,11 +259,18 @@
 
         eventName = TDS.getcfg('tds.watch.event');
 
+        //  The primary change handler function.
         watcher.on('change', function(file) {
             var ignoreChangedFiles,
                 ignoreIndex,
                 fullpath,
-                tibetpath;
+                tibetpath,
+                extname,
+                procs,
+                shouldSignal,
+                i,
+                len,
+                result;
 
             ignoreChangedFiles = TDS.getcfg('tds.watch.ignore_changed_files');
 
@@ -273,10 +286,44 @@
 
             fullpath = path.join(watchRoot, file);
             tibetpath = TDS.getVirtualPath(fullpath);
+            extname = path.extname(fullpath);
+            extname = extname.charAt(0) === '.' ? extname.slice(1) : extname;
 
             TDS.ifDebug() ? logger.debug('Processing file change to ' +
                 tibetpath) : 0;
 
+            //  Perform any extension-specific processing for the file.
+            procs = TDS.watch.lookupProcessors(extname);
+            if (procs) {
+
+                TDS.ifDebug() ? logger.debug('Running processors for ' +
+                    extname) : 0;
+
+                //  Proc can preventDefault by returning non-true. If any
+                //  processor prevents default then we don't signal.
+                len = procs.length;
+                for (i = 0; i < len; i++) {
+                    try {
+                        result = procs[i](fullpath);
+                    } catch (e) {
+                        logger.error('Error running processor: ' +
+                            e.message);
+                    }
+
+                    if (result === false) {
+                        shouldSignal = false;
+                    }
+                }
+            }
+
+            //  If any processor prevented signaling log it and bail early.
+            if (shouldSignal === false) {
+                TDS.ifDebug() ? logger.debug('SSE prevented for ' +
+                    extname) : 0;
+                return;
+            }
+
+            //  Signal if not prevented by a processor...
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {
                     path: tibetpath,
@@ -331,8 +378,118 @@
         };
 
         //  ---
+        //  Processor Management
+        //  ---
+
+        /**
+         * Loads any processor modules found in the project's processors
+         * directory. Each processor is expected to invoke registerProcessor
+         * so it can be invoked during file change handling.
+         */
+        TDS.watch.loadProcessors = function() {
+            var procdir,
+                files;
+
+            procdir = TDS.expandPath('~tds_processors');
+
+            if (TDS.shell.test('-d', procdir)) {
+                files = TDS.shell.ls(procdir);
+                files.sort().forEach(function(file) {
+                    var procMeta,
+                        name;
+
+                    //  Ignore directories
+                    if (TDS.shell.test('-d', path.join(procdir, file))) {
+                        return;
+                    }
+
+                    //  Ignore files that aren't js source
+                    if (!/\./.test(file)) {
+                        return;
+                    }
+
+                    name = file.slice(0, file.lastIndexOf('.'));
+
+                    //  Ignore hidden or 'sample/helper' files.
+                    if (name.match(/^(\.|_)/) ||
+                            name.match(/~$/) ||            //  tilde files for vi etc.
+                            name.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
+                            TDS.shell.test('-d', file)) {
+                        return;
+                    }
+
+                    procMeta = {
+                        comp: 'TDS',
+                        type: 'proc',
+                        name: name
+                    };
+
+                    logger.system('loading file processor', procMeta);
+
+                    options.logger = logger.getContextualLogger(procMeta);
+
+                    try {
+                        //  NOTE the processors themselves should register
+                        //  such that they can be invoked when a file with
+                        //  a matching extension changes.
+                        require(path.join(procdir, file))(options);
+                    } catch (e) {
+                        logger.error('Error loading processor: ' + name);
+                        logger.error(e.message);
+                        logger.debug(e.stack);
+                        return;
+                    }
+                });
+            }
+        };
+
+        /**
+         * Looks up any registered file processors by extension.
+         * @param {String} extension The file extension to use as a lookup key.
+         * @return {Array.<Function>} An array of processor functions.
+         */
+        TDS.watch.lookupProcessors = function(extension) {
+            var dict;
+
+            dict = TDS.watch.processors || {};
+            return dict[extension];
+        };
+
+        /**
+         * Register a file processor by extension. There can be more than one.
+         * @param {String} extension The extension to register the processor
+         *     under. For example 'sass', 'js', etc.
+         * @param {Function} processor The function to invoke. It should take a
+         *     single parameter, the full file path to process.
+         * @param {Object} metadata Logger metadata for the processor.
+         * @returns {Array.<Function>} The updated array of processors.
+         */
+        TDS.watch.registerProcessor = function(extension, processor, metadata) {
+            var dict,
+                procs;
+
+            logger.info('registering ' + extension + ' processor',
+                metadata || meta);
+
+            TDS.watch.processors = TDS.watch.processors || {};
+            dict = TDS.watch.processors;
+
+            procs = dict[extension];
+            if (!procs) {
+                procs = [];
+                dict[extension] = procs;
+            }
+            procs.push(processor);
+
+            return procs;
+        };
+
+
+        //  ---
         //  Routes
         //  ---
+
+        TDS.watch.loadProcessors(options);
 
         app.get(TDS.cfg('tds.watch.uri'), localDev, TDS.watch);
     };
