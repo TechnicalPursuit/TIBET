@@ -10180,7 +10180,7 @@ TP.boot.$expandConfig = function(anElement, configName) {
                             try {
                                 str = '<script><![CDATA[' +
                                     'TP.boot.$stdout(\'' +
-                                        value.replace(/'/g, '\'') +
+                                        value.replace(/'/g, '\\\'') +
                                     '\'' + level + ');' +
                                     ']]></script>';
                                 doc = TP.boot.$documentFromString(str);
