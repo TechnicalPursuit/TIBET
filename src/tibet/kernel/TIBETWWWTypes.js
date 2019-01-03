@@ -2223,11 +2223,11 @@ function(anNSURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('getPrefixURI',
+TP.w3.Xmlns.Type.defineMethod('getNSURIForPrefix',
 function(aPrefix) {
 
     /**
-     * @method getPrefixURI
+     * @method getNSURIForPrefix
      * @summary Returns the namespace URI whose canonical prefix matches the
      *     one provided.
      * @param {String} aPrefix A canonical prefix such as "xforms".

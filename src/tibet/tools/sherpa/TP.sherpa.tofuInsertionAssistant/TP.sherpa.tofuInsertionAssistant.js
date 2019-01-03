@@ -455,7 +455,7 @@ function(tagName, attributes, defaultNS) {
         if (TP.regex.HAS_COLON.test(tagName)) {
             //  Grab the namespace of the inserted tag.
             tagParts = tagName.split(':');
-            tagXmlns = TP.w3.Xmlns.getPrefixURI(tagParts.first());
+            tagXmlns = TP.w3.Xmlns.getNSURIForPrefix(tagParts.first());
             if (tagXmlns !== defaultNS) {
                 attrStr = ' xmlns:' + tagParts.first() + '="' + tagXmlns + '"' +
                             attrStr;

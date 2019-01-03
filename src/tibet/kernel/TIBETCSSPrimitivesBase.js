@@ -2763,7 +2763,7 @@ function(aStylesheet, selectorText, shouldSignal) {
         for (i = 0; i < len; i++) {
 
             //  Grab the URI that goes with the undefined prefix.
-            uri = TP.w3.Xmlns.getPrefixURI(undefinedPrefixes.at(i));
+            uri = TP.w3.Xmlns.getNSURIForPrefix(undefinedPrefixes.at(i));
             if (TP.isEmpty(uri)) {
                 return TP.raise(this, 'TP.sig.InvalidValue');
             }

@@ -1524,7 +1524,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
                               TP.nodeGetFirstAncestorByAttribute(
                                           anElement, 'xmlns:' + prefix))) {
                     //  Couldn't find one - use TIBET's meta information
-                    toXMLNS = TP.w3.Xmlns.getPrefixURI(prefix);
+                    toXMLNS = TP.w3.Xmlns.getNSURIForPrefix(prefix);
                 } else {
                     //  Get it from the ancestor that declared it
                     toXMLNS = TP.elementGetAttribute(elemWithNS,
@@ -2399,7 +2399,7 @@ function(anElement, attributeName, checkAttrNSURI) {
 
             //  NOTE the dependency here on the XMLNS type which allows us
             //  to look up the registered URI for our prefix
-            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            nsURI = TP.w3.Xmlns.getNSURIForPrefix(parts.at(1));
             if (TP.isEmpty(nsURI)) {
                 TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
@@ -3446,7 +3446,7 @@ function(anElement, attributeName, checkAttrNSURI) {
 
         //  NOTE the dependency here on the XMLNS type which allows us
         //  to look up the registered URI for our prefix
-        nsuri = TP.w3.Xmlns.getPrefixURI(prefix);
+        nsuri = TP.w3.Xmlns.getNSURIForPrefix(prefix);
         if (TP.notEmpty(nsuri)) {
             //  might get lucky and find it by full name and have it check
             //  out. this would be typical for things like ev: or bind:
@@ -3638,7 +3638,7 @@ function(anElement, attributeName, checkAttrNSURI) {
 
             //  NOTE the dependency here on the XMLNS type which allows us
             //  to look up the registered URI for our prefix
-            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            nsURI = TP.w3.Xmlns.getNSURIForPrefix(parts.at(1));
             if (TP.isEmpty(nsURI)) {
                 TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
@@ -4183,7 +4183,7 @@ function(anElement, attributeName, checkAttrNSURI) {
 
             //  NOTE the dependency here on the XMLNS type which allows us
             //  to look up the registered URI for our prefix
-            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            nsURI = TP.w3.Xmlns.getNSURIForPrefix(parts.at(1));
             if (TP.isEmpty(nsURI)) {
                 TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
@@ -4539,7 +4539,7 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
             //  NOTE the dependency here on the XMLNS type which allows us
             //  to look up the registered URI for our prefix
-            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            nsURI = TP.w3.Xmlns.getNSURIForPrefix(parts.at(1));
             if (TP.isEmpty(nsURI)) {
                 TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;

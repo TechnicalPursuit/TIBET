@@ -1498,7 +1498,7 @@ function(aString) {
     //  common namespace URI dictionary.
     allResults = allResults.filter(
                     function(aPrefix) {
-                        return TP.notValid(TP.w3.Xmlns.getPrefixURI(aPrefix)) &&
+                        return TP.notValid(TP.w3.Xmlns.getNSURIForPrefix(aPrefix)) &&
                                 TP.notValid(TP.boot.$uriSchemes[aPrefix]);
                     });
 

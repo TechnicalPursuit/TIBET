@@ -7033,7 +7033,7 @@ function(anElement) {
                     //  element is processed), then try to grab the URI and
                     //  build an 'xmlns' attribute.
                     if (!currentNSPrefixes.contains(nsPrefix)) {
-                        currentNSURI = TP.w3.Xmlns.getPrefixURI(nsPrefix);
+                        currentNSURI = TP.w3.Xmlns.getNSURIForPrefix(nsPrefix);
 
                         if (TP.notEmpty(currentNSURI)) {
                             xhtmlResult.push(' ', 'xmlns:', nsPrefix,

@@ -28,7 +28,7 @@ function(aPrefix) {
     var namespaceURI;
 
     if (TP.notEmpty(aPrefix) &&
-        TP.isString(namespaceURI = TP.w3.Xmlns.getPrefixURI(aPrefix))) {
+        TP.isString(namespaceURI = TP.w3.Xmlns.getNSURIForPrefix(aPrefix))) {
         return namespaceURI;
     }
 

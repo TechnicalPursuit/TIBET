@@ -232,7 +232,7 @@ function(nodeSpec, varargs) {
             if (str.endsWith(':')) {
                 prefix = str.slice(0, -1);
 
-                if (TP.isEmpty(nsURI = TP.w3.Xmlns.getPrefixURI(prefix))) {
+                if (TP.isEmpty(nsURI = TP.w3.Xmlns.getNSURIForPrefix(prefix))) {
                     return;
                 }
 
@@ -811,7 +811,7 @@ function() {
      * @returns {String} A namespace URI or the empty string.
      */
 
-    return TP.w3.Xmlns.getPrefixURI(this.get('nsPrefix'));
+    return TP.w3.Xmlns.getNSURIForPrefix(this.get('nsPrefix'));
 });
 
 //  ------------------------------------------------------------------------
@@ -10453,7 +10453,7 @@ function(attrStr, wantsXMLNS, targetDefaultNS) {
                         this.getLocalName(),
                         ' xmlns:', this.getNamespacePrefix(),
                         '="',
-                        TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                        TP.w3.Xmlns.getNSURIForPrefix(this.getNamespacePrefix()),
                         '"' +
                         attrMarkup +
                         '/>');
@@ -10591,7 +10591,7 @@ function(aNode) {
                     return type;
                 }
 
-                if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
+                if (TP.notEmpty(url = TP.w3.Xmlns.getNSURIForPrefix(prefix))) {
                     if (TP.isValid(info =
                                     TP.w3.Xmlns.get('info').at(url))) {
                         if (TP.notEmpty(defaultType =
@@ -13876,7 +13876,7 @@ function(storageInfo) {
                     //  If the prefix has a matching URI, then it's a 'built in'
                     //  (or has been registered), so we skip it. Otherwise, it
                     //  needs to be printed.
-                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrName))) {
+                    if (TP.notEmpty(TP.w3.Xmlns.getNSURIForPrefix(attrName))) {
                         continue;
                     }
 
@@ -13891,7 +13891,7 @@ function(storageInfo) {
 
                         if (wantsPrefixedXMLNSAttrs) {
 
-                            currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
+                            currentNSURI = TP.w3.Xmlns.getNSURIForPrefix(attrPrefix);
 
                             if (TP.notEmpty(currentNSURI)) {
                                 result.push(' ', 'xmlns:', attrPrefix,
@@ -14492,7 +14492,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  seems like we're dealing with a prefixed attribute that isn't an
         //  xmlns attribute, so the question is do we know a URI so we can
         //  map it properly?
-        if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
+        if (TP.notEmpty(url = TP.w3.Xmlns.getNSURIForPrefix(prefix))) {
             TP.elementSetAttributeInNS(node,
                                         prefix + ':' + name,
                                         attributeValue,

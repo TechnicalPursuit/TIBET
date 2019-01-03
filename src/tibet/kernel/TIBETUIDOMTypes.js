@@ -4484,7 +4484,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  seems like we're dealing with a prefixed attribute that isn't an
         //  xmlns attribute, so the question is do we know a URI so we can
         //  map it properly?
-        if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
+        if (TP.notEmpty(url = TP.w3.Xmlns.getNSURIForPrefix(prefix))) {
             TP.elementSetAttributeInNS(node,
                                         prefix + ':' + name,
                                         attributeValue,

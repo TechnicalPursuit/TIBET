@@ -10988,7 +10988,7 @@ function() {
 
                 if (TP.notEmpty(prefix) &&
                     TP.isString(namespace =
-                                TP.w3.Xmlns.getPrefixURI(prefix))) {
+                                TP.w3.Xmlns.getNSURIForPrefix(prefix))) {
                     return namespace;
                 }
 

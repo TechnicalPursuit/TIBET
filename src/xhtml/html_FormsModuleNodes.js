@@ -1606,7 +1606,7 @@ function(attrStr, wantsXMLNS, targetDefaultNS) {
                         'input',
                         ' xmlns:', this.getNamespacePrefix(),
                         '="',
-                        TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                        TP.w3.Xmlns.getNSURIForPrefix(this.getNamespacePrefix()),
                         '"' +
                         attrMarkup +
                         '/>');
