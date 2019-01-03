@@ -2178,11 +2178,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('getNSHandler',
+TP.w3.Xmlns.Type.defineMethod('getNSHandlerForNSURI',
 function(anNSURI) {
 
     /**
-     * @method getNSHandler
+     * @method getNSHandlerForNSURI
      * @summary Returns the type responsible for handling the namespace whose
      *     URI is provided, if available.
      * @param {String} anNSURI A namespace URI, often acquired from a native
