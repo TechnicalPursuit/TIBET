@@ -2298,7 +2298,7 @@ function(mutationRecords) {
 
                 if (TP.notEmpty(record.attributeNamespace)) {
                     if (!TP.regex.HAS_COLON.test(attrName)) {
-                        attrPrefix = TP.w3.Xmlns.getURIPrefix(
+                        attrPrefix = TP.w3.Xmlns.getPrefixForNSURI(
                                         record.attributeNamespace,
                                         record.target);
                         attrName = attrPrefix + ':' + attrName;
@@ -3115,7 +3115,7 @@ function() {
 
                 if (TP.notEmpty(aMutationRecord.attributeNamespace)) {
                     if (!TP.regex.HAS_COLON.test(attrName)) {
-                        attrPrefix = TP.w3.Xmlns.getURIPrefix(
+                        attrPrefix = TP.w3.Xmlns.getPrefixForNSURI(
                                         aMutationRecord.attributeNamespace,
                                         elem);
                         attrName = attrPrefix + ':' + attrName;

@@ -2279,11 +2279,11 @@ function(anNSURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('getURIPrefix',
+TP.w3.Xmlns.Type.defineMethod('getPrefixForNSURI',
 function(anNSURI, aNode) {
 
     /**
-     * @method getURIPrefix
+     * @method getPrefixForNSURI
      * @summary Returns the prefix used for the URI provided, either in
      *     canonical terms, or specifically within the node provided.
      * @param {String} anNSURI A namespace URI, often acquired from a native

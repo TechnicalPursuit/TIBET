@@ -149,7 +149,7 @@ function(anObject) {
     //  default XMLNS if it doesn't have one).
     targetPrefix = targetElem.prefix;
     if (TP.isEmpty(targetPrefix)) {
-        targetPrefix = TP.w3.Xmlns.getURIPrefix(targetXMLNS, targetElem);
+        targetPrefix = TP.w3.Xmlns.getPrefixForNSURI(targetXMLNS, targetElem);
     }
 
     //  If the user entered a tag name, make sure it is prefixed, defaulting to
@@ -326,7 +326,7 @@ function(aSignal) {
     //  default XMLNS if it doesn't have one).
     targetPrefix = targetElem.prefix;
     if (TP.isEmpty(targetPrefix)) {
-        targetPrefix = TP.w3.Xmlns.getURIPrefix(targetXMLNS, targetElem);
+        targetPrefix = TP.w3.Xmlns.getPrefixForNSURI(targetXMLNS, targetElem);
     }
 
     //  If the user isn't specifying a prefixed tag name, then use the

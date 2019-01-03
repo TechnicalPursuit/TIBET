@@ -1598,14 +1598,14 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
         shouldPrefix = true;
         if (TP.notEmpty(sourceNS = TP.nodeGetNSURI(anElement))) {
             if (TP.isEmpty(sourcePrefix = anElement.prefix)) {
-                sourcePrefix = TP.w3.Xmlns.getURIPrefix(sourceNS,
+                sourcePrefix = TP.w3.Xmlns.getPrefixForNSURI(sourceNS,
                                                             anElement);
             }
         }
 
         if (TP.notEmpty(destNS = TP.nodeGetNSURI(newElem))) {
             if (TP.isEmpty(destPrefix = newElem.prefix)) {
-                destPrefix = TP.w3.Xmlns.getURIPrefix(destNS, anElement);
+                destPrefix = TP.w3.Xmlns.getPrefixForNSURI(destNS, anElement);
             }
         }
 
@@ -3536,7 +3536,7 @@ function(anElement, attributeName, checkAttrNSURI) {
         if (TP.isEmpty(prefixToUse = anElement.prefix)) {
             if (TP.isString(anElement.namespaceURI)) {
                 prefixToUse =
-                        TP.w3.Xmlns.getURIPrefix(anElement.namespaceURI);
+                        TP.w3.Xmlns.getPrefixForNSURI(anElement.namespaceURI);
             }
         }
 
@@ -3937,14 +3937,14 @@ function(fromElement, toElement, shouldOverlay, nameRegExp, useElementNS) {
         shouldPrefix = true;
         if (TP.notEmpty(sourceNS = TP.nodeGetNSURI(fromElement))) {
             if (TP.isEmpty(sourcePrefix = fromElement.prefix)) {
-                sourcePrefix = TP.w3.Xmlns.getURIPrefix(sourceNS,
+                sourcePrefix = TP.w3.Xmlns.getPrefixForNSURI(sourceNS,
                                                             fromElement);
             }
         }
 
         if (TP.notEmpty(destNS = TP.nodeGetNSURI(toElement))) {
             if (TP.isEmpty(destPrefix = toElement.prefix)) {
-                destPrefix = TP.w3.Xmlns.getURIPrefix(destNS,
+                destPrefix = TP.w3.Xmlns.getPrefixForNSURI(destNS,
                                                         fromElement);
             }
         }
