@@ -371,7 +371,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         escape: function(str) {
             //  Returns any single quote within the str as escaped quotes.
 
-            return str.replace(/'/ig, '\\\'');
+            return str.replace(/'/g, '\\\'');
         },
 
         escapedIdentifier: function(str) {
