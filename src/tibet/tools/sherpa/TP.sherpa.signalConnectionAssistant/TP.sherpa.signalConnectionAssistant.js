@@ -118,8 +118,6 @@ function(info) {
         sigOrigin,
         sigPolicy,
 
-        formatValue,
-
         val;
 
     str = '';
@@ -141,25 +139,6 @@ function(info) {
     sigName = '';
     sigOrigin = '';
     sigPolicy = '';
-
-    //  Define a Function that will format values according to whether or not
-    //  they contain a colon (':'), period ('.') or single quote.
-    formatValue = function(aValue) {
-
-        var formattedVal;
-
-        if (TP.regex.HAS_PERIOD.test(aValue) ||
-            TP.regex.HAS_COLON.test(aValue) ||
-            TP.regex.HAS_SINGLE_QUOTE.test(aValue)) {
-
-            //  Escape any embedded quotes
-            formattedVal = aValue.replace(/'/g, '\'');
-
-            return formattedVal.quoted('\'');
-        }
-
-        return aValue;
-    };
 
     if (TP.notEmpty(val = info.at('enteredDestinationHandlerName'))) {
         sigName = val;
@@ -188,7 +167,7 @@ function(info) {
 
     if (TP.notEmpty(sigOrigin)) {
         if (extendedForm) {
-            str += 'origin: ' + formatValue(sigOrigin) + ', ';
+            str += 'origin: ' + TP.escapePseudoJSONValue(sigOrigin) + ', ';
         }
     }
 
@@ -199,7 +178,7 @@ function(info) {
     if (TP.notEmpty(sigPolicy)) {
         if (sigPolicy !== 'Choose...') {
             if (extendedForm) {
-                str += 'policy: ' + formatValue(sigPolicy) + ', ';
+                str += 'policy: ' + TP.escapePseudoJSONValue(sigPolicy) + ', ';
             }
         }
     }
@@ -218,7 +197,7 @@ function(info) {
                     str +=
                         hash.at('payloadEntryName') +
                         ': ' +
-                        formatValue(hash.at('payloadEntryValue')) + ',';
+                        TP.escapePseudoJSONValue(hash.at('payloadEntryValue')) + ',';
                 });
 
             //  Slice the trailing comma off.

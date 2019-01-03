@@ -1280,6 +1280,39 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('escapePseudoJSONValue',
+function(aString) {
+
+    /**
+     * @method escapePseudoJSONValue
+     * @summary Escapes the supplied value so that it can be used as a value
+     *     inside of a 'pseudo JSON' data structure. See the TP.reformatJSToJSON
+     *     method for more information.
+     * @param {String} aString The string that contains the pseudo-JSON value.
+     * @returns {String} The escaped pseudo-JSON value.
+     */
+
+    var str;
+
+    if (!TP.isString(aString)) {
+        return;
+    }
+
+    str = aString;
+
+    if (TP.regex.HAS_PERIOD.test(str) ||
+        TP.regex.HAS_COLON.test(str) ||
+        TP.regex.HAS_SINGLE_QUOTE.test(str)) {
+
+        //  Quote the string and escape any embedded single quotes.
+        str = str.quoted('\'');
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('escapeTypeName',
 function(aString) {
 
