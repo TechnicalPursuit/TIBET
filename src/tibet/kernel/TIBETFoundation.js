@@ -277,7 +277,7 @@ function(aName, shouldFault) {
         return;
     }
 
-    if (!TP.isType(aName)) {
+    if (TP.isString(aName)) {
         tName = aName;
 
         //  Namespaces end with a colon (:) as in ev: or xmpp:.
