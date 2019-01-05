@@ -3158,7 +3158,9 @@ function(aDataObject, shouldSignal) {
     doc = this.getNativeDocument();
 
     //  Loop over the outer Array and get either nested Arrays (which are
-    //  value/label pairs) or Objects (which are groups)
+    //  value/label pairs) or Objects (which are groups) or
+    //  Boolean/Date/Number/String (in which case we just set value and text to
+    //  be the same)
 
     leni = dataObj.getSize();
     for (i = 0; i < leni; i++) {
@@ -3213,6 +3215,22 @@ function(aDataObject, shouldSignal) {
                     optElem.text = optGrpData.at(k).last();
                 }
             }
+        } else if (TP.isBoolean(obj) ||
+                    TP.isDate(obj) ||
+                    TP.isNumber(obj) ||
+                    TP.isString(obj)) {
+
+            //  Construct an XHTML 'option' element and append it to ourself.
+            optElem = TP.documentConstructElement(
+                            doc, 'option', TP.w3.Xmlns.XHTML);
+            elem.appendChild(optElem);
+
+            obj = TP.str(obj);
+
+            //  Set the option's value and text to the object, since its just a
+            //  String.
+            optElem.value = obj;
+            optElem.text = obj;
         }
     }
 
