@@ -1058,6 +1058,7 @@ function(aSignal) {
                             ownerTPElem.$refreshLeaf(
                                     facet,
                                     sigOrigin,
+                                    TP.ALL,
                                     boundAttrNodes[i],
                                     null,
                                     originWasURI,
@@ -3255,6 +3256,9 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
         didProcess,
 
+        attrInfo,
+        updatedUIAspects,
+
         lastPart,
 
         startPredIndex,
@@ -3618,6 +3622,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 ownerTPElem.$refreshLeaf(
                     aFacet,
                     theVal,
+                    TP.ALL,
                     boundAttr,
                     aPathType,
                     originWasURI,
@@ -3907,9 +3912,32 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
+                    //  If there is pseudo-JSON content in the attribute, that
+                    //  means that a) the user might not just be binding to the
+                    //  'value' aspect and b) there might be more than 1 aspect
+                    //  binding defined.
+                    if (/\{/g.test(attrVal)) {
+                        //  Grab all of the binding values by parsing the
+                        //  attribute value and making it into a Hash.
+                        attrInfo = TP.json2js(TP.reformatJSToJSON(attrVal));
+
+                        //  Select only those UI aspects that match the
+                        //  leafMatcher (and therefore have a reference to the
+                        //  updating model aspect)
+                        updatedUIAspects = attrInfo.getKeys().select(
+                            function(aKey) {
+                                return leafMatcher.test(attrInfo.at(aKey));
+                            });
+                    } else {
+                        //  Otherwise, we can just say that the 'value' aspect
+                        //  is being updated.
+                        updatedUIAspects = TP.ac('value');
+                    }
+
                     ownerTPElem.$refreshLeaf(
                         aFacet,
                         theVal,
+                        updatedUIAspects,
                         boundAttr,
                         aPathType,
                         originWasURI,
@@ -3968,7 +3996,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$refreshLeaf',
-function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource) {
+function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, originWasURI, changeSource) {
 
     /**
      * @method $refreshLeaf
@@ -3979,6 +4007,9 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
      * @param {Object} initialVal The initial value to use to update the
      *     binding. This could be mutated inside of this method to a final,
      *     massaged, value.
+     * @param {Array|TP.ALL} updatedAspects An Array of the aspects of the data
+     *     model that are being updated or TP.ALL, to indicate that all of them
+     *     are.
      * @param {AttributeNode} bindingAttr The attribute node containing the
      *     binding expression.
      * @param {Number} [aPathType] The path type that is contained in the
@@ -4051,6 +4082,15 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
     for (i = 0; i < len; i++) {
 
         aspect = infoKeys.at(i);
+
+        //  If we were handed an Array of the aspects of the model that were
+        //  updated (and not TP.ALL, meaning all aspects), then check to see if
+        //  the aspect we're currently updating is in that Array. If not,
+        //  continue on.
+        if (updatedAspects !== TP.ALL && !updatedAspects.contains(aspect)) {
+            continue;
+        }
+
         entry = info.at(aspect);
 
         pathOptions = TP.hc();
@@ -5200,6 +5240,7 @@ function(shouldRender) {
                     this.$refreshLeaf(
                             'value',
                             result,
+                            TP.ac(aspectName),
                             attrNode,
                             null,
                             wasURI,
