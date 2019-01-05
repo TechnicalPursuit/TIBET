@@ -3924,10 +3924,12 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         //  Select only those UI aspects that match the
                         //  leafMatcher (and therefore have a reference to the
                         //  updating model aspect)
+                        /* eslint-disable no-loop-func */
                         updatedUIAspects = attrInfo.getKeys().select(
                             function(aKey) {
                                 return leafMatcher.test(attrInfo.at(aKey));
                             });
+                        /* eslint-enable no-loop-func */
                     } else {
                         //  Otherwise, we can just say that the 'value' aspect
                         //  is being updated.
