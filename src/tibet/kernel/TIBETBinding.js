@@ -3999,6 +3999,8 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
         info,
         infoKeys,
 
+        getRequest,
+
         pathOptions,
 
         extractVal,
@@ -4042,6 +4044,8 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
 
     info = this.getBindingInfoFrom(attrValue);
     infoKeys = info.getKeys();
+
+    getRequest = TP.request('shouldCollapse', false);
 
     len = infoKeys.getSize();
     for (i = 0; i < len; i++) {
@@ -4134,24 +4138,24 @@ function(aFacet, initialVal, bindingAttr, aPathType, originWasURI, changeSource)
             if (TP.isURIString(expr)) {
 
                 if (originWasURI) {
-                    finalVal = TP.uc(expr).getResource().get('result');
+                    //  Note here how we use the getRequest, which means that
+                    //  results will *not* be collapsed.
+                    finalVal = TP.uc(expr).getResource(getRequest).
+                                                            get('result');
                 } else {
                     finalVal = initialVal;
                 }
 
-                //  If there is no transformation function defined, then we test
-                //  to see if the value extraction or collapsing flags are
-                //  defined and take action based on that. If there is a
-                //  transformation function, then we just hand the whole,
-                //  unreduced value of the data value to it.
-                if (!TP.isCallable(transformFunc)) {
-                    if (extractVal) {
-                        finalVal = TP.val(finalVal);
-                    }
+                if (collapseVal) {
+                    finalVal = TP.collapse(finalVal);
+                }
 
-                    if (collapseVal) {
-                        finalVal = TP.collapse(finalVal);
-                    }
+                //  If there is no transformation function defined, and if the
+                //  value value extraction flags are defined, then extract the
+                //  value. If there is a transformation function, then we just
+                //  hand the unextracted value of the data value to it.
+                if (!TP.isCallable(transformFunc) && extractVal) {
+                    finalVal = TP.val(finalVal);
                 }
 
             } else if (TP.isValid(pathType)) {
