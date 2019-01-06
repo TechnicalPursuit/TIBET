@@ -237,6 +237,8 @@ function() {
                 elem, 'sherpa:connectorvend', 'signalsource', true);
     }
 
+    TP.elementSetAttribute(elem, 'sherpa:connectoractivated', true, true);
+
     return this;
 });
 
@@ -259,6 +261,8 @@ function() {
     //  Any element can be a 'signal source' - remove the attribute value here.
     TP.elementRemoveAttributeValue(
             elem, 'sherpa:connectorvend', 'signalsource', true);
+
+    TP.elementRemoveAttribute(elem, 'sherpa:connectoractivated', true);
 
     return this;
 });
