@@ -2148,6 +2148,14 @@ function() {
         /* eslint-enable no-extra-parens */
     }
 
+    //  Sometimes entry labels contain backslashed slashes because they're
+    //  created from entries that are also used in the data to navigate the
+    //  inspector. That's unnecessary for labels, though, so remove them.
+    result = result.collect(
+                function(aLabel) {
+                    return aLabel.replace(/\\\//g, '/');
+                });
+
     return result;
 });
 
