@@ -50,7 +50,10 @@ TP.json.JSONSchemaContent.Inst.defineAttribute(
     'definitions', TP.jpc('$.definitions'));
 
 TP.json.JSONSchemaContent.Inst.defineAttribute(
-    'topLevelProperties', TP.jpc('$.definitions["{{0}}"]..properties'));
+    'allPropertiesForType', TP.jpc('$.definitions["{{0}}"]..properties'));
+
+TP.json.JSONSchemaContent.Inst.defineAttribute(
+    'allProperties', TP.jpc('$..properties'));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
