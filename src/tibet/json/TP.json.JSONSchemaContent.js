@@ -201,5 +201,127 @@ function(aPropertyPath) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaContent.Inst.defineMethod('populateSchemaPropertyNamesInto',
+function(accumHash, schemaData, keyPrefix) {
+
+    /**
+     * @method populateSchemaPropertyNamesInto
+     * @summary This method recursively descends the properties of a schema and
+     *     accumulates its keys, *along with all of the subkeys* (recursively)
+     *     for that property.
+     * @description This method accumulates into the supplied hash a data
+     *     structure that looks like this:
+     *
+     *     {
+     *          'escodegen': ['escodegen.format', 'escodegen.format.compact'],
+     *          'escodegen.format': ['escodegen.format.compact']
+     *          'escodegen.format.compact: []
+     *     }
+     * @param {TP.core.Hash} accumHash The hash to accumulate results into.
+     * @param {TP.core.Hash} [schemaData] The data of the 'current level' of the
+     *     schema to process. If this is not supplied, then the top-level schema
+     *     of the first 'definitions' block will be used. This parameter is
+     *     meant to be used by this method when called recursively and should
+     *     only be supplied by the caller if a particular sub-schema needs to be
+     *     processed.
+     * @param {String} [keyPrefix] The key prefix to prepend all keys generated
+     *     'under' the 'current level' of the schema. This parameter is meant to
+     *     be used by this method when called recursively and should only be
+     *     supplied by the caller if a particular sub-schema needs to be
+     *     processed.
+     * @returns {String[]} An array of the keys of the properties at the
+     *     'current level' of the schema plus all of the keys of the properties
+     *     of the subschemas under it. This result is meant to be used by this
+     *     method when called recursively. This method should be called with an
+     *     empty TP.core.Hash as the first parameter, which is where the results
+     *     will accumulate.
+     */
+
+    var data,
+
+        prefix,
+
+        currentSchema,
+
+        allSubValues;
+
+    //  If schema data wasn't supplied, then we go to the definitions in the
+    //  first definition block and grab the schema from.
+    data = TP.ifInvalid(
+            schemaData,
+            this.get('data').at('definitions').at(this.getDefinitionName()));
+
+    prefix = TP.ifInvalid(keyPrefix, '');
+
+    //  Grab the properties
+    currentSchema = data.at('properties');
+    if (TP.notValid(currentSchema)) {
+        return TP.ac();
+    }
+
+    //  We're going to accumulate all of the 'sub values' that we encounter from
+    //  this stack frame down.
+    allSubValues = TP.ac();
+
+    currentSchema.perform(
+        function(kvPair) {
+
+            var localKey,
+                localSchema,
+
+                fullKey,
+                values,
+
+                localValues,
+                subValues;
+
+            localKey = kvPair.first();
+            localSchema = kvPair.last();
+
+            //  Compute a 'full' key, based on the key prefix that was passed
+            //  and the local key that we're currently processing.
+            if (prefix === '') {
+                fullKey = localKey;
+            } else {
+                fullKey = prefix + '.' + localKey;
+            }
+
+            //  Recursively descend, passing the hash that we're populating, the
+            //  hash that contains the sub-schema and the full key (which will
+            //  contain the fully qualified 'path' as the key prefix).
+            values = this.populateSchemaPropertyNamesInto(
+                                accumHash, localSchema, fullKey);
+
+            //  Collect up the values that were returned and put the local key
+            //  on the front. This will have the effect of qualifying them
+            //  against the currently processing level.
+            subValues = values.collect(
+                            function(aKeyName) {
+                                return localKey + '.' + aKeyName;
+                            });
+
+            //  Put those values into the accumulating sub values.
+            allSubValues = allSubValues.concat(subValues);
+
+            //  The values that we're going to place at this 'level' (as denoted
+            //  by the 'full key') need to have the full key prepended to their
+            //  key name.
+            localValues = values.collect(
+                            function(aKeyName) {
+                                return fullKey + '.' + aKeyName;
+                            });
+
+            //  Place all of the locally-computed values into the hash at the
+            //  computed key.
+            accumHash.atPut(fullKey, localValues);
+        }.bind(this));
+
+    //  Return our keys with all of the sub values accumulated from levels
+    //  further 'down' appended onto them.
+    return currentSchema.getKeys().concat(allSubValues);
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
