@@ -116,6 +116,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.json.JSONSchemaContent.Inst.defineMethod('getDefinitionName',
+function(definitionIndex) {
+
+    /**
+     * @method getDefinitionName
+     * @summary Returns the name of JSON schema type definition at the index
+     *     provided (or the first definition if no index is provided).
+     * @param {Number} [definitionIndex] The index of the definition to obtain
+     *     the name of. If this is not supplied, the first definition (the one
+     *     at index 0) is retrieved.
+     * @returns {String} The name of the JSON schema type definition.
+     */
+
+    var index,
+
+        queryPath,
+        defName;
+
+    index = TP.ifInvalid(definitionIndex, 0);
+
+    queryPath = TP.jpc('$.definitions');
+    defName = this.get(queryPath).getKeys().at(index);
+
+    return defName;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.json.JSONSchemaContent.Inst.defineMethod('getSchemaTypeOfProperty',
 function(aPropertyPath) {
 
@@ -131,12 +159,12 @@ function(aPropertyPath) {
      *     'null', 'number', 'string', 'object', 'array'.
      */
 
-    var queryPath,
-
-        defName,
+    var defName,
 
         pathParts,
         query,
+
+        queryPath,
 
         dataType;
 
@@ -147,8 +175,7 @@ function(aPropertyPath) {
 
     //  First, get the schema definition name - this is a unique value that
     //  could be different for each schema.
-    queryPath = TP.jpc('$.definitions');
-    defName = this.get(queryPath).getKeys().first();
+    defName = this.getDefinitionName();
 
     //  Grab the supplied property path and split on '.' to obtain the path
     //  parts.
