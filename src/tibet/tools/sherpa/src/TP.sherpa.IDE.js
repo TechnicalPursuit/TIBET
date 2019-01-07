@@ -4559,7 +4559,13 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     if (shouldMarkDirty) {
         //  Set the resource of the sourceURI back to the updated source node.
-        sourceURI.setResource(sourceNode, TP.request('signalChange', false));
+        //  Note here how we force the 'isDirty' flag to true. Otherwise, there
+        //  will be a lot of flailing as the source DOM is modified. We always
+        //  consider the URI to be dirty from here on out until the user saves
+        //  it.
+        sourceURI.setResource(sourceNode,
+                                TP.request('signalChange', false,
+                                            'isDirty', true));
 
         //  Lastly, because of the way that the dirtying machinery works, we
         //  need to separately signal the dirty each time. This is because 2nd
