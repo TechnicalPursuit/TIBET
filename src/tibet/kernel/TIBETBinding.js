@@ -5008,6 +5008,28 @@ function(aValue, ignoreBidiInfo) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('setInitialValue',
+function(aValue) {
+
+    /**
+     * @method setInitialValue
+     * @summary Sets the initial value of the receiver.
+     * @description This method is a convenience wrapper for setting an initial
+     *     value. The property 'initialValue' has no special meaning, but is a
+     *     defacto property name chosen by TIBET that will simply set the bound
+     *     value. This should only be used in a 'read-only' fashion by authors
+     *     to set the initial value of a piece of model data.
+     * @param {Object} aValue The inital value to set onto the model.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    this.setBoundValueIfBound(aValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('setRepeatPagePosition',
 function(aPosition) {
 
