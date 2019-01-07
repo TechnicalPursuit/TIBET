@@ -617,8 +617,8 @@ function(anObj) {
         //  URN that we can use in the scope and put into the service tag's
         //  'result' attribute.
         newLocalLoc = TP.TIBET_URN_PREFIX +
-                            'uri' + TP.genID().replace('$', '_') +
-                            '_result';
+                        'uri' + TP.genID().replace('$', '_') +
+                        '_result';
 
         localURI = TP.uc(newLocalLoc);
 
