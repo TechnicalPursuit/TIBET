@@ -1914,7 +1914,10 @@ shouldShowAssistant) {
     /**
      * @method insertElementIntoCanvas
      * @summary Inserts the supplied element into the canvas using the supplied
-     *     insertion element at the supplied insertion point.
+     *     insertion element at the supplied insertion point. The element should
+     *     exist in the current canvas being managed by the Sherpa as this
+     *     method turns on Sherpa mutation tracking machinery for the purpose of
+     *     updating a source document.
      * @param {Element} newElement The element to insert.
      * @param {Element} insertionPointElement The element to use as an insertion
      *     point. Combined with the supplied insertion position, this will
