@@ -92,6 +92,9 @@ TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 TP.sherpa.urieditor.Inst.defineAttribute('extraLoadHeaders');
 TP.sherpa.urieditor.Inst.defineAttribute('extraSaveHeaders');
 
+TP.sherpa.urieditor.Inst.defineAttribute('$pathParts');
+TP.sherpa.urieditor.Inst.defineAttribute('$schemaContent');
+
 TP.sherpa.urieditor.Inst.defineAttribute('head',
     TP.cpc('> .head', TP.hc('shouldCollapse', true)));
 
@@ -473,17 +476,19 @@ function(aSignal) {
      * @returns {TP.sherpa.urieditor} The receiver.
      */
 
-    var editor,
+    var displayElem,
+
+        editor,
         editorValue,
 
         jsonData,
 
         pojoSchema,
 
-        schemaText,
         schemaContent,
+        schemaText,
 
-        displayElem;
+        pathParts;
 
     //  Switch the panel box to the 'data' panel.
     this.get('panelBox').set('value', 'schema');
@@ -495,7 +500,7 @@ function(aSignal) {
     editor = this.get('editor');
     editorValue = editor.getValue();
 
-    //  Create a JavScript version of the JSON editor value.
+    //  Create a JavaScript version of the JSON editor value.
     jsonData = TP.json2js(editorValue);
 
     if (TP.notValid(jsonData)) {
@@ -505,33 +510,68 @@ function(aSignal) {
 
     //  Build a 'plain object' full of JSON Schema of that data.
     pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(jsonData);
-
     if (TP.notValid(pojoSchema)) {
         displayElem.innerHTML = TP.sc('Could not build JSON Schema');
         return this;
     }
 
+    //  Build a content object with the POJO schema data.
+    schemaContent = TP.json.JSONSchemaContent.construct(TP.json(pojoSchema));
+    this.set('$schemaContent', schemaContent, false);
+
     //  Grab a JSON String version of it.
     schemaText = TP.json(pojoSchema);
+
+    pathParts = TP.ac();
+    this.set('$pathParts', pathParts, false);
 
     //  Run a JSON formatter on the resultant schema text and have XHTML as the
     //  desired output format.
     schemaContent = TP.sherpa.pp.runFormattedJSONModeOn(
-                    schemaText,
-                    TP.XHTML_ENCODED,
-                    function(srcText, keyPath) {
+        schemaText,
+        TP.XHTML_ENCODED,
+        function(srcText, keyPath) {
 
-                        //  If the second to last item in the key path is the
-                        //  word 'properties', then we tag this source as being
-                        //  a 'property name'.
-                        if (keyPath.slice(-2, -1).first() === 'properties') {
-                            return '<span class="jsonPropName">' +
-                                    srcText.asEscapedXML() +
-                                    '</span>';
+            var propNames,
+
+                infoNum,
+
+                str;
+
+            //  If the second to last item in the key path is the word
+            //  'properties', then we tag this source as being a 'property
+            //  name'.
+            if (keyPath.slice(-2, -1).first() === 'properties') {
+                propNames = keyPath.collect(
+                    function(aKey, index) {
+                        if (keyPath.at(index - 1) === 'properties') {
+                            return aKey;
                         }
-
-                        return srcText.asEscapedXML();
+                        return null;
                     });
+
+                //  Remove all of nulls from the propNames Array and push it
+                //  onto the Array of path parts that we're maintaining.
+                propNames = propNames.removeValue(null);
+                pathParts.push(propNames);
+
+                //  Compute an XHTML span that will have various attributes
+                //  tagging it as a connector source for data bindings and will
+                //  also mark the index of where property data can be found in
+                //  the overall Array of path parts that we're tracking.
+                infoNum = pathParts.getSize() - 1;
+                str = '<span class="jsonPropName"' +
+                        ' sherpa:connectorvend="bindingsource"' +
+                        ' sherpa:connectordatasource="inspectorEditor"' +
+                        ' indexInData="' + infoNum + '">' +
+                        srcText.asEscapedXML() +
+                        '</span>';
+
+                return str;
+            }
+
+            return srcText.asEscapedXML();
+        });
 
     displayElem.innerHTML = schemaContent;
 
