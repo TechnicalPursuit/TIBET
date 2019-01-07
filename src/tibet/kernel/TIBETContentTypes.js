@@ -4095,6 +4095,47 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.path.AccessPath.Inst.defineMethod('computeCommonLeadingParts',
+function(otherPath) {
+
+    /**
+     * @method computeCommonLeadingParts
+     * @summary Returns the common leading parts of comparing the receiver
+     *     with the supplied path.
+     * @param {TP.path.AccessPath} otherPath The other path to compare the
+     *     receiver to in order to compute a leading portion.
+     * @returns {String[]} An Array of path parts that are common between the
+     *     receiver and the supplied path starting from the beginning of both
+     *     paths.
+     */
+
+    var result,
+
+        thisParts,
+        otherParts,
+
+        len,
+        i;
+
+    result = TP.ac();
+
+    thisParts = this.getPathParts();
+    otherParts = otherPath.getPathParts();
+
+    len = thisParts.getSize();
+    for (i = 0; i < len; i++) {
+        if (thisParts.at(i) === otherParts.at(i)) {
+            result.push(thisParts.at(i));
+        } else {
+            break;
+        }
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.path.AccessPath.Inst.defineMethod('isAccessPath',
 function() {
 
