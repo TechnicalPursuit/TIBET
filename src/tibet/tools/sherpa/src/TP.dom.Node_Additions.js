@@ -1926,7 +1926,16 @@ function(insertionPointElement, insertionPosition) {
         contentType,
 
         assistantContentTPElem,
-        dialogPromise;
+        dialogPromise,
+
+        currentServiceTPElems,
+
+        insertedURI,
+        insertedLoc,
+        contextTPElem,
+
+        fullyExpandedLoc,
+        virtualLoc;
 
     inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
 
@@ -2023,6 +2032,70 @@ function(insertionPointElement, insertionPosition) {
                             'insertionID',
                                 'couch_view' + TP.genID().replace('$', '_')));
                 });
+
+            break;
+
+        case 'uri':
+
+            //  Grab the inserted URI from the data value of the current
+            //  inspector selection.
+            insertedURI = inspector.getCurrentPropertyValueForTool(
+                                        'data',
+                                        'inspector').getLocation();
+            insertedLoc = insertedURI.getLocation();
+
+            //  First, get the nearest 'generator' element for the supplied
+            //  insertion point element. This will give us the nearest 'custom
+            //  tag' up the parent chain.
+            contextTPElem = TP.wrap(insertionPointElement).
+                                            getNearestHaloGenerator();
+            if (TP.notValid(contextTPElem)) {
+                contextTPElem = TP.wrap(insertionPointElement).
+                                            getDocument().getDocumentElement();
+            }
+
+            //  Search for 'tibet:service' elements that have an 'href' equal to
+            //  the fully expanded location.
+            fullyExpandedLoc = TP.uriExpandPath(insertedLoc);
+            currentServiceTPElems =
+                TP.byCSSPath('tibet|service[href="' + fullyExpandedLoc + '"]',
+                contextTPElem,
+                false,
+                true);
+
+            //  If none could be found, search for 'tibet:service' elements that
+            //  have an 'href' equal to the TIBET virtualized location.
+            if (TP.isEmpty(currentServiceTPElems)) {
+                virtualLoc = TP.uriInTIBETFormat(fullyExpandedLoc);
+                currentServiceTPElems =
+                    TP.byCSSPath('tibet|service[href="' + virtualLoc + '"]',
+                    contextTPElem,
+                    false,
+                    true);
+            }
+
+            //  If none could be found, tell the Sherpa to insert a
+            //  'tibet:service' with that href at the insertion point and
+            //  position. Note how we also pass true to have the Sherpa halo the
+            //  element and pass true to have the Sherpa show the DOM property
+            //  inspector for the element.
+            if (TP.isEmpty(currentServiceTPElems)) {
+                //  Insert a 'tibet:service' element into the canvas at the
+                //  desired location.
+                TP.bySystemId('Sherpa').insertServiceElementIntoCanvas(
+                    insertedLoc,
+                    null,
+                    insertionPointElement,
+                    insertionPosition,
+                    true,
+                    true);
+            } else {
+                //  Otherwise, let the user know that there is already a
+                //  'tibet:service' element with that href.
+                TP.alert('A tibet:service tag with a remote URI of: ' +
+                            insertedLoc +
+                            ' already exists within this custom element.');
+            }
 
             break;
 

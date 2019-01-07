@@ -191,6 +191,32 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Inst.defineMethod('getContentTypeForCanvas',
+function(options) {
+
+    /**
+     * @method getContentTypeForCanvas
+     * @summary Returns the unique 'content type' used when inserting content
+     *     modeled by the receiver into the current canvas.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {String} The content type, which should be unique, that will
+     *     inform the canvas of the type of data being inserted.
+     */
+
+    return 'uri';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Inst.defineMethod('getDataForInspector',
 function(options) {
 
