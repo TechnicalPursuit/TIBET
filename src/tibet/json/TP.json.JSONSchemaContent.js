@@ -323,5 +323,42 @@ function(accumHash, schemaData, keyPrefix) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaContent.Inst.defineMethod('schemaPropertyHasSubproperties',
+function(aPropertyPath) {
+
+    /**
+     * @method schemaPropertyHasSubproperties
+     * @summary Returns whether or not the supplied property has subproperties
+     *     of its own.
+     * @param {String} aPropertyPath The path 'down to' the property to return
+     *     the type of.
+     * @returns {Boolean} Whether or not the supplied property has subproperties
+     *     of its own.
+     */
+
+    var dataType;
+
+    dataType = this.getSchemaTypeOfProperty(aPropertyPath);
+
+    //  Based on the return value of the data type we can determine whether the
+    //  property has 'more properties'.
+    switch (dataType) {
+        case 'boolean':
+        case 'null':
+        case 'number':
+        case 'string':
+            return false;
+        case 'object':
+        case 'array':
+            return true;
+        default:
+            break;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
