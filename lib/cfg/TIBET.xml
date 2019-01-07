@@ -357,6 +357,9 @@
 
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.signalConnectionAssistant-TP.sherpa.signalConnectionAssistant.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.signalConnectionAssistant-TP.sherpa.signalConnectionAssistant.css.js"/>
+
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindingConnectionAssistant-TP.sherpa.bindingConnectionAssistant.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindingConnectionAssistant-TP.sherpa.bindingConnectionAssistant.css.js"/>
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">

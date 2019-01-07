@@ -124,6 +124,8 @@
 
     <script src="./TP.sherpa.tofuInsertionAssistant/TP.sherpa.tofuInsertionAssistant.js"/>
 
+    <script src="./TP.sherpa.bindingConnectionAssistant/TP.sherpa.bindingConnectionAssistant.js"/>
+
     <script src="./TP.sherpa.signalConnectionAssistant/TP.sherpa.signalConnectionAssistant.js"/>
 
     <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_elementContent.js"/>

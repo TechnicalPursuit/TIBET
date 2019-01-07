@@ -1,0 +1,269 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+sherpa|bindingConnectionAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    overflow: hidden;
+}
+
+sherpa|bindingConnectionAssistant > .head {
+}
+
+sherpa|bindingConnectionAssistant > .body {
+
+    position: absolute;
+    display: grid;
+
+    grid-template-rows: 6em 4em 2em 1fr;
+    grid-template-columns: 8em 1fr;
+    grid-template-areas:
+        "service_tag_field_label service_tag_field_group"
+        "binding_scope_field_label binding_scope_field_group"
+        "binding_expression_control_group binding_expression_control_group"
+        "binding_expression_group binding_expression_group";
+    grid-row-gap: 5px;
+
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 6em;
+
+    text-align: left;
+}
+
+sherpa|bindingConnectionAssistant > .body label {
+
+    font-weight: bold;
+}
+
+sherpa|bindingConnectionAssistant > .body ul {
+
+    margin: 0;
+}
+
+sherpa|bindingConnectionAssistant > .body .serviceTagFieldGroup {
+
+    grid-area: service_tag_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+sherpa|bindingConnectionAssistant > .body .serviceTagRadios {
+
+    line-height: 1.8;
+}
+
+sherpa|bindingConnectionAssistant > .body .serviceTagRadios > li > span {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+sherpa|bindingConnectionAssistant > .body .serviceTagFieldLabel {
+
+    grid-area: service_tag_field_label;
+
+    align-self: center;
+    justify-self: center;
+}
+
+sherpa|bindingConnectionAssistant > .body .serviceTagFieldGroup > input[type="text"] {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingScopeFieldGroup {
+
+    grid-area: binding_scope_field_group;
+
+    position: absolute;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingScopeFieldLabel {
+
+    grid-area: binding_scope_field_label;
+
+    align-self: center;
+    justify-self: center;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingScopeFieldGroup > div {
+
+    display: flex;
+
+    align-items: center;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingScopeFieldGroup input[type="text"] {
+
+    width: 100%;
+
+    margin-left: 20px;
+    margin-right: 0;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingScopeFieldGroup span.computedScopeOutput {
+
+    flex: 1;
+
+    border: dotted 1px gray;
+
+    margin-left: 5px;
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+    line-height: 1.4;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingExpressionControlGroup {
+
+    grid-area: binding_expression_control_group;
+
+    position: absolute;
+    display: flex;
+
+    right: 5px;
+    left: 5px;
+
+    align-items: center;
+    justify-content: flex-end;
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingExpressionControlGroup > .inserter {
+
+    top: 2px;
+    right: 0;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+sherpa|bindingConnectionAssistant > .body .bindingExpressionGroup {
+
+    grid-area: binding_expression_group;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+}
+
+sherpa|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    border: dotted 1px gray;
+
+    overflow-y: auto;
+}
+
+sherpa|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries > span {
+
+    display: flex;
+
+    width: 100%;
+}
+
+sherpa|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries > span > *:not(.deleter) {
+
+    flex: 1;
+}
+
+sherpa|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries > span input {
+
+    width: auto;
+    height: 1em;
+
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 5px;
+}
+
+sherpa|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries .deleter {
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_close_black_24px.svg");
+
+    margin-top: 3px;
+}
+
+sherpa|bindingConnectionAssistant > .foot {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    height: 6em;
+}
+
+sherpa|bindingConnectionAssistant > .foot #generatedAttr {
+
+    display: inline-block;
+
+    width: 90%;
+    height: 3em;
+
+    padding: 0 12px;
+    margin: 0 20px;
+
+    font-size: 100%;
+    line-height: 1.2em;
+
+    border: dotted 1px black;
+
+    text-align: left;
+
+    background-color: cornsilk;
+
+    overflow: auto;
+
+    user-select: text;
+}
+
