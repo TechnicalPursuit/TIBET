@@ -2014,6 +2014,80 @@ shouldShowAssistant) {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('insertServiceElementIntoCanvas',
+function(remoteLocation, localLocation, insertionPointElement, aPositionOrPath,
+shouldFocusHalo, shouldShowAssistant) {
+
+    /**
+     * @method insertServiceElementIntoCanvas
+     * @summary Inserts a 'tibet:service' element into the canvas with the
+     *     supplied remote (and possibly local) locations using the supplied
+     *     insertion element at the supplied insertion point.
+     * @param {String} remoteLocation The remote URI location to use for the
+     *     service tag.
+     * @param {String} [localLocation] The local URI location to use for the
+     *     service tag. If this parameter is not supplied, then a local URI
+     *     location will be computed.
+     * @param {Element} insertionPointElement The element to use as an insertion
+     *     point. Combined with the supplied insertion position, this will
+     *     determine where the element is inserted.
+     * @param {String} aPositionOrPath The position to place the content
+     *     relative to the supplied insertion point element or a path to
+     *     evaluate to get to a node at that position. This should be one of
+     *     four values: TP.BEFORE_BEGIN TP.AFTER_BEGIN TP.BEFORE_END
+     *     TP.AFTER_END or the path to evaluate. Default is TP.BEFORE_END.
+     * @param {Boolean} [shouldFocusHalo=false] Whether or not we should focus
+     *     the halo after insertion.
+     * @param {Boolean} [shouldShowAssistant=false] Whether or not we should
+     *     show the element's DOMHUD assistant after insertion. The default is
+     *     false and is dependent on whether we're focusing the halo as well.
+     * @returns {TP.tibet.service} The wrapped newly inserted 'tibet:service'
+     *     element.
+     */
+
+    var elemID,
+        localLoc,
+
+        newServiceElem;
+
+    //  If a local location wasn't supplied, then generate an ID and compute a
+    //  URI from it.
+    if (TP.isEmpty(localLocation)) {
+        elemID = 'uri' + TP.genID().replace('$', '_');
+        localLoc = TP.TIBET_URN_PREFIX + elemID + '_result';
+    } else {
+        //  Otherwise, grab the local location. To compute a local ID, if it
+        //  matches a 'urn:tibet' URN, then grab the resource name to use as a
+        //  element ID.
+        localLoc = localLocation;
+        if (TP.regex.TIBET_URN.test(localLoc)) {
+            elemID = TP.regex.TIBET_URN_SPLITTER.exec(localLoc).at(2);
+        } else {
+            elemID = 'uri' + TP.genID().replace('$', '_');
+        }
+    }
+
+    //  Make sure the local location has a real URI allocated to it so that the
+    //  system can reference it and use it.
+    TP.uc(localLoc);
+
+    newServiceElem = TP.elem('<tibet:service' +
+                                ' id="' + elemID + '"' +
+                                ' href="' + remoteLocation + '"' +
+                                ' result="' + localLoc + '"/>');
+
+    this.insertElementIntoCanvas(
+            newServiceElem,
+            insertionPointElement,
+            aPositionOrPath,
+            shouldFocusHalo,
+            shouldShowAssistant);
+
+    return TP.wrap(newServiceElem);
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('makeCustomTagFrom',
 function(aTPElem) {
 

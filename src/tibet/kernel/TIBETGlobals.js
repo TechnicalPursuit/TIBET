@@ -3443,6 +3443,7 @@ TP.regex.URL_SPLITTER =
                 /(?:.*):([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
 
 TP.regex.TIBET_URN = /urn:tibet:|urn::/;
+TP.regex.TIBET_URN_SPLITTER = /(urn:tibet:|urn::)(.*)/;
 TP.regex.TIBET_COMPACT_URN = /urn::/;
 TP.TIBET_URN_PREFIX = 'urn:tibet:';
 
