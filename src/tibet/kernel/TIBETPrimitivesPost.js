@@ -5061,14 +5061,14 @@ function(anObject, varargs) {
      *          <code>
      *          val = TP.hc('foo', TP.hc('bar', 1546825646654));
      *          TP.pick(val, 'foo.bar', Date, 'dayName');
-     *          <samp>someParentClassName</samp>
+     *          <samp>Sunday</samp>
      *          </code>
      * @example Obtain a property value using access path that obtains a value,
      *          converts it to a Date and then obtains more data:
      *          <code>
      *          val = TP.hc('foo', TP.hc('bar', 1546825646654));
      *          TP.pick(val, TP.tpc('foo.bar'), Date, 'dayName');
-     *          <samp>someParentClassName</samp>
+     *          <samp>Sunday</samp>
      *          </code>
      * @example Obtain an attribute value from a TP.dom.ElementNode:
      *          <code>
