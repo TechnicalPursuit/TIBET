@@ -1529,7 +1529,11 @@ function(aSignal) {
         vendValues,
 
         acceptValue,
-        acceptValues;
+        acceptValues,
+
+        dataSource,
+
+        bindingData;
 
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
@@ -1549,6 +1553,39 @@ function(aSignal) {
     //  Grab the values that determine what type of connection we're accepting.
     acceptValue = destTPElem.getAttribute('sherpa:connectoraccept');
     acceptValues = acceptValue.split(' ');
+
+    //  If both the vended values and the accepted values contained
+    //  'bindingsource', then invoke the binding connection assistant.
+    if (vendValues.contains('bindingsource') &&
+        acceptValues.contains('bindingsource')) {
+
+        //  Grab the value of the 'sherpa:connectordatasource' attribute. This
+        //  will give us the system ID of the object that we can query to find
+        //  'connector data' - data about this connector dragging session.
+        dataSource = srcTPElem.getAttribute('sherpa:connectordatasource');
+        if (TP.notEmpty(dataSource)) {
+
+            //  Grab the connector data source object, if it can be found.
+            dataSource = TP.bySystemId(dataSource, this.get('vWin'));
+            if (TP.isValid(dataSource)) {
+
+                //  Ask the connector data source for any data it might have
+                //  regarding the connector session. Add the destination element
+                //  to that and pass it along to the assistant.
+                bindingData = dataSource.getConnectorData(srcTPElem);
+                if (TP.isValid(bindingData)) {
+                    bindingData.atPut('destTPElement', destTPElem);
+                } else {
+                    bindingData = TP.hc('destTPElement', destTPElem);
+                }
+
+                //  Show the assistant.
+                TP.sherpa.bindingConnectionAssistant.showAssistant(bindingData);
+            }
+        }
+
+        return this;
+    }
 
     //  If both the vended values and the accepted values contained
     //  'signalsource', then invoke the signal connection assistant.
