@@ -39,6 +39,59 @@ TP.sherpa.couchViewURIInsertionAssistant.Inst.defineAttribute('data');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.couchViewURIInsertionAssistant.Inst.defineMethod('generatePathData',
+function(anElement) {
+
+    /**
+     * @method generatePathData
+     * @summary Generates the data that will be used to display the path from
+     *     the top-level of the Element's document down through the descendant
+     *     chain to the supplied Element.
+     * @param {Element} anElement The element to generate the path to.
+     * @returns {TP.sherpa.couchViewURIInsertionAssistant} The receiver.
+     */
+
+    var targetTPElem,
+
+        nodes,
+
+        info;
+
+    targetTPElem = TP.wrap(anElement);
+
+    //  Get the supplied element's ancestor chain and build a list from that.
+    nodes = targetTPElem.getAncestors();
+
+    //  Unshift the supplied element onto the front.
+    nodes.unshift(targetTPElem);
+
+    //  Reverse the list so that the top-most anscestor is first and the
+    //  supplied element is last.
+    nodes.reverse();
+
+    info = TP.ac();
+
+    //  Concatenate the filtered child elements onto the list.
+    nodes.perform(
+        function(aNode) {
+            var node;
+
+            node = TP.canInvoke(aNode, 'getNativeNode') ?
+                                    aNode.getNativeNode() :
+                                    aNode;
+
+            if (!TP.isElement(node)) {
+                return;
+            }
+
+            info.push(TP.elementGetFullName(node));
+        });
+
+    return info;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.couchViewURIInsertionAssistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
@@ -253,59 +306,6 @@ function(anObject) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.couchViewURIInsertionAssistant.Inst.defineMethod('generatePathData',
-function(anElement) {
-
-    /**
-     * @method generatePathData
-     * @summary Generates the data that will be used to display the path from
-     *     the top-level of the Element's document down through the descendant
-     *     chain to the supplied Element.
-     * @param {Element} anElement The element to generate the path to.
-     * @returns {TP.sherpa.couchViewURIInsertionAssistant} The receiver.
-     */
-
-    var targetTPElem,
-
-        nodes,
-
-        info;
-
-    targetTPElem = TP.wrap(anElement);
-
-    //  Get the supplied element's ancestor chain and build a list from that.
-    nodes = targetTPElem.getAncestors();
-
-    //  Unshift the supplied element onto the front.
-    nodes.unshift(targetTPElem);
-
-    //  Reverse the list so that the top-most anscestor is first and the
-    //  supplied element is last.
-    nodes.reverse();
-
-    info = TP.ac();
-
-    //  Concatenate the filtered child elements onto the list.
-    nodes.perform(
-        function(aNode) {
-            var node;
-
-            node = TP.canInvoke(aNode, 'getNativeNode') ?
-                                    aNode.getNativeNode() :
-                                    aNode;
-
-            if (!TP.isElement(node)) {
-                return;
-            }
-
-            info.push(TP.elementGetFullName(node));
-        });
-
-    return info;
 });
 
 //  ------------------------------------------------------------------------

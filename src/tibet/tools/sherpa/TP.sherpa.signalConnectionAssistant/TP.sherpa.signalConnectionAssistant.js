@@ -220,6 +220,38 @@ function(info) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.signalConnectionAssistant.Inst.defineMethod('generateAttr',
+function(info) {
+
+    /**
+     * @method generateAttr
+     * @summary Generates the attribute text that will be used to create a new
+     *     Attribute and add it to the connector source if user dismisses the
+     *     assistant by clicking 'ok'.
+     * @param {TP.core.Hash} info The hash containing the attribute information.
+     * @returns {String} The attribute markup text.
+     */
+
+    var str,
+        val;
+
+    str = 'on:';
+
+    if (TP.notEmpty(val = info.at('enteredSourceSignalName'))) {
+        str += val;
+    } else if (TP.notEmpty(val = info.at('chosenSourceSignalName'))) {
+        str += val;
+    } else {
+        return '';
+    }
+
+    str += '="' + this.computeAttributeValue(info) + '"';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.signalConnectionAssistant.Inst.defineHandler('AddSignalHandler',
 function(anObject) {
 
@@ -510,38 +542,6 @@ function(aSignal) {
     this.get('generatedAttr').setTextContent(str);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.signalConnectionAssistant.Inst.defineMethod('generateAttr',
-function(info) {
-
-    /**
-     * @method generateAttr
-     * @summary Generates the attribute text that will be used to create a new
-     *     Attribute and add it to the connector source if user dismisses the
-     *     assistant by clicking 'ok'.
-     * @param {TP.core.Hash} info The hash containing the attribute information.
-     * @returns {String} The attribute markup text.
-     */
-
-    var str,
-        val;
-
-    str = 'on:';
-
-    if (TP.notEmpty(val = info.at('enteredSourceSignalName'))) {
-        str += val;
-    } else if (TP.notEmpty(val = info.at('chosenSourceSignalName'))) {
-        str += val;
-    } else {
-        return '';
-    }
-
-    str += '="' + this.computeAttributeValue(info) + '"';
-
-    return str;
 });
 
 //  ------------------------------------------------------------------------

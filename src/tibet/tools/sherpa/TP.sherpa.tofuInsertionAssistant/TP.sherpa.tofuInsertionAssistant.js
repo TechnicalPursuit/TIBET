@@ -41,6 +41,132 @@ TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('data');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generatePathData',
+function(anElement) {
+
+    /**
+     * @method generatePathData
+     * @summary Generates the data that will be used to display the path from
+     *     the top-level of the Element's document down through the descendant
+     *     chain to the supplied Element.
+     * @param {Element} anElement The element to generate the path to.
+     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
+     */
+
+    var targetTPElem,
+
+        nodes,
+
+        info;
+
+    targetTPElem = TP.wrap(anElement);
+
+    //  Get the supplied element's ancestor chain and build a list from that.
+    nodes = targetTPElem.getAncestors();
+
+    //  Unshift the supplied element onto the front.
+    nodes.unshift(targetTPElem);
+
+    //  Reverse the list so that the top-most anscestor is first and the
+    //  supplied element is last.
+    nodes.reverse();
+
+    info = TP.ac();
+
+    //  Concatenate the filtered child elements onto the list.
+    nodes.perform(
+        function(aNode) {
+            var node;
+
+            node = TP.canInvoke(aNode, 'getNativeNode') ?
+                                    aNode.getNativeNode() :
+                                    aNode;
+
+            if (!TP.isElement(node)) {
+                return;
+            }
+
+            info.push(TP.elementGetFullName(node));
+        });
+
+    return info;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generateTag',
+function(tagName, attributes, defaultNS) {
+
+    /**
+     * @method generateTag
+     * @summary Generates the tag text that will be used to create a new Element
+     *     and insert it if user dismisses the assistant by clicking 'ok'.
+     * @param {String} tagName The tagname to use in the markup.
+     * @param {Array[]} attributes An Array of Arrays containing attribute
+     *     name / attribute value pairs.
+     * @param {String} defaultNS The default namespace that the markup Strin
+     *     will be inserted into.
+     * @returns {String} The tag markup text.
+     */
+
+    var str,
+        attrStr,
+
+        tagType,
+
+        tagParts,
+        tagXmlns;
+
+    str = '';
+    attrStr = '';
+
+    if (TP.notEmpty(attributes)) {
+        attributes.forEach(
+            function(attrInfo) {
+                var hash;
+
+                hash = TP.hc(attrInfo);
+                if (TP.isEmpty(hash.at('tagAttrName'))) {
+                    return;
+                }
+
+                attrStr +=
+                    ' ' + hash.at('tagAttrName') +
+                    '=' +
+                    '"' + hash.at('tagAttrValue') + '"';
+            });
+    }
+
+    tagType = TP.sys.getTypeByName(tagName);
+    if (TP.isType(tagType)) {
+        //  If the resolved type is not a subtype of TP.dom.ElementNode,
+        //  then it's an error. Warn the user and return.
+        if (!TP.isSubtypeOf(tagType, TP.dom.ElementNode)) {
+            return '';
+        }
+
+        str = tagType.generateMarkupContent(attrStr, true, defaultNS);
+    } else if (TP.notEmpty(tagName)) {
+        if (TP.regex.HAS_COLON.test(tagName)) {
+            //  Grab the namespace of the inserted tag.
+            tagParts = tagName.split(':');
+            tagXmlns = TP.w3.Xmlns.getNSURIForPrefix(tagParts.first());
+            if (tagXmlns !== defaultNS) {
+                attrStr = ' xmlns:' + tagParts.first() + '="' + tagXmlns + '"' +
+                            attrStr;
+            } else {
+                attrStr = ' xmlns="' + tagXmlns + '"' + attrStr;
+            }
+        }
+
+        str = '<' + tagName + attrStr + '/>';
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.tofuInsertionAssistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
@@ -342,132 +468,6 @@ function(aSignal) {
     this.get('generatedTag').setTextContent(str);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generatePathData',
-function(anElement) {
-
-    /**
-     * @method generatePathData
-     * @summary Generates the data that will be used to display the path from
-     *     the top-level of the Element's document down through the descendant
-     *     chain to the supplied Element.
-     * @param {Element} anElement The element to generate the path to.
-     * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
-     */
-
-    var targetTPElem,
-
-        nodes,
-
-        info;
-
-    targetTPElem = TP.wrap(anElement);
-
-    //  Get the supplied element's ancestor chain and build a list from that.
-    nodes = targetTPElem.getAncestors();
-
-    //  Unshift the supplied element onto the front.
-    nodes.unshift(targetTPElem);
-
-    //  Reverse the list so that the top-most anscestor is first and the
-    //  supplied element is last.
-    nodes.reverse();
-
-    info = TP.ac();
-
-    //  Concatenate the filtered child elements onto the list.
-    nodes.perform(
-        function(aNode) {
-            var node;
-
-            node = TP.canInvoke(aNode, 'getNativeNode') ?
-                                    aNode.getNativeNode() :
-                                    aNode;
-
-            if (!TP.isElement(node)) {
-                return;
-            }
-
-            info.push(TP.elementGetFullName(node));
-        });
-
-    return info;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.tofuInsertionAssistant.Inst.defineMethod('generateTag',
-function(tagName, attributes, defaultNS) {
-
-    /**
-     * @method generateTag
-     * @summary Generates the tag text that will be used to create a new Element
-     *     and insert it if user dismisses the assistant by clicking 'ok'.
-     * @param {String} tagName The tagname to use in the markup.
-     * @param {Array[]} attributes An Array of Arrays containing attribute
-     *     name / attribute value pairs.
-     * @param {String} defaultNS The default namespace that the markup Strin
-     *     will be inserted into.
-     * @returns {String} The tag markup text.
-     */
-
-    var str,
-        attrStr,
-
-        tagType,
-
-        tagParts,
-        tagXmlns;
-
-    str = '';
-    attrStr = '';
-
-    if (TP.notEmpty(attributes)) {
-        attributes.forEach(
-            function(attrInfo) {
-                var hash;
-
-                hash = TP.hc(attrInfo);
-                if (TP.isEmpty(hash.at('tagAttrName'))) {
-                    return;
-                }
-
-                attrStr +=
-                    ' ' + hash.at('tagAttrName') +
-                    '=' +
-                    '"' + hash.at('tagAttrValue') + '"';
-            });
-    }
-
-    tagType = TP.sys.getTypeByName(tagName);
-    if (TP.isType(tagType)) {
-        //  If the resolved type is not a subtype of TP.dom.ElementNode,
-        //  then it's an error. Warn the user and return.
-        if (!TP.isSubtypeOf(tagType, TP.dom.ElementNode)) {
-            return '';
-        }
-
-        str = tagType.generateMarkupContent(attrStr, true, defaultNS);
-    } else if (TP.notEmpty(tagName)) {
-        if (TP.regex.HAS_COLON.test(tagName)) {
-            //  Grab the namespace of the inserted tag.
-            tagParts = tagName.split(':');
-            tagXmlns = TP.w3.Xmlns.getNSURIForPrefix(tagParts.first());
-            if (tagXmlns !== defaultNS) {
-                attrStr = ' xmlns:' + tagParts.first() + '="' + tagXmlns + '"' +
-                            attrStr;
-            } else {
-                attrStr = ' xmlns="' + tagXmlns + '"' + attrStr;
-            }
-        }
-
-        str = '<' + tagName + attrStr + '/>';
-    }
-
-    return str;
 });
 
 //  ------------------------------------------------------------------------
