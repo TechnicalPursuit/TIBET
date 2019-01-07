@@ -3838,26 +3838,30 @@ function(aResource, aRequest, shouldSignal) {
     //  Wrap and augment inbound resource if appropriate (adds XMLBase, etc).
     newResource = this.$normalizeRequestedResource(aResource);
 
-    //  If we're already loaded we need to know if we're changing the value. We
-    //  compare via a TP.equal to ensure a deep comparison.
-    if (TP.equal(oldResource, newResource)) {
-        dirty = false;
+    if (request.hasParameter('isDirty')) {
+        dirty = request.at('isDirty');
     } else {
-        if (TP.sys.hasStarted()) {
-            /*
-            console.log(this.getLocation() +
-                ' dirty:\n\n' +
-                TP.getStackInfo().join('\n') +
-                TP.dump(oldResource) + '\n\n' + TP.dump(newResource));
-            */
-        }
-
-        //  NOTE we don't consider setting a value to the processed version of
-        //  the same value as an operation that dirties the URI.
-        if (request.at('processedResult') === true) {
+        //  If we're already loaded we need to know if we're changing the value.
+        //  We compare via a TP.equal to ensure a deep comparison.
+        if (TP.equal(oldResource, newResource)) {
             dirty = false;
         } else {
-            dirty = true;
+            if (TP.sys.hasStarted()) {
+                /*
+                console.log(this.getLocation() +
+                    ' dirty:\n\n' +
+                    TP.getStackInfo().join('\n') +
+                    TP.dump(oldResource) + '\n\n' + TP.dump(newResource));
+                */
+            }
+
+            //  NOTE we don't consider setting a value to the processed version
+            //  of the same value as an operation that dirties the URI.
+            if (request.at('processedResult') === true) {
+                dirty = false;
+            } else {
+                dirty = true;
+            }
         }
     }
 
