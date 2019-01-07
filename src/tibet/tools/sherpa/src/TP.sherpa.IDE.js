@@ -2427,6 +2427,62 @@ function(mutationRecords) {
         }
     }
 
+    //  !!!NOTE NOTE NOTE!!!
+    //  This processing logic is in a particular order for best results. That
+    //  order is:
+    //      Nodes created
+    //      Attributes updated
+    //      Attributes created
+    //      Attributes deleted
+    //      Nodes deleted
+
+    //  Process all of the records that created child nodes.
+    if (TP.notEmpty(descendantListCreatedRecords)) {
+
+        //  Group the records by the target. This ensures that all mutated nodes
+        //  that were descendants of a particular target are going to get
+        //  processed at once. This will create a TP.core.Hash.
+        descendantListCreations = descendantListCreatedRecords.groupBy(
+                                function(item, index) {
+                                    return TP.gid(item.target);
+                                });
+
+        //  Iterate over the hash and process each batch of grouped records.
+        descendantListCreations.perform(
+            function(kvPair) {
+
+                var creationRecords,
+                    mutatedNodes,
+
+                    recordsLen,
+                    j,
+
+                    nodesLen,
+                    k;
+
+                creationRecords = kvPair.last();
+
+                mutatedNodes = TP.ac();
+
+                //  Iterate over each record and collect up all of the mutated
+                //  nodes into a single Array.
+                recordsLen = creationRecords.getSize();
+                for (j = 0; j < recordsLen; j++) {
+                    record = creationRecords.at(j);
+
+                    nodesLen = record.addedNodes.length;
+                    for (k = 0; k < nodesLen; k++) {
+                        mutatedNodes.push(record.addedNodes[k]);
+                    }
+                }
+
+                //  Call the method to update our current UI canvas's source
+                //  DOM.
+                this.updateUICanvasSource(
+                        mutatedNodes, record.target, TP.CREATE);
+            }.bind(this));
+    }
+
     //  Process all of the records that created attributes.
     len = attrCreatedRecords.getSize();
     for (i = 0; i < len; i++) {
@@ -2522,53 +2578,6 @@ function(mutationRecords) {
                 //  DOM.
                 this.updateUICanvasSource(
                         mutatedNodes, record.target, TP.DELETE);
-            }.bind(this));
-    }
-
-    //  Process all of the records that created child nodes.
-    if (TP.notEmpty(descendantListCreatedRecords)) {
-
-        //  Group the records by the target. This ensures that all mutated nodes
-        //  that were descendants of a particular target are going to get
-        //  processed at once. This will create a TP.core.Hash.
-        descendantListCreations = descendantListCreatedRecords.groupBy(
-                                function(item, index) {
-                                    return TP.gid(item.target);
-                                });
-
-        //  Iterate over the hash and process each batch of grouped records.
-        descendantListCreations.perform(
-            function(kvPair) {
-
-                var creationRecords,
-                    mutatedNodes,
-
-                    recordsLen,
-                    j,
-
-                    nodesLen,
-                    k;
-
-                creationRecords = kvPair.last();
-
-                mutatedNodes = TP.ac();
-
-                //  Iterate over each record and collect up all of the mutated
-                //  nodes into a single Array.
-                recordsLen = creationRecords.getSize();
-                for (j = 0; j < recordsLen; j++) {
-                    record = creationRecords.at(j);
-
-                    nodesLen = record.addedNodes.length;
-                    for (k = 0; k < nodesLen; k++) {
-                        mutatedNodes.push(record.addedNodes[k]);
-                    }
-                }
-
-                //  Call the method to update our current UI canvas's source
-                //  DOM.
-                this.updateUICanvasSource(
-                        mutatedNodes, record.target, TP.CREATE);
             }.bind(this));
     }
 
