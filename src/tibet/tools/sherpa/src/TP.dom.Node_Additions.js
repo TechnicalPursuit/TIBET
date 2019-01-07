@@ -1968,12 +1968,12 @@ function(insertionPointElement, insertionPosition) {
                 function(aDialogTPElem) {
 
                     var contentTPElem,
-                        insertedURI;
+                        insertedCouchURI;
 
                     contentTPElem = aDialogTPElem.get('bodyGroup').
                                                 getFirstChildElement();
 
-                    insertedURI = inspector.getCurrentPropertyValueForTool(
+                    insertedCouchURI = inspector.getCurrentPropertyValueForTool(
                                                 'data',
                                                 'inspector');
 
@@ -1983,7 +1983,7 @@ function(insertionPointElement, insertionPosition) {
                         TP.hc(
                             'insertionPosition', insertionPosition,
                             'insertionPoint', insertionPointElement,
-                            'uri', insertedURI,
+                            'uri', insertedCouchURI,
                             'insertionID',
                                 'couch_doc' + TP.genID().replace('$', '_')));
                 });
@@ -2013,12 +2013,12 @@ function(insertionPointElement, insertionPosition) {
                 function(aDialogTPElem) {
 
                     var contentTPElem,
-                        insertedURI;
+                        insertedCouchURI;
 
                     contentTPElem = aDialogTPElem.get('bodyGroup').
                                                 getFirstChildElement();
 
-                    insertedURI = inspector.getCurrentPropertyValueForTool(
+                    insertedCouchURI = inspector.getCurrentPropertyValueForTool(
                                                 'data',
                                                 'inspector');
 
@@ -2028,7 +2028,7 @@ function(insertionPointElement, insertionPosition) {
                         TP.hc(
                             'insertionPosition', insertionPosition,
                             'insertionPoint', insertionPointElement,
-                            'uri', insertedURI,
+                            'uri', insertedCouchURI,
                             'insertionID',
                                 'couch_view' + TP.genID().replace('$', '_')));
                 });
