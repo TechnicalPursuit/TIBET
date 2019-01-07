@@ -5036,6 +5036,188 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('pick',
+function(anObject, varargs) {
+
+    /**
+     * @method pick
+     * @summary Queries the object using the supplied query/conversion pairs.
+     *     This method will traverse those pairs in succession until they are
+     *     exhausted or a null or undefined value is encountered.
+     * @description This method will 'drill down' through the supplied query
+     *     parameters and, if separated by data types (or String conversions -
+     *     basically anything that can be processed using 'as' or 'transform'),
+     *     it will convert to that before proceeding.
+     * @param {Object} anObject The object to begin querying.
+     * @param {arguments} varargs The rest of query/conversion pairs to use.
+     * @example Obtain a simple property value using a query string:
+     *          <code>
+     *          val = TP.hc('foo', TP.hc('bar', 'baz'));
+     *          TP.pick(val, 'foo.bar');
+     *          <samp>baz</samp>
+     *          </code>
+     * @example Obtain a property value using a query string that obtains a
+     *          value, converts it to a Date and then obtains more data:
+     *          <code>
+     *          val = TP.hc('foo', TP.hc('bar', 1546825646654));
+     *          TP.pick(val, 'foo.bar', Date, 'dayName');
+     *          <samp>someParentClassName</samp>
+     *          </code>
+     * @example Obtain a property value using access path that obtains a value,
+     *          converts it to a Date and then obtains more data:
+     *          <code>
+     *          val = TP.hc('foo', TP.hc('bar', 1546825646654));
+     *          TP.pick(val, TP.tpc('foo.bar'), Date, 'dayName');
+     *          <samp>someParentClassName</samp>
+     *          </code>
+     * @example Obtain an attribute value from a TP.dom.ElementNode:
+     *          <code>
+     *          val = TP.wrap(document.body);
+     *          TP.pick(val, '@class');
+     *          <samp>someClassName</samp>
+     *          </code>
+     * @example Obtain an attribute value from a TP.dom.ElementNode and convert
+     *          it a Number:
+     *          <code>
+     *          val = TP.wrap(document.body);
+     *          TP.pick(val, '@indexInData', Number);
+     *          <samp>42</samp>
+     *          </code>
+     * @example Obtain an attribute value from the parent node of a
+     *          TP.dom.ElementNode:
+     *          <code>
+     *          val = TP.wrap(document.body);
+     *          TP.pick(val, 'parentNode.@class');
+     *          <samp>someParentClassName</samp>
+     *          </code>
+     * @returns {Object|null} The result of traversing the object.
+     */
+
+    var result,
+
+        args,
+
+        notValidVal,
+
+        leni,
+        i,
+
+        pickProperty,
+        pickConversion,
+
+        pickParts,
+        lenj,
+        j,
+
+        pickPart,
+        pickObj;
+
+    if (TP.notValid(anObject)) {
+        return null;
+    }
+
+    //  Grab the initial object to begin querying.
+    result = anObject;
+
+    //  Convert the arguments object to a real Array.
+    args = TP.ac(arguments);
+
+    //  We're not interested in the first argument - we have captured it in a
+    //  formal parameter to this method.
+    args = args.slice(1);
+
+    notValidVal = false;
+
+    //  Iterate over all of the arguments by 2.
+    leni = args.getSize();
+    for (i = 0; i < leni; i += 2) {
+
+        //  Grab the property and an optional conversion.
+        pickProperty = args.at(i);
+        pickConversion = args.at(i + 1);
+
+        //  If the property to pick is really an access path, then see if we can
+        //  wrap the object and run a 'get' call with the access path.
+        if (pickProperty.isAccessPath()) {
+
+            //  If the result isn't a collection, then wrap it. Either way,
+            //  obtain the source object of the query. This will give us the
+            //  best representation to ask questions of the source.
+            if (!TP.isCollection(result)) {
+                pickObj = TP.wrap(result);
+            } else {
+                pickObj = result;
+            }
+
+            result = pickObj.get(pickProperty);
+        } else {
+
+            //  Otherwise, the pick property should be a dot-separated property
+            //  path. Split it and iterate over each part, obtaining the value
+            //  and using that value as the source for the next query.
+            pickParts = pickProperty.split('.');
+
+            lenj = pickParts.getSize();
+            for (j = 0; j < lenj; j++) {
+
+                pickPart = pickParts.at(j);
+
+                //  If the result isn't a collection, then wrap it. Either way,
+                //  obtain the source object of the query. This will give us the
+                //  best representation to ask questions of the source.
+                if (!TP.isCollection(result)) {
+                    pickObj = TP.wrap(result);
+                } else {
+                    pickObj = result;
+                }
+
+                //  If the pick part starts with a '@', then the user is
+                //  querying for an attribute. The pick source should also be a
+                //  TP.dom.ElementNode (which it will be if the 'wrap' above
+                //  succeeded).
+                if (pickPart.startsWith('@') &&
+                    TP.isKindOf(pickObj, TP.dom.ElementNode)) {
+                    result = pickObj.getAttribute(pickPart.slice(1));
+                } else {
+                    //  Otherwise, just run 'get'.
+                    result = pickObj.get(pickPart);
+                }
+
+                //  If we didn't obtain a valid result, then set a valid to
+                //  break out of the overall loop and then break out of this
+                //  inner loop.
+                if (TP.notValid(result)) {
+                    notValidVal = true;
+                    break;
+                }
+            }
+        }
+
+        if (notValidVal === true) {
+            break;
+        } else if (TP.isValid(pickConversion)) {
+            //  There is a valid pick conversion. Try 'as', then 'transform'
+            //  then, if the conversion can be called as a Function, go ahead
+            //  and do that. Note that *order is important* here. The
+            //  'as'/'transform' methods provide the most intelligent
+            //  conversions so we try them first.
+            if (TP.canInvoke(result, 'as')) {
+                result = result.as(pickConversion);
+            } else if (TP.canInvoke(pickConversion, 'transform')) {
+                result = pickConversion.transform(result);
+            } else if (TP.isCallable(pickConversion)) {
+                result = pickConversion(result);
+            }
+        }
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+//  Paths
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getAccessPathParts',
 function(aPath, aScheme) {
 
