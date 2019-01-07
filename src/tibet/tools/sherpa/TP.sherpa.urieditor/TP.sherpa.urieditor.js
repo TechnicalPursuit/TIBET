@@ -234,6 +234,101 @@ function(aProperty, aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('getConnectorData',
+function(aSourceTPElement) {
+
+    /**
+     * @method getConnectorData
+     * @summary Returns data for a connector dragging session. This is called by
+     *     the Sherpa infrastructure to supply data when the connector has
+     *     successfully connected and data about the connector source is needed.
+     * @param {TP.dom.ElementNode} aSourceTPElement The source element that the
+     *     connection was dragged from.
+     * @returns {TP.core.Hash|null} The data to be used for this connector
+     *     dragging session.
+     */
+
+    var dataIndex,
+
+        pathParts,
+        fragParts,
+
+        sourceURI,
+        uriMIMEType,
+
+        schema,
+
+        propInfo,
+
+        isLeaf,
+
+        loc,
+        uriWithFrag;
+
+    //  Grab the index of the data from the source element and convert it to a
+    //  Number.
+    dataIndex = TP.pick(aSourceTPElement, '@indexInData', Number);
+
+    //  If we got a valid number, then grab the data that we computed when we
+    //  drew the schema view.
+    if (TP.isNumber(dataIndex)) {
+
+        //  Make sure to copy this array as we might be modifying it below.
+        pathParts = TP.copy(this.get('$pathParts').at(dataIndex));
+
+        //  Build a URI with a fragment that includes all our path parts.
+
+        fragParts = TP.copy(pathParts);
+
+        sourceURI = this.get('sourceURI');
+        uriMIMEType = sourceURI.getMIMEType();
+
+        //  If we're currently displaying content from a JSON URL, then we can
+        //  use JSONPath-specific separators.
+        if (uriMIMEType === TP.JSON_ENCODED) {
+
+            //  Query the schema content for the data type of the property at
+            //  the end of our path.
+            schema = this.get('$schemaContent');
+
+            //  Populate all of the schema property names (and their sub
+            //  property names) into an empty hash.
+            propInfo = TP.hc();
+            schema.populateSchemaPropertyNamesInto(propInfo);
+
+            //  Query the schema to determine whether the path leads to a
+            //  property that has other properties. We want to know whether
+            //  we're dealing with a 'leaf' property or not.
+            isLeaf = !schema.schemaPropertyHasSubproperties(
+                                                pathParts.join('.'));
+
+            //  If the path parts don't start with '$', unshift one on. We need
+            //  this to form correct JSONPaths.
+            if (pathParts.first() !== '$') {
+                fragParts.unshift('$');
+            }
+        }
+
+        //  Unshift the location of the source URI onto the Array of fragment
+        //  parts.
+        fragParts.unshift(sourceURI.getLocation());
+
+        //  Compute a location from the fragment parts and create a URI from it.
+        //  This will be the URI that is used as the 'source URI' that
+        //  represents the data chunk that the connector was dragged from.
+        loc = TP.uriJoinFragments.apply(TP, fragParts);
+        uriWithFrag = TP.uc(loc);
+
+        return TP.hc('sourceURI', uriWithFrag,
+                        'propInfo', propInfo,
+                        'isLeaf', isLeaf);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineHandler('DetachIntoConsoleTab',
 function(aSignal) {
 
