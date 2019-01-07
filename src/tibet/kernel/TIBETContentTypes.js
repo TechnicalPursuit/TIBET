@@ -4081,6 +4081,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.path.AccessPath.Inst.defineMethod('asXPointerString',
+function() {
+
+    /**
+     * @method asXPointerString
+     * @summary Produces an XPointer string representation of the receiver.
+     * @returns {String} The receiver in XPointer string format.
+     */
+
+    return '#' + this.getPointerScheme() + '(' + this.asString() + ')';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.path.AccessPath.Inst.defineMethod('isAccessPath',
 function() {
 
