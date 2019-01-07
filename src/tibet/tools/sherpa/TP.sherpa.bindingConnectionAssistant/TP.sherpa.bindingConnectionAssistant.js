@@ -312,27 +312,8 @@ function(anObject) {
     //attrVal = this.computeAttributeValue(info);
     attrVal = info.at('fullPath');
 
-    //  Tell the main Sherpa object that it should go ahead and process DOM
-    //  mutations to the source DOM.
-    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
-
-    //  Go ahead and set the attribute.
-    destTPElement.setAttribute(attrName, attrVal);
-
-    destTPElement.refresh();
-
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  500ms
-    setTimeout(
-        function() {
-            var consoleGUI;
-
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 1000);
+    TP.bySystemId('Sherpa').setAttributeOnElementInCanvas(
+                                    destTPElement, attrName, attrVal);
     */
 
     return this;
