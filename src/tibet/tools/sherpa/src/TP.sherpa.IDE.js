@@ -2670,6 +2670,52 @@ function(storageSerialization, successFunc, failFunc) {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('setAttributeOnElementInCanvas',
+function(anElement, attributeName, attributeValue) {
+
+    /**
+     * @method setAttributeOnElement
+     * @summary Sets the attribute on the supplied element with the supplied
+     *     name to the supplied value. The element should exist in the current
+     *     canvas being managed by the Sherpa as this method turns on Sherpa
+     *     mutation tracking machinery for the purpose of updating a source
+     *     document.
+     * @param {TP.dom.ElementNode} anElement The element to set the attribute
+     *     on.
+     * @param {String} attributeName The name of the attribute to set.
+     * @param {String} attributeValue The value to set on the attribute.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    //  Tell ourself that it should go ahead and process DOM mutations to the
+    //  source DOM.
+    this.set('shouldProcessDOMMutations', true);
+
+    //  Go ahead and set the attribute.
+    anElement.setAttribute(attributeName, attributeValue);
+
+    //  In case the attribute affects data binding, we go ahead and refresh it
+    //  here.
+    anElement.refresh();
+
+    //  Focus and set the cursor to the end of the Sherpa's input cell after
+    //  500ms
+    setTimeout(
+        function() {
+            var consoleGUI;
+
+            consoleGUI =
+                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+
+            consoleGUI.focusInput();
+            consoleGUI.setInputCursorToEnd();
+        }, 250);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('setup',
 function() {
 
