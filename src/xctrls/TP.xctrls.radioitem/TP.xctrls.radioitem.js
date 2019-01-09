@@ -143,8 +143,8 @@ function(beDisabled) {
     valuePElem = this.get('valuePElem');
 
     if (TP.isTrue(beDisabled)) {
-        valuePElem.setAttribute('disabled', true, false);
-        valuePElem.setAttribute('pclass:disabled', 'true', false);
+        valuePElem.$setAttribute('disabled', true, false);
+        valuePElem.$setAttribute('pclass:disabled', 'true', false);
     } else {
         valuePElem.removeAttribute('disabled');
         valuePElem.removeAttribute('pclass:disabled');
