@@ -9878,6 +9878,9 @@ function(resource, mimeType, fallback) {
             uri = this.get(res + 'URI');    // e.g. 'style' + 'URI'
         }
         if (TP.notEmpty(uri)) {
+            if (!TP.isString(uri) && TP.isURI(uri)) {
+                return TP.uriInTIBETFormat(uri.getLocation());
+            }
             return uri;
         }
     }
@@ -9896,6 +9899,9 @@ function(resource, mimeType, fallback) {
                 uri = type.get(res + 'URI');    // e.g. 'style' + 'URI'
             }
             if (TP.notEmpty(uri)) {
+                if (!TP.isString(uri) && TP.isURI(uri)) {
+                    return TP.uriInTIBETFormat(uri.getLocation());
+                }
                 return uri;
             }
         }
