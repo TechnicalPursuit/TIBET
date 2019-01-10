@@ -7295,6 +7295,16 @@ function(templateArgs) {
                 //  If its not the same type, then return true to turn the
                 //  'update' into a 'delete'/'insert'.
                 if (currentType !== prevType) {
+
+                    //  If neither the current node or the previous node were
+                    //  containers for structures, then we return false - a
+                    //  String being replaced by a Boolean isn't a structural
+                    //  change.
+                    if (!this.valueIsStructural(aNode) &&
+                        !this.valueIsStructural(prevNode)) {
+                        return false;
+                    }
+
                     return true;
                 }
 
