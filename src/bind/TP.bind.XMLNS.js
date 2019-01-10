@@ -492,13 +492,17 @@ function(anElement) {
             //  this usually returns the URI itself.
             concreteURI = TP.uc(aLocation).getConcreteURI();
 
-            //  If this isn't a TIBET URL, just grab it's primary URI. This
-            //  matches the behavior in the setup.
-            if (!TP.isKindOf(concreteURI, TP.uri.TIBETURL)) {
-                concreteURI = concreteURI.getPrimaryURI();
-            }
+            if (TP.isValid(concreteURI)) {
+                //  If this isn't a TIBET URL, just grab it's primary URI. This
+                //  matches the behavior in the setup.
+                if (!TP.isKindOf(concreteURI, TP.uri.TIBETURL)) {
+                    concreteURI = concreteURI.getPrimaryURI();
+                }
 
-            concreteLoc = concreteURI.getLocation();
+                concreteLoc = concreteURI.getLocation();
+            } else {
+                concreteLoc = location;
+            }
 
             //  If we already saw this location, then we decrement the counter.
             if (observedLocations.containsKey(concreteLoc)) {
