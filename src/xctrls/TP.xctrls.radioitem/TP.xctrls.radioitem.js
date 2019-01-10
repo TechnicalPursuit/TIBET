@@ -88,22 +88,6 @@ function(anElement, aSignal) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineMethod('$getVisualToggle',
-function() {
-
-    /**
-     * @method $getVisualToggle
-     * @summary Returns the low-level primitive 'toggle value' used by the
-     *     receiver to display a 'checked' state.
-     * @returns {Boolean} The low-level primitive 'toggle value' of the
-     *     receiver.
-     */
-
-    return this.$isInState('pclass:checked');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.radioitem.Inst.defineMethod('getDescendantsForSerialization',
 function() {
 
@@ -123,6 +107,22 @@ function() {
     selectedDescendants = TP.expand(selectedDescendants);
 
     return selectedDescendants;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Inst.defineMethod('$getVisualToggle',
+function() {
+
+    /**
+     * @method $getVisualToggle
+     * @summary Returns the low-level primitive 'toggle value' used by the
+     *     receiver to display a 'checked' state.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
+     */
+
+    return this.$isInState('pclass:checked');
 });
 
 //  ------------------------------------------------------------------------

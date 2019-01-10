@@ -112,6 +112,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.checkitem.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.dom.Node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants =
+                this.get('./xctrls:label|./xctrls:value|./xctrls:hint');
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.checkitem.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
@@ -148,29 +171,6 @@ function() {
      */
 
     return this.$isInState('pclass:checked');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineMethod('getDescendantsForSerialization',
-function() {
-
-    /**
-     * @method getDescendantsForSerialization
-     * @summary Returns an Array of descendants of the receiver to include in
-     *     the receiver's serialization. Typically, these will be nodes that
-     *     will be 'slotted' into the receiver by the author and not nodes that
-     *     the template generated 'around' the slotted nodes.
-     * @returns {TP.dom.Node[]} An Array of descendant nodes to serialize.
-     */
-
-    var selectedDescendants;
-
-    selectedDescendants =
-                this.get('./xctrls:label|./xctrls:value|./xctrls:hint');
-    selectedDescendants = TP.expand(selectedDescendants);
-
-    return selectedDescendants;
 });
 
 //  ------------------------------------------------------------------------
