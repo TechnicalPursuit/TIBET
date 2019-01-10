@@ -182,8 +182,13 @@ function(aSignal) {
         oldValue = this.getValue();
 
         //  If we always signal change, then even if the values are equal,
-        //  we will not exit here.
-        alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
+        //  we will not exit here. If an attribute is defined, then it takes
+        //  precedence over whatever the item control returns.
+        if (this.hasAttribute('alwaysSignalChange')) {
+            alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
+        } else {
+            alwaysSignalChange = wrappedDOMTarget.alwaysSignalChange();
+        }
 
         //  If we don't always signal change and the two values are equivalent,
         //  than just return.

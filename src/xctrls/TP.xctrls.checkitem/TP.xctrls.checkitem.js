@@ -92,6 +92,26 @@ TP.xctrls.checkitem.Inst.defineAttribute('valuePElem',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.checkitem.Inst.defineMethod('alwaysSignalChange',
+function() {
+
+    /**
+     * @method alwaysSignalChange
+     * @summary Returns whether or not activating/deactivating this item will
+     *     always signal a change, even if the underlying value isn't changing.
+     * @description This is overridden for checkboxes because the values will
+     *     always be the same - the old value and the new value are the same
+     *     value. What is changing is the toggling 'on' or 'off' of that value -
+     *     i.e. will the control return its value or null.
+     * @returns {Boolean} Whether or not to always signal a change. For this
+     *     type, this always returns true.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.checkitem.Inst.defineMethod('$getPrimitiveValue',
 function() {
 

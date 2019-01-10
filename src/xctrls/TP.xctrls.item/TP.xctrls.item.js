@@ -36,6 +36,22 @@ TP.xctrls.item.Type.defineAttribute('opaqueCapturingSignalNames',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.item.Inst.defineMethod('alwaysSignalChange',
+function() {
+
+    /**
+     * @method alwaysSignalChange
+     * @summary Returns whether or not activating/deactivating this item will
+     *     always signal a change, even if the underlying value isn't changing.
+     * @returns {Boolean} Whether or not to always signal a change. The default
+     *     is false.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.item.Inst.defineMethod('getLabelText',
 function() {
 
