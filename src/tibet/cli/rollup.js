@@ -132,8 +132,6 @@ Cmd.prototype.executeForEach = function(list) {
         keepFnName: true,
         keepClassName: true,
 
-        sourceMaps: false,
-
         //  Don't get fancy, it's just not worth the minor savings.
         booleans: false,
         builtIns: false,
