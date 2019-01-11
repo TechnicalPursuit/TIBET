@@ -250,20 +250,20 @@
     <package src="xctrls/TP.xctrls.button/TP.xctrls.button.xml" config="base"/>
     <package src="xctrls/TP.xctrls.buttonitem/TP.xctrls.buttonitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.checkitem/TP.xctrls.checkitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.xml" config="base"/>
     <package src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.xml" config="base"/>
-    <package src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.xml" config="base"/>
-    <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.hint/TP.xctrls.hint.xml" config="base"/>
     <package src="xctrls/TP.xctrls.list/TP.xctrls.list.xml" config="base"/>
-    <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
-    <package src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.xml" config="base"/>
     <package src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.xml" config="base"/>
     <package src="xctrls/TP.xctrls.pagerbar/TP.xctrls.pagerbar.xml" config="base"/>
-    <package src="xctrls/TP.xctrls.popup/TP.xctrls.popup.xml" config="base"/>
     <package src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.popup/TP.xctrls.popup.xml" config="base"/>
     <package src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.sticky/TP.xctrls.sticky.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->
