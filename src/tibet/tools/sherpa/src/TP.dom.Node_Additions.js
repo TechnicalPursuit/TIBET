@@ -1885,6 +1885,23 @@ function(aHalo) {
      *     itself.
      */
 
+    var display,
+        overflow,
+
+        coords;
+
+    //  If the element is an inline element with a visible overflow, then we use
+    //  the 'global wrapping box' to display the halo. This takes into account
+    //  descendants under the element that are visible, positioned and
+    //  overflowing out of the bounds of the element.
+    display = this.getComputedStyleProperty('display');
+    overflow = this.getComputedStyleProperty('overflow');
+
+    if (display === 'inline' && overflow === 'visible') {
+        coords = TP.elementGetWrappingGlobalBox(this.getNativeNode());
+        return TP.rtc(coords);
+    }
+
     return this.getGlobalRect();
 });
 

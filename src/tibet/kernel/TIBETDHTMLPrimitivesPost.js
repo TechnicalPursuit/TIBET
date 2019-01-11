@@ -4436,6 +4436,105 @@ function(anElement, boxType, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetWrappingGlobalBox',
+function(anElement, boxType) {
+
+    /**
+     * @method elementGetWrappingGlobalBox
+     * @summary Returns the element's 'wrapping box' of coordinates expressed
+     *     as 'global' coordinates. This is the value of the element's maximum
+     *     'outset box' as computed by finding visible descendants and using
+     *     their global boxes to compute the minimum box that would wrap all of
+     *     the content of the supplied element.
+     * @description If an element is an inline element and has its overflow set
+     *     to be visible, positioned content can overflow its box. This means
+     *     that the TP.elementGetGlobalBox method will not provide the maximum
+     *     'wrapping' box of the element. This method will do so.
+     * @param {HTMLElement} anElement The element to extract the maximum box
+     *     from.
+     * @param {String} boxType A TIBET constant that determines the 'box' to
+     *     compute the box from. This can one of the following values:
+     *     TP.CONTENT_BOX TP.PADDING_BOX TP.BORDER_BOX TP.MARGIN_BOX If this
+     *     parameter is not supplied, it defaults to TP.BORDER_BOX.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
+     *     'right', 'bottom', 'width', 'height'.
+     */
+
+    var thisBox,
+
+        top,
+        right,
+        bottom,
+        left,
+
+        descendants,
+
+        len,
+        i,
+
+        descendant,
+
+        descendantBox;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Grab the global box of the supplied element. Note here that we don't
+    //  give a scoping ancestor, since we're not interested in coordinates
+    //  relative to any of our ancestors. Also, we're not interested in
+    //  transformed coordinates.
+    thisBox = TP.elementGetGlobalBox(anElement, boxType, null, false);
+
+    top = thisBox.at('top');
+    right = thisBox.at('right');
+    bottom = thisBox.at('bottom');
+    left = thisBox.at('left');
+
+    //  Grab all of descendant elements.
+    descendants = TP.nodeGetDescendantElements(anElement);
+
+    //  Iterate over them, grabbing their global box and comparing against the
+    //  values we already have.
+    len = descendants.getSize();
+    for (i = 0; i < len; i++) {
+        descendant = descendants.at(i);
+
+        //  If the element isn't displayed, we move on - we don't want their
+        //  readings to possibly corrupt our results (some browsers will return
+        //  non-zero results for hidden elements - we don't want them).
+        if (!TP.elementIsDisplayed(descendant)) {
+            continue;
+        }
+
+        //  Grab the global box of the descendant. Note here that we don't give
+        //  a scoping ancestor, since we're not interested in coordinates
+        //  relative to any of their ancestor. Also, we're not interested in
+        //  transformed coordinates.
+        descendantBox = TP.elementGetGlobalBox(
+                            descendant, boxType, null, false);
+
+        //  Compare to the values we already have. Note that top and left use
+        //  the *minimum* values whereas right and bottom use the *maximum*
+        //  values.
+        top = Math.min(top, descendantBox.at('top'));
+        right = Math.max(right, descendantBox.at('right'));
+        bottom = Math.max(bottom, descendantBox.at('bottom'));
+        left = Math.min(left, descendantBox.at('left'));
+    }
+
+    return TP.hc(
+        'top', top,
+        'right', right,
+        'bottom', bottom,
+        'left', left,
+        'width', right - left,
+        'height', bottom - top);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementHasClass',
 function(anElement, className) {
 
