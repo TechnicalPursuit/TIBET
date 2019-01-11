@@ -248,6 +248,11 @@ sherpa|workbench > .footer xctrls|buttonitem[class~="deploy"] > xctrls|label {
     background-image: url("../media/ic_cloud_upload_black_24px.svg");
 }
 
+sherpa|workbench > .footer xctrls|buttonitem[class~="refresh"] > xctrls|label {
+
+    background-image: url("../media/baseline-cached-24px.svg");
+}
+
 sherpa|workbench > .footer xctrls|buttonitem[class~="halo"] > xctrls|label {
 
     background-image: url("../media/ic_format_shapes_black_24px.svg");

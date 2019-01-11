@@ -705,6 +705,44 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.workbench.Inst.defineHandler('TSHRefresh',
+function(aSignal) {
+
+    /**
+     * @method handleTSHRefresh
+     * @summary Handles notifications of when the receiver wants to refresh the
+     *     current canvas using the TSH.
+     * @param {TP.sig.TSHRefresh} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var canvasWin,
+
+        canvasLoc,
+        canvasURI,
+
+        virtualLoc,
+
+        cmdVal;
+
+    //  Grab the canvas window and it's location and make a URI from that.
+    canvasWin = TP.sys.uiwin();
+
+    canvasLoc = canvasWin.getLocation();
+    canvasURI = TP.uc(canvasLoc);
+
+    virtualLoc = canvasURI.getVirtualLocation();
+
+    cmdVal = virtualLoc + ' -refresh .> TP.sys.uiwin()';
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.workbench.Inst.defineHandler('TSHTest',
 function(aSignal) {
 
