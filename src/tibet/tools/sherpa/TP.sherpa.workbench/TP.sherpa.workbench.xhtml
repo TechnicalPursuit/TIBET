@@ -36,7 +36,31 @@
     <div class="footer">
         <sherpa:statusbar id="SherpaStatusbar"/>
         <div class="systemToolbar">
-            <sherpa:dispenser id="SherpaDispenser" dnd:vend="tofu"/>
+            <button id="snippetMenuTrigger" on:UIActivate="{signal: TogglePopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: SnippetsPopup}}">
+                <xctrls:hint>Snippet menu</xctrls:hint>
+            </button>
+
+            <button class="spacer"/>
+
+            <xctrls:itemgroup id="workbenchProjectButtons" toggleItems="false">
+                <xctrls:buttonitem id="TestButton" class="test" on:click="TSHTest">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>test</xctrls:value>
+                    <xctrls:hint>Test project</xctrls:hint>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="BuildButton" class="build" on:click="TSHBuild">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>build</xctrls:value>
+                    <xctrls:hint>Build Project</xctrls:hint>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="DeployButton" class="deploy" on:click="TSHDeploy">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>deploy</xctrls:value>
+                    <xctrls:hint>Deploy Project</xctrls:hint>
+                </xctrls:buttonitem>
+            </xctrls:itemgroup>
+
+            <button class="spacer"/>
 
             <xctrls:itemgroup id="workbenchToggleButtons" multiple="true">
                 <xctrls:buttonitem id="haloToggleButton" class="halo" on:click="ToggleHalo">
@@ -53,19 +77,7 @@
 
             <button class="spacer"/>
 
-            <xctrls:button class="deploy" on:click="TSHDeploy">
-                <xctrls:hint>Deploy project</xctrls:hint>
-            </xctrls:button>
-            <xctrls:button class="build" on:click="TSHBuild">
-                <xctrls:hint>Build project</xctrls:hint>
-            </xctrls:button>
-            <xctrls:button class="test" on:click="TSHTest">
-                <xctrls:hint>Test project</xctrls:hint>
-            </xctrls:button>
-
-            <button id="snippetMenuTrigger" on:UIActivate="{signal: TogglePopup, payload: {contentURI: urn:tibet:TP.sherpa.snippetMenuContent, hideOn: UISelect, overlayID: SnippetsPopup}}">
-                <xctrls:hint>Snippet menu</xctrls:hint>
-            </button>
+            <sherpa:dispenser id="SherpaDispenser" dnd:vend="tofu"/>
 
         </div>
         <sherpa:toolbar/>

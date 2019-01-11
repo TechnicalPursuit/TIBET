@@ -162,13 +162,11 @@ sherpa|workbench > .footer {
 
 #snippetMenuTrigger {
 
-    float: right;
-
-    margin-left: 32px;
-    margin-top: 3px;
-
     width: 24px;
     height: 24px;
+
+    margin: 0;
+    margin-top: 3px;
 
     background-size: 18px 18px;
     background-position: 2px 2px;
@@ -191,8 +189,9 @@ sherpa|workbench > .footer {
 sherpa|workbench > .footer .systemToolbar {
 
     position: absolute;
+    display: flex;
 
-    left: 0;
+    left: 30px;
 
     height: 30px;
 }
@@ -201,66 +200,25 @@ sherpa|workbench > .footer .systemToolbar sherpa|dispenser {
 
     position: relative;
 
-    float: right;
-
     left: 0;
 
-    margin: 5px;
+    width: 34px;
+
+    margin-top: 4px;
 }
 
-sherpa|workbench > .footer xctrls|button[class~="build"] {
+sherpa|workbench > .footer .systemToolbar sherpa|dispenseritem {
 
-    float: right;
-
+    height: 14px;
     width: 24px;
-    height: 24px;
-
-    margin: 3px 2px;
-
-    background-size: 18px 18px;
-    background-position: 2px 2px;
-    background-repeat: no-repeat;
-    background-image: url("../media/ic_build_black_24px.svg");
-}
-
-sherpa|workbench > .footer xctrls|button[class~="test"] {
-
-    float: right;
-
-    width: 24px;
-    height: 24px;
-
-    margin: 3px 2px;
-
-    background-size: 18px 18px;
-    background-position: 2px 2px;
-    background-repeat: no-repeat;
-    background-image: url("../media/ic_traffic_black_24px.svg");
-}
-
-sherpa|workbench > .footer xctrls|button[class~="deploy"] {
-
-    float: right;
-
-    width: 24px;
-    height: 24px;
-
-    margin: 3px 2px;
-
-    background-size: 18px 18px;
-    background-position: 2px 2px;
-    background-repeat: no-repeat;
-    background-image: url("../media/ic_cloud_upload_black_24px.svg");
 }
 
 sherpa|workbench > .footer xctrls|buttonitem {
 
-    float: right;
-
     width: 24px;
     height: 24px;
 
-    margin-top: 3px;
+    margin: 0;
 }
 
 sherpa|workbench > .footer xctrls|buttonitem > xctrls|label {
@@ -275,6 +233,21 @@ sherpa|workbench > .footer xctrls|buttonitem > xctrls|label:hover {
     background-color: gold;
 }
 
+sherpa|workbench > .footer xctrls|buttonitem[class~="test"] > xctrls|label {
+
+    background-image: url("../media/ic_traffic_black_24px.svg");
+}
+
+sherpa|workbench > .footer xctrls|buttonitem[class~="build"] > xctrls|label {
+
+    background-image: url("../media/ic_build_black_24px.svg");
+}
+
+sherpa|workbench > .footer xctrls|buttonitem[class~="deploy"] > xctrls|label {
+
+    background-image: url("../media/ic_cloud_upload_black_24px.svg");
+}
+
 sherpa|workbench > .footer xctrls|buttonitem[class~="halo"] > xctrls|label {
 
     background-image: url("../media/ic_format_shapes_black_24px.svg");
@@ -286,8 +259,6 @@ sherpa|workbench > .footer xctrls|buttonitem[class~="outline"] > xctrls|label {
 }
 
 sherpa|workbench > .footer button.spacer {
-
-    float: right;
 
     width: 12px;
     height: 24px;
