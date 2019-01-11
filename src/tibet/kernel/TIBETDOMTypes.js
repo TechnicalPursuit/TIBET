@@ -9879,7 +9879,7 @@ function(resource, mimeType, fallback) {
         }
         if (TP.notEmpty(uri)) {
             if (!TP.isString(uri) && TP.isURI(uri)) {
-                return TP.uriInTIBETFormat(uri.getLocation());
+                return uri.getVirtualLocation();
             }
             return uri;
         }
@@ -9900,7 +9900,7 @@ function(resource, mimeType, fallback) {
             }
             if (TP.notEmpty(uri)) {
                 if (!TP.isString(uri) && TP.isURI(uri)) {
-                    return TP.uriInTIBETFormat(uri.getLocation());
+                    return uri.getVirtualLocation();
                 }
                 return uri;
             }
