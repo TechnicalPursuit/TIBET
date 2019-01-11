@@ -25,17 +25,6 @@ rename functions. TIBET makes extensive use of dynamic method invocations which
 preclude using generic obfuscators, at least in their more agressive forms.
 Future extensions to this command will support TIBET-specific obfuscations.
 
-See `https://github.com/estools/escodegen/wiki/API` for current options. The
-options which affect this command should be set via `tibet config`. Default
-`tibet.json` files include the following settings:
-
-    "escodegen": {
-        "format": {
-            "compact": true
-        }
-    },
-
-
 ## OPTIONS
 
   * `--headers` :
@@ -44,10 +33,9 @@ source file(s) used in the rollup. This information is necessary for certain
 TIBET reflection operations at runtime.
 
   * `--minify` :
-    Signifies that the rollup output should pass through the `escodegen`
-minification process. Note that overly agressive obfuscation will cause TIBET
-code to fail. Future additions to TIBET will support more agressive
-minification.
+    Signifies that the rollup output should pass through the minification
+process. Note that overly agressive obfuscation will cause TIBET code to fail.
+Future additions to TIBET will support more agressive minification.
 
   * `[package-opts]` :
     Refers to valid options for a TIBET Package object. These include --package,

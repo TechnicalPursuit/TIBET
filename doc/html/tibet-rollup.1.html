@@ -36,15 +36,7 @@ or more <code>makefile.js</code> targets used to build library or app-level bund
 rename functions. TIBET makes extensive use of dynamic method invocations which
 preclude using generic obfuscators, at least in their more agressive forms.
 Future extensions to this command will support TIBET-specific obfuscations.</p>
-<p>See <code>https://github.com/estools/escodegen/wiki/API</code> for current options. The
-options which affect this command should be set via <code>tibet config</code>. Default
-<code>tibet.json</code> files include the following settings:</p>
-<pre><code>&quot;escodegen&quot;: {
-    &quot;format&quot;: {
-        &quot;compact&quot;: true
-    }
-},
-</code></pre><h2 id="options">OPTIONS</h2>
+<h2 id="options">OPTIONS</h2>
 <ul>
 <li><p><code>--headers</code> :
 Tells the rollup process to include &#39;header&#39; information which points to the
@@ -52,10 +44,9 @@ source file(s) used in the rollup. This information is necessary for certain
 TIBET reflection operations at runtime.</p>
 </li>
 <li><p><code>--minify</code> :
-Signifies that the rollup output should pass through the <code>escodegen</code>
-minification process. Note that overly agressive obfuscation will cause TIBET
-code to fail. Future additions to TIBET will support more agressive
-minification.</p>
+Signifies that the rollup output should pass through the minification
+process. Note that overly agressive obfuscation will cause TIBET code to fail.
+Future additions to TIBET will support more agressive minification.</p>
 </li>
 <li><p><code>[package-opts]</code> :
 Refers to valid options for a TIBET Package object. These include --package,

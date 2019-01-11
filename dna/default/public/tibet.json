@@ -8,10 +8,5 @@
     },
     "boot": {
         "use_login": false
-    },
-    "escodegen": {
-        "format": {
-            "compact": true
-        }
     }
 }

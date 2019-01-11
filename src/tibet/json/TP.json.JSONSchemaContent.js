@@ -214,9 +214,9 @@ function(accumHash, schemaData, keyPrefix) {
      *     structure that looks like this:
      *
      *     {
-     *          'escodegen': ['escodegen.format', 'escodegen.format.compact'],
-     *          'escodegen.format': ['escodegen.format.compact']
-     *          'escodegen.format.compact: []
+     *          'topic': ['topic.subtopic', 'topic.subtopic.subsub'],
+     *          'topic.subtopic': ['topic.subtopic.subsub']
+     *          'topic.subtopic.subsub: []
      *     }
      * @param {TP.core.Hash} accumHash The hash to accumulate results into.
      * @param {TP.core.Hash} [schemaData] The data of the 'current level' of the

@@ -3,11 +3,6 @@
     "boot": {
         "package": "~lib_cfg/TIBET.xml"
     },
-    "escodegen": {
-        "format": {
-            "compact": true
-        }
-    },
     "cli": {
         "help": {
             "viewer": "man"
