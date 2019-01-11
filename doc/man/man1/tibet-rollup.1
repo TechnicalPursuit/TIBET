@@ -23,20 +23,6 @@ Note that in its current form TIBET does not play well with minifiers which
 rename functions\. TIBET makes extensive use of dynamic method invocations which
 preclude using generic obfuscators, at least in their more agressive forms\.
 Future extensions to this command will support TIBET\-specific obfuscations\.
-.P
-See \fBhttps://github\.com/estools/escodegen/wiki/API\fP for current options\. The
-options which affect this command should be set via \fBtibet config\fP\|\. Default
-\fBtibet\.json\fP files include the following settings:
-.P
-.RS 2
-.nf
-"escodegen": {
-    "format": {
-        "compact": true
-    }
-},
-.fi
-.RE
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -46,10 +32,9 @@ source file(s) used in the rollup\. This information is necessary for certain
 TIBET reflection operations at runtime\.
 .IP \(bu 2
 \fB\-\-minify\fP :
-Signifies that the rollup output should pass through the \fBescodegen\fP
-minification process\. Note that overly agressive obfuscation will cause TIBET
-code to fail\. Future additions to TIBET will support more agressive
-minification\.
+Signifies that the rollup output should pass through the minification
+process\. Note that overly agressive obfuscation will cause TIBET code to fail\.
+Future additions to TIBET will support more agressive minification\.
 .IP \(bu 2
 \fB[package\-opts]\fP :
 Refers to valid options for a TIBET Package object\. These include \-\-package,

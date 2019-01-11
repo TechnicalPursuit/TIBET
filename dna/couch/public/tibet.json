@@ -9,11 +9,6 @@
     "boot": {
         "use_login": false
     },
-    "escodegen": {
-        "format": {
-            "compact": true
-        }
-    },
     "couch": {
         "scheme": "http",
         "host": "127.0.0.1",

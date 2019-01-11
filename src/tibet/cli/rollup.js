@@ -21,9 +21,7 @@
 var CLI,
     sh,
     fs,
-    esprima,
-    esmangle,
-    escodegen,
+    minify,
     Cmd;
 
 
@@ -31,9 +29,7 @@ CLI = require('./_cli');
 sh = require('shelljs');
 fs = require('fs');
 
-esprima = require('esprima');
-esmangle = require('esmangle');
-escodegen = require('escodegen');
+minify = require('babel-minify');
 
 //  ---
 //  Type Construction
@@ -88,6 +84,12 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
+/**
+ * The timeout used for command invocation. Rollups can take a long time to
+ * build and minify so we give this a generous amount of time.
+ * @type {Number}
+ */
+Cmd.prototype.TIMEOUT = 1000 * 60 * 5;
 
 /**
  * The command usage string.
@@ -124,13 +126,43 @@ Cmd.prototype.executeForEach = function(list) {
         return CLI.notInitialized();
     }
 
-    minifyOpts = CLI.ifUndefined(cfg.escodegen, {});
+    minifyOpts = {
+        //  Whitespace is automatic, mangling does 95% of the rest.
+        mangle: true,
+        keepFnName: true,
+        keepClassName: true,
+
+        sourceMaps: false,
+
+        //  Don't get fancy, it's just not worth the minor savings.
+        booleans: false,
+        builtIns: false,
+        consecutiveAdds: false,
+        deadcode: false,
+        evaluate: false,
+        flipComparisons: false,
+        guards: false,
+        infinity: false,
+        memberExpressions: false,
+        mergeVars: false,
+        numericLiterals: false,
+        propertyLiterals: false,
+        regexpConstructors: false,
+        removeConsole: false,
+        removeDebugger: false,
+        removeUndefined: false,
+        replace: false,
+        simplify: false,
+        simplifyComparisons: false,
+        typeConstructors: false,
+        undefinedToVoid: false
+    };
+
     this.debug('minifyOpts: ' + CLI.beautify(JSON.stringify(minifyOpts)));
 
     list.forEach(function(item) {
-        var ast,
-            mangled,
-            src,
+        var src,
+            result,
             code,
             virtual;
 
@@ -156,10 +188,12 @@ Cmd.prototype.executeForEach = function(list) {
                 try {
                     code = fs.readFileSync(src, {encoding: 'utf8'});
 
-                    // Parse, reorg/mangle, & then re-generate JS code.
-                    ast = esprima.parse(code);
-                    mangled = esmangle.mangle(ast);
-                    code = escodegen.generate(mangled, minifyOpts);
+                    result = minify(code, minifyOpts);
+                    if (!result || !result.code) {
+                        code = '';
+                    } else {
+                        code = result.code;
+                    }
 
                     if (code && code[code.length - 1] !== ';') {
                         code += ';';
