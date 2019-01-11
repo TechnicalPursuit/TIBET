@@ -182,7 +182,7 @@ function(aRequest) {
     //  expect to see this in *exactly* this format.
     //  Instance of Function
     /* eslint-disable brace-style,max-statements-per-line */
-    functionVal = function() {return 'fluffy'; };
+    functionVal = function() {return "fluffy"; };
     /* eslint-enable brace-style,max-statements-per-line */
 
     //  invalid Date
