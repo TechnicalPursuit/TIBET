@@ -181,9 +181,9 @@ function(aRequest) {
     //  NB: Do *not* reformat this in any way. Some of the representation tests
     //  expect to see this in *exactly* this format.
     //  Instance of Function
-    /* eslint-disable brace-style,max-statements-per-line */
+    /* eslint-disable brace-style,max-statements-per-line,quotes */
     functionVal = function() {return "fluffy"; };
-    /* eslint-enable brace-style,max-statements-per-line */
+    /* eslint-enable brace-style,max-statements-per-line,quotes */
 
     //  invalid Date
     invalidDateVal = new Date('fluffy');
