@@ -86,13 +86,73 @@ function(aRequest) {
         return;
     }
 
+    //  Iterate over any URI attributes and call rewrite() on their values.
+    //  This will cause any mapped URIs to be rewritten before their XML
+    //  Base value is resolved.
+
+    //  NB: Because we're using a select here, this will also collect up the
+    //  attributes that were really url(...) values for further processing by
+    //  the XML Base code below.
+    uriAttrs = uriAttrs.select(
+            function(attrName) {
+
+                var attrVal,
+
+                    urlParts,
+
+                    newVal;
+
+                attrVal = TP.elementGetAttribute(elem, attrName, true);
+
+                //  Test the attribute value, making sure that it has a
+                //  'url(...)' value. If it doesn't, don't try to process it and
+                //  return false to filter it out.
+                TP.regex.CSS_URL_VALUE.lastIndex = 0;
+                if (!TP.regex.CSS_URL_VALUE.test(attrVal)) {
+                    return false;
+                }
+
+                //  Then, exec the URL value matcher on the attribute value and
+                //  extract out the URL.
+                TP.regex.CSS_URL_VALUE.lastIndex = 0;
+                urlParts = TP.regex.CSS_URL_VALUE.exec(attrVal);
+
+                attrVal = urlParts.at(2);
+
+                if (TP.isEmpty(attrVal)) {
+                    return false;
+                }
+
+                //  Just in case the URI was encoded, as it is by some browsers
+                //  (Firefox), make sure to decode it.
+                attrVal = decodeURIComponent(attrVal);
+
+                //  If its an absolute URI, check to see if it needs to be
+                //  rewritten.
+                if (TP.uriIsAbsolute(attrVal)) {
+                    newVal = TP.uri.URI.rewrite(attrVal).getLocation();
+
+                    if (newVal !== attrVal) {
+                        TP.elementSetAttribute(elem,
+                                                attrName,
+                                                newVal,
+                                                true);
+                    }
+                }
+
+                return true;
+            });
+
+    if (TP.isEmpty(uriAttrs)) {
+        return;
+    }
+
     //  update the XML Base references in the node
 
-    //  This call is the reason we overrode this method from our supertype's
-    //  definition - note how we pass a prefix and a suffix to be stripped
-    //  before URI computation and then to be prepended/appended back on
-    //  when setting the result.
-    TP.elementResolveXMLBase(elem, uriAttrs, 'url(', ')');
+    //  Note how we pass a prefix and a suffix to be stripped before URI
+    //  computation and then to be prepended/appended back on when setting the
+    //  result.
+    TP.elementResolveXMLBase(elem, uriAttrs, 'url("', '")');
 
     return;
 });
