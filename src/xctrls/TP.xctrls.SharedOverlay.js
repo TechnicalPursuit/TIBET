@@ -664,6 +664,8 @@ function(contentInfo, overlayContent, afterLoadHandler) {
             if (TP.isType(result) &&
                 TP.isSubtypeOf(result, TP.dom.ElementNode)) {
                 elem = TP.elem('<' + result.getCanonicalName() + '/>');
+            } else if (TP.isElement(result)) {
+                elem = result;
             } else {
                 elem = TP.elem(result.get('data'));
             }
