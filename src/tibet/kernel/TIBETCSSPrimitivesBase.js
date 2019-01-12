@@ -731,12 +731,12 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
     //  Scan the content for url(...) values in general. If found, resolve their
     //  value against the values available for all virtual URIs in TIBET.
-    TP.regex.CSS_URL_VALUE.lastIndex = 0;
-    if (TP.regex.CSS_URL_VALUE.test(processedStyleContent)) {
+    TP.regex.CSS_VIRTUAL_URL_VALUE.lastIndex = 0;
+    if (TP.regex.CSS_VIRTUAL_URL_VALUE.test(processedStyleContent)) {
 
-        TP.regex.CSS_URL_VALUE.lastIndex = 0;
+        TP.regex.CSS_VIRTUAL_URL_VALUE.lastIndex = 0;
         processedStyleContent = processedStyleContent.replace(
-                TP.regex.CSS_URL_VALUE,
+                TP.regex.CSS_VIRTUAL_URL_VALUE,
                 function(wholeMatch, leadingText, locationValue) {
 
                     var loc;
@@ -1711,9 +1711,9 @@ function(anElement) {
         //  Scan the content for url(...) values. If found, resolve their
         //  value.
 
-        TP.regex.CSS_URL_VALUE.lastIndex = 0;
+        TP.regex.CSS_VIRTUAL_URL_VALUE.lastIndex = 0;
         replacedRuleText = origRuleText.replace(
-                TP.regex.CSS_URL_VALUE,
+                TP.regex.CSS_VIRTUAL_URL_VALUE,
                 function(wholeMatch, leadingText, locationValue) {
 
                     var loc;
@@ -1748,8 +1748,8 @@ function(anElement) {
 
         currentRuleText = rules[i].cssText;
 
-        TP.regex.CSS_URL_VALUE.lastIndex = 0;
-        if (TP.regex.CSS_URL_VALUE.test(currentRuleText)) {
+        TP.regex.CSS_VIRTUAL_URL_VALUE.lastIndex = 0;
+        if (TP.regex.CSS_VIRTUAL_URL_VALUE.test(currentRuleText)) {
 
             newRuleText = replaceURLValues(currentRuleText);
 
