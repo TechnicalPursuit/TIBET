@@ -129,6 +129,7 @@ function(aSignal, triggerTPDocument) {
     //  trigger.
     triggerPath = aSignal.at('triggerPath');
     if (TP.notEmpty(triggerPath)) {
+        triggerPath = triggerPath.unquoted();
         triggerTPElem = TP.byPath(triggerPath, triggerTPDocument).first();
     } else if (TP.isValid(triggerSignal)) {
         if (TP.isValid(triggerSignal.at('target'))) {
