@@ -44,7 +44,8 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.observe(TP.uc('urn:tibet:styleshud_readwrite_prop_source'), 'ValueChange');
+    tpElem.observe(TP.uc('urn:tibet:styleshud_readwrite_prop_source'),
+                    'ValueChange');
 
     return;
 });

@@ -305,10 +305,8 @@ function(aSignal) {
             'contentID', 'SherpaHudContextMenu',
             'contentAttributes',
                 TP.hc(
-                    'tibet:ctrl',
-                        this.getLocalID(),
-                    'contenttagname',
-                        contentTagName
+                    'tibet:ctrl', this.getLocalID(),
+                    'contenttagname', contentTagName
                 ),
             'hideOn', 'SelectMenuItem',
             'useTopLevelContentElem', true,
