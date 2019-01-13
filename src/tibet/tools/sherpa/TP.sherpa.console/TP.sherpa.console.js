@@ -656,6 +656,7 @@ function() {
     //  Observe the HUD's south drawer for when it opens/closes
     consoleDrawerTPElem = TP.byId('south', this.getNativeDocument());
     this.observe(consoleDrawerTPElem, 'ClosedChange');
+    this.observe(consoleDrawerTPElem, 'HiddenChange');
 
     //  Set the overall data Array as the resource for the console tabs.
     data = TP.ac(
@@ -748,8 +749,47 @@ function(aSignal) {
 
     if (!isClosed) {
 
-        TP.elementGetStyleObj(TP.unwrap(southDrawer)).height = '';
-        TP.elementGetStyleObj(TP.unwrap(this)).height = '';
+        southDrawer.setHeight('');
+        this.setHeight('');
+
+    } else {
+        //  Adjust the input size - by passing true here, we're anticipating
+        //  animating the drawer.
+        this.adjustInputSize(true);
+    }
+
+    return this;
+}, {
+    origin: 'south'
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineHandler('HiddenChange',
+function(aSignal) {
+
+    /**
+     * @method handleHiddenChange
+     * @summary Handles when the HUD's 'south drawer' 'hidden' state changes.
+     *     We track that by adjusting the size of our input cell area.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var isHidden,
+
+        southDrawer,
+        drawerIsOpenFunc;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    if (isHidden) {
+
+        southDrawer = aSignal.getOrigin();
+
+        southDrawer.setHeight('');
+        this.setHeight('');
 
     } else {
         //  Adjust the input size - by passing true here, we're anticipating

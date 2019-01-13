@@ -207,8 +207,6 @@ function(beClosed) {
 
     var wasClosed,
 
-        drawerElement,
-
         doc,
         hudStyleElement;
 
@@ -220,14 +218,10 @@ function(beClosed) {
         return this;
     }
 
-    drawerElement = TP.byId('south', this.getNativeWindow(), false);
-
     //  Grab the current UI canvas document.
     doc = TP.sys.uidoc(true);
 
     if (TP.isTrue(beClosed)) {
-
-        TP.elementGetStyleObj(drawerElement).height = '';
 
         //  Hide all of the HUD drawers.
         this.hideAllHUDDrawers();
