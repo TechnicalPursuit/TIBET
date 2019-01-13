@@ -256,6 +256,14 @@ function(lessLoc, lessText) {
                                             cssElemID,
                                             true);
 
+                    //  Track the original source from the URI - this is what
+                    //  the author originally typed and might be a virtual URI.
+                    //  We'd like to track it here.
+                    TP.elementSetAttribute(generatedStyleElem,
+                                            'tibet:originalhref',
+                                            lessLoc,
+                                            true);
+
                     //  If the original element has a 'tibet:type' attribute on
                     //  it, copy it over to the generated version. Note that we
                     //  do *not* do this for imported stylesheets above.
@@ -453,6 +461,15 @@ function(anHref) {
                                             'id',
                                             generatedStyleID,
                                             true);
+
+                    //  Track the original source from the URI - this is what
+                    //  the author originally typed and might be a virtual URI.
+                    //  We'd like to track it here.
+                    TP.elementSetAttribute(inlinedStyleElem,
+                                            'tibet:originalhref',
+                                            styleURI.getOriginalSource(),
+                                            true);
+
                 } else {
 
                     //  Grab any existing style element, if available.
@@ -491,6 +508,14 @@ function(anHref) {
                         TP.elementSetAttribute(newStyleElem,
                                                 'tibet:for',
                                                 ourID,
+                                                true);
+
+                        //  Track the original source from the URI - this is what
+                        //  the author originally typed and might be a virtual
+                        //  URI. We'd like to track it here.
+                        TP.elementSetAttribute(inlinedStyleElem,
+                                                'tibet:originalhref',
+                                                hrefLocation,
                                                 true);
 
                     } else {
