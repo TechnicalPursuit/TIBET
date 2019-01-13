@@ -777,8 +777,7 @@ function(aSignal) {
 
     var isHidden,
 
-        southDrawer,
-        drawerIsOpenFunc;
+        southDrawer;
 
     isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
 
