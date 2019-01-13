@@ -661,10 +661,12 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
             //  If the URI pointed to a type and that type is a subtype
             //  of TP.dom.ElementNode, then create an Element using the
-            //  canonical name
+            //  canonical name.
             if (TP.isType(result) &&
                 TP.isSubtypeOf(result, TP.dom.ElementNode)) {
                 elem = TP.elem('<' + result.getCanonicalName() + '/>');
+            } else if (TP.isKindOf(result, TP.dom.ElementNode)) {
+                elem = result.getNativeNode();
             } else if (TP.isElement(result)) {
                 elem = result;
             } else {
