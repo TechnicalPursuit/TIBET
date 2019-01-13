@@ -42,6 +42,59 @@ TP.xctrls.SharedOverlay.Type.defineAttribute('$lastTriggerID');
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
+TP.xctrls.SharedOverlay.Type.defineMethod('constructOverlay',
+function(anOverlayID, aTPDocument) {
+
+    /**
+     * @method constructOverlay
+     * @summary Returns (and, if necessary, constructs) the overlay found by
+     *     using the supplied overlayID to query the supplied document.
+     * @param {String} anOverlayID The ID to use to query for the overlay.
+     * @param {TP.dom.Document} aTPDocument The document to create the overlay
+     *     in, if it can't be found. Note that, in this case, the overlay will
+     *     be created as the last child of the document's 'body' element.
+     * @returns {TP.xctrls.SharedOverlay} The matching overlay on the supplied
+     *     TP.dom.Document.
+     */
+    var overlayTPElem,
+
+        tpDocBody,
+        overlayElem;
+
+    if (TP.isEmpty(anOverlayID)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    if (TP.notValid(aTPDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    overlayTPElem = aTPDocument.get('//*[@id="' + anOverlayID + '"]');
+
+    //  If the 'get' expression above didn't find one, it hands back an empty
+    //  Array. Otherwise it will hand back the TP.dom.ElementNode that
+    //  represents the overlay.
+    if (TP.isEmpty(overlayTPElem)) {
+
+        tpDocBody = aTPDocument.getBody();
+
+        if (TP.isValid(tpDocBody)) {
+
+            overlayElem = TP.elem(
+                '<' + this.getCanonicalName() + ' id="' + anOverlayID + '"/>');
+
+            overlayTPElem = tpDocBody.insertContent(
+                                    overlayElem,
+                                    TP.BEFORE_END,
+                                    TP.hc('doc', aTPDocument.getNativeNode()));
+        }
+    }
+
+    return overlayTPElem;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.xctrls.SharedOverlay.Type.defineMethod('getOverlayWithID',
 function(aTPDocument, anOverlayID) {
 
@@ -59,9 +112,7 @@ function(aTPDocument, anOverlayID) {
      *     TP.dom.Document.
      */
 
-    var tpDocBody,
-        overlayID,
-        overlayElem,
+    var overlayID,
         overlayTPElem;
 
     if (TP.notValid(aTPDocument)) {
@@ -76,19 +127,7 @@ function(aTPDocument, anOverlayID) {
     //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the overlay.
     if (TP.isEmpty(overlayTPElem)) {
-
-        tpDocBody = aTPDocument.getBody();
-
-        if (TP.isValid(tpDocBody)) {
-
-            overlayElem = TP.elem(
-                '<' + this.getCanonicalName() + ' id="' + overlayID + '"/>');
-
-            overlayTPElem = tpDocBody.insertContent(
-                                    overlayElem,
-                                    TP.BEFORE_END,
-                                    TP.hc('doc', aTPDocument.getNativeNode()));
-        }
+        overlayTPElem = this.constructOverlay(overlayID, aTPDocument);
     }
 
     return overlayTPElem;
