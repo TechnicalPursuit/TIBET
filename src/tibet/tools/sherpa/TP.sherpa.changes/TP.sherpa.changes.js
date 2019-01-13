@@ -176,18 +176,17 @@ function(aSignal) {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
-    var hud,
-        hudIsHidden;
+    var hudIsClosed;
 
-    hud = TP.byId('SherpaHUD', this.getNativeWindow());
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    hudIsHidden = TP.bc(hud.getAttribute('closed'));
-
-    if (!hudIsHidden) {
-        this.updateURIInfo();
-        this.observe(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceChanged'));
+    if (hudIsClosed) {
+        this.toggleObservations(false);
     } else {
-        this.ignore(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceChanged'));
+        this.updateURIInfo();
+
+        this.toggleObservations(true);
     }
 
     return this;
@@ -496,16 +495,42 @@ function() {
      * @returns {TP.sherpa.changes} The receiver.
      */
 
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
+
+    this.toggleObservations(true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.changes.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.changes} The receiver.
+     */
+
     var shouldWatchURI,
         shouldProcessURI;
 
-    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
-
     shouldWatchURI = TP.uc('urn:tibet:watch_remote_changes');
-    this.observe(shouldWatchURI, 'ValueChange');
-
     shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
-    this.observe(shouldProcessURI, 'ValueChange');
+
+    if (shouldObserve) {
+        this.observe(shouldWatchURI, 'ValueChange');
+        this.observe(shouldProcessURI, 'ValueChange');
+        this.observe(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceChanged'));
+    } else {
+        this.ignore(shouldWatchURI, 'ValueChange');
+        this.ignore(shouldProcessURI, 'ValueChange');
+        this.ignore(TP.ANY, TP.ac('DirtyChange', 'RemoteResourceChanged'));
+    }
 
     return this;
 });
