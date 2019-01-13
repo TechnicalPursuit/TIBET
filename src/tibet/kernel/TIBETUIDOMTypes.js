@@ -136,8 +136,9 @@ function(aDocument, sheetElemID, aStyleURI) {
 
     //  Start by looking for style elements that have a 'tibet:originalhref' on
     //  them - these will have been placed here by the system as part of
-    //  processing, possibly inline processing.
-    existingStyleElems = TP.byCSSPath('> style[tibet|originalhref]',
+    //  processing, possibly inline processing. Note that we make sure to go
+    //  after only HTML style elements here.
+    existingStyleElems = TP.byCSSPath('> html|style[tibet|originalhref]',
                                         docHead,
                                         false,
                                         false);
@@ -187,7 +188,8 @@ function(aDocument, sheetElemID, aStyleURI) {
 
     if (inlined) {
 
-        //  First, see if we've processed this style URI before.
+        //  First, see if we've processed this style URI before. Note that we
+        //  make sure to go after only HTML style elements here.
         inlinedStyleElem = TP.byCSSPath('html|style[tibet|originalhref=' +
                                             '"' +
                                             styleURI.getOriginalSource() +
@@ -3719,10 +3721,10 @@ function() {
         head = TP.documentEnsureHeadElement(this.getNativeDocument());
         loc = styleURI.getLocation();
 
-        //  Generate a CSS query that looks under the head for any *XHTML* style
-        //  elements (not 'tibet:style' ones) that have an 'originalhref'
-        //  attribute that contains (anywhere in its path) our styleURI's
-        //  location.
+        //  Generate a CSS query that looks under the head for any style
+        //  elements that have an 'originalhref' attribute that contains
+        //  (anywhere in its path) our styleURI's location. Note that we make
+        //  sure to go after only HTML style elements here.
         styleElems = TP.byCSSPath(
                             '> html|style[tibet|originalhref~="' + loc + '"]',
                             head,

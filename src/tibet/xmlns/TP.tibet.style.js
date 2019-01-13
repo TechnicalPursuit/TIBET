@@ -401,6 +401,8 @@ function(anHref) {
                     styleURI = TP.uc(hrefLocation);
 
                     //  Grab any existing inlined style element, if available.
+                    //  Note that we make sure to go after only HTML style
+                    //  elements here.
                     inlinedStyleElem = TP.byCSSPath(
                                             'html|style[tibet|originalhref=' +
                                             '"' +

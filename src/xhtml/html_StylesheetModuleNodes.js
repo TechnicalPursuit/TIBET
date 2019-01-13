@@ -330,7 +330,8 @@ function(anHref) {
 
     if (TP.isURI(styleURI)) {
 
-        //  Grab any existing inlined style element, if available.
+        //  Grab any existing inlined style element, if available. Note that we
+        //  make sure to go after only HTML style elements here.
         inlinedStyleElem = TP.byCSSPath(
                                 'html|style[tibet|originalhref=' +
                                 '"' +
