@@ -630,7 +630,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     //  then just return. When our stylesheet loads, it will use the trigger and
     //  last cached content info to call this method again.
     if (!this.isReadyToRender()) {
-        contentInfo.atPut('afterLoadHandler', afterLoadHandler);
+        contentInfo.atPut('$afterLoadHandler', afterLoadHandler);
         this.set('$$lastContentInfo', contentInfo, false);
         return this;
     }
@@ -805,8 +805,8 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         //  content has been loaded and refreshed, then call it.
         if (TP.isCallable(afterLoadHandler)) {
             afterLoadHandler(tpContent);
-        } else if (TP.isCallable(contentInfo.at('afterLoadHandler'))) {
-            contentInfo.at('afterLoadHandler')(tpContent);
+        } else if (TP.isCallable(contentInfo.at('$afterLoadHandler'))) {
+            contentInfo.at('$afterLoadHandler')(tpContent);
         }
     };
 
