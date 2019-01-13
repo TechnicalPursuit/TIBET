@@ -1554,7 +1554,14 @@ function(shouldAnimate) {
 
     consoleDrawer = TP.byId('south', this.getNativeDocument());
 
+    //  If the drawer isn't 'closed', which for the south drawer means it is
+    //  'open all the way', then we don't resize here.
     if (!consoleDrawer.hasAttribute('pclass:closed')) {
+        return this;
+    }
+
+    //  If the drawer is hidden altogether, then we don't resize here either.
+    if (consoleDrawer.hasAttribute('pclass:hidden')) {
         return this;
     }
 
