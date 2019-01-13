@@ -105,15 +105,10 @@ function() {
         origins,
         'TP.sig.DOMTransitionEnd');
 
-    //  Various signal observations
-
-    this.observe(this.getDocument(), 'TP.sig.DOMResize');
-
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
 
-    this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
-                                'TP.sig.DOMDNDTerminate'));
+    this.toggleObservations(true);
 
     return this;
 });
@@ -132,14 +127,18 @@ function(aSignal) {
      * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
-    var hud,
-        hudIsHidden;
+    var hudIsClosed;
 
-    hud = TP.byId('SherpaHUD', this.getNativeWindow());
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+    if (hudIsClosed) {
+        this.toggleObservations(false);
+    } else {
+        this.toggleObservations(true);
+    }
 
-    this.setAttribute('hidden', hudIsHidden);
+    this.setAttribute('hidden', hudIsClosed);
 
     return this;
 }, {
@@ -742,6 +741,35 @@ function() {
 
     consoleOutputElem = this.getNativeNode();
     consoleOutputElem.scrollTop = consoleOutputElem.scrollHeight;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
+    if (shouldObserve) {
+        this.observe(this.getDocument(), 'TP.sig.DOMResize');
+
+        this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                    'TP.sig.DOMDNDTerminate'));
+    } else {
+        this.ignore(this.getDocument(), 'TP.sig.DOMResize');
+
+        this.ignore(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                    'TP.sig.DOMDNDTerminate'));
+    }
 
     return this;
 });

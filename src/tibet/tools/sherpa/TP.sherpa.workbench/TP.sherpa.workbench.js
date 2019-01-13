@@ -40,11 +40,7 @@ function() {
         sherpaInspectorTPElem,
         arrows,
 
-        breadcrumbTPElem,
-
-        sherpaHaloTPElem,
-
-        sherpaOutliner;
+        breadcrumbTPElem;
 
     win = this.getNativeWindow();
 
@@ -66,24 +62,9 @@ function() {
     this.updateNavigationButtons();
     this.updateToolbarButtons();
 
-    //  Inspector observations
-    this.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
 
-    //  Halo observations
-    sherpaHaloTPElem = TP.byId('SherpaHalo', win);
-    this.observe(sherpaHaloTPElem,
-                    TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
-
-    //  Outliner observations
-    sherpaOutliner = TP.bySystemId('SherpaOutliner');
-    this.observe(sherpaOutliner,
-                    TP.ac('TP.sig.BeginOutlineMode', 'TP.sig.EndOutlineMode'));
-
-    this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
-                                'TP.sig.DOMDNDCompleted'));
-
-    //  Sherpa observations
-    this.observe(TP.bySystemId('Sherpa'), 'SherpaReady');
+    this.toggleObservations(true);
 
     return this;
 });
@@ -244,6 +225,74 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var win,
+
+        sherpaInspectorTPElem,
+
+        sherpaHaloTPElem,
+
+        sherpaOutliner;
+
+    win = this.getNativeWindow();
+
+    //  Set up the inspector scroll buttons
+    sherpaInspectorTPElem = TP.byId('SherpaInspector', win);
+
+    //  Halo observations
+    sherpaHaloTPElem = TP.byId('SherpaHalo', win);
+
+    //  Outliner observations
+    sherpaOutliner = TP.bySystemId('SherpaOutliner');
+
+    if (shouldObserve) {
+        //  Inspector observations
+        this.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
+        this.observe(sherpaHaloTPElem,
+                        TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
+
+        this.observe(sherpaOutliner,
+                        TP.ac('TP.sig.BeginOutlineMode',
+                                'TP.sig.EndOutlineMode'));
+
+        this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                    'TP.sig.DOMDNDCompleted'));
+
+        //  Sherpa observations
+        this.observe(TP.bySystemId('Sherpa'), 'SherpaReady');
+    } else {
+        //  Inspector observations
+        this.ignore(sherpaInspectorTPElem, 'InspectorDidFocus');
+        this.ignore(sherpaHaloTPElem,
+                        TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
+
+        this.ignore(sherpaOutliner,
+                        TP.ac('TP.sig.BeginOutlineMode',
+                                'TP.sig.EndOutlineMode'));
+
+        this.ignore(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                    'TP.sig.DOMDNDCompleted'));
+
+        //  Sherpa observations
+        this.ignore(TP.bySystemId('Sherpa'), 'SherpaReady');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Handlers
 //  ------------------------------------------------------------------------
 
@@ -284,6 +333,35 @@ function(aSignal) {
     TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles when the HUD's 'closed' state changes.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.workbench} The receiver.
+     */
+
+    var hudIsClosed;
+
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (hudIsClosed) {
+        this.toggleObservations(false);
+    } else {
+        this.toggleObservations(true);
+    }
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ----------------------------------------------------------------------------

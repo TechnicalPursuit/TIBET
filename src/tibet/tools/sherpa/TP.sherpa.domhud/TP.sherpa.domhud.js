@@ -1020,26 +1020,19 @@ function(aSignal) {
 
         sourceTPElem;
 
+    //  Grab the HUD and see if it's currently open or closed.
     hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (!hudIsClosed) {
+    if (hudIsClosed) {
+        this.toggleObservations(false);
+    } else {
         sourceTPElem = TP.byId('SherpaHalo', this.getNativeDocument()).
                                             get('currentTargetTPElem');
         if (TP.notValid(sourceTPElem) || sourceTPElem.isDetached()) {
             this.focusOnUICanvasRoot();
         }
 
-        this.observe(this.get('listcontent'),
-                        TP.ac('TP.sig.DOMDNDTargetOver',
-                                'TP.sig.DOMDNDTargetOut'));
-
-        this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
-    } else {
-        this.ignore(this.get('listcontent'),
-                        TP.ac('TP.sig.DOMDNDTargetOver',
-                                'TP.sig.DOMDNDTargetOut'));
-
-        this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
+        this.toggleObservations(true);
     }
 
     return this;
@@ -1614,6 +1607,37 @@ function(aSignal) {
     //  highlighting.
     targetDocElem = uiDoc.documentElement;
     TP.elementAddClass(targetDocElem, 'sherpa-hud-highlighting');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    if (shouldObserve) {
+        this.observe(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
+    } else {
+        this.ignore(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
+    }
 
     return this;
 });

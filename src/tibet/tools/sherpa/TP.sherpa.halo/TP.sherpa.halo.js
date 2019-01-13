@@ -795,26 +795,28 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var hud,
-        hudIsHidden,
+    var hudIsClosed,
 
         wasHidden;
 
     //  Grab the HUD and see if it's currently open or closed.
-    hud = TP.byId('SherpaHUD', this.getNativeWindow());
-    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    //  If the HUD is hidden, then we also hide ourself. But not before
+    //  If the HUD is closed, then we also hide ourself. But not before
     //  capturing whether we were 'currently showing' or not (i.e. the HUD can
-    //  hide or show independent of us). Otherwise, if the HUD is showing, then
+    //  hide or show independent of us). Otherwise, if the HUD is open, then
     //  we set ourself to whatever value we had when the HUD last hid.
-    if (hudIsHidden) {
+    if (hudIsClosed) {
         wasHidden = TP.bc(this.getAttribute('hidden'));
         this.set('$wasShowing', !wasHidden);
+
+        this.toggleObservations(false);
 
         //  This will 'hide' the halo.
         this.setAttribute('hidden', true);
     } else {
+        this.toggleObservations(true);
+
         this.setAttribute('hidden', !this.get('$wasShowing'));
     }
 
@@ -1677,29 +1679,10 @@ function() {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var world,
-        currentScreenTPWin;
-
-    this.observe(TP.ANY, 'SherpaHaloToggle');
-
-    //  Observe the current UI canvas document for click & context menu
-    this.observe(TP.sys.uidoc(),
-                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
-
-    //  Grab the world's current screen TP.core.Window and observe it for when
-    //  it's document unloads & loads so that we can manage our click & context
-    //  menu observations.
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    this.observe(world, 'ToggleScreen');
-
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
-    this.observe(currentScreenTPWin,
-                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
 
-    this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+    this.toggleObservations(true);
 
     //  Make sure to initialize this to whatever our 'pclass:hidden' value is
     //  initially.
@@ -1743,6 +1726,64 @@ function() {
                     }.bind(this));
 
     haloNECorner.setAttribute('dnd:vend', 'dom_node');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin;
+
+    if (shouldObserve) {
+        this.observe(TP.ANY, 'SherpaHaloToggle');
+
+        //  Observe the current UI canvas document for click & context menu
+        this.observe(TP.sys.uidoc(),
+                        TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+        //  Grab the world's current screen TP.core.Window and observe it for
+        //  when it's document unloads & loads so that we can manage our click &
+        //  context menu observations.
+        world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+        this.observe(world, 'ToggleScreen');
+
+        currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+        this.observe(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+        this.observe(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+    } else {
+        this.ignore(TP.ANY, 'SherpaHaloToggle');
+
+        //  Observe the current UI canvas document for click & context menu
+        this.ignore(TP.sys.uidoc(),
+                        TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+        //  Grab the world's current screen TP.core.Window and observe it for
+        //  when it's document unloads & loads so that we can manage our click &
+        //  context menu observations.
+        world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+        this.ignore(world, 'ToggleScreen');
+
+        currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+        this.ignore(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+        this.ignore(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+    }
 
     return this;
 });

@@ -331,8 +331,7 @@ function() {
 
         consoleDrawerTPElem,
 
-        data,
-        tabSelectionURI;
+        data;
 
     consoleInputTPElem = this.get('consoleInput');
 
@@ -668,15 +667,7 @@ function() {
     data = TP.hc('selection', 'TSH');
     TP.uc('urn:tibet:current_console_tab').setResource(data);
 
-    this.observe(TP.uc('urn:tibet:sherpa_consoletabs'), 'ValueChange');
-
-    //  Observe the current tab selection for the tabbar in the source drawer
-    //  for when its value changes.
-    tabSelectionURI = TP.uc('urn:tibet:current_console_tab#tibet(selection)');
-    this.observe(tabSelectionURI, 'ValueChange');
-
-    //  Sherpa observations
-    this.observe(TP.bySystemId('Sherpa'), 'SherpaReady');
+    this.toggleObservations(true);
 
     return this;
 });
@@ -697,11 +688,18 @@ function(aSignal) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var isHidden;
+    var hudIsClosed;
 
-    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    this.setAttribute('hidden', isHidden);
+    if (hudIsClosed) {
+        this.toggleObservations(false);
+    } else {
+        this.toggleObservations(true);
+    }
+
+    this.setAttribute('hidden', hudIsClosed);
 
     return this;
 }, {
@@ -1262,6 +1260,39 @@ function(indicatorName, shouldBeVisible) {
         indicatorTPElem.show();
     } else {
         indicatorTPElem.hide();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var tabDataURI,
+        tabSelectionURI;
+
+    tabDataURI = TP.uc('urn:tibet:sherpa_consoletabs');
+    tabSelectionURI = TP.uc('urn:tibet:current_console_tab#tibet(selection)');
+
+    if (shouldObserve) {
+        this.observe(tabDataURI, 'ValueChange');
+        this.observe(tabSelectionURI, 'ValueChange');
+        this.observe(TP.bySystemId('Sherpa'), 'SherpaReady');
+    } else {
+        this.ignore(tabDataURI, 'ValueChange');
+        this.ignore(tabSelectionURI, 'ValueChange');
+        this.ignore(TP.bySystemId('Sherpa'), 'SherpaReady');
     }
 
     return this;

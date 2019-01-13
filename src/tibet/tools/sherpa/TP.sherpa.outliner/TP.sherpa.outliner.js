@@ -61,13 +61,9 @@ function() {
     var consoleService,
         consoleGUI,
 
-        currentKeyboard,
-        outlineresponder,
-
         keyboardSM,
 
-        world,
-        currentScreenTPWin;
+        outlineresponder;
 
     this.callNextMethod();
 
@@ -84,11 +80,10 @@ function() {
     consoleService = TP.bySystemId('SherpaConsoleService');
     consoleGUI = consoleService.get('$consoleGUI');
 
-    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
+    this.observe(TP.byId('SherpaHUD', consoleGUI.getNativeDocument()),
+                    'ClosedChange');
 
-    (function(aSignal) {
-        this.signal('TP.sig.BeginOutlineMode');
-    }).observe(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up');
+    this.toggleObservations(true);
 
     keyboardSM = consoleService.get('keyboardStateMachine');
 
@@ -135,24 +130,6 @@ function() {
 
     outlineresponder.addStateMachine(keyboardSM);
     outlineresponder.addInputState('outline');
-
-    this.observe(TP.byId('SherpaHUD', consoleGUI.getNativeDocument()),
-                    'ClosedChange');
-
-    this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
-                                'TP.sig.DOMDNDCompleted'));
-
-    this.observe(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
-
-    //  Grab the world's current screen TP.core.Window and observe it for when
-    //  it's document unloads & loads so that we can manage our click & context
-    //  menu observations.
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    this.observe(world, 'ToggleScreen');
-
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
-    this.observe(currentScreenTPWin,
-                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
 
     //  Inject the stylesheet that we need the canvas document to have to
     //  display the outlines (if it's not already there).
@@ -408,14 +385,12 @@ function(aSignal) {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var hud,
-        hudIsHidden,
+    var hudIsClosed,
 
         isActive;
 
     //  Grab the HUD and see if it's currently open or closed.
-    hud = TP.byId('SherpaHUD', TP.sys.getUIRoot());
-    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
     isActive = this.get('isActive');
 
@@ -423,14 +398,18 @@ function(aSignal) {
     //  capturing whether we were 'currently active' or not (i.e. the HUD can
     //  hide or show independent of us). Otherwise, if the HUD is showing, then
     //  we set ourself to whatever value we had when the HUD last hid.
-    if (hudIsHidden) {
+    if (hudIsClosed) {
         if (isActive) {
             this.signal('TP.sig.EndOutlineMode');
         }
+
+        this.toggleObservations(false);
     } else {
         if (this.get('$wasActive')) {
             this.signal('TP.sig.BeginOutlineMode');
         }
+
+        this.toggleObservations(true);
     }
 
     this.set('$wasActive', isActive);
@@ -1798,6 +1777,63 @@ function() {
 
     //  Resume all mutation observer machinery now that the outliner is showing.
     TP.resumeAllMutationObservers();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.outliner} The receiver.
+     */
+
+    var currentKeyboard,
+
+        world,
+        currentScreenTPWin;
+
+    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    if (shouldObserve) {
+        (function(aSignal) {
+            this.signal('TP.sig.BeginOutlineMode');
+        }).observe(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up');
+
+        this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                    'TP.sig.DOMDNDCompleted'));
+
+        this.observe(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
+
+        this.observe(world, 'ToggleScreen');
+
+        this.observe(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    } else {
+        (function(aSignal) {
+            this.signal('TP.sig.BeginOutlineMode');
+        }).ignore(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up');
+
+        this.ignore(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                    'TP.sig.DOMDNDCompleted'));
+
+        this.ignore(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
+
+        this.ignore(world, 'ToggleScreen');
+
+        this.ignore(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    }
 
     return this;
 });

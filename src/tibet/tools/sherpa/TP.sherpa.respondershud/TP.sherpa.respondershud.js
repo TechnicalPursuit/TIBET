@@ -587,12 +587,13 @@ function(aSignal) {
 
     var hudIsClosed;
 
+    //  Grab the HUD and see if it's currently open or closed.
     hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (!hudIsClosed) {
-        this.observe(this, 'TP.sig.SherpaConnectCompleted');
+    if (hudIsClosed) {
+        this.toggleObservations(false);
     } else {
-        this.ignore(this, 'TP.sig.SherpaConnectCompleted');
+        this.toggleObservations(true);
     }
 
     return this;
@@ -1310,6 +1311,29 @@ function(aSignal) {
     //  highlighting.
     targetDocElem = uiDoc.documentElement;
     TP.elementAddClass(targetDocElem, 'sherpa-hud-highlighting');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    if (shouldObserve) {
+        this.observe(this, 'TP.sig.SherpaConnectCompleted');
+    } else {
+        this.ignore(this, 'TP.sig.SherpaConnectCompleted');
+    }
 
     return this;
 });

@@ -123,7 +123,10 @@ function(aRequest) {
         TP.sys.setUICanvas('UIROOT.SCREEN_0');
     }
 
-    tpElem.observe(TP.ANY, TP.ac('TP.sig.ToggleScreen', 'TP.sig.FocusScreen'));
+    //  NB: We don't worry about observing the HUD for 'ClosedChange' here,
+    //  since the Sherpa IDE object does that for us when it does it's set up.
+
+    tpElem.toggleObservations(true);
 
     /*
      * TODO: BILL
@@ -337,17 +340,16 @@ function(aSignal) {
      * @returns {TP.sherpa.world} The receiver.
      */
 
-    /*
-    var isClosed;
+    var hudIsClosed;
 
-    isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (isClosed) {
-        console.log('hud is now closed');
+    if (hudIsClosed) {
+        this.toggleObservations(false);
     } else {
-        console.log('hud is now showing');
+        this.toggleObservations(true);
     }
-    */
 
     this.refocus();
 
@@ -627,6 +629,31 @@ function() {
                 TP.VERTICAL,
                 selectedRect.getY() -
                 TP.elementGetMarginInPixels(selectedScreenElem).first());
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    if (shouldObserve) {
+        this.observe(TP.ANY,
+                        TP.ac('TP.sig.ToggleScreen', 'TP.sig.FocusScreen'));
+    } else {
+        this.ignore(TP.ANY,
+                        TP.ac('TP.sig.ToggleScreen', 'TP.sig.FocusScreen'));
     }
 
     return this;

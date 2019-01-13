@@ -880,41 +880,15 @@ function(aSignal) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    var world,
-        currentScreenTPWin,
+    var hudIsClosed;
 
-        hudIsClosed;
-
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
-
+    //  Grab the HUD and see if it's currently open or closed.
     hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (!hudIsClosed) {
-        this.observe(world, 'ToggleScreen');
-        this.observe(currentScreenTPWin,
-                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
-        this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
-
-        this.observe(this.get('listcontent'),
-                        TP.ac('TP.sig.DOMDNDTargetOver',
-                                'TP.sig.DOMDNDTargetOut'));
-
-        this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
-
+    if (hudIsClosed) {
+        this.toggleObservations(false);
     } else {
-        this.ignore(world, 'ToggleScreen');
-        this.ignore(currentScreenTPWin,
-                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
-        this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
-
-        this.ignore(this.get('listcontent'),
-                        TP.ac('TP.sig.DOMDNDTargetOver',
-                                'TP.sig.DOMDNDTargetOut'));
-
-        this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
+        this.toggleObservations(true);
     }
 
     return this;
@@ -1490,6 +1464,55 @@ function(aSignal) {
     //  Refocus on the target element, which will cause our list to refresh,
     //  thereby showing the new rule.
     this.focusOnTarget(currentTargetTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styleshud.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.styleshud} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    if (shouldObserve) {
+        this.observe(world, 'ToggleScreen');
+        this.observe(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+        this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+        this.observe(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
+    } else {
+        this.ignore(world, 'ToggleScreen');
+        this.ignore(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+        this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
+
+        this.ignore(this.get('listcontent'),
+                        TP.ac('TP.sig.DOMDNDTargetOver',
+                                'TP.sig.DOMDNDTargetOut'));
+
+        this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
+    }
 
     return this;
 });

@@ -2269,6 +2269,35 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineHandler('ClosedChange',
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @summary Handles notifications of HUD closed change signals.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var hudIsClosed;
+
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (hudIsClosed) {
+        this.toggleObservations(false);
+    } else {
+        this.toggleObservations(true);
+    }
+
+    return this;
+}, {
+    origin: 'SherpaHUD'
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
@@ -3561,21 +3590,9 @@ function() {
 
     drawerIsOpenFunc.observe(northDrawer, 'TP.sig.DOMTransitionEnd');
 
-    //  Listen for when our document resizes. Note that we actually filter out
-    //  other resize events coming from elements under the document. See the
-    //  'DOMResize' handler for more information.
-    this.observe(this.getDocument(), 'TP.sig.DOMResize');
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
 
-    this.observe(TP.ANY,
-                    TP.ac('TP.sig.NavigateInspector',
-                            'TP.sig.TypeAdded',
-                            'TP.sig.MethodAdded'));
-
-    this.observe(TP.byId('SherpaHalo', this.getNativeDocument()),
-                    TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
-
-    this.observe(TP.byId('SherpaBreadcrumb', this.getNativeDocument()),
-                    'TP.sig.BreadcrumbSelected');
+    this.toggleObservations(true);
 
     return this;
 });
@@ -3921,6 +3938,54 @@ function(pathParts) {
     this.finishUpdateAfterNavigation(info);
 
     this.signal('InspectorDidFocus');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    if (shouldObserve) {
+        //  Listen for when our document resizes. Note that we actually filter
+        //  out other resize events coming from elements under the document. See
+        //  the 'DOMResize' handler for more information.
+        this.observe(this.getDocument(), 'TP.sig.DOMResize');
+
+        this.observe(TP.ANY,
+                        TP.ac('TP.sig.NavigateInspector',
+                                'TP.sig.TypeAdded',
+                                'TP.sig.MethodAdded'));
+
+        this.observe(TP.byId('SherpaHalo', this.getNativeDocument()),
+                        TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
+
+        this.observe(TP.byId('SherpaBreadcrumb', this.getNativeDocument()),
+                        'TP.sig.BreadcrumbSelected');
+    } else {
+        this.ignore(this.getDocument(), 'TP.sig.DOMResize');
+
+        this.ignore(TP.ANY,
+                        TP.ac('TP.sig.NavigateInspector',
+                                'TP.sig.TypeAdded',
+                                'TP.sig.MethodAdded'));
+
+        this.ignore(TP.byId('SherpaHalo', this.getNativeDocument()),
+                        TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
+
+        this.ignore(TP.byId('SherpaBreadcrumb', this.getNativeDocument()),
+                        'TP.sig.BreadcrumbSelected');
+    }
 
     return this;
 });
