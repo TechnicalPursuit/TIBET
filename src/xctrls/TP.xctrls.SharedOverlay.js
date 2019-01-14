@@ -284,6 +284,10 @@ function(aSignal) {
 
                 this.callNextMethod();
 
+                //  The overlay is closed.
+                this.setAttribute('closed', true);
+
+                //  Hide the overlay.
                 this.setAttribute('hidden', true);
             }, {
                 patchCallee: true
@@ -445,6 +449,10 @@ function(aSignal) {
      * @returns {TP.xctrls.SharedOverlay} The receiver.
      */
 
+    //  The overlay is closed.
+    this.setAttribute('closed', true);
+
+    //  Hide the overlay.
     this.setAttribute('hidden', true);
 
     return this;
@@ -1010,6 +1018,9 @@ function(contentInfo, overlayContent) {
             } else if (triggerPoint === TP.MOUSE) {
                 triggerPoint = mousePoint;
             }
+
+            //  The overlay is not closed.
+            this.setAttribute('closed', false);
 
             //  Show the overlay and set up signal handlers.
             this.setAttribute('hidden', false);

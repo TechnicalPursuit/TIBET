@@ -93,6 +93,7 @@ function(aSignal) {
     }
 
     if (popupTPElem.isVisible()) {
+        popupTPElem.setAttribute('closed', true);
         popupTPElem.setAttribute('hidden', true);
     } else {
         this.openOverlay(aSignal);
@@ -167,6 +168,7 @@ function(aSignal) {
      * @returns {TP.xctrls.popup} The receiver.
      */
 
+    this.setAttribute('closed', true);
     this.setAttribute('hidden', true);
 
     return this;
@@ -196,6 +198,7 @@ function(aSignal) {
     //  hide ourself.
     if (TP.notValid(triggerTPElem)) {
         if (!this.contains(targetElem)) {
+            this.setAttribute('closed', true);
             this.setAttribute('hidden', true);
         }
     } else {
@@ -209,8 +212,10 @@ function(aSignal) {
 
             if (TP.unwrap(triggerTPElem) !== targetElem &&
                 !triggerTPElem.contains(targetElem)) {
+                this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
             } else if (!this.get('isTriggeringClick')) {
+                this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
             }
         }
@@ -373,6 +378,7 @@ function(openSignal, popupContent) {
             //  NOTE: We make sure to do this *before* we position - otherwise,
             //  our width and height will not be set properly and 'edge
             //  avoidance' code will not work.
+            this.setAttribute('closed', false);
             this.setAttribute('hidden', false);
 
             //  If the signal doesn't have a flag to not position the popup,
