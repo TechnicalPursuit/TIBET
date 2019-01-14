@@ -1418,20 +1418,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.Node.Inst.defineMethod('toJSON',
-function() {
-
-    /**
-     * @method toJSON
-     * @summary Returns the object to use in JSON representations.
-     * @returns {Object} The object to use in a JSON representation.
-     */
-
-    return this.asObject();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.Node.Inst.defineMethod('asPrettyString',
 function() {
 
@@ -3163,6 +3149,20 @@ function(aValue, shouldSignal) {
     newValue = this.produceValue('value', aValue);
 
     return this.setTextContent(newValue, shouldSignal);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.Node.Inst.defineMethod('toJSON',
+function() {
+
+    /**
+     * @method toJSON
+     * @summary Returns the object to use in JSON representations.
+     * @returns {Object} The object to use in a JSON representation.
+     */
+
+    return this.asObject();
 });
 
 //  ------------------------------------------------------------------------
