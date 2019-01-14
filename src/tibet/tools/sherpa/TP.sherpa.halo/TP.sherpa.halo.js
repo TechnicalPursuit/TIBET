@@ -838,9 +838,6 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    //  In case the popup menu is open, close it.
-    this.signal('ClosePopup');
-
     //  If the Shift key is down and the Alt key is not (otherwise we're drawing
     //  a connector) and we're not currently hidden, then change our
     //  focus based on a variety of key combinations and mouse button states.
