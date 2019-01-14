@@ -3781,7 +3781,7 @@ function() {
 
     /**
      * @method observeKeybindingsDirectly
-     * @summary Installed a handler to observe signals (normally those that use
+     * @summary Install a handler to observe signals (normally those that use
      *     OBSERVER_FIRING) that are thrown from keys that are bound using the
      *     receiver's key bindings. This is normally used in a 'temporary mode'
      *     for a GUI element.
