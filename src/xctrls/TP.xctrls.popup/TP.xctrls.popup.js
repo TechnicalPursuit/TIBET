@@ -203,7 +203,7 @@ function(aSignal) {
         //  If the target element of the DOMClick isn't contained in ourself,
         //  then check to see if the triggering element contains the target
         //  element (or is the triggering element itself). Also, check to see if
-        //  this is *not* the triggering element. If any of those is the case,
+        //  this is *not* the triggering click. If any of those is the case,
         //  then hide ourself.
         if (!this.contains(targetElem)) {
 
@@ -257,13 +257,14 @@ function(beHidden) {
 
         //  If this popup is 'sticky', that means it stays visible even after
         //  mouse up (rather than being shown on click, for example, it might be
-        //  being shown on mouse down). In that case, the current click will
-        //  *never* be the triggering click. It will have been a click that is
-        //  dismissing the popup.
+        //  being shown on mouse down). In that case, the current click will be
+        //  considered to be the 'triggering click'. By setting this to true,
+        //  when the mouse button is released outside of the trigger, the popup
+        //  will 'stick' and not dismiss (the first time only).
         if (this.get('isSticky') === true) {
-            this.set('isTriggeringClick', false, false);
-        } else {
             this.set('isTriggeringClick', true, false);
+        } else {
+            this.set('isTriggeringClick', false, false);
         }
 
         this.observeKeybindingsDirectly();
