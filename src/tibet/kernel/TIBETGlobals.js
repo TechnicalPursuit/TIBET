@@ -3136,6 +3136,8 @@ TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP\.|APP\.|\$(\w|\*|#)+/;
 
 TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 
+TP.regex.ACP_SOURCE_ID_STATEMENT = /\{\{.*(\$SOURCE.+@id).*\}\}/;
+
 TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
                                             '\\s*:\\s*' +
                                             '(' + '[^;]+' + ');?',

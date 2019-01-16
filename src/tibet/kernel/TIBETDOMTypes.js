@@ -1126,6 +1126,12 @@ function(aRequest) {
     //  expressions.
     str = tpNode.getContent();
 
+    //  Make sure that any required data (i.e. 'id' attributes and others) are
+    //  defined. id attributes, in particular, because they can be dynamically
+    //  assigned by TIBET, are assumed to 'always exist'. This insures that they
+    //  do for use in ACP template processing.
+    tpNode.prepopulateRequiredTemplateData(info, str);
+
     //  Process the attributes. This method should resolve any ACP expressions
     //  in the attributes themselves.
     attrs = TP.elementGetAttributeNodes(node);
@@ -13400,6 +13406,55 @@ function() {
      */
 
     return this.isEmpty();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('prepopulateRequiredTemplateData',
+function(info, nodeContent) {
+
+    /**
+     * @method prepopulateRequiredTemplateData
+     * @summary Makes sure that any 'required data' needed for processing tags
+     *     is defined.
+     * @description This method makes sure that if expressions, such as
+     *     '{{$SOURCE.(@id)}}' are used in the node's content, that the source
+     *     does indeed have a value. This is especially true of attributes like
+     *     'id', since there is an assumption that TIBET will dynamically assign
+     *     these for us. Therefore, templates are authored that make this
+     *     assumption, but in the case of nested templates we need to really
+     *     make sure that this happens.
+     * @param {TP.core.Hash} info A hash of data used for transforming
+     *     templates. The $SOURCE (and other) objects can be found here.
+     * @param {String} [nodeContent] The node content where constructs requiring
+     *     this data can be found. If this is not supplied, the receiver's
+     *     (inner) content is used.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var str,
+
+        sourceElem,
+        sourceIDVal;
+
+    str = TP.ifInvalid(nodeContent, this.getContent());
+
+    //  If we match a 'SOURCE id' statement *and* the id of the $SOURCE node has
+    //  an ACP expression, then we need to rewrite it so that the $SOURCE node
+    //  has a real id value (a generated one).
+    if (TP.regex.ACP_SOURCE_ID_STATEMENT.test(str)) {
+
+        sourceElem = info.at('$SOURCE').getNativeNode();
+        sourceIDVal = TP.elementGetAttribute(sourceElem, 'id', true);
+
+        if (TP.regex.HAS_ACP.test(sourceIDVal)) {
+            TP.elementRemoveAttribute(sourceElem, 'id', true);
+            TP.elementSetAttribute(
+                    sourceElem, 'id', TP.elemGenID(sourceElem), true);
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
