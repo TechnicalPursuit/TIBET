@@ -838,7 +838,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     //  That will be the real element generated from the content that got placed
     //  into our 'content' div.
     tpContent = this.setContent(content);
-    tpContent.removeAttribute('id');
 
     //  Show the overlay content
     tpContent.setAttribute('hidden', false);
