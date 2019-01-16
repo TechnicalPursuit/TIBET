@@ -1126,6 +1126,14 @@ function(aRequest) {
     //  expressions.
     str = tpNode.getContent();
 
+    //  Process the attributes. This method should resolve any ACP expressions
+    //  in the attributes themselves.
+    attrs = TP.elementGetAttributeNodes(node);
+    len = attrs.getSize();
+    for (j = 0; j < len; j++) {
+        tpNode.transformAttributeNode(attrs.at(j), info);
+    }
+
     if (TP.regex.HAS_ACP.test(str)) {
         //  Run a transform on it.
         result = str.transform(tpNode, info);
@@ -1161,22 +1169,6 @@ function(aRequest) {
                 //  contained further ACP templating expressions) - just set the
                 //  original node's text content.
                 tpNode.setTextContent(result);
-            }
-        }
-    }
-
-    //  Process the attribute text.
-    attrs = TP.elementGetAttributeNodes(node);
-
-    len = attrs.getSize();
-    for (j = 0; j < len; j++) {
-        //  Grab the text content of the Attribute node.
-        str = TP.nodeGetTextContent(attrs.at(j));
-        if (TP.regex.HAS_ACP.test(str)) {
-            result = str.transform(TP.wrap(attrs.at(j)), info);
-            if (result !== str) {
-                //  Run a transform on it.
-                TP.nodeSetTextContent(attrs.at(j), result);
             }
         }
     }
@@ -14722,6 +14714,39 @@ function(className) {
                     TP.UPDATE,
                     TP.hc(TP.OLDVAL, oldValue,
                             TP.NEWVAL, newValue));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('transformAttributeNode',
+function(attrNode, info) {
+
+    /**
+     * @method transformAttributeNode
+     * @summary Transforms the content of the supplied attribute using the data
+     *     found in the supplied info hash.
+     * @param {Attribute} attrNode The attribute node to transform the content
+     *     of.
+     * @param {TP.core.Hash} info The dictionary of transformation source data
+     *     to use to transform the attribute node content.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var str,
+        result;
+
+    //  Grab the text content of the Attribute node.
+    str = TP.nodeGetTextContent(attrNode);
+
+    if (TP.regex.HAS_ACP.test(str)) {
+        //  Run a transform on it.
+        result = str.transform(this, info);
+        if (result !== str) {
+            TP.nodeSetTextContent(attrNode, result);
+        }
+    }
 
     return this;
 });
