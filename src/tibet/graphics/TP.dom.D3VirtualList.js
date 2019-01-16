@@ -679,7 +679,8 @@ TP.extern.d3.VirtualScroller = function() {
             var scrollTop,
                 lastPosition;
 
-            if (TP.notDefined(container.node().style)) {
+            if (TP.notValid(container.node()) ||
+                TP.notValid(container.node().style)) {
                 return;
             }
 
