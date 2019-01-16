@@ -1534,7 +1534,7 @@ function(selection) {
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
-    groupID = this.getLocalID() + '_group';
+    groupID = this.get('group').getLocalID();
 
     //  Grab whether or not we are currently focused. This is important because
     //  we will lose track as the items get redrawn (the focused one will lose
