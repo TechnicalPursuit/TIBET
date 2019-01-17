@@ -1122,15 +1122,12 @@ function(aRequest) {
     info.atPut('shouldEcho', false);
     info.atPut('annotateMarkup', this.shouldWrapACPOutput());
 
-    //  Grab the best representation text. This may contain ACP templating
-    //  expressions.
-    str = tpNode.getContent();
-
     //  Make sure that any required data (i.e. 'id' attributes and others) are
     //  defined. id attributes, in particular, because they can be dynamically
     //  assigned by TIBET, are assumed to 'always exist'. This insures that they
-    //  do for use in ACP template processing.
-    tpNode.prepopulateRequiredTemplateData(info, str);
+    //  do for use in ACP template processing. Note that we always use the outer
+    //  content here, since there may be attributes that we need to detect.
+    tpNode.prepopulateRequiredTemplateData(info, tpNode.getOuterContent());
 
     //  Process the attributes. This method should resolve any ACP expressions
     //  in the attributes themselves.
@@ -1139,6 +1136,10 @@ function(aRequest) {
     for (j = 0; j < len; j++) {
         tpNode.transformAttributeNode(attrs.at(j), info);
     }
+
+    //  Grab the best representation text. This may contain ACP templating
+    //  expressions.
+    str = tpNode.getContent();
 
     if (TP.regex.HAS_ACP.test(str)) {
         //  Run a transform on it.
