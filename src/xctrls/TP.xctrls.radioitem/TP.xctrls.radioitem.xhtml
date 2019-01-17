@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
-<xctrls:radioitem class="item {{$SOURCE.(@class)}}">
+<xctrls:radioitem
+        class="item {{$SOURCE.(@class)}}">
     {{$SOURCE.(./xctrls:label|./xctrls:value|./xctrls:hint)}}
     <span xmlns="http://www.w3.org/1999/xhtml" id="{{$SOURCE.(@id)}}_value" tibet:pelem="value">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

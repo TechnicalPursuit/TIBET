@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
-<xctrls:panelbox tibet:assembly="xctrls:panelbox">
+<xctrls:panelbox
+        id="{{$SOURCE.(@id)}}"
+        tibet:assembly="xctrls:panelbox">
     {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:panelbox')])}}
 </xctrls:panelbox>
 
