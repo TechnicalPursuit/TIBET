@@ -1435,10 +1435,14 @@ function(attributeValue) {
                 //  expression and append a '#tibet(.)' on it (which will
                 //  retrieve the whole value).
                 splitURI = TP.uc(valueExpr);
-                valueExpr = splitURI.getPrimaryLocation() + '#tibet(.)';
 
-                //  Set the 'computed' value expression to just the fragment.
-                computedValueExpr = splitURI.getFragmentExpr();
+                if (splitURI.hasFragment()) {
+                    valueExpr = splitURI.getPrimaryLocation() + '#tibet(.)';
+                    //  Set the 'computed' value expression to just the fragment.
+                    computedValueExpr = splitURI.getFragmentExpr();
+                } else {
+                    computedValueExpr = valueExpr;
+                }
             } else {
                 //  Set the 'computed' value expression to the whole value
                 //  expression.
