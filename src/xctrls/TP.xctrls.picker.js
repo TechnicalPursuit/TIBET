@@ -182,7 +182,7 @@ function(aSignal) {
 
     var id,
 
-        overTPElem,
+        overlayTPElem,
 
         triggerSignal;
 
@@ -231,7 +231,7 @@ function(aSignal) {
     content = this.get('popupContentFirstElement');
 
     //  Set up a handler that waits until the content renders and then focus it.
-    (handler = function(aSignal) {
+    (handler = function(didRenderSignal) {
         handler.ignore(content, 'TP.sig.DidRender');
 
         content.focus();
@@ -318,8 +318,6 @@ function(aValue, shouldSignal) {
 
     var oldValue,
         newValue,
-
-        newItem,
 
         displayValue,
 
