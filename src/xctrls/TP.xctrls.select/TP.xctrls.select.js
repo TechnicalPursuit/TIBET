@@ -43,6 +43,8 @@ function(valueURI) {
         bindingInfo,
         dataInVal,
 
+        valueLocation,
+
         contentTPElem;
 
     id = this.getLocalID();
