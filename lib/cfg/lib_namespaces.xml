@@ -242,6 +242,8 @@
 
     <script src="xctrls/TP.xctrls.Lattice.js"/>
 
+    <script src="xctrls/TP.xctrls.picker.js"/>
+
     <script src="xctrls/TP.xctrls.SharedOverlay.js"/>
 
     <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
@@ -260,6 +262,7 @@
     <package src="xctrls/TP.xctrls.popup/TP.xctrls.popup.xml" config="base"/>
     <package src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.xml" config="base"/>
     <package src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.select/TP.xctrls.select.xml" config="base"/>
     <package src="xctrls/TP.xctrls.sticky/TP.xctrls.sticky.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>

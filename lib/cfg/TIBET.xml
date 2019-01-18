@@ -189,6 +189,10 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.radioitem-TP.xctrls.radioitem.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.radioitem_tpi.css.js"/>
 
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.select-TP.xctrls.select.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.select-TP.xctrls.select.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.select_tpi.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.sticky-TP.xctrls.sticky.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.sticky_tpi.css.js"/>
