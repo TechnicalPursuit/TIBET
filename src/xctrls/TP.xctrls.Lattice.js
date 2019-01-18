@@ -324,12 +324,14 @@ function(shouldRender, shouldRefreshBindings) {
         this.scrollTopToRow(0);
     }
 
-    //  Clear the selection.
-    this.setValue(null);
-
     //  Now call the next most specific method, which will re-render the
-    //  receiver and the (now empty) selection.
+    //  receiver.
     hasChanged = this.callNextMethod();
+
+    //  If the bound value truly changed, clear the selection.
+    if (hasChanged) {
+        this.setValue(null);
+    }
 
     return hasChanged;
 });
