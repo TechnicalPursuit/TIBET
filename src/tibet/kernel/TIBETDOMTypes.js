@@ -12592,6 +12592,80 @@ function(aPrefix, anAttributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('defineBinding',
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+         sourceFacetName, transformationFunc) {
+
+    /**
+     * @method defineBinding
+     * @summary Adds a binding to the instance receiver.
+     * @param {String} targetAttributeName The target attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
+     * @returns {Object} The receiver.
+     */
+
+    var targetAttr;
+
+    targetAttr = targetAttributeName;
+
+    //  If the targetAttributeName is either '@content' or '@value', then we
+    //  trim it down to 'content' or 'value' - these have special meanings in
+    //  TIBET.
+    if (targetAttr === '@content') {
+        targetAttr = 'content';
+    } else if (targetAttr === '@value') {
+        targetAttr = 'value';
+    }
+
+    return this.callNextMethod(targetAttr, resourceOrURI, sourceAttributeName,
+                                sourceFacetName, transformationFunc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('destroyBinding',
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+         sourceFacetName) {
+
+    /**
+     * @method destroyBinding
+     * @summary Removes a binding from the instance receiver.
+     * @param {String} targetAttributeName The target attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
+     * @returns {Object} The receiver.
+     */
+
+    var targetAttr;
+
+    targetAttr = targetAttributeName;
+
+    //  If the targetAttributeName is either '@content' or '@value', then we
+    //  trim it down to 'content' or 'value' - these have special meanings in
+    //  TIBET.
+    if (targetAttr === '@content') {
+        targetAttr = 'content';
+    } else if (targetAttr === '@value') {
+        targetAttr = 'value';
+    }
+
+    return this.callNextMethod(targetAttr, resourceOrURI, sourceAttributeName,
+                                sourceFacetName);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('get',
 function(attributeName) {
 
