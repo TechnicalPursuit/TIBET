@@ -28,6 +28,8 @@ TP.tibet.template.defineAttribute('styleURI', TP.NO_RESULT);
 TP.tibet.template.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
 TP.tibet.template.Type.defineMethod('populateCompilationAttrs',
 function(aRequest) {
