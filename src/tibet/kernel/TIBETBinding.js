@@ -4930,8 +4930,14 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                         result = primaryURI.getResource().get('result'))) {
 
                     newValue = TP.lang.Object.construct();
+
+                    //  Make a slot to hold the value.
                     newValue.defineAttribute('value');
                     newValue.set('value', aValue);
+
+                    //  Mark the object as a value holder.
+                    newValue.defineAttribute('$$isValueHolder');
+                    newValue.set('$$isValueHolder', true);
 
                     primaryURI.setResource(
                         newValue, TP.hc('observeResource', true,

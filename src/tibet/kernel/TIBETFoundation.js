@@ -5460,6 +5460,12 @@ function() {
      * @returns {Object} A value appropriate for use in equality comparisons.
      */
 
+    //  If the receiver is a value holder, then we return the underlying value
+    //  for equality comparison purposes.
+    if (this.$get('$$isValueHolder')) {
+        return this.get('value');
+    }
+
     return this;
 });
 
