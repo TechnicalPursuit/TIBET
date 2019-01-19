@@ -309,12 +309,6 @@ function(anEvent) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
-    //  TODO: This seems to be fixed in modern browsers and, due to out-of-order
-    //  sequencing of key events with focus/blur, the
-    //  'TP.documentGetFocusedElement' call below will sometimes encounter
-    //  multiple elements with 'pclass:focus'. Therefore, this code is commented
-    //  out for now.
-
     //  If the event is a type of 'key' event of some sort, then using the
     //  event's 'target' as the 'starting point' is insufficient. The reason is
     //  that, at least on the Chrome browser platforms, key events will only be
