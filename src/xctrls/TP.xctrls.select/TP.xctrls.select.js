@@ -45,21 +45,41 @@ function(valueURI) {
 
         valueLocation,
 
+        str,
         contentTPElem;
 
     id = this.getLocalID();
 
     bindingInfo = this.getBindingInfoFrom(this.getAttribute('bind:in'));
+
+    //  If the binding information had a 'data' key, then that means that the
+    //  author provided an expression for us to obtain data for the list.
     if (bindingInfo.hasKey('data')) {
+
+        //  Grab the value of the first expression.
         dataInVal = bindingInfo.at('data').at('dataExprs').first();
 
+        //  Use the location of the 'value' URI that was supplied to us.
         valueLocation = valueURI.getLocation();
 
-        contentTPElem = TP.tpelem(
-                            '<xctrls:list id="' + id + '_list"' +
-                            ' bind:in="{data:' + dataInVal + '}"' +
-                            ' on:dragup="TP.sig.UIDeactivate"' +
-                            ' bind:io="{value: ' + valueLocation + '}"/>');
+        //  Build the markup for the list, using the 'data' location for the
+        //  'bind:in' and the 'value' location for the 'bind:io'.
+        str = '<xctrls:list id="' + id + '_list"' +
+                ' bind:in="{data:' + dataInVal + '}"' +
+                ' on:dragup="TP.sig.UIDeactivate"' +
+                ' bind:io="{value: ' + valueLocation + '}"';
+
+        //  If the author supplied a 'ui:incremental' attribute, pass that along
+        //  to the list.
+        if (this.hasAttribute('ui:incremental')) {
+            str += ' ui:incremental="' +
+                    this.getAttribute('ui:incremental') +
+                    '"';
+        }
+
+        str += '/>';
+
+        contentTPElem = TP.tpelem(str);
         contentTPElem.compile();
     }
 

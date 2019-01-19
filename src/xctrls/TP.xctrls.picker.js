@@ -184,7 +184,11 @@ function(aSignal) {
 
         overlayTPElem,
 
-        triggerSignal;
+        triggerSignal,
+
+        payload,
+
+        incrementalVal;
 
     id = this.getLocalID();
 
@@ -197,18 +201,31 @@ function(aSignal) {
     //  signal.
     triggerSignal = aSignal.at('trigger');
 
-    this.signal(
-        'TogglePopup',
-        TP.hc(
-            'overlayID', 'XCtrlsPickerPopup',
-            'hideOn', 'UISelect',
-            'contentURI', 'urn:tibet:' + id + '_content',
-            'corner', TP.SOUTHWEST,
-            'trigger', triggerSignal,
-            'triggerPath', '#' + id,
-            'triggerTPDocument', this.getDocument(),
-            'sticky', true
-            ));
+    payload = TP.hc('overlayID', 'XCtrlsPickerPopup',
+                    'contentURI', 'urn:tibet:' + id + '_content',
+                    'corner', TP.SOUTHWEST,
+                    'trigger', triggerSignal,
+                    'triggerPath', '#' + id,
+                    'triggerTPDocument', this.getDocument(),
+                    'sticky', true
+                    );
+
+    //  Check to see if we want incremental value updates.
+    incrementalVal = this.getAttribute('ui:incremental');
+
+    //  There are 3 possible values for 'ui:incremental' - 'control',
+    //  'model' and 'both'. We handle 'model' and 'both' here.
+    if (incrementalVal === 'model' || incrementalVal === 'both') {
+        //  If the value is incremental, then a mouse up should hide the popup.
+        //  Mouse hovering will cause a 'UISelect', so we don't want to hide on
+        //  that.
+        payload.atPut('hideOn', 'DOMMouseUp');
+    } else {
+        //  Otherwise, just hide on select.
+        payload.atPut('hideOn', 'UISelect');
+    }
+
+    this.signal('TogglePopup', payload);
 
     return this;
 });
