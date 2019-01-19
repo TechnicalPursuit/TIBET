@@ -341,7 +341,9 @@ function(anEvent) {
         //  'pclass:focus' attribute on it. In that case, we use the focus stack
         //  and grab its last (i.e. most recently focused element) entry.
         if (focusedElems.getSize() > 1) {
-            focusedElem = TP.$focus_stack.last();
+            //  NB: The focus stack stores wrapped elements, but we want the
+            //  native one.
+            focusedElem = TP.unwrap(TP.$focus_stack.last());
         } else {
             focusedElem = focusedElems.first();
         }
