@@ -623,8 +623,7 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
-        //  If the target is a bound element, then we should check to see if it
-        //  wants incremental value updates.
+        //  We should check to see if we want incremental value updates.
         incrementalVal = this.getAttribute('ui:incremental');
 
         //  There are 3 possible values for 'ui:incremental' - 'control',
@@ -1277,8 +1276,7 @@ function() {
         this.$set('filterValue', '');
     }
 
-    //  If the target is a bound element, then we should check to see if it
-    //  wants incremental value updates.
+    //  We should check to see if we want incremental value updates.
     incrementalVal = this.getAttribute('ui:incremental');
 
     //  There are 3 possible values for 'ui:incremental' - 'control',
@@ -1314,8 +1312,7 @@ function() {
         this.signal('CloseSticky');
     }
 
-    //  If the target is a bound element, then we should check to see if it
-    //  wants incremental value updates.
+    //  We should check to see if we want incremental value updates.
     incrementalVal = this.getAttribute('ui:incremental');
 
     //  There are 3 possible values for 'ui:incremental' - 'control',
