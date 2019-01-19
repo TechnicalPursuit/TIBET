@@ -163,6 +163,121 @@ TP.xctrls.list.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('changeValueUsingTarget',
+function(aTargetItem) {
+
+    /**
+     * @method changeValueUsingTarget
+     * @summary Changes the 'value' aspect of the receiver using the data found
+     *     in the supplied target item.
+     * @param {TP.core.ElementNode} aTargetItem The target item element to find
+     *     the data to use when computing the receiver's value.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var altItemTag,
+        itemType,
+
+        domTarget,
+
+        valueTPElem,
+
+        newValue,
+        oldValue,
+
+        alwaysSignalChange,
+
+        wasSignalingChange,
+
+        toggleItems;
+
+    //  See if we have an alternate item tag name that resolves to a TIBET
+    //  type.
+    altItemTag = this.getAttribute('itemTag');
+    if (TP.notEmpty(altItemTag)) {
+        itemType = TP.sys.getTypeByName(altItemTag);
+    }
+
+    //  If one couldn't be computed, then we just use our standard
+    //  TP.xctrls.item
+    if (!TP.isType(itemType)) {
+        itemType = TP.xctrls.item;
+    }
+
+    //  If the deactivate didn't happen in a target that was one of our item
+    //  types, then return. This typically happens if we're using a template
+    //  and there are events happening in embedded controls.
+    if (!TP.isKindOf(aTargetItem, itemType)) {
+        return this;
+    }
+
+    domTarget = TP.unwrap(aTargetItem);
+
+    //  If the DOM target has either a 'spacer' or 'grouping' attribute,
+    //  then we're not interested in adding or removing it from the
+    //  selection - exit here.
+    if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
+        TP.elementHasAttribute(domTarget, 'grouping', true)) {
+        return this;
+    }
+
+    //  Grab the value element of the list item.
+    valueTPElem = aTargetItem.get('xctrls|value');
+    if (TP.notValid(valueTPElem)) {
+        return this;
+    }
+
+    //  And it's text content.
+    newValue = valueTPElem.getTextContent();
+
+    //  Grab the old value before we set it.
+    oldValue = this.getValue();
+
+    //  If we always signal change, then even if the values are equal,
+    //  we will not exit here.
+    alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
+
+    //  If we don't always signal change and the two values are equivalent,
+    //  than just return.
+    if (!alwaysSignalChange && TP.equal(oldValue, newValue)) {
+        return this;
+    }
+
+    //  If the item was already selected, then deselect the value.
+    //  Otherwise, select it.
+
+    //  Note here how we turn off change signaling to avoid multiple
+    //  unnecessary calls to render.
+    wasSignalingChange = this.shouldSignalChange();
+    this.shouldSignalChange(false);
+
+    //  See if we 'toggle' items - if so and the item is selected, we'll
+    //  deselect it. The default is true.
+    if (this.hasAttribute('toggleItems')) {
+        toggleItems = TP.bc(this.getAttribute('toggleItems'));
+    } else {
+        toggleItems = true;
+    }
+
+    if (TP.isTrue(aTargetItem.isSelected()) && toggleItems) {
+        this.deselect(newValue);
+    } else {
+        this.select(newValue);
+    }
+
+    this.changed('value', TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+
+    //  If the element is bound, then update its bound value.
+    this.setBoundValueIfBound(this.getDisplayValue());
+
+    this.shouldSignalChange(wasSignalingChange);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('createBlankRowData',
 function(anIndex) {
 
@@ -425,21 +540,7 @@ function(aSignal) {
      */
 
     var domTarget,
-        wrappedDOMTarget,
-
-        altItemTag,
-        itemType,
-
-        valueTPElem,
-
-        newValue,
-        oldValue,
-
-        alwaysSignalChange,
-
-        wasSignalingChange,
-
-        toggleItems;
+        wrappedDOMTarget;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -455,85 +556,7 @@ function(aSignal) {
             return this;
         }
 
-        //  See if we have an alternate item tag name that resolves to a TIBET
-        //  type.
-        altItemTag = this.getAttribute('itemTag');
-        if (TP.notEmpty(altItemTag)) {
-            itemType = TP.sys.getTypeByName(altItemTag);
-        }
-
-        //  If one couldn't be computed, then we just use our standard
-        //  TP.xctrls.item
-        if (!TP.isType(itemType)) {
-            itemType = TP.xctrls.item;
-        }
-
-        //  If the deactivate didn't happen in a target that was one of our item
-        //  types, then return. This typically happens if we're using a template
-        //  and there are events happening in embedded controls.
-        if (!TP.isKindOf(wrappedDOMTarget, itemType)) {
-            return this;
-        }
-
-        //  If the DOM target has either a 'spacer' or 'grouping' attribute,
-        //  then we're not interested in adding or removing it from the
-        //  selection - exit here.
-        if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
-            TP.elementHasAttribute(domTarget, 'grouping', true)) {
-            return this;
-        }
-
-        //  Grab the value element of the list item.
-        valueTPElem = wrappedDOMTarget.get('xctrls|value');
-        if (TP.notValid(valueTPElem)) {
-            return this;
-        }
-
-        //  And it's text content.
-        newValue = valueTPElem.getTextContent();
-
-        //  Grab the old value before we set it.
-        oldValue = this.getValue();
-
-        //  If we always signal change, then even if the values are equal,
-        //  we will not exit here.
-        alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
-
-        //  If we don't always signal change and the two values are equivalent,
-        //  than just return.
-        if (!alwaysSignalChange && TP.equal(oldValue, newValue)) {
-            return this;
-        }
-
-        //  If the item was already selected, then deselect the value.
-        //  Otherwise, select it.
-
-        //  Note here how we turn off change signaling to avoid multiple
-        //  unnecessary calls to render.
-        wasSignalingChange = this.shouldSignalChange();
-        this.shouldSignalChange(false);
-
-        //  See if we 'toggle' items - if so and the item is selected, we'll
-        //  deselect it. The default is true.
-        if (this.hasAttribute('toggleItems')) {
-            toggleItems = TP.bc(this.getAttribute('toggleItems'));
-        } else {
-            toggleItems = true;
-        }
-
-        if (TP.isTrue(wrappedDOMTarget.isSelected()) && toggleItems) {
-            this.deselect(newValue);
-        } else {
-            this.select(newValue);
-        }
-
-        this.changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
-
-        //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(this.getDisplayValue());
-
-        this.shouldSignalChange(wasSignalingChange);
+        this.changeValueUsingTarget(wrappedDOMTarget);
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
