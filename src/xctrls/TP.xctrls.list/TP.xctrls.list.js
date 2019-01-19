@@ -529,6 +529,44 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineHandler('DOMMouseOver',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseOver
+     * @description This handler is installed when the list is in 'incremental'
+     *     mode. It sets the value whenever one of the receiver's items is
+     *     hovered over.
+     * @param {TP.sig.DOMMouseOver} aSignal The signal that caused this handler
+     *     to trip.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var domTarget,
+        wrappedDOMTarget;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Get the resolved target - this should be the list item that we were
+        //  hovering over.
+        domTarget = aSignal.getResolvedTarget();
+
+        //  Wrap it and if it's actually us (the list - maybe because the user
+        //  clicked in a tiny area that doesn't contain a list item), we're not
+        //  interested.
+        wrappedDOMTarget = TP.wrap(domTarget);
+        if (wrappedDOMTarget === this) {
+            return this;
+        }
+
+        this.changeValueUsingTarget(wrappedDOMTarget);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
@@ -561,6 +599,52 @@ function(aSignal) {
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
         aSignal.stopPropagation();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineHandler('UIDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleUIDidFocus
+     * @param {TP.sig.UIDidFocus} aSignal The signal that caused this handler to
+     *     trip.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var incrementalVal,
+
+        domTarget,
+        wrappedDOMTarget;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  If the target is a bound element, then we should check to see if it
+        //  wants incremental value updates.
+        incrementalVal = this.getAttribute('ui:incremental');
+
+        //  There are 3 possible values for 'ui:incremental' - 'control',
+        //  'model' and 'both'. We handle 'model' and 'both' here.
+        if (incrementalVal === 'model' || incrementalVal === 'both') {
+
+            //  Get the target - this should be the list item that we are
+            //  focusing on.
+            domTarget = aSignal.getTarget();
+
+            //  Wrap it and if it's actually us (the list - maybe because the
+            //  user clicked in a tiny area that doesn't contain a list item),
+            //  we're not interested.
+            wrappedDOMTarget = TP.wrap(domTarget);
+            if (wrappedDOMTarget === this) {
+                return this;
+            }
+
+            this.changeValueUsingTarget(wrappedDOMTarget);
+        }
     }
 
     return this;
@@ -1172,7 +1256,9 @@ function() {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    var newSearcher;
+    var newSearcher,
+
+        incrementalVal;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -1189,6 +1275,16 @@ function() {
         //  NB: We use $set() here or otherwise we end up trying to update
         //  currently non-existent GUI.
         this.$set('filterValue', '');
+    }
+
+    //  If the target is a bound element, then we should check to see if it
+    //  wants incremental value updates.
+    incrementalVal = this.getAttribute('ui:incremental');
+
+    //  There are 3 possible values for 'ui:incremental' - 'control',
+    //  'model' and 'both'. We handle 'model' and 'both' here.
+    if (incrementalVal === 'model' || incrementalVal === 'both') {
+        this.observe(this, TP.ac('TP.sig.DOMMouseOver', 'TP.sig.DOMDragOver'));
     }
 
     //  Start with the receiver *not* being focused.
@@ -1209,11 +1305,23 @@ function() {
      * @returns {TP.xctrls.list} The receiver.
      */
 
+    var incrementalVal;
+
     //  this makes sure we maintain parent processing
     this.callNextMethod();
 
     if (this.hasAttribute('filter')) {
         this.signal('CloseSticky');
+    }
+
+    //  If the target is a bound element, then we should check to see if it
+    //  wants incremental value updates.
+    incrementalVal = this.getAttribute('ui:incremental');
+
+    //  There are 3 possible values for 'ui:incremental' - 'control',
+    //  'model' and 'both'. We handle 'model' and 'both' here.
+    if (incrementalVal === 'model' || incrementalVal === 'both') {
+        this.ignore(this, TP.ac('TP.sig.DOMMouseOver', 'TP.sig.DOMDragOver'));
     }
 
     return this;
