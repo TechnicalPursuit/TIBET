@@ -1855,9 +1855,7 @@ function(selection) {
      */
 
     var selectedValues,
-        selectAll,
-
-        hasFocus;
+        selectAll;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1865,12 +1863,6 @@ function(selection) {
     }
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
-
-    //  Grab whether or not we are currently focused. This is important because
-    //  we will lose track as the items get redrawn (the focused one will lose
-    //  it's 'pclass:focus' attribute) and we need to know so that we can
-    //  refocus.
-    hasFocus = this.get('$wasFocused');
 
     selection.each(
             function(d) {
@@ -1930,11 +1922,6 @@ function(selection) {
                 return null;
             }
         );
-
-    //  If we were focused, the grab the first item and focus it.
-    if (hasFocus) {
-        this.get('listitems').first().focus();
-    }
 
     return this;
 });
