@@ -170,12 +170,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.picker.Inst.defineHandler('TogglePicker',
+TP.xctrls.picker.Inst.defineHandler('OpenPicker',
 function(aSignal) {
 
     /**
-     * @method handleTogglePicker
-     * @param {TP.sig.TogglePicker} aSignal The TIBET signal which triggered
+     * @method handleOpenPicker
+     * @param {TP.sig.OpenPicker} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.xctrls.picker} The receiver.
      */
@@ -219,13 +219,13 @@ function(aSignal) {
         //  If the value is incremental, then a mouse up should hide the popup.
         //  Mouse hovering will cause a 'UISelect', so we don't want to hide on
         //  that.
-        payload.atPut('hideOn', 'DOMMouseUp');
+        payload.atPut('hideOn', 'UIDeactivate');
     } else {
         //  Otherwise, just hide on select.
         payload.atPut('hideOn', 'UISelect');
     }
 
-    this.signal('TogglePopup', payload);
+    this.signal('OpenPopup', payload);
 
     return this;
 });
