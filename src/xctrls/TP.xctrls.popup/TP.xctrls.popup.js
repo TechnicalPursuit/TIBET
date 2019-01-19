@@ -65,6 +65,15 @@ function(aSignal) {
      * @returns {TP.meta.xctrls.popup} The receiver.
      */
 
+    var popupTPElem;
+
+    popupTPElem = this.getOverlayElement(aSignal);
+    if (TP.isTrue(aSignal.at('sticky'))) {
+        popupTPElem.set('isSticky', true, false);
+    } else {
+        popupTPElem.set('isSticky', false, false);
+    }
+
     this.openOverlay(aSignal);
 
     return this;
