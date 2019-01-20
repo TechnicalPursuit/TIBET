@@ -120,7 +120,25 @@ function() {
      * @returns {Object} The visual value of the receiver's UI node.
      */
 
-    return this.get('label').getContent();
+    var initialVal,
+
+        popupList,
+
+        itemWithLabel,
+        value;
+
+    initialVal = this.get('label').getContent();
+
+    popupList = this.get('popupContentFirstElement');
+
+    itemWithLabel = popupList.get('itemWithLabel', initialVal);
+    if (TP.notEmpty(itemWithLabel)) {
+        value = itemWithLabel.$getMarkupValue();
+    } else {
+        value = initialVal;
+    }
+
+    return value;
 });
 
 //  ------------------------------------------------------------------------
@@ -136,7 +154,21 @@ function(aValue) {
      * @returns {TP.xctrls.select} The receiver.
      */
 
-    this.get('label').setContent(aValue);
+    var popupList,
+
+        itemWithValue,
+        label;
+
+    popupList = this.get('popupContentFirstElement');
+
+    itemWithValue = popupList.get('itemWithValue', aValue);
+    if (TP.notEmpty(itemWithValue)) {
+        label = itemWithValue.getLabelText();
+    } else {
+        label = aValue;
+    }
+
+    this.get('label').setContent(label);
 
     return this;
 });
