@@ -81,10 +81,6 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.picker.Inst.defineAttribute('label',
-    TP.cpc('> xctrls|button > xctrls|label',
-            TP.hc('shouldCollapse', true)));
-
 TP.xctrls.picker.Inst.defineAttribute('popup',
     TP.xpc('//*[@id="XCtrlsPickerPopup"]',
             TP.hc('shouldCollapse', true)));

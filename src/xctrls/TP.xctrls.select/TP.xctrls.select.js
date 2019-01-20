@@ -24,6 +24,14 @@ TP.xctrls.picker.defineSubtype('xctrls:select');
 TP.xctrls.select.Type.set('bidiAttrs', TP.ac('value'));
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.select.Inst.defineAttribute('label',
+    TP.cpc('> xctrls|button > xctrls|label',
+            TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
