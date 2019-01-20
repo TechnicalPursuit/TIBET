@@ -573,6 +573,32 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Type.defineMethod('needsObserve',
+function() {
+
+    /**
+     * @method needsObserve
+     * @summary Returns whether or not the default firing policy of signals of
+     *     this type require observers to use an 'observe' call in order to
+     *     receive the signals.
+     * @returns {Boolean} Whether or not observers need to use an 'observe'
+     *     call.
+     */
+
+    var policy;
+
+    policy = this.$get('defaultPolicy');
+
+    //  TP.DOM_FIRING doesn't require an 'observe' for observing only bubbling
+    //  when the observer is an element, but does so for capturing signals and
+    //  for non-element observers, so we return true here for that.
+    /* eslint-disable no-extra-parens */
+    return (policy === TP.OBSERVER_FIRING || policy === TP.DOM_FIRING);
+    /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
 //  TP.sig.Signal is, of course, the root of all signaling types - we don't
 //  signal 'above' it in the supertype chain. We've got to do this *after*
 //  we define the 'isSignalingRoot' function, though ;-)
