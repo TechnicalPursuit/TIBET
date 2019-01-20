@@ -376,14 +376,31 @@ function(moveAction) {
     var focusableElements,
         tpElementToFocus;
 
+    //  If there are focusable element under the group, then move the focus to
+    //  one of them.
     if (TP.notEmpty(focusableElements = this.findFocusableElements())) {
+
+        //  If there was a supplied move action that was one of the 'focus
+        //  last/previous' actions, then just use the last focusable element.
         if (moveAction === TP.LAST ||
             moveAction === TP.PREVIOUS ||
             moveAction === TP.LAST_IN_GROUP ||
             moveAction === TP.PRECEDING) {
             tpElementToFocus = focusableElements.last();
         } else {
-            tpElementToFocus = focusableElements.first();
+
+            //  Otherwise, see if there was any selected elements - if there
+            //  were, grab the first one. We'll use that.
+            tpElementToFocus =
+                focusableElements.detect(
+                            function(aTPElem) {
+                                return aTPElem.hasAttribute('pclass:selected');
+                            });
+
+            //  No selected element? Just use the first one.
+            if (TP.notValid(tpElementToFocus)) {
+                tpElementToFocus = focusableElements.first();
+            }
         }
 
         TP.dom.UIElementNode.set('$calculatedFocusingTPElem',
