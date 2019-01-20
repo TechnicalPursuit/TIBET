@@ -220,7 +220,11 @@ function(aSignal) {
         triggerID,
         triggerTPElem,
 
-        hideOn;
+        hideOn,
+        hideOnSignalName,
+        hideOnSignalType,
+
+        needsObserve;
 
     overlayTPElem = this.getOverlayElement(aSignal);
 
@@ -276,26 +280,59 @@ function(aSignal) {
     if (TP.notEmpty(hideOn)) {
         hideOn = hideOn.unquoted();
 
-        //  Note here how we define the handler as a local method on the
-        //  specific instance.
-        overlayTPElem.defineHandler(
-            hideOn,
-            function(sig) {
+        //  Compute the full signal name and get the signal type for it.
+        hideOnSignalName = TP.expandSignalName(hideOn);
+        hideOnSignalType = TP.sys.getTypeByName(hideOnSignalName);
 
-                this.callNextMethod();
+        if (TP.isType(hideOnSignalType)) {
 
-                //  The overlay is closed.
-                this.setAttribute('closed', true);
+            //  If the signal type's default firing policy says that we need to
+            //  observe in order to receive signals, then we'll do that.
+            needsObserve = hideOnSignalType.needsObserve();
 
-                //  Hide the overlay.
-                this.setAttribute('hidden', true);
-            }, {
-                patchCallee: true
-            });
+            //  Note here how we define the handler as a local method on the
+            //  specific instance.
+            overlayTPElem.defineHandler(
+                hideOnSignalName,
+                function(sig) {
 
-        //  Save the signal name so that we can uninstall the local method after
-        //  we've hidden.
-        overlayTPElem.set('$hideOnSignalName', hideOn, false);
+                    //  If we observed before, we need to ignore here to avoid
+                    //  leaking.
+                    if (needsObserve) {
+                        this.ignore(this,
+                                    hideOnSignalName,
+                                    null,
+                                    TP.sig.SignalMap.REGISTER_CAPTURING);
+                    }
+
+                    this.callNextMethod();
+
+                    //  The overlay is closed.
+                    this.setAttribute('closed', true);
+
+                    //  Hide the overlay.
+                    this.setAttribute('hidden', true);
+                }, {
+                    phase: TP.CAPTURING,
+                    patchCallee: true
+                });
+
+            //  If we need to observe, then we observe ourself for that signal.
+            //  Note here how we observe using a 'capturing' strategy so that we
+            //  get the signal before any other underlying control that might
+            //  block that signal from bubbling back out to us during regular
+            //  bubbling phase.
+            if (needsObserve) {
+                overlayTPElem.observe(overlayTPElem,
+                                        hideOnSignalName,
+                                        null,
+                                        TP.sig.SignalMap.REGISTER_CAPTURING);
+            }
+
+            //  Save the signal name so that we can uninstall the local method
+            //  after we've hidden.
+            overlayTPElem.set('$hideOnSignalName', hideOnSignalName, false);
+        }
     }
 
     //  Set the content of the overlay and activate it.
