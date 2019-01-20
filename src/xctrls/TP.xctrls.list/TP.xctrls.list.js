@@ -155,6 +155,16 @@ TP.xctrls.list.Inst.defineAttribute(
                                         TP.hc('shouldCollapse', false)));
 
 TP.xctrls.list.Inst.defineAttribute(
+    'itemWithLabel',
+    TP.xpc('.//xctrls:label[text() = "{{0}}"]/..',
+        TP.hc('shouldCollapse', true)));
+
+TP.xctrls.list.Inst.defineAttribute(
+    'itemWithValue',
+    TP.xpc('.//xctrls:value[text() = "{{0}}"]/..',
+        TP.hc('shouldCollapse', true)));
+
+TP.xctrls.list.Inst.defineAttribute(
     'focusedItem',
     TP.cpc('> .scroller xctrls|content > xctrls|*[pclass|focus]',
             TP.hc('shouldCollapse', true)));
