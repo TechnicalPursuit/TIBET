@@ -4890,15 +4890,18 @@ function(size) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('setBoundValue',
-function(attributeName, aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
+TP.dom.ElementNode.Inst.defineMethod('setBoundAspect',
+function(attributeName, anAspect, aValue, scopeVals, bindingInfoValue,
+ignoreBidiInfo) {
 
     /**
-     * @method setBoundValue
-     * @summary Sets the bound value of the receiver to the supplied value. This
-     *     takes the supplied value and sets that value onto the model.
+     * @method setBoundAspect
+     * @summary Sets the bound aspect of the receiver to the supplied value.
+     *     This takes the supplied aspect and value and sets that value onto the
+     *     model under that aspect.
      * @param {String} attributeName The name of the attribute to find the
      *     binding information that we're setting.
+     * @param {String} anAspect The aspect of model that we're going to set
      * @param {Object} aValue The value to set onto the model.
      * @param {String[]} scopeVals The list of scoping values (i.e. parts that,
      *     when combined, make up the entire bind scoping path).
@@ -4961,6 +4964,12 @@ function(attributeName, aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 newValue;
 
             boundAspect = bindEntry.first();
+
+            //  If the bound aspect that we're processing doesn't match the
+            //  aspect name that was supplied to this method, then we skip it.
+            if (boundAspect !== anAspect) {
+                return;
+            }
 
             //  If the attribute isn't one of the bidi attributes, then we can
             //  just exit here (i.e. its not an attribute that we can 'set' from
@@ -5080,9 +5089,9 @@ function(aValue, ignoreBidiInfo) {
      * @summary Sets the bound value of the receiver to the supplied value if
      *     the receiver is bound. This takes the supplied value and sets that
      *     value onto the model.
-     * @description This method is a convenience wrapper for setBoundValue()
-     *     that assumes that the receiver's binding scope values and binding
-     *     attribute value will be used.
+     * @description This method is a convenience wrapper for setBoundAspect
+     *     that assumes an aspect of 'value' and that the receiver's binding
+     *     scope values and binding attribute value will be used.
      * @param {Object} aValue The value to set onto the model.
      * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
      *     receiver's bidirectional attribute information. If this parameter is
@@ -5109,9 +5118,10 @@ function(aValue, ignoreBidiInfo) {
         return this;
     }
 
-    //  Call setBoundValue, using the supplied value and assuming our binding
+    //  Call setBoundAspect, using the supplied value and assuming our binding
     //  scope values and the value of the found binding attribute.
-    this.setBoundValue(attrName,
+    this.setBoundAspect(attrName,
+                        'value',
                         aValue,
                         this.getBindingScopeValues(),
                         this.getAttribute(attrName),
@@ -5789,8 +5799,9 @@ function(aSignal) {
         //  Wrap the element that we're really setting the value for and set its
         //  bound value.
         boundTPElem = TP.wrap(boundElem);
-        boundTPElem.setBoundValue(
+        boundTPElem.setBoundAspect(
                         'bind:in',
+                        'value',
                         newText,
                         boundTPElem.getBindingScopeValues(),
                         boundTPElem.getAttribute('bind:in'),

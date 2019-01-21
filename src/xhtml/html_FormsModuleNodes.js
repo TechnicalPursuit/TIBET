@@ -1961,8 +1961,9 @@ function(aTargetElem, anEvent) {
         //  Set our bound value, but using the binding information found on one
         //  of our 'value elements' (which might be the targeted element, but
         //  might not be).
-        tpElem.setBoundValue(
+        tpElem.setBoundAspect(
                         attrName,
+                        'checked',
                         val,
                         bindInfoTPElem.getBindingScopeValues(),
                         bindInfoTPElem.getAttribute('bind:io'));
