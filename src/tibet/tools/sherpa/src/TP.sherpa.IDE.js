@@ -4602,6 +4602,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
                     updatingAnsTPElem = TP.wrap(mutationAncestor);
                     bindInfo = updatingAnsTPElem.getBindingInfoFrom(
+                                    'bind:in',
                                     updatingAnsTPElem.getAttribute('bind:in'));
 
                     bindExprStr = bindInfo.at('value').at('fullExpr');
