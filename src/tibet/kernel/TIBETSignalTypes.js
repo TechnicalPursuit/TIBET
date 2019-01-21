@@ -1559,15 +1559,44 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIFocusComputation');
 //  ------------------------------------------------------------------------
 
 TP.sig.UIFocusComputation.defineSubtype('UIFocusFirst');
+TP.sig.UIFocusFirst.Type.defineAttribute(
+                        'moveAction', TP.FIRST);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusLast');
+TP.sig.UIFocusLast.Type.defineAttribute(
+                        'moveAction', TP.LAST);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusPrevious');
+TP.sig.UIFocusPrevious.Type.defineAttribute(
+                        'moveAction', TP.PREVIOUS);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusNext');
+TP.sig.UIFocusNext.Type.defineAttribute(
+                        'moveAction', TP.NEXT);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusFollowing');
+TP.sig.UIFocusFollowing.Type.defineAttribute(
+                        'moveAction', TP.FOLLOWING);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusPreceding');
+TP.sig.UIFocusPreceding.Type.defineAttribute(
+                        'moveAction', TP.PRECEDING);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInGroup');
+TP.sig.UIFocusFirstInGroup.Type.defineAttribute(
+                        'moveAction', TP.FIRST_IN_GROUP);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusLastInGroup');
+TP.sig.UIFocusLastInGroup.Type.defineAttribute(
+                        'moveAction', TP.LAST_IN_GROUP);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInNextGroup');
+TP.sig.UIFocusFirstInNextGroup.Type.defineAttribute(
+                        'moveAction', TP.FIRST_IN_NEXT_GROUP);
+
 TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInPreviousGroup');
+TP.sig.UIFocusFirstInPreviousGroup.Type.defineAttribute(
+                        'moveAction', TP.FIRST_IN_PREVIOUS_GROUP);
 
 //  ------------------------------------------------------------------------
 
