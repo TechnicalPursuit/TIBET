@@ -78,6 +78,34 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    TP.wrap(elem).teardown();
+
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -421,6 +449,21 @@ function() {
 
     //  Set up the selection location as our 'value:' binding.
     this.setAttribute('bind:io', selectionLoc);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     * @summary Tears down the receiver by performing housekeeping cleanup, like
+     *     ignoring signals it's observing, etc.
+     * @returns {TP.xctrls.picker} The receiver.
+     */
 
     return this;
 });
