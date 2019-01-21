@@ -4941,7 +4941,7 @@ function(attributeName, aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
     bindingInfo.perform(
         function(bindEntry) {
 
-            var attrName,
+            var boundAspect,
 
                 bindVal,
 
@@ -4960,13 +4960,13 @@ function(attributeName, aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 result,
                 newValue;
 
-            attrName = bindEntry.first();
+            boundAspect = bindEntry.first();
 
             //  If the attribute isn't one of the bidi attributes, then we can
             //  just exit here (i.e. its not an attribute that we can 'set' from
             //  the UI)
             if (TP.notTrue(ignoreBidiInfo) &&
-                !bidiAttrs.contains(attrName)) {
+                !bidiAttrs.contains(boundAspect)) {
                 return;
             }
 
