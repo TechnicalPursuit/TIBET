@@ -1892,9 +1892,13 @@ function(aTargetElem, anEvent) {
         item,
         bindAttrNodes,
 
+        elem,
+
         bindInfoTPElem,
 
-        val;
+        val,
+
+        attrName;
 
     tpElem = TP.wrap(aTargetElem);
 
@@ -1925,6 +1929,17 @@ function(aTargetElem, anEvent) {
             //  element we're looking for. Capture it and exit.
             if (TP.notEmpty(bindAttrNodes)) {
                 bindInfoTPElem = item;
+
+                //  NB: 'bind:in' doesn't matter here - that goes 'in', these go
+                //  'out'.
+
+                elem = item.getNativeNode();
+                if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+                    attrName = 'bind:io';
+                } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
+                    attrName = 'bind:out';
+                }
+
                 break;
             }
         }
@@ -1947,6 +1962,7 @@ function(aTargetElem, anEvent) {
         //  of our 'value elements' (which might be the targeted element, but
         //  might not be).
         tpElem.setBoundValue(
+                        attrName,
                         val,
                         bindInfoTPElem.getBindingScopeValues(),
                         bindInfoTPElem.getAttribute('bind:io'));

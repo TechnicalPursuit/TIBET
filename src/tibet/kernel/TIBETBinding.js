@@ -1828,13 +1828,13 @@ function(sourceVal, expression, pathConstructor, pathOptions) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('flushBindingInfoCacheFor',
-function(attributeValue) {
+function(attributeName) {
 
     /**
      * @method flushBindingInfoCacheFor
      * @summary Flushes the binding information cache for the supplied attribute
      *     value.
-     * @param {String} attributeValue The attribute value to obtain binding
+     * @param {String} attributeName The name of the attribute to obtain binding
      *     information from.
      * @returns {TP.dom.ElementNode} The receiver.
      */
@@ -1842,7 +1842,9 @@ function(attributeValue) {
     var elem,
         doc,
 
-        registry;
+        registry,
+
+        infoKey;
 
     //  Grab the native Element and Document.
     elem = this.getNativeNode();
@@ -1854,7 +1856,9 @@ function(attributeValue) {
         return this;
     }
 
-    registry.removeKey(attributeValue);
+    infoKey = TP.gid(elem) + '__' + attributeName;
+
+    registry.removeKey(infoKey);
 
     return this;
 });
@@ -1912,12 +1916,14 @@ function(size) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('getBindingInfoFrom',
-function(attributeValue, flushCache) {
+function(attributeName, attributeValue, flushCache) {
 
     /**
      * @method getBindingInfoFrom
      * @summary Gets binding information from the attribute named by the
      *     supplied attribute name on the receiver.
+     * @param {String} attributeName The name of the attribute that binding
+     *     information is coming from.
      * @param {String} attributeValue The attribute value to obtain binding
      *     information from.
      * @param {Boolean} [flushCache=false] Whether or not to flush any currently
@@ -1930,6 +1936,8 @@ function(attributeValue, flushCache) {
         doc,
 
         registry,
+
+        infoKey,
 
         bindEntries;
 
@@ -1948,19 +1956,21 @@ function(attributeValue, flushCache) {
         doc[TP.BIND_INFO_REGISTRY] = registry;
     }
 
+    infoKey = TP.gid(elem) + '__' + attributeName;
+
     if (TP.isTrue(flushCache)) {
-        registry.removeKey(attributeValue);
+        registry.removeKey(infoKey);
     }
 
     //  If the attribute value (acting as a key) is already in the registry,
     //  then just exit here - we don't want dups in the registry.
-    if (registry.hasKey(attributeValue)) {
-        return registry.at(attributeValue);
+    if (registry.hasKey(infoKey)) {
+        return registry.at(infoKey);
     }
 
     //  Ask the type to compute the binding info and put it into the registry.
     bindEntries = this.getType().computeBindingInfo(elem, attributeValue);
-    registry.atPut(attributeValue, bindEntries);
+    registry.atPut(infoKey, bindEntries);
 
     return bindEntries;
 });
@@ -2196,11 +2206,13 @@ function(wantsShallowScope) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('getBoundValues',
-function(scopeVals, bindingInfoValue) {
+function(attributeName, scopeVals, bindingInfoValue) {
 
     /**
      * @method getBoundValues
      * @summary Returns a hash of the bound values of the receiver.
+     * @param {String} attributeName The name of the attribute that binding
+     *     information is coming from.
      * @param {String[]} scopeVals The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
@@ -2220,7 +2232,7 @@ function(scopeVals, bindingInfoValue) {
     //  Extract the binding information from the supplied binding information
     //  value String. This may have already been parsed and cached, in which
     //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
+    bindingInfo = this.getBindingInfoFrom(attributeName, bindingInfoValue);
 
     //  Iterate over each binding expression in the binding information.
     bindingInfo.perform(
@@ -2306,12 +2318,14 @@ function(scopeVals, bindingInfoValue) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('getFullyExpandedBindingExpressions',
-function() {
+function(attributeName) {
 
     /**
      * @method getFullyExpandedBindingExpressions
      * @summary Returns all of the 'fully expanded' binding expressions for the
      *     receiver.
+     * @param {String} attributeName The name of the attribute to obtain binding
+     *     information from.
      * @description These are computed by taking all of the scoping values plus
      *     the local expression and then expanding them into the fully expanded
      *     binding expression.
@@ -2319,9 +2333,7 @@ function() {
      *     fully-formed binding expressions on the receiver for each name.
      */
 
-    var attrName,
-
-        scopeVals,
+    var scopeVals,
 
         results,
 
@@ -2329,9 +2341,7 @@ function() {
 
         info;
 
-    attrName = this.computeBindingAttributeName();
-
-    if (TP.isEmpty(attrName)) {
+    if (TP.isEmpty(attributeName)) {
         return null;
     }
 
@@ -2343,13 +2353,13 @@ function() {
 
     //  If the attribute is a 'bind:scope' or 'bind:repeat', then all we really
     //  need are the scoping values themselves.
-    if (attrName === 'bind:scope' || attrName === 'bind:repeat') {
+    if (attributeName === 'bind:scope' || attributeName === 'bind:repeat') {
         results.atPut('scope', TP.ac(TP.uriJoinFragments.apply(TP, scopeVals)));
     } else {
-        attrVal = this.getAttribute(attrName);
+        attrVal = this.getAttribute(attributeName);
 
         //  Grab the binding info for that local attribute value.
-        info = this.getBindingInfoFrom(attrVal);
+        info = this.getBindingInfoFrom(attributeName, attrVal);
 
         info.perform(
             function(kvPair) {
@@ -4031,6 +4041,7 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, originWasUR
 
         facet,
 
+        attrName,
         attrValue,
 
         info,
@@ -4077,9 +4088,10 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, originWasUR
 
     facet = TP.ifInvalid(aFacet, 'value');
 
+    attrName = bindingAttr.name;
     attrValue = bindingAttr.value;
 
-    info = this.getBindingInfoFrom(attrValue);
+    info = this.getBindingInfoFrom(attrName, attrValue);
     infoKeys = info.getKeys();
 
     getRequest = TP.request('shouldCollapse', false);
@@ -4790,12 +4802,14 @@ function(size) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('setBoundValue',
-function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
+function(attributeName, aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
 
     /**
      * @method setBoundValue
      * @summary Sets the bound value of the receiver to the supplied value. This
      *     takes the supplied value and sets that value onto the model.
+     * @param {String} attributeName The name of the attribute to find the
+     *     binding information that we're setting.
      * @param {Object} aValue The value to set onto the model.
      * @param {String[]} scopeVals The list of scoping values (i.e. parts that,
      *     when combined, make up the entire bind scoping path).
@@ -4815,7 +4829,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
     //  Extract the binding information from the supplied binding information
     //  value String. This may have already been parsed and cached, in which
     //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
+    bindingInfo = this.getBindingInfoFrom(attributeName, bindingInfoValue);
 
     if (TP.notTrue(ignoreBidiInfo)) {
         //  Grab the list of our 'bidirectional' instance (not DOM) attributes.
@@ -5008,7 +5022,8 @@ function(aValue, ignoreBidiInfo) {
 
     //  Call setBoundValue, using the supplied value and assuming our binding
     //  scope values and the value of the found binding attribute.
-    this.setBoundValue(aValue,
+    this.setBoundValue(attrName,
+                        aValue,
                         this.getBindingScopeValues(),
                         this.getAttribute(attrName),
                         ignoreBidiInfo);
@@ -5141,7 +5156,7 @@ function(shouldRender) {
         attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
         attrVal = this.getAttribute('bind:in');
 
-        valChanged = this.$refreshAttr(scopeVals, attrNode, attrVal);
+        valChanged = this.$refreshAttr(scopeVals, attrNode, 'bind:in', attrVal);
     }
 
     if (TP.elementHasAttribute(elem, 'bind:io', true)) {
@@ -5149,7 +5164,7 @@ function(shouldRender) {
         attrNode = TP.elementGetAttributeNode(elem, 'bind:io');
         attrVal = this.getAttribute('bind:io');
 
-        valChanged = this.$refreshAttr(scopeVals, attrNode, attrVal);
+        valChanged = this.$refreshAttr(scopeVals, attrNode, 'bind:io', attrVal);
     }
 
     //  If this element has a bind:scope, then refresh our bound descendants.
@@ -5238,7 +5253,7 @@ function(shouldRender, shouldRefreshBindings) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$refreshAttr',
-function(scopeVals, attributeNode, bindingAttrValue) {
+function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
 
     /**
      * @method $refreshAttr
@@ -5250,6 +5265,7 @@ function(scopeVals, attributeNode, bindingAttrValue) {
      * @param {Attribute} attributeNode The attribute node that the binding
      *     expression was found on. This is passed along to code that refreshes
      *     expressions at our 'leaf' level.
+     * @param {String} bindingAttrName The name of the binding attribute.
      * @param {String} bindingAttrValue The value of the binding attribute. This
      *     will contain the information that binding expressions can be
      *     extracted from.
@@ -5264,7 +5280,7 @@ function(scopeVals, attributeNode, bindingAttrValue) {
     //  Extract the binding information from the supplied binding information
     //  value String. This may have already been parsed and cached, in which
     //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(bindingAttrValue);
+    bindingInfo = this.getBindingInfoFrom(bindingAttrName, bindingAttrValue);
 
     valChanged = false;
 
@@ -5685,6 +5701,7 @@ function(aSignal) {
         //  bound value.
         boundTPElem = TP.wrap(boundElem);
         boundTPElem.setBoundValue(
+                        'bind:in',
                         newText,
                         boundTPElem.getBindingScopeValues(),
                         boundTPElem.getAttribute('bind:in'),

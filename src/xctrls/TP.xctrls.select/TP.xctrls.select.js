@@ -58,7 +58,8 @@ function(valueURI) {
 
     id = this.getLocalID();
 
-    bindingInfo = this.getBindingInfoFrom(this.getAttribute('bind:in'));
+    bindingInfo = this.getBindingInfoFrom(
+                            'bind:in', this.getAttribute('bind:in'));
 
     //  If the binding information had a 'data' key, then that means that the
     //  author provided an expression for us to obtain data for the list.

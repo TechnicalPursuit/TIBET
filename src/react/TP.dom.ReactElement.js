@@ -443,7 +443,8 @@ function(anObject, prevProps, prevState) {
     }
 
     //  Grab the values of any bound values.
-    vals = this.getBoundValues(this.getBindingScopeValues(),
+    vals = this.getBoundValues('bind:io',
+                                this.getBindingScopeValues(),
                                 this.getAttribute('bind:io'));
 
     if (TP.equal(vals.at('value'), anObject.state.value)) {
@@ -475,7 +476,8 @@ function(anObject) {
     var vals;
 
     //  Grab all of the bound values into a TP.lang.Hash
-    vals = this.getBoundValues(this.getBindingScopeValues(),
+    vals = this.getBoundValues('bind:io',
+                                this.getBindingScopeValues(),
                                 this.getAttribute('bind:io'));
 
     //  Set the state on the React peer using a POJO'ed version of the hash.

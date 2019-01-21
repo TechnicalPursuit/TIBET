@@ -253,7 +253,8 @@ function() {
         //  sugared text binding expression, that we have a 'bind:in' attribute
         //  with an aspect name of 'value' and a single binding expression
         //  aspect value.
-        bindInfo = this.getBindingInfoFrom(this.getAttribute('bind:in'));
+        bindInfo = this.getBindingInfoFrom('bind:in',
+                                            this.getAttribute('bind:in'));
 
         str = bindInfo.at('value').at('dataExprs').at(0);
         str = '[[' + str + ']]';
@@ -308,7 +309,7 @@ function(aContent) {
 
         //  Make sure to flush any binding cache information for the computed
         //  attribute value.
-        this.flushBindingInfoCacheFor(attrVal);
+        this.flushBindingInfoCacheFor('bind:in');
 
         //  Refresh ourself. This will cause the binding cache to be rebuilt and
         //  for the new data to populate into the GUI.
