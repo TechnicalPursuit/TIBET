@@ -1337,20 +1337,20 @@ function(targetElement, attributeValue) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('computeTransformationFunction',
-function(attributeValue) {
+function(anExpression) {
 
     /**
      * @method computeTransformationFunction
      * @summary Computes a 'transformation function' for values that are bound
      *     by virtue of the binding expressions that are in the supplied
-     *     attribute value.
-     * @param {String} attributeValue The attribute value to extract binding
-     *     information to compute the transformation function and data
-     *     expressions from.
+     *     expression.
+     * @param {String} anExpression The expression to extract binding
+     *     information from to compute the transformation function and data
+     *     expressions.
      * @returns {Array<Function,String[]>} An Array of a Function, which is the
      *     Function that will transform the values being updated and an Array
      *     which contains all of the data expressions that are embedded in the
-     *     attribute value.
+     *     expression.
      */
 
     var finalExpr,
@@ -1374,7 +1374,7 @@ function(attributeValue) {
 
         transformFunc;
 
-    finalExpr = attributeValue;
+    finalExpr = anExpression;
 
     isSimpleExpr = true;
 
@@ -1385,17 +1385,17 @@ function(attributeValue) {
     //  (i.e. 'foo [[bar]] is called: [[baz]]')
     TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
     while (TP.isValid(exprParts =
-            TP.regex.BINDING_STATEMENT_EXTRACT.exec(attributeValue))) {
+            TP.regex.BINDING_STATEMENT_EXTRACT.exec(anExpression))) {
 
         //  We want the expression both with and without the surrounding
         //  brackets ([[...]])
         exprWithBrackets = exprParts.first();
         exprWithoutBrackets = exprParts.last();
 
-        //  If the attribute value doesn't exactly equal the expression without
+        //  If the expression doesn't exactly equal the expression without
         //  brackets surrounded by brackets, then it has 'surrounding content'.
         hasSurroundingContent =
-                '[[' + exprWithoutBrackets + ']]' !== attributeValue;
+                '[[' + exprWithoutBrackets + ']]' !== anExpression;
 
         //  If the expression without brackets has an ACP format, then we slice
         //  around and extract separate value and format expressions.
