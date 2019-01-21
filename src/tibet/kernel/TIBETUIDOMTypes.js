@@ -3839,7 +3839,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Inst.defineMethod('moveFocus',
-function(moveAction) {
+function(moveAction, fromFocusedElement) {
 
     /**
      * @method moveFocus
@@ -3857,6 +3857,10 @@ function(moveAction) {
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
      *          TP.PRECEDING
+     * @param {Boolean} [fromFocusedElement=true] Whether or not to compute the
+     *     successor element from the currently focused element or not. If not,
+     *     the successor element will be computed from the receiver. The default
+     *     is true.
      * @returns {TP.dom.UIElementNode} The receiver.
      */
 
@@ -3864,9 +3868,13 @@ function(moveAction) {
 
         successorTPElem;
 
-    //  NB: We pass 'true' here because we want the 'body' element returned if
-    //  no other element is focused
-    currentTPElem = this.getFocusedElement(true);
+    if (TP.notFalse(fromFocusedElement)) {
+        //  NB: We pass 'true' here because we want the 'body' element returned
+        //  if no other element is focused
+        currentTPElem = this.getFocusedElement(true);
+    } else {
+        currentTPElem = this;
+    }
 
     //  If there was a real currently focused element, then we move away from it
     //  to the desired element.
