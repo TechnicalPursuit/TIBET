@@ -222,7 +222,8 @@ function(aSignal) {
 
     //  Grab all of the fully expanded binding expressions from the element and
     //  grab the first one, which is what we'll use here.
-    bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions();
+    bindingExprs = sourceTPElem.getFullyExpandedBindingExpressions(
+                        this.computeBindingAttributeName(sourceTPElem));
     expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
 
     if (!TP.isURIString(expandedBindingExpr)) {
@@ -259,7 +260,7 @@ function(aSignal) {
 
             //  Determine the name of the binding attribute that we're setting
             //  based on what is defined on the target element.
-            attrName = sourceTPElem.computeBindingAttributeName();
+            attrName = this.computeBindingAttributeName(sourceTPElem);
             if (TP.notValid(attrName)) {
                 return this;
             }
@@ -379,6 +380,46 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.bindshud.Inst.defineMethod('computeBindingAttributeName',
+function(aSourceTPElem) {
+
+    /**
+     * @method computeBindingAttributeName
+     * @summary Computes and returns the name of the binding attribute on the
+     *     supplied element. Since an element can contain more than one binding
+     *     attribute, this method enforces a common hierarchy.
+     * @param {TP.dom.ElementNode} aSourceTPElem The element to find the binding
+     *     attribute on.
+     * @returns {String|null} The name of the binding attribute.
+     */
+
+    var attrName,
+        elem;
+
+    attrName = null;
+
+    elem = aSourceTPElem.getNativeNode();
+
+    //  Grab the name of the attribute, according to our precedence hierarchy.
+    //  First, bind:in, then bind:io, then bind:out, then bind:scope, then
+    //  bind:repeat.
+    if (TP.elementHasAttribute(elem, 'bind:in', true)) {
+        attrName = 'bind:in';
+    } else if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrName = 'bind:io';
+    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
+        attrName = 'bind:out';
+    } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
+        attrName = 'bind:scope';
+    } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+        attrName = 'bind:repeat';
+    }
+
+    return attrName;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.bindshud.Inst.defineMethod('deleteItem',
 function(aSignal) {
 
@@ -452,21 +493,28 @@ function(aSignal) {
 
             if (shouldDelete) {
 
-                //  Grab the fully expanded binding expressions for the source
-                //  element.
-                bindingExprs = peerTPElem.getFullyExpandedBindingExpressions();
-
-                //  We just need to get the keys and then iterate, calling 'set'
-                //  with an empty value for each one.
-                bindingExprs.getKeys().forEach(
-                    function(aKey) {
-                        peerTPElem.set(aKey, '');
-                    });
-
                 //  Iterate over all of the binding attributes that were present
                 //  and remove them.
                 bindingAttrs.forEach(
                     function(anAttrNode) {
+
+                        var attrName;
+
+                        attrName = anAttrNode.name;
+
+                        //  Grab the fully expanded binding expressions for the
+                        //  source element.
+                        bindingExprs =
+                            peerTPElem.getFullyExpandedBindingExpressions(
+                                                                    attrName);
+
+                        //  We just need to get the keys and then iterate,
+                        //  calling 'set' with an empty value for each one.
+                        bindingExprs.getKeys().forEach(
+                            function(aKey) {
+                                peerTPElem.set(aKey, '');
+                            });
+
                         TP.elementRemoveAttribute(
                             peerElem,
                             TP.attributeGetFullName(anAttrNode),
@@ -700,7 +748,8 @@ function(aSignal) {
     peerID = itemData.at(0);
     targetTPElem = TP.byId(peerID);
 
-    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions(
+                        this.computeBindingAttributeName(targetTPElem));
     expandedBindingExprs = bindingExprs.at(bindingExprs.getKeys().first());
 
     //  We're only going to use the first expression.
@@ -791,7 +840,8 @@ function(enterSelection) {
                 if (d[1] !== 'spacer') {
                     targetTPElem = TP.byId(d[0]);
                     bindingExprs = targetTPElem.
-                                    getFullyExpandedBindingExpressions();
+                            getFullyExpandedBindingExpressions(
+                                this.computeBindingAttributeName(targetTPElem));
                     expandedBindingExprs = bindingExprs.at(
                                             bindingExprs.getKeys().first());
 
@@ -924,7 +974,8 @@ function(updateSelection) {
                 if (d[1] !== 'spacer') {
                     targetTPElem = TP.byId(d[0]);
                     bindingExprs = targetTPElem.
-                                    getFullyExpandedBindingExpressions();
+                            getFullyExpandedBindingExpressions(
+                                this.computeBindingAttributeName(targetTPElem));
                     expandedBindingExprs = bindingExprs.at(
                                             bindingExprs.getKeys().first());
 
@@ -1078,7 +1129,8 @@ function(aSignal) {
 
     //  Grab the fully expanded binding expression. This will contain the
     //  expression's URI.
-    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions(
+                            this.computeBindingAttributeName(targetTPElem));
     expandedBindingExprs = bindingExprs.at(bindingExprs.getKeys().first());
 
     //  We're only going to browse to the source of the first expression.
@@ -1180,7 +1232,7 @@ function(aSignal) {
 
     //  Determine the name of the binding attribute that we're setting based on
     //  what is defined on the target element.
-    attrName = targetTPElem.computeBindingAttributeName();
+    attrName = this.computeBindingAttributeName(targetTPElem);
     if (TP.notValid(attrName)) {
         return this;
     }
@@ -1201,7 +1253,7 @@ function(aSignal) {
 
     //  Grab all of the fully expanded binding expressions from the element and
     //  grab the first one, which is what we'll use here.
-    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions();
+    bindingExprs = targetTPElem.getFullyExpandedBindingExpressions(attrName);
     expandedBindingExpr = bindingExprs.at(bindingExprs.getKeys()).first();
 
     if (!TP.isURIString(expandedBindingExpr)) {

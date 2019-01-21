@@ -1632,44 +1632,6 @@ TP.dom.ElementNode.Inst.defineAttribute('scopeValues');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('computeBindingAttributeName',
-function() {
-
-    /**
-     * @method computeBindingAttributeName
-     * @summary Computes and returns the name of the binding attribute on the
-     *     supplied target element. Since an element can contain more than one
-     *     binding attribute, this method enforces a common hierarchy.
-     * @returns {String|null} The name of the binding attribute.
-     */
-
-    var attrName,
-        elem;
-
-    attrName = null;
-
-    elem = this.getNativeNode();
-
-    //  Grab the name of the attribute, according to our precedence hierarchy.
-    //  First, bind:in, then bind:io, then bind:out, then bind:scope, then
-    //  bind:repeat.
-    if (TP.elementHasAttribute(elem, 'bind:in', true)) {
-        attrName = 'bind:in';
-    } else if (TP.elementHasAttribute(elem, 'bind:io', true)) {
-        attrName = 'bind:io';
-    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
-        attrName = 'bind:out';
-    } else if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
-        attrName = 'bind:scope';
-    } else if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-        attrName = 'bind:repeat';
-    }
-
-    return attrName;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
 function(indexes) {
 
