@@ -1179,32 +1179,22 @@ function(targetElement, attributeValue) {
      *     binding target name.
      */
 
-    var attrVal,
-
-        entryStr,
+    var entryStr,
         bindEntries,
 
         keys,
-        key,
+        aspectName,
 
         len,
         i,
 
-        fullExpr,
-
         entry,
-        hadBrackets,
-        preEntry,
-        postEntry,
 
-        sigilIndex,
-        formatExpr,
+        extractedEntry;
 
-        transformInfo,
-        transformFunc,
-        dataLocs;
-
-    attrVal = attributeValue;
+    if (TP.isEmpty(attributeValue)) {
+        return TP.hc();
+    }
 
     //  Otherwise, parse out each name: value pair.
 
@@ -1216,11 +1206,11 @@ function(targetElement, attributeValue) {
     //      which are converted to:
     //
     //      {"value": "urn:tibet:fluffy"}
-    entryStr = TP.reformatJSToJSON(attrVal);
+    entryStr = TP.reformatJSToJSON(attributeValue);
 
     //  If we couldn't get a JSON String, try to default it to {"value":"..."}
     if (!TP.isJSONString(entryStr)) {
-        entryStr = '{"value":"' + attrVal + '"}';
+        entryStr = '{"value":"' + attributeValue + '"}';
     }
 
     //  Try to parse the entry string into a TP.core.Hash.
@@ -1237,98 +1227,14 @@ function(targetElement, attributeValue) {
     //  Loop over all of the extracted binding entries.
     len = bindEntries.getSize();
     for (i = 0; i < len; i++) {
+        aspectName = keys.at(i);
+        entry = bindEntries.at(aspectName);
 
-        key = keys.at(i);
-        entry = bindEntries.at(key);
+        //  Extract the expression record from the entry. This returns a hash
+        //  that we'll register under the aspectName.
+        extractedEntry = this.extractExpressionRecord(aspectName, entry);
 
-        //  If the binding statement had embedded [[...]], then
-        hadBrackets = TP.regex.BINDING_STATEMENT_DETECT.test(entry);
-        if (hadBrackets) {
-            formatExpr = null;
-
-            //  Slice out the expression from the entry and reset the entry
-            preEntry = entry.slice(0, entry.indexOf('[['));
-            postEntry = entry.slice(entry.indexOf(']]') + 2);
-            entry = entry.slice(entry.indexOf('[[') + 2, entry.indexOf(']]'));
-
-            //  If the entry has a formatting expression, then extract it into a
-            //  separate formatting expression.
-            if (TP.regex.ACP_FORMAT.test(entry)) {
-
-                sigilIndex = entry.indexOf('.%');
-
-                formatExpr = entry.slice(sigilIndex);
-                entry = entry.slice(0, sigilIndex).trim();
-            }
-
-            fullExpr = entry;
-
-            //  The prior expression will have trimmed off the first space, but
-            //  we want to preserve it for the full expression.
-            if (TP.notEmpty(formatExpr)) {
-                fullExpr += ' ' + formatExpr;
-            }
-
-            fullExpr = preEntry + '[[' + fullExpr + ']]' + postEntry;
-
-            //  Sometimes the expression is quoted to allow whitespace in the
-            //  *value* portion of the 'JSON-y' structure that we use to define
-            //  bindings, but we don't want surrounding quotes here - strip them
-            //  off.
-            fullExpr = fullExpr.unquoted();
-        } else {
-
-            //  Otherwise, the entry had no embedded brackets and we can just
-            //  use that as the full expression.
-            fullExpr = entry;
-        }
-
-        //  If the expression contains ACP variables, then we *must* generate a
-        //  transformation Function to process them properly. The expression
-        //  might or might not have surrounding '[[...]]', but we take care of
-        //  that here.
-        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr)) {
-
-            //  If the expression doesn't start with '[[' AND end with ']]',
-            //  then we fix that here.
-            if (!/^\s*\[\[/.test(fullExpr) && !/\]\]\s*$/.test(fullExpr)) {
-                fullExpr = '[[' + fullExpr + ']]';
-            }
-
-            //  Compute the transform Function and dependent data expressions.
-            transformInfo = this.computeTransformationFunction(fullExpr);
-
-            //  The Function object that does the transformation.
-            transformFunc = transformInfo.first();
-
-            //  The referenced expressions.
-            dataLocs = transformInfo.last();
-        } else if (hadBrackets &&
-            (!/^\s*\[\[/.test(fullExpr) || !/\]\]\s*$/.test(fullExpr) ||
-            TP.regex.ACP_FORMAT.test(fullExpr))) {
-
-            //  The full expression had 'surrounding content' (i.e. literal
-            //  content on either or both sides of the leading or trailing
-            //  square brackets). We need a transformation expression to handle
-            //  this.
-            transformInfo = this.computeTransformationFunction(fullExpr);
-
-            //  The Function object that does the transformation.
-            transformFunc = transformInfo.first();
-
-            //  The referenced expressions.
-            dataLocs = transformInfo.last();
-        } else {
-
-            //  Otherwise, the data locations consist of one expression, which
-            //  is the whole entry.
-            dataLocs = TP.ac(entry);
-        }
-
-        bindEntries.atPut(key, TP.hc('targetAttrName', key,
-                                        'transformFunc', transformFunc,
-                                        'fullExpr', fullExpr,
-                                        'dataExprs', dataLocs));
+        bindEntries.atPut(aspectName, extractedEntry);
     }
 
     return bindEntries;
@@ -1589,6 +1495,131 @@ function(anExpression) {
     //  Return an Array containing the transformation Function and an Array of
     //  the referenced expressions.
     return TP.ac(transformFunc, referencedExprs);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Type.defineMethod('extractExpressionRecord',
+function(aspectName, anExpression) {
+
+    /**
+     * @method extractExpressionRecord
+     * @summary Constructs an 'expression record' from the supplied binding
+     *     expression.
+     * @param {String} aspectName The name of the aspect that the supplied
+     *     binding expression was found in.
+     * @param {String} anExpression The binding expression.
+     * @returns {TP.core.Hash} A hash of binding information.
+     */
+
+    var recordText,
+
+        hadBrackets,
+
+        formatExpr,
+
+        preEntry,
+        postEntry,
+
+        sigilIndex,
+
+        fullExpr,
+
+        transformInfo,
+        transformFunc,
+        dataLocs;
+
+    recordText = anExpression;
+
+    //  If the binding statement had embedded [[...]], then
+    hadBrackets = TP.regex.BINDING_STATEMENT_DETECT.test(recordText);
+    if (hadBrackets) {
+        formatExpr = null;
+
+        //  Slice out the expression from the record text and reset the record
+        //  text
+        preEntry = recordText.slice(0, recordText.indexOf('[['));
+        postEntry = recordText.slice(recordText.indexOf(']]') + 2);
+        recordText = recordText.slice(recordText.indexOf('[[') + 2,
+                                        recordText.indexOf(']]'));
+
+        //  If the record text has a formatting expression, then extract it into
+        //  a separate formatting expression.
+        if (TP.regex.ACP_FORMAT.test(recordText)) {
+            sigilIndex = recordText.indexOf('.%');
+
+            formatExpr = recordText.slice(sigilIndex);
+            recordText = recordText.slice(0, sigilIndex).trim();
+        }
+
+        fullExpr = recordText;
+
+        //  The prior expression will have trimmed off the first space, but
+        //  we want to preserve it for the full expression.
+        if (TP.notEmpty(formatExpr)) {
+            fullExpr += ' ' + formatExpr;
+        }
+
+        fullExpr = preEntry + '[[' + fullExpr + ']]' + postEntry;
+
+        //  Sometimes the expression is quoted to allow whitespace in the
+        //  *value* portion of the 'JSON-y' structure that we use to define
+        //  bindings, but we don't want surrounding quotes here - strip them
+        //  off.
+        fullExpr = fullExpr.unquoted();
+    } else {
+
+        //  Otherwise, the record text had no embedded brackets and we can just
+        //  use that as the full expression.
+        fullExpr = recordText;
+    }
+
+    //  If the expression contains ACP variables, then we *must* generate a
+    //  transformation Function to process them properly. The expression
+    //  might or might not have surrounding '[[...]]', but we take care of
+    //  that here.
+    if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr)) {
+
+        //  If the expression doesn't start with '[[' AND end with ']]',
+        //  then we fix that here.
+        if (!/^\s*\[\[/.test(fullExpr) && !/\]\]\s*$/.test(fullExpr)) {
+            fullExpr = '[[' + fullExpr + ']]';
+        }
+
+        //  Compute the transform Function and dependent data expressions.
+        transformInfo = this.computeTransformationFunction(fullExpr);
+
+        //  The Function object that does the transformation.
+        transformFunc = transformInfo.first();
+
+        //  The referenced expressions.
+        dataLocs = transformInfo.last();
+    } else if (hadBrackets &&
+        (!/^\s*\[\[/.test(fullExpr) || !/\]\]\s*$/.test(fullExpr) ||
+        TP.regex.ACP_FORMAT.test(fullExpr))) {
+
+        //  The full expression had 'surrounding content' (i.e. literal
+        //  content on either or both sides of the leading or trailing
+        //  square brackets). We need a transformation expression to handle
+        //  this.
+        transformInfo = this.computeTransformationFunction(fullExpr);
+
+        //  The Function object that does the transformation.
+        transformFunc = transformInfo.first();
+
+        //  The referenced expressions.
+        dataLocs = transformInfo.last();
+    } else {
+
+        //  Otherwise, the data locations consist of one expression, which
+        //  is the whole record text.
+        dataLocs = TP.ac(recordText);
+    }
+
+    return TP.hc('bindingAspect', aspectName,
+                    'transformFunc', transformFunc,
+                    'fullExpr', fullExpr,
+                    'dataExprs', dataLocs);
 });
 
 //  ------------------------------------------------------------------------
