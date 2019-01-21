@@ -1632,6 +1632,102 @@ TP.dom.ElementNode.Inst.defineAttribute('scopeValues');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('addBindingExpressionTo',
+function(attributeName, aspectName, expression) {
+
+    /**
+     * @method addBindingExpressionTo
+     * @summary Adds the supplied binding expression to the receiver's binding
+     *     attribute named by the supplied attribute name.
+     * @param {String} attributeName The name of the binding attribute to
+     *     update.
+     * @param {String} aspectName The name of the aspect that we're setting up a
+     *     binding expression for.
+     * @param {String} expression The text of the 'full' binding expression to
+     *     register for the named aspect.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var elem,
+        doc,
+
+        registry,
+
+        infoKey,
+
+        bindEntries,
+
+        attrVal,
+
+        extractedEntry;
+
+    //  Grab the native Element and Document.
+    elem = this.getNativeNode();
+    doc = TP.nodeGetDocument(elem);
+
+    //  If there's no 'bind registry' installed on the Document, then create
+    //  one. This registry is used to avoid computing the binding information
+    //  from the attribute value each time we need it. It's computed once and
+    //  then stored under a key that is the whole attribute value. In this way,
+    //  it can be shared amongst multiple attributes and elements, as long as
+    //  the value of the attribute is exactly the same.
+    if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
+        registry = TP.hc();
+        doc[TP.BIND_INFO_REGISTRY] = registry;
+    }
+
+    infoKey = TP.gid(elem) + '__' + attributeName;
+
+    //  If the attribute value (acting as a key) is already in the registry,
+    //  then just exit here - we don't want dups in the registry.
+    if (registry.hasKey(infoKey)) {
+        bindEntries = registry.at(infoKey);
+    } else {
+        //  Ask the type to compute the binding info and put it into the
+        //  registry.
+        attrVal = TP.elementGetAttribute(elem, attributeName, true);
+
+        //  NB: Even if attrVal is empty, we'll get an empty hash, which we need
+        //  below.
+        bindEntries = this.getType().computeBindingInfo(elem, attrVal);
+        registry.atPut(infoKey, bindEntries);
+    }
+
+    //  Extract an expression record from the supplied aspect name and
+    //  expression.
+    extractedEntry = this.getType().extractExpressionRecord(
+                                            aspectName, expression);
+
+    //  Put it into the bind entries
+    bindEntries.atPut(aspectName, extractedEntry);
+
+    //  Now, because much of the binding machinery uses the attribute value to
+    //  perform its work, we need to rewrite the attribute value and set it.
+
+    //  Build up a 'fully bracketed' attribute value that contains each aspect
+    //  and it's 'full expression'.
+    attrVal = '{';
+
+    bindEntries.perform(
+        function(kvPair) {
+            attrVal += kvPair.first() +
+                        ': ' +
+                        kvPair.last().at('fullExpr') +
+                        ', ';
+        });
+
+    //  Slice off the last ', '
+    attrVal = attrVal.slice(0, -2);
+
+    attrVal += '}';
+
+    //  Set the updated attribute value back onto the element.
+    TP.elementSetAttribute(elem, attributeName, attrVal, true);
+
+    return this;
+});
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
 function(indexes) {
 
