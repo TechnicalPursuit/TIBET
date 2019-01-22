@@ -2189,6 +2189,7 @@ function(aValue, aTest) {
      */
 
     var arr,
+        i,
         val;
 
     arr = TP.ac();
@@ -2202,6 +2203,7 @@ function(aValue, aTest) {
                 if (TP.identical(aValue, val)) {
                     arr.push(i);
                 }
+                break;
             default:
                 if (TP.equal(aValue, val)) {
                     arr.push(i);
@@ -7045,6 +7047,8 @@ function(aValue, aTest) {
         keys,
         hash,
 
+        val,
+
         i;
 
     arr = TP.ac();
@@ -7061,6 +7065,7 @@ function(aValue, aTest) {
                     if (TP.identical(aValue, val)) {
                         arr.push(keys[i]);
                     }
+                    break;
                 default:
                     if (TP.equal(aValue, val)) {
                         arr.push(keys[i]);

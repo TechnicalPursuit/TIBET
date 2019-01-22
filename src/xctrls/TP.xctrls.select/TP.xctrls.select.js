@@ -155,12 +155,12 @@ function() {
     } else if (TP.isPlainObject(dataObj)) {
         value = TP.hc(dataObj).getKeysForValue(initialVal).first();
     } else if (TP.isPair(dataObj.first())) {
-        val = dataObj.detect(
+        value = dataObj.detect(
                     function(pair) {
                         return pair.last() === initialVal;
                     });
-        if (TP.isValid(val)) {
-            val = val.first();
+        if (TP.isValid(value)) {
+            value = value.first();
         }
     } else if (TP.isArray(dataObj)) {
         value = dataObj.indexOf(initialVal);

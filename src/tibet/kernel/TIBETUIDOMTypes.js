@@ -3873,7 +3873,9 @@ function(moveAction, fromFocusedElement) {
         //  if no other element is focused
         currentTPElem = this.getFocusedElement(true);
     } else {
+        /* eslint-disable consistent-this */
         currentTPElem = this;
+        /* eslint-enable consistent-this */
     }
 
     //  If there was a real currently focused element, then we move away from it
