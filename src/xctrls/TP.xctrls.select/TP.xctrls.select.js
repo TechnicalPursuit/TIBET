@@ -27,6 +27,8 @@ TP.xctrls.select.Type.set('bidiAttrs', TP.ac('value'));
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.select.Inst.defineAttribute('dataURI');
+
 TP.xctrls.select.Inst.defineAttribute('label',
     TP.cpc('> xctrls|button > xctrls|label',
             TP.hc('shouldCollapse', true)));
@@ -68,13 +70,17 @@ function(valueURI) {
         //  Grab the value of the first expression.
         dataInVal = bindingInfo.at('data').at('dataExprs').first();
 
+        //  Capture the URI holding our data so that we can refer to it when
+        //  getting or setting the display value.
+        this.set('dataURI', TP.uc(dataInVal));
+
         //  Use the location of the 'value' URI that was supplied to us.
         valueLocation = valueURI.getLocation();
 
         //  Build the markup for the list, using the 'data' location for the
         //  'bind:in' and the 'value' location for the 'bind:io'.
         str = '<xctrls:list id="' + id + '_list"' +
-                ' bind:in="{data:' + dataInVal + '}"' +
+                ' bind:in="{data: ' + dataInVal + '}"' +
                 ' on:dragup="TP.sig.UIDeactivate"' +
                 ' bind:io="{value: ' + valueLocation + '}"';
 
@@ -131,19 +137,39 @@ function() {
 
     var initialVal,
 
-        popupList,
+        dataObj,
 
-        itemWithLabel,
         value;
 
     initialVal = this.get('label').getContent();
 
-    popupList = this.get('popupContentFirstElement');
+    //  Since the popup might not be shown, we need to access the data directly.
 
-    itemWithLabel = popupList.get('itemWithLabel', initialVal);
-    if (TP.notEmpty(itemWithLabel)) {
-        value = itemWithLabel.$getMarkupValue();
-    } else {
+    dataObj = this.get('dataURI').getContent();
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(dataObj)) {
+        value = dataObj.getKeysForValue(initialVal).first();
+    } else if (TP.isPlainObject(dataObj)) {
+        value = TP.hc(dataObj).getKeysForValue(initialVal).first();
+    } else if (TP.isPair(dataObj.first())) {
+        val = dataObj.detect(
+                    function(pair) {
+                        return pair.last() === initialVal;
+                    });
+        if (TP.isValid(val)) {
+            val = val.first();
+        }
+    } else if (TP.isArray(dataObj)) {
+        value = dataObj.indexOf(initialVal);
+        if (value === TP.NOT_FOUND) {
+            value = null;
+        }
+    }
+
+    if (TP.notValid(value)) {
         value = initialVal;
     }
 
@@ -163,17 +189,31 @@ function(aValue) {
      * @returns {TP.xctrls.select} The receiver.
      */
 
-    var popupList,
+    var dataObj,
 
-        itemWithValue,
         label;
 
-    popupList = this.get('popupContentFirstElement');
+    //  Since the popup might not be shown, we need to access the data directly.
 
-    itemWithValue = popupList.get('itemWithValue', aValue);
-    if (TP.notEmpty(itemWithValue)) {
-        label = itemWithValue.getLabelText();
-    } else {
+    dataObj = this.get('dataURI').getContent();
+
+    if (TP.isHash(dataObj)) {
+        label = dataObj.at(aValue);
+    } else if (TP.isPlainObject(dataObj)) {
+        label = TP.hc(dataObj).at(aValue);
+    } else if (TP.isPair(dataObj.first())) {
+        label = dataObj.detect(
+                    function(pair) {
+                        return pair.first() === aValue;
+                    });
+        if (TP.isValid(label)) {
+            label = label.last();
+        }
+    } else if (TP.isArray(dataObj)) {
+        label = dataObj.at(aValue);
+    }
+
+    if (TP.notValid(label)) {
         label = aValue;
     }
 
