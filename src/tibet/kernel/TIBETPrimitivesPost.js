@@ -3661,6 +3661,11 @@ function(anObject, anAspect, autoCollapse) {
         aspect = anAspect;
     }
 
+    if (TP.canInvoke(anObject, 'get') &&
+        anObject.$get('$$isValueHolder')) {
+        return anObject.get(aspect);
+    }
+
     val = null;
 
     //  if the aspect is a URI (but only if it's an absolute URI with a scheme),
