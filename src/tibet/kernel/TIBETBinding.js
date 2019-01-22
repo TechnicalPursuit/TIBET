@@ -662,6 +662,8 @@ function(aSignal) {
         attrs,
         attrVal,
 
+        aspectNames,
+
         refreshedElements,
         evt;
 
@@ -1049,6 +1051,13 @@ function(aSignal) {
                             ownerElem = boundAttrNodes.at(i).ownerElement;
                             ownerTPElem = TP.wrap(ownerElem);
 
+                            //  Grab all of the names of the aspects referencing
+                            //  the changed location, as given by the matcher.
+                            aspectNames = ownerTPElem.$computeMatchingAspects(
+                                                    boundAttrNodes.at(i).name,
+                                                    attrVal,
+                                                    matcher);
+
                             //  Note that we use sigOrigin here as the
                             //  primarySource and initialValue. We let the
                             //  observers of this element decide how to use this
@@ -1058,7 +1067,7 @@ function(aSignal) {
                             ownerTPElem.$refreshLeaf(
                                     facet,
                                     sigOrigin,
-                                    TP.ALL,
+                                    aspectNames,
                                     boundAttrNodes[i],
                                     null,
                                     originWasURI,
@@ -1726,6 +1735,114 @@ function(attributeName, aspectName, expression) {
 
     return this;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('$computeMatchingAspects',
+function(attributeName, attributeValue, valueMatcher) {
+
+    /**
+     * @method $computeMatchingAspects
+     * @summary Returns the names of the aspects that have expression values
+     *     that match the supplied matcher.
+     * description This method iterates through the aspects of the supplied
+     *     bound attribute, looking for ones that have values that match the
+     *     supplied valueMatcher regexp. Note that this method also takes into
+     *     account the receiver's scoping values. If any of the scoping values
+     *     match, then (if the aspect doesn't have an absolute URI as its
+     *     value), that aspect is also added. Finally, if the aspect's value
+     *     contains an ACP variable, that aspect is added.
+     * @param {String} attributeName The name of binding attribute to retrieve
+     *     the binding information from.
+     * @param {String} attributeValue The value of the binding attribute to
+     *     extract binding information from.
+     * @param {RegExp} valueMatcher The RegExp to use to match against aspect
+     *     values.
+     * @returns {String[]} An array of aspect names that matched using the
+     *     criteria described above.
+     */
+
+    var scopeVals,
+
+        scopeMatched,
+
+        len,
+        i,
+
+        bindingInfo,
+        aspectNames;
+
+    //  Grab all of the scoping values.
+    scopeVals = this.getBindingScopeValues();
+
+    //  See if any of the scope values match using the supplied matcher and set
+    //  the flag. This will be used if the aspect's value doesn't contain a URI
+    //  value but still needs to be matched because it's scope matched.
+
+    scopeMatched = false;
+
+    len = scopeVals.getSize();
+    for (i = 0; i < len; i++) {
+        if (valueMatcher.test(scopeVals.at(i))) {
+            scopeMatched = true;
+            break;
+        }
+    }
+
+    //  Grab the binding information.
+    bindingInfo = this.getBindingInfoFrom(attributeName, attributeValue);
+
+    aspectNames = TP.ac();
+
+    //  Iterate over each binding aspect/info pair
+    bindingInfo.perform(
+        function(kvPair) {
+            var aspect,
+                dataExprs,
+
+                exprsLen,
+                j,
+
+                theExpr;
+
+            aspect = kvPair.first();
+            dataExprs = kvPair.last().at('dataExprs');
+
+            //  Iterate over each data expression.
+            exprsLen = dataExprs.getSize();
+            for (j = 0; j < exprsLen; j++) {
+
+                theExpr = dataExprs.at(j);
+
+                //  If theExpr doesn't contain a likely URI but one of the
+                //  scoping values matched, then add the aspect.
+                if (!TP.isURIString(theExpr) && scopeMatched) {
+                    aspectNames.push(aspect);
+                    break;
+                }
+
+                //  If the matcher matched the expression itself, which means
+                //  that the aspect is probably a 'whole URI' (since it failed
+                //  the test above), then add the aspect.
+                if (valueMatcher.test(theExpr)) {
+                    aspectNames.push(aspect);
+                    break;
+                }
+
+                //  Lastly, if the expression contains ACP variables, then add
+                //  the aspect. We cannot be sure what is referenced here or
+                //  not, so we need to be safe and include this aspect in our
+                //  list.
+                if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(theExpr)) {
+                    aspectNames.push(aspect);
+                    break;
+                }
+            }
+        });
+
+    return aspectNames;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
@@ -3344,6 +3461,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
         pathType,
 
+        aspectNames,
+
         repeatScopeVals,
         repeatPath,
         repeatFragExpr,
@@ -3721,11 +3840,18 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     continue;
                 }
 
+                //  Grab all of the names of the aspects referencing the changed
+                //  location, as given by the primaryLocMatcher.
+                aspectNames = ownerTPElem.$computeMatchingAspects(
+                                                boundAttr.name,
+                                                attrVal,
+                                                primaryLocMatcher);
+
                 //  Otherwise, go ahead and process this as a leaf.
                 ownerTPElem.$refreshLeaf(
                     aFacet,
                     theVal,
-                    TP.ALL,
+                    aspectNames,
                     boundAttr,
                     aPathType,
                     originWasURI,
