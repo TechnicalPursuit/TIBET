@@ -110,6 +110,7 @@ TP.api.IndexedCollectionAPI =
         'containsValue',
         'detectKeyAt',
         'getKeys',
+        'getKeysForValue',
         'getKVPairs',
         'getPairs',
         'getPosition',
@@ -2172,6 +2173,45 @@ function(aKey, anIndex) {
 
 //  ------------------------------------------------------------------------
 //  getKeys                     Kernel
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('getKeysForValue',
+function(aValue, aTest) {
+
+    /**
+     * @method getKeysForValue
+     * @summary Returns an array containing the keys where the value matches the
+     *     supplied value, according to the test.
+     * @param {Object} aValue The value to check.
+     * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
+     *     default is TP.EQUALITY.
+     * @returns {String[]} An array of the keys for the supplied value.
+     */
+
+    var arr,
+        val;
+
+    arr = TP.ac();
+
+    for (i = 0; i < this.length; i++) {
+
+        val = this[i];
+
+        switch (aTest) {
+            case TP.IDENTITY:
+                if (TP.identical(aValue, val)) {
+                    arr.push(i);
+                }
+            default:
+                if (TP.equal(aValue, val)) {
+                    arr.push(i);
+                }
+        }
+    }
+
+    return arr;
+});
+
 //  ------------------------------------------------------------------------
 //  getKVPairs                  Kernel
 //  ------------------------------------------------------------------------
@@ -6985,6 +7025,53 @@ function() {
 
 //  ------------------------------------------------------------------------
 //  flatten                     Kernel
+//  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.defineMethod('getKeysForValue',
+function(aValue, aTest) {
+
+    /**
+     * @method getKeysForValue
+     * @summary Returns an array containing the keys where the value matches the
+     *     supplied value, according to the test.
+     * @param {Object} aValue The value to check.
+     * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
+     *     default is TP.EQUALITY.
+     * @returns {String[]} An array of the keys for the supplied value.
+     */
+
+    var arr,
+
+        keys,
+        hash,
+
+        i;
+
+    arr = TP.ac();
+
+    keys = TP.keys(this);
+
+    if (TP.notNull(hash = this.$get('$$hash'))) {
+        for (i = 0; i < keys.length; i++) {
+
+            val = hash[keys[i]];
+
+            switch (aTest) {
+                case TP.IDENTITY:
+                    if (TP.identical(aValue, val)) {
+                        arr.push(keys[i]);
+                    }
+                default:
+                    if (TP.equal(aValue, val)) {
+                        arr.push(keys[i]);
+                    }
+            }
+        }
+    }
+
+    return arr;
+});
+
 //  ------------------------------------------------------------------------
 //  getItems                    Kernel
 //  ------------------------------------------------------------------------
