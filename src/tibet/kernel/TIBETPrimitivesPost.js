@@ -3661,7 +3661,7 @@ function(anObject, anAspect, autoCollapse) {
         aspect = anAspect;
     }
 
-    if (TP.canInvoke(anObject, 'get') &&
+    if (TP.canInvoke(anObject, '$get') &&
         anObject.$get('$$isValueHolder')) {
         return anObject.get(aspect);
     }
