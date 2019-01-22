@@ -1,0 +1,171 @@
+/*
+    CSS styles for the 'xctrls:combo' control.
+*/
+
+@import (reference) url("../TP.xctrls_variables.less");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace svg url("http://www.w3.org/2000/svg");
+
+xctrls|combo {
+
+    display: inline-flex;
+
+    box-sizing: border-box;
+
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+
+    /* Hovering over the combo */
+
+    &:hover {
+    }
+
+    /* Focusing on the combo */
+
+    /* doesn't work in any browser:
+    &:focus
+    */
+    &[pclass|focus] {
+    }
+
+    /* Clicking down on the combo */
+
+    /* doesn't work in IE9:
+    &:active
+    */
+    &[pclass|active] {
+    }
+
+    /* The combo is disabled */
+
+    /* doesn't work in any browser:
+    &:disabled
+    */
+    &[pclass|disabled] {
+    }
+
+    /* The combo button */
+
+    & > xctrls|button {
+
+        display: inline-flex;
+
+        box-sizing: border-box;
+
+        justify-content: center;
+        align-items: center;
+
+        user-select: none;
+
+        flex: 1;
+
+        /* The combo button's label */
+
+        & > xctrls|label {
+
+            flex: 1;
+        }
+
+        /* Hovering over the combo's button, label must highlight */
+
+        &:hover > xctrls|label {
+        }
+
+        /* Focusing on the combo's button, label must highlight */
+
+        /* doesn't work in any browser:
+        &:focus > xctrls|label
+        */
+        &[pclass|focus] > xctrls|label {
+        }
+
+        /* Clicking down on the combo's button, label must highlight */
+
+        /* doesn't work in IE9:
+        &:active > xctrls|label
+        */
+        &[pclass|active] > xctrls|label {
+        }
+
+        /* The combo's button is disabled, so is the label */
+
+        /* doesn't work in any browser:
+        &:disabled > xctrls|label
+        */
+        &[pclass|disabled] > xctrls|label {
+        }
+    }
+
+    /* The down arrow */
+
+    & > .icon {
+
+        svg|svg {
+
+            display: block;
+
+            width: 1em;
+            height: 1em;
+
+            svg|rect {
+
+                fill: none;
+                stroke: black;
+                stroke-width: 1px;
+            }
+
+            svg|polygon {
+
+                display: none;
+            }
+        }
+    }
+
+    /* Hovering over the down arrow */
+
+    &:hover {
+
+        > .icon {
+        }
+    }
+
+    /* Focusing on the down arrow */
+
+    /* doesn't work in any browser:
+    &:focus
+    */
+    &[pclass|focus] {
+    }
+
+    /* Clicking down on the down arrow */
+
+    &[pclass|active] {
+
+        > .icon {
+        }
+
+        &[pclass|checked] > .icon {
+        }
+    }
+
+    /* The down arrow is disabled */
+
+    /* doesn't work in any browser:
+    &:disabled
+    */
+    &[pclass|disabled] {
+
+        > .icon {
+        }
+
+        &[pclass|active] > .icon {
+        }
+
+        &[pclass|active][pclass|checked] > .icon {
+        }
+    }
+}

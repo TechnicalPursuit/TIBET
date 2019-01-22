@@ -252,6 +252,7 @@
     <package src="xctrls/TP.xctrls.button/TP.xctrls.button.xml" config="base"/>
     <package src="xctrls/TP.xctrls.buttonitem/TP.xctrls.buttonitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.checkitem/TP.xctrls.checkitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.combo/TP.xctrls.combo.xml" config="base"/>
     <package src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.xml" config="base"/>
     <package src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.xml" config="base"/>
     <package src="xctrls/TP.xctrls.hint/TP.xctrls.hint.xml" config="base"/>

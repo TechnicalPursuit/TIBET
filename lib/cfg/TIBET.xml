@@ -154,6 +154,10 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.curtain-TP.xctrls.curtain.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.curtain-TP.xctrls.curtain.css.js"/>
 
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.combo-TP.xctrls.combo.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.combo-TP.xctrls.combo.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.combo_tpi.css.js"/>
+
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.dialog_tpi.css.js"/>
