@@ -109,6 +109,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.picker.Inst.defineAttribute('$settingFromSelection');
+
 TP.xctrls.picker.Inst.defineAttribute('popup',
     TP.xpc('//*[@id="XCtrlsPickerPopup"]',
             TP.hc('shouldCollapse', true)));
@@ -401,7 +403,44 @@ function(aValue, shouldSignal) {
         this.setBoundValueIfBound(displayValue);
     }
 
+    //  If this flag is true, then that means that we're setting the value from
+    //  the selection and don't want to recurse.
+    if (TP.notTrue(this.get('$settingFromSelection'))) {
+        this.set('selection', aValue);
+    }
+
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('setSelection',
+function(aValue) {
+
+    /**
+     * @method setSelection
+     * @summary Sets the selection of the receiver. A picker's popup content
+     *     usually sets this via a data binding.
+     * @param {Object} aValue The value to set the 'selection' of the receiver
+     *     to.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
+     */
+
+    var didChange;
+
+    //  Sometimes, the popup content will send a null value. We want to ignore
+    //  those.
+    if (TP.notValid(aValue)) {
+        return this;
+    }
+
+    //  Set a flag before calling setValue to avoid recursion.
+    this.set('$settingFromSelection', true, false);
+    didChange = this.set('value', aValue);
+    this.set('$settingFromSelection', false, false);
+
+    return didChange;
 });
 
 //  ------------------------------------------------------------------------
@@ -443,12 +482,13 @@ function() {
     contentURI = TP.uc('urn:tibet:' + id + '_content');
     contentURI.setResource(contentTPElem);
 
+    //  Add a binding expression to the receiver that binds our 'selection'
+    //  aspect to the computed selection location.
+    this.addBindingExpressionTo('bind:io', 'selection', selectionLoc);
+
     //  Construct the popup's shared overlay so that we can reference it for
     //  sizing before we actually load it.
     TP.xctrls.popup.constructOverlay('XCtrlsPickerPopup', this.getDocument());
-
-    //  Set up the selection location as our 'value:' binding.
-    this.setAttribute('bind:io', selectionLoc);
 
     return this;
 });
