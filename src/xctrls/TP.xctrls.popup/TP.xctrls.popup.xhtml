@@ -4,7 +4,7 @@
         id="{{$SOURCE.(@id)}}"
         class="POPUP_TIER {{$SOURCE.(@class)}}"
         tibet:assembly="xctrls:popup"
-        pclass:hidden="true" tibet:nomutationtracking="ansorself">
+        pclass:hidden="true">
     <xctrls:content tibet:focuscontext="true">
         {{$SOURCE.(./*[not(@tibet:assembly = 'xctrls:popup')])}}
     </xctrls:content>

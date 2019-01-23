@@ -112,6 +112,42 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.popup.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description Because tibet:data tag content drives binds and we need to
+     *     notify even without a full page load, we notify from here once the
+     *     attachment is complete (instead of during tagAttachData).
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    //  We need to set the 'no mutation tracking' attribute to ignore mutations
+    //  to either ourself or our ancestors, but only after we've awoken. This
+    //  means that we need to allow mutations once in order to get awoken (and
+    //  get to this method), but then we need to turn it off.
+    TP.elementSetAttribute(
+            elem, 'tibet:nomutationtracking', 'ansorself', true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
