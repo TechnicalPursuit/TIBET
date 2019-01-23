@@ -786,9 +786,12 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var domContent;
+    var domContent,
+        thisref;
 
     domContent = enterSelection.append('li');
+
+    thisref = this;
 
     domContent.attr(
             'pclass:selected',
@@ -840,8 +843,8 @@ function(enterSelection) {
                 if (d[1] !== 'spacer') {
                     targetTPElem = TP.byId(d[0]);
                     bindingExprs = targetTPElem.
-                            getFullyExpandedBindingExpressions(
-                                this.computeBindingAttributeName(targetTPElem));
+                        getFullyExpandedBindingExpressions(
+                            thisref.computeBindingAttributeName(targetTPElem));
                     expandedBindingExprs = bindingExprs.at(
                                             bindingExprs.getKeys().first());
 
@@ -924,6 +927,10 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var thisref;
+
+    thisref = this;
+
     updateSelection.attr(
             'pclass:selected',
             function(d) {
@@ -974,8 +981,8 @@ function(updateSelection) {
                 if (d[1] !== 'spacer') {
                     targetTPElem = TP.byId(d[0]);
                     bindingExprs = targetTPElem.
-                            getFullyExpandedBindingExpressions(
-                                this.computeBindingAttributeName(targetTPElem));
+                        getFullyExpandedBindingExpressions(
+                            thisref.computeBindingAttributeName(targetTPElem));
                     expandedBindingExprs = bindingExprs.at(
                                             bindingExprs.getKeys().first());
 
