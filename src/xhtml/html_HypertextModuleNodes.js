@@ -98,6 +98,11 @@ function(aRequest) {
     //  Call up the chain and force expansion and any other default processing.
     this.callNextMethod();
 
+    //  If we already rewrote this, don't do it again.
+    if (TP.elementHasAttribute(elem, 'tibet:rewrittenanchor', true)) {
+        return;
+    }
+
     //  If the target is a local reference (a path or _self) it means we're
     //  targeting a TIBET-controlled surface. If not then we don't want to
     //  interfere with normal processing so we don't rewrite.
@@ -174,6 +179,10 @@ function(aRequest) {
         ' return false;',
         true);
 
+    //  Stamp this element as being a 'rewritten anchor' so that we don't go
+    //  through this process again, possibly corrupting the value.
+    TP.elementSetAttribute(elem, 'tibet:rewrittenanchor', 'true', true);
+
     return;
 });
 
@@ -204,6 +213,11 @@ function(value) {
 
     if (!TP.isElement(elem)) {
         //  setting an attribute returns void according to the spec
+        return;
+    }
+
+    //  If we already rewrote this, don't do it again.
+    if (TP.elementHasAttribute(elem, 'tibet:rewrittenanchor', true)) {
         return;
     }
 
@@ -284,6 +298,10 @@ function(value) {
         ' TP.go2(\'' + value + '\', window);' +
         ' return false;',
         true);
+
+    //  Stamp this element as being a 'rewritten anchor' so that we don't go
+    //  through this process again, possibly corrupting the value.
+    TP.elementSetAttribute(elem, 'tibet:rewrittenanchor', 'true', true);
 
     //  setting an attribute returns void according to the spec
     return;
