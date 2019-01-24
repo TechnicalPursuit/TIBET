@@ -98,11 +98,6 @@ function(aRequest) {
     //  Call up the chain and force expansion and any other default processing.
     this.callNextMethod();
 
-    //  If we already rewrote this, don't do it again.
-    if (TP.elementHasAttribute(elem, 'tibet:rewrittenanchor', true)) {
-        return;
-    }
-
     //  If the target is a local reference (a path or _self) it means we're
     //  targeting a TIBET-controlled surface. If not then we don't want to
     //  interfere with normal processing so we don't rewrite.
@@ -112,24 +107,43 @@ function(aRequest) {
         }
     }
 
-    //  If there's already a click handler the developer "wins", even if that
-    //  means they don't get the benefit of TIBET here. Note the check for
-    //  "TP.go2('#')" here - it's a possibility that we might rewrite those
-    //  exact expressions. Note that if we have an href, we still want to
-    //  rewrite it.
+    //  If there's already a click handler the author "wins", even if that
+    //  means they don't get the benefit of TIBET here.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) &&
-        !onClickVal.contains('TP.go2(\'#') &&
-        TP.isEmpty(href)) {
-        return;
+    if (TP.notEmpty(onClickVal)) {
+
+        //  If there was an 'href' of '#' and the onClickVal contains a
+        //  TP.go2('#...') expression, then we return. This means we already
+        //  rewrote this expression.
+        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
+
+        //  If the href was empty and the onclick value did *not* contain a
+        //  TP.go2('#...') expression, then it was truly an 'onclick' that the
+        //  author put on here and we want to leave it alone.
+        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
     }
 
     //  Same check for 'on:click'.
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
-    if (TP.notEmpty(onClickVal) &&
-        !onClickVal.contains('TP.go2(\'#') &&
-        TP.isEmpty(href)) {
-        return;
+    if (TP.notEmpty(onClickVal)) {
+
+        //  If there was an 'href' of '#' and the onClickVal contains a
+        //  TP.go2('#...') expression, then we return. This means we already
+        //  rewrote this expression.
+        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
+
+        //  If the href was empty and the onclick value did *not* contain a
+        //  TP.go2('#...') expression, then it was truly an 'on:click' that the
+        //  author put on here and we want to leave it alone.
+        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
     }
 
     //  Links with an empty HREF will try to reload the page. We really don't
@@ -179,10 +193,6 @@ function(aRequest) {
         ' return false;',
         true);
 
-    //  Stamp this element as being a 'rewritten anchor' so that we don't go
-    //  through this process again, possibly corrupting the value.
-    TP.elementSetAttribute(elem, 'tibet:rewrittenanchor', 'true', true);
-
     return;
 });
 
@@ -216,11 +226,6 @@ function(value) {
         return;
     }
 
-    //  If we already rewrote this, don't do it again.
-    if (TP.elementHasAttribute(elem, 'tibet:rewrittenanchor', true)) {
-        return;
-    }
-
     //  If the target is a local reference (a path or _self) it means we're
     //  targeting a TIBET-controlled surface. If not then we don't want to
     //  interfere with normal processing so we don't rewrite.
@@ -234,26 +239,43 @@ function(value) {
     //  Capture the current HREF value.
     href = TP.elementGetAttribute(elem, 'href', true);
 
-    //  If there's already a click handler the developer "wins", even if that
-    //  means they don't get the benefit of TIBET here. Note the check for
-    //  "TP.go2('#')" here - it's a possibility that we might rewrite those
-    //  exact expressions. Note that if we have an href, we still want to
-    //  rewrite it.
+    //  If there's already a click handler the author "wins", even if that
+    //  means they don't get the benefit of TIBET here.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal) &&
-        !onClickVal.contains('TP.go2(\'#') &&
-        TP.isEmpty(href)) {
-        //  setting an attribute returns void according to the spec
-        return;
+    if (TP.notEmpty(onClickVal)) {
+
+        //  If there was an 'href' of '#' and the onClickVal contains a
+        //  TP.go2('#...') expression, then we return. This means we already
+        //  rewrote this expression.
+        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
+
+        //  If the href was empty and the onclick value did *not* contain a
+        //  TP.go2('#...') expression, then it was truly an 'onclick' that the
+        //  author put on here and we want to leave it alone.
+        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
     }
 
     //  Same check for 'on:click'.
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
-    if (TP.notEmpty(onClickVal) &&
-        !onClickVal.contains('TP.go2(\'#') &&
-        TP.isEmpty(href)) {
-        //  setting an attribute returns void according to the spec
-        return;
+    if (TP.notEmpty(onClickVal)) {
+
+        //  If there was an 'href' of '#' and the onClickVal contains a
+        //  TP.go2('#...') expression, then we return. This means we already
+        //  rewrote this expression.
+        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
+
+        //  If the href was empty and the onclick value did *not* contain a
+        //  TP.go2('#...') expression, then it was truly an 'on:click' that the
+        //  author put on here and we want to leave it alone.
+        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
+            return;
+        }
     }
 
     //  Links with an empty HREF will try to reload the page. We really don't
@@ -298,10 +320,6 @@ function(value) {
         ' TP.go2(\'' + value + '\', window);' +
         ' return false;',
         true);
-
-    //  Stamp this element as being a 'rewritten anchor' so that we don't go
-    //  through this process again, possibly corrupting the value.
-    TP.elementSetAttribute(elem, 'tibet:rewrittenanchor', 'true', true);
 
     //  setting an attribute returns void according to the spec
     return;
