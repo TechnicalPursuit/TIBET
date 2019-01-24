@@ -239,44 +239,10 @@ function(value) {
     //  Capture the current HREF value.
     href = TP.elementGetAttribute(elem, 'href', true);
 
-    //  If there's already a click handler the author "wins", even if that
-    //  means they don't get the benefit of TIBET here.
-    onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
-    if (TP.notEmpty(onClickVal)) {
-
-        //  If there was an 'href' of '#' and the onClickVal contains a
-        //  TP.go2('#...') expression, then we return. This means we already
-        //  rewrote this expression.
-        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
-            return;
-        }
-
-        //  If the href was empty and the onclick value did *not* contain a
-        //  TP.go2('#...') expression, then it was truly an 'onclick' that the
-        //  author put on here and we want to leave it alone.
-        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
-            return;
-        }
-    }
-
-    //  Same check for 'on:click'.
-    onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
-    if (TP.notEmpty(onClickVal)) {
-
-        //  If there was an 'href' of '#' and the onClickVal contains a
-        //  TP.go2('#...') expression, then we return. This means we already
-        //  rewrote this expression.
-        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
-            return;
-        }
-
-        //  If the href was empty and the onclick value did *not* contain a
-        //  TP.go2('#...') expression, then it was truly an 'on:click' that the
-        //  author put on here and we want to leave it alone.
-        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
-            return;
-        }
-    }
+    //  NB: Unlike the 'tagResolve' method above, there is no check here to
+    //  exit early based on the onclick value. This is due to the fact that the
+    //  href is being set, not being rewritten from authored markup, and the
+    //  caller should know what they're doing.
 
     //  Links with an empty HREF will try to reload the page. We really don't
     //  want that, we want to have them do nothing. We set '#' here and let the
