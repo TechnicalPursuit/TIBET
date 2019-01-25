@@ -179,6 +179,8 @@ function() {
 
         thisref,
 
+        hasResultType,
+
         resp,
 
         headerContent,
@@ -312,6 +314,8 @@ function() {
     if (TP.notEmpty(val = this.getAttribute('separator'))) {
         request.atPut('separator', val);
     }
+
+    hasResultType = this.hasAttribute('resultType');
 
     //  NB: This is the HTTP resultType parameter, not the result type that we
     //  will use to package the data.
@@ -534,6 +538,13 @@ function() {
 
     //  Mark us as having activated
     this.set('isActivated', true);
+
+    //  If the author determined that they want a specialized result type, then
+    //  we just want the TP.TEXT back from these calls to the server. We'll do
+    //  the data conversion above in the RequestSucceeded handler method.
+    if (hasResultType) {
+        request.atPut('resultType', TP.TEXT);
+    }
 
     //  Process the method
     switch (request.at('method')) {
