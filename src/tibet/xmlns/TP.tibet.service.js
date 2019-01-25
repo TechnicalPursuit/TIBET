@@ -379,6 +379,8 @@ function() {
                         newResource = resultType.construct(result, resultURI);
                     } else if (resultType === String) {
                         newResource = TP.str(result);
+                    } else {
+                        newResource = resultType.construct(result);
                     }
 
                 } else if (TP.isNode(result)) {
