@@ -2014,14 +2014,7 @@ function(anObject, resultType, collapse) {
 
             case TP.TEXT:
 
-                //  Often dealing with TP.core.Content types so we have to work
-                //  from the data, not the object in those cases.
-                if (TP.canInvoke(anObject, 'getData')) {
-                    obj = anObject.getData();
-                } else {
-                    obj = anObject;
-                }
-
+                obj = anObject;
                 if (TP.notFalse(collapse)) {
                     obj = TP.collapse(obj);
                     if (TP.isValid(obj)) {
