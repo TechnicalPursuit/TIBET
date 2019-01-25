@@ -9759,7 +9759,7 @@ function(anItem, aTest) {
      *     method makes use of the TP.equal() function of TIBET for equality
      *     comparisons so that arrays, objects, dates, and functions with
      *     equivalent string values will compare equal.
-     * @param {TPOrderedPair} anItem The item (key/value pair) to test.
+     * @param {TP.api.OrderedPair} anItem The item (key/value pair) to test.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Boolean} Whether or not the receiver contains the value

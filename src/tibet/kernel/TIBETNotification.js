@@ -709,8 +709,8 @@ function(anItemOrKey, aValue) {
      * @method addIfAbsent
      * @summary Using the key/value pair provided assign the value to the key
      *     in the receiver if the key doesn't already exist.
-     * @param {TPOrderedPair|String} anItemOrKey The ordered pair to add, or the
-     *     key for a pair.
+     * @param {TP.api.OrderedPair|String} anItemOrKey The ordered pair to add,
+     *     or the key for a pair.
      * @param {Object} aValue Optional value to store when the first argument is
      *     a string.
      * @exception TP.sig.InvalidPair

@@ -9,18 +9,18 @@
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
-//  TP.api.CollectionAPI
+//  TP.api.Collection API
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.api.CollectionAPI}
- * @summary The TP.api.CollectionAPI, which defines the core methods we
+ * @type {TP.api.Collection}
+ * @summary The TP.api.Collection API, which defines the core methods we
  *     consider appropriate for a rich set of collections.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.api.CollectionAPI =
+TP.api.Collection =
     TP.ac(
         'add',
         'addAll',
@@ -82,11 +82,11 @@ TP.api.CollectionAPI =
     );
 
 //  ------------------------------------------------------------------------
-//  TP.api.IndexedCollectionAPI
+//  TP.api.IndexedCollection API
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.api.IndexedCollectionAPI}
+ * @type {TP.api.IndexedCollection}
  * @summary The TP.api.IndexedCollection API, which adds support for accessing
  *     elements of a collection by index and for working with the indexes
  *     themselves.
@@ -94,7 +94,7 @@ TP.api.CollectionAPI =
 
 //  ------------------------------------------------------------------------
 
-TP.api.IndexedCollectionAPI =
+TP.api.IndexedCollection =
     TP.ac(
         'addAt',
         'addAllAt',
@@ -126,18 +126,18 @@ TP.api.IndexedCollectionAPI =
     );
 
 //  ------------------------------------------------------------------------
-//  TP.api.OrderedCollectionAPI
+//  TP.api.OrderedCollection API
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.api.OrderedCollectionAPI}
+ * @type {TP.api.OrderedCollection}
  * @summary The TP.api.OrderedCollection API, which adds methods which deal
  *     with ordered element access.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.api.OrderedCollectionAPI =
+TP.api.OrderedCollection =
     TP.ac(
         'addAfter',
         'addAllAfter',
@@ -161,20 +161,20 @@ TP.api.OrderedCollectionAPI =
     );
 
 //  ------------------------------------------------------------------------
-//  TP.api.OrderedPairAPI
+//  TP.api.OrderedPair API
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.api.OrderedPairAPI}
+ * @type {TP.api.OrderedPair}
  * @summary The API required of objects which act as ordered pairs.
- * @description TP.api.OrderedPairAPI is an interface which can be implemented
+ * @description TP.api.OrderedPair API is an interface which can be implemented
  *     by any object which may be used to hold key/value pairs. Objects in the
  *     core which implement this API include Array, Object, and TP.core.Hash.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.api.OrderedPairAPI =
+TP.api.OrderedPair =
     TP.ac(
 
         /**
@@ -189,7 +189,7 @@ TP.api.OrderedPairAPI =
          *     but it it MUCH more efficient to use Arrays instead. This method
          *     is here primarily for flexibility and polymorphism.
          * @exception TP.sig.InvalidPairRequest
-         * @returns {TPOrderedPair} The key/value pair.
+         * @returns {TP.api.OrderedPair} The key/value pair.
          */
 
         'getPair',
@@ -216,13 +216,13 @@ TP.api.OrderedPairAPI =
     );
 
 //  ------------------------------------------------------------------------
-//  TP.api.SortedCollectionAPI
+//  TP.api.SortedCollection API
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.api.SortedCollectionAPI}
+ * @type {TP.api.SortedCollection}
  * @summary The API required of objects which act as sorted collections.
- * @description TP.api.SortedCollectionAPI is an interface which various
+ * @description TP.api.SortedCollection API is an interface which various
  *     collections may implement as needed. Array is the only type in the system
  *     which has native sorting capability so the interface is typically
  *     implemented by types which use an array to manage either their internal
@@ -231,7 +231,7 @@ TP.api.OrderedPairAPI =
 
 //  ------------------------------------------------------------------------
 
-TP.sys.SortedCollectionAPI =
+TP.sys.SortedCollection =
     TP.ac(
 
         /**
@@ -312,7 +312,7 @@ TP.api.IterationAPI =
          * @summary Returns a new collection containing the items in the
          *     receiver at the various indexes contained in the collection
          *     provided.
-         * @param {TPCollection} anIndexCollection
+         * @param {TP.api.Collection} anIndexCollection
          * @exception TP.sig.InvalidParameter
          * @exception TP.sig.InvalidCollection
          * @returns {Object[]} An array of zero or more items.
@@ -356,8 +356,9 @@ TP.api.IterationAPI =
  * @description The vast majority of functional support for the collection
  *     module. Most other collection classes rely on Array for their internal
  *     storage needs either for data, keys, or both. Array implements all of the
- *     TPCollection, TPIndexedCollection, and TPOrderedCollection APIs as well
- *     as the TPOrderedPair and TPSortedCollection interfaces.
+ *     TP.api.Collection, TP.api.IndexedCollection, and TP.api.OrderedCollection
+ *     APIs as well as the TP.api.OrderedPair and TP.api.SortedCollection
+ *     interfaces.
  * @example See the /tibet/test directory for collection tests which provide a
  *     good view of usage.
  */
@@ -671,7 +672,7 @@ function(aSize) {
 });
 
 //  ------------------------------------------------------------------------
-//  TPCollection API
+//  TP.api.Collection API
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('add',
@@ -707,7 +708,7 @@ function(aCollection) {
     /**
      * @method addAll
      * @summary Adds all items from the collection as elements of the receiver.
-     * @param {TPCollection} aCollection The collection to add items from.
+     * @param {TP.api.Collection} aCollection The collection to add items from.
      * @returns {Array} The receiver.
      */
 
@@ -748,7 +749,7 @@ function(aCollection) {
      * @method addAllIfAbsent
      * @summary Adds all items from the collection provided which are not
      *     currently found in the receiver.
-     * @param {TPCollection} aCollection The collection to add items from.
+     * @param {TP.api.Collection} aCollection The collection to add items from.
      * @returns {Array} The receiver.
      */
 
@@ -1043,9 +1044,9 @@ function(aCollection, aTest) {
      * @method containsAll
      * @summary Returns true if all the values in the collection provided are
      *     found in the receiver.
-     * @param {TPCollection} aCollection The collection of elements all of which
-     *     must be equal to at least one element in the receiver for this method
-     *     to return true.
+     * @param {TP.api.Collection} aCollection The collection of elements all of
+     *     which must be equal to at least one element in the receiver for this
+     *     method to return true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -1106,9 +1107,9 @@ function(aCollection, aTest) {
      * @method containsAny
      * @summary Returns true if any of the values in the collection provided
      *     are found in the receiver.
-     * @param {TPCollection} aCollection The collection of elements any of which
-     *     must be equal to any element in the receiver for this method to be
-     *     true.
+     * @param {TP.api.Collection} aCollection The collection of elements any of
+     *     which must be equal to any element in the receiver for this method to
+     *     be true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -1211,8 +1212,8 @@ function(aCollection, aTest) {
      * @description This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
-     * @param {TPCollection} aCollection The collection to difference against
-     *     the receiver.
+     * @param {TP.api.Collection} aCollection The collection to difference
+     *     against the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -1246,8 +1247,8 @@ function(aCollection, aTest) {
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
      *     returned.
-     * @param {TPCollection} aCollection The collection to disjunct against the
-     *     receiver.
+     * @param {TP.api.Collection} aCollection The collection to disjunct against
+     *     the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {Object[]} The disjunction of aCollection and the receiver.
@@ -1395,7 +1396,7 @@ function(aCollection, aTest) {
      * @summary Returns the intersection of the two collections.
      * @description This method returns a collection of those elements which
      *     occur in BOTH the receiver and in aCollection.
-     * @param {TPCollection} aCollection The collection to intersect the
+     * @param {TP.api.Collection} aCollection The collection to intersect the
      *     receiver with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -1564,8 +1565,8 @@ function(aCollection, aTest) {
      * @method removeAll
      * @summary Removes the values contained in the collection from the
      *     receiver.
-     * @param {TPCollection} aCollection The collection of elements that removed
-     *     elements need to be equal to.
+     * @param {TP.api.Collection} aCollection The collection of elements that
+     *     removed elements need to be equal to.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -1696,8 +1697,8 @@ function(aCollection, newValue, aTest) {
      * @method replaceAll
      * @summary Replaces all values in aCollection with a newValue using the
      *     test provided to determine a match. The default test is TP.EQUALITY.
-     * @param {TPCollection} aCollection A collection containing the elements to
-     *     replace.
+     * @param {TP.api.Collection} aCollection A collection containing the
+     *     elements to replace.
      * @param {Object} newValue A new value to replace objects with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -1767,7 +1768,7 @@ function(aCollection) {
      * @summary Returns a new array containing the members of both arrays.
      * @description This method computes a new array of elements, placing into
      *     it all elements from this array and all elements from aCollection.
-     * @param {TPCollection} aCollection The other collection to union this
+     * @param {TP.api.Collection} aCollection The other collection to union this
      *     array against.
      * @exception TP.sig.InvalidCollection
      * @returns {Object[]} The new array containing elements from both arrays.
@@ -1796,7 +1797,7 @@ function(aCollection) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TPIndexedCollection API
+//  TP.api.IndexedCollection API
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('addAt',
@@ -1852,7 +1853,8 @@ function(aCollection, anIndex) {
      * @method addAllAt
      * @summary Adds all the elements of aCollection beginning at the index
      *     provided.
-     * @param {TPCollection} aCollection The collection to add elements from.
+     * @param {TP.api.Collection} aCollection The collection to add elements
+     *     from.
      * @param {Number} anIndex The index to begin adding elements.
      * @exception TP.sig.InvalidCollection
      * @exception TP.sig.InvalidIndex
@@ -1919,7 +1921,7 @@ function(aCollection) {
      * @method atAll
      * @summary Returns an array containing the values at each of the indices
      *     provided.
-     * @param {TPCollection} aCollection The collection of indexes.
+     * @param {TP.api.Collection} aCollection The collection of indexes.
      * @exception TP.sig.InvalidCollection
      * @exception TP.sig.InvalidIndex
      * @returns {Object[]} A new array containing the values collected.
@@ -1964,7 +1966,7 @@ function(aCollection, anItem) {
      * @description Places anItem at each location in the receiver. If the
      *     optional collection is provided the indices listed in the collection
      *     are updated rather than the entire array.
-     * @param {TPCollection} aCollection An optional collection specifying
+     * @param {TP.api.Collection} aCollection An optional collection specifying
      *     indexes which should be altered to contain anItem.
      * @param {Object} anItem The element to put at all the locations in this
      *     array (unless aCollection of indexes is provided).
@@ -2400,7 +2402,8 @@ function(aCollection) {
      * @summary Removes the elements at the indexes (keys) contained in the
      *     collection provided. Upon completion the remaining elements are
      *     shifted into new positions.
-     * @param {TPCollection} aCollection The collection of indexes. TP.EQUALITY.
+     * @param {TP.api.Collection} aCollection The collection of indexes.
+     *     TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
      * @returns {Array} The receiver.
      * @fires Change
@@ -2483,7 +2486,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TPOrderedCollection API
+//  TP.api.OrderedCollection API
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('addAfter',
@@ -2519,8 +2522,8 @@ function(aCollection, anItem, aTest) {
     /**
      * @method addAllAfter
      * @summary Adds the collection of elements after the element provided.
-     * @param {TPCollection} aCollection The collection containing the elements
-     *     to add after aValue.
+     * @param {TP.api.Collection} aCollection The collection containing the
+     *     elements to add after aValue.
      * @param {Object} anItem The element used to locate the index for the
      *     addition.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -2549,8 +2552,8 @@ function(aCollection, anItem, aTest) {
      * @method addAllBefore
      * @summary Adds the collection of elements before the element equal to the
      *     value provided.
-     * @param {TPCollection} aCollection The collection containing the elements
-     *     to add before aValue.
+     * @param {TP.api.Collection} aCollection The collection containing the
+     *     elements to add before aValue.
      * @param {Object} anItem The element used to locate the insertion index.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -2577,8 +2580,8 @@ function(aCollection) {
     /**
      * @method addAllFirst
      * @summary Adds the elements of the collection at the start of the array.
-     * @param {TPCollection} aCollection The collection containing the elements
-     *     to prepend.
+     * @param {TP.api.Collection} aCollection The collection containing the
+     *     elements to prepend.
      * @returns {Array} The receiver.
      * @fires Change
      */
@@ -2594,8 +2597,8 @@ function(aCollection) {
     /**
      * @method addAllLast
      * @summary Appends the elements of the collection to the receiver.
-     * @param {TPCollection} aCollection The collection containing the elements
-     *     to append.
+     * @param {TP.api.Collection} aCollection The collection containing the
+     *     elements to append.
      * @returns {Array} The receiver.
      * @fires Change
      */
@@ -2915,7 +2918,7 @@ function(oldValue, newValue, aTest) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TPSortedCollection
+//  TP.api.SortedCollection
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('getSortFunction',
@@ -3422,7 +3425,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TPCollection
+//  TP.api.Collection
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
@@ -3556,9 +3559,9 @@ function(aCollection) {
      * @method containsAll
      * @summary Returns true if all the values in the collection provided are
      *     found in the receiver.
-     * @param {TPCollection} aCollection The collection of elements all of which
-     *     must be equal to at least one element in the receiver for this method
-     *     to return true.
+     * @param {TP.api.Collection} aCollection The collection of elements all of
+     *     which must be equal to at least one element in the receiver for this
+     *     method to return true.
      * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains all of the values
      *     in the collection provided.
@@ -3603,9 +3606,9 @@ function(aCollection) {
      * @method containsAny
      * @summary Returns true if any of the values in the collection provided
      *     are found in the receiver.
-     * @param {TPCollection} aCollection The collection of elements any of which
-     *     must be equal to any element in the receiver for this method to be
-     *     true.
+     * @param {TP.api.Collection} aCollection The collection of elements any of
+     *     which must be equal to any element in the receiver for this method to
+     *     be true.
      * @exception TP.sig.InvalidCollection
      * @returns {Boolean} Whether or not the receiver contains any of the values
      *     in the collection provided.
@@ -3734,8 +3737,8 @@ function(aCollection, aTest) {
      * @description This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
-     * @param {TPCollection} aCollection The collection to difference against
-     *     the receiver.
+     * @param {TP.api.Collection} aCollection The collection to difference
+     *     against the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -3758,8 +3761,8 @@ function(aCollection, aTest) {
      *     between the receiver and aCollection. This means that only those
      *     characters which occur in one of the collections but not the other
      *     are returned.
-     * @param {TPCollection} aCollection The collection to disjunct against the
-     *     receiver.
+     * @param {TP.api.Collection} aCollection The collection to disjunct against
+     *     the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @returns {String} The disjunction of aCollection and the receiver.
@@ -3833,7 +3836,7 @@ function(aCollection) {
      * @summary Returns the intersection of the two collections.
      * @description This method returns a collection of those elements which
      *     occur in BOTH the receiver and in aCollection.
-     * @param {TPCollection} aCollection The collection to intersect the
+     * @param {TP.api.Collection} aCollection The collection to intersect the
      *     receiver with.
      * @exception TP.sig.InvalidCollection
      * @returns {Object[]} An array of elements occurring in both.
@@ -3904,7 +3907,7 @@ function(aCollection) {
      * @description This method computes a new string of characters, placing
      *     into it all characters from this string and all elements from
      *     aCollection.
-     * @param {TPCollection} aCollection The other collection to union this
+     * @param {TP.api.Collection} aCollection The other collection to union this
      *     string against.
      * @exception TP.sig.InvalidCollection
      * @returns {Object[]} The new string containing elements from both
@@ -3919,7 +3922,7 @@ function(aCollection) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TPIndexedCollection
+//  TP.api.IndexedCollection
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
@@ -3937,8 +3940,8 @@ function(aCollection) {
      * @method atAll
      * @summary Returns a new collection containing the characters in the
      *     receiver at the various indexes contained in the collection provided.
-     * @param {TPCollection} aCollection The collection of numeric indices to
-     *     use.
+     * @param {TP.api.Collection} aCollection The collection of numeric indices
+     *     to use.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidCollection
      * @returns {String[]} An array of zero or more items.
@@ -4146,7 +4149,7 @@ function(aValue, startIndex) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TPOrderedCollection
+//  TP.api.OrderedCollection
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
@@ -4735,7 +4738,7 @@ function(aCollection) {
      *     inverting the array into the hash. You can use the resulting hash to
      *     do containment checking against a hash key instead of scanning the
      *     original array by using hash.containsKey().
-     * @param {TPCollection} aCollection A collection of one or more keys.
+     * @param {TP.api.Collection} aCollection A collection of one or more keys.
      * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
@@ -6026,7 +6029,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TPCollection API
+//  TP.api.Collection API
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('add',
@@ -6129,7 +6132,8 @@ function(aCollection, aFunction) {
      * @summary Adds all the ordered pairs contained in the collection to the
      *     receiver. The optional function can be used to decide which value
      *     will be used when a duplicate key is found.
-     * @param {TPCollection} aCollection A collection of ordered pairs to add.
+     * @param {TP.api.Collection} aCollection A collection of ordered pairs to
+     *     add.
      * @param {Function} aFunction A function accepting a key and two values
      *     (key, old, new) which returns the value to use for the key.
      * @returns {TP.core.Hash} The receiver.
@@ -6196,7 +6200,8 @@ function(aCollection) {
      * @method addAllIfAbsent
      * @summary Adds all the ordered pairs contained in the collection to the
      *     receiver where the keys are not already in the target collection.
-     * @param {TPCollection} aCollection A collection of ordered pairs to add.
+     * @param {TP.api.Collection} aCollection A collection of ordered pairs to
+     *     add.
      * @returns {TP.core.Hash} The receiver.
      * @fires Change
      */
@@ -6228,8 +6233,8 @@ function(anItemOrKey, aValue, varargs) {
      *     key/value pairs can be provided just as with the TP.core.Hash
      *     constructor to avoid having to call this routine multiple times with
      *     each pair.
-     * @param {TPOrderedPair|String} anItemOrKey The ordered pair to add, or the
-     *     key for a pair.
+     * @param {TP.api.OrderedPair|String} anItemOrKey The ordered pair to add,
+     *     or the key for a pair.
      * @param {Object} aValue Optional value to store when the first argument is
      *     a string.
      * @param {arguments} varargs Additional key signifying that more key/value
@@ -6621,7 +6626,7 @@ function(anItem, aTest) {
      *     receiver. So that hash and array containers can be used for common
      *     operations if anItem is a simple string this method returns true if
      *     that string is a key in the receiver.
-     * @param {TPOrderedPair} anItem The item to find in the receiver.
+     * @param {TP.api.OrderedPair} anItem The item to find in the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception InvalidPair
@@ -6664,9 +6669,9 @@ function(aCollection, aTest) {
      * @method containsAll
      * @summary Returns true if all the values in the collection provided are
      *     found in the receiver.
-     * @param {TPCollection} aCollection The collection of elements all of which
-     *     must be equal to at least one element in the receiver for this method
-     *     to return true.
+     * @param {TP.api.Collection} aCollection The collection of elements all of
+     *     which must be equal to at least one element in the receiver for this
+     *     method to return true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -6715,9 +6720,9 @@ function(aCollection, aTest) {
      * @method containsAny
      * @summary Returns true if any of the values in the collection provided
      *     are found in the receiver.
-     * @param {TPCollection} aCollection The collection of elements any of which
-     *     must be equal to any element in the receiver for this method to be
-     *     true.
+     * @param {TP.api.Collection} aCollection The collection of elements any of
+     *     which must be equal to any element in the receiver for this method to
+     *     be true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -6819,7 +6824,7 @@ function(anItem, aTest) {
      * @method countOf
      * @summary Returns a count of the number of times anItem is found in the
      *     hash.
-     * @param {TPOrderedPair} anItem The item/pair whose value is checked
+     * @param {TP.api.OrderedPair} anItem The item/pair whose value is checked
      *     against.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -6959,8 +6964,8 @@ function(aCollection, aTest) {
      * @description This method can be thought of as subtracting all elements
      *     found in the collection provided from the receiver. What's left are
      *     those elements unique to the receiver.
-     * @param {TPCollection} aCollection The collection to difference against
-     *     the receiver.
+     * @param {TP.api.Collection} aCollection The collection to difference
+     *     against the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -7001,8 +7006,8 @@ function(aCollection, aTest) {
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
      *     returned.
-     * @param {TPCollection} aCollection The collection to disjunct against the
-     *     receiver.
+     * @param {TP.api.Collection} aCollection The collection to disjunct against
+     *     the receiver.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidCollection
@@ -7214,7 +7219,7 @@ function(aCollection, aTest) {
      * @description This method returns a hash of those elements which occur in
      *     BOTH the receiver and in aCollection. NOTE that both the keys and the
      *     values are used in testing.
-     * @param {TPCollection} aCollection The collection to intersect the
+     * @param {TP.api.Collection} aCollection The collection to intersect the
      *     receiver with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -7347,7 +7352,7 @@ function(anItem, aTest) {
      *     key and value must match for the item to be removed. If you want to
      *     remove the key without concern for whether the value matches use
      *     removeKey or removeAt.
-     * @param {TPOrderedPair} anItem The item to be removed.
+     * @param {TP.api.OrderedPair} anItem The item to be removed.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception InvalidItem
@@ -7377,7 +7382,7 @@ function(aCollection, aTest) {
      * @method removeAll
      * @summary Removes the items contained in the collection from the
      *     receiver.
-     * @param {TPCollection} aCollection The collection of items to remove.
+     * @param {TP.api.Collection} aCollection The collection of items to remove.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidParameter
@@ -7443,8 +7448,9 @@ function(oldItem, newItem, aTest) {
      * @method replace
      * @summary Replaces the item having the value oldItem with an item having
      *     the value newItem.
-     * @param {TPOrderedPair} oldItem The old item to look for.
-     * @param {TPOrderedPair} newItem The new item to replace the old item with.
+     * @param {TP.api.OrderedPair} oldItem The old item to look for.
+     * @param {TP.api.OrderedPair} newItem The new item to replace the old item
+     *     with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
      * @exception TP.sig.InvalidParameter
@@ -7491,8 +7497,9 @@ function(aCollection, newItem, aTest) {
     /**
      * @method replaceAll
      * @summary Replaces all the items in aCollection with the newItem.
-     * @param {TPCollection} aCollection A collection of old items to replace.
-     * @param {TPOrderedPair} newItem The new item to replace the old items
+     * @param {TP.api.Collection} aCollection A collection of old items to
+     *     replace.
+     * @param {TP.api.OrderedPair} newItem The new item to replace the old items
      *     with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
@@ -7591,8 +7598,8 @@ function(aCollection, aFunction) {
      *     values of both objects. When aFunction is provided it is used to
      *     produce a return value for duplicate keys, otherwise the incoming
      *     collection's values will replace the receiver's values.
-     * @param {TPCollection} aCollection An object containing key/value data to
-     *     be combined with the receiver.
+     * @param {TP.api.Collection} aCollection An object containing key/value
+     *     data to be combined with the receiver.
      * @param {Function} aFunction A function accepting a key and two values
      *     (key, old, new) which returns the value to use for the key.
      * @returns {TP.core.Hash} A new hash containing items from both
@@ -7658,7 +7665,7 @@ function(aTest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TPIndexedCollection Interface
+//  TP.api.IndexedCollection Interface
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('addAt',
@@ -7690,7 +7697,7 @@ function(aCollection, anIndex) {
      * @method addAllAt
      * @summary Adds aCollection at the index provided. NOTE that the entire
      *     collection becomes the value for the key provided.
-     * @param {TPCollection} aCollection The collection to add.
+     * @param {TP.api.Collection} aCollection The collection to add.
      * @param {Number} anIndex The index to add elements.
      * @exception TP.sig.InvalidIndex
      * @returns {Object} The receiver.
@@ -7737,7 +7744,7 @@ function(aCollection) {
      * @method atAll
      * @summary Returns an array containing the values at each of the indices
      *     provided.
-     * @param {TPCollection} aCollection The collection of indexes.
+     * @param {TP.api.Collection} aCollection The collection of indexes.
      * @exception TP.sig.InvalidCollection
      * @returns {Object[]} A new array containing the values collected.
      */
@@ -7773,7 +7780,7 @@ function(aCollection, aValue) {
      * @description Places aValue at each location in the receiver. If the
      *     optional collection is provided the indices listed in the collection
      *     are updated rather than the entire collection.
-     * @param {TPCollection} aCollection An optional collection specifying
+     * @param {TP.api.Collection} aCollection An optional collection specifying
      *     indexes which should be altered to contain aValue.
      * @param {Object} aValue The element to put at all the locations in this
      *     collection (unless aCollection of indexes is provided).
@@ -8345,7 +8352,7 @@ function(aCollection) {
      * @method removeAtAll
      * @summary Provides a way to remove a collection of keys (and their
      *     values) from the collection.
-     * @param {TPCollection} aCollection A collection of keys.
+     * @param {TP.api.Collection} aCollection A collection of keys.
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidCollection
      * @returns {Object} The receiver.
@@ -8482,7 +8489,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TPSortedCollection
+//  TP.api.SortedCollection
 //  ------------------------------------------------------------------------
 
 /*
@@ -8713,7 +8720,7 @@ function(aCollection, aStep) {
     /**
      * @name init
      * @summary Initialize the iterator instance.
-     * @param {TP.api.CollectionAPI} aCollection The collection to iterate over.
+     * @param {TP.api.Collection} aCollection The collection to iterate over.
      * @param {Number} aStep The step size to use. Iteration can occur in
      *     "steps" by setting a size other than 1. The default is 1.
      * @exception TP.sig.InvalidCollection

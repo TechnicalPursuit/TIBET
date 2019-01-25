@@ -3530,7 +3530,7 @@ function(aNode) {
  *     primary data management structure for XForms and various web service
  *     request/response pairs. The API includes methods from:
  *
- *     TP.api.CollectionAPI:
+ *     TP.api.Collection API:
  *
  *     'add', 'addAll', 'addAllIfAbsent', 'addIfAbsent', 'addItem',
  *     'addWithCount', 'asArray', 'asHash', 'asIterator', 'asRange', 'asString',
@@ -3544,7 +3544,7 @@ function(aNode) {
  *     'performWhile', 'performWith', 'reject', 'remove', 'removeAll',
  *     'replace', 'replaceAll', 'select', 'union', 'unique',
  *
- *     TP.api.IndexedCollectionAPI:
+ *     TP.api.IndexedCollection API:
  *
  *     'addAt', 'addAllAt', 'at', 'atAll', 'atAllPut',
  *     'atIfInvalid', 'atIfNull', 'atIfUndefined', 'atPut', 'atPutIfAbsent',
@@ -3552,7 +3552,7 @@ function(aNode) {
  *     'getPairs', 'getPosition', 'getPositions', 'grepKeys', 'performOver',
  *     'removeAt', 'removeAtAll', 'removeKey', 'removeKeys', 'transpose',
  *
- *     TP.api.OrderedCollectionAPI:
+ *     TP.api.OrderedCollection API:
  *
  *     'addAfter', 'addAllAfter', 'addAllBefore', 'addAllFirst', 'addAllLast',
  *     'addBefore', 'addFirst', 'addLast', 'after', 'before', 'first',
@@ -7076,7 +7076,7 @@ function(anIndex) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.api.CollectionAPI
+//  TP.api.Collection API
 //  ------------------------------------------------------------------------
 
 TP.dom.CollectionNode.Inst.defineMethod('add',
@@ -7392,7 +7392,7 @@ function(aCollection, aTest) {
      * @method containsAll
      * @summary Returns true if all the elements in the collection provided are
      *     found in the receiver.
-     * @param {TP.api.CollectionAPI} aCollection The collection of elements all
+     * @param {TP.api.Collection} aCollection The collection of elements all
      *     of which must be equal to at least one element in the receiver for
      *     this method to return true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -7414,7 +7414,7 @@ function(aCollection) {
      * @method containsAny
      * @summary Returns true if any the elements in the collection provided are
      *     found in the receiver.
-     * @param {TP.api.CollectionAPI} aCollection The collection of elements any
+     * @param {TP.api.Collection} aCollection The collection of elements any
      *     of which must be equal to at least one element in the receiver for
      *     this method to return true.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
@@ -8114,7 +8114,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.api.IndexedCollectionAPI
+//  TP.api.IndexedCollection API
 //  ------------------------------------------------------------------------
 
 TP.dom.CollectionNode.Inst.defineMethod('addAt',
@@ -8660,7 +8660,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.api.OrderedCollectionAPI
+//  TP.api.OrderedCollection API
 //  ------------------------------------------------------------------------
 
 TP.dom.CollectionNode.Inst.defineMethod('addAfter',

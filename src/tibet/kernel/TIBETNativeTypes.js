@@ -6240,7 +6240,7 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
      *     method to process each of the symbols found in the registration hash.
      * @param {String} aSymbol The symbol used to locate a substitution
      *     registration.
-     * @param {TP.api.CollectionAPI} aDataSource The data source(s) being
+     * @param {TP.api.Collection} aDataSource The data source(s) being
      *     formatted.
      * @param {TP.core.Hash} aKeySource The hash for keyed formatters.
      * @param {Object} aScope The object to be used for the context of
