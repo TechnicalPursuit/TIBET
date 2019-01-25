@@ -1319,7 +1319,8 @@ function(deep, aFilterNameOrKeys, contentOnly) {
 
     newinst.phase = this.phase;
 
-    newinst.payload = this.payload;
+    //  Make sure to do a true copy of the signal's payload.
+    newinst.payload = TP.copy(this.payload);
 
     newinst.recyclable = this.recyclable;
 
