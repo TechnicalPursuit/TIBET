@@ -189,7 +189,7 @@ function(aResult) {
 
     result = TP.ifInvalid(aResult, data);
 
-    switch (this.get('resultType')) {
+    switch (this.at('resultType')) {
         case TP.DOM:
             if (!TP.isNode(result)) {
                 result = httpObj.responseXML;
