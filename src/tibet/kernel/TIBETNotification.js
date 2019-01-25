@@ -6605,7 +6605,9 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  Make sure that we can get a resource result for the scope - note here
     //  how we query the primary URI for its resource. The handler will be on
-    //  that object's result.
+    //  that object's result. The reason we do this is that the scope above is
+    //  fully qualified by joining all of the scope values, so we want the
+    //  result of the 'top-level' resource to modify
 
     //  NB: We assume 'async' of false here.
     if (TP.notValid(resource =
