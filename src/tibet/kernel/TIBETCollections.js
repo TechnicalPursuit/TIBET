@@ -4546,6 +4546,38 @@ function(anObject) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Hash.Type.defineMethod('fromString',
+function(anObject) {
+
+    /**
+     * @method fromString
+     * @summary Constructs a new hash from the String provided.
+     * @param {String} anObject The source object.
+     * @returns {TP.core.Hash} A new instance.
+     */
+
+    var newInst,
+        val;
+
+    newInst = this.construct();
+
+    if (TP.isJSONString(anObject)) {
+
+        val = TP.json2js(anObject);
+        if (TP.isValid(val)) {
+            //  Note how we grab the '$$hash' prototype-less
+            //  object and make that *our* $$hash.
+            newInst.$set('$$hash', val.$$hash, false);
+
+            return newInst;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
