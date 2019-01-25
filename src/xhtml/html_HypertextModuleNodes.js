@@ -213,11 +213,7 @@ function(value) {
 
     var elem,
 
-        href,
-
-        target,
-
-        onClickVal;
+        target;
 
     elem = this.getNativeNode();
 
@@ -235,9 +231,6 @@ function(value) {
             return;
         }
     }
-
-    //  Capture the current HREF value.
-    href = TP.elementGetAttribute(elem, 'href', true);
 
     //  NB: Unlike the 'tagResolve' method above, there is no check here to
     //  exit early based on the onclick value. This is due to the fact that the
