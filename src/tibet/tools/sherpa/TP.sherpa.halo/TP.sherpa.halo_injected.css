@@ -8,3 +8,7 @@
     color: red !important;
 }
 
+.sherpa-halo .sherpa-halo-offset-parent,
+.sherpa-halo *[class~="sherpa-halo-offset-parent"] {
+
+}
