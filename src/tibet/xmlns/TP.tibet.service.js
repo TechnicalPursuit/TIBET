@@ -333,7 +333,6 @@ function() {
 
                 mimeType,
 
-                isValid,
                 newResource;
 
             //  Mark the URI as being loaded, since we marked it as not being so
@@ -369,17 +368,6 @@ function() {
                     //  String.
                     if (!TP.isType(resultType)) {
                         resultType = String;
-                    }
-
-                    //  Make sure that it's valid for its container. Note that we
-                    //  pass 'false' as a second parameter here for content
-                    //  objects that do both trivial and full facet checks on
-                    //  their data. We only want trival checks here (i.e. is the
-                    //  XML inside of a TP.core.XMLContent really XML - same for
-                    //  JSON)
-                    isValid = resultType.validate(result, false);
-                    if (!isValid) {
-                        return this.raise('TP.sig.InvalidValue');
                     }
 
                     //  If the new resource result is a content object of some
