@@ -1972,16 +1972,25 @@ function() {
                 }
             }
 
+            //  If the target has a 'tibet:nomutationtracking' attribute on it
+            //  that has a value of 'ancestor or self' on it, then we return
+            //  false, filtering it from the list.
             val = TP.elementGetAttribute(
                             target, 'tibet:nomutationtracking', true);
             if (val === TP.ANCESTOR_OR_SELF) {
                 return false;
             }
 
-            if (TP.isElement(
-                ans = TP.nodeAncestorMatchingCSS(
+            //  Search for an ancestor that has the 'tibet:nomutationtracking'
+            //  attribute.
+            ans = TP.nodeAncestorMatchingCSS(
                             target,
-                            '*[tibet|nomutationtracking]'))) {
+                            '*[tibet|nomutationtracking]');
+
+            //  If we found one, then check *it's* 'tibet:nomutation' value. If
+            //  it's either 'true' or 'ancestor', then we return false,
+            //  filtering *this* element from the list.
+            if (TP.isElement(ans)) {
 
                 val = TP.elementGetAttribute(
                             ans, 'tibet:nomutationtracking', true);
@@ -2320,7 +2329,7 @@ function(aMutationRecord) {
     //  If the target is an Element and it has a 'tibet:nomutationtracking'
     //  attribute on it that's either set to look at itself or at one of its
     //  ancestors or itself to determine whether or not it should process
-    //  mutation signals.
+    //  mutation signals, then process it.
     if (TP.isElement(targetNode)) {
         targetShouldTrack = TP.elementGetAttribute(
                 targetNode, 'tibet:nomutationtracking', true);
