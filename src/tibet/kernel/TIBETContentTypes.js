@@ -796,24 +796,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineHandler('ClearContent',
-function(aSignal) {
-
-    /**
-     * @method handleClearContent
-     * @summary Handles when the receiver's data is to be cleared.
-     * @param {TP.sig.ClearContent} aSignal The signal instance which triggered
-     *     this handler.
-     * @returns {TP.core.Content} The receiver.
-     */
-
-    TP.todo();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Content.Inst.defineHandler('CloneItem',
 function(aSignal) {
 
@@ -982,64 +964,6 @@ function(aSignal) {
             aSignal.at('position'),
             aSignal.at('copy'),
             aSignal.at('clear'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Content.Inst.defineHandler('SetContent',
-function(aSignal) {
-
-    /**
-     * @method handleSetContent
-     * @summary Handles when the receiver's data is to be set to the source
-     *     specified in the 'source' parameter of the supplied signal. The
-     *     source should resolve to a value that a URI can be constructed from.
-     *     The signal should also specify via a 'copy' Boolean flag as to
-     *     whether the source's data should be copied.
-     * @param {TP.sig.SetContent} aSignal The signal instance which triggered
-     *     this handler.
-     * @exception TP.sig.InvalidParameter
-     * @exception TP.sig.InvalidURI
-     * @exception TP.sig.InvalidSource
-     * @returns {TP.core.Content} The receiver.
-     */
-
-    var scope,
-        scopeURI,
-
-        sourceURI,
-        source;
-
-    //  The 'scope' should be a URI location to find the overall collection to
-    //  insert the item into. It should be either the whole collection
-    //  representing the data of the receiver or a subcollection of that data.
-    if (TP.isEmpty(scope = aSignal.at('scope'))) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  Make sure we can create a real URI from it.
-    if (!TP.isURI(scopeURI = TP.uc(scope))) {
-        return this.raise('TP.sig.InvalidURI');
-    }
-
-    //  Make sure we can create a real URI from the source.
-    source = aSignal.at('source');
-    if (TP.isEmpty(source)) {
-        return this.raise('TP.sig.InvalidSource');
-    }
-
-    source = source.unquoted();
-
-    if (!TP.isURI(sourceURI = TP.uc(source))) {
-        return this.raise('TP.sig.InvalidURI');
-    }
-
-    scopeURI.setResourceToResultOf(
-        sourceURI,
-        TP.hc('signalChange', true),
-        TP.bc(aSignal.at('copy')));
 
     return this;
 });
