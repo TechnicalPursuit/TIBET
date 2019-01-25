@@ -8859,7 +8859,7 @@ function(aFunction, aCollection) {
      *     aCollection. This allows you to iterate in a more sparse fashion. If
      *     no collection is provided this works just like perform.
      * @param {Function} aFunction The function to perform.
-     * @param {TP.api.CollectionAPI} aCollection The collection of indexes.
+     * @param {TP.api.Collection} aCollection The collection of indexes.
      * @returns {Object} The receiver.
      */
 
@@ -9007,7 +9007,7 @@ function(aFunction, aCollection) {
      * @param {Function} aFunction A function which accepts three arguments: 1)
      *     The element at the current index in the receiver. 2) The element at
      *     the current index in aCollection. 3) The current index.
-     * @param {TP.api.CollectionAPI} aCollection The collection of elements to
+     * @param {TP.api.Collection} aCollection The collection of elements to
      *     use for the second argument to aFunction.
      * @exception TP.sig.InvalidCollection
      * @exception TP.sig.CollectionSizeMismatch
