@@ -4000,14 +4000,21 @@ function(aURI, aRequest, shouldCopy) {
      * @param {Boolean} [shouldCopy=false] Whether or not to make a copy of the
      *     result before using it as the receiver's resource. Note that this
      *     will cause a *deep copy* of the receiver's resource to be made.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the newly set
-     *     content set as its result.
+     * @returns {TP.sig.Response|null} A TP.sig.Response created with the newly
+     *     set content set as its result or null if there was no content in the
+     *     result.
      */
 
-    var result,
+    var req,
+
+        result,
         newResult;
 
-    result = aURI.getResource(TP.hc('async', false)).get('result');
+    //  Copy the request and make sure it's configured for an 'async' fetch.
+    req = TP.request(aRequest).copy();
+    req.atPut('async', false);
+
+    result = aURI.getResource(req).get('result');
     if (TP.isValid(result)) {
 
         if (TP.isTrue(shouldCopy)) {
@@ -4021,7 +4028,7 @@ function(aURI, aRequest, shouldCopy) {
         return this.setResource(newResult, aRequest);
     }
 
-    return this;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
