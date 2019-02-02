@@ -2085,10 +2085,10 @@
     //  function
     TP.sys.setcfg('aws.passthrough.region', 'us-east-1');
     TP.sys.setcfg('aws.passthrough.apiVersion', '2015-03-31');
-    TP.sys.setcfg('aws.passthrough.userPoolID', 'us-east-1_oPCGmXhoW');
-    TP.sys.setcfg('aws.passthrough.appID', '6ctn07r35mkedqn5ub4gia166k');
+    TP.sys.setcfg('aws.passthrough.userPoolID', 'us-east-1_A206BoLEW');
+    TP.sys.setcfg('aws.passthrough.appID', '7ibvg9a5d3f45lclk2ob9jaqc8');
     TP.sys.setcfg('aws.passthrough.identityPoolID',
-        'us-east-1:01083178-f775-4c66-85e0-cbde9842d409');
+                    'us-east-1:22f26cd1-9384-44d9-b6f3-7d948a4ea87b');
 
     //  ---
     //  xctrls

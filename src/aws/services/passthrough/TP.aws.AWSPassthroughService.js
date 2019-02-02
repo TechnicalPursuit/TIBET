@@ -151,7 +151,7 @@ function(methodName, methodParams) {
     functionParams.atPut('methodName', methodName);
     functionParams.atPut('params', invocationParams);
 
-    return this.callNextMethod('invoker', functionParams);
+    return this.callNextMethod('passthrough', functionParams);
 });
 
 //  ------------------------------------------------------------------------
