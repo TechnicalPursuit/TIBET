@@ -392,7 +392,19 @@ function(aString) {
 
     var text;
 
+    if (!TP.isString(aString)) {
+        return false;
+    }
+
     if (TP.isEmpty(aString)) {
+        return false;
+    }
+
+    if (TP.regex.ANY_NUMBER.test(aString)) {
+        return false;
+    }
+
+    if (TP.regex.BOOLEAN_ID.test(aString)) {
         return false;
     }
 
