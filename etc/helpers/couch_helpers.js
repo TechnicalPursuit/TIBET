@@ -273,7 +273,8 @@ helpers.getCouchParameters = function(options) {
 
     if (options.needsdb !== false) {
         if (requestor.prompt && opts.confirm !== false) {
-            result = requestor.prompt.question('Database name [' + db_name + '] ? ');
+            result = requestor.prompt.question(
+                                'Database name [' + db_name + '] ? ');
             if (result && result.length > 0) {
                 db_name = result;
             }
@@ -288,7 +289,8 @@ helpers.getCouchParameters = function(options) {
 
     if (options.needsapp !== false) {
         if (requestor.prompt && opts.confirm !== false) {
-            result = requestor.prompt.question('Application name [' + db_app + '] ? ');
+            result = requestor.prompt.question(
+                                'Application name [' + db_app + '] ? ');
             if (result && result.length > 0) {
                 db_app = result;
             }
@@ -373,8 +375,10 @@ helpers.getCouchURL = function(options) {
             db_url += db_user + ':' + db_pass + '@' + db_host;
         } else {
             msg =
-                'Missing CouchDB login credential(s). You may need user:pass@host in URL.\n' +
-                'For security reasons you should not rely on public databases in CouchDB.';
+                'Missing CouchDB login credential(s).' +
+                ' You may need user:pass@host in URL.\n' +
+                'For security reasons you should not rely' +
+                ' on public databases in CouchDB.';
             if (requestor.warn) {
                 requestor.warn(msg);
             } else if (requestor.logger && requestor.logger.warn) {
