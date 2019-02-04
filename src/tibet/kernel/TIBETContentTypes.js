@@ -5450,6 +5450,9 @@ function(srcPath, templateArgs) {
         fromExpr,
         toExpr,
 
+        predicateWroteHeader,
+        predicateExpr,
+
         indexes,
         j,
         item,
@@ -5479,6 +5482,8 @@ function(srcPath, templateArgs) {
 
     //  The individual path tokens start at this place under the root
     pathTokens = tokens[0].expression.value;
+
+    predicateWroteHeader = false;
 
     for (i = 0; i < pathTokens.getSize(); i++) {
 
@@ -5558,6 +5563,9 @@ function(srcPath, templateArgs) {
 
                     //  JSONPath subscript operator (numeric values only)
                     //  '[<number>]' ->  '[position() = ... + 1]'
+
+                    //  NB: Because this is a numeric step, we assume that the
+                    //  DOM structure that we're querying is an Array structure.
                     case 'index':
 
                         //  If the previous step was a 'recursive descent'
@@ -5589,6 +5597,9 @@ function(srcPath, templateArgs) {
 
                     //  JSONPath slice expression
                     //  '[<number>:<number>]' ->  '[...]'
+
+                    //  NB: Because this is a numeric step, we assume that the
+                    //  DOM structure that we're querying is an Array structure.
                     case 'slice':
 
                         //  See above for what this is used for.
@@ -5669,25 +5680,28 @@ function(srcPath, templateArgs) {
 
                         indexes = exprRecord.value;
 
-                        xmlStr += '[';
+                        predicateExpr = '[';
 
                         for (j = 0; j < indexes.getSize(); j++) {
 
                             item = indexes.at(j).expression.value;
                             if (TP.isNumber(item.asNumber())) {
-                                xmlStr += 'position() = ' +
+                                predicateExpr += 'position() = ' +
                                         (item.asNumber() + 1);
                             } else {
-                                xmlStr += 'local-name() = "' + item + '"';
+                                predicateExpr +=
+                                    'local-name() = "' + item + '"';
                             }
 
-                            xmlStr += ' or ';
+                            predicateExpr += ' or ';
                         }
 
                         //  slice off the last ' or '
-                        xmlStr = xmlStr.slice(0, -4);
+                        predicateExpr = predicateExpr.slice(0, -4);
 
-                        xmlStr += ']';
+                        predicateExpr += ']';
+
+                        xmlStr += predicateExpr;
 
                         break;
 
@@ -5695,33 +5709,49 @@ function(srcPath, templateArgs) {
                     //  '[(...)]'  ->  '[...]'
                     case 'script_expression':
 
-                        //  See above for what this is used for.
-                        xmlStr += prevStepIsDescent ?
-                                    '[not(@type="array")]' :
-                                    '/*';
-
                         content = exprRecord.value;
 
-                        xmlStr += '[';
+                        predicateExpr = '[';
 
                         if (/@\.length/.test(content)) {
-                            xmlStr +=
+                            predicateExpr +=
                                 'position() = ' +
                                 content.replace(/@\.length/, 'last() + 1');
                         } else {
                             //  JSONPath current object
                             //  '@'     ->  '.'
-                            xmlStr += content.replace(/@\./g, './');
+                            predicateExpr += content.replace(/@\./g, './');
                         }
 
                         /* eslint-disable no-div-regex */
-                        xmlStr = xmlStr.replace(/==/, '=');
+                        predicateExpr = predicateExpr.replace(/==/, '=');
                         /* eslint-enable no-div-regex */
 
-                        xmlStr = xmlStr.replace(/&&/, 'and');
-                        xmlStr = xmlStr.replace(/\|\|/, 'or');
+                        predicateExpr = predicateExpr.replace(/&&/, 'and');
+                        predicateExpr = predicateExpr.replace(/\|\|/, 'or');
 
-                        xmlStr += ']';
+                        predicateExpr += ']';
+
+                        predicateWroteHeader = true;
+
+                        //  Adjust as necessary for the 'rootObj' top-level
+                        //  element that will get generated as the root-level
+                        //  element.
+                        if (xmlStr.startsWith('/') &&
+                            !xmlStr.startsWith('//')) {
+                            xmlStr = '/rootObj' + xmlStr;
+                        }
+
+                        if (prevStepIsDescent) {
+                            xmlStr += '[not(@type="array")]' +
+                                        predicateExpr;
+                        } else {
+                            xmlStr += predicateExpr +
+                                        ' | ' +
+                                        xmlStr +
+                                        '/*' +
+                                        predicateExpr;
+                        }
 
                         break;
 
@@ -5729,27 +5759,43 @@ function(srcPath, templateArgs) {
                     //  '[?(...)]'  ->  '[...]'
                     case 'filter_expression':
 
-                        //  See above for what this is used for.
-                        xmlStr += prevStepIsDescent ?
-                                    '[not(@type="array")]' :
-                                    '/*';
-
                         content = exprRecord.value;
 
-                        xmlStr += '[';
+                        predicateExpr = '[';
 
                         //  JSONPath current object
                         //  '@'     ->  '.'
-                        xmlStr += content.replace(/@\./g, './');
+                        predicateExpr += content.replace(/@\./g, './');
 
                         /* eslint-disable no-div-regex */
-                        xmlStr = xmlStr.replace(/==/, '=');
+                        predicateExpr = predicateExpr.replace(/==/, '=');
                         /* eslint-enable no-div-regex */
 
-                        xmlStr = xmlStr.replace(/&&/, 'and');
-                        xmlStr = xmlStr.replace(/\|\|/, 'or');
+                        predicateExpr = predicateExpr.replace(/&&/, 'and');
+                        predicateExpr = predicateExpr.replace(/\|\|/, 'or');
 
-                        xmlStr += ']';
+                        predicateExpr += ']';
+
+                        predicateWroteHeader = true;
+
+                        //  Adjust as necessary for the 'rootObj' top-level
+                        //  element that will get generated as the root-level
+                        //  element.
+                        if (xmlStr.startsWith('/') &&
+                            !xmlStr.startsWith('//')) {
+                            xmlStr = '/rootObj' + xmlStr;
+                        }
+
+                        if (prevStepIsDescent) {
+                            xmlStr += '[not(@type="array")]' +
+                                        predicateExpr;
+                        } else {
+                            xmlStr += predicateExpr +
+                                        ' | ' +
+                                        xmlStr +
+                                        '/*' +
+                                        predicateExpr;
+                        }
 
                         break;
 
@@ -5765,7 +5811,9 @@ function(srcPath, templateArgs) {
 
     //  Adjust as necessary for the 'rootObj' top-level element that will
     //  get generated as the root-level element.
-    if (xmlStr.startsWith('/') && !xmlStr.startsWith('//')) {
+    if (!predicateWroteHeader &&
+        xmlStr.startsWith('/') &&
+        !xmlStr.startsWith('//')) {
         xmlStr = '/rootObj' + xmlStr;
     }
 
