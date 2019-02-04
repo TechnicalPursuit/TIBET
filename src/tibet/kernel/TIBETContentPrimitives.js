@@ -1589,6 +1589,77 @@ function(aString) {
 });
 
 //  ------------------------------------------------------------------------
+//  Download support
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentDownloadContent',
+function(aDocument, content, filename) {
+
+    /**
+     * @method documentDownloadContent
+     * @summary Downloads the supplied content to the user's local file system.
+     * @description This mechanism generates a link to an internally-generated
+     *     URL which points to an encoded version of the supplied content and
+     *     then activates that link via a synthetic 'click' event.
+     * @param {Document} aDocument The document that the download link element
+     *     will be generated into (and removed from when complete).
+     * @param {String} content The content to download.
+     * @param {String} filename The filename to use when downloading the data.
+     */
+
+    var win,
+
+        blob,
+        url,
+
+        anchorElem,
+        evt;
+
+    if (!TP.isDocument(aDocument)) {
+        return;
+    }
+
+    if (TP.isEmpty(content) || TP.isEmpty(filename)) {
+        return;
+    }
+
+    //  Grab the Window of the supplied document.
+    win = TP.nodeGetWindow(aDocument);
+
+    //  Create a new Blob object with the supplied content, encoding it as
+    //  'octet/stream'.
+    blob = new Blob(TP.ac(content), {type: 'octet/stream'});
+
+    //  Create a URL and put the blob in there as the URL's resource.
+    url = win.URL.createObjectURL(blob);
+
+    //  Create a new anchor and set various attributes on it to allow us to
+    //  treat it as a 'download' link.
+    anchorElem = TP.documentConstructElement(aDocument, 'a', TP.w3.Xmlns.XHTML);
+
+    TP.elementSetAttribute(anchorElem, 'target', '_blank', true);
+
+    //  NB: These properties must be set directly for this approach to work. We
+    //  cannot use TP.elementSetAttribute here.
+    anchorElem.href = url;
+    anchorElem.download = filename;
+
+    //  Append the anchor to the document's body. This will allow us to activate
+    //  it.
+    TP.nodeAppendChild(TP.documentGetBody(aDocument), anchorElem, false);
+
+    //  Create a 'click' Event and dispatch it against the anchor. This will
+    //  activate the anchor and begin the download process.
+    evt = TP.documentConstructEvent(aDocument, TP.hc('type', 'click'));
+    anchorElem.dispatchEvent(evt);
+
+    //  We're done with it - detach it from it's parent node.
+    TP.nodeDetach(anchorElem);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  JSONP call support
 //  ------------------------------------------------------------------------
 
