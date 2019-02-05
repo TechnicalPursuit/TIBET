@@ -10992,6 +10992,7 @@ function(aURIOrPushState, aDirection) {
         if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
+
         return this;
     }
 
@@ -11004,6 +11005,7 @@ function(aURIOrPushState, aDirection) {
         if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
+
         return this;
     }
 
