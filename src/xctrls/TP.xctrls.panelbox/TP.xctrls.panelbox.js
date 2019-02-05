@@ -163,6 +163,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panelbox.Inst.defineMethod('refresh',
+function(shouldRender, shouldRefreshBindings) {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver and all of the descendants of the receiver that are
+     *     bound.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
+     *     bindings from the receiver down (in a 'sparse' fashion). If not
+     *     supplied, this parameter will default to true.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var selectedPanel;
+
+    selectedPanel = this.get('selectedItem');
+
+    if (TP.isEmptyArray(selectedPanel)) {
+        return this.callNextMethod();
+    }
+
+    return selectedPanel.refresh(shouldRender, shouldRefreshBindings);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.panelbox.Inst.defineMethod('removePanel',
 function(aValue) {
 
