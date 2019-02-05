@@ -5977,7 +5977,10 @@ function(objectA, objectB, aStack, bStack) {
         length,
 
         keys,
-        key;
+        key,
+
+        aHasAt,
+        bHasAt;
 
     //  Unwrap any wrapped objects.
     a = TP.unwrap(objectA);
@@ -6101,12 +6104,16 @@ function(objectA, objectB, aStack, bStack) {
             return false;
         }
 
+        aHasAt = TP.isFunction(a.at);
+        bHasAt = TP.isFunction(b.at);
+
         while (length--) {
             //  Deep compare each member
             key = keys.at(length);
-            if (!(TP.objectHasKey(b, key) && TP.$equal(
-                    TP.isFunction(a.at) ? a.at(key) : a[key],
-                    TP.isFunction(b.at) ? b.at(key) : b[key], aStk, bStk))) {
+            if (!(TP.objectHasKey(b, key) &&
+                    TP.$equal(
+                        aHasAt ? a.at(key) : a[key],
+                        bHasAt ? b.at(key) : b[key], aStk, bStk))) {
                 return false;
             }
         }
