@@ -9544,11 +9544,19 @@ function() {
 
     var inst;
 
-    if (this.shouldUseSingleton() &&
-        TP.isValid(inst = this.$get('$$singleton'))) {
-        //  clear the instance of any lingering data first
-        if (inst.isRecyclable()) {
-            inst.recycle();
+    if (this.shouldUseSingleton()) {
+        //  If we have a valid singleton, then see if we recycle it. If so,
+        //  recycling it will clear the '$$singletonInitialized' flag on the
+        //  instance and it will be reinitialized.
+        if (TP.isValid(inst = this.$get('$$singleton'))) {
+            //  clear the instance of any lingering data first
+            if (inst.isRecyclable()) {
+                inst.recycle();
+            }
+        } else {
+            inst = new this[TP.INSTC]();
+
+            this.$set('$$singleton', inst);
         }
 
         return inst;
@@ -9685,14 +9693,29 @@ function() {
 
     newinst[TP.TYPE] = this[TP.TYPE];
 
-    //  initialize the new instance. Notice that the object passed back
-    //  does NOT have to be the object passed in. This is critical because
-    //  in TIBET's collection classes we often local program an Array or
-    //  Object to stand in for what you think is a collection type. Also note
-    //  that the $init is a shared internal initializer useful for hidden
-    //  initialization that can be leveraged by all instances.
-    newinst = newinst.$init.apply(newinst, arguments);
-    optinst = newinst.init.apply(newinst, arguments);
+    //  initialize the new instance. Notice that the object passed back does
+    //  NOT have to be the object passed in. This is critical because in TIBET's
+    //  collection classes we often local program an Array or Object to stand in
+    //  for what you think is a collection type. Also note that the $init is a
+    //  shared internal initializer useful for hidden initialization that can be
+    //  leveraged by all instances.
+
+    //  Note that if we're configured to have a singleton, the $alloc method
+    //  will have handed us back that singleton instance, but it might be the
+    //  first time creating it so we check to see if it has a
+    //  '$$singletonInited' slot. If not, it hasn't been initialized yet. Stamp
+    //  that slot on it and initialize it for the one-and-only time.
+    if (this.shouldUseSingleton()) {
+        if (!TP.owns(newinst, '$$singletonInitialized')) {
+            newinst.defineAttribute('$$singletonInitialized');
+            newinst.set('$$singletonInitialized', true);
+            newinst = newinst.$init.apply(newinst, arguments);
+            optinst = newinst.init.apply(newinst, arguments);
+        }
+    } else {
+        newinst = newinst.$init.apply(newinst, arguments);
+        optinst = newinst.init.apply(newinst, arguments);
+    }
 
     //  if init() returns a non-null object that's our return value.
     //  this lets init() cheat and return an object of its choice
@@ -9767,6 +9790,10 @@ function() {
      *     original state.
      * @returns {TP.lang.RootObject} The receiver.
      */
+
+    //  Remove the $$singletonInitialized flag since we're recycling. This will
+    //  force the singleton to reinitialize.
+    delete this.$$singletonInitialized;
 
     //  default is a no-op
     return this;
