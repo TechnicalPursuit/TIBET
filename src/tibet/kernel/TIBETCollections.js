@@ -5546,6 +5546,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Hash.Inst.defineMethod('$getEqualityValue',
+function() {
+
+    /**
+     * @method $getEqualityValue
+     * @summary Returns the value which should be used for testing equality
+     *     for the receiver. For hashes, this is the underlying POJO object used
+     *     to store values. Note that this does result in a deep compare for
+     *     the hash's values.
+     * @returns {Object} A value appropriate for use in equality comparisons.
+     */
+
+    return this.$get('$$hash');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Hash.Inst.defineMethod('getParameters',
 function() {
 
