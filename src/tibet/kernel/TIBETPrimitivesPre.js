@@ -10506,7 +10506,7 @@ function(anObject, aKey) {
     }
 
     try {
-        return anObject[aKey];
+        return anObject[aKey] !== undefined;
     } catch (e) {
         return false;
     }
