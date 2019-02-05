@@ -2973,17 +2973,30 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
      * @returns {String[]} The object's keys.
      */
 
+    var keys;
+
     //  no valid source object means no work
     if (TP.notValid(anObject)) {
         return [];
     }
 
-    //  Note that we only call 'getKeys' if the object has it *and* neither of
-    //  the two flags are set.
-    if (TP.canInvoke(anObject, 'getKeys') &&
-        !includeNonenumerables &&
-        !includePrototypeProps) {
-        return anObject.getKeys();
+    if (!includeNonenumerables && !includePrototypeProps) {
+        //  Note that we only call 'getKeys' if the object has it *and* neither
+        //  of the two flags are set.
+        if (TP.canInvoke(anObject, 'getKeys')) {
+            return anObject.getKeys();
+        }
+
+        //  Same for extracting keys from a POJO.
+        if (TP.isPlainObject(anObject)) {
+            keys = Object.keys(anObject);
+            keys = keys.filter(
+                        function(aKey) {
+                            return !TP.regex.INTERNAL_SLOT.test(aKey);
+                        });
+
+            return keys;
+        }
     }
 
     //  If the caller wants non enumerable and/or prototype properties, we call
