@@ -1183,6 +1183,9 @@ TP.uri.URI.Inst.defineAttribute('found', null);
 //  content change tracking flag
 TP.uri.URI.Inst.defineAttribute('$dirty', false);
 
+//  whether we track content change flag
+TP.uri.URI.Inst.defineAttribute('$trackDirty', true);
+
 //  load status flag
 TP.uri.URI.Inst.defineAttribute('$loaded', false);
 
@@ -3836,7 +3839,8 @@ function(aResource, aRequest, shouldSignal) {
     } else {
         //  If we're already loaded we need to know if we're changing the value.
         //  We compare via a TP.equal to ensure a deep comparison.
-        if (TP.equal(oldResource, newResource)) {
+        if (TP.notFalse(this.$get('$trackDirty')) &&
+            TP.equal(oldResource, newResource)) {
             dirty = false;
         } else {
             if (TP.sys.hasStarted()) {
@@ -3866,7 +3870,8 @@ function(aResource, aRequest, shouldSignal) {
     //  If the new resource is valid and the request parameters don't contain a
     //  false value for the flag for observing our resource, then observe it for
     //  all *Change signals.
-    if (TP.notFalse(request.at('observeResource')) && TP.isMutable(newResource)) {
+    if (TP.notFalse(request.at('observeResource')) &&
+        TP.isMutable(newResource)) {
         //  Observe the new resource object for changes.
         this.observe(newResource, 'Change');
     }
@@ -4242,7 +4247,7 @@ function(aRequest, aResult, aResource, shouldSignal) {
     //  If there was already a value then we consider new values to dirty the
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
-    if (request.at('loaded')) {
+    if (request.at('loaded') && TP.notFalse(this.$get('$trackDirty'))) {
         if (!TP.equal(oldResource, aResource)) {
             this.isDirty(true, true);
         }
@@ -5134,7 +5139,8 @@ function(aResource, aRequest, shouldSignal) {
     }
 
     //  Core question of whether we're dirty or not, will value change.
-    if (TP.equal(oldResource, newResource)) {
+    if (TP.notFalse(this.$get('$trackDirty') &&
+        TP.equal(oldResource, newResource))) {
         dirty = false;
     } else {
         //  NOTE we don't consider setting a value to the processed version of
