@@ -10210,6 +10210,12 @@ TP.uri.URIRouter.Type.defineAttribute('processors');
  */
 TP.uri.URIRouter.Type.defineAttribute('root', 'Home');
 
+/**
+ * The list of route names that we've visited.
+ * @type {String[]}
+ */
+TP.uri.URIRouter.Type.defineAttribute('visited', TP.ac());
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -10891,7 +10897,8 @@ function(aURIOrPushState, aDirection) {
         lastParams,
         paramDiff,
         bootParams,
-        route;
+        route,
+        visited;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -11319,6 +11326,13 @@ function(aURIOrPushState, aDirection) {
     //  Fire the signal that we computed above, which should be an instance of
     //  either RouteFinalize or a subtype of RouteFinalize.
     signal.fire();
+
+    //  Now that we're done servicing the route we need to capture the route in
+    //  the list of visited routes. Note how we unique the list since we might
+    //  have already been through here.
+    visited = this.get('visited');
+    visited.push(route);
+    visited.unique();
 
     return this;
 });
