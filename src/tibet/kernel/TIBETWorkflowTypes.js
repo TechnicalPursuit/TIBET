@@ -3180,7 +3180,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     signals = this.getTypeSignalNames().copy();
 
     //  Slice off all signal types before TP.sig.Request
-    signals = signals.slice(0, signals.getPosition('TP.sig.Request') + 1);
+    signals = signals.slice(0, signals.indexOf('TP.sig.Request') + 1);
 
     leni = signals.getSize();
 
