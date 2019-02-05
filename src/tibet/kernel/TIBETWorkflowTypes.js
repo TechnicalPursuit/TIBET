@@ -6214,6 +6214,12 @@ TP.core.Controller.defineSubtype('RouteController');
 TP.core.RouteController.Type.shouldUseSingleton(true);
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.RouteController.Inst.defineAttribute('router');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -6657,9 +6663,14 @@ function() {
      */
 
     var controllers,
-        customs,
-        controller,
-        sherpa;
+
+        sherpa,
+
+        router,
+        routeControllerType,
+        routeController,
+
+        customs;
 
     TP.debug('Refreshing controller stack...');
 
@@ -6687,15 +6698,20 @@ function() {
     }
 
     //  Once we've started we also include any current route controller.
-    controller = this.getRouter().getRouteControllerType();
-    if (TP.isValid(controller)) {
-        if (TP.isType(controller)) {
-            controller = controller.construct();
-            if (TP.isValid(controller)) {
-                controllers.push(controller);
-            }
-        } else {
-            controllers.push(controller);
+
+    //  Grab our router and the route controller type for the current route.
+    router = this.getRouter();
+    routeControllerType = router.getRouteControllerType();
+
+    //  If we have a real type, then construct an instance. Note that, by
+    //  default, the TP.core.RouteController (and, therefore, subtypes) are
+    //  configured as singletons, which means we'll be reusing their state.
+    if (TP.isType(routeControllerType)) {
+        routeController = routeControllerType.construct();
+        routeController.set('router', router);
+
+        if (TP.isValid(routeController)) {
+            controllers.push(routeController);
         }
     }
 
