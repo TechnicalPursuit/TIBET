@@ -905,7 +905,7 @@ Cmd.prototype.executeView = function() {
 
     arg1 = this.getArgument(1);
     if (!arg1) {
-        this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
+        this.usage('tibet couch view <[dbname.][appname.]viewname> \'[viewParamJSON]\'');
         return;
     }
 
@@ -930,12 +930,12 @@ Cmd.prototype.executeView = function() {
             viewname = parts[2];
             break;
         default:
-            this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
+            this.usage('tibet couch view <[dbname.][appname.]viewname> \'[viewParamJSON]\'');
             return;
     }
 
     if (!viewname) {
-        this.usage('tibet couch view <[dbname.][appname.]viewname> [viewParamJSON]');
+        this.usage('tibet couch view <[dbname.][appname.]viewname> \'[viewParamJSON]\'');
         return;
     }
 
