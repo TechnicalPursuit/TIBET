@@ -517,6 +517,7 @@ Date.Type.defineConstant('FORMATS',
             'HH:MM ampm', '%{hh}:%{mn}%{ampm}',     //  NOTE the MM->mn here
             'HH:MM AP', '%{hh}:%{mn} %{AP}',        //  NOTE the MM->mn here
             'HH:MM ap', '%{hh}:%{mn} %{ap}',        //  NOTE the MM->mn here
+            'ISO_SHORT', '%{yyyy}-%{mm}-%{dd} %{hhi}:%{mmn}:%{ss}',
             'HTTP_FORMAT', '%{ddd}, %{d} %{mmm} %{yyyy} %{hhi}:%{mmn}:%{ss}'
         ));
 
