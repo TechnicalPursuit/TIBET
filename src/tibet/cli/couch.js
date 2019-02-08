@@ -940,7 +940,7 @@ Cmd.prototype.executeView = function() {
     }
 
     //  View parameters can be provided as a JSON block.
-    viewParams = this.getArgument(1);
+    viewParams = this.getArgument(2);
     if (CLI.notValid(viewParams)) {
         viewParams = {};
     } else {
