@@ -2,20 +2,33 @@
     "name": "tibet",
     "version": "v5.0.0-pre.25",
     "description": "The TIBET Platform.",
-    "keywords": ["CLI", "CouchDB", "Framework", "IDE", "Microservice", "MVC", "MVVC", "TIBET", "Workflow"],
+    "keywords": [
+        "CLI",
+        "CouchDB",
+        "Framework",
+        "IDE",
+        "Microservice",
+        "MVC",
+        "MVVC",
+        "TIBET",
+        "Workflow"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
         "url": "http://www.technicalpursuit.com"
     },
-    "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
+    "contributors": [
+        {
+            "name": "Scott Shattuck",
+            "email": "ss@technicalpursuit.com"
+        },
+        {
+            "name": "William J. Edney",
+            "email": "bedney@technicalpursuit.com"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"
@@ -40,12 +53,12 @@
         "amazon-cognito-identity-js": "^3.0.7",
         "ansi-256-colors": "^1.1.0",
         "ansi-styles": "^2.2.1",
-        "aws-sdk": "^2.394.0",
+        "aws-sdk": "^2.404.0",
         "babel-minify": "^0.5.0",
         "bluebird": "^3.5.3",
         "bower": "^1.8.8",
         "chai": "^4.2.0",
-        "chokidar": "^2.0.4",
+        "chokidar": "^2.1.1",
         "codemirror": "github:TechnicalPursuit/codemirror",
         "cors": "^2.8.5",
         "crypto": "0.0.3",
@@ -53,13 +66,13 @@
         "d3-interpolate": "^1.3.2",
         "d3-selection": "^1.4.0",
         "diff": "^3.5.0",
-        "eslint": "^5.12.1",
+        "eslint": "^5.14.0",
         "express": "^4.16.4",
         "faye-websocket": "^0.11.1",
         "findit": "*",
         "follow": "github:TechnicalPursuit/follow",
-        "fuse.js": "^3.3.0",
-        "handlebars": "^4.0.12",
+        "fuse.js": "^3.4.2",
+        "handlebars": "^4.1.0",
         "has-ansi": "^2.0.0",
         "ip": "^1.1.5",
         "jjv": "^1.0.2",
@@ -70,7 +83,7 @@
         "less": "github:TechnicalPursuit/less.js",
         "marked": "^0.4.0",
         "marked-man": "github:TechnicalPursuit/marked-man",
-        "mime-types": "^2.1.21",
+        "mime-types": "^2.1.22",
         "minimatch": "^3.0.3",
         "minimist": "*",
         "mocha": "^5.2.0",
