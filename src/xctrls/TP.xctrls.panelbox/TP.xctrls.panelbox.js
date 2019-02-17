@@ -237,8 +237,6 @@ function(aContentObject, aRequest) {
         contentKey,
         panelTPElem,
 
-        handler,
-
         contentTPElem,
         firstContentChildTPElem,
 
@@ -272,30 +270,7 @@ function(aContentObject, aRequest) {
         panelTPElem.getLocalName(true);
 
         if (TP.isValid(aContentObject)) {
-
-            //  Observe the new panel when it gets attached to the DOM. When it
-            //  does, refresh its bound data.
-            handler = function() {
-
-                //  Make sure to ignore here - otherwise, we'll fill up the
-                //  signal map.
-                handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
-
-                //  Grab the content element under the existing panel that we
-                //  found with that content key.
-                contentTPElem = panelTPElem.get('contentElement');
-
-                //  And its first content child.
-                firstContentChildTPElem = contentTPElem.getFirstChildElement();
-
-                //  Refresh the new panel's content's first content child.
-                firstContentChildTPElem.refresh();
-            };
-
-            handler.observe(panelTPElem, 'TP.sig.AttachComplete');
-
-            //  Grab the panel's content element and set its content.
-            panelTPElem.get('contentElement').setContent(aContentObject);
+            panelTPElem.setContent(aContentObject);
         }
     } else {
         //  Grab the content element under the existing panel that we found with
@@ -334,23 +309,13 @@ function(aContentObject, aRequest) {
             }
         }
 
-        //  If we're not skipping setting the content, then we do so and refresh
-        //  any data.
+        //  If we're not skipping setting the content, then we do so. This will
+        //  refresh any data.
         if (!skipSettingContent) {
-            firstContentChildTPElem = contentTPElem.setContent(aContentObject);
-
-            handler = function() {
-
-                handler.ignore(panelTPElem, 'TP.sig.AttachComplete');
-
-                firstContentChildTPElem.refresh();
-            };
-
-            handler.observe(firstContentChildTPElem, 'TP.sig.AttachComplete');
+            panelTPElem.setContent(aContentObject);
         } else {
-            //  Otherwise, just refresh the content's existing first content
-            //  child.
-            firstContentChildTPElem.refresh();
+            //  Otherwise, just refresh the panel.
+            panelTPElem.refresh();
         }
     }
 
