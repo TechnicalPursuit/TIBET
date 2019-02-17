@@ -5109,6 +5109,33 @@ function(targetObj) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.path.AccessPath.Inst.defineMethod('valuesAreAlike',
+function(objectA, objectB) {
+
+    /**
+     * @method valuesAreAlike
+     * @summary Returns whether or not the objects are alike in some
+     *     receiver-defined way (e.g. either equality or identity).
+     * @param {Object} objectA The first object to use for comparison.
+     * @param {Object} objectB The second object to use for comparison.
+     * @returns {Boolean} Whether or not the resources are alike in some
+     *     receiver-defined way.
+     */
+
+    var bothAreSimpleObjs;
+
+    bothAreSimpleObjs = !TP.isReferenceType(objectA) &&
+                        !TP.isReferenceType(objectB);
+
+    if (bothAreSimpleObjs) {
+        return TP.equal(objectA, objectB);
+    }
+
+    return TP.identical(objectA, objectB);
+});
+
 //  ========================================================================
 //  TP.path.CompositePath
 //  ========================================================================
@@ -6873,7 +6900,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  Note that we handle empty Arrays specially here since, if we're not
     //  reducing Arrays, an empty Array handed in as the value will compare as
     //  'true' here and this routine will exit.
-    if (TP.equal(oldVal, attributeValue)) {
+    if (this.valuesAreAlike(oldVal, attributeValue)) {
         if (TP.isArray(attributeValue) && TP.isEmpty(attributeValue)) {
             void 0;
         } else {
@@ -7734,7 +7761,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  is nothing to do here and we exit. This is important to avoid endless
     //  recursion when doing a 'two-ended bind' to data referenced by this
     //  path.
-    if (TP.equal(oldVal, attributeValue)) {
+    if (this.valuesAreAlike(oldVal, attributeValue)) {
         return oldVal;
     }
 
