@@ -1183,9 +1183,6 @@ TP.uri.URI.Inst.defineAttribute('found', null);
 //  content change tracking flag
 TP.uri.URI.Inst.defineAttribute('$dirty', false);
 
-//  whether we track content change flag
-TP.uri.URI.Inst.defineAttribute('$trackDirty', true);
-
 //  load status flag
 TP.uri.URI.Inst.defineAttribute('$loaded', false);
 
@@ -3838,9 +3835,7 @@ function(aResource, aRequest, shouldSignal) {
         dirty = request.at('isDirty');
     } else {
         //  If we're already loaded we need to know if we're changing the value.
-        //  We compare via a TP.equal to ensure a deep comparison.
-        if (TP.notFalse(this.$get('$trackDirty')) &&
-            TP.equal(oldResource, newResource)) {
+        if (this.resourcesAreAlike(oldResource, newResource)) {
             dirty = false;
         } else {
             if (TP.sys.hasStarted()) {
@@ -4165,7 +4160,7 @@ function(aRequest, aResult, aResource, shouldSignal) {
         shouldSignalChange = shouldSignal;
     } else if (request.hasParameter('signalChange')) {
         shouldSignalChange = request.at('signalChange');
-    } else if (!TP.equal(oldResource, aResource)) {
+    } else if (!this.resourcesAreAlike(oldResource, aResource)) {
         shouldSignalChange = true;
     }
 
@@ -4247,8 +4242,8 @@ function(aRequest, aResult, aResource, shouldSignal) {
     //  If there was already a value then we consider new values to dirty the
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
-    if (request.at('loaded') && TP.notFalse(this.$get('$trackDirty'))) {
-        if (!TP.equal(oldResource, aResource)) {
+    if (request.at('loaded')) {
+        if (!this.resourcesAreAlike(oldResource, aResource)) {
             this.isDirty(true, true);
         }
     } else {
@@ -4343,6 +4338,28 @@ function(aFlag) {
 
     //  Yes, TP.uri.URIs are hardcoded to return false here.
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URI.Inst.defineMethod('resourcesAreAlike',
+function(resourceA, resourceB) {
+
+    /**
+     * @method resourcesAreAlike
+     * @summary Returns whether or not the resources are alike in some
+     *     receiver-defined way (e.g. either equality or identity) such that
+     *     setting the receiver to the new resource would consider it to be
+     *     not 'dirty'.
+     * @param {Object} resourceA The first resource object to use for
+     *     comparison.
+     * @param {Object} resourceB The second resource object to use for
+     *     comparison.
+     * @returns {Boolean} Whether or not the resources are alike in some
+     *     receiver-defined way.
+     */
+
+    return TP.equal(resourceA, resourceB);
 });
 
 //  ------------------------------------------------------------------------
@@ -4908,6 +4925,28 @@ function(aName) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.uri.URN.Inst.defineMethod('resourcesAreAlike',
+function(resourceA, resourceB) {
+
+    /**
+     * @method resourcesAreAlike
+     * @summary Returns whether or not the resources are alike in some
+     *     receiver-defined way (e.g. either equality or identity) such that
+     *     setting the receiver to the new resource would consider it to be
+     *     not 'dirty'.
+     * @param {Object} resourceA The first resource object to use for
+     *     comparison.
+     * @param {Object} resourceB The second resource object to use for
+     *     comparison.
+     * @returns {Boolean} Whether or not the resources are alike in some
+     *     receiver-defined way.
+     */
+
+    return TP.identical(resourceA, resourceB);
+});
+
+//  ------------------------------------------------------------------------
 //  Storage Management
 //  ------------------------------------------------------------------------
 
@@ -5139,8 +5178,7 @@ function(aResource, aRequest, shouldSignal) {
     }
 
     //  Core question of whether we're dirty or not, will value change.
-    if (TP.notFalse(this.$get('$trackDirty') &&
-        TP.equal(oldResource, newResource))) {
+    if (this.resourcesAreAlike(oldResource, newResource)) {
         dirty = false;
     } else {
         //  NOTE we don't consider setting a value to the processed version of
@@ -5167,7 +5205,8 @@ function(aResource, aRequest, shouldSignal) {
     //  a URI created for it (when that observation is made). In that case,
     //  if we enter this logic because, the caller here is be providing the
     //  same resource, it may want to observe this URI for change.
-    if (TP.notFalse(request.at('observeResource')) && TP.isMutable(newResource)) {
+    if (TP.notFalse(request.at('observeResource')) &&
+        TP.isMutable(newResource)) {
         //  Observe the new resource object for changes.
         this.observe(newResource, 'Change');
     }
@@ -5927,7 +5966,8 @@ function(aRequest, filterResult) {
                 //  filtering result format then don't call setter here. we
                 //  don't want to adjust content just because of alternative
                 //  request response types.
-                if (!TP.equal(aResult, thisref.$get('resource'))) {
+                if (!thisref.resourcesAreAlike(
+                                aResult, thisref.$get('resource'))) {
                     thisref.$setPrimaryResource(result, request);
                 } else if (TP.isTrue(subrequest.at('refresh'))) {
                     thisref.isDirty(false, true);
@@ -6102,7 +6142,7 @@ function(aRequest) {
                             resource, aRequest.at('resultType'));
 
     //  Core question of whether we're dirty or not, will value change.
-    if (TP.equal(currentResult, newResult)) {
+    if (this.resourcesAreAlike(currentResult, newResult)) {
         return currentResult;
     }
 
