@@ -720,7 +720,7 @@ function() {
         test.assert.isArray(value);
         test.assert.isEmpty(value);
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 

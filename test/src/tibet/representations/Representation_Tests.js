@@ -400,7 +400,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -588,7 +588,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1369,7 +1369,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1565,7 +1565,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1764,7 +1764,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 //  end

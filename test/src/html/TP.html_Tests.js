@@ -1970,7 +1970,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2409,7 +2409,7 @@ function() {
         test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
-    }).skip(TP.sys.cfg('boot.context') === 'headless');
+    });
 
     //  ---
 
@@ -2587,7 +2587,7 @@ function() {
         tpElem.selectAll();
         tpElem.deselect(/ba/);
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
-    }).skip(TP.sys.cfg('boot.context') === 'headless');
+    });
 });
 
 //  ------------------------------------------------------------------------

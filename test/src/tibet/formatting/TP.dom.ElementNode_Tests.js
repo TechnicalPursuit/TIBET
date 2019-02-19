@@ -502,7 +502,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 

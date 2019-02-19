@@ -452,7 +452,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -676,7 +676,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -800,7 +800,7 @@ function() {
         test.assert.isTrue(TP.byId('databuttonitem3', windowContext).isSelected());
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1010,7 +1010,7 @@ function() {
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 

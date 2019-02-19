@@ -70,7 +70,7 @@ function() {
             TP.collapse(TP.unwrap(deepFieldSet.get(TP.cpc('#Tester_0_TestType_dimensions_height')))));
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 //  end
