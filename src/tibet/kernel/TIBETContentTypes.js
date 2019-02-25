@@ -1974,7 +1974,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      * @param {Boolean} [shouldEmpty=false] Whether or not to empty any cloned
      *     data before inserting it. The default is false. NOTE: This parameter
      *     is only used if the shouldClone parameter is true.
-     * @returns {TP.core.Content} The receiver.
+     * @returns {TP.core.JSONContent} The receiver.
      */
 
     var targetURIOrPath,
@@ -2200,7 +2200,7 @@ function(aCollectionURI, aDeleteIndex) {
      *     remove the row from.
      * @param {Number} aDeleteIndex The index to remove the item from in the
      *     collection.
-     * @returns {TP.core.Content} The receiver.
+     * @returns {TP.core.JSONContent} The receiver.
      */
 
     var targetCollection,
@@ -2588,7 +2588,7 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
      * @param {Boolean} [shouldEmpty=false] Whether or not to empty any cloned
      *     data before inserting it. The default is false. NOTE: This parameter
      *     is only used if the shouldClone parameter is true.
-     * @returns {TP.core.Content} The receiver.
+     * @returns {TP.core.XMLContent} The receiver.
      */
 
     var targetURIOrPath,
@@ -2928,7 +2928,7 @@ function(aCollectionURI, aDeleteIndex) {
      * @param {Number} aDeleteIndex The index to remove the item from in the
      *     collection.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.core.Content} The receiver.
+     * @returns {TP.core.XMLContent} The receiver.
      */
 
     var targetCollection,
