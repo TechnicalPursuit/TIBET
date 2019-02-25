@@ -4415,7 +4415,7 @@ function(aReturnValue, targetObj) {
 
         fallbackWith;
 
-    isEmptyArray = TP.isArray(aReturnValue) && TP.isEmpty(aReturnValue);
+    isEmptyArray = TP.isEmptyArray(aReturnValue);
 
     retVal = aReturnValue;
 
