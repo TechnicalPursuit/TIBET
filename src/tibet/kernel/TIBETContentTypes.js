@@ -6727,7 +6727,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  reducing Arrays, an empty Array handed in as the value will compare as
     //  'true' here and this routine will exit.
     if (this.valuesAreAlike(oldVal, attributeValue)) {
-        if (TP.isArray(attributeValue) && TP.isEmpty(attributeValue)) {
+        if (TP.isEmptyArray(attributeValue)) {
             void 0;
         } else {
             return oldVal;
@@ -9826,7 +9826,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  reducing Arrays, an empty Array handed in as the value will compare as
     //  'true' here and this routine will exit.
     if (this.checkValueEquality(oldVal, newVal)) {
-        if (TP.isArray(newVal) && TP.isEmpty(newVal)) {
+        if (TP.isEmptyArray(newVal)) {
             void 0;
         } else {
             return oldVal;
