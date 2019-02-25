@@ -333,7 +333,8 @@ function() {
 
                 mimeType,
 
-                newResource;
+                newResource,
+                strResource;
 
             //  Mark the URI as being loaded, since we marked it as not being so
             //  above. We need to do this manually to ensure that, if the
@@ -377,10 +378,13 @@ function() {
                     //  from a String to the proper type.
                     if (TP.isSubtypeOf(resultType, TP.core.Content)) {
                         newResource = resultType.construct(result, resultURI);
-                    } else if (resultType === String) {
-                        newResource = TP.str(result);
                     } else {
-                        newResource = resultType.construct(result);
+                        strResource = TP.str(result);
+                        if (resultType === String) {
+                            newResource = strResource;
+                        } else {
+                            newResource = resultType.from(strResource);
+                        }
                     }
 
                 } else if (TP.isNode(result)) {
@@ -833,7 +837,8 @@ function(aResult) {
 
         isValid,
 
-        newResource;
+        newResource,
+        strResource;
 
     //  See if a 'result' href is available and a URI can be created from it.
     if (TP.notEmpty(href = this.getAttribute('result'))) {
@@ -887,10 +892,14 @@ function(aResult) {
         //  from a String to the proper type.
         if (TP.isSubtypeOf(resultType, TP.core.Content)) {
             newResource = resultType.construct(aResult, resultURI);
-        } else if (resultType === String) {
-            newResource = TP.str(aResult);
+        } else {
+            strResource = TP.str(aResult);
+            if (resultType === String) {
+                newResource = strResource;
+            } else {
+                newResource = resultType.from(strResource);
+            }
         }
-
     } else if (TP.isNode(aResult)) {
         newResource = TP.wrap(aResult);
     } else {

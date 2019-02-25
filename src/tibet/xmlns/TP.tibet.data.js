@@ -391,6 +391,7 @@ function(aContentObject, aRequest) {
         resultType,
 
         newResource,
+        strResource,
 
         isValid;
 
@@ -437,8 +438,13 @@ function(aContentObject, aRequest) {
     //  convert it from a String to the proper type.
     if (TP.isSubtypeOf(resultType, TP.core.Content)) {
         newResource = resultType.construct(aContentObject, namedURI);
-    } else if (resultType === String) {
-        newResource = TP.str(aContentObject);
+    } else {
+        strResource = TP.str(aContentObject);
+        if (resultType === String) {
+            newResource = strResource;
+        } else {
+            newResource = resultType.from(strResource);
+        }
     }
 
     //  Make sure that it's valid for its container. Note that we pass 'false'
