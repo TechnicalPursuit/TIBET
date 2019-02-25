@@ -12465,6 +12465,230 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('handleCloneItemFromANYWhenANY',
+function(aSignal) {
+
+    /**
+     * @method handleCloneItem
+     * @summary Handles when an item is to be cloned and inserted into the
+     *     receiver's data.
+     * @param {TP.sig.CloneItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     * @returns {Object} The receiver.
+     */
+
+    var scope,
+        scopeURI,
+
+        source,
+
+        index,
+
+        targetElem;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    source = TP.tpc(TP.str(aSignal.atIfInvalid('source', '[0]')));
+
+    //  Grab the index if one was specified in the signal.
+    index = aSignal.at('index');
+    if (index === TP.TARGET) {
+
+        //  If the index was 'TP.TARGET', then we're going to use the 'repeat
+        //  index' of the target.
+        targetElem = aSignal.at('trigger').getTarget();
+        if (TP.isElement(targetElem)) {
+            index = TP.wrap(targetElem).$getNearestRepeatIndex();
+        }
+    } else {
+        //  Otherwise, if the index is a Number, then we use. If not, then we
+        //  set it to null, instructing the insertion method just use the end of
+        //  the collection
+        index = parseInt(index, 10);
+        if (TP.isNaN(index)) {
+            index = null;
+        }
+    }
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+            scopeURI,
+            source,
+            index,
+            aSignal.at('position'),
+            true,
+            true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('handleDeleteItemFromANYWhenANY',
+function(aSignal) {
+
+    /**
+     * @method handleDeleteItem
+     * @summary Handles when an item is to be deleted and removed from the
+     *     receiver's data.
+     * @param {TP.sig.DeleteItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     * @returns {Object} The receiver.
+     */
+
+    var scope,
+        scopeURI,
+
+        index,
+
+        targetElem;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  Grab the index if one was specified in the signal.
+    index = aSignal.at('index');
+    if (index === TP.TARGET) {
+
+        //  If the index was 'TP.TARGET', then we're going to use the 'repeat
+        //  index' of the target.
+        targetElem = aSignal.at('trigger').getTarget();
+        if (TP.isElement(targetElem)) {
+            index = TP.wrap(targetElem).$getNearestRepeatIndex();
+        }
+    } else {
+        //  Otherwise, if the index is a Number, then we use. If not, then we
+        //  set it to null, instructing the insertion method just use the end of
+        //  the collection
+        index = parseInt(index, 10);
+        if (TP.isNaN(index)) {
+            index = null;
+        }
+    }
+
+    //  Remove a row from that collection, using the deletion index in the
+    //  signal.
+    this.removeRowFromAt(scopeURI, index);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('handleInsertItemFromANYWhenANY',
+function(aSignal) {
+
+    /**
+     * @method handleInsertItem
+     * @summary Handles when an item is to be inserted into the receiver's data.
+     * @param {TP.sig.InsertItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     * @returns {Object} The receiver.
+     */
+
+    var scope,
+        scopeURI,
+
+        source,
+
+        index,
+
+        targetElem;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  This could be undefined, but if it's real we want to make URI out of it.
+    source = aSignal.at('source');
+    if (TP.notEmpty(source)) {
+        source = source.unquoted();
+
+        if (TP.isURIString(source)) {
+            source = TP.uc(source);
+        } else if (source.charAt(0) === '#') {
+
+            //  If it's not an XPointer, then make a 'direct to GUI' URI out of
+            //  it.
+            if (!TP.regex.ANY_POINTER.test(source)) {
+                source = 'tibet://uicanvas#tibet(' + source + ')';
+            }
+
+            source = TP.uc(source);
+        } else {
+
+            //  Otherwise, try to create an access path from it.
+            source = TP.apc(source);
+        }
+    }
+
+    //  Grab the index if one was specified in the signal.
+    index = aSignal.at('index');
+    if (index === TP.TARGET) {
+
+        //  If the index was 'TP.TARGET', then we're going to use the 'repeat
+        //  index' of the target.
+        targetElem = aSignal.at('trigger').getTarget();
+        if (TP.isElement(targetElem)) {
+            index = TP.wrap(targetElem).$getNearestRepeatIndex();
+        }
+    } else {
+        //  Otherwise, if the index is a Number, then we use. If not, then we
+        //  set it to null, instructing the insertion method just use the end of
+        //  the collection
+        index = parseInt(index, 10);
+        if (TP.isNaN(index)) {
+            index = null;
+        }
+    }
+
+    //  Go ahead and insert the cloned data.
+    this.insertRowIntoAt(
+            scopeURI,
+            source,
+            index,
+            aSignal.at('position'),
+            aSignal.at('copy'),
+            aSignal.at('clear'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('handleSetContentFromANYWhenANY',
 function(aSignal) {
 
