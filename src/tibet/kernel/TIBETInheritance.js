@@ -12746,5 +12746,319 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('insertRowIntoAt',
+function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
+         shouldClone, shouldEmpty) {
+
+    /**
+     * @method insertRowIntoAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.uri.URI|TP.path.AccessPath} aCollectionURIOrPath The URI
+     *     pointing to the collection to add the row to or a path that, in
+     *     combination with the receiver's 'public facing' URI, can be used to
+     *     obtain a collection to add the row to.
+     * @param {Array|TP.uri.URI|TP.path.AccessPath} aDataRowOrURIOrPath The URI
+     *     or path that points to data or the object itself to insert into the
+     *     collection.
+     * @param {Number} [anInsertIndex] The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after. If not
+     *     specified, the item will be inserted at the end of the collection.
+     * @param {String} [aPosition=TP.AFTER] A value of TP.BEFORE, TP.AFTER or
+     *     null. This determines the position of the insertion. If no position
+     *     is supplied, TP.AFTER is assumed.
+     * @param {Boolean} [shouldClone=false] Whether or not to clone the data
+     *     before inserting it. The default is false.
+     * @param {Boolean} [shouldEmpty=false] Whether or not to empty any cloned
+     *     data before inserting it. The default is false. NOTE: This parameter
+     *     is only used if the shouldClone parameter is true.
+     * @returns {Object} The receiver.
+     */
+
+    var targetURIOrPath,
+
+        targetURI,
+
+        targetCollection,
+
+        dataRow,
+
+        keys,
+
+        fragmentExpr,
+
+        queryURI,
+
+        insertIndex,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
+
+    //  Obtain a URI that will be pointing at a collection.
+
+    targetURIOrPath = aCollectionURIOrPath;
+
+    //  If targetURIOrPath is null or is not a TP.uri.URI (maybe its a
+    //  path...), then we can do no more here and exit.
+    if (!TP.isURI(targetURIOrPath)) {
+        return this;
+    } else {
+
+        //  A URI was supplied to begin with.
+        targetURI = targetURIOrPath;
+
+        //  NB: We assume 'async' of false here.
+        targetCollection = targetURI.getResource(
+                            TP.hc('async', false,
+                                    'shouldCollapse', false)).get('result');
+
+        //  Now, make sure that we're dealing with an Array
+        if (!TP.isArray(targetCollection)) {
+            targetCollection = TP.ac(targetCollection);
+        }
+
+        fragmentExpr = targetURI.getFragmentExpr();
+    }
+
+    if (TP.isURI(aDataRowOrURIOrPath)) {
+        //  NB: We assume 'async' of false here.
+        dataRow = aDataRowOrURIOrPath.getResource(
+                                TP.hc('async', false)).get('result');
+
+    } else if (aDataRowOrURIOrPath.isAccessPath()) {
+
+        queryURI = aCollectionURIOrPath;
+
+        //  aCollectionURIOrPath isn't real - nothing to do here.
+        if (!TP.isURI(queryURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        //  NB: We assume 'async' of false here.
+        dataRow =
+            queryURI.getResource(
+                TP.hc('async', false)).get('result').get(aDataRowOrURIOrPath);
+
+    } else {
+        dataRow = aDataRowOrURIOrPath;
+    }
+
+    if (TP.isTrue(shouldClone)) {
+
+        dataRow = TP.copy(dataRow);
+
+        if (TP.isTrue(shouldEmpty)) {
+            if (TP.canInvoke(dataRow, 'clearTextContent')) {
+                //  Clear out all of the 'text content' - that is, all of the
+                //  scalar values in the newly cloned item. This will descend
+                //  through the new item's data structure and cleanse it all of
+                //  previous values.
+                dataRow.clearTextContent();
+            } else {
+                keys = TP.keys(dataRow);
+                keys.forEach(
+                    function(aKey) {
+                        dataRow.atPut(aKey, '');
+                    });
+            }
+        }
+    }
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+        insertIndex++;
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        insertIndex = targetCollection.getSize();
+    }
+
+    //  TP.BEFORE was specified - subtract a position back off.
+    if (aPosition === TP.BEFORE) {
+        insertIndex--;
+    }
+
+    //  Splice it into the collection.
+    targetCollection.splice(insertIndex, 0, dataRow);
+
+    /* TODO: This doesn't seem to be necessary and it causes the resource in the
+     * URI to change to be the collection, which is definitely wrong. At worst,
+     * this should replace the URI's resource with a new instance of it's own
+     * class ('this' is the content object and the URI's resource should be
+     * another one). Review this.
+
+    //  NB: We *must* reset the targetURI's resource here since we've modified
+    //  it 'outside' of the normal set()/get() behavior and observers that are
+    //  observing this object for changes will be depending on having a
+    //  queryable structure when they receive their notification. Note also how
+    //  we do *not* signal change when we set this value. We don't want those
+    //  observers to trigger early, but instead use the richer notification
+    //  they'll receive from the code below.
+    targetURI.setResource(targetCollection, TP.request('signalChange', false));
+    */
+
+    //  The index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the index that
+    //  changed.
+    changedAspect = fragmentExpr + '[' + changedIndex + ']';
+
+    //  For these paths, the changed addresses are just an Array of the changed
+    //  aspect.
+    changedAddresses = TP.ac(changedAspect);
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('removeRowFromAt',
+function(aCollectionURI, aDeleteIndex) {
+
+    /**
+     * @method removeRowFromAt
+     * @summary Removes a row of data from the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
+     *     remove the row from.
+     * @param {Number} aDeleteIndex The index to remove the item from in the
+     *     collection.
+     * @returns {Object} The receiver.
+     */
+
+    var targetCollection,
+
+        deleteIndexes,
+
+        removedData,
+
+        changedAddresses,
+
+        len,
+        i,
+
+        changedAspect,
+        changedPaths,
+
+        batchID;
+
+    //  If the supplied URI really resolves to an Array, then remove the proper
+    //  row.
+
+    //  NB: We assume 'async' of false here.
+    if (TP.isArray(
+        targetCollection =
+            aCollectionURI.getResource(TP.hc('async', false)).get('result'))) {
+
+        //  If a deletion index was supplied or we have numbers in our selection
+        //  indexes, then use those as the deletion indexes.
+        if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
+            deleteIndexes = TP.ac(aDeleteIndex);
+        } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
+            //  empty
+        } else {
+            deleteIndexes = TP.ac(targetCollection.getSize() - 1);
+        }
+
+        //  If we have an Array of deletion indexes, use a TIBET convenience
+        //  method.
+        if (TP.isArray(deleteIndexes)) {
+            removedData = targetCollection.atAll(deleteIndexes);
+            targetCollection.removeAtAll(deleteIndexes);
+        } else {
+            removedData = targetCollection.splice(deleteIndexes, 1);
+        }
+
+    } else {
+        //  Allocate and push 0 separately to avoid oldtime JS behavior around
+        //  an Array with a single Number as its argument.
+        deleteIndexes = TP.ac();
+        deleteIndexes.push(0);
+    }
+
+    changedAddresses = TP.ac();
+
+    len = deleteIndexes.getSize();
+    for (i = 0; i < len; i++) {
+        //  The aspect that changed is just the collection along with the index
+        //  that changed.
+        changedAspect = aCollectionURI.getFragmentExpr() +
+                        '[' + deleteIndexes.at(i) + ']';
+
+        //  For these paths, the changed addresses are just an Array of the
+        //  changed aspect.
+        changedAddresses.push(changedAspect);
+    }
+
+    //  Just set the changed aspect to the first address that changed -
+    //  observers can dig into the changedAddresses Array to find out exactly
+    //  which aspects changed if more than 1 did.
+    changedAspect = changedAddresses.first();
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.DELETE, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureDelete',
+                TP.hc('action', TP.DELETE,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', deleteIndexes,
+                        'removedData', removedData,
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
