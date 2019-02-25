@@ -19,8 +19,8 @@
         ]]>
     </tibet:data>
 
-    <xctrls:tabbar id="DOMInfo_Tabbar" bind:io="{data: urn:tibet:sherpa_domhud_genericElementContent_tabs, value: urn:tibet:current_domhud_genericElementContent_tab#tibet(selection)}" tibet:ctrl="SherpaConsole" tooltips="true"/>
-    <xctrls:panelbox id="DOMInfo_Tabpanelbox" bind:in="urn:tibet:current_domhud_genericElementContent_tab#tibet(selection)">
+    <xctrls:tabbar id="DOMInfo_Tabbar" bind:io="{data: urn:tibet:sherpa_domhud_genericElementContent_tabs, value: urn:tibet:current_domhud_genericElementContent_tab#jpath($.selection)}" tibet:ctrl="SherpaConsole" tooltips="true"/>
+    <xctrls:panelbox id="DOMInfo_Tabpanelbox" bind:in="urn:tibet:current_domhud_genericElementContent_tab#jpath($.selection)">
         <xctrls:panel>
             <xctrls:value>Attributes</xctrls:value>
             <xctrls:content>

@@ -20,7 +20,7 @@
     </style>
 
     <!-- As a one dimensional Array, the item labels and values will be the same -->
-    <tibet:data name="urn:tibet:one_dim_array">
+    <tibet:data name="urn:tibet:one_dim_array" resultType="TP.core.Hash">
         <![CDATA[
             {
             "names": [
@@ -39,7 +39,7 @@
     </tibet:data>
 
     <!-- As a two dimensional Array, the item values will come from the values in the first 'column' and item labels will come from the values in the second 'column' -->
-    <tibet:data name="urn:tibet:two_dim_array">
+    <tibet:data name="urn:tibet:two_dim_array" resultType="TP.core.Hash">
         <![CDATA[
             {
             "names": [
@@ -59,7 +59,7 @@
     </tibet:data>
 
     <!-- As a JS 'object' hash, the item values will come from the 'keys' in the hash and item labels will come from the values 'hash' -->
-    <tibet:data name="urn:tibet:object_hash">
+    <tibet:data name="urn:tibet:object_hash" resultType="TP.core.Hash">
         <![CDATA[
             {
             "names": {
@@ -79,7 +79,7 @@
     </tibet:data>
 
     <!-- The test data for selection tests -->
-    <tibet:data name="urn:tibet:selection_test_data">
+    <tibet:data name="urn:tibet:selection_test_data" resultType="TP.core.Hash">
         <![CDATA[
             {
             "data": [
@@ -92,7 +92,7 @@
     </tibet:data>
 
     <!-- The test data for value bound selection tests -->
-    <tibet:data name="urn:tibet:bound_selection_test_data">
+    <tibet:data name="urn:tibet:bound_selection_test_data" resultType="TP.core.Hash">
         <![CDATA[
         {"selection_set_1": "bar", "selection_set_2": ["foo", "baz"]}
         ]]>

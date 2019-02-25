@@ -84,6 +84,9 @@ function(topLevelSchema, params) {
 
     str = '';
 
+    //  'definitions' is a POJO - we need it as a TP.core.Hash
+    definitions = TP.hc(definitions);
+
     definitions.perform(
         function(kvPair) {
 

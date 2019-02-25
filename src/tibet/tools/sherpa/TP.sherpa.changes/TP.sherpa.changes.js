@@ -419,14 +419,14 @@ function(aSignal) {
         processIsSelected;
 
     shouldWatchSelectedURI = TP.uc(
-        'urn:tibet:watch_remote_changes#tibet(selected)');
+        'urn:tibet:watch_remote_changes#jpath($.selected)');
     watchIsSelected =
         TP.ifEmpty(shouldWatchSelectedURI.getResource().get('result'),
                     TP.sys.cfg('uri.watch_remote_changes'));
     TP.sys.setcfg('uri.watch_remote_changes', watchIsSelected);
 
     shouldProcessSelectedURI = TP.uc(
-        'urn:tibet:process_remote_changes#tibet(selected)');
+        'urn:tibet:process_remote_changes#jpath($.selected)');
     processIsSelected =
         TP.ifEmpty(shouldProcessSelectedURI.getResource().get('result'),
                     TP.sys.cfg('uri.process_remote_changes'));
@@ -463,7 +463,7 @@ function(panelName) {
         countTPElem;
 
     //  Grab the model value for the currently selected tab.
-    selectionURI = TP.uc('urn:tibet:current_changes_tab#tibet(selection)');
+    selectionURI = TP.uc('urn:tibet:current_changes_tab#jpath($.selection)');
     currentName = selectionURI.getResource().get('result');
 
     //  If that value is different than the supplied name, then switch.

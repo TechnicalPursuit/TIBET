@@ -1823,13 +1823,16 @@ function() {
     //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(jsonData) && TP.notEmpty(jsonData)) {
 
-        jsonData = TP.json2js(jsonData);
+        //  NB: We pass false as the 2nd parameter to these TP.json2js calls to
+        //  get a standard POJO (not TP.core.Hashes) from the JSON.
+
+        jsonData = TP.json2js(jsonData, false);
 
         //  When first loading from server content the first pass can often
         //  return just a transformed string. If the first char of that is a
         //  curly brace we want to do a second pass.
         if (TP.isString(jsonData) && jsonData.charAt(0) === '{') {
-            jsonData = TP.json2js(jsonData);
+            jsonData = TP.json2js(jsonData, false);
         }
 
         //  TP.json2js will raise for us.
@@ -5961,7 +5964,8 @@ function(targetObj, varargs) {
 
                     if (TP.isValid(tpValueDoc)) {
                         cachedData = TP.json2js(
-                                    this.$convertXMLValueDocToJSON(tpValueDoc));
+                                    this.$convertXMLValueDocToJSON(tpValueDoc),
+                                    false);
 
                         //  Note here how we pass 'false' to not signal change,
                         //  since all we're doing is a data conversion and we
@@ -6643,10 +6647,6 @@ function(targetObj, varargs) {
             if (retValKeys.length === 1) {
                 retVal = retVal[retValKeys[0]];
             }
-        }
-
-        if (TP.isPlainObject(retVal)) {
-            retVal = TP.hc(retVal);
         }
 
         //  Make sure to process the final value using converters, etc.

@@ -77,6 +77,9 @@ function() {
                             'JSON content is empty.');
     }
 
+    //  'data' is a POJO - we need it as a TP.core.Hash
+    data = TP.hc(data);
+
     if (TP.notValid(definitions = data.at('definitions'))) {
         return this.raise('TP.sig.InvalidContext',
                             'JSON content is not JSON Schema.');
@@ -246,11 +249,19 @@ function(accumHash, schemaData, keyPrefix) {
 
         allSubValues;
 
+    if (TP.isEmpty(data = this.get('data'))) {
+        return this.raise('TP.sig.InvalidValue',
+                            'JSON content is empty.');
+    }
+
+    //  'data' is a POJO - we need it as a TP.core.Hash
+    data = TP.hc(data);
+
     //  If schema data wasn't supplied, then we go to the definitions in the
     //  first definition block and grab the schema from.
     data = TP.ifInvalid(
             schemaData,
-            this.get('data').at('definitions').at(this.getDefinitionName()));
+            data.at('definitions').at(this.getDefinitionName()));
 
     prefix = TP.ifInvalid(keyPrefix, '');
 

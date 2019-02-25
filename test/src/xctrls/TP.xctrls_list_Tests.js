@@ -950,7 +950,7 @@ function() {
             'bar');
 
         test.assert.isEqualTo(
-            TP.val(modelObj.get('data').get('selection_set_1')),
+            TP.val(modelObj.get('selection_set_1')),
             'bar');
     });
 
@@ -982,7 +982,7 @@ function() {
                     'foo');
 
                 test.assert.isEqualTo(
-                    TP.val(modelObj.get('data').get('selection_set_1')),
+                    TP.val(modelObj.get('selection_set_1')),
                     'foo');
             });
     });
@@ -1051,7 +1051,7 @@ function() {
             TP.ac('foo', 'baz'));
 
         test.assert.isEqualTo(
-            TP.val(modelObj.get('data').get('selection_set_2')),
+            TP.val(modelObj.get('selection_set_2')),
             TP.ac('foo', 'baz'));
     });
 
@@ -1084,7 +1084,7 @@ function() {
                     TP.ac('foo', 'baz', 'bar'));
 
                 test.assert.isEqualTo(
-                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.val(modelObj.get('selection_set_2')),
                     TP.ac('foo', 'baz', 'bar'));
             });
 
@@ -1101,7 +1101,7 @@ function() {
                     TP.ac('foo', 'bar'));
 
                 test.assert.isEqualTo(
-                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.val(modelObj.get('selection_set_2')),
                     TP.ac('foo', 'bar'));
             });
 

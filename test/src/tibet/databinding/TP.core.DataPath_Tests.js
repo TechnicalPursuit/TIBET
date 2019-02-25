@@ -4536,11 +4536,12 @@ function() {
         multiLevelPath;
 
     this.before(function() {
-        singleLevelModel = TP.core.JSONContent.construct('{"foo":{"hi":"there"}}');
+        singleLevelModel = TP.core.JSONContent.construct(
+            '{"foo":{"hi":"there"}}');
         singleLevelPath = TP.apc('$.foo.hi');
 
-        multiLevelModel =
-            TP.core.JSONContent.construct('{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
+        multiLevelModel = TP.core.JSONContent.construct(
+            '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
         multiLevelPath = TP.apc('$.foo.hi.boo');
     });
 
@@ -4559,7 +4560,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = singleLevelModel.get('data').at('foo').at('hi');
+        val = singleLevelModel.get('data').foo.hi;
 
         test.assert.isEqualTo(val, 'folks');
     });
@@ -4579,7 +4580,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = multiLevelModel.get('data').at('foo').at('hi').at('boo');
+        val = multiLevelModel.get('data').foo.hi.boo;
 
         test.assert.isEqualTo(val, 'foofy');
     });
@@ -4597,11 +4598,12 @@ function() {
         multiLevelPath;
 
     this.before(function() {
-        singleLevelModel = TP.core.JSONContent.construct('{"value":["one", "two", ["a", "b", "c"]]}');
+        singleLevelModel = TP.core.JSONContent.construct(
+            '{"value":["one", "two", ["a", "b", "c"]]}');
         singleLevelPath = TP.apc('$.value[2][1]');
 
-        multiLevelModel =
-            TP.core.JSONContent.construct('{"value":["one", "two", ["a", ["6", "7", "8"], "c"]]}');
+        multiLevelModel = TP.core.JSONContent.construct(
+            '{"value":["one", "two", ["a", ["6", "7", "8"], "c"]]}');
         multiLevelPath = TP.apc('$.value[2][1][2]');
     });
 
@@ -4620,7 +4622,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = singleLevelModel.get('data').at('value')[2][1];
+        val = singleLevelModel.get('data').value[2][1];
 
         test.assert.isEqualTo(val, 'z');
     });
@@ -4640,7 +4642,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = multiLevelModel.get('data').at('value')[2][1][2];
+        val = multiLevelModel.get('data').value[2][1][2];
 
         test.assert.isEqualTo(val, '9');
     });
@@ -4687,7 +4689,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = tailResultsModel.get('data').at('foo').at('hi').at('boo');
+        val = tailResultsModel.get('data').foo.hi.boo;
 
         test.assert.isEqualTo(
             val,
@@ -4695,7 +4697,7 @@ function() {
                 roo: 'coo'
             });
 
-        val = tailResultsModel.get('data').at('foo').at('hi').at('moo');
+        val = tailResultsModel.get('data').foo.hi.moo;
 
         test.assert.isEqualTo(
             val,
@@ -4719,11 +4721,11 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = middleResultsModel.get('data').at('foo').at('hi').at('boo').at('gar');
+        val = middleResultsModel.get('data').foo.hi.boo.gar;
 
         test.assert.isEqualTo(val, 'car');
 
-        val = middleResultsModel.get('data').at('foo').at('hi').at('moo').at('gar');
+        val = middleResultsModel.get('data').foo.hi.moo.gar;
 
         test.assert.isEqualTo(val, 'car');
     });
@@ -4765,11 +4767,11 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = tailResultsModel.get('data').at('value')[2][1];
+        val = tailResultsModel.get('data').value[2][1];
 
         test.assert.isEqualTo(val, TP.ac('4', '5', '6'));
 
-        val = tailResultsModel.get('data').at('value')[2][2];
+        val = tailResultsModel.get('data').value[2][2];
 
         test.assert.isEqualTo(val, TP.ac('4', '5', '6'));
     });
@@ -4789,11 +4791,11 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = middleResultsModel.get('data').at('value')[2][1][2];
+        val = middleResultsModel.get('data').value[2][1][2];
 
         test.assert.isEqualTo(val, 'hi');
 
-        val = middleResultsModel.get('data').at('value')[2][2][2];
+        val = middleResultsModel.get('data').value[2][2][2];
 
         test.assert.isEqualTo(val, 'hi');
     });
@@ -4807,8 +4809,8 @@ function() {
     var slicingResultsModel;
 
     this.before(function() {
-        slicingResultsModel =
-            TP.core.JSONContent.construct('{"value": ["one", "two", ["a", ["6", "7", "8"], "c"], 37, "hi"]}');
+        slicingResultsModel = TP.core.JSONContent.construct(
+        '{"value": ["one", "two", ["a", ["6", "7", "8"], "c"], 37, "hi"]}');
     });
 
     this.it('slicing get #1', function(test, options) {
@@ -4884,7 +4886,8 @@ function() {
         multiLevelPath;
 
     this.before(function() {
-        singleLevelModel = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
+        singleLevelModel = TP.core.JSONContent.construct(
+                            '{"foo":["1st","2nd",{"hi":"there"}]}');
         singleLevelPath = TP.apc('$.foo[1]');
 
         multiLevelModel = singleLevelModel;
@@ -4906,7 +4909,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = singleLevelModel.get('data').at('foo')[1];
+        val = singleLevelModel.get('data').foo[1];
 
         test.assert.isEqualTo(val, '3rd');
     });
@@ -4926,7 +4929,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = multiLevelModel.get('data').at('foo')[2].at('hi');
+        val = multiLevelModel.get('data').foo[2].hi;
 
         test.assert.isEqualTo(val, 'boo boo');
     });
@@ -4985,7 +4988,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = model1.get('data').at('value')[0].at('fname');
+        val = model1.get('data').value[0].fname;
 
         test.assert.isEqualTo(val, 'July');
     });
@@ -5005,11 +5008,11 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = model1.get('data').at('value')[0].at('fname');
+        val = model1.get('data').value[0].fname;
 
         test.assert.isEqualTo(val, 'January');
 
-        val = model1.get('data').at('value')[2].at('fname');
+        val = model1.get('data').value[2].fname;
 
         test.assert.isEqualTo(val, 'January');
     });
@@ -5021,11 +5024,11 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = model1.get('data').at('value')[0].at('fname');
+        val = model1.get('data').value[0].fname;
 
         test.assert.isEqualTo(val, TP.ac('Janny', 'Jenny'));
 
-        val = model1.get('data').at('value')[2].at('fname');
+        val = model1.get('data').value[2].fname;
 
         test.assert.isEqualTo(val, TP.ac('Janny', 'Jenny'));
     });
@@ -5045,7 +5048,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = model1.get('data').at('value')[0].at('aliases')[1];
+        val = model1.get('data').value[0].aliases[1];
 
         test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
     });
@@ -5067,11 +5070,11 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-        val = model1.get('data').at('value')[0].at('aliases')[0];
+        val = model1.get('data').value[0].aliases[0];
 
         test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
 
-        val = model1.get('data').at('value')[0].at('aliases')[1];
+        val = model1.get('data').value[0].aliases[1];
 
         test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
     });
@@ -5110,7 +5113,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('bar');
+        val = model1.get('data').bar;
 
         test.refute.isDefined(val);
     });
@@ -5126,7 +5129,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('bar').at('moo');
+        val = model1.get('data').bar.moo;
 
         test.assert.isEqualTo(val, 'goo');
     });
@@ -5155,11 +5158,11 @@ function() {
         //  value.
         //  This also means there will be no value at 'too'.
 
-        val = model1.get('data').at('bar').at('moo');
+        val = model1.get('data').bar.moo;
 
         test.assert.isEqualTo(val, 'goo');
 
-        val = model1.get('data').at('bar').at('too');
+        val = model1.get('data').bar.too;
 
         test.refute.isDefined(val);
     });
@@ -5175,7 +5178,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('bar').at('moo').at('noo');
+        val = model1.get('data').bar.moo.noo;
 
         test.assert.isEqualTo(val, 'boo');
     });
@@ -5216,7 +5219,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[3];
+        val = model1.get('data').value[3];
 
         test.refute.isDefined(val);
     });
@@ -5232,7 +5235,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[3][1];
+        val = model1.get('data').value[3][1];
 
         test.assert.isEqualTo(val, 'four');
     });
@@ -5258,11 +5261,11 @@ function() {
         //  Note - there is a value at 0 - the 'f' from the word 'four' that we
         //  set above.
 
-        val = model1.get('data').at('value')[3][1][0];
+        val = model1.get('data').value[3][1][0];
 
         test.assert.isEqualTo(val, 'f');
 
-        val = model1.get('data').at('value')[3][1][4];
+        val = model1.get('data').value[3][1][4];
 
         test.assert.isEmpty(val);
     });
@@ -5278,11 +5281,11 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[3][1][0];
+        val = model1.get('data').value[3][1][0];
 
         test.assert.isEqualTo(val, 'stuff');
 
-        val = model1.get('data').at('value')[3][1][4];
+        val = model1.get('data').value[3][1][4];
 
         test.assert.isEqualTo(val, 'stuff');
     });
@@ -5310,21 +5313,21 @@ function() {
 
         //  Even though we have creation turned off, the call above did not
         //  require 'structure creating' - the values should have been set.
-        val = model1.get('data').at('value')[3][1][1];
+        val = model1.get('data').value[3][1][1];
 
         test.assert.isEqualTo(val, 'foofy');
 
-        val = model1.get('data').at('value')[3][1][2];
+        val = model1.get('data').value[3][1][2];
 
         test.assert.isEqualTo(val, 'foofy');
 
-        val = model1.get('data').at('value')[3][1][3];
+        val = model1.get('data').value[3][1][3];
 
         test.assert.isEqualTo(val, 'foofy');
 
         //  This value should still be 'stuff' - the '1:4' range means items
         //  1-3.
-        val = model1.get('data').at('value')[3][1][4];
+        val = model1.get('data').value[3][1][4];
 
         test.assert.isEqualTo(val, 'stuff');
     });
@@ -5367,7 +5370,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('foo')[3];
+        val = model1.get('data').foo[3];
 
         test.refute.isDefined(val);
     });
@@ -5383,7 +5386,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('foo')[3].at('bar');
+        val = model1.get('data').foo[3].bar;
 
         test.assert.isEqualTo(val, 'goo');
     });
@@ -5408,15 +5411,15 @@ function() {
 
         //  Note - there is a value at 'bar' - it was set above, but there
         //  shouldn't be one at 'moo' or 'too'.
-        val = model1.get('data').at('foo')[3].at('bar');
+        val = model1.get('data').foo[3].bar;
 
         test.assert.isEqualTo(val, 'goo');
 
-        val = model1.get('data').at('foo')[3].at('moo');
+        val = model1.get('data').foo[3].moo;
 
         test.refute.isDefined(val);
 
-        val = model1.get('data').at('foo')[3].at('too');
+        val = model1.get('data').foo[3].too;
 
         test.refute.isDefined(val);
     });
@@ -5432,15 +5435,15 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('foo')[3].at('bar').at('roo');
+        val = model1.get('data').foo[3].bar.roo;
 
         test.assert.isArray(val);
 
-        val = model1.get('data').at('foo')[3].at('moo').at('roo');
+        val = model1.get('data').foo[3].moo.roo;
 
         test.assert.isArray(val);
 
-        val = model1.get('data').at('foo')[3].at('too').at('roo');
+        val = model1.get('data').foo[3].too.roo;
 
         test.assert.isArray(val);
     });
@@ -5524,7 +5527,7 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[1].at('fname');
+        val = model1.get('data').value[1].fname;
 
         test.assert.isEqualTo(val, 'spike');
     });
@@ -5539,15 +5542,15 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[1].at('fname');
+        val = model1.get('data').value[1].fname;
 
         test.assert.isEqualTo(val, 'larry');
 
-        val = model1.get('data').at('value')[2].at('fname');
+        val = model1.get('data').value[2].fname;
 
         test.assert.isEqualTo(val, 'larry');
 
-        val = model1.get('data').at('value')[3].at('fname');
+        val = model1.get('data').value[3].fname;
 
         test.assert.isEqualTo(val, 'larry');
     });
@@ -5562,11 +5565,11 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[2].at('fname');
+        val = model1.get('data').value[2].fname;
 
         test.assert.isEqualTo(val, 'curly');
 
-        val = model1.get('data').at('value')[3].at('fname');
+        val = model1.get('data').value[3].fname;
 
         test.assert.isEqualTo(val, 'curly');
     });
@@ -5581,11 +5584,11 @@ function() {
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
 
-        val = model1.get('data').at('value')[0].at('aliases')[1];
+        val = model1.get('data').value[0].aliases[1];
 
         test.assert.isEqualTo(val, 'moe');
 
-        val = model1.get('data').at('value')[0].at('aliases')[2];
+        val = model1.get('data').value[0].aliases[2];
 
         test.assert.isEqualTo(val, 'moe');
     });
