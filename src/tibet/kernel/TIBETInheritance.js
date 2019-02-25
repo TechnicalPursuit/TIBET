@@ -6713,6 +6713,7 @@ function(anObject, constraints) {
 
         constraintName,
         constraint,
+        constraintType,
 
         num,
         str;
@@ -6746,23 +6747,25 @@ function(anObject, constraints) {
                 //  TIBET type object
                 if (!TP.isType(constraint)) {
                     if (TP.isString(constraint)) {
-                        constraint = TP.sys.getTypeByName(constraint);
+                        constraintType = TP.sys.getTypeByName(constraint);
                     }
+                } else {
+                    constraintType = constraint;
                 }
 
                 //  If we successfully got a type, then validate the supplied
                 //  object with it.
-                if (!TP.isType(constraint)) {
+                if (!TP.isType(constraintType)) {
                     this.raise('TP.sig.InvalidConstraint',
                                 'Unable to find type: ' + constraint);
                 } else {
-                    result = constraint.validate(anObject);
+                    result = constraintType.validate(anObject);
                 }
 
                 if (!result) {
                     errors.push(
                         TP.sc('Object: "', anObject, '"',
-                                ' is not of type: ', TP.name(constraint)));
+                                ' is not of type: ', TP.name(constraintType)));
                 }
 
                 break;
