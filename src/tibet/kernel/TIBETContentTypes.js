@@ -3568,26 +3568,32 @@ function(anAddress, anAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.path.AccessPath.Type.defineMethod('registerObservedAddress',
-function(anAddress, sourceObjectID, interestedPath) {
+TP.path.AccessPath.Type.defineMethod('registerObservedAddresses',
+function(addresses, sourceObjectID, interestedPath) {
 
     /**
-     * @method registerObservedAddress
-     * @summary Registers a 'data address' (i.e. a unique location in the
-     *     source object that is currently being processed by the receiver) as
-     *     an 'observed' address (i.e. a location where the data has been
-     *     retrieved and observers might be interested in changes there).
-     * @param {String} anAddress The data address where the data retrieval took
-     *     place.
+     * @method registerObservedAddresses
+     * @summary Registers the supplied 'data addresses' (i.e. unique locations
+     *     in the source object that are currently being processed by the
+     *     receiver) as 'observed' addresses (i.e. locations where the data has
+     *     been retrieved and observers might be interested in changes there).
+     * @param {String[]} addresses The data addresses where the data retrieval
+     *     took place.
      * @param {String} sourceObjectID The unique ID of the source object.
      * @param {String} interestedPath The String representation of the path
-     *     that is interested in changes at the supplied address.
+     *     that is interested in changes at the supplied addresses.
      * @returns {Object} The receiver.
      */
 
     var addressMap,
 
         sources,
+
+        uniquedAddresses,
+
+        len,
+        i,
+
         paths;
 
     //  Build a map that looks like this:
@@ -3605,12 +3611,24 @@ function(anAddress, sourceObjectID, interestedPath) {
 
     sources = addressMap.atPutIfAbsent(sourceObjectID, TP.hc());
 
-    paths = sources.atPutIfAbsent(anAddress, TP.ac());
-    paths.add(interestedPath);
+    //  Copy the incoming list of addresses and unique them. This will ensure
+    //  that we only visit that address's path Array once.
+    uniquedAddresses = TP.copy(addresses);
+    uniquedAddresses.unique();
 
-    //  Make sure to unique the paths so that we don't have more than one
-    //  occurrence of the same path for a particular address.
-    paths.unique();
+    //  Iterate over the uniqued addresses, retrieving each one's path Array and
+    //  adding the referenced path to it.
+    len = uniquedAddresses.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Grab the address's path Array and add the referenced path.
+        paths = sources.atPutIfAbsent(uniquedAddresses.at(i), TP.ac());
+        paths.push(interestedPath);
+
+        //  Make sure to unique the paths so that we don't have more than one
+        //  occurrence of the same path for a particular address.
+        paths.unique();
+    }
 
     return this;
 });
@@ -7381,7 +7399,8 @@ function(addressPart) {
     //  Grab the ID of the current source object
     sourceObjectID = TP.id(srcObj);
 
-    this.registerObservedAddress(address, sourceObjectID, srcPath);
+    TP.path.AccessPath.registerObservedAddresses(
+                        TP.ac(address), sourceObjectID, srcPath);
 
     return this;
 });
@@ -9675,11 +9694,8 @@ function(targetObj, varargs) {
     //  created above.
     interestedPath = TP.ifInvalid(this.get('$interestedPath'), path);
 
-    addresses.perform(
-            function(anAddress) {
-                TP.path.AccessPath.registerObservedAddress(
-                    anAddress, sourceObjectID, interestedPath);
-            });
+    TP.path.AccessPath.registerObservedAddresses(
+                                addresses, sourceObjectID, interestedPath);
 
     //  If there is a valid final value *or* we were trying to do a scalar
     //  conversion (and maybe got a null value - which is what we would want if
