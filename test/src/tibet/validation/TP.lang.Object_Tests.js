@@ -373,16 +373,31 @@ TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
 //  ------------------------------------------------------------------------
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('lastName',
-    TP.tpc('lastName'), {valid: {dataType: String}});
+    TP.tpc('lastName', TP.hc('shouldMakeStructures', true)),
+    {
+        valid: {
+            dataType: String
+        }
+    });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('firstName',
-    TP.tpc('firstName'), {valid: {dataType: String}});
+    TP.tpc('firstName', TP.hc('shouldMakeStructures', true)),
+    {
+        valid: {
+            dataType: String
+        }
+    });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('age',
-    TP.tpc('age'), {valid: {dataType: Number}});
+    TP.tpc('age', TP.hc('shouldMakeStructures', true)),
+    {
+        valid: {
+            dataType: Number
+        }
+    });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('SSN',
-    TP.tpc('SSN'),
+    TP.tpc('SSN', TP.hc('shouldMakeStructures', true)),
     {
         valid: {
             dataType: 'TP.test.SSN'

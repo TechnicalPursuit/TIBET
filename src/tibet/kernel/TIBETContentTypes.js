@@ -7597,9 +7597,16 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     thisType = this.getType();
 
+    //  If an old value wasn't defined and our 'shouldMakeStructures' flag is
+    //  false, then we don't do anything and just return here.
+    oldVal = targetObj.get(srcPath);
+    if (TP.notDefined(oldVal) && !this.get('shouldMakeStructures')) {
+        return;
+    }
+
     if (TP.notValid(attributeValue)) {
         op = TP.DELETE;
-    } else if (TP.isDefined(oldVal = targetObj.get(srcPath))) {
+    } else if (TP.isDefined(oldVal)) {
         op = TP.UPDATE;
     } else {
         op = TP.CREATE;

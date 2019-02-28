@@ -2800,6 +2800,80 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.path.SimpleTIBETPath.Inst.describe('TP.path.SimpleTIBETPath Inst simple value traversal',
+function() {
+
+    var singleLevelModel,
+        singleLevelPath;
+
+    this.before(function() {
+        singleLevelModel = TP.json2js('{"foo":"bar"}');
+        singleLevelPath = TP.apc('foo');
+    });
+
+    this.it('single level get', function(test, options) {
+        var val;
+
+        val = singleLevelPath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'bar');
+    });
+
+    this.it('single level set', function(test, options) {
+        var val;
+
+        singleLevelPath.executeSet(singleLevelModel, 'baz', true);
+
+        //  NB: We use a manual mechanism to get to the value to get independent
+        //  validation of 'path' execution code.
+        val = singleLevelModel.at('foo');
+
+        test.assert.isEqualTo(val, 'baz');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.SimpleTIBETPath.Inst.describe('TP.path.SimpleTIBETPath Inst simple value traversal with creation',
+function() {
+
+    var singleLevelModel,
+        singleLevelPath;
+
+    this.before(function() {
+        singleLevelModel = TP.json2js('{}');
+        singleLevelPath = TP.apc('foo');
+    });
+
+    this.it('single level set without creation', function(test, options) {
+        var val;
+
+        singleLevelPath.executeSet(singleLevelModel, TP.hc('bar', 'baz'), true);
+
+        //  NB: We use a manual mechanism to get to the value to get independent
+        //  validation of 'path' execution code.
+        val = singleLevelModel.at('foo');
+
+        test.refute.isDefined(val);
+    });
+
+    this.it('single level set with creation', function(test, options) {
+        var val;
+
+        singleLevelPath.set('shouldMakeStructures', true);
+
+        singleLevelPath.executeSet(singleLevelModel, TP.hc('bar', 'baz'), true);
+
+        //  NB: We use a manual mechanism to get to the value to get independent
+        //  validation of 'path' execution code.
+        val = singleLevelModel.at('foo');
+
+        test.assert.isEqualTo(val, TP.hc('bar', 'baz'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst simple value Hash traversal',
 function() {
 
