@@ -2798,7 +2798,95 @@ function() {
     });
 });
 
+//  ========================================================================
+//  TP.test.CustomAccessorType
+//  ========================================================================
+
+/**
+ * @type {TP.test.CustomAccessorType}
+ */
+
 //  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('test.CustomAccessorType');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.CustomAccessorType.Inst.defineAttribute('$internalMoo');
+TP.test.CustomAccessorType.Inst.defineAttribute('$internalVal');
+TP.test.CustomAccessorType.Inst.defineAttribute('$internalBoo');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.test.CustomAccessorType.Inst.defineMethod('getMoo',
+function() {
+
+    var internalVal;
+
+    internalVal = this.get('$internalMoo');
+    if (TP.isValid(internalVal)) {
+        return 'goo - ' + internalVal;
+    }
+
+    return 'goo';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.CustomAccessorType.Inst.defineMethod('getValue',
+function() {
+
+    var internalVal;
+
+    internalVal = this.get('$internalVal');
+    if (TP.isValid(internalVal)) {
+        return 'val - ' + internalVal;
+    }
+
+    return 'val';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.CustomAccessorType.Inst.defineMethod('getBoo',
+function() {
+
+    var internalBoo;
+
+    internalBoo = this.get('$internalBoo');
+    if (TP.notValid(internalBoo)) {
+        internalBoo = this.getType().construct();
+        this.set('$internalBoo', internalBoo);
+    }
+
+    return internalBoo;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.CustomAccessorType.Inst.defineMethod('setMoo',
+function(aValue) {
+
+    this.set('$internalMoo', aValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.CustomAccessorType.Inst.defineMethod('setValue',
+function(aValue) {
+
+    this.set('$internalVal', aValue);
+
+    return this;
+});
+
+//  ========================================================================
 
 TP.path.SimpleTIBETPath.Inst.describe('TP.path.SimpleTIBETPath Inst simple value traversal',
 function() {
@@ -2869,6 +2957,40 @@ function() {
         val = singleLevelModel.at('foo');
 
         test.assert.isEqualTo(val, TP.hc('bar', 'baz'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.SimpleTIBETPath.Inst.describe('TP.path.SimpleTIBETPath Inst custom value traversal',
+function() {
+
+    var singleLevelModel,
+        singleLevelPath;
+
+    this.before(function() {
+        singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
+        singleLevelPath = TP.apc('foo');
+    });
+
+    this.it('single level get', function(test, options) {
+        var val;
+
+        val = singleLevelPath.executeGet(singleLevelModel);
+
+        test.assert.isKindOf(val, TP.test.CustomAccessorType);
+    });
+
+    this.it('single level set', function(test, options) {
+        var val;
+
+        singleLevelPath.executeSet(singleLevelModel, 'baz', true);
+
+        //  NB: We use a manual mechanism to get to the value to get independent
+        //  validation of 'path' execution code.
+        val = singleLevelModel.at('foo');
+
+        test.assert.isEqualTo(val, 'baz');
     });
 });
 
@@ -3854,6 +3976,110 @@ function() {
         val = model1.at('foo').at(5).at(0);
 
         test.assert.isEqualTo(val, 'goo');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst custom value traversal - custom object at end',
+function() {
+
+    var singleLevelModel,
+        singleLevelValuePath,
+        singleLevelOtherPath;
+
+    this.before(function() {
+        singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
+        singleLevelValuePath = TP.apc('foo.value');
+        singleLevelOtherPath = TP.apc('foo.moo');
+    });
+
+    this.it('invoke custom \'value\' getter', function(test, options) {
+        var val;
+
+        val = singleLevelValuePath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'val');
+    });
+
+    this.it('invoke custom \'value\' setter', function(test, options) {
+        var val;
+
+        singleLevelValuePath.executeSet(singleLevelModel, 'baz', true);
+
+        val = singleLevelValuePath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'val - baz');
+    });
+
+    this.it('invoke custom other getter', function(test, options) {
+        var val;
+
+        val = singleLevelOtherPath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'goo');
+    });
+
+    this.it('invoke custom other setter', function(test, options) {
+        var val;
+
+        singleLevelOtherPath.executeSet(singleLevelModel, 'baz', true);
+
+        val = singleLevelOtherPath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'goo - baz');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst custom value traversal - custom object in midpoint',
+function() {
+
+    var singleLevelModel,
+        singleLevelValuePath,
+        singleLevelOtherPath;
+
+    this.before(function() {
+        singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
+        singleLevelValuePath = TP.apc('foo.boo.value');
+        singleLevelOtherPath = TP.apc('foo.boo.moo');
+    });
+
+    this.it('invoke custom \'value\' getter', function(test, options) {
+        var val;
+
+        val = singleLevelValuePath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'val');
+    });
+
+    this.it('invoke custom \'value\' setter', function(test, options) {
+        var val;
+
+        singleLevelValuePath.executeSet(singleLevelModel, 'baz', true);
+
+        val = singleLevelValuePath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'val - baz');
+    });
+
+    this.it('invoke custom other getter', function(test, options) {
+        var val;
+
+        val = singleLevelOtherPath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'goo');
+    });
+
+    this.it('invoke custom other setter', function(test, options) {
+        var val;
+
+        singleLevelOtherPath.executeSet(singleLevelModel, 'baz', true);
+
+        val = singleLevelOtherPath.executeGet(singleLevelModel);
+
+        test.assert.isEqualTo(val, 'goo - baz');
     });
 });
 
