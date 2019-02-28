@@ -1070,7 +1070,6 @@ function(aSignal) {
                                     aspectNames,
                                     boundAttrNodes[i],
                                     null,
-                                    originWasURI,
                                     sigSource);
                         }
                     }
@@ -3854,7 +3853,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     aspectNames,
                     boundAttr,
                     aPathType,
-                    originWasURI,
                     changeSource);
             }
         }
@@ -4171,7 +4169,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         updatedUIAspects,
                         boundAttr,
                         aPathType,
-                        originWasURI,
                         changeSource);
 
                     didProcess = true;
@@ -4227,7 +4224,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$refreshLeaf',
-function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, originWasURI, changeSource) {
+function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSource) {
 
     /**
      * @method $refreshLeaf
@@ -4245,348 +4242,66 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, originWasUR
      *     binding expression.
      * @param {Number} [aPathType] The path type that is contained in the
      *     binding expression.
-     * @param {Boolean} [originWasURI=false] Whether or not the origin of the
-     *     signal that started the refreshing process was a TP.uri.URI.
      * @param {Object} [changeSource] The source of the change. If a signal
      *     initiated the refreshing process, this will be the signal's 'source'.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var refreshedElements,
-
-        facet,
-
-        attrName,
-        attrValue,
-
-        info,
-        infoKeys,
-
-        getRequest,
-
-        pathOptions,
-
-        extractVal,
-        collapseVal,
-
-        len,
-        i,
-
-        aspect,
-        entry,
-
-        exprs,
-        expr,
-
-        pathType,
-
-        theVal,
-
-        transformFunc,
-        finalVal,
-
-        isXMLResource,
-        repeatInfo,
-        repeatIndex,
-        repeatSource,
+    var bindingInfo,
 
         didRefresh;
 
-    //  TIMING: var start = Date.now();
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(bindingAttr.name, bindingAttr.value);
 
-    refreshedElements = this.getDocument().get('$refreshedElements');
+    didRefresh = false;
 
-    if (TP.notValid(refreshedElements)) {
-        refreshedElements = TP.ac();
-        this.getDocument().set('$refreshedElements', refreshedElements);
-    }
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
 
-    facet = TP.ifInvalid(aFacet, 'value');
+            var aspectName,
+                bindVal,
 
-    attrName = bindingAttr.name;
-    attrValue = bindingAttr.value;
+                dataExprs,
+                transformFunc,
 
-    info = this.getBindingInfoFrom(attrName, attrValue);
-    infoKeys = info.getKeys();
+                refreshedEntry;
 
-    getRequest = TP.request('shouldCollapse', false);
+            aspectName = bindEntry.first();
+            bindVal = bindEntry.last();
 
-    len = infoKeys.getSize();
-    for (i = 0; i < len; i++) {
+            //  There will be 1...n data expressions here.
+            dataExprs = bindVal.at('dataExprs');
 
-        aspect = infoKeys.at(i);
+            //  If a transformation function was computed from the expression,
+            //  it will be here.
+            transformFunc = bindVal.at('transformFunc');
 
-        //  If we were handed an Array of the aspects of the model that were
-        //  updated (and not TP.ALL, meaning all aspects), then check to see if
-        //  the aspect we're currently updating is in that Array. If not,
-        //  continue on.
-        if (updatedAspects !== TP.ALL && !updatedAspects.contains(aspect)) {
-            continue;
-        }
+            //  Set our final value for the current binding expresssion. This
+            //  will return whether or not setting this value will have changed
+            //  one or more of the values of the observers.
+            refreshedEntry = this.$setFinalValue(
+                                    aspectName,
+                                    dataExprs,
+                                    initialVal,
+                                    updatedAspects,
+                                    aFacet,
+                                    transformFunc,
+                                    aPathType,
+                                    changeSource);
 
-        entry = info.at(aspect);
-
-        pathOptions = TP.hc();
-
-        //  If the receiver is a 'scalar valued' target object, then we set
-        //  flags to extract the value from the data value.
-        extractVal = false;
-        if (this.isScalarValued(aspect)) {
-            extractVal = true;
-            pathOptions.atPut('extractWith', 'value');
-        }
-
-        //  If the receiver is a 'single valued' target object, then we set
-        //  flags to collapse a single item value from the data value.
-        collapseVal = false;
-        if (this.isSingleValued(aspect)) {
-            collapseVal = true;
-            pathOptions.atPut('shouldCollapse', true);
-        }
-
-        //  If the facet isn't 'value', then we just set the facet using the new
-        //  value extracted from the signal and continue on.
-        if (facet !== 'value') {
-            this.setFacet(aspect, facet, initialVal, true);
-        } else {
-
-            transformFunc = entry.at('transformFunc');
-
-            theVal = TP.collapse(initialVal);
-
-            exprs = entry.at('dataExprs');
-
-            if (TP.isEmpty(exprs)) {
-                continue;
+            //  If at least one returned true, then flip the flag to true. Note
+            //  that this is constructed such that, once the flag is flipped to
+            //  true, it cannot be changed back.
+            if (refreshedEntry) {
+                didRefresh = refreshedEntry;
             }
+        }.bind(this));
 
-            //  This should only have one expression. If it has more than one,
-            //  then we need to raise an exception.
-            if (exprs.getSize() > 1) {
-                //  TODO: Raise
-                continue;
-            }
-
-            //  TODO: Support more than 1 expr
-            expr = TP.trim(exprs.at(0));
-
-            if (TP.isEmpty(expr)) {
-                continue;
-            }
-
-            if (TP.regex.BARENAME.test(expr)) {
-                expr = 'tibet://uicanvas' + expr;
-            }
-
-            pathType = aPathType;
-
-            if (TP.isValid(pathType)) {
-
-                switch (pathType) {
-                    case TP.XPATH_PATH_TYPE:
-
-                        if (TP.isXMLNode(theVal) ||
-                            TP.isKindOf(theVal, TP.dom.Node)) {
-                            //  empty
-                        } else {
-                            pathType = null;
-                        }
-
-                        break;
-
-                    case TP.JSON_PATH_TYPE:
-                        if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                            //  empty
-                        } else {
-                            pathType = null;
-                        }
-
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            if (TP.isURIString(expr)) {
-
-                if (originWasURI) {
-                    //  Note here how we use the getRequest, which means that
-                    //  results will *not* be collapsed.
-                    finalVal = TP.uc(expr).getResource(getRequest).
-                                                            get('result');
-                } else {
-                    finalVal = initialVal;
-                }
-
-                if (collapseVal) {
-                    finalVal = TP.collapse(finalVal);
-                }
-
-                //  If there is no transformation function defined, and if the
-                //  value value extraction flags are defined, then extract the
-                //  value. If there is a transformation function, then we just
-                //  hand the unextracted value of the data value to it.
-                if (!TP.isCallable(transformFunc) && extractVal) {
-                    finalVal = TP.val(finalVal);
-                }
-
-            } else if (TP.isValid(pathType)) {
-
-                if (TP.isValid(theVal)) {
-                    switch (pathType) {
-
-                        case TP.XPATH_PATH_TYPE:
-
-                            if (TP.isXMLNode(theVal)) {
-                                theVal = TP.wrap(theVal);
-                            }
-
-                            finalVal = this.$extractValue(theVal,
-                                                            expr,
-                                                            TP.xpc,
-                                                            pathOptions);
-
-                            break;
-
-                        case TP.JSON_PATH_TYPE:
-
-                            if (!/^\$\./.test(expr)) {
-                                expr = '$.' + expr;
-                            }
-
-                            //  Because of the check above, theVal has to be a
-                            //  JSONContent object here.
-
-                            finalVal = this.$extractValue(theVal,
-                                                            expr,
-                                                            TP.jpc,
-                                                            pathOptions);
-
-                            break;
-
-                        case TP.TIBET_PATH_TYPE:
-
-                            finalVal = this.$extractValue(theVal,
-                                                            expr,
-                                                            TP.tpc,
-                                                            pathOptions);
-
-                            break;
-
-                        default:
-                            finalVal = theVal.get(expr);
-
-                            break;
-                    }
-                }
-            } else {
-
-                if (TP.isValid(theVal)) {
-                    if (TP.regex.COMPOSITE_PATH.test(expr)) {
-                        if (TP.isValid(entry.at('transformFunc'))) {
-                            finalVal = theVal;
-                        } else {
-                            finalVal =
-                                TP.wrap(theVal).get(TP.apc(expr, pathOptions));
-                        }
-                    } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
-                        finalVal = theVal;
-                    } else if (TP.isPlainObject(theVal)) {
-                        finalVal = TP.hc(theVal).get(expr);
-                    } else if (TP.isXMLNode(theVal)) {
-                        finalVal = TP.wrap(theVal).get(
-                                                TP.xpc(expr, pathOptions));
-                    } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-                        finalVal = theVal.get(TP.xpc(expr, pathOptions));
-                    } else if (TP.regex.JSON_POINTER.test(expr) ||
-                                TP.regex.JSON_PATH.test(expr)) {
-                        if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
-                            theVal = TP.core.JSONContent.construct(theVal);
-                        }
-
-                        finalVal = this.$extractValue(theVal,
-                                                        expr,
-                                                        TP.jpc,
-                                                        pathOptions);
-                    } else if (TP.notValid(theVal)) {
-                        finalVal = null;
-                    } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
-                        finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
-                    } else if (!TP.isMutable(theVal)) {
-                        //  If it's a String, Number or Boolean, then theVal is
-                        //  the actual value we want to use.
-                        finalVal = theVal;
-                    } else {
-                        finalVal = theVal.get(expr);
-                    }
-                }
-            }
-
-            if (TP.isValid(finalVal)) {
-
-                if (TP.isCallable(transformFunc)) {
-
-                    if (TP.isCollection(finalVal)) {
-                        isXMLResource =
-                            TP.isXMLNode(TP.unwrap(finalVal.first()));
-                    } else {
-                        isXMLResource =
-                            TP.isXMLNode(TP.unwrap(finalVal));
-                    }
-
-                    //  It is important for the logic in the transformation
-                    //  Function to set this to NaN and let the logic below set
-                    //  it if it finds it.
-                    repeatIndex = NaN;
-
-                    repeatInfo = this.$getRepeatSourceAndIndex();
-
-                    if (TP.isValid(repeatInfo)) {
-                        repeatSource = repeatInfo.first();
-                        repeatIndex = repeatInfo.last();
-                    }
-
-                    finalVal = transformFunc(
-                                    changeSource,
-                                    finalVal,
-                                    this,
-                                    repeatSource,
-                                    repeatIndex,
-                                    isXMLResource);
-
-                } else if (!TP.isURIString(expr)) {
-
-                    //  There was no transformation function and the expression
-                    //  did *not* contain a URI, then we extract the value
-                    //  and/or collapse it based on flags set earlier.
-                    if (extractVal) {
-                        finalVal = TP.val(finalVal);
-                    }
-
-                    if (collapseVal) {
-                        finalVal = TP.collapse(finalVal);
-                    }
-                }
-            }
-
-            if (aspect === 'value') {
-                didRefresh = this.setValue(finalVal);
-            } else {
-                this.setFacet(aspect, facet, finalVal);
-                didRefresh = true;
-            }
-
-            if (didRefresh) {
-                refreshedElements.push(this.getNativeNode());
-            }
-        }
-    }
-
-    //  TIMING: var end = Date.now();
-    //  TIMING: TP.totalInitialGetTime += (end - start);
-
-    return this;
+    return didRefresh;
 });
 
 //  ------------------------------------------------------------------------
@@ -5258,6 +4973,405 @@ function(aValue, ignoreBidiInfo) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$setFinalValue',
+function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, aPathType, changeSource) {
+
+    /**
+     * @method $setFinalValue
+     * @summary Sets the 'final value' of the receiver.
+     * @param {String} aspect The aspect of the receiver to update.
+     * @param {String[]} exprs The list of data expressions that were parsed
+     *     from the overall binding expression.
+     * @param {Object} outerScopeVal The outer scoped value (usually a
+     *     collection) to use to update the binding (unless the binding is a
+     *     fully qualified exression). The binding will take a portion of this
+     *     data to update.
+     * @param {Array|TP.ALL} updatedAspects An Array of the aspects of the data
+     *     model that are being updated or TP.ALL, to indicate that all of them
+     *     are.
+     * @param {String} [aFacet=value] The facet of the data that we're updating.
+     *     we're refreshing. This defaults to 'value' which is the 99% case.
+     * @param {Function} [transformFunc] Any transformation Function that was
+     *     computed from the binding expression (that will have 1..n data
+     *     expressions - supplied here in the 'exprs' parameter) embedded in it.
+     * @param {Number} [aPathType] The path type that is contained in the
+     *     binding expression.
+     * @param {Object} [changeSource] The source of the change. If a signal
+     *     initiated the refreshing process, this will be the signal's 'source'.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var facet,
+
+        pathOptions,
+
+        shouldExtractVal,
+        shouldCollapseVal,
+
+        getRequest,
+
+        initialScopedValue,
+
+        finalVal,
+
+        len,
+        i,
+
+        scopedVal,
+
+        expr,
+
+        customGetterName,
+
+        uriExpr,
+
+        pathType,
+
+        exprVal,
+
+        isXMLResource,
+
+        repeatIndex,
+        repeatInfo,
+        repeatSource,
+
+        didRefresh,
+        refreshedElements;
+
+    //  If we were handed an Array of the aspects of the model that were
+    //  updated (and not TP.ALL, meaning all aspects), then check to see
+    //  if the aspect we're currently updating is in that Array. If not,
+    //  continue on.
+    if (updatedAspects !== TP.ALL &&
+        !updatedAspects.contains(aspect)) {
+        return;
+    }
+
+    facet = TP.ifInvalid(aFacet, 'value');
+
+    if (facet !== 'value' && TP.isValid(outerScopeValue)) {
+        finalVal = outerScopeValue;
+    } else {
+        pathOptions = TP.hc();
+
+        //  If the receiver is a 'scalar valued' target object, then we set
+        //  flags to extract the value from the data value.
+        shouldExtractVal = false;
+        if (this.isScalarValued(aspect)) {
+            shouldExtractVal = true;
+            pathOptions.atPut('extractWith', 'value');
+        }
+
+        //  If the receiver is a 'single valued' target object, then we set
+        //  flags to collapse a single item value from the data value.
+        shouldCollapseVal = false;
+        if (this.isSingleValued(aspect)) {
+            shouldCollapseVal = true;
+            pathOptions.atPut('shouldCollapse', true);
+        }
+
+        getRequest = TP.request('shouldCollapse', false);
+
+        initialScopedValue = TP.collapse(outerScopeValue);
+
+        finalVal = '';
+
+        len = exprs.getSize();
+        for (i = 0; i < len; i++) {
+
+            //  NB: These get modified in the loop - we need to reset them here.
+            scopedVal = initialScopedValue;
+            customGetterName = null;
+
+            expr = TP.trim(exprs.at(i));
+
+            if (TP.isEmpty(expr)) {
+                continue;
+            }
+
+            //  If we were handed a 'barename' expression, then we're
+            //  referencing the value of another control on the same GUI page.
+            if (TP.regex.BARENAME.test(expr)) {
+                expr = 'tibet://uicanvas' + expr;
+            } else if (TP.regex.JS_IDENTIFIER.test(expr)) {
+                customGetterName = 'get' + TP.makeStartUpper(expr);
+            }
+
+            //  Compute a final value based on whether we were handed:
+            //      1. A URI that we can extract the final value from.
+            //      2. A path type if one was supplied and matches the value we
+            //      were supplied.
+            //      3. A value that can be extracted based on the supplied value
+            //      and a computed extraction mechanism.
+
+            if (TP.isURIString(expr)) {
+
+                //  If there's a fragment, use that. Otherwise, we append a
+                //  '#tibet(.)' fragment expression onto the URI, which will
+                //  just return whatever object is considered the 'whole value'
+                //  of the resource's result.
+                if (TP.regex.URI_FRAGMENT.test(expr)) {
+                    uriExpr = expr;
+                } else {
+                    uriExpr = TP.uc(expr).getPrimaryLocation() + '#tibet(.)';
+                }
+
+                exprVal = TP.uc(uriExpr).getResource(getRequest).get('result');
+
+                if (shouldCollapseVal) {
+                    exprVal = TP.collapse(exprVal);
+                }
+
+                //  If there is no transformation function defined, and if the
+                //  value extraction flag is defined, then extract the value.
+                //  If there is a transformation function, then we just hand the
+                //  unextracted value of the data value to it.
+                if (!TP.isCallable(transformFunc) && shouldExtractVal) {
+                    exprVal = TP.val(exprVal);
+                }
+
+            } else if (TP.isValid(customGetterName) &&
+                        TP.canInvoke(scopedVal, customGetterName)) {
+
+                //  There was a custom getter on the supplied scoped value -
+                //  execute it and use that value.
+                exprVal = scopedVal[customGetterName]();
+            } else {
+
+                //  Test the path type we were handed. If it doesn't match the
+                //  type of data that we're processing in the loop, then we set
+                //  the pathType to null and let the machinery handle it as if
+                //  no path type was supplied.
+                pathType = aPathType;
+                if (TP.isValid(pathType)) {
+
+                    switch (pathType) {
+                        case TP.XPATH_PATH_TYPE:
+
+                            if (TP.isXMLNode(scopedVal) ||
+                                TP.isKindOf(scopedVal, TP.dom.Node)) {
+                                //  empty
+                            } else {
+                                pathType = null;
+                            }
+
+                            break;
+
+                        case TP.JSON_PATH_TYPE:
+                            if (TP.isKindOf(scopedVal, TP.core.JSONContent)) {
+                                //  empty
+                            } else {
+                                pathType = null;
+                            }
+
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                if (TP.isValid(pathType)) {
+
+                    if (TP.isValid(scopedVal)) {
+                        switch (pathType) {
+
+                            case TP.XPATH_PATH_TYPE:
+
+                                if (TP.isXMLNode(scopedVal)) {
+                                    scopedVal = TP.wrap(scopedVal);
+                                }
+
+                                exprVal = this.$extractValue(
+                                                        scopedVal,
+                                                        expr,
+                                                        TP.xpc,
+                                                        pathOptions);
+
+                                break;
+
+                            case TP.JSON_PATH_TYPE:
+
+                                if (!/^\$\./.test(expr)) {
+                                    expr = '$.' + expr;
+                                }
+
+                                //  Because of the check above, scopedVal has to
+                                //  be a JSONContent object here.
+
+                                exprVal = this.$extractValue(
+                                                        scopedVal,
+                                                        expr,
+                                                        TP.jpc,
+                                                        pathOptions);
+
+                                break;
+
+                            case TP.TIBET_PATH_TYPE:
+
+                                if (TP.isPlainObject(scopedVal)) {
+                                    exprVal = this.$extractValue(
+                                                        TP.hc(scopedVal),
+                                                        expr,
+                                                        TP.tpc,
+                                                        pathOptions);
+                                } else {
+                                    exprVal = this.$extractValue(
+                                                        scopedVal,
+                                                        expr,
+                                                        TP.tpc,
+                                                        pathOptions);
+                                }
+
+                                break;
+
+                            default:
+
+                                exprVal = scopedVal.get(expr);
+
+                                break;
+                        }
+                    }
+
+                } else {
+
+                    if (TP.isValid(scopedVal)) {
+
+                        if (TP.regex.COMPOSITE_PATH.test(expr)) {
+                            if (TP.isValid(transformFunc)) {
+                                exprVal = scopedVal;
+                            } else {
+                                exprVal = TP.wrap(scopedVal).get(
+                                                    TP.apc(expr, pathOptions));
+                            }
+                        } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
+                                                                        expr)) {
+                            exprVal = scopedVal;
+                        } else if (TP.isPlainObject(scopedVal)) {
+                            exprVal = TP.hc(scopedVal).get(expr);
+                        } else if (TP.isXMLNode(scopedVal)) {
+                            exprVal = TP.wrap(scopedVal).get(
+                                                    TP.xpc(expr, pathOptions));
+                        } else if (TP.isKindOf(scopedVal,
+                                                TP.dom.Node)) {
+                            exprVal = scopedVal.get(TP.xpc(expr, pathOptions));
+                        } else if (TP.isKindOf(scopedVal,
+                                                TP.core.JSONContent)) {
+                            exprVal = scopedVal.get(TP.jpc(expr, pathOptions));
+                        } else if (TP.isKindOf(scopedVal,
+                                                TP.core.XMLContent)) {
+                            exprVal = scopedVal.get(TP.xpc(expr, pathOptions));
+                        } else if (TP.regex.JSON_POINTER.test(expr) ||
+                                    TP.regex.JSON_PATH.test(expr)) {
+                            if (!TP.isKindOf(scopedVal, TP.core.JSONContent)) {
+                                scopedVal = TP.core.JSONContent.construct(
+                                                                    scopedVal);
+                            }
+
+                            exprVal = this.$extractValue(scopedVal,
+                                                            expr,
+                                                            TP.jpc,
+                                                            pathOptions);
+
+                        } else if (TP.notValid(scopedVal)) {
+                            exprVal = null;
+                        } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
+                            exprVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
+                        } else if (!TP.isMutable(scopedVal)) {
+                            //  If it's a String, Number or Boolean, then
+                            //  scopedVal is the actual value we want to use.
+                            exprVal = scopedVal;
+                        } else {
+                            exprVal = scopedVal.get(expr);
+                        }
+                    }
+                }
+
+                //  If there is no transformation function defined, and if the
+                //  value extraction flags are defined, then extract the value.
+                //  If there is a transformation function, then we just hand the
+                //  unextracted value of the data value to it.
+                if (!TP.isCallable(transformFunc) && shouldExtractVal) {
+                    exprVal = TP.val(exprVal);
+                }
+
+                if (shouldCollapseVal) {
+                    exprVal = TP.collapse(exprVal);
+                }
+            }
+
+            //  Try to preserve the data type here. If there is only 1
+            //  expression, then there is no sense in stringifying the final
+            //  value.
+            if (len === 1) {
+                finalVal = exprVal;
+            } else {
+                finalVal += exprVal;
+            }
+        }
+
+        //  If we ended up with a *valid* final value and a transformation
+        //  Function was defined, then execute it with that value.
+        if (TP.isValid(finalVal) && TP.isCallable(transformFunc)) {
+
+            if (TP.isCollection(finalVal)) {
+                isXMLResource =
+                    TP.isXMLNode(TP.unwrap(finalVal.first()));
+            } else {
+                isXMLResource =
+                    TP.isXMLNode(TP.unwrap(finalVal));
+            }
+
+            //  It is important for the logic in the transformation Function to
+            //  set this to NaN and let the logic below set it if it finds it.
+            repeatIndex = NaN;
+
+            //  Grab the repeating information. If it's valid, that means that
+            //  we're in a repeating context.
+            repeatInfo = this.$getRepeatSourceAndIndex();
+
+            if (TP.isValid(repeatInfo)) {
+                repeatSource = repeatInfo.first();
+                repeatIndex = repeatInfo.last();
+            }
+
+            finalVal = transformFunc(
+                            changeSource,
+                            finalVal,
+                            this,
+                            repeatSource,
+                            repeatIndex,
+                            isXMLResource);
+        }
+    }
+
+    //  NB: We will *always* call either setValue or setFacet, even if the value
+    //  is null or undefined. This way we can let the receiver decide how to
+    //  manage those values.
+    if (aspect === 'value' && facet === 'value') {
+        didRefresh = this.setValue(finalVal);
+    } else {
+        this.setFacet(aspect, facet, finalVal);
+        didRefresh = true;
+    }
+
+    //  If we refreshed, then add ourself to the list of elements that did.
+    if (didRefresh) {
+        refreshedElements = this.getDocument().get('$refreshedElements');
+
+        if (TP.notValid(refreshedElements)) {
+            refreshedElements = TP.ac();
+            this.getDocument().set('$refreshedElements', refreshedElements);
+        }
+
+        refreshedElements.push(this.getNativeNode());
+    }
+
+    return didRefresh;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('setInitialValue',
 function(aValue) {
 
@@ -5500,140 +5614,92 @@ function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
 
     var bindingInfo,
 
-        valChanged;
+        scopedValExpr,
+        scopedURI,
+        scopedVal,
+
+        pathType,
+
+        didRefresh;
 
     //  Extract the binding information from the supplied binding information
     //  value String. This may have already been parsed and cached, in which
     //  case we get the cached values back.
     bindingInfo = this.getBindingInfoFrom(bindingAttrName, bindingAttrValue);
 
-    valChanged = false;
+    //  If we are inside of a scoping context.
+    if (TP.notEmpty(scopeVals)) {
+        //  Concatenate the binding value onto the scope values array (thereby
+        //  creating a new Array) and use it to join all of the values together.
+        scopedValExpr = TP.uriJoinFragments.apply(TP, scopeVals);
+
+        //  If we weren't able to compute a real URI from the fully expanded URI
+        //  value, then raise an exception and return here.
+        if (!TP.isURIString(scopedValExpr)) {
+            this.raise('TP.sig.InvalidURI');
+
+            return false;
+        }
+
+        //  Create a URI from the scoped expression and get its result. This
+        //  will provide with the 'closest scoped expression'.
+        scopedURI = TP.uc(scopedValExpr);
+        scopedVal = scopedURI.getResource().get('result');
+
+        //  It should be possible to derive an access path type from the URI's
+        //  fragment.
+        pathType = scopedURI.getFragmentAccessPathType();
+    } else {
+        scopedVal = null;
+        pathType = null;
+    }
+
+    didRefresh = false;
 
     //  Iterate over each binding expression in the binding information.
     bindingInfo.perform(
         function(bindEntry) {
 
             var aspectName,
-
                 bindVal,
 
                 dataExprs,
-                len,
-                i,
+                transformFunc,
 
-                dataExpr,
-
-                allVals,
-
-                fullURI,
-                fullExpr,
-
-                wholeURI,
-
-                oldVal,
-
-                wasURI,
-
-                result;
+                refreshedEntry;
 
             aspectName = bindEntry.first();
-
             bindVal = bindEntry.last();
 
-            //  There will be 1...n data expressions here. Iterate over them and
-            //  compute a model reference.
+            //  There will be 1...n data expressions here.
             dataExprs = bindVal.at('dataExprs');
 
-            len = dataExprs.getSize();
-            for (i = 0; i < len; i++) {
-                dataExpr = TP.trim(dataExprs.at(i));
+            //  If a transformation function was computed from the expression,
+            //  it will be here.
+            transformFunc = bindVal.at('transformFunc');
 
-                if (TP.isEmpty(dataExpr)) {
-                    continue;
-                }
+            //  Set our final value for the current binding expresssion. This
+            //  will return whether or not setting this value will have changed
+            //  one or more of the values of the observers.
+            refreshedEntry = this.$setFinalValue(
+                                    aspectName,
+                                    dataExprs,
+                                    scopedVal,
+                                    TP.ac(aspectName),
+                                    'value',
+                                    transformFunc,
+                                    pathType,
+                                    this);
 
-                //  If the data expression is a 'whole URI' (without a
-                //  fragment), then it's not scoped no matter whether we have
-                //  scoping values or not.
-                if (TP.isURIString(dataExpr) &&
-                    !TP.regex.URI_FRAGMENT.test(dataExpr)) {
-
-                    //  Grab the primary URI from a URI computed from the value
-                    //  expression and append a '#tibet(.)' on it (which will
-                    //  retrieve the whole value).
-                    fullURI = TP.uc(dataExpr);
-                    fullExpr = fullURI.getPrimaryLocation() + '#tibet(.)';
-
-                    wholeURI = TP.uc(fullExpr);
-                } else if (TP.notEmpty(scopeVals)) {
-                    //  Concatenate the binding value onto the scope values
-                    //  array (thereby creating a new Array) and use it to
-                    //  join all of the values together.
-                    allVals = scopeVals.concat(dataExpr);
-                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
-
-                    //  If we weren't able to compute a real URI from the
-                    //  fully expanded URI value, then raise an exception
-                    //  and return here.
-                    if (!TP.isURIString(fullExpr)) {
-                        this.raise('TP.sig.InvalidURI');
-
-                        break;
-                    }
-
-                    wholeURI = TP.uc(fullExpr);
-                } else {
-                    //  Scope values is empty - this is (hopefully) a fully
-                    //  qualified binding expression.
-
-                    //  If we weren't able to compute a real URI from the
-                    //  fully expanded URI value, then raise an exception
-                    //  and return here.
-                    if (!TP.isURIString(dataExpr) &&
-                            !TP.regex.URI_FRAGMENT.test(dataExpr)) {
-                        this.raise('TP.sig.InvalidURI');
-                        break;
-                    }
-
-                    wholeURI = TP.uc(dataExpr);
-                }
-
-                if (!TP.isURI(wholeURI)) {
-                    this.raise('TP.sig.InvalidURI');
-                    break;
-                }
-
-                oldVal = this.get(aspectName);
-
-                //  If the content is quoted (with, specifically, quote marks at
-                //  either end), then it's a literal value. The result should be
-                //  that content with the quotes stripped off.
-                if (TP.regex.QUOTED_CONTENT.test(dataExpr)) {
-                    result = dataExpr.unquoted();
-                    wasURI = false;
-                } else {
-                    //  Otherwise, it's a binding expression to a data source.
-                    //  Grab the result from the URI.
-                    result = wholeURI.getResource().get('result');
-                    wasURI = true;
-                }
-
-                if (!TP.equal(result, oldVal)) {
-                    this.$refreshLeaf(
-                            'value',
-                            result,
-                            TP.ac(aspectName),
-                            attributeNode,
-                            null,
-                            wasURI,
-                            this);
-
-                    valChanged = true;
-                }
+            //  If at least one returned true, then flip the flag to true. Note
+            //  that this is constructed such that, once the flag is flipped to
+            //  true, it cannot be changed back.
+            if (refreshedEntry) {
+                didRefresh = refreshedEntry;
             }
         }.bind(this));
 
-    return valChanged;
+    return didRefresh;
 });
 
 //  ------------------------------------------------------------------------
