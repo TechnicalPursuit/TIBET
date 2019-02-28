@@ -2714,6 +2714,13 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
         dataRow = aDataRowOrURIOrPath;
     }
 
+    //  If we got a XML content object, then we want it's data.
+    if (TP.isKindOf(dataRow, TP.core.XMLContent)) {
+        dataRow = dataRow.get('data');
+    }
+
+    dataRow = TP.wrap(dataRow);
+
     if (TP.isTrue(shouldClone)) {
 
         //  Get the item to clone and clone it.
