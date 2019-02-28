@@ -2123,6 +2123,84 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Inst.defineMethod('getFragmentAccessPath',
+function() {
+
+    /**
+     * @method getFragmentAccessPath
+     * @summary Returns an instance of an access path from the path encoded in
+     *     the fragment expression of the receiver (if its fragment forms an
+     *     expression that can be considered an access path).
+     * @returns {TP.path.AccessPath|null} An access path created from the
+     *     receiver's fragment.
+     */
+
+    var fragment,
+        fragmentAccessor;
+
+    fragment = this.getFragment();
+    if (TP.isEmpty(fragment)) {
+        return null;
+    }
+
+    if (TP.regex.ANY_POINTER.test(fragment)) {
+        fragmentAccessor = TP.apc(fragment);
+        return fragmentAccessor;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URI.Inst.defineMethod('getFragmentAccessPathType',
+function() {
+
+    /**
+     * @method getFragmentAccessPathType
+     * @summary Returns the type of the access path encoded in the fragment
+     *     expression of the receiver (if its fragment forms an expression that
+     *     can be considered an access path).
+     * @returns {String} One of the 'path type' constants:
+     *     TP.TIBET_PATH_TYPE
+     *     TP.JSON_PATH_TYPE
+     *     TP.CSS_PATH_TYPE
+     *     TP.XPATH_PATH_TYPE
+     *     TP.BARENAME_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
+     */
+
+    var fragment,
+        fragmentAccessor,
+
+        fragExpr;
+
+    //  The most robust way to do this is to create a TP.path.AccessPath object
+    //  from the fragment and ask that object.
+    fragment = this.getFragment();
+    if (TP.isEmpty(fragment)) {
+        return TP.NOT_FOUND;
+    }
+
+    if (TP.regex.ANY_POINTER.test(fragment)) {
+        fragmentAccessor = TP.apc(fragment);
+        return fragmentAccessor.getPathType();
+    }
+
+    //  As a fallback, we can try to compute the access path type by looking at
+    //  the raw fragment expression.
+    fragExpr = this.getFragmentExpr();
+    if (TP.isEmpty(fragExpr)) {
+        return TP.NOT_FOUND;
+    }
+
+    return TP.getAccessPathType(fragExpr);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Inst.defineMethod('getFragmentExpr',
 function() {
 
