@@ -5720,7 +5720,7 @@ function(aPath, config) {
      * @summary Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.path.SimpleTIBETPath} The receiver.
+     * @returns {TP.path.JSONPath} The receiver.
      */
 
     var path;
