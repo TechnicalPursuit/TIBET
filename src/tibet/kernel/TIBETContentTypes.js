@@ -7313,10 +7313,20 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.path.SimpleTIBETPath.Type.defineMethod('endObservedAddress',
-function() {
+function(theVal, observedAddressRecord) {
 
     /**
      * @method endObservedAddress
+     * @summary End computing an 'observed address' that will used to track
+     *     which data addresses are being observed by a data path. Note that
+     *     this (along with its counterpart startObservedAddress) will be
+     *     called as many times as there are 'path parts' since we build an
+     *     address from those path parts as we recurse 'down' a JS object data
+     *     structure.
+     * @param {Object} theVal The value that we use to test as to whether to
+     *     save this address (i.e. register the supplied address record).
+     * @param {Array} observedAddressRecord The record of address information
+     *     that will be registered if the test of the supplied value passes.
      * @returns {TP.meta.path.SimpleTIBETPath} The receiver.
      */
 
@@ -7328,6 +7338,15 @@ function() {
     }
 
     this.get('$prefixParts').pop();
+
+    //  If we have a defined value, then make an 'observed address' from the
+    //  supplied record.
+    if (TP.isDefined(theVal)) {
+        TP.path.AccessPath.registerObservedAddresses(
+                                TP.ac(observedAddressRecord.at(0)),
+                                observedAddressRecord.at(1),
+                                observedAddressRecord.at(2));
+    }
 
     return this;
 });
@@ -7373,18 +7392,28 @@ function(addressPart) {
 
     /**
      * @method startObservedAddress
-     * @param {String} addressPart
-     * @returns {TP.meta.path.SimpleTIBETPath} The receiver.
+     * @summary Start computing an 'observed address' that will used to track
+     *     which data addresses are being observed by a data path. Note that
+     *     this will be called as many times as there are 'path parts' since we
+     *     build an address from those path parts as we recurse 'down' a JS
+     *     object data structure.
+     * @param {String} addressPart The 'local' portion of the address to add to
+     *     the overall address that we're computing.
+     * @returns {Array} An Array of the address, the source object ID and the
+     *     source path, all used by the endObservedAddress method to make a
+     *     observed address record.
      */
 
     var srcObj,
 
         prefixParts,
 
-        sourceObjectID,
-        srcPath,
+        address,
 
-        address;
+        srcPath,
+        sourceObjectID,
+
+        addressRecord;
 
     srcObj = TP.path.SimpleTIBETPath.get('$currentSource');
     if (TP.owns(srcObj, '$$noPathTracking')) {
@@ -7406,10 +7435,9 @@ function(addressPart) {
     //  Grab the ID of the current source object
     sourceObjectID = TP.id(srcObj);
 
-    TP.path.AccessPath.registerObservedAddresses(
-                        TP.ac(address), sourceObjectID, srcPath);
+    addressRecord = TP.ac(address, sourceObjectID, srcPath);
 
-    return this;
+    return addressRecord;
 });
 
 //  ------------------------------------------------------------------------
@@ -7479,8 +7507,10 @@ function(targetObj, varargs) {
 
     var args,
 
-        path,
         srcPath,
+        path,
+
+        addressRecord,
 
         retVal;
 
@@ -7520,7 +7550,7 @@ function(targetObj, varargs) {
 
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
-    this.getType().startObservedAddress(srcPath);
+    addressRecord = this.getType().startObservedAddress(srcPath);
 
     //  If the path is something like '[0]', then slice off the brackets to
     //  just produce '0'.
@@ -7530,7 +7560,7 @@ function(targetObj, varargs) {
 
     retVal = targetObj.get(path);
 
-    this.getType().endObservedAddress();
+    this.getType().endObservedAddress(retVal, addressRecord);
 
     this.postGetAccess(targetObj);
 
@@ -8287,6 +8317,8 @@ function(targetObj) {
 
         val,
 
+        mainAddressRecord,
+
         tailPath,
 
         retVal;
@@ -8314,9 +8346,11 @@ function(targetObj) {
                 targetObj.vslice(head).perform(
                         function(index) {
 
-                            var itemVal;
+                            var itemVal,
+                                addressRecord;
 
-                            thisType.startObservedAddress(index);
+                            addressRecord =
+                                thisType.startObservedAddress(index);
 
                             itemVal = targetObj.at(index);
 
@@ -8329,7 +8363,7 @@ function(targetObj) {
 
                             val.push(itemVal);
 
-                            thisType.endObservedAddress();
+                            thisType.endObservedAddress(itemVal, addressRecord);
                         });
             } else {
                 //  Otherwise, we take each one of our items and capture the
@@ -8337,9 +8371,11 @@ function(targetObj) {
                 targetObj.vslice(head).perform(
                         function(index) {
 
-                            var itemVal;
+                            var itemVal,
+                                addressRecord;
 
-                            thisType.startObservedAddress(index);
+                            addressRecord =
+                                thisType.startObservedAddress(index);
 
                             itemVal = targetObj.at(index);
 
@@ -8352,7 +8388,7 @@ function(targetObj) {
 
                             val.push(itemVal.get(TP.tpc(tail)));
 
-                            thisType.endObservedAddress();
+                            thisType.endObservedAddress(itemVal, addressRecord);
                         });
             }
         } else {
@@ -8385,9 +8421,10 @@ function(targetObj) {
                 targetObj.performOver(
                         function(item, key) {
 
-                            var itemVal;
+                            var itemVal,
+                                addressRecord;
 
-                            thisType.startObservedAddress(key);
+                            addressRecord = thisType.startObservedAddress(key);
 
                             itemVal = item;
 
@@ -8400,7 +8437,7 @@ function(targetObj) {
 
                             val.push(itemVal);
 
-                            thisType.endObservedAddress();
+                            thisType.endObservedAddress(itemVal, addressRecord);
                         }, queryParts);
             } else {
                 //  Otherwise, we take each one of our items and capture the
@@ -8408,9 +8445,10 @@ function(targetObj) {
                 targetObj.performOver(
                         function(item, key) {
 
-                            var itemVal;
+                            var itemVal,
+                                addressRecord;
 
-                            thisType.startObservedAddress(key);
+                            addressRecord = thisType.startObservedAddress(key);
 
                             itemVal = item;
 
@@ -8427,7 +8465,7 @@ function(targetObj) {
                                 val.push(itemVal);
                             }
 
-                            thisType.endObservedAddress();
+                            thisType.endObservedAddress(itemVal, addressRecord);
 
                         }, queryParts);
             }
@@ -8450,18 +8488,18 @@ function(targetObj) {
     //  only continue if the tail is valid and the result object can
     //  stay with the program :)
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
-        thisType.startObservedAddress(head);
+        mainAddressRecord = thisType.startObservedAddress(head);
 
         tailPath = TP.tpc(tail);
         tailPath.set('shouldCollapse', this.get('shouldCollapse'));
 
         retVal = val.get(tailPath);
 
-        thisType.endObservedAddress();
+        thisType.endObservedAddress(retVal, mainAddressRecord);
 
         return retVal;
     } else if (TP.isString(tail) && TP.isPlainObject(val)) {
-        thisType.startObservedAddress(head);
+        mainAddressRecord = thisType.startObservedAddress(head);
 
         if (tail.indexOf('.') !== TP.NOT_FOUND) {
             return TP.objectValue(val, tail);
@@ -8469,7 +8507,7 @@ function(targetObj) {
             retVal = val[tail];
         }
 
-        thisType.endObservedAddress();
+        thisType.endObservedAddress(retVal, mainAddressRecord);
 
         return retVal;
     } else {
@@ -8504,6 +8542,8 @@ function(targetObj) {
 
         val,
 
+        mainAddressRecord,
+
         tailPath,
 
         retVal;
@@ -8531,9 +8571,10 @@ function(targetObj) {
             targetObj.performOver(
                     function(item, key) {
 
-                        var itemVal;
+                        var itemVal,
+                            addressRecord;
 
-                        thisType.startObservedAddress(key);
+                        addressRecord = thisType.startObservedAddress(key);
 
                         itemVal = item;
 
@@ -8545,7 +8586,7 @@ function(targetObj) {
 
                         val.push(itemVal);
 
-                        thisType.endObservedAddress();
+                        thisType.endObservedAddress(itemVal, addressRecord);
                     }, queryParts);
         } else {
             //  Otherwise, we take each one of our items and capture the return
@@ -8553,9 +8594,10 @@ function(targetObj) {
             targetObj.performOver(
                     function(item, key) {
 
-                        var itemVal;
+                        var itemVal,
+                            addressRecord;
 
-                        thisType.startObservedAddress(key);
+                        addressRecord = thisType.startObservedAddress(key);
 
                         itemVal = item;
 
@@ -8571,7 +8613,7 @@ function(targetObj) {
                             val.push(itemVal);
                         }
 
-                        thisType.endObservedAddress();
+                        thisType.endObservedAddress(itemVal, addressRecord);
 
                     }, queryParts);
         }
@@ -8597,18 +8639,18 @@ function(targetObj) {
     //  only continue if the tail is valid and the result object can stay
     //  with the program :)
     if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
-        thisType.startObservedAddress(head);
+        mainAddressRecord = thisType.startObservedAddress(head);
 
         tailPath = TP.tpc(tail);
         tailPath.set('shouldCollapse', this.get('shouldCollapse'));
 
         retVal = val.get(tailPath);
 
-        thisType.endObservedAddress();
+        thisType.endObservedAddress(retVal, mainAddressRecord);
 
         return retVal;
     } else if (TP.isString(tail) && TP.isPlainObject(val)) {
-        thisType.startObservedAddress(head);
+        mainAddressRecord = thisType.startObservedAddress(head);
 
         if (tail.indexOf('.') !== TP.NOT_FOUND) {
             return TP.objectValue(val, tail);
@@ -8616,7 +8658,7 @@ function(targetObj) {
             retVal = val[tail];
         }
 
-        thisType.endObservedAddress();
+        thisType.endObservedAddress(retVal, mainAddressRecord);
 
         return retVal;
     } else {

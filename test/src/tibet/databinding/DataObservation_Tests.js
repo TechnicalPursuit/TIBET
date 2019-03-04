@@ -296,28 +296,20 @@ function() {
         //  But not for the structural path result
         test.refute.contains(structurePathResults, objPath6.get('srcPath'));
 
-        //  And for objPath5
-        test.assert.contains(valuePathResults, objPath5.get('srcPath'));
-
-        //  But not for the structural path result
+        //  And *not* for objPath5 for either set of results.
+        test.refute.contains(valuePathResults, objPath5.get('srcPath'));
         test.refute.contains(structurePathResults, objPath5.get('srcPath'));
 
-        //  And for objPath4
-        test.assert.contains(valuePathResults, objPath4.get('srcPath'));
-
-        //  But not for the structural path result
+        //  And *not* for objPath4 for either set of results.
+        test.refute.contains(valuePathResults, objPath4.get('srcPath'));
         test.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
-        //  And for objPath3
-        test.assert.contains(valuePathResults, objPath3.get('srcPath'));
-
-        //  But not for the structural path result
+        //  And *not* for objPath3 for either set of results.
+        test.refute.contains(valuePathResults, objPath3.get('srcPath'));
         test.refute.contains(structurePathResults, objPath3.get('srcPath'));
 
-        //  And for objPath2
-        test.assert.contains(valuePathResults, objPath2.get('srcPath'));
-
-        //  But not for the structural path result
+        //  And *not* for objPath2 for either set of results.
+        test.refute.contains(valuePathResults, objPath2.get('srcPath'));
         test.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
         //  And *not* for objPath1 (it's too high up in the chain)
