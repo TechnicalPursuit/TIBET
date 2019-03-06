@@ -4794,11 +4794,11 @@ function() {
     this.before(function() {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
-        tailResultsPath = TP.apc('$.foo.hi[boo,moo]');
+        tailResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\']');
 
         middleResultsModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":{"gar":"bar"},"moo":{"gar":"tar"}}}}');
-        middleResultsPath = TP.apc('$.foo.hi[boo,moo].gar');
+        middleResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\'].gar');
     });
 
     this.it('tail results get', function(test, options) {
@@ -5224,7 +5224,7 @@ function() {
     this.before(function() {
         model1 = TP.core.JSONContent.construct('{"foo":{"hi":"there"}}');
         path1 = TP.apc('$.bar.moo');
-        path2 = TP.apc('$.bar[moo,too].noo');
+        path2 = TP.apc('$.bar[\'moo\',\'too\'].noo');
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -5481,7 +5481,7 @@ function() {
     this.before(function() {
         model1 = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
         path1 = TP.apc('$.foo[3].bar');
-        path2 = TP.apc('$.foo[3][bar,moo,too].roo');
+        path2 = TP.apc('$.foo[3][\'bar\',\'moo\',\'too\'].roo');
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -5602,10 +5602,10 @@ function() {
                 '{"fname":"june", "lname":"cleaver"}' +
             ']}');
 
-        path1 = TP.apc('$.value[{{0}}].fname');
+        path1 = TP.apc('$.value[\'{{0}}\'].fname');
         path2 = TP.apc('$.value[{{0}}:{{1}}].fname');
-        path3 = TP.apc('$.value[{{0}},{{1}}].fname');
-        path4 = TP.apc('$.value[{{0}}].aliases[{{1}}:{{2}}]');
+        path3 = TP.apc('$.value[\'{{0}}\',\'{{1}}\'].fname');
+        path4 = TP.apc('$.value[\'{{0}}\'].aliases[{{1}}:{{2}}]');
     });
 
     this.afterEach(
