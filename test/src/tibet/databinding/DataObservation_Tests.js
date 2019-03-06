@@ -982,7 +982,10 @@ function() {
             newEmployee;
 
         aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('TYPE_DEFINED_TEST_ASPECT_CHANGED_RESULTS');
+
         valueChangedResults = TP.ac();
+        aspectChangedResults.setID('TYPE_DEFINED_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
                 function(aSignal) {
@@ -1026,7 +1029,10 @@ function() {
             newEmployee;
 
         aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('TIBETPATH_TEST_ASPECT_CHANGED_RESULTS');
+
         valueChangedResults = TP.ac();
+        aspectChangedResults.setID('TIBETPATH_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
                 function(aSignal) {
@@ -1073,7 +1079,10 @@ function() {
             newEmployee;
 
         aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('JSONPATH_TEST_ASPECT_CHANGED_RESULTS');
+
         valueChangedResults = TP.ac();
+        aspectChangedResults.setID('JSONPATH_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
                 function(aSignal) {
@@ -1119,7 +1128,10 @@ function() {
             newEmployee;
 
         aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('XPATH_TEST_ASPECT_CHANGED_RESULTS');
+
         valueChangedResults = TP.ac();
+        aspectChangedResults.setID('XPATH_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
             function(aSignal) {
