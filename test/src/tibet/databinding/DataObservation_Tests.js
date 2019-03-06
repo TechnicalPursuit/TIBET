@@ -32,10 +32,10 @@ function() {
         modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
 
         valuePathResults = TP.ac();
-        valuePathResults.setID('JSONPATH_TEST_VALUE_PATH_RESULTS');
+        valuePathResults.setID('TIBETPATH_TEST_VALUE_PATH_RESULTS');
 
         structurePathResults = TP.ac();
-        structurePathResults.setID('JSONPATH_TEST_STRUCTURE_PATH_RESULTS');
+        structurePathResults.setID('TIBETPATH_TEST_STRUCTURE_PATH_RESULTS');
 
         objValueObsFunction =
                 function(aSignal) {
@@ -668,10 +668,10 @@ function() {
         modelObj = TP.core.XMLContent.construct('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
 
         valuePathResults = TP.ac();
-        valuePathResults.setID('JSONPATH_TEST_VALUE_PATH_RESULTS');
+        valuePathResults.setID('XPATH_TEST_VALUE_PATH_RESULTS');
 
         structurePathResults = TP.ac();
-        structurePathResults.setID('JSONPATH_TEST_STRUCTURE_PATH_RESULTS');
+        structurePathResults.setID('XPATH_TEST_STRUCTURE_PATH_RESULTS');
 
         xmlValueObsFunction =
                 function(aSignal) {
