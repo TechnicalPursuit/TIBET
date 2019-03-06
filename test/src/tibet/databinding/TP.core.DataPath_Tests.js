@@ -5443,6 +5443,12 @@ function() {
         //  Note - there is a value at 0 - the 'f' from the word 'four' that we
         //  set above.
 
+        //  This value should still be 'stuff' - the '1:4' range means items
+        //  1-3.
+        val = model1.get('data').value[3][1][0];
+
+        test.assert.isEqualTo(val, 'stuff');
+
         //  Even though we have creation turned off, the call above did not
         //  require 'structure creating' - the values should have been set.
         val = model1.get('data').value[3][1][1];
