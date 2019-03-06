@@ -2067,28 +2067,20 @@ function() {
         //  But not for the structural path result
         test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
 
-        //  And for jsonURI5
-        test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
-
-        //  But not for the structural path result
+        //  And *not* for jsonPath5 for either set of results.
+        test.refute.contains(valuePathResults, jsonURI5.getFragmentExpr());
         test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
-        //  And for jsonURI4
-        test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
-
-        //  But not for the structural path result
+        //  And *not* for jsonPath4 for either set of results.
+        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
         test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
-        //  And for jsonURI3
-        test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
-
-        //  But not for the structural path result
+        //  And *not* for jsonPath3 for either set of results.
+        test.refute.contains(valuePathResults, jsonURI3.getFragmentExpr());
         test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
-        //  And for jsonURI2
-        test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
-
-        //  But not for the structural path result
+        //  And *not* for jsonPath2 for either set of results.
+        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
         test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 (it's too high up in the chain)
