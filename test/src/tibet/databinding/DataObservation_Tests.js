@@ -558,50 +558,6 @@ function() {
         test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
-    this.it('change along a single path for the new object', function(test, options) {
-        jsonPath6.executeSet(modelObj, 'goofy', true);
-
-        //  The path has should *not* have the path for jsonPath7 (it's at a
-        //  similar level in the chain, but on a different branch)
-        test.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
-
-        //  The value path results should have the path for jsonPath6
-        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
-
-        //  And for jsonPath5
-        test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
-
-        //  And for jsonPath4
-        test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
-
-        //  And for jsonPath3
-        test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
-
-        //  And for jsonPath2
-        test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
-
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
-
-        //  And *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-
-        //  And not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
-    });
-
     this.it('change model to a whole new object', function(test, options) {
         jsonPath1.set('shouldMakeStructures', true);
 
@@ -637,6 +593,42 @@ function() {
         //  And for jsonPath1
         test.assert.contains(valuePathResults, jsonPath1.get('srcPath'));
         test.assert.contains(structurePathResults, jsonPath1.get('srcPath'));
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+        jsonPath6.executeSet(modelObj, 'fluffy', true);
+
+        //  The path has should *not* have the path for jsonPath7 (it's at a
+        //  similar level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
+
+        //  The value path results should have the path for jsonPath6
+        test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
+
+        //  But not for the structural path result
+        test.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
+
+        //  And *not* for jsonPath5 for either set of results.
+        test.refute.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+
+        //  And *not* for jsonPath4 for either set of results.
+        test.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+
+        //  And *not* for jsonPath3 for either set of results.
+        test.refute.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+
+        //  And *not* for jsonPath2 for either set of results.
+        test.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+
+        //  And *not* for jsonPath1 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+
+        //  And not for the structural path result
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
 });
