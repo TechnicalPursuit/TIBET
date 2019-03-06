@@ -606,7 +606,7 @@ function() {
         jsonPath1.set('shouldMakeStructures', true);
 
         //  Set everything under 'foo' to a new data structure
-        jsonPath1.executeSet(modelObj, TP.json2js('["A","B","C","D"]'), true);
+        jsonPath1.executeSet(modelObj, TP.json2js('["A","B","C","D"]', false), true);
 
         //  All paths will have changed
 
@@ -1091,7 +1091,7 @@ function() {
                 };
 
         newEmployee = TP.test.JSONPathEmployee.construct(
-                TP.json2js('{"emp":{"lastName":"", "firstName":""}}'));
+                TP.json2js('{"emp":{"lastName":"", "firstName":""}}', false));
 
         aspectObsFunction.observe(newEmployee, 'FirstNameChange');
         aspectObsFunction.observe(newEmployee, 'LastNameChange');
