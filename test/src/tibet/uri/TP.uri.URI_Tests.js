@@ -1880,7 +1880,7 @@ function() {
 
     this.it('change along a branching path', function(test, options) {
 
-        jsonURI3 = TP.uc('urn:tibet:jsonData#jpath($.foo[3][bar,moo,too].roo)');
+        jsonURI3 = TP.uc('urn:tibet:jsonData#jpath($.foo[3][\'bar\',\'moo\',\'too\'].roo)');
         jsonURI3.set('shouldCreateContent', true);
 
         jsonURI3.setResource(TP.ac(), setResourceParams);
