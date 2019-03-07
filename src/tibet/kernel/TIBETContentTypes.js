@@ -2316,7 +2316,10 @@ function() {
     var data;
 
     data = TP.js2json(this.getData());
-    data = TP.json2js(data);
+
+    //  NB: We pass false as the 2nd parameter to this TP.json2js call to get a
+    //  standard POJO (not TP.core.Hashes) from the JSON.
+    data = TP.json2js(data, false);
 
     return data;
 });
