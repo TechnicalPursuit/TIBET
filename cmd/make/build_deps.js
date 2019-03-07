@@ -26,6 +26,7 @@
             '_rollup_forge',
             '_rollup_fuse',
             '_rollup_jjv',
+            '_rollup_jsonpath',
             '_rollup_jquery',
             '_rollup_jqueryxpath',
             '_rollup_less',

@@ -67,6 +67,7 @@
         "jquery-xpath": "^0.3.1",
         "js-beautify": "^1.8.9",
         "jsDAV": "^0.3.4",
+        "jsonpath": "github:TechnicalPursuit/jsonpath",
         "less": "github:TechnicalPursuit/less.js",
         "marked": "^0.4.0",
         "marked-man": "github:TechnicalPursuit/marked-man",

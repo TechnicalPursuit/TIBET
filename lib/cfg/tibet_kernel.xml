@@ -84,6 +84,16 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/jsonpath-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/jsonpath-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('jsonpath', window.jsonpath);
+        ]]>
+    </script>
+
     <script src="TIBETDOMPrimitivesPre.js"/>
     <script src="TIBETDOMPrimitivesBase.js"/>
     <script src="TIBETDOMPrimitivesPlatform.js"/>
