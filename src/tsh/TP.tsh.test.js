@@ -36,20 +36,26 @@ function(aRequest) {
      */
 
     var shell,
-        target,
         runner,
+
         ignore_only,
         ignore_skip,
-        options,
-        params,
-        karma,
-        total,
+        target,
         suiteName,
         cases,
-        context,
+
         contextDefaulted,
+        context,
+
+        karma,
+
+        total,
+
         obj,
-        nsRoot;
+        nsRoot,
+        options,
+
+        params;
 
     shell = aRequest.at('cmdShell');
 

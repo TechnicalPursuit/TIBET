@@ -160,7 +160,7 @@ function(options) {
 
                         name = suite.getSuiteName();
                         path = TP.objectGetSourcePath(suite) ||
-                            TP.objectGetLoadPath(suite);
+                                TP.objectGetLoadPath(suite);
 
                         if (pattern) {
                             return pattern.match(name) ||
@@ -180,27 +180,28 @@ function(options) {
     context = params.at('context');
     if (TP.notValid(context)) {
         if (TP.notEmpty(targets)) {
-            targets.forEach(function(t) {
-                var c;
+            targets.forEach(
+                function(aTarget) {
+                    var targetContext;
 
-                //  Already been through and found at least two variants.
-                if (context === 'all') {
-                    return;
-                }
+                    //  Already been through and found at least two variants.
+                    if (context === 'all') {
+                        return;
+                    }
 
-                c = TP.id(t);
-                if (TP.notValid(c)) {
-                    return;
-                }
+                    targetContext = TP.id(aTarget);
+                    if (TP.notValid(targetContext)) {
+                        return;
+                    }
 
-                if (c.indexOf('TP.') === 0) {
-                    context = context === 'app' ? 'all' : 'lib';
-                } else if (c.indexOf('APP.') === 0) {
-                    context = context === 'lib' ? 'all' : 'app';
-                } else {
-                    return;
-                }
-            });
+                    if (targetContext.indexOf('TP.') === 0) {
+                        context = context === 'app' ? 'all' : 'lib';
+                    } else if (targetContext.indexOf('APP.') === 0) {
+                        context = context === 'lib' ? 'all' : 'app';
+                    } else {
+                        return;
+                    }
+                });
         } else {
             context = 'app';
         }
