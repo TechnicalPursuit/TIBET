@@ -4147,7 +4147,7 @@ function(targetObj, filterOutSignalSupertypes) {
     //  normally done by doing a 'get'.
 
     if (TP.isEmpty(observedAddresses)) {
-        this.executeGet(target);
+        this.executeGet(targetObj);
 
         observedAddresses = allAddresses.at(TP.id(target));
 
