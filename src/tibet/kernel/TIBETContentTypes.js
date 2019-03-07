@@ -5236,6 +5236,643 @@ function() {
 });
 
 //  ========================================================================
+//  TP.path.JSONPath
+//  ========================================================================
+
+/**
+ * @type {TP.path.JSONPath}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.path.AccessPath.defineSubtype('JSONPath');
+
+//  ------------------------------------------------------------------------
+
+//  avoid binding and apply issues by creating our alias as a wrapper
+TP.definePrimitive('jpc',
+function(aPath, config) {
+
+    /**
+     * @method jpc
+     * @summary Returns a newly initialized JSONPath instance. Note that if
+     * @param {String} aPath The JSONPath as a String.
+     * @param {TP.core.Hash} config The configuration for this path.
+     * @returns {TP.path.JSONPath} The new instance.
+     */
+
+    return TP.path.JSONPath.construct.apply(TP.path.JSONPath, arguments);
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.path.JSONPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.core.Hash} config The configuration for this path.
+     * @returns {TP.path.JSONPath} The receiver.
+     */
+
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.JSON_POINTER.test(aPath)) {
+        path = TP.regex.JSON_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
+    this.callNextMethod(path, config);
+
+    if (TP.isHash(config)) {
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+    } else {
+        this.set('shouldCollapse', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.JSONPath.Inst.defineMethod('executeGet',
+function(targetObj, varargs) {
+
+    /**
+     * @method executeGet
+     * @summary Returns the result of executing the path in a 'get' fashion -
+     *     i.e. with the intent of retrieving data from the supplied target
+     *     object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     get data.
+     * @param {arguments} varargs The arguments to execute the get with. The
+     *     first argument should be the object to execute the receiver against
+     *     to retrieve data. Any remaining arguments will be used as values for
+     *     a templated substitution in the path itself.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
+     * @exception TP.sig.InvalidNode
+     * @returns {Object} The result of executing a 'get' against the target
+     *     object using the receiver.
+     */
+
+    var sourceObjectID,
+        data,
+
+        targetNdx,
+        targetSnaps,
+        targetData,
+
+        srcPath,
+        path,
+        args,
+
+        executedPaths,
+
+        results,
+        addresses,
+
+        retVal;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  This kind of path will only work against TP.core.JSONContent objects
+    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    srcPath = this.get('srcPath');
+
+    //  If the path is empty or just '$', then that's the shortcut to just
+    //  return the target object itself.
+    if (TP.isEmpty(srcPath) || srcPath === '$') {
+        return targetObj;
+    }
+
+    path = srcPath;
+
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 2nd parameter onwards.
+    if (TP.regex.HAS_ACP.test(path)) {
+        //  Grab the arguments and slice the first one off (since it's the
+        //  targetObj, which we already have).
+        args = TP.args(arguments, 1);
+
+        //  Run the transform with the arguments after the 1st one.
+        path = path.transform(args);
+    }
+
+    sourceObjectID = targetObj.getID();
+
+    if (targetObj.$get('transactional')) {
+
+        targetNdx = targetObj.$get('currentIndex');
+        targetSnaps = targetObj.$get('snaps');
+
+        //  NOTE:   we use $get here since we don't want to recurse over
+        //          getProperty() calls that use getNativeNode
+        if (TP.isValid(targetNdx)) {
+            targetData = targetSnaps.at(targetNdx);
+        } else {
+            targetData = targetObj.get('data');
+        }
+
+        data = targetData;
+    } else {
+        data = targetObj.get('data');
+    }
+
+    executedPaths = TP.path.AccessPath.$getExecutedPaths().atPutIfAbsent(
+                    TP.id(targetObj),
+                    TP.hc());
+
+    executedPaths.atPut(path, this);
+
+    //  Invoke the external JSONPath engine and get back a list of results. This
+    //  will be an Array of POJO structures that will contain information about
+    //  each match.
+    results = TP.extern.jsonpath.nodes(data, path);
+
+    //  An Array to gather up the referenced addresses for each result.
+    addresses = TP.ac();
+
+    //  An Array to gather up the value for each result.
+    retVal = TP.ac();
+
+    //  Process each result by capturing its referenced address and value.
+    results.forEach(
+        function(anEntry) {
+            addresses.push(anEntry.path.join('.'));
+            retVal.push(anEntry.value);
+        });
+
+    //  Use the referenced addresses to specify the fact that this path (and
+    //  therefore users of this path) are interested in those data locations,
+    //  should they change.
+    TP.path.AccessPath.registerObservedAddresses(
+                                        addresses, sourceObjectID, srcPath);
+
+    //  If we got at least one valid return value.
+    if (TP.notEmpty(retVal)) {
+
+        //  If the Array of return values only has one item, then collapse it
+        //  down to the value itself.
+        retVal = TP.collapse(retVal);
+
+        //  Make sure to process the final value using converters, etc.
+        //  configured for this object.
+        return this.processFinalValue(retVal, targetObj);
+    }
+
+    return null;
+}, {
+    patchCallee: false
+});
+
+//  -----------------------------------------------------------------------
+
+TP.path.JSONPath.Inst.defineMethod('executeSet',
+function(targetObj, attributeValue, shouldSignal, varargs) {
+
+    /**
+     * @method executeSet
+     * @summary Executes the path in a 'set' fashion - i.e. with the intent of
+     *     setting the supplied data into the supplied target object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     set data.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
+     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     *     targetObj.shouldSignalChange().
+     * @param {arguments} varargs Any remaining arguments will be used as values
+     *     for a templated substitution in the path itself.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
+     * @returns {TP.path.JSONPath} The receiver.
+     */
+
+    var data,
+
+        srcPath,
+        path,
+        args,
+
+        oldVal,
+
+        ops,
+        newStructs,
+
+        setFunc,
+        makeStructuresFunc,
+        createdStructure,
+
+        results,
+
+        sigFlag,
+
+        executedPaths,
+        obsAddresses,
+
+        mutatedStructure;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  This kind of path will only work against TP.core.JSONContent objects
+    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    srcPath = this.get('srcPath');
+    //  If the path is empty or just '$', then that's the shortcut to just
+    //  return the target object itself.
+    if (TP.isEmpty(srcPath) || srcPath === '$') {
+        return targetObj;
+    }
+
+    path = srcPath;
+
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 4th parameter onwards.
+    if (TP.regex.HAS_ACP.test(path)) {
+        //  Grab the arguments and slice the first three off (since they're
+        //  targetObj, attributeValue and shouldSignal which we already have).
+        args = TP.args(arguments, 3);
+
+        //  Run the transform with the arguments after the 3rd one.
+        path = path.transform(args);
+    }
+
+    //  If the old value is equal to the value that we're setting, then there
+    //  is nothing to do here and we exit. This is important to avoid endless
+    //  recursion when doing a 'two-ended bind' to data referenced by this
+    //  path.
+    //  Note that we handle empty Arrays specially here since, if we're not
+    //  reducing Arrays, an empty Array handed in as the value will compare as
+    //  'true' here and this routine will exit.
+    if (this.valuesAreAlike(oldVal, attributeValue)) {
+        if (TP.isEmptyArray(attributeValue)) {
+            void 0;
+        } else {
+            return oldVal;
+        }
+    }
+
+    data = targetObj.get('data');
+
+    ops = TP.ac();
+    newStructs = TP.ac();
+
+    //  Construct a Function that will used to 'set' values at the end of paths
+    //  that are executed by external JSONPath engine. This Function takes the
+    //  current value as its only parameter and returns the value to be placed
+    //  into that spot in the JS data structure.
+    setFunc = function(currentVal) {
+        var op,
+
+        deletedNodes,
+
+        srcPathParts,
+
+        len,
+        i,
+
+        trackingPath;
+
+        //  The current value is identical to the new value, so there is no
+        //  change.
+        if (currentVal === attributeValue) {
+            return currentVal;
+        }
+
+        //  If there is no new value or the current value is a POJO or an Array,
+        //  then this is a DELETE operation.
+        if (TP.notValid(attributeValue) ||
+            TP.isPlainObject(currentVal) ||
+            TP.isArray(currentVal)) {
+
+            op = TP.DELETE;
+
+            //  Grab all of the nodes deeply under the current value. If that is
+            //  not empty, then grab the first path to the current value. This
+            //  gives us the common base path to all nodes that we're removing.
+            //  We then compute a tracking path to each piece of data being
+            //  removed and register each one of those changed addresses with
+            //  DELETE as the operation.
+            deletedNodes = TP.extern.jsonpath.nodes(currentVal, '$..*');
+            if (TP.notEmpty(deletedNodes)) {
+
+                srcPathParts = TP.extern.jsonpath.paths(data, path).at(0);
+
+                len = deletedNodes.getSize();
+                for (i = 0; i < len; i++) {
+                    trackingPath = srcPathParts.concat(
+                                    deletedNodes.at(i).path.slice(1));
+                    trackingPath = trackingPath.join('.');
+
+                    TP.path.AccessPath.registerChangedAddress(
+                                            trackingPath,
+                                            TP.DELETE);
+                }
+            }
+        } else if (TP.isDefined(currentVal)) {
+
+            //  If the current value was created as part of our 'making
+            //  structure' Function below, then it's a CREATE operation.
+            if (newStructs.contains(currentVal, TP.IDENTITY)) {
+                op = TP.CREATE;
+            } else {
+                //  Otherwise, it's an UPDATE operation.
+                op = TP.UPDATE;
+            }
+        } else {
+            //  If there was no value already at this spot in the data
+            //  structure, then this is a CREATE operation.
+            op = TP.CREATE;
+        }
+
+        ops.push(op);
+
+        return attributeValue;
+    };
+
+    //  Construct a Function that will used to 'make structure' values at the
+    //  end of paths that are executed by external JSONPath engine. This
+    //  Function takes the internal partial data structure built by the external
+    //  JSONPath engine, along with the value and reference being built and
+    //  returns whether or not structure was actually built.
+    makeStructuresFunc = function(partial, value, ref) {
+
+        var partialPath,
+
+            comp,
+            nextComp,
+
+            pathToHere,
+
+            branchStruct,
+
+            pathToStruct,
+
+            buildFunc,
+
+            mainDataVal,
+
+            leafStruct;
+
+        //  Grab the pieces of the partial that we'll need. This includes the
+        //  path to the partial, the current parsed path token, and the next
+        //  parsed path token (if any).
+
+        //  This is an Array of path parts.
+        partialPath = partial.path;
+
+        //  These are token POJO data structures.
+        comp = partial.component;
+        nextComp = partial.nextComponent;
+
+        //  Copy the path parts to the partial so that we can manipulate them.
+        pathToHere = TP.copy(partialPath);
+
+        //  If there is no next token component, then we're at the end of a
+        //  path.
+        if (!nextComp) {
+
+            //  If the value of the partial itself is not either a POJO or an
+            //  Array, then we need to build a branch structure, reset the
+            //  partial value to that, and then build a leaf structure to go
+            //  under the 'ref' of that branch structure.
+            if (!TP.isPlainObject(value) && !TP.isArray(value)) {
+
+                //  Build a branch structure.
+                branchStruct = {};
+                newStructs.push(branchStruct);
+
+                //  The path to the branch structure (which will be the
+                //  partial's new value) will be the partial's path with the
+                //  last item sliced off.
+                pathToStruct = partialPath.slice(0, -1);
+
+                //  Grab the current value at the end of that path.
+                mainDataVal = TP.extern.jsonpath.value(
+                        data,
+                        TP.extern.jsonpath.stringify(pathToStruct));
+
+                //  Set the branch structure to be the slot on that value that
+                //  matches the last segment of the partial's path (the segment
+                //  we sliced off above).
+                mainDataVal[partialPath.last()] = branchStruct;
+
+                //  Set the partial's value itself to that branch.
+                partial.value = branchStruct;
+
+                //  Register a changed address with the whole path and an
+                //  operation of UPDATE.
+                TP.path.AccessPath.registerChangedAddress(
+                                    pathToHere.join('.'), TP.UPDATE);
+
+                //  Now that the branch structure is in place, create a leaf
+                //  structure that will be placed in the slot named by ref on
+                //  the new branch structure.
+                leafStruct = {};
+                branchStruct[ref] = leafStruct;
+
+            } else if (comp.operation === 'member') {
+                //  If the token component's operation was 'member', then we
+                //  need to build a POJO structure.
+                leafStruct = {};
+                value[ref] = leafStruct;
+            } else if (comp.operation === 'subscript') {
+                //  If the token component's operation was 'subscript', then we
+                //  need to build an Array structure.
+                leafStruct = [];
+                value[ref] = leafStruct;
+            }
+
+            newStructs.push(leafStruct);
+
+            return true;
+        }
+
+        //  There was a next token component, so we must not be at the end of
+        //  the path. At this point, structure will definitely be built and its
+        //  considered to be 'branch structure'.
+
+        //  If the next token component's operation was 'member', then we need
+        //  to build a POJO structure.
+        if (nextComp.operation === 'member') {
+            branchStruct = {};
+        } else if (nextComp.operation === 'subscript') {
+            //  Otherwise, it's a subscript, then we need to build an Array
+            //  structure.
+            branchStruct = [];
+        }
+
+        //  If a real branchStruct was defined, then add to the list of new
+        //  structures we're building, set it as the value of the 'ref' on the
+        //  supplied value (which will be the 'parent' in this context), push
+        //  the 'ref' on the end of the tracking path and then register a
+        //  changed address with that path and an operation of CREATE.
+        if (branchStruct) {
+            newStructs.push(branchStruct);
+
+            value[ref] = branchStruct;
+
+            pathToHere.push(ref);
+
+            TP.path.AccessPath.registerChangedAddress(
+                                pathToHere.join('.'), TP.CREATE);
+
+            return true;
+        }
+
+        return false;
+    };
+
+    //  Empty out all of the changed addresses that we're currently tracking.
+    TP.path.AccessPath.$getChangedAddresses().empty();
+
+    //  If we're configured to 'make structures', then we supply the Function
+    //  defined above responsible for making structures.
+    if (this.get('shouldMakeStructures')) {
+        results = TP.extern.jsonpath.apply(
+                        data, path, setFunc, makeStructuresFunc);
+    } else {
+        results = TP.extern.jsonpath.apply(
+                        data, path, setFunc);
+    }
+
+    //  If, after the 'apply' call, we added new structures, newStructs will not
+    //  be empty and that will let us know that we actually created structures.
+    createdStructure = TP.notEmpty(newStructs);
+
+    //  Register any changed addresses for the main query.
+    results.forEach(
+        function(anEntry, anIndex) {
+            TP.path.AccessPath.registerChangedAddress(anEntry.path.join('.'),
+                                                        ops.at(anIndex));
+        });
+
+    //  If we 'created structure', that means that all of the previously
+    //  executed paths need to be run, because they could now refer to new
+    //  addresses.
+    if (createdStructure) {
+
+        //  Grab the Array of executed paths registered under the ID of the
+        //  target object.
+        executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
+                                                        TP.id(targetObj));
+
+        if (TP.notEmpty(executedPaths)) {
+
+            //  Grab the Array of observed addresses registered under the ID of
+            //  the target object.
+            obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
+                                            TP.id(targetObj));
+
+            //  Empty it if it isn't already.
+            if (TP.notEmpty(obsAddresses)) {
+                obsAddresses.empty();
+            }
+
+            //  Rerun all of the paths in a 'get' mode. This will cause the
+            //  observed addresses Array to fill back up with (possibly
+            //  different) addresses.
+            executedPaths.perform(
+                    function(pathEntry) {
+                        pathEntry.last().executeGet(targetObj);
+                    });
+        }
+    }
+
+    //  Compute the flag as to whether we should signal or not by looking first
+    //  at the supplied parameter and then as to whether the target object is
+    //  configured to signal change.
+    if (TP.isValid(shouldSignal)) {
+        sigFlag = shouldSignal;
+    } else if (TP.isValid(targetObj)) {
+        sigFlag = targetObj.shouldSignalChange();
+    }
+
+    if (sigFlag) {
+
+        //  If the supplied attribute was a reference type then we *mutated*
+        //  structure (which is not necessarily the same thing as *creating*
+        //  structure).
+        mutatedStructure = TP.isReferenceType(attributeValue);
+
+        //  If we mutated structure, then we need to clear the path information
+        //  registered for the addresses 'under' the node that changed.
+        if (mutatedStructure) {
+            this.updateRegistrationsBeforeSignaling(targetObj);
+        }
+
+        //  Send the changed signal
+        this.sendChangedSignal(targetObj);
+
+        //  If we mutated structure, we may very well have removed some
+        //  structure. After signaling that fact, we should no longer keep those
+        //  registrations around.
+        if (mutatedStructure) {
+            this.updateRegistrationsAfterSignaling(targetObj);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.JSONPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {String[]} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'jpath');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.JSONPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.JSON_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.path.JSONPath.Inst.defineMethod('getPointerScheme',
+function() {
+
+    /**
+     * @method getPointerScheme
+     * @summary Returns the receiver's 'pointer scheme'.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    return 'jpath';
+});
+
+//  ========================================================================
 //  TP.path.SimpleTIBETPath
 //  ========================================================================
 
