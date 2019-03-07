@@ -7536,11 +7536,14 @@ function(targetObj, varargs) {
 
     path = srcPath;
 
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 2nd parameter onwards.
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first one off (since it's the
         //  targetObj, which we already have).
         args = TP.args(arguments, 1);
 
+        //  Run the transform with the arguments after the 1st one.
         path = path.transform(args);
     }
 
@@ -7654,11 +7657,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return oldVal;
     }
 
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 4th parameter onwards.
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first three off (since they're
         //  targetObj, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
 
+        //  Run the transform with the arguments after the 3rd one.
         path = path.transform(args);
     }
 
@@ -7721,16 +7727,29 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  executed paths need to be run, because they could now refer to new
         //  addresses.
         if (this.get('$createdStructure')) {
+
+            //  Grab the Array of executed paths registered under the ID of the
+            //  target object.
             executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                                     TP.id(targetObj));
 
+            //  If the Array is not empty, then reprocess the observed
+            //  addresses.
             if (TP.notEmpty(executedPaths)) {
+
+                //  Grab the Array of observed addresses registered under the ID
+                //  of the target object.
                 obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                                                 TP.id(targetObj));
+
+                //  Empty it if it isn't already.
                 if (TP.notEmpty(obsAddresses)) {
                     obsAddresses.empty();
                 }
 
+                //  Rerun all of the paths in a 'get' mode. This will cause the
+                //  observed addresses Array to fill back up with (possibly
+                //  different) addresses.
                 executedPaths.perform(
                         function(pathEntry) {
                             pathEntry.last().executeGet(targetObj);
@@ -7738,6 +7757,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             }
         }
 
+        //  Compute the flag as to whether we should signal or not by looking
+        //  first at the supplied parameter and then as to whether the target
+        //  object is configured to signal change.
         if (TP.isValid(shouldSignal)) {
             sigFlag = shouldSignal;
         } else if (TP.isValid(targetObj)) {
@@ -7746,8 +7768,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         if (sigFlag) {
 
+            //  If the supplied attribute was a reference type then we *mutated*
+            //  structure (which is not necessarily the same thing as *creating*
+            //  structure).
             mutatedStructure = TP.isReferenceType(attributeValue);
 
+            //  If we mutated structure, then we need to clear the path
+            //  information registered for the addresses 'under' the node that
+            //  changed.
             if (mutatedStructure) {
                 this.updateRegistrationsBeforeSignaling(targetObj);
             }
@@ -7755,6 +7783,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             //  Send the changed signal
             this.sendChangedSignal(targetObj);
 
+            //  If we mutated structure, we may very well have removed some
+            //  structure. After signaling that fact, we should no longer keep
+            //  those registrations around.
             if (mutatedStructure) {
                 this.updateRegistrationsAfterSignaling(targetObj);
             }
@@ -8095,11 +8126,14 @@ function(targetObj, varargs) {
 
     path = srcPath;
 
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 2nd parameter onwards.
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first one off (since it's the
         //  targetObj, which we already have).
         args = TP.args(arguments, 1);
 
+        //  Run the transform with the arguments after the 1st one.
         path = path.transform(args);
     }
     this.set('$transformedPath', path);
@@ -8171,11 +8205,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     srcPath = this.get('srcPath');
     path = srcPath;
 
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 4th parameter onwards.
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first three off (since they're
         //  targetObj, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
 
+        //  Run the transform with the arguments after the 3rd one.
         path = path.transform(args);
     }
     this.set('$transformedPath', path);
@@ -8240,16 +8277,27 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  executed paths need to be run, because they could now refer to new
         //  addresses.
         if (this.get('$createdStructure')) {
+
+            //  Grab the Array of executed paths registered under the ID of the
+            //  target object.
             executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                                     TP.id(targetObj));
 
             if (TP.notEmpty(executedPaths)) {
+
+                //  Grab the Array of observed addresses registered under the ID
+                //  of the target object.
                 obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
                                                 TP.id(targetObj));
+
+                //  Empty it if it isn't already.
                 if (TP.notEmpty(obsAddresses)) {
                     obsAddresses.empty();
                 }
 
+                //  Rerun all of the paths in a 'get' mode. This will cause the
+                //  observed addresses Array to fill back up with (possibly
+                //  different) addresses.
                 executedPaths.perform(
                         function(pathEntry) {
                             pathEntry.last().executeGet(targetObj);
@@ -8257,6 +8305,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             }
         }
 
+        //  Compute the flag as to whether we should signal or not by looking
+        //  first at the supplied parameter and then as to whether the target
+        //  object is configured to signal change.
         if (TP.isValid(shouldSignal)) {
             sigFlag = shouldSignal;
         } else if (TP.isValid(targetObj)) {
@@ -8265,8 +8316,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         if (sigFlag) {
 
+            //  If the supplied attribute was a reference type then we *mutated*
+            //  structure (which is not necessarily the same thing as *creating*
+            //  structure).
             mutatedStructure = TP.isReferenceType(attributeValue);
 
+            //  If we mutated structure, then we need to clear the path
+            //  information registered for the addresses 'under' the node that
+            //  changed.
             if (mutatedStructure) {
                 this.updateRegistrationsBeforeSignaling(targetObj);
             }
@@ -8274,6 +8331,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             //  Send the changed signal
             this.sendChangedSignal(targetObj);
 
+            //  If we mutated structure, we may very well have removed some
+            //  structure. After signaling that fact, we should no longer keep
+            //  those registrations around.
             if (mutatedStructure) {
                 this.updateRegistrationsAfterSignaling(targetObj);
             }
@@ -9656,9 +9716,10 @@ function(targetObj, varargs) {
 
     executedPaths.atPut(srcPath, this);
 
+    path = this.get('srcPath');
+
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    path = this.get('srcPath');
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first one off (since it's the
         //  target, which we already have).
@@ -9929,11 +9990,15 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     path = this.get('srcPath');
+
+    //  If the path has ACP expressions ('{{...}}') in it, then template them
+    //  out with the source object(s) from the 4th parameter onwards.
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first three off (since they're
         //  target, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
 
+        //  Run the transform with the arguments after the 3rd one.
         path = path.transform(args);
     }
     this.set('$transformedPath', path);
@@ -10224,29 +10289,38 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  executed paths need to be run, because they could now refer to new
     //  addresses.
     if (createdStructure) {
-        if (TP.notEmpty(
-            executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
-                                                targetTPDoc.getID()))) {
-            if (TP.notEmpty(executedPaths)) {
-                obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
-                                                TP.id(targetObj));
-                if (TP.notEmpty(obsAddresses)) {
-                    obsAddresses.empty();
-                }
 
-                executedPaths.perform(
-                        function(pathEntry) {
-                            pathEntry.last().executeGet(target);
-                        });
+        //  Grab the Array of executed paths registered under the ID of the
+        //  target object.
+        executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
+                                                targetTPDoc.getID());
+
+        if (TP.notEmpty(executedPaths)) {
+
+            //  Grab the Array of observed addresses registered under the ID
+            //  of the target object.
+            obsAddresses = TP.path.AccessPath.$getObservedAddresses().at(
+                                            TP.id(targetObj));
+
+            //  Empty it if it isn't already.
+            if (TP.notEmpty(obsAddresses)) {
+                obsAddresses.empty();
             }
+
+            //  Rerun all of the paths in a 'get' mode. This will cause the
+            //  observed addresses Array to fill back up with (possibly
+            //  different) addresses.
+            executedPaths.perform(
+                    function(pathEntry) {
+                        pathEntry.last().executeGet(target);
+                    });
         }
     }
 
     if (signalChange) {
 
-        //  If it was a structural change, then we need to clear the path
-        //  information registered for the addresses 'under' the node that
-        //  changed.
+        //  If we mutated structure, then we need to clear the path information
+        //  registered for the addresses 'under' the node that changed.
         if (mutatedStructure) {
             this.updateRegistrationsBeforeSignaling(targetTPDoc);
         }
@@ -10254,6 +10328,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  Send the changed signal
         this.sendChangedSignal(target);
 
+        //  If we mutated structure, we may very well have removed some
+        //  structure. After signaling that fact, we should no longer keep those
+        //  registrations around.
         if (mutatedStructure) {
             this.updateRegistrationsAfterSignaling(targetTPDoc);
         }
