@@ -5626,8 +5626,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             pathToStruct,
 
-            buildFunc,
-
             mainDataVal,
 
             leafStruct;
