@@ -12465,7 +12465,7 @@ function(aSignal) {
 
     return this;
 }, {
-    'deprecationWarning': false
+    deprecationWarning: false
 });
 
 //  ------------------------------------------------------------------------
@@ -12538,7 +12538,7 @@ function(aSignal) {
 
     return this;
 }, {
-    'deprecationWarning': false
+    deprecationWarning: false
 });
 
 //  ------------------------------------------------------------------------
@@ -12602,7 +12602,7 @@ function(aSignal) {
 
     return this;
 }, {
-    'deprecationWarning': false
+    deprecationWarning: false
 });
 
 //  ------------------------------------------------------------------------
@@ -12695,7 +12695,7 @@ function(aSignal) {
 
     return this;
 }, {
-    'deprecationWarning': false
+    deprecationWarning: false
 });
 
 //  ------------------------------------------------------------------------
@@ -12755,7 +12755,7 @@ function(aSignal) {
 
     return this;
 }, {
-    'deprecationWarning': false
+    deprecationWarning: false
 });
 
 //  ------------------------------------------------------------------------
