@@ -403,12 +403,13 @@ Cmd.prototype.execute = function() {
                 }
 
                 TP.shellExec(TP.hc(
-                    'cmdSrc', tshInput,         // the TSH input to run
-                    'cmdEcho', false,           // don't echo the request
-                    'cmdHistory', false,        // don't create a history entry
-                    'cmdSilent', false,         // report output so we can capture it
-                    'onsuccess', handler,       // success handler (same handler)
-                    'onfail', handler));        // failure handler (same handler)
+                    'cmdSrc', tshInput,     //  the TSH input to run
+                    'cmdEcho', false,       //  don't echo the request
+                    'cmdHistory', false,    //  don't create a history entry
+                    'cmdSilent', false,     //  report output so we can capture
+                                            //  it
+                    'onsuccess', handler,   //  success handler (same handler)
+                    'onfail', handler));    //  failure handler (same handler)
             });
         }, input, shouldPause);
 
