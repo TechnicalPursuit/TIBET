@@ -40,6 +40,7 @@ function(aRequest) {
 
         ignore_only,
         ignore_skip,
+        inherit,
         target,
         suiteName,
         cases,
@@ -83,6 +84,7 @@ function(aRequest) {
 
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
+    inherit = shell.getArgument(aRequest, 'tsh:inherit', false);
 
     target = shell.getArgument(
                         aRequest,
@@ -125,6 +127,7 @@ function(aRequest) {
 
     options = TP.hc('ignore_only', ignore_only,
                     'ignore_skip', ignore_skip,
+                    'inherit', inherit,
                     'context', context,
                     'target', target,
                     'suite', suiteName,

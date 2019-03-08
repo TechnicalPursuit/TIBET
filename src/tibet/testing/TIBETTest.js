@@ -86,9 +86,11 @@ function(options) {
         suites,
         id,
         target,
-        targets,
+        targetIDs,
         inherit,
         obj,
+        suffix,
+        superNames,
         filter,
         context,
         pattern;
@@ -112,26 +114,59 @@ function(options) {
         //  can exit with just the suites by ID.
         params.removeKey('target');
 
+        //  Make sure the target has an ID.
         id = TP.id(target);
         if (TP.isEmpty(id)) {
             this.raise('InvalidID');
         }
 
-        targets = TP.ac(id);
+        //  Start off the target ID list with the ID of the target itself.
+        targetIDs = TP.ac(id);
 
+        //  If we're configured to obtain tests that are inherited from our
+        //  supertypes, then do so.
         inherit = params.at('inherit');
         if (TP.isTrue(inherit)) {
-            obj = TP.bySystemId(target);
+            obj = TP.bySystemId(id);
+
+            //  If the object is a 'prototype' and has a '$$owner', then we can
+            //  assume it's a type's either .Inst or .Type prototype.
+            if (TP.isPrototype(obj) && TP.isValid(obj.$$owner)) {
+
+                //  Slice off the suffix with the period ('.') (so, either
+                //  '.Type' or '.Inst').
+                suffix = obj.$$id.slice(obj.$$id.lastIndexOf('.'));
+
+                //  Reset obj to be the type itself (which is the prototype
+                //  object's $$owner).
+                obj = obj.$$owner;
+            } else {
+                suffix = '';
+            }
+
+            //  If the target object can tell us what it's supertype names are,
+            //  then obtain them.
             if (TP.canInvoke(obj, 'getSupertypeNames')) {
-                targets.concat(obj.getSupertypeNames());
+                superNames = obj.getSupertypeNames();
+
+                //  Slice off from 'TP.lang.Object' 'up', since the consumer
+                //  probably won't want those tests.
+                superNames = superNames.slice(
+                                0,
+                                superNames.indexOf('TP.lang.Object'));
+
+                superNames = superNames.collect(
+                                function(aName) {
+                                    return aName + suffix;
+                                });
+
+                //  Add those supertype names to the list.
+                targetIDs = targetIDs.concat(superNames);
             }
         }
 
-        //  Get the list of suites owned by the targeted object.
-        suites = suites.filter(
-                        function(item) {
-                            return targets.contains(TP.id(item.suiteOwner));
-                        });
+        //  Grab the suites that have owners with the supplied IDs.
+        suites = this.getSuitesWithOwnersWithIDs(suites, targetIDs);
     }
 
     //  If params is empty it means it was either empty to begin with or had
@@ -179,24 +214,18 @@ function(options) {
     //  Use explicit context, or context of the target(s).
     context = params.at('context');
     if (TP.notValid(context)) {
-        if (TP.notEmpty(targets)) {
-            targets.forEach(
-                function(aTarget) {
-                    var targetContext;
+        if (TP.notEmpty(targetIDs)) {
+            targetIDs.forEach(
+                function(aTargetID) {
 
                     //  Already been through and found at least two variants.
                     if (context === 'all') {
                         return;
                     }
 
-                    targetContext = TP.id(aTarget);
-                    if (TP.notValid(targetContext)) {
-                        return;
-                    }
-
-                    if (targetContext.indexOf('TP.') === 0) {
+                    if (aTargetID.indexOf('TP.') === 0) {
                         context = context === 'app' ? 'all' : 'lib';
-                    } else if (targetContext.indexOf('APP.') === 0) {
+                    } else if (aTargetID.indexOf('APP.') === 0) {
                         context = context === 'lib' ? 'all' : 'app';
                     } else {
                         return;
@@ -227,6 +256,58 @@ function(options) {
     }
 
     return suites;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.defineMethod('getSuitesWithOwnersWithIDs',
+function(suites, ownerIDs) {
+
+    /**
+     * @method getSuitesWithOwnersWithIds
+     * @summary Returns a list of test suites whose owning type matches at least
+     * one of the supplied owner IDs.
+     * @param {TP.test.Suite[]} suites The master list of all test suites known
+     *     to the system.
+     * @param {String[]} ownerIDs The list of owner IDs to scan the suites for
+     *     ownership of.
+     * @returns {TP.test.Suite[]} A list of test suites whose owning type
+     *     matches at least one of the supplied owner IDs.
+     */
+
+    var targetMatchers,
+        matchedSuites,
+
+        leni,
+        i,
+
+        suiteOwnerID,
+
+        lenj,
+        j;
+
+    targetMatchers = ownerIDs.collect(
+                        function(aTargetID) {
+                            return TP.rc('^' + aTargetID + '$');
+                        });
+
+    matchedSuites = TP.ac();
+
+    leni = suites.getSize();
+    for (i = 0; i < leni; i++) {
+
+        suiteOwnerID = TP.id(suites.at(i).suiteOwner);
+
+        lenj = targetMatchers.getSize();
+        for (j = 0; j < lenj; j++) {
+            if (targetMatchers.at(j).test(suiteOwnerID)) {
+                matchedSuites.push(suites.at(i));
+                break;
+            }
+        }
+    }
+
+    return matchedSuites;
 });
 
 //  ------------------------------------------------------------------------
