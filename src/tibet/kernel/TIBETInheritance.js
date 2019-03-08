@@ -12464,6 +12464,8 @@ function(aSignal) {
     scopeURI.setResource(null);
 
     return this;
+}, {
+    'deprecationWarning': false
 });
 
 //  ------------------------------------------------------------------------
@@ -12535,6 +12537,8 @@ function(aSignal) {
             true);
 
     return this;
+}, {
+    'deprecationWarning': false
 });
 
 //  ------------------------------------------------------------------------
@@ -12597,6 +12601,8 @@ function(aSignal) {
     this.removeRowFromAt(scopeURI, index);
 
     return this;
+}, {
+    'deprecationWarning': false
 });
 
 //  ------------------------------------------------------------------------
@@ -12688,6 +12694,8 @@ function(aSignal) {
             aSignal.at('clear'));
 
     return this;
+}, {
+    'deprecationWarning': false
 });
 
 //  ------------------------------------------------------------------------
@@ -12746,6 +12754,8 @@ function(aSignal) {
         TP.bc(aSignal.at('copy')));
 
     return this;
+}, {
+    'deprecationWarning': false
 });
 
 //  ------------------------------------------------------------------------
