@@ -4524,7 +4524,7 @@ function(attributeName, attributeValue, attributeDescriptor) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('defineMetaTypeMethod',
-function(methodName, methodBody) {
+function(methodName, methodBody, methodDescriptor) {
 
     /**
      * @method defineMetaTypeMethod
@@ -4537,6 +4537,7 @@ function(methodName, methodBody) {
      *     TP.META_TYPE_TARGETS array).
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
+     * @param {Object} methodDescriptor An optional 'property descriptor'.
      * @returns {null}
      */
 
@@ -4566,7 +4567,7 @@ function(methodName, methodBody) {
                 methodName,
                 methodBody,
                 TP.META_TYPE_TRACK,
-                null,
+                methodDescriptor,
                 target[TP.ID] + '.' + TP.META_TYPE_TRACK + '.' + methodName,
                 TP.META_TYPE_OWNER);
     }
@@ -4647,7 +4648,7 @@ function(attributeName, attributeValue, attributeDescriptor) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('defineMetaInstMethod',
-function(methodName, methodBody) {
+function(methodName, methodBody, methodDescriptor) {
 
     /**
      * @method defineMetaInstMethod
@@ -4661,6 +4662,7 @@ function(methodName, methodBody) {
      *     TP.lang.RootObject.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
+     * @param {Object} methodDescriptor An optional 'property descriptor'.
      * @returns {null}
      */
 
@@ -4690,7 +4692,7 @@ function(methodName, methodBody) {
                 methodName,
                 methodBody,
                 TP.META_INST_TRACK,
-                null,
+                methodDescriptor,
                 target[TP.ID] + '.' + TP.META_INST_TRACK + '.' + methodName,
                 TP.META_INST_OWNER);
     }
@@ -4717,7 +4719,7 @@ function(methodName, methodBody) {
                     methodName,
                     methodBody,
                     TP.META_INST_TRACK,
-                    null,
+                    methodDescriptor,
                     target[TP.ID] + '.' + TP.META_INST_TRACK + '.' + methodName,
                     TP.META_INST_OWNER);
         }
@@ -4737,7 +4739,7 @@ function(methodName, methodBody) {
                     methodName,
                     methodBody,
                     TP.META_INST_TRACK,
-                    null,
+                    methodDescriptor,
                     target[TP.ID] + '.' + TP.META_INST_TRACK + '.' + methodName,
                     TP.META_INST_OWNER);
         }
