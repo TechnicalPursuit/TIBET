@@ -78,8 +78,8 @@ Cmd.NAME = 'test';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok',
-            'karma'],
+        'boolean': ['selftest', 'inherit', 'ignore-only', 'ignore-skip', 'tap',
+                    'ok', 'karma'],
         'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
         'default': {
             tap: true,
