@@ -124,6 +124,7 @@ Cmd.prototype.execute = function() {
         start,
         end,
         cmd,
+        puppeteerArgs,
         active,
         profile,
         script,
@@ -185,20 +186,22 @@ Cmd.prototype.execute = function() {
 
     cmd = this;
 
-    puppeteer.launch({
-        //  Let us access file urls so we don't have to launch a server. Also,
-        //  don't specify a sandbox in case we're running as root.
-        args: ['--disable-web-security',
-                '--allow-file-access-from-files',
-                '--no-sandbox']
+    //  Let us access file urls so we don't have to launch a server. Also, don't
+    //  specify a sandbox in case we're running as root.
+    puppeteerArgs = {
+        args: CLI.getcfg('puppeteer.chromium_args') || [
+                        '--disable-web-security',
+                        '--allow-file-access-from-files',
+                        '--no-sandbox'],
+        devtools: CLI.getcfg('puppeteer.devtools') || false,
+        headless: CLI.getcfg('puppeteer.headless') || true,
+        slowMo: CLI.getcfg('puppeteer.slowMo') || false
+    };
 
-        /*
-        devtools: true,         //  For debugging
-        headless: false,        //  For debugging
-        slowMo: true            //  For debugging
-        */
-
-    }).then(function(browser) {
+    puppeteer.launch(
+        puppeteerArgs
+    ).then(
+    function(browser) {
 
         puppetBrowser = browser;
         return browser.newPage();
