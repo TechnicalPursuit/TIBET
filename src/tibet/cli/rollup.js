@@ -114,13 +114,10 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
 Cmd.prototype.executeForEach = function(list) {
     var pkg,
         cmd,
-        cfg,
         minifyOpts; // Options for minify
 
     cmd = this;
     pkg = this.package;
-
-    cfg = pkg.getProjectConfig();
 
     if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
