@@ -2438,8 +2438,12 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
     if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
-        TP.deprecated('Use defineHandler for handler: ' +
-            TP.objectGetMetadataName(realMethod, TP.METHOD));
+        if (descriptor && descriptor.deprecationWarning === false) {
+            void 0;
+        } else {
+            TP.deprecated('Use defineHandler for handler: ' +
+                TP.objectGetMetadataName(realMethod, TP.METHOD));
+        }
     }
 
     //  If the body of the function has a reference to methods that need
