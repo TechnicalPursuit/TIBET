@@ -189,13 +189,13 @@ Cmd.prototype.execute = function() {
     //  Let us access file urls so we don't have to launch a server. Also, don't
     //  specify a sandbox in case we're running as root.
     puppeteerArgs = {
-        args: CLI.getcfg('puppeteer.chromium_args') || [
+        args: CLI.getcfg('puppeteer.chromium_args', [
                         '--disable-web-security',
                         '--allow-file-access-from-files',
-                        '--no-sandbox'],
-        devtools: CLI.getcfg('puppeteer.devtools') || false,
-        headless: CLI.getcfg('puppeteer.headless') || true,
-        slowMo: CLI.getcfg('puppeteer.slowMo') || false
+                        '--no-sandbox']),
+        devtools: CLI.getcfg('puppeteer.devtools', false),
+        headless: CLI.getcfg('puppeteer.headless', true),
+        slowMo: CLI.getcfg('puppeteer.slowMo', false)
     };
 
     puppeteer.launch(
