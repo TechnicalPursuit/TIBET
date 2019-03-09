@@ -10,7 +10,6 @@
         make.sh.cd(make.path.join(npmdir, 'jsonpath'));
 
         make.sh.exec('cp -f ./jsonpath.js ../../deps/jsonpath-tpi.js');
-        make.sh.exec('cp -f ./jsonpath.min.js ../../deps/jsonpath-tpi.min.js');
 
         resolve();
     };
