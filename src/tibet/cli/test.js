@@ -78,8 +78,8 @@ Cmd.NAME = 'test';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest', 'inherit', 'ignore-only', 'ignore-skip', 'tap',
-                    'ok', 'karma'],
+        'boolean': ['selftest', 'inherit', 'subtypes', 'ignore-only',
+                    'ignore-skip', 'tap', 'ok', 'karma'],
         'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
         'default': {
             tap: true,
@@ -333,6 +333,10 @@ Cmd.prototype.getScript = function() {
 
     if (this.options.inherit) {
         target += ' -inherit';
+    }
+
+    if (this.options.subtypes) {
+        target += ' -subtypes';
     }
 
     if (CLI.notEmpty(this.options.cases)) {

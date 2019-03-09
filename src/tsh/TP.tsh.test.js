@@ -41,6 +41,7 @@ function(aRequest) {
         ignore_only,
         ignore_skip,
         inherit,
+        subtypes,
         target,
         suiteName,
         cases,
@@ -85,6 +86,7 @@ function(aRequest) {
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
     inherit = shell.getArgument(aRequest, 'tsh:inherit', false);
+    subtypes = shell.getArgument(aRequest, 'tsh:subtypes', false);
 
     target = shell.getArgument(
                         aRequest,
@@ -128,6 +130,7 @@ function(aRequest) {
     options = TP.hc('ignore_only', ignore_only,
                     'ignore_skip', ignore_skip,
                     'inherit', inherit,
+                    'subtypes', subtypes,
                     'context', context,
                     'target', target,
                     'suite', suiteName,

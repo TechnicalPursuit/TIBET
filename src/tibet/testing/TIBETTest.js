@@ -88,9 +88,11 @@ function(options) {
         target,
         targetIDs,
         inherit,
+        subtypes,
         obj,
         suffix,
         superNames,
+        subNames,
         filter,
         context,
         pattern;
@@ -126,7 +128,12 @@ function(options) {
         //  If we're configured to obtain tests that are inherited from our
         //  supertypes, then do so.
         inherit = params.at('inherit');
-        if (TP.isTrue(inherit)) {
+
+        //  If we're configured to obtain tests for all of our subtypes, then do
+        //  so.
+        subtypes = params.at('subtypes');
+
+        if (TP.isTrue(inherit) || TP.isTrue(subtypes)) {
             obj = TP.bySystemId(id);
 
             //  If the object is a 'prototype' and has a '$$owner', then we can
@@ -146,7 +153,7 @@ function(options) {
 
             //  If the target object can tell us what it's supertype names are,
             //  then obtain them.
-            if (TP.canInvoke(obj, 'getSupertypeNames')) {
+            if (TP.isTrue(inherit) && TP.canInvoke(obj, 'getSupertypeNames')) {
                 superNames = obj.getSupertypeNames();
 
                 //  Slice off from 'TP.lang.Object' 'up', since the consumer
@@ -162,6 +169,20 @@ function(options) {
 
                 //  Add those supertype names to the list.
                 targetIDs = targetIDs.concat(superNames);
+            }
+
+            //  If the target object can tell us what it's subtype names are,
+            //  then obtain them.
+            if (TP.isTrue(subtypes) && TP.canInvoke(obj, 'getSubtypeNames')) {
+                subNames = obj.getSubtypeNames();
+
+                subNames = subNames.collect(
+                                function(aName) {
+                                    return aName + suffix;
+                                });
+
+                //  Add those subtype names to the list.
+                targetIDs = targetIDs.concat(subNames);
             }
         }
 
