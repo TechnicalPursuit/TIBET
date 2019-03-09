@@ -331,6 +331,10 @@ Cmd.prototype.getScript = function() {
         }
     }
 
+    if (this.options.inherit) {
+        target += ' -inherit';
+    }
+
     if (CLI.notEmpty(this.options.cases)) {
         target = target.trim() + ' -cases=\'' + this.options.cases + '\'';
     }
