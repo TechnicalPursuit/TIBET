@@ -2584,7 +2584,7 @@ function(aRequest) {
         args,
         str,
         req,
-        decolor,
+        removeANSICC,
         shell,
         cliSocket;
 
@@ -2685,7 +2685,7 @@ function(aRequest) {
     //  ---
 
     //  Helper to remove color codes that may have snuck in to output.
-    decolor = function(data) {
+    removeANSICC = function(data) {
         var dat;
 
         if (TP.notValid(data)) {
@@ -2738,10 +2738,10 @@ function(aRequest) {
         if (TP.notEmpty(result.ok)) {
 
             if (result.ok === true) {
-                data = decolor(result.data);
+                data = removeANSICC(result.data);
                 TP.notEmpty(data) ? request.stdout(data) : 0;
             } else {
-                reason = decolor(result.reason);
+                reason = removeANSICC(result.reason);
                 TP.notEmpty(reason) ? request.stderr(reason) : 0;
             }
 
@@ -2756,12 +2756,12 @@ function(aRequest) {
         } else {
 
             if (result.status === 0) {
-                data = decolor(result.data);
+                data = removeANSICC(result.data);
                 TP.notEmpty(data) ? request.stderr(data) : 0;
                 request.complete();
                 return;
             } else if (result.status !== undefined) {
-                reason = decolor(result.reason);
+                reason = removeANSICC(result.reason);
                 TP.notEmpty(reason) ? request.stderr(reason) : 0;
                 request.fail();
                 return;
@@ -2790,12 +2790,12 @@ function(aRequest) {
                     data;
 
                 try {
-                    data = decolor(evt.data);
+                    data = removeANSICC(evt.data);
                     result = JSON.parse(data);
                     process(result, request);
                 } catch (e) {
                     request.stderr(e.message);
-                    result = decolor(evt.data);
+                    result = removeANSICC(evt.data);
                     request.stdout(result);
                 }
             });
