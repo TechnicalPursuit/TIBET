@@ -2688,14 +2688,28 @@ function(aRequest) {
     decolor = function(data) {
         var dat;
 
+        if (TP.notValid(data)) {
+            return '';
+        }
+
         dat = '' + data;
-        /* eslint-disable no-control-regex */
-        return dat.
-                replace(/\u001b\[38;5;\d*m/g, '').
-                replace(/\\u001b\[38;5;\d*m/g, '').
-                replace(/\u001b\[\d*m/g, '').
-                replace(/\\u001b\[\d*m/g, '');
+
+        //  Authoritative removal of all ANSI escape sequences per:
+        //  https://superuser.com/questions/380772/removing-ansi-color-codes-from-text-stream
+        dat = dat.strip(/\x1b\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]/g).
+                    strip(/\x1b[PX^_].*?\x1b\\/g).
+                    strip(/\x1b\][^\a]*(?:\x07|\x1b\\)/g).
+                    strip(/\x1b[\[\]A-Z\\^_@]/g);
+
+        //  Also, need to remove '<Esc>='
+        dat = dat.strip(/\x1b=/g);
+
+        //  And backspaces
+        dat = dat.strip(/\x08/g);
+
         /* eslint-enable no-control-regex */
+
+        return dat;
     };
 
     //  Helper function to process a single result object (print/resolve).
