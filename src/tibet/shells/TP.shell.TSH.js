@@ -2574,6 +2574,7 @@ function(aRequest) {
      */
 
     var cmd,
+        realCmd,
         url,
         argv,
         seenKeys,
@@ -2592,6 +2593,9 @@ function(aRequest) {
     cmd = this.getArgument(aRequest, 'ARG0', null, false);
     if (TP.isEmpty(cmd)) {
         cmd = 'help';
+        realCmd = false;
+    } else {
+        realCmd = true;
     }
 
     noSocket = this.getArgument(aRequest, 'tsh:nosocket');
@@ -2621,14 +2625,23 @@ function(aRequest) {
 
     args = this.getArguments(aRequest);
 
-    //  Filter arg0 variants when they are identical to the cmd value. We don't
-    //  want to have duplicate arguments sent over the wire.
-    if (args.at('ARG0') === cmd) {
-        args.removeKey('ARG0');
-        args.removeKey('tsh:ARG0');
-        if (TP.isValid(args.at('ARGV'))) {
-            args.at('ARGV').shift();
-        }
+    //  If there is a real command (which there is in all case except when the
+    //  command is 'help'), filter argN variants. We don't want to have
+    //  duplicate arguments sent over the wire.
+    if (realCmd) {
+        args = args.select(
+                function(kvPair) {
+                    if (/ARG\d/.test(kvPair.first()) ||
+                        /tsh:ARG\d/.test(kvPair.first())) {
+                        if (TP.isValid(args.at('ARGV'))) {
+                            args.at('ARGV').shift();
+                        }
+
+                        return false;
+                    }
+
+                    return true;
+                });
     }
 
     args.perform(
