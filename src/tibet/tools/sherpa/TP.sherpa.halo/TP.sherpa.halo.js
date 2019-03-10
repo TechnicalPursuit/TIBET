@@ -1541,7 +1541,7 @@ function(aspectPathParts) {
     //  current choice.
     editor = TP.sys.cfg('cli.open.editor');
     cmdVal = ':cli open' +
-                (TP.isEmpty(editor) ? ' --editor=' + editor : '') +
+                (TP.notEmpty(editor) ? ' --editor=' + editor : '') +
                 ' ' + virtualLoc;
 
     (function() {
