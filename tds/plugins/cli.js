@@ -158,9 +158,11 @@
 
             var cli,        // Spawned child process for the server.
                 params,     // Command line parameter array.
-                errors,     // Flag tracking whether there were errors in execution.
+                errors,     // Flag tracking whether there were errors in
+                            // execution.
                 results,    // Array of results when in non-socket mode.
                 cmd,        // Filtered input string for safer processing.
+                spawnOpts,  // Options for spawning the child process.
                 message,    // Output result message structure.
                 reason,     // Message text for assembled response.
                 child;      // child process module.
@@ -198,6 +200,8 @@
 
             params.push(cmd);
 
+            spawnOpts = {};
+
             Object.keys(query).forEach(
                     function(k) {
                         var key,
@@ -214,6 +218,20 @@
 
                         //  Ignore signal that this is a URL vs. socket channel.
                         if (key === 'nosocket') {
+                            return;
+                        }
+
+                        if (key === 'detached') {
+                            spawnOpts.detached = true;
+                            return;
+                        }
+
+                        if (key === 'shell') {
+                            if (value) {
+                                spawnOpts.shell = value;
+                            } else {
+                                spawnOpts.shell = true;
+                            }
                             return;
                         }
 
@@ -247,7 +265,7 @@
             logger.info('evaluating `tibet ' + params.join(' ') + '`', meta);
 
             child = require('child_process');
-            cli = child.spawn('tibet', params);
+            cli = child.spawn('tibet', params, spawnOpts);
 
             cli.stdout.on('data', function(data) {
                 var str,
