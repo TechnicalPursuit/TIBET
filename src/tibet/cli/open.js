@@ -82,8 +82,8 @@ Cmd.prototype.execute = function() {
         opts,
         cmd;
 
-    //  Try to default editor. If not provided we'll rely on the open-editor module to
-    //  look at environment instead.
+    //  Try to default editor. If not provided we'll rely on the open-editor
+    //  module to look at environment instead.
     this.options.editor = this.options.editor || CLI.getcfg('cli.open.editor');
 
     //  Process all file references provided, expanding any virtual paths.
