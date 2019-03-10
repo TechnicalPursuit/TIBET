@@ -2696,6 +2696,8 @@ function(aRequest) {
 
         //  Authoritative removal of all ANSI escape sequences per:
         //  https://superuser.com/questions/380772/removing-ansi-color-codes-from-text-stream
+
+        /* eslint-disable no-control-regex */
         dat = dat.strip(/\x1b\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]/g).
                     strip(/\x1b[PX^_].*?\x1b\\/g).
                     strip(/\x1b\][^\a]*(?:\x07|\x1b\\)/g).
