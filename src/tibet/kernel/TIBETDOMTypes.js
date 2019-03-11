@@ -11611,7 +11611,9 @@ function(anElement, nodesRemoved) {
         targetHasNoAwaken,
         targetAnsHasNoAwaken,
 
-        root;
+        root,
+
+        tpElement;
 
     if (!TP.isElement(anElement)) {
         return this.raise('TP.sig.InvalidElement');
@@ -11707,12 +11709,20 @@ function(anElement, nodesRemoved) {
                     TP.hc('mutatedNodeIDs', mutatedGIDs));
     }
 
+    tpElement = TP.wrap(anElement);
+
     //  Signal from our target element's document that we detached nodes due to
     //  a mutation.
     TP.signal(TP.tpdoc(anElement),
                 'TP.sig.MutationDetach',
-                TP.hc('mutationTarget', TP.wrap(anElement),
+                TP.hc('mutationTarget', tpElement,
                         'mutatedNodeIDs', mutatedGIDs));
+
+    //  If the target element is empty, signal DOMContentUnloaded for
+    //  convenience purposes for observers.
+    if (tpElement.isEmpty()) {
+        TP.signal(tpElement, 'TP.sig.DOMContentUnloaded');
+    }
 
     //  Filter any elements that are descendants of the nodes we are removing
     //  from the DOM out of the $focus_stack.
