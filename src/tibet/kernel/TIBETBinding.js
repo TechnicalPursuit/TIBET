@@ -5143,6 +5143,14 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 //  the pathType to null and let the machinery handle it as if
                 //  no path type was supplied.
                 pathType = aPathType;
+
+                //  If the expression contains ACP variables, then set the
+                //  pathType to null and let the machinery that looks at the
+                //  value compute the expression value.
+                if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+                    pathType = null;
+                }
+
                 if (TP.isValid(pathType)) {
 
                     switch (pathType) {
