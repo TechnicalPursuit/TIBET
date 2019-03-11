@@ -2090,9 +2090,13 @@ function(anObject, resultType, collapse) {
 
             default:
 
-                if (TP.isType(resultType) &&
-                    resultType !== anObject.getType()) {
-                    obj = resultType.from(anObject, this);
+                if (TP.isType(resultType)) {
+                    if (TP.canInvoke(anObject, 'getType') &&
+                        resultType === anObject.getType()) {
+                        obj = anObject;
+                    } else {
+                        obj = resultType.from(anObject, this);
+                    }
                 } else {
                     obj = anObject;
                 }
