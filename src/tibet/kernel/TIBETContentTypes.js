@@ -2069,7 +2069,8 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
         dataRow = aDataRowOrURIOrPath.getResource(
                                 TP.hc('async', false)).get('result');
 
-    } else if (aDataRowOrURIOrPath.isAccessPath()) {
+    } else if (!TP.isPlainObject(aDataRowOrURIOrPath) &&
+                aDataRowOrURIOrPath.isAccessPath()) {
 
         queryURI = aCollectionURIOrPath;
 
