@@ -5098,15 +5098,26 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.CollectionNode.Inst.defineMethod('isEmpty',
-function() {
+function(elementsOnly) {
 
     /**
      * @method isEmpty
      * @summary Returns whether or not the receiver is considered 'empty'.
+     * @param {Boolean} [elementsOnly=false] If true this method will only
+     *     look at Element type nodes when considering whether the receiver is
+     *     empty. This defaults to false.
      * @returns {Boolean} Whether or not the receiver is empty.
      */
 
-    return TP.nodeGetChildNodes(this.getNativeNode()).getSize() === 0;
+    var count;
+
+    if (TP.isTrue(elementsOnly)) {
+        count = TP.nodeGetChildElements(this.getNativeNode()).getSize();
+    } else {
+        count = TP.nodeGetChildNodes(this.getNativeNode()).getSize();
+    }
+
+    return count === 0;
 });
 
 //  ------------------------------------------------------------------------
