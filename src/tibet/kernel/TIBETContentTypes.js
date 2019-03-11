@@ -1708,6 +1708,29 @@ function(data, uri) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Type.defineMethod('fromObject',
+function(anObj) {
+
+    /**
+     * @method fromObject
+     * @summary Constructs a new instance from the incoming object. The default
+     *     implementation forwards to construct.
+     * @description We override this method here because our inherited method
+     *     treats POJOs as a 'description' of what the object should be rather
+     *     than here, where we merely treat a POJO as a data object.
+     * @param {Object} anObj The source object.
+     * @returns {Object} A new instance of the receiver.
+     */
+
+    var newObj;
+
+    newObj = this.construct.apply(this, arguments);
+
+    return newObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Type.defineMethod('validate',
 function(anObject, includeFacetChecks) {
 
