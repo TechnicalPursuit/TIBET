@@ -2522,6 +2522,106 @@ function(attributeName, scopeVals, bindingInfoValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$getBranchValueAndPathType',
+function(branchExpr, initialVal, initialPathType) {
+
+    /**
+     * @method $getBranchValueAndPathType
+     * @summary Returns the branch value given the expression and the initial
+     *     value. If a path type is supplied, it is used to further refine the
+     *     value extraction.
+     * @param {String} [aFacet=value] The facet of the binding expressions that
+     *     we're refreshing. This defaults to 'value' which is the 99% case.
+     * @param {Object} initialVal The initial value to use to compute the branch
+     *     value.
+     * @param {Number} [initialPathType] The path type that was precomputed by
+     *     the caller. Note that the method will also return a computed path
+     *     type. If this parameter is supplied, it will be taken into account
+     *     when computing the path type.
+     * @returns {Array<Object, Number>} The computed value and path type.
+     */
+
+    var branchURI,
+        branchVal,
+
+        pathType,
+
+        theVal;
+
+    theVal = initialVal;
+
+    //  If the attribute value is a whole URI, then just grab the
+    //  result of the URI and use that as the branch value to
+    //  process 'the next level down' in the branching.
+    if (TP.isURIString(branchExpr)) {
+        branchURI = TP.uc(branchExpr);
+        if (branchURI.hasFragment()) {
+            branchVal = branchURI.getResource().get('result');
+        } else if (TP.isValid(theVal)) {
+            branchVal = theVal;
+        } else {
+            branchVal = branchURI.getResource().get('result');
+        }
+
+        //  Try to detect the type of path based on tasting the
+        //  branch value. This makes things much easier later on.
+        if (TP.isXMLNode(branchVal)) {
+            pathType = TP.ifInvalid(initialPathType, TP.XPATH_PATH_TYPE);
+        } else if (TP.isKindOf(branchVal, TP.dom.Node)) {
+            pathType = TP.ifInvalid(initialPathType, TP.XPATH_PATH_TYPE);
+        } else if (TP.regex.JSON_POINTER.test(branchExpr) ||
+                    TP.regex.JSON_PATH.test(branchExpr)) {
+            pathType = TP.ifInvalid(initialPathType, TP.JSON_PATH_TYPE);
+        } else if (branchURI.hasFragment()) {
+            pathType = branchURI.getFragmentAccessPathType();
+        }
+
+    } else {
+
+        if (TP.isValid(theVal)) {
+            if (TP.isArray(theVal) &&
+                theVal.first() !== TP.NULL &&
+                TP.isXMLNode(TP.unwrap(theVal.first()))) {
+                theVal = TP.copy(theVal);
+                theVal.unshift(TP.NULL);
+            }
+
+            if (TP.isXMLNode(theVal)) {
+                branchVal = TP.wrap(theVal).get(TP.xpc(branchExpr));
+                pathType = TP.ifInvalid(initialPathType,
+                                        TP.XPATH_PATH_TYPE);
+            } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+                branchVal = theVal.get(TP.xpc(branchExpr));
+                pathType = TP.ifInvalid(initialPathType,
+                                        TP.XPATH_PATH_TYPE);
+            } else if (TP.regex.JSON_POINTER.test(branchExpr) ||
+                        TP.regex.JSON_PATH.test(branchExpr)) {
+                if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
+                    theVal = TP.core.JSONContent.construct(theVal);
+                }
+
+                branchVal = this.$extractValue(theVal,
+                                                branchExpr,
+                                                TP.jpc,
+                                                null);
+
+                pathType = TP.ifInvalid(initialPathType,
+                                        TP.JSON_PATH_TYPE);
+            } else if (TP.notValid(theVal)) {
+                branchVal = null;
+            } else {
+                branchVal = theVal.get(branchExpr);
+            }
+        }
+    }
+
+    pathType = TP.ifInvalid(pathType, initialPathType);
+
+    return TP.ac(branchVal, pathType);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getFullyExpandedBindingExpressions',
 function(attributeName) {
 
@@ -3455,6 +3555,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
         isScopingElement,
 
+        valueAndPath,
+
         branchURI,
         branchVal,
 
@@ -3721,67 +3823,15 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     theVal = null;
                 }
 
-                //  If the attribute value is a whole URI, then just grab the
-                //  result of the URI and use that as the branch value to
-                //  process 'the next level down' in the branching.
-                if (TP.isURIString(attrVal)) {
-                    branchURI = TP.uc(attrVal);
-                    if (branchURI.hasFragment()) {
-                        branchVal = branchURI.getResource().get('result');
-                    } else {
-                        branchVal = theVal;
-                    }
+                //  Obtain the branching value and path type, given the
+                //  expression in the attribute value, the value as we've
+                //  computed it so far and whatever path type we've been able to
+                //  calculate.
+                valueAndPath = this.$getBranchValueAndPathType(
+                                                attrVal, theVal, aPathType);
 
-                    //  Try to detect the type of path based on tasting the
-                    //  branch value. This makes things much easier later on.
-                    if (TP.isXMLNode(branchVal)) {
-                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.isKindOf(branchVal, TP.dom.Node)) {
-                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.regex.JSON_POINTER.test(attrVal) ||
-                                TP.regex.JSON_PATH.test(attrVal)) {
-                        pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
-                    }
-
-                } else {
-
-                    if (TP.isValid(theVal)) {
-                        if (TP.isArray(theVal) &&
-                            theVal.first() !== TP.NULL &&
-                            TP.isXMLNode(TP.unwrap(theVal.first()))) {
-                            theVal.unshift(TP.NULL);
-                        }
-
-                        if (TP.isXMLNode(theVal)) {
-                            branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.XPATH_PATH_TYPE);
-                        } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-                            branchVal = theVal.get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.XPATH_PATH_TYPE);
-                        } else if (TP.regex.JSON_POINTER.test(attrVal) ||
-                                    TP.regex.JSON_PATH.test(attrVal)) {
-                            if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
-                                theVal = TP.core.JSONContent.construct(theVal);
-                            }
-
-                            branchVal = this.$extractValue(theVal,
-                                                            attrVal,
-                                                            TP.jpc,
-                                                            null);
-
-                            pathType = TP.ifInvalid(aPathType,
-                                                    TP.JSON_PATH_TYPE);
-                        } else if (TP.notValid(theVal)) {
-                            branchVal = null;
-                        } else {
-                            branchVal = theVal.get(attrVal);
-                        }
-                    }
-                }
-
-                pathType = TP.ifInvalid(pathType, aPathType);
+                branchVal = valueAndPath.at(0);
+                pathType = valueAndPath.at(1);
 
                 if (attrName === 'repeat') {
 
@@ -5628,6 +5678,8 @@ function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
 
         pathType,
 
+        valueAndPath,
+
         didRefresh;
 
     //  Extract the binding information from the supplied binding information
@@ -5654,9 +5706,14 @@ function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
         scopedURI = TP.uc(scopedValExpr);
         scopedVal = scopedURI.getResource().get('result');
 
-        //  It should be possible to derive an access path type from the URI's
-        //  fragment.
-        pathType = scopedURI.getFragmentAccessPathType();
+        //  Obtain the branching value and path type, given the scoped value
+        //  expression and the value as we've computed it so far.
+        valueAndPath = this.$getBranchValueAndPathType(
+                                scopedValExpr, scopedVal);
+
+        branchVal = valueAndPath.at(0);
+        pathType = valueAndPath.at(1);
+
     } else {
         scopedVal = null;
         pathType = null;
