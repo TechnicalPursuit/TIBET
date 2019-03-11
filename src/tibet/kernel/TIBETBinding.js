@@ -3701,7 +3701,7 @@ function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
         valueAndPath = this.$getBranchValueAndPathType(
                                 scopedValExpr, scopedVal);
 
-        branchVal = valueAndPath.at(0);
+        scopedVal = valueAndPath.at(0);
         pathType = valueAndPath.at(1);
 
     } else {
