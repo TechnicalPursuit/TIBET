@@ -3488,6 +3488,336 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$refresh',
+function(shouldRender) {
+
+    /**
+     * @method $refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var elem,
+
+        scopeVals,
+
+        didProcess,
+
+        attrNode,
+        attrVal,
+
+        valChanged,
+
+        willRender;
+
+    elem = this.getNativeNode();
+
+    //  If this element has a bind:repeat, then just refresh it and move on.
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        //  If the repeat page position isn't already set to a Number, then
+        //  initialize it to 1.
+        if (!TP.isNumber(
+                this.getAttribute('bind:repeatpageposition').asNumber())) {
+            this.$setAttribute('bind:repeatpageposition', 1, false);
+        }
+
+        //  Refresh the repeating data under us, passing true to regenerate any
+        //  new repeat chunks that may be required.
+        this.$refreshRepeatData(true);
+
+        return this;
+    }
+
+    didProcess = false;
+    scopeVals = this.getBindingScopeValues();
+
+    if (TP.elementHasAttribute(elem, 'bind:in', true)) {
+        didProcess = true;
+        attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
+        attrVal = this.getAttribute('bind:in');
+
+        valChanged = this.$refreshAttr(scopeVals, attrNode, 'bind:in', attrVal);
+    }
+
+    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        didProcess = true;
+        attrNode = TP.elementGetAttributeNode(elem, 'bind:io');
+        attrVal = this.getAttribute('bind:io');
+
+        valChanged = this.$refreshAttr(scopeVals, attrNode, 'bind:io', attrVal);
+    }
+
+    //  If this element has a bind:scope, then refresh our bound descendants.
+    if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
+        this.refreshBoundDescendants(shouldRender, false);
+    }
+
+    if (!didProcess) {
+        //  If this isn't an element around one of those four attributes, then
+        //  just call render() and return.
+        this.render();
+
+        return this;
+    }
+
+    //  If there is no attribute value, then just return
+    if (TP.isEmpty(attrVal)) {
+        return this;
+    }
+
+    //  Note here how we force the value of willRender to shouldRender (no
+    //  matter whether it's true or false) if shouldRender is supplied.
+    if (TP.notValid(shouldRender)) {
+        willRender = valChanged;
+    } else {
+        willRender = shouldRender;
+    }
+
+    if (willRender) {
+        this.render();
+    }
+
+    return valChanged;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('refresh',
+function(shouldRender, shouldRefreshBindings) {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver and all of the descendants of the receiver that are
+     *     bound.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
+     *     bindings from the receiver down (in a 'sparse' fashion). If not
+     *     supplied, this parameter will default to true.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var retVal;
+
+    //  First, call refresh on all of the *direct children* of the receiver,
+    //  specifying to *not* refresh data bindings. We'll do that in a more
+    //  efficient way below. In this way, the child refresh will not try to
+    //  refresh bindings, but leave it to the sparse update routine below to do
+    //  it.
+    this.getChildElements().forEach(
+        function(aChildTPElem) {
+            aChildTPElem.refresh(shouldRender, false);
+        });
+
+    //  If the caller hasn't explicitly said to refresh data bindings, then we
+    //  do so.
+    if (TP.notFalse(shouldRefreshBindings)) {
+        retVal = this.$refresh(shouldRender);
+
+        //  If this element has a 'bind:scope', then the '$refresh' call above
+        //  will have already called refreshBoundDescendants on it.
+        if (!this.hasAttribute('bind:scope')) {
+            this.refreshBoundDescendants(shouldRender);
+        }
+    } else {
+        retVal = false;
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('$refreshAttr',
+function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
+
+    /**
+     * @method $refreshAttr
+     * @summary Updates the receiver's content using the supplied scope values,
+     *     attribute node and binding expression.
+     * @param {String[]} scopeVals An Array of scoping values to use for
+     *     computing the binding scope when evaluating the expressions as
+     *     supplied in the binding expression.
+     * @param {Attribute} attributeNode The attribute node that the binding
+     *     expression was found on. This is passed along to code that refreshes
+     *     expressions at our 'leaf' level.
+     * @param {String} bindingAttrName The name of the binding attribute.
+     * @param {String} bindingAttrValue The value of the binding attribute. This
+     *     will contain the information that binding expressions can be
+     *     extracted from.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var bindingInfo,
+
+        scopedValExpr,
+        scopedURI,
+        scopedVal,
+
+        pathType,
+
+        valueAndPath,
+
+        didRefresh;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(bindingAttrName, bindingAttrValue);
+
+    //  If we are inside of a scoping context.
+    if (TP.notEmpty(scopeVals)) {
+        //  Concatenate the binding value onto the scope values array (thereby
+        //  creating a new Array) and use it to join all of the values together.
+        scopedValExpr = TP.uriJoinFragments.apply(TP, scopeVals);
+
+        //  If we weren't able to compute a real URI from the fully expanded URI
+        //  value, then raise an exception and return here.
+        if (!TP.isURIString(scopedValExpr)) {
+            this.raise('TP.sig.InvalidURI');
+
+            return false;
+        }
+
+        //  Create a URI from the scoped expression and get its result. This
+        //  will provide with the 'closest scoped expression'.
+        scopedURI = TP.uc(scopedValExpr);
+        scopedVal = scopedURI.getResource().get('result');
+
+        //  Obtain the branching value and path type, given the scoped value
+        //  expression and the value as we've computed it so far.
+        valueAndPath = this.$getBranchValueAndPathType(
+                                scopedValExpr, scopedVal);
+
+        branchVal = valueAndPath.at(0);
+        pathType = valueAndPath.at(1);
+
+    } else {
+        scopedVal = null;
+        pathType = null;
+    }
+
+    didRefresh = false;
+
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var aspectName,
+                bindVal,
+
+                dataExprs,
+                transformFunc,
+
+                refreshedEntry;
+
+            aspectName = bindEntry.first();
+            bindVal = bindEntry.last();
+
+            //  There will be 1...n data expressions here.
+            dataExprs = bindVal.at('dataExprs');
+
+            //  If a transformation function was computed from the expression,
+            //  it will be here.
+            transformFunc = bindVal.at('transformFunc');
+
+            //  Set our final value for the current binding expresssion. This
+            //  will return whether or not setting this value will have changed
+            //  one or more of the values of the observers.
+            refreshedEntry = this.$setFinalValue(
+                                    aspectName,
+                                    dataExprs,
+                                    scopedVal,
+                                    TP.ac(aspectName),
+                                    'value',
+                                    transformFunc,
+                                    pathType,
+                                    this);
+
+            //  If at least one returned true, then flip the flag to true. Note
+            //  that this is constructed such that, once the flag is flipped to
+            //  true, it cannot be changed back.
+            if (refreshedEntry) {
+                didRefresh = refreshedEntry;
+            }
+        }.bind(this));
+
+    return didRefresh;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('refreshBoundDescendants',
+function(shouldRender, shouldSendEvent) {
+
+    /**
+     * @method refreshBoundDescendants
+     * @summary Updates bound descendants content by refreshing all bound
+     *     aspects in each one.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @param {Boolean} [shouldSendEvent=true] Whether or not we should send a
+     *     custom native event that indicates that we refreshed the bindings.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var boundDescendants,
+
+        refreshedElements,
+        evt;
+
+    //  Get the bound descendant elements of the receiver. Note how we pass
+    //  'true' here to *just* get elements that are 'shallow'. If we pick up
+    //  'scope' or 'repeat' elements, those will recursively call this method
+    //  for any 'in' or 'io' elements under them.
+    boundDescendants = TP.wrap(this.$getBoundElements(true));
+
+    boundDescendants.forEach(
+        function(aDescendant) {
+
+            //  NB: We call the primitive '$refresh' call here - otherwise,
+            //  we'll end up recursing. Note that, even though boundDescendants
+            //  will contain 'bind:scope' and 'bind:repeat' elements at this
+            //  point, they will be filtered out by this method. Their
+            //  descendants, the real bind:[in|io|out] elements, will be
+            //  refreshed.
+            aDescendant.$refresh(shouldRender);
+        });
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    refreshedElements = this.getDocument().get('$refreshedElements');
+    if (TP.notEmpty(refreshedElements) && TP.notFalse(shouldSendEvent)) {
+        evt = this.getNativeDocument().createEvent('Event');
+        evt.initEvent('TIBETBindingsRefreshed', true, true);
+        evt.data = refreshedElements;
+
+        this.getNativeNode().dispatchEvent(evt);
+
+        //  Make sure to empty the list of elements that were refreshed so that
+        //  we start fresh when bindings are refreshed again.
+        refreshedElements.empty();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$refreshBranches',
 function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pathAction, isScoped, sigOrigin, originWasURI, changeSource, updateIndexes) {
 
