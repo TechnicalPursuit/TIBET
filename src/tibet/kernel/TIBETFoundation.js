@@ -1463,6 +1463,62 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  FUNCTION SIGNAL OBSERVING
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('execIfTrueOrWaitForSignal',
+function(condition, anOrigin, aSignal, timeout) {
+
+    /**
+     * @method execIfTrueOrWaitForSignal
+     * @summary Executes the receiver immediately if the condition is true. If
+     *     not, the receiver will be executed when the specified signal from the
+     *     specified origin is received.
+     * @param {Boolean} condition The condition to test for immediate execution.
+     * @param {Object|Object[]} anOrigin The originator(s) to be observed.
+     * @param {TP.sig.Signal|Array<TP.sig.Signal|String>} aSignal The signal(s)
+     *     to observe.
+     * @param {Number} [timeout] An optional delay for when this method will
+     *     cause the receiver to be unsubscribed to the signal if the handler
+     *     hasn't been executed yet. This default to the value of the
+     *     'content.signal.delay' cfg value.
+     * @returns {Function} The receiver.
+     */
+
+    var thisref,
+
+        didRun,
+        handler;
+
+    if (TP.isTrue(condition)) {
+        this();
+        return this;
+    }
+
+    thisref = this;
+
+    didRun = false;
+    handler = function(aSignal) {
+        handler.ignore(anOrigin, aSignal);
+
+        thisref();
+
+        didRun = true;
+    };
+
+    handler.observe(anOrigin, aSignal);
+
+    setTimeout(
+        function() {
+            if (!didRun) {
+                handler.ignore(anOrigin, aSignal);
+            }
+        }, TP.ifInvalid(timeout, TP.sys.cfg('content.signal.delay', 1000)));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TYPE MEMBERSHIP
 //  ------------------------------------------------------------------------
 

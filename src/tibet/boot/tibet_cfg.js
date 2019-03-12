@@ -1583,6 +1583,8 @@
     TP.sys.setcfg('shell.init.delay', 10);
     TP.sys.setcfg('shell.update.delay', 1000);
 
+    TP.sys.setcfg('content.signal.delay', 1000);
+
     //  ---
     //  os integration
     //  ---
