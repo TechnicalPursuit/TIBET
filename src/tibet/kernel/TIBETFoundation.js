@@ -1498,8 +1498,8 @@ function(condition, anOrigin, aSignal, timeout) {
     thisref = this;
 
     didRun = false;
-    handler = function(aSignal) {
-        handler.ignore(anOrigin, aSignal);
+    handler = function(aSig) {
+        handler.ignore(anOrigin, aSig);
 
         thisref();
 
