@@ -1684,7 +1684,11 @@ function(attributeName, aspectName, expression) {
         doc[TP.BIND_INFO_REGISTRY] = registry;
     }
 
-    infoKey = TP.gid(elem) + '__' + attributeName;
+    infoKey = TP.join(TP.gid(elem),
+                        TP.JOIN,
+                        attributeName,
+                        TP.JOIN,
+                        expression);
 
     //  If the attribute value (acting as a key) is already in the registry,
     //  then just exit here - we don't want dups in the registry.
@@ -2049,6 +2053,8 @@ function(attributeName) {
 
         registry,
 
+        attrVal,
+
         infoKey;
 
     //  Grab the native Element and Document.
@@ -2061,7 +2067,13 @@ function(attributeName) {
         return this;
     }
 
-    infoKey = TP.gid(elem) + '__' + attributeName;
+    attrVal = TP.elementGetAttribute(elem, attributeName, true);
+
+    infoKey = TP.join(TP.gid(elem),
+                        TP.JOIN,
+                        attributeName,
+                        TP.JOIN,
+                        attrVal);
 
     registry.removeKey(infoKey);
 
@@ -2161,7 +2173,11 @@ function(attributeName, attributeValue, flushCache) {
         doc[TP.BIND_INFO_REGISTRY] = registry;
     }
 
-    infoKey = TP.gid(elem) + '__' + attributeName;
+    infoKey = TP.join(TP.gid(elem),
+                        TP.JOIN,
+                        attributeName,
+                        TP.JOIN,
+                        attributeValue);
 
     if (TP.isTrue(flushCache)) {
         registry.removeKey(infoKey);
