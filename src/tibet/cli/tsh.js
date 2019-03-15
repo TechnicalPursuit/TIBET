@@ -128,7 +128,8 @@ Cmd.prototype.execute = function() {
         active,
         profile,
         script,
-        arglist;
+        arglist,
+        finalTimeout;
 
     //  Without a script we can't run so verify that we got something useful.
     script = this.getScript();
@@ -165,7 +166,7 @@ Cmd.prototype.execute = function() {
 
     //  Need to be ok with more latency in command output...esp for things like
     //  resource processing.
-    this.finalizeTimeout(arglist);
+    finalTimeout = this.finalizeTimeout(arglist);
 
     // Push root path values since headless can't properly determine that based
     // on where it loads (app vs. lib, tibet_pub or not, etc).
@@ -209,6 +210,10 @@ Cmd.prototype.execute = function() {
     }).then(function(page) {
 
         puppetPage = page;
+
+        //  Set the timeout on Puppeteer so that it matches what we hand to the
+        //  TSH:
+        page.setDefaultTimeout(finalTimeout);
 
         page.on('close', function(evt) {
             process.exit(0);
@@ -490,7 +495,7 @@ Cmd.prototype.finalizeBootProfile = function(arglist) {
  * timeout we want it preserved if it's larger. Otherwise we want to use
  * whatever new value is provided.
  * @param {Array.<String>} arglist The argument list to adjust.
- * @returns {Array.<String>} The updated argument list.
+ * @returns {Number} The final timeout value.
  */
 Cmd.prototype.finalizeTimeout = function(arglist) {
     var timeout,
@@ -548,7 +553,7 @@ Cmd.prototype.finalizeTimeout = function(arglist) {
         arglist.push('--timeout=' + timeout);
     }
 
-    return arglist;
+    return parseInt(timeout);
 };
 
 /**
