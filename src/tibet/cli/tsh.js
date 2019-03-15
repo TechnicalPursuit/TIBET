@@ -141,25 +141,25 @@ Cmd.prototype.execute = function() {
     //  Push values into the config or we won't get them back in the arglist.
     CLI.setcfg('script', this.options.script);
 
-    // Access the argument list. Subtypes can adjust how they assemble this to
-    // alter the default behavior. Note the slice() here removes the command
-    // name from the list ('tsh').
+    //  Access the argument list. Subtypes can adjust how they assemble this to
+    //  alter the default behavior. Note the slice() here removes the command
+    //  name from the list ('tsh').
     arglist = this.getArglist().slice(1);
     if (CLI.isEmpty(arglist)) {
         return 0;
     }
 
-    // Finalize it, giving subtypes a chance to tweak the arguments as needed.
+    //  Finalize it, giving subtypes a chance to tweak the arguments as needed.
     arglist = this.finalizeArglist(arglist);
 
-    // If no arglist then we presubably output usage() and are just returning.
+    //  If no arglist then we presubably output usage() and are just returning.
     if (!arglist) {
         return 0;
     }
 
-    //  Determine which specific boot profile to use. We use a separate
-    //  routine for this so we can check the prefix/value and avoid pushing a
-    //  profile more than once into the argument list.
+    //  Determine which specific boot profile to use. We use a separate routine
+    //  for this so we can check the prefix/value and avoid pushing a profile
+    //  more than once into the argument list.
     profile = this.finalizeBootProfile(arglist);
 
     //  TODO:   headless args?
@@ -255,8 +255,8 @@ Cmd.prototype.execute = function() {
     }).then(function(agent) {
         var fullpath;
 
-        //  You can launch a file path as long as you set the right flags
-        //  for Chrome to avoid issues with cross-origin security glitches.
+        //  You can launch a file path as long as you set the right flags for
+        //  Chrome to avoid issues with cross-origin security glitches.
         if (CLI.inLibrary()) {
             fullpath = 'file:' +
                 CLI.expandPath('~lib_etc/headless/headlesstsh.xhtml') +
@@ -267,8 +267,8 @@ Cmd.prototype.execute = function() {
                 '#?boot.profile=\'' + profile + '\'';
         }
 
-        //  NOTE: this value must match the value found in tibet_cfg.js
-        //  for the boot system to properly recognize headless context.
+        //  NOTE: this value must match the value found in tibet_cfg.js for the
+        //  boot system to properly recognize headless context.
         puppetPage.setUserAgent(agent + ' Puppeteer');
 
         start = new Date();
@@ -277,8 +277,8 @@ Cmd.prototype.execute = function() {
 
     }).then(function(result) {
 
-        //  Once the page loads TIBET will start to load. We need to
-        //  wait for it to finish before we continue.
+        //  Once the page loads TIBET will start to load. We need to wait for it
+        //  to finish before we continue.
         return puppetPage.waitForFunction(function() {
 
             //  If TP isn't defined, that means we're in a non-TIBET start page.
@@ -288,8 +288,8 @@ Cmd.prototype.execute = function() {
             }
             /* eslint-enable dot-notation */
 
-            //  If $$stop isn't falsey it's going to have an error in
-            //  it. Capture and exit.
+            //  If $$stop isn't falsey it's going to have an error in it.
+            //  Capture and exit.
             if (TP && TP.boot && TP.boot.$$stop) {
                 throw new Error(TP.boot.$$stop);
             }
@@ -308,8 +308,8 @@ Cmd.prototype.execute = function() {
         active = true;
         end = new Date();
 
-        //  Once TIBET boots run whatever TSH command we're being
-        //  asked to execute for this process.
+        //  Once TIBET boots run whatever TSH command we're being asked to
+        //  execute for this process.
         if (!cmd.options.silent) {
             cmd.log((cmd.options.tap ? '# ' : '') +
                 'TIBET loaded and active in ' + (end - start) + 'ms', 'dim');
@@ -373,7 +373,8 @@ Cmd.prototype.execute = function() {
                         }
                     }
 
-                    //  Normalize all data slots in result set to be string form.
+                    //  Normalize all data slots in result set to be string
+                    //  form.
                     results = results.map(function(item) {
                         var data;
 
