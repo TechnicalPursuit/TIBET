@@ -543,6 +543,13 @@ function() {
      * @returns {Number} The height of a row when rendered.
      */
 
+    //  Headless doesn't load the stylesheet that contains the
+    //  'xctrls-item-height' variable in a timely fashion, so we just hardcode a
+    //  Number here.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        return 20;
+    }
+
     return this.getComputedStyleProperty(
                         '--xctrls-item-height').asNumber();
 });
