@@ -606,8 +606,8 @@ function(driver) {
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {TP.test.GUIDriver} driver The GUI driver which created this sequence
-     *     and is being used in conjunction with it to drive the GUI.
+     * @param {TP.test.GUIDriver} driver The GUI driver which created this
+     *     sequence and is being used in conjunction with it to drive the GUI.
      * @returns {TP.test.GUISequence} The receiver.
      */
 
@@ -1583,7 +1583,7 @@ function(target, type, args, callback, currentElement) {
 
             evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.click(evtArgs, finalTarget, callback);
+            syn.click(finalTarget, evtArgs, callback);
 
             break;
 
@@ -1591,7 +1591,7 @@ function(target, type, args, callback, currentElement) {
 
             evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.dblclick(evtArgs, finalTarget, callback);
+            syn.dblclick(finalTarget, evtArgs, callback);
 
             break;
 
@@ -1599,7 +1599,7 @@ function(target, type, args, callback, currentElement) {
 
             evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.rightClick(evtArgs, finalTarget, callback);
+            syn.rightClick(finalTarget, evtArgs, callback);
 
             break;
 
@@ -1607,7 +1607,7 @@ function(target, type, args, callback, currentElement) {
 
             evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.key(evtArgs, finalTarget, callback);
+            syn.key(finalTarget, evtArgs, callback);
 
             break;
 
@@ -1615,7 +1615,7 @@ function(target, type, args, callback, currentElement) {
 
             evtArgs = populateSynArgs(args, finalTarget);
 
-            syn.type(evtArgs, finalTarget, callback);
+            syn.type(finalTarget, evtArgs, callback);
 
             break;
 
@@ -1639,10 +1639,9 @@ function(target, type, args, callback, currentElement) {
             evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
+                finalTarget,
                 type,
-                //  TODO: Verify this:
-                {},
-                finalTarget);
+                {});
 
             break;
 
@@ -1666,9 +1665,9 @@ function(target, type, args, callback, currentElement) {
             evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
+                finalTarget,
                 type,
-                TP.extern.syn.key.options(evtArgs, type),
-                finalTarget);
+                TP.extern.syn.key.options(evtArgs, type));
 
             break;
 

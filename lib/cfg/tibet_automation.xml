@@ -36,11 +36,14 @@
         <![CDATA[
         //  Because our automation system uses Promises in conjunction with Syn,
         //  we have to define an alternate version of Syn's 'schedule' call that
-        //  knows that synchronization of all behavior is handled by our internal
-        //  Promise code. Therefore, here we just invoke the function.
-        //  Note that we *must* do this *before* Syn loads, which is why we do
-        //  this here - it's just how Syn works.
-        Syn = {
+        //  knows that synchronization of all behavior is handled by our
+        //  internal Promise code. Therefore, here we just invoke the function.
+        //  Note that this is how you provide global options to Syn - by
+        //  defining a global 'syn' object that will pull from before
+        //  reassigning itself to that global slot. So we *must* do this
+        //  *before* Syn loads, which is why we do this here. Strange, but it's
+        //  just how Syn works.
+        syn = {
             'schedule' :
                 function (fn, ms) {
                 return fn();
@@ -49,14 +52,11 @@
         ]]>
     </script>
 
-    <script src="~lib_deps/syn-tpi.min.js"
-        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
-    <script src="~lib_deps/syn-tpi.js"
-        unless="boot.minified" no-lint="no-lint" />
+    <script src="~lib_deps/syn-tpi.js" no-lint="no-lint" />
 
     <script>
         <![CDATA[
-        TP.registerExternalObject('syn', window.Syn);
+        TP.registerExternalObject('syn', window.syn);
         ]]>
     </script>
 </config>
