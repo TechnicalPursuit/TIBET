@@ -420,15 +420,11 @@ function() {
 
         testKey = testKeys.at(i);
 
-        //  Headless doesn't report HTML document from top level. We have to
-        //  manufacture one and it has no window as a result...
-        if (TP.sys.cfg('boot.context') === 'headless') {
-            if (TP.ac(
-                'HTMLDocument', 'HTMLElement',
-                'TP.dom.HTMLDocumentNode', 'TP.dom.HTMLElementNode').indexOf(
-                    testKey) !== -1) {
-                continue;
-            }
+        if (TP.ac(
+            'HTMLDocument', 'HTMLElement',
+            'TP.dom.HTMLDocumentNode', 'TP.dom.HTMLElementNode').indexOf(
+                testKey) !== -1) {
+            continue;
         }
 
         val = testData.at(testKey);

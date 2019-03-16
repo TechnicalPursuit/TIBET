@@ -254,7 +254,7 @@ function() {
 
     //  Can't test "submit" in Headless because we're not launching from an
     //  HTTP server.
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 //  end

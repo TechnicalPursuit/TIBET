@@ -30,7 +30,7 @@
     <script src="automation/TP.test.GUIDriver.js" />
 </config>
 
-<config id="syn" depends="" unless="boot.context=headless">
+<config id="syn">
 
     <script>
         <![CDATA[

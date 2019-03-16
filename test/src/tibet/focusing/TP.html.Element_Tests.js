@@ -2267,7 +2267,7 @@ function() {
             });
     }).timeout(10000);
 
-}).timeout(60000).skip(TP.sys.cfg('boot.context') === 'headless');
+}).timeout(60000);
 
 //  ------------------------------------------------------------------------
 
@@ -3141,7 +3141,7 @@ function() {
                                             loadURI.getLocation()));
             });
     }).timeout(10000);
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 //  end

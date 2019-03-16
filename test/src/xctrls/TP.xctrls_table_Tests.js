@@ -305,7 +305,7 @@ function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -959,7 +959,7 @@ function() {
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
     }).skip();
 
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1060,7 +1060,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1194,7 +1194,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 //  end
