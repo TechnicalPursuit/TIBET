@@ -4190,21 +4190,38 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         TP.apc(repeatFragExpr).executeGet(primarySource);
                     }
 
-                    //  Make sure that branchVal is an Array
-                    if (!TP.isArray(branchVal)) {
-                        branchVal = TP.ac(branchVal);
+                    //  If branchVal is a POJO, make it into a TP.core.Hash.
+                    if (TP.isPlainObject(branchVal)) {
+                        branchVal = TP.hc(branchVal);
                     }
 
-                    //  NB: This modifies the supplied 'boundElems' Array to add
-                    //  the newly generated elements. They will be refreshed
-                    //  below.
-                    //  If $regenerateRepeat returns false, then it didn't
-                    //  regenerate any chunks and, therefore, we need to
-                    //  manually update the repeat indexes.
-                    updateRepeatIndexes = !ownerTPElem.$regenerateRepeat(
+                    //  Make sure that branchVal is a collection.
+                    if (TP.isCollection(branchVal)) {
+
+                        //  If repeatResult is a TP.core.Hash, then convert it
+                        //  into an Array of key/value pairs. Binding repeats
+                        //  need a collection they can index numerically.
+                        if (TP.isHash(branchVal)) {
+                            branchVal = branchVal.getKVPairs();
+                        }
+
+                        //  If the branchVal isn't an Array, then make it be the
+                        //  single item in an Array.
+                        if (!TP.isArray(branchVal)) {
+                            branchVal = TP.ac(branchVal);
+                        }
+
+                        //  NB: This modifies the supplied 'boundElems' Array to
+                        //  add the newly generated elements. They will be
+                        //  refreshed below.
+                        //  If $regenerateRepeat returns false, then it didn't
+                        //  regenerate any chunks and, therefore, we need to
+                        //  manually update the repeat indexes.
+                        updateRepeatIndexes = !ownerTPElem.$regenerateRepeat(
                                                         branchVal, boundElems);
-                    if (updateRepeatIndexes) {
-                        ownerTPElem.$updateRepeatRowIndices(branchVal);
+                        if (updateRepeatIndexes) {
+                            ownerTPElem.$updateRepeatRowIndices(branchVal);
+                        }
                     }
                 }
 
@@ -4745,6 +4762,12 @@ function(regenerateIfNecessary) {
     repeatWholeResult = repeatWholeURI.getResource(
                     TP.request('shouldCollapse', false)).get('result');
 
+    //  If repeatResult is a POJO, make it into a TP.core.Hash.
+    if (TP.isPlainObject(repeatResult)) {
+        repeatResult = TP.hc(repeatResult);
+    }
+
+    //  Make sure that repeatResult is a collection.
     if (TP.isCollection(repeatResult)) {
 
         //  If repeatResult is a TP.core.Hash, then convert it into an Array of
@@ -4752,6 +4775,12 @@ function(regenerateIfNecessary) {
         //  numerically.
         if (TP.isHash(repeatResult)) {
             repeatResult = repeatResult.getKVPairs();
+        }
+
+        //  If the repeatResult isn't an Array, then make it be the single item
+        //  in an Array.
+        if (!TP.isArray(repeatResult)) {
+            repeatResult = TP.ac(repeatResult);
         }
 
         //  If this flag is true, then go ahead and regenerate (if necessary).
