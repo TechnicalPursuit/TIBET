@@ -53,12 +53,7 @@ function() {
         keyCode,
         val;
 
-    //  The 'syn' library only loads if we're *not* running in Headless Chrome.
-    if (TP.sys.cfg('boot.context') !== 'headless') {
-        this.defineDependencies('TP.extern.syn');
-    }
-
-    this.defineDependencies('TP.extern.Promise');
+    this.defineDependencies('TP.extern.syn', 'TP.extern.Promise');
 
     //  If Syn isn't loaded, then don't try to manipulate its keymap. Just
     //  return.
