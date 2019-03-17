@@ -100,7 +100,7 @@ Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suit
 //  ---
 
 /**
- * Execute either Karma or PhantomJS-based testing.
+ * Execute either Karma or headless-based testing.
  */
 Cmd.prototype.execute = function() {
     var karmafile;

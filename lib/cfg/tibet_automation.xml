@@ -39,7 +39,7 @@
         //  knows that synchronization of all behavior is handled by our
         //  internal Promise code. Therefore, here we just invoke the function.
         //  Note that this is how you provide global options to Syn - by
-        //  defining a global 'syn' object that will pull from before
+        //  defining a global 'syn' object that it will pull from before
         //  reassigning itself to that global slot. So we *must* do this
         //  *before* Syn loads, which is why we do this here. Strange, but it's
         //  just how Syn works.
