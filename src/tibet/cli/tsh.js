@@ -113,6 +113,28 @@ Cmd.prototype.announce = function() {
     return;
 };
 
+/**
+ * Performed before we close the browser
+ * @param {Object} puppetBrowser Puppeteer's 'browser' object.
+ * @param {Object} puppetPage Puppeteer's 'page' object.
+ * @returns {Promise|null} Either a Promise or null. If this method returns a
+ *     Promise, this object will wait to shut down Puppeteer until that Promise
+ *     is resolved.
+ */
+Cmd.prototype.beforeBrowserClose = function(puppetBrowser, puppetPage) {
+
+    return;
+};
+
+/**
+ * Performed before we load the test page
+ * @param {Object} puppetBrowser Puppeteer's 'browser' object.
+ * @param {Object} puppetPage Puppeteer's 'page' object.
+ */
+Cmd.prototype.beforePageLoad = function(puppetBrowser, puppetPage) {
+
+    return;
+};
 
 /**
  * Perform the actual command processing logic.
@@ -271,6 +293,8 @@ Cmd.prototype.execute = function() {
         //  boot system to properly recognize headless context.
         puppetPage.setUserAgent(agent + ' Puppeteer');
 
+        cmd.beforePageLoad(puppetBrowser, puppetPage);
+
         start = new Date();
 
         return puppetPage.goto(fullpath);
@@ -424,8 +448,24 @@ Cmd.prototype.execute = function() {
 
     }).then(function(results) {
 
+        var closePromise;
+
         cmd.stdout(results);
-        cmd.close(0, puppetBrowser);
+
+        //  Call beforeBrowserClose. Its return value is either a Promise or
+        //  null. If it hands back a Promise, wait until that is fulfilled
+        //  before closing.
+
+        closePromise = cmd.beforeBrowserClose(puppetBrowser, puppetPage);
+
+        if (closePromise) {
+            closePromise.then(
+                function() {
+                    cmd.close(0, puppetBrowser);
+                });
+        } else {
+            cmd.close(0, puppetBrowser);
+        }
 
     }).catch(function(err) {
 
