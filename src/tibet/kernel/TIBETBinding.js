@@ -4102,7 +4102,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
             //  Make sure the attribute is in the binding namespace. This also
             //  accounts for the deficency of the querySelectorAll() call above.
-            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
+            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
+                /^bind:(in|out|io|scope|repeat)$/.test(attrs[j].name)) {
                 boundAttrNodes.push(attrs[j]);
             }
         }
