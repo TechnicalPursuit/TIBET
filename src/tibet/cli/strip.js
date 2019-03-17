@@ -193,7 +193,7 @@ Cmd.prototype.getScript = function() {
     target = prefix;
 
     target += ' --context=\'all\'';
-    //target += ' --context=\'lib\' --suite=\'TP.xctrls.button: manipulation\'';
+    // target += ' --context=\'lib\' --suite=\'TP.xctrls.button: manipulation\'';
 
     /*
     if (target.length > 0 && target.indexOf(prefix) !== 0) {
@@ -265,9 +265,9 @@ Cmd.prototype.processCoverageResults = function(results) {
             js_total_bytes += entry.text.length;
             this.stdout(`Total Bytes for ${entry.url}: ${entry.text.length}`);
 
-            for (range of entry.ranges){
+            for (range of entry.ranges) {
                 js_used_bytes += range.end - range.start - 1;
-                covered_js += entry.text.slice(range.start, range.end) + "\n";
+                covered_js += entry.text.slice(range.start, range.end) + '\n';
             }
         }
 
