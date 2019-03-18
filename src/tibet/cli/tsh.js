@@ -594,7 +594,7 @@ Cmd.prototype.finalizeTimeout = function(arglist) {
         arglist.push('--timeout=' + timeout);
     }
 
-    return parseInt(timeout);
+    return parseInt(timeout, 10);
 };
 
 /**
