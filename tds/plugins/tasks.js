@@ -41,6 +41,7 @@
             remapStdioParams,
             retrieveFlow,
             retrieveTask,
+            escapeJSON,
             prepareParams,
             processOwnedTasks,
             refreshTaskState,
@@ -829,6 +830,18 @@
             return Date.now() - task.start > (task.timeout || 15000);
         };
 
+        escapeJSON = function (str) {
+            return str
+                .replace(/[\\]/g, '\\\\')
+                .replace(/[\"]/g, '\\\"')
+                .replace(/[\/]/g, '\\/')
+                .replace(/[\b]/g, '\\b')
+                .replace(/[\f]/g, '\\f')
+                .replace(/[\n]/g, '\\n')
+                .replace(/[\r]/g, '\\r')
+                .replace(/[\t]/g, '\\t');
+        };
+
         /*
          */
         prepareParams = function(job, step, task) {
@@ -932,9 +945,10 @@
                 throw e;
             }
 
-            //  Embedded newlines in the template can cause JSON.parse to have
-            //  issues so make sure we don't have any after template execution.
-            result = result.replace(/\n/g, '\\n');
+            //  Certain embedded characters in the template can cause JSON.parse
+            //  to have issues so make sure we don't have any after template
+            //  execution.
+            result = escapeJSON(result);
 
             //  Note here that we allow embedded templates, but because of
             //  escaping issues with JSON and Handlebars, we require these
