@@ -214,6 +214,25 @@ function() {
         return this;
     }
 
+    //  If we're running in headless mode (we're probably testing), then we need
+    //  to rewrite the URL to have an HTTP resource.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        href = TP.elementGetAttribute(this.getNativeNode(), 'href', true);
+
+        if (href.startsWith('file:///')) {
+            href = href.slice(8);
+        } else if (href.startsWith('/')) {
+            href = href.slice(1);
+        }
+
+        href = TP.uriJoinPaths('http://127.0.0.1:1407', href);
+
+        TP.elementSetAttribute(this.getNativeNode(), 'href', href, true);
+
+        //  Make sure to recompute the URI here.
+        uri = TP.uc(href);
+    }
+
     //  Configure the main URI to force a refresh of its contents.
     request = TP.request(TP.hc('refresh', true));
 

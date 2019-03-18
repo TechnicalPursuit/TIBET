@@ -19,6 +19,8 @@ function() {
 
         unloadURI,
 
+        httpLoc,
+
         windowContext,
 
         loadURI,
@@ -26,6 +28,8 @@ function() {
         server;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    httpLoc = 'http://127.0.0.1:1407';
 
     this.before(
         function() {
@@ -93,6 +97,17 @@ function() {
                 //  ---
 
                 serviceTPElem = TP.byId('Service1', windowContext);
+
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
 
                 //  In order to make the asynchronous behavior work here, we
                 //  create a Promise and return it from the test case method.
@@ -307,6 +322,17 @@ function() {
 
                 serviceTPElem = TP.byId('Service3', windowContext);
 
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
+
                 //  In order to make the asynchronous behavior work here, we
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
@@ -408,6 +434,17 @@ function() {
                 //  ---
 
                 serviceTPElem = TP.byId('Service4', windowContext);
+
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
 
                 //  In order to make the asynchronous behavior work here, we
                 //  create a Promise and return it from the test case method.
@@ -684,8 +721,6 @@ function() {
                             locRe,
                             function(req) {
 
-                                test.assert.isValid(req.requestHeaders['X-Record-Num']);
-
                                 req.respond(
                                     200,
                                     {
@@ -736,6 +771,17 @@ function() {
 
                 bodyContentTPElem = TP.byId('BodyContentField', windowContext);
                 serviceTPElem = TP.byId('Service7', windowContext);
+
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
 
                 //  ---
 
@@ -1070,6 +1116,17 @@ function() {
 
                 serviceTPElem = TP.byId('Service10', windowContext);
 
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
+
                 //  ---
 
                 //  In order to make the asynchronous behavior work here, we
@@ -1171,6 +1228,17 @@ function() {
                 //  ---
 
                 serviceTPElem = TP.byId('Service11', windowContext);
+
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
 
                 //  ---
 
@@ -1275,6 +1343,17 @@ function() {
 
                 serviceTPElem = TP.byId('Service12', windowContext);
 
+                //  If we're running in headless mode (we're probably testing),
+                //  then we need to rewrite the URL to have an HTTP resource and
+                //  reset it on the service element.
+                if (TP.sys.cfg('boot.context') === 'headless') {
+                    locStr = httpLoc + locStr;
+                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                            'href',
+                                            locStr,
+                                            true);
+                }
+
                 //  ---
 
                 //  In order to make the asynchronous behavior work here, we
@@ -1353,7 +1432,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'headless');
+});
 
 //  ------------------------------------------------------------------------
 //  end
