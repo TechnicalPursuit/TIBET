@@ -301,15 +301,17 @@ function(aContent) {
             attrVal = '{value: [[' + val + ']]}';
         }
 
+        //  Make sure to flush any binding cache information for the computed
+        //  attribute value. Since this uses the value of the supplied
+        //  attribute as a key into the binding information registry, we make
+        //  sure to do this *before* we reset the value.
+        this.flushBindingInfoCacheFor('bind:in');
+
         //  Set the value of the bind:in attribute. Note that we do this to the
         //  native node directly, to avoid any existing binding change machinery
         //  from getting in the way.
         elem = this.getNativeNode();
         TP.elementSetAttribute(elem, 'bind:in', attrVal, true);
-
-        //  Make sure to flush any binding cache information for the computed
-        //  attribute value.
-        this.flushBindingInfoCacheFor('bind:in');
 
         //  Refresh ourself. This will cause the binding cache to be rebuilt and
         //  for the new data to populate into the GUI.
