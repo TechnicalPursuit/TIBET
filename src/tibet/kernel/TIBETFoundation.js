@@ -9545,7 +9545,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
 
         next = arr.shift();
         if (TP.isCallable(next)) {
-            setTimeout(next);
+            setTimeout(next, 0);
         } else {
             thisref.signal('TP.sig.InvokeComplete',
                 TP.hc('results', results, 'errors', errors));
