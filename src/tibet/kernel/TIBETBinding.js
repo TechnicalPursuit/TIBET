@@ -2173,7 +2173,7 @@ function(attributeName, attributeValue, flushCache) {
         doc[TP.BIND_INFO_REGISTRY] = registry;
     }
 
-    infoKey = TP.join(TP.gid(elem),
+    infoKey = TP.join(TP.gid(elem, true),
                         TP.JOIN,
                         attributeName,
                         TP.JOIN,
