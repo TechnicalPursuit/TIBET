@@ -809,9 +809,8 @@ function(options) {
         suites = this.$get('suiteList');
         suites.perform(
             function(func) {
-                //  Running this function ends up invoking 'this.it()'
-                //  against the test suite instance. See 'it()' for more
-                //  information.
+                //  Running this function ends up invoking 'this.it()' against
+                //  the test suite instance. See 'it()' for more information.
                 try {
                     func.call(suite, suite.get('suiteOwner'), options);
                 } catch (e) {
@@ -928,7 +927,7 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @returns {TP.core.Hash|undefined} The new test suite instance.
+     * @returns {TP.test.Suite} The new test suite instance.
      */
 
     if (TP.notValid(target) ||
