@@ -100,6 +100,8 @@ TP.LOAD_CONFIG_ATTR = 'load_config';
 TP.SOURCE_PACKAGE_ATTR = 'src_package';
 TP.SOURCE_CONFIG_ATTR = 'src_config';
 
+TP.PACKAGING_REP = '$$packagingRep';
+
 TP.PHASE_ONE = 'import_phase_one';
 TP.PHASE_TWO = 'import_phase_two';
 

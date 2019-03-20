@@ -43,8 +43,13 @@ function(aRequest) {
         profileParts,
 
         results,
-        packagePaths,
-        scriptPaths,
+
+        packageEntries,
+        scriptEntries,
+
+        packageOutputEntries,
+        scriptOutputEntries,
+
         libSrcPath,
 
         shouldFix,
@@ -52,6 +57,8 @@ function(aRequest) {
         newArgs,
 
         str,
+
+        allOutputEntries,
 
         uri;
 
@@ -93,8 +100,8 @@ function(aRequest) {
         results = TP.sys.getMissingPackagingInfo(profile);
 
         //  NB: These contain fully expanded paths
-        packagePaths = results.at('packagePaths');
-        scriptPaths = results.at('scriptPaths');
+        packageEntries = results.at('packageEntries');
+        scriptEntries = results.at('scriptEntries');
 
         //  We want to make all package and script paths that *start* with the
         //  '~lib_src' path be relative to '~lib_src', since they're going to be
@@ -104,25 +111,55 @@ function(aRequest) {
         //  Compute the fully expanded path to '~lib_src'.
         libSrcPath = TP.uriExpandPath('~lib_src');
 
-        //  Iterate over all of the package paths and make them relative to the
-        //  fully expanded '~lib_src' path *if they start with it*.
-        packagePaths = packagePaths.collect(
-                        function(aPath) {
-                            if (aPath.startsWith(libSrcPath)) {
-                                return TP.uriRelativeToPath(aPath, libSrcPath);
-                            }
-                            return aPath;
-                        });
+        //  Iterate over all of the package entries and make their scripts
+        //  relative to the fully expanded '~lib_src' path *if they start with
+        //  it*.
+        packageOutputEntries = packageEntries.collect(
+            function(anEntry) {
+                var outEntry,
+                    path;
 
-        //  Iterate over all of the script paths and make them relative to the
-        //  fully expanded '~lib_src' path *if they start with it*.
-        scriptPaths = scriptPaths.collect(
-                        function(aPath) {
-                            if (aPath.startsWith(libSrcPath)) {
-                                return TP.uriRelativeToPath(aPath, libSrcPath);
-                            }
-                            return aPath;
-                        });
+                outEntry = TP.ac('package',
+                                    anEntry[TP.LOAD_INDEX],
+                                    anEntry[TP.PACKAGING_REP]);
+
+                //  The path here was already expanded by the call that produced
+                //  these results.
+                path = anEntry[TP.PACKAGING_REP].split('@').first();
+
+                if (path.startsWith(libSrcPath)) {
+                    outEntry.push(TP.uriRelativeToPath(path, libSrcPath));
+                } else {
+                    outEntry.push(path);
+                }
+
+                return outEntry;
+            });
+
+        //  Iterate over all of the script entries and make their scripts
+        //  relative to the fully expanded '~lib_src' path *if they start with
+        //  it*.
+        scriptOutputEntries = scriptEntries.collect(
+            function(anEntry) {
+                var outEntry,
+                    path;
+
+                outEntry = TP.ac('script',
+                                    anEntry[TP.LOAD_INDEX],
+                                    anEntry[TP.PACKAGING_REP]);
+
+                //  The path here was already expanded by the call that produced
+                //  these results.
+                path = anEntry[TP.PACKAGING_REP];
+
+                if (path.startsWith(libSrcPath)) {
+                    outEntry.push(TP.uriRelativeToPath(path, libSrcPath));
+                } else {
+                    outEntry.push(path);
+                }
+
+                return outEntry;
+            });
 
         //  If the user is asking us to fix this situation, then we invoke a
         //  remote command to actually patch these into the config matching the
@@ -181,27 +218,46 @@ function(aRequest) {
             //  Iterate over all of the paths and compose a chunk of markup that
             //  could be copied and pasted into a cfg file.
             str = '<ul>';
-            packagePaths.forEach(
-                function(aPath) {
-                    var pathParts;
 
-                    pathParts = aPath.split('@');
+            //  Create an Array of all of the output entries by concatenating
+            //  all of the script output entries onto the package output
+            //  entries. Then sort that by the load index. This will make sure
+            //  that scripts or packages that require prerequisites to be loaded
+            //  before they are are generated that way.
+            allOutputEntries = packageOutputEntries.concat(scriptOutputEntries);
+            allOutputEntries.sort(function(entryA, entryB) {
+                return entryA.at(1) - entryB.at(1);
+            });
 
-                    str += '<li>' +
+            //  Write those entries properly based on their type.
+            allOutputEntries.forEach(
+                function(anEntry) {
+                    var entryType,
+
+                        path,
+                        configParts;
+
+                    entryType = anEntry.at(0);
+
+                    //  The path is the 4th item, whether it's a package or
+                    //  script.
+                    path = TP.uriInTIBETFormat(anEntry.at(3));
+
+                    if (entryType === 'package') {
+                        configParts = anEntry.at(2).split('@');
+
+                        str += '<li>' +
                                 '&lt;package src="' +
-                                TP.uriInTIBETFormat(pathParts.first()) +
-                                '" config="' + pathParts.last() + '"/&gt;' +
-                            '</li>';
+                                path +
+                                '" config="' + configParts.last() + '"/&gt;' +
+                                '</li>';
+                    } else if (entryType === 'script') {
+                        str += '<li>' +
+                                '&lt;script src="' + path + '"/&gt;' +
+                                '</li>';
+                    }
                 });
-            scriptPaths.forEach(
-                function(aPath) {
-                    var path;
 
-                    path = TP.uriInTIBETFormat(aPath);
-                    str += '<li>' +
-                            '&lt;script src="' + path + '"/&gt;' +
-                            '</li>';
-                });
             str += '</ul>';
 
             //  Make sure to mark the request 'as is' since we're outputting
