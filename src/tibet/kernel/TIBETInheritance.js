@@ -10756,6 +10756,9 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.registerLoadInfo(TP.lang.RootObject$$Type.prototype);
+TP.registerLoadInfo(TP.lang.RootObject$$Inst.prototype);
+
 TP.sys.addMetadata(null, TP.lang.RootObject, TP.SUBTYPE);
 
 //  ------------------------------------------------------------------------
