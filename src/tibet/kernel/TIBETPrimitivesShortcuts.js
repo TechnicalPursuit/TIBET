@@ -1798,8 +1798,9 @@ function(anObject, aFilter) {
      *     approach to this, for example, a TP.core.Hash will remove keys whose
      *     values are undefined or null.
      * @param {Object} anObject The object to compact.
-     * @param {Function} aFilter An optional filtering function defining which
-     *     values are retained.
+     * @param {Function} aFilter An optional filtering function which should
+     *     return true for value which should be removed. The default function
+     *     is TP.notValid().
      * @returns {Object} The compacted object, which may be a new object.
      */
 

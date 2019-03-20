@@ -9272,8 +9272,8 @@ function(aFilter) {
      *     you'd expect remove to operate...compact is more like reject() than
      *     select().
      * @param {Function} aFilter An optional filtering function which should
-     *     return true for elements which should be removed. The default
-     *     function is TP.notValid().
+     *     return true for value which should be removed. The default function
+     *     is TP.notValid().
      * @returns {Array} The receiver.
      */
 

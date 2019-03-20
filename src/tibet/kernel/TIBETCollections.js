@@ -6534,8 +6534,9 @@ function(aFilter) {
      *     returns true will be removed and all other values will be retained.
      *     In this sense using compact with a filter is like doing a reject()
      *     inline.
-     * @param {Function} aFilter The filtering function. This should return true
-     *     for values to remove from the collection.
+     * @param {Function} aFilter An optional filtering function which should
+     *     return true for value which should be removed. The default function
+     *     is TP.notValid().
      * @returns {Array} The receiver.
      * @fires Change
      */
