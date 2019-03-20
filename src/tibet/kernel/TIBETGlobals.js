@@ -159,7 +159,7 @@ TP.registerLoadInfo = function(anObject) {
     anObject[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
     anObject[TP.LOAD_STAGE] = TP.boot[TP.LOAD_STAGE];
 
-    if (!anObject[TP.LOAD_ORDER]) {
+    if (!TP.ObjectProto.hasOwnProperty.call(anObject, TP.LOAD_ORDER)) {
         anObject[TP.LOAD_ORDER] = TP.__loadOrderCount__++;
     }
 
