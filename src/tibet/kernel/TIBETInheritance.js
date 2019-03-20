@@ -976,6 +976,7 @@ function() {
         obj[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
         obj[TP.LOAD_PATH] = this[TP.LOAD_PATH];
         obj[TP.LOAD_STAGE] = this[TP.LOAD_STAGE];
+        obj[TP.LOAD_ORDER] = this[TP.LOAD_ORDER];
         obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
         obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
         obj[TP.SOURCE_PATH] = this[TP.SOURCE_PATH];
@@ -8636,6 +8637,7 @@ function() {
         obj[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
         obj[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
         obj[TP.LOAD_STAGE] = this[TP.LOAD_STAGE];
+        obj[TP.LOAD_ORDER] = this[TP.LOAD_ORDER];
         obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
         obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
 

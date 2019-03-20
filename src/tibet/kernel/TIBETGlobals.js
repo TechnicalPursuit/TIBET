@@ -57,6 +57,10 @@ TP.StringProto = String.prototype;
 //  LOW-LEVEL OBJECT CREATION
 //  ------------------------------------------------------------------------
 
+//  A simple numeric counter used to track the load order of types, methods,
+//  external objects, etc.
+TP.__loadOrderCount__ = 0;
+
 //  method metadata slots - need these for method definitions below.
 
 TP.DISPLAY = 'displayName';     //  What debuggers want to see.
@@ -84,6 +88,7 @@ TP.LOAD_PATH = '$$loadPath';
 TP.LOAD_PACKAGE = '$$loadPackage';
 TP.LOAD_CONFIG = '$$loadConfig';
 TP.LOAD_STAGE = '$$stage';
+TP.LOAD_ORDER = '$$loadOrder';
 
 TP.SOURCE_PATH = '$$srcPath';
 TP.SOURCE_PACKAGE = '$$srcPackage';
@@ -117,6 +122,7 @@ TP.USE_WHOLE_PACKAGE = function() {
     obj[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
     obj[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
     obj[TP.LOAD_STAGE] = this[TP.LOAD_STAGE];
+    obj[TP.LOAD_ORDER] = this[TP.LOAD_ORDER];
     obj[TP.SOURCE_PACKAGE] = this[TP.SOURCE_PACKAGE];
     obj[TP.SOURCE_CONFIG] = this[TP.SOURCE_CONFIG];
     obj[TP.OID] = this[TP.SOURCE_PACKAGE] + '@' + this[TP.SOURCE_CONFIG];
@@ -152,6 +158,10 @@ TP.registerLoadInfo = function(anObject) {
     anObject[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
     anObject[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
     anObject[TP.LOAD_STAGE] = TP.boot[TP.LOAD_STAGE];
+
+    if (!anObject[TP.LOAD_ORDER]) {
+        anObject[TP.LOAD_ORDER] = TP.__loadOrderCount__++;
+    }
 
     anObject[TP.SOURCE_PATH] = spath;
     anObject[TP.SOURCE_PACKAGE] = TP.boot[TP.SOURCE_PACKAGE];
