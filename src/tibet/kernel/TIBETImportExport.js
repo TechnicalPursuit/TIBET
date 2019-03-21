@@ -451,7 +451,7 @@ function() {
     entries = entries.concat(TP.sys.getManualDependencies());
 
     //  Unique the entries by their OID (which could either be an '$$oid' slot
-    //  or their SOURCE_PATH.
+    //  or their SOURCE_PATH).
     entries.unique();
 
     //  Sort the remaining entries by their load order.
