@@ -348,7 +348,7 @@ function() {
      * @summary Returns a list of source file paths that are currently being
      *     used by the system. This is determined by looking at all of the
      *     methods that were invoked and their source paths.
-     * @description This method requires the 'oo.$$track_invocation' flag to be
+     * @description This method requires the 'oo.$$track_invocations' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it return an empty hash.
      * @returns {String[]} An Array of script paths that are used in the
@@ -360,7 +360,7 @@ function() {
 
         expandedPaths;
 
-    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
         TP.ifError() ?
             TP.error('Attempt to retrieve used types when invocation' +
                         ' data isn\'t available.') : 0;
@@ -403,7 +403,7 @@ function() {
      *     are used and can be represented by 'package' definitions and one of
      *     'extra' source file paths for code that is used but is outside of
      *     those packages.
-     * @description This method requires the 'oo.$$track_invocation' flag to be
+     * @description This method requires the 'oo.$$track_invocations' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it returns an empty hash.
      * @returns {TP.core.Hash} A hash of two Arrays of paths to code used by the
@@ -419,7 +419,7 @@ function() {
 
         extraSourceEntries;
 
-    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
         TP.ifError() ?
             TP.error('Attempt to retrieve used types when invocation' +
                         ' data isn\'t available.') : 0;
@@ -561,7 +561,7 @@ function(packageConfig) {
      *     missing from the supplied package/config combo and one of 'extra'
      *     source file paths for code that is used but is outside of those
      *     packages and are also missing from the supplied package/config combo.
-     * @description This method requires the 'oo.$$track_invocation' flag to be
+     * @description This method requires the 'oo.$$track_invocations' flag to be
      *     true, otherwise there will be no data for this method to use for its
      *     computation and it returns an empty hash.
      * @param {String} packageConfig The package name to locate and import along
@@ -587,7 +587,7 @@ function(packageConfig) {
         missingPackageEntries,
         filteredPackageEntries;
 
-    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocation'))) {
+    if (TP.isFalse(TP.sys.cfg('oo.$$track_invocations'))) {
         TP.ifError() ?
             TP.error('Attempt to retrieve used types when invocation' +
                         ' data isn\'t available.') : 0;
