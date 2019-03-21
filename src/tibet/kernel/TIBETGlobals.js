@@ -3713,9 +3713,6 @@ TP.regex.XPATH_PATH_STRIPPER = /^(\s*|\/|\|)$/;
 TP[TP.TNAME] = 'Object';
 TP.sys[TP.TNAME] = 'Object';
 
-TP.getDependencies = TP.RETURN_EMPTY_ARRAY;
-TP.sys.getDependencies = TP.RETURN_EMPTY_ARRAY;
-
 //  a tmp for holding the 'real' i.e. non-spoofed browser for patching
 TP.sys.$$realBrowser = null;
 

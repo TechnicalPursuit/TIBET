@@ -13364,6 +13364,78 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  GLOBAL DEPENDENCY TRACKING
+//  ------------------------------------------------------------------------
+
+TP.getDependencies = TP.RETURN_EMPTY_ARRAY;
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('addManualDependencies',
+function(anObjectOID, dependencies) {
+
+    /**
+     * @method addManualDependencies
+     * @summary Adds any 'manual' dependencies that the system cannot determine
+     *     by using it's 'used method reachability' mechanism.
+     * @description Sometimes code (usually a type) is required by an app where
+     *     no methods on that type are invoked. This method allows those
+     *     dependencies to be added manually and tracked by the user.
+     * @param {String} anObjectOID The OID of the object that we're registering
+     *     these dependencies for.
+     * @param {Array} dependencies The Array of dependency entries, usually
+     *     obtained by calling 'getDependencies' on the object in question.
+     */
+
+    var dependencies;
+
+    if (TP.notValid(this.$manualDependencies)) {
+        this.$manualDependencies = new TP.boot.PHash();
+    }
+
+    dependencies = dependencies.flatten();
+
+    this.$manualDependencies.atPut(anObjectOID, dependencies);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getManualDependencies',
+function() {
+
+    /**
+     * @method getManualDependencies
+     * @summary Retrieves any 'manual' dependencies that was defined by the
+     *     system.
+     * @returns {Array} Returns an Array of dependency entries.
+     */
+
+    return this.$manualDependencies.getValues().flatten();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('hasManualDependencies',
+function(anObjectOID) {
+
+    /**
+     * @method hasManualDependencies
+     * @summary Returns whether or not the object with the supplied OID has its
+     *     dependencies already registered.
+     * @param {String} anObjectOID The OID of the object that we're checking
+     *     to see if its dependencies are registered.
+     * @returns {Boolean} Whether or not dependencies are registered for the
+     *     object with the supplied OID.
+     */
+
+    if (TP.notValid(this.manualDependencies)) {
+        return false;
+    }
+
+    return this.$manualDependencies.hasKey(anObjectOID);
+});
+
+//  ------------------------------------------------------------------------
 
 //  Add metadata for the 'bootstrap' methods that got us this far.
 

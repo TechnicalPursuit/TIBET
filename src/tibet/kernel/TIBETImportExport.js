@@ -445,6 +445,11 @@ function() {
 
     entries = entries.flatten();
 
+    //  Concatenate all of the dependency entries that were manually registered
+    //  by the system. These are needed, for instance, for types that are used
+    //  for custom tags, but no methods on them are ever invoked.
+    entries = entries.concat(TP.sys.getManualDependencies());
+
     //  Unique the entries by their OID (which could either be an '$$oid' slot
     //  or their SOURCE_PATH.
     entries.unique();
