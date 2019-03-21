@@ -11998,6 +11998,18 @@ function(aRequest) {
         }
     }
 
+    //  Since the type is actually being used, we register it as a 'manual
+    //  dependency' (since, sometimes, custom elements are simple and don't have
+    //  methods to get triggered, and therefore tracked). Note that we only do
+    //  this if we're tracking method invocations, which means we're probably
+    //  trying to compute missing packages or scripts given a baseline code
+    //  package. .
+    if (TP.isTrue(TP.sys.cfg('oo.$$track_invocations'))) {
+        if (!TP.sys.hasManualDependencies(TP.name(this))) {
+            TP.sys.addManualDependencies(TP.name(this), this.getDependencies());
+        }
+    }
+
     return;
 });
 
