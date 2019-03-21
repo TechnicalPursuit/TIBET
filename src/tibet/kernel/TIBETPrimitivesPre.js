@@ -13386,15 +13386,11 @@ function(anObjectOID, dependencies) {
      *     obtained by calling 'getDependencies' on the object in question.
      */
 
-    var dependencies;
-
     if (TP.notValid(this.$manualDependencies)) {
         this.$manualDependencies = new TP.boot.PHash();
     }
 
-    dependencies = dependencies.flatten();
-
-    this.$manualDependencies.atPut(anObjectOID, dependencies);
+    this.$manualDependencies.atPut(anObjectOID, dependencies.flatten());
 });
 
 //  ------------------------------------------------------------------------
