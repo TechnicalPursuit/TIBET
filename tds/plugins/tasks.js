@@ -833,7 +833,7 @@
         escapeJSON = function (str) {
             return str
                 //.replace(/[\\]/g, '\\\\')
-                .replace(/[\"]/g, '\\\"')
+                //.replace(/[\"]/g, '\\\"')
                 .replace(/[\/]/g, '\\/')
                 .replace(/[\b]/g, '\\b')
                 .replace(/[\f]/g, '\\f')
