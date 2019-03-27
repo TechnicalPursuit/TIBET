@@ -281,7 +281,8 @@
             var tasks,
                 taskdef,
                 taskname,
-                fullname;
+                fullname,
+                last;
 
             tasks = getNextTasks(job);
 
@@ -318,10 +319,29 @@
                     logger.debug(err);
                 });
             } else if (!isJobComplete(job)) {
-                //  No next task or last task failed so we have an empty Array.
-                //  If last task failed, the job will have already been
-                //  completed during cleanupTask processing.
-                cleanupJob(job);
+
+                if (!job.processingerror) {
+                    //  No next task or last task failed so we have an empty
+                    //  Array. If last task failed, the job will have already
+                    //  been completed during cleanupTask processing.
+                    cleanupJob(job);
+                } else {
+                    //  Grab the last step from the job. If we're both
+                    //  'processing an error' and the last step is the error
+                    //  processing step itself, then we're done. Mark that step
+                    //  as '$$error' (thereby marking the whole job as errored)
+                    //  and clean it up.
+                    last = job.steps[job.steps.length - 1];
+                    if (last.joberror === true) {
+                        //  Note that we do *not* clear the 'processingerror'
+                        //  flag, due to the fact that we do *not* want to end
+                        //  up in the cleanup process (endlessly looping).
+
+                        //job.processingerror = false;
+                        last.state = '$$error';
+                        cleanupTask(job, last);
+                    }
+                }
             }
         };
 
@@ -359,9 +379,16 @@
             step.start = Date.now();
             step.index = job.steps.length;
 
+            //  If we're 'processing an error', then we tag the new step as
+            //  being the job's error step.
+            if (job.processingerror) {
+                step.joberror = true;
+            }
+
             job.state = task.name + '-' + job.steps.length;
 
             step.params = prepareParams(job, step, task);
+
             //  If the task has a guard expression we need to evaluate that.
             //  When it's true we continue processing with a status of ready but
             //  when it's false we set the status to skipped for that task.
@@ -433,22 +460,34 @@
 
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
-            if (failed && job.error) {
-                errname = job.error + '::' + job.owner;
+            if (failed && job.error && !job.processingerror) {
+                errname = job.error.name + '::' + job.owner;
+
+                job.processingerror = true;
+
                 //  NOTE job.error is a task reference.
-                retrieveTask(job, job.error, job.owner).then(function(errtask) {
+                retrieveTask(job, job.error.name, job.owner).then(function(errtask) {
+                    var blended;
+
                     if (!errtask) {
                         logger.error(job,
                             'missing task: ' + errname);
                         failJob(job, 'Missing task ' + errname);
                         return;
                     }
-                    acceptTask(job, errtask);
+
+                    blended = {
+                        params: job.error.params
+                    };
+                    blended = TDS.blend(blended, errtask);
+
+                    acceptTask(job, blended);
                 }).catch(function(err) {
                     logger.error(job,
                         'error: ' + err.message +
                         ' fetching task: ' + errname);
                 });
+
                 return;
             }
 
