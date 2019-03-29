@@ -1070,7 +1070,9 @@ function(aSignal) {
                                     aspectNames,
                                     boundAttrNodes[i],
                                     null,
-                                    sigSource);
+                                    sigSource,
+                                    null,
+                                    NaN);
                         }
                     }
                 }
@@ -3771,7 +3773,9 @@ function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
                                     'value',
                                     transformFunc,
                                     pathType,
-                                    this);
+                                    this,
+                                    null,
+                                    NaN);
 
             //  If at least one returned true, then flip the flag to true. Note
             //  that this is constructed such that, once the flag is flipped to
@@ -3920,6 +3924,13 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
         pathType,
 
         aspectNames,
+
+        repeatElem,
+        inRepeatContext,
+
+        repeatSource,
+        repeatIndex,
+        repeatInfo,
 
         repeatScopeVals,
         repeatPath,
@@ -4271,6 +4282,34 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                                 attrVal,
                                                 primaryLocMatcher);
 
+                repeatElem = TP.nodeDetectAncestor(
+                            ownerElem,
+                            function(aNode) {
+                                var isRepeat;
+
+                                isRepeat = TP.isElement(aNode) &&
+                                            TP.elementHasAttribute(
+                                                    aNode, 'bind:repeat', true);
+
+                                return isRepeat;
+                            });
+
+                inRepeatContext = TP.isElement(repeatElem);
+
+                repeatSource = null;
+                repeatIndex = NaN;
+
+                if (inRepeatContext) {
+                    //  Grab the repeating information. If it's valid, that means
+                    //  that we're in a repeating context.
+                    repeatInfo = this.$getRepeatSourceAndIndex();
+
+                    if (TP.isValid(repeatInfo)) {
+                        repeatSource = repeatInfo.first();
+                        repeatIndex = repeatInfo.last();
+                    }
+                }
+
                 //  Otherwise, go ahead and process this as a leaf.
                 ownerTPElem.$refreshLeaf(
                     aFacet,
@@ -4278,7 +4317,9 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     aspectNames,
                     boundAttr,
                     aPathType,
-                    changeSource);
+                    changeSource,
+                    repeatSource,
+                    repeatIndex);
             }
         }
 
@@ -4588,13 +4629,43 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         updatedUIAspects = TP.ac('value');
                     }
 
+                    repeatElem = TP.nodeDetectAncestor(
+                            ownerElem,
+                            function(aNode) {
+                                var isRepeat;
+
+                                isRepeat = TP.isElement(aNode) &&
+                                            TP.elementHasAttribute(
+                                                    aNode, 'bind:repeat', true);
+
+                                return isRepeat;
+                            });
+
+                    inRepeatContext = TP.isElement(repeatElem);
+
+                    repeatSource = null;
+                    repeatIndex = NaN;
+
+                    if (inRepeatContext) {
+                        //  Grab the repeating information. If it's valid, that
+                        //  means that we're in a repeating context.
+                        repeatInfo = this.$getRepeatSourceAndIndex();
+
+                        if (TP.isValid(repeatInfo)) {
+                            repeatSource = repeatInfo.first();
+                            repeatIndex = repeatInfo.last();
+                        }
+                    }
+
                     ownerTPElem.$refreshLeaf(
                         aFacet,
                         theVal,
                         updatedUIAspects,
                         boundAttr,
                         aPathType,
-                        changeSource);
+                        changeSource,
+                        repeatSource,
+                        repeatIndex);
 
                     didProcess = true;
                 }
@@ -4649,7 +4720,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$refreshLeaf',
-function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSource) {
+function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSource, repeatSource, repeatIndex) {
 
     /**
      * @method $refreshLeaf
@@ -4665,10 +4736,14 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSourc
      *     are.
      * @param {AttributeNode} bindingAttr The attribute node containing the
      *     binding expression.
-     * @param {Number} [aPathType] The path type that is contained in the
+     * @param {Number} aPathType The path type that is contained in the
      *     binding expression.
-     * @param {Object} [changeSource] The source of the change. If a signal
+     * @param {Object} changeSource The source of the change. If a signal
      *     initiated the refreshing process, this will be the signal's 'source'.
+     * @param {Object} repeatSource The 'whole source' of the repeat, if the
+     *     receiver is inside of a repeat context.
+     * @param {Number} repeatIndex The index of the nearest scope within the
+     *     nearest repeat if the receiver is inside of a repeat context.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -4716,7 +4791,9 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSourc
                                     aFacet,
                                     transformFunc,
                                     aPathType,
-                                    changeSource);
+                                    changeSource,
+                                    repeatSource,
+                                    repeatIndex);
 
             //  If at least one returned true, then flip the flag to true. Note
             //  that this is constructed such that, once the flag is flipped to
@@ -5421,7 +5498,7 @@ function(aValue, ignoreBidiInfo) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$setFinalValue',
-function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, aPathType, changeSource) {
+function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, aPathType, changeSource, repeatSource, repeatIndex) {
 
     /**
      * @method $setFinalValue
@@ -5436,15 +5513,19 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
      * @param {Array|TP.ALL} updatedAspects An Array of the aspects of the data
      *     model that are being updated or TP.ALL, to indicate that all of them
      *     are.
-     * @param {String} [aFacet=value] The facet of the data that we're updating.
+     * @param {String} aFacet=value The facet of the data that we're updating.
      *     we're refreshing. This defaults to 'value' which is the 99% case.
-     * @param {Function} [transformFunc] Any transformation Function that was
+     * @param {Function} transformFunc Any transformation Function that was
      *     computed from the binding expression (that will have 1..n data
      *     expressions - supplied here in the 'exprs' parameter) embedded in it.
-     * @param {Number} [aPathType] The path type that is contained in the
+     * @param {Number} aPathType The path type that is contained in the
      *     binding expression.
-     * @param {Object} [changeSource] The source of the change. If a signal
+     * @param {Object} changeSource The source of the change. If a signal
      *     initiated the refreshing process, this will be the signal's 'source'.
+     * @param {Object} repeatSource The 'whole source' of the repeat, if the
+     *     receiver is inside of a repeat context.
+     * @param {Number} repeatIndex The index of the nearest scope within the
+     *     nearest repeat if the receiver is inside of a repeat context.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -5477,10 +5558,6 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         exprVal,
 
         isXMLResource,
-
-        repeatIndex,
-        repeatInfo,
-        repeatSource,
 
         didRefresh,
         refreshedElements;
@@ -5775,19 +5852,6 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
             } else {
                 isXMLResource =
                     TP.isXMLNode(TP.unwrap(finalVal));
-            }
-
-            //  It is important for the logic in the transformation Function to
-            //  set this to NaN and let the logic below set it if it finds it.
-            repeatIndex = NaN;
-
-            //  Grab the repeating information. If it's valid, that means that
-            //  we're in a repeating context.
-            repeatInfo = this.$getRepeatSourceAndIndex();
-
-            if (TP.isValid(repeatInfo)) {
-                repeatSource = repeatInfo.first();
-                repeatIndex = repeatInfo.last();
             }
 
             finalVal = transformFunc(
