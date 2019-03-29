@@ -337,7 +337,7 @@
                         //  flag, due to the fact that we do *not* want to end
                         //  up in the cleanup process (endlessly looping).
 
-                        //job.processingerror = false;
+                        //  job.processingerror = false;
                         last.state = '$$error';
                         cleanupTask(job, last);
                     }
@@ -869,16 +869,16 @@
             return Date.now() - task.start > (task.timeout || 15000);
         };
 
-        escapeJSON = function (str) {
-            return str
-                //.replace(/[\\]/g, '\\\\')
-                //.replace(/[\"]/g, '\\\"')
-                .replace(/[\/]/g, '\\/')
-                .replace(/[\b]/g, '\\b')
-                .replace(/[\f]/g, '\\f')
-                .replace(/[\n]/g, '\\n')
-                .replace(/[\r]/g, '\\r')
-                .replace(/[\t]/g, '\\t');
+        escapeJSON = function(str) {
+            return str.
+                //  .replace(/[\\]/g, '\\\\')
+                //  .replace(/[\"]/g, '\\\"')
+                replace(/[\/]/g, '\\/').
+                replace(/[\b]/g, '\\b').
+                replace(/[\f]/g, '\\f').
+                replace(/[\n]/g, '\\n').
+                replace(/[\r]/g, '\\r').
+                replace(/[\t]/g, '\\t');
         };
 
         /*
