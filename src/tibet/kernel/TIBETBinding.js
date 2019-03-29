@@ -2938,6 +2938,11 @@ function() {
                 if (TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
                     repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
                                                 attrVal).at(1).asNumber();
+
+                    //  Cache the repeat source and repeat index values on the
+                    //  binding scope.
+                    elem[TP.REPEAT_SOURCE] = repeatSource;
+                    elem[TP.REPEAT_INDEX] = repeatIndex;
                 }
             }
         }
@@ -2959,6 +2964,12 @@ function() {
                         if (TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
                             repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
                                                     attrVal).at(1).asNumber();
+
+                            //  Cache the repeat source and repeat index values on
+                            //  the binding scope.
+                            aNode[TP.REPEAT_SOURCE] = repeatSource;
+                            aNode[TP.REPEAT_INDEX] = repeatIndex;
+
                             return true;
                         }
                     }
@@ -4900,6 +4911,16 @@ function(aCollection, elems) {
     //  items is the same as the chunks we're going to produce, then we don't
     //  need to regenerate so we can just exit here.
     if (existingChunkCount === chunkCount) {
+
+        //  Clear any repeat source or repeat index on any descendant elements.
+        //  Just because we're reusing the chunk doesn't mean that we're using
+        //  the same data source (or want whatever the index was set to last).
+        TP.nodeGetDescendantElements(elem).forEach(
+            function(anElem) {
+                anElem[TP.REPEAT_SOURCE] = null;
+                anElem[TP.REPEAT_INDEX] = null;
+            });
+
         return false;
     }
 
