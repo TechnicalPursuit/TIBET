@@ -16,18 +16,18 @@
     /* eslint-disable quote-props,quotes */
     release({
         //  new release
-        "semver": "v5.0.0-pre.29+gd1428fc371.21.1553002896337",
+        "semver": "v5.0.0-pre.30+ga2ff305292.24.1554006224452",
         "major": "5",
         "minor": "0",
         "patch": "0",
         "suffix": "pre",
-        "increment": "29",
-        "time": "1553002896337",
+        "increment": "30",
+        "time": "1554006224452",
         //  prior semver
-        "describe": "v5.0.0-pre.28-21-gd1428fc371",
-        "ptag": "v5.0.0-pre.28",
-        "commits": "21",
-        "phash": "d1428fc371"
+        "describe": "v5.0.0-pre.29-24-ga2ff305292",
+        "ptag": "v5.0.0-pre.29",
+        "commits": "24",
+        "phash": "a2ff305292"
     });
     /* eslint-enable quote-props,quotes */
     //  --- latest.js end ---
