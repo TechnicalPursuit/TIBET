@@ -384,10 +384,8 @@ function(suite, caseName, caseFunc) {
 
         thisref;
 
-    if (TP.notValid(suite) ||
-            TP.notValid(caseName) ||
-            TP.notValid(caseFunc)) {
-        this.raise('InvalidArgument');
+    if (TP.notValid(suite) || TP.notValid(caseName) || TP.notValid(caseFunc)) {
+        this.raise('TP.sig.InvalidParameter');
         return;
     }
 

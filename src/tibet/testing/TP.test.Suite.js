@@ -930,10 +930,8 @@ function(target, suiteName, suiteFunc) {
      * @returns {TP.test.Suite} The new test suite instance.
      */
 
-    if (TP.notValid(target) ||
-            TP.notValid(suiteName) ||
-            TP.notValid(suiteFunc)) {
-        this.raise('InvalidArgument');
+    if (TP.notValid(target) || TP.notValid(suiteName) || TP.notValid(suiteFunc)) {
+        this.raise('TP.sig.InvalidParameter');
         return;
     }
 
