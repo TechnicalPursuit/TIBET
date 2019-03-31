@@ -24,6 +24,8 @@
     <script src="testing/TP.test.Case.js"/>
     <script src="testing/TP.log.TestLayout.js"/>
     <script src="testing/TP.log.TestAppender.js"/>
+
+    <script src="testing/TP.test.DescribedSuite.js"/>
 </config>
 
 <config id="assertions">

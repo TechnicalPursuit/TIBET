@@ -1,0 +1,31 @@
+{
+  "suites": [
+    {
+      "target": "TP.test.Suite.Inst",
+      "suite": "TP.test.DescribedSuite test",
+      "before": [
+        ["loadURL", "~lib_test/src/tibet/testharness/described_suite_test_ui.xhtml"],
+        ["startTrackingSignals"]
+      ],
+      "after": [
+        ["stopTrackingSignals"]
+      ],
+      "beforeEach": [
+        ["sendEvent", "focus", "uidoc"]
+      ],
+      "afterEach": [
+        ["resetSignalTracking"]
+      ],
+      "tests": [
+        {
+          "name": "Click on a button in the loaded file",
+          "steps": [
+            ["click", "#button1"],
+            ["assert", "didSignal", "#button1", "TP.sig.UIActivate"],
+            ["assert", "didSignal", "#button1", "TP.sig.UIDidActivate"]
+          ]
+        }
+      ]
+    }
+  ]
+}
