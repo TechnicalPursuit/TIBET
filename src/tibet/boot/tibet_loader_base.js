@@ -1330,7 +1330,13 @@ TP.sys.needsLoadingIndicator = function() {
      */
 
     var profile,
-        package;
+        package,
+
+        matcher;
+
+    //  Compute whether we're booting the developer target or not.
+    //  NB: Like other logic in the boot system, we respect the setting
+    //  of 'boot.profile' first before considering 'boot.package'.
 
     profile = TP.sys.cfg('boot.profile') || '';
     package = TP.sys.cfg('boot.package') || '';
@@ -9406,9 +9412,6 @@ TP.boot.$$importComplete = function() {
     var stage,
         win,
 
-        profile,
-        package,
-
         needsLoadingVisual,
 
         focusedElems,
@@ -9477,14 +9480,6 @@ TP.boot.$$importComplete = function() {
                     //  singleton to be created from.
 
                     if (TP.sys.cfg('boot.use_login')) {
-
-                        //  Compute whether we're booting the developer target
-                        //  or not.
-                        //  NB: Like other logic in the boot system, we respect
-                        //  the setting of 'boot.profile' first before
-                        //  considering 'boot.package'.
-                        profile = TP.sys.cfg('boot.profile') || '';
-                        package = TP.sys.cfg('boot.package') || '';
 
                         needsLoadingVisual = TP.sys.needsLoadingIndicator();
 
@@ -11721,9 +11716,6 @@ TP.boot.$uiRootReady = function() {
 
         login,
 
-        profile,
-        package,
-
         bootWin,
         fields,
         i;
@@ -11749,12 +11741,6 @@ TP.boot.$uiRootReady = function() {
             win.$$phase_two = true;
             TP.boot.boot();
         } else {
-
-            //  Compute whether we're booting the developer target or not.
-            //  NB: Like other logic in the boot system, we respect the setting
-            //  of 'boot.profile' first before considering 'boot.package'.
-            profile = TP.sys.cfg('boot.profile') || '';
-            package = TP.sys.cfg('boot.package') || '';
 
             needsLoadingVisual = TP.sys.needsLoadingIndicator();
 
