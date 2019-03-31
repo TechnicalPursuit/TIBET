@@ -72,6 +72,7 @@
     <config ref="requests"/>
     <config ref="routing"/>
     <config ref="service"/>
+    <config ref="selftests"/>
     <config ref="shell"/>
     <config ref="signaling"/>
     <config ref="states"/>
