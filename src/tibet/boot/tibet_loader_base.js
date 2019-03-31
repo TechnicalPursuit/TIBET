@@ -1316,6 +1316,31 @@ TP.sys.isUA = function(browser, varargs) {
 };
 
 //  ----------------------------------------------------------------------------
+
+TP.sys.needsLoadingIndicator = function() {
+
+    /**
+     * @method needsLoadingIndicator
+     * @summary Whether or not some sort of loading indication needs to be
+     *     presented to the user. For bigger packages, such as 'developer' and
+     *     'contributor', we need to display to the user that TIBET is still
+     *     loading.
+     * @returns {Boolean} Whether or not we need a visual indicator that we're
+     *     loading.
+     */
+
+    var profile,
+        package;
+
+    profile = TP.sys.cfg('boot.profile') || '';
+    package = TP.sys.cfg('boot.package') || '';
+
+    matcher = /(developer|contributor)/;
+
+    return matcher.test(profile) || matcher.test(package);
+};
+
+//  ----------------------------------------------------------------------------
 //  IE MSXML VERSION TRACKING
 //  ----------------------------------------------------------------------------
 
@@ -9384,7 +9409,7 @@ TP.boot.$$importComplete = function() {
         profile,
         package,
 
-        loadingDev,
+        needsLoadingVisual,
 
         focusedElems,
         focusedElem;
@@ -9461,10 +9486,9 @@ TP.boot.$$importComplete = function() {
                         profile = TP.sys.cfg('boot.profile') || '';
                         package = TP.sys.cfg('boot.package') || '';
 
-                        loadingDev = profile.indexOf('developer') !== -1 ||
-                                        package.indexOf('developer') !== -1;
+                        needsLoadingVisual = TP.sys.needsLoadingIndicator();
 
-                        if (TP.sys.cfg('boot.parallel') && loadingDev) {
+                        if (TP.sys.cfg('boot.parallel') && needsLoadingVisual) {
                             TP.boot.getUIBoot().
                                     contentDocument.body.style.opacity = '';
                         }
@@ -11693,7 +11717,7 @@ TP.boot.$uiRootReady = function() {
     var uiRootID,
         win,
 
-        loadingDev,
+        needsLoadingVisual,
 
         login,
 
@@ -11732,10 +11756,9 @@ TP.boot.$uiRootReady = function() {
             profile = TP.sys.cfg('boot.profile') || '';
             package = TP.sys.cfg('boot.package') || '';
 
-            loadingDev = profile.indexOf('developer') !== -1 ||
-                            package.indexOf('developer') !== -1;
+            needsLoadingVisual = TP.sys.needsLoadingIndicator();
 
-            if (TP.sys.cfg('boot.parallel') && loadingDev) {
+            if (TP.sys.cfg('boot.parallel') && needsLoadingVisual) {
                 TP.boot.getUIBoot().contentDocument.body.style.opacity = 0.5;
                 TP.boot.getUIBoot().contentWindow.blur();
             }
