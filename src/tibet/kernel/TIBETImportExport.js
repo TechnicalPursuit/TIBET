@@ -739,6 +739,7 @@ function() {
                     loadPackage: methodBody[TP.LOAD_PACKAGE],
                     loadConfig: methodBody[TP.LOAD_CONFIG],
                     loadStage: methodBody[TP.LOAD_STAGE],
+                    loadIndex: methodBody[TP.LOAD_INDEX],
                     sourcePath: methodBody[TP.SOURCE_PATH],
                     sourcePackage: methodBody[TP.SOURCE_PACKAGE],
                     sourceConfig: methodBody[TP.SOURCE_CONFIG]
