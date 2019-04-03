@@ -1289,11 +1289,24 @@
          */
         retrieveFlow = function(job, flow, owner) {
 
-            return dbView(db_app, 'flows', {keys: [flow + '::' + owner]}).then(
+            return dbView(db_app, 'flows',
+                {keys: [flow + '::' + owner, flow + '::DEFAULT']}).then(
             function(result) {
                 //  Result should be the docs from the db.view call.
-                //  There should be only one so pass first one along.
-                return result[0];
+                //  If there are two docs then there is a specifically owned
+                //  version as well as a DEFAULT version.
+                switch (result.length) {
+                    case 0:
+                        return;
+                    case 1:
+                        return result[0];
+                    default:
+                        if (result[0].owner === 'DEFAULT') {
+                            return result[1];
+                        } else {
+                            return result[0];
+                        }
+                }
             }).catch(function(err) {
                 logger.error(job,
                     'error: ' + err +
