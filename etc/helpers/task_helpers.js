@@ -90,34 +90,31 @@
 
         /**
          */
-        Job.hasWaitStepsPending = function(job) {
+        Job.hasWaitTasksPending = function(job) {
             var steps,
-                len,
-                i,
-                step,
-                j;
+                tasks,
+
+                lastCompletedIndex,
+
+                i;
 
             steps = job.steps;
             if (!steps) {
                 return false;
             }
 
-            len = steps.length;
+            tasks = job.tasks.sequence;
+            if (!tasks) {
+                return false;
+            }
 
-            //  Find the last completed step by stepping backwards through the
-            //  list of steps.
-            for (i = len - 1; i >= 0; i--) {
-                step = steps[i];
-                if (Job.isComplete(step)) {
-                    //  Now, see if there is a step *after* the last completed
-                    //  step that has a 'wait' flag configured. If so, return
-                    //  true.
-                    for (j = i + 1; j < len; j++) {
-                        step = steps[j];
-                        if (step.wait) {
-                            return true;
-                        }
-                    }
+            lastCompletedIndex = Job.getLastCompletedStepIndex(job);
+
+            //  Now, see if there is a task *after* the last completed step
+            //  index that has a 'wait' flag configured. If so, return true.
+            for (i = lastCompletedIndex + 1; i < tasks.length; i++) {
+                if (tasks[i].wait) {
+                    return true;
                 }
             }
 
@@ -148,6 +145,32 @@
             }
 
             return null;
+        };
+
+        /**
+         */
+        Job.getLastCompletedStepIndex = function(job) {
+            var steps,
+                len,
+                i,
+                step;
+
+            steps = job.steps;
+            if (!steps) {
+                return;
+            }
+
+            len = steps.length;
+
+            for (i = len - 1; i >= 0; i--) {
+                step = steps[i];
+                //  NB: Jobs and Steps share the same status codes.
+                if (Job.isComplete(step)) {
+                    return i;
+                }
+            }
+
+            return -1;
         };
 
         /**
