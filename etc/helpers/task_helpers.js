@@ -146,6 +146,8 @@
                     return step;
                 }
             }
+
+            return null;
         };
 
         /**
