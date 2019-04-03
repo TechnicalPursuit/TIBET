@@ -71,6 +71,12 @@
 
         /**
          */
+        Job.didError = function(jobOrStep) {
+            return jobOrStep.state === '$$error';
+        };
+
+        /**
+         */
         Job.getLastStep = function(job) {
             var steps;
 
