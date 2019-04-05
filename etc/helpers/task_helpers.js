@@ -94,7 +94,7 @@
             var steps,
                 tasks,
 
-                lastCompletedIndex,
+                lastStepIndex,
 
                 i;
 
@@ -108,11 +108,11 @@
                 return false;
             }
 
-            lastCompletedIndex = Job.getLastCompletedStepIndex(job);
+            lastStepIndex = steps.length - 1;
 
-            //  Now, see if there is a task *after* the last completed step
-            //  index that has a 'wait' flag configured. If so, return true.
-            for (i = lastCompletedIndex + 1; i < tasks.length; i++) {
+            //  Now, see if there is a task *after* the last step index that has
+            //  a 'wait' flag configured. If so, return true.
+            for (i = lastStepIndex + 1; i < tasks.length; i++) {
                 if (tasks[i].wait) {
                     return true;
                 }
