@@ -1702,7 +1702,20 @@ function(anAspect, anAction, aDescription) {
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
         //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        desc = TP.isValid(aDescription) ? aDescription : TP.hc();
+
+        //  If we got a valid description, use that.
+        if (TP.isValid(aDescription)) {
+            desc = aDescription;
+        } else {
+            //  Otherwise, build a Hash with the same parameters as we used for
+            //  the sub URIs, but without the 'path' (which doesn't make sense
+            //  at a 'whole URI' level).
+            desc = TP.hc('action', anAction,
+                            'aspect', 'value',
+                            'facet', 'value',
+                            'target', primaryResource
+                            );
+        }
 
         this.signal('TP.sig.ValueChange', desc);
     }
