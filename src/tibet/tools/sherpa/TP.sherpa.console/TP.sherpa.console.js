@@ -196,7 +196,7 @@ function() {
     var tabsURI,
         data;
 
-    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
+    tabsURI = TP.uc('urn:tibet:sherpa_south_drawer_tabs');
     data = TP.val(tabsURI.getResource().get('result'));
 
     return data.getSize();
@@ -221,7 +221,7 @@ function(aValue) {
         keys,
         tabHasValue;
 
-    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
+    tabsURI = TP.uc('urn:tibet:sherpa_south_drawer_tabs');
     data = TP.val(tabsURI.getResource().get('result'));
 
     tabHasValue = false;
@@ -273,7 +273,7 @@ function(tabValue, tabLabel, shouldCreateProfileEntry) {
         editorTabEntries;
 
     //  Grab the value holder holding the tab data.
-    tabsURI = TP.uc('urn:tibet:sherpa_tabs');
+    tabsURI = TP.uc('urn:tibet:sherpa_south_drawer_tabs');
 
     //  Grab the data and push a new value of an Array consisting of the value
     //  and the label.
@@ -661,11 +661,11 @@ function() {
     data = TP.ac(
             TP.ac('TSH', 'TSH')
             );
-    TP.uc('urn:tibet:sherpa_tabs').setResource(data);
+    TP.uc('urn:tibet:sherpa_south_drawer_tabs').setResource(data);
 
     //  Set the selection hash for the console tabs.
     data = TP.hc('selection', 'TSH');
-    TP.uc('urn:tibet:current_console_tab').setResource(data);
+    TP.uc('urn:tibet:sherpa_current_south_drawer_tab').setResource(data);
 
     this.toggleObservations(true);
 
@@ -1282,7 +1282,7 @@ function(shouldObserve) {
         tabSelectionURI;
 
     tabDataURI = TP.uc('urn:tibet:sherpa_consoletabs');
-    tabSelectionURI = TP.uc('urn:tibet:current_console_tab#tibet(selection)');
+    tabSelectionURI = TP.uc('urn:tibet:sherpa_current_south_drawer_tab#tibet(selection)');
 
     if (shouldObserve) {
         this.observe(tabDataURI, 'ValueChange');
