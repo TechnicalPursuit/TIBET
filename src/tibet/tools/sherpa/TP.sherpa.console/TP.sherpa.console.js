@@ -927,9 +927,7 @@ function(aSignal) {
         i,
         entry,
 
-        value,
-
-        consoleInputTPElem;
+        currentTabURI;
 
     if (aSignal.getOrigin() === TP.uc('urn:tibet:sherpa_consoletabs')) {
 
@@ -943,25 +941,12 @@ function(aSignal) {
                 entry = editorTabEntries.at(i);
                 this.createNewConsoleEditorFor(entry.first(), entry.last());
             }
-        }
 
-    } else {
-
-        value = aSignal.getOrigin().getResource().get('result');
-
-        //  If the new value is 'TSH', then we need to grab the console input
-        //  and set up a timeout to refresh the editor and focus. This causes
-        //  the embedded CodeMirror editor to redraw properly.
-        if (value === 'TSH') {
-
-            if (TP.isValid(consoleInputTPElem = this.get('consoleInput'))) {
-                setTimeout(
-                    function() {
-                        if (consoleInputTPElem.isVisible()) {
-                            consoleInputTPElem.focus();
-                        }
-                    }, 100);
-            }
+            //  Now that we're done adding tabs, force a 'change' on the URI
+            //  value holder holding the current tab setting. This will cause it
+            //  to redraw and highlight the current tab again.
+            currentTabURI = TP.uc('urn:tibet:sherpa_current_south_drawer_tab');
+            currentTabURI.$changed();
         }
     }
 
