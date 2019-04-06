@@ -2746,13 +2746,9 @@ function(aRequest, aResult, aResource) {
             fragment = TP.apc(fragment);
         }
 
-        //  Try to collapse and wrap to use the smartest objects possible for
-        //  the query.
-        result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
-
         //  NB: The result must be a Node to get wrapped into a TP.dom.Node,
         //  otherwise we just use the result itself.
-        result = TP.isNode(result) ? TP.tpnode(result) : result;
+        result = TP.isNode(aResult) ? TP.tpnode(aResult) : aResult;
 
         //  Make sure that we obtain the 'shouldCollapse' value from the request
         //  (if it has one - defaulted to true) and if the fragment is an access
