@@ -397,6 +397,11 @@ function() {
                     //  from a String to the proper type.
                     if (TP.isSubtypeOf(resultType, TP.core.Content)) {
                         newResource = resultType.construct(result, resultURI);
+                        if (this.hasAttribute('makestructures')) {
+                            newResource.set(
+                                    'shouldMakeStructures',
+                                    TP.bc(this.getAttribute('makestructures')));
+                        }
                     } else {
                         strResource = TP.str(result);
                         if (resultType === String) {
