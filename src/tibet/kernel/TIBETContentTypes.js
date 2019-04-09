@@ -246,6 +246,9 @@ TP.core.Content.Inst.defineAttribute('snaps');
 //  the checkpoint hash, used when the receiver is checkpointing
 TP.core.Content.Inst.defineAttribute('points');
 
+//  whether or not to 'make data structures' on the receiver.
+TP.core.Content.Inst.defineAttribute('shouldMakeStructures');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -306,6 +309,8 @@ function(data, aURI) {
     }
 
     this.set('transactional', false, false);
+
+    this.set('shouldMakeStructures', false, false);
 
     return this;
 });
@@ -3714,15 +3719,20 @@ function(aPath, config) {
 
     this.set('srcPath', aPath);
 
+    //  We specifically set shouldMakeStructures to null because, when run
+    //  against a content object, if the content object has a setting and that
+    //  isn't 'overridden' by us, the path, then that setting will be used.
+
     if (TP.isHash(config)) {
         this.set('shouldMakeStructures',
-                    config.atIfInvalid('shouldMakeStructures', false));
+                    config.atIfInvalid('shouldMakeStructures', null));
+
         this.set('packageWith', config.atIfInvalid('packageWith', null));
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', false));
         this.set('extractWith', config.atIfInvalid('extractWith', null));
         this.set('fallbackWith', config.atIfInvalid('fallbackWith', null));
     } else {
-        this.set('shouldMakeStructures', false);
+        this.set('shouldMakeStructures', null);
         this.set('shouldCollapse', false);
     }
 
@@ -5185,7 +5195,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     var paths,
         i,
-        retVal;
+        retVal,
+
+        pathWantsToMakeStructures;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -5214,8 +5226,23 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
     }
 
+    //  See if the path wants to make structures. If it doesn't have either true
+    //  or false defined for that value, then set it to our value of whether
+    //  we're making structures or not.
+    pathWantsToMakeStructures = paths.last().get('shouldMakeStructures');
+    if (!TP.isDefined(pathWantsToMakeStructures)) {
+        paths.last().set('shouldMakeStructures',
+                            this.get('shouldMakeStructures'));
+    }
+
     //  Execute the 'set()' and reassign the return value.
     retVal = retVal.set(paths.last(), attributeValue, shouldSignal);
+
+    //  The path didn't originally have any value defined for whether it was
+    //  making structures or not, so set it back to null.
+    if (!TP.isDefined(pathWantsToMakeStructures)) {
+        paths.last().set('shouldMakeStructures', null);
+    }
 
     return retVal;
 });
@@ -5505,6 +5532,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     var data,
 
+        shouldMakeStructures,
+
         srcPath,
         path,
         args,
@@ -5572,6 +5601,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     data = targetObj.get('data');
+
+    //  Whether or not we make structures depends on whether we are configured
+    //  to make structures. If the we have no configuration one way or the other
+    //  (neither true or false), then however the source object is configured
+    //  will be used.
+    shouldMakeStructures = TP.ifInvalid(this.get('shouldMakeStructures'),
+                                        targetObj.get('shouldMakeStructures'));
 
     ops = TP.ac();
     newStructs = TP.ac();
@@ -5785,7 +5821,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  If we're configured to 'make structures', then we supply the Function
     //  defined above responsible for making structures.
-    if (this.get('shouldMakeStructures')) {
+    if (shouldMakeStructures) {
         results = TP.extern.jsonpath.apply(
                         data, path, setFunc, makeStructuresFunc);
     } else {
@@ -6257,6 +6293,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         thisType,
 
+        shouldMakeStructures,
+
         oldVal,
 
         op,
@@ -6289,10 +6327,17 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     thisType = this.getType();
 
-    //  If an old value wasn't defined and our 'shouldMakeStructures' flag is
+    //  Whether or not we make structures depends on whether we are configured
+    //  to make structures. If the we have no configuration one way or the other
+    //  (neither true or false), then however the source object is configured
+    //  will be used.
+    shouldMakeStructures = TP.ifInvalid(this.get('shouldMakeStructures'),
+                                        targetObj.get('shouldMakeStructures'));
+
+    //  If an old value wasn't defined and the 'shouldMakeStructures' flag is
     //  false, then we don't do anything and just return here.
     oldVal = targetObj.get(srcPath);
-    if (TP.notDefined(oldVal) && !this.get('shouldMakeStructures')) {
+    if (TP.notDefined(oldVal) && !shouldMakeStructures) {
         return;
     }
 
@@ -7506,7 +7551,7 @@ function(targetObj, attributeValue, shouldSignal) {
         tail,
 
         thisType,
-        shouldMake,
+        shouldMakeStructures,
 
         val,
 
@@ -7525,7 +7570,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
     thisType = this.getType();
 
-    shouldMake = this.get('shouldMakeStructures');
+    shouldMakeStructures = TP.ifInvalid(this.get('shouldMakeStructures'),
+                                        targetObj.get('shouldMakeStructures'));
 
     if (/[,:]/.test(head)) {
 
@@ -7580,7 +7626,7 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  If item is not valid, or it's not a reference type,
                         //  then we blow away the entry and make it a reference
                         //  type - we need to set the slot...
-                        if (shouldMake &&
+                        if (shouldMakeStructures &&
                             (TP.notValid(indexVal) ||
                              !TP.isReferenceType(indexVal))) {
 
@@ -7626,7 +7672,8 @@ function(targetObj, attributeValue, shouldSignal) {
                         indexVal.set(
                             TP.tpc(
                                 tail,
-                                TP.hc('shouldMakeStructures', shouldMake)),
+                                TP.hc('shouldMakeStructures',
+                                        shouldMakeStructures)),
                             attributeValue,
                             false);
 
@@ -7691,7 +7738,7 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  If item is not valid, or it's not a reference type,
                         //  then we blow away the entry and make it a reference
                         //  type - we need to set the slot...
-                        if (shouldMake &&
+                        if (shouldMakeStructures &&
                             (TP.notValid(itemVal) ||
                              !TP.isReferenceType(itemVal))) {
 
@@ -7737,7 +7784,8 @@ function(targetObj, attributeValue, shouldSignal) {
                         itemVal.set(
                             TP.tpc(
                                 tail,
-                                TP.hc('shouldMakeStructures', shouldMake)),
+                                TP.hc('shouldMakeStructures',
+                                        shouldMakeStructures)),
                             attributeValue,
                             false);
 
@@ -7757,7 +7805,8 @@ function(targetObj, attributeValue, shouldSignal) {
     //  value or doesn't have a reference type value at the place pointed to by
     //  'head', then we create a reference type (either an Object or an Array)
     //  and set it into place.
-    if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
+    if (shouldMakeStructures &&
+        (TP.notValid(val) || !TP.isReferenceType(val))) {
         firstSimplePath = TP.tpc(tail).getFirstSimplePath();
         if (TP.isNumber(firstSimplePath.asNumber())) {
             val = TP.ac();
@@ -7766,7 +7815,9 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        setPath = TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake));
+        setPath = TP.tpc(
+                    head,
+                    TP.hc('shouldMakeStructures', shouldMakeStructures));
         targetObj.set(setPath, val, false);
 
         //  If the setter path created structure, we flip our value of that flag
@@ -7781,7 +7832,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
     if (TP.notValid(val) || !TP.isReferenceType(val)) {
         //  Had an access character and needed a reference type, but we can't
-        //  create the Object (probably had shouldMake turned off)
+        //  create the Object (probably had shouldMakeStructures turned off)
         return;
     }
 
@@ -7789,7 +7840,9 @@ function(targetObj, attributeValue, shouldSignal) {
     if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
         thisType.startChangedAddress(head);
 
-        setPath = TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake));
+        setPath = TP.tpc(
+                    tail,
+                    TP.hc('shouldMakeStructures', shouldMakeStructures));
 
         //  This 'set' call will take care of registering the changed address.
         val.set(setPath, attributeValue, false);
@@ -7838,7 +7891,7 @@ function(targetObj, attributeValue, shouldSignal) {
         tail,
 
         thisType,
-        shouldMake,
+        shouldMakeStructures,
 
         val,
 
@@ -7857,7 +7910,13 @@ function(targetObj, attributeValue, shouldSignal) {
 
     thisType = this.getType();
 
-    shouldMake = this.get('shouldMakeStructures');
+    //  Whether or not we make structures depends on whether we are configured
+    //  to make structures. If the we have no configuration one way or the other
+    //  (neither true or false), then however the source object is configured
+    //  will be used.
+    shouldMakeStructures = TP.ifInvalid(this.get('shouldMakeStructures'),
+                                        targetObj.get('shouldMakeStructures'));
+
 
     if (/,/.test(head)) {
         //  Make sure to strip off the leading '[' and trailing ']'
@@ -7911,7 +7970,7 @@ function(targetObj, attributeValue, shouldSignal) {
                     //  If item is not valid, or it's not a reference type,
                     //  then we blow away the entry and make it a reference
                     //  type - we need to set the slot...
-                    if (shouldMake &&
+                    if (shouldMakeStructures &&
                         (TP.notValid(itemVal) ||
                          !TP.isReferenceType(itemVal))) {
 
@@ -7954,8 +8013,11 @@ function(targetObj, attributeValue, shouldSignal) {
 
                     //  This 'set' call will take care of registering the
                     //  changed address.
-                    itemVal.set(TP.tpc(tail, TP.hc('shouldMakeStructures',
-                                                                shouldMake)),
+                    itemVal.set(
+                            TP.tpc(
+                                tail,
+                                TP.hc('shouldMakeStructures',
+                                                    shouldMakeStructures)),
                             attributeValue,
                             false);
 
@@ -7974,7 +8036,9 @@ function(targetObj, attributeValue, shouldSignal) {
     //  value or doesn't have a reference type value at the place pointed to by
     //  'head', then we create a reference type (either an Object or an Array)
     //  and set it into place.
-    if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
+    if (shouldMakeStructures &&
+        (TP.notValid(val) || !TP.isReferenceType(val))) {
+
         firstSimplePath = TP.tpc(tail).getFirstSimplePath();
         if (TP.isNumber(firstSimplePath.asNumber())) {
             val = TP.ac();
@@ -7983,7 +8047,8 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        setPath = TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake));
+        setPath = TP.tpc(
+                    head, TP.hc('shouldMakeStructures', shouldMakeStructures));
         targetObj.set(setPath, val, false);
 
         if (TP.isTrue(setPath.get('$createdStructure'))) {
@@ -7994,7 +8059,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
     if (TP.notValid(val) || !TP.isReferenceType(val)) {
         //  Had an access character and needed a reference type, but we can't
-        //  create the Object (probably had shouldMake turned off)
+        //  create the Object (probably had shouldMakeStructures turned off)
         return;
     }
 
@@ -8002,7 +8067,8 @@ function(targetObj, attributeValue, shouldSignal) {
     if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
         thisType.startChangedAddress(head);
 
-        setPath = TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake));
+        setPath = TP.tpc(
+                    tail, TP.hc('shouldMakeStructures', shouldMakeStructures));
 
         //  This 'set' call will take care of registering the changed address.
         val.set(setPath, attributeValue, false);
@@ -8675,7 +8741,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  Note here how we pass 'true' to *always* flag changes in any content
     //  that we generate
     if (TP.notValid(content = this.$$getContentForSetOperation(
-                                                natTargetObj, true))) {
+                                            natTargetObj, true, targetObj))) {
 
         //  unable to build nodes...path may not be specific enough
         TP.ifWarn() ?
@@ -9038,7 +9104,7 @@ function(content, value) {
 //  ------------------------------------------------------------------------
 
 TP.path.XMLPath.Inst.defineMethod('$$getContentForSetOperation',
-function(aNode, flagChanges) {
+function(aNode, flagChanges, targetObj) {
 
     /**
      * @method $$getContentForSetOperation
@@ -9048,6 +9114,8 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
+     * @param {Object} targetObj The original target object that contains aNode
+     *     in some form or fashion.
      * @returns {Node[]} The array of Nodes that got built.
      */
 
@@ -9157,7 +9225,7 @@ TP.path.XMLPath.defineSubtype('SimpleXMLPath');
 //  ------------------------------------------------------------------------
 
 TP.path.SimpleXMLPath.Inst.defineMethod('$$getContentForSetOperation',
-function(aNode, flagChanges) {
+function(aNode, flagChanges, targetObj) {
 
     /**
      * @method $$getContentForSetOperation
@@ -9167,11 +9235,15 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
+     * @param {Object} targetObj The original target object that contains aNode
+     *     in some form or fashion.
      * @returns {Node[]} The array of Nodes that got built.
      */
 
     var path,
         attrName,
+
+        shouldMakeStructures,
 
         retVal;
 
@@ -9189,7 +9261,11 @@ function(aNode, flagChanges) {
             return TP.elementGetAttributeNode(aNode, attrName);
         }
 
-        if (this.get('shouldMakeStructures')) {
+        shouldMakeStructures = TP.ifInvalid(
+                                this.get('shouldMakeStructures'),
+                                targetObj.get('shouldMakeStructures'));
+
+        if (shouldMakeStructures) {
             TP.elementSetAttribute(aNode, attrName, '', true);
             retVal = TP.elementGetAttributeNode(aNode, attrName);
             TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
@@ -9210,7 +9286,7 @@ TP.path.XMLPath.defineSubtype('ElementPath');
 //  ------------------------------------------------------------------------
 
 TP.path.ElementPath.Inst.defineMethod('$$getContentForSetOperation',
-function(aNode, flagChanges) {
+function(aNode, flagChanges, targetObj) {
 
     /**
      * @method $$getContentForSetOperation
@@ -9220,6 +9296,8 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
+     * @param {Object} targetObj The original target object that contains aNode
+     *     in some form or fashion.
      * @returns {Node[]} The array of Nodes that got built.
      */
 
@@ -9260,7 +9338,7 @@ TP.path.XMLPath.defineSubtype('XTensionPath');
 //  ------------------------------------------------------------------------
 
 TP.path.XTensionPath.Inst.defineMethod('$$getContentForSetOperation',
-function(aNode, flagChanges) {
+function(aNode, flagChanges, targetObj) {
 
     /**
      * @method $$getContentForSetOperation
@@ -9270,6 +9348,8 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
+     * @param {Object} targetObj The original target object that contains aNode
+     *     in some form or fashion.
      * @returns {Node[]} The array of Nodes that got built.
      */
 
@@ -9372,7 +9452,7 @@ TP.path.XMLPath.defineSubtype('BarenamePath');
 //  ------------------------------------------------------------------------
 
 TP.path.BarenamePath.Inst.defineMethod('$$getContentForSetOperation',
-function(aNode, flagChanges) {
+function(aNode, flagChanges, targetObj) {
 
     /**
      * @method $$getContentForSetOperation
@@ -9382,15 +9462,21 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
+     * @param {Object} targetObj The original target object that contains aNode
+     *     in some form or fashion.
      * @returns {Node[]} The array of Nodes that got built.
      */
 
     var path,
+        shouldMakeStructures,
         content;
 
     if (TP.notValid(path = this.get('$transformedPath'))) {
         path = this.get('srcPath');
     }
+
+    shouldMakeStructures = TP.ifInvalid(this.get('shouldMakeStructures'),
+                                        targetObj.get('shouldMakeStructures'));
 
     //  Note we return an Array if we didn't get one to keep the API
     //  consistent (we can get an Array of attributes here due to 'special
@@ -9399,7 +9485,7 @@ function(aNode, flagChanges) {
                                     aNode,
                                     path,
                                     false,
-                                    this.get('shouldMakeStructures')))) {
+                                    shouldMakeStructures))) {
         content = TP.ac(content);
     }
 
@@ -9988,6 +10074,10 @@ function(aNode, flagChanges) {
     //  non-native parser, so we save the settings of the path type and whether
     //  the parser is configured to create nodes as it executes.
     wasNative = this.get('isNative');
+
+    //  NB: We're not interested in the content object's setting of
+    //  'shouldMakeStructures' here - only the path's (since we just capturing
+    //  it to set it back).
     oldMakeStruct = this.get('shouldMakeStructures');
 
     //  Switch the path type to a non native path and the create nodes on
@@ -10229,6 +10319,9 @@ function(aTPNode, shouldSignal) {
 
     node = aTPNode.getNativeNode();
 
+    //  NB: We're not interested in the content object's setting of
+    //  'shouldMakeStructures' here - only the path's (since we just capturing
+    //  it to set it back).
     oldMakeStruct = this.get('shouldMakeStructures');
     this.set('shouldMakeStructures', false);
 
@@ -10310,7 +10403,7 @@ function(aTPNode, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.path.XPathPath.Inst.defineMethod('$$getContentForSetOperation',
-function(aNode, flagChanges) {
+function(aNode, flagChanges, targetObj) {
 
     /**
      * @method $$getContentForSetOperation
@@ -10320,10 +10413,12 @@ function(aNode, flagChanges) {
      *     any content that is required for a 'set' operation.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
+     * @param {Object} targetObj The original target object that contains aNode
+     *     in some form or fashion.
      * @returns {Node[]} The array of Nodes that got built.
      */
 
-    var shouldMake,
+    var shouldMakeStructures,
 
         newPath,
 
@@ -10333,7 +10428,12 @@ function(aNode, flagChanges) {
         lastSegment,
         ndx;
 
-    shouldMake = this.get('shouldMakeStructures');
+    //  Whether or not we make structures depends on whether we are configured
+    //  to make structures. If the we have no configuration one way or the other
+    //  (neither true or false), then however the source object is configured
+    //  will be used.
+    shouldMakeStructures = TP.ifInvalid(this.get('shouldMakeStructures'),
+                                        targetObj.get('shouldMakeStructures'));
 
     if (TP.notValid(path = this.get('$transformedPath'))) {
         path = this.get('srcPath');
@@ -10345,9 +10445,9 @@ function(aNode, flagChanges) {
         if (TP.notEmpty(newPath)) {
             newPath = TP.xpc(newPath);
 
-            //  Since we're now dealing with a scalar path, we change shouldMake
-            //  to be the value of 'shouldMakeValues'.
-            shouldMake = this.get('shouldMakeValues');
+            //  Since we're now dealing with a scalar path, we change
+            //  shouldMakeStructures to be the value of 'shouldMakeValues'.
+            shouldMakeStructures = this.get('shouldMakeValues');
 
             results = newPath.execOnNative(
                                     aNode, TP.NODESET, false, flagChanges);
@@ -10365,7 +10465,7 @@ function(aNode, flagChanges) {
     if (TP.isEmpty(results)) {
 
         //  only support build on demand behavior if the flag is set
-        if (TP.notTrue(shouldMake)) {
+        if (TP.notTrue(shouldMakeStructures)) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(
                             this,
