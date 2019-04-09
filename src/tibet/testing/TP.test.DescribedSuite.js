@@ -251,7 +251,9 @@ function(stepArray, isTestLevel) {
     var suiteref,
         stepProcessorFunc;
 
+    /* eslint-disable consistent-this */
     suiteref = this;
+    /* eslint-enable consistent-this */
 
     stepProcessorFunc = function(test, options) {
         var suite,
