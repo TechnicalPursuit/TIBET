@@ -480,14 +480,14 @@ function(aContentObject, aRequest) {
     if (shouldSignal) {
         this.signal('TP.sig.UIDataConstruct');
 
-        //  Check and dispatch a signal from our attributes if one exists for this
-        //  signal.
+        //  Check and dispatch a signal from our attributes if one exists for
+        //  this signal.
         this.dispatchResponderSignalFromAttr('UIDataConstruct', null);
 
         //  Dispatch 'TP.sig.DOMReady' for consistency with other elements that
-        //  dispatch this when their 'dynamic content' is resolved. Note that we use
-        //  'dispatch()' here because this is a DOM signal and we want all of the
-        //  characteristics of a DOM signal.
+        //  dispatch this when their 'dynamic content' is resolved. Note that we
+        //  use 'dispatch()' here because this is a DOM signal and we want all
+        //  of the characteristics of a DOM signal.
         this.dispatch('TP.sig.DOMReady');
     }
 
