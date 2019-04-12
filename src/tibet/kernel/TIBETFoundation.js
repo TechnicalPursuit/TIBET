@@ -6846,9 +6846,10 @@ function(attributeName) {
 
         args;
 
-    //  A shortcut - if the attribute name is '.', then that's shorthand for
-    //  returning ourselves.
-    if (attributeName === '.') {
+    //  A shortcut - if the attribute name is '.' or '$_', then that's
+    //  shorthand for returning ourselves.
+    if (TP.regex.ONLY_PERIOD.test(attributeName) ||
+        TP.regex.ONLY_STDIN.test(attributeName)) {
         return this;
     }
 
@@ -7046,9 +7047,10 @@ function(attributeName) {
 
         args;
 
-    //  A shortcut - if the attribute name is '.', then that's shorthand for
-    //  returning ourselves.
-    if (attributeName === '.') {
+    //  A shortcut - if the attribute name is '.' or '$_', then that's
+    //  shorthand for returning ourselves.
+    if (TP.regex.ONLY_PERIOD.test(attributeName) ||
+        TP.regex.ONLY_STDIN.test(attributeName)) {
         return this;
     }
 
@@ -7163,9 +7165,10 @@ function(attributeName) {
 
         args;
 
-    //  A shortcut - if the attribute name is '.', then that's shorthand for
-    //  returning ourselves.
-    if (attributeName === '.') {
+    //  A shortcut - if the attribute name is '.' or '$_', then that's
+    //  shorthand for returning ourselves.
+    if (TP.regex.ONLY_PERIOD.test(attributeName) ||
+        TP.regex.ONLY_STDIN.test(attributeName)) {
 
         //  NB: Here we return the primitive string.
         return this.toString();

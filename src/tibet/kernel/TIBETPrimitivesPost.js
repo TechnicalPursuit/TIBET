@@ -5286,7 +5286,10 @@ function(aPath, aScheme) {
         case 'tibet':
         case 'jpath':
 
-            if (aPath === '.') {
+            //  If the path is just '.' or '$_', then that's the shortcut to
+            //  just return the target node itself.
+            if (TP.regex.ONLY_PERIOD.test(aPath) ||
+                TP.regex.ONLY_STDIN.test(aPath)) {
                 return TP.ac('.');
             }
 
@@ -5512,9 +5515,9 @@ function(aPath) {
     //  strip any id/fragment prefix
     path = path.charAt(0) === '#' ? path.slice(1) : path;
 
-    //  If the path is just '.', then that's the shortcut to just return a TIBET
-    //  path
-    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+    //  If the path is just '.' or '$_', then that's the shortcut to just return
+    //  a TIBET path
+    if (TP.regex.ONLY_PERIOD.test(aPath) || TP.regex.ONLY_STDIN.test(aPath)) {
         return TP.TIBET_PATH_TYPE;
     }
 

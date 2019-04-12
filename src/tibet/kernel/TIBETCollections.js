@@ -5499,7 +5499,12 @@ function(attributeName) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         pathStr = path.asString();
-        if (pathStr === '.') {
+
+        //  If the path is just '.', then that's the shortcut to just return
+        //  ourself. Note that we do *not* test for '$_' here, as we do in many
+        //  other places that would signify returning the receiver since '$_'
+        //  could be and is used as a valid key in TP.core.Hashes.
+        if (TP.regex.ONLY_PERIOD.test(pathStr)) {
             return this;
         }
 

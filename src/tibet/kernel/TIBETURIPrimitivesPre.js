@@ -1256,9 +1256,10 @@ function(aPath, aFragment) {
         return aPath;
     }
 
-    //  If the fragment is '.', that a self-reference. Just return the main
-    //  path.
-    if (aFragment === '.') {
+    //  If the fragment is '.' or '$_', that a self-reference. Just return the
+    //  main path.
+    if (TP.regex.ONLY_PERIOD.test(aFragment) ||
+        TP.regex.ONLY_STDIN.test(aFragment)) {
         return aPath;
     }
 
@@ -2404,8 +2405,9 @@ function(aFragment, aScheme) {
         return TP.ac(aFragment);
     }
 
-    //  If the fragment is '.', that a self-reference. Just return it.
-    if (aFragment === '.') {
+    //  If the fragment is '.' or '$_', that a self-reference. Just return it.
+    if (TP.regex.ONLY_PERIOD.test(aFragment) ||
+        TP.regex.ONLY_STDIN.test(aFragment)) {
         return TP.ac(aFragment);
     }
 

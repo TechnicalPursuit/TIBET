@@ -3397,9 +3397,9 @@ function(aPath) {
         return TP.path.CompositePath;
     }
 
-    //  If the path is just '.', then that's the shortcut to just return the
-    //  target object itself.
-    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+    //  If the path is just '.' or '$_', then that's the shortcut to just return
+    //  the target object itself.
+    if (TP.regex.ONLY_PERIOD.test(aPath) || TP.regex.ONLY_STDIN.test(aPath)) {
         return TP.path.SimpleTIBETPath;
     }
 

@@ -12820,7 +12820,10 @@ function(attributeName) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         pathStr = path.asString();
-        if (pathStr === '.') {
+        //  A shortcut - if the path string is '.' or '$_', then that's
+        //  shorthand for returning ourselves.
+        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
+            TP.regex.ONLY_STDIN.test(pathStr)) {
             return this;
         }
 
@@ -16314,7 +16317,10 @@ function(attributeName) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         pathStr = path.asString();
-        if (pathStr === '.') {
+        //  A shortcut - if the path string is '.' or '$_', then that's
+        //  shorthand for returning ourselves.
+        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
+            TP.regex.ONLY_STDIN.test(pathStr)) {
             return this;
         }
 

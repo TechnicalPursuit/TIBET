@@ -3209,6 +3209,8 @@ TP.regex.CALL_STACK_ID = /Function\$[0-9a-z]*($|([\s]))/g;  //  needs reset
 
 TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+):(\d+):(\d+)/;
 
+TP.regex.ONLY_STDIN = /^\$_$/;
+
 //  ---
 //  testing
 //  ---

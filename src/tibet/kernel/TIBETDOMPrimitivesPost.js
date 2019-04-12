@@ -7574,9 +7574,9 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
         return TP.raise(this, 'TP.sig.InvalidPath');
     }
 
-    //  If the path is just '.', then that's the shortcut to just return the
-    //  target node itself.
-    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+    //  If the path is just '.' or '$_', then that's the shortcut to just return
+    //  the target node itself.
+    if (TP.regex.ONLY_PERIOD.test(aPath) || TP.regex.ONLY_STDIN.test(aPath)) {
         return aNode;
     }
 
