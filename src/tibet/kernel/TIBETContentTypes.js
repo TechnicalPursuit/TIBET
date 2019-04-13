@@ -5417,7 +5417,10 @@ function(targetObj, varargs) {
 
     //  This kind of path will only work against TP.core.JSONContent objects
     if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise(
+            'TP.sig.InvalidPath',
+            'Target is not a TP.core.JSONContent, but is a: ' +
+                TP.tname(targetObj));
     }
 
     srcPath = this.get('srcPath');
@@ -5562,7 +5565,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  This kind of path will only work against TP.core.JSONContent objects
     if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise(
+            'TP.sig.InvalidPath',
+            'Target is not a TP.core.JSONContent, but is a: ' +
+                TP.tname(targetObj));
     }
 
     srcPath = this.get('srcPath');
@@ -6216,7 +6222,9 @@ function(targetObj, varargs) {
     //  This kind of path won't work against native XML (but will against
     //  wrapped XML).
     if (TP.isNode(targetObj)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise(
+            'TP.sig.InvalidPath',
+            'Target is native XML, but this path needs wrapped XML.');
     }
 
     //  Fill in any templated expressions in the path (which must be numeric
@@ -6319,7 +6327,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  This kind of path won't work against native XML (but will against
     //  wrapped XML).
     if (TP.isNode(targetObj)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise(
+            'TP.sig.InvalidPath',
+            'Target is native XML, but this path needs wrapped XML.');
     }
 
     srcPath = this.get('srcPath');
@@ -6813,7 +6823,9 @@ function(targetObj, varargs) {
     //  This kind of path won't work against native XML (but will against
     //  wrapped XML).
     if (TP.isNode(targetObj)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise(
+            'TP.sig.InvalidPath',
+            'Target is native XML, but this path needs wrapped XML.');
     }
 
     this.preGetAccess(targetObj);
@@ -6901,7 +6913,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  This kind of path won't work against native XML (but will against
     //  wrapped XML).
     if (TP.isNode(targetObj)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise(
+            'TP.sig.InvalidPath',
+            'Target is native XML, but this path needs wrapped XML.');
     }
 
     //  Fill in any templated expressions in the path (which must be numeric
