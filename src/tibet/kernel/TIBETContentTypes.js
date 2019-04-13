@@ -5123,9 +5123,14 @@ function(targetObj, varargs) {
      */
 
     var paths,
+
+        len,
         i,
+
         retVal,
-        nextPath;
+        nextPath,
+        pathStr,
+        val;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -5136,7 +5141,9 @@ function(targetObj, varargs) {
 
     //  Iterate over this object's subpaths.
     paths = this.get('paths');
-    for (i = 0; i < paths.getSize(); i++) {
+
+    len = paths.getSize();
+    for (i = 0; i < len; i++) {
 
         //  If it's null or undefined, don't try to message it - just exit here.
         if (TP.notValid(retVal)) {
@@ -5157,8 +5164,31 @@ function(targetObj, varargs) {
             retVal = TP.core.JSONContent.construct(retVal);
         }
 
-        //  Execute the 'get()' and reassign the return value.
-        retVal = retVal.get(nextPath);
+        //  Grab the path String. If the path is just '.' or '$_', then we may
+        //  be able to shortcut and just continue with the loop.
+        pathStr = nextPath.asString();
+        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
+            TP.regex.ONLY_STDIN.test(pathStr)) {
+
+            //  Sometimes we get a POJO, in which case an undefined 'val' is
+            //  just fine.
+            if (TP.canInvoke(retVal, 'get')) {
+                val = retVal.get(nextPath);
+            }
+
+            //  If the return value didn't have a value that could be extracted
+            //  under the '.' or '$_' path, then we just continue without
+            //  reassigning it to the extracted value.
+            if (TP.notValid(val)) {
+                continue;
+            } else {
+                //  Otherwise, reassign the return value to the extracted value.
+                retVal = val;
+            }
+        } else {
+            //  Execute the 'get()' and reassign the return value.
+            retVal = retVal.get(nextPath);
+        }
 
         //  If the return value is a callable Function, then call it and
         //  reassign the return value to the result.
