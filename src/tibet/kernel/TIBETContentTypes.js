@@ -5063,8 +5063,6 @@ function(aPath, config) {
 
         paths;
 
-    this.callNextMethod('value', config);
-
     path = aPath;
 
     //  If the path has a '#tibet(...)' scheme wrapping it, slice that off. It
@@ -5072,6 +5070,8 @@ function(aPath, config) {
     if (TP.regex.TIBET_POINTER.test(path)) {
         path = path.slice(7, -1);
     }
+
+    this.callNextMethod(path, config);
 
     //  Split along '.(' or ').'
     pathStrs = path.split(/(\.\(|\)\.)/);
