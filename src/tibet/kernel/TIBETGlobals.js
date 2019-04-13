@@ -3513,6 +3513,8 @@ TP.regex.TIBET_SCHEME = /^tibet:/;
 TP.regex.URI_LIKELY =
     /^~|^\/|^\.\/|^\.\.\/|^urn:|^tibet:|^javascript:|^(?:\w+):(?:.*)\//;
 
+TP.regex.ALL_SCHEMES = /urn:|tibet:|javascript:/;
+
 TP.regex.URI_FRAGMENT = /#\w+/;
 
 /* eslint-disable max-len */

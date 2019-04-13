@@ -541,6 +541,12 @@ function(aScheme) {
                             TP.keys(TP.boot.$uriSchemes).join(':|^'),
                             ':',
                             '|^(?:\\w+):(?:.*)\\/'));
+
+        //  Rewrite the TP.regex.ALL_SCHEMES so that it reflects the new
+        //  scheme as well.
+        TP.regex.ALL_SCHEMES =
+            TP.rc(TP.join(TP.keys(TP.boot.$uriSchemes).join(':|'),
+                            ':'));
     }
 
     return this;
