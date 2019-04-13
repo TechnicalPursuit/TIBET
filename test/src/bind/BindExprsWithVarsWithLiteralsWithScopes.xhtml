@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person_xml">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
+        </person>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_json">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_jsobj" resultType="TP.core.Hash">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind expressions with variables - literal content and scoped</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a test where elements bound with 'bind:io' attributes that have binding expressions in them with variables are used. There is surrounding literal content.
+    <br/>
+    <br/>
+    Since these expressions use variables, they won't be using data from their data source, but they will be re-evaluated when their data source changes.
+    <br/>
+    <br/>
+
+    <label for="xmlBindAttr">Variable bound to XML data:</label>
+    <input type="text" id="xmlBindAttr" bind:io="{value: 'The canonical name: [[$TAG.canonicalName]]'}" tabindex="0"/><br/>
+
+    <span bind:scope="urn:tibet:test_person_xml">
+        <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
+        <input type="text" id="xmlBindStdinAttr" bind:io="{value: 'The data source\'s last name field value uppercased: [[#tibet($_.(.//lastname).value) .% upperCase]]'}" tabindex="0"/><br/>
+    </span>
+
+    <label for="jsonBindAttr">Variable bound to JSON data:</label>
+    <input type="text" id="jsonBindAttr" bind:io="{value: 'The canonical name: [[$TAG.canonicalName]]'}" tabindex="0"/><br/>
+
+    <span bind:scope="urn:tibet:test_person_json">
+        <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
+        <input type="text" id="jsonBindStdinAttr" bind:io="{value: 'The data source\'s last name field value uppercased: [[#tibet($_.($.person.lastname).value) .% upperCase]]'}" tabindex="0"/><br/>
+    </span>
+
+
+    <label for="jsobjBindAttr">Variable bound to JavaScript Object data:</label>
+    <input type="text" id="jsobjBindAttr" bind:io="{value: 'The canonical name: [[$TAG.canonicalName]]'}" tabindex="0"/><br/>
+
+    <span bind:scope="urn:tibet:test_person_jsobj">
+        <label for="jsobjBindStdinAttr">Binding to JavaScript Object data with $_ variable reference:</label>
+        <input type="text" id="jsobjBindStdinAttr" bind:io="{value: 'The data source\'s last name field value uppercased: [[#tibet($_.person.lastname) .% upperCase]]'}" tabindex="0"/><br/>
+    </span>
+
+</body>
+</html>
