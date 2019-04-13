@@ -9125,7 +9125,7 @@ function(aspectName, facetName) {
     //  not, just return *undefined*. The reason we return undefined here is so
     //  that the value will be exactly the same as when there is no facet for
     //  the aspect at all.
-    if (TP.notValid(facetSetting = this.getType().getInstFacetSettingFor(
+    if (TP.isEmpty(facetSetting = this.getType().getInstFacetSettingFor(
                                                     aspectName,
                                                     facetName))) {
         return;
