@@ -6914,6 +6914,14 @@ function(attributeName) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
+        pathStr = path.asString();
+        //  A shortcut - if the path string is '.' or '$_', then that's
+        //  shorthand for returning ourselves.
+        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
+            TP.regex.ONLY_STDIN.test(pathStr)) {
+            return this;
+        }
+
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
         //  and invoke with an apply(). Otherwise, we make an Array that has our
@@ -7125,6 +7133,14 @@ function(attributeName) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attrStr, 'value'))) {
 
+        pathStr = path.asString();
+        //  A shortcut - if the path string is '.' or '$_', then that's
+        //  shorthand for returning ourselves.
+        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
+            TP.regex.ONLY_STDIN.test(pathStr)) {
+            return this;
+        }
+
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
         //  and invoke with an apply(). Otherwise, we make an Array that has our
@@ -7240,6 +7256,14 @@ function(attributeName) {
     //  access path, then invoke the path.
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
+
+        pathStr = path.asString();
+        //  A shortcut - if the path string is '.' or '$_', then that's
+        //  shorthand for returning ourselves.
+        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
+            TP.regex.ONLY_STDIN.test(pathStr)) {
+            return this;
+        }
 
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument

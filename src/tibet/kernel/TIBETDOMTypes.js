@@ -12742,6 +12742,13 @@ function(attributeName) {
         return this.getDocument();
     }
 
+    //  A shortcut - if the attribute name is '.' or '$_', then that's
+    //  shorthand for returning ourselves.
+    if (TP.regex.ONLY_PERIOD.test(attributeName) ||
+        TP.regex.ONLY_STDIN.test(attributeName)) {
+        return this;
+    }
+
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
@@ -16239,6 +16246,13 @@ function(attributeName) {
 
     if (TP.isEmpty(attributeName)) {
         return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  A shortcut - if the attribute name is '.' or '$_', then that's
+    //  shorthand for returning ourselves.
+    if (TP.regex.ONLY_PERIOD.test(attributeName) ||
+        TP.regex.ONLY_STDIN.test(attributeName)) {
+        return this;
     }
 
     //  We can shortcut '#document' by just returning this. The '#document'

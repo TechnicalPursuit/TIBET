@@ -5444,6 +5444,18 @@ function(attributeName) {
 
         val;
 
+    //  If the attribute name is just '.', then that's the shortcut to just
+    //  return ourself.
+    if (TP.regex.ONLY_PERIOD.test(attributeName)) {
+        return this;
+    }
+
+    //  Now we separately test for '$_' here because we need to do a key
+    //  check and make sure that we don't have a valid key for '$_'.
+    if (TP.regex.ONLY_STDIN.test(attributeName) && !this.hasKey('$_')) {
+        return this;
+    }
+
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
@@ -5501,10 +5513,14 @@ function(attributeName) {
         pathStr = path.asString();
 
         //  If the path is just '.', then that's the shortcut to just return
-        //  ourself. Note that we do *not* test for '$_' here, as we do in many
-        //  other places that would signify returning the receiver since '$_'
-        //  could be and is used as a valid key in TP.core.Hashes.
+        //  ourself.
         if (TP.regex.ONLY_PERIOD.test(pathStr)) {
+            return this;
+        }
+
+        //  Now we separately test for '$_' here because we need to do a key
+        //  check and make sure that we don't have a valid key for '$_'.
+        if (TP.regex.ONLY_STDIN.test(pathStr) && !this.hasKey('$_')) {
             return this;
         }
 
