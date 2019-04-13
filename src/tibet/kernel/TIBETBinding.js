@@ -4167,6 +4167,15 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
             attrName = boundAttr.localName;
             attrVal = boundAttr.value;
 
+            //  If the attribute value contains a URI scheme, but it's primary
+            //  location doesn't match the primary location that changed and
+            //  that we're refreshing from (which may happen because we're
+            //  querying from the *document* down), then just move on.
+            if (TP.regex.ALL_SCHEMES.test(attrVal) &&
+                !primaryLocMatcher.test(attrVal)) {
+                continue;
+            }
+
             ownerElem = boundAttr.ownerElement;
             ownerTPElem = TP.wrap(ownerElem);
 
@@ -4177,16 +4186,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
             /* eslint-enable no-extra-parens */
 
             if (isScopingElement) {
-
-                //  If the attribute value contains a URI, but it's primary
-                //  location doesn't match the primary location that changed
-                //  and that we're refreshing from (which may happen because
-                //  we're querying from the *document* down), then just move
-                //  on.
-                if (TP.isURIString(attrVal) &&
-                    !primaryLocMatcher.test(attrVal)) {
-                    continue;
-                }
 
                 if (attrVal === '[NaN]') {
                     theVal = null;
