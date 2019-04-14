@@ -642,6 +642,9 @@ function(aSignal) {
         changedPathKeys,
         keysToProcess,
 
+        changedKey,
+        keyToProcess,
+
         matcher,
         len,
 
@@ -836,7 +839,13 @@ function(aSignal) {
             //  NB: We use getSize() here as we expect that this Array could
             //  change size as we add keys to it.
             for (j = 0; j < keysToProcess.getSize(); j++) {
-                if (changedPathKeys.at(i).startsWith(keysToProcess.at(j))) {
+                changedKey = changedPathKeys.at(i);
+                keyToProcess = keysToProcess.at(j);
+
+                if (changedKey === keyToProcess &&
+                    keysToProcess.indexOf(changedKey) !== TP.NOT_FOUND) {
+                    continue;
+                } else if (changedKey.startsWith(keyToProcess)) {
                     continue;
                 }
 
