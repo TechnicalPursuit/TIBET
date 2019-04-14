@@ -206,7 +206,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                     if (TP.isCallable(transformFunc)) {
 
                         source = aSignal.getSource();
-                        newVal = transformFunc(source, newVal);
+                        newVal = transformFunc(source, TP.ac(newVal));
                     }
 
                     this.setFacet(targetAttr, facet, newVal, false);
@@ -1394,8 +1394,8 @@ function(anExpression) {
                 isSimpleExpr = false;
 
                 finalExpr = finalExpr.replace(
-                                exprWithBrackets,
-                                '{{value' + formatExpr + '}}');
+                    exprWithBrackets,
+                    '{{$ARG' + referencedExprs.getSize() + formatExpr + '}}');
                 finalExpr = finalExpr.unquoted('"');
             }
         }
@@ -1408,7 +1408,7 @@ function(anExpression) {
     //  Function that will transform the data before returning it.
     if (!isSimpleExpr) {
 
-        transformFunc = function(source, val, targetTPElem,
+        transformFunc = function(source, vals, targetTPElem,
                                  repeatSource, index, isXMLResource) {
             var wrappedVal,
 
@@ -1422,10 +1422,10 @@ function(anExpression) {
             //  to get the most 'intelligent' data type.
             //  NB: For performance reasons, we don't do this for Arrays and
             //  TP.core.Hashes
-            if (!TP.isArray(val) && !TP.isHash(val)) {
-                wrappedVal = TP.wrap(val);
+            if (!TP.isArray(vals.first()) && !TP.isHash(vals.first())) {
+                wrappedVal = TP.wrap(vals.first());
             } else {
-                wrappedVal = val;
+                wrappedVal = vals.first();
             }
 
             //  Iterating context
@@ -1479,18 +1479,28 @@ function(anExpression) {
                             '$REQUEST', null,
                             'TP', TP,
                             'APP', APP,
+                            '$SOURCE', source,
                             '$TAG', targetTPElem,
                             '$TARGET', targetTPElem.getDocument(),
                             '$_', wrappedVal,
-                            '$INPUT', val);
+                            '$INPUT', vals);
             }
 
-            //  Don't try to template invalid values.
-            if (TP.isValid(val)) {
-                retVal = transformFunc.$$templateFunc.transform(val, params);
+            //  Register the Array of values we were handed as 'arguments' under
+            //  '$ARGN' variable names.
+            vals.forEach(
+                function(aVal, valIndex) {
+                    params.atPut('$ARG' + valIndex, aVal);
+                });
+
+            //  If we got a non-empty Array of values, then process them. Note
+            //  here that we do *not* hand in a 'main data source', but all
+            //  parameters to the templating Function are supplied as params.
+            if (TP.notEmpty(vals)) {
+                retVal = transformFunc.$$templateFunc.transform(null, params);
             } else {
-                //  null or undefined, but let's be pendantic
-                retVal = val;
+                //  null or undefined (or empty), but let's be pendantic
+                retVal = vals;
             }
 
             return retVal;
@@ -5555,6 +5565,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
         finalVal,
 
+        exprVals,
+
         len,
         i,
 
@@ -5571,6 +5583,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         exprVal,
 
         isXMLResource,
+        xmlTestVal,
 
         didRefresh,
         refreshedElements;
@@ -5614,6 +5627,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         hasTransformFunc = TP.isCallable(transformFunc);
 
         finalVal = '';
+
+        exprVals = TP.ac();
 
         len = exprs.getSize();
         for (i = 0; i < len; i++) {
@@ -5787,12 +5802,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                     if (TP.isValid(scopedVal)) {
 
                         if (TP.regex.COMPOSITE_PATH.test(expr)) {
-                            if (TP.isValid(transformFunc)) {
-                                exprVal = scopedVal;
-                            } else {
-                                exprVal = TP.wrap(scopedVal).get(
-                                                    TP.apc(expr, pathOptions));
-                            }
+                            exprVal = TP.wrap(scopedVal).get(
+                                                TP.apc(expr, pathOptions));
                         } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
                                                                         expr)) {
                             exprVal = scopedVal;
@@ -5849,35 +5860,49 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 }
             }
 
-            //  Try to preserve the data type here. If there is only 1
-            //  expression, then there is no sense in stringifying the final
-            //  value.
-            if (len === 1) {
-                finalVal = exprVal;
-            } else {
-                finalVal += exprVal;
-            }
+            exprVals.push(exprVal);
         }
 
         //  If we ended up with a *valid* final value and a transformation
         //  Function was defined, then execute it with that value.
-        if (TP.isValid(finalVal) && TP.isCallable(transformFunc)) {
+        if (TP.notEmpty(exprVals)) {
+            if (hasTransformFunc) {
 
-            if (TP.isCollection(finalVal)) {
-                isXMLResource =
-                    TP.isXMLNode(TP.unwrap(finalVal.first()));
+                xmlTestVal = exprVals.first();
+
+                if (TP.isCollection(xmlTestVal)) {
+                    isXMLResource = TP.isXMLNode(TP.unwrap(xmlTestVal.first()));
+                } else {
+                    isXMLResource = TP.isXMLNode(TP.unwrap(xmlTestVal));
+                }
+
+                if (isXMLResource) {
+                    exprVals.convert(
+                        function(aVal) {
+                            if (TP.isNode(aVal) ||
+                                TP.isKindOf(aVal, TP.dom.Node)) {
+                                return TP.objectValue(aVal, 'value', true);
+                            }
+                        });
+                }
+
+                finalVal = transformFunc(
+                                changeSource,
+                                exprVals,
+                                this,
+                                repeatSource,
+                                repeatIndex,
+                                isXMLResource);
             } else {
-                isXMLResource =
-                    TP.isXMLNode(TP.unwrap(finalVal));
+                //  Try to preserve the data type here. If there is only 1
+                //  expression, then there is no sense in stringifying the final
+                //  value.
+                if (exprVals.getSize() === 1) {
+                    finalVal = exprVal;
+                } else {
+                    finalVal = exprVals.join('');
+                }
             }
-
-            finalVal = transformFunc(
-                            changeSource,
-                            finalVal,
-                            this,
-                            repeatSource,
-                            repeatIndex,
-                            isXMLResource);
         }
     }
 
