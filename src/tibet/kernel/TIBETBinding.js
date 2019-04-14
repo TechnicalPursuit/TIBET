@@ -1615,7 +1615,9 @@ function(aspectName, anExpression) {
         dataLocs = transformInfo.last();
     } else if (hadBrackets &&
         (!/^\s*\[\[/.test(fullExpr) || !/\]\]\s*$/.test(fullExpr) ||
-        TP.regex.ACP_FORMAT.test(fullExpr))) {
+        TP.regex.ACP_FORMAT.test(fullExpr) ||
+        /\[\[/g.match(fullExpr).getSize() > 1)) {
+
 
         //  The full expression had 'surrounding content' (i.e. literal
         //  content on either or both sides of the leading or trailing
