@@ -402,8 +402,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  this will either be the data source or the params handed to the
             //  generated Function or a source variable 'in scope'.
 
-            var retVal,
+            var identName,
+
+                retVal,
                 sourceName;
+
+            identName = generators.escapedIdentifier(propName);
 
             //  If the propName starts with a '$' and isn't in the 'special
             //  list' of 'source variable' supplied by the caller, then it
@@ -423,10 +427,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             }
 
             //  Generate the expression.
-            retVal = 'var ' + generators.escapedIdentifier(propName) + ' = ' +
-                        'TP.wrap(TP.objectValue(' + sourceName + ',' +
+            retVal = 'var ' + identName + ' = ' +
+                        'TP.objectValue(' + sourceName + ',' +
                                     ' ' + propName.quoted() + ',' +
-                                    ' true));';
+                                    ' true);' + newlineChar;
+
+            retVal += identName + ' = TP.wrap(' + identName + ');';
 
             return retVal;
         },
