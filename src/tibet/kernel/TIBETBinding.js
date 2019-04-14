@@ -5551,6 +5551,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
         initialScopedValue,
 
+        hasTransformFunc,
+
         finalVal,
 
         len,
@@ -5609,6 +5611,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
         initialScopedValue = TP.collapse(outerScopeValue);
 
+        hasTransformFunc = TP.isCallable(transformFunc);
+
         finalVal = '';
 
         len = exprs.getSize();
@@ -5661,7 +5665,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 //  value extraction flag is defined, then extract the value.
                 //  If there is a transformation function, then we just hand the
                 //  unextracted value of the data value to it.
-                if (!TP.isCallable(transformFunc) && shouldExtractVal) {
+                if (!hasTransformFunc && shouldExtractVal) {
                     exprVal = TP.val(exprVal);
                 }
 
@@ -5834,7 +5838,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 //  value extraction flags are defined, then extract the value.
                 //  If there is a transformation function, then we just hand the
                 //  unextracted value of the data value to it.
-                if (!TP.isCallable(transformFunc) && shouldExtractVal) {
+                if (!hasTransformFunc && shouldExtractVal) {
                     exprVal = TP.val(exprVal);
                 }
 
