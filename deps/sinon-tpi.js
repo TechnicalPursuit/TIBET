@@ -1,9 +1,9 @@
-/* Sinon.JS 7.2.7, 2019-03-04, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* Sinon.JS 7.3.1, 2019-03-27, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
 var behavior = require("./sinon/behavior");
 var createSandbox = require("./sinon/create-sandbox");
-var deprecated = require("./sinon/util/core/deprecated");
+var deprecated = require("@sinonjs/commons").deprecated;
 var extend = require("./sinon/util/core/extend");
 var fakeTimers = require("./sinon/util/fake-timers");
 var format = require("./sinon/util/core/format");
@@ -57,7 +57,7 @@ var api = extend(sandbox, legacySandboxAPI, apiMethods);
 
 module.exports = api;
 
-},{"./sinon/assert":2,"./sinon/behavior":3,"./sinon/call":4,"./sinon/create-sandbox":7,"./sinon/mock-expectation":10,"./sinon/sandbox":12,"./sinon/stub":16,"./sinon/util/core/default-config":18,"./sinon/util/core/deprecated":19,"./sinon/util/core/extend":21,"./sinon/util/core/format":22,"./sinon/util/fake-timers":34,"@sinonjs/samsam":65,"nise":85}],2:[function(require,module,exports){
+},{"./sinon/assert":2,"./sinon/behavior":3,"./sinon/call":4,"./sinon/create-sandbox":7,"./sinon/mock-expectation":10,"./sinon/sandbox":12,"./sinon/stub":16,"./sinon/util/core/default-config":18,"./sinon/util/core/extend":20,"./sinon/util/core/format":21,"./sinon/util/fake-timers":33,"@sinonjs/commons":39,"@sinonjs/samsam":65,"nise":85}],2:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -275,7 +275,7 @@ mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
 module.exports = assert;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./util/core/format":22,"./util/core/times-in-words":30,"@sinonjs/commons":39,"@sinonjs/samsam":65}],3:[function(require,module,exports){
+},{"./util/core/format":21,"./util/core/times-in-words":29,"@sinonjs/commons":39,"@sinonjs/samsam":65}],3:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -507,7 +507,7 @@ var asyncBehaviors = exportAsyncBehaviors(proto);
 
 module.exports = extend.nonEnum({}, proto, asyncBehaviors);
 
-},{"./util/core/export-async-behaviors":20,"./util/core/extend":21,"./util/core/next-tick":29,"@sinonjs/commons":39}],4:[function(require,module,exports){
+},{"./util/core/export-async-behaviors":19,"./util/core/extend":20,"./util/core/next-tick":28,"@sinonjs/commons":39}],4:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -763,7 +763,7 @@ createSpyCall.toString = callProto.toString; // used by mocks
 
 module.exports = createSpyCall;
 
-},{"./util/core/format":22,"@sinonjs/commons":39,"@sinonjs/samsam":65}],5:[function(require,module,exports){
+},{"./util/core/format":21,"@sinonjs/commons":39,"@sinonjs/samsam":65}],5:[function(require,module,exports){
 "use strict";
 
 var walk = require("./util/core/walk");
@@ -788,7 +788,7 @@ function collectOwnMethods(object) {
 
 module.exports = collectOwnMethods;
 
-},{"./util/core/get-property-descriptor":25,"./util/core/walk":32,"@sinonjs/commons":39}],6:[function(require,module,exports){
+},{"./util/core/get-property-descriptor":24,"./util/core/walk":31,"@sinonjs/commons":39}],6:[function(require,module,exports){
 "use strict";
 
 var supportsColor = require("supports-color");
@@ -1158,7 +1158,7 @@ var asyncBehaviors = exportAsyncBehaviors(defaultBehaviors);
 
 module.exports = extend({}, defaultBehaviors, asyncBehaviors);
 
-},{"./util/core/export-async-behaviors":20,"./util/core/extend":21,"./util/core/is-property-configurable":28,"@sinonjs/commons":39}],9:[function(require,module,exports){
+},{"./util/core/export-async-behaviors":19,"./util/core/extend":20,"./util/core/is-property-configurable":27,"@sinonjs/commons":39}],9:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1284,7 +1284,7 @@ fake.yieldsAsync = function yieldsAsync() {
 
 module.exports = fake;
 
-},{"./spy":14,"./util/core/next-tick":29,"@sinonjs/commons":39}],10:[function(require,module,exports){
+},{"./spy":14,"./util/core/next-tick":28,"@sinonjs/commons":39}],10:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1602,7 +1602,7 @@ var mockExpectation = {
 
 module.exports = mockExpectation;
 
-},{"./assert":2,"./call":4,"./spy":14,"./stub":16,"./util/core/extend":21,"./util/core/format":22,"./util/core/times-in-words":30,"@sinonjs/commons":39,"@sinonjs/samsam":65}],11:[function(require,module,exports){
+},{"./assert":2,"./call":4,"./spy":14,"./stub":16,"./util/core/extend":20,"./util/core/format":21,"./util/core/times-in-words":29,"@sinonjs/commons":39,"@sinonjs/samsam":65}],11:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1804,7 +1804,7 @@ extend(mock, {
 
 module.exports = mock;
 
-},{"./call":4,"./mock-expectation":10,"./util/core/extend":21,"./util/core/use-promise-library":31,"./util/core/wrap-method":33,"@sinonjs/commons":39,"@sinonjs/samsam":65}],12:[function(require,module,exports){
+},{"./call":4,"./mock-expectation":10,"./util/core/extend":20,"./util/core/use-promise-library":30,"./util/core/wrap-method":32,"@sinonjs/commons":39,"@sinonjs/samsam":65}],12:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -1876,6 +1876,26 @@ function Sandbox() {
 
         obj.mock = function() {
             return sandbox.mock.apply(null, arguments);
+        };
+
+        obj.createStubInstance = function() {
+            return sandbox.createStubInstance.apply(sandbox, arguments);
+        };
+
+        obj.fake = function() {
+            return sandbox.fake.apply(null, arguments);
+        };
+
+        obj.replace = function() {
+            return sandbox.replace.apply(null, arguments);
+        };
+
+        obj.replaceSetter = function() {
+            return sandbox.replaceSetter.apply(null, arguments);
+        };
+
+        obj.replaceGetter = function() {
+            return sandbox.replaceGetter.apply(null, arguments);
         };
 
         if (sandbox.clock) {
@@ -2197,7 +2217,7 @@ Sandbox.prototype.match = match;
 
 module.exports = Sandbox;
 
-},{"./assert":2,"./collect-own-methods":5,"./fake":9,"./mock":11,"./spy":14,"./stub":16,"./util/core/get-property-descriptor":25,"./util/core/is-es-module":26,"./util/core/is-non-existent-own-property":27,"./util/core/is-property-configurable":28,"./util/core/use-promise-library":31,"./util/fake-timers":34,"@sinonjs/commons":39,"@sinonjs/samsam":65,"nise":85}],13:[function(require,module,exports){
+},{"./assert":2,"./collect-own-methods":5,"./fake":9,"./mock":11,"./spy":14,"./stub":16,"./util/core/get-property-descriptor":24,"./util/core/is-es-module":25,"./util/core/is-non-existent-own-property":26,"./util/core/is-property-configurable":27,"./util/core/use-promise-library":30,"./util/fake-timers":33,"@sinonjs/commons":39,"@sinonjs/samsam":65,"nise":85}],13:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -2308,7 +2328,7 @@ module.exports = {
     }
 };
 
-},{"./color":6,"./util/core/format":22,"./util/core/times-in-words":30,"@sinonjs/commons":39,"@sinonjs/samsam":65,"diff":69}],14:[function(require,module,exports){
+},{"./color":6,"./util/core/format":21,"./util/core/times-in-words":29,"@sinonjs/commons":39,"@sinonjs/samsam":65,"diff":69}],14:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -2898,7 +2918,7 @@ extend(spy, spyApi);
 spy.spyCall = spyCall;
 module.exports = spy;
 
-},{"./behavior":3,"./call":4,"./spy-formatters":13,"./util/core/extend":21,"./util/core/format":22,"./util/core/function-to-string":23,"./util/core/get-property-descriptor":25,"./util/core/is-es-module":26,"./util/core/wrap-method":33,"@sinonjs/commons":39,"@sinonjs/samsam":65}],15:[function(require,module,exports){
+},{"./behavior":3,"./call":4,"./spy-formatters":13,"./util/core/extend":20,"./util/core/format":21,"./util/core/function-to-string":22,"./util/core/get-property-descriptor":24,"./util/core/is-es-module":25,"./util/core/wrap-method":32,"@sinonjs/commons":39,"@sinonjs/samsam":65}],15:[function(require,module,exports){
 "use strict";
 
 var getPropertyDescriptor = require("./util/core/get-property-descriptor");
@@ -2922,7 +2942,7 @@ function stubEntireObject(stub, object) {
 
 module.exports = stubEntireObject;
 
-},{"./util/core/get-property-descriptor":25,"./util/core/walk":32}],16:[function(require,module,exports){
+},{"./util/core/get-property-descriptor":24,"./util/core/walk":31}],16:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -3145,7 +3165,7 @@ forEach(Object.keys(behaviors), function(method) {
 extend(stub, proto);
 module.exports = stub;
 
-},{"./behavior":3,"./default-behaviors":8,"./spy":14,"./stub-entire-object":15,"./throw-on-falsy-object":17,"./util/core/extend":21,"./util/core/function-to-string":23,"./util/core/get-property-descriptor":25,"./util/core/is-es-module":26,"./util/core/is-non-existent-own-property":27,"./util/core/wrap-method":33,"@sinonjs/commons":39}],17:[function(require,module,exports){
+},{"./behavior":3,"./default-behaviors":8,"./spy":14,"./stub-entire-object":15,"./throw-on-falsy-object":17,"./util/core/extend":20,"./util/core/function-to-string":22,"./util/core/get-property-descriptor":24,"./util/core/is-es-module":25,"./util/core/is-non-existent-own-property":26,"./util/core/wrap-method":32,"@sinonjs/commons":39}],17:[function(require,module,exports){
 "use strict";
 var valueToString = require("@sinonjs/commons").valueToString;
 
@@ -3162,50 +3182,25 @@ module.exports = throwOnFalsyObject;
 "use strict";
 
 module.exports = {
-    injectIntoThis: true,
     injectInto: null,
-    properties: ["spy", "stub", "mock", "clock", "server", "requests"],
+    properties: [
+        "spy",
+        "stub",
+        "mock",
+        "clock",
+        "server",
+        "requests",
+        "fake",
+        "replace",
+        "replaceSetter",
+        "replaceGetter",
+        "createStubInstance"
+    ],
     useFakeTimers: true,
     useFakeServer: true
 };
 
 },{}],19:[function(require,module,exports){
-/* eslint-disable no-console */
-"use strict";
-
-// wrap returns a function that will invoke the supplied function and print a deprecation warning to the console each
-// time it is called.
-exports.wrap = function(func, msg) {
-    var wrapped = function() {
-        exports.printWarning(msg);
-        return func.apply(this, arguments);
-    };
-    if (func.prototype) {
-        wrapped.prototype = func.prototype;
-    }
-    return wrapped;
-};
-
-// defaultMsg returns a string which can be supplied to `wrap()` to notify the user that a particular part of the
-// sinon API has been deprecated.
-/* istanbul ignore next */
-exports.defaultMsg = function(funcName) {
-    return "sinon." + funcName + " is deprecated and will be removed from the public API in a future version of sinon.";
-};
-
-exports.printWarning = function(msg) {
-    // Watch out for IE7 and below! :(
-    if (typeof console !== "undefined") {
-        /* istanbul ignore else */
-        if (console.info) {
-            console.info(msg);
-        } else {
-            console.log(msg);
-        }
-    }
-};
-
-},{}],20:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -3229,7 +3224,7 @@ module.exports = function exportAsyncBehaviors(behaviorMethods) {
     );
 };
 
-},{"@sinonjs/commons":39}],21:[function(require,module,exports){
+},{"@sinonjs/commons":39}],20:[function(require,module,exports){
 "use strict";
 
 var arrayProto = require("@sinonjs/commons").prototypes.array;
@@ -3342,7 +3337,7 @@ module.exports.nonEnum = function extendNonEnum(target /*, sources */) {
     });
 };
 
-},{"@sinonjs/commons":39}],22:[function(require,module,exports){
+},{"@sinonjs/commons":39}],21:[function(require,module,exports){
 "use strict";
 
 var formatio = require("@sinonjs/formatio");
@@ -3372,7 +3367,7 @@ format.setFormatter = function(aCustomFormatter) {
 
 module.exports = format;
 
-},{"@sinonjs/formatio":49}],23:[function(require,module,exports){
+},{"@sinonjs/formatio":49}],22:[function(require,module,exports){
 "use strict";
 
 module.exports = function toString() {
@@ -3394,7 +3389,7 @@ module.exports = function toString() {
     return this.displayName || "sinon fake";
 };
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 
 /* istanbul ignore next : not testing that setTimeout works */
@@ -3414,7 +3409,7 @@ module.exports = function getNextTick(process, setImmediate) {
     return nextTick;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 module.exports = function getPropertyDescriptor(object, property) {
@@ -3427,7 +3422,7 @@ module.exports = function getPropertyDescriptor(object, property) {
     return descriptor;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
 /**
@@ -3447,7 +3442,7 @@ module.exports = function(object) {
     );
 };
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 
 function isNonExistentOwnProperty(object, property) {
@@ -3456,7 +3451,7 @@ function isNonExistentOwnProperty(object, property) {
 
 module.exports = isNonExistentOwnProperty;
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 
 var getPropertyDescriptor = require("./get-property-descriptor");
@@ -3469,7 +3464,7 @@ function isPropertyConfigurable(obj, propName) {
 
 module.exports = isPropertyConfigurable;
 
-},{"./get-property-descriptor":25}],29:[function(require,module,exports){
+},{"./get-property-descriptor":24}],28:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3481,7 +3476,7 @@ var root = typeof window !== "undefined" ? window : global;
 module.exports = getNextTick(root.process, root.setImmediate);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./get-next-tick":24}],30:[function(require,module,exports){
+},{"./get-next-tick":23}],29:[function(require,module,exports){
 "use strict";
 
 var array = [null, "once", "twice", "thrice"];
@@ -3490,7 +3485,7 @@ module.exports = function timesInWords(count) {
     return array[count] || (count || 0) + " times";
 };
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 "use strict";
 
 var forEach = Array.prototype.forEach;
@@ -3513,7 +3508,7 @@ function usePromiseLibrary(library, fakes) {
 
 module.exports = usePromiseLibrary;
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 
 var forEach = require("@sinonjs/commons").prototypes.array.forEach;
@@ -3560,7 +3555,7 @@ module.exports = function walk(obj, iterator, context) {
     return walkInternal(obj, iterator, context, obj, {});
 };
 
-},{"@sinonjs/commons":39}],33:[function(require,module,exports){
+},{"@sinonjs/commons":39}],32:[function(require,module,exports){
 "use strict";
 
 var getPropertyDescriptor = require("./get-property-descriptor");
@@ -3717,7 +3712,7 @@ module.exports = function wrapMethod(object, property, method) {
     return method;
 };
 
-},{"./extend":21,"./get-property-descriptor":25,"@sinonjs/commons":39}],34:[function(require,module,exports){
+},{"./extend":20,"./get-property-descriptor":24,"@sinonjs/commons":39}],33:[function(require,module,exports){
 "use strict";
 
 var extend = require("./core/extend");
@@ -3781,7 +3776,7 @@ exports.timers = {
     Date: Date
 };
 
-},{"./core/extend":21,"lolex":73}],35:[function(require,module,exports){
+},{"./core/extend":20,"lolex":73}],34:[function(require,module,exports){
 "use strict";
 
 var every = require("./prototypes/array").every;
@@ -3817,7 +3812,7 @@ module.exports = function calledInOrder(spies) {
     return every(_spies, checkAdjacentCalls.bind(null, callMap));
 };
 
-},{"./prototypes/array":41}],36:[function(require,module,exports){
+},{"./prototypes/array":41}],35:[function(require,module,exports){
 "use strict";
 
 var functionName = require("./function-name");
@@ -3838,7 +3833,49 @@ module.exports = function className(value) {
     );
 };
 
-},{"./function-name":38}],37:[function(require,module,exports){
+},{"./function-name":38}],36:[function(require,module,exports){
+/* eslint-disable no-console */
+"use strict";
+
+// wrap returns a function that will invoke the supplied function and print a deprecation warning to the console each
+// time it is called.
+exports.wrap = function(func, msg) {
+    var wrapped = function() {
+        exports.printWarning(msg);
+        return func.apply(this, arguments);
+    };
+    if (func.prototype) {
+        wrapped.prototype = func.prototype;
+    }
+    return wrapped;
+};
+
+// defaultMsg returns a string which can be supplied to `wrap()` to notify the user that a particular part of the
+// sinon API has been deprecated.
+exports.defaultMsg = function(packageName, funcName) {
+    return (
+        packageName +
+        "." +
+        funcName +
+        " is deprecated and will be removed from the public API in a future version of " +
+        packageName +
+        "."
+    );
+};
+
+exports.printWarning = function(msg) {
+    // Watch out for IE7 and below! :(
+    /* istanbul ignore next */
+    if (typeof console !== "undefined") {
+        if (console.info) {
+            console.info(msg);
+        } else {
+            console.log(msg);
+        }
+    }
+};
+
+},{}],37:[function(require,module,exports){
 "use strict";
 
 // This is an `every` implementation that works for all iterables
@@ -3885,6 +3922,7 @@ module.exports = function functionName(func) {
 module.exports = {
     calledInOrder: require("./called-in-order"),
     className: require("./class-name"),
+    deprecated: require("./deprecated"),
     every: require("./every"),
     functionName: require("./function-name"),
     orderByFirstCall: require("./order-by-first-call"),
@@ -3893,7 +3931,7 @@ module.exports = {
     valueToString: require("./value-to-string")
 };
 
-},{"./called-in-order":35,"./class-name":36,"./every":37,"./function-name":38,"./order-by-first-call":40,"./prototypes":44,"./type-of":47,"./value-to-string":48}],40:[function(require,module,exports){
+},{"./called-in-order":34,"./class-name":35,"./deprecated":36,"./every":37,"./function-name":38,"./order-by-first-call":40,"./prototypes":44,"./type-of":47,"./value-to-string":48}],40:[function(require,module,exports){
 "use strict";
 
 var sort = require("./prototypes/array").sort;
@@ -4252,11 +4290,12 @@ var getTime = Date.prototype.getTime;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 var indexOf = Array.prototype.indexOf;
 var keys = Object.keys;
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
 
 /**
  * @name samsam.deepEqual
- * @param Object first
- * @param Object second
+ * @param Object actual
+ * @param Object expectation
  *
  * Deep equal comparison. Two values are "deep equal" if:
  *
@@ -4264,136 +4303,158 @@ var keys = Object.keys;
  *   - They are both date objects representing the same time
  *   - They are both arrays containing elements that are all deepEqual
  *   - They are objects with the same set of properties, and each property
- *     in ``first`` is deepEqual to the corresponding property in ``second``
+ *     in ``actual`` is deepEqual to the corresponding property in ``expectation``
  *
  * Supports cyclic objects.
  */
-function deepEqualCyclic(first, second, match) {
+function deepEqualCyclic(actual, expectation, match) {
     // used for cyclic comparison
     // contain already visited objects
-    var objects1 = [];
-    var objects2 = [];
+    var actualObjects = [];
+    var expectationObjects = [];
     // contain pathes (position in the object structure)
     // of the already visited objects
     // indexes same as in objects arrays
-    var paths1 = [];
-    var paths2 = [];
+    var actualPaths = [];
+    var expectationPaths = [];
     // contains combinations of already compared objects
     // in the manner: { "$1['ref']$2['ref']": true }
     var compared = {};
 
     // does the recursion for the deep equal check
-    return (function deepEqual(obj1, obj2, path1, path2) {
+    return (function deepEqual(
+        actualObj,
+        expectationObj,
+        actualPath,
+        expectationPath
+    ) {
         // If both are matchers they must be the same instance in order to be
         // considered equal If we didn't do that we would end up running one
         // matcher against the other
-        if (match && match.isMatcher(obj2)) {
-            if (match.isMatcher(obj1)) {
-                return obj1 === obj2;
+        if (match && match.isMatcher(expectationObj)) {
+            if (match.isMatcher(actualObj)) {
+                return actualObj === expectationObj;
             }
-            return obj2.test(obj1);
+            return expectationObj.test(actualObj);
         }
 
-        var type1 = typeof obj1;
-        var type2 = typeof obj2;
+        var actualType = typeof actualObj;
+        var expectationType = typeof expectationObj;
 
         // == null also matches undefined
         if (
-            obj1 === obj2 ||
-            isNaN(obj1) ||
-            isNaN(obj2) ||
-            obj1 == null ||
-            obj2 == null ||
-            type1 !== "object" ||
-            type2 !== "object"
+            actualObj === expectationObj ||
+            isNaN(actualObj) ||
+            isNaN(expectationObj) ||
+            actualObj == null ||
+            expectationObj == null ||
+            actualType !== "object" ||
+            expectationType !== "object"
         ) {
-            return identical(obj1, obj2);
+            return identical(actualObj, expectationObj);
         }
 
         // Elements are only equal if identical(expected, actual)
-        if (isElement(obj1) || isElement(obj2)) {
+        if (isElement(actualObj) || isElement(expectationObj)) {
             return false;
         }
 
-        var isDate1 = isDate(obj1);
-        var isDate2 = isDate(obj2);
-        if (isDate1 || isDate2) {
+        var isActualDate = isDate(actualObj);
+        var isExpectationDate = isDate(expectationObj);
+        if (isActualDate || isExpectationDate) {
             if (
-                !isDate1 ||
-                !isDate2 ||
-                getTime.call(obj1) !== getTime.call(obj2)
+                !isActualDate ||
+                !isExpectationDate ||
+                getTime.call(actualObj) !== getTime.call(expectationObj)
             ) {
                 return false;
             }
         }
 
-        if (obj1 instanceof RegExp && obj2 instanceof RegExp) {
-            if (valueToString(obj1) !== valueToString(obj2)) {
+        if (actualObj instanceof RegExp && expectationObj instanceof RegExp) {
+            if (valueToString(actualObj) !== valueToString(expectationObj)) {
                 return false;
             }
         }
 
-        if (obj1 instanceof Error && obj2 instanceof Error) {
-            return obj1 === obj2;
+        if (actualObj instanceof Error && expectationObj instanceof Error) {
+            return actualObj === expectationObj;
         }
 
-        var class1 = getClass(obj1);
-        var class2 = getClass(obj2);
-        var keys1 = keys(obj1);
-        var keys2 = keys(obj2);
-        var name1 = getClassName(obj1);
-        var name2 = getClassName(obj2);
+        var actualClass = getClass(actualObj);
+        var expectationClass = getClass(expectationObj);
+        var actualKeys = keys(actualObj);
+        var expectationKeys = keys(expectationObj);
+        var actualName = getClassName(actualObj);
+        var expectationName = getClassName(expectationObj);
+        var expectationSymbols =
+            typeof getOwnPropertySymbols === "function"
+                ? getOwnPropertySymbols(expectationObj)
+                : [];
+        var expectationKeysAndSymbols = expectationKeys.concat(
+            expectationSymbols
+        );
 
-        if (isArguments(obj1) || isArguments(obj2)) {
-            if (obj1.length !== obj2.length) {
+        if (isArguments(actualObj) || isArguments(expectationObj)) {
+            if (actualObj.length !== expectationObj.length) {
                 return false;
             }
         } else {
             if (
-                type1 !== type2 ||
-                class1 !== class2 ||
-                keys1.length !== keys2.length ||
-                (name1 && name2 && name1 !== name2)
+                actualType !== expectationType ||
+                actualClass !== expectationClass ||
+                actualKeys.length !== expectationKeys.length ||
+                (actualName &&
+                    expectationName &&
+                    actualName !== expectationName)
             ) {
                 return false;
             }
         }
 
-        if (isSet(obj1) || isSet(obj2)) {
-            if (!isSet(obj1) || !isSet(obj2) || obj1.size !== obj2.size) {
+        if (isSet(actualObj) || isSet(expectationObj)) {
+            if (
+                !isSet(actualObj) ||
+                !isSet(expectationObj) ||
+                actualObj.size !== expectationObj.size
+            ) {
                 return false;
             }
 
-            return isSubset(obj1, obj2, deepEqual);
+            return isSubset(actualObj, expectationObj, deepEqual);
         }
 
-        return every.call(keys1, function(key) {
-            if (!hasOwnProperty.call(obj2, key)) {
+        return every.call(expectationKeysAndSymbols, function(key) {
+            if (!hasOwnProperty.call(actualObj, key)) {
                 return false;
             }
 
-            var value1 = obj1[key];
-            var value2 = obj2[key];
-            var isObject1 = isObject(value1);
-            var isObject2 = isObject(value2);
+            var actualValue = actualObj[key];
+            var expectationValue = expectationObj[key];
+            var actualObject = isObject(actualValue);
+            var expectationObject = isObject(expectationValue);
             // determines, if the objects were already visited
             // (it's faster to check for isObject first, than to
             // get -1 from getIndex for non objects)
-            var index1 = isObject1 ? indexOf.call(objects1, value1) : -1;
-            var index2 = isObject2 ? indexOf.call(objects2, value2) : -1;
+            var actualIndex = actualObject
+                ? indexOf.call(actualObjects, actualValue)
+                : -1;
+            var expectationIndex = expectationObject
+                ? indexOf.call(expectationObjects, expectationValue)
+                : -1;
             // determines the new paths of the objects
             // - for non cyclic objects the current path will be extended
             //   by current property name
             // - for cyclic objects the stored path is taken
-            var newPath1 =
-                index1 !== -1
-                    ? paths1[index1]
-                    : path1 + "[" + JSON.stringify(key) + "]";
-            var newPath2 =
-                index2 !== -1
-                    ? paths2[index2]
-                    : path2 + "[" + JSON.stringify(key) + "]";
-            var combinedPath = newPath1 + newPath2;
+            var newActualPath =
+                actualIndex !== -1
+                    ? actualPaths[actualIndex]
+                    : actualPath + "[" + JSON.stringify(key) + "]";
+            var newExpectationPath =
+                expectationIndex !== -1
+                    ? expectationPaths[expectationIndex]
+                    : expectationPath + "[" + JSON.stringify(key) + "]";
+            var combinedPath = newActualPath + newExpectationPath;
 
             // stop recursion if current objects are already compared
             if (compared[combinedPath]) {
@@ -4401,27 +4462,32 @@ function deepEqualCyclic(first, second, match) {
             }
 
             // remember the current objects and their paths
-            if (index1 === -1 && isObject1) {
-                objects1.push(value1);
-                paths1.push(newPath1);
+            if (actualIndex === -1 && actualObject) {
+                actualObjects.push(actualValue);
+                actualPaths.push(newActualPath);
             }
-            if (index2 === -1 && isObject2) {
-                objects2.push(value2);
-                paths2.push(newPath2);
+            if (expectationIndex === -1 && expectationObject) {
+                expectationObjects.push(expectationValue);
+                expectationPaths.push(newExpectationPath);
             }
 
             // remember that the current objects are already compared
-            if (isObject1 && isObject2) {
+            if (actualObject && expectationObject) {
                 compared[combinedPath] = true;
             }
 
             // End of cyclic logic
 
-            // neither value1 nor value2 is a cycle
+            // neither actualValue nor expectationValue is a cycle
             // continue with next level
-            return deepEqual(value1, value2, newPath1, newPath2);
+            return deepEqual(
+                actualValue,
+                expectationValue,
+                newActualPath,
+                newExpectationPath
+            );
         });
-    })(first, second, "$1", "$2");
+    })(actual, expectation, "$1", "$2");
 }
 
 deepEqualCyclic.use = function(match) {

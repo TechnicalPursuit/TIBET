@@ -5489,15 +5489,26 @@ var CognitoUser = function () {
 
     var userData = this.storage.getItem(this.userDataKey);
     // get the cached user data
+
     if (!userData || bypassCache) {
       this.client.request('GetUser', {
         AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-      }, function (err, userData) {
+      }, function (err, latestUserData) {
         if (err) {
           return callback(err, null);
         }
-        _this10.cacheUserData(userData);
-        return callback(null, userData);
+        _this10.cacheUserData(latestUserData);
+        var refresh = _this10.signInUserSession.getRefreshToken();
+        if (refresh && refresh.getToken()) {
+          _this10.refreshSession(refresh, function (refreshError, data) {
+            if (refreshError) {
+              return callback(refreshError, null);
+            }
+            return callback(null, latestUserData);
+          });
+        } else {
+          return callback(null, latestUserData);
+        }
       });
     } else {
       try {
