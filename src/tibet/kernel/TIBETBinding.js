@@ -4405,6 +4405,16 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     '($|\\s*[,}])');
             }
 
+            //  If the search path is only one character and that character is
+            //  '/' or '$', then we've reached the root of either an XPath or
+            //  JSONPath. We don't update from whole roots, so empty the
+            //  searchParts (so we don't endlessly recurse) and break out of the
+            //  whole loop.
+            if (searchPath === '/' || searchPath === '$') {
+                searchParts.empty();
+                break;
+            }
+
             //  If there is only one search part, and it is a URI, then we've
             //  'trimmed back' to the most general part of the source URI. In
             //  that case, we only want to match 'leafs' that are looking at the
