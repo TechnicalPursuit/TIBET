@@ -2976,6 +2976,9 @@ TP.regex.ROOT_OBJECTS = /Object|TP.lang.RootObject|TP.lang.Object/;
 TP.regex.JS_FIRST_CHAR = /^[a-zA-Z_$]/;
 TP.regex.JS_IDENT_REPLACE = /[^a-zA-Z0-9_$]/g;          //  needs reset
 TP.regex.JS_IDENTIFIER = /^[a-zA-Z_$]{1}[a-zA-Z0-9_$]*$/;
+TP.regex.JS_OPERATORS =
+            /(\+|-|\*|\/|=|>|<|>=|<=|&|\||%|!|\^|\(|\)|\?([^?]+):([^:]+))/;
+
 
 TP.regex.JS_ASSIGNMENT =
     /(^|;|\s+)([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)(\s*=[^=])/g; // needs reset
