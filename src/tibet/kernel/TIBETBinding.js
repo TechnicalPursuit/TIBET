@@ -1426,6 +1426,7 @@ function(anExpression) {
 
                 last,
 
+                val,
                 retVal;
 
             //  Wrap the value - it helps when trying to extract a value from it
@@ -1507,15 +1508,17 @@ function(anExpression) {
             //  here that we do *not* hand in a 'main data source', but all
             //  parameters to the templating Function are supplied as params.
             if (TP.notEmpty(vals)) {
-                retVal = transformFunc.$$templateFunc.transform(null, params);
+                val = transformFunc.$$templateFunc.transform(null, params);
                 if (transformFunc.$$needsEval) {
                     try {
                         /* eslint-disable no-eval */
-                        retVal = eval(retVal);
+                        retVal = eval(val);
                         /* eslint-enable no-eval */
                     } catch (e) {
-                        retVal = null;
+                        retVal = val;
                     }
+                } else {
+                    retVal = val;
                 }
 
             } else {
@@ -1536,18 +1539,19 @@ function(anExpression) {
         //  just return the 'reduced value'. This is necessary especially for
         //  XML where val will be an Element, but we want the text value of
         //  the Element.
-        transformFunc = function(source, val) {
-            var retVal;
+        transformFunc = function(source, initialVal) {
+            var val,
+                retVal;
 
-            retVal = TP.val(val);
+            val = TP.val(initialVal);
 
             if (transformFunc.$$needsEval) {
                 try {
                     /* eslint-disable no-eval */
-                    retVal = eval(retVal);
+                    retVal = eval(val);
                     /* eslint-enable no-eval */
                 } catch (e) {
-                    retVal = null;
+                    retVal = val;
                 }
             }
 
