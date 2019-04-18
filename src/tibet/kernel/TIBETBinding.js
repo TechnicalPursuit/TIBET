@@ -1281,6 +1281,9 @@ function(anExpression) {
     var finalExpr,
         isSimpleExpr,
 
+        textWithoutExprs,
+        needsEval,
+
         referencedExprs,
 
         sigilIndex,
@@ -1302,6 +1305,13 @@ function(anExpression) {
     finalExpr = anExpression;
 
     isSimpleExpr = true;
+
+    //  Compute whether or not the transformation Function needs to eval its
+    //  return value based on whether or not the statement *without the
+    //  expressions* contains JavaScript operators.
+    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+    textWithoutExprs = anExpression.strip(TP.regex.BINDING_STATEMENT_EXTRACT);
+    needsEval = TP.regex.JS_OPERATORS.test(textWithoutExprs);
 
     referencedExprs = TP.ac();
 
@@ -1498,6 +1508,16 @@ function(anExpression) {
             //  parameters to the templating Function are supplied as params.
             if (TP.notEmpty(vals)) {
                 retVal = transformFunc.$$templateFunc.transform(null, params);
+                if (transformFunc.$$needsEval) {
+                    try {
+                        /* eslint-disable no-eval */
+                        retVal = eval(retVal);
+                        /* eslint-enable no-eval */
+                    } catch (e) {
+                        retVal = null;
+                    }
+                }
+
             } else {
                 //  null or undefined (or empty), but let's be pendantic
                 retVal = vals;
@@ -1517,9 +1537,27 @@ function(anExpression) {
         //  XML where val will be an Element, but we want the text value of
         //  the Element.
         transformFunc = function(source, val) {
-            return TP.val(val);
+            var retVal;
+
+            retVal = TP.val(val);
+
+            if (transformFunc.$$needsEval) {
+                try {
+                    /* eslint-disable no-eval */
+                    retVal = eval(retVal);
+                    /* eslint-enable no-eval */
+                } catch (e) {
+                    retVal = null;
+                }
+            }
+
+            return retVal;
         };
     }
+
+    //  Mark whether or not the transformation Function needs to perform an
+    //  eval() of its return value.
+    transformFunc.$$needsEval = needsEval;
 
     //  Return an Array containing the transformation Function and an Array of
     //  the referenced expressions.
