@@ -45,14 +45,14 @@ types.
 
     <!-- Non-negative number (positive number or 0) -->
     <xs:simpleType name="tibet:nonneg_number">
-        <xs:restriction base="xs:float">
+        <xs:restriction base="xs:decimal">
             <xs:minInclusive value="0"/>
         </xs:restriction>
     </xs:simpleType>
 
     <!-- Positive number (positive number, not 0) -->
     <xs:simpleType name="tibet:pos_number">
-        <xs:restriction base="xs:float">
+        <xs:restriction base="xs:decimal">
             <xs:minExclusive value="0"/>
         </xs:restriction>
     </xs:simpleType>
