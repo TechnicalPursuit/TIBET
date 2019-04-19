@@ -20,13 +20,6 @@ types.
         </xs:restriction>
     </xs:simpleType>
 
-    <!-- 3 or 4 numeric characters -->
-    <xs:simpleType name="tibet:cvv">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="^\d{3,4}$"/>
-        </xs:restriction>
-    </xs:simpleType>
-
     <!-- alphanumeric, underscores and dashes characters -->
     <!-- The RegExp here assumes XRegExp (which supports Unicode RegExps) -->
     <xs:simpleType name="tibet:identifier">
