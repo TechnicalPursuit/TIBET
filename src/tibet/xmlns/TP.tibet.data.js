@@ -417,7 +417,7 @@ function(aContentObject, aRequest) {
     //  If the MIME type that was computed is text/plain, then something
     //  probably went wrong (i.e. the data couldn't be parsed) and so we warn
     //  about that.
-    if (mimeType === TP.PLAIN_TEXT_ENCODED) {
+    if (TP.notNull(aContentObject) && mimeType === TP.PLAIN_TEXT_ENCODED) {
         TP.ifWarn() ?
             TP.warn('Computed a content type of text/plain for' +
                     ' <tibet:data/> with id: ' +
