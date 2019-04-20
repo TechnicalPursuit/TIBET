@@ -36,7 +36,7 @@ TP.core.JSONContent.defineSubtype('test.DataTestJSONEmployee');
 //  TP.tibet.data
 //  ========================================================================
 
-TP.tibet.data.Inst.describe('TP.tibet.data',
+TP.tibet.data.Inst.describe('TP.tibet.data - basic',
 function() {
 
     var unloadURI,
@@ -227,6 +227,56 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.data.Inst.describe('TP.tibet.data - resetting via setContent()',
+function() {
+
+    var unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    this.before(
+        function() {
+
+            //  ---
+
+            this.getDriver().showTestGUI();
+
+            //  ---
+
+            //  NB: We do this here rather than in the 'beforeEach' so that we
+            //  can test for signals that get dispatched during the load
+            //  process.
+            this.startTrackingSignals();
+        });
+
+    this.after(
+        function() {
+
+            //  ---
+
+            this.getDriver().showTestLog();
+
+            //  ---
+
+            //  Stop tracking here because we started tracking in the before().
+            this.stopTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+
+            //  Reset the metrics we're tracking.
+            this.getSuite().resetSignalTracking();
+        });
 
     //  ---
 
