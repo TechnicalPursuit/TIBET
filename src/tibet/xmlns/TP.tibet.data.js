@@ -258,9 +258,13 @@ function() {
 
     var elem,
         namedHref,
+
         children,
         cdatas,
-        resourceStr;
+
+        resourceStr,
+
+        shouldMakeStructures;
 
     elem = this.getNativeNode();
 
@@ -310,6 +314,16 @@ function() {
             //  again, but the setContent step forces interpretation of the data
             //  into our URI, triggers the right change notifications etc.
             this.setContent(resourceStr);
+        }
+    } else {
+
+        //  If we should make structures, then go ahead and set the content to
+        //  'null'. Some content types, such as TP.core.XMLContent and
+        //  TP.core.JSONContent, can handle null content objects handed to their
+        //  initialization logic.
+        shouldMakeStructures = TP.bc(this.getAttribute('makestructures'));
+        if (shouldMakeStructures) {
+            this.setContent(null);
         }
     }
 
