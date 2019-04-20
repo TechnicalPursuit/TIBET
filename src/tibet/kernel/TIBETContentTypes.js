@@ -2506,6 +2506,10 @@ function(data, aURI) {
 
     if (TP.isKindOf(contentData, TP.dom.Node)) {
         contentData = contentData.getNativeNode();
+    } else if (TP.notValid(contentData)) {
+        //  If the supplied content wasn't valid, then initialize our content
+        //  with a blank TP.dom.DocumentNode.
+        contentData = TP.tpdoc();
     }
 
     this.callNextMethod(contentData, aURI);
