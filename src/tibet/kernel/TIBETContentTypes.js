@@ -1898,8 +1898,6 @@ function(aPath) {
     //  TODO: Put a warning here that this conversion should really only be used
     //  in 'get' operations using this path.
 
-    //  Make sure to call the specific getData() handler here so that any
-    //  necessary conversion takes place.
     return this.getData();
 });
 
@@ -8810,7 +8808,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  we can't do that, then we're dead in the water...
 
     //  Note here how we pass 'true' to *always* flag changes in any content
-    //  that we generate
+    //  that we generate and that we also pass the *original* target object (so
+    //  that we can query it for things like 'shouldMakeStructures').
     if (TP.notValid(content = this.$$getContentForSetOperation(
                                             natTargetObj, true, targetObj))) {
 
