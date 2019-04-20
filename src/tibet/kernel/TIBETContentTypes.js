@@ -2517,6 +2517,33 @@ function(data, aURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLContent.Inst.defineMethod('getPathSource',
+function(aPath) {
+
+    /**
+     * @method getPathSource
+     * @summary Return the current source object being used by the executeGet()
+     *     and executeSet() methods. At this level, this method returns the
+     *     underlying data object.
+     * @param {TP.path.AccessPath} aPath The path that the path source will be
+     *     used with.
+     * @returns {Object} The object used as the current path source object.
+     */
+
+    //  If we're going to be used with a XMLPath, then we are the path source -
+    //  otherwise our data is.
+    if (TP.isKindOf(aPath, TP.path.XMLPath)) {
+        return this;
+    }
+
+    //  TODO: Put a warning here that this conversion should really only be used
+    //  in 'get' operations using this path.
+
+    return this.getData();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLContent.Inst.defineHandler('CloneItem',
 function(aSignal) {
 
