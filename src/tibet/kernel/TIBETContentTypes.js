@@ -1775,6 +1775,34 @@ function(anObject, includeFacetChecks) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineMethod('init',
+function(data, aURI) {
+
+    /**
+     * @method init
+     * @summary Returns a newly constructed Object from inbound content.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.uri.URI} aURI The source URI.
+     * @returns {TP.core.JSONContent} A new instance.
+     */
+
+    var contentData;
+
+    contentData = data;
+
+    if (TP.notValid(contentData)) {
+        //  If the supplied content wasn't valid, then initialize our content
+        //  with a blank POJO.
+        contentData = {};
+    }
+
+    this.callNextMethod(contentData, aURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('asHTTPValue',
 function() {
 
