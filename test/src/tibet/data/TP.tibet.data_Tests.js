@@ -457,5 +457,232 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.tibet.data.Inst.describe('TP.tibet.data - auto-creation of structures',
+function() {
+
+    var loadURI;
+
+    this.before(
+        function() {
+
+            //  ---
+
+            this.getDriver().showTestGUI();
+
+            //  ---
+
+            //  NB: We do this here rather than in the 'beforeEach' so that we
+            //  can test for signals that get dispatched during the load
+            //  process.
+            this.startTrackingSignals();
+        });
+
+    this.after(
+        function() {
+
+            //  ---
+
+            this.getDriver().showTestLog();
+
+            //  ---
+
+            //  Stop tracking here because we started tracking in the before().
+            this.stopTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+
+            //  Reset the metrics we're tracking.
+            this.getSuite().resetSignalTracking();
+        });
+
+    //  ---
+
+    this.it('Auto-creation within existing structure - XML content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data5.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource,
+
+                    testPath,
+                    val;
+
+                dataTPElem = TP.byId('Data5',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data5_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource().get('result');
+
+                //  We loaded with XML, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.XMLContent);
+
+                testPath = TP.xpc('/person/license_number',
+                                    TP.hc('shouldCollapse', true));
+
+                dataResource.set(testPath, '404040');
+
+                val = TP.val(dataResource.get(testPath));
+
+                test.assert.isEqualTo(val, '404040');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Auto-creation within existing structure - JSON content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data6.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource,
+
+                    testPath,
+                    val;
+
+                dataTPElem = TP.byId('Data6',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data6_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource().get('result');
+
+                //  We loaded with JSON, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
+
+                testPath = TP.jpc('$.person.license_number',
+                                    TP.hc('shouldCollapse', true));
+
+                dataResource.set(testPath, '404040');
+
+                val = TP.val(dataResource.get(testPath));
+
+                test.assert.isEqualTo(val, '404040');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Auto-creation into no existing structure - XML content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data7.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource,
+
+                    testPath,
+                    val;
+
+                dataTPElem = TP.byId('Data7',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data7_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                //  NB: The <tibet:data> tag will not have signaled
+                //  UIDataConstruct, since it doesn't have any data. Therefore,
+                //  we don't check for that here.
+
+                dataResource = srcURI.getResource().get('result');
+
+                //  We loaded with XML, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.XMLContent);
+
+                testPath = TP.xpc('/person/license_number',
+                                    TP.hc('shouldCollapse', true));
+
+                dataResource.set(testPath, '808080');
+
+                val = TP.val(dataResource.get(testPath));
+
+                test.assert.isEqualTo(val, '808080');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Auto-creation into no existing structure - JSON content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data8.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource,
+
+                    testPath,
+                    val;
+
+                dataTPElem = TP.byId('Data8',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data8_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                //  NB: The <tibet:data> tag will not have signaled
+                //  UIDataConstruct, since it doesn't have any data. Therefore,
+                //  we don't check for that here.
+
+                dataResource = srcURI.getResource().get('result');
+
+                //  We loaded with JSON, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
+
+                testPath = TP.jpc('$.person.license_number',
+                                    TP.hc('shouldCollapse', true));
+
+                dataResource.set(testPath, '808080');
+
+                val = TP.val(dataResource.get(testPath));
+
+                test.assert.isEqualTo(val, '808080');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data id="Data6" name="urn:tibet:Data6_person" makestructures="true">
+        <![CDATA[
+        {"person": {"lastname": "Jones", "firstname": "Jane", "description": "Ms. Jones is a great lady", "gender": "f", "pet": "cat", "color": "blue"}}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body>
+
+    <h2>Data Test #6</h2><br/>
+
+    <br/>
+    <br/>
+    This test sets up a &lt;tibet:data&gt; tag that makes data in the page available as under a particular named URI. It has 'makestructures' set to 'true' so that when a 'set' is executed against the data that it is holding and there is no existing 'structure' for that data, that it is auto-created.
+    <br/>
+    A variety of signals are thrown by the various objects involved.
+    <br/>
+
+</body>
+</html>
