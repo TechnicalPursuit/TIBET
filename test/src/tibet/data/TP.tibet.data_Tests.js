@@ -108,6 +108,11 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
@@ -144,6 +149,11 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
@@ -181,6 +191,11 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
@@ -218,6 +233,11 @@ function() {
 
                 test.getDriver().setLocation(unloadURI);
 
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.chain(function() {
                     test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 });
