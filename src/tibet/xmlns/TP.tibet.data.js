@@ -425,12 +425,9 @@ function(aContentObject, aRequest) {
     }
 
     //  Obtain a MIME type for the result and use it to obtain a result type.
+    //  Note that there might not be either a 'type' or 'resultType' attribute
+    //  on the receiver, in which case we'll just get a String result type here.
     resultType = this.getResultType(mimeType);
-
-    //  If a result type couldn't be determined, then just use String.
-    if (!TP.isType(resultType)) {
-        resultType = String;
-    }
 
     //  If the new resource result is a content object of some sort (highly
     //  likely) then we should initialize it with both the content String and
