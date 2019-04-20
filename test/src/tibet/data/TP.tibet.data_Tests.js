@@ -357,6 +357,8 @@ function() {
                 //  We've now reloaded with JSON, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
+                test.getDriver().setLocation(unloadURI);
+
                 //  ---
 
                 //  NB: By chain()ing this, it gets invoked *after* this test's
@@ -432,6 +434,8 @@ function() {
 
                 //  We've now reloaded with XML, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
+
+                test.getDriver().setLocation(unloadURI);
 
                 //  ---
 
