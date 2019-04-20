@@ -8806,15 +8806,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         signalChange = targetTPDoc.shouldSignalChange();
     }
 
-    //  If the target object is flagging changes, then we set a flag to leave
-    //  the flagged changes to true. Otherwise, we set the flag to false to
-    //  strip them out.
-    if (TP.wrap(target).shouldFlagChanges()) {
-        leaveFlaggedChanges = true;
-    } else {
-        leaveFlaggedChanges = false;
-    }
-
     path = this.get('srcPath');
 
     //  If the path has ACP expressions ('{{...}}') in it, then template them
@@ -8852,6 +8843,15 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         'Unable to set value for path: ' + path)) : 0;
 
         return this;
+    }
+
+    //  If the target object is flagging changes, then we set a flag to leave
+    //  the flagged changes to true. Otherwise, we set the flag to false to
+    //  strip them out.
+    if (TP.wrap(target).shouldFlagChanges()) {
+        leaveFlaggedChanges = true;
+    } else {
+        leaveFlaggedChanges = false;
     }
 
     //  Turn off 'DOMContentLoaded' signaling here - but capture the current
