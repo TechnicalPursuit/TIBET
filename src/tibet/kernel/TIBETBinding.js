@@ -952,10 +952,18 @@ function(aSignal) {
 
         //  If we have an aspect and the facet that we're updating is *not*
         //  'value', then that means we're updating other facets such as
-        //  'readonly', 'required', etc. This means that we just use the
-        //  singular aspect as the 'path parts' and pretend that this is a
-        //  TIBET-type path, no matter how the 'value' facet is bound.
+        //  'readonly', 'required', etc. This means that we try to compute the
+        //  path parts if our origin was a URI or just use the
+        //  singular aspect as the 'path parts'. In either case, we use a
+        //  TIBET-type path for non-'value' facets (no matter how the 'value'
+        //  facet is bound).
         if (TP.notEmpty(aspect) && facet !== 'value') {
+
+            if (originWasURI) {
+                pathParts = TP.ac(changedPrimaryLoc, '#tibet()', aspect);
+            } else {
+                pathParts = TP.ac(aspect);
+            }
 
             //  Refresh all 'branches' using the aspect from the path, since
             //  we're updating 'non value facet' bindings..
@@ -965,7 +973,7 @@ function(aSignal) {
                     aSignal.at(TP.NEWVAL),
                     boundElems,
                     TP.TIBET_PATH_TYPE,
-                    TP.ac(aspect),
+                    pathParts,
                     TP.UPDATE,
                     false,
                     sigOrigin,
