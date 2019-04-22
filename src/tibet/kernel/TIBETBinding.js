@@ -4254,15 +4254,22 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                     theVal = null;
                 }
 
-                //  Obtain the branching value and path type, given the
-                //  expression in the attribute value, the value as we've
-                //  computed it so far and whatever path type we've been able to
-                //  calculate.
-                valueAndPath = this.$getBranchValueAndPathType(
+                //  If our facet is 'value', then we obtain the branching value
+                //  and path type, given the expression in the attribute value,
+                //  the value as we've computed it so far and whatever path type
+                //  we've been able to calculate.
+                //  If the facet is not 'value', then we just use what is
+                //  supplied.
+                if (aFacet === 'value') {
+                    valueAndPath = this.$getBranchValueAndPathType(
                                                 attrVal, theVal, aPathType);
 
-                branchVal = valueAndPath.at(0);
-                pathType = valueAndPath.at(1);
+                    branchVal = valueAndPath.at(0);
+                    pathType = valueAndPath.at(1);
+                } else {
+                    branchVal = theVal;
+                    pathType = aPathType;
+                }
 
                 if (attrName === 'repeat') {
 
@@ -4518,54 +4525,64 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                                 updateIndexes);
                     }
 
-                    if (TP.isURIString(attrVal)) {
-                        branchURI = TP.uc(attrVal);
-                        if (branchURI.hasFragment()) {
-                            branchVal = branchURI.getResource().get('result');
-                        } else {
-                            branchVal = theVal;
-                        }
-                    } else {
+                    if (aFacet === 'value') {
 
-                        if (TP.isValid(theVal)) {
-                            if (TP.isArray(theVal) &&
-                                theVal.first() !== TP.NULL &&
-                                TP.isXMLNode(TP.unwrap(theVal.first()))) {
-                                theVal.unshift(TP.NULL);
+                        if (TP.isURIString(attrVal)) {
+                            branchURI = TP.uc(attrVal);
+                            if (branchURI.hasFragment()) {
+                                branchVal =
+                                    branchURI.getResource().get('result');
+                            } else {
+                                branchVal = theVal;
                             }
+                        } else {
 
-                            if (TP.isXMLNode(theVal)) {
-
-                                branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
-                                pathType = TP.ifInvalid(aPathType,
-                                                        TP.XPATH_PATH_TYPE);
-
-                            } else if (TP.isKindOf(theVal, TP.dom.Node)) {
-
-                                branchVal = theVal.get(TP.xpc(attrVal));
-                                pathType = TP.ifInvalid(aPathType,
-                                                        TP.XPATH_PATH_TYPE);
-
-                            } else if (TP.regex.JSON_POINTER.test(attrVal) ||
-                                        TP.regex.JSON_PATH.test(attrVal)) {
-                                if (!TP.isKindOf(theVal, TP.core.JSONContent)) {
-                                    theVal =
-                                        TP.core.JSONContent.construct(theVal);
+                            if (TP.isValid(theVal)) {
+                                if (TP.isArray(theVal) &&
+                                    theVal.first() !== TP.NULL &&
+                                    TP.isXMLNode(TP.unwrap(theVal.first()))) {
+                                    theVal.unshift(TP.NULL);
                                 }
 
-                                branchVal = this.$extractValue(theVal,
-                                                                attrVal,
-                                                                TP.jpc,
-                                                                null);
+                                if (TP.isXMLNode(theVal)) {
 
-                                pathType = TP.ifInvalid(aPathType,
-                                                        TP.JSON_PATH_TYPE);
-                            } else {
-                                branchVal = theVal.get(attrVal);
-                                pathType = TP.ifInvalid(aPathType,
-                                                        TP.TIBET_PATH_TYPE);
+                                    branchVal =
+                                        TP.wrap(theVal).get(TP.xpc(attrVal));
+                                    pathType = TP.ifInvalid(
+                                        aPathType, TP.XPATH_PATH_TYPE);
+
+                                } else if (TP.isKindOf(theVal, TP.dom.Node)) {
+
+                                    branchVal = theVal.get(TP.xpc(attrVal));
+                                    pathType = TP.ifInvalid(aPathType,
+                                                            TP.XPATH_PATH_TYPE);
+
+                                } else if (
+                                    TP.regex.JSON_POINTER.test(attrVal) ||
+                                            TP.regex.JSON_PATH.test(attrVal)) {
+                                    if (!TP.isKindOf(
+                                            theVal, TP.core.JSONContent)) {
+                                        theVal = TP.core.JSONContent.construct(
+                                                                        theVal);
+                                    }
+
+                                    branchVal = this.$extractValue(theVal,
+                                                                    attrVal,
+                                                                    TP.jpc,
+                                                                    null);
+
+                                    pathType = TP.ifInvalid(aPathType,
+                                                            TP.JSON_PATH_TYPE);
+                                } else {
+                                    branchVal = theVal.get(attrVal);
+                                    pathType = TP.ifInvalid(aPathType,
+                                                            TP.TIBET_PATH_TYPE);
+                                }
                             }
                         }
+                    } else {
+                        branchVal = initialVal;
+                        pathType = TP.ifInvalid(aPathType, TP.TIBET_PATH_TYPE);
                     }
 
                     if (partsNegativeSlice === 0) {
