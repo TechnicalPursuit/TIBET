@@ -661,6 +661,8 @@ function(aSignal) {
         sigSource,
         sigIndexes,
 
+        pathPieces,
+
         boundAttrNodes,
         attrs,
         attrVal,
@@ -960,9 +962,9 @@ function(aSignal) {
         if (TP.notEmpty(aspect) && facet !== 'value') {
 
             if (originWasURI) {
-                pathParts = TP.ac(changedPrimaryLoc, '#tibet()', aspect);
+                pathPieces = TP.ac(changedPrimaryLoc, '#tibet()', aspect);
             } else {
-                pathParts = TP.ac(aspect);
+                pathPieces = TP.ac(aspect);
             }
 
             //  Refresh all 'branches' using the aspect from the path, since
@@ -973,7 +975,7 @@ function(aSignal) {
                     aSignal.at(TP.NEWVAL),
                     boundElems,
                     TP.TIBET_PATH_TYPE,
-                    pathParts,
+                    pathPieces,
                     TP.UPDATE,
                     false,
                     sigOrigin,
