@@ -662,6 +662,9 @@ function(aValue) {
         valJS,
 
         schemaStr,
+
+        coerceTypes,
+
         results,
         typeName,
 
@@ -712,6 +715,8 @@ function(aValue) {
     //  that type.
     schemaStr = TP.json(jsonSchema);
 
+    coerceTypes = false;
+
     //  Global regexp needs a reset
     TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT.lastIndex = 0;
     while (TP.isValid(results = TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT.exec(
@@ -720,6 +725,60 @@ function(aValue) {
 
         //  If the extracted type name is a JSON Schema built in, move on.
         if (/array|boolean|integer|number|null|object|string/.test(typeName)) {
+
+            //  If the type name is 'integer', then install a type coercion
+            //  Function that will try to parseInt the value to convert it into
+            //  a Number.
+            if (typeName === 'integer') {
+                schemaValidator.addTypeCoercion(
+                    'integer',
+                    function(val) {
+                        var intVal;
+
+                        intVal = parseInt(val, 10);
+
+                        //  A value like '12W' will parse into '12', so we need
+                        //  to check to make sure the parsed value's length and
+                        //  the original value's length are the same.
+                        if (intVal.toString().length ===
+                            val.toString().length) {
+                            return intVal;
+                        }
+
+                        return null;
+                    });
+
+                //  Flip the flag that tells the validation call below that we
+                //  want it to coerce types.
+                coerceTypes = true;
+            }
+
+            //  If the type name is 'integer', then install a type coercion
+            //  Function that will try to parseFloat the value to convert it
+            //  into a Number.
+            if (typeName === 'number') {
+                schemaValidator.addTypeCoercion(
+                    'number',
+                    function(val) {
+                        var floatVal;
+
+                        //  A value like '12.5W' will parse into '12.5', so we
+                        //  need to check to make sure the parsed value's length
+                        //  and the original value's length are the same.
+                        floatVal = parseFloat(val);
+                        if (floatVal.toString().length ===
+                            val.toString().length) {
+                            return floatVal;
+                        }
+
+                        return null;
+                    });
+
+                //  Flip the flag that tells the validation call below that we
+                //  want it to coerce types.
+                coerceTypes = true;
+            }
+
             continue;
         }
 
@@ -744,7 +803,12 @@ function(aValue) {
 
     //  Invoke the schema validator. It will return a non-empty 'errors' object
     //  if there are errors.
-    errors = schemaValidator.validate(jsonSchema, valJS);
+    errors = schemaValidator.validate(
+                    jsonSchema,
+                    valJS,
+                    {
+                        useCoerce: coerceTypes
+                    });
 
     if (TP.notEmpty(errors)) {
 
