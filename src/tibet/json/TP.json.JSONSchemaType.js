@@ -812,7 +812,9 @@ function(aValue) {
 
     if (TP.notEmpty(errors)) {
 
-        this.raise('TP.sig.InvalidObject', TP.sc('Errors: ', TP.json(errors)));
+        //  TODO: For now, we don't log these messages. When we switch out this
+        //  JSON validator for a different one with better error messages, we'll
+        //  try to capture them.
 
         return false;
     }
