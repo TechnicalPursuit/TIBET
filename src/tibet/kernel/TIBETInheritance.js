@@ -6409,6 +6409,57 @@ This pattern is evident in as/from for type conversion as well.
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getValidationErrorEntries',
+function() {
+
+    /**
+     * @method getValidationErrorEntries
+     * @summary Returns an Array of the last validation error entries that were
+     *     provided by the validation machinery when it ran.
+     * @description Because the 'validate' method machinery only returns true or
+     *     false depending on whether the object validates by the type supplied.
+     *     But some validation machinery can also produce error messages that
+     *     are useful for displaying to the user or for logging. This
+     *     'out-of-band' data needs to be stored somewhere and it will be stored
+     *     here.
+     * @returns {TP.core.Hash[]} An array of the most recent type validation
+     *     entries. At a minimum these will have a 'timestamp' field (a Date)
+     *     and a message (a String).
+     */
+
+    return TP.sys.$$validationErrorEntries;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('addValidationErrorEntry',
+function(anEntry) {
+
+    /**
+     * @method addValidationErrorEntry
+     * @summary Adds a validation entry to the overall Array of validation error
+     *     entries, timestamping it by putting the current Date.now() value in a
+     *     'timestamp' slot before adding it to the array.
+     * @param {TP.core.Hash} anEntry The validation error entry.
+     */
+
+    var validationErrorEntries;
+
+    anEntry.atPut('timestamp', Date.now());
+
+    validationErrorEntries = TP.sys.$$validationErrorEntries;
+    if (TP.notValid(validationErrorEntries)) {
+        validationErrorEntries = TP.ac();
+        TP.sys.$$validationErrorEntries = validationErrorEntries;
+    }
+
+    validationErrorEntries.push(anEntry);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('isa',
 function(aType) {
 
@@ -7092,11 +7143,16 @@ function(anObject, constraints) {
         }
     }
 
+    if (TP.notEmpty(errors)) {
+        errors.forEach(
+            function(aMessage) {
+                TP.sys.addValidationErrorEntry(
+                    TP.hc('message', aMessage));
+            });
+    }
+
     //  If there were errors, report them and return false
     if (TP.notEmpty(errors)) {
-
-        this.raise('TP.sig.InvalidObject', TP.sc('Errors: ', TP.json(errors)));
-
         return false;
     }
 
