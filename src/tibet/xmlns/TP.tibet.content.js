@@ -155,11 +155,13 @@ function(aRequest) {
                 function(aTPElem) {
                     var name,
                         descriptor,
-                        val;
+                        val,
+                        typeVal;
 
                     if (TP.isEmpty(name = aTPElem.getAttribute('name'))) {
-                        //  TODO: Raise exception
-                        return;
+                        return this.raise(
+                                    'TP.sig.InvalidParameter',
+                                    'Couldn\'t find an aspect name');
                     }
 
                     descriptor = {};
@@ -192,11 +194,12 @@ function(aRequest) {
                     descriptor.valid = {};
 
                     if (TP.notEmpty(val = aTPElem.getAttribute('dataType'))) {
-                        if (!TP.isType(val = TP.sys.getTypeByName(val))) {
-                            //  TODO: Raise exception
-                            return;
+                        if (!TP.isType(typeVal = TP.sys.getTypeByName(val))) {
+                            return this.raise(
+                                        'TP.sig.InvalidType',
+                                        'Couldn\'t find the type: ' + val);
                         }
-                        descriptor.valid.dataType = val;
+                        descriptor.valid.dataType = typeVal;
                     }
 
                     if (TP.notEmpty(val =
@@ -292,7 +295,7 @@ function(aRequest) {
                     //  Define the attribute on the type, using the descriptor
                     //  that we just built up.
                     type.Inst.defineAttribute(name, val, descriptor);
-                });
+                }.bind(this));
     }
 
     return;
