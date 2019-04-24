@@ -9154,6 +9154,11 @@ function(aspectName, facetName) {
             //  and so it's "still in a required-ness state").
             if (TP.isTrue(val)) {
                 facetValue = TP.isEmpty(this.get(aspectName));
+            } else if (TP.notValid(val)) {
+                //  If the actual value is not valid (i.e. null or undefined),
+                //  then it can be considered missing - in which case a facet of
+                //  TP.REQUIRED would be false.
+                facetValue = false;
             }
 
             break;
@@ -9179,10 +9184,19 @@ function(aspectName, facetName) {
                 val = this.get(aspectName);
             }
 
-            //  The validity facet is computed by a method, since it is a more
-            //  complex calculation than any of the other facets.
-            facetValue = this.getType().validateConstraintsOn(
-                                                    val, facetSetting);
+            //  If the actual value is not valid (i.e. null or undefined), then
+            //  it can be considered missing - in which case a facet of
+            //  TP.VALID would be true  Therefore, missing values are *true*
+            //  insofar as data type validity. In the case of a facet of
+            //  TP.REQUIRED, then it's considered false. See above.
+            if (TP.notValid(val)) {
+                facetValue = true;
+            } else {
+                //  The validity facet is computed by a method, since it is a
+                //  more complex calculation than any of the other facets.
+                facetValue = this.getType().validateConstraintsOn(
+                                                        val, facetSetting);
+            }
 
             break;
 
