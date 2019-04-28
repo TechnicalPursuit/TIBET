@@ -102,6 +102,14 @@ helpers.linkup_app = function(make, options) {
     list.forEach(function(item) {
         var linksrc,
             linkdest,
+
+            linksrcdir,
+            linkdestdir,
+
+            srcdir,
+
+            rellinksrc,
+
             lnerr;
 
         if (item.indexOf('tibet') === 0) {
@@ -117,7 +125,26 @@ helpers.linkup_app = function(make, options) {
             return;
         }
 
+        /*
         sh.ln(lnflags, linksrc, linkdest);
+        */
+
+        //  Grab the directories of the link source and destination.
+        linksrcdir = path.dirname(linksrc);
+        linkdestdir = path.dirname(linkdest);
+
+        //  Compute a relative path between the two directories
+        srcdir = path.relative(linkdestdir, linksrcdir);
+
+        //  Join the supplied item onto the relative source directory. This
+        //  will produce a relative path to the destination.
+        rellinksrc = path.join(srcdir, item);
+
+        //  NB: The source path to the command here is used as a raw argument.
+        //  In other words, the '../..' is *not* evaluated against the current
+        //  working directory. It is used as is to create the link.
+        fs.symlinkSync(rellinksrc, linkdest);
+
         lnerr = sh.error();
         if (lnerr) {
             throw new Error('Error linking \'' + linksrc + '\': ' + lnerr);

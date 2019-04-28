@@ -27,11 +27,13 @@
 
 var CLI,
     Cmd,
+    fs,
     path;
 
 
 CLI = require('./_cli');
 path = require('path');
+fs = require('fs');
 
 //  ---
 //  Type Construction
@@ -133,10 +135,20 @@ Cmd.prototype.execute = function() {
         //  to avoid pointing down into node_modules or having
         //  node_modules be a location potentially pushed to a remote
         //  deployment target.
+
+        /*
         sh.ln(lnflags, path.join(
             CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
             path.join(
             CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
+        */
+
+        //  NB: The source path to the command here is used as a raw argument.
+        //  In other words, the '../..' is *not* evaluated against the current
+        //  working directory. It is used as is to create the link.
+        fs.symlinkSync('../../node_modules/tibet',
+                        'public/TIBET-INF/tibet');
+
         lnerr = sh.error();
         if (lnerr) {
             cmd.error('Error linking library launch directory: ' +
