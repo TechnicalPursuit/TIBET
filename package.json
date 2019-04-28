@@ -89,7 +89,6 @@
         "open-editor": "^1.2.0",
         "opener": "^1.5.1",
         "permessage-deflate": "^0.1.6",
-        "pouchdb": "^7.0.0",
         "pouchdb-all-dbs": "^1.0.2",
         "readline-sync": "^1.4.9",
         "resize-observer-polyfill": "github:TechnicalPursuit/resize-observer-polyfill",

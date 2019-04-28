@@ -1,6 +1,6 @@
-// PouchDB 7.0.0
+// PouchDB 7.0.0-prerelease
 // 
-// (c) 2012-2018 Dale Harvey and the PouchDB team
+// (c) 2012-2019 Dale Harvey and the PouchDB team
 // PouchDB may be freely distributed under the Apache license, version 2.0.
 // For all details and documentation:
 // http://pouchdb.com
@@ -1978,13 +1978,110 @@ exports.parse = function (str) {
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var getArguments = _interopDefault(_dereq_(1));
-var nextTick = _interopDefault(_dereq_(3));
-var events = _dereq_(2);
-var inherits = _interopDefault(_dereq_(4));
-var Md5 = _interopDefault(_dereq_(6));
+var immediate = _interopDefault(_dereq_(3));
 var uuidV4 = _interopDefault(_dereq_(7));
+var Md5 = _interopDefault(_dereq_(6));
 var vuvuzela = _interopDefault(_dereq_(12));
+var getArguments = _interopDefault(_dereq_(1));
+var inherits = _interopDefault(_dereq_(4));
+var events = _dereq_(2);
+
+function mangle(key) {
+  return '$' + key;
+}
+function unmangle(key) {
+  return key.substring(1);
+}
+function Map$1() {
+  this._store = {};
+}
+Map$1.prototype.get = function (key) {
+  var mangled = mangle(key);
+  return this._store[mangled];
+};
+Map$1.prototype.set = function (key, value) {
+  var mangled = mangle(key);
+  this._store[mangled] = value;
+  return true;
+};
+Map$1.prototype.has = function (key) {
+  var mangled = mangle(key);
+  return mangled in this._store;
+};
+Map$1.prototype["delete"] = function (key) {
+  var mangled = mangle(key);
+  var res = mangled in this._store;
+  delete this._store[mangled];
+  return res;
+};
+Map$1.prototype.forEach = function (cb) {
+  var keys = Object.keys(this._store);
+  for (var i = 0, len = keys.length; i < len; i++) {
+    var key = keys[i];
+    var value = this._store[key];
+    key = unmangle(key);
+    cb(value, key);
+  }
+};
+Object.defineProperty(Map$1.prototype, 'size', {
+  get: function () {
+    return Object.keys(this._store).length;
+  }
+});
+
+function Set$1(array) {
+  this._store = new Map$1();
+
+  // init with an array
+  if (array && Array.isArray(array)) {
+    for (var i = 0, len = array.length; i < len; i++) {
+      this.add(array[i]);
+    }
+  }
+}
+Set$1.prototype.add = function (key) {
+  return this._store.set(key, true);
+};
+Set$1.prototype.has = function (key) {
+  return this._store.has(key);
+};
+Set$1.prototype.forEach = function (cb) {
+  this._store.forEach(function (value, key) {
+    cb(key);
+  });
+};
+Object.defineProperty(Set$1.prototype, 'size', {
+  get: function () {
+    return this._store.size;
+  }
+});
+
+/* global Map,Set,Symbol */
+// Based on https://kangax.github.io/compat-table/es6/ we can sniff out
+// incomplete Map/Set implementations which would otherwise cause our tests to fail.
+// Notably they fail in IE11 and iOS 8.4, which this prevents.
+function supportsMapAndSet() {
+  if (typeof Symbol === 'undefined' || typeof Map === 'undefined' || typeof Set === 'undefined') {
+    return false;
+  }
+  var prop = Object.getOwnPropertyDescriptor(Map, Symbol.species);
+  return prop && 'get' in prop && Map[Symbol.species] === Map;
+}
+
+// based on https://github.com/montagejs/collections
+
+var ExportedSet;
+var ExportedMap;
+
+{
+  if (supportsMapAndSet()) { // prefer built-in Map/Set
+    ExportedSet = Set;
+    ExportedMap = Map;
+  } else { // fall back to our polyfill
+    ExportedSet = Set$1;
+    ExportedMap = Map$1;
+  }
+}
 
 function isBinaryObject(object) {
   return (typeof ArrayBuffer !== 'undefined' && object instanceof ArrayBuffer) ||
@@ -2177,103 +2274,6 @@ function adapterFun(name, callback) {
     }
     return callback.apply(this, args);
   }));
-}
-
-function mangle(key) {
-  return '$' + key;
-}
-function unmangle(key) {
-  return key.substring(1);
-}
-function Map$1() {
-  this._store = {};
-}
-Map$1.prototype.get = function (key) {
-  var mangled = mangle(key);
-  return this._store[mangled];
-};
-Map$1.prototype.set = function (key, value) {
-  var mangled = mangle(key);
-  this._store[mangled] = value;
-  return true;
-};
-Map$1.prototype.has = function (key) {
-  var mangled = mangle(key);
-  return mangled in this._store;
-};
-Map$1.prototype["delete"] = function (key) {
-  var mangled = mangle(key);
-  var res = mangled in this._store;
-  delete this._store[mangled];
-  return res;
-};
-Map$1.prototype.forEach = function (cb) {
-  var keys = Object.keys(this._store);
-  for (var i = 0, len = keys.length; i < len; i++) {
-    var key = keys[i];
-    var value = this._store[key];
-    key = unmangle(key);
-    cb(value, key);
-  }
-};
-Object.defineProperty(Map$1.prototype, 'size', {
-  get: function () {
-    return Object.keys(this._store).length;
-  }
-});
-
-function Set$1(array) {
-  this._store = new Map$1();
-
-  // init with an array
-  if (array && Array.isArray(array)) {
-    for (var i = 0, len = array.length; i < len; i++) {
-      this.add(array[i]);
-    }
-  }
-}
-Set$1.prototype.add = function (key) {
-  return this._store.set(key, true);
-};
-Set$1.prototype.has = function (key) {
-  return this._store.has(key);
-};
-Set$1.prototype.forEach = function (cb) {
-  this._store.forEach(function (value, key) {
-    cb(key);
-  });
-};
-Object.defineProperty(Set$1.prototype, 'size', {
-  get: function () {
-    return this._store.size;
-  }
-});
-
-/* global Map,Set,Symbol */
-// Based on https://kangax.github.io/compat-table/es6/ we can sniff out
-// incomplete Map/Set implementations which would otherwise cause our tests to fail.
-// Notably they fail in IE11 and iOS 8.4, which this prevents.
-function supportsMapAndSet() {
-  if (typeof Symbol === 'undefined' || typeof Map === 'undefined' || typeof Set === 'undefined') {
-    return false;
-  }
-  var prop = Object.getOwnPropertyDescriptor(Map, Symbol.species);
-  return prop && 'get' in prop && Map[Symbol.species] === Map;
-}
-
-// based on https://github.com/montagejs/collections
-
-var ExportedSet;
-var ExportedMap;
-
-{
-  if (supportsMapAndSet()) { // prefer built-in Map/Set
-    ExportedSet = Set;
-    ExportedMap = Map;
-  } else { // fall back to our polyfill
-    ExportedSet = Set$1;
-    ExportedMap = Map$1;
-  }
 }
 
 // like underscore/lodash _.pick()
@@ -2485,7 +2485,7 @@ Changes.prototype.addListener = function (dbName, id, db, opts) {
       }
     }).on('complete', function () {
       if (inprogress === 'waiting') {
-        nextTick(eventFunction);
+        immediate(eventFunction);
       }
       inprogress = false;
     }).on('error', onError);
@@ -3075,7 +3075,7 @@ function stringMd5(string) {
   return Md5.hash(string);
 }
 
-function rev$$1(doc, deterministic_revs) {
+function rev(doc, deterministic_revs) {
   var clonedDoc = clone(doc);
   if (!deterministic_revs) {
     return uuidV4.v4().replace(/-/g, '').toLowerCase();
@@ -3788,14 +3788,14 @@ function computeHeight(revs) {
   var height = {};
   var edges = [];
   traverseRevTree(revs, function (isLeaf, pos, id, prnt) {
-    var rev = pos + "-" + id;
+    var rev$$1 = pos + "-" + id;
     if (isLeaf) {
-      height[rev] = 0;
+      height[rev$$1] = 0;
     }
     if (prnt !== undefined) {
-      edges.push({from: prnt, to: rev});
+      edges.push({from: prnt, to: rev$$1});
     }
-    return rev;
+    return rev$$1;
   });
 
   edges.reverse();
@@ -3841,7 +3841,7 @@ function doNextCompaction(self) {
       } else {
         callback(null, res);
       }
-      nextTick(function () {
+      immediate(function () {
         self._compactionQueue.shift();
         if (self._compactionQueue.length) {
           doNextCompaction(self);
@@ -3917,7 +3917,7 @@ AbstractPouchDB.prototype.put = adapterFun('put', function (doc, opts, cb) {
     var oldRevNum = parseInt(parts[0], 10);
 
     var newRevNum = oldRevNum + 1;
-    var newRevId = rev$$1();
+    var newRevId = rev();
 
     doc._revisions = {
       start: newRevNum,
@@ -3936,20 +3936,20 @@ AbstractPouchDB.prototype.put = adapterFun('put', function (doc, opts, cb) {
 });
 
 AbstractPouchDB.prototype.putAttachment =
-  adapterFun('putAttachment', function (docId, attachmentId, rev,
+  adapterFun('putAttachment', function (docId, attachmentId, rev$$1,
                                               blob, type) {
   var api = this;
   if (typeof type === 'function') {
     type = blob;
-    blob = rev;
-    rev = null;
+    blob = rev$$1;
+    rev$$1 = null;
   }
   // Lets fix in https://github.com/pouchdb/pouchdb/issues/3267
   /* istanbul ignore if */
   if (typeof type === 'undefined') {
     type = blob;
-    blob = rev;
-    rev = null;
+    blob = rev$$1;
+    rev$$1 = null;
   }
   if (!type) {
     guardedConsole('warn', 'Attachment', attachmentId, 'on document', docId, 'is missing content_type');
@@ -3967,7 +3967,7 @@ AbstractPouchDB.prototype.putAttachment =
   }
 
   return api.get(docId).then(function (doc) {
-    if (doc._rev !== rev) {
+    if (doc._rev !== rev$$1) {
       throw createError(REV_CONFLICT);
     }
 
@@ -3984,7 +3984,7 @@ AbstractPouchDB.prototype.putAttachment =
 });
 
 AbstractPouchDB.prototype.removeAttachment =
-  adapterFun('removeAttachment', function (docId, attachmentId, rev,
+  adapterFun('removeAttachment', function (docId, attachmentId, rev$$1,
                                                  callback) {
   var self = this;
   self.get(docId, function (err, obj) {
@@ -3993,7 +3993,7 @@ AbstractPouchDB.prototype.removeAttachment =
       callback(err);
       return;
     }
-    if (obj._rev !== rev) {
+    if (obj._rev !== rev$$1) {
       callback(createError(REV_CONFLICT));
       return;
     }
@@ -4070,8 +4070,8 @@ AbstractPouchDB.prototype.revsDiff =
     var missingForId = req[id].slice(0);
     traverseRevTree(rev_tree, function (isLeaf, pos, revHash, ctx,
       opts) {
-        var rev = pos + '-' + revHash;
-        var idx = missingForId.indexOf(rev);
+        var rev$$1 = pos + '-' + revHash;
+        var idx = missingForId.indexOf(rev$$1);
         if (idx === -1) {
           return;
         }
@@ -4079,14 +4079,14 @@ AbstractPouchDB.prototype.revsDiff =
         missingForId.splice(idx, 1);
         /* istanbul ignore if */
         if (opts.status !== 'available') {
-          addToMissing(id, rev);
+          addToMissing(id, rev$$1);
         }
       });
 
     // Traversing the tree is synchronous, so now `missingForId` contains
     // revisions that were not found in the tree
-    missingForId.forEach(function (rev) {
-      addToMissing(id, rev);
+    missingForId.forEach(function (rev$$1) {
+      addToMissing(id, rev$$1);
     });
   }
 
@@ -4139,16 +4139,16 @@ AbstractPouchDB.prototype.compactDocument =
     var height = computeHeight(revTree);
     var candidates = [];
     var revs = [];
-    Object.keys(height).forEach(function (rev) {
-      if (height[rev] > maxHeight) {
-        candidates.push(rev);
+    Object.keys(height).forEach(function (rev$$1) {
+      if (height[rev$$1] > maxHeight) {
+        candidates.push(rev$$1);
       }
     });
 
     traverseRevTree(revTree, function (isLeaf, pos, revHash, ctx, opts) {
-      var rev = pos + '-' + revHash;
-      if (opts.status === 'available' && candidates.indexOf(rev) !== -1) {
-        revs.push(rev);
+      var rev$$1 = pos + '-' + revHash;
+      if (opts.status === 'available' && candidates.indexOf(rev$$1) !== -1) {
+        revs.push(rev$$1);
       }
     });
     self._doCompaction(docId, revs, callback);
@@ -4338,18 +4338,18 @@ AbstractPouchDB.prototype.get = adapterFun('get', function (id, opts, cb) {
       if (opts.revs) {
         doc._revisions = {
           start: (path.pos + path.ids.length) - 1,
-          ids: path.ids.map(function (rev) {
-            return rev.id;
+          ids: path.ids.map(function (rev$$1) {
+            return rev$$1.id;
           })
         };
       }
       if (opts.revs_info) {
         var pos =  path.pos + path.ids.length;
-        doc._revs_info = path.ids.map(function (rev) {
+        doc._revs_info = path.ids.map(function (rev$$1) {
           pos--;
           return {
-            rev: pos + '-' + rev.id,
-            status: rev.opts.status
+            rev: pos + '-' + rev$$1.id,
+            status: rev$$1.opts.status
           };
         });
       }
@@ -4961,7 +4961,7 @@ PouchDB.fetch = function (url, opts) {
 };
 
 // managed automatically by set-version.js
-var version = "7.0.0";
+var version = "7.0.0-prerelease";
 
 // this would just be "return doc[field]", but fields
 // can be "deep" due to dot notation
@@ -5151,6 +5151,37 @@ function mergeEq(value, fieldMatchers) {
   fieldMatchers.$eq = value;
 }
 
+//#7458: execute function mergeAndedSelectors on nested $and
+function mergeAndedSelectorsNested(obj) {
+    for (var prop in obj) {
+        if (Array.isArray(obj)) {
+            for (var i in obj) {
+                if (obj[i]['$and']) {
+                    obj[i] = mergeAndedSelectors(obj[i]['$and']);
+                }
+            }
+        }
+        var value = obj[prop];
+        if (typeof value === 'object') {
+            mergeAndedSelectorsNested(value); // <- recursive call
+        }
+    }
+    return obj;
+}
+
+//#7458: determine id $and is present in selector (at any level)
+function isAndInSelector(obj, isAnd) {
+    for (var prop in obj) {
+        if (prop === '$and') {
+            isAnd = true;
+        }
+        var value = obj[prop];
+        if (typeof value === 'object') {
+            isAnd = isAndInSelector(value, isAnd); // <- recursive call
+        }
+    }
+    return isAnd;
+}
 
 //
 // normalize the selector
@@ -5158,10 +5189,14 @@ function mergeEq(value, fieldMatchers) {
 function massageSelector(input) {
   var result = clone(input);
   var wasAnded = false;
-  if ('$and' in result) {
-    result = mergeAndedSelectors(result['$and']);
-    wasAnded = true;
-  }
+    //#7458: if $and is present in selector (at any level) merge nested $and
+    if (isAndInSelector(result, false)) {
+        result = mergeAndedSelectorsNested(result);
+        if ('$and' in result) {
+            result = mergeAndedSelectors(result['$and']);
+        }
+        wasAnded = true;
+    }
 
   ['$or', '$nor'].forEach(function (orOrNor) {
     if (orOrNor in result) {
@@ -6052,13 +6087,13 @@ var dataWords = toObject([
   '_replication_stats'
 ]);
 
-function parseRevisionInfo(rev) {
-  if (!/^\d+-./.test(rev)) {
+function parseRevisionInfo(rev$$1) {
+  if (!/^\d+-./.test(rev$$1)) {
     return createError(INVALID_REV);
   }
-  var idx = rev.indexOf('-');
-  var left = rev.substring(0, idx);
-  var right = rev.substring(idx + 1);
+  var idx = rev$$1.indexOf('-');
+  var left = rev$$1.substring(0, idx);
+  var right = rev$$1.substring(idx + 1);
   return {
     prefix: parseInt(left, 10),
     id: right
@@ -6102,7 +6137,7 @@ function parseDoc(doc, newEdits, dbOpts) {
     if (!doc._id) {
       doc._id = uuid();
     }
-    newRevId = rev$$1(doc, dbOpts.deterministic_revs);
+    newRevId = rev(doc, dbOpts.deterministic_revs);
     if (doc._rev) {
       revInfo = parseRevisionInfo(doc._rev);
       if (revInfo.error) {
@@ -6652,9 +6687,9 @@ function compactRevs(revs, docId, txn) {
     });
   }
 
-  revs.forEach(function (rev) {
+  revs.forEach(function (rev$$1) {
     var index = seqStore.index('_doc_id_rev');
-    var key = docId + "::" + rev;
+    var key = docId + "::" + rev$$1;
     index.getKey(key).onsuccess = function (e) {
       var seq = e.target.result;
       if (typeof seq !== 'number') {
@@ -7480,7 +7515,7 @@ function enqueueTask(action, callback, PouchDB) {
     action(function runCallback(err, res) {
       tryCode(callback, err, res, PouchDB);
       running = false;
-      nextTick(function runNext() {
+      immediate(function runNext() {
         applyNext(PouchDB);
       });
     });
@@ -7761,9 +7796,9 @@ function init(api, opts, callback) {
         var metadata = cursor.value;
         var docId = metadata.id;
         var local = isLocalId(docId);
-        var rev = winningRev(metadata);
+        var rev$$1 = winningRev(metadata);
         if (local) {
-          var docIdRev = docId + "::" + rev;
+          var docIdRev = docId + "::" + rev$$1;
           // remove all seq entries
           // associated with this docId
           var start = docId + "::";
@@ -7964,20 +7999,20 @@ function init(api, opts, callback) {
         return finish();
       }
 
-      var rev;
+      var rev$$1;
       if (!opts.rev) {
-        rev = metadata.winningRev;
+        rev$$1 = metadata.winningRev;
         var deleted = isDeleted(metadata);
         if (deleted) {
           err = createError(MISSING_DOC, "deleted");
           return finish();
         }
       } else {
-        rev = opts.latest ? latest(opts.rev, metadata) : opts.rev;
+        rev$$1 = opts.latest ? latest(opts.rev, metadata) : opts.rev;
       }
 
       var objectStore = txn.objectStore(BY_SEQ_STORE);
-      var key = metadata.id + '::' + rev;
+      var key = metadata.id + '::' + rev$$1;
 
       objectStore.index('_doc_id_rev').get(key).onsuccess = function (e) {
         doc = e.target.result;
@@ -8098,8 +8133,8 @@ function init(api, opts, callback) {
       var metadata = decodeMetadata(event.target.result);
       traverseRevTree(metadata.rev_tree, function (isLeaf, pos,
                                                          revHash, ctx, opts) {
-        var rev = pos + '-' + revHash;
-        if (revs.indexOf(rev) !== -1) {
+        var rev$$1 = pos + '-' + revHash;
+        if (revs.indexOf(rev$$1) !== -1) {
           opts.status = 'missing';
         }
       });
@@ -8267,7 +8302,7 @@ function init(api, opts, callback) {
   if (cached) {
     idb = cached.idb;
     api._meta = cached.global;
-    return nextTick(function () {
+    return immediate(function () {
       callback(null, api);
     });
   }
@@ -8503,7 +8538,7 @@ var supportsBulkGetMap = {};
 
 function readAttachmentsAsBlobOrBuffer(row) {
   var doc = row.doc || row.ok;
-  var atts = doc._attachments;
+  var atts = doc && doc._attachments;
   if (!atts) {
     return;
   }
@@ -8629,6 +8664,8 @@ function HttpPouch(opts, callback) {
     options = options || {};
     options.headers = options.headers || new h();
 
+    options.credentials = 'include';
+
     if (opts.auth || host.auth) {
       var nAuth = opts.auth || host.auth;
       var str = nAuth.username + ':' + nAuth.password;
@@ -8748,7 +8785,7 @@ function HttpPouch(opts, callback) {
     return setupPromise;
   }
 
-  nextTick(function () {
+  immediate(function () {
     callback(null, api);
   });
 
@@ -8762,12 +8799,13 @@ function HttpPouch(opts, callback) {
   api.id = adapterFun$$1('id', function (callback) {
     ourFetch(genUrl(host, '')).then(function (response) {
       return response.json();
+    })["catch"](function () {
+      return {};
     }).then(function (result) {
+      // Bad response or missing `uuid` should not prevent ID generation.
       var uuid$$1 = (result && result.uuid) ?
           (result.uuid + host.db) : genDBUrl(host, '');
       callback(null, uuid$$1);
-    })["catch"](function (err) {
-      callback(err);
     });
   });
 
@@ -8896,7 +8934,10 @@ function HttpPouch(opts, callback) {
 
   api.fetch = function (path, options) {
     return setup().then(function () {
-      return ourFetch(genDBUrl(host, path), options);
+      var url = path.substring(0, 1) === '/' ?
+        genUrl(host, path.substring(1)) :
+        genDBUrl(host, path);
+      return ourFetch(url, options);
     });
   };
 
@@ -9050,8 +9091,8 @@ function HttpPouch(opts, callback) {
       }
     }
 
-    var rev = (doc._rev || opts.rev);
-    var url = genDBUrl(host, encodeDocId(doc._id)) + '?rev=' + rev;
+    var rev$$1 = (doc._rev || opts.rev);
+    var url = genDBUrl(host, encodeDocId(doc._id)) + '?rev=' + rev$$1;
 
     fetchJSON(url, {method: 'DELETE'}, cb)["catch"](cb);
   });
@@ -9097,10 +9138,10 @@ function HttpPouch(opts, callback) {
   // Remove the attachment given by the id and rev
   api.removeAttachment =  adapterFun$$1('removeAttachment', function (docId,
                                                                    attachmentId,
-                                                                   rev,
+                                                                   rev$$1,
                                                                    callback) {
     var url = genDBUrl(host, encodeDocId(docId) + '/' +
-                       encodeAttachmentId(attachmentId)) + '?rev=' + rev;
+                       encodeAttachmentId(attachmentId)) + '?rev=' + rev$$1;
     fetchJSON(url, {method: 'DELETE'}, callback)["catch"](callback);
   });
 
@@ -9108,18 +9149,18 @@ function HttpPouch(opts, callback) {
   // to the document with the given id, the revision given by rev, and
   // add it to the database given by host.
   api.putAttachment = adapterFun$$1('putAttachment', function (docId, attachmentId,
-                                                            rev, blob,
+                                                            rev$$1, blob,
                                                             type, callback) {
     if (typeof type === 'function') {
       callback = type;
       type = blob;
-      blob = rev;
-      rev = null;
+      blob = rev$$1;
+      rev$$1 = null;
     }
     var id = encodeDocId(docId) + '/' + encodeAttachmentId(attachmentId);
     var url = genDBUrl(host, id);
-    if (rev) {
-      url += '?rev=' + rev;
+    if (rev$$1) {
+      url += '?rev=' + rev$$1;
     }
 
     if (typeof blob === 'string') {
@@ -9489,7 +9530,7 @@ function HttpPouch(opts, callback) {
 
       if ((opts.continuous && !(limit && leftToFetch <= 0)) || !finished) {
         // Queue a call to fetch again with the newest sequence number
-        nextTick(function () { fetchData(lastFetchedSeq, fetched); });
+        immediate(function () { fetchData(lastFetchedSeq, fetched); });
       } else {
         // We're done, call the callback
         opts.complete(null, results);
@@ -9591,11 +9632,11 @@ inherits(BuiltInError, Error);
 function promisedCallback(promise, callback) {
   if (callback) {
     promise.then(function (res) {
-      nextTick(function () {
+      immediate(function () {
         callback(null, res);
       });
     }, function (reason) {
-      nextTick(function () {
+      immediate(function () {
         callback(reason);
       });
     });
@@ -10711,7 +10752,7 @@ function createAbstractMapReduce(localDocName, mapper, reducer, ddocValidator) {
         return createViewPromise.then(function (view) {
           if (opts.stale === 'ok' || opts.stale === 'update_after') {
             if (opts.stale === 'update_after') {
-              nextTick(function () {
+              immediate(function () {
                 updateView(view);
               });
             }
@@ -10851,8 +10892,8 @@ var mapreduce = {
   viewCleanup: viewCleanup
 };
 
-function isGenOne$1(rev) {
-  return /^1-/.test(rev);
+function isGenOne$1(rev$$1) {
+  return /^1-/.test(rev$$1);
 }
 
 function fileHasChanged(localDoc, remoteDoc, filename) {
@@ -11568,7 +11609,7 @@ function replicate(src, target, opts, returnValue, result) {
   }
 
 
-  function processPendingBatch(immediate) {
+  function processPendingBatch(immediate$$1) {
     if (pendingBatch.changes.length === 0) {
       if (batches.length === 0 && !currentBatch) {
         if ((continuous && changesOpts.live) || changesCompleted) {
@@ -11582,7 +11623,7 @@ function replicate(src, target, opts, returnValue, result) {
       return;
     }
     if (
-      immediate ||
+      immediate$$1 ||
       changesCompleted ||
       pendingBatch.changes.length >= batch_size
     ) {
@@ -11675,7 +11716,7 @@ function replicate(src, target, opts, returnValue, result) {
     }
     pendingBatch.seq = change.seq || lastSeq;
     pendingBatch.changes.push(change);
-    nextTick(function () {
+    immediate(function () {
       processPendingBatch(batches.length === 0 && changesOpts.live);
     });
   }
