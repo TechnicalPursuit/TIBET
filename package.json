@@ -49,11 +49,11 @@
         "man": "./doc/man"
     },
     "dependencies": {
-        "ace-builds": "^1.4.3",
+        "ace-builds": "^1.4.4",
         "amazon-cognito-identity-js": "^3.0.11",
         "ansi-256-colors": "^1.1.0",
         "ansi-styles": "^2.2.1",
-        "aws-sdk": "^2.437.0",
+        "aws-sdk": "^2.444.0",
         "bluebird": "^3.5.4",
         "bower": "^1.8.8",
         "chokidar": "^2.1.5",
@@ -114,7 +114,7 @@
         "mocha": "^5.2.0",
         "node-sass": "^4.11.0",
         "puppeteer": "^1.14.0",
-        "sinon": "^7.3.1",
+        "sinon": "^7.3.2",
         "stylelint": "^9.10.1",
         "stylelint-config-standard": "^18.3.0",
         "syn": "github:TechnicalPursuit/syn"
