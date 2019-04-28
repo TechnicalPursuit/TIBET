@@ -120,8 +120,8 @@
         "syn": "github:TechnicalPursuit/syn"
     },
     "engines": {
-        "node": ">=6",
-        "npm": ">=3"
+        "node": ">=8",
+        "npm": ">=5"
     },
     "scripts": {
         "preinstall": "npm install -g bower --allow-root",
