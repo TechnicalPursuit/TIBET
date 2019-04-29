@@ -28,8 +28,6 @@
         "request": "*",
         "require-dir": "*",
         "serve-static": "*",
-        "stylelint": "^9.4.0",
-        "stylelint-config-standard": "^18.2.0",
         "sessionstore": "github:TechnicalPursuit/sessionstore",
         "shelljs": "github:TechnicalPursuit/shelljs",
         "winston": "github:TechnicalPursuit/winston"

@@ -4,9 +4,7 @@
     "dependencies": {
         "marked-man": "^0.2.1",
         "minimist": "*",
-        "shelljs": "TechnicalPursuit/shelljs",
-        "stylelint": "^9.4.0",
-        "stylelint-config-standard": "^18.2.0"
+        "shelljs": "TechnicalPursuit/shelljs"
     },
     "devDependencies": {},
     "engines": {
