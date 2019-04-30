@@ -396,6 +396,10 @@
             if (task.guards) {
                 task.guards.some(function(guard) {
                     if (TDS.notEmpty(guard.test)) {
+                        if (guard.test === true) {
+                            return false;
+                        }
+
                         if (!TWS.Evaluator.evaluate(guard.test,
                                 {
                                     job: job,
