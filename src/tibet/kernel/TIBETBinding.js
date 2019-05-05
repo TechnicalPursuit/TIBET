@@ -5648,7 +5648,9 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var facet,
+    var elem,
+
+        facet,
 
         pathOptions,
 
@@ -5685,6 +5687,24 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
         didRefresh,
         refreshedElements;
+
+    elem = this.getNativeNode();
+
+    //  Grab the list of elements that have been refreshed.
+    refreshedElements = this.getDocument().get('$refreshedElements');
+    if (TP.notValid(refreshedElements)) {
+        //  The list didn't exist - create it.
+        refreshedElements = TP.ac();
+        this.getDocument().set('$refreshedElements', refreshedElements);
+    } else {
+        //  If the list contains the receiver's native element, then we've
+        //  already refreshed it in this 'pass'. Just return here.
+        if (refreshedElements.indexOf(elem) !== TP.NOT_FOUND) {
+            return this;
+        }
+    }
+
+    refreshedElements.push(elem);
 
     //  If we were handed an Array of the aspects of the model that were
     //  updated (and not TP.ALL, meaning all aspects), then check to see
@@ -6012,18 +6032,6 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
     } else {
         this.setFacet(aspect, facet, finalVal);
         didRefresh = true;
-    }
-
-    //  If we refreshed, then add ourself to the list of elements that did.
-    if (didRefresh) {
-        refreshedElements = this.getDocument().get('$refreshedElements');
-
-        if (TP.notValid(refreshedElements)) {
-            refreshedElements = TP.ac();
-            this.getDocument().set('$refreshedElements', refreshedElements);
-        }
-
-        refreshedElements.push(this.getNativeNode());
     }
 
     return didRefresh;
