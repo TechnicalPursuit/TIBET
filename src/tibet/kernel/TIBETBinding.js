@@ -4930,7 +4930,10 @@ function(regenerateIfNecessary) {
         repeatWholeResult,
         repeatResult,
 
-        boundElems;
+        boundElems,
+
+        refreshedElements,
+        evt;
 
     //  Grab our binding scoping values and compute a 'binding repeat'
     //  expression from them and any local value on us.
@@ -4996,6 +4999,22 @@ function(regenerateIfNecessary) {
                 true,
                 this,
                 null);
+
+        //  Send a custom DOM-level event to allow 3rd party libraries to know
+        //  that the bindings have been refreshed.
+        refreshedElements = this.getDocument().get('$refreshedElements');
+        if (TP.notEmpty(refreshedElements)) {
+            evt = this.getNativeDocument().createEvent('Event');
+            evt.initEvent('TIBETBindingsRefreshed', true, true);
+            evt.data = refreshedElements;
+
+            this.getNativeNode().dispatchEvent(evt);
+
+            //  Make sure to empty the list of elements that were refreshed so
+            //  that we start fresh when bindings are refreshed again.
+            refreshedElements.empty();
+        }
+
     }
 
     return this;
