@@ -5014,7 +5014,6 @@ function(regenerateIfNecessary) {
             //  that we start fresh when bindings are refreshed again.
             refreshedElements.empty();
         }
-
     }
 
     return this;
