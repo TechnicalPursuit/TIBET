@@ -412,7 +412,11 @@ function(anAspect, anAction, aDescription) {
      * @fires Change
      */
 
-    var srcURI;
+    var srcURI,
+
+        batchID,
+        changedAddresses,
+        changedPaths;
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
     //  We don't normally do this in TIBET, but this method is used heavily and
@@ -439,7 +443,26 @@ function(anAspect, anAction, aDescription) {
         this.$changed('value', TP.UPDATE);
     } else {
         if (TP.isValid(this.get('data'))) {
-            this.$changed(anAspect, anAction, aDescription);
+
+            //  We need this purely so that any machinery that relies on signal
+            //  batching (i.e. the markup-based data binding) knows that this
+            //  signal represents an entire batch.
+            batchID = TP.genID('SIGNAL_BATCH');
+
+            changedAddresses = TP.ac(anAspect);
+            changedPaths = TP.hc(anAspect, TP.hc(TP.UPDATE, changedAddresses));
+
+            TP.signal(this.getID(),
+                        'TP.sig.ValueChange',
+                        TP.hc('action', anAction,
+                                'addresses', changedAddresses,
+                                'aspect', anAspect,
+                                'facet', 'value',
+                                TP.CHANGE_PATHS, changedPaths,
+                                'target', this,
+                                TP.CHANGE_URIS, null,
+                                TP.START_SIGNAL_BATCH, batchID,
+                                TP.END_SIGNAL_BATCH, batchID));
         }
 
         srcURI = this.get('sourceURI');
