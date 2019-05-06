@@ -669,8 +669,10 @@ function(aSignal) {
 
         aspectNames,
 
-        refreshedElements,
-        evt;
+        allRefreshedElements,
+        evt,
+
+        refreshedElements;
 
     //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
     //  that there were specific paths to data that changed and we can more
@@ -1108,17 +1110,25 @@ function(aSignal) {
 
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
     //  the bindings have been refreshed.
-    refreshedElements = this.get('$refreshedElements');
-    if (TP.notEmpty(refreshedElements)) {
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
         evt = this.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETBindingsRefreshed', true, true);
+
+        refreshedElements = TP.ac();
+        allRefreshedElements.perform(
+            function(kvPair) {
+                refreshedElements = refreshedElements.concat(kvPair.last());
+            });
+        refreshedElements.unique();
+
         evt.data = refreshedElements;
 
         this.getBody().getNativeNode().dispatchEvent(evt);
 
         //  Make sure to empty the list of elements that were refreshed so that
         //  we start fresh when bindings are refreshed again.
-        refreshedElements.empty();
+        allRefreshedElements.empty();
     }
 
     return this;
@@ -3881,8 +3891,10 @@ function(shouldRender, shouldSendEvent) {
 
     var boundDescendants,
 
-        refreshedElements,
-        evt;
+        allRefreshedElements,
+        evt,
+
+        refreshedElements;
 
     //  Get the bound descendant elements of the receiver. Note how we pass
     //  'true' here to *just* get elements that are 'shallow'. If we pick up
@@ -3904,17 +3916,25 @@ function(shouldRender, shouldSendEvent) {
 
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
     //  the bindings have been refreshed.
-    refreshedElements = this.getDocument().get('$refreshedElements');
-    if (TP.notEmpty(refreshedElements) && TP.notFalse(shouldSendEvent)) {
+    allRefreshedElements = this.getDocument().get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements) && TP.notFalse(shouldSendEvent)) {
         evt = this.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETBindingsRefreshed', true, true);
+
+        refreshedElements = TP.ac();
+        allRefreshedElements.perform(
+            function(kvPair) {
+                refreshedElements = refreshedElements.concat(kvPair.last());
+            });
+        refreshedElements.unique();
+
         evt.data = refreshedElements;
 
         this.getNativeNode().dispatchEvent(evt);
 
         //  Make sure to empty the list of elements that were refreshed so that
         //  we start fresh when bindings are refreshed again.
-        refreshedElements.empty();
+        allRefreshedElements.empty();
     }
 
     return this;
@@ -4932,8 +4952,10 @@ function(regenerateIfNecessary) {
 
         boundElems,
 
-        refreshedElements,
-        evt;
+        allRefreshedElements,
+        evt,
+
+        refreshedElements;
 
     //  Grab our binding scoping values and compute a 'binding repeat'
     //  expression from them and any local value on us.
@@ -5002,17 +5024,25 @@ function(regenerateIfNecessary) {
 
         //  Send a custom DOM-level event to allow 3rd party libraries to know
         //  that the bindings have been refreshed.
-        refreshedElements = this.getDocument().get('$refreshedElements');
-        if (TP.notEmpty(refreshedElements)) {
+        allRefreshedElements = this.getDocument().get('$refreshedElements');
+        if (TP.notEmpty(allRefreshedElements)) {
             evt = this.getNativeDocument().createEvent('Event');
             evt.initEvent('TIBETBindingsRefreshed', true, true);
+
+            refreshedElements = TP.ac();
+            allRefreshedElements.perform(
+                function(kvPair) {
+                    refreshedElements = refreshedElements.concat(kvPair.last());
+                });
+            refreshedElements.unique();
+
             evt.data = refreshedElements;
 
             this.getNativeNode().dispatchEvent(evt);
 
             //  Make sure to empty the list of elements that were refreshed so
             //  that we start fresh when bindings are refreshed again.
-            refreshedElements.empty();
+            allRefreshedElements.empty();
         }
     }
 
@@ -5651,6 +5681,9 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
         facet,
 
+        allRefreshedElements,
+        refreshedElemsByAspectAndFacet,
+
         pathOptions,
 
         shouldExtractVal,
@@ -5684,26 +5717,48 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         isXMLResource,
         xmlTestVal,
 
-        didRefresh,
-        refreshedElements;
+        didRefresh;
 
     elem = this.getNativeNode();
 
+    facet = TP.ifInvalid(aFacet, 'value');
+
     //  Grab the list of elements that have been refreshed.
-    refreshedElements = this.getDocument().get('$refreshedElements');
-    if (TP.notValid(refreshedElements)) {
-        //  The list didn't exist - create it.
-        refreshedElements = TP.ac();
-        this.getDocument().set('$refreshedElements', refreshedElements);
+    allRefreshedElements = this.getDocument().get('$refreshedElements');
+    if (TP.notValid(allRefreshedElements)) {
+        //  The hash of all refreshed elements didn't exist - create it.
+        allRefreshedElements = TP.hc();
+        this.getDocument().set('$refreshedElements', allRefreshedElements);
+
+        //  Now, create an Array and register it under a composite key of the
+        //  aspect and facet.
+        refreshedElemsByAspectAndFacet = TP.ac();
+        allRefreshedElements.atPut(
+                    aspect + '__' + facet,
+                    refreshedElemsByAspectAndFacet);
     } else {
-        //  If the list contains the receiver's native element, then we've
-        //  already refreshed it in this 'pass'. Just return here.
-        if (refreshedElements.indexOf(elem) !== TP.NOT_FOUND) {
-            return this;
+
+        //  Grab the Array under the composite key of the aspect and facet.
+        refreshedElemsByAspectAndFacet = allRefreshedElements.at(
+                    aspect + '__' + facet);
+
+        //  If that didn't exist, then create it.
+        if (TP.notValid(refreshedElemsByAspectAndFacet)) {
+            refreshedElemsByAspectAndFacet = TP.ac();
+            allRefreshedElements.atPut(
+                    aspect + '__' + facet,
+                    refreshedElemsByAspectAndFacet);
+        } else {
+            //  Otherwise, if the Array under that composite key contains the
+            //  receiver's native element, then we've already refreshed it in
+            //  this 'pass'. Just return here.
+            if (refreshedElemsByAspectAndFacet.indexOf(elem) !== TP.NOT_FOUND) {
+                return this;
+            }
         }
     }
 
-    refreshedElements.push(elem);
+    refreshedElemsByAspectAndFacet.push(elem);
 
     //  If we were handed an Array of the aspects of the model that were
     //  updated (and not TP.ALL, meaning all aspects), then check to see
@@ -5713,8 +5768,6 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         !updatedAspects.contains(aspect)) {
         return;
     }
-
-    facet = TP.ifInvalid(aFacet, 'value');
 
     if (facet !== 'value' && TP.isValid(outerScopeValue)) {
         finalVal = outerScopeValue;
