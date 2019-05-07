@@ -39,6 +39,7 @@
 
 <config id="bind">
     <script src="bind/TP.bind.XMLNS.js"/>
+    <script src="bind/TP.bind.adaptor.js"/>
 </config>
 
 <config id="ev">
