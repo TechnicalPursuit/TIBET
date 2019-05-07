@@ -2723,6 +2723,39 @@ function(branchExpr, initialVal, initialPathType) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getFullBindingPathFrom',
+function(pathTail) {
+
+    /**
+     * @method getFullBindingPathFrom
+     * @summary Returns a path computed from the receiver's binding scope and
+     *     the supplied path tail.
+     * @param {String} [pathTail=''] The tail of the path to use for the
+     *     returned full binding path. Note that this will default to the empty
+     *     String.
+     * @returns {String} The fully qualified binding path computed from the
+     *     binding scope of the receiver and the supplied path tail.
+     */
+
+    var scopeVals,
+        tail,
+
+        allVals,
+
+        fullPath;
+
+    scopeVals = this.getBindingScopeValues();
+    tail = TP.ifInvalid(pathTail, '');
+
+    allVals = scopeVals.concat(tail);
+
+    fullPath = TP.uriJoinFragments.apply(TP, allVals);
+
+    return fullPath;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getFullyExpandedBindingExpressions',
 function(attributeName) {
 
