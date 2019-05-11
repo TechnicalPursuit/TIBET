@@ -3152,7 +3152,7 @@ TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 //  content to contain '.(' (and then further '(') because we want to support
 //  composite paths.
 TP.regex.ACP_PATH_CONTAINS_VARIABLES =
-    /(TP\.|APP\.|\$)([a-zA-Z0-9]|\*|#)+(\.\(.+|[^(]*)$/;
+    /(TP\.|APP\.|\$)([a-zA-Z0-9_]|\*|#)+(\.\(.+|[^(]*)$/;
 
 TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 
