@@ -1,6 +1,6 @@
 {
     "name": "tibet",
-    "version": "v5.0.0-pre.32",
+    "version": "v5.0.0-pre.33",
     "description": "The TIBET Platform.",
     "keywords": ["CLI", "CouchDB", "Framework", "IDE", "Microservice", "MVC", "MVVC", "TIBET", "Workflow"],
     "homepage": "http://www.technicalpursuit.com",
