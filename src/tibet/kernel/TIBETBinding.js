@@ -1573,6 +1573,8 @@ function(anExpression) {
                 } catch (e) {
                     retVal = val;
                 }
+            } else {
+                retVal = val;
             }
 
             return retVal;
