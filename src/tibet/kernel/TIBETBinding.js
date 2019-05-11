@@ -1587,6 +1587,11 @@ function(anExpression) {
         };
     }
 
+    //  Mark the fact that this is a transformation Function. This assists
+    //  callers in determining whether this Function was generated using this
+    //  method and mechanism.
+    transformFunc.$$transformationFunction = true;
+
     //  Mark whether or not the transformation Function needs to perform an
     //  eval() of its return value.
     transformFunc.$$needsEval = needsEval;
