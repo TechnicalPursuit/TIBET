@@ -3147,12 +3147,8 @@ TP.regex.ACP_BEGIN_CONTROL_STATEMENT = /\{\{:(with|if|for)(.*?)\}\}/;
 TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 
 //  '$' followed by a word character (but *not* including '_') or '*' or '#'
-//  NB: Note here that we do *not* allow the following content to contain '('
-//  (because we *don't* want to match JS function calls), but we *do* allow the
-//  content to contain '.(' (and then further '(') because we want to support
-//  composite paths.
 TP.regex.ACP_PATH_CONTAINS_VARIABLES =
-    /(TP\.|APP\.|\$)([a-zA-Z0-9_]|\*|#)+(\.\(.+|[^(]*)$/;
+    /(TP\.|APP\.|\$)([a-zA-Z0-9]+|\*|#)/;
 
 TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 
