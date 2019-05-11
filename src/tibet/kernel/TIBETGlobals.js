@@ -3150,6 +3150,12 @@ TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 TP.regex.ACP_PATH_CONTAINS_VARIABLES =
     /(TP\.|APP\.|\$)([a-zA-Z0-9]+|\*|#)/;
 
+TP.regex.ACP_VARIABLE_STATEMENT =
+    /(TP\.|APP\.|\$)(\w+|\*|#)/;
+
+TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT =
+    /((TP\.|APP\.|\$)(\w+|\*|#))(\.\w+\()/g;
+
 TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 
 //  Finds ACP expressions that have an 'id' construct along with '$SOURCE' for
@@ -3213,6 +3219,7 @@ TP.regex.CALL_STACK_ID = /Function\$[0-9a-z]*($|([\s]))/g;  //  needs reset
 
 TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+):(\d+):(\d+)/;
 
+TP.regex.HAS_STDIN = /\$_/;
 TP.regex.ONLY_STDIN = /^\$_$/;
 
 //  ---

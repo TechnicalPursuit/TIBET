@@ -1282,7 +1282,7 @@ function(targetElement, attributeValue) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('computeTransformationFunction',
-function(anExpression) {
+function(anExpression, stdinIsSpecial) {
 
     /**
      * @method computeTransformationFunction
@@ -1292,6 +1292,8 @@ function(anExpression) {
      * @param {String} anExpression The expression to extract binding
      *     information from to compute the transformation function and data
      *     expressions.
+     * @param {Boolean} [stdinIsSpecial=false] Whether or not the STDIN (i.e.
+     *     '$_') syntax should be treated specially (not as part of a path).
      * @returns {Array<Function,String[]>} An Array of a Function, which is the
      *     Function that will transform the values being updated and an Array
      *     which contains all of the data expressions that are embedded in the
@@ -1372,7 +1374,8 @@ function(anExpression) {
         //  If the expression to execute is a path that contains variables, then
         //  we use the 'value' of the URI and leverage the transformation
         //  function installed below to form a final value.
-        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(valueExpr)) {
+        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(valueExpr) ||
+            (TP.regex.HAS_STDIN.test(valueExpr) && TP.isTrue(stdinIsSpecial))) {
 
             isSimpleExpr = false;
 
@@ -1404,12 +1407,20 @@ function(anExpression) {
                 computedValueExpr = valueExpr;
             }
 
+            TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT.lastIndex = 0;
+            if (TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT.test(valueExpr)) {
+                TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT.lastIndex = 0;
+                computedValueExpr = valueExpr.replace(
+                    TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT, '({{$1}})$4');
+            } else {
+                computedValueExpr =
+                    '{{' + computedValueExpr + formatExpr + '}}';
+            }
+
             //  Make sure to replace that expression in the expression to
-            //  execute with a 'formatting expression', so that the templating
-            //  function below will work.
-            finalExpr = finalExpr.replace(
-                            exprWithBrackets,
-                            '{{' + computedValueExpr + formatExpr + '}}');
+            //  execute with a 'formatting expression', so that the
+            //  templating function below will work.
+            finalExpr = finalExpr.replace(exprWithBrackets, computedValueExpr);
 
             //  Unquote any final expression (note that this only removes
             //  surrounding quotes - not embedded ones).
@@ -1426,6 +1437,7 @@ function(anExpression) {
                 finalExpr = finalExpr.replace(
                     exprWithBrackets,
                     '{{$ARG' + referencedExprs.getSize() + formatExpr + '}}');
+
                 finalExpr = finalExpr.unquoted('"');
             }
         }
