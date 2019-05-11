@@ -1442,6 +1442,8 @@ function(anExpression) {
                                  repeatSource, index, isXMLResource) {
             var wrappedVal,
 
+                tpDoc,
+
                 params,
 
                 last,
@@ -1459,6 +1461,10 @@ function(anExpression) {
                 wrappedVal = vals.first();
             }
 
+            if (TP.isValid(targetTPElem)) {
+                tpDoc = targetTPElem.getDocument();
+            }
+
             //  Iterating context
             if (TP.isNumber(index)) {
 
@@ -1472,7 +1478,7 @@ function(anExpression) {
                                 'APP', APP,
                                 '$SOURCE', source,
                                 '$TAG', targetTPElem,
-                                '$TARGET', targetTPElem.getDocument(),
+                                '$TARGET', tpDoc,
                                 '$_', wrappedVal,
                                 '$INPUT', repeatSource,
                                 '$INDEX', index,
@@ -1492,7 +1498,7 @@ function(anExpression) {
                                 'APP', APP,
                                 '$SOURCE', source,
                                 '$TAG', targetTPElem,
-                                '$TARGET', targetTPElem.getDocument(),
+                                '$TARGET', tpDoc,
                                 '$_', wrappedVal,
                                 '$INPUT', repeatSource,
                                 '$INDEX', index,
@@ -1512,7 +1518,7 @@ function(anExpression) {
                             'APP', APP,
                             '$SOURCE', source,
                             '$TAG', targetTPElem,
-                            '$TARGET', targetTPElem.getDocument(),
+                            '$TARGET', tpDoc,
                             '$_', wrappedVal,
                             '$INPUT', vals);
             }
