@@ -1374,8 +1374,10 @@ function(anExpression, stdinIsSpecial) {
         //  If the expression to execute is a path that contains variables, then
         //  we use the 'value' of the URI and leverage the transformation
         //  function installed below to form a final value.
+        /* eslint-disable no-extra-parens */
         if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(valueExpr) ||
             (TP.regex.HAS_STDIN.test(valueExpr) && TP.isTrue(stdinIsSpecial))) {
+        /* eslint-enable no-extra-parens */
 
             isSimpleExpr = false;
 
