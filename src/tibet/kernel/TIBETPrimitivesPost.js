@@ -1262,6 +1262,43 @@ function(aList, aPrefix, aSuffix) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('replaceConvenienceOperators',
+function(aStr) {
+
+    /**
+     * @method replaceConvenienceOperators
+     * @summary Returns the supplied String with 'convenience' operator
+     *     substitutions replaced with their real counterparts.
+     * @description Sometimes its easier, especially when writing expressions in
+     *     markup attributes, to write aliases such as AND and OR instead of &&
+     *     and || which might have to be entitified or otherwise escaped. This
+     *     method takes those constructs and turns them into their real
+     *     counterparts.
+     * @param {String} aStr The String containing convenience operators.
+     * @returns {String} The supplied String with the convenience operators
+     *     replaced.
+     */
+
+    var str;
+
+    str = aStr;
+
+    str = str.replace(/EQ/g, '=');
+    str = str.replace(/NOT_EQ/g, '!=');
+
+    str = str.replace(/LTE/g, '<=');
+    str = str.replace(/GTE/g, '>=');
+    str = str.replace(/LT/g, '<');
+    str = str.replace(/GT/g, '>');
+
+    str = str.replace(/AND/g, '&&');
+    str = str.replace(/OR/g, '||');
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getNextWindowName',
 function() {
 
@@ -1393,6 +1430,52 @@ function(aString) {
     }
 
     return aString.replace(/_/g, '.');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('generateBindingSyntaxAroundACPVariables',
+function(aStr) {
+
+    /**
+     * @method generateBindingSyntaxAroundACPVariables
+     * @summary Returns the supplied String with ACP variables surrounded by
+     *     the '[[' and ']]' of binding expressions.
+     * @param {String} aStr The String containing ACP variables.
+     * @returns {String} The supplied String with the ACP variables surrounded
+     *     by binding syntax.
+     */
+
+    var tokens,
+
+        len,
+
+        results,
+        i;
+
+    //  Split the string into tokens
+    tokens = TP.$tokenizedSplit(aStr);
+
+    len = tokens.getSize();
+
+    if (len === 1) {
+        //  TODO: There was probably a problem
+        return tokens.join('');
+    }
+
+    results = TP.ac();
+
+    //  Iterate over all of the tokens and, if they start with a '$', then
+    //  surround them with binding syntax brackets.
+    for (i = 0; i < len; i++) {
+        if (tokens.at(i).startsWith('$')) {
+            results.push('[[' + tokens.at(i) + ']]');
+        } else {
+            results.push(tokens.at(i));
+        }
+    }
+
+    return results.join(' ');
 });
 
 //  ------------------------------------------------------------------------

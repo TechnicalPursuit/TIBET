@@ -9193,7 +9193,17 @@ function(aspectName, facetName) {
 
         case TP.REQUIRED:
 
-            if (TP.isBoolean(facetSetting)) {
+            if (TP.isCallable(facetSetting)) {
+                if (facetSetting.$$transformationFunction === true) {
+                    if (TP.isCollection(this)) {
+                        val = facetSetting(this, this);
+                    } else {
+                        val = facetSetting(this, TP.ac(this.get(aspectName)));
+                    }
+                } else {
+                    val = facetSetting(this);
+                }
+            } else if (TP.isBoolean(facetSetting)) {
                 val = facetSetting;
             } else if (facetSetting.isAccessPath()) {
                 val = facetSetting.executeGet(this.getPathSource(facetSetting));
@@ -9221,23 +9231,36 @@ function(aspectName, facetName) {
 
         case TP.VALID:
 
-            //  If facetSetting is a POJO with a 'value' slot, then that's the
-            //  value to use, otherwise we do a 'get' of the aspectName
-            if (TP.isValid(facetValue = facetSetting.value)) {
-                if (TP.isBoolean(facetValue)) {
-                    val = facetValue;
-                } else if (TP.isArray(facetValue)) {
-                    val = facetValue;
-                } else if (facetValue.isAccessPath()) {
-                    val = facetValue.executeGet(this.getPathSource(facetValue));
-                } else if (TP.isString(facetValue) &&
-                            TP.isMethod(this[facetValue])) {
-                    val = this[facetValue]();
-                } else if (TP.isString(facetValue)) {
-                    val = facetValue;
+            if (TP.isCallable(facetSetting)) {
+                if (facetSetting.$$transformationFunction === true) {
+                    if (TP.isCollection(this)) {
+                        val = facetSetting(this, this);
+                    } else {
+                        val = facetSetting(this, TP.ac(this.get(aspectName)));
+                    }
+                } else {
+                    val = facetSetting(this);
                 }
             } else {
-                val = this.get(aspectName);
+                //  If facetSetting is a POJO with a 'value' slot, then that's
+                //  the value to use, otherwise we do a 'get' of the aspectName
+                if (TP.isValid(facetValue = facetSetting.value)) {
+                    if (TP.isBoolean(facetValue)) {
+                        val = facetValue;
+                    } else if (TP.isArray(facetValue)) {
+                        val = facetValue;
+                    } else if (facetValue.isAccessPath()) {
+                        val = facetValue.executeGet(
+                                            this.getPathSource(facetValue));
+                    } else if (TP.isString(facetValue) &&
+                                TP.isMethod(this[facetValue])) {
+                        val = this[facetValue]();
+                    } else if (TP.isString(facetValue)) {
+                        val = facetValue;
+                    }
+                } else {
+                    val = this.get(aspectName);
+                }
             }
 
             //  If the actual value is not valid (i.e. null or undefined), then
@@ -9247,9 +9270,13 @@ function(aspectName, facetName) {
             //  TP.REQUIRED, then it's considered false. See above.
             if (TP.notValid(val)) {
                 facetValue = true;
+            } else if (TP.isCallable(facetSetting)) {
+                facetValue = val;
             } else {
                 //  The validity facet is computed by a method, since it is a
-                //  more complex calculation than any of the other facets.
+                //  more complex calculation than any of the other facets. At
+                //  this point, facetSetting should be a POJO containing
+                //  subconstraint settings (minValue, maxLength, etc).
                 facetValue = this.getType().validateConstraintsOn(
                                                         val, facetSetting);
             }
@@ -9260,7 +9287,17 @@ function(aspectName, facetName) {
 
             //  Otherwise, use a series of object tests to try to obtain the
             //  best value for the facet.
-            if (TP.isBoolean(facetSetting)) {
+            if (TP.isCallable(facetSetting)) {
+                if (facetSetting.$$transformationFunction === true) {
+                    if (TP.isCollection(this)) {
+                        val = facetSetting(this, this);
+                    } else {
+                        val = facetSetting(this, TP.ac(this.get(aspectName)));
+                    }
+                } else {
+                    val = facetSetting(this);
+                }
+            } else if (TP.isBoolean(facetSetting)) {
                 facetValue = facetSetting;
             } else if (TP.isArray(facetSetting)) {
                 facetValue = facetSetting;
