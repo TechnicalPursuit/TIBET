@@ -60,6 +60,7 @@
     <config ref="ev"/>
     <config ref="focusing"/>
     <config ref="formatting"/>
+    <config ref="forms"/>
     <config ref="grouping"/>
     <config ref="html"/>
     <config ref="lifecycle"/>
@@ -80,7 +81,6 @@
     <config ref="templating"/>
     <config ref="tokenizer"/>
     <config ref="uri"/>
-    <config ref="validation"/>
     <config ref="values"/>
     <config ref="xctrls"/>
     <config ref="xs"/>
@@ -150,6 +150,10 @@
     <script src="~lib_test/src/tibet/focusing/TP.html.Element_Tests.js"/>
 </config>
 
+<config id="forms">
+    <script src="~lib_test/src/tibet/forms/TP.lang.Object_Tests.js"/>
+</config>
+
 <config id="localization">
     <script src="~lib_test/src/tibet/localization/TP.i18n.Locale_Tests.js"/>
 </config>
@@ -194,10 +198,6 @@
 
 <config id="values">
     <script src="~lib_test/src/tibet/values/Value_Tests.js"/>
-</config>
-
-<config id="validation">
-    <script src="~lib_test/src/tibet/validation/TP.lang.Object_Tests.js"/>
 </config>
 
 <config id="bind">
