@@ -1130,7 +1130,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation1.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1252,7 +1252,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation2.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1363,7 +1363,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation3.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1529,7 +1529,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation4.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1817,7 +1817,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation5.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1920,7 +1920,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation6.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -2023,7 +2023,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation7.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -2126,7 +2126,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/validation/Validation8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation8.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
