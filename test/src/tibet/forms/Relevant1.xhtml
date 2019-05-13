@@ -23,7 +23,7 @@
     ]]>
     </style>
 
-    <tibet:data id="Validation2Data" name="urn:tibet:Validation2_person" resultType="TP.test.BaseMarkupEmployee">
+    <tibet:data id="Relevant1Data" name="urn:tibet:Relevant1_person" resultType="TP.test.BaseMarkupEmployee">
         <person xmlns="">
             <lastname>Smith</lastname>
             <firstname>Joe</firstname>
@@ -43,7 +43,7 @@
 
 <body>
 
-    <h2>Validation Test #2</h2><br/>
+    <h2>Relevant Test #1</h2><br/>
 
     <br/>
     <br/>
@@ -57,10 +57,10 @@
     <br/>
 
     <label for="uscitizenField">U.S. Citizen?: </label>
-    <input type="checkbox" id="uscitizenCheckbox" bind:io="{checked: urn:tibet:Validation2_person#tibet(uscitizen)}" tabindex="0"/><br/>
+    <input type="checkbox" id="uscitizenCheckbox" bind:io="{checked: urn:tibet:Relevant1_person#tibet(uscitizen)}" tabindex="0"/><br/>
 
     <label for="SSNField">SSN: </label>
-    <input type="text" id="SSNField" bind:io="{value: urn:tibet:Validation2_person#tibet(SSN)}" tabindex="0"/><br/>
+    <input type="text" id="SSNField" bind:io="{value: urn:tibet:Relevant1_person#tibet(SSN)}" tabindex="0"/><br/>
 
 </body>
 </html>

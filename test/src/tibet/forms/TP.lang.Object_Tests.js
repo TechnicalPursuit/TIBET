@@ -1252,7 +1252,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Relevant1.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1270,9 +1270,9 @@ function() {
                     ssnField,
                     citCheckbox;
 
-                srcURI = TP.uc('urn:tibet:Validation2_person');
-                ssnURI = TP.uc('urn:tibet:Validation2_person#tibet(SSN)');
-                citURI = TP.uc('urn:tibet:Validation2_person#tibet(uscitizen)');
+                srcURI = TP.uc('urn:tibet:Relevant1_person');
+                ssnURI = TP.uc('urn:tibet:Relevant1_person#tibet(SSN)');
+                citURI = TP.uc('urn:tibet:Relevant1_person#tibet(uscitizen)');
 
                 ssnField = TP.byId('SSNField', windowContext);
                 citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
@@ -1817,7 +1817,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Required1.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1833,8 +1833,8 @@ function() {
 
                     codeNumField;
 
-                srcURI = TP.uc('urn:tibet:Validation5_data');
-                codeNumURI = TP.uc('urn:tibet:Validation5_data#tibet(codenum)');
+                srcURI = TP.uc('urn:tibet:Required1_data');
+                codeNumURI = TP.uc('urn:tibet:Required1_data#tibet(codenum)');
 
                 codeNumField = TP.byId('CodeNumField', windowContext);
 
@@ -1920,7 +1920,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Required2.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -1936,8 +1936,8 @@ function() {
 
                     codeNumField;
 
-                srcURI = TP.uc('urn:tibet:Validation6_data');
-                codeNumURI = TP.uc('urn:tibet:Validation6_data#tibet(codenum)');
+                srcURI = TP.uc('urn:tibet:Required2_data');
+                codeNumURI = TP.uc('urn:tibet:Required2_data#tibet(codenum)');
 
                 codeNumField = TP.byId('CodeNumField', windowContext);
 
@@ -2023,7 +2023,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Required3.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -2039,8 +2039,8 @@ function() {
 
                     codeNumField;
 
-                srcURI = TP.uc('urn:tibet:Validation7_data');
-                codeNumURI = TP.uc('urn:tibet:Validation7_data#tibet(codenum)');
+                srcURI = TP.uc('urn:tibet:Required3_data');
+                codeNumURI = TP.uc('urn:tibet:Required3_data#tibet(codenum)');
 
                 codeNumField = TP.byId('CodeNumField', windowContext);
 
@@ -2126,7 +2126,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Required4.xhtml');
 
         driver = test.getDriver();
         windowContext = test.getDriver().get('windowContext');
@@ -2142,8 +2142,8 @@ function() {
 
                     codeNumField;
 
-                srcURI = TP.uc('urn:tibet:Validation8_data');
-                codeNumURI = TP.uc('urn:tibet:Validation8_data#tibet(codenum)');
+                srcURI = TP.uc('urn:tibet:Required4_data');
+                codeNumURI = TP.uc('urn:tibet:Required4_data#tibet(codenum)');
 
                 codeNumField = TP.byId('CodeNumField', windowContext);
 
