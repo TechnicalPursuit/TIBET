@@ -172,7 +172,7 @@ types.
     <!-- Credit card CVV -->
     <xs:simpleType name="tibet:CVV">
         <xs:restriction base="xs:integer">
-            <xs:pattern value="\d{3}"/>
+            <xs:pattern value="^\d{3}$"/>
         </xs:restriction>
     </xs:simpleType>
 
