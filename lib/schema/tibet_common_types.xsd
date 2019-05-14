@@ -58,8 +58,8 @@ types.
         </xs:restriction>
     </xs:simpleType>
 
-    <!-- "password" characters -->
-    <xs:simpleType name="tibet:password">
+    <!-- No whitespace -->
+    <xs:simpleType name="tibet:no_whitespace">
         <xs:restriction base="xs:string">
             <xs:pattern value="^\S+$"/>
         </xs:restriction>
