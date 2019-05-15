@@ -380,6 +380,10 @@
     <script src="xs/extensions/TP.xforms.email.js"/>
     <script src="xs/extensions/TP.xforms.card_number.js"/>
 
+    <!-- tibet additions -->
+    <script src="xs/extensions/TP.tibet.email_list.js"/>
+    <script src="xs/extensions/TP.tibet.credit_card_number.js"/>
+
 </config>
 
 </package>
