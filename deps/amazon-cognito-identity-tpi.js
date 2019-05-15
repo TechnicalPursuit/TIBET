@@ -7556,7 +7556,8 @@ var CognitoUserPool = function () {
       var returnData = {
         user: new __WEBPACK_IMPORTED_MODULE_1__CognitoUser__["a" /* default */](cognitoUser),
         userConfirmed: data.UserConfirmed,
-        userSub: data.UserSub
+        userSub: data.UserSub,
+        codeDeliveryDetails: data.CodeDeliveryDetails
       };
 
       return callback(null, returnData);
@@ -7774,7 +7775,11 @@ var CookieStorage = function () {
   function CookieStorage(data) {
     _classCallCheck(this, CookieStorage);
 
-    this.domain = data.domain;
+    if (data.domain) {
+      this.domain = data.domain;
+    } else {
+      throw new Error('The domain of cookieStorage can not be undefined.');
+    }
     if (data.path) {
       this.path = data.path;
     } else {
