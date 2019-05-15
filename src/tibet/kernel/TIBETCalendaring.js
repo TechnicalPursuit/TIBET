@@ -499,6 +499,84 @@ function(anObj) {
 });
 
 //  ========================================================================
+//  TP.core.Duration
+//  ========================================================================
+
+/**
+ * @type {TP.core.Duration}
+ * @summary A helper class that represents a clock duration.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.Duration');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Duration.Type.defineMethod('validate',
+function(anObject) {
+
+    /**
+     * @method validate
+     * @summary Returns true if the object provided it meets the criteria for a
+     *     valid Duration string.
+     * @param {Object} anObject The object whose value should be verified.
+     * @returns {Boolean} True if the object is 'valid'.
+     */
+
+    var momentObj;
+
+    if (!TP.isString(anObject)) {
+        return false;
+    }
+
+    momentObj = TP.extern.moment(anObject, TP.ac('hh:mm a', 'HH:mm'));
+
+    return momentObj.isValid();
+});
+
+//  ========================================================================
+//  TP.core.Time
+//  ========================================================================
+
+/**
+ * @type {TP.core.Time}
+ * @summary A helper class that represents a clock time.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.Time');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Time.Type.defineMethod('validate',
+function(anObject) {
+
+    /**
+     * @method validate
+     * @summary Returns true if the object provided it meets the criteria for a
+     *     valid time string with optional time zone data.
+     * @param {Object} anObject The object whose value should be verified.
+     * @returns {Boolean} True if the object is 'valid'.
+     */
+
+    var momentObj;
+
+    if (!TP.isString(anObject)) {
+        return false;
+    }
+
+    momentObj = TP.extern.moment(anObject, TP.ac('hh:mm a', 'HH:mm'));
+
+    return momentObj.isValid();
+});
+
+//  ========================================================================
 //  TP.core.TimeZone
 //  ========================================================================
 
