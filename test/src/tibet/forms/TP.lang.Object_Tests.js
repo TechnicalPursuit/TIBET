@@ -1359,6 +1359,170 @@ function() {
 
     //  ---
 
+    this.it('markup-level validation - multiple types validation', function(test, options) {
+        var driver,
+            windowContext,
+
+            typeTestFunc;
+
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation2.xhtml');
+
+        driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
+        driver.setLocation(loadURI);
+
+        typeTestFunc = function(aspectName, invalidValueStr, validValueStr) {
+
+            test.chain(
+                function(result) {
+
+                    var name,
+                        nameTC,
+
+                        srcURI,
+
+                        aspectURI,
+
+                        aspectField;
+
+                    name = aspectName;
+                    nameTC = aspectName.asTitleCase();
+
+                    srcURI = TP.uc('urn:tibet:Validation2_data');
+                    aspectURI =
+                        TP.uc('urn:tibet:Validation2_data#tibet(' + name + ')');
+
+                    aspectField = TP.byId(name + 'Field', windowContext);
+
+                    //  Note that these are tested in order of firing, just for
+                    //  clarity purposes.
+
+                    //  ---
+
+                    //  'value' change - source URI
+                    test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                    //  ---
+
+                    test.chain(
+                        function() {
+                            //  Reset the metrics we're tracking.
+                            test.getSuite().resetSignalTracking();
+                        });
+
+                    test.getDriver().constructSequence().
+                        exec(function() {
+                            aspectField.clearValue();
+                        }).
+                        sendKeys(invalidValueStr, aspectField).
+                        sendEvent(TP.hc('type', 'change'), aspectField).
+                        run();
+
+                    //  ---
+
+                    test.chain(
+                        function() {
+
+                            //  aspect change - aspect URI
+                            test.assert.didSignal(aspectURI,
+                                                    nameTC + 'Change');
+
+                            //  aspect change - source URI
+                            test.assert.didSignal(srcURI,
+                                                    nameTC + 'Change');
+
+                            //  'valid' change
+                            test.assert.didSignal(aspectURI,
+                                                    nameTC + 'ValidChange');
+                            test.assert.didSignal(aspectField,
+                                                    'TP.sig.UIInvalid');
+
+                            test.assert.didSignal(srcURI,
+                                                    nameTC + 'ValidChange');
+                        });
+
+                    //  ---
+
+                    test.chain(
+                        function() {
+                            //  Reset the metrics we're tracking.
+                            test.getSuite().resetSignalTracking();
+                        });
+
+                    //  ---
+
+                    test.getDriver().constructSequence().
+                        exec(function() {
+                            aspectField.clearValue();
+                        }).
+                        sendKeys(validValueStr, aspectField).
+                        sendEvent(TP.hc('type', 'change'), aspectField).
+                        run();
+
+                    //  ---
+
+                    test.chain(
+                        function() {
+
+                            //  aspect change - aspect URI
+                            test.assert.didSignal(aspectURI,
+                                                    nameTC + 'Change');
+
+                            //  'age' change - source URI
+                            test.assert.didSignal(srcURI,
+                                                    nameTC + 'Change');
+
+                            //  'valid' change
+                            test.assert.didSignal(aspectURI,
+                                                    nameTC + 'ValidChange');
+                            test.assert.didSignal(aspectField,
+                                                    'TP.sig.UIValid');
+
+                            test.assert.didSignal(srcURI,
+                                                    nameTC + 'ValidChange');
+                        });
+                });
+        };
+
+        test.chain(
+            function(result) {
+                typeTestFunc('AlphaOnly', 'ABC123', 'ABC');
+                typeTestFunc('AlphaNum', 'ABC123%#', 'ABC123');
+                typeTestFunc('Password', 'badpwd', 'GoodPwd2*');
+                typeTestFunc('CVV', '1234', '123');
+                typeTestFunc('Date', 'foo', '1/1/1970');
+                typeTestFunc('Email', 'foo', 'foo@bar.com');
+                typeTestFunc('EmailList', 'foo. bar', 'foo@bar.com baz@goo.com');
+                typeTestFunc('Identifier', '**FOO37foo**', 'foo39_');
+                typeTestFunc('IPV4Addr', '45.34.2', '127.0.0.1');
+                typeTestFunc('IPV6Addr', 'FE80::0202:B3FF:FE1E:', 'FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
+                typeTestFunc('NoWhitespace', 'Hi There', 'HiThere');
+                typeTestFunc('Decimal', '1A', '34.52');
+                typeTestFunc('NonNegativeNumber', '-42', '42');
+                typeTestFunc('PositiveNumber', '0', '42');
+                typeTestFunc('Integer', '42.45', '42');
+                typeTestFunc('NonNegativeInteger', '-42.45', '42');
+                typeTestFunc('PositiveInteger', '0', '42');
+                typeTestFunc('USPhoneNumber', 'BU 5-1212', '555-555-1212');
+                //typeTestFunc('InternationalPhoneNumber', '', '');
+                typeTestFunc('SSN', '555-55-33', '555-55-1212');
+                typeTestFunc('Time', 'fluffy', '12:18pm');
+                typeTestFunc('Duration', 'barfy', 'P1Y2M3DT4H5M6S');
+                typeTestFunc('URL', 'bazfy', 'http://www.baz.com');
+                typeTestFunc('USPostalCode', 'ACD456', '11111-1111');
+                typeTestFunc('CreditCard', '5555555544', '5555555555554444');
+                typeTestFunc('USDollar', 'moo', '$42.00');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+
+    }).timeout(15000);
+
+    //  ---
+
     this.it('markup-level validation - group-level validation', function(test, options) {
         var driver,
             windowContext;
