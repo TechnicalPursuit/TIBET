@@ -207,7 +207,7 @@ function(aFilterName) {
 
     arr = TP.ac();
 
-    keys = this.getKeys(aFilterName);
+    keys = this.getKeys();
     len = keys.getSize();
 
     try {

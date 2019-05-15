@@ -3552,7 +3552,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('getKeys',
-function(includeUndefined) {
+function() {
 
     /**
      * @method getKeys
@@ -3560,27 +3560,12 @@ function(includeUndefined) {
      *     or 'keys' of the array. This version returns all keys. An interesting
      *     alternative is only returning keys whose values are non-null (see
      *     TP.core.Mask.getMasks() for an example).
-     * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {String[]} An array containing the keys of the receiver.
      */
 
-    var includeUndef,
+    var tmparr;
 
-        tmparr,
-        i;
-
-    includeUndef = TP.ifInvalid(includeUndefined, false);
-
-    tmparr = TP.ac();
-    for (i = 0; i < this.length; i++) {
-        if (!includeUndef && TP.notDefined(this[i])) {
-            continue;
-        }
-
-        tmparr.push(i);
-    }
-
-    tmparr = tmparr.concat(TP.$getOwnKeys(this));
+    tmparr = TP.$getOwnKeys(this);
 
     return tmparr.concat(TP.sys.$arraykeys);
 });
@@ -3612,21 +3597,20 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getSize',
-function(aFilterName) {
+function() {
 
     /**
      * @method getSize
      * @summary Returns the size of the receiver. This is thought of as the
      *     number of attributes the receiver contains unless a different filter
      *     is provided.
-     * @param {String} aFilterName A get*Interface() filter.
      * @returns {Number} The receiver's size.
      */
 
     var k,
         res;
 
-    k = this.getKeys(aFilterName);
+    k = this.getKeys();
     res = k.getSize();
 
     return res;
@@ -3657,7 +3641,6 @@ function(aFilterName) {
      * @summary Returns an array containing the values for the objects'
      *     attributes. The filter provided determines which set of keys is used
      *     to acquire the values.
-     * @param {String} aFilterName A get*Interface() filter.
      * @returns {Object[]} An array of the values for the receiver's keys.
      */
 
@@ -3666,7 +3649,7 @@ function(aFilterName) {
         k;
 
     arr = TP.ac();
-    k = this.getKeys(aFilterName);
+    k = this.getKeys();
 
     for (i = 0; i < k.getSize(); i++) {
         arr.push(this.at(k.at(i)));
@@ -5069,9 +5052,7 @@ function(aHash, aLevel) {
     result.push(header);
 
     if (useKeys) {
-        //  get keys using same filter...and pass along 'include
-        //  defined' as a true in case we're processing an array.
-        k = this.getKeys(filter, true);
+        k = this.getKeys();
 
         //  Make sure we don't leave the 'length' key in the Array - it will
         //  mess up our sort:
@@ -5211,13 +5192,11 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('asSource',
-function(aFilterName) {
+function() {
 
     /**
      * @method asSource
      * @summary Returns the receiver as a TIBET source code string.
-     * @param {String} aFilterName Used to determine the keys that will be used
-     *     to produce the recreatable form.
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
@@ -5246,7 +5225,7 @@ function(aFilterName) {
         void 0;
     }
 
-    keys = this.getKeys(aFilterName);
+    keys = this.getKeys();
     len = keys.length;
     arr = TP.ac();
 

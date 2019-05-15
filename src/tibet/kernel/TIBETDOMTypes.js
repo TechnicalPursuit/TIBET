@@ -18385,16 +18385,13 @@ function(anObj, filter, useNil) {
 //  ------------------------------------------------------------------------
 
 TP.dom.XMLRPCNode.Type.defineMethod('fromObject',
-function(anObj, filter, useNil) {
+function(anObj, useNil) {
 
     /**
      * @method fromObject
      * @summary Returns an instance that encodes anObj in the format according
      *     to the type description.
      * @param {Object} anObj The object to format.
-     * @param {TP.core.Hash} filter The filter parameters that determine which
-     *     attributes of anObj to include in the output. The default is
-     *     'unique_attributes'.
      * @param {Boolean} useNil Should null values be filled in with the
      *     non-standard nil?
      * @returns {Node} An instance of a Node with anObj encoded according to
@@ -18405,7 +18402,6 @@ function(anObj, filter, useNil) {
 
         structElem,
 
-        aFilter,
         k,
         len,
         i,
@@ -18435,8 +18431,7 @@ function(anObj, filter, useNil) {
 
     structElem = TP.XML_FACTORY_DOCUMENT.createElement('struct');
 
-    aFilter = TP.ifInvalid(filter, 'unique_attributes');
-    k = anObj.getKeys(aFilter).sort();
+    k = anObj.getKeys().sort();
 
     //  Loop over the keys of the supplied object, creating a 'member'
     //  element for each key/value pair and appending that to the parent

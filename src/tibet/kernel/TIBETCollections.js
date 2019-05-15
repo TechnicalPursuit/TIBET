@@ -8793,8 +8793,7 @@ function(aCollection, aStep) {
     //  capture the collection reference
     this.$set('coll', aCollection);
 
-    //  no filtering but we force iteration on all keys via includeUndef
-    this.$set('keys', aCollection.getKeys(null, true));
+    this.$set('keys', aCollection.getKeys());
 
     return this;
 });
