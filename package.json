@@ -70,6 +70,7 @@
         "mime-types": "^2.1.24",
         "minimatch": "^3.0.3",
         "minimist": "*",
+        "moment": "^2.24.0",
         "nano": "github:TechnicalPursuit/couchdb-nano",
         "node-forge": "^0.7.6",
         "open-editor": "^1.2.0",

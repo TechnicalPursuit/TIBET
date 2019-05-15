@@ -30,6 +30,7 @@
             '_rollup_jquery',
             '_rollup_jqueryxpath',
             '_rollup_less',
+            '_rollup_moment',
             '_rollup_pouchdb',
             '_rollup_pouchdb_all_dbs',
             '_rollup_resizeobserver',

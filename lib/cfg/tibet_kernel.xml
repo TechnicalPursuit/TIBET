@@ -31,6 +31,16 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/moment-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/moment-tpi.js"
+        unless="boot.minified" no-lint="no-lint" />
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('moment', window.moment);
+        ]]>
+    </script>
+
     <script src="~lib_deps/cryptojs/CryptoJS-core-tpi.js" no-lint="no-lint"/>
     <script src="~lib_deps/cryptojs/CryptoJS-md5-tpi.js" no-lint="no-lint"/>
     <script src="~lib_deps/cryptojs/CryptoJS-sha1-tpi.js" no-lint="no-lint"/>
