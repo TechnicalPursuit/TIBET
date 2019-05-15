@@ -1160,6 +1160,33 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+Date.Type.defineMethod('validate',
+function(anObject) {
+
+    /**
+     * @method validate
+     * @summary Returns true if the object provided it meets the criteria for a
+     *     valid date.
+     * @param {Object} anObject The object whose value should be verified.
+     * @returns {Boolean} True if the object is 'valid'.
+     */
+
+    var str,
+        dateInst;
+
+    str = TP.str(anObject);
+
+    if (!TP.isString(str)) {
+        return false;
+    }
+
+    dateInst = this.construct(str);
+
+    return TP.isDate(dateInst);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

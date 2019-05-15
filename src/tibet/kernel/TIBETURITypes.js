@@ -672,6 +672,33 @@ function(anInstance) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.uri.URI.Type.defineMethod('validate',
+function(anObject) {
+
+    /**
+     * @method validate
+     * @summary Returns true if the object provided it meets the criteria for a
+     *     valid URI.
+     * @param {Object} anObject The object whose value should be verified.
+     * @returns {Boolean} True if the object is 'valid'.
+     */
+
+    var str,
+        uriInst;
+
+    str = TP.str(anObject);
+
+    if (!TP.isString(str)) {
+        return false;
+    }
+
+    uriInst = this.construct(str);
+
+    return TP.isValid(uriInst);
+});
+
+//  ------------------------------------------------------------------------
 //  Rewriting/Routing Support
 //  ------------------------------------------------------------------------
 
