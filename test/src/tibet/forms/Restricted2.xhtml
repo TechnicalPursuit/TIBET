@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    @namespace pclass url(urn:tibet:pseudoclass);
+
+    /*input[type=text]:invalid*/
+    input[type=text][pclass|invalid]
+    {
+           color: red;
+    }
+
+    ]]>
+    </style>
+
+    <tibet:data id="Restricted2Data" name="urn:tibet:Restricted2_data" makestructures="true" resultType="TP.test.Restricted2Data"/>
+
+    <tibet:content name="TP.test.Restricted2Data" baseType="TP.core.JSONContent">
+        <tibet:aspect name="email1" value="$.email1" valid="$_ == $.email2"/>
+        <tibet:aspect name="email2" value="$.email2" valid="$_ == $.email1"/>
+
+        <tibet:aspect name="email3" value="$.email3" valid="$_ != $.email4"/>
+        <tibet:aspect name="email4" value="$.email4" valid="$_ != $.email3"/>
+
+        <tibet:aspect name="choice1" value="$.choice1" valid="$_ != $.choice2 AND $_ != $.choice3"/>
+        <tibet:aspect name="choice2" value="$.choice2" valid="$_ != $.choice1 AND $_ != $.choice3"/>
+        <tibet:aspect name="choice3" value="$.choice3" valid="$_ != $.choice1 AND $_ != $.choice2"/>
+
+        <tibet:aspect name="uniquetoform" value="$.uniquetoform" valid="!$ALL.contains($_)"/>
+
+        <tibet:aspect name="basenumber" value="$.basenumber"/>
+        <tibet:aspect name="biggernumber" valid="$._ > $.basenumber"/>
+        <tibet:aspect name="smallernumber" valid="$._ < $.basenumber"/>
+
+        <tibet:aspect name="baseduration" value="$.baseduration"/>
+        <tibet:aspect name="biggerduration" valid="$._ > $.baseduration"/>
+        <tibet:aspect name="smallerduration" valid="$._ < $.baseduration"/>
+
+        <tibet:aspect name="basedate" value="$.basedate"/>
+        <tibet:aspect name="biggerdate" valid="$._ > $.basedate"/>
+        <tibet:aspect name="smallerdate" valid="$._ < $.basedate"/>
+
+        <tibet:aspect name="basetime" value="$.basetime"/>
+        <tibet:aspect name="biggertime" valid="$._ > $.basetime"/>
+        <tibet:aspect name="smallertime" valid="$._ < $.basetime"/>
+
+    </tibet:content>
+
+</head>
+
+<body>
+
+    <span bind:scope="urn:tibet:Restricted2_data#tibet()">
+    </span>
+
+</body>
+</html>

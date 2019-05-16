@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    @namespace pclass url(urn:tibet:pseudoclass);
+
+    /*input[type=text]:required*/
+    input[type=text][pclass|required]
+    {
+        background-color: yellow;
+    }
+
+    ]]>
+    </style>
+
+    <tibet:data id="Required7Data" name="urn:tibet:Required7_data" makestructures="true" resultType="TP.test.Required7Data"/>
+
+    <tibet:content name="TP.test.Required7Data" baseType="TP.core.JSONContent">
+        <tibet:aspect name="code" value="$.code" required="true"/>
+        <tibet:aspect name="year" value="$.year" required="true"/>
+        <tibet:aspect name="checkboxvalue" value="$.checkboxvalue" required="true"/>
+    </tibet:content>
+
+</head>
+
+<body>
+
+    <tibet:group id="minimum1group" bind:scope="urn:tibet:Required7_data#tibet()" requiredwhen="any">
+
+        <label for="CodeField">Text: </label>
+        <input type="text" id="CodeField" bind:io="{value: code}" tabindex="0"/><br/>
+
+        <br/>
+        <br/>
+
+        <label for="YearField">Choose: </label>
+        <select id="YearField" bind:io="{value: year}" tabindex="0">
+            <option label="choose…"></option>
+            <option>2019</option>
+            <option>2020</option>
+            <option>2021</option>
+            <option>2022</option>
+            <option>2023</option>
+            <option>2024</option>
+        </select>
+
+        <br/>
+        <br/>
+
+    </tibet:group>
+
+    <tibet:group id="noneorallgroup" bind:scope="urn:tibet:Required7_data#tibet()" requiredwhen="none-or-all">
+
+        <label for="Checkbox1Field">Checkbox1: </label>
+        <input type="Checkbox" id="Checkbox1Field" bind:io="{checked: checkboxvalue}" tabindex="0"/><br/>
+        <label for="Checkbox2Field">Checkbox2: </label>
+        <input type="Checkbox" id="Checkbox2Field" bind:io="{checked: checkboxvalue}" tabindex="0"/><br/>
+        <label for="Checkbox3Field">Checkbox3: </label>
+        <input type="Checkbox" id="Checkbox3Field" bind:io="{checked: checkboxvalue}" tabindex="0"/><br/>
+
+    </tibet:group>
+
+</body>
+</html>

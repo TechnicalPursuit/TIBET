@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    @namespace pclass url(urn:tibet:pseudoclass);
+
+    /*input[type=text]:invalid*/
+    input[type=text][pclass|invalid] {
+        color: red;
+    }
+
+    #total {
+        border: solid 1px blue;
+    }
+
+    #total:not([pclass|disabled]) {
+        border: solid 1px red;
+    }
+    ]]>
+    </style>
+
+    <tibet:data id="Computed1Data" name="urn:tibet:Computed1_data" makestructures="true">
+        <![CDATA[
+        {
+            "operand1":"",
+            "operand2":""
+        }
+        ]]>
+    </tibet:data>
+
+    <span bind:scope="urn:tibet:Computed1_data#jpath()">
+        <bind:adaptor name="total" value="'[[$.operand1]] + [[$.operand2]]'" relevant="'TP.notEmpty([[$.operand1]])'"/>
+    </span>
+
+</head>
+
+<body>
+
+    <h2>Computed fields Test #1</h2><br/>
+
+    <br/>
+    <br/>
+    This test sets up an XHTML 'input' element, bound to an underlying data model (expressed in JSON) defined in the test code. It also uses a &lt;tibet:content&gt; element to define a content type for validation purposes, which has a 'schema' attribute used to import data type schema definitions.
+    <br/>
+    <br/>
+
+    <label for="CodeNumField">Operand #1: </label>
+    <input type="text" id="operand1" bind:io="{value: urn:tibet:Computed1_data#jpath($.operand1)}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+
+    <label for="CodeNumField">Operand #2: </label>
+    <input type="text" id="operand2" bind:io="{value: urn:tibet:Computed1_data#jpath($.operand2)}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+
+    <span>Total:</span>
+    <span type="text" id="total" bind:io="{value: urn:tibet:Computed1_data#tibet(total)}" tabindex="0" pclass:disabled="true"/><br/>
+</body>
+</html>

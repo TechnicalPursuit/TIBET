@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    @namespace pclass url(urn:tibet:pseudoclass);
+
+    /*input[type=text]:invalid*/
+    input[type=text][pclass|invalid]
+    {
+        color: red;
+    }
+    ]]>
+    </style>
+
+    <tibet:data id="Computed2Data" name="urn:tibet:Computed2_data" makestructures="true">
+        <![CDATA[
+        {
+            "operand1":"",
+            "operand2":""
+        }
+        ]]>
+    </tibet:data>
+
+    <span bind:scope="urn:tibet:Computed2_data#jpath()">
+        <bind:adaptor name="total" bind:in="{value: '[[$.rawamount]] + ([[$.paidfile]] ? 100 : 0) + (10 * [[$.ticketquanity]] + [[$.optionalchoice]] + [[$.sizevalue]] - [[ACCUM $.discountvalue.]]'}"/>
+    </span>
+
+</head>
+
+<body>
+
+    <h2>Computed fields Test #2</h2><br/>
+
+    <br/>
+    <br/>
+    This test sets up an XHTML 'input' element, bound to an underlying data model (expressed in JSON) defined in the test code. It also uses a &lt;tibet:content&gt; element to define a content type for validation purposes, which has a 'schema' attribute used to import data type schema definitions.
+    <br/>
+    <br/>
+
+    <span bind:scope="urn:tibet:Computed2_data#jpath()">
+
+        <label for="AmountField">Amount</label>
+        <input type="text" id="AmountField1" bind:io="{value: $.rawamount}" tabindex="0"/><br/>
+
+        <br/>
+        <br/>
+
+        <label for="FileField">File:</label>
+        <input type="file" id="FileField" bind:io="{value: $.paidfile}" tabindex="0"/><br/>
+
+        <br/>
+        <br/>
+
+        <label for="HowManySelectField">How Many?</label>
+        <select id="HowManySelectField" bind:io="{value: $.ticketquantity}" tabindex="0">
+            <option label="$10 each…"></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+
+        <label for="OptionField">Option</label>
+        <select id="OptionField" bind:io="{value: $.optionalchoice}" tabindex="0">
+            <option label="choose…"></option>
+            <option value="1">Copper $1</option>
+            <option value="10">Silver $10</option>
+            <option value="100">Gold $100</option>
+            <option value="1000">Platinum $1000</option>
+        </select>
+
+        <br/>
+        <br/>
+
+        <tibet:group id="sizegroup">
+
+            <label for="SmallField">Small:</label>
+            <input type="radio" id="SmallField" value="1" bind:io="{checked: $.sizevalue}" tabindex="0"/><br/>
+            <label for="MediumField">Medium: </label>
+            <input type="radio" id="MediumField" value="10" bind:io="{checked: $.sizevalue}" tabindex="0"/><br/>
+            <label for="LargeField">Large: </label>
+            <input type="radio" id="LargeField" value="100" bind:io="{checked: $.sizevalue}" tabindex="0"/><br/>
+            <label for="ExtraLargeField">Extra Large: </label>
+            <input type="radio" id="LargeField" value="1000" bind:io="{checked: $.sizevalue}" tabindex="0"/><br/>
+
+        </tibet:group>
+
+        <br/>
+        <br/>
+
+        <tibet:group id="discountgroup">
+
+            <label for="TallField">Tall ($10 off): </label>
+            <input type="Checkbox" id="TallField" value="10" bind:io="{checked: $.discountvalue}" tabindex="0"/><br/>
+            <label for="MaleField">Male ($20 off): </label>
+            <input type="Checkbox" id="MaleField" value="20" bind:io="{checked: $.discountvalue}" tabindex="0"/><br/>
+            <label for="HandsomeField">Handsome ($50 off): </label>
+            <input type="Checkbox" id="HandsomeField" value="50" bind:io="{checked: $.discountvalue}" tabindex="0"/><br/>
+            <label for="RichField">Rich ($100 off): </label>
+            <input type="Checkbox" id="RichField" value="100" bind:io="{checked: $.discountvalue}" tabindex="0"/><br/>
+
+        </tibet:group>
+
+        <br/>
+        <br/>
+
+        <span>Total:</span>
+        <span id="total" bind:io="{value: #tibet(total)}"/><br/>
+
+    </span>
+
+</body>
+</html>

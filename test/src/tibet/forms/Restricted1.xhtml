@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    @namespace pclass url(urn:tibet:pseudoclass);
+
+    /*input[type=text]:invalid*/
+    input[type=text][pclass|invalid]
+    {
+           color: red;
+    }
+
+    ]]>
+    </style>
+
+    <tibet:data id="Restricted1Data" name="urn:tibet:Restricted1_data" makestructures="true" resultType="TP.test.Restricted1Data"/>
+
+    <tibet:content name="TP.test.Restricted1Data" baseType="TP.core.JSONContent">
+        <tibet:aspect name="numatleast10" value="$.atleast10" valid="$_ >= 10 AND $_ &lt; 100"/>
+        <tibet:aspect name="numatmost10" value="$.atmost10" valid="$_ <= 10"/>
+        <tibet:aspect name="numfrom5to15" value="$.from5to15" valid="$_ >= 5 AND $_ <= 15"/>
+        <tibet:aspect name="numequalto10" value="" valid="$_ == 10"/>
+
+        <tibet:aspect name="duratleast2hrs" value="" valid=""/>
+        <tibet:aspect name="durlessthan30mins" value="" valid=""/>
+        <tibet:aspect name="durfrom2to5hrs" value="" valid=""/>
+
+        <tibet:aspect name="timefrom9amto5pm" value="" valid=""/>
+        <tibet:aspect name="timefrom10amto3pm" value="" valid=""/>
+        <tibet:aspect name="timefrom6_20amto3_16pm" value="" valid=""/>
+
+        <tibet:aspect name="dateafter20FEB2010" value="" valid=""/>
+        <tibet:aspect name="datebefore20FEB2010" value="" valid=""/>
+        <tibet:aspect name="dateofJUN2010" value="" valid=""/>
+
+        <tibet:aspect name="singleextension" value="" valid="$_.endsWith('pdf')"/>
+        <tibet:aspect name="multipleextension" value="" valid="$_.endsWith(['gif', 'jpg', 'jpeg', 'png', 'svg'])"/>
+
+        <tibet:aspect name="enumerationval" value="" valid="$_ == 'Umbrella'"/>
+
+        <tibet:aspect name="enumerationlengthatleast3" value="" valid="$_.length >= 3"/>
+        <tibet:aspect name="enumerationlengthatmost3" value="" valid="$_.length <= 3"/>
+
+        <tibet:aspect name="textlengthmin5chars" value="" valid="$_.length => 5"/>
+
+        <tibet:aspect name="textlengthmin50chars" value="" valid="$_.length => 50"/>
+        <tibet:aspect name="textlengthmmax50chars" value="" valid="$_.length < 500"/>
+    </tibet:content>
+
+</head>
+
+<body>
+
+    <span bind:scope="urn:tibet:Restricted1_data#tibet()">
+        <input type="text" bind:io="numatleast10"/>
+    </span>
+
+</body>
+</html>
