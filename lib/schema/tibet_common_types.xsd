@@ -185,6 +185,13 @@ types.
         </xs:restriction>
     </xs:simpleType>
 
+    <!-- Internationl Phone Number characters -->
+    <xs:simpleType name="tibet:intlphonenumber">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="^\+?[1-9]\d{1,14}$"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <!-- Credit card providers -->
     <xs:simpleType name="tibet:cc_providers">
         <xs:restriction base="xs:string">

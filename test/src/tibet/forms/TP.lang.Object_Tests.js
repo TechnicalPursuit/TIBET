@@ -1505,7 +1505,7 @@ function() {
                 typeTestFunc('NonNegativeInteger', '-42.45', '42');
                 typeTestFunc('PositiveInteger', '0', '42');
                 typeTestFunc('USPhoneNumber', 'BU 5-1212', '555-555-1212');
-                //typeTestFunc('InternationalPhoneNumber', '', '');
+                typeTestFunc('InternationalPhoneNumber', 'fluffy', '+15555555555');
                 typeTestFunc('SSN', '555-55-33', '555-55-1212');
                 typeTestFunc('Time', 'fluffy', '12:18pm');
                 typeTestFunc('Duration', 'barfy', 'P1Y2M3DT4H5M6S');
