@@ -1248,117 +1248,6 @@ function() {
 
     //  ---
 
-    this.it('markup-level validation - relevancy check', function(test, options) {
-        var driver,
-            windowContext;
-
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Relevant1.xhtml');
-
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
-
-        driver.setLocation(loadURI);
-
-        test.chain(
-            function(result) {
-
-                var srcURI,
-
-                    ssnURI,
-                    citURI,
-
-                    ssnField,
-                    citCheckbox;
-
-                srcURI = TP.uc('urn:tibet:Relevant1_person');
-                ssnURI = TP.uc('urn:tibet:Relevant1_person#tibet(SSN)');
-                citURI = TP.uc('urn:tibet:Relevant1_person#tibet(uscitizen)');
-
-                ssnField = TP.byId('SSNField', windowContext);
-                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
-
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
-
-                //  ---
-
-                //  Citizen
-
-                //  'structure' change - citizen URI
-                test.assert.didSignal(citURI, 'TP.sig.StructureChange');
-
-                //  'valid' change - citizen
-                test.assert.didSignal(citURI, 'UscitizenValidChange');
-                test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
-
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'UscitizenValidChange');
-
-                //  ---
-
-                //  SSN
-
-                //  'structure' change - SSN URI
-                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
-
-                //  'relevant' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
-                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-
-                test.assert.didSignal(srcURI, 'SSNRelevantChange');
-
-                //  'valid' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNValidChange');
-                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'SSNValidChange');
-
-                //  ---
-
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
-
-                //  ---
-
-                driver.constructSequence().
-                    click(citCheckbox).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-
-                        //  'relevant' change - SSN
-                        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
-                        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
-
-                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
-
-                        //  'US citizen' change - citizen URI
-                        test.assert.didSignal(citURI, 'UscitizenChange');
-
-                        //  'US citizen' change - source URI
-                        test.assert.didSignal(srcURI, 'UscitizenChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
-    });
-
-    //  ---
-
     this.it('markup-level validation - multiple types validation', function(test, options) {
         var driver,
             windowContext,
@@ -1967,6 +1856,117 @@ function() {
                         //  because SSN is now valid)
                         test.assert.didSignal(empGroup, 'TP.sig.UIValid');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level validation - relevancy check', function(test, options) {
+        var driver,
+            windowContext;
+
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Relevant1.xhtml');
+
+        driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
+        driver.setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+
+                var srcURI,
+
+                    ssnURI,
+                    citURI,
+
+                    ssnField,
+                    citCheckbox;
+
+                srcURI = TP.uc('urn:tibet:Relevant1_person');
+                ssnURI = TP.uc('urn:tibet:Relevant1_person#tibet(SSN)');
+                citURI = TP.uc('urn:tibet:Relevant1_person#tibet(uscitizen)');
+
+                ssnField = TP.byId('SSNField', windowContext);
+                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Citizen
+
+                //  'structure' change - citizen URI
+                test.assert.didSignal(citURI, 'TP.sig.StructureChange');
+
+                //  'valid' change - citizen
+                test.assert.didSignal(citURI, 'UscitizenValidChange');
+                test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'UscitizenValidChange');
+
+                //  ---
+
+                //  SSN
+
+                //  'structure' change - SSN URI
+                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+
+                //  'relevant' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+
+                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                //  'valid' change - SSN
+                test.assert.didSignal(ssnURI, 'SSNValidChange');
+                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, 'SSNValidChange');
+
+                //  ---
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                driver.constructSequence().
+                    click(citCheckbox).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+
+                        //  'relevant' change - SSN
+                        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+                        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
+
+                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
+
+                        //  'US citizen' change - citizen URI
+                        test.assert.didSignal(citURI, 'UscitizenChange');
+
+                        //  'US citizen' change - source URI
+                        test.assert.didSignal(srcURI, 'UscitizenChange');
                     });
             },
             function(error) {
