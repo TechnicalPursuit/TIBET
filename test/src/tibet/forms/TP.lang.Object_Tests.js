@@ -1866,7 +1866,7 @@ function() {
 
     //  ---
 
-    this.it('markup-level validation - relevancy check', function(test, options) {
+    this.it('markup-level relevancy', function(test, options) {
         var driver,
             windowContext;
 
@@ -1977,7 +1977,7 @@ function() {
 
     //  ---
 
-    this.it('markup-level - XML content type defined in markup', function(test, options) {
+    this.it('markup-level required - XML content type defined in markup', function(test, options) {
         var driver,
             windowContext;
 
@@ -2080,7 +2080,7 @@ function() {
 
     //  ---
 
-    this.it('markup-level - JSON content type defined in markup', function(test, options) {
+    this.it('markup-level required - JSON content type defined in markup', function(test, options) {
         var driver,
             windowContext;
 
@@ -2183,7 +2183,7 @@ function() {
 
     //  ---
 
-    this.it('markup-level - XML content type defined in markup with a schema defined type', function(test, options) {
+    this.it('markup-level required - XML content type defined in markup with a schema defined type', function(test, options) {
         var driver,
             windowContext;
 
@@ -2286,7 +2286,7 @@ function() {
 
     //  ---
 
-    this.it('markup-level - JSON content type defined in markup with a schema defined type', function(test, options) {
+    this.it('markup-level required - JSON content type defined in markup with a schema defined type', function(test, options) {
         var driver,
             windowContext;
 
