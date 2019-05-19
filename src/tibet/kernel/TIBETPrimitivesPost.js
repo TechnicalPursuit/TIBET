@@ -5575,6 +5575,11 @@ function(aPath) {
         return TP.BARENAME_PATH_TYPE;
     }
 
+    //  tibet xpointer using the explicit tibet() scheme (TIBET-only)
+    if (TP.regex.TIBET_POINTER.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
     //  regular xpointer, either xpointer(), xpath1() or element() scheme
     if (TP.regex.XPOINTER.test(path)) {
 
