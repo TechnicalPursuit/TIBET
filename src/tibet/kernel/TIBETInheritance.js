@@ -8906,7 +8906,13 @@ function() {
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    this.checkFacets(this.getFacetedAspectNames());
+    var facetedAspects;
+
+    facetedAspects = this.getFacetedAspectNames();
+
+    if (TP.notEmpty(facetedAspects)) {
+        this.checkFacets(facetedAspects);
+    }
 
     return this;
 });
