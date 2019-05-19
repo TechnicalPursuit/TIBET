@@ -5677,6 +5677,13 @@ function(aValue, ignoreBidiInfo) {
 
         attrName;
 
+    //  If we're part of a chain that started with refreshing the bind machinery
+    //  (i.e. the bind machinery called setValue(), which is calling us), then
+    //  just bail out here.
+    if (TP.isTrue(TP.$$settingValueFromBindMachinery)) {
+        return this;
+    }
+
     elem = this.getNativeNode();
 
     //  NB: 'bind:in' doesn't matter here - that goes 'in', these go 'out'.
@@ -6140,7 +6147,9 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
     //  is null or undefined. This way we can let the receiver decide how to
     //  manage those values.
     if (aspect === 'value' && facet === 'value') {
+        TP.$$settingValueFromBindMachinery = true;
         didRefresh = this.setValue(finalVal);
+        TP.$$settingValueFromBindMachinery = false;
     } else {
         this.setFacet(aspect, facet, finalVal);
         didRefresh = true;
