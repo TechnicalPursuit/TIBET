@@ -9093,13 +9093,13 @@ function() {
      *     the receiver.
      */
 
-    var aspectsToCheck,
+    var aspects,
         thisType;
 
-    aspectsToCheck = this.getKeys();
+    aspects = this.getKeys();
 
     //  We want to filter out slots holding facet values
-    aspectsToCheck = aspectsToCheck.reject(
+    aspects = aspects.reject(
             function(aspectName) {
                 return TP.regex.FACET_SLOT_NAME_MATCH.test(aspectName);
             });
@@ -9107,12 +9107,12 @@ function() {
     thisType = this.getType();
 
     //  Next filter out slots that don't have property descriptors
-    aspectsToCheck = aspectsToCheck.select(
+    aspects = aspects.select(
             function(aspectName) {
                 return TP.isValid(thisType.getInstDescriptorFor(aspectName));
             });
 
-    return aspectsToCheck;
+    return aspects;
 });
 
 //  ------------------------------------------------------------------------
