@@ -916,12 +916,23 @@ function(attributeName, attributeValue, shouldSignal) {
     attrName = attributeName.asString();
 
     //  If it's a JS identifier (i.e. simple path), then we can check its
-    //  facets.
+    //  facets. Note here how we filter out attribute (i.e. aspect) names that
+    //  are used to track our internal data, while allowing ones that our
+    //  subtypes might have defined.
     if (TP.regex.JS_IDENTIFIER.test(attrName)) {
         if (attrName !== 'data' &&
+            attrName !== '$publicURI' &&
             attrName !== 'sourceURI' &&
-            attrName !== 'transactional') {
-            this.checkFacets(attrName);
+            attrName !== 'transactional' &&
+            attrName !== 'currentIndex' &&
+            attrName !== 'snaps' &&
+            attrName !== 'points' &&
+            attrName !== 'shouldMakeStructures') {
+
+            //  We only do this if this instance attribute has a descriptor.
+            if (TP.isValid(this.getType().getInstDescriptorFor(attrName))) {
+                this.checkFacets(attrName);
+            }
         }
     }
 
