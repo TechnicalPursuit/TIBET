@@ -5756,6 +5756,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             TP.isPlainObject(currentVal) ||
             TP.isArray(currentVal)) {
 
+            //  If the current value is not mutable, then it can't be queried,
+            //  no matter what the path is. In this case, it's just the
+            //  attribute value updating the current val.
+            if (!TP.isMutable(currentVal)) {
+                op = TP.UPDATE;
+                return attributeValue;
+            }
+
             op = TP.DELETE;
 
             //  Grab all of the nodes deeply under the current value. If that is
