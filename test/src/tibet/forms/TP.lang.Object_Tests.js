@@ -1321,12 +1321,13 @@ function() {
                             test.assert.didSignal(srcURI,
                                                     nameTC + 'Change');
 
-                            //  'valid' change
+                            //  'valid' change - aspect URI
                             test.assert.didSignal(aspectURI,
                                                     nameTC + 'ValidChange');
                             test.assert.didSignal(aspectField,
                                                     'TP.sig.UIInvalid');
 
+                            //  'valid' change - source URI
                             test.assert.didSignal(srcURI,
                                                     nameTC + 'ValidChange');
                         });
@@ -1362,12 +1363,13 @@ function() {
                             test.assert.didSignal(srcURI,
                                                     nameTC + 'Change');
 
-                            //  'valid' change
+                            //  'valid' change - aspect URI
                             test.assert.didSignal(aspectURI,
                                                     nameTC + 'ValidChange');
                             test.assert.didSignal(aspectField,
                                                     'TP.sig.UIValid');
 
+                            //  'valid' change - source URI
                             test.assert.didSignal(srcURI,
                                                     nameTC + 'ValidChange');
                         });

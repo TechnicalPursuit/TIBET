@@ -23,7 +23,7 @@ from a top-level type's construct() call.
 
 The TIBET object maintains the "current locale" while the various TP.i18n.Locale
 subtypes provide the actual functionality for localization. The language code
-for the current locale is used by "localized" types such as TP.core.PhoneNumber
+for the current locale is used by "localized" types such as TP.tibet.PhoneNumber
 to determine the specific subtype to use.
 
 Methods on the TIBET hash for aqcuiring the current "source language" and the
