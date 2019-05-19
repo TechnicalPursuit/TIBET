@@ -890,6 +890,46 @@ function(attributeName, facetName, originalPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('getFacetedAspectNames',
+function() {
+
+    /**
+     * @method getFacetedAspectNames
+     * @summary Returns an Array of the names of the aspects that are faceted on
+     *     the receiver.
+     * @returns {String[]} A list of the names of aspects that are faceted on
+     *     the receiver.
+     */
+
+    var aspects;
+
+    //  Gather whatever our supertype thinks we should have as aspect names that
+    //  have facets.
+    aspects = this.callNextMethod();
+
+    //  We filter out aspect names that are used to track our internal data,
+    //  while allowing ones that our subtypes might have defined.
+    aspects = aspects.filter(
+                function(anAspect) {
+                    if (anAspect !== 'data' &&
+                        anAspect !== '$publicURI' &&
+                        anAspect !== 'sourceURI' &&
+                        anAspect !== 'transactional' &&
+                        anAspect !== 'currentIndex' &&
+                        anAspect !== 'snaps' &&
+                        anAspect !== 'points' &&
+                        anAspect !== 'shouldMakeStructures') {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+    return aspects;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
