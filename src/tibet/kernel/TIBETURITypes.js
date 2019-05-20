@@ -3770,10 +3770,6 @@ function(oldResource, newResource) {
 
             secondaryURIs.at(i).signal('TP.sig.StructureDelete',
                                         description);
-
-            if (TP.canInvoke(newResource, 'checkFacets')) {
-                newResource.checkFacets(fragText);
-            }
         }
     }
 
