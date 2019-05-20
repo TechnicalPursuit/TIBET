@@ -3727,9 +3727,14 @@ function(oldResource, newResource) {
      */
 
     var secondaryURIs,
+
         description,
+
         i,
-        fragText;
+        fragText,
+
+        facetedAspects,
+        primaryLoc;
 
     secondaryURIs = this.getSecondaryURIs();
 
@@ -3791,6 +3796,38 @@ function(oldResource, newResource) {
     );
 
     this.signal('TP.sig.ValueChange', description);
+
+    //  If we can invoke 'getFacetedAspectNames' on the new resource, then we
+    //  want to query for and check those facets.
+    if (TP.canInvoke(newResource, 'getFacetedAspectNames')) {
+
+        //  Grab the faceted aspect names.
+        facetedAspects = newResource.getFacetedAspectNames();
+
+        //  If there were faceted aspects, then create '#tibet' URIs with
+        //  aspects as the fragments for each one. This will force the system to
+        //  signal from those URIs as well.
+        if (TP.notEmpty(facetedAspects)) {
+
+            primaryLoc = this.getPrimaryURI().getLocation();
+            facetedAspects.forEach(
+                function(anAspect) {
+                    var aspectLoc;
+
+                    //  The 'aspect location' is the primary location with a
+                    //  '#tibet' fragment and the aspect name.
+                    aspectLoc = primaryLoc + '#tibet(' + anAspect + ')';
+
+                    //  Create the URI. Note that we don't worry about the
+                    //  return value here as the URI machinery will cache the
+                    //  instance.
+                    TP.uc(aspectLoc);
+                });
+
+            //  Check the facets.
+            newResource.checkFacets(facetedAspects);
+        }
+    }
 
     return this;
 });
