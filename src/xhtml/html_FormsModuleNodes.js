@@ -1218,9 +1218,7 @@ function(aValue, shouldSignal) {
 
     //  Sometimes the display value computed from the new value can be equal to
     //  the old value. If that's *not* the case, then propagate the change
-    //  signal. Note that we do *not* need to set the bound value since that's
-    //  already done for these native controls in the 'onchange' *method* that's
-    //  defined on the individual concrete types.
+    //  signal.
     if (!TP.equal(oldValue, displayValue)) {
         //  NB: Use this construct this way for better performance
         if (TP.notValid(flag = shouldSignal)) {
@@ -1231,6 +1229,9 @@ function(aValue, shouldSignal) {
             this.$changed('value', TP.UPDATE,
                             TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
         }
+
+        //  If the element is bound, then update its bound value.
+        this.setBoundValueIfBound(displayValue);
     }
 
     return true;
@@ -3422,9 +3423,7 @@ function(aValue, shouldSignal) {
 
     //  Sometimes the display value computed from the new value can be equal to
     //  the old value. If that's *not* the case, then propagate the change
-    //  signal. Note that we do *not* need to set the bound value since that's
-    //  already done for these native controls in the 'onchange' *method* that's
-    //  defined on this type.
+    //  signal.
     if (!TP.equal(oldValue, displayValue)) {
         //  NB: Use this construct this way for better performance
         if (TP.notValid(flag = shouldSignal)) {
@@ -3435,6 +3434,9 @@ function(aValue, shouldSignal) {
             this.$changed('value', TP.UPDATE,
                             TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
         }
+
+        //  If the element is bound, then update its bound value.
+        this.setBoundValueIfBound(displayValue);
     }
 
     return this;
