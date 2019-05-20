@@ -2857,6 +2857,10 @@ function(onlyShallow) {
      *     URIs which point to the same primary resource as the receiver, but
      *     also have a secondary resource pointed to by a fragment. If the
      *     receiver has a secondary resource itself, it returns null.
+     * @description This method also will create an 'empty pointer' URI
+     *     consisting of the receiver's primary URI location, the scheme and an
+     *     empty parentheses. This allows consistent results for when this empty
+     *     pointer URI might not have been created explicitly.
      * @param {Boolean} [onlyShallow=false] Whether or not to only include
      *     secondary URIs that are 'the shallowest possible set'. I.e. if the
      *     set of secondary URIs consisted of 'urn:tibet:stuff#tibet(foo)' and
@@ -2867,25 +2871,45 @@ function(onlyShallow) {
      */
 
     var secondaryURIs,
-        uriGroupings;
+        uriGroupings,
+
+        schemeOnlySecondaryURI,
+
+        scheme;
 
     secondaryURIs = this.getSubURIs(true);
 
-    if (TP.notEmpty(secondaryURIs) && onlyShallow) {
+    if (TP.notEmpty(secondaryURIs)) {
 
-        //  Group the secondary URIs by their 'fragment weight'. We want only
-        //  the ones in the group with the lowest weight.
-        uriGroupings = secondaryURIs.groupBy(
-                            function(aURI) {
-                                return aURI.getFragmentWeight();
-                            });
+        if (onlyShallow) {
 
-        //  Make sure the hash keys are sorted sorted
-        uriGroupings.sort(TP.sort.NUMERIC);
+            //  Group the secondary URIs by their 'fragment weight'. We want
+            //  only the ones in the group with the lowest weight.
+            uriGroupings = secondaryURIs.groupBy(
+                                function(aURI) {
+                                    return aURI.getFragmentWeight();
+                                });
 
-        //  Get the first item's (a key-value pair) last item, which will be an
-        //  Array.
-        return uriGroupings.first().last();
+            //  Make sure the hash keys are sorted sorted
+            uriGroupings.sort(TP.sort.NUMERIC);
+
+            //  Get the first item's (a key-value pair) last item, which will
+            //  be an Array.
+            secondaryURIs = uriGroupings.first().last();
+        }
+
+        //  Grab the fragment scheme from the first secondary URI
+        scheme = TP.getPointerScheme(secondaryURIs.first().getFragment());
+
+        //  Compute the 'empty pointer' URI location.
+        schemeOnlySecondaryURI =
+            this.getPrimaryURI().getLocation() + '#' + scheme + '()';
+
+        //  Create and push a URI instance representing the empty pointer.
+        secondaryURIs.push(TP.uc(schemeOnlySecondaryURI));
+
+        //  Unique the list in case the empty pointer already existed.
+        secondaryURIs.unique();
     }
 
     return secondaryURIs;
