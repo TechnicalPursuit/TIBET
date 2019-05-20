@@ -2386,6 +2386,160 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('markup-level required - various controls', function(test, options) {
+        var driver,
+            windowContext,
+
+            srcURI,
+
+            beforeChangeFunc,
+            changeFunc;
+
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Required5.xhtml');
+
+        driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
+        driver.setLocation(loadURI);
+
+        srcURI = TP.uc('urn:tibet:Required5_data');
+
+        beforeChangeFunc = function(aspectName) {
+
+            test.chain(
+                function(result) {
+
+                    var name,
+                        nameTC,
+
+                        aspectURI,
+
+                        aspectField;
+
+                    name = aspectName;
+                    nameTC = aspectName.asTitleCase();
+
+                    aspectURI =
+                        TP.uc('urn:tibet:Required5_data#tibet(' + name + ')');
+
+                    aspectField = TP.byId(name + 'Field', windowContext);
+
+                    //  Note that these are tested in order of firing, just for
+                    //  clarity purposes.
+
+                    //  ---
+
+                    //  'required' change - aspect URI
+                    test.assert.didSignal(aspectURI, nameTC + 'RequiredChange');
+                    test.assert.didSignal(aspectField, 'TP.sig.UIRequired');
+
+                    //  'required' change - source URI
+                    test.assert.didSignal(srcURI, nameTC + 'RequiredChange');
+                });
+        };
+
+        changeFunc = function(aspectName, typedStr, valueStr) {
+
+            test.chain(
+                function(result) {
+
+                    var name,
+                        nameTC,
+
+                        aspectURI,
+
+                        aspectField;
+
+                    name = aspectName;
+                    nameTC = aspectName.asTitleCase();
+
+                    srcURI = TP.uc('urn:tibet:Required5_data');
+                    aspectURI =
+                        TP.uc('urn:tibet:Required5_data#tibet(' + name + ')');
+
+                    aspectField = TP.byId(name + 'Field', windowContext);
+
+                    //  ---
+
+                    if (TP.isValid(typedStr)) {
+                        test.getDriver().constructSequence().
+                            exec(function() {
+                                aspectField.clearValue();
+                            }).
+                            sendKeys(typedStr, aspectField).
+                            sendEvent(TP.hc('type', 'change'), aspectField).
+                            run();
+                    } else {
+                        test.chain(
+                            function() {
+                                aspectField.set('value', valueStr);
+                            });
+                    }
+
+                    //  ---
+
+                    test.chain(
+                        function() {
+
+                            //  Note that these are tested in order of firing,
+                            //  just for clarity purposes.
+
+                            //  aspect change - aspect URI
+                            test.assert.didSignal(aspectURI,
+                                                    nameTC + 'Change');
+
+                            //  'age' change - source URI
+                            test.assert.didSignal(srcURI,
+                                                    nameTC + 'Change');
+
+                            //  'required' change - aspect URI
+                            test.assert.didSignal(aspectURI,
+                                                    nameTC + 'RequiredChange');
+                            test.assert.didSignal(aspectField,
+                                                    'TP.sig.UIOptional');
+
+                            //  'required' change - source URI
+                            test.assert.didSignal(srcURI,
+                                                    nameTC + 'RequiredChange');
+                        });
+                });
+        };
+
+        test.chain(
+            function(result) {
+
+                //  'value' change - source URI
+                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+                beforeChangeFunc('AnyText');
+                beforeChangeFunc('PasswordText');
+                beforeChangeFunc('Filename');
+                beforeChangeFunc('Notes');
+                beforeChangeFunc('SingleSelect');
+                beforeChangeFunc('MultiSelect');
+
+                test.chain(
+                    function() {
+                    //  Reset the metrics we're tracking.
+                    test.getSuite().resetSignalTracking();
+                });
+
+                changeFunc('AnyText', 'moo');
+                changeFunc('PasswordText', 'my_password');
+                //changeFunc('Filename', null, 'myfile.txt');
+                changeFunc('Notes', 'moo');
+                changeFunc('SingleSelect', null, 'Option #1');
+                changeFunc('MultiSelect', null, 'Option A');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+
+    });
+
 });
 
 //  ------------------------------------------------------------------------

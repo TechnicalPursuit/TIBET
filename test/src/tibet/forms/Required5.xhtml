@@ -16,7 +16,11 @@
     @namespace pclass url(urn:tibet:pseudoclass);
 
     /*input[type=text]:required*/
-    input[type=text][pclass|required]
+    /*textarea:required*/
+    /*select:required*/
+    input[type=text][pclass|required],
+    textarea[pclass|required],
+    select[pclass|required]
     {
         background-color: yellow;
     }
@@ -27,12 +31,12 @@
     <tibet:data id="Required5Data" name="urn:tibet:Required5_data" makestructures="true" resultType="TP.test.Required5Data"/>
 
     <tibet:content name="TP.test.Required5Data" baseType="TP.core.JSONContent">
-        <tibet:aspect name="anytext" value="$.anytext" required="true"/>
-        <tibet:aspect name="passwordtext" value="$.passwordtext" required="true"/>
-        <tibet:aspect name="filename" value="$.filename" required="true"/>
-        <tibet:aspect name="notes" value="$.notes" required="true"/>
-        <tibet:aspect name="singleselectvalue" value="$.selectvalue" required="true"/>
-        <tibet:aspect name="multiselectvalue" value="$.multiselectvalue" required="true"/>
+        <tibet:aspect name="AnyText" value="$.anytext" required="true"/>
+        <tibet:aspect name="PasswordText" value="$.passwordtext" required="true"/>
+        <tibet:aspect name="Filename" value="$.filename" required="true"/>
+        <tibet:aspect name="Notes" value="$.notes" required="true"/>
+        <tibet:aspect name="SingleSelect" value="$.selectvalue" required="true"/>
+        <tibet:aspect name="MultiSelect" value="$.multiselectvalue" required="true"/>
     </tibet:content>
 
 </head>
@@ -42,50 +46,50 @@
     <span bind:scope="urn:tibet:Required5_data#tibet()">
 
         <label for="AnyTextField">Text: </label>
-        <input pclass:required="true" type="text" id="AnyTextField" bind:io="{value: anytext}" tabindex="0"/><br/>
+        <input type="text" id="AnyTextField" bind:io="{value: AnyText}" tabindex="0"/><br/>
 
         <br/>
         <br/>
 
         <label for="PasswordTextField">Password: </label>
-        <input type="password" id="PasswordTextField" bind:io="{value: passwordtext}" tabindex="0"/><br/>
+        <input type="password" id="PasswordTextField" bind:io="{value: PasswordText}" tabindex="0"/><br/>
 
         <br/>
         <br/>
 
         <label for="FilenameField">File Name: </label>
-        <input type="file" id="FilenameTextField" bind:io="{value: filename}" tabindex="0"/><br/>
+        <input type="file" id="FilenameField" bind:io="{value: Filename}" tabindex="0"/><br/>
 
         <br/>
         <br/>
 
-        <label for="NotesTextarea">Notes: </label>
-        <textarea id="NotesTextarea" bind:io="{value: notes}" tabindex="0"/><br/>
+        <label for="NotesField">Notes: </label>
+        <textarea id="NotesField" bind:io="{value: Notes}" tabindex="0"/><br/>
 
         <br/>
         <br/>
 
         <label for="SingleSelectField">Choose: </label>
-        <select id="SingleSelectField" bind:io="{value: singleselectvalue}" tabindex="0">
+        <select id="SingleSelectField" bind:io="{value: SingleSelect}" tabindex="0">
             <option label="choose…"></option>
             <option>Option #1</option>
             <option>Option #2</option>
             <option>Option #3</option>
         </select>
 
-        <label for="MultiSelectField">Choose: </label>
-        <select id="MultiSelectField" bind:io="{value: multiselectvalue}" tabindex="0" multiple="multiple" size="3">
-            <option label="choose…"></option>
-            <option>Option #A</option>
-            <option>Option #B</option>
-            <option>Option #C</option>
-            <option>Option #D</option>
-            <option>Option #E</option>
-            <option>Option #F</option>
-        </select>
+        <br/>
+        <br/>
 
-        <br/>
-        <br/>
+        <label for="MultiSelectField">Choose: </label>
+        <select id="MultiSelectField" bind:io="{value: MultiSelect}" tabindex="0" multiple="multiple" size="3">
+            <option label="choose…"></option>
+            <option>Option A</option>
+            <option>Option B</option>
+            <option>Option C</option>
+            <option>Option D</option>
+            <option>Option E</option>
+            <option>Option F</option>
+        </select>
 
     </span>
 
