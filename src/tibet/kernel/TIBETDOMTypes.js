@@ -2006,6 +2006,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('getFacetedAspectNames',
+function() {
+
+    /**
+     * @method getFacetedAspectNames
+     * @summary Returns an Array of the names of the aspects that are faceted on
+     *     the receiver.
+     * @returns {String[]} A list of the names of aspects that are faceted on
+     *     the receiver.
+     */
+
+    var aspects;
+
+    //  Gather whatever our supertype thinks we should have as aspect names that
+    //  have facets.
+    aspects = this.callNextMethod();
+
+    //  We filter out aspect names that are used to track our internal data,
+    //  while allowing ones that our subtypes might have defined.
+    aspects = aspects.filter(
+                function(anAspect) {
+                    if (anAspect !== '$signalingBatchID' &&
+                        anAspect !== '$repeatTemplates' &&
+                        anAspect !== '$refreshedElements' &&
+                        anAspect !== '$alreadyTransforming' &&
+                        anAspect !== 'changeFlagging' &&
+                        anAspect !== 'dirty' &&
+                        anAspect !== 'node' &&
+                        anAspect !== 'recyclable' &&
+                        anAspect !== 'phase' &&
+                        anAspect !== 'preppedReps' &&
+                        anAspect !== 'uri') {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+    return aspects;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('getGlobalID',
 function(assignIfAbsent) {
 
