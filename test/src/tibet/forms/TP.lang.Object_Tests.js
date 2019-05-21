@@ -1504,7 +1504,6 @@ function() {
                 //  'valid' change - Employee Group field (it's invalid because
                 //  the SSN is missing)
                 test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
-                test.assert.didSignal(empGroup, 'InvalidChange');
                 test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
                 //  ---

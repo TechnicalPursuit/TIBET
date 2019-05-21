@@ -6261,7 +6261,9 @@ function(stateAttribute, stateFlag, shouldSignal) {
         }
 
         if (flag) {
-            this.$changed(stateAttribute.slice(7),
+            //  Note here how 'escape' the attribute name by replacing ':' with
+            //  '_'.
+            this.$changed(stateAttribute.replace(':', '_'),
                             TP.UPDATE,
                             TP.hc('baseSignalType', TP.sig.AttributeChange));
         }

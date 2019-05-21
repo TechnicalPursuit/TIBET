@@ -547,6 +547,9 @@ function(aSignal) {
         return this;
     }
 
+    //  Slice off the 'Pclass_' prefix.
+    attrName = attrName.slice(7);
+
     //  attrName will be one of the following:
     //      readonly
     //      disabled
