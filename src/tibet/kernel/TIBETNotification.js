@@ -3767,6 +3767,8 @@ function(aSignal, aDefaultType) {
                             //  We know it's a Structure thing...
                             defaultType = TP.sig.StructureChange;
                         }
+                    } else {
+                        defaultType = aDefaultType;
                     }
 
                     defaultType = TP.ifInvalid(defaultType, TP.sig.ValueChange);
