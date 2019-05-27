@@ -2539,6 +2539,369 @@ function() {
 
     });
 
+    //  ---
+
+    this.it('markup-level validation - group-level various controls', function(test, options) {
+        var driver,
+            windowContext;
+
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Required6.xhtml');
+
+        driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
+        driver.setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+
+                var srcURI,
+
+                    codeURI,
+                    expMonthURI,
+                    expYearURI,
+                    radioButtonURI,
+                    checkBoxURI,
+
+                    fieldUnionGroup,
+                    codeField,
+                    expMonthSelect,
+                    expYearSelect,
+
+                    radioButtonGroup,
+                    radio1Field,
+                    radio2Field,
+                    radio3Field,
+
+                    checkBoxGroup,
+                    checkBox1Field,
+                    checkBox2Field,
+                    checkBox3Field;
+
+                srcURI = TP.uc('urn:tibet:Required6_data');
+
+                codeURI = TP.uc('urn:tibet:Required6_data#tibet(Code)');
+                expMonthURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(ExpirationMonth)');
+                expYearURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(ExpirationYear)');
+                radioButtonURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(RadioValue)');
+                checkBoxURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(CheckboxValue)');
+
+                fieldUnionGroup = TP.byId('FieldUnionGroup', windowContext);
+                codeField = TP.byId('CodeField', windowContext);
+                expMonthSelect = TP.byId('MonthField', windowContext);
+                expYearSelect = TP.byId('YearField', windowContext);
+
+                radioButtonGroup = TP.byId('RadioButtonGroup', windowContext);
+                radio1Field = TP.byId('Radio1Field', windowContext);
+                radio2Field = TP.byId('Radio2Field', windowContext);
+                radio3Field = TP.byId('Radio3Field', windowContext);
+
+                checkBoxGroup = TP.byId('CheckBoxGroup', windowContext);
+                checkBox1Field = TP.byId('Checkbox1Field', windowContext);
+                checkBox2Field = TP.byId('Checkbox2Field', windowContext);
+                checkBox3Field = TP.byId('Checkbox3Field', windowContext);
+
+                //  Note that these are tested in order of firing, just for
+                //  clarity purposes.
+
+                //  ---
+
+                //  Code
+
+                //  'required' change - code
+                test.assert.didSignal(codeURI,
+                                        'CodeRequiredChange');
+                test.assert.didSignal(codeField,
+                                        'TP.sig.UIRequired');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'CodeRequiredChange');
+
+                //  ---
+
+                //  Expiration Month
+
+                //  'required' change - expiration month
+                test.assert.didSignal(expMonthURI,
+                                        'ExpirationMonthRequiredChange');
+                test.assert.didSignal(expMonthSelect,
+                                        'TP.sig.UIRequired');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'ExpirationMonthRequiredChange');
+
+                //  ---
+
+                //  Expiration Year
+
+                //  'required' change - expiration year
+                test.assert.didSignal(expYearURI,
+                                        'ExpirationYearRequiredChange');
+                test.assert.didSignal(expYearSelect,
+                                        'TP.sig.UIRequired');
+
+                //  'required' change - source URI
+                test.assert.didSignal(srcURI, 'ExpirationYearRequiredChange');
+
+                //  ---
+
+                //  Field Union group
+
+                //  'required' change - Field Union group (it's in required mode
+                //  because all values are missing)
+                test.assert.didSignal(fieldUnionGroup, 'TP.sig.UIRequired');
+                test.assert.hasAttribute(fieldUnionGroup, 'pclass:required');
+
+                //  ---
+
+                //  Radio Button group
+
+                //  'required' change - Radio Button group (it's in required
+                //  mode because all values are missing)
+                test.assert.didSignal(radioButtonGroup, 'TP.sig.UIRequired');
+                test.assert.hasAttribute(radioButtonGroup, 'pclass:required');
+
+                //  ---
+
+                //  Check Box group
+
+                //  'required' change - Check Box group (it's in required
+                //  mode because all values are missing)
+                test.assert.didSignal(checkBoxGroup, 'TP.sig.UIRequired');
+                test.assert.hasAttribute(checkBoxGroup, 'pclass:required');
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        codeField.clearValue();
+                    }).
+                    sendKeys('333-33-3333', codeField).
+                    sendEvent(TP.hc('type', 'change'), codeField).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(codeURI,
+                                                'CodeRequiredChange');
+                        test.assert.didSignal(codeField,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(srcURI, 'CodeRequiredChange');
+
+
+                        //  This should not have signaled yet - not all of the
+                        //  constraints are fulfilled.
+                        test.refute.didSignal(fieldUnionGroup,
+                                                'TP.sig.UIOptional');
+                    });
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        expMonthSelect.setValue('Mar');
+                    }).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(expMonthURI,
+                                                'ExpirationMonthRequiredChange');
+                        test.assert.didSignal(expMonthSelect,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'ExpirationMonthRequiredChange');
+
+
+                        //  This should not have signaled yet - not all of the
+                        //  constraints are fulfilled.
+                        test.refute.didSignal(fieldUnionGroup,
+                                                'TP.sig.UIOptional');
+                    });
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        expYearSelect.setValue('2022');
+                    }).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(expYearURI,
+                                                'ExpirationYearRequiredChange');
+                        test.assert.didSignal(expYearSelect,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'ExpirationYearRequiredChange');
+
+
+                        //  Now that all of the constraints on the group are
+                        //  fulfilled (i.e. 'all') this should have signaled.
+                        test.assert.didSignal(fieldUnionGroup,
+                                                'TP.sig.UIOptional');
+                    });
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                driver.constructSequence().
+                    click(radio1Field).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(radioButtonURI,
+                                                'RadioValueRequiredChange');
+                        test.assert.didSignal(radio1Field,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(radio2Field,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(radio3Field,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'RadioValueRequiredChange');
+
+                        //  Now that all of the constraints on the group are
+                        //  fulfilled (i.e. 'any') this should have signaled.
+                        test.assert.didSignal(radioButtonGroup,
+                                                'TP.sig.UIOptional');
+                    });
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                driver.constructSequence().
+                    click(checkBox1Field).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(checkBoxURI,
+                                                'CheckboxValueRequiredChange');
+                        test.assert.didSignal(checkBox1Field,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(checkBox2Field,
+                                                'TP.sig.UIOptional');
+                        test.assert.didSignal(checkBox3Field,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'CheckboxValueRequiredChange');
+
+                        //  Now that all of the constraints on the group are
+                        //  fulfilled (i.e. 'any') this should have signaled.
+                        test.assert.didSignal(checkBoxGroup,
+                                                'TP.sig.UIOptional');
+                    });
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
+                //  Turn the checkbox back off. This will make our checkboxes
+                //  and checkbox group required again.
+                driver.constructSequence().
+                    click(checkBox1Field).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(checkBoxURI,
+                                                'CheckboxValueRequiredChange');
+                        test.assert.didSignal(checkBox1Field,
+                                                'TP.sig.UIRequired');
+                        test.assert.didSignal(checkBox2Field,
+                                                'TP.sig.UIRequired');
+                        test.assert.didSignal(checkBox3Field,
+                                                'TP.sig.UIRequired');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'CheckboxValueRequiredChange');
+
+                        //  Now that all of the constraints on the group are
+                        //  fulfilled (i.e. 'any') this should have signaled.
+                        test.assert.didSignal(checkBoxGroup,
+                                                'TP.sig.UIRequired');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 });
 
 //  ------------------------------------------------------------------------

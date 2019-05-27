@@ -147,7 +147,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('checkTestConditions',
-function(attrName, conditionAttrVal) {
+function(attrName, conditionAttrVal, invertConditions) {
 
     /**
      * @method checkTestConditions
@@ -166,36 +166,96 @@ function(attrName, conditionAttrVal) {
      * @param {String} conditionAttrVal The value of the 'test condition'
      *     attribute on the receiver. This determines what kind of test will be
      *     run and can currently consist of 'all', 'any' or 'none-or-all'
+     * @param {Boolean} invertConditions Whether or not to 'invert' conditions
+     *     because the value that is supplied is actually for the inverse
+     *     attribute. For instance, the user authors a 'validwhen' attribute on
+     *     the group, but the attribute we're checking for and need logic built
+     *     around is '(pclass:)invalid'.
      * @returns {Boolean|null} True if the members meet the condition, false if
      *     they don't or null if the value of the test condition doesn't match
      *     one of it's currently supported values.
      */
 
-    var positiveState,
+    var shouldHaveAttribute,
 
         members,
+        boundMembers,
+
+        condition,
+
+        len,
 
         i,
 
-        count;
+        val;
 
     //  Grab all of the members of this group and test their values.
     members = this.getMemberElements();
 
-    positiveState = null;
+    //  Filter out only members that are bound. They're the only ones we'll
+    //  consider for testing.
+    boundMembers = members.select(
+                    function(anElem) {
+                        return TP.wrap(anElem).isBoundElement();
+                    });
 
-    switch (conditionAttrVal) {
+    if (invertConditions) {
+
+        //  Inverting the value of the condition. (i.e. 'valid' when 'all' of
+        //  them are valid means 'invalid' when 'any' are invalid.
+        if (conditionAttrVal === 'all') {
+            condition = 'any';
+        } else if (conditionAttrVal === 'any') {
+            //  (i.e. 'valid' when 'any' of them are valid means 'invalid' when
+            //  'all' are invalid
+            condition = 'all';
+        }
+    } else {
+        condition = conditionAttrVal;
+    }
+
+    len = boundMembers.getSize();
+
+    shouldHaveAttribute = null;
+
+    switch (condition) {
 
         case 'all':
 
-            //  Initially set it to set our flag
-            positiveState = true;
+            if (invertConditions) {
 
-            for (i = 0; i < members.getSize(); i++) {
-                if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
-                    //  One failed - we'll no longer set our flag
-                    positiveState = false;
-                    break;
+                //  If the condition is 'all', that means that if *any* of the
+                //  elements under the group do not have the attribute, then the
+                //  group should not have the attribute.
+
+                //  Initially set shouldHaveAttribute to true.
+                shouldHaveAttribute = true;
+
+                for (i = 0; i < len; i++) {
+                    val = TP.bc(boundMembers.at(i).getAttribute(attrName));
+                    if (val === false) {
+                        //  One did have the attribute - we set our flag to
+                        //  false
+                        shouldHaveAttribute = false;
+                        break;
+                    }
+                }
+            } else {
+
+                //  If the condition is 'all', that means that if *any* of the
+                //  elements under the group have the attribute, then the group
+                //  should have the attribute.
+
+                //  Initially set shouldHaveAttribute to false.
+                shouldHaveAttribute = false;
+
+                for (i = 0; i < len; i++) {
+                    val = TP.bc(boundMembers.at(i).getAttribute(attrName));
+                    if (val === true) {
+                        //  One did have the attribute - we set our flag to true
+                        shouldHaveAttribute = true;
+                        break;
+                    }
                 }
             }
 
@@ -203,41 +263,51 @@ function(attrName, conditionAttrVal) {
 
         case 'any':
 
-            //  Initially set it to *not* set our flag
-            positiveState = false;
+            if (invertConditions) {
 
-            for (i = 0; i < members.getSize(); i++) {
-                if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
-                    //  One succeeded - we'll set our flag
-                    positiveState = true;
-                    break;
+                //  If the condition is 'any', that means that if *any* of the
+                //  elements under the group have the attribute, then the group
+                //  should have the attribute.
+
+                //  Initially set shouldHaveAttribute to false.
+                shouldHaveAttribute = false;
+
+                for (i = 0; i < len; i++) {
+                    val = TP.bc(boundMembers.at(i).getAttribute(attrName));
+                    if (val === true) {
+                        //  One did have the attribute - we set our flag to true
+                        shouldHaveAttribute = true;
+                        break;
+                    }
+                }
+
+            } else {
+
+                //  If the condition is 'any', that means that if *any* of the
+                //  elements under the group do not have the attribute, then the
+                //  group should not have the attribute.
+
+                //  Initially set shouldHaveAttribute to true.
+                shouldHaveAttribute = true;
+
+                for (i = 0; i < len; i++) {
+                    val = TP.bc(boundMembers.at(i).getAttribute(attrName));
+                    if (val === false) {
+                        //  One did *not* have the attribute - we set our flag to
+                        //  false
+                        shouldHaveAttribute = false;
+                        break;
+                    }
                 }
             }
 
             break;
 
-        case 'none-or-all':
-
-            count = 0;
-
-            for (i = 0; i < members.getSize(); i++) {
-                if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
-                    count++;
-                    break;
-                }
-            }
-
-            /* eslint-disable no-extra-parens */
-            positiveState =
-                (count === 0 || count === members.getSize() - 1);
-            /* eslint-enable no-extra-parens */
-
-            break;
         default:
             break;
     }
 
-    return positiveState;
+    return shouldHaveAttribute;
 });
 
 //  ------------------------------------------------------------------------
@@ -540,6 +610,8 @@ function(aSignal) {
     var attrName,
         conditionAttrVal,
 
+        invertCondition,
+
         positiveState;
 
     if (TP.isEmpty(attrName = aSignal.at('aspect'))) {
@@ -556,11 +628,23 @@ function(aSignal) {
     //      required
     //      invalid
 
-    if (TP.notEmpty(conditionAttrVal = this.getAttribute(attrName + 'when'))) {
+    //  If the attribute name is 'invalid' we query for a 'validwhen' attribute
+    //  and set the flag to invert the condition testing.
+    if (attrName === 'invalid') {
+        conditionAttrVal = this.getAttribute('validwhen');
+        invertCondition = true;
+    } else {
+        conditionAttrVal = this.getAttribute(attrName + 'when');
+        invertCondition = false;
+    }
+
+    if (TP.notEmpty(conditionAttrVal)) {
 
         //  NB: This method could return true, false or null. We test explicitly
         //  for true or false below.
-        positiveState = this.checkTestConditions(attrName, conditionAttrVal);
+
+        positiveState = this.checkTestConditions(
+                                attrName, conditionAttrVal, invertCondition);
 
         //  Set the flag (or not) and send the proper signal depending on
         //  whether the flag is already set.
@@ -622,7 +706,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'disabled', conditionAttrVal);
+                                        'disabled', conditionAttrVal, false);
 
             shouldSet = false;
 
@@ -683,7 +767,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'disabled', conditionAttrVal);
+                                        'disabled', conditionAttrVal, false);
 
             shouldSet = false;
 
@@ -733,7 +817,7 @@ function(aSignal) {
 
         //  Grab the value of the 'qualifer' attribute that might be set on the
         //  receiver.
-        conditionAttrVal = this.getAttribute('invalidwhen');
+        conditionAttrVal = this.getAttribute('validwhen');
 
         //  If that attribute was set on the receiver, then do a more
         //  sophisticated check to see if we should set the attribute matching
@@ -744,7 +828,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'invalid', conditionAttrVal);
+                                        'invalid', conditionAttrVal, true);
 
             shouldSet = false;
 
@@ -805,7 +889,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'required', conditionAttrVal);
+                                        'required', conditionAttrVal, false);
 
             shouldSet = false;
 
@@ -866,7 +950,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'readonly', conditionAttrVal);
+                                        'readonly', conditionAttrVal, false);
 
             shouldSet = false;
 
@@ -927,7 +1011,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'readonly', conditionAttrVal);
+                                        'readonly', conditionAttrVal, false);
 
             shouldSet = false;
 
@@ -988,7 +1072,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'required', conditionAttrVal);
+                                        'required', conditionAttrVal, false);
 
             shouldSet = false;
 
@@ -1038,7 +1122,7 @@ function(aSignal) {
 
         //  Grab the value of the 'qualifer' attribute that might be set on the
         //  receiver.
-        conditionAttrVal = this.getAttribute('invalidwhen');
+        conditionAttrVal = this.getAttribute('validwhen');
 
         //  If that attribute was set on the receiver, then do a more
         //  sophisticated check to see if we should set the attribute matching
@@ -1049,7 +1133,7 @@ function(aSignal) {
             //  name of the attribute of the receiver's members that should be
             //  queried as part of the testing and the value of the qualifier.
             positiveState = this.checkTestConditions(
-                                        'invalid', conditionAttrVal);
+                                        'invalid', conditionAttrVal, true);
 
             shouldSet = false;
 

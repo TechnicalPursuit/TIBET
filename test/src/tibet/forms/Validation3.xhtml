@@ -62,7 +62,7 @@
     A variety of signals are thrown by the various objects involved.
     <br/>
 
-    <tibet:group id="EmployeeGroup" invalidwhen="any">
+    <tibet:group id="EmployeeGroup" validwhen="all">
         <label for="GenderField">Gender: </label>
         <input type="text" id="GenderField" bind:io="{value: urn:tibet:Validation3_person#tibet(gender)}" tabindex="0"/><br/>
 
