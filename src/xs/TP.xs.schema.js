@@ -18,6 +18,43 @@
 TP.dom.ElementNode.defineSubtype('xs:schema');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xs.schema.Type.defineMethod('loadSchemaFrom',
+function(aSchemaURI) {
+
+    /**
+     * @method loadSchemaFrom
+     * @summary Loads an XML schema from the supplied URI.
+     * @param {TP.uri.URI} aSchemaURI The URI that the XML schema resource is
+     *     located at.
+     * @returns {TP.meta.xs.schema} The receiver.
+     */
+
+    var fetchParams,
+
+        resp,
+        schemaObj;
+
+    fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
+
+    resp = aSchemaURI.getResource(fetchParams);
+
+    if (TP.isValid(schemaObj = resp.get('result'))) {
+        if (TP.isKindOf(schemaObj, TP.dom.XMLDocumentNode)) {
+            schemaObj = schemaObj.getDocumentElement();
+        }
+    }
+
+    if (TP.canInvoke(schemaObj, 'defineTypes')) {
+        schemaObj.defineTypes();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
