@@ -26,7 +26,7 @@
 
     <tibet:data id="Validation2Data" name="urn:tibet:Validation2_data" makestructures="true" resultType="TP.test.Validation2Data"/>
 
-    <tibet:content name="TP.test.Validation2Data" baseType="TP.core.JSONContent" schema="~lib_schema/tibet_common_types.xsd">
+    <tibet:content name="TP.test.Validation2Data" baseType="TP.core.JSONContent">
         <tibet:aspect name="AlphaOnly" value="$.alphaval" dataType="TP.tibet.alpha"/>
         <tibet:aspect name="AlphaNum" value="$.alphanumval" dataType="TP.tibet.alphanum"/>
         <tibet:aspect name="Password" value="$.passwordval" dataType="TP.tibet.password"/>
