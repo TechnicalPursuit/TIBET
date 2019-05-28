@@ -9225,7 +9225,7 @@ function(aspectName, facetName) {
             //  *doesn't* (i.e. this aspect is required, it doesn't have a value
             //  and so it's "still in a required-ness state").
             if (TP.isTrue(val)) {
-                facetValue = TP.isEmpty(this.get(aspectName));
+                facetValue = !this.satisfiesRequiredFacet(aspectName);
             } else if (TP.notValid(val)) {
                 //  If the actual value is not valid (i.e. null or undefined),
                 //  then it can be considered missing - in which case a facet of
@@ -9357,6 +9357,53 @@ function() {
                 });
 
     return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('satisfiesRequiredFacet',
+function(aspectName) {
+
+    /**
+     * @method satisfiesRequiredFacet
+     * @summary Returns whether or not the value obtained by querying the
+     *     receiver with the supplied aspect name produces a value that can be
+     *     considered 'satisfying' to the 'required'ness facet.
+     * @description Typically, falsey values or a collection of falsey values
+     *     will cause this method to return false.
+     * @param {String} aspectName The name of the aspect to use to query the
+     *     receiver to use in the test.
+     * @returns {Boolean} Whether or not the value obtained by the query
+     *     satisfies the 'required value' constraint.
+     */
+
+    var aspectValue,
+
+        values,
+        satisfiesRequired,
+
+        len,
+        i;
+
+    aspectValue = this.get(aspectName);
+
+    if (!TP.isCollection(aspectValue)) {
+        return TP.isTruthy(aspectValue);
+    }
+
+    values = aspectValue.getValues();
+
+    satisfiesRequired = false;
+
+    len = values.getSize();
+    for (i = 0; i < len; i++) {
+        if (TP.isTruthy(values.at(i))) {
+            satisfiesRequired = true;
+            break;
+        }
+    }
+
+    return satisfiesRequired;
 });
 
 //  ------------------------------------------------------------------------
