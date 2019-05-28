@@ -40,6 +40,8 @@
         function(req, res) {
             var fullpath,
 
+                email,
+
                 role,
                 primaryRole,
                 otherRoles,
@@ -66,6 +68,8 @@
             //  The file doesn't exist - create a simple vCard (in XML format)
             //  for the current user.
             if (!sh.test('-e', fullpath)) {
+                email = req.user.email || '';
+
                 role = req.user.role || TP.sys.cfg('user.default_role');
                 if (Array.isArray(role)) {
                     primaryRole = role[0];
@@ -98,7 +102,7 @@
                         '</parameters>',
                         '<uri></uri>',
                     '</tel>',
-                    '<email><text/></email>',
+                    '<email><text>' + email + '</text></email>',
                     '<url>',
                         '<parameters>',
                             '<type><text>work</text></type>',

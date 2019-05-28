@@ -45,7 +45,9 @@
             //  create a simple vCard (in XML format) for the current user.
             app.get(TDS.cfg('tds.vcard.uri') || '/vcard', options.loggedIn,
                 function(req, res) {
-                    var role,
+                    var email,
+
+                        role,
                         primaryRole,
                         otherRoles,
 
@@ -60,6 +62,8 @@
                         i;
 
                     res.set('Content-Type', 'application/vcard+xml');
+
+                    email = req.user.email || '';
 
                     role = req.user.role || TP.sys.cfg('user.default_role');
                     if (Array.isArray(role)) {
@@ -93,7 +97,7 @@
                             '</parameters>',
                             '<uri></uri>',
                         '</tel>',
-                        '<email><text/></email>',
+                        '<email><text>' + email + '</text></email>',
                         '<url>',
                             '<parameters>',
                                 '<type><text>work</text></type>',

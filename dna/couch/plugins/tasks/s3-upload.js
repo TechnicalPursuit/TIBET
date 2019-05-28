@@ -101,10 +101,13 @@
                 Body: body
             };
 
+            step.stdout = {};
+
             //  In a dry run environment, just write the upload options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                step.stdout = uploadOpts;
+                serviceOpts.status = 'S3 upload succeeded.';
+                step.stdout = serviceOpts;
                 return TDS.Promise.resolve();
             }
 
@@ -114,9 +117,22 @@
 
             logger.trace(job, ' uploading data to s3');
 
-            //  Invoke the upload operation, returning the promise for the task
-            //  engine to link to.
-            return upload(uploadOpts);
+            //  Supply a catch here in case the S3 task has some sort of error,
+            //  like it can't access the bucket.
+            return upload(uploadOpts).then(
+                function(result) {
+                    step.stdout.status = 'S3 upload succeeded.';
+                    return result;
+                }).catch(
+                function(err) {
+                    step.stderr = {
+                        status: 'S3 upload failed.',
+                        rawmsg: 'S3 upload failed: ' + err.toString()
+                    };
+
+                    return TDS.Promise.reject(
+                            new Error('S3 upload failed: ' + err));
+                });
         };
     };
 }());

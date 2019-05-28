@@ -96,7 +96,8 @@
                                 id: username,
                                 org: org,
                                 unit: unit,
-                                role: role
+                                role: role,
+                                email: username
                             });
                         }
                     } catch (e) {

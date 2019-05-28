@@ -57,6 +57,8 @@
                 fileName,
 
                 transporter,
+                srctext,
+                format,
                 template,
                 send;
 
@@ -68,18 +70,27 @@
                     'Misconfigured sendmail task. No params.transport value.'));
             }
 
-            //  Basic mail options sanity check
-            if (!params.from || !params.subject) {
-                return TDS.Promise.reject(new Error(
-                'Misconfigured sendmail task. Missing params.from, ' +
-                'params.to, and/or ' +
-                'params.subject.'));
-            }
+            //  We need a minimum of from/to/subject to do any mailing.
+            ['from', 'to', 'subject'].forEach(function(key) {
+                if (!params[key]) {
+                    return TDS.Promise.reject(new Error(
+                    'Misconfigured sendmail task. Missing param: ' +
+                        key +
+                        '.'));
+                }
+            });
 
             //  Basic content sanity check
             if (!params.text && !params.html) {
                 logger.warn('Missing params.text and params.html.');
-                params.text = '';
+                format = 'text';
+                srctext = '';
+            } else if (params.html) {
+                format = 'html';
+                srctext = params[format];
+            } else {
+                format = 'text';
+                srctext = params[format];
             }
 
             //  Map over the sendmail parameters from the task as our top-level
@@ -97,10 +108,12 @@
             mailOpts.subject = params.subject;
             mailOpts.from = params.from;
             mailOpts.to = params.to;
+            mailOpts.cc = params.cc;
+            mailOpts.bcc = params.bcc;
 
             //  Process any file attachments by adding their file paths and file
-            //  names to the 'attachments' Array that nodemailer will use to send
-            //  them.
+            //  names to the 'attachments' Array that nodemailer will use to
+            //  send them.
             if (params.attachments) {
                 mailOpts.attachments = [];
                 for (i = 0; i < params.attachments.length; i++) {
@@ -114,30 +127,24 @@
             }
 
             try {
-                if (params.html) {
-                    template = TDS.template.compile(params.html);
-                    mailOpts.html = template(
-                        {
-                            job: job,
-                            step: step,
-                            params: params
-                        });
-                } else if (params.text) {
-                    template = TDS.template.compile(params.text);
-                    mailOpts.text = template(
-                        {
-                            job: job,
-                            step: step,
-                            params: params
-                        });
-                }
+                template = TDS.template.compile(srctext);
+                mailOpts[format] = template(
+                    {
+                        job: job,
+                        step: step,
+                        params: params
+                    });
             } catch (e) {
                 return TDS.Promise.reject(e);
             }
 
+            //  Provide final mail content for any downstream services.
+            step.stdout = {mail: mailOpts, format: format};
+
             //  In a dry run environment, just write the sendmail options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
+                sendmailOpts.status = 'sendmail succeeded.';
                 step.stdout = sendmailOpts;
                 return TDS.Promise.resolve();
             }
@@ -149,13 +156,25 @@
             //  promises so we can work with promises consistently. NOTE
             //  we have to bind() since promisify won't and we need internal
             //  'this' references to be correct.
-            send = TDS.Promise.promisify(transporter.sendMail.bind(transporter));
+            send = TDS.Promise.promisify(
+                                transporter.sendMail.bind(transporter));
+
+            logger.trace(job, ' sending email via sendmail');
 
             //  Supply a catch here in case the sendmail task has some sort of
             //  error, like it can't compute the correct username or password or
             //  connect for some other reason.
-            return send(mailOpts).catch(
+            return send(mailOpts).then(
+                function(result) {
+                    step.stdout.status = 'sendmail succeeded.';
+                    return result;
+                }).catch(
                 function(err) {
+                    step.stderr = {
+                        status: 'sendmail failed.',
+                        rawmsg: 'sendmail failed: ' + err.toString()
+                    };
+
                     return TDS.Promise.reject(
                             new Error('sendmail task failed: ' + err));
                 });

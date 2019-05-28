@@ -115,12 +115,28 @@
 
             promisifiedExec = TDS.Promise.promisify(execTemplate);
 
+            //  Note here that we allow embedded templates, but because of
+            //  escaping issues with JSON and Handlebars, we require these
+            //  to be written with double square brackets ('[[...]]')
+            //  and we need to replace them with double curly brackets
+            //  before sending them to the Handlebars templating engine.
+            template = template.replace(/\[\[([^[]+?)\]\]/g, '{{$1}}');
+
             return promisifiedExec(template, TDS.blend({}, params)).then(
                 function(result) {
-                    step.stdout = {result: result};
+                    step.stdout = {
+                        status: 'Templating succeeded.',
+                        result: result
+                    };
                 },
                 function(err) {
-                    step.stderr = {error: err};
+                    step.stderr = {
+                        status: 'Templating failed.',
+                        rawmsg: 'Templating failed: ' + err.toString()
+                    };
+
+                    return TDS.Promise.reject(
+                            new Error('Templating failed: ' + err));
                 }
             );
         };

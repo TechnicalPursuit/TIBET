@@ -72,23 +72,12 @@
             ['from', 'to', 'subject'].forEach(function(key) {
                 if (!params[key]) {
                     return TDS.Promise.reject(new Error(
-                    'Misconfigured SMTP task. Missing params.' + key + '.'));
+                    'Misconfigured SMTP task. Missing param: ' + key + '.'));
                 }
             });
 
-            //  We can work from fallback text or html when no template...but if
-            //  there's a template key we need to see if we can look it up.
-            lookup = params.lookup;
-            if (lookup) {
-                if (!params[lookup]) {
-                    return TDS.Promise.reject(new Error(
-                        'Misconfigured SMTP task. Missing params.' +
-                        lookup + '.'));
-                } else {
-                    srctext = params[lookup];
-                    format = params.format || 'html';
-                }
-            } else if (!params.text && !params.html) {
+            //  Basic content sanity check
+            if (!params.text && !params.html) {
                 logger.warn('Missing params.text and params.html.');
 
                 //  We allow empty body, but not empty subject.
@@ -128,10 +117,12 @@
             mailOpts.subject = params.subject;
             mailOpts.from = params.from;
             mailOpts.to = params.to;
+            mailOpts.cc = params.cc;
+            mailOpts.bcc = params.bcc;
 
             //  Process any file attachments by adding their file paths and file
-            //  names to the 'attachments' Array that nodemailer will use to send
-            //  them.
+            //  names to the 'attachments' Array that nodemailer will use to
+            //  send them.
             if (params.attachments) {
                 mailOpts.attachments = [];
                 for (i = 0; i < params.attachments.length; i++) {
@@ -162,6 +153,7 @@
             //  In a dry run environment, just write the SMTP options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
+                smtpOpts.status = 'SMTP succeeded.';
                 step.stdout = smtpOpts;
                 return TDS.Promise.resolve();
             }
@@ -177,7 +169,23 @@
 
             logger.trace(job, ' sending email via SMTP');
 
-            return send(mailOpts);
+            //  Supply a catch here in case the SMTP task has some sort of
+            //  error, like it can't compute the correct username or password or
+            //  connect for some other reason.
+            return send(mailOpts).then(
+                function(result) {
+                    step.stdout.status = 'SMTP succeeded.';
+                    return result;
+                }).catch(
+                function(err) {
+                    step.stderr = {
+                        status: 'SMTP failed.',
+                        rawmsg: 'SMTP failed: ' + err.toString()
+                    };
+
+                    return TDS.Promise.reject(
+                            new Error('SMTP task failed: ' + err));
+                });
         };
     };
 
