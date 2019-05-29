@@ -11746,7 +11746,7 @@ TP.boot.$uiRootReady = function() {
 
             if (TP.sys.cfg('boot.parallel') && needsLoadingVisual) {
                 TP.boot.getUIBoot().contentDocument.body.style.opacity = 0.5;
-                TP.boot.getUIBoot().contentWindow.blur();
+                TP.boot.getUIBoot().contentDocument.activeElement.blur();
             }
 
             //  Grab all of the 'input' elements in the page and install a
