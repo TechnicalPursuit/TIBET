@@ -4239,6 +4239,9 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         insertionParent,
 
         testNode,
+        wrappedTestNode,
+
+        result,
 
         updatingAnsTPElem,
         bindInfo,
@@ -4531,6 +4534,30 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  out where to move next.
             testNode = currentNode.childNodes[address];
 
+            //  If we got a valid test node, then wrap it and query it for the
+            //  node to modify for a visual change.
+            if (TP.isValid(testNode)) {
+                wrappedTestNode = TP.wrap(testNode);
+
+                result = wrappedTestNode.sherpaGetNodeForVisualDOMChange(
+                                mutatedNode,
+                                operation,
+                                addresses.at(j),
+                                addresses.slice(j + 1),
+                                addresses);
+
+                //  If the result is TP.CONTINUE, then the receiving node does
+                //  not want to be modified (or have modifications performed
+                //  under it), so we skip over it.
+                if (result === TP.CONTINUE) {
+                    break;
+                }
+
+                //  Otherwise, reset the node we'll use from here to the result
+                //  that was returned.
+                testNode = result;
+            }
+
             //  If the test node is a Text node containing only whitespace and
             //  we're not actually mutating a Text node (i.e. setting it), then
             //  we skip it and move on to the next node.
@@ -4541,6 +4568,11 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             } else {
                 currentNode = testNode;
             }
+        }
+
+        if (result === TP.CONTINUE) {
+            result = null;
+            continue;
         }
 
         //  NB: This might push 'null'... and for non-attribute TP.CREATE
