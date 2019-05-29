@@ -108,7 +108,7 @@ Cmd.prototype.execute = function() {
         data,
         libbase,
         npmbase,
-        lnflags,
+        //  lnflags,
         cperr,
         lnerr,
         rmerr;
@@ -125,9 +125,9 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    lnflags = '-s';
+    //  lnflags = '-s';
     if (this.options.force) {
-        lnflags += 'f';
+        //  lnflags += 'f';
     }
 
     wrapup = function() {

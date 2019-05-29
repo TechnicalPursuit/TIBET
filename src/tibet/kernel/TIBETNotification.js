@@ -22,9 +22,6 @@ event/signaling system ties directly into the concept of workflow very
 quickly, see the workflow module for more information.
 */
 
-/* global EventSource:false
-*/
-
 //  ========================================================================
 //  Annotation
 //  ========================================================================

@@ -55,7 +55,6 @@
                 transporter,
                 srctext,
                 format,
-                lookup,
                 template,
                 send;
 

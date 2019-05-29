@@ -65,7 +65,7 @@ helpers.linkup_app = function(make, options) {
         source,
         list,
         config,
-        lnflags,
+        //  lnflags,
         deferred;
 
     deferred = Promise.pending();
@@ -86,7 +86,7 @@ helpers.linkup_app = function(make, options) {
 
     config = options.config || 'base';
 
-    lnflags = '-sf';
+    //  lnflags = '-sf';
 
     list = [
         'tibet_' + config + '.js',
