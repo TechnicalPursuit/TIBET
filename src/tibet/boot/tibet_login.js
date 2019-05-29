@@ -63,6 +63,10 @@
                 return;
             }
 
+            //  Now that we've returned from the call, clear the opacity
+            //  setting that we set below when we made the call.
+            document.body.style.opacity = '';
+
             if (xhr.status === 200) {
                 //  Save any JWT token we received so we can send back with any
                 //  calls we make to the server.
@@ -84,6 +88,12 @@
                 window.location.replace(pathname + 'login');
             }
         };
+
+        //  In case the login process takes a while, set the opacity on the body
+        //  to be 50% and blur the active element to let the user know that user
+        //  interaction really shouldn't be happening at this point.
+        document.body.style.opacity = 0.5;
+        document.activeElement.blur();
 
         dat = JSON.stringify({
             username: usernameField.value.trim(),
