@@ -2669,12 +2669,13 @@ function(branchExpr, initialVal, initialPathType) {
      * @returns {Array<Object, Number>} The computed value and path type.
      */
 
-    var branchURI,
+    var theVal,
+
+        branchValReq,
+        branchURI,
         branchVal,
 
-        pathType,
-
-        theVal;
+        pathType;
 
     theVal = initialVal;
 
@@ -2683,12 +2684,14 @@ function(branchExpr, initialVal, initialPathType) {
     //  process 'the next level down' in the branching.
     if (TP.isURIString(branchExpr)) {
         branchURI = TP.uc(branchExpr);
+        branchValReq = TP.request('shouldCollapse', false);
+
         if (branchURI.hasFragment()) {
-            branchVal = branchURI.getResource().get('result');
+            branchVal = branchURI.getResource(branchValReq).get('result');
         } else if (TP.isValid(theVal)) {
             branchVal = theVal;
         } else {
-            branchVal = branchURI.getResource().get('result');
+            branchVal = branchURI.getResource(branchValReq).get('result');
         }
 
         //  Try to detect the type of path based on tasting the
