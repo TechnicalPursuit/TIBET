@@ -2566,6 +2566,10 @@ function() {
                     codeURI,
                     expMonthURI,
                     expYearURI,
+                    clubSeatsURI,
+                    boxSeatsURI,
+                    bleacherSeatsURI,
+                    nosebleedSeatsURI,
                     radioButtonURI,
                     checkBoxURI,
 
@@ -2573,6 +2577,12 @@ function() {
                     codeField,
                     expMonthSelect,
                     expYearSelect,
+
+                    textFieldGroup,
+                    clubSeatsField,
+                    boxSeatsField,
+                    bleacherSeatsField,
+                    nosebleedSeatsField,
 
                     radioButtonGroup,
                     radio1Field,
