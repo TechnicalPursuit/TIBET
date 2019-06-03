@@ -30,6 +30,10 @@
         <tibet:aspect name="Code" value="$.code" required="true"/>
         <tibet:aspect name="ExpirationMonth" value="$.expirationmonth" required="true"/>
         <tibet:aspect name="ExpirationYear" value="$.expirationyear" required="true"/>
+        <tibet:aspect name="ClubSeats" value="$.clubseats" required="true"/>
+        <tibet:aspect name="BoxSeats" value="$.boxseats" required="true"/>
+        <tibet:aspect name="BleacherSeats" value="$.bleacherseats" required="true"/>
+        <tibet:aspect name="NosebleedSeats" value="$.nosebleedseats" required="true"/>
         <tibet:aspect name="RadioValue" value="$.radiovalue" required="true"/>
         <tibet:aspect name="CheckboxValue" value="$.checkboxvalue" required="true"/>
     </tibet:content>
@@ -73,6 +77,22 @@
             <option>2023</option>
             <option>2024</option>
         </select>
+
+        <br/>
+        <br/>
+
+    </tibet:group>
+
+    <tibet:group id="TextFieldGroup" bind:scope="urn:tibet:Required6_data#tibet()" requiredwhen="any">
+
+        <label for="ClubSeatsField">Club Seats: </label>
+        <input type="text" id="ClubSeatsField" bind:io="{value: ClubSeats}" tabindex="0"/><br/>
+        <label for="BoxSeatsField">Box Seats: </label>
+        <input type="text" id="BoxSeatsField" bind:io="{value: BoxSeats}" tabindex="0"/><br/>
+        <label for="BleacherSeatsField">Bleacher Seats: </label>
+        <input type="text" id="BleacherSeatsField" bind:io="{value: BleacherSeats}" tabindex="0"/><br/>
+        <label for="NosebleedSeatsField">Nosebleed Seats: </label>
+        <input type="text" id="NosebleedSeatsField" bind:io="{value: NosebleedSeats}" tabindex="0"/><br/>
 
         <br/>
         <br/>

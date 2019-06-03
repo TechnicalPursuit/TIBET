@@ -2591,6 +2591,16 @@ function() {
                     TP.uc('urn:tibet:Required6_data#tibet(ExpirationMonth)');
                 expYearURI =
                     TP.uc('urn:tibet:Required6_data#tibet(ExpirationYear)');
+
+                clubSeatsURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(ClubSeats)');
+                boxSeatsURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(BoxSeats)');
+                bleacherSeatsURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(BleacherSeats)');
+                nosebleedSeatsURI =
+                    TP.uc('urn:tibet:Required6_data#tibet(NosebleedSeats)');
+
                 radioButtonURI =
                     TP.uc('urn:tibet:Required6_data#tibet(RadioValue)');
                 checkBoxURI =
@@ -2600,6 +2610,14 @@ function() {
                 codeField = TP.byId('CodeField', windowContext);
                 expMonthSelect = TP.byId('MonthField', windowContext);
                 expYearSelect = TP.byId('YearField', windowContext);
+
+                textFieldGroup = TP.byId('TextFieldGroup', windowContext);
+                clubSeatsField = TP.byId('ClubSeatsField', windowContext);
+                boxSeatsField = TP.byId('BoxSeatsField', windowContext);
+                bleacherSeatsField = TP.byId('BleacherSeatsField',
+                                                windowContext);
+                nosebleedSeatsField = TP.byId('NosebleedSeatsField',
+                                                windowContext);
 
                 radioButtonGroup = TP.byId('RadioButtonGroup', windowContext);
                 radio1Field = TP.byId('Radio1Field', windowContext);
@@ -2799,6 +2817,115 @@ function() {
 
                 //  ---
 
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        clubSeatsField.clearValue();
+                    }).
+                    sendKeys('2', clubSeatsField).
+                    sendEvent(TP.hc('type', 'change'), clubSeatsField).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(clubSeatsURI,
+                                                'ClubSeatsRequiredChange');
+                        test.assert.didSignal(clubSeatsField,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'ClubSeatsRequiredChange');
+
+                        //  Now that all of the constraints on the group are
+                        //  fulfilled (i.e. 'any') this should have signaled.
+                        test.assert.didSignal(textFieldGroup,
+                                                'TP.sig.UIOptional');
+                    });
+
+                //  ---
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        boxSeatsField.clearValue();
+                    }).
+                    sendKeys('2', boxSeatsField).
+                    sendEvent(TP.hc('type', 'change'), boxSeatsField).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(boxSeatsURI,
+                                                'BoxSeatsRequiredChange');
+                        test.assert.didSignal(boxSeatsField,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'BoxSeatsRequiredChange');
+                    });
+
+                //  ---
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        bleacherSeatsField.clearValue();
+                    }).
+                    sendKeys('2', bleacherSeatsField).
+                    sendEvent(TP.hc('type', 'change'), bleacherSeatsField).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(bleacherSeatsURI,
+                                                'BleacherSeatsRequiredChange');
+                        test.assert.didSignal(bleacherSeatsField,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'BleacherSeatsRequiredChange');
+                    });
+
+                //  ---
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        nosebleedSeatsField.clearValue();
+                    }).
+                    sendKeys('2', nosebleedSeatsField).
+                    sendEvent(TP.hc('type', 'change'), nosebleedSeatsField).
+                    run();
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        test.assert.didSignal(nosebleedSeatsURI,
+                                                'NosebleedSeatsRequiredChange');
+                        test.assert.didSignal(nosebleedSeatsField,
+                                                'TP.sig.UIOptional');
+
+                        //  'required' change - source URI
+                        test.assert.didSignal(
+                            srcURI, 'NosebleedSeatsRequiredChange');
+                    });
+
+                //  ---
+
+                test.chain(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        test.getSuite().resetSignalTracking();
+                    });
+
+                //  ---
+
                 driver.constructSequence().
                     click(radio1Field).
                     run();
@@ -2906,7 +3033,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).only();
 
 });
 
