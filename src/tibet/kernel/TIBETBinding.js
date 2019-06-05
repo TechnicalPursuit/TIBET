@@ -2710,6 +2710,8 @@ function(branchExpr, initialVal, initialPathType) {
     } else {
 
         if (TP.isValid(theVal)) {
+            theVal = TP.collapse(theVal);
+
             if (TP.isArray(theVal) &&
                 theVal.first() !== TP.NULL &&
                 TP.isXMLNode(TP.unwrap(theVal.first()))) {
@@ -2736,8 +2738,7 @@ function(branchExpr, initialVal, initialPathType) {
                                                 TP.jpc,
                                                 null);
 
-                pathType = TP.ifInvalid(initialPathType,
-                                        TP.JSON_PATH_TYPE);
+                pathType = TP.ifInvalid(initialPathType, TP.JSON_PATH_TYPE);
             } else if (TP.notValid(theVal)) {
                 branchVal = null;
             } else {
