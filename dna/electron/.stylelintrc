@@ -27,7 +27,8 @@
         "selector-attribute-quotes": "always",
 
         "selector-type-no-unknown": [ true, {
-            "ignoreNamespaces": [ "tibet", "tsh", "sherpa", "xctrls" ]
+            "ignoreNamespaces": [ "tibet", "tsh", "sherpa", "xctrls" ],
+            "ignoreTypes": [ "/*/" ]
         }],
 
         "selector-type-case": null,
