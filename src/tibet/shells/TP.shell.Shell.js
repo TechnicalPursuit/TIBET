@@ -486,10 +486,6 @@ function(command, method, abstract, usage, description) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  whether or not we just loaded the profile. Used as a flag between
-//  initProfile() and saveProfile()
-TP.shell.Shell.Inst.defineAttribute('$justLoadedProfile');
-
 //  the current list of aliases for this shell
 TP.shell.Shell.Inst.defineAttribute('aliases');
 
@@ -1151,8 +1147,6 @@ function() {
         }
     }
 
-    this.set('$justLoadedProfile', true);
-
     return this;
 });
 
@@ -1177,11 +1171,6 @@ function() {
 
         userData,
         profileStorage;
-
-    if (this.get('$justLoadedProfile') === true) {
-        this.set('$justLoadedProfile', false);
-        return this;
-    }
 
     if (TP.notEmpty(name = this.get('username'))) {
 
