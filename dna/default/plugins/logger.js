@@ -87,8 +87,10 @@
         logtheme = TDS.cfg('tds.color.theme') || 'default';
 
         //  Log file names can include the environment if desired.
-        //  NOTE any escaping here is due to handlebars processing during
-        //  the `tibet clone` command. They disappear in the final output.
+
+        //  NOTE the curly brace escaping here is due to handlebars processing
+        //  during the `tibet clone` command. Its disappears in the final
+        //  output.
         /* eslint-disable no-useless-escape */
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
             './logs/tds-\{{env}}.log';

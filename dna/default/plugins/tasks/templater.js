@@ -120,7 +120,13 @@
             //  to be written with double square brackets ('[[...]]')
             //  and we need to replace them with double curly brackets
             //  before sending them to the Handlebars templating engine.
-            template = template.replace(/\[\[([^[]+?)\]\]/g, '{{$1}}');
+
+            //  NOTE the curly brace escaping here is due to handlebars
+            //  processing during the `tibet clone` command. It disappears in
+            //  the final output.
+            /* eslint-disable no-useless-escape */
+            template = template.replace(/\[\[([^[]+?)\]\]/g, '\{{$1}}');
+            /* eslint-enable no-useless-escape */
 
             return promisifiedExec(template, TDS.blend({}, params)).then(
                 function(result) {
