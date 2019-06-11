@@ -305,6 +305,63 @@ function(tabValue, tabLabel, shouldCreateProfileEntry) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('removeConsoleTabPanel',
+function(tabValue) {
+
+    /**
+     * @method removeConsoleTabPanel
+     * @summary Removes a tab in the console using the supplied value.
+     * @param {String} tabValue The value to use to find the tab to remove.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var editorTabEntries,
+        editorTabValues,
+        valueIndex,
+
+        tabbar,
+        newTabValue,
+
+        panelBox,
+        inspector;
+
+    //  Find the entry matching the tab value in the console tab entries that we
+    //  store in the profile.
+    editorTabEntries =
+        TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
+    editorTabValues = editorTabEntries.collect(TP.RETURN_FIRST);
+    valueIndex = editorTabValues.indexOf(tabValue);
+
+    //  Remove the entry corresponding to that tab value.
+    editorTabEntries.splice(valueIndex, 1);
+
+    //  Tell the Shell to save the profile.
+    TP.bySystemId('TSH').saveProfile();
+
+    //  Remove the item from the tabbar matching that value.
+    tabbar = TP.byId('SherpaConsoleTabbar', this.getNativeDocument());
+    tabbar.removeItem(tabValue);
+
+    //  Remove the item from the panelbox matching that value.
+    panelBox = TP.byId('SherpaConsolePanelbox', this.getNativeDocument());
+    panelBox.removePanel(tabValue);
+
+    //  Grab the new tab value (which will have already been computed by the tab
+    //  item removal code) and set the panel box to it.
+    newTabValue = tabbar.get('value');
+    panelBox.setValue(newTabValue);
+
+    //  Repopulate the current bay in the inspector. That way, if the content
+    //  that the tab was holding should now (again) be displayed in the
+    //  inspector, it will be redisplayed.
+    inspector = TP.byId('SherpaInspector', this.getNativeDocument());
+    inspector.repopulateBay();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setup',
 function() {
 
@@ -814,17 +871,7 @@ function(aSignal) {
      */
 
     var tabItem,
-        tabValue,
-
-        editorTabEntries,
-        editorTabValues,
-        valueIndex,
-
-        tabbar,
-        newTabValue,
-
-        panelBox,
-        inspector;
+        tabValue;
 
     //  The tab item will be the parent of the signal's target (which is the
     //  'div' with the close mark on it).
@@ -833,39 +880,8 @@ function(aSignal) {
     //  Grab its value.
     if (TP.isValid(tabItem)) {
         tabValue = tabItem.get('value');
+        this.removeConsoleTabPanel(tabValue);
     }
-
-    //  Find the entry matching the tab value in the console tab entries that we
-    //  store in the profile.
-    editorTabEntries =
-        TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
-    editorTabValues = editorTabEntries.collect(TP.RETURN_FIRST);
-    valueIndex = editorTabValues.indexOf(tabValue);
-
-    //  Remove the entry corresponding to that tab value.
-    editorTabEntries.splice(valueIndex, 1);
-
-    //  Tell the Shell to save the profile.
-    TP.bySystemId('TSH').saveProfile();
-
-    //  Remove the item from the tabbar matching that value.
-    tabbar = TP.byId('SherpaConsoleTabbar', this.getNativeDocument());
-    tabbar.removeItem(tabValue);
-
-    //  Remove the item from the panelbox matching that value.
-    panelBox = TP.byId('SherpaConsolePanelbox', this.getNativeDocument());
-    panelBox.removePanel(tabValue);
-
-    //  Grab the new tab value (which will have already been computed by the tab
-    //  item removal code) and set the panel box to it.
-    newTabValue = tabbar.get('value');
-    panelBox.setValue(newTabValue);
-
-    //  Repopulate the current bay in the inspector. That way, if the content
-    //  that the tab was holding should now (again) be displayed in the
-    //  inspector, it will be redisplayed.
-    inspector = TP.byId('SherpaInspector', this.getNativeDocument());
-    inspector.repopulateBay();
 
     return this;
 });
