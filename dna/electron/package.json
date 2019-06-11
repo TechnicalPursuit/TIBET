@@ -6,7 +6,10 @@
         "minimist": "*",
         "shelljs": "TechnicalPursuit/shelljs"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "stylelint": "^9.10.1",
+        "stylelint-config-standard": "^18.3.0"
+    },
     "engines": {
         "node": ">=8",
         "npm": ">=5"
