@@ -2710,7 +2710,10 @@ function(branchExpr, initialVal, initialPathType) {
     } else {
 
         if (TP.isValid(theVal)) {
-            theVal = TP.collapse(theVal);
+
+            if (!TP.regex.SIMPLE_NUMERIC_PATH.test(branchExpr)) {
+                theVal = TP.collapse(theVal);
+            }
 
             if (TP.isArray(theVal) &&
                 theVal.first() !== TP.NULL &&
