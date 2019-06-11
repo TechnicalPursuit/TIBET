@@ -1044,7 +1044,45 @@ function() {
             }.bind(this)).queueForNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
 
-        }.bind(this));
+        }.bind(this)).catch(
+        function(err) {
+            var sourceLoc;
+
+            sourceLoc = sourceURI.getLocation();
+
+            //  Alert to the user that the content at the location cannot be
+            //  loaded.
+            TP.alert(TP.sc('The content at: ',
+                            sourceLoc,
+                            ' could not be loaded.')).then(
+                    function() {
+                        var sherpaConsole,
+                            tabHasValue;
+
+                        //  If the location has a tab in the console, then ask
+                        //  the user if they want to remove it.
+
+                        sherpaConsole = TP.byId('SherpaConsole',
+                                                TP.sys.getUIRoot());
+
+                        tabHasValue = sherpaConsole.hasTabForValue(sourceLoc);
+
+                        if (tabHasValue) {
+                            TP.confirm('Remove tabbed editor entry?').then(
+                                function(shouldRemove) {
+
+                                    //  Message the Sherpa console object to
+                                    //  remove the tab panel. This will also
+                                    //  save the user's profile to make the
+                                    //  change permanent.
+                                    if (shouldRemove) {
+                                        sherpaConsole.removeConsoleTabPanel(
+                                                                    sourceLoc);
+                                    }
+                                });
+                        }
+                    });
+        });
 
     return this;
 });
