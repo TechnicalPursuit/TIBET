@@ -3746,7 +3746,7 @@ function(aSignal, aDefaultType) {
                 //  Change comes in terms of facets...so we need to test for
                 //  those to determine best supertype here.
                 match = aSignal.match(
-                    /(Value|Valid|Required|Relevant|Readonly)Change$/);
+                    /^(Value|Valid|Required|Relevant|Readonly)Change$/);
                 if (TP.isValid(match)) {
                     if (TP.isValid(TP.sig[match[0]])) {
                         defaultType = TP.sig[match[0]];
