@@ -461,7 +461,7 @@ TP.sherpa.workbench.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
-     * @method handleHaloDidBlur
+     * @method handleHaloDidBlurFromSherpaHalo
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
@@ -482,7 +482,7 @@ TP.sherpa.workbench.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
-     * @method handleHaloDidFocus
+     * @method handleHaloDidFocusFromSherpaHalo
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
@@ -503,7 +503,7 @@ TP.sherpa.workbench.Inst.defineHandler('BeginOutlineMode',
 function(aSignal) {
 
     /**
-     * @method handleBeginOutlineMode
+     * @method handleBeginOutlineModeFromSherpaOutliner
      * @summary Handles notifications of when the Sherpa outliner has activated
      *     its 'outline mode'.
      * @param {TP.sig.BeginOutlineMode} aSignal The TIBET signal which
@@ -526,7 +526,7 @@ TP.sherpa.workbench.Inst.defineHandler('EndOutlineMode',
 function(aSignal) {
 
     /**
-     * @method handleEndOutlineMode
+     * @method handleEndOutlineModeFromSherpaOutliner
      * @summary Handles notifications of when the Sherpa outliner has
      *     deactivated its 'outline mode'.
      * @param {TP.sig.EndOutlineMode} aSignal The TIBET signal which triggered
