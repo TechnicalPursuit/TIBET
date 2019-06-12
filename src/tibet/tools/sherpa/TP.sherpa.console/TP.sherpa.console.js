@@ -827,7 +827,7 @@ function(aSignal) {
      * @method handleHiddenChange
      * @summary Handles when the HUD's 'south drawer' 'hidden' state changes.
      *     We track that by adjusting the size of our input cell area.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     * @param {TP.sig.HiddenChange} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.console} The receiver.
      */
