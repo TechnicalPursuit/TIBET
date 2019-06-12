@@ -849,12 +849,9 @@ function(aSignal) {
             cmdVal = ':test';
 
             shell = TP.bySystemId('TSH');
-            if (TP.isValid(shell)) {
-
-                haloType = shell.getVariable('HALO_TYPE');
-                if (TP.isType(haloType)) {
-                    cmdVal += ' $HALO_TYPE';
-                }
+            if (TP.notValid(shell)) {
+                TP.info('No valid shell. Test run cancelled.');
+                return;
             }
 
             TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
