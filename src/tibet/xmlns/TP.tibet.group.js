@@ -157,10 +157,10 @@ function(attrName, conditionAttrVal, invertConditions) {
      *     required, invalid) based on whether one or all of their members have
      *     that setting. These take the form of:
      *
-     *     invalidwhen="all"            All of the members must be invalid
-     *     invalidwhen="any"            Any of the members may be invalid
-     *     invalidwhen="none-or-all"    None or all of the members must be
-     *                                  invalid
+     *     validwhen="all"            All of the members must be invalid
+     *     validwhen="any"            Any of the members may be invalid
+     *     validwhen="none-or-all"    None or all of the members must be
+     *                                invalid
      * @param {String} attrName The name of the attribute to check on each of
      *     the receiver's members to see if the test condition passes.
      * @param {String} conditionAttrVal The value of the 'test condition'
@@ -598,10 +598,10 @@ function(aSignal) {
      *     required, invalid) based on whether one or all of their members have
      *     that setting. These take the form of:
      *
-     *     invalidwhen="all"            All of the members must be invalid
-     *     invalidwhen="any"            Any of the members may be invalid
-     *     invalidwhen="none-or-all"    None or all of the members must be
-     *                                  invalid
+     *     validwhen="all"            All of the members must be invalid
+     *     validwhen="any"            Any of the members may be invalid
+     *     validwhen="none-or-all"    None or all of the members must be
+     *                                invalid
      * @param {TP.sig.UIAttributeChange} aSignal The signal that caused this
      *     handler to trip.
      * @returns {TP.tibet.group} The receiver.
