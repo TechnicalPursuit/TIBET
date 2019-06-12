@@ -730,8 +730,8 @@ function(aSignal) {
     var cmdVal;
 
     TP.confirm('Build Application Packages?').then(
-        function(build) {
-            if (TP.notTrue(build)) {
+        function(shouldBuild) {
+            if (TP.notTrue(shouldBuild)) {
                 TP.info('Build cancelled.');
                 return;
             }
@@ -835,12 +835,12 @@ function(aSignal) {
      */
 
     TP.confirm('Run Application Test Suites?').then(
-        function(build) {
+        function(shouldTest) {
             var cmdVal,
                 shell,
                 haloType;
 
-            if (TP.notTrue(build)) {
+            if (TP.notTrue(shouldTest)) {
                 TP.info('Test run cancelled.');
                 return;
             }
