@@ -784,13 +784,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('ClosedChange',
+TP.sherpa.halo.Inst.defineHandler('PClassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePClassClosedChangeFromSherpaHUD
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which
+     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
@@ -1677,7 +1677,7 @@ function() {
      */
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
-                    'ClosedChange');
+                    'PClassClosedChange');
 
     this.toggleObservations(true);
 

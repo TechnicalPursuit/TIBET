@@ -332,8 +332,9 @@ function(aSignal) {
 
         newContentTPElem.awaken();
 
-        //  Observe the tile for HiddenChange so that we can tell when it hides.
-        this.observe(tileTPElem, 'HiddenChange');
+        //  Observe the tile for PClassHiddenChange so that we can tell when it
+        //  hides.
+        this.observe(tileTPElem, 'PClassHiddenChange');
 
         sheet = this.getStylesheetForStyleResource();
         mainRule = TP.styleSheetGetStyleRulesMatching(
@@ -1173,15 +1174,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.bindshud.Inst.defineHandler('HiddenChange',
+TP.sherpa.bindshud.Inst.defineHandler('PClassHiddenChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChangeFromSherpaConsole
+     * @method handlePClassHiddenChangeFromBindSummary_Tile
      * @summary Handles notifications of when the 'hidden' state of the
      *     assistant tile associated with this panel changes.
-     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
-     *     method.
+     * @param {TP.sig.PClassHiddenChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.bindshud} The receiver.
      */
 

@@ -177,7 +177,7 @@ function(aResourceID, aRequest) {
     consoleGUI.scrollOutputToEnd();
 
     //  observe the console GUI for when it's shown/hidden
-    this.observe(consoleGUI, 'HiddenChange');
+    this.observe(consoleGUI, 'PClassHiddenChange');
 
     //  observe the halo for focus/blur
 
@@ -382,15 +382,15 @@ function(aFlag) {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler('HiddenChange',
+TP.sherpa.ConsoleService.Inst.defineHandler('PClassHiddenChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChangeFromSherpaConsole
+     * @method handlePClassHiddenChangeFromSherpaConsole
      * @summary Handles notifications of when the 'hidden' state of the
      *     SherpaConsole object changes.
-     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
-     *     method.
+     * @param {TP.sig.PClassHiddenChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 

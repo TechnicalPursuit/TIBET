@@ -869,14 +869,14 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.styleshud.Inst.defineHandler('ClosedChange',
+TP.sherpa.styleshud.Inst.defineHandler('PClassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePClassClosedChangeFromSherpaHUD
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 

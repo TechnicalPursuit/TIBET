@@ -318,8 +318,9 @@ function(aSignal) {
                                     sourceTPElem,
                                     'RespondersHUDTileFooter'));
 
-        //  Observe the tile for HiddenChange so that we can tell when it hides.
-        this.observe(tileTPElem, 'HiddenChange');
+        //  Observe the tile for PClassHiddenChange so that we can tell when it
+        //  hides.
+        this.observe(tileTPElem, 'PClassHiddenChange');
 
         sheet = this.getStylesheetForStyleResource();
         mainRule = TP.styleSheetGetStyleRulesMatching(
@@ -574,14 +575,14 @@ function(aSignal) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.respondershud.Inst.defineHandler('ClosedChange',
+TP.sherpa.respondershud.Inst.defineHandler('PClassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePClassClosedChangeFromSherpaHUD
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 
@@ -778,15 +779,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.respondershud.Inst.defineHandler('HiddenChange',
+TP.sherpa.respondershud.Inst.defineHandler('PClassHiddenChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChangeFromSherpaConsole
+     * @method handlePClassHiddenChangeFromResponderSummary_Tile
      * @summary Handles notifications of when the 'hidden' state of the
      *     assistant tile associated with this panel changes.
-     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
-     *     method.
+     * @param {TP.sig.PClassHiddenChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.respondershud} The receiver.
      */
 

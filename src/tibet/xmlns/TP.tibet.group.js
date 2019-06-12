@@ -619,8 +619,9 @@ function(aSignal) {
         return this;
     }
 
-    //  Slice off the 'Pclass_' prefix.
-    attrName = attrName.slice(7);
+    //  Slice off the 'PClass' prefix and lowercase the remaining portion so
+    //  that we can test it consistently.
+    attrName = attrName.slice(6).toLowerCase();
 
     //  attrName will be one of the following:
     //      readonly

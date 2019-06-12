@@ -62,7 +62,8 @@ function() {
     this.updateNavigationButtons();
     this.updateToolbarButtons();
 
-    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()), 'ClosedChange');
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+                    'PClassClosedChange');
 
     this.toggleObservations(true);
 
@@ -337,14 +338,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineHandler('ClosedChange',
+TP.sherpa.workbench.Inst.defineHandler('PClassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePClassClosedChangeFromSherpaHUD
      * @summary Handles when the HUD's 'closed' state changes.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.workbench} The receiver.
      */
 

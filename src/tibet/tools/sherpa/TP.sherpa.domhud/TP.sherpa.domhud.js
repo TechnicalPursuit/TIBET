@@ -732,8 +732,9 @@ function(aTPElem) {
 
         tileTPElem.get('footer').setContent(newFooterElem);
 
-        //  Observe the tile for HiddenChange so that we can tell when it hides.
-        this.observe(tileTPElem, 'HiddenChange');
+        //  Observe the tile for PClassHiddenChange so that we can tell when it
+        //  hides.
+        this.observe(tileTPElem, 'PClassHiddenChange');
 
     } else {
         currentBodyElem = TP.unwrap(
@@ -1005,14 +1006,14 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('ClosedChange',
+TP.sherpa.domhud.Inst.defineHandler('PClassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePClassClosedChangeFromSherpaHUD
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
@@ -1478,15 +1479,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineHandler('HiddenChange',
+TP.sherpa.domhud.Inst.defineHandler('PClassHiddenChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChangeFromSherpaConsole
+     * @method handlePClassHiddenChangeFromDOMInfo_Tile
      * @summary Handles notifications of when the 'hidden' state of the
      *     assistant tile associated with this panel changes.
-     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
-     *     method.
+     * @param {TP.sig.PClassHiddenChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.domhud} The receiver.
      */
 

@@ -6243,7 +6243,10 @@ function(stateAttribute, stateFlag, shouldSignal) {
      * @returns {Boolean} Whether the receiver's state is active.
      */
 
-    var flag;
+    var flag,
+
+        parts,
+        attrName;
 
     //  NB: we use the '$' versions of setAttribute/getAttribute here or
     //  otherwise we'll endlessly recurse.
@@ -6261,9 +6264,22 @@ function(stateAttribute, stateFlag, shouldSignal) {
         }
 
         if (flag) {
-            //  Note here how 'escape' the attribute name by replacing ':' with
-            //  '_'.
-            this.$changed(stateAttribute.replace(':', '_'),
+
+            //  if the attribute is namespace qualified, we 'start upper' each
+            //  piece.
+            //  e.g. 'foo:bar' -> 'FooBar'
+            if (TP.regex.HAS_COLON.test(stateAttribute)) {
+                parts = stateAttribute.split(/:/);
+                attrName = TP.makeStartUpper(parts.first()) +
+                            TP.makeStartUpper(parts.last());
+            } else {
+
+                //  Otherwise, we just 'start upper' the whole piece
+                //  'foo' -> 'Foo'
+                attrName = TP.makeStartUpper(stateAttribute);
+            }
+
+            this.$changed(attrName,
                             TP.UPDATE,
                             TP.hc('baseSignalType', TP.sig.AttributeChange));
         }

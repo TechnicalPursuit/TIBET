@@ -699,7 +699,7 @@ function() {
 
     //  Observe the HUD for when it opens/closes
     hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
-    this.observe(hudTPElem, 'ClosedChange');
+    this.observe(hudTPElem, 'PclassClosedChange');
 
     //  Use the HUD's current value to set whether we are hidden or not.
     isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
@@ -711,8 +711,8 @@ function() {
 
     //  Observe the HUD's south drawer for when it opens/closes
     consoleDrawerTPElem = TP.byId('south', this.getNativeDocument());
-    this.observe(consoleDrawerTPElem, 'ClosedChange');
-    this.observe(consoleDrawerTPElem, 'HiddenChange');
+    this.observe(consoleDrawerTPElem, 'PclassClosedChange');
+    this.observe(consoleDrawerTPElem, 'PclassHiddenChange');
 
     //  Set the overall data Array as the resource for the console tabs.
     data = TP.ac(
@@ -733,15 +733,15 @@ function() {
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler('ClosedChange',
+TP.sherpa.console.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePclassClosedChangeFromSherpaHUD
      * @summary Handles when the HUD's 'closed' state changes. We track that by
      *     showing/hiding ourself.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -765,15 +765,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler('ClosedChange',
+TP.sherpa.console.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handleClosedChange
+     * @method handlePclassClosedChangeFromsouth
      * @summary Handles when the HUD's 'south drawer' 'closed' state changes.
      *     We track that by adjusting the size of our input cell area.
-     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -820,15 +820,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler('HiddenChange',
+TP.sherpa.console.Inst.defineHandler('PclassHiddenChange',
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handlePclassHiddenChangeFromsouth
      * @summary Handles when the HUD's 'south drawer' 'hidden' state changes.
      *     We track that by adjusting the size of our input cell area.
-     * @param {TP.sig.HiddenChange} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.PclassHiddenChange} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.console} The receiver.
      */
 
