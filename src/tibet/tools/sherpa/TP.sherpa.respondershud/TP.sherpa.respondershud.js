@@ -318,9 +318,9 @@ function(aSignal) {
                                     sourceTPElem,
                                     'RespondersHUDTileFooter'));
 
-        //  Observe the tile for PClassHiddenChange so that we can tell when it
+        //  Observe the tile for PclassHiddenChange so that we can tell when it
         //  hides.
-        this.observe(tileTPElem, 'PClassHiddenChange');
+        this.observe(tileTPElem, 'PclassHiddenChange');
 
         sheet = this.getStylesheetForStyleResource();
         mainRule = TP.styleSheetGetStyleRulesMatching(
@@ -575,13 +575,13 @@ function(aSignal) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.respondershud.Inst.defineHandler('PClassClosedChange',
+TP.sherpa.respondershud.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handlePClassClosedChangeFromSherpaHUD
+     * @method handlePclassClosedChangeFromSherpaHUD
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.respondershud} The receiver.
      */
@@ -779,14 +779,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.respondershud.Inst.defineHandler('PClassHiddenChange',
+TP.sherpa.respondershud.Inst.defineHandler('PclassHiddenChange',
 function(aSignal) {
 
     /**
-     * @method handlePClassHiddenChangeFromResponderSummary_Tile
+     * @method handlePclassHiddenChangeFromResponderSummary_Tile
      * @summary Handles notifications of when the 'hidden' state of the
      *     assistant tile associated with this panel changes.
-     * @param {TP.sig.PClassHiddenChange} aSignal The TIBET signal which
+     * @param {TP.sig.PclassHiddenChange} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.respondershud} The receiver.
      */

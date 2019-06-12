@@ -123,7 +123,7 @@ function(aRequest) {
         TP.sys.setUICanvas('UIROOT.SCREEN_0');
     }
 
-    //  NB: We don't worry about observing the HUD for 'PClassClosedChange'
+    //  NB: We don't worry about observing the HUD for 'PclassClosedChange'
     //  here, since the Sherpa IDE object does that for us when it does it's set
     //  up.
 
@@ -329,14 +329,14 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineHandler('PClassClosedChange',
+TP.sherpa.world.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handlePClassClosedChangeFromSherpaHUD
+     * @method handlePclassClosedChangeFromSherpaHUD
      * @summary Handles when the HUD's 'closed' state changes. We track that by
      *     refocusing ourself.
-     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.world} The receiver.
      */

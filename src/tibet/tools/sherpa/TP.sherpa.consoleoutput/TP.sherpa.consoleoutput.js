@@ -106,7 +106,7 @@ function() {
         'TP.sig.DOMTransitionEnd');
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
-                    'PClassClosedChange');
+                    'PclassClosedChange');
 
     this.toggleObservations(true);
 
@@ -115,14 +115,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineHandler('PClassClosedChange',
+TP.sherpa.consoleoutput.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handlePClassClosedChangeFromSherpaHUD
+     * @method handlePclassClosedChangeFromSherpaHUD
      * @summary Handles when the HUD's 'closed' state changes. We track that by
      *     showing/hiding ourself.
-     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.consoleoutput} The receiver.
      */

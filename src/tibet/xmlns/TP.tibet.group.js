@@ -619,7 +619,7 @@ function(aSignal) {
         return this;
     }
 
-    //  Slice off the 'PClass' prefix and lowercase the remaining portion so
+    //  Slice off the 'Pclass' prefix and lowercase the remaining portion so
     //  that we can test it consistently.
     attrName = attrName.slice(6).toLowerCase();
 

@@ -81,7 +81,7 @@ function() {
     consoleGUI = consoleService.get('$consoleGUI');
 
     this.observe(TP.byId('SherpaHUD', consoleGUI.getNativeDocument()),
-                    'PClassClosedChange');
+                    'PclassClosedChange');
 
     this.toggleObservations(true);
 
@@ -374,13 +374,13 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineHandler('PClassClosedChange',
+TP.sherpa.outliner.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
     /**
-     * @method handlePClassClosedChangeFromSherpaHUD
+     * @method handlePclassClosedChangeFromSherpaHUD
      * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.PClassClosedChange} aSignal The TIBET signal which
+     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.outliner} The receiver.
      */
