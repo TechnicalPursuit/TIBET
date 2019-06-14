@@ -5791,7 +5791,7 @@ function(aValue, anAspect) {
         //  the Array and mark ourselves as dirty.
         len = value.getSize();
         for (i = 0; i < len; i++) {
-            valIndex = valueEntry.getPosition(value.at(i));
+            valIndex = valueEntry.indexOf(value.at(i));
 
             if (valIndex !== TP.NOT_FOUND) {
                 valueEntry.splice(valIndex, 1);
