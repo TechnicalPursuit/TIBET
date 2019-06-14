@@ -575,35 +575,6 @@ function(aSignal) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.respondershud.Inst.defineHandler('PclassClosedChange',
-function(aSignal) {
-
-    /**
-     * @method handlePclassClosedChangeFromSherpaHUD
-     * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.respondershud} The receiver.
-     */
-
-    var hudIsClosed;
-
-    //  Grab the HUD and see if it's currently open or closed.
-    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
-
-    if (hudIsClosed) {
-        this.toggleObservations(false);
-    } else {
-        this.toggleObservations(true);
-    }
-
-    return this;
-}, {
-    origin: 'SherpaHUD'
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.respondershud.Inst.defineHandler('AddSignalHandler',
 function(aSignal) {
 
@@ -1329,6 +1300,8 @@ function(shouldObserve) {
      *     ignoring) signals.
      * @returns {TP.sherpa.respondershud} The receiver.
      */
+
+    this.callNextMethod();
 
     if (shouldObserve) {
         this.observe(this, 'TP.sig.SherpaConnectCompleted');

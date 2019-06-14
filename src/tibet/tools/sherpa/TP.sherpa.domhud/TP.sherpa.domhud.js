@@ -1021,19 +1021,17 @@ function(aSignal) {
 
         sourceTPElem;
 
+    this.callNextMethod();
+
     //  Grab the HUD and see if it's currently open or closed.
     hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (hudIsClosed) {
-        this.toggleObservations(false);
-    } else {
+    if (!hudIsClosed) {
         sourceTPElem = TP.byId('SherpaHalo', this.getNativeDocument()).
                                             get('currentTargetTPElem');
         if (TP.notValid(sourceTPElem) || sourceTPElem.isDetached()) {
             this.focusOnUICanvasRoot();
         }
-
-        this.toggleObservations(true);
     }
 
     return this;
@@ -1625,6 +1623,8 @@ function(shouldObserve) {
      *     ignoring) signals.
      * @returns {TP.sherpa.domhud} The receiver.
      */
+
+    this.callNextMethod();
 
     if (shouldObserve) {
         this.observe(this.get('listcontent'),

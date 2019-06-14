@@ -869,35 +869,6 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.styleshud.Inst.defineHandler('PclassClosedChange',
-function(aSignal) {
-
-    /**
-     * @method handlePclassClosedChangeFromSherpaHUD
-     * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.styleshud} The receiver.
-     */
-
-    var hudIsClosed;
-
-    //  Grab the HUD and see if it's currently open or closed.
-    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
-
-    if (hudIsClosed) {
-        this.toggleObservations(false);
-    } else {
-        this.toggleObservations(true);
-    }
-
-    return this;
-}, {
-    origin: 'SherpaHUD'
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.styleshud.Inst.defineHandler('DocumentLoaded',
 function(aSignal) {
 
@@ -1482,17 +1453,9 @@ function(shouldObserve) {
      * @returns {TP.sherpa.styleshud} The receiver.
      */
 
-    var world,
-        currentScreenTPWin;
-
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.callNextMethod();
 
     if (shouldObserve) {
-        this.observe(world, 'ToggleScreen');
-        this.observe(currentScreenTPWin,
-                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
         this.observe(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
 
         this.observe(this.get('listcontent'),
@@ -1501,10 +1464,6 @@ function(shouldObserve) {
 
         this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
     } else {
-        this.ignore(world, 'ToggleScreen');
-        this.ignore(currentScreenTPWin,
-                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
         this.ignore(TP.sys.uidoc(), 'TP.sig.MutationStyleChange');
 
         this.ignore(this.get('listcontent'),

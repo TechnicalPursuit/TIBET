@@ -164,6 +164,38 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hudsidebar.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hudsidebar.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
@@ -174,6 +206,17 @@ function(aSignal) {
      *     triggered this method.
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
+
+    var hudIsClosed;
+
+    //  Grab the HUD and see if it's currently open or closed.
+    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (hudIsClosed) {
+        this.toggleObservations(false);
+    } else {
+        this.toggleObservations(true);
+    }
 
     return this;
 }, {
@@ -320,6 +363,45 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hudsidebar.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    /**
+     * @method handleToggleScreen
+     * @summary Handles notifications of screen toggle signals.
+     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var world,
+        oldScreenTPWin,
+
+        newScreen,
+        newScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the old screen TP.core.Window and ignore
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    //  Grab the new screen TP.core.Window and observe
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    newScreen = world.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(newScreen)) {
+        newScreenTPWin = newScreen.getContentWindow();
+        this.observe(newScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hudsidebar.Inst.defineMethod('setup',
 function() {
 
@@ -437,6 +519,39 @@ function() {
     }
 
     return TP.unwrap(content);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineMethod('toggleObservations',
+function(shouldObserve) {
+
+    /**
+     * @method toggleObservations
+     * @summary Either observe or ignore the signals that the receiver needs to
+     *     function.
+     * @param {Boolean} shouldObserve Whether or not we should be observing (or
+     *     ignoring) signals.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
+     */
+
+    var world,
+        currentScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    if (shouldObserve) {
+        this.observe(world, 'ToggleScreen');
+        this.observe(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    } else {
+        this.ignore(world, 'ToggleScreen');
+        this.ignore(currentScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
