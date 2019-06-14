@@ -1039,6 +1039,24 @@ function(aSignal) {
     origin: 'SherpaHUD'
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    this.focusOnUICanvasRoot();
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.domhud.Inst.defineHandler('DOMDNDTargetOver',
