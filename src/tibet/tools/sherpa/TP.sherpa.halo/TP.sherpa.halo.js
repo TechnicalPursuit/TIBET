@@ -467,6 +467,10 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
+    //  Blur and hide ourself. The current document is going away.
+    this.blur();
+    this.setAttribute('hidden', true);
+
     this.ignore(TP.sys.uidoc(),
                     TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
