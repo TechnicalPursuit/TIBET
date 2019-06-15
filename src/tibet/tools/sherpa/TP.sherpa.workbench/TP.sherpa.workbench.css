@@ -219,6 +219,7 @@ sherpa|workbench > .footer xctrls|buttonitem {
     height: 24px;
 
     margin: 0;
+    margin-top: 3px;
 }
 
 sherpa|workbench > .footer xctrls|buttonitem > xctrls|label {
@@ -277,6 +278,8 @@ sherpa|workbench > .footer button.spacer {
     cursor: default;
 
     margin: 0;
+    margin-top: 3px;
+
     padding: 0;
 }
 
