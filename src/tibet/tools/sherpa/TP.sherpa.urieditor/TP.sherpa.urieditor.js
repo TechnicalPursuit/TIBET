@@ -1051,6 +1051,7 @@ function() {
             }.bind(this)).queueForNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
 
+            return this;
         }.bind(this)).catch(
         function(err) {
             var sourceLoc;
