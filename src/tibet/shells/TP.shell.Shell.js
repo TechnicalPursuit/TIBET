@@ -715,6 +715,14 @@ function() {
 
     //  note use of $get to avoid recursion
     ndx = this.$get('nextPID');
+
+    //  If the object has a 'recursion marker', that means a String
+    //  representation of some sort is being produced and we should just return
+    //  the current value here.
+    if (TP.objectHasMarker(this)) {
+        return ndx;
+    }
+
     this.$set('nextPID', ndx + 1);
 
     return ndx;

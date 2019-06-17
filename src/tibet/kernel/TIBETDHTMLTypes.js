@@ -794,6 +794,13 @@ function(runModifiers) {
 
         frameOffsetPoint;
 
+    //  If the object has a 'recursion marker', that means a String
+    //  representation of some sort is being produced and we should just return
+    //  the current value here.
+    if (TP.objectHasMarker(this)) {
+        return '';
+    }
+
     //  Grab the TP.gui.Point representing the current point and the current
     //  signal (which will probably be some sort of DOMDrag signal)
     xyPoint = this.$get('currentPoint');

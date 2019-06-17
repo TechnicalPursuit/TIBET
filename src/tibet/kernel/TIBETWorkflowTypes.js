@@ -4678,6 +4678,13 @@ function() {
 
     if (TP.isEmpty(password = this.$get('credentialsPassword'))) {
 
+        //  If the object has a 'recursion marker', that means a String
+        //  representation of some sort is being produced and we should just
+        //  return the current value here.
+        if (TP.objectHasMarker(this)) {
+            return password;
+        }
+
         if (TP.isEmpty(
             password = prompt('Please enter your credentials password'))) {
 
