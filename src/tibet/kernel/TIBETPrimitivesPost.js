@@ -2860,11 +2860,11 @@ function(anObject) {
         rules;
 
     if (anObject === void 0) {
-        return 'undefined';
+        return '"undefined"';
     }
 
     if (anObject === null) {
-        return 'null';
+        return '"null"';
     }
 
     if (TP.isNaN(anObject)) {

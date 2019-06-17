@@ -690,6 +690,7 @@ function(aFilterName, aLevel) {
                 '(',
                 this.toString().tokenizeWhitespace().replace('{ }', '{}'),
                 ')');
+        str = str.quoted('"');
     }
 
     return str;
