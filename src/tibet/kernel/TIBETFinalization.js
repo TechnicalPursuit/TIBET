@@ -69,6 +69,63 @@ function(aName, aValue, force) {
     return TP.global[aName];
 });
 
+//  ------------------------------------------------------------------------
+//  MARKERS
+//  ------------------------------------------------------------------------
+
+//  A list of all of the markers used to prevent 'endless recursion' when
+//  producing String representation.
+TP.sys.defineGlobal('$$markers',
+    TP.ac(
+        '$$recursive_sherpa_pp',
+        '$$recursive_asObject',
+        '$$recursive_asDumpString',
+        '$$recursive_asHTMLString',
+        '$$recursive_asJSONSource',
+        '$$recursive_anObject',
+        '$$recursive_asPrettyString',
+        '$$recursive_asSource',
+        '$$recursive_asXMLString',
+        '$$recursive_asString'
+    ));
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectHasMarker',
+function(anObject, aMarker) {
+
+    /**
+     * @method objectHasMarker
+     * @summary Tests to see whether an object has either a particular marker or
+     *     any marker currently present.
+     * @param {Object} anObject The target object.
+     * @param {String} [aMarker] The marker to test for. If this isn't provided,
+     *     then the target object will be tested for all markers.
+     * @returns {Boolean} Whether or not the supplied marker (or any marker if
+     *     the marker wasn't supplied) is present.
+     */
+
+    var markers,
+        len,
+        i;
+
+    //  A particular marker was supplied - test only for that one.
+    if (TP.isString(aMarker)) {
+        return TP.owns(anObject, aMarker);
+    }
+
+    //  Iterate over all markers and test each one.
+    markers = TP.global.$$markers;
+    len = markers.getSize();
+    for (i = 0; i < len; i++) {
+        if (TP.owns(anObject, markers.at(i))) {
+            //  Found one - exit returning true.
+            return true;
+        }
+    }
+
+    return false;
+});
 
 //  ------------------------------------------------------------------------
 //  CLEANUP
