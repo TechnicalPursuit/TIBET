@@ -304,6 +304,52 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
+Array.Inst.defineMethod('asJSONSource',
+function() {
+
+    /**
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
+     * @returns {String} A JSON-formatted string.
+     */
+
+    var len,
+
+        marker,
+        arr,
+        i;
+
+    len = this.getSize();
+    if (len === 0) {
+        return '[]';
+    }
+
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asJSONSource';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
+    }
+    this[marker] = true;
+
+    arr = TP.ac();
+    arr.push('[');
+
+    try {
+        for (i = 0; i < len; i++) {
+            arr.push(TP.jsonsrc(this.at(i)), ',');
+        }
+
+        arr.pop();
+    } finally {
+        arr.push(']');
+        delete this[marker];
+    }
+
+    return arr.join('');
+});
+
+//  ------------------------------------------------------------------------
+
 Array.Inst.defineMethod('asHTMLString',
 function() {
 
