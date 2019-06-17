@@ -201,6 +201,10 @@ function(content, aURI) {
      *     content.
      */
 
+    if (TP.isType(content)) {
+        return TP.core.OpaqueContent;
+    }
+
     if (TP.isNode(content) || TP.isKindOf(content, TP.dom.Node)) {
         return TP.core.XMLContent;
     }
@@ -217,7 +221,11 @@ function(content, aURI) {
         return TP.core.JSONContent;
     }
 
-    return TP.core.TextContent;
+    if (TP.isString(content) || TP.isFunction(content)) {
+        return TP.core.TextContent;
+    }
+
+    return TP.core.OpaqueContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -1680,6 +1688,92 @@ function() {
      */
 
     return TP.override();
+});
+
+//  ========================================================================
+//  TP.core.OpaqueContent
+//  ========================================================================
+
+/**
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.defineSubtype('core.OpaqueContent');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.OpaqueContent.Type.defineMethod('canConstruct',
+function(data, uri) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
+     * @returns {Boolean} Whether or not an instance of this can be constructed
+     *     from the parameters provided.
+     */
+
+    if (TP.regex.CONTAINS_CSS.test(data)) {
+        return false;
+    }
+
+    if (TP.isJSONString.test(data)) {
+        return false;
+    }
+
+    if (TP.isString.test(data)) {
+        return false;
+    }
+
+    if (TP.isNode(data) || TP.isXMLString(TP.str(data))) {
+        return false;
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.OpaqueContent.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    var data;
+
+    data = this.get('data');
+
+    if (TP.canInvoke(data, 'asJSONSource')) {
+        return data.asJSONSource();
+    }
+
+    return TP.json(data);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.OpaqueContent.Inst.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.OCTET_ENCODED;
 });
 
 //  ========================================================================
