@@ -5817,8 +5817,11 @@ function(aValue, anAspect) {
         //  under that aspect in the selection model. If it is, splice it out of
         //  the Array and mark ourselves as dirty.
         len = value.getSize();
-        for (i = 0; i < len; i++) {
-            valIndex = valueEntry.indexOf(value.at(i));
+        for (i = 0; i < len; i++)
+            //  NB: Leave this using getPosition() rather than changing to
+            //  indexOf(). value.at(i) might be an Array and we need an equality
+            //  comparison.
+            valIndex = valueEntry.getPosition(value.at(i));
 
             if (valIndex !== TP.NOT_FOUND) {
                 valueEntry.splice(valIndex, 1);
