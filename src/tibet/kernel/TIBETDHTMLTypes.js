@@ -5224,6 +5224,8 @@ function() {
      * @returns {String} A JSON-formatted string.
      */
 
+    var str;
+
     str = '{"type":"' + TP.tname(this) + '",' +
             '"ID":"' + TP.id(this) + '"}';
 
@@ -5817,7 +5819,7 @@ function(aValue, anAspect) {
         //  under that aspect in the selection model. If it is, splice it out of
         //  the Array and mark ourselves as dirty.
         len = value.getSize();
-        for (i = 0; i < len; i++)
+        for (i = 0; i < len; i++) {
             //  NB: Leave this using getPosition() rather than changing to
             //  indexOf(). value.at(i) might be an Array and we need an equality
             //  comparison.

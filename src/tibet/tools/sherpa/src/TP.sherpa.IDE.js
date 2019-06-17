@@ -287,6 +287,8 @@ function() {
      * @returns {String} A JSON-formatted string.
      */
 
+    var str;
+
     str = '{"type":"' + TP.tname(this) + '",' +
             '"ID":"' + TP.id(this) + '"}';
 
