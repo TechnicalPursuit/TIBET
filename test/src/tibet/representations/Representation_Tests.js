@@ -1603,8 +1603,8 @@ function() {
 
     /* eslint-disable no-multi-spaces */
     correctValues = TP.hc(
-        TP.UNDEF,               'undefined',
-        TP.NULL,                'null',
+        TP.UNDEF,               '"undefined"',
+        TP.NULL,                '"null"',
         'Boolean',              'true',
         'String',               '"bar"',
         'Number',               '42',
@@ -1613,7 +1613,7 @@ function() {
         'InvalidDate',          '"NaN-NaN-NaNTNaN:NaN:NaN"',
         'Array',                '[1,2,3]',
         'Object',               '{"foo":"bar"}',
-        'Function',             /function\s*\(\s*\)\s*{return\s*"fluffy"\s*;?\s*}/,
+        'Function',             /function\s*\(\s*\)\s*\{return\s*\\"fluffy\\"\s*;?\s*\}/,
         'NaN',                  '"NaN"',
         'NativeType',           '{"type":"NativeType","data":{"name":"Array","supertypes":["Object"]}}',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
@@ -1647,7 +1647,7 @@ function() {
         'Event',                /^{"type":"MouseEvent","data":{([\s\S]+)}}$/,
         'XHR',                  /^{"type":"XHR","data":{"status":"([\s\S]+)","content":"([\s\S]*)"}}$/,
 
-        'TIBETType',                    '{"type":"TP.lang.RootObject","data":{"name":"TP.dom.Node","supertypes":["TP.lang.Object","TP.lang.RootObject","Object"]}}',
+        'TIBETType',                    '{"type":"TP.meta.dom.Node","data":{"name":"TP.dom.Node","abstract":true,"nsRoot":"TP","nsPrefix":"dom","localName":"Node","supertypes":["TP.lang.Object","TP.lang.RootObject","Object"]}}',
         'TP.lang.Object',               '{"type":"TP.lang.Object","data":{"foo":"bar"}}',
         //  Note that TP.core.Hash is different - since it's what's created by
         //  the special function to the JSON.parse() call in TIBET, we create a
@@ -1702,7 +1702,7 @@ function() {
         'TP.gui.Path',              '{"type":"TP.gui.SVGPath","data":{"segments":["M",[10,10],"M",[20,20]]}}',
 
         'TP.core.Job',              /^{"type":"TP.core.Job","data":([\s\S]+)"PID":(\d+)([\s\S]+)}$/,
-        'TP.core.Browser_TYPE',     '{"type":"TP.lang.RootObject","data":{"name":"TP.core.Browser","supertypes":["TP.lang.Object","TP.lang.RootObject","Object"]}}',
+        'TP.core.Browser_TYPE',     '{"type":"TP.meta.core.Browser","data":{"name":"TP.core.Browser","abstract":false,"nsRoot":"TP","nsPrefix":"core","localName":"Browser","supertypes":["TP.lang.Object","TP.lang.RootObject","Object"]}}',
         'TP.boot.Annotation',       '{"type":"TP.boot.Annotation","data":{"object":"A String","message":"This is a message"}}',
         'TP.core.Annotation',       '{"type": "TP.core.Annotation","data": {"object": "A String","message": "This is a message"}}'
         );
