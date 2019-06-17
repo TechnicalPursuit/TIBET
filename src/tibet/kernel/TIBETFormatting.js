@@ -1014,9 +1014,18 @@ function() {
                                     return aName.quoted('"');
                                 });
 
-    return '{"type":"TP.lang.RootObject",' +
-            '"data":{"name":' + this.getName().quoted('"') + ',' +
-            '"supertypes":[' + stNames.join(',') + ']}}';
+    return '{' +
+            '"type":' + this.getTypeName().quoted('"') + ',' +
+            '"data":' +
+                '{' +
+                    '"name":' + this.getName().quoted('"') + ',' +
+                    '"abstract":' + this.isAbstract() + ',' +
+                    '"nsRoot":' + this.get('nsRoot').quoted('"') + ',' +
+                    '"nsPrefix":' + this.get('nsPrefix').quoted('"') + ',' +
+                    '"localName":' + this.get('localName').quoted('"') + ',' +
+                    '"supertypes":[' + stNames.join(',') + ']' +
+                '}' +
+            '}';
 });
 
 //  ------------------------------------------------------------------------
