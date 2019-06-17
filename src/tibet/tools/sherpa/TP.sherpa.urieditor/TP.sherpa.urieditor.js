@@ -1001,6 +1001,13 @@ function() {
             } else {
                 if (TP.isKindOf(sourceResult, TP.core.Content)) {
                     mimeType = sourceResult.getContentMIMEType();
+                    if (mimeType === TP.OCTET_ENCODED) {
+                        if (TP.isJSONString(sourceStr)) {
+                            mimeType = TP.JSON_ENCODED;
+                        } else if (TP.isXMLString(sourceStr)) {
+                            mimeType = TP.XML_ENCODED;
+                        }
+                    }
                 } else if (TP.regex.FUNCTION_LITERAL.test(sourceResult)) {
                     mimeType = TP.JS_TEXT_ENCODED;
                 } else {
