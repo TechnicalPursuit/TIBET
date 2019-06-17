@@ -275,6 +275,26 @@ function(toolID) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('asJSONSource',
+function() {
+
+    /**
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
+     * @description We override at this level to just produce type and ID since
+     *     this is a very 'deep' object that produces a very long JSON
+     *     representation that takes a long time to render in a user interface.
+     * @returns {String} A JSON-formatted string.
+     */
+
+    str = '{"type":"' + TP.tname(this) + '",' +
+            '"ID":"' + TP.id(this) + '"}';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('asTP_sherpa_pp',
 function() {
 
