@@ -198,6 +198,8 @@ xctrls|list#TSHCompleterList {
     left: 280px;
 
     width: 23em;
+
+    min-height: 1.5em;
     max-height: calc(15em + 5px);
 
     line-height: 1.5em;
@@ -208,9 +210,13 @@ xctrls|list#TSHCompleterList {
 
     overflow-y: auto;
 
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
+
     *[tibet|pelem="choices"] {
 
         & > xctrls|textitem {
+
+            background-color: white;
 
             & > xctrls|label {
 
