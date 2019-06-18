@@ -44,9 +44,7 @@
 
 #### Check TIBET's <a href="#prereqs">prerequisites</a> first.
 
-We recommend using `nvm` to install Node.js v6+ (or v8+ if you want
-to use ES7 features like async/await). You can confirm your nvm, node, and npm
-versions using:
+We recommend using `nvm` to install Node.js v8+. You can confirm your nvm, node, and npm versions using:
 
 ```
 nvm --version
