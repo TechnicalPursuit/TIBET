@@ -866,8 +866,10 @@ function(aHalo) {
         len,
         i;
 
-    //  We cannot focus on elements that are Sherpa elements themselves.
-    if (this.getNSURI() === TP.w3.Xmlns.SHERPA) {
+    //  We cannot focus on elements that are Sherpa elements themselves, except
+    //  'sherpa:tofu' elements.
+    if (this.getNSURI() === TP.w3.Xmlns.SHERPA &&
+        this.getCanonicalName() !== 'sherpa:tofu') {
         return false;
     }
 
