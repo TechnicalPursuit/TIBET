@@ -76,7 +76,7 @@ function(aTagTypeName) {
             //  one that contains the screen ;-)).
             tpDoc = aScreen.getContentDocument();
             docTofus =
-                TP.byCSSPath('tibet|tofu[proxyfor="' + tagName + '"]', tpDoc);
+                TP.byCSSPath('sherpa|tofu[proxyfor="' + tagName + '"]', tpDoc);
 
             allTofus = allTofus.concat(docTofus);
         });
