@@ -3985,10 +3985,13 @@ function(aResource, aRequest, shouldSignal) {
 
     var url,
         request,
+
         dirty,
         loaded,
+
         oldResource,
         newResource,
+
         shouldSignalChange;
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
