@@ -19,7 +19,6 @@
 
 <config id="resources">
     <!-- tag-related resource entries here -->
-    <resource href="{{nsroot}}.{{nsname}}.{{typename}}.xhtml"/>
     <resource href="{{nsroot}}.{{nsname}}.{{typename}}.css"/>
 </config>
 
