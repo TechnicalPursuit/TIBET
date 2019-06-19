@@ -386,7 +386,7 @@ function(anObject) {
         targetElem,
         info.at('insertionPosition'),
         true,
-        true);
+        false);
 
     //  Put the autodefine setting back to what it was.
     TP.sys.setcfg('sherpa.autodefine_missing_tags', autodefineMissingTags);
