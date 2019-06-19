@@ -785,10 +785,14 @@ function(packageConfig, shouldSignal) {
     loadedScripts = TP.boot.$$loadpaths;
     missingScripts = packageScriptPaths.difference(loadedScripts);
 
-    //  Since importScript returns a promise we want to create a collection
-    //  which we'll then resolve once all promises have completed in some form.
-    promises = missingScripts.map(
+    //  We need to import all of the scripts, but do so in a synchronous
+    //  fashion. Otherwise, all of the load paths, etc. will be messed up
+    //  because they'll just be the values for the last file loaded.
+    promise = TP.extern.Promise.each(
+                missingScripts,
                 function(path) {
+
+                    //  NB: TP.sys.importScript returns a Promise.
                     return TP.sys.importScript(
                             path,
                             TP.request('callback', function() {
@@ -804,8 +808,8 @@ function(packageConfig, shouldSignal) {
                 });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
-    //  of them failed. NOTE THAT FETCHING IS STILL HAPPENING ASYNCHRONOUSLY!
-    return TP.extern.Promise.all(promises);
+    //  of them failed.
+    return promise;
 }, {
     dependencies: [TP.extern.Promise]
 });
