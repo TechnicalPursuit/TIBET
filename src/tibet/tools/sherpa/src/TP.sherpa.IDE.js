@@ -4511,7 +4511,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         //  It's ok if the source node is a Document since addresses take into
         //  account the index from the #document into the root Element.
 
-        insertionParent = null;
+        insertionParent = sourceNode;
 
         currentNode = sourceNode;
 
