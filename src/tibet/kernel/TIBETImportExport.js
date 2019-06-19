@@ -772,7 +772,7 @@ function(packageConfig, shouldSignal) {
         loadedScripts,
         missingScripts,
 
-        promises;
+        promise;
 
     packageScriptPaths = TP.sys.getAllScriptPaths(packageConfig);
     if (TP.isNull(packageScriptPaths)) {
