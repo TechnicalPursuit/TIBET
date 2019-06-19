@@ -4767,8 +4767,11 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Grab the value of the 'source' attribute off of the script element.
-    loc = TP.elementGetAttribute(anElement, 'source', true);
+    //  Grab the value of the 'src' attribute (or 'source' attribute) off of the
+    //  script element.
+    loc = TP.ifInvalid(
+            TP.elementGetAttribute(anElement, 'src', true),
+            TP.elementGetAttribute(anElement, 'source', true));
 
     if (TP.isEmpty(loc)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
