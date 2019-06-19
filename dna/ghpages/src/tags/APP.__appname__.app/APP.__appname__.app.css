@@ -11,6 +11,13 @@
  * <{{appname}}:app/> form) use rules of this form:
  */
 {{appname}}|app {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+{{appname}}|app > div {
     display: grid;
 
     width: 100%;
@@ -24,22 +31,22 @@
         "nav    footer";
 }
 
-{{appname}}|app > * {
+{{appname}}|app > div > * {
     outline: solid 1px black;
 }
 
-{{appname}}|app > header {
+{{appname}}|app > div > header {
     grid-area: header;
 }
 
-{{appname}}|app > nav {
+{{appname}}|app > div > nav {
     grid-area: nav;
 }
 
-{{appname}}|app > main {
+{{appname}}|app > div > main {
     grid-area: main;
 }
 
-{{appname}}|app > footer {
+{{appname}}|app > div > footer {
     grid-area: footer;
 }
