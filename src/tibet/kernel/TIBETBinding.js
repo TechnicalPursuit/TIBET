@@ -4057,6 +4057,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
         nextElems,
 
+        boundAttrCount,
+
         boundAttrNodes,
         attrs,
         i,
@@ -4280,6 +4282,7 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
     for (i = 0; i < nextElems.length; i++) {
         attrs = nextElems[i].attributes;
 
+        boundAttrCount = 0;
         for (j = 0; j < attrs.length; j++) {
 
             //  Make sure the attribute is in the binding namespace. This also
@@ -4287,8 +4290,14 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
                 /^bind:(in|out|io|scope|repeat)$/.test(attrs[j].name)) {
                 boundAttrNodes.push(attrs[j]);
+                boundAttrCount++;
             }
         }
+
+        //  Stamp the number of bound attributes onto the element. We will use
+        //  this to track how many bound attributes a particular element still
+        //  has left for processing (for performance reasons).
+        nextElems[i][TP.BOUND_ATTR_COUNT] = boundAttrCount;
     }
 
     //  Sort the attribute nodes so that 'bind:in' attributes come first. This
@@ -4589,11 +4598,16 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 //  there are more than one binding attributes on an element,
                 //  we still don't want to process it more than once.
                 if (processedElements.indexOf(ownerElem) !== TP.NOT_FOUND) {
-                    continue;
+                    if (ownerElem[TP.BOUND_ATTR_PROCESSED_COUNT] ===
+                        ownerElem[TP.BOUND_ATTR_COUNT] - 1) {
+                        continue;
+                    }
+                    ownerElem[TP.BOUND_ATTR_PROCESSED_COUNT]++;
+                } else {
+                    //  Keep track of already processed elements.
+                    processedElements.push(ownerElem);
+                    ownerElem[TP.BOUND_ATTR_PROCESSED_COUNT] = 0;
                 }
-
-                //  Keep track of already processed elements.
-                processedElements.push(ownerElem);
 
                 ownerTPElem = TP.wrap(ownerElem);
 

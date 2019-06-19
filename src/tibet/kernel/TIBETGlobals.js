@@ -940,6 +940,9 @@ TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';
 TP.REPEAT_SOURCE = 'tp_repeat_source';
 TP.REPEAT_INDEX = 'tp_repeat_index';
 
+TP.BOUND_ATTR_COUNT = 'tp_bound_attr_count';
+TP.BOUND_ATTR_PROCESSED_COUNT = 'tp_bound_attr_processed_count';
+
 TP.OLD_TOP = 'tp_top';
 TP.OLD_LEFT = 'tp_left';
 TP.OLD_HEIGHT = 'tp_oldheight';
