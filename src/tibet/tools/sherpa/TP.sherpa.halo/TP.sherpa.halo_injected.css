@@ -5,7 +5,6 @@
 .sherpa-halo .sherpa-halo-haloed,
 .sherpa-halo *[class~="sherpa-halo-haloed"] {
 
-    color: red !important;
 }
 
 .sherpa-halo .sherpa-halo-offset-parent,
