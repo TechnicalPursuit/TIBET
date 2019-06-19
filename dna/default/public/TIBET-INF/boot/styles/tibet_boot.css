@@ -60,8 +60,6 @@
     width: 0;
     height: auto;
 
-    margin: 1px;
-
     border-radius: 4px;
 
     background-color: #d6d6d6;
@@ -139,7 +137,7 @@ body.showlog #BOOT-CONSOLE {
     bottom: 24px;
     left: 0;
 
-    height: 12px;
+    height: 9px;
 
     margin: 0 48px;
 }
@@ -254,9 +252,6 @@ body.showlog #BOOT-SPLASH {
     right: 0;
     bottom: 0;
     left: 0;
-
-    border: 1px solid #eee;
-    border-radius: 5px;
 }
 
 /* ---  tibet_content overrides  --- */
@@ -372,3 +367,4 @@ body.full_console #BOOT-CONSOLE {
     margin-left: auto;
     margin-top: 3em;
 }
+
