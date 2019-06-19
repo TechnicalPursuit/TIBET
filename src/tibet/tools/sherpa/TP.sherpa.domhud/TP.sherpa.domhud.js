@@ -1517,7 +1517,8 @@ function(aSignal) {
     //  'assistantfocus' class.
     if (isHidden) {
         assistantFocusedItem = this.get('assistantFocusedItem');
-        if (TP.isValid(assistantFocusedItem)) {
+        if (TP.isValid(assistantFocusedItem) &&
+            !TP.isEmptyArray(assistantFocusedItem)) {
             assistantFocusedItem.removeClass('assistantfocus');
         }
     }
