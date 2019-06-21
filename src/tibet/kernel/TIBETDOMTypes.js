@@ -13145,6 +13145,25 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getTagPrefix',
+function() {
+
+    /**
+     * @method getTagPrefix
+     * @summary Returns a string containing the receiving node's 'prefix'.
+     *     This operation only returns valid strings for Element nodes.
+     * @returns {String} The receiver's tag prefix.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return node.prefix;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getTemplateName',
 function() {
 
