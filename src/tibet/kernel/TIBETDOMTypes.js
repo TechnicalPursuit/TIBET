@@ -13927,6 +13927,7 @@ function(storageInfo) {
 
         realElemPrefix,
         realElemLocalName,
+        realElemName,
 
         computedElemName,
         computedElemNameParts,
@@ -13974,8 +13975,17 @@ function(storageInfo) {
         }
     }
 
-    realElemPrefix = this.getNamespacePrefix();
+    realElemPrefix = this.getTagPrefix();
     realElemLocalName = this.getTagName();
+    if (realElemLocalName.contains(':')) {
+        realElemName = realElemLocalName;
+    } else {
+        if (TP.notEmpty(realElemPrefix)) {
+            realElemName = realElemPrefix + ':' + realElemLocalName;
+        } else {
+            realElemName = realElemLocalName;
+        }
+    }
 
     computedElemName = this.getFullName();
     computedElemNameParts = computedElemName.split(':');
