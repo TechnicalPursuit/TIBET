@@ -2409,7 +2409,9 @@ function(mutationRecords) {
         descendantListDeletedRecords,
 
         descendantListDeletions,
-        descendantListCreations;
+        descendantListCreations,
+
+        replacedNodesRecords;
 
     //  Create separate Arrays for the various kinds of operations we'll be
     //  processing. The mutation records will be sorted into these Arrays so
@@ -2535,6 +2537,8 @@ function(mutationRecords) {
     //      Attributes deleted
     //      Nodes deleted
 
+    replacedNodesRecords = TP.ac();
+
     //  Process all of the records that created child nodes.
     if (TP.notEmpty(descendantListCreatedRecords)) {
 
@@ -2557,7 +2561,12 @@ function(mutationRecords) {
                     j,
 
                     nodesLen,
-                    k;
+                    k,
+
+                    removedNodesLen,
+                    l,
+
+                    foundMatch;
 
                 creationRecords = kvPair.last();
 
@@ -2570,8 +2579,43 @@ function(mutationRecords) {
                     record = creationRecords.at(j);
 
                     nodesLen = record.addedNodes.length;
+                    removedNodesLen = record.removedNodes.length;
+
                     for (k = 0; k < nodesLen; k++) {
-                        mutatedNodes.push(record.addedNodes[k]);
+
+                        //  If there were also removed nodes as part of the
+                        //  record, then iterate over them looking for one whose
+                        //  previous position matches that of the added node. If
+                        //  a match is found, then that means that the removed
+                        //  node is being replaced by the added node and should
+                        //  be treated 'specially' by being placed in a
+                        //  'replaced nodes' data set.
+                        if (removedNodesLen > 0) {
+                            foundMatch = false;
+                            for (l = 0; l < removedNodesLen; l++) {
+                                if (record.
+                                        addedNodes[k][TP.PREVIOUS_POSITION] ===
+                                    record.
+                                        removedNodes[l][TP.PREVIOUS_POSITION]) {
+                                    replacedNodesRecords.push(
+                                        {
+                                            old: record.removedNodes[l],
+                                            new: record.addedNodes[k],
+                                            target: record.target
+                                        });
+                                    foundMatch = true;
+                                    break;
+                                }
+                            }
+
+                            //  There was no matching removed node, so add the
+                            //  nodes to our set of mutated nodes.
+                            if (!foundMatch) {
+                                mutatedNodes.push(record.addedNodes[k]);
+                            }
+                        } else {
+                            mutatedNodes.push(record.addedNodes[k]);
+                        }
                     }
                 }
 
@@ -2655,7 +2699,12 @@ function(mutationRecords) {
                     j,
 
                     nodesLen,
-                    k;
+                    k,
+
+                    addedNodesLen,
+                    l,
+
+                    foundMatch;
 
                 deletionRecords = kvPair.last();
 
@@ -2668,8 +2717,38 @@ function(mutationRecords) {
                     record = deletionRecords.at(j);
 
                     nodesLen = record.removedNodes.length;
+                    addedNodesLen = record.addedNodes.length;
+
                     for (k = 0; k < nodesLen; k++) {
-                        mutatedNodes.push(record.removedNodes[k]);
+
+                        //  If there were also added nodes as part of the
+                        //  record, then iterate over them looking for one whose
+                        //  previous position matches that of the removed node.
+                        //  If a match is found, then that means that the
+                        //  removed node is being replaced by the added node. It
+                        //  was already handled above when processing added
+                        //  nodes, so here we just skip over it, not adding it
+                        //  to our mutated nodes.
+                        if (addedNodesLen > 0) {
+                            foundMatch = false;
+                            for (l = 0; l < addedNodesLen; l++) {
+                                if (record.
+                                        removedNodes[k][TP.PREVIOUS_POSITION] ===
+                                    record.
+                                        addedNodes[l][TP.PREVIOUS_POSITION]) {
+                                    foundMatch = true;
+                                    break;
+                                }
+                            }
+
+                            //  There was no matching added node, so add the
+                            //  nodes to our set of mutated nodes.
+                            if (!foundMatch) {
+                                mutatedNodes.push(record.removedNodes[k]);
+                            }
+                        } else {
+                            mutatedNodes.push(record.removedNodes[k]);
+                        }
                     }
                 }
 
@@ -2678,6 +2757,25 @@ function(mutationRecords) {
                 this.updateUICanvasSource(
                         mutatedNodes, record.target, TP.DELETE);
             }.bind(this));
+    }
+
+    //  If we have specially generated 'replacement' records, then process them.
+    if (TP.notEmpty(replacedNodesRecords)) {
+
+        len = replacedNodesRecords.getSize();
+        for (i = 0; i < len; i++) {
+            record = replacedNodesRecords.at(i);
+
+            this.updateUICanvasSource(
+                    TP.ac(record.old),
+                    record.target,
+                    TP.UPDATE,
+                    null,
+                    null,
+                    null,
+                    true,
+                    record.new);
+        }
     }
 
     return this;
@@ -4200,7 +4298,7 @@ function() {
 
 TP.sherpa.IDE.Inst.defineMethod('updateUICanvasSource',
 function(mutatedNodes, mutationAncestor, operation, attributeName,
-         attributeValue, oldAttributeValue, shouldSignal) {
+         attributeValue, oldAttributeValue, shouldSignal, replacementNode) {
 
     /**
      * @method updateUICanvasSource
@@ -4221,6 +4319,9 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
      *     is changing (if this is an 'attributes' mutation and the operation is
      *     TP.UPDATE or TP.DELETE).
      * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
+     * @param {Node} [replacementNode] The replacement node if we're replacing a
+     *     single node with another node. In this case, mutatedNodes will
+     *     contain a single node, which will be the one we're replacing.
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
@@ -4720,9 +4821,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         } else if (operation === TP.UPDATE) {
 
-            //  No other node types except Attribute nodes will have a TP.UPDATE
-            //  operation (the other nodes - Elements and Text nodes - will
-            //  'delete' and 'insert' themselves in two separate operations).
             if (isAttrChange) {
 
                 //  If the attribute was one of the special 'href'/'onclick'
@@ -4740,6 +4838,32 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                                             true);
                     shouldMarkDirty = true;
                 }
+            } else {
+
+                //  Clone the node
+                newNode = TP.nodeCloneNode(replacementNode, true, false);
+
+                if (TP.isElement(newNode)) {
+
+                    //  'Clean' the Element of any runtime constructs put
+                    //  there by TIBET.
+                    TP.elementClean(newNode);
+
+                    TP.nodeReplaceChild(currentNode.parentNode,
+                                        newNode,
+                                        currentNode,
+                                        false);
+                } else if (TP.isTextNode(newNode)) {
+
+                    //  It's just a Text node - we use it and it's contents
+                    //  literally.
+                    TP.nodeReplaceChild(currentNode.parentNode,
+                                        newNode,
+                                        currentNode,
+                                        false);
+                }
+
+                shouldMarkDirty = true;
             }
         }
     }
