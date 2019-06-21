@@ -52,7 +52,12 @@ function(aTagTypeName) {
 
         allTofus,
 
-        screens;
+        screens,
+
+        replacementTPElem,
+        replacementTPDoc,
+
+        handler;
 
     //  Make sure that we can get a tag type with the supplied tag name
     if (!TP.isType(tagType = TP.sys.getTypeByName(aTagTypeName))) {
@@ -111,8 +116,36 @@ function(aTagTypeName) {
                         //  element and allow it to let go of the tofu element.
                         newTPElem = tofuTPElem.replaceWith(newElem);
                         TP.unwrap(newTPElem)[TP.GLOBAL_ID] = null;
+
+                        replacementTPElem = newTPElem;
                     }
                 });
+
+        //  If we're only replacing one tofu, then set up a handler to focus the
+        //  halo on the element the replacement when the document finishes
+        //  mutating.
+        if (allTofus.getSize() === 1 && TP.isValid(replacementTPElem)) {
+
+            replacementTPDoc = TP.tpdoc(replacementTPElem);
+
+            //  Install a handler looking for a MutationAttach signal that will
+            //  complete when the document has reflowed.
+            handler = function(aSignal) {
+
+                var haloTPElem;
+
+                //  Make sure to uninstall the handler.
+                handler.ignore(replacementTPDoc,
+                                'TP.sig.MutationAttach');
+
+                haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+                haloTPElem.focusOn(replacementTPElem, true);
+            };
+
+            //  Set up the MutationAttach observation on the replacement
+            //  element's Document.
+            handler.observe(replacementTPDoc, 'TP.sig.MutationAttach');
+        }
     }
 
     return this;
