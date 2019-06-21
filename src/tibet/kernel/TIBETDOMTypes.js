@@ -14028,7 +14028,7 @@ function(storageInfo) {
                     //  It's a 'tibet:tag' attribute. See if it matches the
                     //  computed element name. If so, then skip it.
                     if (attrName === 'tag' &&
-                        attrValue === computedElemName) {
+                        attrValue === realElemName) {
                         continue;
                     }
 
