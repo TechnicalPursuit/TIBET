@@ -17,7 +17,7 @@
     height: 100%;
 }
 
-{{appname}}|app > div {
+{{appname}}|app > div#InitialGrid {
     display: grid;
 
     width: 100%;
@@ -31,22 +31,22 @@
         "nav    footer";
 }
 
-{{appname}}|app > div > * {
+{{appname}}|app > div#InitialGrid > * {
     outline: solid 1px black;
 }
 
-{{appname}}|app > div > header {
+{{appname}}|app > div#InitialGrid > header {
     grid-area: header;
 }
 
-{{appname}}|app > div > nav {
+{{appname}}|app > div#InitialGrid > nav {
     grid-area: nav;
 }
 
-{{appname}}|app > div > main {
+{{appname}}|app > div#InitialGrid > main {
     grid-area: main;
 }
 
-{{appname}}|app > div > footer {
+{{appname}}|app > div#InitialGrid > footer {
     grid-area: footer;
 }
