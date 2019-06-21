@@ -859,14 +859,12 @@ function() {
     //  of the tag processor.
     setTimeout(
         function() {
-            //  Note here that, if ResizeObserver isn't native, we will pass a
-            //  true to use the 'tracker element' approach.
             TP.elementAddResizeListener(
                 vertScrollerInner,
                 function() {
                     this.dispatch('TP.sig.EditorResize');
                 }.bind(this),
-                !TP.isNativeFunction(window.ResizeObserver));
+                false);
         }.bind(this), 250);
 
     //  If an attribute was defined that tells us what type of content we're

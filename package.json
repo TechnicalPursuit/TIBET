@@ -78,7 +78,6 @@
         "permessage-deflate": "^0.1.6",
         "pouchdb-all-dbs": "^1.0.2",
         "readline-sync": "^1.4.9",
-        "resize-observer-polyfill": "github:TechnicalPursuit/resize-observer-polyfill",
         "safe-eval": "^0.4.1",
         "semver": "^5.7.0",
         "shelljs": "github:TechnicalPursuit/shelljs",

@@ -1053,8 +1053,7 @@ function(anElement, aHandler, useTrackerElement) {
      * @description Note that there are two techniques to monitor resizing used
      *     here, depending on the setting of the useTrackerElement parameter.
      *     If useTrackerElement is false (the default) then the W3C standard
-     *     ResizeObserver (either native or a TIBET-provided shim) will be used
-     *     to monitor resizing.
+     *     ResizeObserver will be used to monitor resizing.
      *     If useTrackerElement is true, then a 'tracking element' approach is
      *     taken. The technique embodied in this approach depends upon two
      *     things: 1. That the supplied Element is positioned in some
@@ -1068,8 +1067,8 @@ function(anElement, aHandler, useTrackerElement) {
      *     supplied Element is resized. Note that this Function will be invoked
      *     in the context of the supplied Element, such that the 'this'
      *     reference will be that Element.
-     * @param {Boolean} useTrackerElement Whether or not to use a 'tracker
-     *     element' approach.
+     * @param {Boolean} [useTrackerElement=false] Whether or not to use a
+     *     'tracker element' approach.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidFunction
      */
 

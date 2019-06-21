@@ -167,10 +167,6 @@
     <script src="TIBETDevicePrimitivesPlatform.js"/>
     <script src="TIBETDevicePrimitivesPost.js"/>
 
-    <!-- Note that there is no reference placed on 'TP.extern' for this
-         functionality since it is a pure shim for ResizeObserver -->
-    <script src="~lib_deps/resize-observer-tpi.js" no-lint="no-lint"/>
-
     <script src="TIBETDHTMLPrimitivesPre.js"/>
     <script src="TIBETDHTMLPrimitivesBase.js"/>
     <script src="TIBETDHTMLPrimitivesPlatform.js"/>
