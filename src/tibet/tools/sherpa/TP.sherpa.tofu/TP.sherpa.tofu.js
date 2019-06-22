@@ -57,6 +57,8 @@ function(aTagTypeName) {
         replacementTPElem,
         replacementTPDoc,
 
+        haloTPElem,
+
         handler;
 
     //  Make sure that we can get a tag type with the supplied tag name
@@ -121,24 +123,29 @@ function(aTagTypeName) {
                     }
                 });
 
-        //  If we're only replacing one tofu, then set up a handler to focus the
-        //  halo on the element the replacement when the document finishes
-        //  mutating.
-        if (allTofus.getSize() === 1 && TP.isValid(replacementTPElem)) {
+        //  If at least one tofu got replaced, then set up a handler to focus
+        //  the halo on the element the (last) replacement when the document
+        //  finishes mutating.
+        if (TP.isValid(replacementTPElem)) {
 
             replacementTPDoc = TP.tpdoc(replacementTPElem);
+
+            haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+
+            //  NB: We don't bother checking to make sure that the halo's
+            //  current target can be blurred here, since we know it is halo'ed
+            //  on us.
+
+            haloTPElem.blur();
 
             //  Install a handler looking for a MutationAttach signal that will
             //  complete when the document has reflowed.
             handler = function(aSignal) {
 
-                var haloTPElem;
-
                 //  Make sure to uninstall the handler.
                 handler.ignore(replacementTPDoc,
                                 'TP.sig.MutationAttach');
 
-                haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
                 haloTPElem.focusOn(replacementTPElem, true);
             };
 
