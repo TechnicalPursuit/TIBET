@@ -15,9 +15,9 @@ var cli,
 cli = require('../src/tibet/cli/_cli.js');
 
 version = process.versions.node;
-if (parseInt(version.split('.'), 10) < 6) {
+if (parseInt(version.split('.'), 10) < 8) {
     //  eslint-disable-next-line
-    console.error('The TIBET CLI requires Node.js version 6 or higher.');
+    console.error('The TIBET CLI requires Node.js version 8 or higher.');
     return;
 }
 
