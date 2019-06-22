@@ -1536,6 +1536,26 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineHandler('ShowContextMenu',
+function(aSignal) {
+
+    /**
+     * @method handleShowContextMenu
+     * @summary Handles notifications of wanting to show the context menu.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    //  Focus the halo and then let the rest of the context menu machinery show
+    //  the popup menu, etc.
+    this.handleFocusHaloFromANYWhenANY(aSignal);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineHandler('ToggleHighlight',
 function(aSignal) {
 

@@ -962,6 +962,26 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.respondershud.Inst.defineHandler('ShowContextMenu',
+function(aSignal) {
+
+    /**
+     * @method handleShowContextMenu
+     * @summary Handles notifications of wanting to show the context menu.
+     * @param {TP.sig.ShowContextMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.respondershud} The receiver.
+     */
+
+    //  Focus the halo and then let the rest of the context menu machinery show
+    //  the popup menu, etc.
+    this.handleFocusHaloFromANYWhenANY(aSignal);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.respondershud.Inst.defineMethod('getContentTagNameForContextMenu',
 function(aSignal) {
 
