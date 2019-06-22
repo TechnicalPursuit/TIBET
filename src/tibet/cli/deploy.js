@@ -32,9 +32,12 @@ sh = require('shelljs');
 //  ---
 
 Cmd = function() { /* init */ };
-Cmd.Parent = require('./_cmd');
+Cmd.Parent = require('./_multi');
 Cmd.prototype = new Cmd.Parent();
 
+//  NOTE: we want deploy to be able to load runtime extensions so we need to
+//  ensure we patch in an initialize hook.
+Cmd.initialize = Cmd.Parent.initialize;
 
 //  ---
 //  Instance Attributes
@@ -69,7 +72,7 @@ Cmd.SHIPIT_FILE = 'shipitfile.js';
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet deploy [options]';
+Cmd.prototype.USAGE = 'tibet deploy {helper} [options]';
 
 
 //  ---
@@ -77,11 +80,36 @@ Cmd.prototype.USAGE = 'tibet deploy [options]';
 //  ---
 
 /**
+ * Runs the deploy command, checking for support and then
+ * tibet make support in that order.
+ * @returns {Number} A return code.
+ */
+Cmd.prototype.executeMake = function() {
+    var command;
+
+    this.info('checking for `tibet make deploy` target...');
+
+    if (CLI.hasMakeTarget('deploy')) {
+        command = 'deploy';
+        this.warn('Delegating to \'tibet make ' + command + '\'');
+        return CLI.runViaMake(command);
+    } else if (CLI.hasMakeTarget('_deploy')) {
+        command = '_deploy';
+        this.warn('Delegating to \'tibet make ' + command + '\'');
+        return CLI.runViaMake(command);
+    }
+
+    this.warn('No make deploy or makefile deploy target found.');
+
+    return 0;
+};
+
+/**
  * Runs the deploy command, checking for shipit-related support and then
  * tibet make support in that order.
  * @returns {Number} A return code.
  */
-Cmd.prototype.execute = function() {
+Cmd.prototype.executeShipit = function() {
 
     var shipitpath,
         command;
@@ -95,37 +123,20 @@ Cmd.prototype.execute = function() {
         if (sh.test('-e', shipitpath)) {
             //  Found shipit and shipitfile.js. Delegate to those.
             this.info('found shipit file...');
-            return this.executeViaShipit();
+            return this.runViaShipit();
         } else {
             this.info('no shipit file found...');
         }
     } else {
         this.info('shipit not installed');
     }
-
-    this.info('checking for `tibet make` target...');
-
-    if (CLI.hasMakeTarget('deploy')) {
-        command = 'deploy';
-        this.warn('Delegating to \'tibet make ' + command + '\'');
-        return CLI.runViaMake(command);
-    } else if (CLI.hasMakeTarget('_deploy')) {
-        command = '_deploy';
-        this.warn('Delegating to \'tibet make ' + command + '\'');
-        return CLI.runViaMake(command);
-    }
-
-    this.warn('No deploy shipit support or makefile target found.');
-
-    return 0;
 };
-
 
 /**
  * Runs the deploy by activating the Shipit executable.
  * @returns {Number} A return code.
  */
-Cmd.prototype.executeViaShipit = function() {
+Cmd.prototype.runViaShipit = function() {
     var cmd,
         proc,
         child,
@@ -136,8 +147,8 @@ Cmd.prototype.executeViaShipit = function() {
     cmd = this;
     argv = this.getArgv();
 
-    //  NOTE argv[0] is the command name.
-    envname = argv[1];
+    //  NOTE argv[0] is the command name, argv[2] is subcommand name (shipit)
+    envname = argv[2];
 
     proc = require('child_process');
 

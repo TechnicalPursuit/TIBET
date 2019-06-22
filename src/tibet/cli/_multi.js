@@ -17,7 +17,9 @@
 
 var CLI,
     Cmd,
-    minimist;
+    minimist,
+    path,
+    sh;
 
 CLI = require('./_cli');
 
@@ -29,7 +31,9 @@ Cmd = function() { /* init */ };
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
+path = require('path');
 minimist = require('minimist');
+sh = require('shelljs');
 
 //  ---
 //  Type Attributes
@@ -40,6 +44,70 @@ minimist = require('minimist');
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
+
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = '_multi';
+
+
+//  ---
+//  Type Methods
+//  ---
+
+/**
+ * Initialize the command, setting up anything that might be necessary or
+ * helpful before there's actually an instance (or handle to one).
+ * @param {Type} cmdType The command Type. We pass this in because inheritance
+ *     doesn't work (outside of TIBET ;)) and we to access the correct type.
+ */
+Cmd.initialize = function(cmdType) {
+    Cmd.loadSubcommands(cmdType);
+    return;
+};
+
+/**
+ * Loads subcommand implementations for the command type passed in.
+ * @param {Type} cmdType The command Type. We pass this in because inheritance
+ *     doesn't work (outside of TIBET ;)) and we to access the correct type.
+ */
+Cmd.loadSubcommands = function(cmdType) {
+    var context,
+        fullpath,
+        list,
+        cmd,
+        cmdname,
+        re;
+
+    //  NOTE we put lib first so app updates can override baseline.
+    fullpath = CLI.expandPath('~lib_cmd');
+    list = sh.ls(fullpath);
+    fullpath = CLI.expandPath('~app_cmd');
+    list = list.concat(sh.ls(fullpath));
+
+    cmdname = cmdType.NAME;
+    re = new RegExp('^_' + cmdname + '_(.+)\.js$');
+
+    list.forEach(function(file) {
+        var name,
+            subcmd,
+            filepath;
+
+        if (!re.test(file)) {
+            return;
+        }
+
+        filepath = path.join(fullpath, file);
+        name = path.basename(file).replace(path.extname(file), '');
+
+        try {
+            subcmd = require(filepath)(cmdType);
+        } catch (e) {
+            CLI.error('Error loading subcommand ' + name + ': ' + e);
+        }
+    });
+};
 
 
 //  ---

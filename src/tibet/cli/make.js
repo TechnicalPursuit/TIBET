@@ -90,8 +90,10 @@ Cmd.TIMEOUT = 1000 * 30;
 /**
  * Initialize the command, setting up anything that might be necessary or
  * helpful before there's actually an instance (or handle to one).
+ * @param {Type} cmdType The command Type. We pass this in because inheritance
+ *     doesn't work (outside of TIBET ;)) and we to access the correct type.
  */
-Cmd.initialize = function() {
+Cmd.initialize = function(cmdType) {
     var options;
 
     //  Parse options for compression-related tasks in helpers.

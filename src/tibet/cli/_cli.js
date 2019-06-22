@@ -911,7 +911,7 @@ CLI.getCommandOptions = function(command) {
         CmdType = require(cmdPath);
         if (typeof CmdType.initialize === 'function') {
             try {
-                CmdType.initialize();
+                CmdType.initialize(CmdType);
             } catch (e) {
                 return this.handleError(e, 'initializing', command);
             }
@@ -1040,7 +1040,7 @@ CLI.getMakeTargets = function() {
     var Make;
 
     Make = require('./make');
-    Make.initialize();
+    Make.initialize(Make);
 
     return Make.getTargetNames();
 };
@@ -1084,7 +1084,7 @@ CLI.hasMakeTarget = function(target) {
     var Make;
 
     Make = require('./make');
-    Make.initialize();
+    Make.initialize(Make);
 
     return Make.hasTarget(target);
 };
@@ -1648,7 +1648,7 @@ CLI.runCommand = function(command, cmdPath) {
     // Initialize the type if it has an initializer.
     if (typeof CmdType.initialize === 'function') {
         try {
-            CmdType.initialize();
+            CmdType.initialize(CmdType);
         } catch (e) {
             return this.handleError(e, 'initializing', command);
         }
