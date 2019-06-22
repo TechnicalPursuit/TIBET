@@ -27,7 +27,8 @@
     "license": "RPL-1.5",
     "main": "./lib/tibet.js",
     "bin": {
-        "tibet": "./bin/tibet"
+        "tibet": "./bin/tibet",
+        "tibet_debug": "./bin/tibet_debug"
     },
     "directories": {
         "bin": "./bin",

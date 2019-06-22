@@ -1,0 +1,24 @@
+#!/usr/bin/env node --inspect-brk
+
+/**
+ * @overview The TIBET command-line entry point.
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     open source waivers to keep your derivative work source code private.
+ */
+
+var cli,
+    version;
+
+cli = require('../src/tibet/cli/_cli.js');
+
+version = process.versions.node;
+if (parseInt(version.split('.'), 10) < 6) {
+    //  eslint-disable-next-line
+    console.error('The TIBET CLI requires Node.js version 6 or higher.');
+    return;
+}
+
+cli.run({tibet: {}, npm: {}});
