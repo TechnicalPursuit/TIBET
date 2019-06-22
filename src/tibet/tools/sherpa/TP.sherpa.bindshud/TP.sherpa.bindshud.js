@@ -1035,7 +1035,9 @@ function(aSignal) {
         newTargetTPElem,
 
         halo,
-        currentTargetTPElem;
+        currentTargetTPElem,
+
+        didBlur;
 
     //  Grab the target and make sure it's an 'item' tile.
     targetElem = aSignal.getDOMTarget();
@@ -1070,16 +1072,19 @@ function(aSignal) {
         currentTargetTPElem = halo.get('currentTargetTPElem');
         if (newTargetTPElem !== currentTargetTPElem) {
 
+            didBlur = false;
+
             if (TP.isValid(currentTargetTPElem) &&
                     currentTargetTPElem.haloCanBlur(halo)) {
                 halo.blur();
+                didBlur = true;
             }
 
             //  Remove any highlighting that we were doing *on the new target*
             //  because we're going to focus the halo.
             newTargetTPElem.removeClass('sherpa-hud-highlight');
 
-            if (newTargetTPElem.haloCanFocus(halo)) {
+            if (didBlur && newTargetTPElem.haloCanFocus(halo)) {
                 //  Focus the halo on our new element, passing true to actually
                 //  show the halo if it's hidden.
                 halo.focusOn(newTargetTPElem, true);

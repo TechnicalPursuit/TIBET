@@ -1327,7 +1327,9 @@ function(aSignal) {
         newTargetTPElem,
 
         halo,
-        currentTargetTPElem;
+        currentTargetTPElem,
+
+        didBlur;
 
     //  Grab the target lozenge tile and get the value of its peerID attribute.
     //  This will be the ID of the element that we're trying to focus.
@@ -1348,9 +1350,13 @@ function(aSignal) {
     currentTargetTPElem = halo.get('currentTargetTPElem');
     if (newTargetTPElem !== currentTargetTPElem) {
 
+        didBlur = false;
+
+        //  If the halo has a current target that can be blurred, then blur it.
         if (TP.isValid(currentTargetTPElem) &&
                 currentTargetTPElem.haloCanBlur(halo)) {
             halo.blur();
+            didBlur = true;
         }
 
         //  Remove any highlighting that we were doing *on the new target*
@@ -1358,7 +1364,7 @@ function(aSignal) {
         newTargetTPElem.removeClass('sherpa-hud-highlight');
         this.$set('highlighted', null, false);
 
-        if (newTargetTPElem.haloCanFocus(halo)) {
+        if (didBlur && newTargetTPElem.haloCanFocus(halo)) {
             //  Focus the halo on our new element, passing true to actually
             //  show the halo if it's hidden.
             halo.focusOn(newTargetTPElem, true);
