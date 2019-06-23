@@ -5384,14 +5384,15 @@ function(anElement, className) {
      * @summary Removes a CSS class name from anElement's 'className' CSS class
      *     list.
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
-     * @param {String} className The CSS class name to remove.
+     * @param {String|RegExp} className The CSS class name to remove, in either
+     *     String or RegExp form.
      * @exception TP.sig.InvalidElement
      * @returns {Element|undefined} The element the supplied class was removed
      *     from.
      */
 
-    var re,
-        str;
+    var classes,
+        i;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -5401,23 +5402,28 @@ function(anElement, className) {
         return;
     }
 
-    //  If the native 'classList' property is available, use that.
-    if (TP.isValid(anElement.classList)) {
-        return anElement.classList.remove(className);
+    //  Use the HTML5 'classList' convenience property.
+    classes = anElement.classList;
+
+    //  If a RegExp was *not* supplied, then simply remove the class with the
+    //  name.
+    if (!TP.isRegExp(className)) {
+        classes.remove(className);
+    } else {
+        //  Otherwise, iterate over all of the class names and, if they match
+        //  the supplied RegExp, remove them.
+        for (i = 0; i < classes.length; i++) {
+            if (className.test(classes.item(i))) {
+                classes.remove(classes.item(i));
+            }
+        }
     }
 
-    str = TP.elementGetClass(anElement);
-    if (TP.isEmpty(str)) {
-        return anElement;
+    //  By default, if there are no more class names left, we remove the
+    //  attribute.
+    if (anElement.classList.length === 0) {
+        anElement.removeAttribute('class');
     }
-
-    //  NOTE: The RegExp here makes sure that the className is either first,
-    //  last or is surrounded by one character of whitespace.
-    re = TP.rc('(^|\\s)' + className + '(\\s|$)');
-
-    str = str.replace(re, '$2');
-
-    TP.elementSetAttribute(anElement, 'class', str);
 
     return anElement;
 });
