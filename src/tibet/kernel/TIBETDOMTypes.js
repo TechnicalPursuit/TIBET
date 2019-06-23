@@ -3804,6 +3804,32 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.CollectionNode.Type.defineMethod('$shouldAddToOriginals',
+function(sourceNode, mutatedNode, targetNode) {
+
+    /**
+     * @method $shouldAddToOriginals
+     * @summary Whether or not the receiver should add a node that is being
+     *     compiled to its set of 'originals' - that is, nodes that need to be
+     *     updated if the receiver's compilation/templating output changes.
+     * @param {Node} sourceNode A clone of the original node that is
+     *     representing the receiver before 'compilation'/'transformation. The
+     *     original version of this node is what will be added to the set of
+     *     originals.
+     * @param {Node} mutatedNode The original node after having been mutated by
+     *     compilation/transformation.
+     * @param {Node} targetNode The target element that the receiver is a part
+     *     of. This is useful when needing information about the visual surface
+     *     that the currently compiling element will be drawn into.
+     * @returns {Boolean} Whether or not to add the node to the receiver's set
+     *     of 'originals'. The default is false.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.CollectionNode.Type.defineMethod('$tagCompileAndRegister',
 function(aRequest) {
 
@@ -3821,6 +3847,8 @@ function(aRequest) {
         elemClone,
 
         result,
+
+        targetElem,
 
         originals,
         localID;
@@ -3853,9 +3881,17 @@ function(aRequest) {
                 TP.str(elem)) : 0;
     }
 
-    //  If we got a collection node back, register a reference to a clone of the
+    //  The target element that the receiver is a part of. This is useful when
+    //  needing information about the visual surface that the currently
+    //  compiling element will be drawn into.
+    targetElem = TP.unwrap(aRequest.at('target'));
+
+    //  If we got a collection node back and we should add the element to our
+    //  set of 'originals', register a reference to a clone of the
     //  original element (if the 'content.retain_originals' cfg flag is on).
-    if (!TP.nodeEqualsNode(result, elemClone) && TP.isCollectionNode(result)) {
+    if (TP.isCollectionNode(result) &&
+        this.$shouldAddToOriginals(elemClone, result, targetElem)) {
+
         if (TP.sys.cfg('content.retain_originals')) {
 
             //  Make sure to create the type-level (each type - not shared)

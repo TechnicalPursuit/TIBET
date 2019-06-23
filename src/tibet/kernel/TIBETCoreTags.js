@@ -422,6 +422,45 @@ function(storageInfo) {
     return str;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.tag.CustomTag.Type.defineMethod('$shouldAddToOriginals',
+function(originalNode, mutatedNode, targetNode) {
+    /**
+     * @method $shouldAddToOriginals
+     * @summary Whether or not the receiver should add a node that is being
+     *     compiled to its set of 'originals' - that is, nodes that need to be
+     *     updated if the receiver's compilation/templating output changes.
+     * @description For this type, the Window that the node is destined for (as
+     *     supplied by the targetNode, if its available) will be queried for. If
+     *     it is the same as the current UI canvas, then true is returned. If
+     *     there is no targetNode or it's Window cannot be determined, then true
+     *     will be returned.
+     * @param {Node} sourceNode A clone of the original node that is
+     *     representing the receiver before 'compilation'/'transformation. The
+     *     original version of this node is what will be added to the set of
+     *     originals.
+     * @param {Node} mutatedNode The original node after having been mutated by
+     *     compilation/transformation.
+     * @param {Node} targetNode The target element that the receiver is a part
+     *     of. This is useful when needing information about the visual surface
+     *     that the currently compiling element will be drawn into.
+     * @returns {Boolean} Whether or not to add the node to the receiver's set
+     *     of 'originals'.
+     */
+
+    var win;
+
+    if (TP.isNode(targetNode)) {
+        win = TP.nodeGetWindow(targetNode);
+        if (TP.isWindow(win)) {
+            return win === TP.sys.uiwin(true);
+        }
+    }
+
+    return true;
+});
+
 //  ========================================================================
 //  TP.tag.CompiledTag
 //  ========================================================================
