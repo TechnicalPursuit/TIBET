@@ -73,10 +73,8 @@ Cmd.initialize = function(cmdType) {
  *     doesn't work (outside of TIBET ;)) and we to access the correct type.
  */
 Cmd.loadSubcommands = function(cmdType) {
-    var context,
-        fullpath,
+    var fullpath,
         list,
-        cmd,
         cmdname,
         re;
 
@@ -91,7 +89,6 @@ Cmd.loadSubcommands = function(cmdType) {
 
     list.forEach(function(file) {
         var name,
-            subcmd,
             filepath;
 
         if (!re.test(file)) {
@@ -102,7 +99,7 @@ Cmd.loadSubcommands = function(cmdType) {
         name = path.basename(file).replace(path.extname(file), '');
 
         try {
-            subcmd = require(filepath)(cmdType);
+            require(filepath)(cmdType);
         } catch (e) {
             CLI.error('Error loading subcommand ' + name + ': ' + e);
         }
