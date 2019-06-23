@@ -4877,21 +4877,32 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     //  there by TIBET.
                     TP.elementClean(newNode);
 
-                    TP.nodeReplaceChild(currentNode.parentNode,
-                                        newNode,
-                                        currentNode,
-                                        false);
+                    //  Only replace the node and mark for dirty if the two
+                    //  nodes aren't equal.
+                    if (!TP.nodeEqualsNode(currentNode, newNode)) {
+                        TP.nodeReplaceChild(currentNode.parentNode,
+                                            newNode,
+                                            currentNode,
+                                            false);
+
+                        shouldMarkDirty = true;
+                    }
                 } else if (TP.isTextNode(newNode)) {
 
                     //  It's just a Text node - we use it and it's contents
                     //  literally.
-                    TP.nodeReplaceChild(currentNode.parentNode,
-                                        newNode,
-                                        currentNode,
-                                        false);
-                }
 
-                shouldMarkDirty = true;
+                    //  Only replace the node and mark for dirty if the two
+                    //  nodes aren't equal.
+                    if (!TP.nodeEqualsNode(currentNode, newNode)) {
+                        TP.nodeReplaceChild(currentNode.parentNode,
+                                            newNode,
+                                            currentNode,
+                                            false);
+
+                        shouldMarkDirty = true;
+                    }
+                }
             }
         }
     }
