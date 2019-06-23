@@ -4645,17 +4645,36 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  set the current node based on whether we're doing a pure
                 //  append or not.
                 if (!isAttrChange) {
+                    testNode = currentNode.childNodes[address];
+
                     //  If there isn't a Node (even a Text node) at the final
                     //  address, then we're doing a pure append (in the case of
                     //  the operation being a TP.CREATE). Therefore, we set
                     //  currentNode (our insertion point) to null.
-                    if (!TP.isNode(currentNode.childNodes[address])) {
+                    if (!TP.isNode(testNode)) {
                         currentNode = null;
                     } else {
                         //  Otherwise, set the currentNode (used as the
                         //  insertion point in a TP.CREATE) to the childNode at
                         //  the last address.
-                        currentNode = currentNode.childNodes[address];
+                        wrappedTestNode = TP.wrap(testNode);
+
+                        result = wrappedTestNode.
+                                    sherpaGetNodeForVisualDOMChange(
+                                        mutatedNode,
+                                        operation,
+                                        addresses.at(j),
+                                        addresses.slice(j + 1),
+                                        addresses);
+
+                        //  If the result is TP.CONTINUE, then the receiving node does
+                        //  not want to be modified (or have modifications performed
+                        //  under it), so we skip over it.
+                        if (result === TP.CONTINUE) {
+                            break;
+                        }
+
+                        currentNode = result;
                     }
 
                     break;
