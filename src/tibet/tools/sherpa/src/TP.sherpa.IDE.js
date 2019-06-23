@@ -4555,10 +4555,19 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 ancestorAddresses = TP.nodeGetDocumentPosition(
                                         mutationAncestor, null, tagSrcElem);
 
-                //  This will be empty if mutationAncestor and tagSrcElem are the
-                //  same node.
+                //  This will be empty if mutationAncestor and tagSrcElem are
+                //  the same node.
                 if (TP.isEmpty(ancestorAddresses)) {
                     ancestorAddresses = TP.ac();
+
+                    //  If the source node is a Document, then we need to
+                    //  unshift a '0' onto the ancestor addresses because of
+                    //  differences in how the computation will have occurred
+                    //  (the original computation will have included the index
+                    //  off of the Document).
+                    if (TP.isDocument(sourceNode)) {
+                        ancestorAddresses.unshift('0');
+                    }
                 } else {
                     ancestorAddresses = ancestorAddresses.split('.');
                 }
