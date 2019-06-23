@@ -1063,18 +1063,21 @@ function(newMethodText, loadedFromSourceFile) {
                         replace(/SECRET_SAUCE/g, '\\s*'));
         /* eslint-enable no-control-regex */
 
+        //  Try to find an index into current content using the generated
+        //  RegExp. If we can't find one, we'll just use all of the new text to
+        //  try to generate a patch.
         match = currentContent.match(matcher);
         if (TP.notValid(match)) {
             TP.ifWarn() ?
-                TP.warn('Unable to generate method patch.' +
-                            ' Method index not found.') :
+                TP.warn('Unable to generate specific method patch.' +
+                            ' Using large-grained method diff.') :
                 0;
-            return;
-        }
-
-        newContent = currentContent.slice(0, match.index) +
+            newContent = newText;
+        } else {
+            newContent = currentContent.slice(0, match.index) +
                         newText +
                         currentContent.slice(match.index + match.at(0).length);
+        }
     }
 
     //  NOTE we use the original srcPath string here to retain relative address.
