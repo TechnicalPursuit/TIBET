@@ -14087,6 +14087,13 @@ function(storageInfo) {
                 //  Don't emit this attribute.
                 continue;
 
+            case 'class':
+
+                attrValue = attrValue.strip(/sherpa-\w+\s{1,}/g);
+                attrValue = attrValue.strip(/\s{1,}sherpa-\w+/g);
+
+                break;
+
             case 'xmlns':
 
                 //  A default namespace. Try to obtain the document's MIME type
