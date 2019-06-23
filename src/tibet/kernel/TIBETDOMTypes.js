@@ -14060,7 +14060,8 @@ function(storageInfo) {
 
                         if (wantsPrefixedXMLNSAttrs) {
 
-                            currentNSURI = TP.w3.Xmlns.getNSURIForPrefix(attrPrefix);
+                            currentNSURI = TP.w3.Xmlns.getNSURIForPrefix(
+                                                                attrPrefix);
 
                             if (TP.notEmpty(currentNSURI)) {
                                 result.push(' ', 'xmlns:', attrPrefix,

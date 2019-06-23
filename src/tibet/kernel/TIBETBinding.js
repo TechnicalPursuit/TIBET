@@ -4616,8 +4616,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 if (isScopingElement && branchMatcher.test(attrVal)) {
 
-                    //  If the scoping element has a '.' or '$_', then it wants to
-                    //  scope to the data (probably a collection) that was
+                    //  If the scoping element has a '.' or '$_', then it wants
+                    //  to scope to the data (probably a collection) that was
                     //  supplied to this method and is currently in theVal.
                     if (TP.regex.ONLY_PERIOD.test(attrVal) ||
                         TP.regex.ONLY_STDIN.test(attrVal)) {
