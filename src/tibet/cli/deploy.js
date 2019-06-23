@@ -69,6 +69,13 @@ Cmd.SHIPIT_COMMAND = 'shipit';
 Cmd.SHIPIT_FILE = 'shipitfile.js';
 
 /**
+ * For locally installed versions where should we look? A typical 'which'
+ * command won't find locally installed binaries and we want to scan first.
+ * @type {string}
+ */
+Cmd.SHIPIT_ROOT = 'node_modules/shipit-cli/bin';
+
+/**
  * The command usage string.
  * @type {string}
  */
@@ -110,33 +117,48 @@ Cmd.prototype.executeMake = function() {
  * @returns {Number} A return code.
  */
 Cmd.prototype.executeShipit = function() {
+    var shipitpath;
 
-    var shipitpath,
-        command;
+    shipitpath = this.findShipit();
+    if (!shipitpath) {
+        return 0;
+    }
+
+    return this.runViaShipit(shipitpath);
+};
+
+/**
+ * Locates a workable shipit binary if possible. The project is checked first,
+ * followed by any globally accessible (via 'which') version.
+ * @returns {string} The path to the located shipit executable.
+ */
+Cmd.prototype.findShipit = function() {
+    var shipitpath;
 
     this.info('checking for shipit support...');
-    if (sh.which(Cmd.SHIPIT_COMMAND)) {
 
-        this.info('found shipit command...');
-
-        shipitpath = path.join(CLI.getAppHead(), Cmd.SHIPIT_FILE);
-        if (sh.test('-e', shipitpath)) {
-            //  Found shipit and shipitfile.js. Delegate to those.
-            this.info('found shipit file...');
-            return this.runViaShipit();
-        } else {
-            this.info('no shipit file found...');
-        }
-    } else {
-        this.info('shipit not installed');
+    shipitpath = path.join(CLI.getAppHead(),
+        Cmd.SHIPIT_ROOT, Cmd.SHIPIT_COMMAND);
+    if (sh.test('-e', shipitpath)) {
+        this.info('found project-specific shipit...');
+        return shipitpath;
     }
+
+    shipitpath = sh.which(Cmd.SHIPIT_COMMAND);
+    if (shipitpath) {
+        this.info('found shipit...');
+        return shipitpath;
+    }
+
+    this.info('shipit not installed');
+    return;
 };
 
 /**
  * Runs the deploy by activating the Shipit executable.
  * @returns {Number} A return code.
  */
-Cmd.prototype.runViaShipit = function() {
+Cmd.prototype.runViaShipit = function(shipitpath) {
     var cmd,
         proc,
         child,
@@ -164,7 +186,7 @@ Cmd.prototype.runViaShipit = function() {
         return 1;
     }
 
-    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), params);
+    child = proc.spawn(shipitpath, params);
 
     child.stdout.on('data', function(data) {
         var msg;
