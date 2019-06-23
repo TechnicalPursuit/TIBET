@@ -107,6 +107,11 @@ function(aRequest) {
         }
     }
 
+    //  If the element has the 'tibet:norewrite' flag, then don't rewrite it.
+    if (TP.elementHasAttribute(elem, 'tibet:norewrite', true)) {
+        return;
+    }
+
     //  If there's already a click handler the author "wins", even if that
     //  means they don't get the benefit of TIBET here.
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
@@ -230,6 +235,11 @@ function(value) {
             //  setting an attribute returns void according to the spec
             return;
         }
+    }
+
+    //  If the element has the 'tibet:norewrite' flag, then don't rewrite it.
+    if (TP.elementHasAttribute(elem, 'tibet:norewrite', true)) {
+        return;
     }
 
     //  NB: Unlike the 'tagResolve' method above, there is no check here to
