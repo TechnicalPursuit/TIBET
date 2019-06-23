@@ -4687,7 +4687,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
             //  If we got a valid test node, then wrap it and query it for the
             //  node to modify for a visual change.
-            if (TP.isValid(testNode)) {
+            if (TP.isNode(testNode)) {
                 wrappedTestNode = TP.wrap(testNode);
 
                 result = wrappedTestNode.sherpaGetNodeForVisualDOMChange(
