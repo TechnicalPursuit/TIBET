@@ -3728,7 +3728,14 @@ function(aDocument) {
                 setTimeout(
                     function() {
 
-                        var autodefineMissingTags;
+                        var autodefineMissingTags,
+                            oldNode,
+                            oldNodeClone,
+
+                            newNode,
+                            newNodeClone,
+
+                            oldParentNode;
 
                         //  The new content may have a tag that we don't know
                         //  about. Therefore we force the system to autodefine
@@ -3736,6 +3743,21 @@ function(aDocument) {
                         autodefineMissingTags =
                             TP.sys.cfg('sherpa.autodefine_missing_tags');
                         TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+
+                        //  Grab both the old and new nodes being transformed,
+                        //  clone them and clean them. This provides the best
+                        //  canonical comparison below when we check them for
+                        //  equality.
+
+                        oldNode = aTPElem.getNativeNode();
+                        oldNodeClone = TP.nodeCloneNode(oldNode);
+                        TP.elementClean(oldNodeClone);
+
+                        newNode = authoredElem;
+                        newNodeClone = TP.nodeCloneNode(newNode);
+                        TP.elementClean(newNodeClone);
+
+                        oldParentNode = oldNode.parentNode;
 
                         //  Compile the content, supplying the authored node as
                         //  the 'alternate element' to compile. This is the core
@@ -3781,6 +3803,24 @@ function(aDocument) {
                                 //  Refresh any data bindings that are a part of
                                 //  or are under the recast element.
                                 recastTPElem.refresh();
+
+                                //  If the two nodes, old and new, are not
+                                //  equal, then update the source document,
+                                //  replacing one with the other.
+                                if (!TP.nodeEqualsNode(
+                                        oldNodeClone, newNodeClone)) {
+
+                                    TP.bySystemId('Sherpa').
+                                        updateUICanvasSource(
+                                            TP.ac(oldNode),
+                                            oldParentNode,
+                                            TP.UPDATE,
+                                            null,
+                                            null,
+                                            null,
+                                            false,
+                                            newNode);
+                                }
 
                                 //  Signal that we did recast the node.
                                 TP.signal(null,
