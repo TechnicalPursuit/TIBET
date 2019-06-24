@@ -373,7 +373,7 @@ function(aSignal) {
         modelObj =
             TP.uc('urn:tibet:domhud_attr_source').getResource().get('result');
         lastIndex =
-            modelObj.get('data').at('info').at('tagAttrs').getSize() - 1;
+            modelObj.get('data').info.tagAttrs.getSize() - 1;
 
         //  Compute a name aspect path by replacing 'tagAttrValue' with
         //  'tagAttrName' in the value aspect path.
@@ -456,7 +456,7 @@ function(aSignal) {
         //  corresponding attribute.
         removedData = aSignal.at('removedData');
         if (TP.isValid(removedData)) {
-            name = removedData.at('tagAttrs').at('tagAttrName');
+            name = removedData.tagAttrs.tagAttrName;
 
             if (TP.notEmpty(name)) {
                 //  Remove the name from our list of attribute names.
