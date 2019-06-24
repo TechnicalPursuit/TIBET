@@ -2317,6 +2317,11 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
         dataRow = aDataRowOrURIOrPath;
     }
 
+    //  If we got a JSON content object, then we want it's data.
+    if (TP.isKindOf(dataRow, TP.core.JSONContent)) {
+        dataRow = dataRow.get('data');
+    }
+
     if (TP.isTrue(shouldClone)) {
 
         dataRow = TP.copy(dataRow);
