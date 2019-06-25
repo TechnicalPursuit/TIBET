@@ -96,12 +96,12 @@ Cmd.prototype.execute = function() {
 
     cmd = this;
 
-    sh = require('shelljs');
-    child = require('child_process');
-
     if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
+
+    sh = require('shelljs');
+    child = require('child_process');
 
     // Make sure we work from the launch (and hence server.js) location.
     process.chdir(CLI.getAppHead());

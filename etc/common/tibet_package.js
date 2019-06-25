@@ -2098,11 +2098,11 @@
         // top-level directory. TIBET-INF on the other hand will float based on
         // whether the app is frozen or not (or a couchdb template with an
         // attachments directory or similar "substructure).
-        return sh.test('-e',
+        return fs.existsSync(
                 path.join(this.getAppHead(),
                     this.getcfg('path.npm_dir'),
                     this.getcfg('path.tibet_lib'))) ||
-            sh.test('-e',
+            fs.existsSync(
                 path.join(this.getAppRoot(),
                     this.getcfg('path.tibet_inf'),
                     this.getcfg('path.tibet_lib')));

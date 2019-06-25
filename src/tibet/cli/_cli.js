@@ -1309,7 +1309,7 @@ CLI.lpad = function(obj, length, padChar) {
  * by commands that require project initialization to run properly.
  */
 CLI.notInitialized = function() {
-    this.error('Project may not be initialized. Run `tibet init` and retry.');
+    this.error('Project missing dependencies. Run `tibet init` and retry.');
     process.exit(1);
 };
 

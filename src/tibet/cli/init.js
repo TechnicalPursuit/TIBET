@@ -172,26 +172,33 @@ Cmd.prototype.execute = function() {
     // package.json due to earlier check) it means 'npm install' was never run.
     // We have to do that before we can try to start the server.
     if (sh.test('-e', 'node_modules')) {
-        if (!this.options.force) {
-            this.warn('Project already initialized. ' +
-                'Use --force to re-initialize.');
-            return 1;
-        }
-        this.warn('--force specified...removing and rebuilding node_modules.');
-        rmerr = sh.rm('-rf', 'node_modules');
-        if (rmerr) {
-            this.error('Error removing node_modules directory: ' + rmerr);
-            return 1;
+
+        //  If the 'tibet' directory is missing but node_modules is there it
+        //  very likely means 'npm install' was run...and removed links. sigh.
+        //  we can try to patch that up by skipping the requirement for
+        //  '--force' at least so we don't remove the entire directory.
+        if (sh.test('-e', path.join('node_modules', 'tibet'))) {
+            if (!this.options.force) {
+                this.warn('Project already initialized. ' +
+                    'Use --force to re-initialize.');
+                return 1;
+            }
+            this.warn('--force specified...removing and rebuilding dependencies.');
+            rmerr = sh.rm('-rf', 'node_modules');
+            if (rmerr) {
+                this.error('Error removing node_modules directory: ' + rmerr);
+                return 1;
+            }
         }
     }
 
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
         dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
-        cmd.info('Initializing new \'' + dna + '\' project ' +
+        cmd.info('Initializing \'' + dna + '\' project ' +
             this.getcfg('npm.name') + '...');
     } else {
-        cmd.info('Initializing new project...');
+        cmd.info('Initializing project...');
     }
 
     cmd.log('installing package.json modules via `npm install`.');
