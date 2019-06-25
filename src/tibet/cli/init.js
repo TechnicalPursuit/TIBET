@@ -143,11 +143,14 @@ Cmd.prototype.execute = function() {
             CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
         */
 
-        //  NB: The source path to the command here is used as a raw argument.
-        //  In other words, the '../..' is *not* evaluated against the current
-        //  working directory. It is used as is to create the link.
-        fs.symlinkSync('../../node_modules/tibet',
-                        'public/TIBET-INF/tibet');
+        if (!fs.existsSync('public/TIBET-INF/tibet')) {
+            //  NB: The source path to the command here is used as a raw
+            //  argument. In other words, the '../..' is *not* evaluated against
+            //  the current working directory. It is used as is to create the
+            //  link.
+            fs.symlinkSync('../../node_modules/tibet',
+                            'public/TIBET-INF/tibet');
+        }
 
         lnerr = sh.error();
         if (lnerr) {
