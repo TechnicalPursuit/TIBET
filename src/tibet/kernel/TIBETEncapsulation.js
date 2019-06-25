@@ -983,10 +983,13 @@ function(kind) {
         case 'types':
             return TP.sys.$$meta_types;
         case 'attributes':
+        case TP.ATTRIBUTE:
             return TP.sys.$$meta_attributes;
         case 'methods':
+        case TP.METHOD:
             return TP.sys.$$meta_methods;
         case 'namespaces':
+        case TP.NAMESPACE:
             return TP.sys.$$meta_namespaces;
         case 'owners':
             return TP.sys.$$meta_owners;
