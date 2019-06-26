@@ -123,7 +123,7 @@ function(info) {
         //  attributeName.
         entries = val.groupBy(
                         function(anEntry) {
-                            return anEntry.at('attributeName');
+                            return anEntry.attributeName;
                         });
 
         entries.perform(
@@ -138,10 +138,10 @@ function(info) {
 
                 attrEntries.forEach(
                     function(anEntry) {
-                        str += anEntry.at('expressionAspect') +
+                        str += anEntry.expressionAspect +
                                 ': ' +
                                 TP.escapePseudoJSONValue(
-                                    anEntry.at('expressionValue')) +
+                                    anEntry.expressionValue) +
                                 ', ';
                     });
 

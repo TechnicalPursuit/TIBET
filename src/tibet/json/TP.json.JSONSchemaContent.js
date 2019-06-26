@@ -178,7 +178,7 @@ function(definitionIndex) {
     index = TP.ifInvalid(definitionIndex, 0);
 
     queryPath = TP.jpc('$.definitions');
-    defName = this.get(queryPath).getKeys().at(index);
+    defName = TP.keys(this.get(queryPath)).at(index);
 
     return defName;
 });
