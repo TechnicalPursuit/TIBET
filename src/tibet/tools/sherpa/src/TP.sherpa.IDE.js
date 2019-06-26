@@ -4688,9 +4688,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                                         addresses.slice(j + 1),
                                         addresses);
 
-                        //  If the result is TP.CONTINUE, then the receiving node does
-                        //  not want to be modified (or have modifications performed
-                        //  under it), so we skip over it.
+                        //  If the result is TP.CONTINUE, then the receiving
+                        //  node does not want to be modified (or have
+                        //  modifications performed under it), so we skip over
+                        //  it.
                         if (result === TP.CONTINUE) {
                             break;
                         }
