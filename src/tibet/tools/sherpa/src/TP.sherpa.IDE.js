@@ -551,6 +551,45 @@ function(finalizationFunc) {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('focusInputCell',
+function(aTimeout, aCallback) {
+
+    /**
+     * @method focusInputCell
+     * @summary Focuses the Sherpa's TDC input cell after a delay.
+     * @param {Number} [aTimeout=250] The number of milliseconds to wait before
+     *     trying to focus the TDC input cell.
+     * @param {Function} [aCallback] An optional callback function that will be
+     *     called back after the cell is focused.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var timeout;
+
+    timeout = TP.ifInvalid(aTimeout, 250);
+
+    //  Focus and set the cursor to the end of the Sherpa's input cell after a
+    //  timeout (defaults to 250ms).
+    setTimeout(
+        function() {
+            var consoleGUI;
+
+            consoleGUI =
+                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
+
+            consoleGUI.focusInput();
+            consoleGUI.setInputCursorToEnd();
+
+            if (TP.isCallable(aCallback)) {
+                aCallback();
+            }
+        }, timeout);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('getToolsLayer',
 function() {
 
@@ -1981,18 +2020,7 @@ shouldShowAssistant) {
     insertedElem[TP.INSERTION_POSITION] = aPositionOrPath;
     insertedElem[TP.SHERPA_MUTATION] = TP.INSERT;
 
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  500ms
-    setTimeout(
-        function() {
-            var consoleGUI;
-
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 250);
+    this.focusInputCell();
 
     if (TP.isTrue(shouldFocusHalo)) {
         //  Focus the halo onto the inserted element after 1000ms
@@ -2865,7 +2893,7 @@ function(storageSerialization, successFunc, failFunc) {
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('setAttributeOnElementInCanvas',
-function(anElement, attributeName, attributeValue) {
+function(anElement, attributeName, attributeValue, shouldRefresh) {
 
     /**
      * @method setAttributeOnElement
@@ -2878,6 +2906,8 @@ function(anElement, attributeName, attributeValue) {
      *     on.
      * @param {String} attributeName The name of the attribute to set.
      * @param {String} attributeValue The value to set on the attribute.
+     * @param {Boolean} [shouldRefresh=true] Whether or not to refresh the
+     *     element.
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
@@ -2888,22 +2918,13 @@ function(anElement, attributeName, attributeValue) {
     //  Go ahead and set the attribute.
     anElement.setAttribute(attributeName, attributeValue);
 
-    //  In case the attribute affects data binding, we go ahead and refresh it
-    //  here.
-    anElement.refresh();
+    if (TP.notFalse(shouldRefresh)) {
+        //  In case the attribute affects data binding, we go ahead and refresh
+        //  it here.
+        anElement.refresh();
+    }
 
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  500ms
-    setTimeout(
-        function() {
-            var consoleGUI;
-
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 250);
+    this.focusInputCell();
 
     return this;
 });

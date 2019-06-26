@@ -110,18 +110,8 @@ function(anObject) {
     modelURI = TP.uc('urn:tibet:couchDocumentURIInsertionAssistant_source');
     this.ignore(modelURI, 'ValueChange');
 
-    //  Focus and set the cursor to the end of the Sherpa's input cell after
-    //  1000ms
-    setTimeout(
-        function() {
-            var consoleGUI;
-
-            consoleGUI =
-                TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-
-            consoleGUI.focusInput();
-            consoleGUI.setInputCursorToEnd();
-        }, 1000);
+    //  Message the main Sherpa IDE object to focus the TDC input cell.
+    TP.bySystemId('Sherpa').focusInputCell(1000);
 
     return this;
 });
