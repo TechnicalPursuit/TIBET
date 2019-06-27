@@ -73,34 +73,38 @@ Cmd.initialize = function(cmdType) {
  *     doesn't work (outside of TIBET ;)) and we to access the correct type.
  */
 Cmd.loadSubcommands = function(cmdType) {
-    var fullpath,
-        list,
-        cmdname,
-        re;
+    var cmdname,
 
-    //  NOTE we put lib first so app updates can override baseline.
-    fullpath = CLI.expandPath('~lib_cmd');
-    list = sh.ls(fullpath);
-    fullpath = CLI.expandPath('~app_cmd');
-    list = list.concat(sh.ls(fullpath));
+        fullpath,
+
+        liblist,
+        applist,
+        list;
 
     cmdname = cmdType.NAME;
-    re = new RegExp('^_' + cmdname + '_(.+)\.js$');
+
+    fullpath = CLI.expandPath('~lib_cmd/' + cmdname);
+    liblist = sh.ls(fullpath);
+    liblist = liblist.map(function(file) {
+        return path.join(fullpath, file);
+    });
+
+    fullpath = CLI.expandPath('~app_cmd/' + cmdname);
+    applist = sh.ls(fullpath);
+    applist = applist.map(function(file) {
+        return path.join(fullpath, file);
+    });
+
+    //  NOTE we put lib first so app updates can override baseline.
+    list = liblist.concat(applist);
 
     list.forEach(function(file) {
-        var name,
-            filepath;
-
-        if (!re.test(file)) {
-            return;
-        }
-
-        filepath = path.join(fullpath, file);
-        name = path.basename(file).replace(path.extname(file), '');
+        var name;
 
         try {
-            require(filepath)(cmdType);
+            require(file)(cmdType);
         } catch (e) {
+            name = path.basename(file).replace(path.extname(file), '');
             CLI.error('Error loading subcommand ' + name + ': ' + e);
         }
     });
