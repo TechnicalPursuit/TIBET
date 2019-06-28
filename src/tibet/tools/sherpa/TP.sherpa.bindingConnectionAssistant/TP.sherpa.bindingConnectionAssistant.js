@@ -206,11 +206,17 @@ function(info) {
      * @returns {String} The attribute markup text.
      */
 
-    var str;
+    var scopeStr,
+        str;
 
-    str = 'bind:scope="' + this.computeScopeAttributeValue(info) + '"' +
-            ' ' +
-            this.computeExpressionsAttributeValue(info);
+    str = '';
+
+    scopeStr = this.computeScopeAttributeValue(info);
+    if (TP.notEmpty(scopeStr)) {
+        str += 'bind:scope="' + this.computeScopeAttributeValue(info) + '" ';
+    }
+
+    str += this.computeExpressionsAttributeValue(info);
 
     return str;
 });
