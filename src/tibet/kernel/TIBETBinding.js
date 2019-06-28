@@ -6250,7 +6250,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                                                                         expr)) {
                             exprVal = scopedVal;
                         } else if (TP.isPlainObject(scopedVal)) {
-                            exprVal = TP.hc(scopedVal).get(expr);
+                            exprVal = TP.hc(scopedVal).at(expr);
                         } else if (TP.isXMLNode(scopedVal)) {
                             exprVal = TP.wrap(scopedVal).get(
                                                     TP.xpc(expr, pathOptions));
