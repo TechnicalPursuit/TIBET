@@ -542,6 +542,8 @@ function(anObj) {
 
     //  ---
 
+    //  Look for service element that has either its remote or its local
+    //  (result) URI set to connectedURI.
     serviceInfo = this.findServiceTag(destTPElement, connectedURI);
     if (TP.notValid(serviceInfo)) {
         //  We couldn't find a service element. Turn on the flag.
@@ -606,6 +608,8 @@ function(anObj) {
     }
 
     //  ---
+
+    //  Compute possible expression values
 
     scopeParts = TP.apc(connectedURI.getFragment()).getPathParts();
 
