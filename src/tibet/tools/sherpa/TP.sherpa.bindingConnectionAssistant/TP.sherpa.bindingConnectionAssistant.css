@@ -62,12 +62,12 @@ sherpa|bindingConnectionAssistant > .body .serviceTagFieldGroup {
     align-items: center;
 }
 
-sherpa|bindingConnectionAssistant > .body .serviceTagRadios {
+sherpa|bindingConnectionAssistant > .body .serviceTagInfo {
 
     line-height: 1.8;
 }
 
-sherpa|bindingConnectionAssistant > .body .serviceTagRadios > li > span {
+sherpa|bindingConnectionAssistant > .body .serviceTagInfo > li > span {
 
     font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
