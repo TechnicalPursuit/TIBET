@@ -1960,6 +1960,190 @@ function(attributeName, attributeValue, valueMatcher) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('computeCommonScope',
+function(sourceURI, isLeaf, alternateURI) {
+
+    /**
+     * @method computeCommonScope
+     * @summary Computes a common scope that will allow the receiver to bind
+     *     properly to the source URI given any inherited scoping values.
+     * description This method will compute a common scoping value between the
+     *     supplied source URI and the inherited scoping value that is computed
+     *     from the receiver. If a common primary URI scope cannot be computed
+     *     between the two, then the scoping value returned from this method
+     *     will be prepended either by the optionally supplied 'alternate URI'
+     *     or the primary URI of the supplied source URI.
+     * @param {TP.core.URI} sourceURI The URI that a scope should be computed to
+     *     from the receiver, given the receiver's inherited scoping values.
+     *     Note that this URI *must* have a fragment.
+     * @param {Boolean} isLeaf Whether or not the fragment in the source URI
+     *     points to a 'leaf' data item.
+     * @param {TP.core.URI} [alternateURI] An alternate URI that the computed
+     *     scope value will be joined with if the computed scoping value cannot
+     *     be computed relative to the receiver's inherited scope. If this value
+     *     isn't supplied, the primary URI of the source URI will be used.
+     * @returns {String} The computed scope.
+     */
+
+    var sourcePrimaryURI,
+
+        sourceFrag,
+
+        sourcePath,
+        sourcePathType,
+        sourcePathParts,
+
+        inheritedScopeVals,
+        inheritedExpr,
+        inheritedURI,
+
+        needsWholeScopingURI,
+
+        inheritedPrimaryURI,
+
+        inheritedFragExpr,
+
+        inheritedFrag,
+        inheritedPath,
+
+        commonParts,
+
+        scopeParts,
+
+        separator,
+
+        computedScope,
+
+        scopePrefix,
+        scopePath;
+
+    sourcePrimaryURI = sourceURI.getPrimaryURI();
+
+    sourceFrag = sourceURI.getFragment();
+    if (TP.isEmpty(sourceFrag)) {
+        //  TODO: Raise an exception
+        return null;
+    }
+
+    sourcePath = TP.apc(sourceFrag);
+    sourcePathType = sourcePath.getPathType();
+    sourcePathParts = sourcePath.getPathParts();
+
+    //  ---
+
+    //  This is the scope path as seen by the receiver by looking up its tree.
+
+    //  Grab the scoping values from the element we're connecting to.
+    inheritedScopeVals = this.getBindingScopeValues();
+
+    //  If the element we're connecting to has inherited scoping values, then
+    //  compute the full URI from it and compute a scoping value based on
+    //  comparing the URI we connected to and the URI we're 'inherting' scope
+    //  from.
+    if (TP.notEmpty(inheritedScopeVals)) {
+        inheritedExpr = TP.uriJoinFragments.apply(TP, inheritedScopeVals);
+        inheritedURI = TP.uc(inheritedExpr);
+    } else {
+        inheritedURI = null;
+    }
+
+    //  ---
+
+    needsWholeScopingURI = true;
+
+    if (TP.isValid(inheritedURI)) {
+
+        inheritedPrimaryURI = inheritedURI.getPrimaryURI();
+
+        //  Attempt to compute a scope by first looking at the *primary URIs* of
+        //  the inherited and connected URIs.
+        if (inheritedPrimaryURI.equalTo(sourcePrimaryURI)) {
+
+            needsWholeScopingURI = false;
+
+            //  NB: We use the fragment expression here to test for emptiness,
+            //  since the fragment itself will contain the XPointer scheme.
+            inheritedFragExpr = inheritedURI.getFragmentExpr();
+            if (TP.notEmpty(inheritedFragExpr)) {
+
+                //  Use the whole fragment here (including the XPointer scheme
+                //  since that will produce more accurate paths).
+                inheritedFrag = inheritedURI.getFragment();
+                inheritedPath = TP.apc(inheritedFrag);
+
+                //  Try to see if there are any common parts between the
+                //  connected path and the inherited path.
+                commonParts =
+                    sourcePath.computeCommonLeadingParts(inheritedPath);
+
+                //  Not a 100% match?
+                if (commonParts.getSize() !== sourcePathParts.getSize()) {
+
+                    scopeParts = sourcePathParts.slice(
+                                                    commonParts.getSize());
+
+                    if (isLeaf) {
+                        scopeParts = scopeParts.slice(0, -1);
+                    }
+
+                    if (TP.notEmpty(scopeParts)) {
+                        computedScope =
+                            '#' + sourcePath.getPointerScheme() +
+                            '(' +
+                                TP.joinAccessPathParts(
+                                    scopeParts, sourcePathType) +
+                            ')';
+                    } else {
+                        //  Otherwise, the scopes are equivalent - there is no
+                        //  real computed scope.
+                        computedScope = '';
+                    }
+                }
+            }
+        }
+    }
+
+    //  The above logic did not compute a scope - we're going to just return a
+    //  scope computed from the connected path and the supplied scoping URI.
+    if (TP.notValid(computedScope)) {
+
+        if (isLeaf) {
+            scopeParts = sourcePathParts.slice(0, -1);
+        } else {
+            scopeParts = sourcePathParts;
+        }
+
+        //  Grab the property information under the entry that matches our
+        //  scope (joined together by a path separator).
+        if (sourcePathType === TP.TIBET_PATH_TYPE ||
+            sourcePathType === TP.JSON_PATH_TYPE) {
+            separator = '.';
+        } else if (sourcePathType === TP.XPATH_PATH_TYPE) {
+            separator = '/';
+        }
+
+        scopePrefix = scopeParts.join(separator);
+
+        scopePath = TP.apc(scopePrefix);
+
+        if (needsWholeScopingURI) {
+            if (TP.isURI(alternateURI)) {
+                computedScope = alternateURI.getLocation() +
+                                scopePath.asXPointerString();
+            } else {
+                computedScope = sourcePrimaryURI.getLocation() +
+                                scopePath.asXPointerString();
+            }
+        } else {
+            computedScope = scopePath.asXPointerString();
+        }
+    }
+
+    return computedScope;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
 function(indexes) {
 

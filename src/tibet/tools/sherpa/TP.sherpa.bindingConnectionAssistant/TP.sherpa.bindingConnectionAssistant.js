@@ -473,129 +473,6 @@ function(aTPElement, aSourceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('computeCommonScope',
-function(connectedURI, inheritedURI, isLeaf, scopingURI) {
-
-    var connectedFrag,
-
-        connectedPath,
-        connectedPathType,
-        connectedPathParts,
-
-        needsScopingURI,
-
-        connectedPrimaryURI,
-        inheritedPrimaryURI,
-
-        inheritedFragExpr,
-
-        inheritedFrag,
-        inheritedPath,
-
-        commonParts,
-
-        scopeParts,
-
-        computedScope,
-
-        scopePrefix,
-        scopePath;
-
-    connectedFrag = connectedURI.getFragment();
-    if (TP.isEmpty(connectedFrag)) {
-        //  TODO: Raise an exception
-        return null;
-    }
-
-    connectedPath = TP.apc(connectedFrag);
-    connectedPathType = connectedPath.getPathType();
-    connectedPathParts = connectedPath.getPathParts();
-
-    needsScopingURI = true;
-
-    if (TP.isValid(inheritedURI)) {
-
-        connectedPrimaryURI = connectedURI.getPrimaryURI();
-        inheritedPrimaryURI = inheritedURI.getPrimaryURI();
-
-        //  Attempt to compute a scope by first looking at the *primary URIs* of
-        //  the inherited and connected URIs.
-        if (inheritedPrimaryURI.equalTo(connectedPrimaryURI)) {
-
-            needsScopingURI = false;
-
-            //  NB: We use the fragment expression here to test for emptiness,
-            //  since the fragment itself will contain the XPointer scheme.
-            inheritedFragExpr = inheritedURI.getFragmentExpr();
-            if (TP.notEmpty(inheritedFragExpr)) {
-
-                //  Use the whole fragment here (including the XPointer scheme
-                //  since that will produce more accurate paths).
-                inheritedFrag = inheritedURI.getFragment();
-                inheritedPath = TP.apc(inheritedFrag);
-
-                //  Try to see if there are any common parts between the
-                //  connected path and the inherited path.
-                commonParts =
-                    connectedPath.computeCommonLeadingParts(inheritedPath);
-
-                //  Not a 100% match?
-                if (commonParts.getSize() !== connectedPathParts.getSize()) {
-
-                    scopeParts = connectedPathParts.slice(
-                                                    commonParts.getSize());
-
-                    if (isLeaf) {
-                        scopeParts = scopeParts.slice(0, -1);
-                    }
-
-                    if (TP.notEmpty(scopeParts)) {
-                        computedScope =
-                            '#' + connectedPath.getPointerScheme() +
-                            '(' +
-                                TP.joinAccessPathParts(
-                                    scopeParts, connectedPathType) +
-                            ')';
-                    } else {
-                        //  Otherwise, the scopes are equivalent - there is no
-                        //  real computed scope.
-                        computedScope = '';
-                    }
-                }
-            }
-        }
-    }
-
-    //  The above logic did not compute a scope - we're going to just return a
-    //  scope computed from the connected path and the supplied scoping URI.
-    if (TP.notValid(computedScope)) {
-
-        if (isLeaf) {
-            scopeParts = connectedPathParts.slice(0, -1);
-        } else {
-            scopeParts = connectedPathParts;
-        }
-
-        //  Grab the property information under the entry that matches our
-        //  scope (joined together by a path separator).
-        //  TODO: JSONPath-only alert
-        scopePrefix = scopeParts.join('.');
-
-        scopePath = TP.apc(scopePrefix);
-
-        if (needsScopingURI) {
-            computedScope = scopingURI.getLocation() +
-                            scopePath.asXPointerString();
-        } else {
-            computedScope = scopePath.asXPointerString();
-        }
-    }
-
-    return computedScope;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('setData',
 function(anObj) {
 
@@ -632,10 +509,6 @@ function(anObj) {
         localPrimaryURI,
 
         expressions,
-
-        inheritedScopeVals,
-        inheritedExpr,
-        inheritedURI,
 
         computedScope,
 
@@ -714,32 +587,12 @@ function(anObj) {
 
     //  ---
 
-    //  Compute expression and scope
+    //  Compute binding scope value
+
     expressions = TP.ac();
 
-    //  This is the scope path as seen by the destination element by looking up
-    //  its tree.
-
-    //  Grab the scoping values from the element we're connecting to.
-    inheritedScopeVals = destTPElement.getBindingScopeValues();
-
-    //  ---
-
-    //  If the element we're connecting to has inherited scoping values, then
-    //  compute the full URI from it and compute a scoping value based on
-    //  comparing the URI we connected to and the URI we're 'inherting' scope
-    //  from.
-    if (TP.notEmpty(inheritedScopeVals)) {
-        inheritedExpr = TP.uriJoinFragments.apply(TP, inheritedScopeVals);
-        inheritedURI = TP.uc(inheritedExpr);
-    } else {
-        inheritedURI = null;
-    }
-
-    computedScope = this.computeCommonScope(connectedURI,
-                                            inheritedURI,
-                                            isLeaf,
-                                            localURI);
+    computedScope = destTPElement.computeCommonScope(
+                                    connectedURI, isLeaf, localURI);
 
     newBindingInfo.atPut('manualScope', '');
     newBindingInfo.atPut('computedScope', '');
