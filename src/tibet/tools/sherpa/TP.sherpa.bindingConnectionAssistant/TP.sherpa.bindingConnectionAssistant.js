@@ -97,13 +97,14 @@ function(assistantData) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('computeAttributeValue',
+TP.sherpa.bindingConnectionAssistant.Inst.defineMethod(
+'computeExpressionsAttributeValue',
 function(info) {
 
     /**
-     * @method computeAttributeValue
-     * @summary Computes the attribute value text from the supplied attribute
-     *     information.
+     * @method computeExpressionsAttributeValue
+     * @summary Computes the attribute value text for binding expressions
+     *     from the supplied attribute information.
      * @param {TP.core.Hash} info The hash containing the attribute information.
      * @returns {String} The attribute markup text.
      */
@@ -150,11 +151,42 @@ function(info) {
 
                 str += '}" ';
             });
+
+        //  Slice off the last space, if there is one
+        if (str.endsWith(' ')) {
+            str = str.slice(0, -1);
+        }
     }
 
-    //  Slice off the last space, if there is one
-    if (str.endsWith(' ')) {
-        str = str.slice(0, -1);
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindingConnectionAssistant.Inst.defineMethod(
+'computeScopeAttributeValue',
+function(info) {
+
+    /**
+     * @method computeScopeAttributeValue
+     * @summary Computes the attribute value text for the binding scope from the
+     *     supplied attribute information.
+     * @param {TP.core.Hash} info The hash containing the attribute information.
+     * @returns {String} The attribute markup text.
+     */
+
+    var str,
+
+        val;
+
+    str = '';
+
+    if (TP.notEmpty(val = info.at('scopeType'))) {
+        if (val === 'computed') {
+            str += info.at('computedScope');
+        } else if (val === 'manual') {
+            str += info.at('manualScope');
+        }
     }
 
     return str;
@@ -174,24 +206,11 @@ function(info) {
      * @returns {String} The attribute markup text.
      */
 
-    var str,
-        val;
+    var str;
 
-    str = '';
-
-    if (TP.notEmpty(val = info.at('scopeType'))) {
-        if (val === 'computed') {
-            str += 'Scope: ' + info.at('computedScope');
-        } else if (val === 'manual') {
-            str += 'Scope: ' + info.at('manualScope');
-        }
-    } else {
-        return '';
-    }
-
-    str += ' exprs: ';
-
-    str += this.computeAttributeValue(info);
+    str = 'bind:scope="' + this.computeScopeAttributeValue(info) + '"' +
+            ' ' +
+            this.computeExpressionsAttributeValue(info);
 
     return str;
 });
