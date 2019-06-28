@@ -277,9 +277,11 @@ function(anObject) {
         data,
         info,
 
-        attrName,
         val,
-        attrVal;
+
+        scopeVal,
+
+        entries;
 
     //  We observed the model URI when we were set up - we need to ignore it now
     //  on our way out.
@@ -314,16 +316,60 @@ function(anObject) {
 
     info = TP.hc(data).at('info');
 
-    /*
-    //  Compute the attribute name and value from what the user has entered.
-    attrName = 'bind:io';
+    //  Iterate over all of the defined expressions
+    if (TP.notEmpty(val = info.at('expressions'))) {
 
-    //attrVal = this.computeAttributeValue(info);
-    attrVal = info.at('fullPath');
+        scopeVal = this.computeScopeAttributeValue(info);
+        if (TP.notEmpty(scopeVal)) {
+            destTPElement.setAttribute('bind:scope', scopeVal);
+        }
 
-    TP.bySystemId('Sherpa').setAttributeOnElementInCanvas(
-                                    destTPElement, attrName, attrVal);
-    */
+        //  First, group by attributeName. This will produce a hash with the
+        //  attributeName as its key and an Array of the entries that had that
+        //  attributeName.
+        entries = val.groupBy(
+                        function(anEntry) {
+                            return anEntry.attributeName;
+                        });
+
+        entries.perform(
+            function(kvPair) {
+                var attrName,
+                    attrEntries,
+                    attrVal;
+
+                attrName = kvPair.first();
+                attrEntries = kvPair.last();
+
+                //  Start the attribute value with an opening '{'.
+                attrVal = '{';
+
+                //  Iterate over each entry, appending a String representing the
+                //  key/value for each expression.
+                attrEntries.forEach(
+                    function(anEntry) {
+                        attrVal += anEntry.expressionAspect +
+                                    ': ' +
+                                    TP.escapePseudoJSONValue(
+                                        anEntry.expressionValue) +
+                                    ', ';
+                    });
+
+                //  Slice off the last comma and trailing space
+                attrVal = attrVal.slice(0, -2);
+
+                //  Close the '}'
+                attrVal += '}';
+
+                destTPElement.setAttribute(attrName, attrVal);
+            });
+
+        //  Refresh the element, now that we've altered the bindings.
+        destTPElement.refresh();
+
+        //  Message the main Sherpa IDE object to focus the TDC input cell.
+        TP.bySystemId('Sherpa').focusInputCell(1000);
+    }
 
     return this;
 });
