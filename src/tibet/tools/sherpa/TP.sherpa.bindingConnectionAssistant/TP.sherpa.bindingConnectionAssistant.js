@@ -584,6 +584,11 @@ function(anObj) {
     //  ---
 
     newBindingInfo.atPut('needsServiceTag', needsServiceTag);
+
+    //  We initially set the 'wantsServiceTag' property to what the system
+    //  determined around needing a service tag.
+    newBindingInfo.atPut('wantsServiceTag', needsServiceTag);
+
     newBindingInfo.atPut('serviceTagRemoteURI', remoteURI.getLocation());
     newBindingInfo.atPut('serviceTagLocalURI', localPrimaryURI.getLocation());
 
