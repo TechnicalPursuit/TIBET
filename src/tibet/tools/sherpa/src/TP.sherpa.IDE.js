@@ -4930,6 +4930,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     }
 
     if (shouldMarkDirty) {
+        wasDirty = sourceURI.isDirty();
+
         //  Set the resource of the sourceURI back to the updated source node.
         //  Note here how we force the 'isDirty' flag to true. Otherwise, there
         //  will be a lot of flailing as the source DOM is modified. We always
@@ -4940,16 +4942,18 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                                             'isDirty', true));
 
         //  Lastly, because of the way that the dirtying machinery works, we
-        //  need to separately signal the dirty each time. This is because 2nd
-        //  and subsequent times, when the dirty flag is true, it won't send the
-        //  notification again. We need observers of 'dirty' to keep getting
-        //  notifications.
-        wasDirty = sourceURI.isDirty();
-        TP.$changed.call(
-            sourceURI,
-            'dirty',
-            TP.UPDATE,
-            TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, true));
+        //  need to separately signal the dirty each time (except the first
+        //  time, because the setResource() call above will do that). This is
+        //  because 2nd and subsequent times, when the dirty flag is true, it
+        //  won't send the notification again. We need observers of 'dirty' to
+        //  keep getting notifications.
+        if (wasDirty) {
+            TP.$changed.call(
+                sourceURI,
+                'dirty',
+                TP.UPDATE,
+                TP.hc(TP.OLDVAL, true, TP.NEWVAL, true));
+        }
     }
 
     //  Make sure to refresh all of the descendant document positions.
