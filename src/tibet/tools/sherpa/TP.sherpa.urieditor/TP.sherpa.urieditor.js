@@ -1056,6 +1056,10 @@ function() {
         function(err) {
             var sourceLoc;
 
+            //  We had an error reverting the content, but make sure we unset
+            //  the 'changing content' flag.
+            this.set('$changingSourceContent', false);
+
             sourceLoc = sourceURI.getLocation();
 
             //  Alert to the user that the content at the location cannot be
@@ -1090,7 +1094,7 @@ function() {
                                 });
                         }
                     });
-        });
+        }.bind(this));
 
     return this;
 });
