@@ -5829,10 +5829,16 @@ ignoreBidiInfo) {
                     newValue.defineAttribute('$$isValueHolder');
                     newValue.set('$$isValueHolder', true);
 
+                    //  NB: This will mark the primaryURI as dirty.
                     primaryURI.setResource(
                         newValue, TP.hc('observeResource', true,
                                         'signalChange', true));
                 } else {
+
+                    //  Since we have a reference to the portion of the data
+                    //  referenced by primaryURI, we have to manually mark it as
+                    //  dirty here (and send a notification).
+                    primaryURI.isDirty(true, true);
 
                     //  If no fragment could be computed, then we set the 'whole
                     //  value'.
