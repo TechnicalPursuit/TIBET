@@ -610,6 +610,11 @@ function(anObj) {
     } else {
         newBindingInfo.atPut('scopeType', 'computed');
         newBindingInfo.atPut('computedScope', computedScope);
+
+        //  We capture the value of the "computed scope if we want a service
+        //  tag" to the computed scope so that we don't have to compute it
+        //  again.
+        newBindingInfo.atPut('serviceTagComputedScope', computedScope);
     }
 
     //  ---
