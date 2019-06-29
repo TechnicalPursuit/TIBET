@@ -79,7 +79,8 @@ function() {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var currentTargetTPElem;
+    var currentTargetTPElem,
+        offsetParentTPElem;
 
     //  Grab the current target. If there's no current target, then just exit
     //  here.
@@ -96,6 +97,18 @@ function() {
     //  Remove the class on the current halo target that allowed us to apply
     //  'halo style' to it.
     currentTargetTPElem.removeClass('sherpa-halo-haloed');
+
+    //  In case we're showing offset parent highlighting, turn it off. Note that
+    //  we check here to make sure the current target is in a real Window.
+    //  Sometimes (especially when recasting because we're doing a make custom
+    //  tag) the current target node will have gotten moved into an offscreen
+    //  document for processing purposes.
+    if (TP.isWindow(currentTargetTPElem.getNativeWindow())) {
+        offsetParentTPElem = currentTargetTPElem.getOffsetParent();
+        if (TP.isKindOf(offsetParentTPElem, TP.dom.ElementNode)) {
+            offsetParentTPElem.removeClass('sherpa-halo-offset-parent');
+        }
+    }
 
     this.signal('TP.sig.HaloDidBlur',
                 TP.hc('haloTarget', currentTargetTPElem),
@@ -1708,7 +1721,8 @@ function() {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var haloNECorner;
+    var haloNECorner,
+        haloSWCorner;
 
     haloNECorner = TP.byId('haloCorner-Northeast', this.getNativeWindow());
     haloNECorner.defineMethod(
@@ -1727,6 +1741,15 @@ function() {
                     }.bind(this));
 
     haloNECorner.setAttribute('dnd:vend', 'dom_node');
+    //  --  Southwest corner - toggle offset parent visibility
+
+    haloSWCorner = TP.byId('haloCorner-Southwest', this.getNativeWindow());
+    haloSWCorner.observe(haloSWCorner, 'TP.sig.DOMClick');
+    haloSWCorner.defineHandler(
+                    'TP.sig.DOMClick',
+                    function(aSignal) {
+                        this.toggleOffsetParentVisibility();
+                    }.bind(this));
 
     return this;
 });
@@ -1784,6 +1807,31 @@ function(shouldObserve) {
                         TP.ac('DocumentLoaded', 'DocumentUnloaded'));
 
         this.ignore(TP.ANY, TP.ac('NodeWillRecast', 'NodeDidRecast'));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('toggleOffsetParentVisibility',
+function() {
+
+    /**
+     * @method togglesOffsetParentVisibility
+     * @summary Toggles the machinery to make the offset parent of the current
+     *     halo target visible.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem,
+        offsetParentTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    offsetParentTPElem = currentTargetTPElem.getOffsetParent();
+    if (TP.isKindOf(offsetParentTPElem, TP.dom.ElementNode)) {
+        offsetParentTPElem.toggleClass('sherpa-halo-offset-parent');
     }
 
     return this;

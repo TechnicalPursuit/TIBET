@@ -10,4 +10,5 @@
 .sherpa-halo .sherpa-halo-offset-parent,
 .sherpa-halo *[class~="sherpa-halo-offset-parent"] {
 
+    border: dashed 2px black;
 }
