@@ -468,8 +468,7 @@ function(anObj) {
     /**
      * @method setData
      * @summary Sets the receiver's data object to the supplied object.
-     * @param {Object} aDataObject The object to set the receiver's internal
-     *     data to.
+     * @param {Object} anObj The object to set the receiver's internal data to.
      * @returns {TP.sherpa.tofuInsertionAssistant} The receiver.
      */
 
