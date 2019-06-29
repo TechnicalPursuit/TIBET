@@ -194,6 +194,60 @@ function(info) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('findServiceTag',
+function(aTPElement, aSourceURI) {
+
+    var contextTPElem,
+
+        sourcePrimaryURI,
+
+        serviceTPElems,
+
+        len,
+        i,
+
+        serviceTPElem,
+
+        remoteURIAttrVal,
+        localURIAttrVal;
+
+    //  First, get the nearest 'generator' element for the supplied element.
+    //  This will give us the nearest 'custom tag' up the parent chain.
+    contextTPElem = aTPElement.getNearestHaloGenerator();
+    if (TP.notValid(contextTPElem)) {
+        contextTPElem = aTPElement.getDocument().getDocumentElement();
+    }
+
+    sourcePrimaryURI = aSourceURI.getPrimaryURI();
+
+    //  Try to find tibet:service tags that are under the context element that
+    //  have a remote URI that matches the supplied remote URI. Note that,
+    //  because of URI location normalization (expansion, etc.) we need to do
+    //  this by querying for all 'tibet:service' tags and then comparing their
+    //  URIs individually.
+    serviceTPElems = TP.byCSSPath('tibet|service', contextTPElem, false, true);
+
+    len = serviceTPElems.getSize();
+    for (i = 0; i < len; i++) {
+        serviceTPElem = serviceTPElems.at(i);
+
+        remoteURIAttrVal = serviceTPElem.getAttribute('href');
+        localURIAttrVal = serviceTPElem.getAttribute('result');
+
+        if (sourcePrimaryURI.equalTo(remoteURIAttrVal)) {
+            return TP.ac(serviceTPElem, 'remote');
+        }
+
+        if (sourcePrimaryURI.equalTo(localURIAttrVal)) {
+            return TP.ac(serviceTPElem, 'local');
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('generateAttr',
 function(info) {
 
@@ -415,60 +469,6 @@ function(aSignal) {
     this.get('generatedAttr').setTextContent(str);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('findServiceTag',
-function(aTPElement, aSourceURI) {
-
-    var contextTPElem,
-
-        sourcePrimaryURI,
-
-        serviceTPElems,
-
-        len,
-        i,
-
-        serviceTPElem,
-
-        remoteURIAttrVal,
-        localURIAttrVal;
-
-    //  First, get the nearest 'generator' element for the supplied element.
-    //  This will give us the nearest 'custom tag' up the parent chain.
-    contextTPElem = aTPElement.getNearestHaloGenerator();
-    if (TP.notValid(contextTPElem)) {
-        contextTPElem = aTPElement.getDocument().getDocumentElement();
-    }
-
-    sourcePrimaryURI = aSourceURI.getPrimaryURI();
-
-    //  Try to find tibet:service tags that are under the context element that
-    //  have a remote URI that matches the supplied remote URI. Note that,
-    //  because of URI location normalization (expansion, etc.) we need to do
-    //  this by querying for all 'tibet:service' tags and then comparing their
-    //  URIs individually.
-    serviceTPElems = TP.byCSSPath('tibet|service', contextTPElem, false, true);
-
-    len = serviceTPElems.getSize();
-    for (i = 0; i < len; i++) {
-        serviceTPElem = serviceTPElems.at(i);
-
-        remoteURIAttrVal = serviceTPElem.getAttribute('href');
-        localURIAttrVal = serviceTPElem.getAttribute('result');
-
-        if (sourcePrimaryURI.equalTo(remoteURIAttrVal)) {
-            return TP.ac(serviceTPElem, 'remote');
-        }
-
-        if (sourcePrimaryURI.equalTo(localURIAttrVal)) {
-            return TP.ac(serviceTPElem, 'local');
-        }
-    }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
