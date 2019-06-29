@@ -463,6 +463,11 @@ function(aSignal) {
         return this;
     }
 
+    //  If the author has toggled the 'Insert Service Tag'
+    if (aSignal.at('aspect').endsWith('wantsServiceTag')) {
+        this.wantsServiceTagChange(data);
+    }
+
     attrInfo = TP.hc(data).at('info');
 
     str = this.generateAttr(attrInfo);
@@ -671,6 +676,63 @@ function(anObj) {
     modelURI.setResource(
         modelObj,
         TP.hc('observeResource', true, 'signalChange', true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.bindingConnectionAssistant.Inst.defineMethod(
+'wantsServiceTagChange',
+function(anObj) {
+
+    /**
+     * @method wantsServiceTagChange
+     * @summary Sets the receiver's data object to the supplied object.
+     * @param {Object} anObj The object to set the receiver's internal data to.
+     * @returns {TP.sherpa.bindingConnectionAssistant} The receiver.
+     */
+
+    var data,
+        info,
+
+        wantsServiceTag,
+
+        connectedURI,
+
+        computedScope;
+
+    data = this.get('data');
+    info = anObj.info;
+
+    //  Grab the value for whether the author wants a service tag or not. Note
+    //  that radio button values will come as an Array - collapse the value to a
+    //  single Boolean.
+    wantsServiceTag = TP.collapse(info.wantsServiceTag);
+    if (!wantsServiceTag) {
+
+        //  The author doesn't want a service tag. Compute a common scope from
+        //  the URI that we're directly connecting to and use that as the
+        //  computed scope.
+
+        connectedURI = data.at('sourceURI');
+        if (TP.isEmpty(connectedURI.getFragment())) {
+            //  TODO: Raise an exception
+            return null;
+        }
+
+        computedScope = data.at('destTPElement').computeCommonScope(
+                                                    connectedURI,
+                                                    data.at('isLeaf'));
+        info.computedScope = computedScope;
+
+    } else {
+        info.computedScope = info.serviceTagComputedScope;
+    }
+
+    //  Grab the URI that we're updating and signal that it's changing.
+    modelURI = TP.uc('urn:tibet:bindingConnectionAssistant_source');
+    modelURI.$changed();
 
     return this;
 });
