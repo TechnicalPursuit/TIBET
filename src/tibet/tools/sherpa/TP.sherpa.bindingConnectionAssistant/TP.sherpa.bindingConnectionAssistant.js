@@ -720,7 +720,9 @@ function(anObj) {
 
         connectedURI,
 
-        computedScope;
+        computedScope,
+
+        modelURI;
 
     data = this.get('data');
     info = anObj.info;
