@@ -197,6 +197,27 @@ function(info) {
 TP.sherpa.bindingConnectionAssistant.Inst.defineMethod('findServiceTag',
 function(aTPElement, aSourceURI) {
 
+    /**
+     * @method findServiceTag
+     * @summary Finds a 'tibet:service' tag in the same document as the supplied
+     *     element that has either an 'href' or 'result' URI value that matches
+     *     the *primary* URI portion of the supplied source URI.
+     * @param {TP.dom.ElementNode} aTPElement The element to begin looking for
+     *     the 'tibet:service' tag. The nearest 'halo generator' will be found
+     *     for this element (i.e. if this element represents a custom tag, the
+     *     search will *not* take place outside of its template). If that cannot
+     *     be determined, the element's document's documentElement will be used
+     *     to search.
+     * @param {TP.core.URI} aSourceURI The URI that will be used to match either
+     *     the 'href' or 'result' attribute values. Note that the value used to
+     *     match will be the *primary URI* value of this URI.
+     * @returns {Array|null} An array containing the found service tag in the
+     *     first position and the word 'global' or 'local' in the second
+     *     position to indicate whether the match to the supplied source URI was
+     *     the 'href' URI value of the service tag or the 'result' URI value of
+     *     the service tag.
+     */
+
     var contextTPElem,
 
         sourcePrimaryURI,
