@@ -4401,12 +4401,26 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
     nextElems = boundElems.filter(
             function(anElem) {
 
-                var k,
+                var bindValue,
 
-                    bindValue;
+                    k;
 
-                //  We don't want ourself in the list
+                bindValue = TP.ifEmpty(
+                                anElem.getAttributeNS(
+                                    TP.w3.Xmlns.BIND, 'io'),
+                                    TP.ifEmpty(
+                                        anElem.getAttributeNS(
+                                        TP.w3.Xmlns.BIND, 'in'),
+                                        anElem.getAttributeNS(
+                                        TP.w3.Xmlns.BIND, 'out')));
+
+                //  We don't want ourself in the list unless we have a value for
+                //  'bind:io', 'bind:in' or 'bind:out'
                 if (anElem === elem) {
+                    if (TP.notEmpty(bindValue)) {
+                        return true;
+                    }
+
                     return false;
                 }
 
@@ -4420,14 +4434,6 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                         //  'urn:' or '//:' which would indicate some sort of
                         //  absolute path.
                         if (subscopes[k].contains(anElem)) {
-                            bindValue = TP.ifEmpty(
-                                anElem.getAttributeNS(
-                                    TP.w3.Xmlns.BIND, 'io'),
-                                    TP.ifEmpty(
-                                        anElem.getAttributeNS(
-                                        TP.w3.Xmlns.BIND, 'in'),
-                                        anElem.getAttributeNS(
-                                        TP.w3.Xmlns.BIND, 'out')));
 
                             if (TP.notEmpty(bindValue) &&
                                 (bindValue.contains('urn:') ||
