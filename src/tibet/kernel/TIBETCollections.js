@@ -5584,6 +5584,30 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Hash.Inst.defineMethod('getName',
+function() {
+
+    /**
+     * @method getName
+     * @summary An override of the getName() operation that returns any value
+     *     that the receiver has in it's internal hash for the key 'name'. If
+     *     one doesn't exist, then this method returns whatever the supertype
+     *     returns (which is usually the receiver's OID).
+     * @returns {String} The receiver's name.
+     */
+
+    var val;
+
+    val = this.at('name');
+    if (TP.isValid(val)) {
+        return val;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Hash.Inst.defineMethod('getParameters',
 function() {
 
