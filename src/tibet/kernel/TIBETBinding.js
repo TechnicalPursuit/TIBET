@@ -3971,7 +3971,12 @@ function(shouldRender, shouldRefreshBindings) {
      *     receiver already had and, therefore, truly changed.
      */
 
-    var retVal;
+    var retVal,
+
+        allRefreshedElements,
+        evt,
+
+        refreshedElements;
 
     //  First, call refresh on all of the *direct children* of the receiver,
     //  specifying to *not* refresh data bindings. We'll do that in a more
@@ -3989,9 +3994,35 @@ function(shouldRender, shouldRefreshBindings) {
         retVal = this.$refresh(shouldRender);
 
         //  If this element has a 'bind:scope', then the '$refresh' call above
-        //  will have already called refreshBoundDescendants on it.
+        //  will have already called refreshBoundDescendants on it. Note that
+        //  refreshBoundDescendants will process refreshed elements so we only
+        //  do that if we don't call it.
         if (!this.hasAttribute('bind:scope')) {
             this.refreshBoundDescendants(shouldRender);
+        } else {
+            //  Send a custom DOM-level event to allow 3rd party libraries to
+            //  know that the bindings have been refreshed.
+            allRefreshedElements = this.getDocument().get('$refreshedElements');
+            if (TP.notEmpty(allRefreshedElements)) {
+                evt = this.getNativeDocument().createEvent('Event');
+                evt.initEvent('TIBETBindingsRefreshed', true, true);
+
+                refreshedElements = TP.ac();
+                allRefreshedElements.perform(
+                    function(kvPair) {
+                        refreshedElements =
+                            refreshedElements.concat(kvPair.last());
+                    });
+                refreshedElements.unique();
+
+                evt.data = refreshedElements;
+
+                this.getNativeNode().dispatchEvent(evt);
+
+                //  Make sure to empty the list of elements that were refreshed
+                //  so that we start fresh when bindings are refreshed again.
+                allRefreshedElements.empty();
+            }
         }
     } else {
         retVal = false;
