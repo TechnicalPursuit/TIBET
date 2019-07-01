@@ -6080,7 +6080,8 @@ function(aNode, joinChar, stopAncestor, onlyElements) {
      *     Default is '.'.
      * @param {Element} [stopAncestor] An element between aNode and aNode's
      *     document node that the position computation will 'stop' at. This
-     *     parameter is optional.
+     *     parameter is optional. Note that this ancestor will *not* be included
+     *     in the position computation.
      * @param {Boolean} [onlyElements=false] Whether or not to consider only
      *     Element nodes when computing the index.
      * @example Compute a document-level index for an XML node:
@@ -8232,7 +8233,7 @@ TP.nodeGetDescendantElements() call since it's optimized for element access.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetAncestors',
-function(aNode) {
+function(aNode, stopAncestor) {
 
     /**
      * @method nodeGetAncestors
@@ -8242,6 +8243,10 @@ function(aNode) {
      *     include the node's containing DOCUMENT_NODE. The list is ordered
      *     "outward" with the closest parent first.
      * @param {Node} aNode The DOM node to operate on.
+     * @param {Element} [stopAncestor] An element between aNode and aNode's
+     *     document node that the ancestor traversal will 'stop' at. This
+     *     parameter is optional. Note that this ancestor will *not* be included
+     *     in the result set.
      * @example Get all of the ancestors of an XML element:
      *     <code>
      *          xmlDoc = TP.documentFromString(
@@ -8274,6 +8279,9 @@ function(aNode) {
     while (TP.isElement(ancestor)) {
         arr.push(ancestor);
         ancestor = ancestor.parentNode;
+        if (TP.isNode(stopAncestor) && ancestor === stopAncestor) {
+            break;
+        }
     }
 
     return arr;
@@ -11723,7 +11731,7 @@ types.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeAncestorsPerform',
-function(aNode, aFunction) {
+function(aNode, aFunction, stopAncestor) {
 
     /**
      * @method nodeAncestorsPerform
@@ -11735,6 +11743,10 @@ function(aNode, aFunction) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
+     * @param {Element} [stopAncestor] An element between aNode and aNode's
+     *     document node that the ancestor traversal will 'stop' at. This
+     *     parameter is optional. Note that this ancestor will *not* be iterated
+     *     on.
      * @example Iterate up an XML node's ancestor chain and print each tag name:
      *     <code>
      *          xmlDoc = TP.documentFromString(
@@ -11785,6 +11797,10 @@ function(aNode, aFunction) {
     ancestor = aNode.parentNode;
 
     while (TP.isElement(ancestor)) {
+        if (TP.isNode(stopAncestor) && ancestor === stopAncestor) {
+            break;
+        }
+
         if (aFunction(ancestor, count++) === TP.BREAK) {
             break;
         }
