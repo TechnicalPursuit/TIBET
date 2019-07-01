@@ -5241,7 +5241,7 @@ function() {
 
     /**
      * @method getName
-     * @summary Default implementation of the $getName operation. Returns the
+     * @summary Default implementation of the getName operation. Returns the
      *     receiver's ID as the 'Name'.
      * @returns {String}
      */
