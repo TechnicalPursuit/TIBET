@@ -445,6 +445,8 @@ function(anObject) {
                 destTPElement.setAttribute(attrName, attrVal);
             });
 
+        TP.bind.XMLNS.refreshReferencedLocations(destTPElement.getNativeNode());
+
         //  Refresh the element, now that we've altered the bindings.
         destTPElement.refresh();
 
