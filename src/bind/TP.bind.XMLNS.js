@@ -173,12 +173,7 @@ function(anElement) {
         repeatTPElems,
         len,
         i,
-        repeatTPElem,
-
-        observedLocations,
-
-        tpDoc,
-        uriLocs;
+        repeatTPElem;
 
     doc = TP.nodeGetDocument(anElement);
 
@@ -333,12 +328,38 @@ function(anElement) {
         repeatTPElem.$registerRepeatContent();
     }
 
+    this.refreshReferencedLocations(anElement);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.defineMethod('refreshReferencedLocations',
+function(anElement) {
+
+    /**
+     * @method refreshReferencedLocations
+     * @param {Element} anElement The element to obtain the document whose
+     *     referenced locations we're refreshing.
+     * @returns {null}
+     */
+
+    var doc,
+        tpDoc,
+
+        observedLocations,
+
+        uriLocs;
+
     //  Make sure that the owner TP.dom.Document has an '$observedLocations'
     //  hash. This hash will consist of the location and a counter matching the
     //  number of times this primary URI is encountered in the content. This
     //  counter is used as Elements come and go (see the 'teardown' method
     //  below) and when the count is 0, the TP.dom.Document ignores that
     //  location.
+
+    doc = TP.nodeGetDocument(anElement);
 
     tpDoc = TP.wrap(doc);
 
