@@ -445,6 +445,10 @@ function(anObject) {
                 destTPElement.setAttribute(attrName, attrVal);
             });
 
+        //  Tell the binding machinery to update its referenced locations, using
+        //  the supplied native Element to derive the document that the
+        //  locations will be refreshed from (the machinery will refresh all of
+        //  the binding locations in the whole document).
         TP.bind.XMLNS.refreshReferencedLocations(destTPElement.getNativeNode());
 
         //  Refresh the element, now that we've altered the bindings.
