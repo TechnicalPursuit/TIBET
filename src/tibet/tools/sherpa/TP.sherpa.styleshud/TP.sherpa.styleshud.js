@@ -342,88 +342,98 @@ function(aTPElement) {
         return this;
     }
 
-    info = TP.ac();
+    //  We put this into a setTimeout to improve perceived performance. In this
+    //  way, the rest of the HUD can refresh and then the style sidebar can
+    //  refresh after it does this performance-intensive work.
+    setTimeout(
+        function() {
 
-    node = TP.canInvoke(aTPElement, 'getNativeNode') ?
-                            aTPElement.getNativeNode() :
-                            aTPElement;
+            info = TP.ac();
 
-    if (TP.isElement(node)) {
+            node = TP.canInvoke(aTPElement, 'getNativeNode') ?
+                                    aTPElement.getNativeNode() :
+                                    aTPElement;
 
-        //  Note here that we pass true to flush the element's cached ruleset.
-        //  This ensures the most accurate results when focusing.
-        ruleInfo = TP.elementGetAppliedStyleInfo(node, true);
+            if (TP.isElement(node)) {
 
-        //  Finally, we populate the info that will go into the sidebar
-        ruleInfo.perform(
-            function(aRuleInfo) {
+                //  Note here that we pass true to flush the element's cached
+                //  ruleset. This ensures the most accurate results when
+                //  focusing.
+                ruleInfo = TP.elementGetAppliedStyleInfo(node, true);
 
-                var loc;
+                //  Finally, we populate the info that will go into the sidebar
+                ruleInfo.perform(
+                    function(aRuleInfo) {
 
-                //  Grab the sheet location. If it's null, use the word
-                //  '[empty]' as the value of that slot of the info
-                loc = aRuleInfo.at('sheetLocation');
-                if (TP.isEmpty(loc)) {
-                    loc = '[empty]';
-                } else {
-                    loc = TP.uriInTIBETFormat(loc);
-                }
+                        var loc;
 
-                //  Push the following data into the rule information:
+                        //  Grab the sheet location. If it's null, use the word
+                        //  '[empty]' as the value of that slot of the info
+                        loc = aRuleInfo.at('sheetLocation');
+                        if (TP.isEmpty(loc)) {
+                            loc = '[empty]';
+                        } else {
+                            loc = TP.uriInTIBETFormat(loc);
+                        }
 
-                //  TIBET URI to stylesheet (if not null)
-                //  selectorText
-                //  the rule's CSS text
-                //  the original CSSRule object
-                info.push(
-                    TP.ac(
-                        loc,
-                        aRuleInfo.at('originalSelector'),
-                        aRuleInfo.at('rule').cssText,
-                        aRuleInfo.at('rule')));
-            });
-    }
+                        //  Push the following data into the rule information:
 
-    info.reverse();
+                        //  TIBET URI to stylesheet (if not null)
+                        //  selectorText
+                        //  the rule's CSS text
+                        //  the original CSSRule object
+                        info.push(
+                            TP.ac(
+                                loc,
+                                aRuleInfo.at('originalSelector'),
+                                aRuleInfo.at('rule').cssText,
+                                aRuleInfo.at('rule')));
+                    });
+            }
 
-    //  Unshift an entry for cascaded style.
-    info.unshift(TP.ac('[cascaded]', '[cascaded]', '[cascaded]', '[cascaded]'));
+            info.reverse();
 
-    currentRuleIndex = this.get('$currentRuleIndex');
-    if (TP.notValid(currentRuleIndex)) {
-        currentRuleIndex = 0;
-    }
+            //  Unshift an entry for cascaded style.
+            info.unshift(
+                TP.ac('[cascaded]', '[cascaded]', '[cascaded]', '[cascaded]'));
 
-    this.set('$currentRuleIndex', currentRuleIndex);
+            currentRuleIndex = this.get('$currentRuleIndex');
+            if (TP.notValid(currentRuleIndex)) {
+                currentRuleIndex = 0;
+            }
 
-    //  List expects an array of arrays containing IDs and full names.
-    this.setValue(info);
+            this.set('$currentRuleIndex', currentRuleIndex);
 
-    //  Scroll our list content to its bottom.
-    this.get('listcontent').scrollTo(TP.BOTTOM);
+            //  List expects an array of arrays containing IDs and full names.
+            this.setValue(info);
 
-    tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
-    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+            //  Scroll our list content to its bottom.
+            this.get('listcontent').scrollTo(TP.BOTTOM);
 
-        //  Grab the center element and it's page rectangle.
-        centerElem = TP.byId('center', this.getNativeWindow());
-        centerElemPageRect = centerElem.getPageRect();
+            tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
+            if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
 
-        //  Get the currently displayed lozenge given that the peerID should
-        //  be the same as it was for the old lozenge.
-        currentItemTPElem = TP.byCSSPath(
+                //  Grab the center element and it's page rectangle.
+                centerElem = TP.byId('center', this.getNativeWindow());
+                centerElemPageRect = centerElem.getPageRect();
+
+                //  Get the currently displayed lozenge given that the peerID
+                //  should be the same as it was for the old lozenge.
+                currentItemTPElem = TP.byCSSPath(
                             '> ul li[indexInData="' + currentRuleIndex + '"]',
                             this.getNativeNode(),
                             true);
 
-        //  Grab it's page rect.
-        targetElemPageRect = currentItemTPElem.getPageRect();
+                //  Grab it's page rect.
+                targetElemPageRect = currentItemTPElem.getPageRect();
 
-        //  Set the page position of the tile based on the two rectangles X
-        //  and Y, respectively.
-        tileTPElem.setPagePosition(
-            TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
-    }
+                //  Set the page position of the tile based on the two
+                //  rectangles X and Y, respectively.
+                tileTPElem.setPagePosition(
+                    TP.pc(centerElemPageRect.getX(),
+                            targetElemPageRect.getY()));
+            }
+        }.bind(this), 10);
 
     return this;
 });
