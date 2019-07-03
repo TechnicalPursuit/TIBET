@@ -1995,6 +1995,64 @@ function(aSlotPosition) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getCurrentHistoryEntryAsPath',
+function() {
+
+    /**
+     * @method getCurrentHistoryEntryAsPath
+     * @summary Returns the current history entry as a path, doing whatever
+     *     substitutions or escaping is necessary.
+     * @returns {String} The current history entry as a path.
+     */
+    var currentHistoryEntry,
+
+        pathParts,
+
+        len,
+        i,
+
+        str;
+
+    //  Grab the current history entry as computed by the Sherpa Inspector.
+    currentHistoryEntry = this.get('currentHistoryEntry');
+
+    if (TP.isEmpty(currentHistoryEntry)) {
+        return '';
+    }
+
+    pathParts = TP.ac();
+
+    //  Iterate over each piece of the current history entry.
+    len = currentHistoryEntry.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  If the current piece is 'TIBET', then a special 'resolved' value
+        //  might be in the next part of the entry.
+        if (currentHistoryEntry.at(i) === 'TIBET') {
+
+            //  If the next piece is 'URIs', then push '_URIS_' (the original
+            //  value alias for URIs) and increment by 1, thereby basically
+            //  skipping the original 'TIBET' entry. Continue on to avoid
+            //  pushing any more parts.
+            if (currentHistoryEntry.at(i + 1) === 'URIs') {
+                pathParts.push('_URIS_');
+                i++;
+                continue;
+            }
+        }
+
+        //  Push the part, but replace slashes with an escaped slash first.
+        pathParts.push(currentHistoryEntry.at(i).replace(/\//g, '\\/'));
+    }
+
+    //  Join them together with a slash
+    str = pathParts.join('/');
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('getCurrentPropertyValueForTool',
 function(propertyName, toolName) {
 

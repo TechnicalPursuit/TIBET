@@ -309,25 +309,11 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    var currentHistoryEntry,
-        cmdVal;
+    var cmdVal;
 
-    //  Grab the current history entry as computed by the Sherpa Inspector.
-    currentHistoryEntry = TP.byId('SherpaInspector', this.getNativeWindow()).
-                                                    get('currentHistoryEntry');
-
-    if (TP.isEmpty(currentHistoryEntry)) {
-        return this;
-    }
-
-    //  Escape any embedded slashes in each component
-    currentHistoryEntry = currentHistoryEntry.collect(
-                            function(anItem) {
-                                return anItem.replace(/\//g, '\\/');
-                            });
-
-    //  Join them together with a slash
-    cmdVal = currentHistoryEntry.join('/');
+    //  Grab the current history entry as a path.
+    cmdVal = TP.byId('SherpaInspector', this.getNativeWindow()).
+                getCurrentHistoryEntryAsPath();
 
     //  Build the command and execute it.
     cmdVal = ':bookmark \'' + cmdVal + '\'';
@@ -771,7 +757,7 @@ function(aSignal) {
             var cmdVal;
 
             //  Build the command and execute it.
-            cmdVal = ':deploy';
+            cmdVal = ':deploy shipit';
 
             if (TP.notEmpty(userValue)) {
                 cmdVal += ' ' + userValue;
