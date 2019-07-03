@@ -519,7 +519,7 @@ function(aSourceName) {
         source;
 
     //  Sometimes entries come in with escaped slashes. Unescape that.
-    srcName = aSourceName.replace(/\\\//g, '\/');
+    srcName = TP.stringUnescapeSlashes(aSourceName);
 
     if (srcName === 'Node Type') {
         source = this.getType();
@@ -1663,7 +1663,7 @@ function(aSourceName) {
         source;
 
     //  Sometimes entries come in with escaped slashes. Unescape that.
-    srcName = aSourceName.replace(/\\\//g, '\/');
+    srcName = TP.stringUnescapeSlashes(aSourceName);
 
     switch (srcName) {
 

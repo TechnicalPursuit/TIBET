@@ -220,7 +220,7 @@ function(aSourceName) {
     var srcName;
 
     //  Sometimes entries come in with escaped slashes. Unescape that.
-    srcName = aSourceName.replace(/\\\//g, '\/');
+    srcName = TP.stringUnescapeSlashes(aSourceName);
 
     return TP.sys.getTypeByName(srcName);
 });

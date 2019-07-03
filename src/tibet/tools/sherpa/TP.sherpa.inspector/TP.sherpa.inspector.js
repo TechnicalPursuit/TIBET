@@ -320,7 +320,7 @@ function(aSourceName) {
     var srcName;
 
     //  Sometimes entries come in with escaped slashes. Unescape that.
-    srcName = aSourceName.replace(/\\\//g, '\/');
+    srcName = TP.stringUnescapeSlashes(aSourceName);
 
     return this.get('entries').at(srcName);
 });
@@ -2153,7 +2153,7 @@ function() {
     //  inspector. That's unnecessary for labels, though, so remove them.
     result = result.collect(
                 function(aLabel) {
-                    return aLabel.replace(/\\\//g, '/');
+                    return TP.stringUnescapeSlashes(aLabel);
                 });
 
     return result;
@@ -3508,7 +3508,7 @@ function(itemLabel, aBayNum) {
         bayContent = inspectorBayContentItems.at(bayNum);
 
         //  Sometimes entries come in with escaped slashes. Unescape that.
-        label = itemLabel.replace(/\\\//g, '\/');
+        label = TP.stringUnescapeSlashes(itemLabel);
 
         //  The bay content here will have already been re-rendered because of
         //  data binding, but we need to select what the new item will be.
@@ -4124,7 +4124,7 @@ function(aSourceName) {
     }
 
     //  Sometimes entries come in with escaped slashes. Unescape that.
-    srcName = aSourceName.replace(/\\\//g, '\/');
+    srcName = TP.stringUnescapeSlashes(aSourceName);
 
     dynamicContentEntries = this.get('dynamicContentEntries');
     target = dynamicContentEntries.detect(
