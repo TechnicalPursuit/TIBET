@@ -155,8 +155,19 @@ function(enterSelection) {
             hintContent = TP.extern.d3.select(this).append('xctrls:hint');
             hintContent.html(
                 function(d, i) {
+                    var val;
+
+                    //  Pass true here for the call to ignore whether we have a
+                    //  scheme or not. If we're a virtual URI, we won't have a
+                    //  scheme.
+                    if (TP.isURIString(d, true)) {
+                        val = TP.uriExpandPath(d);
+                    } else {
+                        val = d;
+                    }
+
                     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                            d +
+                            val +
                             '</span>';
                 }
             );
