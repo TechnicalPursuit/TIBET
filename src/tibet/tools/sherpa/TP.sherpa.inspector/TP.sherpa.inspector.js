@@ -963,7 +963,7 @@ function(pathParts) {
         }
     } else if (pathParts.first() === '_URIS_') {
 
-        uriPath = TP.uriExpandPath(TP.stringUnescapeSlashes(pathParts.at(1)));
+        uriPath = TP.stringUnescapeSlashes(pathParts.at(1));
 
         newPathParts = TP.ac('TIBET', 'URIs', uriPath);
     } else {
