@@ -402,7 +402,11 @@ function(aTPElement) {
                 currentRuleIndex = 0;
             }
 
-            this.set('$currentRuleIndex', currentRuleIndex);
+            if (info.getSize() > 1) {
+                this.set('$currentRuleIndex', 1);
+            } else {
+                this.set('$currentRuleIndex', TP.NOT_FOUND);
+            }
 
             //  List expects an array of arrays containing IDs and full names.
             this.setValue(info);
