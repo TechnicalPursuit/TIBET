@@ -2685,6 +2685,11 @@ TP.core.Mouse.Type.defineAttribute('$sentDragDown', false);
 //  if we're not in a valid drag target
 TP.core.Mouse.Type.defineAttribute('$notValidDragTarget', false);
 
+//  a hash of any window offsets that were computed between a mouse down/drag
+//  and a mouse up. This is cleared in the mouse up and (re)created when the
+//  call is made to compute the window offsets.
+TP.core.Mouse.Type.defineAttribute('$interWindowPointOffsets', false);
+
 TP.core.Mouse.Type.defineAttribute('leftDown', false);
 TP.core.Mouse.Type.defineAttribute('middleDown', false);
 TP.core.Mouse.Type.defineAttribute('rightDown', false);
@@ -2794,6 +2799,70 @@ function() {
             TP.sys.getTypeByName('TP.sig.DOMDragHover').construct(null, true));
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Mouse.Type.defineMethod('computeWindowOffsetsBetween',
+function(aWindow, otherWindow) {
+
+    /**
+     * @method computeWindowOffsetsBetween
+     * @summary Computes (and possibly caches) window offset data between two
+     *     windows. Note that any cache built here is reset with every mouse up
+     *     event.
+     * @param {Window} aWindow The first window to compute the offset between.
+     * @param {Window} otherWindow The second window to compute the offset
+     *     between.
+     * @returns {Number[]} An Array of two Numbers where the first number is the
+     *     X offset between the two windows and the second number is the Y
+     *     offset between the two windows.
+     */
+
+    var win1GID,
+        win2GID,
+
+        info,
+        win1Info,
+
+        offsets;
+
+    win1GID = TP.gid(aWindow);
+    win2GID = TP.gid(otherWindow);
+
+    //  A set of nested hashes, keyed first on the first window and then on the
+    //  second window.
+    info = this.$get('$interWindowPointOffsets');
+
+    //  Cascade logic to first try to find a valid hash, then a valid nested
+    //  hash under the first window's GID and then an Array of offsets under the
+    //  second window's GID in the nested hash.
+
+    //  Note here that we only compute the offsets when *absolutely* necessary.
+    //  The whole purpose of this caching scheme is to avoid window offset
+    //  computations during operations like mouse dragging.
+    if (TP.isValid(info)) {
+        win1Info = info.at(win1GID);
+        if (TP.isValid(win1Info)) {
+            offsets = win1Info.at(win2GID);
+            if (TP.isValid(offsets)) {
+                return offsets;
+            }
+            offsets = TP.windowComputeWindowOffsets(
+                                aWindow, otherWindow, false);
+            win1Info.atPut(win2GID, offsets);
+        } else {
+            offsets = TP.windowComputeWindowOffsets(
+                                aWindow, otherWindow, false);
+            info.atPut(win1GID, TP.hc(win2GID, offsets));
+        }
+    } else {
+        offsets = TP.windowComputeWindowOffsets(aWindow, otherWindow, false);
+        info = TP.hc(win1GID, TP.hc(win2GID, offsets));
+        this.$set('$interWindowPointOffsets', info);
+    }
+
+    return offsets;
 });
 
 //  ------------------------------------------------------------------------
@@ -3638,6 +3707,8 @@ function(normalizedEvent) {
         TP.ifError() ?
                 TP.error('Unable to clear hover timeout') : 0;
     }
+
+    this.$set('$interWindowPointOffsets', null);
 
     return this;
 });
