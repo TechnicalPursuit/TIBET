@@ -823,8 +823,7 @@ function(aSignal) {
     TP.confirm('Run Application Test Suites?').then(
         function(shouldTest) {
             var cmdVal,
-                shell,
-                haloType;
+                shell;
 
             if (TP.notTrue(shouldTest)) {
                 TP.info('Test run cancelled.');
