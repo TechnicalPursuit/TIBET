@@ -252,8 +252,8 @@ function(aSignal) {
 
     aspectPath = aSignal.at('aspect');
 
-    //  If the whole value changed, we're not interested.
-    if (aspectPath === 'value') {
+    //  If the whole value or it's dirtiness changed, we're not interested.
+    if (aspectPath === 'value' || aspectPath === 'dirty') {
         return this;
     }
 
