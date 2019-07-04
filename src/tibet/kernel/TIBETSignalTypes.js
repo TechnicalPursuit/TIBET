@@ -3037,6 +3037,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetXAdjustedFor',
+function(anElement) {
+
+    /**
+     * @method getOffsetXAdjustedFor
+     * @summary Returns the X coordinate of the signal relative to the
+     *     containing source element, but adjusted to the supplied element.
+     *     If the supplied element is in a different window than the signal's
+     *     source element, the return value is adjusted to take into account the
+     *     difference between the two.
+     * @returns {Element} anElement The element whose window will be compared to
+     *     the signal's source window for offset computation purposes (if
+     *     they're different).
+     * @returns {Number} The X coordinate of the signal relative to its
+     *     containing element, but adjusted to any offset in the windows between
+     *     where the signal occurred and the window of the supplied element (if
+     *     they're different).
+     */
+
+    var offsetX,
+
+        elemWin,
+        evtWin,
+
+        frameOffsetXAndY;
+
+    offsetX = this.getOffsetX();
+
+    elemWin = TP.nodeGetWindow(anElement);
+    evtWin = TP.eventGetWindow(this.getEvent());
+    if (elemWin === evtWin) {
+        return offsetX;
+    }
+
+    frameOffsetXAndY = TP.core.Mouse.computeWindowOffsetsBetween(
+                                                        evtWin, elemWin);
+    offsetX -= frameOffsetXAndY.first();
+
+    return offsetX;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetY',
 function() {
 
@@ -3053,6 +3096,49 @@ function() {
     evt = this.getEvent();
 
     return TP.ifInvalid(evt.$$offsetY, evt.offsetY);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetYAdjustedFor',
+function(anElement) {
+
+    /**
+     * @method getOffsetYAdjustedFor
+     * @summary Returns the Y coordinate of the signal relative to the
+     *     containing source element, but adjusted to the supplied element.
+     *     If the supplied element is in a different window than the signal's
+     *     source element, the return value is adjusted to take into account the
+     *     difference between the two.
+     * @returns {Element} anElement The element whose window will be compared to
+     *     the signal's source window for offset computation purposes (if
+     *     they're different).
+     * @returns {Number} The Y coordinate of the signal relative to its
+     *     containing element, but adjusted to any offset in the windows between
+     *     where the signal occurred and the window of the supplied element (if
+     *     they're different).
+     */
+
+    var offsetY,
+
+        elemWin,
+        evtWin,
+
+        frameOffsetXAndY;
+
+    offsetY = this.getOffsetY();
+
+    elemWin = TP.nodeGetWindow(anElement);
+    evtWin = TP.eventGetWindow(this.getEvent());
+    if (elemWin === evtWin) {
+        return offsetY;
+    }
+
+    frameOffsetXAndY = TP.core.Mouse.computeWindowOffsetsBetween(
+                                                        evtWin, elemWin);
+    offsetY -= frameOffsetXAndY.last();
+
+    return offsetY;
 });
 
 //  ------------------------------------------------------------------------
@@ -3083,6 +3169,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetPointAdjustedFor',
+function(anElement) {
+
+    /**
+     * @method getOffsetPointAdjustedFor
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
+     *     the containing source element, but adjusted to the supplied element.
+     *     If the supplied element is in a different window than the signal's
+     *     source element, the return value is adjusted to take into account the
+     *     difference between the two.
+     * @returns {Element} anElement The element whose window will be compared to
+     *     the signal's source window for offset computation purposes (if
+     *     they're different).
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
+     *     containing element, but adjusted to any offset in the windows between
+     *     where the signal occurred and the window of the supplied element (if
+     *     they're different).
+     */
+
+    var point;
+
+    point = TP.pc(this.getOffsetXAdjustedFor(anElement),
+                    this.getOffsetYAdjustedFor(anElement));
+
+    return point;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMMouseSignal.Inst.defineMethod('getPageX',
 function() {
 
@@ -3099,6 +3214,49 @@ function() {
     evt = this.getEvent();
 
     return TP.ifInvalid(evt.$$pageX, evt.pageX);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMouseSignal.Inst.defineMethod('getPageXAdjustedFor',
+function(anElement) {
+
+    /**
+     * @method getPageXAdjustedFor
+     * @summary Returns the X coordinate of the signal relative to the page
+     *     containing the source element, but adjusted to the supplied element.
+     *     If the supplied element is in a different window than the signal's
+     *     source element, the return value is adjusted to take into account the
+     *     difference between the two.
+     * @returns {Element} anElement The element whose window will be compared to
+     *     the signal's source window for offset computation purposes (if
+     *     they're different).
+     * @returns {Number} The X coordinate of the signal relative to the overall
+     *     page, but adjusted to any offset in the windows between where the
+     *     signal occurred and the window of the supplied element (if they're
+     *     different).
+     */
+
+    var pageX,
+
+        elemWin,
+        evtWin,
+
+        frameOffsetXAndY;
+
+    pageX = this.getPageX();
+
+    elemWin = TP.nodeGetWindow(anElement);
+    evtWin = TP.eventGetWindow(this.getEvent());
+    if (elemWin === evtWin) {
+        return pageX;
+    }
+
+    frameOffsetXAndY = TP.core.Mouse.computeWindowOffsetsBetween(
+                                                        evtWin, elemWin);
+    pageX -= frameOffsetXAndY.first();
+
+    return pageX;
 });
 
 //  ------------------------------------------------------------------------
@@ -3123,6 +3281,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMMouseSignal.Inst.defineMethod('getPageYAdjustedFor',
+function(anElement) {
+
+    /**
+     * @method getPageYAdjustedFor
+     * @summary Returns the Y coordinate of the signal relative to the page
+     *     containing the source element, but adjusted to the supplied element.
+     *     If the supplied element is in a different window than the signal's
+     *     source element, the return value is adjusted to take into account the
+     *     difference between the two.
+     * @returns {Element} anElement The element whose window will be compared to
+     *     the signal's source window for offset computation purposes (if
+     *     they're different).
+     * @returns {Number} The Y coordinate of the signal relative to the overall
+     *     page, but adjusted to any offset in the windows between where the
+     *     signal occurred and the window of the supplied element (if they're
+     *     different).
+     */
+
+    var pageY,
+
+        elemWin,
+        evtWin,
+
+        frameOffsetXAndY;
+
+    pageY = this.getPageY();
+
+    elemWin = TP.nodeGetWindow(anElement);
+    evtWin = TP.eventGetWindow(this.getEvent());
+    if (elemWin === evtWin) {
+        return pageY;
+    }
+
+    frameOffsetXAndY = TP.core.Mouse.computeWindowOffsetsBetween(
+                                                        evtWin, elemWin);
+    pageY -= frameOffsetXAndY.last();
+
+    return pageY;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMMouseSignal.Inst.defineMethod('getPagePoint',
 function() {
 
@@ -3143,6 +3344,35 @@ function() {
         point = TP.pc(this.getPageX(), this.getPageY());
         evt.$$pagePt = point;
     }
+
+    return point;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMouseSignal.Inst.defineMethod('getPagePointAdjustedFor',
+function(anElement) {
+
+    /**
+     * @method getPagePointAdjustedFor
+     * @summary Returns the X/Y TP.gui.Point of the signal relative to the
+     *     page containing the source element, but adjusted to the supplied
+     *     element. If the supplied element is in a different window than the
+     *     signal's source element, the return value is adjusted to take into
+     *     account the difference between the two.
+     * @returns {Element} anElement The element whose window will be compared to
+     *     the signal's source window for offset computation purposes (if
+     *     they're different).
+     * @returns {TP.gui.Point} The X/Y point of the signal relative to its
+     *     overall page, but adjusted to any offset in the windows between where
+     *     the signal occurred and the window of the supplied element (if
+     *     they're different).
+     */
+
+    var point;
+
+    point = TP.pc(this.getPageXAdjustedFor(anElement),
+                    this.getPageYAdjustedFor(anElement));
 
     return point;
 });
