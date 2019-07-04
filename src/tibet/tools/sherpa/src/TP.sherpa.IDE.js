@@ -1441,7 +1441,7 @@ function(aSignal) {
     //  Generate a matcher RegExp
     /* eslint-disable no-control-regex */
     matcher = TP.rc(
-                '(^|\\})\\s*(' +
+                '(^|\\}|\\*\\/)\\s*(' +
                 RegExp.escapeMetachars(
                 str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
                     replace(/SECRET_SAUCE/g, '\\s*') +
