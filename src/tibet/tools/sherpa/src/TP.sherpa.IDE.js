@@ -1485,6 +1485,16 @@ function(aSignal) {
     propertyMatcher = TP.rc(aSignal.at('mutatedProperty') +
                             '\\s*:.+;[\\n\\r]?');
 
+    //  If the signal indicated an operation of TP.UPDATE, we need to test to
+    //  make sure that the property text actually exists in the rule text.
+    //  Sometimes, due to a desire to not signal each style property mutation, a
+    //  'final' mutation signal will be sent with an operation of TP.UPDATE, but
+    //  the property doesn't actually exist yet in the source that we're
+    //  managing. In that case, we switch the operation to TP.CREATE.
+    if (!propertyMatcher.test(ruleText)) {
+        operation = TP.CREATE;
+    }
+
     //  Switch on the operation performed.
     switch (operation) {
         case TP.CREATE:
