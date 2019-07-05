@@ -444,7 +444,7 @@ function(finalizationFunc) {
     //  The World was set up on initial startup - set up the rest of the
     //  components. We do set up the World to observe when the HUD shows
     worldTPElem = TP.byId('SherpaWorld', viewDoc);
-    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'ClosedChange');
+    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'PclassClosedChange');
 
     //  Set up any signal observations for Sherpa-wide handling.
     this.setupObservations();
