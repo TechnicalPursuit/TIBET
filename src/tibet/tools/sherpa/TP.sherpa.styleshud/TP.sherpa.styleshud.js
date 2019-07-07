@@ -582,9 +582,9 @@ function(uniqueToTarget) {
 
     //  Compute a unique selector for the targeted element
     targetType = targetTPElem.getType();
-    ruleSelector = targetType.get('nsPrefix') + '|'
-                    + targetType.get('localName') + '#'
-                    + targetTPElem.getLocalID();
+    ruleSelector = targetType.get('nsPrefix') + '|' +
+                    targetType.get('localName') + '#' +
+                    targetTPElem.getLocalID();
 
     matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
     if (matches.getSize() === 1 && matches.first() === targetElem) {
@@ -608,7 +608,7 @@ function(uniqueToTarget) {
                                                 null,
                                                 true);
 
-        return generatorSheet.cssRules[newRuleIndex]
+        return generatorSheet.cssRules[newRuleIndex];
     }
 
     return null;
