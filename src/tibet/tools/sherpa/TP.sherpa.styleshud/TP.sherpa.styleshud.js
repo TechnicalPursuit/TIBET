@@ -489,7 +489,11 @@ function(uniqueToTarget) {
         allInfo,
         ruleInfo,
 
+        ruleLocation,
+
         initialRule,
+
+        sherpaMain,
 
         ruleSelector,
 
@@ -517,9 +521,17 @@ function(uniqueToTarget) {
     allInfo = this.get('data');
     ruleInfo = allInfo.at(currentRuleIndex);
 
+    ruleLocation = ruleInfo.at(0);
+
     initialRule = ruleInfo.at(3);
 
-    if (TP.notTrue(uniqueToTarget)) {
+    sherpaMain = TP.bySystemId('Sherpa');
+
+    //  If the initial rule (the currently selected one) doesn't have to be
+    //  unique to the target and comes from a mutable location, then just return
+    //  it.
+    if (TP.notTrue(uniqueToTarget) &&
+        sherpaMain.styleLocationIsMutable(ruleLocation)) {
         return initialRule;
     }
 
@@ -530,33 +542,43 @@ function(uniqueToTarget) {
     targetElem = targetTPElem.getNativeNode();
     targetDoc = targetTPElem.getNativeDocument();
 
-    //  Check to see if the rule only matches the targetElem. If that's the
-    //  case, then we've found the rule that we can safely modify.
+    //  Check to see if the rule only matches the targetElem and comes from a
+    //  mutable location. If that's the case, then we've found the rule that we
+    //  can safely modify.
     matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
-    if (matches.getSize() === 1 && matches.first() === targetElem) {
+    if (matches.getSize() === 1 &&
+        matches.first() === targetElem &&
+        sherpaMain.styleLocationIsMutable(ruleLocation)) {
         return initialRule;
     }
 
     //  Since the rule matched more than one element, we need to find or create
     //  a new rule.
 
-    //  Search backwards throught the rule list from the *end of the list of all
+    //  Search backwards through the rule list from the *end of the list of all
     //  rules* to rule number one (the zeroth entry is the '[cascaded]' entry.
     //  We need to go from the end because the rule that failed above might
     //  still be *more specific* and we need find one that matches only our tag
     //  element, even if it's less specific.
     for (i = allInfo.getSize() - 1; i > 0; i--) {
         ruleInfo = allInfo.at(i);
+
+        ruleLocation = ruleInfo.at(0);
         ruleSelector = ruleInfo.at(1);
 
+        //  Check to see if the rule only matches the targetElem and comes from
+        //  a mutable location. If that's the case, then we've found the rule
+        //  that we can safely modify.
         matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
-        if (matches.getSize() === 1 && matches.first() === targetElem) {
+        if (matches.getSize() === 1 &&
+            matches.first() === targetElem &&
+            sherpaMain.styleLocationIsMutable(ruleLocation)) {
             return ruleInfo.at(3);
         }
     }
 
-    //  We couldn't find a rule that matched uniquely, so let's create one
-    //  in the same stylesheet as the currently selected rule.
+    //  We couldn't find a rule that matched uniquely and was modifiable, so
+    //  let's create one in the same stylesheet as the currently selected rule.
 
     //  Compute a unique selector for the targeted element
     targetType = targetTPElem.getType();
