@@ -1379,7 +1379,7 @@ function(aSignal) {
     //  If we didn't find a matching rule to update, then if the operation is
     //  TP.CREATE, we can just append the new rule to the URI content matching
     //  the sheet's location.
-    if (ruleIndex === TP.NOT_FOUND) {
+    if (!currentContent.contains(mutatedRule.selectorText)) {
 
         if (operation === TP.CREATE) {
 
