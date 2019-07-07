@@ -1675,7 +1675,7 @@ function(aSourceName) {
 
         case 'Style':
             //  NB: We're returning the TP.uri.URI instance itself here.
-            source = this.getResourceURI('style', TP.ietf.mime.XHTML);
+            source = this.getResourceURI('style', TP.ietf.mime.CSS);
 
             break;
 
@@ -1896,7 +1896,7 @@ function(anAspect, options) {
 
         case 'Style':
 
-            return thisType.getResourceURI('template', TP.ietf.mime.CSS);
+            return thisType.getResourceURI('style', TP.ietf.mime.CSS);
 
         default:
             return this.callNextMethod();
