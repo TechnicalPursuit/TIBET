@@ -4331,7 +4331,6 @@ function() {
     windows = TP.core.Window.getOpenWindows();
     windows.perform(
         function(win) {
-
             TP.windowAssignACLKeys(win, TP.ACL_REAL);
         });
 

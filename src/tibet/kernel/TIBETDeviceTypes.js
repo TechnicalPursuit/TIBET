@@ -3601,7 +3601,7 @@ function(normalizedEvent) {
                 //  Make sure to suspend all mutation observer machinery for
                 //  performance here during a drag session. This significantly
                 //  increases drag performance during the session and gets
-                //  switched back in $$handleMouseUp.
+                //  switched back on in $$handleMouseUp.
                 TP.suspendAllMutationObservers();
 
                 this.invokeObservers('dragdown', dragDownEvent);

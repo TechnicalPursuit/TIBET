@@ -3190,13 +3190,13 @@ function() {
 
     //  ---
 
-    //  Set up resizing worker functions and value gathering.
-
-    framingStyleElement = TP.byCSSPath(
-                            'style[tibet|originalhref$="sherpa_framing.css"]',
-                            win,
-                            true,
-                            false);
+    //  Set up resizing worker functions and value gathering. Note that we make
+    //  sure to go after only HTML style elements here.
+    framingStyleElement =
+        TP.byCSSPath('html|style[tibet|originalhref$="sherpa_framing.css"]',
+                        win,
+                        true,
+                        false);
 
     variablesRule = TP.styleSheetGetStyleRulesMatching(
                         TP.cssElementGetStyleSheet(framingStyleElement),
