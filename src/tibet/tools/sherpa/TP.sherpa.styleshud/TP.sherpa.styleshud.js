@@ -470,6 +470,130 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.styleshud.Inst.defineMethod('getModifiableRule',
+function(uniqueToTarget) {
+
+    /**
+     * @method getModifiableRule
+     * @summary Returns a CSSRule object that can be modified that matches the
+     *     halo's current target element. If one cannot be found, a new CSSRule
+     *     is generated in the style sheet of the nearest 'generator' to the
+     *     current halo'ed target and is returned.
+     * @param {Boolean} [uniqueToTarget=false] Whether or not the rule should
+     *     *only* match the halo's target.
+     * @returns {CSSRule} The native rule object that was found or generated.
+     */
+
+    var currentRuleIndex,
+
+        allInfo,
+        ruleInfo,
+
+        initialRule,
+
+        ruleSelector,
+
+        halo,
+        targetTPElem,
+        targetElem,
+        targetDoc,
+
+        matches,
+
+        i,
+
+        targetType,
+
+        generatorTPElem,
+        generatorSheet,
+
+        newRuleIndex;
+
+    currentRuleIndex = this.get('$currentRuleIndex');
+    if (TP.notValid(currentRuleIndex)) {
+        return null;
+    }
+
+    allInfo = this.get('data');
+    ruleInfo = allInfo.at(currentRuleIndex);
+
+    initialRule = ruleInfo.at(3);
+
+    if (TP.notTrue(uniqueToTarget)) {
+        return initialRule;
+    }
+
+    ruleSelector = ruleInfo.at(1);
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    targetTPElem = halo.get('currentTargetTPElem');
+    targetElem = targetTPElem.getNativeNode();
+    targetDoc = targetTPElem.getNativeDocument();
+
+    //  Check to see if the rule only matches the targetElem. If that's the
+    //  case, then we've found the rule that we can safely modify.
+    matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
+    if (matches.getSize() === 1 && matches.first() === targetElem) {
+        return initialRule;
+    }
+
+    //  Since the rule matched more than one element, we need to find or create
+    //  a new rule.
+
+    //  Search backwards throught the rule list from the *end of the list of all
+    //  rules* to rule number one (the zeroth entry is the '[cascaded]' entry.
+    //  We need to go from the end because the rule that failed above might
+    //  still be *more specific* and we need find one that matches only our tag
+    //  element, even if it's less specific.
+    for (i = allInfo.getSize() - 1; i > 0; i--) {
+        ruleInfo = allInfo.at(i);
+        ruleSelector = ruleInfo.at(1);
+
+        matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
+        if (matches.getSize() === 1 && matches.first() === targetElem) {
+            return ruleInfo.at(3);
+        }
+    }
+
+    //  We couldn't find a rule that matched uniquely, so let's create one
+    //  in the same stylesheet as the currently selected rule.
+
+    //  Compute a unique selector for the targeted element
+    targetType = targetTPElem.getType();
+    ruleSelector = targetType.get('nsPrefix') + '|'
+                    + targetType.get('localName') + '#'
+                    + targetTPElem.getLocalID();
+
+    matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
+    if (matches.getSize() === 1 && matches.first() === targetElem) {
+
+        //  Grab the nearest 'generator' element to the target element. This
+        //  will be the element (usually a CustomTag) that would have generated
+        //  the target element (and which could be the target element itself).
+        generatorTPElem = targetTPElem.getNearestHaloGenerator();
+        if (TP.notValid(generatorTPElem)) {
+            //  TODO: Raise an exception.
+            return null;
+        }
+
+        //  Grab the style sheet for that generator.
+        generatorSheet = generatorTPElem.getStylesheetForStyleResource();
+
+        //  Create a new rule and add it to the end of the stylesheet.
+        newRuleIndex = TP.styleSheetInsertRule(generatorSheet,
+                                                ruleSelector,
+                                                '',
+                                                null,
+                                                true);
+
+        return generatorSheet.cssRules[newRuleIndex]
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.styleshud.Inst.defineMethod('inspectStyleEntryAt',
 function(anIndex) {
 
