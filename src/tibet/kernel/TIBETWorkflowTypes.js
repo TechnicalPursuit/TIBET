@@ -4007,6 +4007,7 @@ TP.lang.Object.defineSubtype('core.PermissionGroup');
 //  ------------------------------------------------------------------------
 
 TP.core.PermissionGroup.Type.defineAttribute('keyrings');
+TP.core.PermissionGroup.Type.defineAttribute('accessKeys');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
