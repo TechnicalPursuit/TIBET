@@ -1256,6 +1256,10 @@ TP.SKEW = 'SKEW';             //  Skew transformation
 TP.SCALE = 'SCALE';           //  Scale transformation
 TP.TRANSLATE = 'TRANSLATE';   //  Translate transformation
 
+//  CSS error 'codes' as to why elements cannot take on certain CSS properties.
+TP.ELEMENT_NEEDS_TO_BE_BLOCK = 'NEEDS_TO_BE_BLOCK';
+TP.ELEMENT_NEEDS_TO_BE_POSITIONED = 'NEEDS_TO_BE_POSITIONED';
+
 //  ---
 //  workflow support
 //  ---

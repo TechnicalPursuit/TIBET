@@ -1864,6 +1864,52 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('canAlterCSSProperty',
+function(aProperty) {
+
+    /**
+     * @method canAlterCSSProperty
+     * @summary This method tests as to whether the receiver can effectively
+     *     alter the given CSS property. By 'effectively alter', we mean by
+     *     altering the property, it will have a real effect on the element.
+     * @description Effectively altering means that the element could take on a
+     *     different visual presentation.
+     * @param {String} aProperty The name of the CSS property to adjust.
+     * @returns {String[]} A list of reasons as to why the property cannot be
+     *     altered.
+     */
+
+    var elem,
+        reasons;
+
+    elem = this.getNativeNode();
+
+    reasons = TP.ac();
+
+    switch (aProperty) {
+        case 'top':
+        case 'right':
+        case 'bottom':
+        case 'left':
+            if (!TP.elementIsPositioned(elem)) {
+                reasons.push(TP.ELEMENT_NEEDS_TO_BE_POSITIONED);
+            }
+            break;
+        case 'width':
+        case 'height':
+            if (!TP.elementCanBeSized(elem)) {
+                reasons.push(TP.ELEMENT_NEEDS_TO_BE_BLOCK);
+            }
+            break;
+        default:
+            break;
+    }
+
+    return reasons;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('canFocus',
 function() {
 
