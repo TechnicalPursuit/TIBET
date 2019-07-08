@@ -504,14 +504,7 @@ function(uniqueToTarget) {
 
         matches,
 
-        i,
-
-        targetType,
-
-        generatorTPElem,
-        generatorSheet,
-
-        newRuleIndex;
+        i;
 
     currentRuleIndex = this.get('$currentRuleIndex');
     if (TP.notValid(currentRuleIndex)) {
@@ -577,40 +570,8 @@ function(uniqueToTarget) {
         }
     }
 
-    //  We couldn't find a rule that matched uniquely and was modifiable, so
-    //  let's create one in the same stylesheet as the currently selected rule.
-
-    //  Compute a unique selector for the targeted element
-    targetType = targetTPElem.getType();
-    ruleSelector = targetType.get('nsPrefix') + '|' +
-                    targetType.get('localName') + '#' +
-                    targetTPElem.getLocalID();
-
-    matches = TP.byCSSPath(ruleSelector, targetDoc, false, false);
-    if (matches.getSize() === 1 && matches.first() === targetElem) {
-
-        //  Grab the nearest 'generator' element to the target element. This
-        //  will be the element (usually a CustomTag) that would have generated
-        //  the target element (and which could be the target element itself).
-        generatorTPElem = targetTPElem.getNearestHaloGenerator();
-        if (TP.notValid(generatorTPElem)) {
-            //  TODO: Raise an exception.
-            return null;
-        }
-
-        //  Grab the style sheet for that generator.
-        generatorSheet = generatorTPElem.getStylesheetForStyleResource();
-
-        //  Create a new rule and add it to the end of the stylesheet.
-        newRuleIndex = TP.styleSheetInsertRule(generatorSheet,
-                                                ruleSelector,
-                                                '',
-                                                null,
-                                                true);
-
-        return generatorSheet.cssRules[newRuleIndex];
-    }
-
+    //  We couldn't find a rule that matched uniquely and was modifiable, so we
+    //  return null
     return null;
 });
 
