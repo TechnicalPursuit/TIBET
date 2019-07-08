@@ -209,12 +209,58 @@ li.CodeMirror-hint-active {
     background: rgba(0, 0, 0, 0.15) !important;
 }
 
-.toolCloser {
+.cssToolButtonStrip {
 
     position: absolute;
 
     top: 0;
     left: 0;
+
+    height: 16px;
+
+    background-color: yellow;
+
+    z-index: var(--tibet-HUD-CORNER-TIER);
+}
+
+.cssToolButtonStrip:not([pclass|hidden]) {
+
+    display: flex;
+}
+
+/* Position the cssToolButtonStrip based on whether the HUD drawers are open or not */
+
+#background.edge-north-open .cssToolButtonStrip {
+
+    top: calc(var(--sherpa-drawer-north-open-height) + 4px);
+}
+
+#background:not(.edge-north-open) .cssToolButtonStrip {
+
+    top: calc(var(--sherpa-drawer-north-closed-height) + 4px);
+}
+
+#background.edge-west-open .cssToolButtonStrip {
+
+    left: calc(var(--sherpa-drawer-west-open-width) + 4px);
+}
+
+#background:not(.edge-west-open) .cssToolButtonStrip {
+
+    left: calc(var(--sherpa-drawer-west-closed-width) + 4px);
+}
+
+#background.edge-east-open .cssToolButtonStrip {
+
+    right: calc(var(--sherpa-drawer-east-open-width) + 4px);
+}
+
+#background:not(.edge-east-open) .cssToolButtonStrip {
+
+    right: calc(var(--sherpa-drawer-east-closed-width) + 4px);
+}
+
+.toolButton {
 
     width: 16px;
     height: 16px;
@@ -223,37 +269,16 @@ li.CodeMirror-hint-active {
     background-position: 0 0;
     background-repeat: no-repeat;
 
-    background-image: url("~ide_root/media/baseline-highlight_off-24px.svg");
-
     background-color: white;
 
     border-radius: 8px;
 
     cursor: pointer;
-
-    z-index: var(--tibet-HUD-CORNER-TIER);
 }
 
-/* Position the toolCloser based on whether the HUD drawers are open or not */
+.closeButton {
 
-#background.edge-north-open .toolCloser {
-
-    top: calc(var(--sherpa-drawer-north-open-height) - 8px);
-}
-
-#background:not(.edge-north-open) .toolCloser {
-
-    top: calc(var(--sherpa-drawer-north-closed-height) - 8px);
-}
-
-#background.edge-west-open .toolCloser {
-
-    left: calc(var(--sherpa-drawer-west-open-width) - 8px);
-}
-
-#background:not(.edge-west-open) .toolCloser {
-
-    left: calc(var(--sherpa-drawer-west-closed-width) - 8px);
+    background-image: url("~ide_root/media/baseline-highlight_off-24px.svg");
 }
 
 /* Resizing the content when HUD drawers open (but only when its been converted

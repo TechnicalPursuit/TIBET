@@ -253,16 +253,17 @@ function(toolID) {
 
     var haloTPElem,
 
-        closerTPElem,
+        stripTPElem,
         toolTPElem;
 
     //  Hide the halo.
     haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
     haloTPElem.setAttribute('hidden', true);
 
-    //  Show the closer.
-    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
-    closerTPElem.setAttribute('hidden', false);
+    //  Show the CSS tool button strip.
+    stripTPElem =
+        this.getToolsLayer().getParentNode().get('> .cssToolButtonStrip');
+    stripTPElem.setAttribute('hidden', false);
 
     //  Show the tool matching the toolID (if it can be found).
     toolTPElem = TP.byId(toolID, TP.sys.getUIRoot());
@@ -396,7 +397,7 @@ function(toolID) {
 
     var toolTPElem,
 
-        closerTPElem,
+        stripTPElem,
         haloTPElem;
 
     //  Hide the tool matching the toolID (if it can be found).
@@ -405,9 +406,10 @@ function(toolID) {
         toolTPElem.setAttribute('hidden', true);
     }
 
-    //  Hide the closer.
-    closerTPElem = this.getToolsLayer().getParentNode().get('> .toolCloser');
-    closerTPElem.setAttribute('hidden', true);
+    //  Hide the CSS tool button strip.
+    stripTPElem =
+        this.getToolsLayer().getParentNode().get('> .cssToolButtonStrip');
+    stripTPElem.setAttribute('hidden', true);
 
     //  Show the halo.
     haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
@@ -489,7 +491,7 @@ function(finalizationFunc) {
             hudElem,
             contentElem,
 
-            closerElem;
+            stripElem;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
         tpElem.setAttribute('tibet:nomutationtracking', false);
@@ -531,11 +533,11 @@ function(finalizationFunc) {
 
         //  Insert the 'tools closer' content as a sibling of the content (now
         //  tools) element and *before* it.
-        closerElem = TP.xhtmlnode(
-                        '<div class="toolCloser"' +
-                        ' pclass:hidden="true"' +
-                        ' on:click="CloseActiveTool"/>');
-        TP.nodeInsertContent(contentElem, closerElem, TP.BEFORE_BEGIN);
+        stripElem = TP.xhtmlnode(
+            '<div class="cssToolButtonStrip" pclass:hidden="true">' +
+                '<div class="toolButton closeButton" on:click="CloseActiveTool"/>' +
+            '</div>');
+        TP.nodeInsertContent(contentElem, stripElem, TP.BEFORE_BEGIN);
 
         thisref.set('setupComplete', true);
 
