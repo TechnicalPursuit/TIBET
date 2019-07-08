@@ -798,15 +798,14 @@
     TP.sys.setcfg('user.default_unit', 'Public');
     TP.sys.setcfg('user.default_keyring', 'Public');
 
-    //  What path should be used to load application keyrings? Note that by
-    //  default there is no path here. A typical value if you want to make use
-    //  of keyrings would be `~app_dat/keyrings.xml` to mirror the library path.
-    TP.sys.setcfg('path.app_keyrings', null);
+    //  What path should be used to load application keyrings? The file here is
+    //  provided by default for TIBET projects.
+    TP.sys.setcfg('path.app_keyrings', '~app_dat/keyrings.xml');
 
     //  What path should be used to load application vcards? NOTE that this is
-    //  the path to a 'summary file' the client will attempt to load, not to a
-    //  specific user file or to the directory used for that purpose.
-    TP.sys.setcfg('path.app_vcards', null);
+    //  the path to a 'application file' the client will attempt to load, not to
+    //  a specific user file or to the directory used for that purpose.
+    TP.sys.setcfg('path.app_vcards', '~app_dat/vcards.xml');
 
     //  What path should be used to load library keyrings? The default is
     //  provided as a simple stub. no default keyrings are required.

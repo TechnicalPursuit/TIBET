@@ -27,6 +27,8 @@
 <config id="resources">
     <!-- put non-bundle resource entries here -->
     <resource href="~app/styles"/>
+    <resource href="~app_dat/keyrings.xml"/>
+    <resource href="~app_dat/vcards.xml"/>
 </config>
 
 <config id="tests">
