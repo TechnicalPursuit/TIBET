@@ -1662,6 +1662,70 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementCanBeSized',
+function(anElement) {
+
+    /**
+     * @method elementCanBeSized
+     * @summary Returns whether or not a element can take on 'size' - that is,
+     *     whether it can have a specific size in its document flow. Elements
+     *     that can be sized will be able to have their 'width' and 'height'
+     *     set, but also might be sized by other means.
+     * @param {Element} anElement The element to test for sizability.
+     * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not the element can be sized.
+     */
+
+    var doc,
+
+        computedStyle,
+        displayVal;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    //  NOTE: We follow the CSSOM spec here for how to compute the containing
+    //  block.
+
+    //  Per the spec, if anElement is the root element, then it is by definition
+    //  not a sizable element.
+    if (anElement === doc.documentElement) {
+        return false;
+    }
+
+    //  If anElement is the body element, then it is by definition not a sizable
+    //  element.
+    if (anElement === doc.body) {
+        return false;
+    }
+
+    //  Grab the computed style for the element
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
+    }
+
+    //  Grab the parent's display value.
+    displayVal = computedStyle.display;
+
+    //  An element with a display value of any of the following can be sized.
+    if (displayVal === 'block' ||
+        displayVal === 'inline-block' ||
+        displayVal === 'list-item' ||
+        displayVal === 'run-in' ||
+        displayVal === 'table' ||
+        displayVal === 'table-cell') {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementComputeBoxSizeOfMarkup',
 function(anElement, markup, boxType, wantsTransformed) {
 
