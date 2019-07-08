@@ -495,7 +495,8 @@ function() {
 
     var keys,
         roles,
-        units;
+        units,
+        names;
 
     //  NOTE
     //  we cache the key string to avoid recomputation overhead
@@ -505,20 +506,24 @@ function() {
 
     keys = TP.ac();
 
+    names = this.getRoleNames();
+
     roles = this.getRoles();
     keys = roles.injectInto(
             keys,
             function(role, accum) {
-                accum.push.apply(accum, role.getAccessKeys());
+                accum.push.apply(accum, role.getAccessKeys(names));
 
                 return accum;
             });
+
+    names = this.getOrgUnitNames();
 
     units = this.getUnits();
     keys = units.injectInto(
             keys,
             function(unit, accum) {
-                accum.push.apply(accum, unit.getAccessKeys());
+                accum.push.apply(accum, unit.getAccessKeys(names));
 
                 return accum;
             });
@@ -560,6 +565,46 @@ function() {
     names.unshift(org);
 
     return names;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.ietf.vcard.Inst.defineMethod('getOrgUnitNames',
+function() {
+
+    /**
+     * @method getOrgUnitNames
+     * @summary Returns an array of org-unit names found in the vcard. Note this
+     *     list is the combination of orgname and orgunit information with a '-'
+     *     separator injected between them.
+     * @returns {String[]} An array of org-unit names.
+     */
+
+    var orgs,
+        units,
+        name,
+        i,
+        j,
+        results;
+
+    orgs = this.getOrgNames();
+    units = this.getUnitNames();
+
+    results = TP.ac();
+
+    for (i = 0; i < orgs.getSize(); i++) {
+        for (j = 0; j < units.getSize(); j++) {
+            //  we normalize both the org name and role name so things like
+            //  dashes, slashes, parens, etc. in names don't mess us up.
+            name = orgs.at(i).asJSIdentifier() + '-' +
+                units.at(j).asJSIdentifier();
+            results.push(name);
+        }
+    }
+
+    results.compact();
+
+    return results;
 });
 
 //  ------------------------------------------------------------------------
@@ -612,12 +657,9 @@ function() {
 
     var orgs,
         roles,
-
         results,
-
         i,
         j,
-
         typeName;
 
     orgs = this.getOrgNames();
@@ -627,8 +669,17 @@ function() {
 
     for (i = 0; i < orgs.getSize(); i++) {
         for (j = 0; j < roles.getSize(); j++) {
-            typeName = orgs.at(i) + '-' + roles.at(j);
-            results.push(TP.sys.getTypeByName('TP.role.' + typeName));
+            //  we normalize both the org name and role name so things like
+            //  dashes, slashes, parens, etc. in names don't mess us up.
+            typeName = orgs.at(i).asJSIdentifier() + '-' +
+                roles.at(j).asJSIdentifier();
+
+            //  NOTE we push the type if found, otherwise we push the
+            //  top-level role class (which can still load keys etc).
+            results.push(
+                TP.sys.getTypeByName('APP.role.' + typeName) ||
+                TP.sys.getTypeByName('TP.role.' + typeName) ||
+                TP.core.Role);
         }
     }
 
@@ -646,27 +697,19 @@ function() {
     /**
      * @method getUnitNames
      * @summary Returns an array of unit names found in the vcard instance.
-     *     NOTE that TIBET automatically "namespace-qualifies" the content of
-     *     the ORGUNIT element with the content of the ORGNAME element in
-     *     producing this list.
+     *     Note this is the set of ORGUNIT element values without any ORGNAME.
      * @returns {String[]} An array of unit names (TP.core.Unit subtype names).
      */
 
-    var org,
-        unit,
+    var unit,
         names;
 
-    org = this.get('orgname');
     unit = this.get('orgunit');
     if (TP.isEmpty(unit)) {
         return TP.ac();
     }
 
-    names = unit.split(';');
-    return names.collect(
-            function(name) {
-                return TP.join(org, '-', name);
-            });
+    return unit.split(';').compact();
 });
 
 //  ------------------------------------------------------------------------
@@ -682,12 +725,13 @@ function() {
 
     var names;
 
-    names = this.getUnitNames();
+    names = this.getOrgUnitNames();
 
-    return names.collect(
-                function(name) {
-                    return TP.sys.getTypeByName('TP.role.' + name);
-                }).compact();
+    return names.collect(function(name) {
+        return TP.sys.getTypeByName('APP.unit.' + name) ||
+            TP.sys.getTypeByName('TP.unit.' + name) ||
+            TP.core.Unit;
+    });
 });
 
 //  ------------------------------------------------------------------------

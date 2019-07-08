@@ -4012,45 +4012,42 @@ TP.core.PermissionGroup.Type.defineAttribute('keyrings');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PermissionGroup.Type.defineMethod('addKeyRing',
-function(keyRingName) {
+TP.core.PermissionGroup.Type.defineMethod('addKeyring',
+function(keyringName) {
 
     /**
-     * @method addKeyRing
+     * @method addKeyring
      * @summary Adds a keyring to the receiver, granting it the permissions
-     *     defined by the keys contained in the keyring. Note that this
-     *     operation is typically done via an initialize method which defines
-     *     the permissions related to each group type.
+     *     defined by the keys contained in the keyring.
      * @description When defining different permission group types one of the
      *     operations needed is to define the keyrings which that group has
      *     access to. This is typically done by string name so that the keyrings
      *     don't have to exist at the time of the assignment -- allowing
      *     definitions to be made with less overhead. The individual keyrings
      *     will be loaded the first time a request is made for the actual keys.
-     * @param {String} keyRingName The name of the keyring.
+     *     NOTE: it is not necessary to add key rings whose name matches that of
+     *     a particular role/unit, they are fetched automatically.
+     * @param {String} keyringName The name of the keyring.
      * @returns {TP.meta.core.PermissionGroup} The receiver.
      */
 
     var ring,
         rings;
 
-    ring = TP.tibet.keyring.getInstanceById(keyRingName);
+    ring = TP.tibet.keyring.getInstanceById(keyringName);
     if (TP.notValid(ring)) {
         return this.raise('TP.sig.InvalidParameter',
-            'Keyring: \'' + keyRingName + '\' not found.');
+            'Keyring: \'' + keyringName + '\' not found.');
     }
 
-    rings = this.$get('keyrings');
-    if (TP.notValid(rings)) {
-        rings = TP.ac();
-
-        //  Note here how we use 'Type.set()' so that this type and all of its
-        //  subtypes can 'see' the value set here.
-
-        this.Type.set('keyrings', rings);
-    }
-
+    //  NOTE the getKeyrings call will always return an array, even if it builds
+    //  it on the fly in response to this request.
+    rings = this.getKeyrings(); //  We don't pass name, we're about to add it.
     rings.add(ring);
+
+    //  Any time we reconfigure the keyrings we need to flush any cached
+    //  dictionary we have for access keys so it will rebuild on next query.
+    this.$set('accessKeys', null);
 
     return this;
 });
@@ -4058,30 +4055,52 @@ function(keyRingName) {
 //  ------------------------------------------------------------------------
 
 TP.core.PermissionGroup.Type.defineMethod('getAccessKeys',
-function() {
+function(keyringNames) {
 
     /**
      * @method getAccessKeys
      * @summary Returns an array of the permission keys associated with the
-     *     receiver by virtue of its associated keyrings.
-     * @returns {String[]} An array containing the string keys of the receiver.
+     *     receiver by virtue of its associated keyrings. If a specific set of
+     *     keyring names is listed then the keys for that list are returned.
+     * @param {String[]} keyringNames An array of one or more keyring names to
+     *     specifically access the keys for. This is used at the top-level where
+     *     no custom permission group type exists for a role, unit, etc.
+     * @returns {String[]} An array containing the receiver's access keys.
      */
 
-    var keys,
+    var id,
+        dict,
+        keys,
         rings;
+
+    if (TP.notEmpty(keyringNames)) {
+        id = keyringNames.join(TP.JOIN);
+    } else {
+        id = this.getTypeName();
+    }
+
+    //  See if we've got a cached list of keys already.
+    dict = this.$get('accessKeys');
+    if (TP.isValid(dict)) {
+        keys = dict.at(id);
+        if (TP.isValid(keys)) {
+            return keys;
+        }
+    } else {
+        dict = TP.hc();
+        this.$set('accessKeys', dict);
+    }
+
+    //  Build up cached set from our associated keyrings. NOTE the getKeyrings
+    //  call will always return an array, even if it builds it on the fly.
+    rings = this.getKeyrings(keyringNames);
 
     //  build an empty array we can inject into the following processes
     keys = TP.ac();
 
-    rings = this.get('keyrings');
-    if (TP.notValid(rings)) {
-        return TP.ac();
-    }
-
     keys = rings.injectInto(
                 keys,
                 function(ring, accum) {
-
                     //  the apply will flatten the nested keys into the keyset
                     accum.push.apply(accum, ring.getAccessKeys());
 
@@ -4089,22 +4108,58 @@ function() {
                     return accum;
                 });
 
+    //  Cache the result of our effort for future calls.
+    dict.atPut(id, keys);
+
     return keys;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.PermissionGroup.Type.defineMethod('getKeyrings',
-function() {
+function(keyringNames) {
 
     /**
      * @method getKeyrings
      * @summary Returns the list of keyring instances associated with the
      *     receiver.
+     * @param {String[]} keyringNames An array of one or more keyring names to
+     *     specifically access the keys for. This is used at the top-level where
+     *     no custom permission group type exists for a role, unit, etc.
      * @returns {TP.tibet.keyring[]} The array of keyrings.
      */
 
-    return this.$get('keyrings');
+    var rings,
+        inst;
+
+    rings = this.$get('keyrings');
+    if (TP.notValid(rings)) {
+        rings = TP.ac();
+
+        //  Populate with either keyringNames or type name from receiver (if a
+        //  matching keyring exists)
+        if (keyringNames) {
+            keyringNames.perform(function(name) {
+                var ring;
+
+                ring = TP.tibet.keyring.getInstanceById(name);
+                if (TP.isValid(ring)) {
+                    rings.push(ring);
+                }
+            });
+        } else {
+            inst = TP.tibet.keyring.getInstanceById(keyringName);
+            if (TP.isValid(inst)) {
+                rings.push(inst);
+            }
+        }
+
+        //  Note here how we use 'Type.set()' so that this type and all of its
+        //  subtypes can 'see' the value set here.
+        this.Type.set('keyrings', rings);
+    }
+
+    return rings;
 });
 
 //  ========================================================================
@@ -4125,24 +4180,6 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.PermissionGroup.defineSubtype('Role');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Role.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     * @description For this type this method defines the baseline keyrings.
-     */
-
-    this.addKeyRing('public');
-
-    return;
-});
 
 //  ========================================================================
 //  public-guest
@@ -4167,24 +4204,6 @@ TP.core.Role.defineSubtype('role.public-guest');
 //  ------------------------------------------------------------------------
 
 TP.core.PermissionGroup.defineSubtype('Unit');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Unit.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     * @description For this type this method defines the baseline keyrings.
-     */
-
-    this.addKeyRing('public');
-
-    return;
-});
 
 //  ========================================================================
 //  public-public
