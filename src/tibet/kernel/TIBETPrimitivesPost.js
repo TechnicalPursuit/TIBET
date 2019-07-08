@@ -1978,23 +1978,7 @@ function(anObject, assignIfAbsent) {
         //  here, our preference is return an ID, as it tends to be much
         //  more unique than a NAME
         if (TP.isEmpty(localID = TP.elementGetAttribute(obj, 'id'))) {
-            //  if we're able to assign then we can look for semantically
-            //  valuable identification options
-            if (assign) {
-
-                if (TP.isEmpty(localID)) {
-                    //  Build a unique value and assign it
-                    localID = TP.elemGenID(obj);
-                }
-
-                TP.elementSetAttribute(obj, 'id', localID);
-            } else {
-                //  only option is to construct a unique ID
-                if (TP.isEmpty(localID)) {
-                    //  Build a unique value
-                    localID = TP.elemGenID(obj);
-                }
-            }
+            localID = TP.elemGenID(obj, assign);
         }
 
         return localID;
@@ -2058,12 +2042,7 @@ function(anObject, assignIfAbsent) {
         if (TP.isElement(frameElem)) {
             localID = TP.elementGetAttribute(frameElem, 'id');
             if (TP.isEmpty(localID)) {
-                if (assign) {
-                    TP.regex.INVALID_ID_CHARS.lastIndex = 0;
-                    localID = TP.genID().replace('$', 'ID_').replace(
-                                            TP.regex.INVALID_ID_CHARS, '_');
-                    TP.elementSetAttribute(frameElem, 'id', localID);
-                }
+                localID = TP.elemGenID(frameElem, assign);
             }
 
             return localID;
