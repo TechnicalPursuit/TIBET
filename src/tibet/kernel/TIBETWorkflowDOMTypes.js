@@ -701,8 +701,7 @@ function() {
      * @returns {String[]} An array of unit names (TP.core.Unit subtype names).
      */
 
-    var unit,
-        names;
+    var unit;
 
     unit = this.get('orgunit');
     if (TP.isEmpty(unit)) {

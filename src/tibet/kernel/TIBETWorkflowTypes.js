@@ -4148,7 +4148,7 @@ function(keyringNames) {
                 }
             });
         } else {
-            inst = TP.tibet.keyring.getInstanceById(keyringName);
+            inst = TP.tibet.keyring.getInstanceById(this.getTypeName());
             if (TP.isValid(inst)) {
                 rings.push(inst);
             }

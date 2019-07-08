@@ -18,14 +18,9 @@
 'use strict';
 
 var CLI,
-    Cmd,
-    sh,
-    path;
+    Cmd;
 
 CLI = require('./_cli');
-
-sh = require('shelljs');
-path = require('path');
 
 //  ---
 //  Type Construction
@@ -175,9 +170,9 @@ Cmd.prototype.getBootProfile = function() {
 Cmd.prototype.getScript = function() {
 
     var target,
-        context,
-        prefix,
-        ignore;
+        // context,
+        prefix;
+        // ignore;
 
     /*
     if (CLI.notEmpty(this.options.target)) {
@@ -248,7 +243,7 @@ Cmd.prototype.processCoverageResults = function(results) {
 
         js_used_bytes,
         js_total_bytes,
-        covered_js,
+        // covered_js,
 
         range;
 
@@ -258,7 +253,7 @@ Cmd.prototype.processCoverageResults = function(results) {
 
         js_used_bytes = 0;
         js_total_bytes = 0;
-        covered_js = '';
+        // covered_js = '';
 
         for (const entry of coverage) {
 
@@ -267,7 +262,7 @@ Cmd.prototype.processCoverageResults = function(results) {
 
             for (range of entry.ranges) {
                 js_used_bytes += range.end - range.start - 1;
-                covered_js += entry.text.slice(range.start, range.end) + '\n';
+                // covered_js += entry.text.slice(range.start, range.end) + '\n';
             }
         }
 
