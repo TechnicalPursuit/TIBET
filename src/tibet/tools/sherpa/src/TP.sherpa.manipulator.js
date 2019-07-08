@@ -253,7 +253,6 @@ function(beHidden) {
         haloTPElem,
         targetTPElem,
 
-        completeSetAttrHidden,
         stylesHUD,
         sherpaMain,
 
