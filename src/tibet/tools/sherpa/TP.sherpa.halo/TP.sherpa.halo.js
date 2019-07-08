@@ -1722,8 +1722,10 @@ function() {
      */
 
     var haloNECorner,
+        haloSECorner,
         haloSWCorner;
 
+    //  --- Northeast corner. Set it up to provide reparent/copy operation.
     haloNECorner = TP.byId('haloCorner-Northeast', this.getNativeWindow());
     haloNECorner.defineMethod(
                     'getDNDSource',
@@ -1741,6 +1743,24 @@ function() {
                     }.bind(this));
 
     haloNECorner.setAttribute('dnd:vend', 'dom_node');
+    //  --- Southeast corner - resize and multiply
+
+    haloSECorner = TP.byId('haloCorner-Southeast', this.getNativeWindow());
+    haloSECorner.observe(haloSECorner, 'TP.sig.DOMDragDown');
+
+    haloSECorner.defineHandler(
+            'TP.sig.DOMDragDown',
+            function(aSignal) {
+                var currentTargetTPElem;
+
+                currentTargetTPElem = this.get('currentTargetTPElem');
+
+                currentTargetTPElem.haloCornerStartedDragging(
+                                                this, aSignal, TP.SOUTHEAST);
+
+                return this;
+            }.bind(this));
+
     //  --  Southwest corner - toggle offset parent visibility
 
     haloSWCorner = TP.byId('haloCorner-Southwest', this.getNativeWindow());

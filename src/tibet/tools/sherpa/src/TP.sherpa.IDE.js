@@ -462,6 +462,9 @@ function(finalizationFunc) {
 
     //  NB: We set these up *after* the halo is set up.
 
+    //  Set up the manipulators
+    this.setupManipulators();
+
     //  Set up the outliner
     this.setupOutliner();
 
@@ -4012,6 +4015,35 @@ function() {
 
     inspectorTPElem = TP.byId('SherpaInspector', this.get('vWin'));
     inspectorTPElem.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('setupManipulators',
+function() {
+
+    /**
+     * @method setupManipulators
+     * @summary Sets up the Sherpa's 'manipulator' components. These componest
+     *     aid in visual editing of various properties of target elements -
+     *     usually CSS properties.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var toolsLayerTPElem,
+        manipulatorTPElem;
+
+    toolsLayerTPElem = this.getToolsLayer();
+
+    manipulatorTPElem = TP.sherpa.dimensionsManipulator.
+                            getResourceElement('template', TP.ietf.mime.XHTML);
+
+    manipulatorTPElem = manipulatorTPElem.clone();
+    manipulatorTPElem.compile();
+
+    toolsLayerTPElem.addContent(manipulatorTPElem);
 
     return this;
 });

@@ -32,6 +32,7 @@
 
     <script src="./src/TP.sherpa.manipulator.js"/>
 
+    <script src="./TP.sherpa.dimensionsManipulator/TP.sherpa.dimensionsManipulator.js"/>
     <script src="./TP.sherpa.about/TP.sherpa.about.js"/>
     <script src="./TP.sherpa.adjuster/TP.sherpa.adjuster.js"/>
     <script src="./TP.sherpa.connector/TP.sherpa.connector.js"/>

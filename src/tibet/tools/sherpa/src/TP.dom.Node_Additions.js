@@ -91,6 +91,38 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('haloCornerStartedDragging',
+function(aHalo, aSignal, haloCorner) {
+
+    /**
+     * @method haloCornerStartedDragging
+     * @summary Invoked when a halo corner starts being dragged by the user.
+     * @param {TP.sherpa.Halo} aHalo The halo whose corner is being dragged.
+     * @param {TP.sig.DOMDragDown} aSignal The 'drag down' signal that was
+     *     generated when the user began to drag.
+     * @param {Number} haloCorner A numeric constant, such as TP.SOUTHEAST, that
+     *     indicated the corner being dragged.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var manipulator;
+
+    switch (haloCorner) {
+
+        case TP.SOUTHEAST:
+            manipulator =
+                TP.byId('SherpaDimensionsManipulator', TP.win('UIROOT'));
+            manipulator.activate(aHalo.get('currentTargetTPElem'));
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('hudCanDrop',
 function(aHUD, droppingTPElem) {
 
@@ -1413,6 +1445,58 @@ function(outputNode) {
     }
 
     return insertedNode;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('sherpaGetNearestMultiplierGrid',
+function() {
+
+    /**
+     * @method sherpaGetNearestMultiplierGrid
+     * @summary
+     * @returns {TP.dom.ElementNode}
+     */
+
+    var elem,
+
+        generatorTPElem,
+
+        stopAncestor,
+
+        multiplierGrid;
+
+    elem = this.getNativeNode();
+
+    //  Look for an existing multiplier grid between us and our halo generator
+    generatorTPElem = this.getNearestHaloGenerator();
+
+    if (TP.isValid(generatorTPElem)) {
+        stopAncestor = generatorTPElem.getNativeNode();
+    } else {
+        stopAncestor = null;
+    }
+
+    TP.nodeAncestorsPerform(
+        elem,
+        function(ancestor) {
+            if (TP.elementHasClass(ancestor, 'sherpa-halo-multiplier-grid')) {
+                multiplierGrid = ancestor;
+                return TP.BREAK;
+            }
+        },
+        stopAncestor);
+
+    if (!TP.isElement(multiplierGrid)) {
+
+        //  We didn't find one - create one and insert it.
+        multiplierGrid = TP.documentConstructElement(this.getNativeDocument(),
+                                                        'div',
+                                                        TP.w3.Xmlns.XHTML);
+        TP.elementAddClass(multiplierGrid, 'sherpa-halo-multiplier-grid');
+    }
+
+    return TP.wrap(multiplierGrid);
 });
 
 //  ------------------------------------------------------------------------
