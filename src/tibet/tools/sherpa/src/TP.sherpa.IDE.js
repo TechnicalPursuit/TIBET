@@ -326,7 +326,7 @@ function(startTPElement) {
      * @param {TP.dom.ElementNode} startTPElement The element to start searching
      *     'upwards' through the ancestor hierarchy for mutable style sheets.
      * @returns {CSSStyleSheet} The nearest mutable style sheet to the supplied
-     *      element.
+     *     element.
      */
 
     var ancestors,
