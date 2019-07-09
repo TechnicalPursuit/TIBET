@@ -5431,11 +5431,15 @@ function(aRequest) {
     }
 
     if (TP.isValid(request)) {
-        dataSource = TP.ifKeyInvalid(request, 'dataSource', request);
+        dataSource = request.at('dataSource');
         keySource = TP.ifKeyInvalid(request, 'keySource', null);
     }
 
-    result = this.substitute(dataSource, keySource);
+    if (TP.isValid(dataSource)) {
+        result = this.substitute(dataSource, keySource);
+    } else {
+        result = this;
+    }
 
     response = request.getResponse(result);
     request.complete(result);
