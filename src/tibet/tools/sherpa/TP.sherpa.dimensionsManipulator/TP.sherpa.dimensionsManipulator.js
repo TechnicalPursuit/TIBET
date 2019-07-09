@@ -66,8 +66,7 @@ function(aTargetTPElem) {
                 ' "table-cell" to be sizable. Enter a value for the "display"' +
                 ' property:', 'block').then(
                 function(displayVal) {
-                    var stylesHUD,
-                        modifyingRule;
+                    var modifyingRule;
 
                     if (displayVal === 'block' ||
                         displayVal === 'inline-block' ||
@@ -76,8 +75,8 @@ function(aTargetTPElem) {
                         displayVal === 'table' ||
                         displayVal === 'table-cell') {
 
-                        stylesHUD = TP.byId('StylesHUD', TP.win('UIROOT'));
-                        modifyingRule = stylesHUD.getModifiableRule(true);
+                        modifyingRule = TP.bySystemId('Sherpa').
+                                        getOrMakeModifiableRule(aTargetTPElem);
 
                         if (TP.notValid(modifyingRule)) {
                             return this;
@@ -90,7 +89,7 @@ function(aTargetTPElem) {
                         TP.alert(
                             'Invalid "display" property value: ' + displayVal);
                     }
-                });
+                }.bind(this));
             }
 
         //  Return here because we don't want to continue with activation.

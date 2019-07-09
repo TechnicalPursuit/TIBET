@@ -593,6 +593,155 @@ function(aTimeout, aCallback) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('getOrMakeModifiableRule',
+function(aTargetTPElement) {
+
+    /**
+     * @method getOrMakeModifiableRule
+     * @summary Using the supplied element, this method returns or constructs a
+     *     CSS rule that will apply uniquely to the supplied element.
+     * @param {TP.dom.ElementNode} aTargetTPElement The element to use to
+     *     compute a CSS rule that will match.
+     * @returns {CSSRule} An existing or newly constructed CSS rule that will
+     *     match the supplied element uniquely.
+     */
+
+    var stylesHUD,
+
+        modifyingRule,
+
+        generatorTPElem,
+
+        generatorType,
+        targetType,
+
+        ruleSelector,
+
+        targetElem,
+        sherpaID,
+        targetDoc,
+
+        matches,
+
+        generatorSheet,
+
+        newRuleIndex;
+
+    stylesHUD = TP.byId('StylesHUD', TP.win('UIROOT'));
+
+    //  Try to obtain a 'modifying rule' that we can use to manipulate.
+    modifyingRule = stylesHUD.getModifiableRule(true);
+    if (TP.notValid(modifyingRule)) {
+        //  Grab the nearest 'generator' element to the target element. This
+        //  will be the element (usually a CustomTag) that would have generated
+        //  the target element (and which could be the target element itself).
+        generatorTPElem = aTargetTPElement.getNearestHaloGenerator();
+        if (TP.notValid(generatorTPElem)) {
+            //  TODO: Raise an exception.
+            return;
+        }
+
+        //  Compute a unique selector for the targeted element
+        generatorType = generatorTPElem.getType();
+        targetType = aTargetTPElement.getType();
+
+        //  First, we scope it by the generator type.
+        ruleSelector = generatorType.get('nsPrefix') + '|' +
+                        generatorType.get('localName');
+
+        //  With a descendant selector
+        ruleSelector += ' ';
+
+        targetElem = aTargetTPElement.getNativeNode();
+
+        //  If the target is a custom tag.
+        if (TP.isKindOf(aTargetTPElement, TP.tag.CustomTag)) {
+            //  Then, add a selector for the tag target itself, which will
+            //  depend on whether we're using a 'translated' tag (a tag that has
+            //  been translated into a natively-supported namespace) or an XML
+            //  namespaced tag.
+            if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI)) {
+                ruleSelector += '*[tibet|tag="' +
+                                targetType.get('nsPrefix') + ':' +
+                                targetType.get('localName');
+                                '"]';
+            } else {
+                ruleSelector += targetType.get('nsPrefix') + '|' +
+                                targetType.get('localName');
+            }
+        } else if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI)) {
+            //  If the target is in a natively-supported namespace (but is not a
+            //  custom tag - it is truly a native tag of the environment), just
+            //  use the local name.
+            ruleSelector += targetType.get('localName');
+        } else {
+            ruleSelector += targetType.get('nsPrefix') + '|' +
+                            targetType.get('localName');
+        }
+
+        sherpaID = TP.elementGetAttribute(targetElem, 'sherpaID', true);
+        if (TP.isEmpty(sherpaID)) {
+            //  Generate a unique ID for the target element, but do *not* assign
+            //  it because we want to use it for a different, attribute, not
+            //  'id'. 'id' attributes have a special XML-ish meaning and are
+            //  stripped before the document is saved and we want this one to
+            //  persist.
+            sherpaID = TP.elemGenID(targetElem, false);
+
+            aTargetTPElement.setAttribute('sherpaID', sherpaID);
+
+            setTimeout(
+                function() {
+                    //  Manually update the canvas source of the target element.
+                    //  Because we're in the midst of a D&D operation, mutation
+                    //  observers will have been temporarily suspended.
+                    //  Therefore, we do this manually.
+                    this.updateUICanvasSource(
+                        TP.ac(targetElem),
+                        targetElem.parentNode,
+                        TP.CREATE,
+                        'sherpaID',
+                        sherpaID,
+                        null);
+                }.bind(this), 10);
+        }
+
+        //  Add the SherpaID as an attribute selector.
+        ruleSelector += '[sherpaID="' + sherpaID + '"]';
+
+        targetDoc = aTargetTPElement.getNativeDocument();
+
+        //  Make sure that the newly generated selector matches (and matches
+        //  *only*) the target element.
+        matches = TP.byCSSPath(
+                        ruleSelector, targetDoc, false, false);
+        if (matches.getSize() === 1 &&
+            matches.first() === targetElem) {
+
+            //  The match was successful - and we only matched the target
+            //  element. Generate a new rule into the stylesheet using our
+            //  computed selector.
+
+            //  Grab the style sheet for the generator.
+            generatorSheet = generatorTPElem.
+                                getStylesheetForStyleResource();
+
+            //  Create a new rule and add it to the end of the stylesheet.
+            newRuleIndex = TP.styleSheetInsertRule(generatorSheet,
+                                                    ruleSelector,
+                                                    '',
+                                                    null,
+                                                    true);
+
+            modifyingRule = generatorSheet.cssRules[newRuleIndex];
+        }
+    }
+
+    return modifyingRule;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('getToolsLayer',
