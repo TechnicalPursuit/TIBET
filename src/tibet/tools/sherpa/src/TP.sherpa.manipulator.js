@@ -343,21 +343,31 @@ function(beHidden) {
             //  With a descendant selector
             ruleSelector += ' ';
 
-            //  Then, add a selector for the tag target itself, which will
-            //  depend on whether we're using an XHTML 'translated' tag or an
-            //  XML namespaced tag.
-            if (generatorTPElem.getNativeNode().namespaceURI ===
-                TP.w3.Xmlns.XHTML) {
-                ruleSelector += '*[tibet|tag="' +
-                                targetType.get('nsPrefix') + ':' +
-                                targetType.get('localName');
-                                '"]';
+            targetElem = targetTPElem.getNativeNode();
+
+            //  If the target is a custom tag.
+            if (TP.isKindOf(targetTPElem, TP.tag.CustomTag)) {
+                //  Then, add a selector for the tag target itself, which will
+                //  depend on whether we're using a 'translated' tag (a tag that
+                //  has been translated into a natively-supported namespace) or
+                //  an XML namespaced tag.
+                if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI)) {
+                    ruleSelector += '*[tibet|tag="' +
+                                    targetType.get('nsPrefix') + ':' +
+                                    targetType.get('localName');
+                                    '"]';
+                } else {
+                    ruleSelector += targetType.get('nsPrefix') + '|' +
+                                    targetType.get('localName');
+                }
+            } else if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI)) {
+                //  If the target is in a natively-supported namespace, just use
+                //  the local name.
+                ruleSelector += targetType.get('localName');
             } else {
                 ruleSelector += targetType.get('nsPrefix') + '|' +
                                 targetType.get('localName');
             }
-
-            targetElem = targetTPElem.getNativeNode();
 
             sherpaID = TP.elementGetAttribute(targetElem, 'sherpaID', true);
             if (TP.isEmpty(sherpaID)) {
