@@ -1396,7 +1396,7 @@ function(aSignal) {
 
             //  Build up a content chunk that can be appended to the URI content
             //  matching the sheet's location.
-            str = mutatedRule.selectorText + '\n{\n' + str + '}\n';
+            str = mutatedRule.selectorText + ' {\n' + str + '}\n';
             finalContent = currentContent + '\n' + str;
 
             //  Stamp the owner element with a 'tibet:dontreload' attribute so
