@@ -136,7 +136,7 @@ function(aSignal) {
 
     targetElem = haloTargetTPElem.getNativeNode();
 
-    currentTargetBox = TP.elementGetBorderBox(targetElem);
+    currentTargetBox = TP.elementGetBorderBox(targetElem, false);
 
     targetWidth = aSignal.getPageXAdjustedFor(targetElem) -
                     currentTargetBox.at('left');
@@ -188,7 +188,7 @@ function(aSignal) {
 
     targetElem = haloTargetTPElem.getNativeNode();
 
-    currentTargetBox = TP.elementGetBorderBox(targetElem);
+    currentTargetBox = TP.elementGetBorderBox(targetElem, false);
 
     targetWidth = aSignal.getPageXAdjustedFor(targetElem) -
                     currentTargetBox.at('left');
