@@ -671,7 +671,8 @@ function(aTargetTPElement) {
                 ruleSelector += targetType.get('nsPrefix') + '|' +
                                 targetType.get('localName');
             }
-        } else if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI)) {
+        } else if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI) &&
+                    TP.isEmpty(targetElem.prefix)) {
             //  If the target is in a natively-supported namespace (but is not a
             //  custom tag - it is truly a native tag of the environment), just
             //  use the local name.
