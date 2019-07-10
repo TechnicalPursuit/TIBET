@@ -693,20 +693,17 @@ function(aTargetTPElement) {
 
             aTargetTPElement.setAttribute('sherpaID', sherpaID);
 
-            setTimeout(
-                function() {
-                    //  Manually update the canvas source of the target element.
-                    //  Because we're in the midst of a D&D operation, mutation
-                    //  observers will have been temporarily suspended.
-                    //  Therefore, we do this manually.
-                    this.updateUICanvasSource(
-                        TP.ac(targetElem),
-                        targetElem.parentNode,
-                        TP.CREATE,
-                        'sherpaID',
-                        sherpaID,
-                        null);
-                }.bind(this), 10);
+            //  Manually update the canvas source of the target element.
+            //  Because we're in the midst of a D&D operation, mutation
+            //  observers will have been temporarily suspended.
+            //  Therefore, we do this manually.
+            this.updateUICanvasSource(
+                TP.ac(targetElem),
+                targetElem.parentNode,
+                TP.CREATE,
+                'sherpaID',
+                sherpaID,
+                null);
         }
 
         //  Add the SherpaID as an attribute selector.
