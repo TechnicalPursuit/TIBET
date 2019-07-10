@@ -201,9 +201,7 @@ function(aSignal) {
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
     halo.moveAndSizeToTarget();
 
-    this.callNextMethod();
-
-    return this;
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
