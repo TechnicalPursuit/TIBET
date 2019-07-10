@@ -2742,8 +2742,10 @@ function(aStylesheet, selectorText, shouldSignal) {
         //  the top. In fact, once we reach those rules, we will stop.
 
         //  Also note that 'rules' (i.e. cssRules) is a *live* list and
-        //  we're leveraging that here.
-        for (i = 0; i < rules.length; i++) {
+        //  we're leveraging that here, but we have to capture the list length
+        //  first.
+        len = rules.length;
+        for (i = 0; i < len; i++) {
 
             endIndex = rules.length - 1;
 
@@ -3216,8 +3218,6 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
         return TP.raise(this, 'TP.sig.InvalidString');
     }
 
-    /*
-     TODO: Fix this
     //  If the selector text has namespace-qualified selector content, make sure
     //  that the namespace is defined.
     if (TP.regex.HAS_PIPE.test(selectorText)) {
@@ -3232,7 +3232,6 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
     } else {
         newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
     }
-    */
 
     newRuleIndex = TP.ifInvalid(ruleIndex, aStylesheet.cssRules.length);
 
