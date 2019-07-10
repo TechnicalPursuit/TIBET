@@ -4194,6 +4194,14 @@ function() {
 
     toolsLayerTPElem.addContent(manipulatorTPElem);
 
+    manipulatorTPElem = TP.sherpa.positionManipulator.
+                            getResourceElement('template', TP.ietf.mime.XHTML);
+
+    manipulatorTPElem = manipulatorTPElem.clone();
+    manipulatorTPElem.compile();
+
+    toolsLayerTPElem.addContent(manipulatorTPElem);
+
     return this;
 });
 

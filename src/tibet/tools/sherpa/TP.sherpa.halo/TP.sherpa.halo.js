@@ -1722,6 +1722,7 @@ function() {
      */
 
     var haloNECorner,
+        haloNWCorner,
         haloSECorner,
         haloSWCorner;
 
@@ -1743,6 +1744,24 @@ function() {
                     }.bind(this));
 
     haloNECorner.setAttribute('dnd:vend', 'dom_node');
+    //  --- Northwest corner - move
+
+    haloNWCorner = TP.byId('haloCorner-Northwest', this.getNativeWindow());
+    haloNWCorner.observe(haloNWCorner, 'TP.sig.DOMDragDown');
+
+    haloNWCorner.defineHandler(
+            'TP.sig.DOMDragDown',
+            function(aSignal) {
+                var currentTargetTPElem;
+
+                currentTargetTPElem = this.get('currentTargetTPElem');
+
+                currentTargetTPElem.haloCornerStartedDragging(
+                                                this, aSignal, TP.NORTHWEST);
+
+                return this;
+            }.bind(this));
+
     //  --- Southeast corner - resize and multiply
 
     haloSECorner = TP.byId('haloCorner-Southeast', this.getNativeWindow());

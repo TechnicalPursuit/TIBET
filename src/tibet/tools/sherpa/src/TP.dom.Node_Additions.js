@@ -114,6 +114,12 @@ function(aHalo, aSignal, haloCorner) {
                 TP.byId('SherpaDimensionsManipulator', TP.win('UIROOT'));
             manipulator.activate(aHalo.get('currentTargetTPElem'));
             break;
+
+        case TP.NORTHWEST:
+            manipulator =
+                TP.byId('SherpaPositionManipulator', TP.win('UIROOT'));
+            manipulator.activate(aHalo.get('currentTargetTPElem'));
+            break;
         default:
             break;
     }
