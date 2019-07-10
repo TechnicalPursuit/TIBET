@@ -1680,6 +1680,21 @@ function(aNodeOrId) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.input.Type.defineMethod('getLocalName',
+function() {
+
+    /**
+     * @method getLocalName
+     * @summary Returns the local (aka short) name of the receiver without any
+     *     namespace prefix.
+     * @returns {String} The receiver's local name.
+     */
+
+    return 'input';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.input.Type.defineMethod('getTypeAttributeValue',
 function() {
 
