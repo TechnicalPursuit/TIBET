@@ -36,6 +36,10 @@ TP.sherpa.dimensionsManipulator.Inst.defineAttribute(
     'eastguide',
     TP.cpc('> #eastguide', TP.hc('shouldCollapse', true)));
 
+TP.sherpa.dimensionsManipulator.Inst.defineAttribute(
+    'sizecoordinates',
+    TP.cpc('> #sizecoordinates', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -229,7 +233,9 @@ function() {
         northRect,
         westRect,
         southRect,
-        eastRect;
+        eastRect,
+
+        coordsRect;
 
     ourRect = this.getOffsetParent().getGlobalRect(false);
 
@@ -255,6 +261,14 @@ function() {
     eastRect = TP.rtc(x + targetRect.getWidth(), y,
                         0.0, targetRect.getHeight());
     this.get('eastguide').setOffsetPositionAndSize(eastRect);
+
+    coordsRect = TP.rtc(x + targetRect.getWidth(), y + targetRect.getHeight(),
+                        targetRect.getWidth(), targetRect.getHeight());
+    this.get('sizecoordinates').setOffsetPositionAndSize(coordsRect);
+    this.get('sizecoordinates').setTextContent(
+        '(' + haloTargetTPElem.getWidth().floor() +
+        ',' + haloTargetTPElem.getHeight().floor() +
+        ')');
 
     return this;
 });
