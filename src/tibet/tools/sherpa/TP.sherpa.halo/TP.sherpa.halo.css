@@ -92,6 +92,13 @@ sherpa|halo > div {
     left: var(--sherpa-halo-corner-offset);
 }
 
+#haloCorner-Northwest:hover {
+
+    opacity: 1;
+
+    background-color: cornsilk;
+}
+
 /* TP.NORTH */
 #haloCorner-North {
 
@@ -127,6 +134,13 @@ sherpa|halo > div {
     left: var(--sherpa-halo-corner-offset);
 }
 
+#haloCorner-Southwest:hover {
+
+    opacity: 1;
+
+    background-color: cornsilk;
+}
+
 /* TP.SOUTH */
 #haloCorner-South {
 
@@ -139,6 +153,13 @@ sherpa|halo > div {
 
     bottom: var(--sherpa-halo-corner-offset);
     right: var(--sherpa-halo-corner-offset);
+}
+
+#haloCorner-Southeast:hover {
+
+    opacity: 1;
+
+    background-color: cornsilk;
 }
 
 /* Halo breadcrumb */
