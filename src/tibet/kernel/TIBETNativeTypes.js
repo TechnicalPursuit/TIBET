@@ -4940,6 +4940,11 @@ function(aSource, aChar) {
     counter = 0;
     theMatcher = TP.rc(ch + '{1}', 'g');
 
+    if (!TP.canInvokeInterface(aSource, ['asString', 'getSize', 'at'])) {
+        this.raise('TP.sig.InvalidOverlaySource', aSource);
+        return this;
+    }
+
     //  Get the string representation of aSource.
     theSource = aSource.asString();
     sourceSize = theSource.getSize();
@@ -5002,6 +5007,11 @@ function(aSource) {
     //  seriously wrong...
     if (patParts.getSize() > 2) {
         this.raise('TP.sig.InvalidNumericTemplate');
+        return this;
+    }
+
+    if (!TP.canInvokeInterface(aSource, ['integer', 'round'])) {
+        this.raise('TP.sig.InvalidOverlaySource', aSource);
         return this;
     }
 
@@ -5168,6 +5178,10 @@ function(aSource, aSide) {
         //  NOTE: WE DO NOT DEAL WITH NEGATIVE NUMBERS HERE. THIS METHOD'S
         //  USERS MUST DEAL WITH NEGATIVITY IN THEIR OWN WAY!!!
         theSource = parseInt(aSource, 10).abs();
+        if (!TP.canInvoke(theSource, 'toString')) {
+            this.raise('TP.sig.InvalidOverlaySource', aSource);
+            return this;
+        }
         sourceStr = theSource.toString();   //  don't let it recurse by
                                             //  calling asString here!
 
