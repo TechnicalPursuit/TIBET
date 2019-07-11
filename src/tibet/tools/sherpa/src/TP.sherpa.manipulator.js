@@ -77,6 +77,8 @@ function(aTargetTPElem) {
 
     this.setAttribute('hidden', false);
 
+    this.render();
+
     return this;
 });
 
@@ -317,8 +319,6 @@ function(beHidden) {
                             TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
             toolsLayer.setAttribute('activetool', this.getLocalID());
-
-            this.render();
         }
     }
 
