@@ -132,9 +132,6 @@ function(aSignal) {
         targetHeight;
 
     modifyingRule = this.$get('$currentModifyingRule');
-    if (TP.notValid(modifyingRule)) {
-        return this;
-    }
 
     haloTargetTPElem = this.$get('$currentTargetTPElement');
 
@@ -186,9 +183,6 @@ function(aSignal) {
         targetHeight;
 
     modifyingRule = this.$get('$currentModifyingRule');
-    if (TP.notValid(modifyingRule)) {
-        return this;
-    }
 
     haloTargetTPElem = this.$get('$currentTargetTPElement');
 
