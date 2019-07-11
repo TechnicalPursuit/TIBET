@@ -596,7 +596,7 @@ function(aTimeout, aCallback) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('getOrMakeModifiableRule',
-function(aTargetTPElement) {
+function(aTargetTPElement, initialRuleText) {
 
     /**
      * @method getOrMakeModifiableRule
@@ -604,6 +604,10 @@ function(aTargetTPElement) {
      *     CSS rule that will apply uniquely to the supplied element.
      * @param {TP.dom.ElementNode} aTargetTPElement The element to use to
      *     compute a CSS rule that will match.
+     * @param {String} [initialRuleText] If a new rule has to be created in this
+     *     method, this is an optional chunk of rule text that will be used to
+     *     start the rule with. This should *not* include the surrounding
+     *     opening and closing braces ('{' and '}').
      * @returns {CSSRule} An existing or newly constructed CSS rule that will
      *     match the supplied element uniquely.
      */
@@ -726,12 +730,14 @@ function(aTargetTPElement) {
             generatorSheet = generatorTPElem.
                                 getStylesheetForStyleResource();
 
+            ruleText = TP.ifInvalid(initialRuleText, '');
+
             //  Create a new rule and add it to the end of the stylesheet.
             newRuleIndex = TP.styleSheetInsertRule(generatorSheet,
                                                     ruleSelector,
-                                                    '',
+                                                    ruleText,
                                                     null,
-                                                    true);
+                                                    false);
 
             modifyingRule = generatorSheet.cssRules[newRuleIndex];
         }
