@@ -631,6 +631,8 @@ function(aTargetTPElement, initialRuleText) {
 
         generatorSheet,
 
+        ruleText,
+
         newRuleIndex;
 
     stylesHUD = TP.byId('StylesHUD', TP.win('UIROOT'));
