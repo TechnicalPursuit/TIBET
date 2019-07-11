@@ -165,7 +165,9 @@ function(aSignal) {
 
     /**
      * @method handleDOMDragUp
-     * @summary Handles notification of when the receiver might be...
+     * @summary Handles notification of when the receiver might need to be
+     *     updated because the user is done with dragging and the mouse button
+     *     has gone up.
      * @param {TP.sig.DOMDragUp} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.dimensionsManipulator} The receiver.
