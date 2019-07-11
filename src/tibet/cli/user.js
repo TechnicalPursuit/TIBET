@@ -160,8 +160,7 @@ Cmd.prototype.execute = function() {
         if (CLI.sh.test('-e', fullpath)) {
             this.info('User vcard found in ' + fullpath);
         } else {
-            this.info('Generating vcard in ' + fullpath);
-            this.generateDefaultVCard(user, fullpath);
+            this.generateDefaultVCard(user, data, fullpath);
         }
 
         org = this.options.org || data.org;
@@ -212,6 +211,7 @@ Cmd.prototype.execute = function() {
         this.info('User updated.');
 
     } else {
+
         if (CLI.isEmpty(pass)) {
             this.error('Cannot insert new user without a password value.');
             return 1;
@@ -258,7 +258,6 @@ Cmd.prototype.execute = function() {
         data.role = role;
         data.pass = encrypted;
 
-        this.info('Generating vcard in ' + fullpath);
         this.generateDefaultVCard(user, data, fullpath);
 
         //  Write out the changes from the top-level json object.
@@ -280,7 +279,7 @@ Cmd.prototype.generateDefaultVCard = function(user, userData, fullpath) {
         template,
         content;
 
-    this.info('Creating default ' + user + ' vcard in ' + fullpath);
+    this.info('Generating vcard in ' + fullpath);
 
     file = path.join(module.filename, this.DNA_ROOT, 'vcard.xml.hb');
     data = CLI.sh.cat(file);
