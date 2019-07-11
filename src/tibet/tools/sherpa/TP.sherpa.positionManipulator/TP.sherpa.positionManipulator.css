@@ -1,0 +1,30 @@
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+
+sherpa|positionManipulator {
+
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: var(--tibet-HALO-POPUP-TIER);
+}
+
+sherpa|positionManipulator .guide {
+
+    position: absolute;
+    border: dotted 1px red;
+}
+
+sherpa|positionManipulator .readout {
+
+    width: 10em;
+    height: 1.5em;
+
+    color: red;
+
+    padding-top: 5px;
+    padding-left: 5px;
+
+    border: none;
+}
