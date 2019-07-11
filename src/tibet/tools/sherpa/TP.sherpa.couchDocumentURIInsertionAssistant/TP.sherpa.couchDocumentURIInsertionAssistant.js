@@ -232,7 +232,7 @@ function(anObject) {
         TP.elem('<tibet:service' +
                 ' id="' + localID + '_loader"' +
                 ' href="' + remoteLoc + '"' +
-                ' result="' + localLoc + '"' +
+                ' name="' + localLoc + '"' +
                 ' watched="true"' +
                 ' on:TP.sig.AttachComplete="TP.sig.UIActivate"/>');
     TP.nodeAppendChild(newElem, newLoadServiceElem, false);
@@ -243,7 +243,7 @@ function(anObject) {
                 ' id="' + localID + '_saver"' +
                 ' href="' + remoteLoc + '"' +
                 ' body="' + localLoc + '"' +
-                ' result="' + localLoc + '_result"' +
+                ' name="' + localLoc + '_result"' +
                 ' method="PUT"' +
                 ' mimetype="application/json"/>');
     TP.nodeAppendChild(newElem, newSaveServiceElem, false);

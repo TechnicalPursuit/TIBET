@@ -2294,7 +2294,7 @@ shouldFocusHalo, shouldShowAssistant) {
     newServiceElem = TP.elem('<tibet:service' +
                                 ' id="' + elemID + '"' +
                                 ' href="' + remoteLocation + '"' +
-                                ' result="' + localLoc + '"/>');
+                                ' name="' + localLoc + '"/>');
 
     this.insertElementIntoCanvas(
             newServiceElem,

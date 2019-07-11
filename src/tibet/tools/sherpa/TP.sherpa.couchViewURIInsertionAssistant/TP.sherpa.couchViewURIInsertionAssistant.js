@@ -206,7 +206,7 @@ function(anObject) {
         TP.elem('<tibet:service' +
                 ' id="' + localID + '_loader"' +
                 ' href="' + remoteLoc + '"' +
-                ' result="' + localLoc + '"' +
+                ' name="' + localLoc + '"' +
                 ' watched="true"' +
                 ' on:TP.sig.AttachComplete="TP.sig.UIActivate"/>');
     TP.nodeAppendChild(newElem, newLoadServiceElem, false);

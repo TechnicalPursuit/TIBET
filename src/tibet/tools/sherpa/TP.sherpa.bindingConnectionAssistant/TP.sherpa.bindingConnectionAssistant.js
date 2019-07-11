@@ -253,7 +253,7 @@ function(aTPElement, aSourceURI) {
         serviceTPElem = serviceTPElems.at(i);
 
         remoteURIAttrVal = serviceTPElem.getAttribute('href');
-        localURIAttrVal = serviceTPElem.getAttribute('result');
+        localURIAttrVal = serviceTPElem.getAttribute('name');
 
         if (sourcePrimaryURI.equalTo(remoteURIAttrVal)) {
             return TP.ac(serviceTPElem, 'remote');
@@ -606,7 +606,7 @@ function(anObj) {
             //  Otherwise, we're hooking up to the remote URI. We need to get
             //  the local (result) URI from the service tag and use that as our
             //  'connected URI'.
-            localURI = TP.uc(serviceInfo.first().getAttribute('result'));
+            localURI = TP.uc(serviceInfo.first().getAttribute('name'));
         }
     }
 

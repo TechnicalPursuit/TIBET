@@ -112,13 +112,13 @@ function(aRequest) {
         return;
     }
 
-    if (TP.notEmpty(resultHref = TP.elementGetAttribute(elem, 'result'))) {
+    if (TP.notEmpty(resultHref = TP.elementGetAttribute(elem, 'name'))) {
         if (!TP.isURI(resultURI = TP.uc(resultHref))) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
     } else {
-        //  No 'result' attribute.
+        //  No 'name' attribute.
         return;
     }
 
@@ -247,8 +247,8 @@ function() {
         void 0;
     }
 
-    //  See if a 'result' href is available and a URI can be created from it.
-    if (TP.notEmpty(href = this.getAttribute('result'))) {
+    //  See if a 'name' href is available and a URI can be created from it.
+    if (TP.notEmpty(href = this.getAttribute('name'))) {
         if (!TP.isURI(resultURI = TP.uc(href))) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
@@ -864,8 +864,8 @@ function(aResult) {
         newResource,
         strResource;
 
-    //  See if a 'result' href is available and a URI can be created from it.
-    if (TP.notEmpty(href = this.getAttribute('result'))) {
+    //  See if a 'name' href is available and a URI can be created from it.
+    if (TP.notEmpty(href = this.getAttribute('name'))) {
         if (!TP.isURI(resultURI = TP.uc(href))) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
@@ -875,7 +875,7 @@ function(aResult) {
         return this;
     }
 
-    //  If the result URI's 'result' is already equal to what we're handing in,
+    //  If the result URI's 'name' is already equal to what we're handing in,
     //  then exit here
     if (TP.equal(
             resultURI.getResource(TP.hc('refresh', false)).get('result'),
