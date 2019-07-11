@@ -266,6 +266,9 @@ function() {
         ',' + haloTargetTPElem.getHeight().floor() +
         ')');
 
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
+
     return this;
 });
 
