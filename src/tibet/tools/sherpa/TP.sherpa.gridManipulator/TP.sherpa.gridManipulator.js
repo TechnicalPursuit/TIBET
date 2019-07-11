@@ -99,6 +99,8 @@ function(aTargetTPElem) {
 
         multiplierTemplateTPElement,
 
+        halo,
+
         numRows,
         numCols;
 
