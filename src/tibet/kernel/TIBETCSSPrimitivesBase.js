@@ -3188,7 +3188,8 @@ function(aStylesheet, selectorText, ruleText, ruleIndex, shouldSignal) {
      * @param {CSSStyleSheet} aStylesheet The style sheet to add the rule to.
      * @param {String} selectorText The CSS selectorText to use when applying
      *     the rule.
-     * @param {String} ruleText The style text of the rule.
+     * @param {String} ruleText The style text of the rule. This should *not*
+     *     include the surrounding opening and closing braces ('{' and '}').
      * @param {Number} ruleIndex The index to insert the style rule at. If not
      *     supplied, the rule will be inserted at the end.
      * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
