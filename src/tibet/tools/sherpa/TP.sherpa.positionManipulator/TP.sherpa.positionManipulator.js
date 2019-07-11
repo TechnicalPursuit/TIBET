@@ -104,6 +104,8 @@ function(aTargetTPElem) {
     }
 
     return this;
+}, {
+    patchCallee: true
 });
 
 //  ------------------------------------------------------------------------
