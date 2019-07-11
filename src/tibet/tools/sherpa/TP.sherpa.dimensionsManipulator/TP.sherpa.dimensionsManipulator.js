@@ -49,10 +49,9 @@ function(aTargetTPElem) {
 
     /**
      * @method activate
-     * @summary Handles notifications of the canvas changing from the Sherpa
-     *     object.
-     * @param {TP.sig.CanvasChanged} aSignal The TIBET signal which triggered
-     *     this method.
+     * @summary Activates the receiver.
+     * @param {TP.dom.ElementNode} aTargetTPElem The element that the receiver
+     *     will be activated on.
      * @returns {TP.sherpa.dimensionsManipulator} The receiver.
      */
 
