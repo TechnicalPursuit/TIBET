@@ -5452,7 +5452,9 @@ function(aRequest) {
     if (TP.isValid(dataSource)) {
         result = this.substitute(dataSource, keySource);
     } else {
+        /* eslint-disable consistent-this */
         result = this;
+        /* eslint-enable consistent-this */
     }
 
     response = request.getResponse(result);
