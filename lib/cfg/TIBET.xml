@@ -374,6 +374,9 @@
 
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.positionManipulator-TP.sherpa.positionManipulator.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.positionManipulator-TP.sherpa.positionManipulator.css.js"/>
+
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.gridManipulator-TP.sherpa.gridManipulator.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.gridManipulator-TP.sherpa.gridManipulator.css.js"/>
 </config>
 
 <config id="test-inlined" if="boot.phase_one boot.inlined">

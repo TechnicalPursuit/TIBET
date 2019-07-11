@@ -110,8 +110,13 @@ function(aHalo, aSignal, haloCorner) {
     switch (haloCorner) {
 
         case TP.SOUTHEAST:
-            manipulator =
-                TP.byId('SherpaDimensionsManipulator', TP.win('UIROOT'));
+            if (aSignal.getAltKey()) {
+                manipulator =
+                    TP.byId('SherpaGridManipulator', TP.win('UIROOT'));
+            } else {
+                manipulator =
+                    TP.byId('SherpaDimensionsManipulator', TP.win('UIROOT'));
+            }
             manipulator.activate(aHalo.get('currentTargetTPElem'));
             break;
 
@@ -1455,13 +1460,18 @@ function(outputNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('sherpaGetNearestMultiplierGrid',
+TP.dom.ElementNode.Inst.defineMethod('sherpaGetNearestMultipliedElement',
 function() {
 
     /**
-     * @method sherpaGetNearestMultiplierGrid
-     * @summary
-     * @returns {TP.dom.ElementNode}
+     * @method sherpaGetNearestMultipliedElement
+     * @summary Returns the node that was be modified when the Sherpa was in
+     *     'grid multiply' mode or null if none can be found.
+     * @description If the receiver itself is a grid multiplied element, then
+     *     this method will return the receiver. Otherwise, it will return the
+     *     nearest grid multiplied element between the receiver and it's
+     *     'generator'.
+     * @returns {TP.dom.ElementNode|null} The closest 'grid multiplied' element.
      */
 
     var elem,
@@ -1474,7 +1484,13 @@ function() {
 
     elem = this.getNativeNode();
 
-    //  Look for an existing multiplier grid between us and our halo generator
+    //  If we're a multiplied element, just return ourself.
+    if (TP.elementHasAttribute(elem, 'sherpa-multiplied')) {
+        return this;
+    }
+
+    //  Look for an existing multiplied element between us and our halo
+    //  generator
     generatorTPElem = this.getNearestHaloGenerator();
 
     if (TP.isValid(generatorTPElem)) {
@@ -1486,21 +1502,12 @@ function() {
     TP.nodeAncestorsPerform(
         elem,
         function(ancestor) {
-            if (TP.elementHasClass(ancestor, 'sherpa-halo-multiplier-grid')) {
+            if (TP.elementHasAttribute(ancestor, 'sherpa-multiplied')) {
                 multiplierGrid = ancestor;
                 return TP.BREAK;
             }
         },
         stopAncestor);
-
-    if (!TP.isElement(multiplierGrid)) {
-
-        //  We didn't find one - create one and insert it.
-        multiplierGrid = TP.documentConstructElement(this.getNativeDocument(),
-                                                        'div',
-                                                        TP.w3.Xmlns.XHTML);
-        TP.elementAddClass(multiplierGrid, 'sherpa-halo-multiplier-grid');
-    }
 
     return TP.wrap(multiplierGrid);
 });

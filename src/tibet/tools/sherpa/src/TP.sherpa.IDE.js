@@ -4208,6 +4208,14 @@ function() {
 
     toolsLayerTPElem.addContent(manipulatorTPElem);
 
+    manipulatorTPElem = TP.sherpa.gridManipulator.
+                            getResourceElement('template', TP.ietf.mime.XHTML);
+
+    manipulatorTPElem = manipulatorTPElem.clone();
+    manipulatorTPElem.compile();
+
+    toolsLayerTPElem.addContent(manipulatorTPElem);
+
     return this;
 });
 
