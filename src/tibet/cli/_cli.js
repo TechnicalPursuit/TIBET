@@ -311,6 +311,16 @@ CLI.isFalse = function(aReference) {
 };
 
 /**
+ * Returns true if the object provided is a function instance.
+ * @param {Object} obj The object to test.
+ * @returns {Boolean} true if the object appears to be a function.
+ */
+CLI.isFunction = function(obj) {
+    return typeof obj === 'function' &&
+        Object.prototype.toString.call(obj) === '[object Function]';
+};
+
+/**
  * Returns true if the string provided is a valid JS identifier.
  * @param {String} aString The string value to test.
  * @returns {Boolean} true if the string would make a valid JS identifier.

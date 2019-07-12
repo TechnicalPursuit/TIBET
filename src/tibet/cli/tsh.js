@@ -106,8 +106,8 @@ Cmd.prototype.USAGE = 'tibet tsh <script> [<headless_args>]';
 Cmd.prototype.announce = function() {
 
     if (!this.options.silent) {
-        this.log((this.options.tap ? '# ' : '') +
-            'Loading TIBET at ' + new Date().toISOString(), 'dim');
+        this.log('# ' + // (this.options.tap ? '# ' : '') +
+            'Loading TIBET platform at ' + new Date().toISOString(), 'dim');
     }
 
     return;
@@ -134,6 +134,54 @@ Cmd.prototype.beforeBrowserClose = function(puppetBrowser, puppetPage) {
 Cmd.prototype.beforePageLoad = function(puppetBrowser, puppetPage) {
 
     return;
+};
+
+/**
+ * Provides common colorization of output from TSH execution. This is often
+ * content coming from the headless environment. Note that the message object
+ * can take a variety of forms including an array (which is used to send
+ * multi-line output). The return value here can be a string, array, or the
+ * special value Cmd.NO_VALUE used to verify we should skip that item.
+ * @param {Object} msg The object to stringify and colorize.
+ * @return {Object} A string, array, Cmd.NO_VALUE, etc.
+ */
+Cmd.prototype.colorizeForStdio = function(msg) {
+    var arr,
+        cmd;
+
+    cmd = this;
+    arr = this.stringifyForStdio(msg);
+
+    arr = arr.map(function(text) {
+
+        if (text.charAt(0) === '#') {
+            if (/^# PASS/.test(text)) {
+                return cmd.colorize(text, 'green');
+            } else if (/^# FAIL/.test(text)) {
+                return cmd.colorize(text, 'red');
+            } else if (/ TIBET /.test(text)) {
+                return cmd.colorize(text, 'white');
+            } else {
+                return cmd.colorize(text, 'gray');
+            }
+        }
+
+        if (/^(\d+)\.\.(\d+)$/.test(text)) {
+            return cmd.colorize(text, 'white');
+        }
+
+        if (/^ok -/.test(text)) {
+            return cmd.colorize(text.slice(0, 2), 'green') +
+                cmd.colorize(text.slice(2), 'white');
+        } else if (/^not ok -/.test(text)) {
+            return cmd.colorize(text.slice(0, 6), 'red') +
+                cmd.colorize(text.slice(6), 'white');
+        }
+
+        return cmd.colorize(text, 'gray');
+    });
+
+    return arr;
 };
 
 /**
@@ -335,8 +383,8 @@ Cmd.prototype.execute = function() {
         //  Once TIBET boots run whatever TSH command we're being asked to
         //  execute for this process.
         if (!cmd.options.silent) {
-            cmd.log((cmd.options.tap ? '# ' : '') +
-                'TIBET loaded and active in ' + (end - start) + 'ms', 'dim');
+            cmd.log('# ' + // (cmd.options.tap ? '# ' : '') +
+                'TIBET reflection suite loaded and active in ' + (end - start) + 'ms', 'dim');
         }
 
         return puppetPage.mainFrame().executionContext();
@@ -783,15 +831,30 @@ Cmd.prototype.close = function(code, browser) {
  * Invoked any time the stderr channel to the client receives data. The default
  * is simply to log it as an error. Subtypes may do other error handling.
  */
-Cmd.prototype.stderr = function(err) {
-
-    //  Might be a 'ConsoleMessage' object from puppeteer...
-    if (typeof err.text === 'function') {
-        this.error(err.text());
-        return;
+Cmd.prototype.$stderr = function(err) {
+    if (CLI.isValid(err)) {
+        this.log(err);
     }
+    return;
+};
 
-    this.error(err);
+
+/**
+ */
+Cmd.prototype.stderr = function(err) {
+    var arr,
+        cmd;
+
+    cmd = this;
+    arr = this.colorizeForStdio(err);
+
+    arr.forEach(function(line) {
+        if (line !== Cmd.NO_VALUE) {
+            cmd.$stderr(line);
+        }
+    });
+
+    return;
 };
 
 
@@ -800,33 +863,72 @@ Cmd.prototype.stderr = function(err) {
  * is simply to log the data to the console. Subtypes may use this to capture
  * data for processing upon receipt of the 'exit' event.
  */
-Cmd.prototype.stdout = function(obj) {
+Cmd.prototype.$stdout = function(msg) {
+    if (CLI.isValid(msg)) {
+        this.log(msg);
+    }
+    return;
+};
+
+
+/**
+ */
+Cmd.prototype.stdout = function(msg) {
     var arr,
         cmd;
 
     cmd = this;
+    arr = this.colorizeForStdio(msg);
+
+    arr.forEach(function(line) {
+        if (line !== Cmd.NO_VALUE) {
+            cmd.$stdout(line);
+        }
+    });
+
+    return;
+};
+
+
+/**
+ * @return {Object} A string, array, Cmd.NO_VALUE, etc.
+ */
+Cmd.prototype.stringifyForStdio = function(obj) {
+    var cmd,
+        arr;
+
+    cmd = this;
     arr = Array.isArray(obj) ? obj : [obj];
 
-    arr.forEach(function(item) {
+    arr = arr.map(function(item) {
         var val;
 
-        //  Might be a 'ConsoleMessage' object from puppeteer...
-        if (typeof item.text === 'function') {
+        if (Array.isArray(item)) {
+
+            val = item.map(function(it) {
+                return cmd.stringifyForStdio(it);
+            });
+
+        } else if (CLI.isFunction(item.text)) {
+            //  Might be a 'ConsoleMessage' object from puppeteer...
             val = item.text();
         } else if (CLI.isValid(item.data)) {
             //  Might be 'results' from TIBET ( { meta: ..., data: ...} ).
             val = item.data;
         } else {
+            //  Might be anything but if JSON let's beautify etc.
             val = CLI.beautify(item);
         }
 
-        //  Filter TSH no value/output messaging.
-        if (Cmd.NO_VALUE !== val) {
-            cmd.log(val);
-        }
+        return val;
+    });
+
+    //  join, but basically stripping out any undefined values...only join the
+    //  values that became true strings.
+    return arr.filter(function(item) {
+        return CLI.isValid(item) && item !== Cmd.NO_VALUE;
     });
 };
-
 
 module.exports = Cmd;
 
