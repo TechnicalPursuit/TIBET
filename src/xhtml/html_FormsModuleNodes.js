@@ -1575,7 +1575,7 @@ function(attrStr, wantsXMLNS, targetDefaultNS) {
     //  always 'input' - but we do qualify by using a 'type="..."' attribute.
     typeAttrValue = this.getTypeAttributeValue();
     if (TP.notValid(typeAttrValue)) {
-        return '';
+        typeAttrValue = 'text';
     }
 
     attrMarkup = ' type="' + typeAttrValue + '"' + attrMarkup;
