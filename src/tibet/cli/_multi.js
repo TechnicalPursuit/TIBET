@@ -75,6 +75,8 @@ Cmd.initialize = function(cmdType) {
 Cmd.loadSubcommands = function(cmdType) {
     var cmdname,
 
+        wassilent,
+
         fullpath,
 
         liblist,
@@ -82,6 +84,10 @@ Cmd.loadSubcommands = function(cmdType) {
         list;
 
     cmdname = cmdType.NAME;
+
+    //  Turn off ShellJS whining
+    wassilent = sh.config.silent;
+    sh.config.silent = true;
 
     fullpath = CLI.expandPath('~lib_cmd/' + cmdname);
     liblist = sh.ls(fullpath);
@@ -108,6 +114,9 @@ Cmd.loadSubcommands = function(cmdType) {
             CLI.error('Error loading subcommand ' + name + ': ' + e);
         }
     });
+
+    //  Turn back on ShellJS whining
+    sh.config.silent = wassilent;
 };
 
 
