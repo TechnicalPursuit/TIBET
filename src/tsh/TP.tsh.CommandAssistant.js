@@ -117,8 +117,7 @@ function(anObject) {
 
     str = this.generateCommand(typeInfo);
 
-    //  Fire a 'ConsoleCommand' with a ':type' command, supplying the name and
-    //  the template.
+    //  Fire a 'ConsoleCommand' with the command as built.
     TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
 
     return this;
