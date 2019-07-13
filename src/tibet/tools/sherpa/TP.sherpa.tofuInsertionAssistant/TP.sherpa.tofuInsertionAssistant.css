@@ -33,7 +33,7 @@ sherpa|tofuInsertionAssistant > .body {
     top: 0;
     left: 0;
     right: 0;
-    bottom: 6em;
+    bottom: 7em;
 
     text-align: left;
 }
@@ -265,7 +265,7 @@ sherpa|tofuInsertionAssistant > .foot {
     right: 0;
     width: 100%;
 
-    height: 6em;
+    height: 7em;
 }
 
 sherpa|tofuInsertionAssistant > .foot #generatedTag {
@@ -273,10 +273,10 @@ sherpa|tofuInsertionAssistant > .foot #generatedTag {
     display: inline-block;
 
     width: 90%;
-    height: 3em;
+    height: 4em;
 
     padding: 0 12px;
-    margin: 0 12px;
+    margin: 0 20px;
 
     font-size: 100%;
     line-height: 1.2em;

@@ -165,15 +165,16 @@ tsh|method_assistant > .foot #generatedCmdLine {
 
     display: inline-block;
 
+    width: 90%;
     height: 4em;
 
     padding: 0 12px;
-    margin: 0 12px;
+    margin: 0 20px;
 
     font-size: 100%;
     line-height: 1.2em;
 
-    border: dashed 1px black;
+    border: dotted 1px black;
 
     text-align: left;
 

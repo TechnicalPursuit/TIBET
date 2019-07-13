@@ -890,8 +890,9 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #TofuAssistantDialog {
 
-    width: 600px;
-    height: 370px;
+    /* For now, limits us to webkit, will be standardized to 'stretch' */
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 #TofuAssistantDialog .header {
@@ -905,10 +906,10 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #ConnectionAssistantDialog {
 
-    width: 600px;
-    height: 430px;
-
-    max-height: 430px;
+    /* For now, limits us to webkit, will be standardized to 'stretch' */
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    min-height: 430px;
 }
 
 #ConnectionAssistantDialog .header {
@@ -922,8 +923,9 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #CouchDocumentURIAssistantDialog {
 
-    width: 560px;
-    height: 350px;
+    /* For now, limits us to webkit, will be standardized to 'stretch' */
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 /* -----------------------------*
@@ -932,8 +934,9 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #CouchViewURIAssistantDialog {
 
-    width: 560px;
-    height: 350px;
+    /* For now, limits us to webkit, will be standardized to 'stretch' */
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 /* -----------------------------*
@@ -942,8 +945,9 @@ sherpa|hud:not([pclass|closed]) #center {
 
 #CmdAssistantDialog {
 
-    width: 600px;
-    height: 370px;
+    /* For now, limits us to webkit, will be standardized to 'stretch' */
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
 }
 
 /* -----------------------------*
