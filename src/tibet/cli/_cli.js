@@ -41,6 +41,7 @@ var path,
     beautify,
     minimist,
     prompt,
+    procp,
     Color,
     Logger,
     Package,
@@ -52,6 +53,7 @@ sh = require('shelljs');
 minimist = require('minimist');
 prompt = require('readline-sync');
 beautify = require('js-beautify').js_beautify;
+procp = require('promisify-child-process');
 
 //  ---
 //  Object Construction
@@ -1373,6 +1375,99 @@ CLI.quoted = function(aString, aQuoteChar) {
     str = str.replace(re, '\\' + quote);
 
     return quote + str + quote;
+};
+
+
+/**
+ * Spawns a child process and returns a 'then'able representing that process.
+ * This can be used in a Promise chain or 'await'ed upon.
+ * @param {Object} cmd The object representing the TIBET command that provided
+ *     logging functionality, etc.
+ * @param {String} commandpath The command to execute.
+ * @param {String[]} params The Array of arguments that will be joined by spaces
+ *     which, along with the commandpath, will form the command that will spawn
+ *     the child process.
+ * @returns {Object} A thenable representing the spawned child process.
+ */
+CLI.spawnAsync = function(cmd, commandpath, params) {
+
+    var child,
+        spawnParams;
+
+    //  The Promises-based child-process library needs all parameters or it
+    //  won't run properly.
+    if (CLI.notValid(params)) {
+        spawnParams = [];
+    } else {
+        spawnParams = params;
+    }
+
+    //  NB: The 'encoding' and 'maxBuffer' config parameters are required here
+    //  otherwise the Promises-based child-process library will not execute this
+    //  'spawn' properly.
+    child = procp.spawn(
+                    commandpath,
+                    params,
+                    {encoding: 'utf8', maxBuffer: 200 * 1024});
+
+    child.stdout.on('data', function(data) {
+        var msg;
+
+        if (CLI.isValid(data)) {
+            // Copy and remove newline.
+            msg = data.slice(0, -1).toString('utf-8');
+
+            cmd.log(msg);
+        }
+    });
+
+    child.stderr.on('data', function(data) {
+        var msg;
+
+        if (CLI.notValid(data)) {
+            msg = 'Unspecified error occurred.';
+        } else {
+            // Copy and remove newline.
+            msg = data.slice(0, -1).toString('utf-8');
+        }
+
+        //  Some leveraged module likes to write error output with empty
+        //  lines. Remove those so we can control the output form
+        //  better.
+        if (msg &&
+            typeof msg.trim === 'function' &&
+            msg.trim().length === 0) {
+            return;
+        }
+
+        //  A lot of errors will include what appears to be a common
+        //  'header' output message from events.js:72 etc. which
+        //  provides no useful data but clogs up the output. Filter
+        //  those messages.
+        if (/throw er;/.test(msg)) {
+            return;
+        }
+
+        cmd.error(msg);
+    });
+
+    child.on('exit', function(code) {
+        var msg;
+
+        if (code !== 0) {
+            msg = 'Execution stopped with status: ' + code;
+            if (!cmd.options.debug || !cmd.options.verbose) {
+                msg += ' Retry with --debug --verbose for more' +
+                        ' information.';
+            }
+            cmd.error(msg);
+
+            //  The subprocess exited with a non-0 code. Kill ourself too.
+            process.exit(code);
+        }
+    });
+
+    return child;
 };
 
 
