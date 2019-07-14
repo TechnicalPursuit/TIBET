@@ -1640,7 +1640,7 @@
 
     /**
      * Returns the file name of the currently processing package.
-     * @returns {string} The package file name.
+     * @returns {String} The package file name.
      */
     Package.prototype.getCurrentPackage = function() {
         return this.packageStack[0];
@@ -1672,7 +1672,7 @@
      * blending it with any virtual or relative path information from aPath.
      * @param {Element} anElement The element from which to begin basedir lookups.
      * @param {String} aPath The path to resolve into a full path.
-     * @returns {string} The fully-expanded path.
+     * @returns {String} The fully-expanded path.
      */
     Package.prototype.getFullPath = function(anElement, aPath) {
 
