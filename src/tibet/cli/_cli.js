@@ -868,10 +868,13 @@ CLI.getLibRoot = function() {
  * returned.
  * @param {string} property A specific property value to check.
  * @param {Object} [aDefault] Optional value to default the lookup to.
+ * @param {Boolean} [asNestedObj=false] Optional flag to convert the result to a
+ *     multi-level structured Object instead of a single-level Object with
+ *     flattened keys.
  * @returns {Object} The property value, or the entire configuration object.
  */
-CLI.getcfg = function(property, aDefault) {
-    return this._package.getcfg(property, aDefault);
+CLI.getcfg = function(property, aDefault, asNestedObj) {
+    return this._package.getcfg(property, aDefault, asNestedObj);
 };
 CLI.cfg = CLI.getcfg;
 

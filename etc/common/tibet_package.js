@@ -1514,14 +1514,18 @@
      * loaded TIBET configuration data for the property in question.
      * @param {string} property The name of the property to look up.
      * @param {Object} [aDefault] Optional value to default the lookup to.
+     * @param {Boolean} [asNestedObj=false] Optional flag to convert the result
+     *     to a multi-level structured Object instead of a single-level Object
+     *     with flattened keys.
      * @returns {Object} The property value.
      */
-    Package.prototype.getcfg = function(property, aDefault) {
+    Package.prototype.getcfg = function(property, aDefault, asNestedObj) {
         var name,
             keys,
             key,
             cfg,
-            pkg;
+            pkg,
+            retval;
 
         if (notValid(property)) {
             if (isDefined(aDefault)) {
@@ -1537,7 +1541,8 @@
 
         // Secondary check is for prefixed lookups.
         if (/\./.test(property)) {
-            // Simple conversions from dotted to underscore should be checked first.
+            // Simple conversions from dotted to underscore should be checked
+            // first.
             name = property.replace(/\./g, '_');
             if (this.cfg.hasOwnProperty(name)) {
                 return ifInvalid(this.cfg[name], aDefault);
@@ -1565,22 +1570,73 @@
         switch (keys.length) {
             case 0:
                 //  No matches.
-                return aDefault;
+                retval = aDefault;
+                break;
             case 1:
                 //  Exact match or potential prefix match.
                 key = keys[0];
                 if (key === name) {
-                    return ifInvalid(pkg.cfg[key], aDefault);
+                    retval = ifInvalid(pkg.cfg[key], aDefault);
                 } else {
-                    return cfg;
+                    retval = cfg;
                 }
+                break;
             default:
                 //  Multiple matches. Must have been a prefix.
-                return cfg;
+                retval = cfg;
+                break;
         }
+
+        if (asNestedObj) {
+            retval = this.cfgAsNestedObj(retval);
+        }
+
+        return retval;
     };
     Package.prototype.cfg = Package.prototype.getcfg;
 
+
+    /**
+     * Returns the supplied 'flat list' of dot-separated keys as a nested
+     *     Object.
+     * @param {Object} anObj The cfg entries as a single-level object with
+     *     'flattened', dot-separated keys.
+     * @returns {Object} The supplied configuration object converted to an
+     *     Object that has a nested structure that is structured the way the
+     *     keys were supplied in the original object.
+     */
+    Package.prototype.cfgAsNestedObj = function(anObj) {
+        var resultObj;
+
+        if (!anObj) {
+            return null;
+        }
+
+        resultObj = {};
+
+        Object.keys(anObj).forEach(
+            function(aKey) {
+                var keyParts,
+                    currentObj,
+                    i;
+
+                    keyParts = aKey.split('.');
+
+                    currentObj = resultObj;
+
+                    for (i = 0; i < keyParts.length - 1; i++) {
+                        if (!currentObj[keyParts[i]]) {
+                            currentObj[keyParts[i]] = {};
+                        }
+
+                        currentObj = currentObj[keyParts[i]];
+                    }
+
+                    currentObj[keyParts[keyParts.length - 1]] = anObj[aKey];
+                });
+
+        return resultObj;
+    };
 
     /**
      * Returns the file name of the currently processing package.
