@@ -2625,7 +2625,7 @@ function(aRequest) {
 
     args = this.getArguments(aRequest);
 
-    //  If there is a real command (which there is in all case except when the
+    //  If there is a real command (which there is in all cases except when the
     //  command is 'help'), filter argN variants. We don't want to have
     //  duplicate arguments sent over the wire.
     if (realCmd) {

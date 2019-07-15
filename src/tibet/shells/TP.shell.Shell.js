@@ -3099,6 +3099,7 @@ function(aRequest, forms) {
                     newDict.atPut(key, arr);
                 }
             });
+
         return newDict;
     }
 
