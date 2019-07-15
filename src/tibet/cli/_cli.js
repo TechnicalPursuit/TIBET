@@ -1407,7 +1407,7 @@ CLI.spawnAsync = function(cmd, commandpath, params) {
     //  'spawn' properly.
     child = procp.spawn(
                     commandpath,
-                    params,
+                    spawnParams,
                     {encoding: 'utf8', maxBuffer: 200 * 1024});
 
     child.stdout.on('data', function(data) {
