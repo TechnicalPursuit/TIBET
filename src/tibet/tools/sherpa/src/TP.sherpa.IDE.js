@@ -966,7 +966,14 @@ function(aSignal) {
     //  Iterate over the ARGV, processing any unnamed arguments
     originalArgs.at('ARGV').forEach(
             function(argName) {
-                cmdText += ' ' + argName;
+                var val;
+
+                val = argName;
+                if (TP.isJSONString(val)) {
+                    val = val.quoted();
+                }
+
+                cmdText += ' ' + val;
             });
 
     //  This is a TP.core.Hash - iterate over it and gather up the arguments.
