@@ -106,7 +106,7 @@
 
             //  check for control characters etc.
             output = str.split('');
-            regex = /[^@-_:.,/~?%&="'a-zA-Z0-9]/;
+            regex = /[^@-_:.,/~?%&="'a-zA-Z0-9{}[]]/;
 
             invalid = output.some(function(c) {
 
