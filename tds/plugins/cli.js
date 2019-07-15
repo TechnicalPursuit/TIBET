@@ -275,6 +275,7 @@
                                         return '\'' + paramStr + '\'';
                                     }
                                 } catch (e) {
+                                    //  No catch here
                                 }
                             }
 
