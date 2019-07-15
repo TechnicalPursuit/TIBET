@@ -262,26 +262,6 @@
             //  turn off color escape codes sent to the browser.
             params.push('--no-color');
 
-            //  Iterate over the parameters and, if they're JSON, quote them
-            //  with a single quote ("'").
-            params = params.map(
-                        function(aParam) {
-                            var paramStr;
-
-                            paramStr = aParam.trim();
-                            if (paramStr[0] === '{') {
-                                try {
-                                    if (JSON.parse(paramStr)) {
-                                        return '\'' + paramStr + '\'';
-                                    }
-                                } catch (e) {
-                                    //  No catch here
-                                }
-                            }
-
-                            return aParam;
-                        });
-
             logger.info('evaluating `tibet ' + params.join(' ') + '`', meta);
 
             child = require('child_process');
