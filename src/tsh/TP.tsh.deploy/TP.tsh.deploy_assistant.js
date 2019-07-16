@@ -86,7 +86,7 @@ function(aSignal) {
      * @returns {TP.tsh.deploy_assistant} The receiver.
      */
 
-    var aspect,
+    var aspect;
 
     aspect = aSignal.at('aspect');
 
