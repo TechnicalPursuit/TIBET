@@ -120,6 +120,8 @@
     <script src="~lib_build/lib_src-tsh-TP.tsh.type-TP.tsh.type_assistant.css.js"/>
     <script src="~lib_build/lib_src-tsh-TP.tsh.method-TP.tsh.method_assistant.xhtml.js"/>
     <script src="~lib_build/lib_src-tsh-TP.tsh.method-TP.tsh.method_assistant.css.js"/>
+    <script src="~lib_build/lib_src-tsh-TP.tsh.deploy-TP.tsh.deploy_assistant.xhtml.js"/>
+    <script src="~lib_build/lib_src-tsh-TP.tsh.deploy-TP.tsh.deploy_assistant.css.js"/>
 </config>
 
 <config id="baseui-inlined" if="boot.phase_one boot.inlined">

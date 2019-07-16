@@ -10,7 +10,8 @@
 
 /**
  * @type {TP.tsh.deploy}
- * @summary A subtype of TP.tag.ActionTag used to trigger a deploy.
+ * @summary A subtype of TP.tag.ActionTag that knows how to deploy applications
+ *     in the TIBET system.
  */
 
 //  ------------------------------------------------------------------------
@@ -34,6 +35,30 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
+    var shell,
+        shouldAssist;
+
+    shell = aRequest.at('cmdShell');
+
+    shouldAssist = TP.bc(shell.getArgument(
+                                    aRequest, 'tsh:assist', null, false));
+
+    if (shouldAssist) {
+
+        //  Fire a 'AssistObject' signal, supplying the target object to focus
+        //  on.
+        TP.signal(
+                null,
+                'AssistObject',
+                TP.hc('targetObject', this,
+                        'title', 'Deploy Assistant',
+                        'assistantParams', TP.hc('originalRequest', aRequest)));
+
+        return aRequest.complete(TP.TSH_NO_VALUE);
+    }
+
+    //  Fire a 'RemoteConsoleCommand' with a 'deploy ...' command, supplying the
+    //  original request.
     TP.signal(null, 'RemoteConsoleCommand',
         TP.hc('originalRequest', aRequest,
             'timeout', 60000,
@@ -48,6 +73,27 @@ function(aRequest) {
     aRequest.complete('delegated to :cli');
 
     return aRequest;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.deploy.Type.defineMethod('getContentForAssistant',
+function() {
+
+    /**
+     * @method getContentForAssistant
+     * @summary Returns the Element representing the root node of the content
+     *     for the receiver's 'assistant'.
+     * @returns {Element} The root node of the receiver's assistant content.
+     */
+
+    var assistantTPElem;
+
+    assistantTPElem = TP.tsh.deploy_assistant.getResourceElement(
+                        'template',
+                        TP.ietf.mime.XHTML);
+
+    return TP.unwrap(assistantTPElem);
 });
 
 //  ------------------------------------------------------------------------

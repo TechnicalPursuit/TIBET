@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<tsh:deploy_assistant>
+    <div class="head"/>
+    <div class="body" bind:scope="urn:tibet:deploy_cmd_source#jpath($.info)">
+        <label for="deploy_assistant_HelperSelect">Deploy Target:</label>
+        <select id="deploy_assistant_HelperSelect" class="helper_select" bind:io="{value: helperName}">
+            <option value="shipit">ShipIt!</option>
+            <option value="aws_ebs">AWS Elastic Beanstalk</option>
+            <option value="aws_fargate">AWS Fargate</option>
+            <option value="azure_webapps">Azure Webapps</option>
+            <option value="dockerhub">DockerHub</option>
+            <option value="Heroku">Heroku</option>
+        </select>
+        <div class="propertiesControlGroup">
+            <label>Target-specific properties (click + to add):</label>
+            <button class="inserter" on:click="{signal: InsertItem, origin: deploy_assistant_PropertyEntries, payload: {source: 'urn:tibet:deploy_prop_data_blank', copy: true}}"></button>
+        </div>
+        <div class="propertiesGroup">
+            <tibet:group wrapWhen="true" id="deploy_assistant_PropertyEntries" bind:repeat="helperProps">
+                <input type="text" bind:io="{value: propName}" tabindex="0"/>
+                <input type="text" bind:io="{value: propValue}" tabindex="0"/>
+                <span class="deleter" on:click="{signal: DeleteItem, origin: deployAssistant_PropertyEntries, payload: {index: TP.TARGET}}"/>
+            </tibet:group>
+        </div>
+    </div>
+    <div class="foot">
+        <code id="generatedCmdLine"/>
+        <button on:click="DialogCancel">Cancel</button>
+        <button on:click="DialogOk">Execute</button>
+    </div>
+</tsh:deploy_assistant>

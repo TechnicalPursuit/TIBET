@@ -744,26 +744,11 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    var profileName;
-
-    //  Grab the profile name and slice off everything after the '@'. That will
-    //  be what we default the 'ShipIt environment name'.
-    profileName = TP.sys.getcfg('boot.profile');
-    profileName = profileName.slice(0, profileName.indexOf('@'));
-
-    TP.prompt('Enter environment name:',
-                profileName).then(
-        function(userValue) {
-            var cmdVal;
-
-            //  Build the command and execute it.
-            cmdVal = ':deploy shipit';
-
-            if (TP.notEmpty(userValue)) {
-                cmdVal += ' ' + userValue;
-                TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
-            }
-        });
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText', ':deploy --assist'
+                ));
 
     return this;
 });
