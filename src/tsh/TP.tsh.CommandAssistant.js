@@ -95,7 +95,7 @@ function(anObject) {
 
         result,
         data,
-        typeInfo,
+        assistantInfo,
         str;
 
     //  We observed the model URI when we were set up - we need to ignore it now
@@ -113,9 +113,9 @@ function(anObject) {
         return this;
     }
 
-    typeInfo = TP.hc(data).at('info');
+    assistantInfo = TP.hc(data).at('info');
 
-    str = this.generateCommand(typeInfo);
+    str = this.generateCommand(assistantInfo);
 
     //  Fire a 'ConsoleCommand' with the command as built.
     TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
@@ -137,7 +137,7 @@ function(aSignal) {
 
     var result,
         data,
-        typeInfo,
+        assistantInfo,
         str,
 
         cmdLineTPElem;
@@ -152,8 +152,8 @@ function(aSignal) {
         return this;
     }
 
-    typeInfo = TP.hc(data).at('info');
-    str = this.generateCommand(typeInfo);
+    assistantInfo = TP.hc(data).at('info');
+    str = this.generateCommand(assistantInfo);
 
     cmdLineTPElem = this.get('generatedCmdLine');
     cmdLineTPElem.setTextContent(str);
