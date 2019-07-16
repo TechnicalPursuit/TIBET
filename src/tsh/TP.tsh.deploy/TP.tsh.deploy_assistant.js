@@ -76,26 +76,70 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.deploy_assistant.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles when the user changes the value of the underlying model.
+     * @param {ValueChange} aSignal The signal that caused this handler to trip.
+     * @returns {TP.tsh.deploy_assistant} The receiver.
+     */
+
+    var aspect,
+
+    aspect = aSignal.at('aspect');
+
+    if (aspect.endsWith('helperName')) {
+        this.populateHelperProperties();
+    }
+
+    this.callNextMethod();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.deploy_assistant.Inst.defineMethod('populateHelperProperties',
-function(info) {
+function() {
 
     /**
      * @method populateHelperProperties
      * @summary Populates the 'helper properties' in the supplied command
      *     parameters based on the 'helperName' that is also in the command
      *     parameters.
-     * @param {TP.core.Hash} info The hash containing the command parameters.
      * @returns {TP.tsh.deploy_assistant} The receiver.
      */
 
-    var helperName,
+    var modelURI,
+
+        result,
+        data,
+        assistantInfo,
+
+        helperName,
         helperProps,
         helperPropsNames,
 
         profileName;
 
-    helperName = info.at('helperName');
-    helperProps = info.at('helperProps');
+    modelURI = this.get('assistantModelURI');
+
+    result = modelURI.getResource().get('result');
+
+    if (TP.notValid(result)) {
+        return this;
+    }
+
+    if (TP.notValid(data = result.get('data'))) {
+        return this;
+    }
+
+    assistantInfo = data.info;
+
+    helperName = assistantInfo.helperName;
+    helperProps = assistantInfo.helperProps;
     helperPropsNames = helperProps.collect(
                             function(anEntry) {
                                 return anEntry.propName;
@@ -103,8 +147,10 @@ function(info) {
 
     switch (helperName) {
         case 'shipit':
-            //  Grab the profile name and slice off everything after the '@'. That
-            //  will be what we default the 'profile name'.
+            helperProps = TP.ac();
+
+            //  Grab the profile name and slice off everything after the '@'.
+            //  That will be what we default the 'profile name'.
             profileName = TP.sys.getcfg('boot.profile');
             profileName = profileName.slice(0, profileName.indexOf('@'));
 
@@ -116,6 +162,28 @@ function(info) {
                     });
             }
 
+            assistantInfo.helperProps = helperProps;
+            break;
+        case 'aws_ebs':
+            break;
+        case 'aws_fargate':
+            break;
+        case 'azure_webapps':
+            break;
+        case 'dockerhub':
+            helperProps = TP.ac();
+
+            if (!helperPropsNames.contains('password')) {
+                helperProps.push(
+                    {
+                        propName: 'password',
+                        propValue: 'fluffy'
+                    });
+            }
+
+            assistantInfo.helperProps = helperProps;
+            break;
+        case 'heroku':
             break;
         default:
             break;
@@ -158,8 +226,6 @@ function(anObj) {
 
     deployInfo.atPut('helperProps', TP.ac());
 
-    this.populateHelperProperties(deployInfo);
-
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
     modelURI = TP.uc('urn:tibet:deploy_cmd_source');
@@ -175,6 +241,9 @@ function(anObj) {
     //  and signal change to kick things off.
     modelURI.setResource(
         modelObj, TP.hc('observeResource', true, 'signalChange', true));
+
+    this.populateHelperProperties();
+    modelURI.$changed();
 
     return this;
 });
