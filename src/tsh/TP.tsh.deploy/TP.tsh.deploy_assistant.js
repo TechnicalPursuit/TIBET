@@ -92,9 +92,9 @@ function(aSignal) {
 
     if (aspect.endsWith('helperName')) {
         this.populateHelperProperties();
+    } else {
+        this.callNextMethod();
     }
-
-    this.callNextMethod();
 
     return this;
 });
@@ -189,6 +189,8 @@ function() {
             break;
     }
 
+    modelURI.$changed();
+
     return this;
 });
 
@@ -243,7 +245,6 @@ function(anObj) {
         modelObj, TP.hc('observeResource', true, 'signalChange', true));
 
     this.populateHelperProperties();
-    modelURI.$changed();
 
     return this;
 });
