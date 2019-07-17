@@ -148,7 +148,8 @@ function() {
 
         router.definePath('/foo/:fluffy/bar', 'SignalMe');
         result = router.processRoute('/foo/231/bar');
-        test.assert.isEqualTo(result.at(0), 'SignalMe');
+        test.assert.isEqualTo(result.at('route'), 'SignalMe');
+        test.assert.isEqualTo(result.at('signal'), 'SignalMe');
     });
 
     this.it('properly redefines processors', function(test, options) {
@@ -157,7 +158,7 @@ function() {
         router.definePath('/foo/:fluffy/bar', 'SignalMe');
         router.definePath('/foo/:fluffy/bar', 'NoNoSignalMe');
         result = router.processRoute('/foo/231/bar');
-        test.assert.isEqualTo(result.at(0), 'NoNoSignalMe');
+        test.assert.isEqualTo(result.at('signal'), 'NoNoSignalMe');
     });
 
     this.it('properly assigns named parameter values', function(test, options) {
@@ -167,7 +168,7 @@ function() {
         result = router.processRoute('/foo/231/bar');
 
         //  result.at(1) is payload object. then first pair, first slot.
-        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
+        test.assert.isEqualTo(result.at('parameters').first().first(), 'fluffy');
     });
 
     this.it('properly assigns token-based parameters', function(test, options) {
@@ -178,7 +179,7 @@ function() {
         result = router.processRoute('/foo/231/bar');
 
         //  result.at(1) is payload object. then first pair, first slot.
-        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
+        test.assert.isEqualTo(result.at('parameters').first().first(), 'fluffy');
     });
 
     this.it('properly sorts routes for signal naming', function(test, options) {
@@ -191,7 +192,8 @@ function() {
         //  synthetic signal name based on static portions of the inbound path.
         //  The 'bar' portion should be here since it should be longer "full
         //  match" string value.
-        test.assert.isEqualTo(result.at(0), 'FooBar');
+        test.assert.isEqualTo(result.at('route'), 'FooBar');
+        test.assert.isNull(result.at('signal'));
     });
 
     this.it('properly sorts routes for parameter naming', function(test, options) {
@@ -202,7 +204,7 @@ function() {
         result = router.processRoute('/foo/231/bar');
 
         //  result.at(1) is payload object. then first pair, first slot.
-        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
+        test.assert.isEqualTo(result.at('parameters').first().first(), 'fluffy');
     });
 
 });

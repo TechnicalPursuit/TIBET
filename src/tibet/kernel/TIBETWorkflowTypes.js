@@ -6361,7 +6361,7 @@ function(aRoute) {
 
     //  If the route is still empty it's a reference to the home route.
     if (TP.isEmpty(route) || route === '/') {
-        route = 'Home';
+        route = TP.sys.cfg('route.root', 'Home');
     }
 
     //  See if the value is a route configuration key.
@@ -6373,7 +6373,7 @@ function(aRoute) {
 
         //  Don't warn for the Home route - many times, the app won't have a
         //  defined Home route.
-        if (route !== 'Home') {
+        if (route !== TP.sys.cfg('route.root', 'Home')) {
             TP.warn('Unable to find route cfg info for: ' + route);
         }
 
@@ -6458,7 +6458,7 @@ function(aRoute) {
 
     //  If the route is still empty it's a reference to the home route.
     if (TP.isEmpty(route) || route === '/') {
-        route = 'Home';
+        route = TP.sys.cfg('route.root', 'Home');
     }
 
     //  See if the value is a route configuration key.
@@ -6470,7 +6470,7 @@ function(aRoute) {
 
         //  Don't warn for the Home route - many times, the app won't have a
         //  defined Home route.
-        if (route !== 'Home') {
+        if (route !== TP.sys.cfg('route.root', 'Home')) {
             TP.warn('Unable to find route cfg info for: ' + route);
         }
 
