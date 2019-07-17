@@ -11431,8 +11431,6 @@ function(aURIOrPushState, aDirection) {
             //  valid index also gets set to 0. This way, any movement forward
             //  will be trapped.
             TP.core.History.set('lastValidIndex', 0);
-
-            return this;
         } else {
 
             //  The current route is a deeproot. Make sure that the history's
