@@ -10819,6 +10819,75 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URIRouter.Type.defineMethod('getRouteSignalName',
+function(hash, usemap) {
+
+    /**
+     * @method getRouteSignalName
+     * @summary Produces the best signal name from a processor result hash (the
+     *     return value from processMatch/processResult). This means looking for
+     *     a specified name and optionally any remapping of that name in the
+     *     configuration route.map.{route} entries if any.
+     * @param {TP.core.Hash} hash The result hash from a route processor
+     *     function. Normally has 'route', 'signal', and 'parameters' keys.
+     * @param {Boolean} usemap Should mapping be used? Default is true.
+     * @returns {String} The signal name.
+     */
+
+    var route,
+        routeKey,
+        config,
+        signame,
+        configInfo,
+        info;
+
+    if (TP.notValid(hash)) {
+        return this.raise('InvalidParameter', hash);
+    }
+
+    //  Use explicit signal name or synthetic name plus 'Route' suffix.
+    signame = hash.at('signal');
+    signame = TP.ifInvalid(signame, hash.at('route') + 'Route');
+
+    if (TP.isFalse(usemap)) {
+        return signame;
+    }
+
+    //  If usemap wasn't turned off explicitly see if the name provided has been
+    //  remapped in the route maps, if any.
+    route = hash.at('route');
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
+
+    if (TP.notEmpty(config)) {
+        if (TP.isString(config)) {
+            configInfo = TP.json2js(TP.reformatJSToJSON(config));
+            if (TP.isEmpty(configInfo)) {
+                TP.error('InvalidObject',
+                    'Unable to build config data from entry: ' + config);
+                return this.getRouteSignalName(hash, false);
+            }
+            TP.sys.setcfg(routeKey, configInfo);
+        } else {
+            configInfo = config;
+        }
+    }
+
+    if (TP.isEmpty(configInfo)) {
+        return signame;
+    }
+
+    info = configInfo.at(routeKey + '.signal');
+    info = TP.ifInvalid(info, configInfo.at('signal'));
+    if (TP.notEmpty(info)) {
+        signame = info;
+    }
+
+    return signame;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URIRouter.Type.defineMethod('getRouteControllerType',
 function() {
 
@@ -10862,6 +10931,9 @@ function() {
     config = TP.sys.cfg(routeKey);
 
     if (TP.isEmpty(config)) {
+        //  NOTE we effectively skip using 'map' here and roll up such that the
+        //  later lookup ends up being for 'route.controller' as a very
+        //  high-level generic controller lookup.
         routeKey = 'route';
         config = TP.sys.cfg(routeKey);
         if (TP.isEmpty(config)) {
@@ -10872,24 +10944,21 @@ function() {
     //  If we got real config data, then turn it into real JSON if it isn't
     //  already.
     if (TP.isString(config)) {
-
         configInfo = TP.json2js(TP.reformatJSToJSON(config));
-
         if (TP.isEmpty(configInfo)) {
             this.raise('InvalidObject',
                         'Unable to build config data from entry: ' + config);
 
             return TP.ifInvalid(appDefault, TP.core.RouteController);
         }
+        TP.sys.setcfg(routeKey, configInfo);
     } else {
         configInfo = config;
     }
 
     //  Try to obtain a controller type name
     controllerName = configInfo.at(routeKey + '.controller');
-    if (TP.notValid(controllerName)) {
-        controllerName = configInfo.at('controller');
-    }
+    controllerName = TP.ifInvalid(controllerName, configInfo.at('controller'));
 
     //  If there was no controller type name entry, default one by concatenating
     //  'APP' with the project and route name and the word 'Controller'.
@@ -10992,7 +11061,8 @@ function(signal, match, names) {
                 '');
     }
 
-    return TP.ac(TP.ifEmpty(signal, name), params);
+    return TP.hc('route', TP.ifEmpty(signal, name),
+        'signal', signal, 'parameters', params);
 });
 
 //  ------------------------------------------------------------------------
@@ -11115,6 +11185,7 @@ function(aURIOrPushState, aDirection) {
         config,
         configInfo,
         reroute,
+        deeproot,
         urlParams,
         lastParams,
         paramDiff,
@@ -11352,7 +11423,7 @@ function(aURIOrPushState, aDirection) {
     //  matcher for it.
     result = this.processRoute(fragPath);
     if (TP.notEmpty(result)) {
-        route = result.at(0);
+        route = result.at('route');
     } else {
         //  No processed result. Remove the leading '/' for checks we need to
         //  run below for type names, urls, etc.
@@ -11384,13 +11455,14 @@ function(aURIOrPushState, aDirection) {
                     'Unable to build config data from entry: ' + config);
                 return this;
             }
+            TP.sys.setcfg(routeKey, configInfo);
         } else {
             configInfo = config;
         }
 
         //  Check for redirection. If found, update to that route immediately.
         reroute = configInfo.at(routeKey + '.reroute');
-        reroute = reroute || configInfo.at('reroute');
+        reroute = TP.ifInvalid(reroute, configInfo.at('reroute'));
         if (TP.notEmpty(reroute)) {
             if (reroute.charAt(0) !== '#') {
                 if (reroute.charAt(0) !== '/') {
@@ -11406,7 +11478,7 @@ function(aURIOrPushState, aDirection) {
         }
 
         reroute = configInfo.at(routeKey + '.redirect');
-        reroute = reroute || configInfo.at('redirect');
+        reroute = TP.ifInvalid(reroute, configInfo.at('redirect'));
         if (TP.notEmpty(reroute)) {
             TP.go2(reroute);
 
@@ -11422,7 +11494,9 @@ function(aURIOrPushState, aDirection) {
     //  is flagged as a deeproot.
     if (TP.notValid(last)) {
 
-        if (configInfo.at(routeKey + '.deeproot') !== true) {
+        deeproot = configInfo.at(routeKey + '.deeproot');
+        deeproot = TP.ifInvalid(deeproot, configInfo.at('deeproot'));
+        if (deeproot !== true) {
 
             //  Not a deep link? Route to the application home.
             TP.go2('/');
@@ -11446,33 +11520,24 @@ function(aURIOrPushState, aDirection) {
     //  Route Signaling
     //  ---
 
-    payload = TP.isValid(result) ? result.at(1) : TP.hc();
+    payload = TP.isValid(result) ? result.at('parameters') : TP.hc();
 
     //  Support remapping route name to a different signal, but ensure that
-    //  signal follows our standard rules for signal names specific to routes.
-    signame = TP.ifInvalid(
-                configInfo.at(routeKey + '.signal'),
-                route + 'Route');
-    signame = TP.expandSignalName(signame);
+    //  signal follows our standard rules for signal names specific to routes
+    //  unless a specific one came back from the result set earlier.
+    signame = this.getRouteSignalName(result);
 
     //  Determine the signal type, falling back as needed since expandSignalName
     //  will return TP.sig. as a default prefix.
-
-    //  First, try for a type that matches either the signal name specified in
-    //  the routing cfg or the route name with 'Route' appended, as computed
-    //  above.
     type = TP.sys.getTypeByName(signame);
 
     //  If that type couldn't be found, try the same local signal name, but with
     //  a root namespace of 'APP.' instead of 'TP.'
     if (!TP.isType(type)) {
 
+        //  APP.sig.*
+        signame = signame.replace(/^TP\./, 'APP.');
         type = TP.sys.getTypeByName(signame);
-        if (!TP.isType(type)) {
-            //  APP.sig.*
-            signame = signame.replace(/^TP\./, 'APP.');
-            type = TP.sys.getTypeByName(signame);
-        }
 
         //  If that type couldn't be found, then change the non-root namespace
         //  from 'sig' to the name of the project.
@@ -11494,9 +11559,7 @@ function(aURIOrPushState, aDirection) {
         //  TP.sig.RouteFinalize as the type and set a 'spoofed' signal name
         //  using the same algorithm as above.
         signal = TP.sig.RouteFinalize.construct(payload);
-        signame = TP.ifInvalid(
-                    configInfo.at(routeKey + '.signal'),
-                    route + 'Route');
+        signame = this.getRouteSignalName(result);
         signal.setSignalName(signame);
     }
 
