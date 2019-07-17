@@ -10430,7 +10430,7 @@ TP.uri.URIRouter.Type.defineAttribute('processors');
  * The route name to use for the "Root" or "/" route. Default is 'Home'.
  * @type {String}
  */
-TP.uri.URIRouter.Type.defineAttribute('root', 'Home');
+TP.uri.URIRouter.Type.defineAttribute('root', TP.sys.cfg('route.root', 'Home'));
 
 /**
  * The list of route names that we've visited.
@@ -10739,8 +10739,8 @@ function() {
      * @method getLastRoute
      * @summary Returns the last route the application was set to. If the
      *     application hasn't yet been set to a specific route this method
-     *     returns 'Home' as the default value.
-     * @returns {String} The route, or 'Home' if no last route exists.
+     *     returns the 'route.root' or 'root' value as the default value.
+     * @returns {String} The route, or route.root if no last route exists.
      */
 
     var hist,
@@ -10750,7 +10750,7 @@ function() {
     loc = hist.getLastLocation();
 
     if (TP.notValid(loc)) {
-        return 'Home';
+        return this.get('root');
     }
 
     return this.getRoute(loc);

@@ -2014,6 +2014,9 @@
     //  should the base url be updated during route/pushState changes?
     TP.sys.setcfg('route.fragment_only', true);
 
+    //  what is the name we want to use for the root path '/' ?
+    TP.sys.setcfg('route.root', 'Home');
+
     //  ---
     //  uri/url
     //  ---
