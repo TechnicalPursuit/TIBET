@@ -1002,7 +1002,8 @@ function() {
         historyEntries,
         snippetEntries,
         bookmarkEntries,
-        editorTabEntries;
+        editorTabEntries,
+        deployInfoEntries;
         // screenEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
@@ -1106,6 +1107,29 @@ function() {
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
             //  ---
+            //  Deploy Info Entries
+            //  ---
+
+            deployInfoEntries = dataSet.at('deployinfos');
+
+            if (TP.isEmpty(deployInfoEntries)) {
+                deployInfoEntries = TP.hc();
+            } else {
+                //  This resource expects POJOs under the top-level hash, so
+                //  convert it
+                deployInfoEntries.perform(
+                    function(aKVPair) {
+                        deployInfoEntries.atPut(
+                            aKVPair.first(),
+                            aKVPair.last().asObject());
+                    });
+            }
+
+            TP.uc('urn:tibet:sherpa_deployinfos').setResource(
+                                            deployInfoEntries,
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
+            //  ---
             //  Screens
             //  ---
 /*
@@ -1152,6 +1176,16 @@ function() {
                                             bookmarkEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
+
+            //  ---
+            //  Deploy Info Entries
+            //  ---
+
+            deployInfoEntries = TP.hc();
+            TP.uc('urn:tibet:sherpa_deployinfos').setResource(
+                                            deployInfoEntries,
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
         }
     }
 
@@ -1175,6 +1209,7 @@ function() {
         snippetEntries,
         bookmarkEntries,
         editorTabEntries,
+        deployInfoEntries,
 //        screenEntries,
 
         userData,
@@ -1234,6 +1269,16 @@ function() {
         }
 
         //  ---
+        //  Deploy Info
+        //  ---
+
+        deployInfoEntries =
+            TP.uc('urn:tibet:sherpa_deployinfos').getResource().get('result');
+        if (TP.isEmpty(deployInfoEntries)) {
+            deployInfoEntries = TP.hc();
+        }
+
+        //  ---
         //  Screens
         //  ---
 /*
@@ -1252,7 +1297,8 @@ function() {
                     'history', historyEntries,
                     'snippets', snippetEntries,
                     'bookmarks', bookmarkEntries,
-                    'editortabs', editorTabEntries);
+                    'editortabs', editorTabEntries,
+                    'deployinfos', deployInfoEntries);
                     // 'screens', screenEntries);
 
         profileStorage = TP.core.LocalStorage.construct();

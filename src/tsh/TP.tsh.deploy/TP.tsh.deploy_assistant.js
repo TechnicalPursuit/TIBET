@@ -23,6 +23,49 @@ TP.tsh.deploy_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.tsh.deploy_assistant.Inst.defineMethod('$flushToProfile',
+function() {
+
+    var modelURI,
+
+        result,
+        data,
+
+        deployInfos;
+
+    //  Grab the current binding backing store.
+
+    modelURI = this.get('assistantModelURI');
+
+    result = modelURI.getResource().get('result');
+
+    if (TP.notValid(result)) {
+        return this;
+    }
+
+    if (TP.notValid(data = result.get('data'))) {
+        return this;
+    }
+
+    //  Grab the 'deployment information entries' that the user's profile is
+    //  storing for us.
+    deployInfos =
+        TP.uc('urn:tibet:sherpa_deployinfos').getResource().get('result');
+
+    //  Put a copy of the 'info' aspect (a POJO) found in the binding store into
+    //  the deployment information entries.
+    deployInfos.atPut(
+        data.info.helperName,
+        TP.copy(data.info));
+
+    //  Tell the shell to save it's profile. This will force it to flush all of
+    //  its data, including the deployment information entries, to its
+    //  persistent store.
+    TP.bySystemId('TSH').saveProfile();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.deploy_assistant.Inst.defineMethod('generateCommand',
 function(info) {
 
@@ -39,6 +82,8 @@ function(info) {
 
     str = ':deploy ' + info.at('helperName');
 
+    //  Build a 'JSON argument' that represents all of the helper properties.
+    //  This will allow those to be passed on the command line.
     helperProps = info.at('helperProps');
     if (TP.notEmpty(helperProps)) {
         str += ' \'{';
@@ -76,6 +121,50 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.deploy_assistant.Inst.defineHandler('DialogCancel',
+function(anObject) {
+
+    /**
+     * @method handleDialogCancel
+     * @summary Handles when the user has 'canceled' the dialog (i.e. wants to
+     *     proceed without taking any action).
+     * @param {TP.sig.DialogCancel} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.tsh.deploy_assistant} The receiver.
+     */
+
+    this.callNextMethod();
+
+    //  Keep the 'deploy infos' over in the shell up-to-date
+    this.$flushToProfile();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.deploy_assistant.Inst.defineHandler('DialogOk',
+function(anObject) {
+
+    /**
+     * @method handleDialogOk
+     * @summary Handles when the user has 'ok-ed' the dialog (i.e. wants to
+     *     proceed by taking the default action).
+     * @param {TP.sig.DialogOk} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.tsh.deploy_assistant} The receiver.
+     */
+
+    this.callNextMethod();
+
+    //  Keep the 'deploy infos' over in the shell up-to-date
+    this.$flushToProfile();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.deploy_assistant.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
@@ -90,8 +179,14 @@ function(aSignal) {
 
     aspect = aSignal.at('aspect');
 
+    //  If the aspect that got changed is the helperName, then (re)populate the
+    //  helper properties from the profile data store and/or the values that the
+    //  user would have entered in this run of the dialog.
     if (aspect.endsWith('helperName')) {
         this.populateHelperProperties();
+
+        //  Keep the 'deploy infos' over in the shell up-to-date
+        this.$flushToProfile();
     } else {
         this.callNextMethod();
     }
@@ -112,10 +207,12 @@ function() {
      * @returns {TP.tsh.deploy_assistant} The receiver.
      */
 
-    var modelURI,
+    var deployInfos,
 
+        modelURI,
         result,
         data,
+
         assistantInfo,
 
         helperName,
@@ -123,6 +220,14 @@ function() {
         helperPropsNames,
 
         profileName;
+
+    //  Grab the 'deployment information entries' that the user's profile is
+    //  storing for us. If we have an entry here for helper properties, then we
+    //  will use that.
+    deployInfos =
+        TP.uc('urn:tibet:sherpa_deployinfos').getResource().get('result');
+
+    //  Grab the current binding backing store.
 
     modelURI = this.get('assistantModelURI');
 
@@ -138,8 +243,24 @@ function() {
 
     assistantInfo = data.info;
 
+    //  And the helper name from it.
     helperName = assistantInfo.helperName;
-    helperProps = assistantInfo.helperProps;
+
+    //  If the deployment entries have an entry for the helper named with the
+    //  helper name, use that. This will be kept up-to-date as we change from
+    //  helper to helper (within the same dialog session) and will also be
+    //  updated when the user exits the panel (no matter how they did - either
+    //  'ok' or 'cancel').
+    if (deployInfos.at(helperName)) {
+        helperProps = deployInfos.at(helperName).helperProps;
+    } else {
+        helperProps = TP.ac();
+    }
+
+    //  Set whatever we found *back* into the binding info store's version of
+    //  the helper props. Otherwise, they won't show in the UI.
+    assistantInfo.helperProps = helperProps;
+
     helperPropsNames = helperProps.collect(
                             function(anEntry) {
                                 return anEntry.propName;
@@ -147,8 +268,6 @@ function() {
 
     switch (helperName) {
         case 'shipit':
-            helperProps = TP.ac();
-
             //  Grab the profile name and slice off everything after the '@'.
             //  That will be what we default the 'profile name'.
             profileName = TP.sys.getcfg('boot.profile');
@@ -162,7 +281,6 @@ function() {
                     });
             }
 
-            assistantInfo.helperProps = helperProps;
             break;
         case 'aws_ebs':
             break;
@@ -171,8 +289,6 @@ function() {
         case 'azure_webapps':
             break;
         case 'dockerhub':
-            helperProps = TP.ac();
-
             if (!helperPropsNames.contains('password')) {
                 helperProps.push(
                     {
@@ -180,8 +296,6 @@ function() {
                         propValue: 'fluffy'
                     });
             }
-
-            assistantInfo.helperProps = helperProps;
             break;
         case 'heroku':
             break;
