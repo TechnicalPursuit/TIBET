@@ -18,13 +18,9 @@
 'use strict';
 
 var CLI,
-    path,
-    sh,
     Cmd;
 
 CLI = require('./_cli');
-path = require('path');
-sh = require('shelljs');
 
 
 //  ---
