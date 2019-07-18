@@ -183,7 +183,12 @@ function(aSignal) {
     //  helper properties from the profile data store and/or the values that the
     //  user would have entered in this run of the dialog.
     if (aspect.endsWith('helperName')) {
-        this.populateHelperProperties();
+        this.populateHelperProperties(true);
+
+        //  Keep the 'deploy infos' over in the shell up-to-date
+        this.$flushToProfile();
+    } else if (aspect.contains('helperProps')) {
+        this.populateHelperProperties(false);
 
         //  Keep the 'deploy infos' over in the shell up-to-date
         this.$flushToProfile();
@@ -197,13 +202,16 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.tsh.deploy_assistant.Inst.defineMethod('populateHelperProperties',
-function() {
+function(takePropsFromStore) {
 
     /**
      * @method populateHelperProperties
      * @summary Populates the 'helper properties' in the supplied command
      *     parameters based on the 'helperName' that is also in the command
      *     parameters.
+     * @param {Boolean} takePropsFromStore Whether or not to populate the
+     *     current set of deployment properties from the 'backing store' of the
+     *     user's profile or to use the current binding model.
      * @returns {TP.tsh.deploy_assistant} The receiver.
      */
 
@@ -246,20 +254,24 @@ function() {
     //  And the helper name from it.
     helperName = assistantInfo.helperName;
 
-    //  If the deployment entries have an entry for the helper named with the
-    //  helper name, use that. This will be kept up-to-date as we change from
-    //  helper to helper (within the same dialog session) and will also be
-    //  updated when the user exits the panel (no matter how they did - either
-    //  'ok' or 'cancel').
-    if (deployInfos.at(helperName)) {
-        helperProps = deployInfos.at(helperName).helperProps;
-    } else {
-        helperProps = TP.ac();
-    }
+    if (takePropsFromStore) {
+        //  If the deployment entries have an entry for the helper named with
+        //  the helper name, use that. This will be kept up-to-date as we change
+        //  from helper to helper (within the same dialog session) and will also
+        //  be updated when the user exits the panel (no matter how they did -
+        //  either 'ok' or 'cancel').
+        if (deployInfos.at(helperName)) {
+            helperProps = deployInfos.at(helperName).helperProps;
+        } else {
+            helperProps = TP.ac();
+        }
 
-    //  Set whatever we found *back* into the binding info store's version of
-    //  the helper props. Otherwise, they won't show in the UI.
-    assistantInfo.helperProps = helperProps;
+        //  Set whatever we found *back* into the binding info store's version of
+        //  the helper props. Otherwise, they won't show in the UI.
+        assistantInfo.helperProps = helperProps;
+    } else {
+        helperProps = assistantInfo.helperProps;
+    }
 
     helperPropsNames = helperProps.collect(
                             function(anEntry) {
@@ -273,7 +285,8 @@ function() {
             profileName = TP.sys.getcfg('boot.profile');
             profileName = profileName.slice(0, profileName.indexOf('@'));
 
-            if (!helperPropsNames.contains('environment')) {
+            if (takePropsFromStore &&
+                !helperPropsNames.contains('environment')) {
                 helperProps.push(
                     {
                         propName: 'environment',
@@ -289,7 +302,8 @@ function() {
         case 'azure_webapps':
             break;
         case 'dockerhub':
-            if (!helperPropsNames.contains('password')) {
+            if (takePropsFromStore &&
+                !helperPropsNames.contains('password')) {
                 helperProps.push(
                     {
                         propName: 'password',
@@ -303,7 +317,9 @@ function() {
             break;
     }
 
-    modelURI.$changed();
+    if (takePropsFromStore) {
+        modelURI.$changed();
+    }
 
     return this;
 });
@@ -358,7 +374,7 @@ function(anObj) {
     modelURI.setResource(
         modelObj, TP.hc('observeResource', true, 'signalChange', true));
 
-    this.populateHelperProperties();
+    this.populateHelperProperties(true);
 
     return this;
 });
