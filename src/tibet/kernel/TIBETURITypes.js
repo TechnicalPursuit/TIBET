@@ -3010,6 +3010,99 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Inst.defineMethod('getSuperURIWithResourceType',
+function(aType) {
+
+    /**
+     * @method getSuperURIWithResourceType
+     * @summary Returns a URI whose resource type matches the supplied type. If
+     *     one cannot be found, this method will return the receiver.
+     * @param {TP.lang.RootObject|String} aType A Type object, or type name.
+     * @returns {TP.uri.URI} The URI whose resource type matches the supplied
+     * type. This could be the receiver.
+     */
+
+    var pathType,
+
+        primaryLoc,
+
+        resultURI,
+
+        pathParts,
+        len,
+        i,
+
+        pathPart,
+        newPath,
+
+        newURI,
+        newResource;
+
+    //  If there is no path type, then we can't proceed - this may be a URI
+    //  without a fragment or a fragment that isn't a path.
+    pathType = this.getFragmentAccessPathType();
+    if (pathType === TP.NOT_FOUND) {
+        return this;
+    }
+
+    //  Grab our primary location - we'll use this to join with the path as we
+    //  walk it back, trying to find a resource whose type is the supplied type.
+    primaryLoc = this.getPrimaryLocation();
+
+    /* eslint-disable consistent-this */
+    resultURI = this;
+    /* eslint-enable consistent-this */
+
+    switch (pathType) {
+        case TP.JSON_PATH_TYPE:
+
+            //  Grab the path parts from the fragment's access path
+            pathParts = this.getFragmentAccessPath().getPathParts();
+            len = pathParts.getSize();
+
+            for (i = len - 1; i >= 0; i--) {
+                pathPart = pathParts.at(i);
+
+                //  Slice from the start of the path to the chunk just before
+                //  the one we're currently processing.
+                newPath = pathParts.slice(0, i);
+
+                //  If it ends with a *numeric* path part (not another kind of
+                //  predicate), then slice that off.
+                if (TP.regex.ENDS_WITH_NUMERIC_PATH.test(pathPart)) {
+                    newPath.push(
+                        pathPart.slice(0, pathPart.lastIndexOf('[')));
+                } else {
+                    newPath.push(pathPart);
+                }
+
+                //  Compute a new URI based on the new path, which should be
+                //  'one step above' the fragment piece that we tested
+                //  previously.
+                newURI =
+                    TP.uc(primaryLoc + '#jpath(' + newPath.join('.') + ')');
+
+                //  Grab the resource (synchronously and not collapsing) and see
+                //  if its type matches our supplied type.
+                newResource = newURI.getResource(
+                        TP.hc('async', false, 'shouldCollapse', false)).
+                                                            get('result');
+                if (TP.isKindOf(newResource, aType)) {
+                    resultURI = newURI;
+                    break;
+                }
+            }
+
+            break;
+        default:
+            break;
+    }
+
+    return resultURI;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Inst.defineMethod('getValue',
 function() {
 

@@ -3653,6 +3653,8 @@ TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset
 
 TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
 
+TP.regex.ENDS_WITH_NUMERIC_PATH = /\[(\d+)\]$/;
+
 //  ---
 //  XML path
 //  ---

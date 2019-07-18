@@ -2436,6 +2436,8 @@ function(aCollectionURI, aDeleteIndex) {
 
     var targetCollection,
 
+        realArrayURI,
+
         deleteIndexes,
 
         removedData,
@@ -2453,10 +2455,22 @@ function(aCollectionURI, aDeleteIndex) {
     //  If the supplied URI really resolves to an Array, then remove the proper
     //  row.
 
-    //  NB: We assume 'async' of false here.
-    if (TP.isArray(
-        targetCollection =
-            aCollectionURI.getResource(TP.hc('async', false)).get('result'))) {
+    //  NB: We assume 'async' of false here. We also want to make sure that we
+    //  don't collapse results, since what we're looking for is an Array.
+    targetCollection = aCollectionURI.getResource(
+                                TP.hc('async', false,
+                                        'shouldCollapse', false)).get('result');
+
+    if (!TP.isArray(targetCollection)) {
+        realArrayURI = aCollectionURI.getSuperURIWithResourceType(Array);
+        targetCollection = realArrayURI.getResource(
+                                TP.hc('async', false,
+                                        'shouldCollapse', false)).get('result');
+    } else {
+        realArrayURI = aCollectionURI;
+    }
+
+    if (TP.isArray(targetCollection)) {
 
         //  If a deletion index was supplied or we have numbers in our selection
         //  indexes, then use those as the deletion indexes.
@@ -2490,7 +2504,7 @@ function(aCollectionURI, aDeleteIndex) {
     for (i = 0; i < len; i++) {
         //  The aspect that changed is just the collection along with the index
         //  that changed.
-        changedAspect = aCollectionURI.getFragmentExpr() +
+        changedAspect = realArrayURI.getFragmentExpr() +
                         '[' + deleteIndexes.at(i) + ']';
 
         //  For these paths, the changed addresses are just an Array of the
