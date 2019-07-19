@@ -12,7 +12,7 @@
             TDS,
             path,
             meta,
-            fullpath,
+            fullpath;
 
         //  Default references we'll need.
         app = options.app;
