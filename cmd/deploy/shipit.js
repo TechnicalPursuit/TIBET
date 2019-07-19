@@ -11,6 +11,7 @@
     var CLI,
         path,
         sh,
+        fs,
 
         SHIPIT_COMMAND,
         SHIPIT_FILE,
@@ -19,6 +20,7 @@
     CLI = require('../../src/tibet/cli/_cli');
     path = require('path');
     sh = require('shelljs');
+    fs = require('fs');
 
     //  ---
     //  Instance Attributes
@@ -67,7 +69,14 @@
          * @returns {string} The path to the located shipit executable.
          */
         cmdType.prototype.findShipit = function() {
-            var shipitpath;
+            var foundexe,
+                foundfile,
+
+                shipitpath,
+                shipitfilepath;
+
+            foundexe = false;
+            foundfile = false;
 
             this.info('checking for shipit support...');
 
@@ -76,117 +85,111 @@
                                     SHIPIT_COMMAND);
             if (sh.test('-e', shipitpath)) {
                 this.info('found project-specific shipit...');
-                return shipitpath;
+                foundexe = true;
+            } else {
+                shipitpath = sh.which(SHIPIT_COMMAND);
+                if (shipitpath) {
+                    this.info('found shipit...');
+                    foundexe = true;
+                }
             }
 
-            shipitpath = sh.which(SHIPIT_COMMAND);
-            if (shipitpath) {
-                this.info('found shipit...');
-                return shipitpath;
+            shipitfilepath = path.join(CLI.getAppHead(),
+                                        SHIPIT_FILE);
+
+            if (!fs.existsSync(shipitfilepath)) {
+                this.info('no shipitfile.js found in project...');
+            } else {
+                foundfile = true;
+                this.info('found shipitfile.js in project...');
             }
 
-            this.info('shipit not installed');
-            return;
+            if (!foundexe || !foundfile) {
+                this.info('shipit not ready');
+                return null;
+            }
+
+            return shipitpath;
         };
 
         /**
          * Runs the deploy by activating the Shipit executable.
          * @returns {Number} A return code.
          */
-        cmdType.prototype.runViaShipit = function(shipitpath) {
+        cmdType.prototype.runViaShipit = async function(shipitpath) {
             var cmd,
-                proc,
-                child,
                 argv,
+
+                inlineparams,
+                cfgparams,
                 params,
-                envname;
 
+                spawnArgs;
+
+            /* eslint-disable consistent-this */
             cmd = this;
-            argv = this.getArgv();
+            /* eslint-disable consistent-this */
 
-            //  NOTE argv[0] is the command name ('tibet'), argv[1] is the main
-            //  command name ('deploy') and argv[2] is the subcommand name
-            //  ('shipit')
-            envname = argv[2];
+            argv = this.getArglist();
 
-            proc = require('child_process');
+            //  argv[0] is the main command name ('deploy')
+            //  argv[1] is the subcommand name ('shipit')
+            //  argv[2] is an optional inline parameter JSON string with values
+            //  specific to the command
 
-            params = [];
+            //  ---
+            //  Compute parameters from mixing inline params and cfg-based
+            //  params
+            //  ---
 
-            params[0] = envname;
-            params[1] = argv.indexOf('--rollback') === -1 ?
-                        'deploy' :
-                        'rollback';
+            inlineparams = argv[2];
 
-            if (envname) {
-                this.warn('Delegating to \'shipit ' + envname + ' ' +
-                            params[1] + '\'');
+            //  NB: The getArglist call above will also hand us '--flag'-type
+            //  arguments (they will be last). If the inline JSON wasn't
+            //  specified, we don't want to process any of those.
+            if (CLI.notValid(inlineparams) || inlineparams.startsWith('--')) {
+                inlineparams = {};
             } else {
-                this.error('No shipit environment specified.');
+                try {
+                    inlineparams = JSON.parse(inlineparams);
+                } catch (e) {
+                    cmd.error('Invalid inline param JSON: ' + e.message);
+                    return 1;
+                }
+            }
+
+            cfgparams = CLI.cfg('tds.deploy.shipit', null, true);
+            if (!cfgparams) {
+                cfgparams = {};
+            } else {
+                cfgparams = cfgparams.tds.deploy.shipit;
+            }
+
+            params = CLI.blend({}, inlineparams);
+            params = CLI.blend(params, cfgparams);
+
+            params.environment = params.environment || CLI.getEnv();
+            params.rollback = params.rollback || false;
+
+            spawnArgs = [];
+
+            spawnArgs[0] = params.environment;
+            spawnArgs[1] = CLI.isTrue(params.rollback) ? 'rollback' : 'deploy';
+
+            if (spawnArgs[0]) {
+                cmd.warn('Delegating to \'shipit ' + spawnArgs[0] + ' ' +
+                            spawnArgs[1] + '\'');
+            } else {
+                cmd.error('No shipit environment specified.');
                 return 1;
             }
 
-            child = proc.spawn(shipitpath, params);
+            //  ---
+            //  Run ShipIt command
+            //  ---
 
-            child.stdout.on('data', function(data) {
-                var msg;
-
-                if (CLI.isValid(data)) {
-                    // Copy and remove newline.
-                    msg = data.slice(0, -1).toString('utf-8');
-
-                    cmd.log(msg);
-                }
-            });
-
-            child.stderr.on('data', function(data) {
-                var msg;
-
-                if (CLI.notValid(data)) {
-                    msg = 'Unspecified error occurred.';
-                } else {
-                    // Copy and remove newline.
-                    msg = data.slice(0, -1).toString('utf-8');
-                }
-
-                //  Some leveraged module likes to write error output with empty
-                //  lines. Remove those so we can control the output form
-                //  better.
-                if (msg &&
-                    typeof msg.trim === 'function' &&
-                    msg.trim().length === 0) {
-                    return;
-                }
-
-                //  A lot of errors will include what appears to be a common
-                //  'header' output message from events.js:72 etc. which
-                //  provides no useful data but clogs up the output. Filter
-                //  those messages.
-                if (/throw er;/.test(msg)) {
-                    return;
-                }
-
-                cmd.error(msg);
-            });
-
-            child.on('exit', function(code) {
-                var msg;
-
-                if (code !== 0) {
-                    msg = 'Execution stopped with status: ' + code;
-                    if (!cmd.options.debug || !cmd.options.verbose) {
-                        msg += ' Retry with --debug --verbose for more' +
-                                ' information.';
-                    }
-                    cmd.error(msg);
-                }
-
-                /* eslint-disable no-process-exit */
-                process.exit(code);
-                /* eslint-enable no-process-exit */
-            });
+            await CLI.spawnAsync(this, shipitpath, spawnArgs);
         };
-
     };
 
 }(this));
