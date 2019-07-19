@@ -186,6 +186,7 @@ Cmd.prototype.executeForCommand = function(command) {
         pattern,
         topics,
         topic,
+        prefix,
         subjects,
         proc,
         viewer;
@@ -261,7 +262,8 @@ Cmd.prototype.executeForCommand = function(command) {
     topics = this.executeTopics(true);
 
     if (CLI.inProject()) {
-        topic = CLI.getProjectName().toLowerCase() + '-' + command;
+        prefix = CLI.getProjectName().toLowerCase() + '-';
+        topic = command.indexOf(prefix) === 0 ? command : prefix + command;
         if (topics.indexOf(topic) !== -1) {
             subjects.push(topic);
         }
@@ -269,7 +271,8 @@ Cmd.prototype.executeForCommand = function(command) {
 
     //  If nothing from project then attempt to find TIBET subject.
     if (subjects.length === 0) {
-        topic = 'tibet-' + command;
+        prefix = 'tibet-';
+        topic = command.indexOf(prefix) === 0 ? command : prefix + command;
         if (topics.indexOf(topic) !== -1) {
             subjects.push(topic);
         }
