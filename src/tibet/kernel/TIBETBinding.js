@@ -669,10 +669,7 @@ function(aSignal) {
 
         aspectNames,
 
-        allRefreshedElements,
-        evt,
-
-        refreshedElements;
+        allRefreshedElements;
 
     //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
     //  that there were specific paths to data that changed and we can more
@@ -3961,10 +3958,7 @@ function(shouldRender, shouldRefreshBindings) {
 
     var retVal,
 
-        allRefreshedElements,
-        evt,
-
-        refreshedElements;
+        allRefreshedElements;
 
     //  First, call refresh on all of the *direct children* of the receiver,
     //  specifying to *not* refresh data bindings. We'll do that in a more
@@ -4148,10 +4142,7 @@ function(shouldRender, shouldSendEvent) {
 
     var boundDescendants,
 
-        allRefreshedElements,
-        evt,
-
-        refreshedElements;
+        allRefreshedElements;
 
     //  Get the bound descendant elements of the receiver. Note how we pass
     //  'true' here to *just* get elements that are 'shallow'. If we pick up
@@ -5217,10 +5208,7 @@ function(regenerateIfNecessary) {
 
         boundElems,
 
-        allRefreshedElements,
-        evt,
-
-        refreshedElements;
+        allRefreshedElements;
 
     //  Grab our binding scoping values and compute a 'binding repeat'
     //  expression from them and any local value on us.
@@ -5619,9 +5607,7 @@ function() {
 
     var allRefreshedElements,
         evt,
-        refreshedElements,
-
-        dispatchTPElem;
+        refreshedElements;
 
     //  Send a custom DOM-level event to allow 3rd party libraries to
     //  know that the bindings have been refreshed.
