@@ -1112,19 +1112,7 @@ function(aSignal) {
     //  the bindings have been refreshed.
     allRefreshedElements = this.get('$refreshedElements');
     if (TP.notEmpty(allRefreshedElements)) {
-        evt = this.getNativeDocument().createEvent('Event');
-        evt.initEvent('TIBETBindingsRefreshed', true, true);
-
-        refreshedElements = TP.ac();
-        allRefreshedElements.perform(
-            function(kvPair) {
-                refreshedElements = refreshedElements.concat(kvPair.last());
-            });
-        refreshedElements.unique();
-
-        evt.data = refreshedElements;
-
-        this.getBody().getNativeNode().dispatchEvent(evt);
+        this.getBody().$sendNativeRefreshEvent();
 
         //  Make sure to empty the list of elements that were refreshed so that
         //  we start fresh when bindings are refreshed again.
@@ -4004,20 +3992,7 @@ function(shouldRender, shouldRefreshBindings) {
             //  know that the bindings have been refreshed.
             allRefreshedElements = this.getDocument().get('$refreshedElements');
             if (TP.notEmpty(allRefreshedElements)) {
-                evt = this.getNativeDocument().createEvent('Event');
-                evt.initEvent('TIBETBindingsRefreshed', true, true);
-
-                refreshedElements = TP.ac();
-                allRefreshedElements.perform(
-                    function(kvPair) {
-                        refreshedElements =
-                            refreshedElements.concat(kvPair.last());
-                    });
-                refreshedElements.unique();
-
-                evt.data = refreshedElements;
-
-                this.getNativeNode().dispatchEvent(evt);
+                this.$sendNativeRefreshEvent();
 
                 //  Make sure to empty the list of elements that were refreshed
                 //  so that we start fresh when bindings are refreshed again.
@@ -4200,19 +4175,7 @@ function(shouldRender, shouldSendEvent) {
     //  the bindings have been refreshed.
     allRefreshedElements = this.getDocument().get('$refreshedElements');
     if (TP.notEmpty(allRefreshedElements) && TP.notFalse(shouldSendEvent)) {
-        evt = this.getNativeDocument().createEvent('Event');
-        evt.initEvent('TIBETBindingsRefreshed', true, true);
-
-        refreshedElements = TP.ac();
-        allRefreshedElements.perform(
-            function(kvPair) {
-                refreshedElements = refreshedElements.concat(kvPair.last());
-            });
-        refreshedElements.unique();
-
-        evt.data = refreshedElements;
-
-        this.getNativeNode().dispatchEvent(evt);
+        this.$sendNativeRefreshEvent();
 
         //  Make sure to empty the list of elements that were refreshed so that
         //  we start fresh when bindings are refreshed again.
@@ -5328,19 +5291,7 @@ function(regenerateIfNecessary) {
         //  that the bindings have been refreshed.
         allRefreshedElements = this.getDocument().get('$refreshedElements');
         if (TP.notEmpty(allRefreshedElements)) {
-            evt = this.getNativeDocument().createEvent('Event');
-            evt.initEvent('TIBETBindingsRefreshed', true, true);
-
-            refreshedElements = TP.ac();
-            allRefreshedElements.perform(
-                function(kvPair) {
-                    refreshedElements = refreshedElements.concat(kvPair.last());
-                });
-            refreshedElements.unique();
-
-            evt.data = refreshedElements;
-
-            this.getNativeNode().dispatchEvent(evt);
+            this.$sendNativeRefreshEvent();
 
             //  Make sure to empty the list of elements that were refreshed so
             //  that we start fresh when bindings are refreshed again.
@@ -5650,6 +5601,48 @@ function() {
     TP.elementSetAttribute(elem, 'tibet:templateid', templateID, true);
 
     return repeatContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('$sendNativeRefreshEvent',
+function() {
+
+    /**
+     * @method $sendNativeRefreshEvent
+     * @summary Sends a native custom browser event ('TIBETBindingsRefreshed')
+     *     with the elements that have been refreshed by the binding system
+     *     This allow third party libraries to know when data changes have been
+     *     in the TIBET system.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var allRefreshedElements,
+        evt,
+        refreshedElements,
+
+        dispatchTPElem;
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to
+    //  know that the bindings have been refreshed.
+    allRefreshedElements = this.getDocument().get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        evt = this.getNativeDocument().createEvent('Event');
+        evt.initEvent('TIBETBindingsRefreshed', true, true);
+
+        refreshedElements = TP.ac();
+        allRefreshedElements.perform(
+            function(kvPair) {
+                refreshedElements = refreshedElements.concat(kvPair.last());
+            });
+        refreshedElements.unique();
+
+        evt.data = refreshedElements;
+
+        this.getNativeNode().dispatchEvent(evt);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
