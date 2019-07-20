@@ -1968,7 +1968,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.uri.URI.Inst.defineMethod('getContent',
-function() {
+function(aRequest) {
 
     /**
      * @method getContent
@@ -1979,7 +1979,7 @@ function() {
 
     var request;
 
-    request = this.constructRequest();
+    request = this.constructRequest(aRequest);
     request.atPut('async', false);
 
     //  Track initial state so we can properly process flags/results.
