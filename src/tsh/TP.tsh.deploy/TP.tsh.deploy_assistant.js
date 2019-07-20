@@ -187,14 +187,16 @@ function(aSignal) {
 
         //  Keep the 'deploy infos' over in the shell up-to-date
         this.$flushToProfile();
+
+        this.getAssistantModelURI().$changed();
     } else if (aspect.contains('helperProps')) {
         this.populateHelperProperties(false);
 
         //  Keep the 'deploy infos' over in the shell up-to-date
         this.$flushToProfile();
-    } else {
-        this.callNextMethod();
     }
+
+    this.callNextMethod();
 
     return this;
 });
@@ -317,10 +319,6 @@ function(takePropsFromStore) {
             break;
     }
 
-    if (takePropsFromStore) {
-        modelURI.$changed();
-    }
-
     return this;
 });
 
@@ -369,12 +367,18 @@ function(anObj) {
 
     //  Set the resource of the model URI to the model object, telling the URI
     //  that it should observe changes to the model (which will allow us to get
-    //  notifications from the URI which we're observing above) and to go ahead
-    //  and signal change to kick things off.
+    //  notifications from the URI which we're observing above). Note that we
+    //  tell it to *not* and signal change right away - we want to populate (and
+    //  default) any helper properties that are appropriate for the currently
+    //  selected helper.
     modelURI.setResource(
-        modelObj, TP.hc('observeResource', true, 'signalChange', true));
+        modelObj, TP.hc('observeResource', true, 'signalChange', false));
 
     this.populateHelperProperties(true);
+
+    //  Go ahead and tell the model URI that it has been changed (and it will
+    //  now signal it).
+    modelURI.$changed();
 
     return this;
 });
