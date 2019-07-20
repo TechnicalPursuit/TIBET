@@ -345,7 +345,7 @@ function(anObj) {
 
     //  Set up a model URI and observe it for change ourself. This will allow us
     //  to regenerate the tag representation as the model changes.
-    modelURI = TP.uc('urn:tibet:type_cmd_source');
+    modelURI = this.getAssistantModelURI();
     this.observe(modelURI, 'ValueChange');
 
     //  Construct a JSONContent object around the model object so that we can
