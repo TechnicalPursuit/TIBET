@@ -287,7 +287,7 @@ function(aContent) {
      * @returns {TP.core.Content} The supplied object.
      */
 
-    return aContent;
+    return this.construct(aContent.get('data'), aContent.get('sourceURI'));
 });
 
 //  ------------------------------------------------------------------------
