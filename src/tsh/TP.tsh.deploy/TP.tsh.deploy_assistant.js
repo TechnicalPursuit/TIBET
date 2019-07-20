@@ -26,6 +26,13 @@ TP.tsh.deploy_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 TP.tsh.deploy_assistant.Inst.defineMethod('$flushToProfile',
 function() {
 
+    /**
+     * @method $flushToProfile
+     * @summary Flushes the data in the currently bound data model to the user's
+     *     shell profile, thereby storing it for future use.
+     * @returns {TP.tsh.deploy_assistant} The receiver.
+     */
+
     var modelURI,
 
         result,
@@ -62,6 +69,8 @@ function() {
     //  its data, including the deployment information entries, to its
     //  persistent store.
     TP.bySystemId('TSH').saveProfile();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

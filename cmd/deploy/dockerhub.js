@@ -46,9 +46,9 @@
         };
 
         /**
-         * Locates a workable Docker binary if possible. The project is checked
-         * first, followed by any globally accessible (via 'which') version.
-         * @returns {string} The path to the located shipit executable.
+         * Locates a workable Docker binary if possible. This is checked by
+         * looking for any globally accessible version (via 'which').
+         * @returns {string} The path to the located Docker executable.
          */
         cmdType.prototype.findDocker = function() {
             var dockerpath;
@@ -66,7 +66,8 @@
         };
 
         /**
-         * Runs the deploy by activating the Docker executable.
+         * Runs the deploy by activating the Docker executable, building the
+         * Docker image and then deploying to the DockerHub container registry.
          * @returns {Number} A return code.
          */
         cmdType.prototype.runViaDocker = async function(dockerpath) {
