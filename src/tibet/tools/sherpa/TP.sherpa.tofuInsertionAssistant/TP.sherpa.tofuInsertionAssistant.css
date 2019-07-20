@@ -289,5 +289,7 @@ sherpa|tofuInsertionAssistant > .foot #generatedTag {
 
     overflow: auto;
 
+    word-break: break-word;
+
     user-select: text;
 }

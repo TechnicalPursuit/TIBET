@@ -267,4 +267,8 @@ tsh|type_assistant > .foot #generatedCmdLine {
     background-color: cornsilk;
 
     overflow: auto;
+
+    word-break: break-word;
+
+    user-select: text;
 }

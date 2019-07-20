@@ -264,5 +264,7 @@ sherpa|bindingConnectionAssistant > .foot #generatedAttr {
 
     overflow: auto;
 
+    word-break: break-word;
+
     user-select: text;
 }

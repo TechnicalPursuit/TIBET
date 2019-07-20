@@ -177,7 +177,6 @@ tsh|deploy_assistant > .foot #generatedCmdLine {
     display: inline-block;
 
     width: 90%;
-
     height: 4em;
 
     padding: 0 12px;
@@ -193,6 +192,8 @@ tsh|deploy_assistant > .foot #generatedCmdLine {
     background-color: cornsilk;
 
     overflow: auto;
+
+    word-break: break-word;
 
     user-select: text;
 }

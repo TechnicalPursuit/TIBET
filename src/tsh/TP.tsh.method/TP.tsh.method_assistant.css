@@ -182,5 +182,7 @@ tsh|method_assistant > .foot #generatedCmdLine {
 
     overflow: auto;
 
+    word-break: break-word;
+
     user-select: text;
 }

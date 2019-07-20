@@ -302,6 +302,8 @@ sherpa|signalConnectionAssistant > .foot #generatedAttr {
 
     overflow: auto;
 
+    word-break: break-word;
+
     user-select: text;
 }
 
