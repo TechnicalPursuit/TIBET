@@ -250,8 +250,8 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
-            function(result) {
+        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
+            ).chain(function(result) {
                 var processor,
 
                     beforeStr,
@@ -281,8 +281,8 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
-            function(result) {
+        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
+            ).chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -303,8 +303,8 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
-            function(result) {
+        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
+            ).chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -326,8 +326,8 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
-            function(result) {
+        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
+            ).chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -348,8 +348,8 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
-            function(result) {
+        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
+            ).chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -548,8 +548,8 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XInclude1.xml');
 
-        test.getDriver().fetchResource(loadURI, TP.DOM).chain(
-            function(result) {
+        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
+            ).chain(function(result) {
 
                 var tpDoc,
 
