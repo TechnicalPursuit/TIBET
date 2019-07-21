@@ -164,7 +164,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -172,7 +172,7 @@ function(options) {
      *                                      placed in it.
      */
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options.merge(this.get('additionalConfig'));
 });
@@ -381,7 +381,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -389,7 +389,7 @@ function(options) {
      *                                      placed in it.
      */
 
-    options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
 
     return options.merge(this.get('additionalConfig'));
 });
@@ -642,7 +642,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -687,12 +687,12 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentTypeForCanvas',
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getChildTypeForCanvas',
 function(options) {
 
     /**
-     * @method getContentTypeForCanvas
-     * @summary Returns the unique 'content type' used when inserting content
+     * @method getChildTypeForCanvas
+     * @summary Returns the unique 'child type' used when inserting content
      *     modeled by the receiver into the current canvas.
      * @param {TP.core.Hash} options A hash of data available to this source to
      *     generate the content. This will have the following keys, amongst
@@ -709,7 +709,7 @@ function(options) {
      */
 
     return this.dispatchMethodForPath(options.at('pathParts'),
-                                        'getContentTypeForCanvasFor',
+                                        'getChildTypeForCanvasFor',
                                         arguments);
 });
 
@@ -854,7 +854,7 @@ TP.sherpa.inspector.Type.defineConstant(
 //  Commonly used options
 TP.sherpa.inspector.Type.defineConstant(
     'OPTIONS', TP.ac(
-        TP.ATTR + '_contenttype',
+        TP.ATTR + '_childtype',
         TP.ATTR + '_class'
     ));
 
@@ -1102,7 +1102,7 @@ function(bayContent, bayConfig) {
      *     bay.
      * @param {TP.core.Hash} bayConfig The bay configuration. This could have
      *     the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -1211,7 +1211,7 @@ function(aBay, bayConfig) {
      * @param {TP.sherpa.inspectorItem} aBay The bay element to configure.
      * @param {TP.core.Hash} bayConfig The bay configuration. This could have
      *     the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -3343,7 +3343,7 @@ function(aBay, bayContent, bayConfig) {
      *     bay.
      * @param {TP.core.Hash} bayConfig The bay configuration. This could have
      *     the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself

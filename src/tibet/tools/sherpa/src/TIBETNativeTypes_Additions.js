@@ -213,7 +213,7 @@ function(options) {
 
     bayContentElementName = TP.elementGetFullName(firstChildElem);
 
-    if (bayContentElementName === config.at('attr_contenttype')) {
+    if (bayContentElementName === config.at('attr_childtype')) {
         return true;
     }
 
@@ -241,7 +241,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -260,13 +260,13 @@ function(options) {
 
     if (tabHasValue) {
         //  Initially configure the content type to be an 'html:div'.
-        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+        options.atPut(TP.ATTR + '_childtype', 'html:div');
 
         return options;
     }
 
     options.atPut(TP.ATTR + '_class', 'doublewide');
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
+    options.atPut(TP.ATTR + '_childtype', 'sherpa:methodeditor');
 
     return options;
 });

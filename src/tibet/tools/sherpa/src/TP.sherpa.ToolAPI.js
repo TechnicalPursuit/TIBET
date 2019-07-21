@@ -48,11 +48,11 @@ function(anObject, toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getContentTypeForTool',
+TP.definePrimitive('getChildTypeForTool',
 function(anObject, toolName, options) {
 
-    if (TP.canInvoke(anObject, 'getContentTypeForTool')) {
-        return anObject.getContentTypeForTool(toolName, options);
+    if (TP.canInvoke(anObject, 'getChildTypeForTool')) {
+        return anObject.getChildTypeForTool(toolName, options);
     }
 
     return null;
@@ -205,18 +205,18 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getContentTypeForTool',
+TP.sherpa.ToolAPI.Inst.defineMethod('getChildTypeForTool',
 function(toolName, options) {
 
     /**
-     * @method getContentTypeForTool
+     * @method getChildTypeForTool
      * @summary
      * @returns
      */
 
     var methodName;
 
-    methodName = 'getContentTypeFor' + toolName.asTitleCase();
+    methodName = 'getChildTypeFor' + toolName.asTitleCase();
     if (TP.canInvoke(this, methodName)) {
         return this[methodName](options);
     }
@@ -365,7 +365,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -378,9 +378,9 @@ function(options) {
     targetAspect = options.at('targetAspect');
 
     if (targetAspect === this.getID()) {
-        options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+        options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
     } else {
-        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+        options.atPut(TP.ATTR + '_childtype', 'html:div');
     }
 
     return options;
