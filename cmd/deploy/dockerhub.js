@@ -4,6 +4,21 @@
  * This one is built to handle invocations of the TIBET CLI with a command line
  * of:
  * 'tibet deploy dockerhub <environment>'.
+ *
+ * This subcommand expects the following fields, shown here as a set of
+ * configuration parameters in the project's 'tds.json' file:
+ *
+        "deploy": {
+            "dockerhub": {
+                "username": "bedney",
+                "account": "technicalpursuit"
+            }
+        }
+ *
+ * and as an inline parameter to the command, which is not placed in the
+ * 'tds.json' file for obvious reasons:
+ *
+ *      tibet deploy dockerhub '{"password":"passwordMyPassword"}'
  */
 
 (function() {
@@ -178,6 +193,10 @@
             cmd.log('Using Docker to build image & tag: ' + tag);
 
             await CLI.spawnAsync(this, dockerpath, spawnArgs);
+
+            //  ---
+            //  Push the Docker image to DockerHub
+            //  ---
 
             spawnArgs = [
                             'push',
