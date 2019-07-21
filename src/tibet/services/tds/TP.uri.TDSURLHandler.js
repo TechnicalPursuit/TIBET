@@ -94,7 +94,7 @@ function(targetURI, aRequest) {
     //  First, try to get the URI's content as a TP.core.Content object
     localResult =
         targetURI.getResource(
-            TP.hc('resultType', TP.core.Content)
+            TP.hc('resultType', TP.CONTENT, 'contentType', TP.core.Content)
         ).get('result');
 
     //  If that was successful, use 'asCleanString()'. This gives a more

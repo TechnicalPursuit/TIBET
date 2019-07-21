@@ -368,7 +368,10 @@ function(anObj) {
 
     //  Grab the JSON data from the source URI.
     data = anObj.at('uri').getResource(
-                TP.hc('resultType', TP.core.Content)).get('result').get('data');
+                TP.hc(
+                    'resultType', TP.CONTENT,
+                    'contentType', TP.core.Content
+                )).get('result').get('data');
 
     definitionName = 'Couch_Doc_' + data.at('_id');
 

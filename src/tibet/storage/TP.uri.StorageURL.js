@@ -315,7 +315,6 @@ function(aRequest, filterResult) {
 
     var request,
         result,
-        resultType,
         response;
 
     request = this.constructRequest(aRequest);
@@ -326,8 +325,7 @@ function(aRequest, filterResult) {
 
     //  filter any remaining data
     if (TP.isTrue(filterResult) && TP.isValid(result)) {
-        resultType = TP.ifKeyInvalid(request, 'resultType', null);
-        result = this.$getFilteredResult(result, resultType, false);
+        result = this.$getFilteredResult(result, request, false);
     }
 
     response = request.getResponse(result);
@@ -362,8 +360,7 @@ function(aRequest) {
 
     primaryResource = this.$get('resource');
 
-    result = this.$getFilteredResult(
-        primaryResource, request.at('resultType'));
+    result = this.$getFilteredResult(primaryResource, request);
 
     //  synchronous? complete any request we might actually have.
     if (TP.canInvoke(request, 'complete')) {

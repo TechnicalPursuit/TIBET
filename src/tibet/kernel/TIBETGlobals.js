@@ -1423,6 +1423,7 @@ TP.TEXT = 2;
 TP.XHR = 3;
 TP.WRAP = 4;
 TP.NATIVE = 5;
+TP.CONTENT = 6;
 
 //  IO Directions
 TP.SEND = 'SEND';
