@@ -161,6 +161,9 @@ Cmd.prototype.colorizeForStdio = function(msg) {
                 return cmd.colorize(text, 'red');
             } else if (/ TIBET /.test(text)) {
                 return cmd.colorize(text, 'white');
+            } else if (/^# tibet test /.test(text)) {
+                return cmd.colorize(text.slice(0, 2), 'gray') +
+                    cmd.colorize(text.slice(2), 'white');
             } else {
                 return cmd.colorize(text, 'gray');
             }
@@ -172,7 +175,7 @@ Cmd.prototype.colorizeForStdio = function(msg) {
 
         if (/^ok -/.test(text)) {
             return cmd.colorize(text.slice(0, 2), 'green') +
-                cmd.colorize(text.slice(2), 'white');
+                cmd.colorize(text.slice(2), 'gray');
         } else if (/^not ok -/.test(text)) {
             return cmd.colorize(text.slice(0, 6), 'red') +
                 cmd.colorize(text.slice(6), 'white');
