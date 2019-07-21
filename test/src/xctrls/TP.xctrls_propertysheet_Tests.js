@@ -21,7 +21,7 @@ function() {
             schemaResource = TP.uc(jsonURI).getResource(
                             TP.hc('async', false,
                                     'refresh', true,
-                                    'contenttype', TP.json.JSONSchemaContent));
+                                    'contentType', TP.json.JSONSchemaContent));
             schema = schemaResource.get('result');
         });
 

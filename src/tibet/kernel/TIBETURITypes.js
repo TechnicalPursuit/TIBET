@@ -6461,7 +6461,16 @@ function(aRequest) {
 
     //  result content handler invocation...if possible (but not if the
     //  requestor wants raw TP.TEXT).
-    handler = aRequest.at('contenttype');
+    handler = aRequest.at('contentType');
+    if (TP.notValid(handler)) {
+        handler = aRequest.at('contenttype');
+        if (TP.isValid(handler)) {
+            TP.ifWarn() ?
+                TP.warn('Deprecated "contenttype" request parameter: ' +
+                    aRequest) : 0;
+        }
+    }
+
     if (TP.notValid(handler) && aRequest.at('resultType') !== TP.TEXT) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         map = TP.uri.URI.$getURIMap(this);
