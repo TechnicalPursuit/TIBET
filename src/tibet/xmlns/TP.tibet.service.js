@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.defineSubtype('tibet.service');
+TP.dom.UIDataElement.defineSubtype('tibet.service');
 
 //  NB: 'href' for us is a URI attribute, but it's *not* a 'reloadable' URI
 //  attribute - we handle reloading specially for this tag.
@@ -77,74 +77,6 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.tibet.service.Type.defineMethod('tagDetachData',
-function(aRequest) {
-
-    /**
-     * @method tagDetachData
-     * @summary Tears down runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-
-        resultHref,
-        resultURI,
-
-        resource,
-
-        tpElem;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  If the element is being 'recast' (i.e. recompiled in place, usually when
-    //  developing with the Sherpa), then just return here. We don't want to do
-    //  any further processing to process/register/unregister data.
-    if (tpElem.isRecasting()) {
-        return;
-    }
-
-    if (TP.notEmpty(resultHref = TP.elementGetAttribute(elem, 'name'))) {
-        if (!TP.isURI(resultURI = TP.uc(resultHref))) {
-            //  Raise an exception
-            return this.raise('TP.sig.InvalidURI');
-        }
-    } else {
-        //  No 'name' attribute.
-        return;
-    }
-
-    //  If the new resource result is a content object of some sort (highly
-    //  likely) then it should respond to 'setData' so set its data to null
-    //  (which will cause it to ignore its data for *Change signals).
-
-    //  NB: We assume 'async' of false here.
-    resource = resultURI.getResource().get('result');
-    if (TP.canInvoke(resource, 'setData')) {
-        resource.setData(null);
-    }
-
-    resultURI.unregister();
-
-    //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
-    tpElem.signal('TP.sig.UIDataDestruct');
-
-    //  Check and dispatch a signal from our attributes if one exists for this
-    //  signal.
-    tpElem.dispatchResponderSignalFromAttr('UIDataDestruct', null);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -179,7 +111,7 @@ function() {
 
         thisref,
 
-        hasResultType,
+        hasContentType,
 
         resp,
 
@@ -334,11 +266,11 @@ function() {
         request.atPut('separator', val);
     }
 
-    hasResultType = this.hasAttribute('resultType');
+    hasContentType = this.hasAttribute('contentType');
 
     //  NB: This is the HTTP resultType parameter, not the result type that we
     //  will use to package the data.
-    request.atPut('requestType', TP.WRAP);
+    request.atPut('resultType', TP.WRAP);
 
     thisref = this;
 
@@ -347,7 +279,7 @@ function() {
     request.defineHandler('RequestSucceeded',
         function(aResponse) {
 
-            var resultType,
+            var contentType,
                 result,
 
                 mimeType,
@@ -382,12 +314,12 @@ function() {
                     //  result type.
                     mimeType = TP.ietf.mime.guessMIMEType(result, uri);
 
-                    resultType = thisref.getResultType(mimeType);
+                    contentType = thisref.getContentType(mimeType);
 
                     //  If a result type couldn't be determined, then just use
                     //  String.
-                    if (!TP.isType(resultType)) {
-                        resultType = String;
+                    if (!TP.isType(contentType)) {
+                        contentType = String;
                     }
 
                     //  If the new resource result is a content object of some
@@ -395,8 +327,8 @@ function() {
                     //  both the content String and the URI that it should be
                     //  associated with. The content object type will convert it
                     //  from a String to the proper type.
-                    if (TP.isSubtypeOf(resultType, TP.core.Content)) {
-                        newResource = resultType.construct(result, resultURI);
+                    if (TP.isSubtypeOf(contentType, TP.core.Content)) {
+                        newResource = contentType.construct(result, resultURI);
                         if (this.hasAttribute('makestructures')) {
                             newResource.set(
                                     'shouldMakeStructures',
@@ -404,10 +336,10 @@ function() {
                         }
                     } else {
                         strResource = TP.str(result);
-                        if (resultType === String) {
+                        if (contentType === String) {
                             newResource = strResource;
                         } else {
-                            newResource = resultType.from(strResource);
+                            newResource = contentType.from(strResource);
                         }
                     }
 
@@ -560,7 +492,7 @@ function() {
     //  If the author determined that they want a specialized result type, then
     //  we just want the TP.TEXT back from these calls to the server. We'll do
     //  the data conversion above in the RequestSucceeded handler method.
-    if (hasResultType) {
+    if (hasContentType) {
         request.atPut('resultType', TP.TEXT);
     }
 
@@ -672,66 +604,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('getResultType',
-function(mimeType) {
-
-    /**
-     * @method getResultType
-     * @summary Returns a result type that will either be a TIBET type from the
-     *     name specified by the 'resultType' attribute on the receiver or, if
-     *     that's not defined, the MIME type supplied to this method.
-     * @param {String} mimeType The MIME type of the data. This will be used to
-     *     guess the data type if the receiver doesn't have a 'resultType'
-     *     defined on it.
-     * @returns {TP.meta.lang.RootObject|String} The type object (or String as
-     *     a fallback) to create for the supplied result data.
-     */
-
-    var resultType,
-        tibetType;
-
-    //  See if the user has define a 'resultType' attribute on us. If so, try to
-    //  see if TIBET really has a Type matching that.
-    if (TP.notEmpty(resultType = this.getAttribute('resultType'))) {
-        tibetType = TP.sys.getTypeByName(resultType);
-    }
-
-    //  We still don't have a type for the result. If a MIME type was supplied,
-    //  switch off of that.
-    if (!TP.isType(tibetType)) {
-
-        //  Depending on the MIME type, return a TIBET (or JS) type object that
-        //  the result can be constructed with.
-
-        switch (mimeType) {
-
-            case TP.JSON_ENCODED:
-
-                tibetType = TP.core.JSONContent;
-
-                break;
-
-            case TP.XML_ENCODED:
-            case TP.XHTML_ENCODED:
-            case TP.XSLT_ENCODED:
-            case TP.ATOM_ENCODED:
-            case TP.XMLRPC_ENCODED:
-            case TP.SOAP_ENCODED:
-
-                tibetType = TP.core.XMLContent;
-
-                break;
-
-            default:
-                tibetType = String;
-        }
-    }
-
-    return tibetType;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tibet.service.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
@@ -760,21 +632,6 @@ function(aSignal) {
     this.updateResultURI(newContent);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineMethod('isReadyToRender',
-function() {
-
-    /**
-     * @method isReadyToRender
-     * @summary Whether or not the receiver is 'ready to render'. For this type,
-     *     this always returns true.
-     * @returns {Boolean} Whether or not the receiver is ready to render.
-     */
-
-    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -857,7 +714,7 @@ function(aResult) {
         resultURI,
 
         mimeType,
-        resultType,
+        contentType,
 
         isValid,
 
@@ -890,12 +747,12 @@ function(aResult) {
         //  result type.
         mimeType = TP.ietf.mime.guessMIMEType(aResult, this);
 
-        resultType = this.getResultType(mimeType);
+        contentType = this.getContentType(mimeType);
 
         //  If a result type couldn't be determined, then just use
         //  String.
-        if (!TP.isType(resultType)) {
-            resultType = String;
+        if (!TP.isType(contentType)) {
+            contentType = String;
         }
 
         //  Make sure that it's valid for its container. Note that we
@@ -904,7 +761,7 @@ function(aResult) {
         //  their data. We only want trival checks here (i.e. is the
         //  XML inside of a TP.core.XMLContent really XML - same for
         //  JSON)
-        isValid = resultType.validate(aResult, false);
+        isValid = contentType.validate(aResult, false);
         if (!isValid) {
             return this.raise('TP.sig.InvalidValue');
         }
@@ -914,14 +771,14 @@ function(aResult) {
         //  both the content String and the URI that it should be
         //  associated with. The content object type will convert it
         //  from a String to the proper type.
-        if (TP.isSubtypeOf(resultType, TP.core.Content)) {
-            newResource = resultType.construct(aResult, resultURI);
+        if (TP.isSubtypeOf(contentType, TP.core.Content)) {
+            newResource = contentType.construct(aResult, resultURI);
         } else {
             strResource = TP.str(aResult);
-            if (resultType === String) {
+            if (contentType === String) {
                 newResource = strResource;
             } else {
-                newResource = resultType.from(strResource);
+                newResource = contentType.from(strResource);
             }
         }
     } else if (TP.isNode(aResult)) {
