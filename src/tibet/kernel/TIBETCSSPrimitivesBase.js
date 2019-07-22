@@ -763,9 +763,15 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
     if (addedNewStyleElement) {
 
-        //  Create a CDATA section to hold the processed style content
-        processedContentNode =
-            aDocument.createCDATASection(processedStyleContent);
+        if (TP.isXMLDocument(aDocument)) {
+            //  Create a CDATA section to hold the processed style content
+            processedContentNode =
+                aDocument.createCDATASection(processedStyleContent);
+        } else {
+            //  Create a Text node to hold the processed style content
+            processedContentNode =
+                aDocument.createTextNode(processedStyleContent);
+        }
 
         //  Append it to the new style element
         TP.nodeAppendChild(inlinedStyleElem, processedContentNode, false);

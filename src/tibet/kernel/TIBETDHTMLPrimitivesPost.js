@@ -7808,7 +7808,11 @@ function(aNode, aDocument) {
 
         case Node.CDATA_SECTION_NODE:
 
-            return doc.createCDATASection(aNode.data);
+            TP.ifWarn() ?
+                TP.warn('Cannot create CDATASections in HTML. Creating' +
+                        ' text node instead') : 0;
+
+            return doc.createTextNode(aNode.data);
 
         case Node.DOCUMENT_FRAGMENT_NODE:
 
