@@ -114,6 +114,7 @@
 
         /**
          * Runs the deploy by activating the Shipit executable.
+         * @param {string} shipitpath The full path to the ShipIt executable.
          * @returns {Number} A return code.
          */
         cmdType.prototype.runViaShipit = async function(shipitpath) {

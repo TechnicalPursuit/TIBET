@@ -83,6 +83,7 @@
         /**
          * Runs the deploy by activating the Docker executable, building the
          * Docker image and then deploying to the DockerHub container registry.
+         * @param {string} dockerpath The full path to the Docker executable.
          * @returns {Number} A return code.
          */
         cmdType.prototype.runViaDocker = async function(dockerpath) {

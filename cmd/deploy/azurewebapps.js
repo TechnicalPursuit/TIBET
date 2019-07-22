@@ -126,6 +126,9 @@
          * Runs the deploy by activating the Docker executable, building the
          * Docker image, deploying to the Azure Container Registry and then
          * provisioning and loading that Docker image into an Azure WebApp
+         * @param {string} dockerpath The full path to the Docker executable.
+         * @param {string} azuretoolspath The full path to the Azure tools
+         *     executable.
          * @returns {Number} A return code.
          */
         cmdType.prototype.runViaAzurewebapps = async function(
