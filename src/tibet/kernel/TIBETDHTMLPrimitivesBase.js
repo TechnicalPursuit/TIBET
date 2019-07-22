@@ -1194,6 +1194,14 @@ function(anElement, aHandler, useTrackerElement) {
             anElement.appendChild(trackerElem);
         }
     } else {
+
+        //  Some old browsers still don't have native ResizeObserver support.
+        if (TP.notValid(ResizeObserver)) {
+            TP.ifWarn() ? TP.warn('Native ResizeObserver unavailable for: ' +
+                        TP.name(anElement)) : 0;
+            return;
+        }
+
         //  If the global ResizeObserver that manages our resizing events hasn't
         //  been allocated and initialized with the callback function, do so now.
         if (TP.notValid(TP.RESIZING_RESIZE_OBSERVER)) {
