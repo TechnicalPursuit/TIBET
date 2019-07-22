@@ -1746,8 +1746,8 @@ function(anEvent) {
         path = TP.join(
                 '//*[@keycode="_', key, '_shifted"]',
                 '[(@platform="', TP.$platform,
-                    '" and @browser="', TP.$browser, '")',
-                ' or (@browser="', TP.$browser, '")',
+                    '" and @browser="', TP.sys.getBrowser(), '")',
+                ' or (@browser="', TP.sys.getBrowser(), '")',
                 ' or (@platform="', TP.$platform, '")',
                 ' or .]');
 
@@ -1761,8 +1761,8 @@ function(anEvent) {
         path = TP.join(
                 '//*[@keycode="_', key, '"]',
                 '[(@platform="', TP.$platform,
-                    '" and @browser="', TP.$browser, '")',
-                ' or (@browser="', TP.$browser, '")',
+                    '" and @browser="', TP.sys.getBrowser(), '")',
+                ' or (@browser="', TP.sys.getBrowser(), '")',
                 ' or (@platform="', TP.$platform, '")',
                 ' or .]');
 
@@ -1842,8 +1842,8 @@ function(anEvent) {
         path = TP.join(
                 '//*[@keycode="_', key, '_shifted"]',
                 '[(@platform="', TP.$platform,
-                    '" and @browser="', TP.$browser, '")',
-                ' or (@browser="', TP.$browser, '")',
+                    '" and @browser="', TP.sys.getBrowser(), '")',
+                ' or (@browser="', TP.sys.getBrowser(), '")',
                 ' or (@platform="', TP.$platform, '")',
                 ' or .]');
 
@@ -1857,8 +1857,8 @@ function(anEvent) {
         path = TP.join(
                 '//*[@keycode="_', key, '"]',
                 '[(@platform="', TP.$platform,
-                    '" and @browser="', TP.$browser, '")',
-                ' or (@browser="', TP.$browser, '")',
+                    '" and @browser="', TP.sys.getBrowser(), '")',
+                ' or (@browser="', TP.sys.getBrowser(), '")',
                 ' or (@platform="', TP.$platform, '")',
                 ' or .]');
 
@@ -1938,8 +1938,8 @@ function(keyNameOrGlyph) {
     path = TP.join(
             '//*[@key="', keyNameOrGlyph, '"]',
             '[(@platform="', TP.$platform,
-                '" and @browser="', TP.$browser, '")',
-            ' or (@browser="', TP.$browser, '")',
+                '" and @browser="', TP.sys.getBrowser(), '")',
+            ' or (@browser="', TP.sys.getBrowser(), '")',
             ' or (@platform="', TP.$platform, '")',
             ' or .]');
 
@@ -1947,8 +1947,8 @@ function(keyNameOrGlyph) {
         path = TP.join(
                 '//*[@glyph="', keyNameOrGlyph, '"]',
                 '[(@platform="', TP.$platform,
-                    '" and @browser="', TP.$browser, '")',
-                ' or (@browser="', TP.$browser, '")',
+                    '" and @browser="', TP.sys.getBrowser(), '")',
+                ' or (@browser="', TP.sys.getBrowser(), '")',
                 ' or (@platform="', TP.$platform, '")',
                 ' or .]');
 
@@ -2041,8 +2041,8 @@ function(normalizedEvent) {
                 path = TP.join(
                         '//*[@keycode="_', key, '_shifted"]',
                         '[(@platform="', TP.$platform,
-                            '" and @browser="', TP.$browser, '")',
-                        ' or (@browser="', TP.$browser, '")',
+                            '" and @browser="', TP.sys.getBrowser(), '")',
+                        ' or (@browser="', TP.sys.getBrowser(), '")',
                         ' or (@platform="', TP.$platform, '")',
                         ' or .]');
 
@@ -2056,8 +2056,8 @@ function(normalizedEvent) {
                 path = TP.join(
                         '//*[@keycode="_', key, '"]',
                         '[(@platform="', TP.$platform,
-                            '" and @browser="', TP.$browser, '")',
-                        ' or (@browser="', TP.$browser, '")',
+                            '" and @browser="', TP.sys.getBrowser(), '")',
+                        ' or (@browser="', TP.sys.getBrowser(), '")',
                         ' or (@platform="', TP.$platform, '")',
                         ' or .]');
 
