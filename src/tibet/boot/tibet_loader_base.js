@@ -8285,7 +8285,7 @@ TP.boot.$configurePackage = function() {
                 if (TP.boot.$notEmpty(config)) {
                     TP.boot.$stdout(
                         'Overriding boot.config (' + config +
-                        ') with profile@config: ' + parts[1], TP.WARN);
+                        ') with profile@config: ' + parts[1], TP.DEBUG);
                 }
 
                 //  Configuration mismatch. We'll go with the one on the
@@ -8338,6 +8338,11 @@ TP.boot.$configurePackage = function() {
 
         throw new Error(err);
     }
+
+    TP.boot.$stdout('Using boot profile: ' +
+        TP.sys.getcfg('boot.package') + '@' + TP.sys.getcfg('boot.config'),
+        TP.SYSTEM);
+    TP.boot.$stdout('', TP.SYSTEM);
 
     return xml;
 };
