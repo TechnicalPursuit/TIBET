@@ -2627,7 +2627,7 @@ TP.hc(
                 return;
             }
 
-            if (TP.$browser === 'chrome') {
+            if (TP.sys.getBrowser() === 'chrome') {
                 return TP.join(
                         'You should use your application\'s Back/Exit ',
                         'features (if provided) to navigate or quit.\n\n',

@@ -142,6 +142,9 @@
         firefox: [{
             major: 60
         }],
+        fxios: [{
+            major: 18
+        }],
         safari: [{
             major: 10
         }]

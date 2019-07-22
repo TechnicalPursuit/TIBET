@@ -99,7 +99,7 @@ function() {
         //  If the entry has a 'browser' qualification, make sure that it
         //  matches the browser we're currently on.
         if (TP.elementHasAttribute(entry, 'browser') &&
-                TP.elementGetAttribute(entry, 'browser') !== TP.$browser) {
+                TP.elementGetAttribute(entry, 'browser') !== TP.sys.getBrowser()) {
             continue;
         }
 

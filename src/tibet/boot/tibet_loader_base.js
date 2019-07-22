@@ -932,6 +932,43 @@ if ((TP.$agent.indexOf('chrome/') !== -1) ||
 
     //  See: http://code.google.com/p/chromium/issues/detail?id=20071
     TP.$language = TP.$language.replace('_', '-');
+} else if (TP.$agent.indexOf('firefox/') !== -1 ||
+            TP.$agent.indexOf('fxios/') !== -1 ||
+            TP.$agent.indexOf('minefield/') !== -1 ||
+            TP.$agent.indexOf('mozilladeveloperpreview/') !== -1) {
+    //  firefox has a number of clones we want to watch out for
+    if (TP.$agent.indexOf('camino') !== -1 ||
+        TP.$agent.indexOf('epiphany') !== -1 ||
+        TP.$agent.indexOf('flock') !== -1 ||
+        TP.$agent.indexOf('navigator') !== -1 ||
+        TP.$agent.indexOf('swiftfox') !== -1) {
+        TP.$browser = 'ff-clone';
+    } else {
+        TP.$browser = 'firefox';
+        TP.$browserUI = 'gecko';
+        TP.$browserSuffix = 'Gecko';
+
+        //  nightlies use minefield, not firefox, for version prefix
+        //  and mobile is fxios
+        if (TP.$agent.indexOf('fxios') !== -1) {
+            TP.$browser = 'fxios';
+            TP.$$match = TP.$agent.match(/fxios\/([^ ]*?)($| )/);
+        } else if (TP.$agent.indexOf('minefield') !== -1) {
+            TP.$$match = TP.$agent.match(/minefield\/([^ ]*?)($| )/);
+        } else {
+            TP.$$match = TP.$agent.match(/firefox\/([^ ]*?)($| )/);
+        }
+
+        if (TP.$$match != null) {
+            TP.$$assignBrowser(TP.$$match[1]);
+        }
+
+        //  capture the gecko id for rendering engine numbers
+        TP.$$match = TP.$agent.match(/rv:(.*?)\)/);
+        if (TP.$$match != null) {
+            TP.$$assignBrowserUI(TP.$$match[1]);
+        }
+    }
 } else if (TP.$agent.indexOf('opera/') !== -1) {
         TP.$browser = 'opera';
 } else if (TP.$agent.indexOf('safari/') !== -1 ||
@@ -962,38 +999,6 @@ if ((TP.$agent.indexOf('chrome/') !== -1) ||
 
         //  capture the webkit id for rendering engine numbers
         TP.$$match = TP.$agent.match(/applewebkit\/([^ ]*?)($| )/);
-        if (TP.$$match != null) {
-            TP.$$assignBrowserUI(TP.$$match[1]);
-        }
-    }
-} else if (TP.$agent.indexOf('firefox/') !== -1 ||
-            TP.$agent.indexOf('minefield/') !== -1 ||
-            TP.$agent.indexOf('mozilladeveloperpreview/') !== -1) {
-    //  firefox has a number of clones we want to watch out for
-    if (TP.$agent.indexOf('camino') !== -1 ||
-        TP.$agent.indexOf('epiphany') !== -1 ||
-        TP.$agent.indexOf('flock') !== -1 ||
-        TP.$agent.indexOf('navigator') !== -1 ||
-        TP.$agent.indexOf('swiftfox') !== -1) {
-        TP.$browser = 'ff-clone';
-    } else {
-        TP.$browser = 'firefox';
-        TP.$browserUI = 'gecko';
-        TP.$browserSuffix = 'Gecko';
-
-        //  nightlies use minefield, not firefox, for version prefix
-        if (TP.$agent.indexOf('minefield') !== -1) {
-            TP.$$match = TP.$agent.match(/minefield\/([^ ]*?)($| )/);
-        } else {
-            TP.$$match = TP.$agent.match(/firefox\/([^ ]*?)($| )/);
-        }
-
-        if (TP.$$match != null) {
-            TP.$$assignBrowser(TP.$$match[1]);
-        }
-
-        //  capture the gecko id for rendering engine numbers
-        TP.$$match = TP.$agent.match(/rv:(.*?)\)/);
         if (TP.$$match != null) {
             TP.$$assignBrowserUI(TP.$$match[1]);
         }
@@ -1055,6 +1060,14 @@ TP.sys.getBrowser = function() {
      *     'firefox', 'ie', 'safari', 'chrome'.
      * @returns {String} The String representing the 'browser'.
      */
+
+    if (TP.$browser === 'fxios') {
+        return 'firefox';
+    }
+
+    if (TP.$browser === 'crios' || TP.$browser === 'gsa') {
+        return 'chrome';
+    }
 
     return TP.$browser;
 };
@@ -1480,6 +1493,9 @@ TP.sys.isSupported = function() {
         config,
         flag;
 
+    TP.boot.$stdout('User agent: ' + TP.$browser + '/' + TP.$browserMajor +
+        '.' + TP.$browserMinor, TP.boot.SYSTEM);
+
     //  Headless and Electron checks are based on boot.context from tibet_cfg.
     context = TP.sys.cfg('boot.context');
     if (TP.sys.cfg('boot.supported_contexts').indexOf(context) !== -1) {
@@ -1492,12 +1508,14 @@ TP.sys.isSupported = function() {
     cfg = TP.sys.cfg('boot.supported_browsers');
 
     //  Browser name must be a key in the supported data set.
-    if (!(TP.$browser in cfg)) {
+    //  NOTE we use the call here so it can deal with "spoofs" (fxios etc)
+    if (!(TP.sys.getBrowser() in cfg)) {
         return false;
     }
 
     //  Data should be an array of configuration blocks. Each block can
     //  either accept or deny access.
+    //  NOTE we use the _SLOT_ here so we look up _exact_ parameters.
     options = cfg[TP.$browser];
     len = options.length;
 
