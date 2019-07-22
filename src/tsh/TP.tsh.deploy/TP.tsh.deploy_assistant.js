@@ -306,9 +306,9 @@ function(takePropsFromStore) {
             }
 
             break;
-        case 'aws_ebs':
+        case 'awselasticbeanstalk':
             break;
-        case 'aws_fargate':
+        case 'awsfargate':
             break;
         case 'azurewebapps':
             break;
