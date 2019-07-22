@@ -2349,7 +2349,7 @@ function(aMutationRecord) {
 
     //  Make sure that the target is in a Window.
     doc = targetNode.ownerDocument;
-    if (doc === undefined) {
+    if (!TP.isDocument(doc)) {
         return this;
     }
 
