@@ -154,8 +154,9 @@ function() {
 
     //  Set the content of our source URI to the source text extracted from the
     //  editor.
-    sourceURI.setContent(newSourceText,
-                            TP.request('resultType', TP.core.Content));
+    sourceURI.setContent(newSourceText, TP.request(
+        'resultType', TP.CONTENT,
+        'contentType', TP.core.Content));
 
     //  Capture this into the 'local' version of the source content. This is
     //  used to compare against what is currently in the source URI to determine
@@ -926,7 +927,10 @@ function() {
     //  also that we specify that we want the result wrapped in some sort of
     //  TP.core.Content instance.
 
-    getParams = TP.hc('resultType', TP.core.Content, 'async', true);
+    getParams = TP.hc(
+        'resultType', TP.CONTENT,
+        'contentType', TP.core.Content,
+        'async', true);
 
     //  If any extra load headers were configured on ourself as an attribute,
     //  then they'll be in this instance variable. Add them to the get
@@ -1156,7 +1160,10 @@ function(shouldRefresh) {
     //  If we're refreshing from the server, then just configure the get
     //  parameters that way.
     if (refresh) {
-        getParams = TP.hc('resultType', TP.core.Content, 'refresh', true);
+        getParams = TP.hc(
+            'resultType', TP.CONTENT,
+            'contentType', TP.core.Content,
+            'refresh', true);
     } else {
         //  Grab our source URI's resource. Note that we *always* configure this
         //  to be an asynchronous fetch due to the fact that, we're *not*
@@ -1164,7 +1171,10 @@ function(shouldRefresh) {
         //  in the stack and we want the result provided to the then() to be the
         //  latest. Note also that we specify that we want the result wrapped in
         //  some sort of TP.core.Content instance.
-        getParams = TP.hc('resultType', TP.core.Content, 'async', true);
+        getParams = TP.hc(
+            'resultType', TP.CONTENT,
+            'contentType', TP.core.Content,
+            'async', true);
     }
 
     //  If any extra load headers were configured on ourself as an

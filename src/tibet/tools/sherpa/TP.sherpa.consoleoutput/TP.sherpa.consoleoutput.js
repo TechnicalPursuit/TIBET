@@ -389,7 +389,7 @@ function(uniqueID, dataRecord) {
                     'hid', hidstr,
                     'cmdText', cmdText,
                     'empty', '',
-                    'resultType', '',
+                    'returnType', '',
                     'stats', '&#8230;');
 
     //  Grab the proper template for a console item from the Sherpa' shared

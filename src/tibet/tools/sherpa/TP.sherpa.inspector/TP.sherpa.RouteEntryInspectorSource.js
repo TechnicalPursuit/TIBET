@@ -43,7 +43,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -51,7 +51,7 @@ function(options) {
      *                                      placed in it.
      */
 
-    options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
 
     return options;
 });
@@ -93,7 +93,7 @@ function(options) {
     schemaResource = TP.uc(jsonURI).getResource(
                         TP.hc('async', false,
                                 'refresh', true,
-                                'contenttype', TP.json.JSONSchemaContent));
+                                'contentType', TP.json.JSONSchemaContent));
     schema = schemaResource.get('result');
 
     propertySheet = TP.xctrls.propertysheet.from(

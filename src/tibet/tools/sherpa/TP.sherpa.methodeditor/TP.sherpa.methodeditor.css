@@ -116,7 +116,7 @@ sherpa|methodeditor xctrls|codeeditor > .CodeMirror-scroll {
     overflow-y: auto;
 }
 
-sherpa|inspectoritem[contenttype="sherpa:methodeditor"] {
+sherpa|inspectoritem[childtype="sherpa:methodeditor"] {
 
     /* CSS custom property */
     --sherpa-inspector-width: 2;

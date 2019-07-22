@@ -1228,6 +1228,9 @@ TP.uri.URI.Inst.defineAttribute('$uriHandler', null);
 //  uri as rewritten based on rewrite process caching
 TP.uri.URI.Inst.defineAttribute('$uriRewrite', null);
 
+//  the default content type for this instance
+TP.uri.URI.Inst.defineAttribute('defaultContentType');
+
 //  the default MIME type for this instance
 TP.uri.URI.Inst.defineAttribute('defaultMIMEType');
 
@@ -1968,7 +1971,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.uri.URI.Inst.defineMethod('getContent',
-function() {
+function(aRequest) {
 
     /**
      * @method getContent
@@ -1979,7 +1982,7 @@ function() {
 
     var request;
 
-    request = this.constructRequest();
+    request = this.constructRequest(aRequest);
     request.atPut('async', false);
 
     //  Track initial state so we can properly process flags/results.
@@ -2011,7 +2014,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.uri.URI.Inst.defineMethod('$getFilteredResult',
-function(anObject, resultType, collapse) {
+function(anObject, aRequest, collapse) {
 
     /**
      * @method $getFilteredResult
@@ -2025,16 +2028,21 @@ function(anObject, resultType, collapse) {
      *     valid TP.dom.Node, then a viable JavaScript object by parsing for
      *     JSON strings, and finally just the object itself.
      * @param {Object} anObject The object to "type check".
-     * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP. The default
-     *     is to avoid repackaging the result object other than to optionally
-     *     collapse it.
+     * @param {Object} aRequest The request object used to original fetch data.
      * @param {Boolean} [collapse=true] False to skip collapsing node lists to a
      *     single node.
      * @returns {Object} The desired return value type.
      */
 
     var obj,
-        saved;
+        saved,
+        resultType,
+        contentType,
+        type,
+        request;
+
+    request = this.constructRequest(aRequest);
+    resultType = request.at('resultType');
 
     if (TP.isValid(anObject)) {
         switch (resultType) {
@@ -2134,14 +2142,25 @@ function(anObject, resultType, collapse) {
                 }
                 return obj;
 
+            case TP.CONTENT:
+                //  fall through to default handling.
             default:
 
-                if (TP.isType(resultType)) {
+                contentType = TP.ifInvalid(request.at('contentType'),
+                    this.get('defaultContentType'));
+                if (TP.notValid(contentType)) {
+                    return anObject;
+                }
+
+                type = TP.sys.getTypeByName(contentType);
+
+                if (TP.isType(type)) {
+                    //  Don't recreate instances of the same type.
                     if (TP.canInvoke(anObject, 'getType') &&
-                        resultType === anObject.getType()) {
+                        type === anObject.getType()) {
                         obj = anObject;
                     } else {
-                        obj = resultType.from(anObject, this);
+                        obj = type.from(anObject, this);
                     }
                 } else {
                     obj = anObject;
@@ -2760,10 +2779,7 @@ function(aRequest, aResult, aResource) {
 
     var fragment,
         result,
-
-        shouldCollapse,
-
-        resultType;
+        shouldCollapse;
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -2789,7 +2805,7 @@ function(aRequest, aResult, aResource) {
 
         //  Note here that if we do collapse, we do so to just to make sure to
         //  have consistent results across 'get' calls... what ultimately gets
-        //  returned from this method is determined by the $getFilteredResult()
+        //  returned from this method is determined by the $getFilteredResult
         //  call below.
 
         shouldCollapse = TP.ifKeyInvalid(aRequest, 'shouldCollapse', true);
@@ -2810,8 +2826,7 @@ function(aRequest, aResult, aResource) {
     }
 
     //  filter to any result type which was specified.
-    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
-    result = this.$getFilteredResult(result, resultType);
+    result = this.$getFilteredResult(result, aRequest);
 
     return result;
 });
@@ -5103,7 +5118,6 @@ function(aRequest, filterResult) {
         refresh,
         request,
         result,
-        resultType,
         response;
 
     request = this.constructRequest(aRequest);
@@ -5137,8 +5151,7 @@ function(aRequest, filterResult) {
 
     //  filter any remaining data
     if (TP.isTrue(filterResult) && TP.isValid(result)) {
-        resultType = TP.ifKeyInvalid(request, 'resultType', null);
-        result = this.$getFilteredResult(result, resultType, false);
+        result = this.$getFilteredResult(result, request, false);
     }
 
     response = request.getResponse(result);
@@ -5591,8 +5604,7 @@ function(aRequest) {
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        result = this.$getFilteredResult(
-                        primaryResource, request.at('resultType'));
+        result = this.$getFilteredResult(primaryResource, request);
     } else {
         result = this.$getResultFragment(aRequest, primaryResource);
     }
@@ -6222,8 +6234,7 @@ function(aRequest, filterResult) {
             'completeJob',
             function(aResult) {
 
-                var resultType,
-                    result;
+                var result;
 
                 //  Default our result, and filter if requested. We do this
                 //  here as well to ensure we don't complete() an incoming
@@ -6231,10 +6242,8 @@ function(aRequest, filterResult) {
                 result = aResult;
 
                 if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
-                    resultType = TP.ifKeyInvalid(request, 'resultType', null);
-                    result = thisref.$getFilteredResult(aResult,
-                                                        resultType,
-                                                        false);
+                    result = thisref.$getFilteredResult(aResult, request,
+                        false);
                 }
 
                 //  If we fetched the initial resource and are just going to be
@@ -6386,9 +6395,7 @@ function(aRequest) {
     //  results on completion. We don't refresh content from those results,
     //  which will be flagged with a false value for refreshContent.
     if (TP.isFalse(aRequest.at('refreshContent'))) {
-        return this.$getFilteredResult(
-                        this.$get('resource'),
-                        aRequest.at('resultType'));
+        return this.$getFilteredResult(this.$get('resource'), aRequest);
     }
 
     //  the default mime type can often be determined by the Content-Type
@@ -6413,8 +6420,7 @@ function(aRequest) {
     //  In cases of refresh we'll often be called with the data we already have
     //  as the result.
 
-    currentResult = this.$getFilteredResult(
-                            resource, aRequest.at('resultType'));
+    currentResult = this.$getFilteredResult(resource, aRequest);
 
     //  Core question of whether we're dirty or not, will value change.
     if (this.resourcesAreAlike(currentResult, newResult)) {
@@ -6461,7 +6467,16 @@ function(aRequest) {
 
     //  result content handler invocation...if possible (but not if the
     //  requestor wants raw TP.TEXT).
-    handler = aRequest.at('contenttype');
+    handler = aRequest.at('contentType');
+    if (TP.notValid(handler)) {
+        handler = aRequest.at('contenttype');
+        if (TP.isValid(handler)) {
+            TP.ifWarn() ?
+                TP.warn('Deprecated "contenttype" request parameter: ' +
+                    aRequest) : 0;
+        }
+    }
+
     if (TP.notValid(handler) && aRequest.at('resultType') !== TP.TEXT) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         map = TP.uri.URI.$getURIMap(this);
@@ -6595,7 +6610,7 @@ function(aRequest) {
     //  clear any expiration computations.
     this.expire(false);
 
-    return this.$getFilteredResult(resource, aRequest.at('resultType'));
+    return this.$getFilteredResult(resource, aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -8116,8 +8131,6 @@ function(aRequest, filterResult) {
         $$result,
         result,
         msg,
-
-        resultType,
         response;
 
     request = this.constructRequest(aRequest);
@@ -8136,8 +8149,7 @@ function(aRequest, filterResult) {
     }
 
     if (TP.isTrue(filterResult) && TP.isValid(result)) {
-        resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
-        result = this.$getFilteredResult(result, resultType, false);
+        result = this.$getFilteredResult(result, request, false);
     }
 
     response = request.getResponse(result);
@@ -9542,16 +9554,13 @@ function(request, result, async, filter) {
      */
 
     var resource,
-
-        resultType,
         response;
 
     resource = result;
 
     if (TP.isValid(resource)) {
         if (TP.isTrue(filter)) {
-            resultType = TP.ifKeyInvalid(request, 'resultType', null);
-            resource = this.$getFilteredResult(resource, resultType, false);
+            resource = this.$getFilteredResult(resource, request, false);
         }
 
         if (!this.isLoaded()) {
@@ -10094,8 +10103,7 @@ function(aRequest) {
     }
 
     if (TP.isValid(aRequest)) {
-        return this.$getFilteredResult(this.$get('resource'),
-                                        aRequest.at('resultType'));
+        return this.$getFilteredResult(this.$get('resource'), aRequest);
     } else {
         return this.$get('resource');
     }

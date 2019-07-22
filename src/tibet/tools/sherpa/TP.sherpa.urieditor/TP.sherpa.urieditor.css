@@ -149,7 +149,7 @@ sherpa|urieditor xctrls|codeeditor > .CodeMirror-scroll {
     overflow-y: auto;
 }
 
-sherpa|inspectoritem[contenttype="sherpa:urieditor"] {
+sherpa|inspectoritem[childtype="sherpa:urieditor"] {
 
     /* CSS custom property */
     --sherpa-inspector-width: 2;

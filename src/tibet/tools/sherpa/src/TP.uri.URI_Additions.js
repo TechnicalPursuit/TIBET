@@ -88,7 +88,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -102,7 +102,7 @@ function(options) {
     this.callNextMethod();
 
     //  Initially configure the content type to be an 'html:div'.
-    options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
 
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
@@ -113,7 +113,7 @@ function(options) {
     //  If not, then possibly reset the content type to be that for a Sherpa
     //  urieditor.
     if (!tabHasValue) {
-        options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+        options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
     }
 
     return options;
@@ -191,12 +191,12 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URI.Inst.defineMethod('getContentTypeForCanvas',
+TP.uri.URI.Inst.defineMethod('getChildTypeForCanvas',
 function(options) {
 
     /**
-     * @method getContentTypeForCanvas
-     * @summary Returns the unique 'content type' used when inserting content
+     * @method getChildTypeForCanvas
+     * @summary Returns the unique 'child type' used when inserting content
      *     modeled by the receiver into the current canvas.
      * @param {TP.core.Hash} options A hash of data available to this source to
      *     generate the content. This will have the following keys, amongst

@@ -279,7 +279,7 @@ function(windowContext) {
 //  ------------------------------------------------------------------------
 
 TP.test.GUIDriver.Inst.defineMethod('fetchResource',
-function(aURI, resultType) {
+function(aURI, aRequest) {
 
     /**
      * @method fetchResource
@@ -306,8 +306,7 @@ function(aURI, resultType) {
                         function(resolver, rejector) {
                             var subrequest;
 
-                            subrequest = TP.request(
-                                            TP.hc('resultType', resultType));
+                            subrequest = TP.request(aRequest);
 
                             subrequest.defineHandler(
                                 'RequestSucceeded',
@@ -395,7 +394,7 @@ function(aURI, aWindow) {
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    this.fetchResource(aURI, TP.DOM).chain(
+    this.fetchResource(aURI, TP.hc('resultType', TP.DOM)).chain(
         function(result) {
             var tpWin,
                 tpDoc,

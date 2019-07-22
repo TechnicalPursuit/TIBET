@@ -874,7 +874,7 @@ function() {
 
             resp = TP.uc('~lib_schema/tibet_common_types.json').
                 getResource(TP.hc('async', false,
-                                    'contenttype', TP.json.JSONSchemaContent));
+                                    'contentType', TP.json.JSONSchemaContent));
             jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
         });
@@ -1077,7 +1077,7 @@ function() {
             resp = TP.uc('~lib_schema/tibet_common_types.json').
                     getResource(
                         TP.hc('async', false,
-                                'contenttype', TP.json.JSONSchemaContent));
+                                'contentType', TP.json.JSONSchemaContent));
             jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
 

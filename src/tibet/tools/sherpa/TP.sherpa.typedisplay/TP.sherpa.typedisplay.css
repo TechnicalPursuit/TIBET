@@ -76,7 +76,7 @@ sherpa|typedisplay .content td:hover {
     cursor: pointer;
 }
 
-sherpa|inspectoritem[contenttype="sherpa:typedisplay"] {
+sherpa|inspectoritem[childtype="sherpa:typedisplay"] {
 
     /* CSS custom property */
     --sherpa-inspector-width: 2;

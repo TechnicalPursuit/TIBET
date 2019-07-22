@@ -222,7 +222,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -231,7 +231,7 @@ function(options) {
      */
 
     if (!this.checkAuthentication()) {
-        options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+        options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
         return options;
     }
 
@@ -412,7 +412,7 @@ function() {
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForS3Designation',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -422,7 +422,7 @@ function(options) {
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForS3AllBuckets',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -432,7 +432,7 @@ function(options) {
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForLambdaDesignation',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -442,7 +442,7 @@ function(options) {
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForLambdaAllFunctions',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });

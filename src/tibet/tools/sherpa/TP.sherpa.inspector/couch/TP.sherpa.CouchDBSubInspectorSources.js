@@ -347,7 +347,7 @@ function(options) {
      *                              currently selected path.
      * @returns {TP.core.Hash} Configuration data used by the inspector for bay
      *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *          TP.ATTR + '_childtype':   The tag name of the content being
      *                                      put into the bay
      *          TP.ATTR + '_class':         Any additional CSS classes to put
      *                                      onto the bay inspector item itself
@@ -356,7 +356,7 @@ function(options) {
      */
 
     if (!this.checkAuthentication()) {
-        options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+        options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
         return options;
     }
 
@@ -540,7 +540,7 @@ function() {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForAllDatabases',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -550,7 +550,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForAllDocuments',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -560,7 +560,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDesignDocuments',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -570,7 +570,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForViews',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -580,7 +580,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDatabaseDesignation',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -590,7 +590,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDatabaseInfo',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+    options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
 
     return options;
 });
@@ -600,7 +600,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForDocumentContent',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+    options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
 
     return options;
 });
@@ -610,7 +610,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForServerDesignation',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
 
     return options;
 });
@@ -620,7 +620,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getConfigForInspectorForServerInfo',
 function(options) {
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+    options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
 
     return options;
 });
@@ -782,7 +782,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentTypeForCanvasForDocumentContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getChildTypeForCanvasForDocumentContent',
 function(options) {
 
     return 'uri/CouchDB/document';
@@ -790,7 +790,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getContentTypeForCanvasForViewContent',
+TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getChildTypeForCanvasForViewContent',
 function(options) {
 
     return 'uri/CouchDB/view';

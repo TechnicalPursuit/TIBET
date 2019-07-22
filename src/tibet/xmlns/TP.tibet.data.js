@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.defineSubtype('tibet:data');
+TP.dom.UIDataElement.defineSubtype('tibet:data');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -68,79 +68,6 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.tibet.data.Type.defineMethod('tagDetachData',
-function(aRequest) {
-
-    /**
-     * @method tagDetachData
-     * @summary Tears down runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-
-        namedHref,
-        namedURI,
-
-        resource,
-
-        tpElem;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  If the element is being 'recast' (i.e. recompiled in place, usually when
-    //  developing with the Sherpa), then just return here. We don't want to do
-    //  any further processing to process/register/unregister data.
-    if (tpElem.isRecasting()) {
-        return;
-    }
-
-    //  If we're not empty, then we use our child content as our 'named'
-    //  resource's content and ignore any 'remote' URI attribute.
-    if (TP.notEmpty(elem.childNodes)) {
-
-        if (TP.notEmpty(namedHref = TP.elementGetAttribute(elem, 'name'))) {
-            if (!TP.isURI(namedURI = TP.uc(namedHref))) {
-                //  Raise an exception
-                return this.raise('TP.sig.InvalidURI');
-            }
-        } else {
-            //  No 'name' attribute.
-            return;
-        }
-
-        //  If the new resource result is a content object of some sort (highly
-        //  likely) then it should respond to 'setData' so set its data to null
-        //  (which will cause it to ignore its data for *Change signals).
-
-        //  NB: We assume 'async' of false here.
-        resource = namedURI.getResource().get('result');
-        if (TP.canInvoke(resource, 'setData')) {
-            resource.setData(null);
-        }
-
-        namedURI.unregister();
-
-        //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
-        tpElem.signal('TP.sig.UIDataDestruct');
-
-        //  Check and dispatch a signal from our attributes if one exists for
-        //  this signal.
-        tpElem.dispatchResponderSignalFromAttr('UIDataDestruct', null);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -171,77 +98,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.data.Inst.defineMethod('getResultType',
-function(mimeType) {
-
-    /**
-     * @method getResultType
-     * @summary Returns a result type that will either be a TIBET type from the
-     *     name specified by the 'resultType' attribute on the receiver or, if
-     *     that's not defined, the MIME type supplied to this method.
-     * @param {String} mimeType The MIME type of the data. This will be used to
-     *     guess the data type if the receiver doesn't have a 'resultType'
-     *     defined on it.
-     * @returns {TP.meta.lang.RootObject|String} The type object (or String as
-     *     a fallback) to create for the supplied result data.
-     */
-
-    var resultType,
-        tibetType;
-
-    //  See if the user has define a 'resultType' attribute on us. If so, try to
-    //  see if TIBET really has a Type matching that.
-    if (TP.notEmpty(resultType = this.getAttribute('resultType'))) {
-        tibetType = TP.sys.getTypeByName(resultType);
-    }
-
-    //  We still don't have a type for the result. If a MIME type was supplied,
-    //  switch off of that.
-    if (!TP.isType(tibetType)) {
-
-        //  Depending on the MIME type, return a TIBET (or JS) type object that
-        //  the result can be constructed with.
-
-        switch (mimeType) {
-
-            case TP.JSON_ENCODED:
-
-                tibetType = TP.core.JSONContent;
-
-                break;
-
-            case TP.XML_ENCODED:
-            case TP.XHTML_ENCODED:
-            case TP.XSLT_ENCODED:
-            case TP.ATOM_ENCODED:
-            case TP.XMLRPC_ENCODED:
-            case TP.SOAP_ENCODED:
-
-                tibetType = TP.core.XMLContent;
-
-                break;
-
-            default:
-                tibetType = String;
-        }
-    }
-
-    return tibetType;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.data.Inst.defineMethod('isReadyToRender',
+TP.tibet.data.Inst.defineMethod('hasLocalData',
 function() {
 
     /**
-     * @method isReadyToRender
-     * @summary Whether or not the receiver is 'ready to render'. For this type,
-     *     this always returns true.
-     * @returns {Boolean} Whether or not the receiver is ready to render.
+     * @method hasLocalData
+     * @summary Does this element have local, not remote data. In particular,
+     *     should it rely on child node content for example, over remote hrefs?
+     * @returns {Boolean} Whether or not the receiver has local data.
      */
 
-    return true;
+    return TP.isEmpty(this.getNativeNode());
 });
 
 //  ------------------------------------------------------------------------
@@ -402,7 +269,7 @@ function(aContentObject, aRequest) {
         shouldSignal,
 
         mimeType,
-        resultType,
+        contentType,
 
         newResource,
         strResource,
@@ -439,26 +306,26 @@ function(aContentObject, aRequest) {
     }
 
     //  Obtain a MIME type for the result and use it to obtain a result type.
-    //  Note that there might not be either a 'type' or 'resultType' attribute
+    //  Note that there might not be either a 'type' or 'contentType' attribute
     //  on the receiver, in which case we'll just get a String result type here.
-    resultType = this.getResultType(mimeType);
+    contentType = this.getContentType(mimeType);
 
     //  If the new resource result is a content object of some sort (highly
     //  likely) then we should initialize it with both the content String and
     //  the URI that it should be associated with. The content object type will
     //  convert it from a String to the proper type.
-    if (TP.isSubtypeOf(resultType, TP.core.Content)) {
-        newResource = resultType.construct(aContentObject, namedURI);
+    if (TP.isSubtypeOf(contentType, TP.core.Content)) {
+        newResource = contentType.construct(aContentObject, namedURI);
         if (this.hasAttribute('makestructures')) {
             newResource.set('shouldMakeStructures',
                             TP.bc(this.getAttribute('makestructures')));
         }
     } else {
         strResource = TP.str(aContentObject);
-        if (resultType === String) {
+        if (contentType === String) {
             newResource = strResource;
         } else {
-            newResource = resultType.from(strResource);
+            newResource = contentType.from(strResource);
         }
     }
 
@@ -466,7 +333,7 @@ function(aContentObject, aRequest) {
     //  as a second parameter here for content objects that do both trivial and
     //  full facet checks on their data. We only want trival checks here (i.e.
     //  is the XML inside of a TP.core.XMLContent really XML - same for JSON)
-    isValid = resultType.validate(newResource, false);
+    isValid = contentType.validate(newResource, false);
     if (!isValid) {
         return this.raise('TP.sig.InvalidValue');
     }

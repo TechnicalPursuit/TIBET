@@ -63,7 +63,7 @@ function(aSchemaURI) {
     fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
 
     if (aSchemaURI.getExtension() === 'json') {
-        fetchParams.atPut('contenttype', TP.json.JSONSchemaContent);
+        fetchParams.atPut('contentType', TP.json.JSONSchemaContent);
     }
 
     resp = aSchemaURI.getResource(fetchParams);

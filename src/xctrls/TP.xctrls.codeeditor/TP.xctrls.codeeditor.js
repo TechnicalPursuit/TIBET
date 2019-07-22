@@ -869,8 +869,8 @@ function() {
 
     //  If an attribute was defined that tells us what type of content we're
     //  going to have, use it.
-    if (this.hasAttribute('contenttype')) {
-        this.setEditorModeFromMIMEType(this.getAttribute('contenttype'));
+    if (this.hasAttribute('childtype')) {
+        this.setEditorModeFromMIMEType(this.getAttribute('childtype'));
     }
 
     //  We're all set up and ready - signal that.
