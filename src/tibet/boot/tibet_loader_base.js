@@ -887,7 +887,9 @@ if (navigator.userLanguage != null) {
 TP.$$match = null;
 
 /* eslint-disable no-extra-parens */
-if ((TP.$agent.indexOf('chrome/') !== -1) || (TP.$agent.indexOf('crios/') !== -1)) {
+if ((TP.$agent.indexOf('chrome/') !== -1) ||
+    (TP.$agent.indexOf('crios/') !== -1) ||
+    (TP.$agent.indexOf('gsa/') !== -1)) {
 /* eslint-enable no-extra-parens */
     //  Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13
 
@@ -910,6 +912,11 @@ if ((TP.$agent.indexOf('chrome/') !== -1) || (TP.$agent.indexOf('crios/') !== -1
     }
 
     TP.$$match = TP.$agent.match(/crios\/([^ ]*?) /);
+    if (TP.$$match != null) {
+        TP.$$assignBrowser(TP.$$match[1]);
+    }
+
+    TP.$$match = TP.$agent.match(/gsa\/([^ ]*?) /);
     if (TP.$$match != null) {
         TP.$$assignBrowser(TP.$$match[1]);
     }
