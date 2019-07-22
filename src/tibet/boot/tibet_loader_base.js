@@ -886,7 +886,7 @@ if (navigator.userLanguage != null) {
 
 TP.$$match = null;
 
-if (TP.$agent.indexOf('chrome/') !== -1) {
+if ((TP.$agent.indexOf('chrome/') !== -1) || (TP.$agent.indexOf('crios/') !== -1)) {
     //  Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13
 
     //  chrome is WebKit-based for GUI, but has a different JS engine.
@@ -903,6 +903,11 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
 
     //  capture chrome number for browser version numbering
     TP.$$match = TP.$agent.match(/chrome\/([^ ]*?) /);
+    if (TP.$$match != null) {
+        TP.$$assignBrowser(TP.$$match[1]);
+    }
+
+    TP.$$match = TP.$agent.match(/crios\/([^ ]*?) /);
     if (TP.$$match != null) {
         TP.$$assignBrowser(TP.$$match[1]);
     }
@@ -10038,13 +10043,12 @@ TP.boot.$config = function() {
 
     //  warn about unsupported platforms but don't halt the boot process
     if (!TP.sys.isSupported()) {
-        if (TP.sys.cfg('boot.supported')) {
+        if (TP.sys.cfg('boot.unsupported')) {
+            TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
+                TP.WARN);
+        } else {
             TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent +
                 '. Boot sequence terminated.', TP.FATAL);
-            return;
-        } else {
-            TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
-                TP.ERROR);
         }
     }
 

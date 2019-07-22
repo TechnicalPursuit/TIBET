@@ -126,7 +126,7 @@
     TP.sys.setcfg('boot.show_ide', false);
 
     //  allow unsupported browsers to boot but log, or force supported list.
-    TP.sys.setcfg('boot.supported', true);
+    TP.sys.setcfg('boot.unsupported', false);
 
     //  list of supported boot contexts
     TP.sys.setcfg('boot.supported_contexts', [
@@ -136,17 +136,14 @@
     //  dictionary of data used by the isSupported call in the loader to
     //  determine if a browser should be considered supported.
     TP.sys.setcfg('boot.supported_browsers', {
-        ie: [{
-            major: 11
-        }],
         chrome: [{
-            major: 39
+            major: 70
         }],
         firefox: [{
-            major: 34
+            major: 60
         }],
         safari: [{
-            major: 7
+            major: 10
         }]
     });
 
