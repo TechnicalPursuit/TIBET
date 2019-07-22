@@ -886,7 +886,9 @@ if (navigator.userLanguage != null) {
 
 TP.$$match = null;
 
+/* eslint-disable no-extra-parens */
 if ((TP.$agent.indexOf('chrome/') !== -1) || (TP.$agent.indexOf('crios/') !== -1)) {
+/* eslint-enable no-extra-parens */
     //  Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13
 
     //  chrome is WebKit-based for GUI, but has a different JS engine.
