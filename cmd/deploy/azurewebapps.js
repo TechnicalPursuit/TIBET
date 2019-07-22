@@ -4,7 +4,7 @@
  * an Azure WebApp running that Docker image.
  * This one is built to handle invocations of the TIBET CLI with a command line
  * of:
- * 'tibet deploy azure_webapps <environment>'.
+ * 'tibet deploy azurewebapps <environment>'.
  *
  * This subcommand expects the following fields, shown here as a set of
  * configuration parameters in the project's 'tds.json' file:
@@ -60,7 +60,7 @@
     module.exports = function(cmdType) {
 
         /**
-         * Runs the dockerhub subcommand, checking for dockerhub-related
+         * Runs the azurewebapps command, checking for azurewebapps-related
          * support.
          * @returns {Number} A return code.
          */

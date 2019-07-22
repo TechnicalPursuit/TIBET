@@ -310,7 +310,7 @@ function(takePropsFromStore) {
             break;
         case 'aws_fargate':
             break;
-        case 'azure_webapps':
+        case 'azurewebapps':
             break;
         case 'dockerhub':
             if (takePropsFromStore &&
