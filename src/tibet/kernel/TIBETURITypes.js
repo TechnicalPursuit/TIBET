@@ -2146,7 +2146,8 @@ function(anObject, aRequest, collapse) {
                 //  fall through to default handling.
             default:
 
-                contentType = request.at('contentType');
+                contentType = TP.ifInvalid(request.at('contentType'),
+                    this.get('defaultContentType'));
                 if (TP.notValid(contentType)) {
                     return anObject;
                 }
