@@ -1387,9 +1387,13 @@ CLI.quoted = function(aString, aQuoteChar) {
  * @param {String[]} params The Array of arguments that will be joined by spaces
  *     which, along with the commandpath, will form the command that will spawn
  *     the child process.
+ * @param {Function} [stdoutcb] The Function to execute when there is standard
+ *     out output.
+ * @param {Function} [stderrcb] The Function to execute when there is standard
+ *     error output.
  * @returns {Object} A thenable representing the spawned child process.
  */
-CLI.spawnAsync = function(cmd, commandpath, params) {
+CLI.spawnAsync = function(cmd, commandpath, params, stdoutcb, stderrcb) {
 
     var child,
         spawnParams;
@@ -1416,6 +1420,10 @@ CLI.spawnAsync = function(cmd, commandpath, params) {
         if (CLI.isValid(data)) {
             // Copy and remove newline.
             msg = data.slice(0, -1).toString('utf-8');
+
+            if (CLI.isFunction(stdoutcb)) {
+                stdoutcb(msg);
+            }
 
             cmd.log(msg);
         }
@@ -1446,6 +1454,10 @@ CLI.spawnAsync = function(cmd, commandpath, params) {
         //  those messages.
         if (/throw er;/.test(msg)) {
             return;
+        }
+
+        if (CLI.isFunction(stderrcb)) {
+            stderrcb(msg);
         }
 
         cmd.error(msg);
