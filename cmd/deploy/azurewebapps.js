@@ -18,7 +18,7 @@
                 "containerregistrysku": "Basic",
                 "appserviceplanname": "TIBETAzureTestPlan",
                 "appservicesku": "B1",
-                "webappname": "TIBETAzureTest"
+                "appname": "TIBETAzureTest"
             }
         }
  *
@@ -235,8 +235,8 @@
                 return 1;
             }
 
-            if (CLI.notValid(params.webappname)) {
-                cmd.warn('Missing parameter: webappname');
+            if (CLI.notValid(params.appname)) {
+                cmd.warn('Missing parameter: appname');
                 return 1;
             }
 
@@ -419,7 +419,7 @@
                             '--plan',
                             params.appserviceplanname,
                             '--name',
-                            params.webappname,
+                            params.appname,
                             '--deployment-container-image-name',
                             tag
                         ];
@@ -438,7 +438,7 @@
                             'container',
                             'set',
                             '--name',
-                            params.webappname,
+                            params.appname,
                             '--resource-group',
                             params.resourcegroupname,
                             '--docker-custom-image-name',
@@ -465,7 +465,7 @@
                             'appsettings',
                             'set',
                             '--name',
-                            params.webappname,
+                            params.appname,
                             '--resource-group',
                             params.resourcegroupname,
                             '--settings',
