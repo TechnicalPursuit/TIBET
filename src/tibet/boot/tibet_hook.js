@@ -28,7 +28,9 @@
         $$root,
         $$msg,
         $$find,
-        tibet;
+        tibet,
+
+        $$url;
 
 //  ----------------------------------------------------------------------------
 
@@ -245,10 +247,21 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
     //  initialized (although they may be removed once the home page for
     //  the application loads)
 
-    //  since we know that all code will load in a single phase without
-    //  any kind of user-dependent pause we can start up the
-    //  initializeCanvas loop here
-    TP.boot.initializeCanvas(root);
+    //  Some browsers (Safari) have a race condition wherein the will set the
+    //  location of the window to a path that doesn't point to a file. This
+    //  should be an XML file of some sort. Therefore, if the URL doesn't end in
+    //  one of our supported XML extensions, we don't initialize the canvas. We
+    //  set the window's location to the blank page, which will cause it to come
+    //  back through here.
+    if (/.+\.(xhtml|svg)/.test(window.location.href)) {
+        //  since we know that all code will load in a single phase without
+        //  any kind of user-dependent pause we can start up the
+        //  initializeCanvas loop here
+        TP.boot.initializeCanvas(root);
+    } else {
+        $$url = TP.uc(TP.sys.cfg('path.blank_page'));
+        window.location = $$url.getLocation();
+    }
 }
 
 //  ------------------------------------------------------------------------
