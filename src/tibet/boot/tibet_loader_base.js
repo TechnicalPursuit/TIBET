@@ -8339,6 +8339,11 @@ TP.boot.$configurePackage = function() {
         throw new Error(err);
     }
 
+    TP.boot.$stdout('Using boot profile: ' +
+        TP.sys.getcfg('boot.package') + '@' + TP.sys.getcfg('boot.config'),
+        TP.SYSTEM);
+    TP.boot.$stdout('', TP.SYSTEM);
+
     return xml;
 };
 
