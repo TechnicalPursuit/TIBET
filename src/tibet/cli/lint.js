@@ -1299,7 +1299,6 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
 Cmd.prototype.validateXMLFiles = function(files, results) {
 
     var cmd,
-        lib,
         res,
         xmlFiles;
 
@@ -1308,8 +1307,6 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
     xmlFiles = Array.isArray(files) ? files : [files];
     res.checked += xmlFiles.length;
-
-    lib = CLI.inLibrary();
 
     // By using 'some' rather that forEach we can support --stop semantics.
     xmlFiles.some(
@@ -1330,10 +1327,6 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
             try {
                 parseString(text, function(err, result) {
                     if (err) {
-                        //  Certain library DNA files will trigger errors. Ignore those.
-                        if (lib && false) {
-                            return;
-                        }
                         res.linty += 1;
                         res.errors += 1;
                         cmd.error('Error in ' + file + ': ' + err);
