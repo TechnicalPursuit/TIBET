@@ -154,6 +154,12 @@ Cmd.prototype.colorizeForStdio = function(msg) {
 
     arr = arr.map(function(text) {
 
+        //  During startup the 'fatal' internal flag is set in which case we
+        //  want to treat everything that comes next as an error message.
+        if (cmd.$$fatal) {
+            return cmd.colorize(text, 'red');
+        }
+
         if (text.charAt(0) === '#') {
             if (/^# PASS/.test(text)) {
                 return cmd.colorize(text, 'green');
@@ -191,14 +197,15 @@ Cmd.prototype.colorizeForStdio = function(msg) {
  * Perform the actual command processing logic.
  */
 Cmd.prototype.execute = function() {
-    var ignoreChromeOutput,
+    var ignoreMessage,
+        ignoreChromeOutput,
+        ignoreStartupOutput,
         puppetBrowser,
         puppetPage,
         start,
         end,
         cmd,
         puppeteerArgs,
-        active,
         profile,
         script,
         arglist,
@@ -251,14 +258,69 @@ Cmd.prototype.execute = function() {
 
     this.announce();
 
+    cmd = this;
+    cmd.$$active = false;
+    cmd.$$fatal = false;
+
+    /*
+     * Helper to filter out messages based on an array of text patterns.
+     */
+    ignoreMessage = function(msg, patterns) {
+        var text,
+            result;
+
+        text = msg.text();
+
+        result = patterns.filter(function(regex) {
+            return regex.test(text);
+        });
+
+        return result.length !== 0;
+    };
+
     /*
      * Helper to remove Chrome-initiated messages we don't need to see.
      */
-    ignoreChromeOutput = function(text) {
-        return /Synchronous XMLHttpRequest on the main thread/i.test(text);
+    ignoreChromeOutput = function(msg) {
+        return ignoreMessage(msg,
+            [/Synchronous XMLHttpRequest on the main thread/i]
+        );
     };
 
-    cmd = this;
+    /*
+     * Helper to filter 'system' messages during TIBET boot/load sequence.
+     */
+    ignoreStartupOutput = function(msg) {
+        var text;
+
+        text = msg.text();
+
+        if (ignoreMessage(msg, [/Overriding boot\.package/i])) {
+            return true;
+        }
+
+        //  Common startup messages we want to ignore...
+        if (!cmd.$$active) {
+            if (cmd.options.verbose) {
+                return false;
+            }
+
+            //  Watch for error/fatal/stack etc so we can catch and report those
+            //  conditions to the console.
+            if (/^(fatal|Uncaught)/i.test(text)) {
+                cmd.$$fatal = true;
+                return false;
+            }
+
+            //  Once we see an error that's fatal output everything else that
+            //  follows so we get as much information as we can.
+            if (cmd.$$fatal) {
+                return false;
+            }
+
+            return text.indexOf('system') === 0;
+        }
+    };
 
     //  Let us access file urls so we don't have to launch a server. Also, don't
     //  specify a sandbox in case we're running as root.
@@ -305,20 +367,32 @@ Cmd.prototype.execute = function() {
         page.on('console', function(msg) {
 
             //  Strip browser messages we don't initiate.
-            if (ignoreChromeOutput(msg.text())) {
+            if (ignoreChromeOutput(msg)) {
                 return;
             }
 
-            if (!active && !cmd.options.verbose) {
+            //  Strip messages we don't want to show like cfg overrides etc.
+            if (ignoreStartupOutput(msg)) {
                 return;
             }
 
             switch (msg.type()) {
                 case 'error':
                     cmd.stderr(msg);
+                    if (/Boot terminated/i.test(msg.text())) {
+                        cmd.close(1, puppetBrowser);
+                    }
                     break;
                 default:
-                    cmd.stdout(msg);
+                    //  Only reason to output in this case is a startup error.
+                    if (!cmd.$$active && !cmd.options.verbose) {
+                        cmd.stderr(msg);
+                        if (/Boot terminated/i.test(msg.text())) {
+                            cmd.close(1, puppetBrowser);
+                        }
+                    } else {
+                        cmd.stdout(msg);
+                    }
                     break;
             }
         });
@@ -380,7 +454,7 @@ Cmd.prototype.execute = function() {
 
     }).then(function() {
 
-        active = true;
+        cmd.$$active = true;
         end = new Date();
 
         //  Once TIBET boots run whatever TSH command we're being asked to
@@ -519,7 +593,6 @@ Cmd.prototype.execute = function() {
         }
 
     }).catch(function(err) {
-
         cmd.stderr(err);
         cmd.close(1, puppetBrowser);
     });

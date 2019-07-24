@@ -7186,6 +7186,14 @@ function(aSignal) {
 });
 
 //  ========================================================================
+//  APP.headless.Application
+//  ========================================================================
+
+//  Only here to allow Puppeteer et. al. to potentially have their own type for
+//  managing application-level logic.
+TP.core.Application.defineSubtype('APP.headless.Application');
+
+//  ========================================================================
 //  TP.core.History
 //  ========================================================================
 

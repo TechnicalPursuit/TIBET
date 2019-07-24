@@ -1709,8 +1709,9 @@ function(eventInfo, aPath) {
      * @summary Sends the event as described in the supplied eventInfo. See the
      *     TP.documentConstructEvent() call for more information on the fields
      *     recognized ere.
-     * @param {TP.core.Hash|Object} eventInfo The event information used to
-     *     create the event to send.
+     * @param {TP.core.Hash|Object|String} eventInfo The event information used
+     *     to create the event to send or a simple event name which will be
+     *     used to create an eventInfo object via TP.hc('type', eventInfo).
      * @param {TP.path.AccessPath} aPath The access path to the target element
      *     that should be the target of the event. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
@@ -1718,11 +1719,13 @@ function(eventInfo, aPath) {
      * @returns {TP.test.GUISequence} The receiver.
      */
 
-    var target;
+    var target,
+        info;
 
     target = TP.ifInvalid(aPath, TP.CURRENT);
+    info = TP.isString(eventInfo) ? TP.hc('type', eventInfo) : eventInfo;
 
-    this.get('sequenceEntries').add(TP.ac('sendevent', target, eventInfo));
+    this.get('sequenceEntries').add(TP.ac('sendevent', target, info));
 
     return this;
 });
