@@ -7297,8 +7297,8 @@ function(aNode, aPath, autoCollapse, createAttr) {
      *     'http://www.foo.com#bar@*'.
      * @param {Node} aNode The 'context node' for the evaluation.
      * @param {String} aPath A valid element scheme path.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them. The default is false.
      * @param {Boolean} createAttr Whether or not we should create Attribute
      *     nodes if the barename uses 'TIBET extended syntax' and references an
      *     attribute, but that attribute doesn't exist.
@@ -7548,11 +7548,11 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
      *     TP.XTENSION_POINTER_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.BARENAME_PATH_TYPE
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
-     * @param {Boolean} retryWithDocument Whether or not we should retry with
-     *     the supplied node's document node, if we got back no results. For
-     *     now, due to the nature of the various types of paths, this only
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them. The default is false.
+     * @param {Boolean} [retryWithDocument=false] Whether or not we should retry
+     *     with the supplied node's document node, if we got back no results.
+     *     For now, due to the nature of the various types of paths, this only
      *     applies for the TP.CSS_PATH_TYPE path.
      * @returns {Object} The value of evaluating the path.
      * @exception TP.sig.InvalidPath Raised when an invalid path is provided to
@@ -8114,8 +8114,8 @@ function(aNode, aPath, autoCollapse) {
      * @param {Node} aNode The 'context node' for the evaluation.
      * @param {String} aPath A valid xpointer expression/scheme such as
      *     xpointer(), xpath1(), element(), etc.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them. The default is false.
      * @returns {Node[]|Node|Object} A collection of zero or more result nodes.
      */
 
@@ -8194,8 +8194,8 @@ function(aNode, aPath, autoCollapse) {
      * @summary Executes an extended XPointer scheme, typically css().
      * @param {Node} aNode The 'context node' for the evaluation.
      * @param {String} aPath An extended path/pointer scheme such as css(), etc.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them. The default is false.
      * @returns {Node[]|Node} A collection of zero or more result nodes.
      */
 

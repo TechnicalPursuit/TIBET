@@ -265,8 +265,8 @@ function(aNode, aSelector, autoCollapse) {
      * @param {Node|Window} aNode The 'context node' for the evaluation (or a
      *     Window, which will supply its document as the context node).
      * @param {String} aSelector A valid CSS selector.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them. The default is false.
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidString
      * @returns {Node[]|Node} A collection of zero or more result nodes or a
