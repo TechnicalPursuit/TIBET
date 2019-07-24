@@ -2898,5 +2898,209 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+//  TP.nodeEvaluatePath
+
+TP.nodeEvaluatePath.describe('Fetch results for TP.XPATH_PATH_TYPE',
+function() {
+
+    var data;
+
+    this.before(function() {
+        data = TP.doc(
+            '<foo><bar></bar></foo>');
+    });
+
+    this.it('autocollapse defaulted - found item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  no defined autoCollapse (defaults to false).
+        results = TP.nodeEvaluatePath(data, '//bar', TP.XPATH_PATH_TYPE);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    this.it('autocollapse false - found item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, '//bar', TP.XPATH_PATH_TYPE, false);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    this.it('autocollapse true - found item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, '//bar', TP.XPATH_PATH_TYPE, true);
+
+        test.assert.isElement(results);
+    });
+
+    this.it('autocollapse defaulted - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  no defined autoCollapse (defaults to false).
+        results = TP.nodeEvaluatePath(data, '//fluffy', TP.XPATH_PATH_TYPE);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    this.it('autocollapse false - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, '//fluffy', TP.XPATH_PATH_TYPE, false);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    this.it('autocollapse true - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, '//fluffy', TP.XPATH_PATH_TYPE, true);
+
+        test.assert.isNull(results);
+    });
+
+});
+
+TP.nodeEvaluatePath.describe('Fetch results for TP.CSS_PATH_TYPE',
+function() {
+
+    var data;
+
+    this.before(function() {
+        data = TP.doc(
+            '<foo><bar></bar></foo>');
+    });
+
+    this.it('autocollapse defaulted - found item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  no defined autoCollapse (defaults to false).
+        results = TP.nodeEvaluatePath(data, 'bar', TP.CSS_PATH_TYPE);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    this.it('autocollapse false - found item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, 'bar', TP.CSS_PATH_TYPE, false);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    this.it('autocollapse true - found item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, 'bar', TP.CSS_PATH_TYPE, true);
+
+        test.assert.isElement(results);
+    });
+
+    this.it('autocollapse defaulted - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  no defined autoCollapse (defaults to false).
+        results = TP.nodeEvaluatePath(data, 'fluffy', TP.CSS_PATH_TYPE);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    this.it('autocollapse false - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, 'fluffy', TP.CSS_PATH_TYPE, false);
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    this.it('autocollapse true - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  context
+        //  path expr
+        //  path type
+        //  autoCollapse false
+        results = TP.nodeEvaluatePath(data, 'fluffy', TP.CSS_PATH_TYPE, true);
+
+        test.assert.isNull(results);
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+//  TP.nodeEvaluateXPath()
+//  TP.nodeEvaluateXPoint()
+//  TP.nodeEvaluateXTension()
+//  TP.nodeEvaluateCSS
+//  TP.nodeEvaluateBarename
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
