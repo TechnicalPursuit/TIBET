@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    dom,
     path,
     sh,
     eslint,
@@ -31,7 +30,6 @@ CLI = require('./_cli');
 
 Promise = require('bluebird');
 path = require('path');
-dom = require('xmldom');
 parseString = require('xml2js').parseString;
 sh = require('shelljs');
 eslint = require('eslint');
@@ -1303,10 +1301,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
     var cmd,
         lib,
         res,
-        xmlFiles,
-        parser,
-        current,
-        currentText;
+        xmlFiles;
 
     cmd = this;
     res = results || this.constructResults();
@@ -1316,49 +1311,15 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
     lib = CLI.inLibrary();
 
-    parser = new dom.DOMParser({
-        locator: {},
-        errorHandler: {
-            error: function(msg) {
-                //  Certain library DNA files will trigger errors. Ignore those.
-                if (lib && msg.match(/{{appname}}/)) {
-                    return;
-                }
-
-                parseString(currentText, function(err, result) {
-                    if (err) {
-                        res.errors += 1;
-                        res.recheck.push(current);
-                        cmd.error('Error in ' + current + ': ' + err);
-                    }
-                });
-            },
-            warn: function(msg) {
-                parseString(currentText, function(err, result) {
-                    if (err) {
-                        res.warnings += 1;
-                        res.recheck.push(current);
-                        if (!cmd.options.quiet) {
-                            cmd.warn('Warning in ' + current + ': ' + msg);
-                        }
-                    }
-                });
-            }
-        }
-    });
-
     // By using 'some' rather that forEach we can support --stop semantics.
     xmlFiles.some(
         function(file) {
-            var text,
-                doc;
+            var text;
 
-            current = file;
             cmd.verbose('');
             cmd.verbose(file, 'lintpass');
 
             text = sh.cat(file);
-            currentText = text;
             if (!text) {
                 cmd.error('Unable to read ' + file);
                 res.linty += 1;
@@ -1367,19 +1328,18 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
             }
 
             try {
-                doc = parser.parseFromString(text);
-                if (!doc || CLI.isValid(
-                        doc.getElementsByTagName('parsererror')[0])) {
-
-                    parseString(text, function(err, result) {
-                        if (err) {
-                            res.linty += 1;
-                            res.errors += 1;
-                            cmd.error('Error in ' + file + ': ' + err);
-                            res.recheck.push(file);
+                parseString(text, function(err, result) {
+                    if (err) {
+                        //  Certain library DNA files will trigger errors. Ignore those.
+                        if (lib && false) {
+                            return;
                         }
-                    });
-                }
+                        res.linty += 1;
+                        res.errors += 1;
+                        cmd.error('Error in ' + file + ': ' + err);
+                        res.recheck.push(file);
+                    }
+                });
             } catch (e) {
                 cmd.error(file);
                 cmd.error(e.message);

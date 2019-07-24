@@ -755,6 +755,10 @@ Cmd.prototype.executeRename = function(file) {
     //  we can use in the renaming process to rename template files.
     params = this.getTemplateParameters();
 
+    //  Force __home__.xhtml to rename to home.xhtml to avoid templating in that
+    //  file from causing issues with linting etc.
+    params.home = 'home';
+
     Object.keys(params).forEach(function(key) {
         var value;
 
