@@ -28,7 +28,7 @@ function(options) {
 //  Test Suite
 //  ========================================================================
 
-TP.test.GUIDriver.Inst.describe('Syn test suite',
+TP.test.GUIDriver.Inst.describe('Syn test',
 function() {
 
     this.it('focus and sendKeys sequence', function(test, options) {

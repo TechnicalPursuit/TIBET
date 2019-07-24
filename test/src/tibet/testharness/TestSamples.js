@@ -24,7 +24,7 @@
 
 //  ------------------------------------------------------------------------
 
-Array.describe('Array local suite',
+Array.describe('Array local',
 function() {
     this.it('passes explicitly', function(test, options) {
         test.assert.isTrue(true);
@@ -45,7 +45,7 @@ function() {
     });
 });
 
-Array.Inst.describe('Array.Inst suite',
+Array.Inst.describe('Array.Inst',
 function() {
     this.it('passes implicitly', function(test, options) {
         test.assert.isTrue(true);
@@ -95,7 +95,7 @@ function() {
     });
 });
 
-TP.core.Resource.describe('core.Resource local suite',
+TP.core.Resource.describe('core.Resource local',
 function() {
     this.it('passes async via resolver', function(test, options) {
         test.assert.isTrue(true);
@@ -202,7 +202,7 @@ function() {
 
 //  Test for test.Case only support. We'll see a fail() when running with
 //  ignore_only set to true due to the first test case below.
-TP.sig.Signal.Inst.describe('sig.Signal Inst suite',
+TP.sig.Signal.Inst.describe('sig.Signal Inst',
 function() {
     this.it('fails at signal inst stuff', function(test, options) {
         test.assert.isTrue(true);
@@ -216,7 +216,7 @@ function() {
     }).only();
 });
 
-TP.sig.Signal.Inst.describe('sig.Signal Inst suite - #2',
+TP.sig.Signal.Inst.describe('sig.Signal Inst - #2',
 function() {
     this.it('fails at signal inst stuff', function(test, options) {
         test.assert.isTrue(true);
@@ -232,7 +232,7 @@ function() {
 
 //  Test for test.Suite skip support. We'll see a fail() when running with
 //  ignore_skip set to true.
-TP.lang.Object.Type.describe('lang.Object Type suite',
+TP.lang.Object.Type.describe('lang.Object Type',
 function() {
     this.it('fails at object type stuff', function(test, options) {
         test.assert.isTrue(true);
@@ -248,7 +248,7 @@ function() {
 
 //  Test for test.Suite skip support. We'll see a fail() when running with
 //  ignore_skip set to true.
-TP.lang.Object.Inst.describe('lang.Object Inst suite',
+TP.lang.Object.Inst.describe('lang.Object Inst',
 function() {
     this.it('fails at object inst stuff', function(test, options) {
         test.assert.isTrue(true);
@@ -262,7 +262,7 @@ function() {
     });
 });
 
-TP.lang.Object.describe('lang.Object Local suite',
+TP.lang.Object.describe('lang.Object Local',
 function() {
     this.it('will eventually do object local stuff', function(test, options) {
         test.assert.isTrue(true);
@@ -271,7 +271,7 @@ function() {
     }).todo();
 });
 
-String.describe('String local suite',
+String.describe('String local',
 function() {
     this.it('passes simple test 1', function(test, options) {
         test.assert.isTrue(true);

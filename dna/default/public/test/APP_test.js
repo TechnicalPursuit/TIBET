@@ -6,7 +6,7 @@
 
 //  ------------------------------------------------------------------------
 
-APP.describe('APP suite', function() {
+APP.describe('APP', function() {
 
     this.it('Has a namespace', function(test, options) {
         test.assert.isNamespace(APP['{{appname}}']);

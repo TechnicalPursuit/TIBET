@@ -225,7 +225,7 @@ function(options) {
 //  Test Suite
 //  ========================================================================
 
-TP.tag.TagProcessor.Inst.describe('TP.tag.TagProcessor Inst all nodes suite',
+TP.tag.TagProcessor.Inst.describe('TP.tag.TagProcessor Inst all nodes',
 function() {
 
     var testDataLoc;
@@ -370,7 +370,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.TagProcessor.Inst.describe('TP.tag.TagProcessor Inst core functionality suite',
+TP.tag.TagProcessor.Inst.describe('TP.tag.TagProcessor Inst core functionality',
 function() {
 
     var unloadURI,

@@ -186,8 +186,8 @@ function(options) {
             }
         }
 
-        //  Grab the suites that have owners with the supplied IDs.
-        suites = this.getSuitesWithOwnersWithIDs(suites, targetIDs);
+        //  Find suites that match the targeted IDs...
+        suites = this.getSuitesForTargetIDs(suites, targetIDs);
     }
 
     //  If params is empty it means it was either empty to begin with or had
@@ -281,54 +281,95 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.defineMethod('getSuitesWithOwnersWithIDs',
-function(suites, ownerIDs) {
+TP.test.defineMethod('getSuitesForTargetIDs',
+function(suites, targetIDs) {
 
     /**
-     * @method getSuitesWithOwnersWithIds
-     * @summary Returns a list of test suites whose owning type matches at least
-     * one of the supplied owner IDs.
+     * @method getSuitesForTargetIDs
+     * @summary Returns a list of test suites which match at least one of the
+     *     IDs provided. Note that the match takes things like the combined
+     *     owner ID and suite name / suite name prefix into account so this
+     *     method can attempt to find matches for methods in particular.
      * @param {TP.test.Suite[]} suites The master list of all test suites known
      *     to the system.
-     * @param {String[]} ownerIDs The list of owner IDs to scan the suites for
-     *     ownership of.
+     * @param {String[]} targetIDs The list of  IDs to scan the suites for.
      * @returns {TP.test.Suite[]} A list of test suites whose owning type
-     *     matches at least one of the supplied owner IDs.
+     *     matches at least one of the supplied IDs.
      */
 
-    var targetMatchers,
-        matchedSuites,
-
+    var matchedSuites,
+        suite,
+        suiteName,
+        suiteID,
+        ownerID,
+        targetID,
         leni,
         i,
-
-        suiteOwnerID,
-
         lenj,
         j;
-
-    targetMatchers = ownerIDs.collect(
-                        function(aTargetID) {
-                            return TP.rc('^' + aTargetID + '$');
-                        });
 
     matchedSuites = TP.ac();
 
     leni = suites.getSize();
     for (i = 0; i < leni; i++) {
 
-        suiteOwnerID = TP.id(suites.at(i).suiteOwner);
+        suite = suites.at(i);
 
-        lenj = targetMatchers.getSize();
+        //  NOTE: ownerID will almost always be a namspace id, a type id, a
+        //  type.Type id, or a type.Inst id.
+        ownerID = TP.id(suite.suiteOwner);
+        suiteName = suite.suiteName;
+
+        lenj = targetIDs.getSize();
         for (j = 0; j < lenj; j++) {
-            if (targetMatchers.at(j).test(suiteOwnerID)) {
-                matchedSuites.push(suites.at(i));
+
+            //  NOTE: targetID will _usually_ be an owner ID...however it can
+            //  also be a method ID meaning it's the owner ID _plus_ a .foo
+            //  portion where 'foo' is the method name. And moreover, to make
+            //  it more self-documenting we support describe('foo - bad data')
+            //  vs. describe('foo - good data') suite definitions so the method
+            //  name can be a prefix in the actual suite name with or without
+            //  the owner ID as part of the suite name (usually without).
+            targetID = targetIDs.at(j);
+
+            //  Identical? That's easy...
+            if (targetID === ownerID) {
+                matchedSuites.push(suite);
+                break;
+            }
+
+            //  Namespace or "ancestor"? Implied "wildcard" test...
+            if (ownerID.indexOf(targetID + '.') === 0) {
+                matchedSuites.push(suite);
+                break;
+            }
+
+            //  Target ID might be a method name. We need to add the
+            //  suite name itself to see if that's a match...
+            if (targetID.indexOf(ownerID) === 0) {
+                suiteID = ownerID + '.' + suiteName;
+                if (targetID === suiteID) {
+                    //  suite name is a pure method name match
+                    matchedSuites.push(suite);
+                    break;
+                }
+
+                if (suiteID.indexOf(targetID + '(') === 0) {
+                    //  suite name starts off with 'methodname(' so add it.
+                    matchedSuites.push(suite);
+                    break;
+                }
+            }
+
+            //  Finally, allow the target ID to be a regex of some form...
+            if (TP.rc('^' + targetID + '$').test(ownerID)) {
+                matchedSuites.push(suite);
                 break;
             }
         }
     }
 
-    return matchedSuites;
+    return matchedSuites.unique();
 });
 
 //  ------------------------------------------------------------------------

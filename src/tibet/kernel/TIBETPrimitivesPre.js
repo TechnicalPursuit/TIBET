@@ -657,6 +657,10 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
     this[TP.TRACK] = track;
     this[TP.DISPLAY] = displayName;
 
+    //  NOTE we do a little trick here if owner is TP since we want resolvable
+    //  IDs and TP.Primitive.id or TP.Local.foo isn't resolvable.
+    this[TP.ID] = owner === TP ? 'TP.' + name : displayName;
+
     //  Register where we were loaded from.
     TP.registerLoadInfo(this);
 

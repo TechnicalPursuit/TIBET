@@ -76,12 +76,12 @@ If you haven't installed `karma` you can run tests via the `tibet test` command:
     # 2 suite(s) found.
     1..3
     #
-    # tibet test APP --suite 'APP suite'
+    # tibet test APP --suite 'APP'
     ok - Has a namespace.
     ok - Has an application type.
     # pass: 2 total, 2 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
     #
-    # tibet test APP.d2d.app --suite 'APP.d2d:app suite'
+    # tibet test APP.d2d.app --suite 'APP.d2d:app'
     ok - Is a templated tag.
     # pass: 1 total, 1 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
     #
@@ -102,12 +102,12 @@ which allows you to run that specific test suite.
     # 2 suite(s) found.
     1..3
     #
-    # tibet test APP --suite 'APP suite'
+    # tibet test APP --suite 'APP'
     ok - Has a namespace.
     ok - Has an application type.
     # pass: 2 total, 2 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
     #
-    # tibet test APP.d2d.app --suite 'APP.d2d:app suite'
+    # tibet test APP.d2d.app --suite 'APP.d2d:app'
     ok - Is a templated tag.
     # pass: 1 total, 1 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
     #
@@ -128,7 +128,7 @@ which allows you to run that specific test suite.
 
 ### Run a specific test suite
 
-    $ tibet test --suite 'APP suite' --no-karma
+    $ tibet test --suite 'APP' --no-karma
 
     # Loading TIBET at 2018-08-23T13:32:03.632Z
     # TIBET loaded and active in 6736ms
@@ -136,7 +136,7 @@ which allows you to run that specific test suite.
     # 1 suite(s) found.
     1..2
     #
-    # tibet test APP --suite='APP suite'
+    # tibet test APP --suite='APP'
     ok - Has a namespace.
     ok - Has an application type.
     # pass: 2 total, 2 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
