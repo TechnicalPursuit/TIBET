@@ -1197,7 +1197,7 @@ function() {
     var content;
 
     content = this.get('tablecontent');
-    if (TP.isEmptyArray(content)) {
+    if (TP.notValid(content)) {
         return null;
     }
 

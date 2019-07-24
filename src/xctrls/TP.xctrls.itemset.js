@@ -1293,7 +1293,7 @@ function() {
     var content;
 
     content = this.get('templatedItemContent');
-    if (TP.isEmptyArray(content)) {
+    if (TP.notValid(content)) {
         return null;
     }
 

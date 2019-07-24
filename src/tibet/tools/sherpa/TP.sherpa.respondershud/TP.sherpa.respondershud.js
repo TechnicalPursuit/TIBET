@@ -346,7 +346,7 @@ function(aSignal) {
     //  If the assistant is already focused on another item, then remove the
     //  'assistantfocus' class on that item.
     assistantFocusedItem = this.get('assistantFocusedItem');
-    if (!TP.isEmptyArray(assistantFocusedItem)) {
+    if (TP.isValid(assistantFocusedItem)) {
         assistantFocusedItem.removeClass('assistantfocus');
     }
 

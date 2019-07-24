@@ -4783,6 +4783,12 @@ function(aReturnValue, targetObj) {
         //  with a fallback Function, then go ahead and use it to try to return
         //  an initial value.
         retVal = fallbackWith(targetObj);
+    } else {
+        //  If we collapse results and the results are an empty Array, then we
+        //  return null.
+        if (this.get('shouldCollapse') && isEmptyArray) {
+            retVal = null;
+        }
     }
 
     return retVal;

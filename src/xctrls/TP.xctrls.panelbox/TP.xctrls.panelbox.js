@@ -130,7 +130,7 @@ function(aRoute) {
     var panelTPElem;
 
     panelTPElem = this.get('itemWithValue', aRoute);
-    if (TP.isEmptyArray(panelTPElem)) {
+    if (TP.notValid(panelTPElem)) {
         return null;
     }
 
@@ -186,7 +186,7 @@ function(shouldRender, shouldRefreshBindings) {
 
     selectedPanel = this.get('selectedItem');
 
-    if (TP.isEmptyArray(selectedPanel)) {
+    if (TP.notValid(selectedPanel)) {
         return this.callNextMethod();
     }
 

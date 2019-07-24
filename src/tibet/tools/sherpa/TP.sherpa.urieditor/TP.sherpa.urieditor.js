@@ -1426,7 +1426,7 @@ function() {
 
     //  If we have a panel box, start with it switched to the 'data' panel.
     panelBox = this.get('panelBox');
-    if (!TP.isEmptyArray(panelBox)) {
+    if (TP.isValid(panelBox)) {
         panelBox.set('value', 'data');
     }
 

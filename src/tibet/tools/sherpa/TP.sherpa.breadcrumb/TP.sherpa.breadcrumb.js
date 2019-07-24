@@ -215,7 +215,7 @@ function() {
     var content;
 
     content = this.get('listcontent');
-    if (TP.isEmptyArray(content)) {
+    if (TP.notValid(content)) {
         return null;
     }
 

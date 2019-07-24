@@ -769,7 +769,7 @@ function(aTPElem) {
     //  If the assistant is already focused on another item, then remove the
     //  'assistantfocus' class on that item.
     assistantFocusedItem = this.get('assistantFocusedItem');
-    if (!TP.isEmptyArray(assistantFocusedItem)) {
+    if (TP.isValid(assistantFocusedItem)) {
         assistantFocusedItem.removeClass('assistantfocus');
     }
 
@@ -1524,7 +1524,7 @@ function(aSignal) {
     if (isHidden) {
         assistantFocusedItem = this.get('assistantFocusedItem');
         if (TP.isValid(assistantFocusedItem) &&
-            !TP.isEmptyArray(assistantFocusedItem)) {
+            TP.isValid(assistantFocusedItem)) {
             assistantFocusedItem.removeClass('assistantfocus');
         }
     }

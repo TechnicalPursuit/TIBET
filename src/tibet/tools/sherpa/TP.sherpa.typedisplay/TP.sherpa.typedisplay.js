@@ -225,7 +225,7 @@ function() {
     var content;
 
     content = this.get('body');
-    if (TP.isEmptyArray(content)) {
+    if (TP.notValid(content)) {
         return null;
     }
 
