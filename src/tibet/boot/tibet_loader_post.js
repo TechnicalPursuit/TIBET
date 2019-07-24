@@ -13,9 +13,7 @@
  *     reference if they will be calling on TIBET code from within the page.
  */
 
-/* global TP:true,
-          Document:false
-*/
+/* global TP:true */
 
 //  ----------------------------------------------------------------------------
 
