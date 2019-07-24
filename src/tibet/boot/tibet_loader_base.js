@@ -1495,6 +1495,7 @@ TP.sys.isSupported = function() {
 
     TP.boot.$stdout('User agent: ' + TP.$browser + '/' + TP.$browserMajor +
         '.' + TP.$browserMinor, TP.boot.SYSTEM);
+    TP.boot.$stdout('', TP.SYSTEM);
 
     //  Headless and Electron checks are based on boot.context from tibet_cfg.
     context = TP.sys.cfg('boot.context');
@@ -8366,10 +8367,10 @@ TP.boot.$configurePackage = function() {
         throw new Error(err);
     }
 
-    TP.boot.$stdout('Using boot profile: ' +
-        TP.sys.getcfg('boot.package') + '@' + TP.sys.getcfg('boot.config'),
+    TP.boot.$stdout('Boot using: ' +
+        TP.sys.getcfg('boot.package') + '@' +
+        (TP.sys.getcfg('boot.config') || 'default'),
         TP.SYSTEM);
-    TP.boot.$stdout('', TP.SYSTEM);
 
     return xml;
 };
