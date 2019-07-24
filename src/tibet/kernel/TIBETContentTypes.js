@@ -5774,13 +5774,9 @@ function(targetObj, varargs) {
         //  If the Array of return values only has one item, then collapse it
         //  down to the value itself.
         retVal = TP.collapse(retVal);
-
-        //  Make sure to process the final value using converters, etc.
-        //  configured for this object.
-        return this.processFinalValue(retVal, targetObj);
     }
 
-    return null;
+    return this.processFinalValue(retVal, targetObj);
 }, {
     patchCallee: false
 });
