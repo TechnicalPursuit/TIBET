@@ -106,7 +106,7 @@ function() {
         'Function',                             /^Function\$(\w+)$/,
         'NaN',                                  'NaN',
         'NativeType',                           'Array',
-        'NativeFunction',                       /^Function\$(\w+)$/,
+        'NativeFunction',                       /^(\w+)\.Inst\.(\w+)$/,
 
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
@@ -305,7 +305,7 @@ function() {
         'Function',                             /^Function\$(\w+)$/,
         'NaN',                                  'NaN',
         'NativeType',                           'Array',
-        'NativeFunction',                       /^Function\$(\w+)$/,
+        'NativeFunction',                       /^(\w+)\.Inst\.(\w+)$/,
 
         'Window',                               winGID,
         'IFrameWindow',                         winGID + '.UIROOT',
