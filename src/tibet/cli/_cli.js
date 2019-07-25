@@ -1219,6 +1219,12 @@ CLI.inProject = function(CmdType) {
 
     silent = CmdType && CmdType.NAME === 'help';
 
+    //  If the package is null here it's usually a bad config file (tibet.json)
+    //  etc. and we can't continue.
+    if (!this._package) {
+        process.exit(1);
+    }
+
     return this._package.inProject(silent);
 };
 
