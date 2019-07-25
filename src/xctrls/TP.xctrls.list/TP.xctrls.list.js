@@ -1986,10 +1986,15 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var shouldConstructTooltips;
+
+    shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
+
     updateSelection.each(
         function(data) {
             var labelContent,
-                valueContent;
+                valueContent,
+                hintContent;
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 0));
@@ -2024,6 +2029,21 @@ function(updateSelection) {
                     return data[0];
                 }
             );
+
+            if (shouldConstructTooltips) {
+                //  Grab the span that is holding the text content.
+                hintContent = TP.extern.d3.select(
+                                TP.nodeGetChildElementAt(
+                                    TP.nodeGetChildElementAt(this, 2),
+                                    0));
+
+                //  Update that content.
+                hintContent.text(
+                    function(d, i) {
+                        return data[0];
+                    }
+                );
+            }
         });
 
     return updateSelection;
