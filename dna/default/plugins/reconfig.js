@@ -60,7 +60,14 @@
                     throw err;
                 }
 
-                obj = JSON.parse(data);
+                try {
+                    obj = JSON.parse(data);
+                } catch (e) {
+                    logger.error(e);
+                    res.status(500);
+                    res.json('{ok: false}');
+                    return;
+                }
 
                 //  If there's a function replacement for this logic rely on
                 //  that to do what the user wants, otherwise we want to be sure
