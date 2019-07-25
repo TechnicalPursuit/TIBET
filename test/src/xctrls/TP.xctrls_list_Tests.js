@@ -128,6 +128,8 @@ function() {
             mouseUp(firstListItem).
             run();
 
+        test.andWait(500);
+
         test.chain(
             function() {
                 test.refute.hasAttribute(firstListItem, 'pclass:active');
@@ -143,6 +145,8 @@ function() {
         test.getDriver().constructSequence().
             click(firstListItem).
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
@@ -190,6 +194,8 @@ function() {
         test.getDriver().constructSequence().
             keyUp(firstListItem, 'Enter').
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
@@ -252,6 +258,8 @@ function() {
             mouseUp(firstListItem).
             run();
 
+        test.andWait(500);
+
         test.chain(
             function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
@@ -265,6 +273,8 @@ function() {
         test.getDriver().constructSequence().
             click(firstListItem).
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
@@ -296,6 +306,8 @@ function() {
         test.getDriver().constructSequence().
             keyUp(firstListItem, 'Enter').
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {

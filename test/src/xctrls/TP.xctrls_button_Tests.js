@@ -108,6 +108,8 @@ function() {
             mouseUp(button).
             run();
 
+        test.andWait(500);
+
         test.chain(
             function() {
                 test.refute.hasAttribute(button, 'pclass:active');
@@ -123,6 +125,8 @@ function() {
         driver.constructSequence().
             click(button).
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
@@ -167,6 +171,8 @@ function() {
         driver.constructSequence().
             keyUp(button, 'Enter').
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
@@ -224,6 +230,8 @@ function() {
             mouseUp(button).
             run();
 
+        test.andWait(500);
+
         test.chain(
             function() {
                 test.refute.didSignal(button, 'TP.sig.UIDeactivate');
@@ -237,6 +245,8 @@ function() {
         driver.constructSequence().
             click(button).
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
@@ -268,6 +278,8 @@ function() {
         driver.constructSequence().
             keyUp(button, 'Enter').
             run();
+
+        test.andWait(500);
 
         test.chain(
             function() {
