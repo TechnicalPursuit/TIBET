@@ -1074,8 +1074,13 @@ function(aSignal) {
 
             didBlur = false;
 
-            if (TP.isValid(currentTargetTPElem) &&
-                    currentTargetTPElem.haloCanBlur(halo)) {
+            if (TP.notValid(currentTargetTPElem)) {
+                //  Since we didn't have a current target, we say that we
+                //  blurred, so that the focus operation below succeeds.
+                didBlur = true;
+            } else if (currentTargetTPElem.haloCanBlur(halo)) {
+                //  If the halo has a current target that can be blurred, then
+                //  blur it.
                 halo.blur();
                 didBlur = true;
             }

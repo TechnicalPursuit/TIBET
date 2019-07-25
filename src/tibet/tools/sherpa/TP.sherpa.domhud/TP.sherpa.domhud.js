@@ -1352,9 +1352,13 @@ function(aSignal) {
 
         didBlur = false;
 
-        //  If the halo has a current target that can be blurred, then blur it.
-        if (TP.isValid(currentTargetTPElem) &&
-                currentTargetTPElem.haloCanBlur(halo)) {
+        if (TP.notValid(currentTargetTPElem)) {
+            //  Since we didn't have a current target, we say that we blurred,
+            //  so that the focus operation below succeeds.
+            didBlur = true;
+        } else if (currentTargetTPElem.haloCanBlur(halo)) {
+            //  If the halo has a current target that can be blurred, then blur
+            //  it.
             halo.blur();
             didBlur = true;
         }
@@ -1397,6 +1401,9 @@ function(aSignal) {
         halo,
         currentTargetTPElem,
 
+        didBlur,
+        didFocus,
+
         tileTPElem;
 
     //  Grab the target lozenge tile and get the value of its peerID attribute.
@@ -1419,6 +1426,21 @@ function(aSignal) {
     if (newTargetTPElem !== currentTargetTPElem) {
         //  Blur and refocus the halo on the newTargetTPElem.
 
+        didBlur = false;
+        didFocus = false;
+
+        if (TP.notValid(currentTargetTPElem)) {
+            //  Since we didn't have a current target, we say that we blurred,
+            //  so that the focus operation below succeeds.
+            didBlur = true;
+        } else if (currentTargetTPElem.haloCanBlur(halo)) {
+            //  If the halo has a current target that can be blurred, then blur
+            //  it.
+            halo.blur();
+            didBlur = true;
+        }
+
+        /*
         if (currentTargetTPElem.haloCanBlur(halo)) {
 
             halo.blur();
@@ -1427,22 +1449,36 @@ function(aSignal) {
                 halo.focusOn(newTargetTPElem);
             }
         }
+        */
+
+        if (didBlur && newTargetTPElem.haloCanFocus(halo)) {
+            //  Focus the halo on our new element, passing true to actually
+            //  show the halo if it's hidden.
+            halo.focusOn(newTargetTPElem, true);
+            didFocus = true;
+        }
+    } else {
+        //  Since the new target was the same as the current target, we say that
+        //  we focused, so that the focus operation below succeeds.
+        didFocus = true;
     }
 
-    halo.setAttribute('hidden', false);
+    if (didFocus) {
+        halo.setAttribute('hidden', false);
 
-    //  Hide the tile to get it out of the way.
-    tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeDocument());
-    if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
-        tileTPElem.setAttribute('hidden', true);
+        //  Hide the tile to get it out of the way.
+        tileTPElem = TP.byId('DOMInfo_Tile', this.getNativeDocument());
+        if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
+            tileTPElem.setAttribute('hidden', true);
+        }
+
+        //  Fire a 'ConsoleCommand' signal that will be picked up and processed
+        //  by the Sherpa console. Send command text asking it to inspect the
+        //  current target of the halo.
+        TP.signal(null,
+                    'ConsoleCommand',
+                    TP.hc('cmdText', ':inspect $HALO'));
     }
-
-    //  Fire a 'ConsoleCommand' signal that will be picked up and processed by
-    //  the Sherpa console. Send command text asking it to inspect the current
-    //  target of the halo.
-    TP.signal(null,
-                'ConsoleCommand',
-                TP.hc('cmdText', ':inspect $HALO'));
 
     return this;
 });
