@@ -54,7 +54,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
  * with the current file's load path to create the absolute root path.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = '../dna/user';
+Cmd.prototype.DNA_ROOT = path.join('..', 'dna', 'user');
 
 /**
  * The command name for this type.

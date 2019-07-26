@@ -1323,7 +1323,7 @@
         }
 
         if (!this.isAbsolutePath(approot)) {
-            approot = path.join('~/', approot);
+            approot = path.join('~', approot);
         }
         this.app_root = approot;
         this.trace('getAppRoot defaulted to launch root: ' + this.app_root, true);
@@ -1376,7 +1376,8 @@
         // running. This latter path gives us a fallback when we're being run
         // outside a project, or in a non-node project.
         app_root = this.getAppRoot();
-        moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
+        moduleDir = module.filename.slice(0,
+            module.filename.lastIndexOf(path.sep));
 
         // Our file checks are looking for the library so we need to leverage the
         // standard boot settings for tibet_dir, tibet_inf, and tibet_lib just as
@@ -1417,7 +1418,7 @@
         }
 
         // How far is this file from the library root?
-        offset = '../../..';
+        offset = path.join('..', '..', '..');
 
         checks = [
             [moduleDir, path.join(offset, tibet_lib.toUpperCase())],
@@ -2177,7 +2178,7 @@
             return true;
         }
 
-        if (aPath.indexOf('/') === 0) {
+        if (aPath.indexOf(path.sep) === 0) {
             return true;
         }
 

@@ -143,6 +143,13 @@ CLI.MAKE_FILE = '~app_cmd/make/makefile.js';
  * The name of the npm package file.
  * @type {string}
  */
+CLI.MODULE_FILE = 'node_modules';
+
+
+/**
+ * The name of the npm package file.
+ * @type {string}
+ */
 CLI.NPM_FILE = 'package.json';
 
 
@@ -890,18 +897,17 @@ CLI.getNpmPath = function() {
     var base,
         current;
 
-    base = process.cwd();
-    current = path.join(base, 'node_modules');
+    base = this.expandPath(this.getAppRoot());
+    current = path.join(base, CLI.MODULE_FILE);
 
-    while (current && current !== 'node_modules') {
+    while (current && current !== CLI.MODULE_FILE) {
         if (sh.test('-e', current)) {
             return current;
         }
         base = base.slice(0, base.lastIndexOf(path.sep));
-        current = path.join(base, 'node_modules');
+        current = path.join(base, CLI.MODULE_FILE);
     }
-
-    return CLI.notInitialized();
+    return;
 };
 
 
@@ -1127,13 +1133,13 @@ CLI.ifUndefined = function(suspectValue, defaultValue) {
  */
 CLI.inGitProject = function() {
 
-    var cwd,        // Where are we being run?
+    var base,       // Where is the project root?
         file;       // What file are we looking for?
 
-    cwd = process.cwd();
+    base = this.expandPath(this.getAppRoot());
     file = this.GIT_FILE;
 
-    return sh.test('-f', path.join(cwd, file)) && sh.which('git');
+    return sh.test('-f', path.join(base, file)) && sh.which('git');
 };
 
 
@@ -1143,15 +1149,15 @@ CLI.inGitProject = function() {
  */
 CLI.inGruntProject = function() {
 
-    var cwd,        // Where are we being run?
+    var base,       // Where is the project root?
         file;       // What file are we looking for?
 
-    cwd = process.cwd();
+    base = this.expandPath(this.getAppRoot());
     file = this.GRUNT_FILE;
 
-    return sh.test('-f', path.join(cwd, file)) &&
+    return sh.test('-f', path.join(base, file)) &&
         (sh.which('grunt') ||
-         sh.test('-f', path.join(cwd, './node_modules/.bin/grunt')));
+         sh.test('-f', path.join(base, CLI.MODULE_FILE, '.bin', 'grunt')));
 };
 
 
@@ -1161,15 +1167,15 @@ CLI.inGruntProject = function() {
  */
 CLI.inGulpProject = function() {
 
-    var cwd,        // Where are we being run?
+    var base,       // Where is the project root?
         file;       // What file are we looking for?
 
-    cwd = process.cwd();
+    base = this.expandPath(this.getAppRoot());
     file = this.GULP_FILE;
 
-    return sh.test('-f', path.join(cwd, file)) &&
+    return sh.test('-f', path.join(base, file)) &&
         (sh.which('gulp') ||
-        sh.test('-f', path.join(cwd, './node_modules/.bin/gulp')));
+        sh.test('-f', path.join(base, CLI.MODULE_FILE, '.bin', 'gulp')));
 };
 
 
@@ -1241,7 +1247,7 @@ CLI.isAbsolutePath = function(aPath) {
         return true;
     }
 
-    if (aPath.indexOf('/') === 0) {
+    if (aPath.indexOf(path.sep) === 0) {
         return true;
     }
 
