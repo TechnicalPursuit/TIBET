@@ -485,7 +485,7 @@
         }
 
         // How far is this file from the library root?
-        offset = '../../..';
+        offset = path.join('..', '..', '..');
 
         checks = [
             [moduleDir, path.join(offset, tibet_lib.toUpperCase())],

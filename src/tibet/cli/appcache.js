@@ -175,7 +175,8 @@ Cmd.prototype.execute = function() {
     }
 
     if (!sh.test('-e', cachefile)) {
-        this.error('Cannot find cache file: ' + cachefile);
+        this.warn('Cannot find cache file: ' + CLI.getVirtualPath(cachefile));
+        this.warn('Is this an HTTP(S) server-enabled project?');
         return -1;
     }
 

@@ -54,7 +54,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
  * with the current file's load path to create the absolute root path.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = '../dna/user';
+Cmd.prototype.DNA_ROOT = path.join('..', 'dna', 'user');
 
 /**
  * The command name for this type.
@@ -115,8 +115,23 @@ Cmd.prototype.execute = function() {
         user = this.options._[1];
     }
 
+    //  If we're in a project with no server.js file we don't support the user
+    //  command...only support our user module with our server (TDS).
+    file = CLI.expandPath('~/server.js');
+    if (!CLI.sh.test('-e', file)) {
+        this.warn('tibet user command unsupported in non-TDS project.');
+        return 1;
+    }
+
     file = CLI.expandPath('~user_file');
-    json = require(file);
+    try {
+        json = require(file);
+    } catch (e) {
+        this.error('Unable to load tds config file: ' + file);
+        this.error(e);
+        return 1;
+    }
+
     if (!json) {
         this.error('Unable to load tds config file: ' + file);
         return 1;

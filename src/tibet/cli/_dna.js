@@ -71,7 +71,7 @@ Cmd.prototype.DNA_DEFAULT = 'default';
  * with the current file's load path to create the absolute root path.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = '../../../../dna/';
+Cmd.prototype.DNA_ROOT = path.join('..', '..', '..', '..', 'dna');
 
 /**
  * Whether the command needs --force when a destination directory already

@@ -49,7 +49,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * the dna is below a command-specific subdirectory of dna/type.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = '../dna/type/';
+Cmd.prototype.DNA_ROOT = path.join('..', 'dna', 'type');
 
 /**
  * The command name for this type.

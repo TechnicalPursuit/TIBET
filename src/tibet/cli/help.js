@@ -692,7 +692,7 @@ Cmd.prototype.executeMissingCheck = function() {
     //  Built-ins
     //  ---
 
-    mans = sh.ls(path.join(CLI.expandPath('~lib'), 'doc/markdown')).map(function(name) {
+    mans = sh.ls(path.join(CLI.expandPath('~lib'), 'doc', 'markdown')).map(function(name) {
         return name.slice(6, -5);
     });
 
@@ -714,7 +714,7 @@ Cmd.prototype.executeMissingCheck = function() {
     //  Custom commands
     //  ---
 
-    mans = sh.ls(path.join(CLI.expandPath('~'), 'doc/markdown')).map(function(name) {
+    mans = sh.ls(path.join(CLI.expandPath('~'), 'doc', 'markdown')).map(function(name) {
         return name.slice(6, -5);
     });
 
