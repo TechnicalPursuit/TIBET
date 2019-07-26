@@ -109,7 +109,6 @@ Cmd.prototype.execute = function() {
         libbase,
         npmbase,
         cperr,
-        lnerr,
         rmerr;
 
     cmd = this;
@@ -138,7 +137,7 @@ Cmd.prototype.execute = function() {
             steps,
             linkfrom,
             linkto,
-            rmerr,
+            lnerr,
             i;
 
         //  We also link TIBET library code into the TIBET-INF location
@@ -171,7 +170,7 @@ Cmd.prototype.execute = function() {
         steps = linkfrom.split(path.sep).length -
             linkto.split(path.sep).length + 1;
 
-        for (i=0; i<steps; i++) {
+        for (i = 0; i < steps; i++) {
             linkto = path.join('..', linkto);
         }
 
@@ -188,9 +187,9 @@ Cmd.prototype.execute = function() {
 
             //  force the link by removing here and falling through...
             sh.rm('-f', linkfrom);
-            rmerr = sh.error();
-            if (rmerr) {
-                cmd.error('Error removing ' + linkfrom + ': ' + rmerr);
+            lnerr = sh.error();
+            if (lnerr) {
+                cmd.error('Error removing ' + linkfrom + ': ' + lnerr);
                 return 1;
             }
         }
@@ -267,7 +266,7 @@ Cmd.prototype.execute = function() {
             try {
                 data = require(pkgpath);
             } catch (e) {
-                cmd.error('Invalid library ' + CLI.NPM_FILE +': ' + e.message);
+                cmd.error('Invalid library ' + CLI.NPM_FILE + ': ' + e.message);
                 return 1;
             }
             version = data.version;
