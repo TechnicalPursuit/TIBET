@@ -2,6 +2,7 @@
     "name": "{{appname}}",
     "version": "0.1.0",
     "dependencies": {
+        "electron": "*",
         "marked-man": "^0.2.1",
         "minimist": "*",
         "shelljs": "TechnicalPursuit/shelljs"
