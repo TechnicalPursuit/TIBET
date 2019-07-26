@@ -43,41 +43,6 @@ function(data) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.json.JSONSchemaContent.Type.defineMethod('loadSchemaFrom',
-function(aSchemaURI) {
-
-    /**
-     * @method loadSchemaFrom
-     * @summary Loads a JSON schema from the supplied URI.
-     * @param {TP.uri.URI} aSchemaURI The URI that the JSON schema resource is
-     *     located at.
-     * @returns {TP.meta.json.JSONSchemaContent} The receiver.
-     */
-
-    var fetchParams,
-
-        resp,
-        schemaObj;
-
-    fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
-
-    if (aSchemaURI.getExtension() === 'json') {
-        fetchParams.atPut('contentType', TP.json.JSONSchemaContent);
-    }
-
-    resp = aSchemaURI.getResource(fetchParams);
-
-    schemaObj = resp.get('result');
-
-    if (TP.canInvoke(schemaObj, 'defineTypes')) {
-        schemaObj.defineTypes();
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -144,9 +109,9 @@ function() {
             }
 
             //  If the system doesn't have a type by that name, then define one
-            //  as a subtype of TP.json.JSONSchemaType.
+            //  as a subtype of TP.json.JSONSchema.
             if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
-                type = TP.json.JSONSchemaType.defineSubtype(typeName);
+                type = TP.json.JSONSchema.defineSubtype(typeName);
             }
 
             type.set('schema', schema);

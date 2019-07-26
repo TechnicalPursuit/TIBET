@@ -948,6 +948,9 @@ TP.core.XMLContent.defineSubtype('test.BaseMarkupEmployee');
 //  will also define the type objects themselves.
 TP.xs.schema.loadSchemaFrom(TP.uc('~lib_schema/tibet_common_types.xsd'));
 
+//  Load some JSON Schema as well...
+TP.json.JSONSchema.loadSchemaFrom(TP.uc('~lib_schema/tibet_common_types.json'));
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

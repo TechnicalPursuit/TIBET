@@ -10,7 +10,7 @@
 
 
 /**
- * @type {TP.core.JSONSchemaType}
+ * @type {TP.core.JSONSchema}
  * @summary The common supertype for all JSON Schema-defined data types.
  * @description This type can produce a simple JSON Schema from a chunk of
  *     parsed JSON data structure. Note that the following assumptions are made:
@@ -35,17 +35,17 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('json.JSONSchemaType');
+TP.lang.Object.defineSubtype('json.JSONSchema');
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineAttribute('schema');
+TP.json.JSONSchema.Type.defineAttribute('schema');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('initialize',
+TP.json.JSONSchema.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -60,7 +60,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('buildSchemaFrom',
+TP.json.JSONSchema.Type.defineMethod('buildSchemaFrom',
 function(sourceObject, definitionName) {
 
     /**
@@ -109,7 +109,45 @@ function(sourceObject, definitionName) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('$buildArraySchemaMetaFrom',
+TP.json.JSONSchema.Type.defineMethod('loadSchemaFrom',
+function(aSchemaURI) {
+
+    /**
+     * @method loadSchemaFrom
+     * @summary Loads a JSON schema from the supplied URI.
+     * @param {TP.uri.URI} aSchemaURI The URI that the JSON schema resource is
+     *     located at.
+     * @returns {TP.meta.json.JSONSchemaContent} The receiver.
+     */
+
+    var fetchParams,
+
+        resp,
+        schemaObj;
+
+    fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
+
+    if (aSchemaURI.getExtension() === 'json') {
+        fetchParams.atPut('contentType',
+            TP.sys.getTypeByName('TP.json.JSONSchemaContent'));
+    }
+
+    resp = aSchemaURI.getResource(fetchParams);
+
+    schemaObj = resp.get('result');
+
+    if (TP.canInvoke(schemaObj, 'defineTypes')) {
+        schemaObj.defineTypes();
+    } else {
+        this.raise('InvalidOperation', 'Unable to define types from schema content.');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchema.Type.defineMethod('$buildArraySchemaMetaFrom',
 function(tree, pojoObj) {
 
     /**
@@ -199,7 +237,7 @@ function(tree, pojoObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('$buildObjectSchemaMetaFrom',
+TP.json.JSONSchema.Type.defineMethod('$buildObjectSchemaMetaFrom',
 function(tree, pojoObj) {
 
     /**
@@ -262,7 +300,7 @@ function(tree, pojoObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('$buildPrimitiveSchemaMetaFrom',
+TP.json.JSONSchema.Type.defineMethod('$buildPrimitiveSchemaMetaFrom',
 function(tree, pojoObj) {
 
     /**
@@ -299,7 +337,7 @@ function(tree, pojoObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('$checkForSamenessIn',
+TP.json.JSONSchema.Type.defineMethod('$checkForSamenessIn',
 function(anArray) {
 
     /**
@@ -367,7 +405,7 @@ function(anArray) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('compile',
+TP.json.JSONSchema.Type.defineMethod('compile',
 function(tree, schema, parent) {
 
     /**
@@ -461,7 +499,7 @@ function(tree, schema, parent) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('compileSchemaFromMeta',
+TP.json.JSONSchema.Type.defineMethod('compileSchemaFromMeta',
 function(tree, definitionName) {
 
     /**
@@ -537,7 +575,7 @@ function(tree, definitionName) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('fromString',
+TP.json.JSONSchema.Type.defineMethod('fromString',
 function(aString, sourceLocale) {
 
     /**
@@ -562,7 +600,7 @@ function(aString, sourceLocale) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('getSchemaType',
+TP.json.JSONSchema.Type.defineMethod('getSchemaType',
 function(aValue) {
 
     /**
@@ -617,7 +655,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('setSchema',
+TP.json.JSONSchema.Type.defineMethod('setSchema',
 function(aSchema) {
 
     /**
@@ -644,7 +682,7 @@ function(aSchema) {
 
 //  ------------------------------------------------------------------------
 
-TP.json.JSONSchemaType.Type.defineMethod('validate',
+TP.json.JSONSchema.Type.defineMethod('validate',
 function(aValue) {
 
     /**

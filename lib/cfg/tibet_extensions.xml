@@ -121,7 +121,7 @@
         ]]>
     </script>
 
-    <script src="./json/TP.json.JSONSchemaType.js"/>
+    <script src="./json/TP.json.JSONSchema.js"/>
     <script src="./json/TP.json.JSONSchemaContent.js"/>
 
 </config>

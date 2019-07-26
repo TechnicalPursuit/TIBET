@@ -377,7 +377,7 @@ function(anObj) {
 
     //  Build a JSON Schema from the POJO data and with the ID of the Couch
     //  document as the JSON Schema 'definition name'.
-    pojoSchema = TP.json.JSONSchemaType.buildSchemaFrom(data, definitionName);
+    pojoSchema = TP.json.JSONSchema.buildSchemaFrom(data, definitionName);
 
     if (TP.notValid(pojoSchema)) {
         return this;
