@@ -108,7 +108,6 @@ Cmd.prototype.execute = function() {
         data,
         libbase,
         npmbase,
-        //  lnflags,
         cperr,
         lnerr,
         rmerr;
@@ -118,46 +117,93 @@ Cmd.prototype.execute = function() {
     sh = require('shelljs');
     child = require('child_process');
 
+    cmd.debug('head: ' + CLI.getAppHead());
+    cmd.debug('root: ' + CLI.expandPath(CLI.getAppRoot()));
+    cmd.debug('inf: ' + CLI.expandPath('~app_inf'));
+    cmd.debug('node: ' + CLI.getNpmPath());
+
     // We can only start if we're in a top-level Node.js project directory.
-    if (!sh.test('-f', 'package.json')) {
+    if (!sh.test('-f', CLI.NPM_FILE)) {
         this.error(
-            'Cannot init. No package.json found. Are you in a project?');
+            'No ' + CLI.NPM_FILE +
+            ' in current directory. Are you in a project?');
         return 1;
     }
 
-    //  lnflags = '-s';
-    if (this.options.force) {
-        //  lnflags += 'f';
-    }
-
     wrapup = function() {
+
+        var infpath,
+            toppath,
+            npmpath,
+            steps,
+            linkfrom,
+            linkto,
+            rmerr,
+            i;
+
         //  We also link TIBET library code into the TIBET-INF location
         //  to avoid pointing down into node_modules or having
         //  node_modules be a location potentially pushed to a remote
         //  deployment target.
 
-        /*
-        sh.ln(lnflags, path.join(
-            CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
-            path.join(
-            CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
-        */
+        //  find the inf directory (TIBET-INF usually) so we can compute
+        //  proper relative path (NOTE: not all projects have a 'public'
+        //  segment, only those with a TDS which serves files.)
+        toppath = CLI.expandPath('~');
+        infpath = CLI.expandPath('~app_inf');
+        npmpath = CLI.getNpmPath();
 
-        if (!fs.existsSync('public/TIBET-INF/tibet')) {
-            //  NB: The source path to the command here is used as a raw
-            //  argument. In other words, the '../..' is *not* evaluated against
-            //  the current working directory. It is used as is to create the
-            //  link.
-            fs.symlinkSync('../../node_modules/tibet',
-                            'public/TIBET-INF/tibet');
+        cmd.debug('toppath: ' + toppath);
+        cmd.debug('infpath: ' + infpath);
+        cmd.debug('npmpath: ' + npmpath);
+
+        //  We'll ultimately need to use the distance from the INF directory to
+        //  the shared root as the offset "count" e.g. how many ".." segments do
+        //  we need?
+        infpath = infpath.replace(toppath, '').slice(1); // slice off path.sep
+        npmpath = npmpath.replace(toppath, '').slice(1); // slice off path.sep
+
+        //  something like public/TIBET-INF/tibet
+        linkfrom = path.join(infpath, 'tibet');
+        //  something like node_modules/tibet
+        linkto = path.join(npmpath, 'tibet');
+
+        steps = linkfrom.split(path.sep).length -
+            linkto.split(path.sep).length + 1;
+
+        for (i=0; i<steps; i++) {
+            linkto = path.join('..', linkto);
         }
 
-        lnerr = sh.error();
-        if (lnerr) {
-            cmd.error('Error linking library launch directory: ' +
-                lnerr);
-        } else {
+        cmd.debug('linkfrom: ' + linkfrom);
+        cmd.debug('linkto: ' + linkto);
+        cmd.debug('steps: ' + steps);
+
+        if (fs.existsSync(linkfrom)) {
+            if (!cmd.options.force) {
+                //  not being asked to force-rebuild the link
+                cmd.warn(infpath + ' exists. skipping link without --force.');
+                return;
+            }
+
+            //  force the link by removing here and falling through...
+            sh.rm('-f', linkfrom);
+            rmerr = sh.error();
+            if (rmerr) {
+                cmd.error('Error removing ' + linkfrom + ': ' + rmerr);
+                return 1;
+            }
+        }
+
+        //  NB: The source path to the command here is used as a raw argument.
+        //  In other words, the '../..' is *not* evaluated against the current
+        //  working directory. It is used as is to create the link.
+        try {
+            fs.symlinkSync(linkto, linkfrom);
             cmd.log('TIBET development dependency linked.');
+        } catch (e) {
+            cmd.error('Error linking library launch directory: ' + e.message);
+            return 1;
         }
 
         cmd.log('project initialized successfully.');
@@ -168,57 +214,66 @@ Cmd.prototype.execute = function() {
             'Use `tibet start` to run your application.');
     };
 
-    // If the node_modules directory doesn't exist (but we know there's a
-    // package.json due to earlier check) it means 'npm install' was never run.
-    // We have to do that before we can try to start the server.
-    if (sh.test('-e', 'node_modules')) {
+    //  ---
 
-        //  If the 'tibet' directory is missing but node_modules is there it
-        //  very likely means 'npm install' was run...and removed links. sigh.
-        //  we can try to patch that up by skipping the requirement for
-        //  '--force' at least so we don't remove the entire directory.
-        if (sh.test('-e', path.join('node_modules', 'tibet'))) {
+    //  If we're being asked to initialize but node_modules already exists we
+    //  need to check to see whether we need to require a 'force' or not...
+    if (sh.test('-e', CLI.MODULE_FILE)) {
+
+        //  If tibet directory is in place it's not unlinked by npm so we want
+        //  to request a specific '--force' flag before we reinitialize.
+        if (sh.test('-e', path.join(CLI.MODULE_FILE, 'tibet'))) {
+
             if (!this.options.force) {
                 this.warn('Project already initialized. ' +
                     'Use --force to re-initialize.');
                 return 1;
             }
+
             this.warn('--force specified...removing and rebuilding dependencies.');
-            rmerr = sh.rm('-rf', 'node_modules');
+            rmerr = sh.rm('-rf', CLI.MODULE_FILE);
             if (rmerr) {
-                this.error('Error removing node_modules directory: ' + rmerr);
+                this.error('Error removing ' + CLI.MODULE_FILE +
+                    ' directory: ' + rmerr);
                 return 1;
             }
+        } else {
+            //  node_modules exists but not tibet package...npm unlinked
+            //  it...probably during a npm 5+ install of a new package.
+            //  fall through and let the command continue without a force.
         }
     }
 
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
         dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
-        cmd.info('Initializing \'' + dna + '\' project ' +
-            this.getcfg('npm.name') + '...');
+        cmd.info('Initializing \'' + this.getcfg('npm.name') +
+            '\' project with \'' + dna + '\' dna...');
     } else {
         cmd.info('Initializing project...');
     }
 
-    cmd.log('installing package.json modules via `npm install`.');
+    cmd.log('installing project dependencies via `npm install`...');
 
     //  ---
     //  version capture (do this first)
     //  ---
 
     if (this.options.static) {
-        pkgpath = path.join(__dirname, '../../../package.json');
+        //  NOTE this is looking for the TIBET library package.json, not an
+        //  application/project one so we root from __dirname and climb up.
+        pkgpath = path.join(__dirname, '..', '..', '..', CLI.NPM_FILE);
         if (sh.test('-e', pkgpath)) {
             try {
                 data = require(pkgpath);
             } catch (e) {
-                cmd.error('Invalid library package.json: ' + e.message);
+                cmd.error('Invalid library ' + CLI.NPM_FILE +': ' + e.message);
                 return 1;
             }
             version = data.version;
         } else {
-            cmd.error('Unable to find library package.json at ' + pkgpath);
+            cmd.error('Unable to find library ' + CLI.NPM_FILE +
+                ' at ' + pkgpath);
             return 1;
         }
     }
@@ -231,10 +286,10 @@ Cmd.prototype.execute = function() {
     //  remove any references to the library in package.json. If we're using
     //  the static flag they'll be re-injected _after_ npm install.
     try {
-        pkgpath = path.join(CLI.expandPath('~'), 'package.json');
+        pkgpath = path.join(CLI.expandPath('~'), CLI.NPM_FILE);
         data = require(pkgpath);
     } catch (e) {
-        cmd.error('Invalid project package.json: ' + e.message);
+        cmd.error('Invalid project ' + CLI.NPM_FILE + ': ' + e.message);
         return 1;
     }
 
@@ -265,8 +320,12 @@ Cmd.prototype.execute = function() {
 
             //  Locate the library path, and normalize to lowercase to match
             //  standard npm expectations.
-            libbase = path.join(__dirname, '../../..');
-            libbase = libbase.replace(/\/TIBET$/, '/tibet');
+            libbase = path.join(__dirname, '..', '..', '..');
+            if (path.sep === '/') {
+                libbase = libbase.replace(/\/TIBET$/, '/tibet');
+            } else {
+                libbase = libbase.replace(/\\TIBET$/, '\\tibet');
+            }
 
             npmbase = CLI.expandPath('~app_npm');
 
@@ -296,7 +355,7 @@ Cmd.prototype.execute = function() {
                 if (linkerr) {
                     cmd.error('Failed to initialize: ' + linkstderr);
                     cmd.warn(
-                        '`git clone` TIBET 5.x, `npm link .` it, and retry.');
+                        '`git clone` TIBET, `npm link .` it, and retry.');
                     throw new Error();
                 }
 
