@@ -295,7 +295,11 @@ Cmd.prototype.execute = function() {
 
         text = msg.text();
 
-        if (ignoreMessage(msg, [/Overriding boot\.package/i])) {
+        if (ignoreMessage(msg,
+            [/overriding boot\.package/i,
+            /no sheets were loaded/i,
+            /Invalid route direction/i]
+        )) {
             return true;
         }
 
