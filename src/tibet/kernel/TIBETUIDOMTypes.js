@@ -8920,17 +8920,22 @@ function(aRequest) {
         return;
     }
 
-    //  If the new resource result is a content object of some sort (highly
-    //  likely) then it should respond to 'setData' so set its data to null
-    //  (which will cause it to ignore its data for *Change signals).
+    //  If the element has local data, then we clear any underlying data if its
+    //  a TP.core.Content object and unregister the URI (which will cause the
+    //  URI's resource itself to be cleared/collected).
+    if (tpElem.hasLocalData()) {
+        //  NB: We assume 'async' of false here.
+        resource = dataURI.getResource().get('result');
 
-    //  NB: We assume 'async' of false here.
-    resource = dataURI.getResource().get('result');
-    if (TP.canInvoke(resource, 'setData')) {
-        resource.setData(null);
+        //  If the new resource result is a content object of some sort (highly
+        //  likely) then it should respond to 'setData' so set its data to null
+        //  (which will cause it to ignore its data for *Change signals).
+        if (TP.canInvoke(resource, 'setData')) {
+            resource.setData(null);
+        }
+
+        dataURI.unregister();
     }
-
-    dataURI.unregister();
 
     //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
     tpElem.signal('TP.sig.UIDataDestruct');
