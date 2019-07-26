@@ -986,19 +986,28 @@ Cmd.prototype.summarize = function(results) {
         this.log('');
         msg = '' + this.colorize(
             'checked ' + results.checked + ' of ' +
-            results.files + ' total files (' +
+            results.files + ' total files',
+        'dim');
+        this.log(msg);
+
+        msg = this.colorize('(' +
             results.filtered + ' filtered, ' +
             results.unchanged + ' unchanged)',
         'dim');
         this.log(msg);
 
         msg = '' +
-            this.colorize(results.errors + ' errors', 'error') +
-            ' and ' +
-            this.colorize(results.warnings + ' warnings', 'warn') +
-            ' in ' +
-            results.linty + ' files.';
-
+            this.colorize(results.errors + ' errors',
+                results.errors ? 'error' : 'success') +
+            this.colorize(', ', results.errors ? 'error' : 'success') +
+            this.colorize(results.warnings + ' warnings',
+                results.warnings ? 'warn' : 'success');
+        if (results.errors + results.warnings) {
+            msg = msg + this.colorize(' in ' + results.linty + ' files.',
+                results.errors ? 'error' : 'warn');
+        } else {
+            msg = msg + this.colorize('. Clean!', 'success');
+        }
         this.log(msg);
     }
 
