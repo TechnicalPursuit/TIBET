@@ -108,7 +108,14 @@ function() {
      * @returns {Boolean} Whether or not the receiver has local data.
      */
 
-    return TP.isEmpty(this.getNativeNode());
+    var elem,
+        childCDATASectionNodes;
+
+    elem = this.getNativeNode();
+    childCDATASectionNodes = TP.nodeGetChildNodesByType(
+                                        elem, Node.CDATA_SECTION_NODE);
+
+    return TP.notEmpty(childCDATASectionNodes);
 });
 
 //  ------------------------------------------------------------------------
