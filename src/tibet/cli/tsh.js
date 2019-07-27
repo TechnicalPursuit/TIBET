@@ -338,6 +338,11 @@ Cmd.prototype.execute = function() {
         slowMo: CLI.getcfg('puppeteer.slowMo', false)
     };
 
+    if (cmd.options.verbose) {
+        cmd.stdout('Launching puppeteer with args:\n' +
+            CLI.beautify(puppeteerArgs));
+    }
+
     puppeteer.launch(
         puppeteerArgs
     ).then(
@@ -426,6 +431,10 @@ Cmd.prototype.execute = function() {
 
         start = new Date();
 
+        if (cmd.options.verbose) {
+            cmd.stdout('Loading URL: ' + fullpath);
+        }
+
         return puppetPage.goto(fullpath);
 
     }).then(function(result) {
@@ -477,6 +486,10 @@ Cmd.prototype.execute = function() {
 
         input = cmd.options.script;
         shouldPause = cmd.options.pause;
+
+        if (cmd.options.verbose) {
+            cmd.stdout(input);
+        }
 
         return context.evaluate(function(tshInput, pauseBeforeExec) {
 
