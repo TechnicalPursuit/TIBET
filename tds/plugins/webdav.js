@@ -24,6 +24,7 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
+        /*
         var app,
             jsDAV,
             jsDAV_CORS,
@@ -38,6 +39,9 @@
         TDS = app.TDS;
 
         loggedInOrLocalDev = options.loggedInOrLocalDev;
+        */
+        var logger;
+
         logger = options.logger;
 
         //  ---
@@ -49,6 +53,7 @@
 
         return;
 
+        /*
         path = require('path');
         jsDAV = require('jsDAV/lib/jsdav');
         jsDAV_CORS = require('jsDAV/lib/DAV/plugins/cors');
@@ -87,6 +92,7 @@
         //  ---
 
         app.use(TDS.cfg('tds.webdav.uri'), loggedInOrLocalDev, TDS.webdav);
+        */
     };
 
 }(this));
