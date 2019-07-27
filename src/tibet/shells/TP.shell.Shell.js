@@ -2702,6 +2702,13 @@ function(anObjectSpec, aRequest, forArguments) {
         }
     }
 
+    if (TP.regex.NS_ID.test(spec)) {
+        $$inst = TP[spec.slice(0, -1)] || APP[spec.slice(0, -1)];
+        if (TP.isValid($$inst) && TP.isNamespace($$inst)) {
+            return $$inst;
+        }
+    }
+
     try {
         if (TP.regex.URI_LIKELY.test(spec) &&
             !TP.regex.REGEX_LITERAL_STRING.test(spec)) {

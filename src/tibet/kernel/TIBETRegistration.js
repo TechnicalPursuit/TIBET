@@ -186,6 +186,20 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
+    //  Maybe a namespace name, e.g. something like 'css:' or any other prefix
+    //  we'd normally associate with a namespace object
+    if (TP.regex.NS_ID.test(id)) {
+        obj = TP[id.slice(0, -1)] || APP[id.slice(0, -1)];
+        if (TP.isValid(obj) && TP.isNamespace(obj)) {
+            return obj;
+        } else {
+            TP.ifWarn() ?
+                TP.warn('Unable to resolve apparent namespace reference: ' +
+                            id) : 0;
+
+            return;
+        }
+    }
 
     //  Note that we check first to see if an Element has the ID (if a node
     //  context was supplied. If one was supplied, then we don't bother looking

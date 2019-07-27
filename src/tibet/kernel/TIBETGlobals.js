@@ -2991,6 +2991,8 @@ TP.regex.JS_OPERATORS =
 TP.regex.JS_ASSIGNMENT =
     /(^|;|\s+)([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)(\s*=[^=])/g; // needs reset
 
+TP.regex.NS_ID = /^[a-zA-Z]{2,}:$/;
+
 //  matching facet slot names
 TP.regex.FACET_SLOT_NAME_MATCH = new RegExp('\\$(\\w+)_(' +
                                             TP.FACET_NAMES.join('|') +
