@@ -113,7 +113,7 @@
     },
     "scripts": {
         "preinstall": "npm install -g bower --allow-root",
-        "postinstall": "cd \"$(npm root -g)/tibet\" && rm -rf ./node_modules && npm -g config set user root && npm install --allow-root",
+        "postinstall": "cd \"$(npm root -g)/tibet\" && rm -rf ./node_modules/@babel && npm -g config set user root && npm install --allow-root",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
