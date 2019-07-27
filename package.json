@@ -126,6 +126,7 @@
     },
     "scripts": {
         "preinstall": "npm install -g bower --allow-root",
+        "prepare": "npm install",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
