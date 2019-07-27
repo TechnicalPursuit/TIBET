@@ -1955,8 +1955,6 @@ function(anElement) {
             //  signaling.
             newLinkElem = TP.documentAddCSSLinkElement(
                                 doc, hrefsToAdd.at(i), null, false);
-            TP.elementSetAttribute(newLinkElem, 'tibet:flattened',
-                                    'true', true);
         }
 
         //  We added a bunch of hrefs representing the (recursively gathered)

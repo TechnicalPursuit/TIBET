@@ -1933,10 +1933,6 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
         //  Nothing else to do. Bail out early.
         return;
     } else if (TP.isElement(aNodeOrList)) {
-        TP.elementSetAttribute(aNodeOrList,
-                                'tibet:armed',
-                                'true',
-                                true);
         TP.$windowArmNodeForEvents(aWindow,
                                     aNodeOrList,
                                     eventNameArray,
@@ -1959,10 +1955,6 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
             element = TP.nodeGetElementById(aWindow.document,
                                             elementNameArray[i]);
             if (TP.isElement(element)) {
-                TP.elementSetAttribute(element,
-                                        'tibet:armed',
-                                        'true',
-                                        true);
                 TP.$windowArmNodeForEvents(aWindow,
                                             element,
                                             eventNameArray,

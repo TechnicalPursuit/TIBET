@@ -700,10 +700,6 @@ function(aRequest) {
         return;
     }
 
-    if (TP.notEmpty(elem.getAttribute('tibet:appctrl'))) {
-        return this.callNextMethod();
-    }
-
     name = TP.sys.cfg('project.name');
     tag = TP.sys.cfg('tibet.apptag') || 'APP.' + name + ':app';
 
