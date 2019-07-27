@@ -12139,6 +12139,8 @@ TP.lang.Object.defineSubtype('lang.Namespace');
 //  ------------------------------------------------------------------------
 
 TP.lang.Namespace.Inst.defineAttribute('$$isNamespace');
+TP.lang.Namespace.Inst.defineAttribute('nsPrefix');
+TP.lang.Namespace.Inst.defineAttribute('nsRoot');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -12162,6 +12164,9 @@ function(fullName) {
 
     this.$set(TP.NAME, fullName, false);
     this.$set(TP.ID, fullName, false);
+
+    this.$set('nsRoot', fullName.split(':')[0], false);
+    this.$set('nsPrefix', fullName.split(':')[1], false);
 
     return this;
 });
@@ -12190,6 +12195,36 @@ function() {
     }
 
     return keys;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getNamespacePrefix',
+function() {
+
+    /**
+     * @method getNamespacePrefix
+     * @summary Returns the namespace (in TIBET terms) of the receiver. For
+     *     example, the namespace of the TP.sig.Signal type is 'sig'.
+     * @returns {String} The receiver's namespace.
+     */
+
+    return this.$get('nsPrefix');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getNamespaceRoot',
+function() {
+
+    /**
+     * @method getNamespaceRoot
+     * @summary Returns the namespace root (in TIBET terms) of the receiver.
+     *     For example, the namespace root of the TP.sig.Signal type is 'TP'.
+     * @returns {String} The receiver's namespace root.
+     */
+
+    return this.$get('nsRoot');
 });
 
 //  ------------------------------------------------------------------------
