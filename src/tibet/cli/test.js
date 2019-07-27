@@ -285,10 +285,13 @@ Cmd.prototype.getBootProfile = function() {
  */
 Cmd.prototype.getScript = function() {
 
-    var target,
+    var script,
+        target,
         context,
         prefix,
         ignore;
+
+    script = '';
 
     if (CLI.notEmpty(this.options.target)) {
         target = this.options.target;
@@ -302,49 +305,51 @@ Cmd.prototype.getScript = function() {
     target = target || '';
 
     if (target.length > 0 && target.indexOf(prefix) !== 0) {
-        target = prefix + ' \'' + target + '\'';
+        script = prefix + ' \'' + target + '\'';
     } else {
-        target = prefix;
+        script = prefix;
     }
 
     if (CLI.notEmpty(this.options.suite)) {
-        target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
+        script = script.trim() + ' -suite=\'' + this.options.suite + '\'';
     }
 
     //  Don't default context for this command. Let the object being targeted
     //  define the context based on its nsRoot once the shell resolves it.
     context = this.options.context;
     if (CLI.notEmpty(context)) {
-        target = target.trim() + ' -context=\'' + context + '\'';
+        script = script.trim() + ' -context=\'' + context + '\'';
+    } else if (CLI.isEmpty(target)) {
+        script += ' -context=\'' + (CLI.inProject() ? 'app' : 'lib') + '\'';
     }
 
     if (this.options.selftest) {
-        target += ' -ignore_only';
+        script += ' -ignore_only';
     } else {
         ignore = this.options['ignore-only'];
         if (ignore === true) {
-            target += ' -ignore_only';
+            script += ' -ignore_only';
         }
 
         ignore = this.options['ignore-skip'];
         if (ignore === true) {
-            target += ' -ignore_skip';
+            script += ' -ignore_skip';
         }
     }
 
     if (this.options.inherit) {
-        target += ' -inherit';
+        script += ' -inherit';
     }
 
     if (this.options.subtypes) {
-        target += ' -subtypes';
+        script += ' -subtypes';
     }
 
     if (CLI.notEmpty(this.options.cases)) {
-        target = target.trim() + ' -cases=\'' + this.options.cases + '\'';
+        script = script.trim() + ' -cases=\'' + this.options.cases + '\'';
     }
 
-    return target;
+    return script;
 };
 
 
