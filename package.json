@@ -113,7 +113,7 @@
     },
     "scripts": {
         "preinstall": "npm install -g bower --allow-root",
-        "prepare": "npm install",
+        "prepare": "cd \"$(npm root -g)\"/tibet; rm -rf ./node_modules/*/.git/; npm install",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
