@@ -44,6 +44,11 @@
         //  Requires
         //  ---
 
+        //  TODO: For now, jsDAV is badly broken and we don't support WebDAV
+        logger.warn('WebDAV currently not supported');
+
+        return;
+
         path = require('path');
         jsDAV = require('jsDAV/lib/jsdav');
         jsDAV_CORS = require('jsDAV/lib/DAV/plugins/cors');
