@@ -6251,13 +6251,13 @@ function(aHandlerName) {
     //  Origin
     //  ---
 
-    expression += 'From(.+?)';
+    expression += '(?:From(.+?))*?';
 
     //  ---
     //  State
     //  ---
 
-    expression += 'When(.+)';
+    expression += '(?:When(.+))*?$';
 
 
     //  Construct a RegExp and make sure that it is indeed one.
@@ -6289,14 +6289,10 @@ function(aHandlerName) {
     }
 
     //  'origin' is at the 3rd place.
-    if (TP.notEmpty(parts.at(3))) {
-        result.origin = parts.at(3);
-    }
+    result.origin = parts.at(3) || TP.ANY;
 
     //  'state' is at the 4th place.
-    if (TP.notEmpty(parts.at(4))) {
-        result.state = parts.at(4);
-    }
+    result.state = parts.at(4) || TP.ANY;
 
     return result;
 });
