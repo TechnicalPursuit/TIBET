@@ -351,16 +351,38 @@ function(aRequest) {
                     //  use a regex rather than split or other approaches.
                     match = name.match(/^(.*)_(.*?)_(.*?)$/);
 
+                    dict = TP.decomposeHandlerName(name);
+
                     found = false;
+
                     names.forEach(
                             function(line) {
-                                var lineParts;
+                                var lineParts,
+                                    mDict;
 
                                 //  Throw away tag, keeping remainder.
                                 lineParts = line.split(' ').last();
 
-                                if (match && match.at(3) === lineParts) {
-                                    found = true;
+                                if (TP.notEmpty(dict)) {
+                                    //  This is a handler name... method name
+                                    //  match gets a lot trickier...
+                                    mDict = TP.decomposeHandlerName(lineParts);
+                                    if (TP.notEmpty(mDict)) {
+                                        if (dict.signalName ===
+                                            mDict.signalName &&
+                                            dict.phase ===
+                                            mDict.phase &&
+                                            dict.origin ===
+                                            mDict.origin &&
+                                            dict.state ===
+                                            mDict.state) {
+                                                found = true;
+                                            }
+                                    }
+                                } else {
+                                    if (match && match.at(3) === lineParts) {
+                                        found = true;
+                                    }
                                 }
                             });
 
@@ -919,7 +941,8 @@ function(aRequest) {
                 entries = fileDict.at(key);
                 if (TP.notValid(entries)) {
                     if (TP.notEmpty(key)) {
-                        results.push('ok - ' + key);
+                        results.push('ok - ' +
+                            TP.uriExpandPath(key).replace('file://', ''));
                     }
                     return;
                 }
@@ -927,7 +950,8 @@ function(aRequest) {
                 errorFiles++;
 
                 //  Output the file name.
-                results.push('not ok - ' + key);
+                results.push('not ok - ' +
+                    TP.uriExpandPath(key).replace('file://', ''));
 
                 entries.forEach(
                         function(entry) {
