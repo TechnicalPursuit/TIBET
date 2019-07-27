@@ -311,11 +311,12 @@ Cmd.prototype.getScript = function() {
         target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
     }
 
+    //  Don't default context for this command. Let the object being targeted
+    //  define the context based on its nsRoot once the shell resolves it.
     context = this.options.context;
-    if (CLI.isEmpty(context)) {
-        context = CLI.inLibrary() ? 'lib' : 'app';
+    if (CLI.notEmpty(context)) {
+        target = target.trim() + ' -context=\'' + context + '\'';
     }
-    target = target.trim() + ' -context=\'' + context + '\'';
 
     if (this.options.selftest) {
         target += ' -ignore_only';

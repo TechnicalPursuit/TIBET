@@ -62,8 +62,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['tap', 'missing'],
         'string': ['target', 'filter', 'context'],
         'default': {
-            tap: true,
-            context: 'app'
+            tap: true
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -133,6 +132,8 @@ Cmd.prototype.getScript = function() {
 
     if (CLI.notEmpty(this.options.context)) {
         prefix += ' --context=' + this.options.context;
+    } else if (CLI.isEmpty(target)) {
+        prefix += ' --context=' + (CLI.inProject() ? 'app' : 'lib');
     }
 
     if (CLI.isTrue(this.options.missing)) {

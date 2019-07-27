@@ -135,7 +135,13 @@ function(aRequest) {
         target = shell.getArgument(aRequest, 'tsh:target', null);
         if (TP.notEmpty(target)) {
             target = target.unquoted();
-            owner = TP.bySystemId(target);
+
+            //  Resolve the reference, but deal with the fact that the input
+            //  target can be something like 'bind:' etc. so update target ID.
+            owner = shell.resolveObjectReference(target);
+            if (TP.isValid(owner)) {
+                target = TP.id(owner);
+            }
         }
     }
 
@@ -143,14 +149,17 @@ function(aRequest) {
         return aRequest.fail('Unable to resolve target: ' + target);
     }
 
-    //  Context determines whether we care about app, lib, or both. It is always
-    //  in effect and defaults to app.
-    context = shell.getArgument(aRequest, 'tsh:context', 'app');
+    //  Context determines whether we care about app, lib, or both.
+    //  NOTE we do NOT default this provided there's a target. If there's a
+    //  target we assume the user wants that object's context as the default.
+    context = shell.getArgument(aRequest, 'tsh:context');
     if (TP.isEmpty(context)) {
         if (/^APP/.test(target)) {
             context = 'app';
         } else if (/^TP/.test(target)) {
             context = 'lib';
+        } else {
+            context = 'all';
         }
     }
 
