@@ -922,7 +922,7 @@ function(aString) {
  *
  *     IFF the page is in a "relativized" state then the page is "revived" by
  *     invoking each tag's revive method. NOTE that when a request's XML shows
- *     that it's a compiled representation the previous steps are all skipped
+ *     that it's a processed representation the previous steps are all skipped
  *     and processing begins with this step.
  *
  *     - any tag-specific URI attributes are converted to app paths
@@ -1513,7 +1513,7 @@ function(aRequest) {
             if (TP.canInvoke(type, funcName)) {
                 //  If the node is already processed up to the phase in question
                 //  we don't want to work on it again. This can occur when a
-                //  template or similar compilation returns compiled elements
+                //  template or similar compilation returns processed elements
                 //  which refer to concrete types via tibet:tag.
                 if (TP.nodeHasReachedPhase(child, phase, phases)) {
                     TP.ifTrace() &&
@@ -1545,7 +1545,7 @@ function(aRequest) {
                     //  TP.nodeHasReachedPhase. Once we've branched however, we
                     //  want to clear the flag.
 
-                    //  TODO: Can't do this here because of compile errors
+                    //  TODO: Can't do this here because of processing errors
                     //  around including templates multiple times... Need a fix.
                     // TP.elementRemoveAttribute(child, 'tibet:phase', true);
                 } else {

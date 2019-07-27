@@ -2,7 +2,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-sherpa|compiledTagContextMenuContent {
+sherpa|computedTagContextMenuContent {
 
     display: block;
     position: absolute;
@@ -19,7 +19,7 @@ sherpa|compiledTagContextMenuContent {
     overflow: auto;
 }
 
-sherpa|compiledTagContextMenuContent > ul {
+sherpa|computedTagContextMenuContent > ul {
 
     height: 100%;
     width: 100%;
@@ -30,7 +30,7 @@ sherpa|compiledTagContextMenuContent > ul {
     line-height: 29px;
 }
 
-sherpa|compiledTagContextMenuContent > ul > li {
+sherpa|computedTagContextMenuContent > ul > li {
 
     border: 0;
     border-top: 1px solid transparent;
@@ -43,7 +43,7 @@ sherpa|compiledTagContextMenuContent > ul > li {
     cursor: pointer;
 }
 
-sherpa|compiledTagContextMenuContent > ul > li:hover {
+sherpa|computedTagContextMenuContent > ul > li:hover {
 
     background-color: #ddd;
 
@@ -51,7 +51,7 @@ sherpa|compiledTagContextMenuContent > ul > li:hover {
     border-bottom: 1px solid #666;
 }
 
-sherpa|compiledTagContextMenuContent > ul > li:last-child:hover {
+sherpa|computedTagContextMenuContent > ul > li:last-child:hover {
 
     border-bottom: 1px solid #666;
 }

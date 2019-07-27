@@ -10036,7 +10036,7 @@ function(aWindow, anHref) {
         }
 
         //  Grab the element's 'template' resource URI - if it's equal to the
-        //  URL that just changed, then we need to recompile / refresh.
+        //  URL that just changed, then we need to reprocess / refresh.
         elemURI = elemType.getResourceURI('template');
         if (elemURI.equalTo(url)) {
 

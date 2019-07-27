@@ -210,23 +210,23 @@ function(aStyleTPElem) {
 });
 
 //  ========================================================================
-//  TP.xctrls.CompiledTag
+//  TP.xctrls.ComputedTag
 //  ========================================================================
 
 /**
- * @type {TP.xctrls.CompiledTag}
- * @summary A tag type that is compiled and also has the common aspect of all
+ * @type {TP.xctrls.ComputedTag}
+ * @summary A tag type that is computed and also has the common aspect of all
  *     XControls tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('xctrls.CompiledTag');
-TP.xctrls.CompiledTag.addTraits(TP.xctrls.Element);
+TP.tag.ComputedTag.defineSubtype('xctrls.ComputedTag');
+TP.xctrls.ComputedTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
-//  and execute the one inherited from TP.tag.CompiledTag afterwards as well.
-TP.xctrls.CompiledTag.Type.resolveTrait(
+//  and execute the one inherited from TP.tag.ComputedTag afterwards as well.
+TP.xctrls.ComputedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
 //  ========================================================================

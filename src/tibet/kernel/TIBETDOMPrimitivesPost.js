@@ -1452,7 +1452,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
      * @method elementBecome
      * @summary Replaces the node with a new node of a different type, moving
      *     all attributes and children of the original node onto the new node.
-     *     This is the core "compiled tag" support method allowing custom XML
+     *     This is the core "computable tag" support method allowing custom XML
      *     tags to switch into HTML tags.
      * @param {Element} anElement The original element to be transformed.
      * @param {String} tagName The local or full tag name to use for the new
@@ -4689,7 +4689,7 @@ function(anElement) {
      * @method elementSetGenerator
      * @summary Sets the 'generator' of the target element. This is the
      *     canonical name of the element, which usually points back to the type
-     *     that generated the target element when it was 'compiled'.
+     *     that generated the target element when it was processed.
      * @param {Element} anElement The element to set the generator for.
      * @exception TP.sig.InvalidElement
      */
@@ -6171,7 +6171,7 @@ function(aNode, aSignal) {
 
     /**
      * @method nodeGetResponderChain
-     * @summary Compiles a list of all the responder elements along the
+     * @summary Creates a list of all the responder elements along the
      *     containment hierarchy for aNode. This method essentially iterates via
      *     nodeGetResponderElement until no more responder elements are found.
      * @param {Node} aNode The DOM node to operate on.
@@ -6260,7 +6260,7 @@ function(aNode, aSignal) {
     //  Next, check to see if a 'tibet:tag' attribute is defined. If so, then it
     //  will point to a TIBET type of some sort. This mechanism allows the
     //  author to override the TIBET type that this tag would normally resolve
-    //  to. Therefore, in the case of custom tags that have been 'compiled' into
+    //  to. Therefore, in the case of custom tags that have been processed into
     //  platform native markup (i.e. XHTML or SVG), this attribute will probably
     //  point to the custom TIBET type that the platform-native markup is
     //  standing in for.

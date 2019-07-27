@@ -41,7 +41,7 @@
     <script src="./TP.sherpa.connector/TP.sherpa.connector.js"/>
     <script src="./TP.sherpa.console/TP.sherpa.console.js"/>
     <script src="./TP.sherpa.halo/TP.sherpa.halo.js"/>
-    <script src="./TP.sherpa.compiledTagContextMenuContent/TP.sherpa.compiledTagContextMenuContent.js"/>
+    <script src="./TP.sherpa.computedTagContextMenuContent/TP.sherpa.computedTagContextMenuContent.js"/>
     <script src="./TP.sherpa.templatedTagContextMenuContent/TP.sherpa.templatedTagContextMenuContent.js"/>
     <script src="./TP.sherpa.hud/TP.sherpa.hud.js"/>
     <script src="./TP.sherpa.world/TP.sherpa.world.js"/>

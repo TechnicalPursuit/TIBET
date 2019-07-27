@@ -13,9 +13,9 @@
 /**
  * @type {TP.tsh.script}
  * @summary Provides support for the TIBET Shell (TSH) during raw content
- *     compilation and execution. This tag is typically wrapped around raw
+ *     processing and execution. This tag is typically wrapped around raw
  *     content entered in a TIBET console to provide an XML context for it.
- *     During tag compilation this tag handles XML desugaring as well as
+ *     During tag processing this tag handles XML desugaring as well as
  *     splitting of command lines for pipes and redirects. At execution time
  *     this tag handles the processing of individual tsh:eval tags and manages
  *     the overall execution loop.
@@ -31,7 +31,7 @@ TP.tsh.script.addTraits(TP.tsh.Element);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  A list of operators specific to compile-time TSH processing. In
+//  A list of operators specific to tranform-time TSH processing. In
 //  particular these are the operators which define pipe and redirection
 //  syntax in TSH scripts. These are used to help parse individual tags from
 //  the sugared command input.
@@ -547,7 +547,7 @@ function(source, shell, sibling, request) {
      *     potential syntax errors from splitting a block-level construct such
      *     as a function.
      *
-     *     NOTE that these transforms are all "compile time" conversions. See
+     *     NOTE that these are all "tranform time" conversions. See
      *     the TP.tsh.eval type for processing specific to "runtime" processing
      *     of shell input.
      * @param {String|String[]} source The input source to translate.
@@ -1923,7 +1923,7 @@ function(aRequest) {
 
     /**
      * @method tshCompile
-     * @summary Compiles the content of a tsh:script tag, replacing the tag's
+     * @summary Processes the content of a tsh:script tag, replacing the tag's
      *     content with one or more child tags which will handle the concrete
      *     processing for the script.
      * @param {TP.sig.Request} aRequest The request containing command input for

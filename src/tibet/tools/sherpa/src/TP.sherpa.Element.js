@@ -76,20 +76,20 @@ function(aHalo) {
 });
 
 //  ========================================================================
-//  TP.sherpa.CompiledTag
+//  TP.sherpa.ComputedTag
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.CompiledTag}
- * @summary A tag type that is compiled and also has the common aspect of all
- *     Sherpa tags.
+ * @type {TP.sherpa.ComputedTag}
+ * @summary A tag type that has its structure computed and also has the common
+ *     aspect of all Sherpa tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('sherpa.CompiledTag');
+TP.tag.ComputedTag.defineSubtype('sherpa.ComputedTag');
 
-TP.sherpa.CompiledTag.addTraits(TP.sherpa.Element);
+TP.sherpa.ComputedTag.addTraits(TP.sherpa.Element);
 
 //  ========================================================================
 //  TP.sherpa.TemplatedTag

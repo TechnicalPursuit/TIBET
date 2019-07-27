@@ -1895,9 +1895,7 @@ function(anElement) {
         len,
         i,
 
-        sheetHref,
-
-        newLinkElem;
+        sheetHref;
 
     //  Make sure we were handed a 'link' element.
     if (!TP.isElement(anElement) ||
@@ -1953,8 +1951,7 @@ function(anElement) {
 
             //  Note here that we pass false to avoid style mutation change
             //  signaling.
-            newLinkElem = TP.documentAddCSSLinkElement(
-                                doc, hrefsToAdd.at(i), null, false);
+            TP.documentAddCSSLinkElement(doc, hrefsToAdd.at(i), null, false);
         }
 
         //  We added a bunch of hrefs representing the (recursively gathered)

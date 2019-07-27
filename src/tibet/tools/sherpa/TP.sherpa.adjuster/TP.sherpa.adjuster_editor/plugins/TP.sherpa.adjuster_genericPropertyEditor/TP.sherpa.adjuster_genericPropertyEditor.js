@@ -1121,8 +1121,7 @@ function() {
 
     //  Set our 'name field' markup to the DOM structure that we generated from
     //  the markup.
-    //  NB: This will process (i.e. 'compile') any custom slot editor markup
-    //  underneath
+    //  NB: This will process any custom slot editor markup underneath
     this.get('propertyValue').set('value', valueFieldDOM);
 
     //  Set the 'selector field' markup to the selector of the rule.
@@ -1248,7 +1247,7 @@ function(updateRuleSource) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CompiledTag.defineSubtype('CSSSlotEditor');
+TP.sherpa.ComputedTag.defineSubtype('CSSSlotEditor');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

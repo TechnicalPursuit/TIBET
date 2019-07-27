@@ -669,7 +669,7 @@ function(aHalo) {
      * @summary Returns the next 'generator' ancestor element of the receiver.
      * @description This method returns the next parent up the ancestor chain
      *     that is a 'tag generator'. A generator is an Element that is usually
-     *     a compiled or templated tag that is responsible for generating
+     *     a computed or templated tag that is responsible for generating
      *     content.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
      *     generator ancestor.
@@ -688,7 +688,7 @@ function(aHalo) {
     }
 
     //  Keep iterating up the *haloable* ancestors of the receiver, looking for
-    //  one that is a TP.tag.CustomTag (the parent type of compiled and
+    //  one that is a TP.tag.CustomTag (the parent type of computed and
     //  templated tag types). Return the first one found.
     while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
 
@@ -1906,10 +1906,10 @@ function() {
 });
 
 //  ========================================================================
-//  TP.tag.CompiledTag Additions
+//  TP.tag.ComputedTag Additions
 //  ========================================================================
 
-TP.tag.CompiledTag.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',
+TP.tag.ComputedTag.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',
 function(mutatedVisualNode, operation, currentAddressPosition,
 followingAddresses, allAddresses) {
 
@@ -1952,7 +1952,7 @@ followingAddresses, allAddresses) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.Inst.defineMethod('resolveAspectForInspector',
+TP.tag.ComputedTag.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
     /**
@@ -2004,7 +2004,7 @@ function(anAspect, options) {
 //  Context Menu API
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.Inst.defineMethod('getContentForContextMenu',
+TP.tag.ComputedTag.Inst.defineMethod('getContentForContextMenu',
 function(options) {
 
     /**
@@ -2025,7 +2025,7 @@ function(options) {
      *     context menu.
      */
 
-    return TP.elem('<sherpa:compiledTagContextMenuContent/>');
+    return TP.elem('<sherpa:ComputedTagContextMenuContent/>');
 });
 
 //  ========================================================================

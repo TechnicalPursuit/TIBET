@@ -6,7 +6,7 @@
 @namespace {{nsname}} url("urn:app:{{nsname}}");
 
 /**
- * If your template/compile process transforms <{{nsname}}:{{typename}}/> tags
+ * If your template/compute process transforms <{{nsname}}:{{typename}}/> tags
  * from namespaced XML into XHTML with a tibet:tag attribute so they render
  * in the page similar to <div tibet:tag="{{nsname}}:{{typename}}"/> place your
  * style in rules with the following root form:

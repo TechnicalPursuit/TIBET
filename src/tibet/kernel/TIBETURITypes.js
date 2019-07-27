@@ -6659,7 +6659,7 @@ function(targetPhase, targetPhaseList) {
      * @summary Returns true if the receiver's content has been processed to
      *     the phase defined, relative to an optional phase list.
      * @param {String} targetPhase A TIBET content "process phase" string such
-     *     as 'Compile'.
+     *     as 'Includes'.
      * @param {String[]} targetPhaseList An array of phase names. The default is
      *     TP.shell.TSH.NOCACHE.
      * @returns {Boolean} Whether or not the content of the receiver has reached
@@ -10718,7 +10718,7 @@ function(pattern, signalOrProcessor, processor) {
      *     match result, and token names which should function as a replacement
      *     for the default processMatch function of the router for this path.
      * @exception {TP.sig.InvalidRoute} When pattern isn't either a RegExp or
-     *     cannot be compiled from the supplied pattern String.
+     *     cannot be processed from the supplied pattern String.
      * @exception {TP.sig.InvalidParameter} When signalOrProcessor isn't a
      *     String or a Function.
      * @returns {Object} A route entry consisting of pattern, signal, processor,

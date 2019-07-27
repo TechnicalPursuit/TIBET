@@ -26,7 +26,7 @@ TP.tsh.type_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 TP.tsh.type_assistant.Type.defineConstant('BUILT_IN_DNA_TAG_TYPES',
     TP.ac(
         'TP.tag.ActionTag',
-        'TP.tag.CompiledTag',
+        'TP.tag.ComputedTag',
         'TP.core.Content',
         'TP.core.Controller',
         'TP.tag.InfoTag',
@@ -205,8 +205,8 @@ function(aSignal) {
             supertypeForDNA = 'TP.tag.ActionTag';
             break;
 
-        case 'compiledtag':
-            supertypeForDNA = 'TP.tag.CompiledTag';
+        case 'computedtag':
+            supertypeForDNA = 'TP.tag.ComputedTag';
             break;
 
         case 'content':

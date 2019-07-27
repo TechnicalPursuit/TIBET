@@ -9,7 +9,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('tmp.PopupTestContent');
+TP.tag.ComputedTag.defineSubtype('tmp.PopupTestContent');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

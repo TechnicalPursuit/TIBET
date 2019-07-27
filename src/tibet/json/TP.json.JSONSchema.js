@@ -101,7 +101,7 @@ function(sourceObject, definitionName) {
         this.$buildObjectSchemaMetaFrom(tree, pojoObj);
     }
 
-    //  Now compile a schema from that metadata.
+    //  Now compute a schema from that metadata.
     schema = this.compileSchemaFromMeta(tree, definitionName);
 
     return schema;

@@ -9,7 +9,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('tmp.TooltipTestContent');
+TP.tag.ComputedTag.defineSubtype('tmp.TooltipTestContent');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

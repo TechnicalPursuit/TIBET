@@ -1,6 +1,6 @@
 {
     "default": {
-        "supertype": "TP.tag.CompiledTag",
+        "supertype": "TP.tag.ComputedTag",
         "bundled": true
     },
     "APP": {

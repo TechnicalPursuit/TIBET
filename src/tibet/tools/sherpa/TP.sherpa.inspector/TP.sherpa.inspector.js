@@ -1116,7 +1116,7 @@ function(bayContent, bayConfig) {
     bay = TP.tpelem('<sherpa:inspectoritem/>');
 
     //  NOTE: We use setRawContent() here to avoid compiling twice. The content
-    //  will be compiled when it, along with it's item, is added to the
+    //  will be processed when it, along with it's item, is added to the
     //  inspector's overall container.
     bay.setRawContent(TP.wrap(bayContent));
 

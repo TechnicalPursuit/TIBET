@@ -102,7 +102,7 @@ function(aTagTypeName) {
         //  Iterate over all of the found instances, create an empty tag with
         //  the created tag name and replace the tofu with it. This will cause
         //  the new tag to replace this empty tag version of itself with either
-        //  compiled or templated content.
+        //  computed or templated content.
         allTofus.forEach(
                 function(tofuTPElem) {
 

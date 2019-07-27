@@ -957,7 +957,7 @@ Cmd.prototype.verifyDNA = function() {
         return 1;
     }
 
-    //  DNA can be entered as 'typename' (CompiledTag) but we convert to
+    //  DNA can be entered as 'typename' (ComputedTag) but we convert to
     //  lowercase to normalize for directory use.
     dna = dna.toLowerCase();
 

@@ -1736,7 +1736,7 @@ function(firstPath, secondPath, filePath) {
      *     to the second path. In essence, what path would you have to append to
      *     the secondPath to acquire the resource defined by the first path.
      * @description This method is a core method for helping stored files remain
-     *     "relocatable". When storing TIBET metadata or compiled pages their
+     *     "relocatable". When storing TIBET metadata or processed pages their
      *     internal references are automatically adjusted to relative paths
      *     using this routine. For example, given a path of ~lib_cfg/tibet.xml
      *     as the firstPath and a path of ~lib_dat as the secondPath we'd
@@ -1881,7 +1881,7 @@ function(firstPath, secondPath, filePath) {
     //  now for the other common cases, which hopefully helps us keep this
     //  running a little faster
 
-    //  page compilation often wants a path relative to the cache directory
+    //  page processing often wants a path relative to the cache directory
     //  or similar structure, meaning the first path is a subset of the
     //  second path (~ vs. ~app_tmp) so check for that
     if (second.indexOf(first) !== TP.NOT_FOUND) {

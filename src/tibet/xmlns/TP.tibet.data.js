@@ -53,7 +53,7 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    //  If the element is being 'recast' (i.e. recompiled in place, usually when
+    //  If the element is being 'recast' (i.e. recomputed in place, usually when
     //  developing with the Sherpa), then just return here. We don't want to do
     //  any further processing to process/register/unregister data.
     if (tpElem.isRecasting()) {

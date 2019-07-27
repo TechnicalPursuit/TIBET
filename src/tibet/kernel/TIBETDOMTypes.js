@@ -2483,7 +2483,7 @@ function(targetPhase, targetPhaseList) {
      *     that's the last valid phase that doesn't require run-time canvas
      *     information)
      * @param {String} targetPhase A TIBET content "process phase" constant such
-     *     as 'Compile'.
+     *     as 'Includes'.
      * @param {String[]} targetPhaseList An optional list of phases to search
      *     for the target phase. The default is TP.shell.TSH.NOCACHE.
      * @returns {Boolean} True if the phase has been reached.
@@ -3637,7 +3637,7 @@ TP.dom.CollectionNode.Type.defineAttribute('originals');
 
 //  Whether or not we're already in the middle of 'transforming' a piece of
 //  markup. This helps avoid endless recursions between the 'transform' method
-//  and the 'compile' method/tag processing pipeline.
+//  and the 'compute' method/tag processing pipeline.
 TP.dom.CollectionNode.Inst.defineAttribute('$alreadyTransforming');
 
 TP.dom.CollectionNode.Inst.defineAttribute('preppedReps');
@@ -3654,7 +3654,7 @@ function(aDocument) {
      * @summary Refreshes instances on the supplied Document or the current
      *     uicanvas if aDocument isn't supplied.
      * @description This method attempts to obtain the node as it was originally
-     *     authored, recompile and re-awaken it.
+     *     authored, reprocess and re-awaken it.
      * @param {Document} aDocument The native document containing instances of
      *     this node to refresh instances of. This defaults to the document of
      *     the current uicanvas.
@@ -3682,7 +3682,7 @@ function(aDocument) {
 
     //  Compute the CSS query path, indicating that we want a path that will
     //  find both 'deep elements' (i.e. elements even under other elements of
-    //  this same type) and compiled representations of this element.
+    //  this same type) and processed representations of this element.
     cssQuery = this.getQueryPath(true, true);
 
     //  Default the document to the uicanvas's document. Note the 'true' here to
@@ -3759,8 +3759,8 @@ function(aDocument) {
 
                         oldParentNode = oldNode.parentNode;
 
-                        //  Compile the content, supplying the authored node as
-                        //  the 'alternate element' to compile. This is the core
+                        //  process the content, supplying the authored node as
+                        //  the 'alternate element' to process. This is the core
                         //  of 'recasting'. Note that awaken will happen via the
                         //  core TIBET Mutation Observer when the new node is
                         //  attached to the DOM. It will send a MutationAttach
@@ -3850,17 +3850,17 @@ function(sourceNode, mutatedNode, targetNode) {
     /**
      * @method $shouldAddToOriginals
      * @summary Whether or not the receiver should add a node that is being
-     *     compiled to its set of 'originals' - that is, nodes that need to be
-     *     updated if the receiver's compilation/templating output changes.
+     *     processed to its set of 'originals' - that is, nodes that need to be
+     *     updated if the receiver's computation/templating output changes.
      * @param {Node} sourceNode A clone of the original node that is
-     *     representing the receiver before 'compilation'/'transformation. The
+     *     representing the receiver before 'computation'/'transformation. The
      *     original version of this node is what will be added to the set of
      *     originals.
      * @param {Node} mutatedNode The original node after having been mutated by
-     *     compilation/transformation.
+     *     computation/transformation.
      * @param {Node} targetNode The target element that the receiver is a part
      *     of. This is useful when needing information about the visual surface
-     *     that the currently compiling element will be drawn into.
+     *     that the currently processing element will be drawn into.
      * @returns {Boolean} Whether or not to add the node to the receiver's set
      *     of 'originals'. The default is false.
      */
@@ -3906,7 +3906,7 @@ function(aRequest) {
     //  Element. If all that changes is a single Text node under the original
     //  Element, then elem and result will still be considered equal because the
     //  change will now be present in *both* of them (changing the Text node's
-    //  value by compiling it will change it in both because it's just the
+    //  value by processing it will change it in both because it's just the
     //  '.nodeValue' that's being updated).
     elemClone = TP.nodeCloneNode(elem);
 
@@ -4613,7 +4613,7 @@ function(anObject, aParamHash) {
             resultStr = resultStr.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
 */
             //  Now, we need to make sure that any constructs that were
-            //  generated into the result that need tag compilation are
+            //  generated into the result that need tag processing are
             //  processed.
 
             //  Try to create a real Node from the supplied content (passing
@@ -4665,7 +4665,7 @@ function(anObject, aParamHash) {
         resultStr = resultStr.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
 */
         //  Now, we need to make sure that any constructs that were generated
-        //  into the result that need tag compilation are processed.
+        //  into the result that need tag processing are processed.
 
         //  Try to create a real Node from the supplied content (passing 'true'
         //  to TP.nodeAsString() so that it will report parsing errors). If we
@@ -5247,7 +5247,7 @@ function() {
     /**
      * @method isRecasting
      * @summary Returns whether or not the receiver is considered to be in state
-     *     of 'recasting' - that is, TIBET's compilation and rendering machinery
+     *     of 'recasting' - that is, TIBET's processing and rendering machinery
      *     are re-processing it (probably in a Sherpa development session).
      * @returns {Boolean} Whether or not the receiver is empty.
      */

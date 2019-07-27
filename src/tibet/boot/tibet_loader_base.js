@@ -2810,7 +2810,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
      *     to the second path. In essence, what path would you have to append to
      *     the secondPath to acquire the resource defined by the first path.
      * @summary This method is a core method for helping stored files remain
-     *     "relocatable". When storing TIBET metadata or compiled pages their
+     *     "relocatable". When storing TIBET metadata or processed pages their
      *     internal references are automatically adjusted to relative paths
      *     using this routine. For example, given a path of ~lib_cfg/TIBET.xml
      *     as the firstPath and a path of ~lib_cfg as the secondPath we'd expect

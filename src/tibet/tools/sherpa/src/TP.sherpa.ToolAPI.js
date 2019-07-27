@@ -551,8 +551,8 @@ function(options) {
 
     generator = this.getNearestHaloGenerator(halo);
 
-    if (TP.isKindOf(generator, TP.tag.CompiledTag)) {
-        return TP.elem('<sherpa:compiledTagContextMenuContent/>');
+    if (TP.isKindOf(generator, TP.tag.ComputedTag)) {
+        return TP.elem('<sherpa:ComputedTagContextMenuContent/>');
     }
 
     return TP.elem('<sherpa:elementContextMenuContent/>');

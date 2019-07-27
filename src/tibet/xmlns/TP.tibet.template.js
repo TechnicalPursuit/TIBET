@@ -37,7 +37,7 @@ function(aRequest) {
     /**
      * @method populateCompilationAttrs
      * @summary Populates attributes on the element that is produced by this
-     *     type when it is compiled.
+     *     type when it is processed.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */

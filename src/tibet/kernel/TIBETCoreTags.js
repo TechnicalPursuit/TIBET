@@ -429,22 +429,22 @@ function(originalNode, mutatedNode, targetNode) {
     /**
      * @method $shouldAddToOriginals
      * @summary Whether or not the receiver should add a node that is being
-     *     compiled to its set of 'originals' - that is, nodes that need to be
-     *     updated if the receiver's compilation/templating output changes.
+     *     processed to its set of 'originals' - that is, nodes that need to be
+     *     updated if the receiver's computation/templating output changes.
      * @description For this type, the Window that the node is destined for (as
      *     supplied by the targetNode, if its available) will be queried for. If
      *     it is the same as the current UI canvas, then true is returned. If
      *     there is no targetNode or it's Window cannot be determined, then true
      *     will be returned.
      * @param {Node} sourceNode A clone of the original node that is
-     *     representing the receiver before 'compilation'/'transformation. The
+     *     representing the receiver before 'computation'/'transformation. The
      *     original version of this node is what will be added to the set of
      *     originals.
      * @param {Node} mutatedNode The original node after having been mutated by
-     *     compilation/transformation.
+     *     computation/transformation.
      * @param {Node} targetNode The target element that the receiver is a part
      *     of. This is useful when needing information about the visual surface
-     *     that the currently compiling element will be drawn into.
+     *     that the currently processing element will be drawn into.
      * @returns {Boolean} Whether or not to add the node to the receiver's set
      *     of 'originals'.
      */
@@ -462,23 +462,23 @@ function(originalNode, mutatedNode, targetNode) {
 });
 
 //  ========================================================================
-//  TP.tag.CompiledTag
+//  TP.tag.ComputedTag
 //  ========================================================================
 
 /**
- * @type {TP.tag.CompiledTag}
- * @summary A common supertype for compiled UI tags.
+ * @type {TP.tag.ComputedTag}
+ * @summary A common supertype for computed UI tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CustomTag.defineSubtype('TP.tag.CompiledTag');
+TP.tag.CustomTag.defineSubtype('TP.tag.ComputedTag');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.Type.defineMethod('defineMethod',
+TP.tag.ComputedTag.Type.defineMethod('defineMethod',
 function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
@@ -515,7 +515,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.Type.defineMethod('tagCompile',
+TP.tag.ComputedTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -569,7 +569,7 @@ function(aRequest) {
 
 TP.tag.CustomTag.defineSubtype('TP.tag.TemplatedTag');
 
-//  Mix in templating behavior, resolving compile in favor of templating.
+//  Mix in templating behavior, resolving computation in favor of templating.
 TP.tag.TemplatedTag.addTraits(TP.dom.TemplatedNode);
 
 TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
@@ -644,7 +644,7 @@ function(nodeSpec, varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('tibet:app');
+TP.tag.ComputedTag.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -751,7 +751,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('tibet:root');
+TP.tag.ComputedTag.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

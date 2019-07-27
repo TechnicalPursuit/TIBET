@@ -9,7 +9,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.tag.CompiledTag.defineSubtype('tmp.NotifierTestContent');
+TP.tag.ComputedTag.defineSubtype('tmp.NotifierTestContent');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

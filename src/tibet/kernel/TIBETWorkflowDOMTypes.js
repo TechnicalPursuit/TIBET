@@ -1191,14 +1191,14 @@ TP.tag.TagProcessor.Type.defineConstant(
     'TP.tag.DetachCompletePhase'
     ));
 
-//  A set of phase types used when 'compiling' or transforming content from one
+//  A set of phase types used when 'computing' or transforming content from one
 //  representation into another.
 TP.tag.TagProcessor.Type.defineConstant(
     'COMPILE_PHASES',
     TP.ac(
     'TP.tag.IncludesPhase',        //  xi:includes, CSS @imports, etc.
     'TP.tag.InstructionsPhase',    //  ?tibet, ?xsl-stylesheet, etc.
-    'TP.tag.PrecompilePhase',      //  conversion to compilable form
+    'TP.tag.PrecompilePhase',      //  conversion to computable form
     'TP.tag.CompilePhase',         //  tag/macro expansion (ACT)
     'TP.tag.TidyPhase',            //  move non-DTD content out of html:head
                                     //  etc.
