@@ -208,12 +208,11 @@ function(aRequest) {
             obj = target;
         }
 
-        //  If the target object is a type and the context was defaulted (to
-        //  'app' above), then we poke around a bit more to see if we should
-        //  actually be defaulting it to 'lib' instead.
-        if (TP.isType(obj) && contextDefaulted) {
+        //  If we defaulted the context and we've got an object to ask then ask
+        //  it to help correct any mistake in the defaulting.
+        if (contextDefaulted && TP.canInvoke(obj, 'get')) {
             nsRoot = obj.get('nsRoot');
-            if (nsRoot !== 'APP') {
+            if (TP.isValid(nsRoot) && nsRoot !== 'APP') {
                 context = 'lib';
                 options.atPut('context', context);
             }
