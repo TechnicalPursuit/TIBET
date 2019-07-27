@@ -557,7 +557,9 @@ CLI.beautify = function(obj) {
         str = obj;
     }
 
-    return beautify(str);
+    //  beautify does weird stuff to strings like urls...so only really run it
+    //  if it appears we've got some kind of JS structure to process.
+    return str.charAt(0) === '{' ? beautify(str) : str;
 };
 
 
