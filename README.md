@@ -38,7 +38,7 @@
 
 ---
 
-<img alt="Installation" src="./lib/media/disk.png" width="152px" height="128px"/>
+<img alt="Installation" src="./lib/media/disk.png" width="128px" height="128px"/>
 
 # Installation
 
@@ -202,7 +202,7 @@ href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-vers
 
 ---
 
-<img alt="Install via Docker" src="./lib/media/docker_logo.jpg" width="128px" height="128px"/>
+<img alt="Install via Docker" src="./lib/media/docker_logo.jpg" width="152px" height="128px"/>
 
 <a name="dockerinstall" href="#"></a>
 # Installing TIBET via Docker
