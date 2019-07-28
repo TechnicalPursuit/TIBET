@@ -4228,6 +4228,10 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
         nextElems,
 
+        primaryLoc,
+        originalLocationInfos,
+        matcherEntries,
+
         boundAttrCount,
 
         boundAttrNodes,
@@ -4407,8 +4411,62 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                 return false;
             });
 
-    primaryLocMatcher =
-        TP.rc(TP.regExpEscape(sigOrigin.getPrimaryLocation()));
+    //  Compute a RegExp matcher that will match the 'primary location' (i.e.
+    //  the rooted URI).
+
+    //  Grab the primary location of the signal origin.
+    primaryLoc = sigOrigin.getPrimaryLocation();
+
+    //  Grab the 'original location' info records that were computed by the
+    //  'bind:' namespace object when the content containing these binds was
+    //  loaded.
+    originalLocationInfos = this.getDocument().get('$originalLocationInfos');
+
+    matcherEntries = TP.ac();
+
+    //  Iterate over each location info record and build up a set of RegExp
+    //  expressions that will match the primary binding expressions in the
+    //  document. A location info record will be a pair that contains the
+    //  originally authored location in the first position and the concrete /
+    //  fully expanded URI in the last position.
+    originalLocationInfos.forEach(
+        function(infoPair) {
+
+            var originalLocation,
+                concreteLocation;
+
+            //  Grab the concrete location and test it against the primary
+            //  location obtained above. If they don't match, then we're not
+            //  going to match here at all.
+            concreteLocation = infoPair.last();
+            if (concreteLocation !== primaryLoc) {
+                return;
+            }
+
+            //  Grab the originally authored location. If it contains a
+            //  fragment, then we reset it by slicing off the fragment.
+            originalLocation = infoPair.first();
+            if (originalLocation.indexOf('#') !== TP.NOT_FOUND) {
+                originalLocation = originalLocation.slice(
+                                    0,
+                                    originalLocation.indexOf('#'));
+            }
+
+            //  If the two locations *don't* match, then we add a separate
+            //  RegExp expression entry for the originally authored location.
+            //  This allows us to match locations like relative and virtual
+            //  URIs.
+            if (originalLocation !== concreteLocation) {
+                matcherEntries.push(TP.regExpEscape(originalLocation));
+            }
+
+            //  Add a RegExp expression entry for the concrete location.
+            matcherEntries.push(TP.regExpEscape(concreteLocation));
+        });
+
+    //  Compute an 'alternating RegExp' that contains all of the computed
+    //  matcher entries.
+    primaryLocMatcher = TP.rc('(' + matcherEntries.join('|') + ')');
 
     //  If we have subscopes, filter out any non-roots (since we won't want
     //  nested subscopes appended here - each subscope root will find *all* of
