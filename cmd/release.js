@@ -17,14 +17,14 @@
 var CLI,
     Cmd;
 
-CLI = require('./_cli');
+CLI = require('../src/tibet/cli/_cli');
 
 //  ---
 //  Type Construction
 //  ---
 
 Cmd = function() { /* init */ };
-Cmd.Parent = require('./_cmd');
+Cmd.Parent = require('../src/tibet/cli/_cmd');
 Cmd.prototype = new Cmd.Parent();
 
 
