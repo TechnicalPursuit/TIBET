@@ -131,8 +131,10 @@ function(anElement) {
 
                                 //  If this is a URI String or is a barename
                                 //  (used for direct GUI-to-GUI binding), then
-                                //  it's one we're interested in.
-                                if (TP.isURIString(location) ||
+                                //  it's one we're interested in. Note here that
+                                //  we pass true to make matching a scheme
+                                //  optional.
+                                if (TP.isURIString(location, true) ||
                                     TP.regex.BARENAME.test(location)) {
                                     uriLocs.push(location);
                                 }
