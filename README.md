@@ -42,6 +42,8 @@
 
 # Installation
 
+#### To Install TIBET via Docker <a href="#dockerinstall">see the Docker instructions</a>.
+
 #### Check TIBET's <a href="#prereqs">prerequisites</a> first.
 
 We recommend using `nvm` to install Node.js v8+. You can confirm your nvm, node, and npm versions using:
@@ -191,6 +193,15 @@ If you see errors from any npm-based operations mentioning `cb() never called!`
 you'll want to perform the step above, or the appropriate step for your
 operating system. See <a
 href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
+
+---
+
+<img alt="Install via Docker" src="./lib/media/git_logo@2x.png" width="128px" height="128px"/>
+
+<a name="dockerinstall" href="#"></a>
+# Installing TIBET via Docker
+
+...coming soon...
 
 ---
 
