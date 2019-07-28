@@ -350,6 +350,8 @@ function(anElement) {
     var doc,
         tpDoc,
 
+        originalLocationInfos,
+
         observedLocations,
 
         uriLocs;
@@ -370,6 +372,11 @@ function(anElement) {
         tpDoc.set('$observedLocations', observedLocations);
     }
 
+    //  Gather up the 'original locations' to compute a binding attribute
+    //  matcher. This will be an Array of pairs, with the original location in
+    //  the first position and the fully expanded location in the last position.
+    originalLocationInfos = TP.ac();
+
     //  Gather any locations that are referenced in binding expressions under
     //  the supplied Element. These are the locations that the owner
     //  TP.dom.Document of the supplied Element will observe for FacetChange.
@@ -380,7 +387,9 @@ function(anElement) {
     //  is encountered, the TP.dom.Document is told to observe it.
     uriLocs.forEach(
         function(aLocation) {
-            var location,
+            var originalLocation,
+
+                location,
 
                 concreteURI,
                 concreteLoc,
@@ -388,6 +397,11 @@ function(anElement) {
                 resultObj,
 
                 uriCount;
+
+            //  Capture the original location before we modify it. We'll use
+            //  this later to compute a matcher used by the binding system to
+            //  find attributes with those URI values.
+            originalLocation = aLocation;
 
             //  Grab the location. If it's a barename (i.e. starting with '#'
             //  and followed by 1-n word characters), then that's a sugar for a
@@ -457,8 +471,16 @@ function(anElement) {
                 //  TP.dom.Document to observe it for FacetChange.
                 observedLocations.atPut(concreteLoc, 1);
                 tpDoc.observe(TP.uc(concreteLoc), 'FacetChange');
+
+                //  Push a pair that contains the original location and the
+                //  computed, concrete location.
+                originalLocationInfos.push(
+                    TP.ac(originalLocation, concreteLoc));
             }
         });
+
+    //  Put the original location information onto the Document.
+    tpDoc.set('$originalLocationInfos', originalLocationInfos);
 
     return;
 });

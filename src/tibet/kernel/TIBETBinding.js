@@ -600,6 +600,7 @@ TP.dom.DocumentNode.Inst.defineAttribute('$signalingBatchID');
 TP.dom.DocumentNode.Inst.defineAttribute('$repeatTemplates');
 TP.dom.DocumentNode.Inst.defineAttribute('$refreshedElements');
 TP.dom.DocumentNode.Inst.defineAttribute('$observedLocations');
+TP.dom.DocumentNode.Inst.defineAttribute('$originalLocationInfos');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
