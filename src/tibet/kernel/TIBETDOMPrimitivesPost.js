@@ -7255,6 +7255,13 @@ function(aString, defaultNS, shouldReport) {
     str = str.strip(TP.regex.XML_PREFIX);
     str = str.trim();
 
+    //  the regex which follows can be very temperamental, as in it'll wander
+    //  off for who knows how long if it's not at least closed markup.
+    if (str.first() !== '<' || str.last() !== '>') {
+        //  can't be a node string anyway...
+        return;
+    }
+
     //  wrap the element content (skipping comments, PIs, etc).
     str = str.replace(TP.regex.ALL_ELEM_MARKUP, '<wrap>$&</wrap>');
 
