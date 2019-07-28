@@ -29,10 +29,6 @@ RUN apt-get update \
 # devDependencies. We'll do that in the step below.
 RUN npm -g config set user root && npm install -g tibet
 
-# Some npm package leave around .git detritus that will cause problems when we
-# go to install the devDependencies. Clean that out.
-RUN rm -rf $(npm root -g)/tibet/node_modules/*/.git/
-
 # Run a script in TIBET's bin directory that will install of its
 # devDependencies.
 RUN $(npm root -g)/tibet/bin/tibet_develop_init.bash
