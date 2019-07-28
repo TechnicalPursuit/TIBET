@@ -159,10 +159,9 @@ relates to a topic.
 
 #### Install Node.js
 
-TIBET requires Node.js version 6+
+TIBET requires Node.js version 8+
 
-We also recommend using `npm` version `3.x` (some TIBET dependencies have shown
-installation glitches using version `5.x` of npm).
+We also recommend using `npm` version `5.x` or higher.
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
 your Node.js installation. Using `nvm` lets you install multiple versions of
