@@ -207,7 +207,68 @@ href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-vers
 <a name="dockerinstall" href="#"></a>
 # Installing TIBET via Docker
 
-...coming soon...
+Running TIBET via Docker is very easy. TIBET Docker container images exist on
+DockerHub and are prebuilt for ease of development.
+
+##### First, install the Docker software for your machine.
+
+To install Docker, follow the instructions at <a href="https://docs.docker.com">Docker Documentation</a>
+
+##### Then, install the TIBET Docker image from Dockerhub
+
+```
+docker pull technicalpursuit/tibet
+```
+
+Note that, this will pull the latest TIBET release (by default `docker pull`
+will pull the tag with the `:latest` tag). Therefore, the following is
+equivalent:
+
+```
+docker pull technicalpursuit/tibet:latest
+```
+
+Team TIBET follows a 'semver' release versioning scheme. You could also pull any
+one of the following:
+
+```
+docker pull technicalpursuit/tibet:5
+OR
+docker pull technicalpursuit/tibet:5.0
+OR
+docker pull technicalpursuit/tibet:5.0.0
+```
+
+##### Instantiate a Docker container from the TIBET Docker image
+
+Create a Docker container and execute it by running the TIBET Docker image. Note
+that, inside of the TIBET Docker container, port 1407 (the traditional TIBET
+port) is exposed. To execute the environment and expose the port into your host
+environment, execute the following:
+
+```
+docker run -i -p 127.0.0.1:1407:1407/tcp -t technicalpursuit/tibet
+```
+
+You are now inside of the Docker environment, inside of the home directory of
+the 'developer' user that the TIBET Docker image created for you, ready to start
+TIBET development!
+
+After you create your TIBET project and build it (see instructions later on how
+to do that), you can access the TIBET Data Server running in your Docker
+container by going to this address in a browser in your host environment:
+
+```
+http://127.0.0.01:1407
+```
+
+***NOTE*** Be aware that Docker does **NOT** preserve the environment after you
+exit the container (by executing `exit` from the shell). Any work you've done in
+the container will be lost!!!
+
+Therefore, you need to use Docker to either mount a volume or use bind mounts to
+persistent your TIBET project. Follow the instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and
+<a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>
 
 ---
 
