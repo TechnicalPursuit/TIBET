@@ -1,0 +1,55 @@
+# Start with Node 10.X and the Debian Linux 'Stretch Slim' image.
+FROM node:10.16.0-stretch-slim
+
+# Grab the latest package definitions for apt-get
+RUN apt-get update
+
+# Add git because some of TIBET's npm packages come from TPI forks of Git
+# packages on Github (force 'yes' or otherwise Docker can't complete building
+# the package.
+RUN apt-get -y install git-core
+
+# Add the prerequisites for Puppeteer.
+RUN apt-get update \
+     # Install latest chrome dev package, which installs the necessary libs to
+     # make the bundled version of Chromium that Puppeteer installs work.
+     && apt-get install -y wget --no-install-recommends \
+     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+     && apt-get update \
+     && apt-get install -y google-chrome-unstable --no-install-recommends \
+     && rm -rf /var/lib/apt/lists/* \
+     && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
+     && chmod +x /usr/sbin/wait-for-it.sh
+
+# Force npm to set the user to root and install TIBET *globally*. Note that
+# forcing the npm user to be root solves multiple issues when installing npm
+# packages as the root user, which is what we are until the USER command below.
+# Also note that, because TIBET is a global package, it won't install TIBET's
+# devDependencies. We'll do that in the step below.
+RUN npm -g config set user root && npm install -g tibet
+
+# Some npm package leave around .git detritus that will cause problems when we
+# go to install the devDependencies. Clean that out.
+RUN rm -rf $(npm root -g)/tibet/node_modules/*/.git/
+
+# Run a script in TIBET's bin directory that will install of its
+# devDependencies.
+RUN $(npm root -g)/tibet/bin/tibet_develop_init.bash
+
+# Add the non-root 'developer' user.
+RUN useradd -ms /bin/bash developer
+
+# cd into the 'developer' user's home directory.
+WORKDIR /home/developer
+
+# Switch to the 'developer' user.
+USER developer
+
+# Expose TIBET's favorite port :-). The container environment will map this port
+# to whatever port it wants to, but by default the TDS listens on this port so
+# exposing this port makes it easy.
+EXPOSE 1407
+
+# Set an entrypoint to bash and we're ready to go!
+ENTRYPOINT /bin/bash
