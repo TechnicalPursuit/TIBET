@@ -202,7 +202,7 @@ href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-vers
 
 ---
 
-<img alt="Install via Docker" src="./lib/media/git_logo@2x.png" width="128px" height="128px"/>
+<img alt="Install via Docker" src="./lib/media/docker_logo.jpg" width="128px" height="128px"/>
 
 <a name="dockerinstall" href="#"></a>
 # Installing TIBET via Docker
