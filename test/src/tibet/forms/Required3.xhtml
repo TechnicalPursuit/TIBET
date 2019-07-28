@@ -27,9 +27,9 @@
         <codenum xmlns=""/>
     </tibet:data>
 
-    <tibet:content name="TP.test.SomeXMLCodeData" baseType="TP.core.XMLContent" schema="~lib_test/src/tibet/forms/Validation_Test_Types.xsd">
+    <tibet:type name="TP.test.SomeXMLCodeData" baseType="TP.core.XMLContent" schema="~lib_test/src/tibet/forms/Validation_Test_Types.xsd">
         <tibet:aspect name="codenum" value="number(./codenum/text())" dataType="test:XMLCodeNumber" required="true"/>
-    </tibet:content>
+    </tibet:type>
 
 </head>
 
@@ -39,7 +39,7 @@
 
     <br/>
     <br/>
-    This test sets up an XHTML 'input' element, bound to an underlying data model (expressed in XML) defined in the test code. It also uses a &lt;tibet:content&gt; element to define a content type for validation purposes, which has a 'schema' attribute used to import data type schema definitions.
+    This test sets up an XHTML 'input' element, bound to an underlying data model (expressed in XML) defined in the test code. It also uses a &lt;tibet:type&gt; element to define a content type for validation purposes, which has a 'schema' attribute used to import data type schema definitions.
     <br/>
     <br/>
 

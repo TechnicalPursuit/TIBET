@@ -26,7 +26,7 @@
 
     <tibet:data id="Validation2Data" name="urn:tibet:Validation2_data" makestructures="true" contentType="TP.test.Validation2Data"/>
 
-    <tibet:content name="TP.test.Validation2Data" baseType="TP.core.JSONContent">
+    <tibet:type name="TP.test.Validation2Data" baseType="TP.core.JSONContent">
         <tibet:aspect name="AlphaOnly" value="$.alphaval" dataType="TP.tibet.alpha"/>
         <tibet:aspect name="AlphaNum" value="$.alphanumval" dataType="TP.tibet.alphanum"/>
         <tibet:aspect name="Password" value="$.passwordval" dataType="TP.tibet.password"/>
@@ -57,7 +57,7 @@
         <tibet:aspect name="NEDriversLicense" value="$.nelicensenumval" dataType=""/>
         <tibet:aspect name="MEDriversLicense" value="$.melicensenumval" dataType=""/>
         <tibet:aspect name="MTDriversLicense" value="$.mtlicensenumval" dataType=""/>
-    </tibet:content>
+    </tibet:type>
 
 </head>
 

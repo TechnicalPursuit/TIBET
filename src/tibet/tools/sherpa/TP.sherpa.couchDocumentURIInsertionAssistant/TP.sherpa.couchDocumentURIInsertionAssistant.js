@@ -297,10 +297,10 @@ function(anObject) {
                         var newContentElem;
 
                         newContentElem =
-                            TP.elem('<tibet:content' +
+                            TP.elem('<tibet:type' +
                                     ' name="' + localID + '"' +
                                     ' baseType="TP.core.JSONContent"' +
-                                    ' schema="' + schemaFile + '"');
+                                    ' schema="' + schemaFile + '"/>');
 
                         TP.nodeInsertBefore(
                             newElem, newContentElem, newLoadServiceElem, false);

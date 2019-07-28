@@ -151,7 +151,7 @@
 
     <script src="tibet/xmlns/TP.tibet.group.js"/>
     <script src="tibet/xmlns/TP.tibet.data.js"/>
-    <script src="tibet/xmlns/TP.tibet.content.js"/>
+    <script src="tibet/xmlns/TP.tibet.type.js"/>
     <script src="tibet/xmlns/TP.tibet.service.js"/>
     <script src="tibet/xmlns/TP.tibet.style.js"/>
     <script src="tibet/xmlns/TP.tibet.template.js"/>

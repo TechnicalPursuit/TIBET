@@ -540,7 +540,7 @@ function(anObj) {
     //  TIBET tags
     typesObj.push(TP.GROUPING_PREFIX + ' - tibet tags');
     typeData = TP.ac(
-                TP.tibet.content,
+                TP.tibet.type,
                 TP.tibet.data,
                 TP.tibet.service);
     typeData = typeData.collect(

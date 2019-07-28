@@ -9,15 +9,13 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tibet.content}
- * @summary A subtype of TP.dom.ElementNode that implements a way of describing
- *     a 'content type', along with its attendant data types and aspect
- *     mappings, in markup.
+ * @type {TP.tibet.type}
+ * @summary A custom tag that implements a way of describing a TIBET type
  */
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.defineSubtype('tibet:content');
+TP.dom.ElementNode.defineSubtype('tibet:type');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -27,7 +25,7 @@ TP.dom.ElementNode.defineSubtype('tibet:content');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tibet.content.Type.defineMethod('tagAttachDOM',
+TP.tibet.type.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
