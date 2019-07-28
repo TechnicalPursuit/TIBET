@@ -70,6 +70,13 @@ TIBET should be installed globally using `npm install -g`:<br/>
 npm install -g tibet
 ```
 
+And TIBET's developer dependencies:
+
+```bash
+$(npm root -g)/tibet/bin/tibet_develop_init.bash
+```
+
+
 Initial installation process can take several minutes depending on the speed of
 your network connection and the particular version being installed. Be patient
 :).
