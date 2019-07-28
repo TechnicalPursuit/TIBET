@@ -38,7 +38,7 @@
 
 ---
 
-<img alt="Installation" src="./lib/media/disk.png" width="128px" height="128px"/>
+<img alt="Installation" src="./lib/media/disk.png" width="152px" height="128px"/>
 
 # Installation
 
