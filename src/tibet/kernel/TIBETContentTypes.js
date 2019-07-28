@@ -5744,6 +5744,16 @@ function(targetObj, varargs) {
         data = targetObj.get('data');
     }
 
+    if (TP.notValid(data)) {
+        //  unable to query - there is no data
+        TP.ifWarn() ?
+            TP.warn(TP.annotate(
+                this,
+                'Null data value. Unable to get value for path: ' + path)) : 0;
+
+        return null;
+    }
+
     executedPaths = TP.path.AccessPath.$getExecutedPaths().atPutIfAbsent(
                     TP.id(targetObj),
                     TP.hc());
