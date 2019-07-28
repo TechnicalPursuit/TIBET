@@ -42,7 +42,7 @@ function(anObject, schemeOptional) {
     }
 
     if (schemeOptional) {
-        return TP.regex.URI_STRICT.test(anObject) &&
+        return TP.regex.URI_LIKELY.test(anObject) &&
             !TP.regex.HAS_LINEBREAK.test(anObject);
     }
 
