@@ -6,7 +6,7 @@ RUN apt-get update
 
 # Add git because some of TIBET's npm packages come from TPI forks of Git
 # packages on Github (force 'yes' or otherwise Docker can't complete building
-# the package.
+# the package).
 RUN apt-get -y install git-core
 
 # Add the prerequisites for Puppeteer.
