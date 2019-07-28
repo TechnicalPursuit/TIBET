@@ -44,6 +44,7 @@
 
 #### To Install TIBET via Docker <a href="#dockerinstall">see the Docker instructions</a>.
 
+
 #### Check TIBET's <a href="#prereqs">prerequisites</a> first.
 
 We recommend using `nvm` to install Node.js v8+. You can confirm your nvm, node, and npm versions using:
@@ -264,11 +265,9 @@ http://127.0.0.01:1407
 
 ***NOTE*** Be aware that Docker does **NOT** preserve the environment after you
 exit the container (by executing `exit` from the shell). Any work you've done in
-the container will be lost!!!
-
-Therefore, you need to use Docker to either mount a volume or use bind mounts to
-persistent your TIBET project. Follow the instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and
-<a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>
+the container will be lost!!! Therefore, you need to use Docker to either mount
+a volume or use bind mounts to persist your TIBET project. Follow the
+instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and <a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>
 
 ---
 
@@ -355,8 +354,8 @@ components are **fully-supported on MacOS and common Linux variants**.
 
 TIBET's command line and server components are **being ported to Windows**. In
 the meantime we recommend using Docker or similar container technology if you
-are a Windows-based developer. Pre-built Docker images will be available in an
-upcoming release.
+are a Windows-based developer. Pre-built Docker images are available now. See
+above.
 
 
 ###### TIBET Client / Sherpa
