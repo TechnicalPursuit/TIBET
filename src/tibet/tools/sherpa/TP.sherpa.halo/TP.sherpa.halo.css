@@ -171,7 +171,7 @@ sherpa|halo > sherpa|breadcrumb {
     pointer-events: auto;
 }
 
-div[busyFor="SherpaHalo"] {
+div[busyfor="SherpaHalo"] {
 
     z-index: var(--tibet-HUD-TIER);
 }

@@ -69,7 +69,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 */
 
 /* In its natural state, the busy is 'closed' */
-[busyFor] {
+[busyfor] {
 
     position: absolute;
 
@@ -83,12 +83,12 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     z-index: var(--tibet-CURTAIN-TIER);
 }
 
-[busyFor]:not([pclass|hidden]) {
+[busyfor]:not([pclass|hidden]) {
 
     display: flex;
 }
 
-[busyFor] > .busyImage {
+[busyfor] > .busyImage {
 
     position: absolute;
 
@@ -106,7 +106,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     background-size: contain;
 }
 
-[busyFor] > .busyMessage {
+[busyfor] > .busyMessage {
 
     position: absolute;
 

@@ -2488,12 +2488,12 @@ function(anElement) {
         return busyElement;
     }
 
-    //  Create a new 'div' element and set the 'busyFor' attribute on it.
+    //  Create a new 'div' element and set the 'busyfor' attribute on it.
     //  This allows users to override the default styling provided by TIBET
     //  so that they can customize their own busy element look and feel.
     busyElement = anElement.ownerDocument.createElement('div');
     TP.elementSetAttribute(busyElement,
-                            'busyFor',
+                            'busyfor',
                             TP.elementGetAttribute(anElement, 'id'));
 
     //  Create a 'busy background' element that will have the busy image set as

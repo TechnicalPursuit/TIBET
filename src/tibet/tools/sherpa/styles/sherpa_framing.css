@@ -963,7 +963,7 @@ sherpa|hud:not([pclass|closed]) #center {
  * Busy layer styling           *
  * ---------------------------- */
 
-div[busyFor="content"] {
+div[busyfor="content"] {
 
     background-color: #444;
 
@@ -972,7 +972,7 @@ div[busyFor="content"] {
     border-radius: 3px;
 }
 
-div[busyFor="content"] > .busyImage {
+div[busyfor="content"] > .busyImage {
 
     left: auto;
 
@@ -983,7 +983,7 @@ div[busyFor="content"] > .busyImage {
     margin-top: -50px;
 }
 
-div[busyFor="content"] > .busyMessage {
+div[busyfor="content"] > .busyMessage {
 
     margin-top: 0;
 
