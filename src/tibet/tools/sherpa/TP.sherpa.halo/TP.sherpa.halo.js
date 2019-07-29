@@ -1451,23 +1451,23 @@ function(newTargetTPElem, shouldUnhide) {
 
     this.set('haloRect', theRect);
 
-    this.removeAttribute('nonDisplayedTarget');
-    this.removeAttribute('descendantOf');
+    this.removeAttribute('no-display');
+    this.removeAttribute('ancestor');
 
     if (TP.isValid(newTargetTPElem)) {
 
         if (!newTargetTPElem.isDisplayed()) {
-            this.setAttribute('nonDisplayedTarget', 'true');
+            this.setAttribute('no-display', 'true');
 
             newTargetTPDoc = newTargetTPElem.getDocument();
 
             if (newTargetTPElem === newTargetTPDoc.getHead() ||
                 newTargetTPDoc.getHead().contains(
                             newTargetTPElem, TP.IDENTITY)) {
-                this.setAttribute('descendantOf', 'head');
+                this.setAttribute('ancestor', 'head');
             } else if (newTargetTPDoc.getBody().contains(
                             newTargetTPElem, TP.IDENTITY)) {
-                this.setAttribute('descendantOf', 'body');
+                this.setAttribute('ancestor', 'body');
             }
         }
     }
