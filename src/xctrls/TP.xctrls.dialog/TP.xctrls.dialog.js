@@ -74,7 +74,7 @@ TP.xctrls.dialog.Inst.defineAttribute('curtain',
     ).set('fallbackWith', function(tpTarget) {
         return TP.xctrls.curtain.getSystemCurtainFor(
             tpTarget.getDocument(),
-            tpTarget.getAttribute('curtainID'));
+            tpTarget.getAttribute('curtain'));
     }));
 
 TP.xctrls.dialog.Inst.defineAttribute('curtainWasShowing');
@@ -318,7 +318,7 @@ function(info) {
                 //  attribute if appropriate.
                 dialogElem = TP.elem(
                                 '<xctrls:dialog id="' + dialogID + '"' +
-                                ' curtainID="systemCurtain"/>');
+                                ' curtain="systemCurtain"/>');
                 if (isModal) {
                     TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
                 }
