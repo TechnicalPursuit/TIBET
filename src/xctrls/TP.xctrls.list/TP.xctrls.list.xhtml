@@ -5,7 +5,7 @@
         tibet:nomutationtracking="true"
         tibet:opaque="bind">
     <div tibet:assembly="xctrls:list" class="scroller">
-        <tibet:group wrapWhen="true" id="{{$SOURCE.(@id)}}_group">
+        <tibet:group wrapfocus="true" id="{{$SOURCE.(@id)}}_group">
             <xctrls:content tibet:pelem="choices" class="noselect"/>
         </tibet:group>
         {{$SOURCE.(./*[local-name() = 'template'])}}

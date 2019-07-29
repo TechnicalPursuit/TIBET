@@ -17,7 +17,7 @@
             <button class="inserter" on:click="{signal: InsertItem, origin: deploy_assistant_PropertyEntries, payload: {source: 'urn:tibet:deploy_prop_data_blank', copy: true}}"></button>
         </div>
         <div class="propertiesGroup">
-            <tibet:group wrapWhen="true" id="deploy_assistant_PropertyEntries" bind:repeat="helperProps">
+            <tibet:group wrapfocus="true" id="deploy_assistant_PropertyEntries" bind:repeat="helperProps">
                 <input type="text" bind:io="{value: propName}" tabindex="0"/>
                 <input type="text" bind:io="{value: propValue}" tabindex="0"/>
                 <span class="deleter" on:click="{signal: DeleteItem, origin: deployAssistant_PropertyEntries, payload: {index: TP.TARGET}}"/>

@@ -40,7 +40,7 @@
         </div>
 
         <div class="signalPayloadGroup" bind:scope="urn:tibet:signalConnectionAssistant_source#jpath($.info)">
-            <tibet:group wrapWhen="true" id="signalConnectionAssistant_PayloadEntries" bind:repeat="signalPayload">
+            <tibet:group wrapfocus="true" id="signalConnectionAssistant_PayloadEntries" bind:repeat="signalPayload">
                 <input type="text" bind:io="{value: payloadEntryName}" tabindex="0"/>
                 <input type="text" bind:io="{value: payloadEntryValue}" tabindex="0"/>
                 <span class="deleter" on:click="{signal: DeleteItem, origin: signalConnectionAssistant_PayloadEntries, payload: {index: TP.TARGET}}"/>

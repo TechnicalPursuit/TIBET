@@ -65,7 +65,7 @@
     <br/>
     This test sets up 4 focusable elements in multiple nested groups.
     <br/>
-    The 'goo' group has a 'wrapWhen' attribute.
+    The 'goo' group has a 'wrapfocus' attribute.
     <br/>
     Field #7 (in the 'boo' group) has a tabindex value of '1' and field #8 (in the 'foo' group) has a tabindex value of '2'. And field #3 (not in any group) also has a tabindex value of '2'. Note that, in TIBET, tabindex values are processed 'per group', except upon page load. This means that the first focused field upon page load will be field #3. But when the 'goo' group is entered, field #8 will be focused and when the 'boo' group is entered, field #7 will be focused.
     <br/>
@@ -74,14 +74,14 @@
     <br/>
     Home key navigates to the first field *in the first group*.<br/>
     End key navigates to the last field *in the last group*.<br/>
-    Tab key navigates 'forward' to the next field and will *not* wrap around *at the group level* on the 'foo' group (since it has no 'wrapWhen' attribute), but will wrap around on the 'goo' group (since it has a 'wrapWhen' attribute).<br/>
-    Shift-Tab key navigates 'backward' to the previous field and will *not* wrap around *at the group level* on the 'foo' group (since it has no 'wrapWhen' attribute), but will wrap around on the 'goo' group (since it has a 'wrapWhen' attribute)<br/>
-    Ctrl-Tab key navigates 'forward' to the next field *in the same or next group* and will *ignore* any 'wrapWhen' attributes.<br/>
-    Shift-Ctrl-Tab key navigates 'backward' to the previous field *in the same or last group* and will *ignore* any 'wrapWhen' attributes.<br/>
+    Tab key navigates 'forward' to the next field and will *not* wrap around *at the group level* on the 'foo' group (since it has no 'wrapfocus' attribute), but will wrap around on the 'goo' group (since it has a 'wrapfocus' attribute).<br/>
+    Shift-Tab key navigates 'backward' to the previous field and will *not* wrap around *at the group level* on the 'foo' group (since it has no 'wrapfocus' attribute), but will wrap around on the 'goo' group (since it has a 'wrapfocus' attribute)<br/>
+    Ctrl-Tab key navigates 'forward' to the next field *in the same or next group* and will *ignore* any 'wrapfocus' attributes.<br/>
+    Shift-Ctrl-Tab key navigates 'backward' to the previous field *in the same or last group* and will *ignore* any 'wrapfocus' attributes.<br/>
     PageUp key navigates to the first field *in the same group*.<br/>
     PageDown key navigates to the last field *in the same group*.<br/>
-    Ctrl-PageUp key navigates to the first field *in the previous group* (ignoring any 'wrapWhen' attributes).<br/>
-    Ctrl-PageDown key navigates to the first field *in the next group* (ignoring any 'wrapWhen' attributes).<br/>
+    Ctrl-PageUp key navigates to the first field *in the previous group* (ignoring any 'wrapfocus' attributes).<br/>
+    Ctrl-PageDown key navigates to the first field *in the next group* (ignoring any 'wrapfocus' attributes).<br/>
     <br/>
     <br/>
     These fields are in the 'foo' group:
@@ -100,7 +100,7 @@
     <br/>
     These fields are in the 'goo' group:
     <br/>
-    <tibet:group id="gooGroup" wrapWhen="true">
+    <tibet:group id="gooGroup" wrapfocus="true">
         Focus test field #4: <tmp:testElem id="focusTestElem4" tabindex="0"/>
         <br/>
         Focus test field #5: <tmp:testElem id="focusTestElem5" tabindex="0"/>
