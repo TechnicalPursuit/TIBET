@@ -771,8 +771,8 @@ function() {
 
     //  If the content element hasn't been 'converted to being the tools layer',
     //  do so now and show it.
-    if (!contentTPElem.hasAttribute('isToolsLayer')) {
-        contentTPElem.setAttribute('isToolsLayer', 'true');
+    if (!contentTPElem.hasAttribute('toolslayer')) {
+        contentTPElem.setAttribute('toolslayer', 'true');
         contentTPElem.show();
     }
 

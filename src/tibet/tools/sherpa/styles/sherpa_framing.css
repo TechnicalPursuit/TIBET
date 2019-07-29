@@ -189,7 +189,7 @@ li.CodeMirror-hint-active {
 /* Misc content styles, etc */
 
 /* Used when the 'content' div is converted to the tools layer */
-#content[isToolsLayer] {
+#content[toolslayer] {
 
     top: 0;
     right: 0;
@@ -204,7 +204,7 @@ li.CodeMirror-hint-active {
     pointer-events: none;
 }
 
-#content[isToolsLayer][activetool]:not([activetool="SherpaHalo"]) {
+#content[toolslayer][activetool]:not([activetool="SherpaHalo"]) {
 
     background: rgba(0, 0, 0, 0.15) !important;
 }
@@ -284,32 +284,32 @@ li.CodeMirror-hint-active {
 /* Resizing the content when HUD drawers open (but only when its been converted
     to the tools layer) */
 
-#background.edge-north-open #content[isToolsLayer] {
+#background.edge-north-open #content[toolslayer] {
 
     top: calc(var(--sherpa-drawer-north-open-height) + var(--sherpa-toolslayer-offset));
 }
 
-#background:not(.edge-north-open) #content[isToolsLayer] {
+#background:not(.edge-north-open) #content[toolslayer] {
 
     top: calc(var(--sherpa-drawer-north-closed-height) + var(--sherpa-toolslayer-offset));
 }
 
-#background.edge-south-open #content[isToolsLayer] {
+#background.edge-south-open #content[toolslayer] {
 
     bottom: calc(var(--sherpa-drawer-south-open-height) + var(--sherpa-toolslayer-offset));
 }
 
-#background:not(.edge-south-open) #content[isToolsLayer] {
+#background:not(.edge-south-open) #content[toolslayer] {
 
     bottom: calc(var(--sherpa-drawer-south-closed-height) + var(--sherpa-toolslayer-offset));
 }
 
-#background.edge-west-open #content[isToolsLayer] {
+#background.edge-west-open #content[toolslayer] {
 
     left: calc(var(--sherpa-drawer-west-open-width) + var(--sherpa-toolslayer-offset));
 }
 
-#background.edge-east-open #content[isToolsLayer] {
+#background.edge-east-open #content[toolslayer] {
 
     right: calc(var(--sherpa-drawer-east-open-width) + var(--sherpa-toolslayer-offset));
 }
@@ -624,12 +624,12 @@ sherpa|methodeditor[class~="tabbed"] {
         min-width: var(--sherpa-world-SBS-width);
     }
 
-    #background.edge-east-open #content[isToolsLayer] {
+    #background.edge-east-open #content[toolslayer] {
 
         right: calc(var(--sherpa-consoleoutput-SBS-width) + var(--sherpa-drawer-east-open-width));
     }
 
-    #content[isToolsLayer] {
+    #content[toolslayer] {
 
         min-width: var(--sherpa-world-SBS-width);
     }
