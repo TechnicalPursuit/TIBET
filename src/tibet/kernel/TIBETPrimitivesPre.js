@@ -2415,6 +2415,19 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     realMethod = value;
 
+    //  If we've been through here once already for this Function instance, then
+    //  that means that we're aliasing this method to another slot. We don't
+    //  reinstrument the Function instance representing the value here with
+    //  metadata for the alias - we let it keep all of the naming, load
+    //  information, etc. of the real method, since that's where and how the
+    //  method is truly defined.
+    if (realMethod[TP.DISPLAY] !== undefined) {
+        TP.defineSlot(target, name, realMethod,
+                        TP.METHOD, track, realMethod[TP.DESCRIPTOR]);
+
+        return realMethod;
+    }
+
     if (!TP.isCallable(realMethod) ||
         !TP.isCallable(realMethod.asMethod)) {
 
