@@ -6091,8 +6091,8 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
      *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
-     *     without errors for deprecated use of defineMethod for handlers.
+     * @param {Boolean} [$isHandler=false] True will cause the definition to
+     *     pass without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
@@ -6344,8 +6344,8 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
      *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
-     *     without errors for deprecated use of defineMethod for handlers.
+     * @param {Boolean} [$isHandler=false] True will cause the definition to
+     *     pass without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
