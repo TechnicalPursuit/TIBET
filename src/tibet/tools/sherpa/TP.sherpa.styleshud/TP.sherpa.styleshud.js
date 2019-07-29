@@ -126,7 +126,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -166,11 +166,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
@@ -179,11 +179,11 @@ function(aSignal) {
     aSignal.at('trigger').preventDefault();
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     if (itemData.at(0) === '[cascaded]') {
         TP.byId('SherpaAdjuster', this.getNativeDocument()).showAdjusterTile();
@@ -276,7 +276,7 @@ function(aSignal) {
     var contextMenuSignal,
 
         targetElem,
-        indexInData;
+        dataIndex;
 
     //  Although we get the 'item selected' signal as a parameter, what we
     //  really want was the signal that triggered the opening of the context
@@ -290,19 +290,19 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Inspect the entry at the index.
-    this.inspectStyleEntryAt(indexInData);
+    this.inspectStyleEntryAt(dataIndex);
 
     return this;
 });
@@ -424,7 +424,7 @@ function(aTPElement) {
                 //  Get the currently displayed lozenge given that the peerID
                 //  should be the same as it was for the old lozenge.
                 currentItemTPElem = TP.byCSSPath(
-                            '> ul li[indexInData="' + currentRuleIndex + '"]',
+                            '> ul li[dataindex="' + currentRuleIndex + '"]',
                             this.getNativeNode(),
                             true);
 
@@ -659,7 +659,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -688,11 +688,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
@@ -701,11 +701,11 @@ function(aSignal) {
     aSignal.at('trigger').preventDefault();
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     loc = itemData.at(0);
     if (TP.isEmpty(loc) || loc === '[cascaded]') {
@@ -799,7 +799,7 @@ function(enterSelection) {
                     return true;
                 }
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 if (d[1] !== 'spacer') {
                     return i / 2;
@@ -941,7 +941,7 @@ function(updateSelection) {
                     return true;
                 }
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 if (d[1] !== 'spacer') {
                     return i / 2;
@@ -1177,7 +1177,7 @@ function(aSignal) {
      */
 
     var targetElem,
-        indexInData;
+        dataIndex;
 
     //  Grab the target and make sure it's an 'selector' tile.
     targetElem = aSignal.getDOMTarget();
@@ -1185,19 +1185,19 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Inspect the entry at the index.
-    this.inspectStyleEntryAt(indexInData);
+    this.inspectStyleEntryAt(dataIndex);
 
     return this;
 });
@@ -1244,8 +1244,7 @@ function(aSignal) {
      */
 
     var targetElem,
-
-        indexInData;
+        dataIndex;
 
     //  Grab the target and make sure it's an 'selector' tile.
     targetElem = aSignal.getDOMTarget();
@@ -1253,18 +1252,18 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
-    this.set('$currentRuleIndex', indexInData);
+    this.set('$currentRuleIndex', dataIndex);
 
     this.render();
 
@@ -1334,7 +1333,7 @@ function(aSignal) {
     }
 
     //  Grab the index in the data from our lozenge.
-    index = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    index = TP.elementGetAttribute(targetElem, 'dataindex', true);
     if (TP.isEmpty(index)) {
         return this;
     }
@@ -1441,7 +1440,7 @@ function(aSignal) {
     var lockElem,
         parentListItem,
 
-        indexInData,
+        dataIndex,
         data,
         dataRecord,
 
@@ -1465,11 +1464,11 @@ function(aSignal) {
 
     //  Grab the index in our data that is represented by the lozenge item whose
     //  lock was clicked on
-    indexInData = TP.elementGetAttribute(parentListItem, 'indexInData', true);
-    indexInData = indexInData.asNumber();
+    dataIndex = TP.elementGetAttribute(parentListItem, 'dataindex', true);
+    dataIndex = dataIndex.asNumber();
 
     data = this.get('data');
-    dataRecord = data.at(indexInData);
+    dataRecord = data.at(dataIndex);
 
     selector = dataRecord.at(1);
 
@@ -1483,7 +1482,7 @@ function(aSignal) {
     for (i = 1; i < len; i++) {
 
         //  Don't check the rule that we are checking
-        if (i === indexInData) {
+        if (i === dataIndex) {
             continue;
         }
 
@@ -1511,7 +1510,7 @@ function(aSignal) {
     for (i = 1; i < len; i++) {
 
         //  Don't check the rule that we are checking
-        if (i === indexInData) {
+        if (i === dataIndex) {
             continue;
         }
 

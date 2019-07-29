@@ -154,7 +154,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -198,11 +198,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
@@ -211,11 +211,11 @@ function(aSignal) {
     aSignal.at('trigger').preventDefault();
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     peerID = itemData.at(0);
     sourceTPElem = TP.byId(peerID);
@@ -437,7 +437,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -460,20 +460,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     peerID = itemData.at(0);
     peerTPElem = TP.byId(peerID);
@@ -703,7 +703,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -731,20 +731,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     peerID = itemData.at(0);
     targetTPElem = TP.byId(peerID);
@@ -801,7 +801,7 @@ function(enterSelection) {
                     return true;
                 }
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 if (d[1] !== 'spacer') {
                     return (i / 2).floor();
@@ -939,7 +939,7 @@ function(updateSelection) {
                     return true;
                 }
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 if (d[1] !== 'spacer') {
                     return (i / 2).floor();
@@ -1025,7 +1025,7 @@ function(aSignal) {
 
     var targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -1045,20 +1045,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     peerID = itemData.at(0);
 

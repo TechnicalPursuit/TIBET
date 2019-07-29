@@ -469,7 +469,7 @@ function(enterSelection) {
                 //  attribute.
                 return null;
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 return i;
             }).text(
@@ -579,7 +579,7 @@ function(updateSelection) {
                 //  attribute.
                 return null;
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 return i;
             }).text(

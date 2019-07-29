@@ -268,7 +268,7 @@ function(aSourceTPElement) {
 
     //  Grab the index of the data from the source element and convert it to a
     //  Number.
-    dataIndex = TP.pick(aSourceTPElement, '@indexInData', Number);
+    dataIndex = TP.pick(aSourceTPElement, '@dataindex', Number);
 
     //  If we got a valid number, then grab the data that we computed when we
     //  drew the schema view.
@@ -659,7 +659,7 @@ function(aSignal) {
                 str = '<span class="jsonPropName"' +
                         ' sherpa:connectorvend="bindingsource"' +
                         ' sherpa:connectordatasource="inspectorEditor"' +
-                        ' indexInData="' + infoNum + '">' +
+                        ' dataindex="' + infoNum + '">' +
                         srcText.asEscapedXML() +
                         '</span>';
 

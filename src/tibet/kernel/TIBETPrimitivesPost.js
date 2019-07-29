@@ -5160,7 +5160,7 @@ function(anObject, varargs) {
      *          it a Number:
      *          <code>
      *          val = TP.wrap(document.body);
-     *          TP.pick(val, '@indexInData', Number);
+     *          TP.pick(val, '@dataindex', Number);
      *          <samp>42</samp>
      *          </code>
      * @example Obtain an attribute value from the parent node of a

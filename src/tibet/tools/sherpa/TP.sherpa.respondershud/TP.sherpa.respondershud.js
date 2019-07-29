@@ -137,7 +137,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -158,20 +158,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
@@ -212,7 +212,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -256,20 +256,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
@@ -502,7 +502,7 @@ function(aSignal) {
 
         targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -526,20 +526,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
@@ -633,7 +633,7 @@ function(aSignal) {
 
     var targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -653,20 +653,20 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     peerID = itemData.at(0);
 
@@ -809,7 +809,7 @@ function(aSignal) {
 
     var targetElem,
 
-        indexInData,
+        dataIndex,
 
         data,
         itemData,
@@ -824,11 +824,11 @@ function(aSignal) {
         return this;
     }
 
-    //  Get the value of the target's indexInData attribute.
-    indexInData = TP.elementGetAttribute(targetElem, 'indexInData', true);
+    //  Get the value of the target's dataindex attribute.
+    dataIndex = TP.elementGetAttribute(targetElem, 'dataindex', true);
 
-    //  No indexInData? Exit here.
-    if (TP.isEmpty(indexInData)) {
+    //  No dataIndex? Exit here.
+    if (TP.isEmpty(dataIndex)) {
         return this;
     }
 
@@ -837,11 +837,11 @@ function(aSignal) {
     aSignal.at('trigger').preventDefault();
 
     //  Convert to a Number.
-    indexInData = indexInData.asNumber();
+    dataIndex = dataIndex.asNumber();
 
     //  Grab our data and retrieve the entry Array from our data.
     data = this.get('data');
-    itemData = data.at(indexInData);
+    itemData = data.at(dataIndex);
 
     //  Resolve the type from the type name that will be at the second position
     //  in the Array.
@@ -1156,7 +1156,7 @@ function(enterSelection) {
                 //  attribute.
                 return null;
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 return i;
             }).text(
@@ -1195,7 +1195,7 @@ function(updateSelection) {
                 //  attribute.
                 return null;
             }).attr(
-            'indexInData',
+            'dataindex',
             function(d, i) {
                 return i;
             }).text(
@@ -1259,14 +1259,14 @@ function(aSignal) {
     //  user is highlighting.
     targetElem = aSignal.getDOMTarget();
 
-    //  If element doesn't have an 'indexInData' it's not something we can use.
-    if (!TP.elementHasAttribute(targetElem, 'indexInData')) {
+    //  If element doesn't have an 'dataindex' it's not something we can use.
+    if (!TP.elementHasAttribute(targetElem, 'dataindex')) {
         return this;
     }
 
     //  The peerID on the lozenge will indicate which element in the UI canvas
     //  it is representing. If we don't have one, we exit.
-    targetData = this.data.at(TP.elementGetAttribute(targetElem, 'indexInData'));
+    targetData = this.data.at(TP.elementGetAttribute(targetElem, 'dataindex'));
     if (TP.isEmpty(targetData)) {
         return this;
     }
