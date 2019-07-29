@@ -135,7 +135,7 @@ function() {
                 test.refute.hasAttribute(firstListItem, 'pclass:active');
 
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                // test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -158,7 +158,7 @@ function() {
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                // test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -202,7 +202,7 @@ function() {
                 test.refute.hasAttribute(firstListItem, 'pclass:active');
 
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                // test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -263,7 +263,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                // test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -282,7 +282,7 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                // test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -312,7 +312,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                // test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
             });
     });
 });

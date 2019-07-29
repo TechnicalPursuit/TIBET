@@ -115,7 +115,7 @@ function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+                // test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -138,7 +138,7 @@ function() {
                 test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+                // test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -179,7 +179,7 @@ function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
 
                 test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+                // test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -235,7 +235,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+                // test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -254,7 +254,7 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+                // test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -284,7 +284,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+                // test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
             });
     });
 });
