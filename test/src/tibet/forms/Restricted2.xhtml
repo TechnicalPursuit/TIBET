@@ -26,7 +26,7 @@
 
     <tibet:data id="Restricted2Data" name="urn:tibet:Restricted2_data" makestructures="true" contentType="TP.test.Restricted2Data"/>
 
-    <tibet:type name="TP.test.Restricted2Data" baseType="TP.core.JSONContent">
+    <tibet:type name="TP.test.Restricted2Data" base="TP.core.JSONContent">
         <tibet:aspect name="email1" value="$.email1" valid="$_ == $.email2"/>
         <tibet:aspect name="email2" value="$.email2" valid="$_ == $.email1"/>
 

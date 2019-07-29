@@ -67,16 +67,16 @@ function(aRequest) {
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
 
-    if (TP.isEmpty(supertypeName = elemTPNode.getAttribute('baseType'))) {
+    if (TP.isEmpty(supertypeName = elemTPNode.getAttribute('base'))) {
         return this.raise(
                     'TP.sig.InvalidParameter',
-                    'Couldn\'t find an attribute defining the baseType type');
+                    'Couldn\'t find an attribute defining the base type');
     }
 
     if (!TP.isType(supertype = TP.sys.getTypeByName(supertypeName))) {
         return this.raise(
                     'TP.sig.InvalidType',
-                    'Couldn\'t find the baseType type');
+                    'Couldn\'t find the base type');
     }
 
     if (TP.isEmpty(typeName = elemTPNode.getAttribute('name'))) {

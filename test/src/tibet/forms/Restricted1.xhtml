@@ -26,7 +26,7 @@
 
     <tibet:data id="Restricted1Data" name="urn:tibet:Restricted1_data" makestructures="true" contentType="TP.test.Restricted1Data"/>
 
-    <tibet:type name="TP.test.Restricted1Data" baseType="TP.core.JSONContent">
+    <tibet:type name="TP.test.Restricted1Data" base="TP.core.JSONContent">
         <tibet:aspect name="numatleast10" value="$.atleast10" valid="$_ >= 10 AND $_ &lt; 100"/>
         <tibet:aspect name="numatmost10" value="$.atmost10" valid="$_ <= 10"/>
         <tibet:aspect name="numfrom5to15" value="$.from5to15" valid="$_ >= 5 AND $_ <= 15"/>
