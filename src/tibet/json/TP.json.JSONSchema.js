@@ -117,7 +117,7 @@ function(aSchemaURI) {
      * @summary Loads a JSON schema from the supplied URI.
      * @param {TP.uri.URI} aSchemaURI The URI that the JSON schema resource is
      *     located at.
-     * @returns {TP.meta.json.JSONSchemaContent} The receiver.
+     * @returns {TP.meta.json.JSONSchema} The receiver.
      */
 
     var fetchParams,
@@ -157,7 +157,7 @@ function(tree, pojoObj) {
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
      * @param {Object[]} pojoObj The object to describe in the AST metadata.
-     * @returns {TP.meta.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchema} The receiver.
      */
 
     var results,
@@ -247,7 +247,7 @@ function(tree, pojoObj) {
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
      * @param {Object} pojoObj The object to describe in the AST metadata.
-     * @returns {TP.meta.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchema} The receiver.
      */
 
     var keys,
@@ -311,7 +311,7 @@ function(tree, pojoObj) {
      * @param {Object} tree The plain JavaScript object holding the metadata
      *     tree.
      * @param {Object} pojoObj The object to describe in the AST metadata.
-     * @returns {TP.meta.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchema} The receiver.
      */
 
     var schemaTypeName;
@@ -416,7 +416,7 @@ function(tree, schema, parent) {
      * @param {Object} schema The JSON Schema object being built.
      * @param {Object} parent The parent of the current JSON Schema object being
      *     built.
-     * @returns {TP.meta.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchema} The receiver.
      */
 
     var keys,
@@ -662,7 +662,7 @@ function(aSchema) {
      * @method setSchema
      * @summary Sets the receiver's schema to the supplied hash.
      * @param {TP.core.Hash} aSchema The schema to use for the receiver.
-     * @returns {TP.meta.json.JSONSchemaType} The receiver.
+     * @returns {TP.meta.json.JSONSchema} The receiver.
      */
 
     var schemaJSON;
