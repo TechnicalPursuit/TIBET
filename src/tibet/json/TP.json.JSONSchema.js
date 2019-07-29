@@ -136,10 +136,14 @@ function(aSchemaURI) {
 
     schemaObj = resp.get('result');
 
+    //  This should have loaded a content object of type
+    //  TP.json.JSONSchemaContent, which will have a method of 'defineTypes' on
+    //  it.
     if (TP.canInvoke(schemaObj, 'defineTypes')) {
         schemaObj.defineTypes();
     } else {
-        this.raise('InvalidOperation', 'Unable to define types from schema content.');
+        this.raise('InvalidOperation',
+                    'Unable to define types from schema content.');
     }
 
     return this;
