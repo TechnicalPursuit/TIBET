@@ -89,8 +89,8 @@ TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 
 TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 
-TP.sherpa.urieditor.Inst.defineAttribute('extraLoadHeaders');
-TP.sherpa.urieditor.Inst.defineAttribute('extraSaveHeaders');
+TP.sherpa.urieditor.Inst.defineAttribute('loadheaders');
+TP.sherpa.urieditor.Inst.defineAttribute('saveheaders');
 
 TP.sherpa.urieditor.Inst.defineAttribute('$pathParts');
 TP.sherpa.urieditor.Inst.defineAttribute('$schemaContent');
@@ -792,7 +792,7 @@ function() {
     //  If any extra save headers were configured on ourself as an attribute,
     //  then they'll be in this instance variable. Add them to the put
     //  parameters.
-    extraHeaders = this.get('extraSaveHeaders');
+    extraHeaders = this.get('saveheaders');
     if (TP.notEmpty(extraHeaders)) {
         putParams.addAll(extraHeaders);
     }
@@ -935,7 +935,7 @@ function() {
     //  If any extra load headers were configured on ourself as an attribute,
     //  then they'll be in this instance variable. Add them to the get
     //  parameters.
-    extraHeaders = this.get('extraLoadHeaders');
+    extraHeaders = this.get('loadheaders');
     if (TP.notEmpty(extraHeaders)) {
         getParams.addAll(extraHeaders);
     }
@@ -1180,7 +1180,7 @@ function(shouldRefresh) {
     //  If any extra load headers were configured on ourself as an
     //  attribute, then they'll be in this instance variable. Add them to
     //  the get parameters.
-    extraHeaders = this.get('extraLoadHeaders');
+    extraHeaders = this.get('loadheaders');
     if (TP.notEmpty(extraHeaders)) {
         getParams.addAll(extraHeaders);
     }
@@ -1402,25 +1402,25 @@ function() {
 
     //  If there are an 'extra load headers' defined on ourself as an attribute,
     //  grab and store them.
-    attrVal = this.getAttribute('extraLoadHeaders');
+    attrVal = this.getAttribute('loadheaders');
     if (TP.notEmpty(attrVal)) {
 
         //  Convert the JSON-y like value into real JSON
         attrVal = TP.reformatJSToJSON(attrVal);
         if (TP.isJSONString(attrVal)) {
-            this.set('extraLoadHeaders', TP.json2js(attrVal));
+            this.set('loadheaders', TP.json2js(attrVal));
         }
     }
 
     //  If there are an 'extra save headers' defined on ourself as an attribute,
     //  grab and store them.
-    attrVal = this.getAttribute('extraSaveHeaders');
+    attrVal = this.getAttribute('saveheaders');
     if (TP.notEmpty(attrVal)) {
 
         //  Convert the JSON-y like value into real JSON
         attrVal = TP.reformatJSToJSON(attrVal);
         if (TP.isJSONString(attrVal)) {
-            this.set('extraSaveHeaders', TP.json2js(attrVal));
+            this.set('saveheaders', TP.json2js(attrVal));
         }
     }
 
