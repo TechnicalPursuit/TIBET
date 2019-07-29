@@ -462,6 +462,13 @@ function() {
 
                     //  Configure routing data from cfg() parameters
                     TP.uri.URIRouter.$configureRoutes();
+
+                    //  Call the supertype method here, which will inform any
+                    //  observers of the 'tibet.json' URI that it's content
+                    //  changed.
+                    return this.callNextMethod();
+                }, {
+                    patchCallee: true
                 });
 
             TP.boot.$getStageInfo('starting').head =
