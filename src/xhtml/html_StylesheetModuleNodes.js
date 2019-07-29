@@ -153,7 +153,7 @@ function(aRequest) {
                     });
             }
 
-            //  If the element doesn't have a 'dependsOn' attribute (and,
+            //  If the element doesn't have a 'imports' attribute (and,
             //  therefore, doesn't have other resources - usually @imports that
             //  it's waiting on and are being processed separately), dispatch
             //  'TP.sig.DOMReady'. This provides for consistency with other
@@ -161,7 +161,7 @@ function(aRequest) {
             //  resolved.
             //  Note that we use 'dispatch()' here because this is a DOM signal
             //  and we want all of the characteristics of a DOM signal.
-            if (!TP.elementHasAttribute(elem, 'dependsOn', true)) {
+            if (!TP.elementHasAttribute(elem, 'imports', true)) {
                 TP.wrap(elem).dispatch('TP.sig.DOMReady');
             }
         };
@@ -255,9 +255,9 @@ function() {
     }
 
     //  Query the document head to see if there are any other style elements
-    //  that have our ID *anywhere* in the value of their 'dependsOn' attribute.
+    //  that have our ID *anywhere* in the value of their 'imports' attribute.
     dependentElements = TP.byCSSPath(
-                            '> style[dependsOn*="' + targetID + '"]',
+                            '> style[imports*="' + targetID + '"]',
                             TP.documentGetHead(natDoc),
                             false,
                             false);
@@ -267,9 +267,9 @@ function() {
 
         dependentElement = dependentElements.at(i);
 
-        //  Grab the value of the 'dependsOn' attribute and split on the TP.JOIN
+        //  Grab the value of the 'imports' attribute and split on the TP.JOIN
         //  character, which is what all of its dependent IDs was joined on.
-        attrVal = TP.elementGetAttribute(dependentElement, 'dependsOn', true);
+        attrVal = TP.elementGetAttribute(dependentElement, 'imports', true);
         attrVal = attrVal.split(TP.JOIN);
 
         //  Splice out our ID from the list of dependent IDs on the dependent
@@ -277,11 +277,11 @@ function() {
         idValIndex = attrVal.indexOf(targetID);
         attrVal.splice(idValIndex, 1);
 
-        //  If our ID was the last one, then we remove the 'dependsOn' attribute
+        //  If our ID was the last one, then we remove the 'imports' attribute
         //  from the dependent element and signal that it's ready to go.
         if (TP.isEmpty(attrVal)) {
 
-            TP.elementRemoveAttribute(dependentElement, 'dependsOn', true);
+            TP.elementRemoveAttribute(dependentElement, 'imports', true);
 
             TP.wrap(dependentElement).dispatch('TP.sig.DOMReady');
 
@@ -291,7 +291,7 @@ function() {
             //  together and set the attribute to that new value.
             TP.elementSetAttribute(
                         dependentElement,
-                        'dependsOn',
+                        'imports',
                         attrVal.join(TP.JOIN),
                         true);
         }

@@ -276,13 +276,13 @@ function(lessLoc, lessText) {
 
                     //  If @imports were detected and we've gathered a set of
                     //  IDs representing them, then we join those together using
-                    //  the TP.JOIN separator character and set the 'dependsOn'
+                    //  the TP.JOIN separator character and set the 'imports'
                     //  attribute to that value. This will be used by the
                     //  generated style element to determine when all of its
                     //  @imports have been loaded.
                     if (TP.notEmpty(cssImportIDs)) {
                         TP.elementSetAttribute(generatedStyleElem,
-                                                'dependsOn',
+                                                'imports',
                                                 cssImportIDs.join(TP.JOIN),
                                                 true);
                     }
