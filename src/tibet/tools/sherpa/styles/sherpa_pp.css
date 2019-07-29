@@ -64,7 +64,7 @@
 
 .sherpa_pp.Function,
 .sherpa_pp.Node,
-.sherpa_pp.TP_core_Node {
+.sherpa_pp.TP_dom_Node {
 
     white-space: pre-wrap;
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;

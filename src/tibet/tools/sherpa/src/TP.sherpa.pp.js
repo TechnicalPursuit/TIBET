@@ -787,7 +787,7 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('fromTP_core_Node',
+TP.sherpa.pp.Type.defineMethod('fromTP_dom_Node',
 function(anObject, optFormat) {
 
     var marker,
@@ -813,7 +813,7 @@ function(anObject, optFormat) {
     }
 
     str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="sherpa_pp TP_core_Node">' +
+                ' class="sherpa_pp TP_dom_Node">' +
                 str +
             '</span>';
 

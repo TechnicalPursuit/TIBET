@@ -523,7 +523,7 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.pp.Type.defineMethod('fromTP_core_Node',
+TP.tsh.pp.Type.defineMethod('fromTP_dom_Node',
 function(anObject, optFormat) {
 
     //  Don't need to box output from our own markup generator.
