@@ -44,5 +44,21 @@ function(aString, sourceLocale) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xs.XMLSchemaType.Type.defineMethod('validate',
+function(anObject) {
+
+    /**
+     * @method validate
+     * @summary Returns true if the object provided it meets all of the
+     *     criteria supplied in this type.
+     * @param {Object} aValue The object to validate.
+     * @returns {Boolean} True if the object validates against the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
