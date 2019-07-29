@@ -50,7 +50,7 @@ function() {
                 var node;
 
                 if (TP.isElement(node = aRequest.at('node'))) {
-                    TP.elementSetAttribute(node, 'allNodesMark', 'true');
+                    TP.elementSetAttribute(node, 'allnodesmark', 'true');
                 }
             });
     }
@@ -74,9 +74,9 @@ function() {
                 var node;
 
                 if (TP.isElement(node = aRequest.at('node'))) {
-                    TP.elementSetAttribute(node, 'allNodesMark', 'true');
+                    TP.elementSetAttribute(node, 'allnodesmark', 'true');
                     if (!TP.elementHasAttribute(node, 'donttransform')) {
-                        TP.elementSetAttribute(node, 'allNodesMark2', 'true');
+                        TP.elementSetAttribute(node, 'allnodesmark2', 'true');
                         TP.elementSetAttribute(node, 'donttransform', 'true');
                     }
                 }
@@ -132,7 +132,7 @@ function() {
                     newElem;
 
                 if (TP.isElement(node = aRequest.at('node'))) {
-                    TP.elementSetAttribute(node, 'allNodesMark', 'true');
+                    TP.elementSetAttribute(node, 'allnodesmark', 'true');
                     if (!TP.elementHasAttribute(node, 'donttransform')) {
                         newElem = TP.documentConstructElement(
                                                 TP.nodeGetDocument(node),
@@ -146,7 +146,7 @@ function() {
                                 newElem, 'donttransform',
                                 'true');
                         TP.elementSetAttribute(
-                                newElem, 'allNodesMark2',
+                                newElem, 'allnodesmark2',
                                 'true');
 
                         TP.nodeAppendChild(node, newElem, false);
@@ -289,7 +289,7 @@ function() {
 
                 processor.processTree(result);
 
-                test.assert.hasAttribute(result, 'allNodesMark');
+                test.assert.hasAttribute(result, 'allnodesmark');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -311,8 +311,8 @@ function() {
 
                 processor.processTree(result);
 
-                test.assert.hasAttribute(result, 'allNodesMark');
-                test.assert.hasAttribute(result, 'allNodesMark2');
+                test.assert.hasAttribute(result, 'allnodesmark');
+                test.assert.hasAttribute(result, 'allnodesmark2');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -356,10 +356,10 @@ function() {
 
                 processor.processTree(result);
 
-                test.assert.hasAttribute(result, 'allNodesMark');
+                test.assert.hasAttribute(result, 'allnodesmark');
 
                 test.assert.isXMLNode(result.firstElementChild);
-                test.assert.hasAttribute(result.firstElementChild, 'allNodesMark2');
+                test.assert.hasAttribute(result.firstElementChild, 'allnodesmark2');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
