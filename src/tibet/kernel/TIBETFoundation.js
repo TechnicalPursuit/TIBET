@@ -4498,8 +4498,12 @@ function() {
     id = TP.gid(this);
 
     if (TP.sys.cfg('debug.register_recursion')) {
-        id = 'urn:tibet:' + id;
-        TP.uc(id).setResource(this);
+        //  If the ID isn't a URI (even one without a scheme), then make it a
+        //  TIBET URN and set the content.
+        if (!TP.isURIString(id, true)) {
+            id = 'urn:tibet:' + id;
+            TP.uc(id).setResource(this);
+        }
         return id;
     }
 
