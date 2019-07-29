@@ -1558,8 +1558,8 @@ function(anObject) {
     }
 
     //  defer to object itself whenever possible
-    if (TP.canInvoke(anObject, 'asTP_dom.XMLRPCNode')) {
-        return anObject.asTP_dom.XMLRPCNode();
+    if (TP.canInvoke(anObject, 'asTP_dom_XMLRPCNode')) {
+        return anObject.asTP_dom_XMLRPCNode();
     }
 
     return TP.dom.XMLRPCNode.from(anObject);

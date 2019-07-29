@@ -435,11 +435,11 @@ function(aURIString) {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URI.Type.defineMethod('fromTP_uri.URI',
+TP.uri.URI.Type.defineMethod('fromTP_uri_URI',
 function(aURI) {
 
     /**
-     * @method fromTP_uri.URI
+     * @method fromTP_uri_URI
      * @summary Returns the URI provided to help ensure unique entries exist.
      * @param {TP.uri.URI} aURI An existing URI.
      * @returns {TP.uri.URI} A new instance.
@@ -1630,11 +1630,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URI.Inst.defineMethod('asTP_uri.URI',
+TP.uri.URI.Inst.defineMethod('asTP_uri_URI',
 function() {
 
     /**
-     * @method asTP_uri.URI
+     * @method asTP_uri_URI
      * @summary Returns the receiver.
      * @returns {TP.uri.URI} The receiver.
      */

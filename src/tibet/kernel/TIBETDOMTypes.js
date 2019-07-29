@@ -446,11 +446,11 @@ function(aString, defaultNS, shouldReport) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.Node.Type.defineMethod('fromTP_dom.Node',
+TP.dom.Node.Type.defineMethod('fromTP_dom_Node',
 function(aNode) {
 
     /**
-     * @method fromTP.dom.Node
+     * @method fromTP_dom_Node
      * @summary Returns the TP.dom.Node wrapper provided.
      * @param {TP.dom.Node} aNode A wrapped node.
      * @returns {TP.dom.Node} The supplied object.
@@ -465,7 +465,7 @@ TP.dom.Node.Type.defineMethod('fromTP_sig_Signal',
 function(aSignal) {
 
     /**
-     * @method fromTP.sig.Signal
+     * @method fromTP_sig_Signal
      * @summary Constructs and returns a new instance initialized using data in
      *     the signal provided.
      * @param {TP.sig.Signal} aSignal The signal instance to construct a handler
@@ -496,11 +496,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.Node.Type.defineMethod('fromTP_uri.URI',
+TP.dom.Node.Type.defineMethod('fromTP_uri_URI',
 function(aURI, shouldReport) {
 
     /**
-     * @method fromTP.uri.URI
+     * @method fromTP_uri_URI
      * @summary Returns a new instance of the receiver, constructed around the
      *     DOM content of the URI provided. Note that the URI must point to XML
      *     data for this call to succeed.
