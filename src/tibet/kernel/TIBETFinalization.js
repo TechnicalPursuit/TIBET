@@ -826,7 +826,7 @@ function(aURI) {
     //  handler as the code unloads.
     if (TP.isElement(TP.documentGetBody(window.document))) {
         TP.elementSetAttribute(TP.documentGetBody(window.document),
-                                'allowUnload',
+                                'unloadable',
                                 'true');
     }
 

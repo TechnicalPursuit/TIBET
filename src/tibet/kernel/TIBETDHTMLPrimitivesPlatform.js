@@ -2464,7 +2464,7 @@ TP.hc(
 
             //  On IE once the 'onbeforeunload' function is installed, it
             //  cannot be uninstalled. So we set an attribute on the
-            //  window's document's body (called 'allowUnload') to 'true' to
+            //  window's document's body (called 'unloadable') to 'true' to
             //  allow the window to unload without seeing the dialog box. If
             //  this flag is defined and is true, we just return null from
             //  this function, which causes the browser to not show the
@@ -2486,7 +2486,7 @@ TP.hc(
             }
 
             if (TP.elementGetAttribute(TP.documentGetBody(aWindow.document),
-                                        'allowUnload') === 'true') {
+                                        'unloadable') === 'true') {
                 return;
             }
 
@@ -2532,7 +2532,7 @@ TP.hc(
 
             //  On IE once the 'onbeforeunload' function is installed, it
             //  cannot be uninstalled. So we set an attribute on the
-            //  window's document's body (called 'allowUnload') to 'true' to
+            //  window's document's body (called 'unloadable') to 'true' to
             //  allow the window to unload without seeing the dialog box. If
             //  this flag is defined and is true, we just return null from
             //  this function, which causes the browser to not show the
@@ -2554,7 +2554,7 @@ TP.hc(
             }
 
             if (TP.elementGetAttribute(TP.documentGetBody(aWindow.document),
-                                        'allowUnload') === 'true') {
+                                        'unloadable') === 'true') {
                 return;
             }
 
@@ -2601,7 +2601,7 @@ TP.hc(
 
             //  On IE once the 'onbeforeunload' function is installed, it
             //  cannot be uninstalled. So we set an attribute on the
-            //  window's document's body (called 'allowUnload') to 'true' to
+            //  window's document's body (called 'unloadable') to 'true' to
             //  allow the window to unload without seeing the dialog box. If
             //  this flag is defined and is true, we just return null from
             //  this function, which causes the browser to not show the
@@ -2623,7 +2623,7 @@ TP.hc(
             }
 
             if (TP.elementGetAttribute(TP.documentGetBody(aWindow.document),
-                                        'allowUnload') === 'true') {
+                                        'unloadable') === 'true') {
                 return;
             }
 
