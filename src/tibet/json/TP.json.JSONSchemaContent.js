@@ -111,7 +111,7 @@ function() {
             //  If the system doesn't have a type by that name, then define one
             //  as a subtype of TP.json.JSONSchema.
             if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
-                type = TP.json.JSONSchema.defineSubtype(typeName);
+                type = TP.json.JSONSchemaType.defineSubtype(typeName);
             }
 
             type.set('schema', schema);

@@ -1,0 +1,278 @@
+//  ========================================================================
+/**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
+ */
+//  ------------------------------------------------------------------------
+
+
+/**
+ * @type {TP.core.JSONSchemaType}
+ * @summary The common supertype for all JSON Schema-defined data types.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('json.JSONSchemaType');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineAttribute('schema');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    this.defineDependencies('TP.extern.jjv');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('fromString',
+function(aString, sourceLocale) {
+
+    /**
+     * @method fromString
+     * @summary Returns a new instance from the string provided by processing
+     *     the String into another type.
+     * @description For XML Schema data types, we have no 'parsers' - but the
+     *     types themselves take a String and convert it into an instance by
+     *     calling fromObject(). Therefore we override this method and just call
+     *     fromObject().
+     * @param {String} aString The content string to parse.
+     * @param {String|TP.i18n.Locale} sourceLocale A source xml:lang or
+     *     TP.i18n.Locale defining the language the string is now in. Defaults
+     *     to getTargetLanguage() which is based on the current locale's
+     *     language-country value.
+     * @returns {Object} An instance of the receiver, if parsing of the string
+     *     is successful.
+     */
+
+    return this.fromObject(aString, sourceLocale);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('setSchema',
+function(aSchema) {
+
+    /**
+     * @method setSchema
+     * @summary Sets the receiver's schema to the supplied hash.
+     * @param {TP.core.Hash} aSchema The schema to use for the receiver.
+     * @returns {TP.meta.json.JSONSchemaType} The receiver.
+     */
+
+    var schemaJSON;
+
+    //  First, we need to get the schema as a chunk of JSON.
+    schemaJSON = aSchema.asJSONSource();
+
+    //  Because the validator we use expects a JS object that's a 'plain object'
+    //  we use the low-level JSON.parse() here.
+
+    //  NB: We use '$set' here because we don't want to recurse back into this
+    //  method.
+    this.$set('schema', JSON.parse(schemaJSON));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.json.JSONSchemaType.Type.defineMethod('validate',
+function(aValue) {
+
+    /**
+     * @method validate
+     * @summary Returns true if the object provided it meets all of the
+     *     criteria supplied in this type.
+     * @param {Object} aValue The object to validate.
+     * @returns {Boolean} True if the object validates against the receiver.
+     */
+
+    var jsonSchema,
+        schemaValidator,
+
+        valJSON,
+        valJS,
+
+        schemaStr,
+
+        coerceTypes,
+
+        results,
+        typeName,
+
+        type,
+        func,
+
+        errors;
+
+    if (TP.notValid(aValue)) {
+        return this.raise('TP.sig.InvalidParameter',
+                            'No object provided to validate');
+    }
+
+    if (TP.notValid(jsonSchema = this.get('schema'))) {
+        this.raise('TP.sig.InvalidObject',
+                            'No valid schema for the the object.');
+        return false;
+    }
+
+    if (TP.notValid(schemaValidator = TP.extern.jjv)) {
+        this.raise('TP.sig.InvalidObject',
+                            'No valid JSONSchema validator found.');
+        return false;
+    }
+
+    if (!TP.isString(valJSON = TP.json(aValue))) {
+        this.raise('TP.sig.InvalidJSON',
+                            'Can\'t generate valid JSON.');
+        return false;
+    }
+
+    if (TP.notValid(valJS = JSON.parse(valJSON))) {
+        this.raise('TP.sig.InvalidObject',
+                            'Can\'t generate object reference from JSON.');
+        return false;
+    }
+
+    //  If it has a data slot, then it's object created from JSON that was
+    //  generated by TIBET, which puts the object's data under a 'data' slot.
+    if (TP.isValid(valJS.data)) {
+        valJS = valJS.data;
+    }
+
+    //  Stringify the schema JSON and use a global regexp to loop through it
+    //  looking for 'type: <typename>' constructs. If the typename isn't one
+    //  that JSON Schema considers to be a built in, register a custom type
+    //  handler with the validator that knows how to validate occurrences of
+    //  that type.
+    schemaStr = TP.json(jsonSchema);
+
+    coerceTypes = false;
+
+    //  Global regexp needs a reset
+    TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT.lastIndex = 0;
+    while (TP.isValid(results = TP.regex.JSON_SCHEMA_TYPENAME_EXTRACT.exec(
+                                                                schemaStr))) {
+        typeName = results.at(1);
+
+        //  If the extracted type name is a JSON Schema built in, move on.
+        if (/array|boolean|integer|number|null|object|string/.test(typeName)) {
+
+            //  If the type name is 'integer', then install a type coercion
+            //  Function that will try to parseInt the value to convert it into
+            //  a Number.
+            if (typeName === 'integer') {
+                schemaValidator.addTypeCoercion(
+                    'integer',
+                    function(val) {
+                        var intVal;
+
+                        intVal = parseInt(val, 10);
+
+                        //  A value like '12W' will parse into '12', so we need
+                        //  to check to make sure the parsed value's length and
+                        //  the original value's length are the same.
+                        if (intVal.toString().length ===
+                            val.toString().length) {
+                            return intVal;
+                        }
+
+                        return null;
+                    });
+
+                //  Flip the flag that tells the validation call below that we
+                //  want it to coerce types.
+                coerceTypes = true;
+            }
+
+            //  If the type name is 'integer', then install a type coercion
+            //  Function that will try to parseFloat the value to convert it
+            //  into a Number.
+            if (typeName === 'number') {
+                schemaValidator.addTypeCoercion(
+                    'number',
+                    function(val) {
+                        var floatVal;
+
+                        //  A value like '12.5W' will parse into '12.5', so we
+                        //  need to check to make sure the parsed value's length
+                        //  and the original value's length are the same.
+                        floatVal = parseFloat(val);
+                        if (floatVal.toString().length ===
+                            val.toString().length) {
+                            return floatVal;
+                        }
+
+                        return null;
+                    });
+
+                //  Flip the flag that tells the validation call below that we
+                //  want it to coerce types.
+                coerceTypes = true;
+            }
+
+            continue;
+        }
+
+        //  Make sure that we got a valid type that the system knows about.
+        if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
+            this.raise('TP.sig.InvalidType', typeName);
+            return false;
+        }
+
+        /* eslint-disable no-loop-func */
+        func = function(val) {
+            return func.type.validate(val);
+        };
+        /* eslint-enable no-loop-func */
+
+        //  We need a reference to our type inside of the function (to avoid
+        //  closure problems).
+        func.type = type;
+
+        schemaValidator.addType(typeName, func);
+    }
+
+    //  Invoke the schema validator. It will return a non-empty 'errors' object
+    //  if there are errors.
+    errors = schemaValidator.validate(
+                    jsonSchema,
+                    valJS,
+                    {
+                        useCoerce: coerceTypes
+                    });
+
+    if (TP.notEmpty(errors)) {
+
+        //  TODO: For now, we don't log these messages. When we switch out this
+        //  JSON validator for a different one with better error messages, we'll
+        //  try to capture them.
+
+        return false;
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

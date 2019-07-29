@@ -123,6 +123,7 @@
 
     <script src="./json/TP.json.JSONSchema.js"/>
     <script src="./json/TP.json.JSONSchemaContent.js"/>
+    <script src="./json/TP.json.JSONSchemaType.js"/>
 
 </config>
 
