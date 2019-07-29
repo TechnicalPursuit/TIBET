@@ -281,7 +281,7 @@ TP.core.Content.Type.defineMethod('fromTP_core_Content',
 function(aContent) {
 
     /**
-     * @method fromTP.core.Content
+     * @method fromTP_core_Content
      * @summary Returns the TP.core.Content object provided.
      * @param {TP.core.Content} aContent A content object.
      * @returns {TP.core.Content} The supplied object.
