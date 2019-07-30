@@ -3134,11 +3134,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('getRepeatPagePosition',
+TP.dom.ElementNode.Inst.defineMethod('getRepeatPage',
 function() {
 
     /**
-     * @method getRepeatPagePosition
+     * @method getRepeatPage
      * @summary Returns the repeat page 'position', that is the currently
      *     showing page of repeating results.
      * @returns {Number} The repeat page position.
@@ -3455,7 +3455,7 @@ function(aSignal) {
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
         pagePos = this.getRepeatPageCount() + 1;
-        this.setRepeatPagePosition(pagePos);
+        this.setRepeatPage(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -3485,8 +3485,8 @@ function(aSignal) {
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        pagePos = this.getRepeatPagePosition() + 1;
-        this.setRepeatPagePosition(pagePos);
+        pagePos = this.getRepeatPage() + 1;
+        this.setRepeatPage(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -3516,8 +3516,8 @@ function(aSignal) {
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        pagePos = this.getRepeatPagePosition() - 1;
-        this.setRepeatPagePosition(pagePos);
+        pagePos = this.getRepeatPage() - 1;
+        this.setRepeatPage(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -3547,7 +3547,7 @@ function(aSignal) {
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
         pagePos = aSignal.at('pageNum') + 1;
-        this.setRepeatPagePosition(pagePos);
+        this.setRepeatPage(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -3575,7 +3575,7 @@ function(aSignal) {
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        this.setRepeatPagePosition(1);
+        this.setRepeatPage(1);
 
         //  Make sure to stop the signal propagation here - we've processed the
         //  paging.
@@ -3874,8 +3874,8 @@ function(shouldRender) {
         //  If the repeat page position isn't already set to a Number, then
         //  initialize it to 1.
         if (!TP.isNumber(
-                this.getAttribute('bind:repeatpageposition').asNumber())) {
-            this.$setAttribute('bind:repeatpageposition', 1, false);
+                this.getAttribute('bind:repeatpage').asNumber())) {
+            this.$setAttribute('bind:repeatpage', 1, false);
         }
 
         //  Refresh the repeating data under us, passing true to regenerate any
@@ -6469,11 +6469,11 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('setRepeatPagePosition',
+TP.dom.ElementNode.Inst.defineMethod('setRepeatPage',
 function(aPosition) {
 
     /**
-     * @method setRepeatPagePosition
+     * @method setRepeatPage
      * @summary Sets the repeat page 'position', that is the currently showing
      *     page of repeating results.
      * @param {Number} aPosition The position to set the repeating paging system
@@ -6508,7 +6508,7 @@ function(aPosition) {
 
     //  NB: We pass true here to signal change in case anything in the GUI is
     //  watching this attribute.
-    this.$setAttribute('bind:repeatpageposition', aPosition, true);
+    this.$setAttribute('bind:repeatpage', aPosition, true);
 
     return this;
 });
@@ -6652,10 +6652,10 @@ function(aCollection) {
         repeatElem[TP.REPEAT_INDEX] = scopeIndex;
     }
 
-    if (!TP.isNumber(this.getAttribute('bind:repeatpageposition').asNumber())) {
+    if (!TP.isNumber(this.getAttribute('bind:repeatpage').asNumber())) {
         //  NB: We pass true here to signal change in case anything in the GUI
         //  is watching this attribute.
-        this.$setAttribute('bind:repeatpageposition', 1, true);
+        this.$setAttribute('bind:repeatpage', 1, true);
     }
 
     return this;
