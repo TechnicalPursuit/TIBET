@@ -50,7 +50,7 @@ function(aSignal) {
     target = aSignal.getDOMTarget();
 
     if (TP.isElement(target)) {
-        itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
+        itemNumber = TP.elementGetAttribute(target, 'itemnum', true);
         itemNumber = itemNumber.asNumber();
 
         if (TP.isNumber(itemNumber)) {
@@ -94,7 +94,7 @@ function(enterSelection) {
 
     newContent = enterSelection.append('div').classed('item', true).
         attr(
-        'itemNum',
+        'itemnum',
         function(d, i) {
             return i;
         }).
@@ -106,7 +106,7 @@ function(enterSelection) {
         append('div').classed('itemcontent', true).
         append('div').classed('textcontent', true).
         attr(
-        'itemNum',
+        'itemnum',
         function(d, i) {
             return i;
         }).
