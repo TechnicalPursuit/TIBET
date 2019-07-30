@@ -463,13 +463,13 @@ function() {
                     contentElem3);
 
                 //  Check the attributes
-                test.assert.hasAttribute(contentElem, 'noNSAttr');
+                test.assert.hasAttribute(contentElem, 'nonsattr');
                 test.assert.hasAttribute(contentElem, 'tmp:attr1');
                 test.assert.hasAttribute(contentElem, 'html:attr2');
 
                 test.assert.isEmpty(
                     TP.nodeGetNSURI(
-                        TP.elementGetAttributeNode(contentElem, 'noNSAttr')));
+                        TP.elementGetAttributeNode(contentElem, 'nonsattr')));
                 test.assert.isEqualTo(
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(
@@ -532,13 +532,13 @@ function() {
                     contentElem3);
 
                 //  Check the attributes
-                test.assert.hasAttribute(contentElem, 'noNSAttr');
+                test.assert.hasAttribute(contentElem, 'nonsattr');
                 test.assert.hasAttribute(contentElem, 'tmp:attr1');
                 test.assert.hasAttribute(contentElem, 'html:attr2');
 
                 test.assert.isEmpty(
                     TP.nodeGetNSURI(
-                        TP.elementGetAttributeNode(contentElem, 'noNSAttr')));
+                        TP.elementGetAttributeNode(contentElem, 'nonsattr')));
                 test.assert.isEqualTo(
                     TP.nodeGetNSURI(
                         TP.elementGetAttributeNode(
