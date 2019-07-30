@@ -88,7 +88,7 @@ function(aSignal) {
 
     this.setAttribute('hidden', true);
 
-    if (this.hasAttribute('detachOnClose')) {
+    if (this.hasAttribute('detachonclose')) {
 
         detachOnClose = TP.bc(this.getAttribute('detachonclose'));
 
