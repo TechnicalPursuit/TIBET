@@ -1668,7 +1668,7 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:handlerid',
     'tibet:mime',
     'tibet:noawaken',
-    'tibet:nocompile',
+    'tibet:no-compile',
     'tibet:nodragtrapping',
     'tibet:nomutationtracking',
     'tibet:originalhref',

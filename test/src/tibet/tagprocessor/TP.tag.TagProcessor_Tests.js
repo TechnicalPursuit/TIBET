@@ -75,9 +75,9 @@ function() {
 
                 if (TP.isElement(node = aRequest.at('node'))) {
                     TP.elementSetAttribute(node, 'allnodesmark', 'true');
-                    if (!TP.elementHasAttribute(node, 'donttransform')) {
+                    if (!TP.elementHasAttribute(node, 'no-compile')) {
                         TP.elementSetAttribute(node, 'allnodesmark2', 'true');
-                        TP.elementSetAttribute(node, 'donttransform', 'true');
+                        TP.elementSetAttribute(node, 'no-compile', 'true');
                     }
                 }
             });
@@ -133,7 +133,7 @@ function() {
 
                 if (TP.isElement(node = aRequest.at('node'))) {
                     TP.elementSetAttribute(node, 'allnodesmark', 'true');
-                    if (!TP.elementHasAttribute(node, 'donttransform')) {
+                    if (!TP.elementHasAttribute(node, 'no-compile')) {
                         newElem = TP.documentConstructElement(
                                                 TP.nodeGetDocument(node),
                                                 'div',
@@ -143,7 +143,7 @@ function() {
                                 'test:morecontentchange',
                                 'true');
                         TP.elementSetAttribute(
-                                newElem, 'donttransform',
+                                newElem, 'no-compile',
                                 'true');
                         TP.elementSetAttribute(
                                 newElem, 'allnodesmark2',

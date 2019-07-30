@@ -887,7 +887,7 @@ function() {
                     strip(/ xmlns:xml=".+?"/g).
                     strip(/ xmlns:tibet=".+?"/g).
                     strip(/ tibet:globaldocid=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
 
         test.assert.isEqualTo(
             value, '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
@@ -897,7 +897,7 @@ function() {
         value = tpElem.get('value');
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
 
         test.assert.matches(value, /<foo id=".+">bar<\/foo>/);
 
@@ -931,7 +931,7 @@ function() {
         value = tpElem.get('value');
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
 
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
@@ -1033,7 +1033,7 @@ function() {
                     strip(/ xmlns:xml=".+?"/g).
                     strip(/ xmlns:tibet=".+?"/g).
                     strip(/ tibet:globaldocid=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
 
         test.assert.isEqualTo(
             value, '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
@@ -1043,7 +1043,7 @@ function() {
         value = tpElem.get('value');
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
 
         test.assert.matches(value, /<foo id=".+">bar<\/foo>/);
 
@@ -1077,7 +1077,7 @@ function() {
         value = tpElem.get('value');
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
 
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
@@ -1221,7 +1221,7 @@ function() {
         value = tpElem.get('value');
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
@@ -1367,7 +1367,7 @@ function() {
         value = tpElem.get('value');
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:nocompile="true"/g);
+                    strip(/ tibet:no-compile="true"/g);
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, '<foo/><bar/>');
 

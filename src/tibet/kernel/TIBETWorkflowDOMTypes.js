@@ -1220,12 +1220,12 @@ TP.tag.TagProcessor.Type.defineConstant(
 //          d. Are not in the 'on:' namespace
 
 //  A version of the expression that filters out elements that have an ancestor
-//  with an attribute of 'tibet:nocompile'.
+//  with an attribute of 'tibet:no-compile'.
 TP.tag.TagProcessor.Type.defineConstant(
     'CUSTOM_NODES_QUERY_NO_COMPILE',
-        'descendant-or-self::*[not(ancestor::*[@tibet:nocompile])]' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:no-compile])]' +
         ' | ' +
-        'descendant-or-self::*[not(ancestor::*[@tibet:nocompile])]/@*[' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:no-compile])]/@*[' +
         'namespace-uri() != ""' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
@@ -1238,7 +1238,7 @@ TP.tag.TagProcessor.Type.defineConstant(
         ']');
 
 //  A version of the expression that filters out elements that have an ancestor
-//  with an attribute of 'tibet:nocompile'.
+//  with an attribute of 'tibet:no-compile'.
 TP.tag.TagProcessor.Type.defineConstant(
     'CUSTOM_NODES_QUERY_NO_AWAKEN',
         'descendant-or-self::*[not(ancestor::*[@tibet:noawaken])]' +

@@ -9208,16 +9208,16 @@ function(aRequest, replaceNode, alternateNode) {
     shouldProcess = true;
 
     //  But if the node is an Element and it has an attribute of
-    //  'tibet:nocompile', then skip processing it.
+    //  'tibet:no-compile', then skip processing it.
     if (TP.isElement(node) &&
-        TP.elementHasAttribute(node, 'tibet:nocompile', true)) {
+        TP.elementHasAttribute(node, 'tibet:no-compile', true)) {
         shouldProcess = false;
     }
 
     //  If the node is a Document and it's documentElement has an attribute of
-    //  'tibet:nocompile', then skip processing it.
+    //  'tibet:no-compile', then skip processing it.
     if (TP.isDocument(node) &&
-        TP.elementHasAttribute(node.documentElement, 'tibet:nocompile', true)) {
+        TP.elementHasAttribute(node.documentElement, 'tibet:no-compile', true)) {
         shouldProcess = false;
     }
 
@@ -9702,9 +9702,9 @@ function(aRequest) {
         nodeGID = TP.gid(childNode);
 
         //  But if the node is an Element and it has an attribute of
-        //  'tibet:nocompile', then skip processing it.
+        //  'tibet:no-compile', then skip processing it.
         if (TP.isElement(childNode) &&
-            TP.elementHasAttribute(childNode, 'tibet:nocompile', true)) {
+            TP.elementHasAttribute(childNode, 'tibet:no-compile', true)) {
             continue;
         }
 
