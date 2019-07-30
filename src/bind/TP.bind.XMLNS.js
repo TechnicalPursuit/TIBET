@@ -367,7 +367,8 @@ function(anElement) {
 
     tpDoc = TP.wrap(doc);
 
-    if (TP.notValid(observedLocations = tpDoc.get('$observedLocations'))) {
+    observedLocations = tpDoc.get('$observedLocations');
+    if (TP.notValid(observedLocations)) {
         observedLocations = TP.hc();
         tpDoc.set('$observedLocations', observedLocations);
     }
@@ -375,7 +376,11 @@ function(anElement) {
     //  Gather up the 'original locations' to compute a binding attribute
     //  matcher. This will be an Array of pairs, with the original location in
     //  the first position and the fully expanded location in the last position.
-    originalLocationInfos = TP.ac();
+    originalLocationInfos = tpDoc.get('$originalLocationInfos');
+    if (TP.notValid(originalLocationInfos)) {
+        originalLocationInfos = TP.ac();
+        tpDoc.set('$originalLocationInfos', originalLocationInfos);
+    }
 
     //  Gather any locations that are referenced in binding expressions under
     //  the supplied Element. These are the locations that the owner
@@ -478,9 +483,6 @@ function(anElement) {
                     TP.ac(originalLocation, concreteLoc));
             }
         });
-
-    //  Put the original location information onto the Document.
-    tpDoc.set('$originalLocationInfos', originalLocationInfos);
 
     return;
 });
