@@ -1839,7 +1839,7 @@ function(aWindow, aDocumentNode) {
 
         TP.windowArmNode(
                     aWindow,
-                    TP.elementGetAttribute(listener, 'local_origin'),
+                    TP.elementGetAttribute(listener, 'local-origin'),
                     TP.elementGetAttribute(listener, 'event'));
         count++;
 

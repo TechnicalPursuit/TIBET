@@ -39,9 +39,9 @@ destination window's full name.
 	</xsl:template>
 
 	<xsl:template match="tibet_listener/@origin">
-		<!-- First, we go ahead and put a 'local_origin' on the element to
+		<!-- First, we go ahead and put a 'local-origin' on the element to
 				allow quick access to the original local origin value -->
-		<xsl:attribute name="local_origin">
+		<xsl:attribute name="local-origin">
 			<xsl:value-of select="."/>
 		</xsl:attribute>
 
