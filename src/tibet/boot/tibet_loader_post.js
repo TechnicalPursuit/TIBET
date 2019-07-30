@@ -1700,7 +1700,7 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
         //  local attribute name.
         if (doc.body.hasAttributeNS(
                 'http://www.technicalpursuit.com/1999/tibet',
-                'canvasinitialized')) {
+                'canvasready')) {
 
             if (TP.sys.cfg('log.hook') &&
                 TP.sys.cfg('boot.context') !== 'headless') {
@@ -1726,7 +1726,7 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
     if (doc && doc.body && TP.boot.$isElement(doc.body)) {
         doc.body.setAttributeNS(
                 'http://www.technicalpursuit.com/1999/tibet',
-                'tibet:canvasinitialized',
+                'tibet:canvasready',
                 'true');
     }
 };
