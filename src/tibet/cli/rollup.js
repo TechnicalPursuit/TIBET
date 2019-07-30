@@ -202,10 +202,10 @@ Cmd.prototype.executeForEach = function(list) {
             if (cmd.options.headers) {
                 pkg.log('TP.boot.$$srcPath = \'' + virtual + '\';');
                 pkg.log('TP.boot.$$srcPackage = \'' +
-                        pkg.getVirtualPath(item.getAttribute('load_package')) +
+                        pkg.getVirtualPath(item.getAttribute('loadpkg')) +
                         '\';');
                 pkg.log('TP.boot.$$srcConfig = \'' +
-                        item.getAttribute('load_config') +
+                        item.getAttribute('loadcfg') +
                         '\';');
             }
 

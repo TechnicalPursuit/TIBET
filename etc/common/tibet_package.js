@@ -2452,9 +2452,9 @@
                             if (notValid(pkg.asset_paths[src])) {
                                 pkg.asset_paths[src] = src;
                                 if (nodes) {
-                                    child.setAttribute('load_package',
+                                    child.setAttribute('loadpkg',
                                         pkg.getCurrentPackage());
-                                    child.setAttribute('load_config',
+                                    child.setAttribute('loadcfg',
                                         anElement.getAttribute('id'));
                                     result.push(child);
                                 } else {
@@ -2465,9 +2465,9 @@
                             }
                         } else {
                             if (nodes) {
-                                child.setAttribute('load_package',
+                                child.setAttribute('loadpkg',
                                     pkg.getCurrentPackage());
-                                child.setAttribute('load_config',
+                                child.setAttribute('loadcfg',
                                     anElement.getAttribute('id'));
                                 result.push(child);
                             }

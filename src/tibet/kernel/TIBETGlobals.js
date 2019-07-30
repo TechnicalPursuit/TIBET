@@ -94,11 +94,11 @@ TP.SOURCE_PATH = '$$srcPath';
 TP.SOURCE_PACKAGE = '$$srcPackage';
 TP.SOURCE_CONFIG = '$$srcConfig';
 
-TP.LOAD_PACKAGE_ATTR = 'load_package';
-TP.LOAD_CONFIG_ATTR = 'load_config';
+TP.LOAD_PACKAGE_ATTR = 'loadpkg';
+TP.LOAD_CONFIG_ATTR = 'loadcfg';
 
-TP.SOURCE_PACKAGE_ATTR = 'src_package';
-TP.SOURCE_CONFIG_ATTR = 'src_config';
+TP.SOURCE_PACKAGE_ATTR = 'srcpkg';
+TP.SOURCE_CONFIG_ATTR = 'srccfg';
 
 TP.PACKAGING_REP = '$$packagingRep';
 

@@ -9115,16 +9115,16 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
     TP.boot.$$loadNode = elem;
 
     //  ensure we keep track of the proper package/config information
-    TP.boot.$$loadNode.setAttribute('load_package',
+    TP.boot.$$loadNode.setAttribute('loadpkg',
                                     TP.sys.cfg('load.package', ''));
-    TP.boot.$$loadNode.setAttribute('load_config',
+    TP.boot.$$loadNode.setAttribute('loadcfg',
                                     TP.sys.cfg('load.config', ''));
-    TP.boot.$$loadNode.setAttribute('load_stage',
+    TP.boot.$$loadNode.setAttribute('loadstage',
                                     TP.sys.cfg('load.stage', ''));
 
-    TP.boot.$$loadNode.setAttribute('src_package',
+    TP.boot.$$loadNode.setAttribute('srcpkg',
                                     TP.sys.cfg('src.package', ''));
-    TP.boot.$$loadNode.setAttribute('src_config',
+    TP.boot.$$loadNode.setAttribute('srccfg',
                                     TP.sys.cfg('src.config', ''));
 
     scriptDoc = TP.boot.$isValid(targetDoc) ?
@@ -9299,16 +9299,16 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
     TP.boot.$$loadNode = elem;
 
     //  ensure we keep track of the proper package/config information
-    TP.boot.$$loadNode.setAttribute('load_package',
+    TP.boot.$$loadNode.setAttribute('loadpkg',
                                     TP.sys.cfg('load.package', ''));
-    TP.boot.$$loadNode.setAttribute('load_config',
+    TP.boot.$$loadNode.setAttribute('loadcfg',
                                     TP.sys.cfg('load.config', ''));
-    TP.boot.$$loadNode.setAttribute('load_stage',
+    TP.boot.$$loadNode.setAttribute('loadstage',
                                     TP.sys.cfg('load.stage', ''));
 
-    TP.boot.$$loadNode.setAttribute('src_package',
+    TP.boot.$$loadNode.setAttribute('srcpkg',
                                     TP.sys.cfg('src.package', ''));
-    TP.boot.$$loadNode.setAttribute('src_config',
+    TP.boot.$$loadNode.setAttribute('srccfg',
                                     TP.sys.cfg('src.config', ''));
 
     scriptDoc = TP.boot.$isValid(targetDoc) ?
@@ -9673,7 +9673,7 @@ TP.boot.$importComponents = function(loadSync) {
     //  'flatten' packages into place.
     tn = nd.tagName.toLowerCase();
 
-    logpackage = nd.getAttribute('load_package');
+    logpackage = nd.getAttribute('loadpkg');
     if (logpackage) {
         logpackage = TP.boot.$uriInTIBETFormat(logpackage).replace(
                             '.xml', '');
@@ -9712,7 +9712,7 @@ TP.boot.$importComponents = function(loadSync) {
             logpath = TP.boot.$join(
                         logpackage,
                         '::' +
-                        nd.getAttribute('load_config'),
+                        nd.getAttribute('loadcfg'),
                         ' ',
                         srcpath.slice(srcpath.lastIndexOf('/') + 1));
 
@@ -9720,7 +9720,7 @@ TP.boot.$importComponents = function(loadSync) {
             //  by TIBET on request
             if (TP.sys.cfg('boot.defer') === true &&
                 (nd.getAttribute('defer') === 'true' ||
-                nd.getAttribute('load_deferred') === 'true')) {
+                nd.getAttribute('loaddefer') === 'true')) {
                 if (TP.boot.$verbose) {
                     TP.boot.$stdout('Deferring ' + logpath, TP.DEBUG);
                 } else {
@@ -9746,7 +9746,7 @@ TP.boot.$importComponents = function(loadSync) {
             //  adjust our log path to show shorthand package/config data
             logpath = TP.boot.$join(logpackage,
                             '::',
-                            nd.getAttribute('load_config'),
+                            nd.getAttribute('loadcfg'),
                             ' inline ', tn, ' source');
         }
 
@@ -9771,8 +9771,8 @@ TP.boot.$importComponents = function(loadSync) {
             TP.boot.$$srcPath = null;
         }
 
-        TP.boot.$$loadPackage = nd.getAttribute('load_package') || '';
-        TP.boot.$$loadConfig = nd.getAttribute('load_config') || '';
+        TP.boot.$$loadPackage = nd.getAttribute('loadpkg') || '';
+        TP.boot.$$loadConfig = nd.getAttribute('loadcfg') || '';
 
         TP.boot.$$srcPackage = TP.boot.$uriInTIBETFormat(TP.boot.$$loadPackage);
         TP.boot.$$srcConfig = TP.boot.$$loadConfig;
@@ -9803,12 +9803,12 @@ TP.boot.$importComponents = function(loadSync) {
             if (TP.sys.cfg('import.use_dom')) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
 
-                elem.setAttribute('load_package', TP.boot.$$loadPackage);
-                elem.setAttribute('load_config', TP.boot.$$loadConfig);
-                elem.setAttribute('load_stage', TP.boot.$$stage);
+                elem.setAttribute('loadpkg', TP.boot.$$loadPackage);
+                elem.setAttribute('loadcfg', TP.boot.$$loadConfig);
+                elem.setAttribute('loadstage', TP.boot.$$stage);
 
-                elem.setAttribute('src_package', TP.boot.$$srcPackage);
-                elem.setAttribute('src_config', TP.boot.$$srcConfig);
+                elem.setAttribute('srcpkg', TP.boot.$$srcPackage);
+                elem.setAttribute('srccfg', TP.boot.$$srcConfig);
 
                 TP.boot.$$loadNode = elem;
 
@@ -9870,7 +9870,7 @@ TP.boot.$importComponents = function(loadSync) {
                 logpath = TP.boot.$join(
                         logpackage,
                         '::',
-                        nd.getAttribute('load_config'),
+                        nd.getAttribute('loadcfg'),
                         ' ',
                         srcpath.slice(srcpath.lastIndexOf('/') + 1));
 
@@ -10975,15 +10975,15 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
 
                         case 'property':
 
-                            child.setAttribute('load_package',
+                            child.setAttribute('loadpkg',
                                 TP.boot.$getCurrentPackage());
-                            child.setAttribute('load_config',
+                            child.setAttribute('loadcfg',
                                 anElement.getAttribute('id'));
-                            child.setAttribute('load_stage',
+                            child.setAttribute('loadstage',
                                 TP.boot.$$stage);
-                            child.setAttribute('src_package',
+                            child.setAttribute('srcpkg',
                                 TP.boot.$getCurrentPackage());
-                            child.setAttribute('src_config',
+                            child.setAttribute('srccfg',
                                 anElement.getAttribute('id'));
 
                             result.push(child);
@@ -11012,16 +11012,16 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                 if (TP.boot.$notValid(TP.boot.$$assets[src])) {
                                     TP.boot.$$assets[src] = src;
 
-                                    child.setAttribute('load_package',
+                                    child.setAttribute('loadpkg',
                                         TP.boot.$getCurrentPackage());
-                                    child.setAttribute('load_config',
+                                    child.setAttribute('loadcfg',
                                         anElement.getAttribute('id'));
-                                    child.setAttribute('load_stage',
+                                    child.setAttribute('loadstage',
                                         TP.boot.$$stage);
 
-                                    child.setAttribute('src_package',
+                                    child.setAttribute('srcpkg',
                                         TP.boot.$getCurrentPackage());
-                                    child.setAttribute('src_config',
+                                    child.setAttribute('srccfg',
                                         anElement.getAttribute('id'));
 
                                     result.push(child);
@@ -11031,16 +11031,16 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                             TP.WARN);
                                 }
                             } else {
-                                child.setAttribute('load_package',
+                                child.setAttribute('loadpkg',
                                     TP.boot.$getCurrentPackage());
-                                child.setAttribute('load_config',
+                                child.setAttribute('loadcfg',
                                     anElement.getAttribute('id'));
-                                child.setAttribute('load_stage',
+                                child.setAttribute('loadstage',
                                     TP.boot.$$stage);
 
-                                child.setAttribute('src_package',
+                                child.setAttribute('srcpkg',
                                     TP.boot.$getCurrentPackage());
-                                child.setAttribute('src_config',
+                                child.setAttribute('srccfg',
                                     anElement.getAttribute('id'));
 
                                 result.push(child);
