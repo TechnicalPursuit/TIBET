@@ -49,12 +49,12 @@ sherpa|consoleoutput[mode="one"] {
     top: auto;
 }
 
-sherpa|consoleoutput[mode="one"]:not([showing_all]) sherpa|consoleoutputitem {
+sherpa|consoleoutput[mode="one"]:not([showingall]) sherpa|consoleoutputitem {
 
     display: none;
 }
 
-sherpa|consoleoutput[mode="one"]:not([showing_all]) sherpa|consoleoutputitem:last-child {
+sherpa|consoleoutput[mode="one"]:not([showingall]) sherpa|consoleoutputitem:last-child {
 
     display: block;
 }

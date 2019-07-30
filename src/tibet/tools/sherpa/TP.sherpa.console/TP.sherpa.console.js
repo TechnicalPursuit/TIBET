@@ -419,7 +419,7 @@ function() {
             //  and force toggle the display to expose the last cell.
             if (mode === 'none') {
                 consoleOutput.removeAttribute('hidden');
-                consoleOutput.removeAttribute('showing_all');
+                consoleOutput.removeAttribute('showingall');
 
                 consoleOutput.setAttribute('mode', 'growl');
                 consoleOutput.growlModeForceDisplayToggle();
@@ -428,10 +428,10 @@ function() {
                 //  keystroke.
                 return true;
             } else if (mode === 'one') {
-                if (consoleOutput.hasAttribute('showing_all')) {
-                    consoleOutput.removeAttribute('showing_all');
+                if (consoleOutput.hasAttribute('showingall')) {
+                    consoleOutput.removeAttribute('showingall');
                 } else {
-                    consoleOutput.setAttribute('showing_all', 'true');
+                    consoleOutput.setAttribute('showingall', 'true');
                 }
 
                 //  Return true so that ACE will *not* process this as a regular
