@@ -1251,7 +1251,7 @@ function(REQUEST$$, CMDTYPE$$) {
                         function(item) {
 
                             return item.value;
-                        }).join('') + '\').set(\'makeStruct\', true), $INPUT);';
+                        }).join('') + '\').set(\'buildout\', true), $INPUT);';
                 TP.nodeSetTextContent($NODE, $SCRIPT);
             } else {
                 //  fall through and let the EXEC$$ code try to invoke the

@@ -138,7 +138,7 @@ function() {
 
         resourceStr,
 
-        shouldMakeStructures;
+        buildout;
 
     elem = this.getNativeNode();
 
@@ -195,8 +195,8 @@ function() {
         //  'null'. Some content types, such as TP.core.XMLContent and
         //  TP.core.JSONContent, can handle null content objects handed to their
         //  initialization logic.
-        shouldMakeStructures = TP.bc(this.getAttribute('makestructures'));
-        if (shouldMakeStructures) {
+        buildout = TP.bc(this.getAttribute('buildout'));
+        if (buildout) {
             this.setContent(null);
         }
     }
@@ -323,9 +323,9 @@ function(aContentObject, aRequest) {
     //  convert it from a String to the proper type.
     if (TP.isSubtypeOf(contentType, TP.core.Content)) {
         newResource = contentType.construct(aContentObject, namedURI);
-        if (this.hasAttribute('makestructures')) {
-            newResource.set('shouldMakeStructures',
-                            TP.bc(this.getAttribute('makestructures')));
+        if (this.hasAttribute('buildout')) {
+            newResource.set('buildout',
+                            TP.bc(this.getAttribute('buildout')));
         }
     } else {
         strResource = TP.str(aContentObject);

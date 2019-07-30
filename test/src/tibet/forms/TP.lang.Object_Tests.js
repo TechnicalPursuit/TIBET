@@ -373,7 +373,7 @@ TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
 //  ------------------------------------------------------------------------
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('lastName',
-    TP.tpc('lastName', TP.hc('shouldMakeStructures', true)),
+    TP.tpc('lastName', TP.hc('buildout', true)),
     {
         valid: {
             dataType: String
@@ -381,7 +381,7 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute('lastName',
     });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('firstName',
-    TP.tpc('firstName', TP.hc('shouldMakeStructures', true)),
+    TP.tpc('firstName', TP.hc('buildout', true)),
     {
         valid: {
             dataType: String
@@ -389,7 +389,7 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute('firstName',
     });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('age',
-    TP.tpc('age', TP.hc('shouldMakeStructures', true)),
+    TP.tpc('age', TP.hc('buildout', true)),
     {
         valid: {
             dataType: Number
@@ -397,7 +397,7 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute('age',
     });
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('SSN',
-    TP.tpc('SSN', TP.hc('shouldMakeStructures', true)),
+    TP.tpc('SSN', TP.hc('buildout', true)),
     {
         valid: {
             dataType: 'TP.test.SSN'
@@ -606,7 +606,7 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute('age',
 TP.test.SimpleXMLContentType.Inst.defineAttribute('SSN',
     TP.xpc('/emp/SSN',
         TP.hc('shouldCollapse', true, 'extractWith', 'value',
-                'shouldMakeStructures', true)),
+                'buildout', true)),
     {
         valid: {
             dataType: 'TP.test.SSN'

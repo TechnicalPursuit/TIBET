@@ -4480,7 +4480,7 @@ function(aRequest, aResult, aResource, shouldSignal) {
             //  accessor's flag to make structures.
             if (TP.isTrue(this.get('shouldCreateContent'))) {
 
-                fragmentAccessor.set('shouldMakeStructures', true);
+                fragmentAccessor.set('buildout', true);
 
                 //  If result was not valid, then our primary URI doesn't have
                 //  valid object for us to use as a starting point - try to

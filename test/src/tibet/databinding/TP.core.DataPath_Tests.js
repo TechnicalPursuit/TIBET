@@ -2780,7 +2780,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        singleLevelPath.set('shouldMakeStructures', true);
+        singleLevelPath.set('buildout', true);
 
         singleLevelPath.executeSet(singleLevelModel, TP.hc('bar', 'baz'), true);
 
@@ -3417,7 +3417,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'goo', true);
@@ -3457,7 +3457,7 @@ function() {
     this.it('multi level set with creation', function(test, options) {
         var val;
 
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, 'boo', true);
@@ -3505,7 +3505,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'four', true);
@@ -3542,7 +3542,7 @@ function() {
     this.it('multi level set with creation', function(test, options) {
         var val;
 
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, 'stuff', true);
@@ -3629,7 +3629,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'goo', true);
@@ -3669,7 +3669,7 @@ function() {
     this.it('multi level set with creation', function(test, options) {
         var val;
 
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, TP.ac(), true);
@@ -4126,7 +4126,7 @@ function() {
         test.assert.isNull(val);
 
         //  Turn ON creation
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'November', true);
@@ -4187,7 +4187,7 @@ function() {
         test.assert.isNull(val);
 
         //  Turn ON creation
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, 'Bill', true);
@@ -4258,7 +4258,7 @@ function() {
         test.assert.isNull(val);
 
         //  Turn ON creation
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, TP.elem('<bp>110/70</bp>'), true);
@@ -4322,7 +4322,7 @@ function() {
         test.assert.isNull(val);
 
         //  Turn ON creation
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, newFrag, true);
@@ -4486,7 +4486,7 @@ function() {
         test.assert.isNull(val);
 
         //  Turn ON creation
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'moo', true);
@@ -4549,7 +4549,7 @@ function() {
         //  path2 = TP.apc('/emp/fname/@foo|/emp/age/@bar');
 
         //  Turn ON creation
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model2, 'goo', true);
@@ -5253,7 +5253,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'goo', true);
@@ -5302,7 +5302,7 @@ function() {
     this.it('multi level set with creation', function(test, options) {
         var val;
 
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, 'boo', true);
@@ -5359,7 +5359,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'four', true);
@@ -5405,7 +5405,7 @@ function() {
     this.it('multi level set with creation', function(test, options) {
         var val;
 
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, 'stuff', true);
@@ -5516,7 +5516,7 @@ function() {
     this.it('single level set with creation', function(test, options) {
         var val;
 
-        path1.set('shouldMakeStructures', true);
+        path1.set('buildout', true);
 
         //  Should create - we just turned it on
         path1.executeSet(model1, 'goo', true);
@@ -5565,7 +5565,7 @@ function() {
     this.it('multi level set with creation', function(test, options) {
         var val;
 
-        path2.set('shouldMakeStructures', true);
+        path2.set('buildout', true);
 
         //  Should create - we just turned it on
         path2.executeSet(model1, TP.ac(), true);
