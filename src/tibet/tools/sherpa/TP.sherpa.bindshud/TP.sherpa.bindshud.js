@@ -807,7 +807,7 @@ function(enterSelection) {
                     return (i / 2).floor();
                 }
             }).attr(
-            'peerID',
+            'peer',
             function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
@@ -945,7 +945,7 @@ function(updateSelection) {
                     return (i / 2).floor();
                 }
             }).attr(
-            'peerID',
+            'peer',
             function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
@@ -1131,10 +1131,10 @@ function(aSignal) {
 
         cmdText;
 
-    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  Grab the target lozenge tile and get the value of its peer attribute.
     //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
 
     //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
@@ -1387,9 +1387,9 @@ function(aSignal) {
         return this;
     }
 
-    //  The peerID on the lozenge will indicate which element in the UI canvas
+    //  The peer on the lozenge will indicate which element in the UI canvas
     //  it is representing. If we don't have one, we exit.
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
     if (TP.isEmpty(peerID)) {
         return this;
     }

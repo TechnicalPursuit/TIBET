@@ -85,7 +85,7 @@ function(aSignal) {
     //  user is highlighting.
     targetElem = aSignal.getDOMTarget();
 
-    //  The peerID on the lozenge will indicate which element in the UI canvas
+    //  The peer on the lozenge will indicate which element in the UI canvas
     //  it is representing. If we don't have one, we exit.
     val = TP.elementGetAttribute(targetElem, 'data-value', true);
     if (TP.isEmpty(val)) {

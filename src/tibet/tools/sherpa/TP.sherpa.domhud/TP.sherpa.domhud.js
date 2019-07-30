@@ -161,7 +161,7 @@ function(aSignal) {
         return this;
     }
 
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
     if (TP.isEmpty(peerID)) {
         return this;
     }
@@ -211,7 +211,7 @@ function(sidebarElement) {
             //  We go to the item after us to determine the peerID
             peerID = TP.elementGetAttribute(
                         sidebarElement.nextSibling,
-                        'peerID',
+                        'peer',
                         true);
         }
 
@@ -222,14 +222,14 @@ function(sidebarElement) {
             //  We go to the item before us to determine the peerID
             peerID = TP.elementGetAttribute(
                             sidebarElement.previousSibling,
-                            'peerID',
+                            'peer',
                             true);
         }
     } else {
         //  We go to ourself to determine the peerID
         peerID = TP.elementGetAttribute(
                             sidebarElement,
-                            'peerID',
+                            'peer',
                             true);
     }
 
@@ -438,7 +438,7 @@ function(aTPElement) {
 
         //  Get the currently displayed lozenge given that the peerID should
         //  be the same as it was for the old lozenge.
-        currentItemTPElem = TP.byCSSPath('> ul li[peerID="' + itemID + '"]',
+        currentItemTPElem = TP.byCSSPath('> ul li[peer="' + itemID + '"]',
                                             this.getNativeNode(),
                                             true);
 
@@ -556,7 +556,7 @@ function(aSignal) {
         return this;
     }
 
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
     if (TP.isEmpty(peerID)) {
         return this;
     }
@@ -661,7 +661,7 @@ function(aTPElem) {
 
             //  The peerID will contain the ID of the element that the list item
             //  represents.
-            peerID = lastListItem.getAttribute('peerID');
+            peerID = lastListItem.getAttribute('peer');
             if (TP.isEmpty(peerID)) {
                 return this;
             }
@@ -692,7 +692,7 @@ function(aTPElem) {
 
         len = listItems.getSize();
         for (i = 0; i < len; i++) {
-            if (listItems.at(i).getAttribute('peerID') === sourceID) {
+            if (listItems.at(i).getAttribute('peer') === sourceID) {
                 itemTPElem = listItems.at(i);
                 break;
             }
@@ -830,7 +830,7 @@ function(enterSelection) {
                     return (i / 2).floor();
                 }
             }).attr(
-            'peerID',
+            'peer',
             function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
@@ -960,7 +960,7 @@ function(updateSelection) {
                     return (i / 2).floor();
                 }
             }).attr(
-            'peerID',
+            'peer',
             function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
@@ -1205,7 +1205,7 @@ function(aSignal) {
                     //  We go to the item after us to determine the peerID
                     peerID = TP.elementGetAttribute(
                                 dndTargetElem.nextSibling,
-                                'peerID',
+                                'peer',
                                 true);
                     insertionPosition = TP.BEFORE_BEGIN;
                 }
@@ -1217,7 +1217,7 @@ function(aSignal) {
                     //  We go to the item before us to determine the peerID
                     peerID = TP.elementGetAttribute(
                                     dndTargetElem.previousSibling,
-                                    'peerID',
+                                    'peer',
                                     true);
                     insertionPosition = TP.AFTER_END;
                 }
@@ -1225,7 +1225,7 @@ function(aSignal) {
                 //  We go to ourself to determine the peerID
                 peerID = TP.elementGetAttribute(
                                     dndTargetElem,
-                                    'peerID',
+                                    'peer',
                                     true);
                 sherpaOutliner = TP.bySystemId('SherpaOutliner');
                 insertionPosition = sherpaOutliner.get('insertionPosition');
@@ -1331,10 +1331,10 @@ function(aSignal) {
 
         didBlur;
 
-    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  Grab the target lozenge tile and get the value of its peer attribute.
     //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
 
     //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
@@ -1406,10 +1406,10 @@ function(aSignal) {
 
         tileTPElem;
 
-    //  Grab the target lozenge tile and get the value of its peerID attribute.
+    //  Grab the target lozenge tile and get the value of its peer attribute.
     //  This will be the ID of the element that we're trying to focus.
     targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
 
     //  No peerID? Exit here.
     if (TP.isEmpty(peerID)) {
@@ -1648,7 +1648,7 @@ function(aSignal) {
 
     //  The peerID on the lozenge will indicate which element in the UI canvas
     //  it is representing. If we don't have one, we exit.
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
     if (TP.isEmpty(peerID)) {
         return this;
     }
