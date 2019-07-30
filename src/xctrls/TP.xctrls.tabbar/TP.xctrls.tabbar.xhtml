@@ -5,7 +5,7 @@
         tibet:nomutationtracking="true"
         tibet:opaque="bind">
     <span tibet:assembly="xctrls:tabbar">
-        <tibet:group wrapfocus="true" id="{{$SOURCE.(@id)}}_group">
+        <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
             <xctrls:content tibet:pelem="choices" class="noselect">
             {{$SOURCE.(./*[local-name() = 'template']/preceding-sibling::*[local-name() = 'tabitem'])}}
             <span class="templated"/>

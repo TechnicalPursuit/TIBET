@@ -42,7 +42,7 @@
         </div>
 
         <div class="attributesGroup" bind:scope="urn:tibet:tofuInsertionAssistant_source#jpath($.info)">
-            <tibet:group wrapfocus="true" id="tofuInsertionAssistant_AttributeEntries" bind:repeat="tagAttrs">
+            <tibet:group focuswrap="true" id="tofuInsertionAssistant_AttributeEntries" bind:repeat="tagAttrs">
                 <input type="text" bind:io="{value: tagAttrName}" tabindex="0"/>
                 <input type="text" bind:io="{value: tagAttrValue}" tabindex="0"/>
                 <span class="deleter" on:click="{signal: DeleteItem, origin: tofuInsertionAssistant_AttributeEntries, payload: {index: TP.TARGET}}"/>

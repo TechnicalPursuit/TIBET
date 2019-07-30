@@ -2037,10 +2037,10 @@ function(focusedTPElem, moveAction) {
     theMoveAction = moveAction;
 
     //  Compute whether the current group 'wraps' or not. It will wrap if it
-    //  has a 'wrapfocus' attribute and the value of that is not 'false'.
+    //  has a 'focuswrap' attribute and the value of that is not 'false'.
     currentGroupWraps =
-            currentGroup.hasAttribute('wrapfocus') &&
-            currentGroup.getAttribute('wrapfocus') !== 'false';
+            currentGroup.hasAttribute('focuswrap') &&
+            currentGroup.getAttribute('focuswrap') !== 'false';
 
     //  If the current group doesn't wrap, then the move action turns from a
     //  TP.NEXT into a TP.FOLLOWING or from a TP.PREVIOUS into a
@@ -3129,11 +3129,11 @@ function(startGroupName, alwaysWrap, wantsNested) {
             //  Otherwise, loop for the group out of all of the groups *of only
             //  the parent group* that comes after the 'from' group.
 
-            //  If the parent tibet:group has a 'wrapfocus' attribute on it
+            //  If the parent tibet:group has a 'focuswrap' attribute on it
             //  use that to determine whether we should wrap... unless we
-            //  should always wrap, ignoring 'wrapfocus'
-            if (parentGroupTPElem.hasAttribute('wrapfocus') || shouldWrap) {
-                //  TODO: There are other values for 'wrapfocus'
+            //  should always wrap, ignoring 'focuswrap'
+            if (parentGroupTPElem.hasAttribute('focuswrap') || shouldWrap) {
+                //  TODO: There are other values for 'focuswrap'
                 nextGroupTPElem = memberGroupTPElems.first();
             } else {
                 //  Can't find the next group and we're not wrapping -
@@ -3411,11 +3411,11 @@ function(startGroupName, alwaysWrap, wantsNested) {
             //  Otherwise, look for the group out of all of the groups *of only
             //  the parent group* that comes before the 'from' group.
 
-            //  If the parent tibet:group has a 'wrapfocus' attribute on it
+            //  If the parent tibet:group has a 'focuswrap' attribute on it
             //  use that to determine whether we should wrap... unless we
-            //  should always wrap, ignoring 'wrapfocus'
-            if (parentGroupTPElem.hasAttribute('wrapfocus') || shouldWrap) {
-                //  TODO: There are other values for 'wrapfocus'
+            //  should always wrap, ignoring 'focuswrap'
+            if (parentGroupTPElem.hasAttribute('focuswrap') || shouldWrap) {
+                //  TODO: There are other values for 'focuswrap'
                 prevGroupTPElem = memberGroupTPElems.last();
             } else {
                 //  Can't find the previous group and we're not wrapping -

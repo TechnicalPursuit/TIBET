@@ -622,7 +622,7 @@ function() {
                 elem4 = TP.byId('focusTestElem4', windowContext, false);
 
                 //  In this test, the 'fooGroup' does *not* wrap (since it
-                //  doesn't have a 'wrapfocus' attribute), but the 'gooGroup'
+                //  doesn't have a 'focuswrap' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
                 TP.elementFocusAutofocusedElement(
@@ -862,7 +862,7 @@ function() {
                 elem4 = TP.byId('focusTestElem4', windowContext, false);
 
                 //  In this test, the 'fooGroup' does *not* wrap (since it
-                //  doesn't have a 'wrapfocus' attribute), but the 'gooGroup'
+                //  doesn't have a 'focuswrap' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
                 TP.elementFocusAutofocusedElement(
