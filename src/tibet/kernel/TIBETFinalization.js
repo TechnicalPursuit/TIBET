@@ -487,7 +487,8 @@ function() {
 
     return this;
 }, {
-    dependencies: [TP.extern.Promise]
+    dependencies: [TP.extern.Promise],
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
