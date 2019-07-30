@@ -4648,7 +4648,7 @@ function(anObject, aParamHash) {
         //  Create a template name per tsh:template model.
         //  TODO:   convert genID into a "hash code" for uniquing.
         templateName = 'template_' + TP.genID();
-        this.setAttribute('tsh:template_name', templateName);
+        this.setAttribute('tsh:template', templateName);
 
         //  Store the function in the URN for later lookup.
         urn = TP.TIBET_URN_PREFIX + templateName;
@@ -13251,7 +13251,7 @@ function() {
 
     var urn;
 
-    urn = this.getAttribute('tsh:template_name');
+    urn = this.getAttribute('tsh:template');
     if (TP.notEmpty(urn)) {
         urn = urn.startsWith(TP.TIBET_URN_PREFIX) ?
                     urn :
