@@ -848,7 +848,7 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         }
     } else if (TP.isElement(finalContent)) {
         content = TP.nodeCloneNode(finalContent);
-        TP.elementRemoveAttribute(content, 'tibet:noawaken', true);
+        TP.elementRemoveAttribute(content, 'tibet:no-awaken', true);
     } else if (TP.isFragment(finalContent)) {
         content = TP.documentConstructElement(
                     this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
@@ -1100,7 +1100,7 @@ function(aStyleTPElem) {
 
     //  If we're not awakening this tag, then exit - we want none of the
     //  machinery here to execute.
-    if (this.hasAttribute('tibet:noawaken')) {
+    if (this.hasAttribute('tibet:no-awaken')) {
         return this;
     }
 

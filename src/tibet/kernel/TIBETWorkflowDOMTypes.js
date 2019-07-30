@@ -1241,9 +1241,9 @@ TP.tag.TagProcessor.Type.defineConstant(
 //  with an attribute of 'tibet:no-compile'.
 TP.tag.TagProcessor.Type.defineConstant(
     'CUSTOM_NODES_QUERY_NO_AWAKEN',
-        'descendant-or-self::*[not(ancestor::*[@tibet:noawaken])]' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:no-awaken])]' +
         ' | ' +
-        'descendant-or-self::*[not(ancestor::*[@tibet:noawaken])]/@*[' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:no-awaken])]/@*[' +
         'namespace-uri() != ""' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
@@ -2415,7 +2415,7 @@ function(aNode) {
     //  or have attributes in the 'ev:' namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'not(ancestor::*[@tibet:no-awaken]) and ' +
             '(namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
             ' or ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"])' +
@@ -2487,7 +2487,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken])' +
+            'not(ancestor::*[@tibet:no-awaken])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -2556,7 +2556,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'not(ancestor::*[@tibet:no-awaken]) and ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
             ']';
 
@@ -2625,7 +2625,7 @@ function(aNode) {
     //  We're only interested in elements that have a local name of 'info'.
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'not(ancestor::*[@tibet:no-awaken]) and ' +
             'local-name() = "info"' +
             ']';
 
@@ -2718,7 +2718,7 @@ function(aNode) {
     //  Make sure to filter out all non-roots. This will filter out the vast
     //  majority of bound nodes (esp. in a bind:repeat) but we will still get
     //  valid results, since we're looking for common ancestors that don't have
-    //  'tibet:noawaken' on them.
+    //  'tibet:no-awaken' on them.
     boundElements = TP.nodeListFilterNonRoots(boundElements);
 
     //  Since querySelectorAll always queries from the Document even though we
@@ -2728,10 +2728,10 @@ function(aNode) {
             function(anElem) {
                 var ans;
 
-                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|noawaken]');
+                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
-                    TP.elementHasAttribute(anElem, 'tibet:noawaken', true)) {
+                    TP.elementHasAttribute(anElem, 'tibet:no-awaken', true)) {
                     return false;
                 }
 
@@ -2746,11 +2746,11 @@ function(aNode) {
                     textContent;
 
                 ans = TP.nodeAncestorMatchingCSS(aTextNode.parentNode,
-                                                    '*[tibet|noawaken]');
+                                                    '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
                     TP.elementHasAttribute(aTextNode.parentNode,
-                                            'tibet:noawaken',
+                                            'tibet:no-awaken',
                                             true)) {
                     return false;
                 }
@@ -2860,7 +2860,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken])' +
+            'not(ancestor::*[@tibet:no-awaken])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -2929,7 +2929,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken])' +
+            'not(ancestor::*[@tibet:no-awaken])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -3027,7 +3027,7 @@ function(aNode) {
     //  or have attributes in the 'ev:' namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'not(ancestor::*[@tibet:no-awaken]) and ' +
             'namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
             ' or ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"]' +
@@ -3099,7 +3099,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'not(ancestor::*[@tibet:no-awaken]) and ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
             ']';
 
@@ -3169,7 +3169,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken])' +
+            'not(ancestor::*[@tibet:no-awaken])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -3237,7 +3237,7 @@ function(aNode) {
     //  We're only interested in elements that have a local name of 'info'.
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken]) and ' +
+            'not(ancestor::*[@tibet:no-awaken]) and ' +
             'local-name() = "info"' +
             ']';
 
@@ -3330,7 +3330,7 @@ function(aNode) {
     //  Make sure to filter out all non-roots. This will filter out the vast
     //  majority of bound nodes (esp. in a bind:repeat) but we will still get
     //  valid results, since we're looking for common ancestors that don't have
-    //  'tibet:noawaken' on them.
+    //  'tibet:no-awaken' on them.
     boundElements = TP.nodeListFilterNonRoots(boundElements);
 
     //  Since querySelectorAll always queries from the Document even though we
@@ -3340,10 +3340,10 @@ function(aNode) {
             function(anElem) {
                 var ans;
 
-                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|noawaken]');
+                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
-                    TP.elementHasAttribute(anElem, 'tibet:noawaken', true)) {
+                    TP.elementHasAttribute(anElem, 'tibet:no-awaken', true)) {
                     return false;
                 }
 
@@ -3358,11 +3358,11 @@ function(aNode) {
                     textContent;
 
                 ans = TP.nodeAncestorMatchingCSS(aTextNode.parentNode,
-                                                    '*[tibet|noawaken]');
+                                                    '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
                     TP.elementHasAttribute(aTextNode.parentNode,
-                                            'tibet:noawaken',
+                                            'tibet:no-awaken',
                                             true)) {
                     return false;
                 }
@@ -3472,7 +3472,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken])' +
+            'not(ancestor::*[@tibet:no-awaken])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -3541,7 +3541,7 @@ function(aNode) {
     //  namespace
     query = 'descendant-or-self::*' +
             '[' +
-            'not(ancestor::*[@tibet:noawaken])' +
+            'not(ancestor::*[@tibet:no-awaken])' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);

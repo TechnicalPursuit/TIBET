@@ -9107,9 +9107,9 @@ function() {
     shouldProcess = true;
 
     //  But if the node is an Element and it has an attribute of
-    //  'tibet:noawaken', then skip processing it.
+    //  'tibet:no-awaken', then skip processing it.
     if (TP.isElement(node) &&
-        TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+        TP.elementHasAttribute(node, 'tibet:no-awaken', true)) {
         shouldProcess = false;
     }
 
@@ -9341,9 +9341,9 @@ function() {
     shouldProcess = true;
 
     //  But if the node is an Element and it has an attribute of
-    //  'tibet:noawaken', then skip processing it.
+    //  'tibet:no-awaken', then skip processing it.
     if (TP.isElement(node) &&
-        TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+        TP.elementHasAttribute(node, 'tibet:no-awaken', true)) {
         shouldProcess = false;
     }
 
@@ -11646,16 +11646,16 @@ function(anElement, nodesAdded) {
         }
 
         //  If the root is an Element and it has an attribute of
-        //  'tibet:noawaken', then skip processing it.
+        //  'tibet:no-awaken', then skip processing it.
         if (TP.isElement(root) &&
-            TP.elementHasAttribute(root, 'tibet:noawaken', true)) {
+            TP.elementHasAttribute(root, 'tibet:no-awaken', true)) {
             continue;
         }
 
         //  If the root has an ancestor Element that has an attribute of
-        //  'tibet:noawaken', then skip processing it.
+        //  'tibet:no-awaken', then skip processing it.
         if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
-                                        root, 'tibet:noawaken', null, true))) {
+                                        root, 'tibet:no-awaken', null, true))) {
             continue;
         }
 
@@ -11774,33 +11774,33 @@ function(anElement, nodesRemoved) {
         shouldProcess = true;
 
         //  But if the root is an Element and it has an attribute of
-        //  'tibet:noawaken', then skip processing it.
+        //  'tibet:no-awaken', then skip processing it.
         if (TP.isElement(root) &&
-            TP.elementHasAttribute(root, 'tibet:noawaken', true)) {
+            TP.elementHasAttribute(root, 'tibet:no-awaken', true)) {
             shouldProcess = false;
         }
 
         //  If the shouldProcess flag is still true
         if (shouldProcess) {
-            //  We need to now check for 'tibet:noawaken' in the hierarchy of
+            //  We need to now check for 'tibet:no-awaken' in the hierarchy of
             //  the root. Because the root is detached, we need to break this
             //  check into 2 parts: the first part will check the root's
             //  ancestor tree (if there is any) and the second part will check
             //  from the target root.
             //  Then both results will be checked. This gives the maximum chance
-            //  that a 'tibet:noawaken' flag will be found, if it ever existed
+            //  that a 'tibet:no-awaken' flag will be found, if it ever existed
             //  for this root.
 
             if (TP.isElement(root.parentNode)) {
                 parentHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
-                                            root, 'tibet:noawaken', null, true);
+                                            root, 'tibet:no-awaken', null, true);
             }
 
             targetHasNoAwaken = TP.elementHasAttribute(
-                                    anElement, 'tibet:noawaken', true);
+                                    anElement, 'tibet:no-awaken', true);
 
             targetAnsHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
-                                    anElement, 'tibet:noawaken', null, true);
+                                    anElement, 'tibet:no-awaken', null, true);
 
             if (parentHasNoAwaken ||
                 targetHasNoAwaken ||
@@ -11939,17 +11939,17 @@ function(aNode) {
     //  NB: We don't bother to check the TP.AWAKENED and TP.GENERATED flags here
     //  since we're 'forcing' an awaken.
 
-    //  If the node is an Element and it has an attribute of 'tibet:noawaken',
+    //  If the node is an Element and it has an attribute of 'tibet:no-awaken',
     //  then skip processing it.
     if (TP.isElement(aNode) &&
-        TP.elementHasAttribute(aNode, 'tibet:noawaken', true)) {
+        TP.elementHasAttribute(aNode, 'tibet:no-awaken', true)) {
         return;
     }
 
     //  If the node has an ancestor Element that has an attribute of
-    //  'tibet:noawaken', then skip processing it.
+    //  'tibet:no-awaken', then skip processing it.
     if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
-                                    aNode, 'tibet:noawaken', null, true))) {
+                                    aNode, 'tibet:no-awaken', null, true))) {
         return;
     }
 
@@ -11996,17 +11996,17 @@ function(aNode) {
     //  NB: We don't bother to check the TP.AWAKENED and TP.GENERATED flags here
     //  since we're 'forcing' a deaden.
 
-    //  If the node is an Element and it has an attribute of 'tibet:noawaken',
+    //  If the node is an Element and it has an attribute of 'tibet:no-awaken',
     //  then skip processing it.
     if (TP.isElement(aNode) &&
-        TP.elementHasAttribute(aNode, 'tibet:noawaken', true)) {
+        TP.elementHasAttribute(aNode, 'tibet:no-awaken', true)) {
         return;
     }
 
     //  If the node has an ancestor Element that has an attribute of
-    //  'tibet:noawaken', then skip processing it.
+    //  'tibet:no-awaken', then skip processing it.
     if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
-                                    aNode, 'tibet:noawaken', null, true))) {
+                                    aNode, 'tibet:no-awaken', null, true))) {
         return;
     }
 
