@@ -394,7 +394,7 @@ function(aValue, shouldSignal) {
 
     //  Turn off mutation tracking for the editors div. We don't need it and the
     //  overhead.
-    TP.elementSetAttribute(editorsDiv, 'tibet:nomutationtracking', 'true', true);
+    TP.elementSetAttribute(editorsDiv, 'tibet:no-mutations', 'true', true);
 
     editorEntries = TP.ac();
 

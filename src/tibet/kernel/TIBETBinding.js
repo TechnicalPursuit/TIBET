@@ -2168,15 +2168,15 @@ function(indexes) {
 
     elem = this.getNativeNode();
 
-    //  Whichever element has a 'tibet:nomutationtracking' attribute on it is
+    //  Whichever element has a 'tibet:no-mutations' attribute on it is
     //  acting as a common wrapper for the 'rows' making up the repeat. This may
     //  be a <tbody> element if we're repeating rows in a <table>, but it
     //  doesn't have to be.
-    if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
+    if (TP.elementHasAttribute(elem, 'tibet:no-mutations', true)) {
         wrapperElement = elem;
     } else {
         wrapperElement = TP.byCSSPath(
-                            '> *[tibet|nomutationtracking]',
+                            '> *[tibet|no-mutations]',
                             elem,
                             true,
                             false);
@@ -3675,15 +3675,15 @@ function(indexes) {
         repeatContent = repeatContent.firstElementChild;
     }
 
-    //  Whichever element has a 'tibet:nomutationtracking' attribute on it is
+    //  Whichever element has a 'tibet:no-mutations' attribute on it is
     //  acting as a common wrapper for the 'rows' making up the repeat. This may
     //  be a <tbody> element if we're repeating rows in a <table>, but it
     //  doesn't have to be.
-    if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
+    if (TP.elementHasAttribute(elem, 'tibet:no-mutations', true)) {
         wrapperElement = elem;
     } else {
         wrapperElement = TP.byCSSPath(
-                            '> *[tibet|nomutationtracking]',
+                            '> *[tibet|no-mutations]',
                             elem,
                             true,
                             false);
@@ -5499,7 +5499,7 @@ function(aCollection, elems) {
     //  Put an attribute on ourself that will prevent Mutation signals from
     //  being sent from content under us. This also marks us as the 'repeating
     //  body' (i.e. the element containing the repeating content).
-    TP.elementSetAttribute(elem, 'tibet:nomutationtracking', true, true);
+    TP.elementSetAttribute(elem, 'tibet:no-mutations', true, true);
 
     //  Make sure to empty the repeat element of any existing content
     TP.nodeEmptyContent(elem);

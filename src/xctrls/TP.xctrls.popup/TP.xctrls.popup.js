@@ -142,7 +142,7 @@ function(aRequest) {
     //  means that we need to allow mutations once in order to get awoken (and
     //  get to this method), but then we need to turn it off.
     TP.elementSetAttribute(
-            elem, 'tibet:nomutationtracking', 'ansorself', true);
+            elem, 'tibet:no-mutations', 'ansorself', true);
 
     return;
 });

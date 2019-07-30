@@ -381,7 +381,7 @@ function(aSignal) {
 
     //  We don't want moving this object and it's toolbar around in the DOM to
     //  cause mutation signals to be processed.
-    newPanel.setAttribute('tibet:nomutationtracking', 'true');
+    newPanel.setAttribute('tibet:no-mutations', 'true');
 
     //  Compute a unique ID for the editor, based on the number of tabs that are
     //  already in the console tab view.

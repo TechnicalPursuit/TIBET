@@ -497,13 +497,13 @@ function(finalizationFunc) {
             stripElem;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:nomutationtracking', false);
+        tpElem.setAttribute('tibet:no-mutations', false);
 
         tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:nomutationtracking', false);
+        tpElem.setAttribute('tibet:no-mutations', false);
 
         tpElem = TP.byId('center', viewDoc);
-        tpElem.setAttribute('tibet:nomutationtracking', true);
+        tpElem.setAttribute('tibet:no-mutations', true);
 
         //  Make sure to refresh all of the descendant document positions for
         //  the UI canvas.

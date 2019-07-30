@@ -821,7 +821,7 @@ function() {
     //  Make sure and flag the native node to not track mutations. This is a
     //  huge performance win when dealing with CodeMirror.
     TP.elementSetAttribute(
-        this.getNativeNode(), 'tibet:nomutationtracking', true, true);
+        this.getNativeNode(), 'tibet:no-mutations', true, true);
 
     //  Observe ourself for when we change size - so that we can call 'resize()'
     //  on the underlying ACE editor.

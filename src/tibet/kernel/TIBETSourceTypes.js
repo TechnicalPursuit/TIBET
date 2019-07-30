@@ -1972,20 +1972,20 @@ function() {
                 }
             }
 
-            //  If the target has a 'tibet:nomutationtracking' attribute on it
+            //  If the target has a 'tibet:no-mutations' attribute on it
             //  that has a value of 'ancestor or self' on it, then we return
             //  false, filtering it from the list.
             val = TP.elementGetAttribute(
-                            target, 'tibet:nomutationtracking', true);
+                            target, 'tibet:no-mutations', true);
             if (val === TP.ANCESTOR_OR_SELF) {
                 return false;
             }
 
-            //  Search for an ancestor that has the 'tibet:nomutationtracking'
+            //  Search for an ancestor that has the 'tibet:no-mutations'
             //  attribute.
             ans = TP.nodeAncestorMatchingCSS(
                             target,
-                            '*[tibet|nomutationtracking]');
+                            '*[tibet|no-mutations]');
 
             //  If we found one, then check *it's* 'tibet:nomutation' value. If
             //  it's either 'true' or 'ancestor', then we return false,
@@ -1993,7 +1993,7 @@ function() {
             if (TP.isElement(ans)) {
 
                 val = TP.elementGetAttribute(
-                            ans, 'tibet:nomutationtracking', true);
+                            ans, 'tibet:no-mutations', true);
 
                 if (val === 'true' || val === TP.ANCESTOR) {
                     return false;
@@ -2326,13 +2326,13 @@ function(aMutationRecord) {
         processForSherpa = true;
     }
 
-    //  If the target is an Element and it has a 'tibet:nomutationtracking'
+    //  If the target is an Element and it has a 'tibet:no-mutations'
     //  attribute on it that's either set to look at itself or at one of its
     //  ancestors or itself to determine whether or not it should process
     //  mutation signals, then process it.
     if (TP.isElement(targetNode)) {
         targetShouldTrack = TP.elementGetAttribute(
-                targetNode, 'tibet:nomutationtracking', true);
+                targetNode, 'tibet:no-mutations', true);
 
         //  NB: Note how we also take processForSherpa into account here.
         if ((targetShouldTrack === 'true' ||
@@ -2429,21 +2429,21 @@ function(aMutationRecord) {
 
                             //  If the node that got removed is an Element and
                             //  it has a value of TP.ANCESTOR_OR_SELF for the
-                            //  'tibet:nomutationtracking' attribute, then
+                            //  'tibet:no-mutations' attribute, then
                             //  return false to filter out this node from the
                             //  'removed' data set. Note that we do *NOT* check
                             //  for a value of 'true' here. The element is
                             //  supposed to be looking to its *ancestor*, not to
                             //  itself, as to whether it should be tracked from
                             //  a mutation perspective. In other words, a
-                            //  'tibet:nomutationtracking' attribute with a
+                            //  'tibet:no-mutations' attribute with a
                             //  simple value of 'true' will have *no* effect on
                             //  this element - only its descendants. There is a
                             //  workaround to this by using TP.ANCESTOR_OR_SELF.
                             if (TP.isElement(aNode)) {
 
                                 val = TP.elementGetAttribute(
-                                    aNode, 'tibet:nomutationtracking', true);
+                                    aNode, 'tibet:no-mutations', true);
 
                                 //  NB: Note how we also take processForSherpa
                                 //  into account here.
@@ -2456,7 +2456,7 @@ function(aMutationRecord) {
                             //  If the node that got removed is an Element and
                             //  an Element can be found in the node's ancestor
                             //  chain that has an attribute with a name of
-                            //  'tibet:nomutationtracking' and that attribute
+                            //  'tibet:no-mutations' and that attribute
                             //  has a value of 'true' or 'ans', then return
                             //  false to filter out this node from the 'removed'
                             //  data set.
@@ -2464,10 +2464,10 @@ function(aMutationRecord) {
                                 TP.isElement(
                                     ans = TP.nodeAncestorMatchingCSS(
                                             aNode,
-                                            '*[tibet|nomutationtracking]'))) {
+                                            '*[tibet|no-mutations]'))) {
 
                                 val = TP.elementGetAttribute(
-                                        ans, 'tibet:nomutationtracking', true);
+                                        ans, 'tibet:no-mutations', true);
 
                                 //  NB: Note how we also take processForSherpa
                                 //  into account here.
@@ -2510,21 +2510,21 @@ function(aMutationRecord) {
 
                             //  If the node that got added is an Element and
                             //  it has a value of TP.ANCESTOR_OR_SELF for the
-                            //  'tibet:nomutationtracking' attribute, then
+                            //  'tibet:no-mutations' attribute, then
                             //  return false to filter out this node from the
                             //  'added' data set. Note that we do *NOT* check
                             //  for a value of 'true' here. The element is
                             //  supposed to be looking to its *ancestor*, not to
                             //  itself, as to whether it should be tracked from
                             //  a mutation perspective. In other words, a
-                            //  'tibet:nomutationtracking' attribute with a
+                            //  'tibet:no-mutations' attribute with a
                             //  simple value of 'true' will have *no* effect on
                             //  this element - only its descendants. There is a
                             //  workaround to this by using TP.ANCESTOR_OR_SELF.
                             if (TP.isElement(aNode)) {
 
                                 val = TP.elementGetAttribute(
-                                    aNode, 'tibet:nomutationtracking', true);
+                                    aNode, 'tibet:no-mutations', true);
 
                                 //  NB: Note how we also take processForSherpa
                                 //  into account here.
@@ -2537,7 +2537,7 @@ function(aMutationRecord) {
                             //  If the node that got added is an Element and
                             //  an Element can be found in the node's ancestor
                             //  ancestor chain that has an attribute with a name
-                            //  of 'tibet:nomutationtracking' and that attribute
+                            //  of 'tibet:no-mutations' and that attribute
                             //  has a value of 'true' or 'ans', then return
                             //  false to filter out this node from the 'added'
                             //  data set.
@@ -2545,10 +2545,10 @@ function(aMutationRecord) {
                                 TP.isElement(
                                     ans = TP.nodeAncestorMatchingCSS(
                                             aNode,
-                                            '*[tibet|nomutationtracking]'))) {
+                                            '*[tibet|no-mutations]'))) {
 
                                 val = TP.elementGetAttribute(
-                                        ans, 'tibet:nomutationtracking', true);
+                                        ans, 'tibet:no-mutations', true);
 
                                 //  NB: Note how we also take processForSherpa
                                 //  into account here.
