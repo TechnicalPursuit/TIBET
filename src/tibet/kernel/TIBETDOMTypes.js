@@ -15046,14 +15046,14 @@ function(aFlag) {
 
     if (TP.isBoolean(aFlag)) {
         if (TP.notTrue(aFlag)) {
-            TP.elementRemoveAttribute(natElem, 'tibet:shouldflagchanges');
+            TP.elementRemoveAttribute(natElem, 'tibet:flagchanges');
         } else {
             TP.elementSetAttribute(
-                    natElem, 'tibet:shouldflagchanges', true);
+                    natElem, 'tibet:flagchanges', true);
         }
     }
 
-    return TP.elementGetAttribute(natElem, 'tibet:shouldflagchanges') ===
+    return TP.elementGetAttribute(natElem, 'tibet:flagchanges') ===
                     'true';
 });
 

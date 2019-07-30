@@ -1675,7 +1675,7 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:phase',
     'tibet:recasting',
     'tibet:single',
-    'tibet:shouldflagchanges',
+    'tibet:flagchanges',
     'tibet:templateid',
     'tibet:templateexpr',
     'tibet:textbinding'
