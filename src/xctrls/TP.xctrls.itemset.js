@@ -502,8 +502,8 @@ function(aSignal) {
         //  If we always signal change, then even if the values are equal,
         //  we will not exit here. If an attribute is defined, then it takes
         //  precedence over whatever the item control returns.
-        if (this.hasAttribute('alwaysSignalChange')) {
-            alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
+        if (this.hasAttribute('alwayschange')) {
+            alwaysSignalChange = TP.bc(this.getAttribute('alwayschange'));
         } else {
             alwaysSignalChange = wrappedDOMTarget.alwaysSignalChange();
         }
@@ -524,8 +524,8 @@ function(aSignal) {
 
         //  See if we 'toggle' items - if so and the item is selected, we'll
         //  deselect it. The default is true.
-        if (this.hasAttribute('toggleItems')) {
-            toggleItems = TP.bc(this.getAttribute('toggleItems'));
+        if (this.hasAttribute('toggleitems')) {
+            toggleItems = TP.bc(this.getAttribute('toggleitems'));
         } else {
             toggleItems = true;
         }

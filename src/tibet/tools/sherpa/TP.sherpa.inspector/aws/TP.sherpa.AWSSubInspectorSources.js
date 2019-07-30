@@ -461,7 +461,7 @@ function(options) {
     return TP.elem(
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
-            '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
+            '}" filter="true" alwayschange="true" toggleitems="false"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -476,7 +476,7 @@ function(options) {
     return TP.elem(
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
-            '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
+            '}" filter="true" alwayschange="true" toggleitems="false"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -491,7 +491,7 @@ function(options) {
     return TP.elem(
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
-            '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
+            '}" filter="true" alwayschange="true" toggleitems="false"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -506,7 +506,7 @@ function(options) {
     return TP.elem(
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
-            '}" filter="true" alwaysSignalChange="true" toggleItems="false"/>');
+            '}" filter="true" alwayschange="true" toggleitems="false"/>');
 });
 
 //  ------------------------------------------------------------------------

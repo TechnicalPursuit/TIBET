@@ -245,7 +245,7 @@ function(aTargetItem) {
 
     //  If we always signal change, then even if the values are equal,
     //  we will not exit here.
-    alwaysSignalChange = TP.bc(this.getAttribute('alwaysSignalChange'));
+    alwaysSignalChange = TP.bc(this.getAttribute('alwayschange'));
 
     //  If we don't always signal change and the two values are equivalent,
     //  than just return.
@@ -263,8 +263,8 @@ function(aTargetItem) {
 
     //  See if we 'toggle' items - if so and the item is selected, we'll
     //  deselect it. The default is true.
-    if (this.hasAttribute('toggleItems')) {
-        toggleItems = TP.bc(this.getAttribute('toggleItems'));
+    if (this.hasAttribute('toggleitems')) {
+        toggleItems = TP.bc(this.getAttribute('toggleitems'));
     } else {
         toggleItems = true;
     }
