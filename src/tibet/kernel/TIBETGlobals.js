@@ -1659,7 +1659,7 @@ TP.NEVER_PREFIXED_ATTRS = ['id'];
 TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:assembly',
     'tibet:crud',
-    'tibet:desugaredAttrExprs',
+    'tibet:desugared',
     'tibet:focuscontext',
     'tibet:for',
     'tibet:globaldocid',

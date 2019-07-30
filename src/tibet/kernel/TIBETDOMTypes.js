@@ -14254,7 +14254,7 @@ function(storageInfo) {
                     //  If the element has desugared ACP attribute expressions,
                     //  then process them back into their original form.
                     desugaredAttrExprs = TP.elementGetAttribute(
-                            elem, 'tibet:desugaredAttrExprs', true);
+                            elem, 'tibet:desugared', true);
 
                     if (TP.notEmpty(desugaredAttrExprs)) {
 

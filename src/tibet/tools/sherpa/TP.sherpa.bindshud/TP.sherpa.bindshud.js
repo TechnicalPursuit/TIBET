@@ -525,7 +525,7 @@ function(aSignal) {
                 //  Remove special attributes that TIBET uses for binding
                 //  maintenance.
                 TP.elementRemoveAttribute(
-                    peerElem, 'tibet:desugaredAttrExprs', true);
+                    peerElem, 'tibet:desugared', true);
                 TP.elementRemoveAttribute(
                     peerElem, 'tibet:textbinding', true);
 

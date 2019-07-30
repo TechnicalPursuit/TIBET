@@ -258,7 +258,7 @@ TP.hc(
 
                 ownerElem.setAttributeNS(
                         TP.w3.Xmlns.TIBET,
-                        'tibet:desugaredAttrExprs',
+                        'tibet:desugared',
                         srcAttr.name);
             } else {
                 //  Already have a bind:in/bind:io attribute - add to it.
@@ -271,7 +271,7 @@ TP.hc(
                     val +
                     '}';
                 desugaredAttrsAttr =
-                    ownerElem.attributes['tibet:desugaredAttrExprs'];
+                    ownerElem.attributes['tibet:desugared'];
                 desugaredAttrsAttr.nodeValue += ' ' + srcAttr.name;
             }
 
@@ -421,7 +421,7 @@ TP.hc(
 
                 desugaredAttrsAttr = activeXDoc.createNode(
                                         Node.ATTRIBUTE_NODE,
-                                        'tibet:desugaredAttrExprs',
+                                        'tibet:desugared',
                                         TP.w3.Xmlns.TIBET);
 
                 ownerElem.setAttributeNode(desugaredAttrsAttr);
@@ -438,7 +438,7 @@ TP.hc(
                     val +
                     '}';
                 desugaredAttrsAttr =
-                    ownerElem.attributes['tibet:desugaredAttrExprs'];
+                    ownerElem.attributes['tibet:desugared'];
                 desugaredAttrsAttr.nodeValue += ' ' + srcAttr.name;
             }
 
