@@ -167,7 +167,7 @@ TP.sherpa.IDE.Inst.defineAttribute('$shouldProcessTimeout');
 //  type' dynamically when a connector session starts and removed when it ends.
 TP.sherpa.IDE.Inst.defineAttribute('connectorCollectors');
 
-//  A target element that would have had a 'tibet:nodragtrapping' attribute on
+//  A target element that would have had a 'tibet:no-dragtrapping' attribute on
 //  it when the connector session started, but needed to be removed to make the
 //  DOMDrag* signals for connectors work. This needs to be tracked and put back
 //  when the connector session has ended.
@@ -1291,7 +1291,7 @@ function(aSignal) {
         aSignal.preventDefault();
 
         //  Next, grab the target and, if it's an Element and has a
-        //  'tibet:nodragtrapping' attribute on it, remove that attribute and
+        //  'tibet:no-dragtrapping' attribute on it, remove that attribute and
         //  track the fact that we had a target that had that attribute.
         //  Controls like text input fields will have this attribute, because
         //  during normal production operation we do *not* want to allow
@@ -1300,7 +1300,7 @@ function(aSignal) {
         //  override that.
         target = aSignal.getTarget();
         if (TP.isElement(target)) {
-            TP.elementRemoveAttribute(target, 'tibet:nodragtrapping', true);
+            TP.elementRemoveAttribute(target, 'tibet:no-dragtrapping', true);
             this.$set('$nodragtrapTarget', target);
         }
     }
@@ -1933,13 +1933,13 @@ function(aSignal) {
 
         connector;
 
-    //  If we had a target that used to have a 'tibet:nodragtrapping' attribute
+    //  If we had a target that used to have a 'tibet:no-dragtrapping' attribute
     //  on it, we need to put that back now that the connector session is
     //  terminating.
     noTrapTarget = this.$get('$nodragtrapTarget');
     if (TP.isValid(noTrapTarget)) {
         TP.elementSetAttribute(noTrapTarget,
-                                'tibet:nodragtrapping',
+                                'tibet:no-dragtrapping',
                                 'true',
                                 true);
         this.$set('$nodragtrapTarget', null);

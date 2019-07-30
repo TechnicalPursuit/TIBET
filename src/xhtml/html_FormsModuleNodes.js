@@ -725,7 +725,7 @@ function(aRequest) {
     //  Set the attribute to not trap dragging in the TIBET D&D system, but
     //  allow targets of this type to do their natural drag operation (which, in
     //  this case, is selecting text).
-    TP.elementSetAttribute(elem, 'tibet:nodragtrapping', 'true', true);
+    TP.elementSetAttribute(elem, 'tibet:no-dragtrapping', 'true', true);
 
     return;
 });
