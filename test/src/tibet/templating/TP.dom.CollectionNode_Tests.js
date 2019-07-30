@@ -634,7 +634,7 @@ function() {
                 test.assert.isElement(contentElem);
 
                 correctVal = 'html:div';
-                testVal = TP.elementGetAttribute(contentElem, 'canonicalname', true);
+                testVal = TP.elementGetAttribute(contentElem, 'canonical', true);
 
                 test.assert.isEqualTo(
                     testVal,
