@@ -313,7 +313,7 @@ function(aContentObject, aRequest) {
     }
 
     //  Obtain a MIME type for the result and use it to obtain a result type.
-    //  Note that there might not be either a 'type' or 'contentType' attribute
+    //  Note that there might not be either a 'type' or 'contenttype' attribute
     //  on the receiver, in which case we'll just get a String result type here.
     contentType = this.getContentType(mimeType);
 
