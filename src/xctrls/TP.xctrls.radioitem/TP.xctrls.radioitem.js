@@ -63,7 +63,7 @@ function(anElement, aSignal) {
      *     'opaqueBubblingSignalNames' list and/or a defined attribute on the
      *     element.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaquebubbling' attribute.
+     *     'tibet:opaque-bubbling' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     bubble phase for the signal.

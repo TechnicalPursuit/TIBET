@@ -11451,13 +11451,13 @@ function(anElement, aSignal) {
      *     they will handle the signal themselves and not allow ancestors above
      *     them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:opaquebubbling' attribute, which should contain a
+     *     'tibet:opaque-bubbling' attribute, which should contain a
      *     space-separated set of TIBET signal names that will be captured by
      *     this element during the bubble phase of signaling. If that attribute
      *     is not present, it will check the 'opaqueBubblingSignalNames' type
      *     attribute for a list of signal names.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaquebubbling' attribute.
+     *     'tibet:opaque-bubbling' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     bubble phase for the signal.
@@ -11476,12 +11476,12 @@ function(anElement, aSignal) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:opaquebubbling'
+    //  Check to see if the supplied element has a 'tibet:opaque-bubbling'
     //  attribute. If so, split on space (' ') and use those values as the list
     //  of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:opaquebubbling', true)) {
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque-bubbling', true)) {
         attrVal = TP.elementGetAttribute(
-                        anElement, 'tibet:opaquebubbling', true);
+                        anElement, 'tibet:opaque-bubbling', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.
@@ -11519,13 +11519,13 @@ function(anElement, aSignal) {
      *     that they will handle the signal themselves and not allow targeted
      *     descendants underneath them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:opaquecapturing' attribute, which should contain a
+     *     'tibet:opaque-capturing' attribute, which should contain a
      *     space-separated set of TIBET signal names that will be captured by
      *     this element during the capture phase of signaling. If that attribute
      *     is not present, it will check the 'opaqueCapturingSignalNames' type
      *     attribute for a list of signal names.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaquecapturing' attribute.
+     *     'tibet:opaque-capturing' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     capture phase for the signal.
@@ -11544,12 +11544,12 @@ function(anElement, aSignal) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:opaquecapturing'
+    //  Check to see if the supplied element has a 'tibet:opaque-capturing'
     //  attribute. If so, split on space (' ') and use those values as the list
     //  of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:opaquecapturing', true)) {
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque-capturing', true)) {
         attrVal = TP.elementGetAttribute(
-                        anElement, 'tibet:opaquecapturing', true);
+                        anElement, 'tibet:opaque-capturing', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.

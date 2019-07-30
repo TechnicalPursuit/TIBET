@@ -703,7 +703,7 @@ function(anElement, aSignal) {
      *     can handle a particular key signal. If so, it is considered to be an
      *     opaque capturer.
      * @param {Element} anElem The element to check for the
-     *     'tibet:opaquecapturing' attribute.
+     *     'tibet:opaque-capturing' attribute.
      * @param {String} aSignalName The signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     capture phase for the signal.
