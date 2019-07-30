@@ -1117,7 +1117,7 @@ function() {
     //  Create a DOM structure for it, assuming that non-prefixed elements are
     //  XHTML.
     valueFieldDOM = TP.xhtmlnode(valueFieldMarkup);
-    valueFieldDOM.setAttribute('propName', cssData.at('propName'));
+    valueFieldDOM.setAttribute('property', cssData.at('propName'));
 
     //  Set our 'name field' markup to the DOM structure that we generated from
     //  the markup.
