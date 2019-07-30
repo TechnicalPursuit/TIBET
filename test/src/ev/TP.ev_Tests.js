@@ -79,7 +79,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'handler_specifies_control');
+                            'handlerspecifiescontrol');
                     },
                     function(error) {
                         test.fail(error, TP.sc('Event sequence error'));
@@ -93,7 +93,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'control_specifies_handler');
+                            'controlspecifieshandler');
                     },
                     function(error) {
                         test.fail(error, TP.sc('Event sequence error'));
@@ -124,7 +124,7 @@ function() {
             function() {
                 test.assert.hasAttribute(
                     TP.byId('testResults', windowContext, false),
-                    'document_contentloaded_fired');
+                    'documentcontentloadedfired');
                 test.assert.didSignal(TP.sys.uidoc(),
                                         'TP.sig.DOMContentLoaded');
             },
@@ -147,7 +147,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'element_contentloaded_fired');
+                            'elementcontentloadedfired');
                         test.assert.didSignal(
                             TP.byId('testDiv', windowContext, false),
                             'TP.sig.DOMContentLoaded');
@@ -185,7 +185,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'alphakey_fired');
+                            'alphakeyfired');
                         test.assert.didSignal(TP.sys.uidoc(),
                                                 'TP.sig.DOM_A_Up');
                     });
@@ -198,7 +198,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'unicodekey_fired');
+                            'unicodekeyfired');
                         test.assert.didSignal(TP.sys.uidoc(),
                                                 'TP.sig.DOM_U0062_Up');
                     });
@@ -211,7 +211,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'fnkey_fired');
+                            'fnkeyfired');
                         test.assert.didSignal(TP.sys.uidoc(),
                                                 'TP.sig.DOM_F2_Up');
                     });
@@ -248,7 +248,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'multisignal_singleorigin');
+                            'multisignalsingleorigin');
                         test.assert.didSignal(
                             TP.byId('fooDiv', windowContext, false),
                             'TP.sig.DOMClick');
@@ -257,7 +257,7 @@ function() {
                         //  test.
                         TP.elementRemoveAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'multisignal_singleorigin',
+                            'multisignalsingleorigin',
                             true);
                     });
 
@@ -269,7 +269,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'multisignal_singleorigin');
+                            'multisignalsingleorigin');
                         test.assert.didSignal(
                             TP.byId('fooDiv', windowContext, false),
                             'TP.sig.DOMDblClick');
@@ -307,7 +307,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'anysignal_singleorigin');
+                            'anysignalsingleorigin');
                         test.assert.didSignal(
                             TP.byId('fooDiv', windowContext, false),
                             'TP.sig.DOMClick');
@@ -321,7 +321,7 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'singlesignal_anyorigin');
+                            'singlesignalanyorigin');
                         test.assert.didSignal(
                             TP.byId('bazDiv', windowContext, false),
                             'TP.sig.DOMDblClick');
@@ -378,10 +378,10 @@ function() {
                     function() {
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'barfield_keypress');
+                            'barfieldkeypress');
                         test.refute.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'barfieldwrapper_keypress');
+                            'barfieldwrapperkeypress');
 
                         test.assert.didSignal(
                             TP.byId('barField', windowContext, false),
@@ -428,11 +428,11 @@ function() {
 
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'shiftXkey_fired');
+                            'shiftXkeyfired');
                         testVal =
                             TP.elementGetAttribute(
                                 TP.byId('testResults', windowContext, false),
-                                'shiftXkey_fired',
+                                'shiftXkeyfired',
                                 true);
                         test.assert.isEqualTo(testVal, 'fired_shiftXkey');
 
@@ -451,11 +451,11 @@ function() {
 
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'shiftYkey_fired');
+                            'shiftYkeyfired');
                         testVal =
                             TP.elementGetAttribute(
                                 TP.byId('testResults', windowContext, false),
-                                'shiftYkey_fired',
+                                'shiftYkeyfired',
                                 true);
                         test.assert.matches(
                             testVal, /.+"signame":"TP.sig.DOM_Y_Up".+/);
@@ -475,11 +475,11 @@ function() {
 
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'shiftZkey_fired');
+                            'shiftZkeyfired');
                         testVal =
                             TP.elementGetAttribute(
                                 TP.byId('testResults', windowContext, false),
-                                'shiftZkey_fired',
+                                'shiftZkeyfired',
                                 true);
                         test.assert.isEqualTo(testVal, '"TP.sig.DOMKeyUp"');
 
@@ -528,7 +528,7 @@ function() {
 
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'alpha_sequence_fired');
+                            'alphasequencefired');
 
                         test.assert.didSignal(
                             TP.sys.uidoc(),
@@ -553,7 +553,7 @@ function() {
 
                         test.assert.hasAttribute(
                             TP.byId('testResults', windowContext, false),
-                            'unicode_sequence_fired');
+                            'unicodesequencefired');
 
                         test.assert.didSignal(
                             TP.sys.uidoc(),

@@ -39,14 +39,14 @@
     <ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="barFieldWrapper">
         <![CDATA[
         //  Should not have gotten here
-        TP.byId('testResults').setAttribute('barfieldwrapper_keypress', 'true');
+        TP.byId('testResults').setAttribute('barfieldwrapperkeypress', 'true');
         ]]>
     </ev:script>
 
     <ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="barField">
         <![CDATA[
         //  Should have gotten here
-        TP.byId('testResults').setAttribute('barfield_keypress', 'true');
+        TP.byId('testResults').setAttribute('barfieldkeypress', 'true');
         ]]>
     </ev:script>
 
@@ -56,13 +56,13 @@
 
     <ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="bazField">
         <![CDATA[
-        TP.byId('testResults').setAttribute('bazfield_keypress_2nd', TP.dc());
+        TP.byId('testResults').setAttribute('bazfieldkeypress2nd', TP.dc());
         ]]>
     </ev:script>
 
     <ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="bazField" phase="capture">
         <![CDATA[
-        TP.byId('testResults').setAttribute('bazfield_keypress_1st', TP.dc());
+        TP.byId('testResults').setAttribute('bazfieldkeypress1st', TP.dc());
         ]]>
     </ev:script>
 

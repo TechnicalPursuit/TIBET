@@ -24,7 +24,7 @@
 
     <ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="#document">
         <![CDATA[
-        TP.byId('testResults').setAttribute('document_contentloaded_fired', 'true');
+        TP.byId('testResults').setAttribute('documentcontentloadedfired', 'true');
         ]]>
     </ev:script>
 
@@ -40,7 +40,7 @@
     The &lt;ev:script&gt; element has an 'event' value of 'TP.sig.DOMContentLoaded' (the TIBET equivalent of 'onload') and an 'observer' containing the identifier 'testDiv', which points it to the element we're observing for content change.<br/>
     <ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="testDiv">
         <![CDATA[
-        TP.byId('testResults').setAttribute('element_contentloaded_fired', 'true');
+        TP.byId('testResults').setAttribute('elementcontentloadedfired', 'true');
         ]]>
     </ev:script>
 
