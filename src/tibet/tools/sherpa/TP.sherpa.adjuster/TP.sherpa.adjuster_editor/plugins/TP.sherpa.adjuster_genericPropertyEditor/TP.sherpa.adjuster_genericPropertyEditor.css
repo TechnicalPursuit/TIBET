@@ -82,7 +82,7 @@ sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span.arrowMark {
     vertical-align: middle;
 }
 
-sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slot_type="Identifier"]:hover span.arrowMark {
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slottype="Identifier"]:hover span.arrowMark {
 
     visibility: visible;
 }
@@ -92,8 +92,8 @@ sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[part="value
     margin-right: 1px;
 }
 
-sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slot_type="Percentage"] span[part="value"]:hover,
-sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slot_type="Dimension"] span[part="value"]:hover {
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slottype="Percentage"] span[part="value"]:hover,
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slottype="Dimension"] span[part="value"]:hover {
 
     cursor: ew-resize;
 }
@@ -112,13 +112,13 @@ sherpa|adjuster_genericPropertyEditor[nonmutable] div[name="propertyRuleSelector
     background-position: 90% 4px;
 }
 
-span[slot_type] {
+span[slottype] {
 
     margin-right: 2px;
 }
 
 /*
-span[slot_type]:not([slot_type="Identifier"]) {
+span[slottype]:not([slottype="Identifier"]) {
 
     margin-right: 10px;
 }

@@ -30,7 +30,7 @@ TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyValueSlotEditors',
-    TP.cpc('> *[name="propertyValue"] > .slots span[slot_type]:not([slot_multi_part])', TP.hc('shouldCollapse', false)));
+    TP.cpc('> *[name="propertyValue"] > .slots span[slottype]:not([slotmultipart])', TP.hc('shouldCollapse', false)));
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineAttribute(
     'propertyRuleSelector',
@@ -573,7 +573,7 @@ function(infoData, mainPropName, aSlotName) {
     if (TP.isValid(infoData.match)) {
 
         //  Begin generating a multi-part chunk wrapper.
-        str = '<span slot_multi_part="true"';
+        str = '<span slotmultipart="true"';
 
         //  If we have a piece of syntax data associated with the supplied data,
         //  then query it for a name and use that as the sub-property name.
@@ -599,11 +599,11 @@ function(infoData, mainPropName, aSlotName) {
         slotName = TP.ifInvalid(computedSlotName, aSlotName);
 
         if (TP.notEmpty(slotName) && slotName !== slotType) {
-            str += ' slot_name="' + slotName + '"';
+            str += ' slotname="' + slotName + '"';
         }
 
         if (TP.notEmpty(slotType)) {
-            str += ' slot_type="' + slotType + '"';
+            str += ' slottype="' + slotType + '"';
         }
 
         str += '>';
@@ -652,16 +652,16 @@ function(infoData, mainPropName, aSlotName) {
         str = '<span';
 
         if (TP.notEmpty(aSlotName)) {
-            str += ' slot_name="' + aSlotName + '"';
+            str += ' slotname="' + aSlotName + '"';
         }
 
-        str += ' slot_type="' + slotType + '"';
+        str += ' slottype="' + slotType + '"';
 
         switch (slotType) {
 
             case 'Dimension':
                 str += ' tibet:tag="sherpa:CSSDimensionSlotEditor"';
-                str += ' slot_unit="' + infoData.node.unit + '"';
+                str += ' slotunit="' + infoData.node.unit + '"';
 
                 break;
 
@@ -1023,17 +1023,17 @@ function(aSignal) {
 
     targetTPElem = TP.wrap(aSignal.getDOMTarget());
 
-    //  If the DOM target doesn't have a 'slot_name' attribute, then try to find
+    //  If the DOM target doesn't have a 'slotname' attribute, then try to find
     //  an ancestor that has one.
-    if (!targetTPElem.hasAttribute('slot_name')) {
-        targetTPElem = targetTPElem.getAncestorBySelector('*[slot_name]');
+    if (!targetTPElem.hasAttribute('slotname')) {
+        targetTPElem = targetTPElem.getAncestorBySelector('*[slotname]');
         if (TP.notValid(targetTPElem)) {
             return this;
         }
     }
 
     //  Grab the slot name.
-    slotName = targetTPElem.getAttribute('slot_name');
+    slotName = targetTPElem.getAttribute('slotname');
 
     //  Grab the adjuster element and set it's info text to the property name.
     adjusterTPElem = TP.byId('SherpaAdjuster', this.getNativeDocument());
@@ -1664,7 +1664,7 @@ function(aRequest) {
             TP.nodeGetTextContent(elem) +
             '</span>' +
             '<span part="unit">' +
-            TP.elementGetAttribute(elem, 'slot_unit', true) +
+            TP.elementGetAttribute(elem, 'slotunit', true) +
             '</span>';
 
     newFrag = TP.xhtmlnode(str);
@@ -1726,12 +1726,12 @@ function(oldX, newX, aDirection, aSignal) {
         }
     }
 
-    //  Grab the closest element that has a 'slot_name' attribute.
-    wrapperSpan = this.getAncestorBySelector('*[slot_name]');
+    //  Grab the closest element that has a 'slotname' attribute.
+    wrapperSpan = this.getAncestorBySelector('*[slotname]');
     if (TP.notValid(wrapperSpan)) {
         return this;
     }
-    slotName = wrapperSpan.getAttribute('slot_name');
+    slotName = wrapperSpan.getAttribute('slotname');
 
     disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(slotName);
 
@@ -1856,15 +1856,15 @@ function(aSignal) {
     //  mouse down.
     aSignal.at('trigger').stopPropagation();
 
-    //  Grab the closest element that has a 'slot_name' attribute.
+    //  Grab the closest element that has a 'slotname' attribute.
     wrapperSpan = TP.nodeAncestorMatchingCSS(aSignal.getDOMTarget(),
-                                                '*[slot_name]');
+                                                '*[slotname]');
     if (!TP.isElement(wrapperSpan)) {
         return this;
     }
 
     //  Grab the slot name value.
-    slotName = TP.elementGetAttribute(wrapperSpan, 'slot_name', true);
+    slotName = TP.elementGetAttribute(wrapperSpan, 'slotname', true);
 
     //  Grab the adjuster element and the CSS schema information it keeps.
     adjusterTPElem = TP.byId('SherpaAdjuster', this.getNativeDocument());
@@ -2131,12 +2131,12 @@ function(oldX, newX, aDirection, aSignal) {
         }
     }
 
-    //  Grab the closest element that has a 'slot_name' attribute.
-    wrapperSpan = this.getAncestorBySelector('*[slot_name]');
+    //  Grab the closest element that has a 'slotname' attribute.
+    wrapperSpan = this.getAncestorBySelector('*[slotname]');
     if (TP.notValid(wrapperSpan)) {
         return this;
     }
-    slotName = wrapperSpan.getAttribute('slot_name');
+    slotName = wrapperSpan.getAttribute('slotname');
 
     disallowsNegative = TP.regex.CSS_NON_NEGATIVE_PROPERTIES.test(slotName);
 
