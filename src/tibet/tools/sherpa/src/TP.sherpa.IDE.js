@@ -1785,11 +1785,11 @@ function(aSignal) {
     connector.set('autohideConnector', false);
 
     //  Grab the values that determine what type of connection we're vending.
-    vendValue = srcTPElem.getAttribute('sherpa:connectorvend');
+    vendValue = srcTPElem.getAttribute('sherpa:connector-vend');
     vendValues = vendValue.split(' ');
 
     //  Grab the values that determine what type of connection we're accepting.
-    acceptValue = destTPElem.getAttribute('sherpa:connectoraccept');
+    acceptValue = destTPElem.getAttribute('sherpa:connector-accept');
     acceptValues = acceptValue.split(' ');
 
     //  If both the vended values and the accepted values contained
@@ -1797,10 +1797,10 @@ function(aSignal) {
     if (vendValues.contains('bindingsource') &&
         acceptValues.contains('bindingsource')) {
 
-        //  Grab the value of the 'sherpa:connectordatasource' attribute. This
+        //  Grab the value of the 'sherpa:connector-source' attribute. This
         //  will give us the system ID of the object that we can query to find
         //  'connector data' - data about this connector dragging session.
-        dataSource = srcTPElem.getAttribute('sherpa:connectordatasource');
+        dataSource = srcTPElem.getAttribute('sherpa:connector-source');
         if (TP.notEmpty(dataSource)) {
 
             //  Grab the connector data source object, if it can be found.
@@ -1864,7 +1864,7 @@ function(aSignal) {
     sourceTPElem = aSignal.at('sourceElement');
 
     //  Grab the values that determine what type of connection we're vending.
-    vendValue = sourceTPElem.getAttribute('sherpa:connectorvend');
+    vendValue = sourceTPElem.getAttribute('sherpa:connector-vend');
     vendValues = vendValue.split(' ');
 
     //  Grab the target collectors for connection sessions.
@@ -1890,14 +1890,14 @@ function(aSignal) {
             matchingNodes = collector(sourceTPElem);
 
             //  Iterate over each node that matched, which should be an Element,
-            //  and add the vend value to the 'sherpa:connectoraccept'
+            //  and add the vend value to the 'sherpa:connector-accept'
             //  attribute.
             matchingNodes.forEach(
                 function(aNode) {
 
                     if (TP.isElement(aNode)) {
                         TP.elementAddAttributeValue(aNode,
-                                                    'sherpa:connectoraccept',
+                                                    'sherpa:connector-accept',
                                                     aVendValue,
                                                     true);
                     }
@@ -1950,7 +1950,7 @@ function(aSignal) {
     destinationTPElem = aSignal.at('destinationElement');
 
     //  Grab the values that determine what type of connection we're vending.
-    vendValue = sourceTPElem.getAttribute('sherpa:connectorvend');
+    vendValue = sourceTPElem.getAttribute('sherpa:connector-vend');
     vendValues = vendValue.split(' ');
 
     //  Grab the target collectors for connection sessions.
@@ -1976,7 +1976,7 @@ function(aSignal) {
             matchingNodes = collector(sourceTPElem);
 
             //  Iterate over each node that matched, which should be an Element,
-            //  and remove the vend value from the 'sherpa:connectoraccept'
+            //  and remove the vend value from the 'sherpa:connector-accept'
             //  attribute.
             matchingNodes.forEach(
                 function(aNode) {
@@ -1984,7 +1984,7 @@ function(aSignal) {
                     if (TP.isElement(aNode)) {
                         TP.elementRemoveAttributeValue(
                                             aNode,
-                                            'sherpa:connectoraccept',
+                                            'sherpa:connector-accept',
                                             aVendValue,
                                             true);
                     }

@@ -232,7 +232,7 @@ function(destTPElement) {
 
     //  Get the vending value for comparison to what the target will accept.
     //  Note that there can be multiple vending values.
-    vendValue = this.getAttribute('sherpa:connectorvend');
+    vendValue = this.getAttribute('sherpa:connector-vend');
     vendValues = vendValue.split(' ');
     if (TP.isEmpty(vendValues)) {
         return false;
@@ -240,7 +240,7 @@ function(destTPElement) {
 
     //  Get the accepting value to compare against the vending value. Note that
     //  there can be multiple accepting values.
-    acceptValue = destTPElement.getAttribute('sherpa:connectoraccept');
+    acceptValue = destTPElement.getAttribute('sherpa:connector-accept');
     acceptValues = acceptValue.split(' ');
     if (TP.isEmpty(acceptValues)) {
         return false;
@@ -270,7 +270,7 @@ function(srcTPElement) {
 
     //  Get the accepting value for comparison to what the target will accept.
     //  Note that there can be multiple accepting values.
-    acceptValue = this.getAttribute('sherpa:connectoraccept');
+    acceptValue = this.getAttribute('sherpa:connector-accept');
     acceptValues = acceptValue.split(' ');
     if (TP.isEmpty(acceptValues)) {
         return false;
@@ -278,7 +278,7 @@ function(srcTPElement) {
 
     //  Get the vending value to compare against the accepting value. Note that
     //  there can be multiple vending values.
-    vendValue = srcTPElement.getAttribute('sherpa:connectorvend');
+    vendValue = srcTPElement.getAttribute('sherpa:connector-vend');
     vendValues = vendValue.split(' ');
     if (TP.isEmpty(vendValues)) {
         return false;
@@ -303,14 +303,14 @@ function() {
 
     elem = this.getNativeNode();
 
-    //  Any element that doesn't have an existing 'sherpa:connectorvend' element
-    //  can be a 'signal source' - add the attribute value here.
-    if (!TP.elementHasAttribute(elem, 'sherpa:connectorvend', true)) {
+    //  Any element that doesn't have an existing 'sherpa:connector-vend'
+    //  element can be a 'signal source' - add the attribute value here.
+    if (!TP.elementHasAttribute(elem, 'sherpa:connector-vend', true)) {
         TP.elementAddAttributeValue(
-                elem, 'sherpa:connectorvend', 'signalsource', true);
+                elem, 'sherpa:connector-vend', 'signalsource', true);
     }
 
-    TP.elementSetAttribute(elem, 'sherpa:connectoractivated', true, true);
+    TP.elementSetAttribute(elem, 'sherpa:connector-activated', true, true);
 
     return this;
 });
@@ -333,9 +333,9 @@ function() {
 
     //  Any element can be a 'signal source' - remove the attribute value here.
     TP.elementRemoveAttributeValue(
-            elem, 'sherpa:connectorvend', 'signalsource', true);
+            elem, 'sherpa:connector-vend', 'signalsource', true);
 
-    TP.elementRemoveAttribute(elem, 'sherpa:connectoractivated', true);
+    TP.elementRemoveAttribute(elem, 'sherpa:connector-activated', true);
 
     return this;
 });
@@ -356,7 +356,7 @@ function(aConnector) {
      *     destination.
      */
 
-    if (this.hasAttribute('sherpa:connectoraccept')) {
+    if (this.hasAttribute('sherpa:connector-accept')) {
         return this;
     }
 
@@ -388,7 +388,7 @@ function(aConnector) {
     var destRect,
         connectorThickness;
 
-    if (!this.hasAttribute('sherpa:connectoraccept')) {
+    if (!this.hasAttribute('sherpa:connector-accept')) {
         return TP.rtc(0, 0, 0, 0);
     }
 
@@ -422,7 +422,7 @@ function(aConnector) {
      * @returns {TP.dom.ElementNode} The element to use as the connector source.
      */
 
-    if (this.hasAttribute('sherpa:connectorvend')) {
+    if (this.hasAttribute('sherpa:connector-vend')) {
         return this;
     }
 

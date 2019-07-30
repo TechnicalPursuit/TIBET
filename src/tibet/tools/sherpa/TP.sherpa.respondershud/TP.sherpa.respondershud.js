@@ -732,7 +732,7 @@ function(aSignal) {
     }
 
     //  Turn off our ability to accept signal source connections
-    this.removeAttribute('sherpa:connectoraccept');
+    this.removeAttribute('sherpa:connector-accept');
 
     return this;
 });
@@ -753,7 +753,7 @@ function(aSignal) {
     this.callNextMethod();
 
     //  Turn on our ability to accept signal source connections
-    this.setAttribute('sherpa:connectoraccept', 'signalsource');
+    this.setAttribute('sherpa:connector-accept', 'signalsource');
 
     return this;
 });

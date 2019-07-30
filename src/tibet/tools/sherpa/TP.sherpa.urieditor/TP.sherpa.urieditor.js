@@ -657,8 +657,8 @@ function(aSignal) {
                 //  the overall Array of path parts that we're tracking.
                 infoNum = pathParts.getSize() - 1;
                 str = '<span class="jsonPropName"' +
-                        ' sherpa:connectorvend="bindingsource"' +
-                        ' sherpa:connectordatasource="inspectorEditor"' +
+                        ' sherpa:connector-vend="bindingsource"' +
+                        ' sherpa:connector-source="inspectorEditor"' +
                         ' dataindex="' + infoNum + '">' +
                         srcText.asEscapedXML() +
                         '</span>';

@@ -39,7 +39,7 @@ sherpa|urieditor > .body .schemaDisplay .jsonPropName:hover {
     outline: solid 1px black;
 }
 
-sherpa|urieditor > .body .schemaDisplay .jsonPropName[sherpa|connectoractivated] {
+sherpa|urieditor > .body .schemaDisplay .jsonPropName[sherpa|connector-activated] {
 
     outline: solid 2px black;
 }
