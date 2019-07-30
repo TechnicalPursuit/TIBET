@@ -146,7 +146,7 @@ function(aDataObject, shouldSignal) {
 
     var dataObj,
 
-        pagingSize,
+        pageSize,
         totalPages,
 
         pageData;
@@ -158,12 +158,12 @@ function(aDataObject, shouldSignal) {
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
-    pagingSize = this.getAttribute('pagingsize').asNumber();
-    if (TP.isNaN(pagingSize)) {
-        pagingSize = 1;
+    pageSize = this.getAttribute('pagesize').asNumber();
+    if (TP.isNaN(pageSize)) {
+        pageSize = 1;
     }
 
-    totalPages = (dataObj.getSize() / pagingSize).ceil();
+    totalPages = (dataObj.getSize() / pageSize).ceil();
 
     //  Create an Array from a Range, starting at 1.
     pageData = (1).to(totalPages).asArray();
