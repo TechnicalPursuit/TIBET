@@ -8957,10 +8957,10 @@ function(mimeType) {
     /**
      * @method getContentType
      * @summary Returns a result type that will either be a TIBET type from the
-     *     name specified by the 'contenttype' attribute on the receiver or, if
+     *     name specified by the 'content' attribute on the receiver or, if
      *     that's not defined, the MIME type supplied to this method.
      * @param {String} mimeType The MIME type of the data. This will be used to
-     *     guess the data type if the receiver doesn't have a 'contenttype'
+     *     guess the data type if the receiver doesn't have a 'content'
      *     defined on it.
      * @returns {TP.meta.lang.RootObject|String} The type object (or String as
      *     a fallback) to create for the supplied result data.
@@ -8969,9 +8969,9 @@ function(mimeType) {
     var contentType,
         tibetType;
 
-    //  See if the user has define a 'contenttype' attribute on us. If so, try
+    //  See if the user has define a 'content' attribute on us. If so, try
     //  to see if TIBET really has a Type matching that.
-    if (TP.notEmpty(contentType = this.getAttribute('contenttype'))) {
+    if (TP.notEmpty(contentType = this.getAttribute('content'))) {
         tibetType = TP.sys.getTypeByName(contentType);
     }
 

@@ -266,7 +266,7 @@ function() {
         request.atPut('separator', val);
     }
 
-    hasContentType = this.hasAttribute('contenttype');
+    hasContentType = this.hasAttribute('content');
 
     //  NB: This is the HTTP resultType parameter, not the result type that we
     //  will use to package the data.
