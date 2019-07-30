@@ -7732,14 +7732,14 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
             nodeContent = aContent;
         }
 
-        if (!TP.elementHasAttribute(anElement, 'inited')) {
+        if (!TP.elementHasAttribute(anElement, 'hasdoc')) {
             //  This process works much better when we have a blank document
             //  to start from.
             iframeDoc.open();
             iframeDoc.write('<html><head></head><body></body></html>');
             iframeDoc.close();
 
-            TP.elementSetAttribute(anElement, 'inited', 'true');
+            TP.elementSetAttribute(anElement, 'hasdoc', 'true');
         }
 
         //  We pass 'true' as the last parameter to awaken content if
