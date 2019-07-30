@@ -491,11 +491,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud.Inst.defineMethod('getContentTagNameForContextMenu',
+TP.sherpa.domhud.Inst.defineMethod('getContentTagForContextMenu',
 function(aSignal) {
 
     /**
-     * @method getContentTagNameForContextMenu
+     * @method getContentTagForContextMenu
      * @summary Returns the tag name of the content to use in a context menu.
      *     Note that this should return the plain (possibly namespaced) name
      *     with no markup bracketing, etc.

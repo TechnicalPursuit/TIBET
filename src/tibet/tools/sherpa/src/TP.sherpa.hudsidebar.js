@@ -115,11 +115,11 @@ function(aTPElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hudsidebar.Inst.defineMethod('getContentTagNameForContextMenu',
+TP.sherpa.hudsidebar.Inst.defineMethod('getContentTagForContextMenu',
 function(aSignal) {
 
     /**
-     * @method getContentTagNameForContextMenu
+     * @method getContentTagForContextMenu
      * @summary Returns the tag name of the content to use in a context menu.
      *     Note that this should return the plain (possibly namespaced) name
      *     with no markup bracketing, etc.
@@ -319,7 +319,7 @@ function(aSignal) {
      */
 
     var triggerSignal,
-        contentTagName;
+        contentTag;
 
     //  Grab the 'trigger signal' - this will be the DOM-level 'context menu'
     //  signal.
@@ -332,8 +332,8 @@ function(aSignal) {
 
     //  Grab the tag name for the content tag that we're going to shove into the
     //  menu. If that's not available, exit here.
-    contentTagName = this.getContentTagNameForContextMenu(aSignal);
-    if (TP.isEmpty(contentTagName)) {
+    contentTag = this.getContentTagForContextMenu(aSignal);
+    if (TP.isEmpty(contentTag)) {
         return this;
     }
 
@@ -349,7 +349,7 @@ function(aSignal) {
             'contentAttributes',
                 TP.hc(
                     'tibet:ctrl', this.getLocalID(),
-                    'contenttagname', contentTagName
+                    'contenttag', contentTag
                 ),
             'hideOn', 'SelectMenuItem',
             'useTopLevelContentElem', true,
