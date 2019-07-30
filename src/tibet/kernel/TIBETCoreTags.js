@@ -539,13 +539,13 @@ function(aRequest) {
                 '.sendConsoleRequest(\':inspect ' +
                 this.getID().replace(':', '.') + '.Type.tagCompile' +
                 '\'); return false;" href="#" tibet:tag="' +
-                this.getCanonicalName() + '" tibet:norewrite="true">' +
+                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
                 '&lt;' + this.getCanonicalName() + '/&gt;' +
                 '</a>';
     } else {
         str = '<a onclick="alert(\'Edit ' + this.getID() +
                 '.Type.tagCompile.\')" href="#" tibet:tag="' +
-                this.getCanonicalName() + '" tibet:norewrite="true">' +
+                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
                 '&lt;' + this.getCanonicalName() + '/&gt;' +
                 '</a>';
     }

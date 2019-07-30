@@ -107,8 +107,8 @@ function(aRequest) {
         }
     }
 
-    //  If the element has the 'tibet:norewrite' flag, then don't rewrite it.
-    if (TP.elementHasAttribute(elem, 'tibet:norewrite', true)) {
+    //  If the element has the 'tibet:no-rewrite' flag, then don't rewrite it.
+    if (TP.elementHasAttribute(elem, 'tibet:no-rewrite', true)) {
         return;
     }
 
@@ -223,8 +223,8 @@ function(value) {
         }
     }
 
-    //  If the element has the 'tibet:norewrite' flag, then don't rewrite it.
-    if (TP.elementHasAttribute(elem, 'tibet:norewrite', true)) {
+    //  If the element has the 'tibet:no-rewrite' flag, then don't rewrite it.
+    if (TP.elementHasAttribute(elem, 'tibet:no-rewrite', true)) {
         return;
     }
 

@@ -1937,7 +1937,7 @@ followingAddresses, allAddresses) {
     //  NB: We go after the native tag name here - not the element's 'name',
     //  which will be it's spoofed type name.
     if (mutatedVisualNode.tagName === 'a' &&
-        TP.elementHasAttribute(mutatedVisualNode, 'tibet:norewrite')) {
+        TP.elementHasAttribute(mutatedVisualNode, 'tibet:no-rewrite')) {
         return this.callNextMethod();
     }
 
