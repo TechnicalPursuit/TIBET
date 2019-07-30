@@ -108,7 +108,7 @@ function(aRequest) {
     //  element type wrapped around elem.
     elemTPNode = TP.tpnode(elem);
 
-    if (TP.notEmpty(stubHref = TP.elementGetAttribute(elem, 'stubHref'))) {
+    if (TP.notEmpty(stubHref = TP.elementGetAttribute(elem, 'stubhref'))) {
         stubURI = TP.uc(stubHref);
     } else {
         stubURI = this.get('frameFileURI');
