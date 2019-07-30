@@ -1669,7 +1669,7 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:mime',
     'tibet:no-awaken',
     'tibet:no-compile',
-    'tibet:no-dragtrapping',
+    'tibet:no-dragtrap',
     'tibet:nomutationtracking',
     'tibet:originalhref',
     'tibet:phase',

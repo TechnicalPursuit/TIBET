@@ -4001,7 +4001,7 @@ function(normalizedEvent) {
         //  the value if it doesn't).
         target = TP.eventGetTarget(normalizedEvent);
         val = TP.elementGetAttribute(
-                        target, 'tibet:no-dragtrapping', true);
+                        target, 'tibet:no-dragtrap', true);
         if (val === 'true') {
             this.$set('$notValidDragTarget', true);
             return false;
@@ -4010,10 +4010,10 @@ function(normalizedEvent) {
         if (TP.isElement(
             ans = TP.nodeAncestorMatchingCSS(
                         target,
-                        '*[tibet|no-dragtrapping]'))) {
+                        '*[tibet|no-dragtrap]'))) {
 
             val = TP.elementGetAttribute(
-                        ans, 'tibet:no-dragtrapping', true);
+                        ans, 'tibet:no-dragtrap', true);
             if (val === 'true') {
                 this.$set('$notValidDragTarget', true);
                 return false;
