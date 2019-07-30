@@ -117,17 +117,10 @@ function(aRequest) {
     onClickVal = TP.elementGetAttribute(elem, 'onclick', true);
     if (TP.notEmpty(onClickVal)) {
 
-        //  If there was an 'href' of '#' and the onClickVal contains a
-        //  TP.go2('#...') expression, then we return. This means we already
-        //  rewrote this expression.
-        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
-            return;
-        }
-
-        //  If the href was empty and the onclick value did *not* contain a
-        //  TP.go2('#...') expression, then it was truly an 'onclick' that the
-        //  author put on here and we want to leave it alone.
-        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
+        //  If there was an 'href' of '#' or an empty 'href', then we return.
+        //  This means either a) the author originally had an 'onclick' value or
+        //  we already rewrote a link into a TP.go2() expression.
+        if (href === '#' || TP.isEmpty(href)) {
             return;
         }
     }
@@ -136,17 +129,10 @@ function(aRequest) {
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
     if (TP.notEmpty(onClickVal)) {
 
-        //  If there was an 'href' of '#' and the onClickVal contains a
-        //  TP.go2('#...') expression, then we return. This means we already
-        //  rewrote this expression.
-        if (href === '#' && onClickVal.contains('TP.go2(\'#')) {
-            return;
-        }
-
-        //  If the href was empty and the onclick value did *not* contain a
-        //  TP.go2('#...') expression, then it was truly an 'on:click' that the
-        //  author put on here and we want to leave it alone.
-        if (TP.isEmpty(href) && !onClickVal.contains('TP.go2(\'#')) {
+        //  If there was an 'href' of '#' or an empty 'href', then we return.
+        //  This means either a) the author originally had an 'on:click' value
+        //  or we already rewrote a link into a TP.go2() expression.
+        if (href === '#' || TP.isEmpty(href)) {
             return;
         }
     }
