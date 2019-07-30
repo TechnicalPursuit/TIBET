@@ -273,7 +273,7 @@ function(options) {
     return TP.elem(
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
-            '}" filter="true" alwayschange="true" toggleitems="false"/>');
+            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
 });
 
 //  ------------------------------------------------------------------------

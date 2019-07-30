@@ -58,7 +58,7 @@ function(options) {
     return TP.elem(
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
-            '}" filter="true" alwayschange="true" toggleitems="false" tooltips="true"/>');
+            '}" filter="true" alwayschange="true" itemtoggle="false" tooltips="true"/>');
 });
 
 //  ------------------------------------------------------------------------

@@ -524,8 +524,8 @@ function(aSignal) {
 
         //  See if we 'toggle' items - if so and the item is selected, we'll
         //  deselect it. The default is true.
-        if (this.hasAttribute('toggleitems')) {
-            toggleItems = TP.bc(this.getAttribute('toggleitems'));
+        if (this.hasAttribute('itemtoggle')) {
+            toggleItems = TP.bc(this.getAttribute('itemtoggle'));
         } else {
             toggleItems = true;
         }
