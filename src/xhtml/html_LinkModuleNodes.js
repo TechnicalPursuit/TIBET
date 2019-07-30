@@ -225,9 +225,9 @@ function(anHref) {
 
     var doc;
 
-    //  If the receiver has a 'tibet:dontreload' attribute, then exit here
+    //  If the receiver has a 'tibet:no-reload' attribute, then exit here
     //  without reloading.
-    if (this.hasAttribute('tibet:dontreload')) {
+    if (this.hasAttribute('tibet:no-reload')) {
         return this;
     }
 

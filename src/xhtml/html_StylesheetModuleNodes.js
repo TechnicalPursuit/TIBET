@@ -342,11 +342,11 @@ function(anHref) {
                             false);
 
         //  If the element existed, check to make sure that it
-        //  doesn't have a 'tibet:dontreload' attribute. If it does,
+        //  doesn't have a 'tibet:no-reload' attribute. If it does,
         //  then exit here without reloading.
         if (TP.isElement(inlinedStyleElem) &&
             TP.elementHasAttribute(
-                inlinedStyleElem, 'tibet:dontreload', true)) {
+                inlinedStyleElem, 'tibet:no-reload', true)) {
             return this;
         }
 

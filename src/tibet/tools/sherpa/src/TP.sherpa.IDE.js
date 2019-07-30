@@ -1524,17 +1524,17 @@ function(aSignal) {
                                 afterNSContent;
             }
 
-            //  Stamp the owner element with a 'tibet:dontreload' attribute so
+            //  Stamp the owner element with a 'tibet:no-reload' attribute so
             //  that the style element will *not* reload when it receives a
             //  change notification due to its underlying content changing.
-            TP.elementSetAttribute(ownerElem, 'tibet:dontreload', 'true', true);
+            TP.elementSetAttribute(ownerElem, 'tibet:no-reload', 'true', true);
 
             //  Set the resource of the sheetURI. This should dirty it.
             sheetURI.setResource(finalContent);
 
-            //  Remove the 'tibet:dontreload' attribute from the owner element
+            //  Remove the 'tibet:no-reload' attribute from the owner element
             //  so that it will now reload when its content changes.
-            TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+            TP.elementRemoveAttribute(ownerElem, 'tibet:no-reload', true);
 
             return this;
         } else {
@@ -1561,17 +1561,17 @@ function(aSignal) {
             str = mutatedRule.selectorText + ' {\n' + str + '}\n';
             finalContent = currentContent + '\n' + str;
 
-            //  Stamp the owner element with a 'tibet:dontreload' attribute so
+            //  Stamp the owner element with a 'tibet:no-reload' attribute so
             //  that the style element will *not* reload when it receives a
             //  change notification due to its underlying content changing.
-            TP.elementSetAttribute(ownerElem, 'tibet:dontreload', 'true', true);
+            TP.elementSetAttribute(ownerElem, 'tibet:no-reload', 'true', true);
 
             //  Set the resource of the sheetURI. This should dirty it.
             sheetURI.setResource(finalContent);
 
-            //  Remove the 'tibet:dontreload' attribute from the owner element
+            //  Remove the 'tibet:no-reload' attribute from the owner element
             //  so that it will now reload when its content changes.
-            TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+            TP.elementRemoveAttribute(ownerElem, 'tibet:no-reload', true);
 
             return this;
         } else {
@@ -1701,17 +1701,17 @@ function(aSignal) {
     patch = TP.extern.JsDiff.createPatch(loc, currentContent, newContent);
     finalContent = TP.extern.JsDiff.applyPatch(currentContent, patch);
 
-    //  Stamp the owner element with a 'tibet:dontreload' attribute so that the
+    //  Stamp the owner element with a 'tibet:no-reload' attribute so that the
     //  style element will *not* reload when it receives a change notification
     //  due to its underlying content changing.
-    TP.elementSetAttribute(ownerElem, 'tibet:dontreload', 'true', true);
+    TP.elementSetAttribute(ownerElem, 'tibet:no-reload', 'true', true);
 
     //  Set the resource of the sheetURI. This should dirty it.
     sheetURI.setResource(finalContent);
 
-    //  Remove the 'tibet:dontreload' attribute from the owner element so that
+    //  Remove the 'tibet:no-reload' attribute from the owner element so that
     //  it will now reload when its content changes.
-    TP.elementRemoveAttribute(ownerElem, 'tibet:dontreload', true);
+    TP.elementRemoveAttribute(ownerElem, 'tibet:no-reload', true);
 
     return this;
 });
