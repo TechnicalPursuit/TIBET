@@ -1326,16 +1326,16 @@ function() {
                             TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
-    //  custom itemTag attribute.
+    //  custom itemtag attribute.
     if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
 
         //  Make sure to null out the return value in case we got an empty
         //  Array.
         templateTPElem = null;
 
-        //  If the author specified an 'itemTag' attribute, then we use that in
+        //  If the author specified an 'itemtag' attribute, then we use that in
         //  a prebuilt template that we'll define here.
-        itemTagName = this.getAttribute('itemTag');
+        itemTagName = this.getAttribute('itemtag');
         if (TP.notEmpty(itemTagName)) {
 
             //  Build a template element, using the supplied item tag name and

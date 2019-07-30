@@ -203,7 +203,7 @@ function(aTargetItem) {
 
     //  See if we have an alternate item tag name that resolves to a TIBET
     //  type.
-    altItemTag = this.getAttribute('itemTag');
+    altItemTag = this.getAttribute('itemtag');
     if (TP.notEmpty(altItemTag)) {
         itemType = TP.sys.getTypeByName(altItemTag);
     }
@@ -1608,9 +1608,9 @@ function() {
         //  Array.
         templateTPElem = null;
 
-        //  If the author specified an 'itemTag' attribute, then we use that in
+        //  If the author specified an 'itemtag' attribute, then we use that in
         //  a prebuilt template that we'll define here.
-        itemTagName = this.getAttribute('itemTag');
+        itemTagName = this.getAttribute('itemtag');
         if (TP.notEmpty(itemTagName)) {
 
             //  Build a template element, using the supplied item tag name and

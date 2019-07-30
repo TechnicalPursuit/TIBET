@@ -1226,7 +1226,7 @@ function() {
                             TP.hc('shouldCollapse', true)));
 
     //  If the user didn't specify template content, then see if they provided a
-    //  custom itemTag attribute.
+    //  custom itemtag attribute.
     if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
 
         //  Make sure to null out the return value in case we got an empty
