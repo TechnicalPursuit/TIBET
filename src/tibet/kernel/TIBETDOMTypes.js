@@ -14159,7 +14159,7 @@ function(storageInfo) {
         }
 
         switch (attrName) {
-            case 'pseudoinline':
+            case 'pseudo-inline':
 
                 //  Don't emit this attribute.
                 continue;

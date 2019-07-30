@@ -1525,10 +1525,10 @@ function(anElement) {
     elemID = TP.lid(anElement, true);
 
     //  We also use a second attribute to force more specificity.
-    TP.elementSetAttribute(anElement, 'pseudoinline', elemID);
+    TP.elementSetAttribute(anElement, 'pseudo-inline', elemID);
 
     //  Compute the selector text
-    selectorText = '#' + elemID + '[pseudoinline="' + elemID + '"]';
+    selectorText = '#' + elemID + '[pseudo-inline="' + elemID + '"]';
 
     //  If we didn't create a new sheet, then maybe we just lost the rule
     //  somewhere in the existing sheet...
