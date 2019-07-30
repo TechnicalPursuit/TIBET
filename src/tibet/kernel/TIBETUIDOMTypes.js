@@ -5772,7 +5772,7 @@ function(transformType, varargs) {
     //  If our native node already has an attribute that contains the local
     //  transforms, we use that (decoding it's value from the string JSON
     //  representation that is used). Otherwise, we create one.
-    if (TP.isEmpty(localTransforms = this.getAttribute('localTransforms'))) {
+    if (TP.isEmpty(localTransforms = this.getAttribute('local-transforms'))) {
         localTransforms = TP.ac();
     } else {
         localTransforms = TP.json2js(localTransforms);
@@ -5785,7 +5785,7 @@ function(transformType, varargs) {
         TP.hc('type', transformType, 'args', TP.ac(arguments).slice(1)));
 
     //  JSONify the local transforms data structure and set the attribute.
-    this.setAttribute('localTransforms', TP.js2json(localTransforms));
+    this.setAttribute('local-transforms', TP.js2json(localTransforms));
 
     //  Set the local transform style from the local transforms that we're
     //  managing.
@@ -5893,7 +5893,7 @@ function(transformType, transformIndex) {
 
     //  If our native node has an attribute that contains the local transforms,
     //  we use that. Otherwise, there is nothing to do here, so we exit here.
-    if (TP.isEmpty(localTransforms = this.getAttribute('localTransforms'))) {
+    if (TP.isEmpty(localTransforms = this.getAttribute('local-transforms'))) {
         return '';
     } else {
         localTransforms = TP.json2js(localTransforms);
@@ -5982,7 +5982,7 @@ function(transformType, transformIndex) {
 
     //  If our native node has an attribute that contains the local transforms,
     //  we use that. Otherwise, there is nothing to do here, so we exit here.
-    if (TP.isEmpty(localTransforms = this.getAttribute('localTransforms'))) {
+    if (TP.isEmpty(localTransforms = this.getAttribute('local-transforms'))) {
         return this;
     } else {
         localTransforms = TP.json2js(localTransforms);
@@ -6022,7 +6022,7 @@ function(transformType, transformIndex) {
     }
 
     //  JSONify the local transforms data structure and set the attribute.
-    this.setAttribute('localTransforms', TP.js2json(transformRecords));
+    this.setAttribute('local-transforms', TP.js2json(transformRecords));
 
     //  Set the local transform style from the local transforms that we're
     //  managing.
@@ -6104,7 +6104,7 @@ function(transformType, transformIndex, varargs) {
 
     //  If our native node has an attribute that contains the local transforms,
     //  we use that. Otherwise, there is nothing to do here, so we exit here.
-    if (TP.isEmpty(localTransforms = this.getAttribute('localTransforms'))) {
+    if (TP.isEmpty(localTransforms = this.getAttribute('local-transforms'))) {
         return this;
     } else {
         localTransforms = TP.json2js(localTransforms);
@@ -6146,7 +6146,7 @@ function(transformType, transformIndex, varargs) {
     transformRecords.first().atPut('args', TP.ac(arguments).slice(2));
 
     //  JSONify the local transforms data structure and set the attribute.
-    this.setAttribute('localTransforms', TP.js2json(localTransforms));
+    this.setAttribute('local-transforms', TP.js2json(localTransforms));
 
     //  Set the local transform style from the local transforms that we're
     //  managing.
@@ -6174,7 +6174,7 @@ function() {
     //  If our native node does not have an attribute that contains the local
     //  transforms, there is nothing to do, so we set the CSS3 transform to
     //  nothing and exit here.
-    if (!this.hasAttribute('localTransforms')) {
+    if (!this.hasAttribute('local-transforms')) {
         this.setTransform('');
 
         return this;
@@ -6182,7 +6182,7 @@ function() {
 
     //  If our native node has no local transforms, there is nothing to do, so
     //  we exit here.
-    if (TP.isEmpty(localTransforms = this.getAttribute('localTransforms'))) {
+    if (TP.isEmpty(localTransforms = this.getAttribute('local-transforms'))) {
         return this;
     } else {
         localTransforms = TP.json2js(localTransforms);
