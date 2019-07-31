@@ -12866,7 +12866,7 @@ function(release, meta) {
 
     //  Build a semver-compliant string optionally including pre-release and
     //  meta information when that data is available. Not all releases have it.
-    str = 'v';
+    str = '';
     str += TP.ifEmpty(data.at('major'), '0');
     str += '.';
     str += TP.ifEmpty(data.at('minor'), '0');

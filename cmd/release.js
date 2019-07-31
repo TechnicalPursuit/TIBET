@@ -150,7 +150,7 @@ Cmd.prototype.getLibVersion = function(data) {
 
     // Build a semver-compliant string optionally including pre-release and meta
     // information when that data is available. Not all releases have it.
-    str = 'v';
+    str = '';
     str += data.major;
     str += '.';
     str += data.minor;
