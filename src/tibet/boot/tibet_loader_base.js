@@ -9216,8 +9216,17 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
 
                 try {
                     if (TP.canInvoke(type, 'initialize')) {
-                        TP.trace('Initializing type ' + type.getName());
-                        type.initialize();
+                        //  Put in a check here to make sure we don't initialize
+                        //  a type twice.
+                        if (type.isInitialized()) {
+                            TP.warn('Type already initialized: ' +
+                                        type.getName());
+                        } else if (type.ownsMethod('initialize')) {
+                            //  We only initialize types that *own* an
+                            //  initialize method.
+                            TP.trace('Initializing type: ' + type.getName());
+                            type.initialize();
+                        }
                     }
 
                     if (sherpa) {
@@ -9420,8 +9429,16 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
 
             try {
                 if (TP.canInvoke(type, 'initialize')) {
-                    TP.trace('Initializing type ' + type.getName());
-                    type.initialize();
+                    //  Put in a check here to make sure we don't initialize a
+                    //  type twice.
+                    if (type.isInitialized()) {
+                        TP.warn('Type already initialized: ' + type.getName());
+                    } else if (type.ownsMethod('initialize')) {
+                        //  We only initialize types that *own* an initialize
+                        //  method.
+                        TP.trace('Initializing type: ' + type.getName());
+                        type.initialize();
+                    }
                 }
 
                 if (sherpa) {
