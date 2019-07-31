@@ -2319,9 +2319,7 @@ function(aRequest) {
         resp,
         src,
 
-        debug,
-
-        type;
+        debug;
 
     if (TP.notValid(aRequest.at('cmdNode'))) {
         return aRequest.fail();
@@ -2381,18 +2379,12 @@ function(aRequest) {
 
                 debug = TP.sys.shouldUseDebugger();
                 TP.sys.shouldUseDebugger(false);
+
+                //  This will take care of initializing any newly-defined types
+                //  if a) they define an 'initialize' method and b) if they
+                //  haven't been initialized before.
                 TP.boot.$sourceImport(src, null, file, true);
 
-                //  may need to re-initialize the type
-                if (TP.isType($$inst)) {
-                    type = $$inst;
-                } else {
-                    type = $$inst.getType();
-                }
-
-                if (TP.owns(type, 'initialize')) {
-                    type.initialize();
-                }
             } catch (e) {
                 aRequest.fail(
                     TP.ec(e, 'tsh:source failed to eval ' + file));

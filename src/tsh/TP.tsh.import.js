@@ -53,12 +53,7 @@ function(aRequest) {
         resp,
         src,
 
-        debug,
-
-        urlLoc,
-        urlName,
-        urlTypeName,
-        urlType;
+        debug;
 
     shell = aRequest.at('cmdShell');
 
@@ -157,29 +152,11 @@ function(aRequest) {
         debug = TP.sys.shouldUseDebugger();
         TP.sys.shouldUseDebugger(false);
 
+        //  This will take care of initializing any newly-defined types if a)
+        //  they define an 'initialize' method and b) if they haven't been
+        //  initialized before.
         TP.boot.$sourceImport(src, null, TP.str(url), true);
 
-        //  Grab the location of the URL, trim it down so that its only
-        //  the name of the file with no extension and see if there's
-        //  now a 'type' with that name. If so, call its 'initialize()'
-        //  method.
-        urlLoc = url.getLocation();
-        urlName = TP.uriName(urlLoc);
-        urlTypeName = urlName.slice(0, urlName.lastIndexOf('.'));
-        urlTypeName = urlTypeName.replace(/_/, ':');
-
-        if (TP.isType(urlType = urlTypeName.asType()) &&
-            !urlType.isInitialized() &&
-            urlType.ownsMethod('initialize')) {
-            try {
-                urlType.initialize();
-                urlType.isInitialized(true);
-            } catch (e) {
-                this.raise(
-                    'TP.sig.InitializationException',
-                    'Unable to initialize ' + urlType.getName());
-            }
-        }
     } catch (e) {
         aRequest.fail(
             TP.ec(e, 'tsh:import failed to load ' + file));
