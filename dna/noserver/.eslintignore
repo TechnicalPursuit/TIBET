@@ -1,6 +1,0 @@
-node_modules/*
-deps/**
-lib/src/*
-**/*.__appname__.*.js
-/public/build
-/public/TIBET-INF/tibet
