@@ -727,6 +727,43 @@ function(aURI) {
     return fragment;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriGetTIBETType',
+function(aURI) {
+
+    /**
+     * @method uriGetTIBETType
+     * @summary Returns the TIBET type whose type definition is contained in the
+     *     resource pointed to by the URL.
+     * @param {String|TP.uri.URI} aURI The URI that might contain a TIBET type
+     *     definition.
+     * @returns {TP.meta.*|null} The TIBET type whose type definition is
+     *     contained in the resource pointed to by the URL.
+     */
+
+    var url,
+        name,
+        typeName,
+        type;
+
+    url = TP.str(aURI);
+    if (TP.isEmpty(url)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    name = TP.uriName(url);
+
+    typeName = name.slice(0, name.lastIndexOf('.'));
+    typeName = typeName.replace(/_/, ':');
+
+    if (TP.isType(type = typeName.asType())) {
+        return type;
+    }
+
+    return null;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uriGetXPointerData',
