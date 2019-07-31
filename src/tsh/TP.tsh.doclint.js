@@ -154,12 +154,10 @@ function(aRequest) {
     //  target we assume the user wants that object's context as the default.
     context = shell.getArgument(aRequest, 'tsh:context');
     if (TP.isEmpty(context)) {
-        if (/^APP/.test(target)) {
-            context = 'app';
-        } else if (/^TP/.test(target)) {
+        if (/^TP/.test(target)) {
             context = 'lib';
         } else {
-            context = 'all';
+            context = 'app';
         }
     }
 
