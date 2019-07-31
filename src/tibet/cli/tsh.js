@@ -254,7 +254,7 @@ Cmd.prototype.execute = function() {
     arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
     arglist.push('--lib-root=\'' + CLI.expandPath('~lib') + '\'');
 
-    // this.debug('headless ' + arglist.join(' '));
+    this.debug('headless ' + arglist.join(' '));
 
     this.announce();
 
@@ -420,7 +420,8 @@ Cmd.prototype.execute = function() {
         } else {
             fullpath = 'file:' +
                 CLI.expandPath(CLI.getcfg('project.start_page')) +
-                '#?boot.profile=\'' + profile + '\'';
+                '#?boot.profile=\'' + profile + '\'' +
+                '&path.app_root=\'' + CLI.expandPath('~app') + '\'';
         }
 
         //  NOTE: this value must match the value found in tibet_cfg.js for the

@@ -1,6 +1,7 @@
 {
     "name": "{{appname}}",
     "version": "0.1.0",
+    "main": "electron.js",
     "dependencies": {
         "electron": "*",
         "marked-man": "^0.2.1",

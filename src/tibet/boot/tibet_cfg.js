@@ -644,8 +644,7 @@
         TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
-    } else if (/PhantomJS/.test(navigator.userAgent) ||
-        /Puppeteer/.test(navigator.userAgent)) {
+    } else if (/ Puppeteer/.test(navigator.userAgent)) {
 
         TP.sys.setcfg('boot.context', 'headless');
         TP.sys.setcfg('boot.reporter', 'headless');
@@ -656,7 +655,7 @@
         TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
-    } else if (/Electron\//.test(navigator.userAgent)) {
+    } else if (/ Electron\//.test(navigator.userAgent)) {
 
         TP.sys.setcfg('boot.context', 'electron');
         TP.sys.setcfg('boot.reporter', 'bootui');

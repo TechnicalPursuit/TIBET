@@ -19,12 +19,14 @@
 
 var CLI,
     Cmd,
-    TDS;
+    TDS,
+    path;
 
 //  Bring in the TDS code so we can reference command line options.
 TDS = require('../../../tds/tds_base');
 
 CLI = require('./_cli');
+path = require('path');
 
 //  ---
 //  Type Construction
@@ -107,22 +109,29 @@ Cmd.prototype.execute = function() {
     process.chdir(CLI.getAppHead());
 
     if (!sh.test('-f', 'server.js')) {
+        msg = 'No server.js found...';
+        cmd.warn(msg);
+
         // If there's no server.js assume a 'noserver' template or 'couch'
         // template of some sort and default to opening the index.html.
 
-        //  If we see electron.js and we can find an electron binary we can
-        //  spawn it and fire up the electron engine.
-        if (sh.test('-f', 'electron.js') && sh.which('electron')) {
-            msg = 'Found electron.js. Launching Electron.';
+        //  If we see electron.js delegate to the electron command....
+        if (sh.test('-f', 'electron.js')) {
+            msg = 'Found electron.js...\nRunning \'tibet electron\'...';
             cmd.system(msg);
-            server = child.spawn('electron', ['./electron.js']);
+
+            args = process.argv.slice(3);
+            return CLI.runCommand('electron' +
+                (args ? ' ' + args.join(' ') : ''),
+                path.join(__dirname, 'electron.js'));
         } else {
             url = CLI.expandPath(CLI.getcfg('project.start_page'));
-            msg = 'No server.js. Opening ' + url;
+            msg = 'Trying project.start_page via \'open\': ' + url;
             cmd.system(msg);
 
             server = child.spawn('open', [url]);
         }
+
     } else {
 
         //  The slice() here removes the command name ('start').
