@@ -10855,8 +10855,7 @@ function() {
 
     var own;
 
-    //  Grab all of the objects that 'own' an implementation of
-    //  initialize.
+    //  Grab all of the objects that *own* an implementation of initialize.
 
     //  NOTE the names-only flag here to keep things from loading
     own = TP.sys.getMethodOwners('initialize', true);
@@ -10904,8 +10903,9 @@ function() {
                         obj.initialize();
                         obj.isInitialized(true);
                     } catch (e) {
-                        TP.boot.$stderr(
-                            'Initialization error for type: ' + item, e);
+                        this.raise(
+                            'TP.sig.InitializationException',
+                            TP.ec(e, 'Unable to initialize: ' + obj.getName()));
                     }
                 };
             });
