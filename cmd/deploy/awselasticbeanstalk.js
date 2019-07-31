@@ -466,7 +466,7 @@
             //  The registry name is matched as the first (outer) group.
             tag = containerRegistryInfo[1] +
                     '/' + params.projectname +
-                    ':v.' + params.projectversion;
+                    ':' + params.projectversion;
 
             //  ---
             //  Build and tag a Docker image

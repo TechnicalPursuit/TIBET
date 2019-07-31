@@ -363,7 +363,7 @@
 
             tag = containerRegistryLocation +
                     '/' + params.projectname +
-                    ':v.' + params.projectversion;
+                    ':' + params.projectversion;
 
             spawnArgs = [
                             'build',

@@ -182,7 +182,7 @@
 
             tag = params.account +
                     '/' + params.projectname +
-                    ':v.' + params.projectversion;
+                    ':' + params.projectversion;
 
             spawnArgs = [
                             'build',
