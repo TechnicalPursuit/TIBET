@@ -250,6 +250,10 @@ if (!TP.sys.$nativeglobals) {
         //  Slice out any TIBET globals.
         TP.sys.$nativeglobals.splice(TP.sys.$nativeglobals.indexOf('TP'), 1);
         TP.sys.$nativeglobals.splice(TP.sys.$nativeglobals.indexOf('APP'), 1);
+
+        //  Slice out deprecated 'GLOBAL' and 'root' refs (make electron happy)
+        TP.sys.$nativeglobals.splice(TP.sys.$nativeglobals.indexOf('root'), 1);
+        TP.sys.$nativeglobals.splice(TP.sys.$nativeglobals.indexOf('GLOBAL'), 1);
     }());
 }
 
