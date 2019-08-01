@@ -4595,7 +4595,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
     desc.atPutIfAbsent('target', this);
 
     baseSignalType = TP.ifInvalid(desc.at('baseSignalType'),
-                                        TP.sig.ValueChange);
+                                    TP.sig.FacetChange);
 
     //  Fire the signal. Note that we force the firing policy here. This allows
     //  observers of a generic Change to see 'aspect'Change notifications, even
