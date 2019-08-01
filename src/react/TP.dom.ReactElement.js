@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.defineSubtype('dom.ReactElement');
+TP.tag.CustomTag.defineSubtype('dom.ReactElement');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -25,8 +25,83 @@ TP.dom.ReactElement.Type.defineAttribute('$$loading');
 
 TP.dom.ReactElement.Type.defineAttribute('$$componentsNeedingSetup');
 
+TP.dom.ReactElement.Type.defineAttribute('$$nameNeedingProxy');
+TP.dom.ReactElement.Type.defineAttribute('$$initialProps');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Type.defineMethod('buildProxyFor',
+function(anObject) {
+
+    /**
+     * @method buildProxyFor
+     * @summary Builds an ECMAScript 6 Proxy object around the supplied React
+     *     constructor Function object.
+     * @param {Function} anObject A React constructor Function object that needs
+     *     to trap instance creation so that component lifecycle methods can be
+     *     hooked.
+     * @returns {Proxy} The Proxy wrapping the supplied React constructor
+     *     Function.
+     */
+
+    var proxyConfig,
+        reactProxy;
+
+    //  Now, because we need to 'hook' a number of lifecycle methods to forward
+    //  over to us, we build an ECMAScript Proxy that will have its 'construct'
+    //  trap invoked when React builds a new instance.
+    proxyConfig = {
+        construct: function(target, args) {
+            var newInst;
+
+            //  Do the normal thing to build a new instance (of the target - the
+            //  'real' constructor object).
+            newInst = new target(...args);
+
+            //  Now hook these methods but make sure to 'capture' any existing
+            //  versions authored by the component author so that we can invoke
+            //  them as well.
+
+            newInst.__oldComponentDidMount = newInst.componentDidMount;
+            newInst.componentDidMount = function() {
+                this.props.TIBETPeer.reactDidMount(this);
+                if (this.__oldComponentDidMount) {
+                    return this.__oldComponentDidMount.apply(this, arguments);
+                }
+            };
+
+            newInst.__oldComponentDidUpdate = newInst.componentDidUpdate;
+            newInst.componentDidUpdate = function(prevProps, prevState) {
+                this.props.TIBETPeer.reactDidUpdate(this, prevProps, prevState);
+                if (this.__oldComponentDidUpdate) {
+                    return this.__oldComponentDidUpdate.apply(this, arguments);
+                }
+            };
+
+            newInst.__oldComponentWillUnmount = newInst.componentWillUnmount;
+            newInst.componentWillUnmount = function() {
+                this.props.TIBETPeer.reactWillUnmount(this);
+                if (this.__oldComponentWillUnmount) {
+                    return this.__oldComponentWillUnmount.apply(
+                                                            this, arguments);
+                }
+            };
+
+            //  Return the newly constructed instance.
+            return newInst;
+        }
+    };
+
+    //  Create the Proxy, supplying the constructor (resolved by using the
+    //  target window global context and referenced by the ECMAScript class
+    //  name) and the Proxy configuration..
+    reactProxy = TP.constructProxyObject(anObject, proxyConfig);
+
+    return reactProxy;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.dom.ReactElement.Type.defineMethod('getComponentScriptURLs',
@@ -160,7 +235,9 @@ function(aRequest) {
         //  concatenating all of the component scripts onto it.
         allScriptLocs = TP.ac(
             'https://unpkg.com/react@16/umd/react.development.js',
-            'https://unpkg.com/react-dom@16/umd/react-dom.development.js');
+            'https://unpkg.com/react-dom@16/umd/react-dom.development.js',
+            'https://unpkg.com/@babel/standalone/babel.min.js');
+
         allScriptLocs = allScriptLocs.concat(componentScripts);
 
         //  Iterate over all of the script locations, loading them one at a time
@@ -173,12 +250,57 @@ function(aRequest) {
                 return TP.sys.fetchScriptInto(
                         TP.uc(aScriptLoc),
                         doc,
-                        TP.request());
-                        //  TP.hc('type', 'module'));
+                        null,
+                        TP.hc('crossorigin', true));
             }).then(
             function() {
 
-                var reactDOMObj;
+                var reactObj,
+                    reactDOMObj;
+
+                //  Unfortunately, due to the way that React works, we have to
+                //  'hook' the React.createElement() call in order to insert our
+                //  proxy standin for the React component constructor.
+                reactObj = TP.nodeGetWindow(elem).React;
+                reactObj.__hooked__createElement = reactObj.createElement;
+                reactObj.createElement = function(type, props, children) {
+                    var nameNeedingProxy,
+                        typeName,
+                        proxy,
+                        newProps,
+                        newElem;
+
+                    //  When we're evaluating code we need to know which
+                    //  tag name corresponds to the component that we're trying
+                    //  to hook/proxy the constructor Function for.
+                    nameNeedingProxy = thisref.$get('$$nameNeedingProxy');
+
+                    //  Grab the name of what React thinks is the constructor
+                    //  Function.
+                    typeName = TP.name(type);
+
+                    //  If the constructor Function is not a Proxy but does
+                    //  match the constructor name we're looking for, then
+                    //  construct a Proxy from the initial properties and invoke
+                    //  the hooked React.createElement() with that now proxied
+                    //  type object.
+                    if (!TP.isProxy(type) && nameNeedingProxy === typeName) {
+
+                        type = thisref.buildProxyFor(type);
+                        newProps = TP.copy(
+                                    TP.ifInvalid(
+                                        thisref.$get('$$initialProps'), {}));
+
+                        newElem = this.__hooked__createElement(
+                                                type, newProps, children);
+                        return newElem;
+                    } else {
+                        newElem = this.__hooked__createElement(
+                                                type, props, children);
+                    }
+
+                    return newElem;
+                };
 
                 reactDOMObj = TP.nodeGetWindow(elem).ReactDOM;
 
@@ -253,6 +375,98 @@ TP.dom.ReactElement.Inst.defineAttribute('$isMounted');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.dom.ReactElement.Inst.defineMethod('buildReactComponent',
+function() {
+
+    /**
+     * @method buildReactComponent
+     * @summary Builds the React component and renders it into the receiver's
+     *     document.
+     * @returns {TP.dom.ReactElement} The receiver.
+     */
+
+    var sourceURI,
+
+        response,
+        jsxText,
+
+        reactComponentClassName,
+
+        initialProps,
+
+        elemWin,
+
+        reactType,
+        reactComponent,
+
+        renderedReactComponent;
+
+    //  If the receiver has a component definition URL, then it's going be
+    //  bringing in a file of React definitions, probably in JSX.
+    sourceURI = this.getReactComponentDefinitionURL();
+    if (TP.isURI(sourceURI)) {
+        response = sourceURI.getResource(
+                                TP.hc('async', false, 'resultType', TP.TEXT));
+        jsxText = response.get('result');
+
+        if (TP.isEmpty(jsxText)) {
+            return this.raise(
+                'TP.sig.InvalidString',
+                'No React source code at: ' + sourceURI.getLocation());
+        }
+
+        this.setContent(jsxText);
+
+    } else {
+
+        //  Grab the component's ECMAScript class name. If it's empty, exit
+        //  here.
+        reactComponentClassName = this.getReactComponentClassName();
+        if (TP.isEmpty(reactComponentClassName)) {
+            return this.raise(
+                'TP.sig.InvalidName', 'No React component class name defined');
+        }
+
+        elemWin = this.getNativeWindow();
+
+        //  Grab the React constructor Function.
+        reactType = elemWin[reactComponentClassName];
+
+        //  Store this in our type so that our hooked React.createElement call
+        //  can find it.
+        this.getType().set('$$nameNeedingProxy', reactComponentClassName);
+
+        //  Grab any initial properties that we want our component to have.
+        initialProps = this.getInitialProps();
+
+        //  Store this in our type so that our hooked React.createElement call
+        //  can find it.
+        this.getType().$set('$$initialProps', initialProps);
+
+        //  Evaluate the code *in the context of this element's window* (which
+        //  Call React's 'createElement' method using the proxy as the
+        //  constructor and supplying the props we computed above.
+        reactComponent = elemWin.React.createElement(reactType, initialProps);
+
+        //  If we got a valid component class, then invoke the render call with
+        //  it. Note here how we provide ourself (transformed by our compilation
+        //  method above into an XHTML span) as the 'root DOM node' for this
+        //  React component.
+        if (TP.isValid(reactComponent)) {
+            renderedReactComponent = elemWin.ReactDOM.render(
+                    reactComponent,
+                    this.getNativeNode(),
+                    function() {
+                        this.reactComponentCreationFinished();
+                    }.bind(this));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ReactElement.Inst.defineMethod('getNonAttributeProps',
 function() {
 
@@ -270,103 +484,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Inst.defineMethod('getReactComponentClass',
+TP.dom.ReactElement.Inst.defineMethod('getInitialProps',
 function() {
 
     /**
-     * @method getReactComponentClass
-     * @summary Returns an object that will be used by React to create our peer
-     *     instance of the component.
-     * @returns {Function} The object to be used as the React component's class
-     *     (i.e. constructor).
+     * @method getInitialProps
+     * @summary Returns a POJO that contains the initial properties for the
+     *     React component that underlies this object.
+     * @returns {Object} A POJO containing the initial properties for the React
+     *     component.
      */
 
-    var reactComponentClassName,
+    var initialProps;
 
-        initialProps,
-
-        elemWin,
-
-        proxyConfig,
-        reactProxy,
-
-        reactComponent;
-
-    //  Grab the component's ECMAScript class name. If it's empty, exit here.
-    reactComponentClassName = this.getReactComponentClassName();
-    if (TP.isEmpty(reactComponentClassName)) {
-        //  TODO: Raise an exception.
-        return this;
-    }
-
-    //  Grab the initial props by getting all of the attributes of the receiver
-    //  as a hash.
+    //  Grab the initial props by getting all of the attributes of the
+    //  receiver as a hash.
     initialProps = this.getAttributes();
 
     //  Add in any 'non attribute' props.
     initialProps.addAll(this.getNonAttributeProps());
 
-    //  Convert the initial hash into a POJO and add a reference to the receiver
-    //  to it.
+    //  Convert the initial hash into a POJO and add a reference to the
+    //  receiver to it.
     initialProps = initialProps.asObject();
     initialProps.TIBETPeer = this;
 
-    elemWin = this.getNativeWindow();
-
-    //  Now, because we need to 'hook' a number of lifecycle methods to forward
-    //  over to us, we build an ECMAScript Proxy that will have its 'construct'
-    //  trap invoked when React builds a new instance.
-    proxyConfig = {
-        construct: function(target, args) {
-            var newInst;
-
-            //  Do the normal thing to build a new instance (of the target - the
-            //  'real' constructor object).
-            newInst = new target(...args);
-
-            //  Now hook these methods but make sure to 'capture' any existing
-            //  versions authored by the component author so that we can invoke
-            //  them as well.
-
-            newInst.__oldComponentDidMount = newInst.componentDidMount;
-            newInst.componentDidMount = function() {
-                this.props.TIBETPeer.reactDidMount(this);
-                if (this.__oldComponentDidMount) {
-                    return this.__oldComponentDidMount.apply(this, arguments);
-                }
-            };
-
-            newInst.__oldComponentDidUpdate = newInst.componentDidUpdate;
-            newInst.componentDidUpdate = function(prevProps, prevState) {
-                this.props.TIBETPeer.reactDidUpdate(this, prevProps, prevState);
-                if (this.__oldComponentDidUpdate) {
-                    return this.__oldComponentDidUpdate.apply(this, arguments);
-                }
-            };
-
-            newInst.__oldComponentWillUnmount = newInst.componentWillUnmount;
-            newInst.componentWillUnmount = function() {
-                this.props.TIBETPeer.reactWillUnmount(this);
-                if (this.__oldComponentWillUnmount) {
-                    return this.__oldComponentWillUnmount.apply(this, arguments);
-                }
-            };
-
-            //  Return the newly constructed instance.
-            return newInst;
-        }
-    };
-
-    //  Create the Proxy, supplying the constructor (resolved by using the
-    //  target window global context and referenced by the ECMAScript class
-    //  name) and the Proxy configuration..
-    reactProxy = new Proxy(elemWin[reactComponentClassName], proxyConfig);
-
-    //  Call React's 'createElement' method using the proxy as the constructor
-    //  and supplying the props we computed above.
-    reactComponent = elemWin.React.createElement(reactProxy, initialProps);
-
-    return reactComponent;
+    return initialProps;
 });
 
 //  ------------------------------------------------------------------------
@@ -382,6 +525,56 @@ function() {
      */
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Inst.defineMethod('getReactComponentDefinitionURL',
+function() {
+
+    /**
+     * @method getReactComponentDefinitionURL
+     * @summary Returns a URL instance that will
+     * @returns {TP.core.URL|null}
+     */
+
+    var src,
+        path;
+
+    //  Grab the source location from our attribute.
+    src = this.getAttribute('src');
+    if (TP.isEmpty(src)) {
+        return null;
+    }
+
+    //  Compute a path from our source collection path and our source location.
+    path = TP.uriJoinPaths(TP.objectGetSourceCollectionPath(this), src);
+
+    return TP.uc(path);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles when the underlying value of the resource we are
+     *     currently editing changes.
+     * @param {TP.sig.ValueChange} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var newContent;
+
+    newContent = aSignal.getOrigin().getContent().get('data');
+    if (TP.notEmpty(newContent)) {
+        this.setContent(newContent);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -519,28 +712,14 @@ function() {
      * @returns {TP.dom.ReactElement} The receiver.
      */
 
-    var elem,
-        elemWin,
+    var sourceURI;
 
-        reactComponentClass;
+    this.buildReactComponent();
 
-    elem = this.getNativeNode();
-    elemWin = this.getNativeWindow();
+    sourceURI = this.getReactComponentDefinitionURL();
 
-    //  Grab the React component class (i.e. the constructor).
-    reactComponentClass = this.getReactComponentClass();
-
-    //  If we got a valid component class, then invoke the render call with it.
-    //  Note here how we provide ourself (transformed by our compilation method
-    //  above into an XHTML span) as the 'root DOM node' for this React
-    //  component.
-    if (TP.isValid(reactComponentClass)) {
-        elemWin.ReactDOM.render(
-                reactComponentClass,
-                elem,
-                function() {
-                    this.reactComponentCreationFinished();
-                }.bind(this));
+    if (TP.isURI(sourceURI)) {
+        this.observe(sourceURI, 'TP.sig.ValueChange');
     }
 
     return this;
@@ -592,6 +771,90 @@ function(attributeName, attributeValue, shouldSignal) {
     peer.setState(state);
 
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Inst.defineMethod('setContent',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
+     *     the value supplied.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.dom.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    var str,
+
+        elemWin,
+
+        babel,
+        componentCode,
+
+        reactComponentClassName,
+
+        initialProps,
+
+        renderedReactComponent;
+
+    str = TP.str(aContentObject);
+
+    if (TP.notEmpty(str)) {
+
+        elemWin = this.getNativeWindow();
+
+        //  Run the content through Babel, compiling both ES2015 and React
+        //  constructs.
+        babel = elemWin.Babel;
+        if (TP.notValid(babel)) {
+            return this.raise(
+                'TP.sig.InvalidObject', 'No valid Babel compiler available');
+        }
+
+        //  componentCode will be a String containing the React compiled code.
+        componentCode = babel.transform(
+                            str, { presets: ['es2015', 'react'] }).code;
+
+        if (TP.isEmpty(componentCode)) {
+            return this.raise(
+                'TP.sig.InvalidString', 'No React code compilation output');
+        }
+
+        //  Grab the component's ECMAScript class name. If it's empty, exit
+        //  here.
+        reactComponentClassName = this.getReactComponentClassName();
+        if (TP.isEmpty(reactComponentClassName)) {
+            return this.raise(
+                'TP.sig.InvalidName', 'No React component class name defined');
+        }
+
+        //  Store this in our type so that our hooked React.createElement call
+        //  can find it.
+        this.getType().set('$$nameNeedingProxy', reactComponentClassName);
+
+        //  Grab any initial properties that we want our component to have.
+        initialProps = this.getInitialProps();
+
+        //  Store this in our type so that our hooked React.createElement call
+        //  can find it.
+        this.getType().$set('$$initialProps', initialProps);
+
+        //  Evaluate the code *in the context of this element's window* (which
+        //  should be the UI canvas window - that's where we loaded React into.
+        //  React will invoke our hooked React.createElement call as part of
+        //  this evaluation process.
+        renderedReactComponent = elemWin.eval(componentCode);
+        this.reactComponentCreationFinished();
+
+        this.getType().$set('$$nameNeedingProxy', null);
+        this.getType().$set('$$initialProps', null);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -670,7 +933,52 @@ function() {
      * @returns {TP.dom.ReactElement} The receiver.
      */
 
+    var sourceURI;
+
+    sourceURI = this.getReactComponentDefinitionURL();
+
+    if (TP.isURI(sourceURI)) {
+        this.ignore(sourceURI, 'TP.sig.ValueChange');
+    }
+
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Sherpa Methods
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var thisType;
+
+    thisType = this.getType();
+
+    switch (anAspect) {
+
+        case 'Structure':
+            //  NB: We're returning the TP.uri.URI instance itself here.
+            return this.getReactComponentDefinitionURL();
+
+        default:
+            return this.callNextMethod();
+    }
 });
 
 //  ------------------------------------------------------------------------
