@@ -992,11 +992,14 @@ function() {
 
             if (TP.isKindOf(sourceURI, TP.uri.URL)) {
 
-                //  Try to get a MIME type from the URL - if we can't, then we
-                //  just treat the content as plain text.
-                if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
-                    mimeType = TP.PLAIN_TEXT_ENCODED;
-                }
+                //  Get the MIME type from guessing based on content and URI. We
+                //  do this rather than ask the URI for a MIME type, since the
+                //  URI might be holding 'plain text' content that will report
+                //  as TP.PLAIN_TEXT_ENCODED and we want a 'higher level' MIME
+                //  type for use when setting the editor's syntax highlighting,
+                //  etc.
+                mimeType = TP.ietf.mime.guessMIMEType(
+                        sourceStr, sourceURI, sourceURI.get('defaultMIMEType'));
 
                 //  CodeMirror won't understand XHTML as distinct from XML.
                 if (mimeType === TP.XHTML_ENCODED) {
