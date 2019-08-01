@@ -162,8 +162,7 @@ function(aRequest) {
 
         TP.sys.fetchScriptInto(
             TP.uc('~lib_deps/ace/ace-tpi.js'),
-            TP.doc(elem),
-            TP.request()
+            TP.doc(elem)
         ).then(function() {
                 var aceObj;
 
