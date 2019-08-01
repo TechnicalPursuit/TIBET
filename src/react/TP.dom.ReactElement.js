@@ -266,7 +266,7 @@ function(aRequest) {
                 reactObj.createElement = function(type, props, children) {
                     var nameNeedingProxy,
                         typeName,
-                        proxy,
+                        proxyType,
                         newProps,
                         newElem;
 
@@ -286,13 +286,13 @@ function(aRequest) {
                     //  type object.
                     if (!TP.isProxy(type) && nameNeedingProxy === typeName) {
 
-                        type = thisref.buildProxyFor(type);
+                        proxyType = thisref.buildProxyFor(type);
                         newProps = TP.copy(
                                     TP.ifInvalid(
                                         thisref.$get('$$initialProps'), {}));
 
                         newElem = this.__hooked__createElement(
-                                                type, newProps, children);
+                                                proxyType, newProps, children);
                         return newElem;
                     } else {
                         newElem = this.__hooked__createElement(
@@ -397,9 +397,7 @@ function() {
         elemWin,
 
         reactType,
-        reactComponent,
-
-        renderedReactComponent;
+        reactComponent;
 
     //  If the receiver has a component definition URL, then it's going be
     //  bringing in a file of React definitions, probably in JSX.
@@ -453,7 +451,7 @@ function() {
         //  method above into an XHTML span) as the 'root DOM node' for this
         //  React component.
         if (TP.isValid(reactComponent)) {
-            renderedReactComponent = elemWin.ReactDOM.render(
+            elemWin.ReactDOM.render(
                     reactComponent,
                     this.getNativeNode(),
                     function() {
@@ -797,9 +795,7 @@ function(aContentObject, aRequest) {
 
         reactComponentClassName,
 
-        initialProps,
-
-        renderedReactComponent;
+        initialProps;
 
     str = TP.str(aContentObject);
 
@@ -817,7 +813,7 @@ function(aContentObject, aRequest) {
 
         //  componentCode will be a String containing the React compiled code.
         componentCode = babel.transform(
-                            str, { presets: ['es2015', 'react'] }).code;
+                            str, {presets: ['es2015', 'react']}).code;
 
         if (TP.isEmpty(componentCode)) {
             return this.raise(
@@ -847,7 +843,7 @@ function(aContentObject, aRequest) {
         //  should be the UI canvas window - that's where we loaded React into.
         //  React will invoke our hooked React.createElement call as part of
         //  this evaluation process.
-        renderedReactComponent = elemWin.eval(componentCode);
+        elemWin.eval(componentCode);
         this.reactComponentCreationFinished();
 
         this.getType().$set('$$nameNeedingProxy', null);
@@ -965,10 +961,6 @@ function(anAspect, options) {
      * @returns {Object} The object produced when resolving the aspect against
      *     the receiver.
      */
-
-    var thisType;
-
-    thisType = this.getType();
 
     switch (anAspect) {
 
