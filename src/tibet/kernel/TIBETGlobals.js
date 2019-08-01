@@ -1537,6 +1537,7 @@ TP.XML_TEXT_ENCODED = 'text/xml';
 TP.JSON_TEXT_ENCODED = 'text/json';
 
 TP.JS_TEXT_ENCODED = 'text/javascript';
+TP.JSX_TEXT_ENCODED = 'text/jsx';
 
 //  ---
 //  html support

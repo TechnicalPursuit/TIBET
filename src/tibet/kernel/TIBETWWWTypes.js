@@ -559,6 +559,7 @@ TP.ietf.mime.Type.defineConstant('HTML', TP.HTML_TEXT_ENCODED);
 TP.ietf.mime.Type.defineConstant('ECMASCRIPT', 'text/ecmascript');
 TP.ietf.mime.Type.defineConstant('JS', TP.JS_TEXT_ENCODED);
 TP.ietf.mime.Type.defineConstant('JSON', TP.JSON_ENCODED);
+TP.ietf.mime.Type.defineConstant('JSX', TP.JSX_TEXT_ENCODED);
 TP.ietf.mime.Type.defineConstant('XHTML', TP.XHTML_ENCODED);
 
 TP.ietf.mime.Type.defineConstant('TSH', 'text/vnd.TPI.TSH');
@@ -665,6 +666,11 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'extensions', 'js jscript',
                         'handler', 'TP.uri.JSURI',
                         'tshtag', 'tsh:script'),
+            TP.ietf.mime.JSX,
+                TP.hc('mimetype', TP.ietf.mime.JSX,
+                        'alias', 'JSX',
+                        'extensions', 'jsx',
+                        'tshtag', 'html:span'),
             TP.ietf.mime.JSON,
                 TP.hc('mimetype', TP.ietf.mime.JSON,
                         'alias', 'JSON',

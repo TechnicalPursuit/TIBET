@@ -15,6 +15,9 @@
 
         make.sh.exec('cp -f -R src-min-noconflict/mode-javascript.js ../../deps/ace');
         make.sh.exec('cp -f -R src-min-noconflict/worker-javascript.js ../../deps/ace');
+
+        make.sh.exec('cp -f -R src-min-noconflict/mode-jsx.js ../../deps/ace');
+
         make.sh.exec('cp -f -R src-min-noconflict/mode-css.js ../../deps/ace');
         make.sh.exec('cp -f -R src-min-noconflict/worker-css.js ../../deps/ace');
 

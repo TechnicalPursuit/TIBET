@@ -745,6 +745,9 @@ function(mimeType) {
         case TP.JS_TEXT_ENCODED:
             this.setEditorMode('ace/mode/javascript');
             break;
+        case TP.JSX_TEXT_ENCODED:
+            this.setEditorMode('ace/mode/jsx');
+            break;
         case TP.JSON_ENCODED:
             this.setEditorMode('ace/mode/json');
             break;
