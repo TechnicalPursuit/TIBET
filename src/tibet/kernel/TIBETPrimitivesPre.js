@@ -8709,6 +8709,37 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isProxy',
+function(anObj) {
+
+    /**
+     * @method isProxy
+     * @summary Returns true if the object provided is an ECMA E6 Proxy object.
+     * @param {Object} anObj The object to test.
+     * @example Test to see if anObj is a Proxy:
+     *     <code>
+     *          anObj = TP.constructProxyObject(myTarget, myConfig);
+     *          TP.isProxy(anObj);
+     *          <samp>true</samp>
+     *     </code>
+     * @example Test to see if any other object is a Proxy:
+     *     <code>
+     *          TP.isProxy('');
+     *          <samp>false</samp>
+     *          TP.isProxy(42);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is an ECMA E6 Proxy
+     *     object.
+     */
+
+    /* eslint-disable no-extra-parens */
+    return (TP.isValid(anObj) && anObj.__isProxy__ !== undefined);
+    /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isRegExp',
 function(anObj) {
 

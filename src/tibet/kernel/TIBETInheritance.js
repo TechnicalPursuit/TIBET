@@ -661,7 +661,7 @@ function(name, classDefFunction) {
     //  Create a proxy around the class description Function that was supplied.
     //  This is what will get installed below under the global slot and is
     //  used in order to trap instance creation via the 'construct' trap above.
-    classProxy = new Proxy(classDefFunction, proxyConfig);
+    classProxy = TP.constructProxyObject(classDefFunction, proxyConfig);
 
     //  Wire up the prototype chains on the class description Function to
     //  support calling 'super' from the ECMAScript 'class'. The first one wires

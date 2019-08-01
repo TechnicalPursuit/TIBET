@@ -341,6 +341,37 @@ TP.registerLoadInfo(TP.constructOrphanObject);
 TP.oc = TP.constructOrphanObject;
 
 //  ------------------------------------------------------------------------
+
+TP.constructProxyObject = function(target, config) {
+
+    /**
+     * @method constructProxyObject
+     * @summary Constructs an ECMA E6 proxy object. This method stamps a slot
+     *     onto the return E6 Proxy object that allows the system to determine
+     *     whether an object is a Proxy or not, which is normally very difficult
+     *     if not impossible to determine. Use TP.isProxy to determine if an
+     *     object is an E6 Proxy.
+     * @param {Object} target The object to act as a proxy for.
+     * @param {Object} config The proxy configuration
+     * @returns {Proxy} An ECMA E6 proxy object.
+     */
+
+    var newProxy;
+
+    newProxy = new Proxy(target, config);
+    newProxy.__isProxy__ = true;
+
+    return newProxy;
+};
+
+//  Manual setup
+TP.constructProxyObject[TP.NAME] = 'constructProxyObject';
+TP.constructProxyObject[TP.OWNER] = TP;
+TP.constructProxyObject[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.constructProxyObject[TP.DISPLAY] = 'TP.constructProxyObject';
+TP.registerLoadInfo(TP.constructProxyObject);
+
+//  ------------------------------------------------------------------------
 //  DEFINE PROPERTY KEYS
 //  ------------------------------------------------------------------------
 
