@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.dom.ReactElement}
- * @summary Manages custom elements that use ReactJS components
+ * @summary Manages custom elements that use ReactJS components.
  */
 
 //  ------------------------------------------------------------------------
@@ -96,7 +96,7 @@ function(anObject) {
 
     //  Create the Proxy, supplying the constructor (resolved by using the
     //  target window global context and referenced by the ECMAScript class
-    //  name) and the Proxy configuration..
+    //  name) and the Proxy configuration.
     reactProxy = TP.constructProxyObject(anObject, proxyConfig);
 
     return reactProxy;
@@ -165,10 +165,11 @@ function(aRequest) {
 
     tagName = tpElem.getTagName();
 
-    //  Create a new XHTML element from elem, using either 'div' or 'span'
-    //  depending on whether the element is block level or not
+    //  Create a new XHTML span element from elem
     newElem = TP.elementBecome(elem, 'span');
 
+    //  Set the 'tibet:tag' attribute on it so that the proper type is used to
+    //  create the instance.
     TP.elementSetAttribute(newElem, 'tibet:tag', tagName, true);
 
     return newElem;
