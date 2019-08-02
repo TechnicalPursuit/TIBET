@@ -415,6 +415,10 @@ function() {
         elemWin,
 
         reactType,
+
+        doc,
+        componentScripts,
+
         reactComponent;
 
     //  If the receiver has a component definition URL, then it's going be
@@ -447,38 +451,84 @@ function() {
 
         //  Grab the React constructor Function.
         reactType = elemWin[reactComponentClassName];
+        if (TP.notValid(reactType)) {
 
-        //  Store this in our type so that our hooked React.createElement call
-        //  can find it.
-        TP.dom.ReactElement.set('$$nameNeedingProxy', reactComponentClassName);
+            if (this.getType().get('$$loading') === true) {
+                return this;
+            }
 
-        //  Grab any initial properties that we want our component to have.
-        initialProps = this.getInitialProps();
+            //  Set '$$loading' immediately so that if we're loading multiple
+            //  components, we won't see multiple tries.
+            this.getType().set('$$loading', true);
 
-        //  Store this in our type so that our hooked React.createElement call
-        //  can find it.
-        TP.dom.ReactElement.$set('$$initialProps', initialProps);
+            doc = this.getNativeDocument();
 
-        //  Evaluate the code *in the context of this element's window* (which
-        //  Call React's 'createElement' method using the proxy as the
-        //  constructor and supplying the props we computed above.
-        reactComponent = elemWin.React.createElement(reactType, initialProps);
+            //  Grab all of the React 'component' script URLs.
+            componentScripts = this.getType().getComponentScriptURLs();
 
-        //  If we got a valid component class, then invoke the render call with
-        //  it. Note here how we provide ourself (transformed by our compilation
-        //  method above into an XHTML span) as the 'root DOM node' for this
-        //  React component.
-        if (TP.isValid(reactComponent)) {
-            elemWin.ReactDOM.render(
-                    reactComponent,
-                    this.getNativeNode(),
+            //  Iterate over all of the script locations, loading them one at a
+            //  time via Promises. When everything is complete, then proceed
+            //  with setting up the 'ReactDOM' object and set up each element
+            //  that wanted to be set up.
+            TP.extern.Promise.each(
+                componentScripts,
+                function(aScriptLoc) {
+                    return TP.sys.fetchScriptInto(
+                            TP.uc(aScriptLoc),
+                            doc,
+                            null,
+                            TP.hc('crossorigin', true));
+                }).then(
                     function() {
-                        this.reactComponentCreationFinished();
-                    }.bind(this));
-        }
+                        //  We're no longer loading.
+                        this.getType().set('$$loading', false);
 
-        TP.dom.ReactElement.$set('$$nameNeedingProxy', null);
-        TP.dom.ReactElement.$set('$$initialProps', null);
+                        //  Iterate over the Array of the components that we
+                        //  were keeping to set up and set them up.
+                        this.getType().get('$$componentsNeedingSetup').forEach(
+                            function(aTPElem) {
+                                aTPElem.setup();
+                            });
+
+                        this.getType().get('$$componentsNeedingSetup').empty();
+
+                    }.bind(this));
+        } else {
+
+            //  Store this in our type so that our hooked React.createElement
+            //  call can find it.
+            TP.dom.ReactElement.set('$$nameNeedingProxy',
+                                    reactComponentClassName);
+
+            //  Grab any initial properties that we want our component to have.
+            initialProps = this.getInitialProps();
+
+            //  Store this in our type so that our hooked React.createElement
+            //  call can find it.
+            TP.dom.ReactElement.$set('$$initialProps', initialProps);
+
+            //  Evaluate the code *in the context of this element's window*
+            //  (which call React's 'createElement' method using the proxy as
+            //  the constructor and supplying the props we computed above).
+            reactComponent = elemWin.React.createElement(
+                                            reactType, initialProps);
+
+            //  If we got a valid component class, then invoke the render call
+            //  with it. Note here how we provide ourself (transformed by our
+            //  compilation method above into an XHTML span) as the 'root DOM
+            //  node' for this React component.
+            if (TP.isValid(reactComponent)) {
+                elemWin.ReactDOM.render(
+                        reactComponent,
+                        this.getNativeNode(),
+                        function() {
+                            this.reactComponentCreationFinished();
+                        }.bind(this));
+            }
+
+            TP.dom.ReactElement.$set('$$nameNeedingProxy', null);
+            TP.dom.ReactElement.$set('$$initialProps', null);
+        }
     }
 
     return this;
