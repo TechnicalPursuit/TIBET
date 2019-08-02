@@ -793,6 +793,10 @@ TP.getFunctionName = function(aFunction) {
     results = Function.$$getNameRegex.exec(aFunction.toString());
 
     if (TP.notValid(results) || results[1] === '') {
+        results = aFunction.name;
+        if (TP.notEmpty(results)) {
+            return results;
+        }
         return TP.ANONYMOUS_FUNCTION_NAME;
     } else {
         return results[1].strip(/\s/g);
