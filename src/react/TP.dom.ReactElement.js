@@ -25,8 +25,9 @@ TP.dom.ReactElement.Type.defineAttribute('$$loading');
 
 TP.dom.ReactElement.Type.defineAttribute('$$componentsNeedingSetup');
 
-TP.dom.ReactElement.Type.defineAttribute('$$nameNeedingProxy');
-TP.dom.ReactElement.Type.defineAttribute('$$initialProps');
+//  Note how these properties are TYPE_LOCAL, by design.
+TP.dom.ReactElement.defineAttribute('$$nameNeedingProxy');
+TP.dom.ReactElement.defineAttribute('$$initialProps');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -276,7 +277,8 @@ function(aRequest) {
                     //  When we're evaluating code we need to know which
                     //  tag name corresponds to the component that we're trying
                     //  to hook/proxy the constructor Function for.
-                    nameNeedingProxy = thisref.$get('$$nameNeedingProxy');
+                    nameNeedingProxy =
+                        TP.dom.ReactElement.$get('$$nameNeedingProxy');
 
                     //  Grab the name of what React thinks is the constructor
                     //  Function.
@@ -301,9 +303,11 @@ function(aRequest) {
                             proxyType = type;
                         }
 
-                        newProps = TP.copy(
-                                    TP.ifInvalid(
-                                        thisref.$get('$$initialProps'), {}));
+                        newProps =
+                            TP.copy(
+                                TP.ifInvalid(
+                                    TP.dom.ReactElement.$get('$$initialProps'),
+                                    {}));
 
                         newElem = this.__hooked__createElement(
                                                 proxyType, newProps, children);
@@ -446,14 +450,14 @@ function() {
 
         //  Store this in our type so that our hooked React.createElement call
         //  can find it.
-        this.getType().set('$$nameNeedingProxy', reactComponentClassName);
+        TP.dom.ReactElement.set('$$nameNeedingProxy', reactComponentClassName);
 
         //  Grab any initial properties that we want our component to have.
         initialProps = this.getInitialProps();
 
         //  Store this in our type so that our hooked React.createElement call
         //  can find it.
-        this.getType().$set('$$initialProps', initialProps);
+        TP.dom.ReactElement.$set('$$initialProps', initialProps);
 
         //  Evaluate the code *in the context of this element's window* (which
         //  Call React's 'createElement' method using the proxy as the
@@ -473,8 +477,8 @@ function() {
                     }.bind(this));
         }
 
-        this.getType().$set('$$nameNeedingProxy', null);
-        this.getType().$set('$$initialProps', null);
+        TP.dom.ReactElement.$set('$$nameNeedingProxy', null);
+        TP.dom.ReactElement.$set('$$initialProps', null);
     }
 
     return this;
@@ -847,14 +851,14 @@ function(aContentObject, aRequest) {
 
         //  Store this in our type so that our hooked React.createElement call
         //  can find it.
-        this.getType().set('$$nameNeedingProxy', reactComponentClassName);
+        TP.dom.ReactElement.set('$$nameNeedingProxy', reactComponentClassName);
 
         //  Grab any initial properties that we want our component to have.
         initialProps = this.getInitialProps();
 
         //  Store this in our type so that our hooked React.createElement call
         //  can find it.
-        this.getType().$set('$$initialProps', initialProps);
+        TP.dom.ReactElement.$set('$$initialProps', initialProps);
 
         //  Evaluate the code *in the context of this element's window* (which
         //  should be the UI canvas window - that's where we loaded React into.
@@ -863,8 +867,8 @@ function(aContentObject, aRequest) {
         elemWin.eval(componentCode);
         this.reactComponentCreationFinished();
 
-        this.getType().$set('$$nameNeedingProxy', null);
-        this.getType().$set('$$initialProps', null);
+        TP.dom.ReactElement.$set('$$nameNeedingProxy', null);
+        TP.dom.ReactElement.$set('$$initialProps', null);
     }
 
     return this;
