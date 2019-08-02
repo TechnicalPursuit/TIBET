@@ -255,13 +255,15 @@ function(aRequest) {
             }).then(
             function() {
 
-                var reactObj,
+                var reactWin,
+                    reactObj,
                     reactDOMObj;
 
                 //  Unfortunately, due to the way that React works, we have to
                 //  'hook' the React.createElement() call in order to insert our
                 //  proxy standin for the React component constructor.
-                reactObj = TP.nodeGetWindow(elem).React;
+                reactWin = TP.nodeGetWindow(elem);
+                reactObj = reactWin.React;
                 reactObj.__hooked__createElement = reactObj.createElement;
                 reactObj.createElement = function(type, props, children) {
                     var nameNeedingProxy,
@@ -279,14 +281,25 @@ function(aRequest) {
                     //  Function.
                     typeName = TP.name(type);
 
-                    //  If the constructor Function is not a Proxy but does
-                    //  match the constructor name we're looking for, then
-                    //  construct a Proxy from the initial properties and invoke
-                    //  the hooked React.createElement() with that now proxied
-                    //  type object.
-                    if (!TP.isProxy(type) && nameNeedingProxy === typeName) {
+                    //  If the constructor Function's name matches the
+                    //  constructor name we're looking for, then use a proxied
+                    //  Type object to construct the React Element instance.
+                    if (nameNeedingProxy === typeName) {
 
-                        proxyType = thisref.buildProxyFor(type);
+                        //  If the constructor Function is not a Proxy, then
+                        //  construct a Proxy from the initial properties and
+                        //  invoke the hooked React.createElement() with that
+                        //  now proxied type object. Note how we reset the
+                        //  global reference on the target Window to the proxy.
+                        //  This is important for subsequent invocations to use
+                        //  the proper constructor Function.
+                        if (!TP.isProxy(type)) {
+                            proxyType = thisref.buildProxyFor(type);
+                            reactWin[typeName] = proxyType;
+                        } else {
+                            proxyType = type;
+                        }
+
                         newProps = TP.copy(
                                     TP.ifInvalid(
                                         thisref.$get('$$initialProps'), {}));
@@ -458,6 +471,9 @@ function() {
                         this.reactComponentCreationFinished();
                     }.bind(this));
         }
+
+        this.getType().$set('$$nameNeedingProxy', null);
+        this.getType().$set('$$initialProps', null);
     }
 
     return this;
