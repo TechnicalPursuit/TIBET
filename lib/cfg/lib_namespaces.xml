@@ -25,6 +25,8 @@
 
     <config ref="aws"/>
 
+    <config ref="demo"/>
+
     <config ref="xctrls"/>
 
     <config ref="svg" unless="ie"/>
@@ -86,6 +88,22 @@
     <script src="aws/services/passthrough/TP.sig.AWSPassthroughRequest.js"/>
     <script src="aws/services/passthrough/TP.sig.AWSPassthroughResponse.js"/>
     <script src="aws/services/passthrough/TP.aws.AWSPassthroughService.js"/>
+
+</config>
+
+<config id="demo" basedir="~lib_demo">
+
+    <script>
+        <![CDATA[
+            TP.defineNamespace('TP.demo');
+            TP.w3.Xmlns.registerNSInfo('urn:tibet:demo', TP.hc('prefix', 'demo'));
+        ]]>
+    </script>
+
+    <script src="react1/TP.demo.reactlikebutton.js"/>
+    <script src="react2/TP.demo.reactgreeting.js"/>
+
+    <script src="react_sample/TP.demo.samplereactfield.js"/>
 
 </config>
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title></title>
+
+    <script src="../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="../tibet_demos.css"/>
+
+    <tibet:data name="urn:tibet:test_person_JSON">
+        <![CDATA[
+        {"person": {"lastname": "Jones", "firstname": "Jane", "description": "Ms. Jones is a great lady", "work_history": "Quite a bit", "gender": "f", "pet": "cat", "color": "blue"}}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <demo:samplereactfield id="field1" bind:io="urn:tibet:test_person_JSON#jpath($.person.firstname)"/>
+    <demo:samplereactfield id="field2" bind:io="urn:tibet:test_person_JSON#jpath($.person.firstname)"/>
+
+</body>
+</html>
