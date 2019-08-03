@@ -94,7 +94,7 @@ Cmd.prototype.PACKAGED_RESOURCE = /.+\.(js|jscript|json|xml|xhtml|xsl|xsd|css)$/
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['force', 'list', 'update'],
-        'string': ['dir', 'dirname', 'dna', 'name'],
+        'string': ['dir', 'dna', 'name'],
         'default': {}
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -874,7 +874,7 @@ Cmd.prototype.verifyDestination = function() {
         err;
 
     options = this.options;
-    dirname = options.dirname;
+    dirname = options.dir;
 
     //  ---
     //  Verify destination directory
@@ -887,7 +887,7 @@ Cmd.prototype.verifyDestination = function() {
         options.dest = dest;
 
         dirname = dest.slice(dest.lastIndexOf(path.sep) + 1);
-        options.dirname = dirname;
+        options.dir = dirname;
 
         list = CLI.sh.ls('-RA', dest);
         err = CLI.sh.error();

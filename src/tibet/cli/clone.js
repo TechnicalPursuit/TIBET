@@ -82,22 +82,21 @@ Cmd.prototype.configure = function() {
 
     //  One special case has to be dealt with, in particular cloning to an
     //  exising directory via '.' as a parameter. That value is always treated
-    //  as the value for 'dir/dirname' and any other positional paramter is
+    //  as the value for 'dir' and any other positional parameter is
     //  treated as the name. So `tibet clone . foo` is --dir="." --name="foo".
     if (options._[1] === '.') {
-        options.dirname = options._[1];
+        options.dir = options._[1];
         options.name = options._[2] || options.name;
     } else {
         options.name = options._[1] || options.name;
-        options.dirname = options._[2] || options.dirname || options.dir ||
-            './' + options.name;
+        options.dir = options._[2] || options.dir || './' + options.name;
     }
 
     cwd = process.cwd();
 
     //  If we're targeting the current directory we allow for scanning any
     //  existing project information for name and dna values.
-    if (options.dirname === '.') {
+    if (options.dir === '.') {
         if (!options.name) {
             if (CLI.inProject()) {
                 options.name = CLI.cfg('npm.name');
@@ -132,10 +131,10 @@ Cmd.prototype.summarize = function() {
     options = this.options;
 
     this.log('Application DNA \'' + path.basename(options.dna) +
-        '\' cloned to ' + options.dirname +
+        '\' cloned to ' + options.dir +
         ' as \'' + options.name + '\'.');
 
-    this.info('cd ' + options.dirname + '; tibet init; to continue developing.');
+    this.info('cd ' + options.dir + '; tibet init; to continue developing.');
 };
 
 module.exports = Cmd;

@@ -233,20 +233,20 @@ Cmd.prototype.configureForDNA = function(config) {
     }
 
     //  ---
-    //  dir/dirname
+    //  dir
     //  ---
 
-    options.dirname = options._[2] || options.dirname || options.dir;
+    options.dir = options._[2] || options.dir;
 
-    if (CLI.isEmpty(options.dirname)) {
+    if (CLI.isEmpty(options.dir)) {
 
-        options.dirname = inProj ? '~app_src/' :
+        options.dir = inProj ? '~app_src/' :
             '~lib_src/' + options.nsname;
 
-        options.dirname = path.join(options.dirname,
+        options.dir = path.join(options.dir,
             options.nsname + '.' + options.name);
 
-        dest = CLI.expandPath(options.dirname);
+        dest = CLI.expandPath(options.dir);
         options.dest = dest;
     }
 
@@ -942,7 +942,7 @@ Cmd.prototype.summarize = function() {
     options = this.options;
 
     this.info('Type DNA \'' + path.basename(options.dna) +
-        '\' cloned to ' + options.dirname +
+        '\' cloned to ' + options.dir +
         ' as \'' + options.name + '\'.');
 };
 
