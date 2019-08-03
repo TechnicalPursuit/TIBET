@@ -72,7 +72,7 @@ Cmd.NAME = 'init';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['static'],
+        'boolean': ['freeze'],
         'default': {
         }
     },
@@ -84,7 +84,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet init [--static]';
+Cmd.prototype.USAGE = 'tibet init [--freeze]';
 
 
 //  ---
@@ -258,7 +258,7 @@ Cmd.prototype.execute = function() {
     //  version capture (do this first)
     //  ---
 
-    if (this.options.static) {
+    if (this.options.freeze) {
         //  NOTE this is looking for the TIBET library package.json, not an
         //  application/project one so we root from __dirname and climb up.
         pkgpath = path.join(__dirname, '..', '..', '..', CLI.NPM_FILE);
@@ -283,7 +283,7 @@ Cmd.prototype.execute = function() {
 
     //  For performance reasons and to avoid potential issues with #10343 we
     //  remove any references to the library in package.json. If we're using
-    //  the static flag they'll be re-injected _after_ npm install.
+    //  the freeze flag they'll be re-injected _after_ npm install.
     try {
         pkgpath = path.join(CLI.expandPath('~'), CLI.NPM_FILE);
         data = require(pkgpath);
@@ -312,9 +312,9 @@ Cmd.prototype.execute = function() {
             throw new Error();
         }
 
-        if (cmd.options.static) {
+        if (cmd.options.freeze) {
 
-            cmd.log('installing static TIBET version ' + version +
+            cmd.log('installing TIBET version ' + version +
                 ' via `cp -R`.');
 
             //  Locate the library path, and normalize to lowercase to match
