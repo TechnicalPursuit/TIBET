@@ -74,7 +74,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet doclint [<target>] [--filter <filter>] [--context <app|lib|all>] [--tap] [--missing]';
+    'tibet doclint [<target>] [--filter <filter>] [--missing] [--tap] [--context <app|lib|all>]';
 
 //  ---
 //  Instance Methods
