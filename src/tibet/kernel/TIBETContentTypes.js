@@ -1870,13 +1870,13 @@ function(data, uri) {
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
-     * @param {String} data The content data in question.
+     * @param {String|Object} data The content data in question.
      * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean} Whether or not an instance of this can be constructed
      *     from the parameters provided.
      */
 
-    return TP.isJSONString(data);
+    return TP.isJSONString(data) || TP.isPlainObject(data);
 });
 
 //  ------------------------------------------------------------------------
