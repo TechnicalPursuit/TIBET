@@ -9759,6 +9759,45 @@ function(aNumber) {
 });
 
 //  ------------------------------------------------------------------------
+//  LOAD and SOURCE PATH QUALIFICATION
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('qualifyToSourcePath',
+function(paths) {
+
+    /**
+     * @method qualifyToSourcePath
+     * @summary Qualifies the path or paths supplied in the parameter to the
+     *     source path of the receiver.
+     * @param {String|String[]} paths The URI paths to qualify to the
+     *     receiver's source path.
+     * @returns {String|String[]} The supplied paths qualified to the
+     *     receiver's source path.
+     */
+
+    var sourceCollectionPath,
+
+        result;
+
+    if (TP.notValid(paths)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    sourceCollectionPath = TP.objectGetSourceCollectionPath(this);
+
+    if (!TP.isArray(paths)) {
+        result = TP.uriJoinPaths(sourceCollectionPath, paths);
+    } else {
+        result = paths.map(
+                    function(aPath) {
+                        return TP.uriJoinPaths(sourceCollectionPath, aPath);
+                    });
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
 //  CONTAINMENT
 //  ------------------------------------------------------------------------
 
