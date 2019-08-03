@@ -84,27 +84,6 @@ Cmd.prototype.USAGE =
 //  ---
 
 /**
- * Performs any final processing of the argument list prior to execution.
- * @param {Array.<String>} arglist The argument list to finalize.
- * @returns {Array.<String>} The finalized argument list.
- */
-Cmd.prototype.finalizeArglist = function(arglist) {
-    var args;
-
-    args = Cmd.Parent.prototype.finalizeArglist.call(this, arglist);
-
-    if (args.indexOf('--contrast') === -1 &&
-            args.indexOf('--no-contrast') === -1) {
-        args.push('--contrast');
-    }
-
-    // args.push('#');
-
-    return args;
-};
-
-
-/**
  * Returns a list of options/flags/parameters suitable for command completion.
  * @returns {Array.<string>} The list of options for this command.
  */
