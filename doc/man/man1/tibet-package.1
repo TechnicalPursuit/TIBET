@@ -1,4 +1,4 @@
-.TH "TIBET\-PACKAGE" "1" "July 2019" "" ""
+.TH "TIBET\-PACKAGE" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-package\fR \- list package assets either as asset paths or nodes
 .SH SYNOPSIS
@@ -39,6 +39,13 @@ of this command is to run it with various options, of which there are many:
 \-\-styles     include all CSS containing assets\.
 .P
 \-\-inlined    include boot\.resourced resources (inlined URI content)
+.SH OPTIONS
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS List known resources from the current application package
 .P
@@ -83,6 +90,10 @@ $ tibet package \-\-profile development@developer \-\-context all
 .P
 Note that with \fB\-\-context all\fP we now see library resources (in this case
 \fBtibet_developer\.min\.js\fP) as well as our application's resources\.
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

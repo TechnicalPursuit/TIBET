@@ -46,6 +46,13 @@ resources. Other values are `lib` and `all`.
     An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
 
 ## EXAMPLES
 
@@ -110,6 +117,13 @@ Note that you can also do case-insensitive filtering (with `i`) as follows:
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.
     # Finished in 10556 ms w/TSH exec time of 6344 ms.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

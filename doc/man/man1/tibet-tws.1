@@ -1,4 +1,4 @@
-.TH "TIBET\-TWS" "1" "July 2019" "" ""
+.TH "TIBET\-TWS" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-tws\fR \- manage the TIBET Workflow System (TWS)
 .SH SYNOPSIS
@@ -38,6 +38,35 @@ mailtwo::Team TIBET => ["formatter","mailer"] (e52b072b50c597298c310ea9c80050b2)
 sample::Team TIBET => ["sample","smtp"] (e52b072b50c597298c310ea9c800af06)
 .fi
 .RE
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-confirm\fP :
+Should database URL and other parameters be confirmed when provided\. Default
+is true\. Use \fB\-\-no\-confirm\fP to disable\. If you want to disable confirmations in
+general you can set the TIBET configuration value \fBcli\.tws\.confirm\fP to false\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBtds\.tasks\.scheme\fP :
+The CouchDB server scheme\. Default is \fBhttp\fP\|\.
+.IP \(bu 2
+\fBtds\.tasks\.host\fP :
+The CouchDB server hostname or IP address\. Default is \fB127\.0\.0\.1\fP\|\.
+.IP \(bu 2
+\fBtds\.tasks\.port\fP :
+The CouchDB server port\. Default is \fB5984\fP\|\.
+.IP \(bu 2
+\fBtds\.tasks\.db_name\fP:
+The CouchDB database name to use\. Defaults to the current project name +
+\fB_tasks\fP\|\.
+.IP \(bu 2
+\fBtds\.tasks\.app_name\fP:
+The CouchDB application name to use\. Defaults to \fBtws\fP\|\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .RS 0
 .IP \(bu 2
@@ -69,35 +98,6 @@ exported as a URL\-encoded value\.
 \fBCOUCH_KEY\fP :
 The API key (if used) for the CouchDB server being accessed\. Should be
 exported as a URL\-encoded value\.
-
-.RE
-.SH CONFIGURATION SETTINGS
-.RS 0
-.IP \(bu 2
-\fBtds\.tasks\.scheme\fP :
-The CouchDB server scheme\. Default is \fBhttp\fP\|\.
-.IP \(bu 2
-\fBtds\.tasks\.host\fP :
-The CouchDB server hostname or IP address\. Default is \fB127\.0\.0\.1\fP\|\.
-.IP \(bu 2
-\fBtds\.tasks\.port\fP :
-The CouchDB server port\. Default is \fB5984\fP\|\.
-.IP \(bu 2
-\fBtds\.tasks\.db_name\fP:
-The CouchDB database name to use\. Defaults to the current project name +
-\fB_tasks\fP\|\.
-.IP \(bu 2
-\fBtds\.tasks\.app_name\fP:
-The CouchDB application name to use\. Defaults to \fBtws\fP\|\.
-
-.RE
-.SH OPTIONS
-.RS 0
-.IP \(bu 2
-\fB\-\-confirm\fP :
-Should database URL and other parameters be confirmed when provided\. Default
-is true\. Use \fB\-\-no\-confirm\fP to disable\. If you want to disable confirmations in
-general you can set the TIBET configuration value \fBcli\.tws\.confirm\fP to false\.
 
 .RE
 .SH EXAMPLES
@@ -318,6 +318,9 @@ $ tibet tws submit sample
 }
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
 .SH TROUBLESHOOTING
 .P
 During any operation if you receive a message including output to the effect

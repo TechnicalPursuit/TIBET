@@ -49,6 +49,14 @@ source found in the `~lib_build` directory.
 This option supports dynamic development with TIBET source code but does have a
 performance impact.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Freeze a project's TIBET resources (...but maybe not...)
@@ -70,6 +78,13 @@ performance impact.
     updating embedded lib_root references...
     updating project lib_root setting...
     Application frozen. TIBET now boots from ~app/TIBET-INF/tibet.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

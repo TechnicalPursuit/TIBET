@@ -1,4 +1,4 @@
-.TH "TIBET\-PATH" "1" "July 2019" "" ""
+.TH "TIBET\-PATH" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-path\fR \- resolve and print expanded virtual path value
 .SH SYNOPSIS
@@ -9,6 +9,15 @@ tibet path <virtual_path>
 Produces the fully expanded value for a TIBET virtual path\. Note that virtual
 paths normally start with a '~' which can cause issues with certain shells so
 this command lets you leave the leading '~' off\.
+.SH OPTIONS
+.P
+No command options or flags are checked by this command\.
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .P
 .RS 2
@@ -17,6 +26,10 @@ $ tibet path app_cfg
 ~app_cfg => /Users/ss/dev/TPI/TIBET/TIBET\-INF/cfg
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

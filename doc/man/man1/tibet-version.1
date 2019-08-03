@@ -1,10 +1,10 @@
-.TH "TIBET\-VERSION" "1" "July 2019" "" ""
+.TH "TIBET\-VERSION" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-version\fR \- displays the current project and TIBET version
 .SH SYNOPSIS
 .P
 tibet version [\-\-check]
-.SH SYNOPSIS
+.SH DESCRIPTION
 .P
 Displays the current version of TIBET\. Also available as the
 \-\-version flag on the 'tibet' command (tibet \-\-version)\.
@@ -20,6 +20,12 @@ released version\. This operation relies on \fBnpm info tibet \-\-json\fP to ret
 data about publicly available TIBET releases\.
 
 .RE
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS Display the current application and TIBET version data
 .P
@@ -56,6 +62,10 @@ $ tibet config path\.lib_version_latest
 http://www\.technicalpursuit\.com/tibet/latest\.js
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

@@ -10,9 +10,12 @@ tibet appcache [--file <cachefile>] [--enable|--disable|--status]
 
 Manages a project's HTML5 application manifest file for offline caching.
 
-TIBET projects include a manifest file named `{appname}.appcache` which is
+TIBET projects include a manifest file named `{npm.name}.appcache` which is
 managed by this command. Specific comment blocks in TIBET versions of the
 manifest file help delimit the content of the file for easier processing.
+
+When used without flags this command will default to `--status` and will report
+the current state of the application cache file (enabled, disabled, etc).
 
 *This command never removes entries* so you can feel confident both editing the
 cache and using this command.
@@ -71,6 +74,19 @@ the default option.
 template. This effectively changes the cache content which should have the
 effect of causing your browser to refresh the cache.
 
+## CONFIGURATION SETTINGS
+
+  * `npm.name` :
+    The project name, used to locate the cache file by name.
+
+  * `project.start_page` :
+    The project's start page, usually `index.html`. This is the file updated
+with the manifest attribute necessary to enable/disable the cache.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Checking application cache status
@@ -113,6 +129,71 @@ effect of causing your browser to refresh the cache.
     checking application cache content...
     updating cache ID value...
     Application cache stamped with ID: 1467309265306
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
+### Enable/Disable
+
+If the enable/disable machinery is failing check your `project.start_page` and
+verify the `manifest` or `no-manifest` attribute is present as expected:
+
+```
+<html xmlns="http://www.w3.org/1999/xhtml" no-manifest="./hello.appcache">
+```
+
+### Cache File
+
+The basic format of the cache file used by TIBET is shown below. You can
+manually edit this file as needed, just respect the initial comments about
+formatting TIBET uses to help it process the file.
+
+```
+CACHE MANIFEST
+
+# ---
+# !!! TIBET-managed appcache. Do not remove comment blocks of this form.
+# ---
+
+## You can have comments ignored by prefixing ala: # !!!, # ---, or ##.
+## It is recommended that you not alter the section headings or # !!!
+## comments since those help guide the 'tibet cache' command operation.
+
+
+CACHE:
+# !!! lib
+
+...snipped...
+
+# --- don't cache multiple copies of TIBET, only the desired one(s)
+
+...snipped...
+
+CACHE:
+# !!! app
+
+...snipped...
+
+# --- don't cache multiple copies of APP, only the desired one(s)
+
+# --- NOTE: do not uncomment until after a build. If there are any
+# --- 404 result codes the appcache is NOT used.
+
+...snipped...
+
+NETWORK:
+*
+
+
+FALLBACK:
+
+# ---
+# !!! ID: 1467147560253
+# ---
+```
 
 ## SEE ALSO
 

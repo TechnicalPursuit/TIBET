@@ -1,4 +1,4 @@
-.TH "TIBET\-CONTEXT" "1" "July 2019" "" ""
+.TH "TIBET\-CONTEXT" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-context\fR \- outputs current context information to stdout
 .SH SYNOPSIS
@@ -10,6 +10,15 @@ Displays core contextual information about the current project including values
 for the library root, application root, current project name, etc\. The data
 provided is often helpful in showing you where the key paths for project launch
 point and what the baseline boot profile elements are\.
+.SH OPTIONS
+.P
+No command options or flags are checked by this command\.
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS In a TIBET project
 .P
@@ -53,10 +62,14 @@ $ tibet context
 }
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2
-tibet\-config(1)
+tibet\-config(2)
 
 .RE
 

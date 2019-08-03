@@ -47,7 +47,32 @@ Application name [tws] ?
 
 [&quot;s3::Team TIBET&quot;, &quot;sample::DEFAULT&quot;, &quot;sample::Team TIBET&quot;, &quot;sendmail::Team TIBET&quot;,
 &quot;smtp::Team TIBET&quot;]
-</code></pre><h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+</code></pre><h2 id="options">OPTIONS</h2>
+<ul>
+<li><code>--confirm</code> :
+Should database URL and other parameters be confirmed when provided. Default
+is true. Use <code>--no-confirm</code> to disable. If you want to disable confirmations in
+general you can set the TIBET configuration value <code>cli.couch.confirm</code> to false.</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>tds.couch.scheme</code> :
+The CouchDB server scheme. Default is <code>http</code>.</p>
+</li>
+<li><p><code>tds.couch.host</code> :
+The CouchDB server hostname or IP address. Default is <code>127.0.0.1</code>.</p>
+</li>
+<li><p><code>tds.couch.port</code> :
+The CouchDB server port. Default is <code>5984</code>.</p>
+</li>
+<li><p><code>tds.couch.db_name</code>:
+The CouchDB database name to use. Defaults to the current project name.</p>
+</li>
+<li><p><code>tds.couch.app_name</code>:
+The CouchDB application name to use. Defaults to the current project name.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <ul>
 <li><p><code>COUCH_DATABASE</code> :
 The name of the CouchDB database to use for operations. Normally defaults to
@@ -78,31 +103,6 @@ exported as a URL-encoded value.</p>
 The API key (if used) for the CouchDB server being accessed. Should be
 exported as a URL-encoded value.</p>
 </li>
-</ul>
-<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<ul>
-<li><p><code>tds.couch.scheme</code> :
-The CouchDB server scheme. Default is <code>http</code>.</p>
-</li>
-<li><p><code>tds.couch.host</code> :
-The CouchDB server hostname or IP address. Default is <code>127.0.0.1</code>.</p>
-</li>
-<li><p><code>tds.couch.port</code> :
-The CouchDB server port. Default is <code>5984</code>.</p>
-</li>
-<li><p><code>tds.couch.db_name</code>:
-The CouchDB database name to use. Defaults to the current project name.</p>
-</li>
-<li><p><code>tds.couch.app_name</code>:
-The CouchDB application name to use. Defaults to the current project name.</p>
-</li>
-</ul>
-<h2 id="options">OPTIONS</h2>
-<ul>
-<li><code>--confirm</code> :
-Should database URL and other parameters be confirmed when provided. Default
-is true. Use <code>--no-confirm</code> to disable. If you want to disable confirmations in
-general you can set the TIBET configuration value <code>cli.couch.confirm</code> to false.</li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="creating-a-database">Creating a database</h3>
@@ -203,7 +203,9 @@ Application name [tws] ?
 
 [&quot;s3::Team TIBET&quot;, &quot;sample::DEFAULT&quot;, &quot;sample::Team TIBET&quot;, &quot;sendmail::Team TIBET&quot;,
 &quot;smtp::Team TIBET&quot;]
-</code></pre><h2 id="troubleshooting">TROUBLESHOOTING</h2>
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <p>During any operation if you receive a message including output to the effect
 that <code>You are not a server admin.</code> either export the the proper environment
 variables or provide your credentials in your <code>CouchDB url</code> prompt response.</p>

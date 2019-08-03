@@ -1,4 +1,4 @@
-.TH "TIBET\-APPCACHE" "1" "July 2019" "" ""
+.TH "TIBET\-APPCACHE" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-appcache\fR \- manages a project's HTML5 application manifest
 .SH SYNOPSIS
@@ -9,9 +9,12 @@ tibet appcache [\-\-file <cachefile>] [\-\-enable|\-\-disable|\-\-status]
 .P
 Manages a project's HTML5 application manifest file for offline caching\.
 .P
-TIBET projects include a manifest file named \fB{appname}\.appcache\fP which is
+TIBET projects include a manifest file named \fB{npm\.name}\.appcache\fP which is
 managed by this command\. Specific comment blocks in TIBET versions of the
 manifest file help delimit the content of the file for easier processing\.
+.P
+When used without flags this command will default to \fB\-\-status\fP and will report
+the current state of the application cache file (enabled, disabled, etc)\.
 .P
 \fIThis command never removes entries\fR so you can feel confident both editing the
 cache and using this command\.
@@ -71,6 +74,20 @@ template\. This effectively changes the cache content which should have the
 effect of causing your browser to refresh the cache\.
 
 .RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP :
+The project name, used to locate the cache file by name\.
+.IP \(bu 2
+\fBproject\.start_page\fP :
+The project's start page, usually \fBindex\.html\fP\|\. This is the file updated
+with the manifest attribute necessary to enable/disable the cache\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS Checking application cache status
 .P
@@ -126,6 +143,71 @@ $ tibet appcache \-\-touch
 checking application cache content\.\.\.
 updating cache ID value\.\.\.
 Application cache stamped with ID: 1467309265306
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SS Enable/Disable
+.P
+If the enable/disable machinery is failing check your \fBproject\.start_page\fP and
+verify the \fBmanifest\fP or \fBno\-manifest\fP attribute is present as expected:
+.P
+.RS 2
+.nf
+<html xmlns="http://www\.w3\.org/1999/xhtml" no\-manifest="\./hello\.appcache">
+.fi
+.RE
+.SS Cache File
+.P
+The basic format of the cache file used by TIBET is shown below\. You can
+manually edit this file as needed, just respect the initial comments about
+formatting TIBET uses to help it process the file\.
+.P
+.RS 2
+.nf
+CACHE MANIFEST
+
+# \-\-\-
+# !!! TIBET\-managed appcache\. Do not remove comment blocks of this form\.
+# \-\-\-
+
+## You can have comments ignored by prefixing ala: # !!!, # \-\-\-, or ##\.
+## It is recommended that you not alter the section headings or # !!!
+## comments since those help guide the 'tibet cache' command operation\.
+
+
+CACHE:
+# !!! lib
+
+\|\.\.\.snipped\.\.\.
+
+# \-\-\- don't cache multiple copies of TIBET, only the desired one(s)
+
+\|\.\.\.snipped\.\.\.
+
+CACHE:
+# !!! app
+
+\|\.\.\.snipped\.\.\.
+
+# \-\-\- don't cache multiple copies of APP, only the desired one(s)
+
+# \-\-\- NOTE: do not uncomment until after a build\. If there are any
+# \-\-\- 404 result codes the appcache is NOT used\.
+
+\|\.\.\.snipped\.\.\.
+
+NETWORK:
+*
+
+
+FALLBACK:
+
+# \-\-\-
+# !!! ID: 1467147560253
+# \-\-\-
 .fi
 .RE
 .SH SEE ALSO

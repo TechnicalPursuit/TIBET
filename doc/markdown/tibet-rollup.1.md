@@ -44,6 +44,14 @@ Future additions to TIBET will support more agressive minification.
 configuration is built. See help on the `tibet package` command for more
 information.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Roll up the default package@config
@@ -82,6 +90,13 @@ information.
     TP.uc('~app_tags/APP.hello.app/APP.hello.app.xhtml').setContent('    <h1 tibet:tag="hello:app" class="hello">\n        Welcome to your new TIBET application!\n    </h1>\n');
     TP.boot.$$srcPath = '~app_build/tags.APP.hello.app.css.js';
     TP.uc('~app_tags/APP.hello.app/APP.hello.app.css').setContent('/**\n * @overview \'APP.hello.app\' styles.\n */\n\n@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);\n@namespace hello url(urn:tibet:hello);\n\n/**\n * If your template/compute process transforms <hello:app/> tags\n * from namespaced XML into XHTML with a tibet:tag attribute so they render\n * in the page similar to <div tibet:tag="hello:app"/> place your\n * style in rules with the following root form:\n */\n*[tibet|tag="hello:app"] {\n    /* style here for xhtml converted tags */\n}\n\n/**\n * If you don\'t transform from XML form (tags in the page remain in their\n * <hello:app/> form) use rules of this form:\n */\nhello|app {\n}\n');
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

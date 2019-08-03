@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet apropros <terms> [--comments] [--limit=N] [--no-ignorecase]
+tibet apropros <terms> [--comments] [--limit=N] [--ignorecase]
 
 ## DESCRIPTION
 
@@ -36,9 +36,18 @@ the set of returned values depending on the term in question.
 term at least `--limit` number of times will be discarded. The default value is
 2.
 
-  * `--no-ignorecase` :
-    Use a case-sensitive search. Searches are normally case-insensitive to
+  * `--ignorecase` :
+    Use a case-insensitive search. Searches are normally case-insensitive to
 improve the chances you will find appropriate suggestions in the result list.
+You can use `--no-ignorecase` as an alternative to using `false` here.
+
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
 
 ## EXAMPLES
 
@@ -135,6 +144,12 @@ improve the chances you will find appropriate suggestions in the result list.
      */
 
     ~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
 
 
 ## SEE ALSO

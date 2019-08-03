@@ -1,4 +1,4 @@
-.TH "TIBET\-COUCH" "1" "July 2019" "" ""
+.TH "TIBET\-COUCH" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-couch\fR \- manage CouchDB databases and applications
 .SH SYNOPSIS
@@ -36,6 +36,34 @@ Application name [tws] ?
 "smtp::Team TIBET"]
 .fi
 .RE
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-confirm\fP :
+Should database URL and other parameters be confirmed when provided\. Default
+is true\. Use \fB\-\-no\-confirm\fP to disable\. If you want to disable confirmations in
+general you can set the TIBET configuration value \fBcli\.couch\.confirm\fP to false\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBtds\.couch\.scheme\fP :
+The CouchDB server scheme\. Default is \fBhttp\fP\|\.
+.IP \(bu 2
+\fBtds\.couch\.host\fP :
+The CouchDB server hostname or IP address\. Default is \fB127\.0\.0\.1\fP\|\.
+.IP \(bu 2
+\fBtds\.couch\.port\fP :
+The CouchDB server port\. Default is \fB5984\fP\|\.
+.IP \(bu 2
+\fBtds\.couch\.db_name\fP:
+The CouchDB database name to use\. Defaults to the current project name\.
+.IP \(bu 2
+\fBtds\.couch\.app_name\fP:
+The CouchDB application name to use\. Defaults to the current project name\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .RS 0
 .IP \(bu 2
@@ -67,34 +95,6 @@ exported as a URL\-encoded value\.
 \fBCOUCH_KEY\fP :
 The API key (if used) for the CouchDB server being accessed\. Should be
 exported as a URL\-encoded value\.
-
-.RE
-.SH CONFIGURATION SETTINGS
-.RS 0
-.IP \(bu 2
-\fBtds\.couch\.scheme\fP :
-The CouchDB server scheme\. Default is \fBhttp\fP\|\.
-.IP \(bu 2
-\fBtds\.couch\.host\fP :
-The CouchDB server hostname or IP address\. Default is \fB127\.0\.0\.1\fP\|\.
-.IP \(bu 2
-\fBtds\.couch\.port\fP :
-The CouchDB server port\. Default is \fB5984\fP\|\.
-.IP \(bu 2
-\fBtds\.couch\.db_name\fP:
-The CouchDB database name to use\. Defaults to the current project name\.
-.IP \(bu 2
-\fBtds\.couch\.app_name\fP:
-The CouchDB application name to use\. Defaults to the current project name\.
-
-.RE
-.SH OPTIONS
-.RS 0
-.IP \(bu 2
-\fB\-\-confirm\fP :
-Should database URL and other parameters be confirmed when provided\. Default
-is true\. Use \fB\-\-no\-confirm\fP to disable\. If you want to disable confirmations in
-general you can set the TIBET configuration value \fBcli\.couch\.confirm\fP to false\.
 
 .RE
 .SH EXAMPLES
@@ -231,6 +231,9 @@ Application name [tws] ?
 "smtp::Team TIBET"]
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
 .SH TROUBLESHOOTING
 .P
 During any operation if you receive a message including output to the effect

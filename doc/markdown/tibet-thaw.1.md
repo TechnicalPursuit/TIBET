@@ -27,6 +27,14 @@ actually run.
   * `--force` :
     Required to actually cause a thaw operation to be performed.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Thaw a previously frozen project (...but not really...)
@@ -42,6 +50,13 @@ actually run.
     updating embedded lib_root references...
     updating project lib_root setting...
     Application thawed. TIBET now boots from ~/node_modules/tibet.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

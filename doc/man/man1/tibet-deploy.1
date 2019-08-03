@@ -1,4 +1,4 @@
-.TH "TIBET\-DEPLOY" "1" "July 2019" "" ""
+.TH "TIBET\-DEPLOY" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-deploy\fR \- deploys an application via `shipit` or `tibet make`
 .SH SYNOPSIS
@@ -32,6 +32,12 @@ An open\-ended set of arguments and flags\. Any content on the command line
 can be accessed from within your \fBdeploy\fP make target\.
 
 .RE
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS Using Shipit for deployments
 .P
@@ -59,6 +65,10 @@ Deploying via your `makefile\.js`\-based `deploy` target is as simple as
 entering either `tibet deploy` or `tibet make deploy`\.
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

@@ -1,15 +1,12 @@
-{{topic}}({{section}}) -- resolve and print expanded virtual path value
+{{topic}}({{section}}) -- start a TIBET electron application
 =============================================
 
 ## SYNOPSIS
 
-tibet path <virtual_path>
+tibet electron [<args>]
 
 ## DESCRIPTION
 
-Produces the fully expanded value for a TIBET virtual path. Note that virtual
-paths normally start with a '~' which can cause issues with certain shells so
-this command lets you leave the leading '~' off.
 
 ## OPTIONS
 
@@ -25,8 +22,6 @@ No process environment variables are required by this command.
 
 ## EXAMPLES
 
-    $ tibet path app_cfg
-    ~app_cfg => /Users/ss/dev/TPI/TIBET/TIBET-INF/cfg
 
 ## TIBET SHELL
 
@@ -37,4 +32,3 @@ This command has no client-side TSH peer command.
 
 ## SEE ALSO
 
-  * tibet-config(1)

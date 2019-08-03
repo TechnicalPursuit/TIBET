@@ -25,9 +25,11 @@
     [--missing] [--develop] [--rebuild] [--touch] [--context &lt;app|lib|all&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Manages a project&#39;s HTML5 application manifest file for offline caching.</p>
-<p>TIBET projects include a manifest file named <code>{appname}.appcache</code> which is
+<p>TIBET projects include a manifest file named <code>{npm.name}.appcache</code> which is
 managed by this command. Specific comment blocks in TIBET versions of the
 manifest file help delimit the content of the file for easier processing.</p>
+<p>When used without flags this command will default to <code>--status</code> and will report
+the current state of the application cache file (enabled, disabled, etc).</p>
 <p><em>This command never removes entries</em> so you can feel confident both editing the
 cache and using this command.</p>
 <h2 id="options">OPTIONS</h2>
@@ -85,6 +87,18 @@ template. This effectively changes the cache content which should have the
 effect of causing your browser to refresh the cache.</p>
 </li>
 </ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>npm.name</code> :
+The project name, used to locate the cache file by name.</p>
+</li>
+<li><p><code>project.start_page</code> :
+The project&#39;s start page, usually <code>index.html</code>. This is the file updated
+with the manifest attribute necessary to enable/disable the cache.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="checking-application-cache-status">Checking application cache status</h3>
 <pre><code>$ tibet appcache
@@ -117,6 +131,58 @@ Application cache disabled.
 checking application cache content...
 updating cache ID value...
 Application cache stamped with ID: 1467309265306
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h3 id="enable-disable">Enable/Disable</h3>
+<p>If the enable/disable machinery is failing check your <code>project.start_page</code> and
+verify the <code>manifest</code> or <code>no-manifest</code> attribute is present as expected:</p>
+<pre><code>&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; no-manifest=&quot;./hello.appcache&quot;&gt;
+</code></pre><h3 id="cache-file">Cache File</h3>
+<p>The basic format of the cache file used by TIBET is shown below. You can
+manually edit this file as needed, just respect the initial comments about
+formatting TIBET uses to help it process the file.</p>
+<pre><code>CACHE MANIFEST
+
+# ---
+# !!! TIBET-managed appcache. Do not remove comment blocks of this form.
+# ---
+
+## You can have comments ignored by prefixing ala: # !!!, # ---, or ##.
+## It is recommended that you not alter the section headings or # !!!
+## comments since those help guide the &#39;tibet cache&#39; command operation.
+
+
+CACHE:
+# !!! lib
+
+...snipped...
+
+# --- don&#39;t cache multiple copies of TIBET, only the desired one(s)
+
+...snipped...
+
+CACHE:
+# !!! app
+
+...snipped...
+
+# --- don&#39;t cache multiple copies of APP, only the desired one(s)
+
+# --- NOTE: do not uncomment until after a build. If there are any
+# --- 404 result codes the appcache is NOT used.
+
+...snipped...
+
+NETWORK:
+*
+
+
+FALLBACK:
+
+# ---
+# !!! ID: 1467147560253
+# ---
 </code></pre><h2 id="see-also">SEE ALSO</h2>
 <ul>
 <li><a class="crossref" href="./tibet-package.1.html">tibet-package(1)</a></li>

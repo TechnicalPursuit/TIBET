@@ -36,6 +36,31 @@ value.
     mailtwo::Team TIBET => ["formatter","mailer"] (e52b072b50c597298c310ea9c80050b2)
     sample::Team TIBET => ["sample","smtp"] (e52b072b50c597298c310ea9c800af06)
 
+## OPTIONS
+
+  * `--confirm` :
+    Should database URL and other parameters be confirmed when provided. Default
+is true. Use `--no-confirm` to disable. If you want to disable confirmations in
+general you can set the TIBET configuration value `cli.tws.confirm` to false.
+
+## CONFIGURATION SETTINGS
+
+  * `tds.tasks.scheme` :
+    The CouchDB server scheme. Default is `http`.
+
+  * `tds.tasks.host` :
+    The CouchDB server hostname or IP address. Default is `127.0.0.1`.
+
+  * `tds.tasks.port` :
+    The CouchDB server port. Default is `5984`.
+
+  * `tds.tasks.db_name`:
+    The CouchDB database name to use. Defaults to the current project name +
+    `_tasks`.
+
+  * `tds.tasks.app_name`:
+    The CouchDB application name to use. Defaults to `tws`.
+
 ## ENVIRONMENT VARIABLES
 
   * `COUCH_DATABASE` :
@@ -66,32 +91,6 @@ exported as a URL-encoded value.
   * `COUCH_KEY` :
     The API key (if used) for the CouchDB server being accessed. Should be
 exported as a URL-encoded value.
-
-
-## CONFIGURATION SETTINGS
-
-  * `tds.tasks.scheme` :
-    The CouchDB server scheme. Default is `http`.
-
-  * `tds.tasks.host` :
-    The CouchDB server hostname or IP address. Default is `127.0.0.1`.
-
-  * `tds.tasks.port` :
-    The CouchDB server port. Default is `5984`.
-
-  * `tds.tasks.db_name`:
-    The CouchDB database name to use. Defaults to the current project name +
-    `_tasks`.
-
-  * `tds.tasks.app_name`:
-    The CouchDB application name to use. Defaults to `tws`.
-
-## OPTIONS
-
-  * `--confirm` :
-    Should database URL and other parameters be confirmed when provided. Default
-is true. Use `--no-confirm` to disable. If you want to disable confirmations in
-general you can set the TIBET configuration value `cli.tws.confirm` to false.
 
 ## EXAMPLES
 
@@ -285,6 +284,9 @@ general you can set the TIBET configuration value `cli.tws.confirm` to false.
         "rev": "1-64cbec7b86393bcf02ef81db283f721f"
     }
 
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
 
 ## TROUBLESHOOTING
 

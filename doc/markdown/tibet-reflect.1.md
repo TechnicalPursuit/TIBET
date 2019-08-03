@@ -65,6 +65,14 @@ focus on all keys on the target object, not just methods etc.
     Normally used to list all types, or to filter types in conjunction with the
 `--filter` option.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### List all types in the system
@@ -222,6 +230,12 @@ focus on all keys on the target object, not just methods etc.
     TIBET loaded in 3779 ms. Starting execution.
 
     "2016-07-02T04:09:25.148Z"
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
 
 
 ## SEE ALSO

@@ -24,6 +24,14 @@ simply linked into position via `npm link tibet`.
     Used to lock your project to a specific version of TIBET within the
 package.json and node_modules locations.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Initialize a fresh project
@@ -44,6 +52,13 @@ package.json and node_modules locations.
     installing static TIBET version v5.0.0-pre.1 via `cp -R`.
     TIBET development dependency linked.
     Project initialized successfully.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

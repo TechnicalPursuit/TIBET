@@ -5,7 +5,7 @@
 
 tibet version [--check]
 
-## SYNOPSIS
+## DESCRIPTION
 
 Displays the current version of TIBET. Also available as the
 --version flag on the 'tibet' command (tibet --version).
@@ -19,6 +19,14 @@ version of TIBET has been published.
     Tell TIBET to check the current project TIBET version against the latest
 released version. This operation relies on `npm info tibet --json` to return
 data about publicly available TIBET releases.
+
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
 
 ## EXAMPLES
 
@@ -44,6 +52,13 @@ If a new version is available you'll see something similar to:
     $ tibet config path.lib_version_latest
 
     http://www.technicalpursuit.com/tibet/latest.js
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

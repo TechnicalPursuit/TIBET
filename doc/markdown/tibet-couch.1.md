@@ -34,6 +34,30 @@ can be turned off via the `--no-confirm` flag.
     ["s3::Team TIBET", "sample::DEFAULT", "sample::Team TIBET", "sendmail::Team TIBET",
     "smtp::Team TIBET"]
 
+## OPTIONS
+
+  * `--confirm` :
+    Should database URL and other parameters be confirmed when provided. Default
+is true. Use `--no-confirm` to disable. If you want to disable confirmations in
+general you can set the TIBET configuration value `cli.couch.confirm` to false.
+
+## CONFIGURATION SETTINGS
+
+  * `tds.couch.scheme` :
+    The CouchDB server scheme. Default is `http`.
+
+  * `tds.couch.host` :
+    The CouchDB server hostname or IP address. Default is `127.0.0.1`.
+
+  * `tds.couch.port` :
+    The CouchDB server port. Default is `5984`.
+
+  * `tds.couch.db_name`:
+    The CouchDB database name to use. Defaults to the current project name.
+
+  * `tds.couch.app_name`:
+    The CouchDB application name to use. Defaults to the current project name.
+
 ## ENVIRONMENT VARIABLES
 
   * `COUCH_DATABASE` :
@@ -65,30 +89,6 @@ exported as a URL-encoded value.
     The API key (if used) for the CouchDB server being accessed. Should be
 exported as a URL-encoded value.
 
-
-## CONFIGURATION SETTINGS
-
-  * `tds.couch.scheme` :
-    The CouchDB server scheme. Default is `http`.
-
-  * `tds.couch.host` :
-    The CouchDB server hostname or IP address. Default is `127.0.0.1`.
-
-  * `tds.couch.port` :
-    The CouchDB server port. Default is `5984`.
-
-  * `tds.couch.db_name`:
-    The CouchDB database name to use. Defaults to the current project name.
-
-  * `tds.couch.app_name`:
-    The CouchDB application name to use. Defaults to the current project name.
-
-## OPTIONS
-
-  * `--confirm` :
-    Should database URL and other parameters be confirmed when provided. Default
-is true. Use `--no-confirm` to disable. If you want to disable confirmations in
-general you can set the TIBET configuration value `cli.couch.confirm` to false.
 
 ## EXAMPLES
 
@@ -204,6 +204,10 @@ general you can set the TIBET configuration value `cli.couch.confirm` to false.
 
     ["s3::Team TIBET", "sample::DEFAULT", "sample::Team TIBET", "sendmail::Team TIBET",
     "smtp::Team TIBET"]
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
 
 ## TROUBLESHOOTING
 

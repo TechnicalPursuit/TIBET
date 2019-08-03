@@ -41,6 +41,18 @@ of this command is to run it with various options, of which there are many:
 
 --inlined    include boot.resourced resources (inlined URI content)
 
+## OPTIONS
+
+
+
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### List known resources from the current application package
@@ -76,6 +88,13 @@ Here we see that the test files for our application are now listed.
 
 Note that with `--context all` we now see library resources (in this case
 `tibet_developer.min.js`) as well as our application's resources.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

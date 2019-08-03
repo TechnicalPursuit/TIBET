@@ -28,13 +28,22 @@ provided as a convenience allowing you to read a TDS_CRYPTO_KEY environment
 value and then decrypt passwords or API keys to verify them.</p>
 <p>Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the
 encryption and decryption processes.</p>
+<h2 id="options">OPTIONS</h2>
+<p>No command options or flags are checked by this command.</p>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<p>No TIBET configuration variables are utilized by this command.</p>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
 <pre><code>$ export TDS_CRYPTO_KEY=&#39;TOPsecretKEY&#39;
 $ tibet encrypt &#39;myrestserviceapikey&#39;
 d82d954e44ec4843aeae9846895ad4979b9ff4
 $ tibet decrypt d82d954e44ec4843aeae9846895ad4979b9ff4
 myrestserviceapikey
-</code></pre><h2 id="see-also">SEE ALSO</h2>
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
 <ul>
 <li><a class="crossref" href="./tibet-encrypt.1.html">tibet-encrypt(1)</a></li>
 </ul>

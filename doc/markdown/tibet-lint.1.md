@@ -43,7 +43,6 @@ All of the linters can be disabled individually by using a `--no-` prefix.
 For example: --no-style --no-js --no-json --no-xml will turn off all the
 currently supported linters.
 
-
 ## OPTIONS
 
   * `--scan` :
@@ -57,6 +56,14 @@ makes direct use of.
 
   * `--stop` :
 Tells the linter to stop after the first file with errors.
+
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
 
 ## EXAMPLES
 
@@ -80,6 +87,13 @@ Tells the linter to stop after the first file with errors.
       106:13   warn    'dir' is defined but never used                                no-unused-vars
       112:27   error   Unexpected trailing comma.                                     comma-dangle
     1 errors, 1 warnings in 1 of 1 files.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

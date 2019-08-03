@@ -38,6 +38,14 @@ values are `development` (the default), and `production`.
     A commonly used `tibet config` option value which alters the port number the
 server should start on.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Start the server on a default port (1407)
@@ -80,6 +88,12 @@ server should start on.
 
     ...
     info: hello 0.1.0 (testing) running on TIBET v5.0.0-dev.7 at http://127.0.0.1:1407
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
 
 
 ## SEE ALSO

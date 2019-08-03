@@ -1,4 +1,4 @@
-.TH "TIBET\-LINT" "1" "July 2019" "" ""
+.TH "TIBET\-LINT" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-lint\fR \- runs various lint tools on package files
 .SH SYNOPSIS
@@ -57,6 +57,12 @@ Tells the linter to suppress warnings if possible\.
 Tells the linter to stop after the first file with errors\.
 
 .RE
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS Lint all package\-referenced files in an application
 .P
@@ -88,6 +94,10 @@ $ tibet lint \-\-scan \-\-filter /makefile/
 1 errors, 1 warnings in 1 of 1 files\.
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

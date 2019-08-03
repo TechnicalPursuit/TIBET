@@ -43,6 +43,14 @@ repositories.
 directory of your choosing. This latter option lets you create your own reusable
 custom application templates.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### See the list of available project dna
@@ -88,6 +96,13 @@ avoid file conflicts, allowing this operation to be done safely.
     $ tibet clone --name hello . --force
 
     TIBET dna 'default' cloned to . as app 'hello'.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

@@ -35,6 +35,14 @@ package with any missing resource entries.
 configuration is built. See help on the `tibet package` command for more
 information.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Listing application resource data
@@ -102,6 +110,13 @@ recognize that nested entries do not need to be added.
 
 You can then refer to the individual <config/> elements in your other
 package configurations to adjust loading as you require.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

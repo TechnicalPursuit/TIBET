@@ -1,4 +1,4 @@
-.TH "TIBET\-ROLLUP" "1" "July 2019" "" ""
+.TH "TIBET\-ROLLUP" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-rollup\fR \- concatenates a package@config's resources
 .SH SYNOPSIS
@@ -44,6 +44,12 @@ configuration is built\. See help on the \fBtibet package\fP command for more
 information\.
 
 .RE
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .SS Roll up the default package@config
 .P
@@ -87,6 +93,10 @@ TP\.boot\.$$srcPath = '~app_build/tags\.APP\.hello\.app\.css\.js';
 TP\.uc('~app_tags/APP\.hello\.app/APP\.hello\.app\.css')\.setContent('/**\\n * @overview \\'APP\.hello\.app\\' styles\.\\n */\\n\\n@namespace tibet url(http://www\.technicalpursuit\.com/1999/tibet);\\n@namespace hello url(urn:tibet:hello);\\n\\n/**\\n * If your template/compute process transforms <hello:app/> tags\\n * from namespaced XML into XHTML with a tibet:tag attribute so they render\\n * in the page similar to <div tibet:tag="hello:app"/> place your\\n * style in rules with the following root form:\\n */\\n*[tibet|tag="hello:app"] {\\n    /* style here for xhtml converted tags */\\n}\\n\\n/**\\n * If you don\\'t transform from XML form (tags in the page remain in their\\n * <hello:app/> form) use rules of this form:\\n */\\nhello|app {\\n}\\n');
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

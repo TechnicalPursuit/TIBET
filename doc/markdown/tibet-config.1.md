@@ -39,6 +39,14 @@ a properly defined property name.
 values prefixed with `tds.` since environment-specific configuration via JSON is
 only done for server configuration values.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### List a single value:
@@ -94,6 +102,13 @@ only done for server configuration values.
         ...
         ...
     }
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

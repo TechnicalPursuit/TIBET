@@ -1,4 +1,4 @@
-.TH "TIBET\-DECRYPT" "1" "July 2019" "" ""
+.TH "TIBET\-DECRYPT" "1" "August 2019" "" ""
 .SH "NAME"
 \fBtibet-decrypt\fR \- decrypt a string using the TDS\.decrypt approach
 .SH SYNOPSIS
@@ -12,6 +12,15 @@ value and then decrypt passwords or API keys to verify them\.
 .P
 Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the
 encryption and decryption processes\.
+.SH OPTIONS
+.P
+No command options or flags are checked by this command\.
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
 .SH EXAMPLES
 .P
 .RS 2
@@ -23,6 +32,10 @@ $ tibet decrypt d82d954e44ec4843aeae9846895ad4979b9ff4
 myrestserviceapikey
 .fi
 .RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2

@@ -29,6 +29,13 @@ specific project requirements.
     Gives you a way to provide a millisecond timeout value in which each task
 must complete successfully. The default is 15 seconds (15000).
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
 
 ## EXAMPLES
 
@@ -54,4 +61,16 @@ must complete successfully. The default is 15 seconds (15000).
     Delegating to 'tibet make clean'
     cleaning...
     Task complete: 4ms.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
+
+## SEE ALSO
+
+  * tibet-build(1)
+  * tibet-deploy(1)
 

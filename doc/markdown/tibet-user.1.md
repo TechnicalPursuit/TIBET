@@ -34,6 +34,14 @@ As a result your file may not retain its appearance after updates.
   * `--pass` :
     Flag to use to set a password for a particular user.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Check to see if a particular user has been defined
@@ -60,3 +68,13 @@ are not stored in plain text.
             "testy": "e9381a7cef0756c6c57c41e80ac491a48b37df21300b0180a635117061c9e9fd"
         }
     }
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
+
+## SEE ALSO
+

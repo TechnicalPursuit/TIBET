@@ -9,6 +9,18 @@ tibet quickstart
 
 Outputs quick getting started information for new TIBET users.
 
+## OPTIONS
+
+No command options or flags are checked by this command.
+
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Run it :)
@@ -59,4 +71,12 @@ Outputs quick getting started information for new TIBET users.
 
     For more info visit https://www.technicalpursuit.com/docs/index.html
 
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
+
+## SEE ALSO
 

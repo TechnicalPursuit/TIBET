@@ -12,6 +12,18 @@ for the library root, application root, current project name, etc. The data
 provided is often helpful in showing you where the key paths for project launch
 point and what the baseline boot profile elements are.
 
+## OPTIONS
+
+No command options or flags are checked by this command.
+
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### In a TIBET project
@@ -50,6 +62,13 @@ point and what the baseline boot profile elements are.
         }
     }
 
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
+
 ## SEE ALSO
 
-  * tibet-config(1)
+  * tibet-config(2)

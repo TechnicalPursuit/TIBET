@@ -61,6 +61,14 @@ representing the type. If this parameter is not supplied, the default for a type
 being created in a project is `~app_tags` and for a type being created in
 the TIBET library is `~lib_src/{{type_nsname}}`.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Create a new type in the default application namespace
@@ -121,6 +129,13 @@ Also note that TIBET has also updated the package@config so our types load:
 
         <script src="~app_src/APP.special.Type_test.js"/>
     </config>
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 

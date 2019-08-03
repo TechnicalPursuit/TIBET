@@ -30,6 +30,14 @@ the script.
   * `--script` :
     An optional argument used to define the `command`.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Run a simple TSH script via the command line
@@ -71,4 +79,12 @@ tool. As it turns out, this is exactly what the `tibet test` command does. The
 
     Finished in 4209 ms w/TSH exec time of 104 ms.
 
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
+
 ## SEE ALSO
+

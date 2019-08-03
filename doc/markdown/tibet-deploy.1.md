@@ -32,6 +32,14 @@ using `tibet deploy` in a Shipit-enabled project.
     An open-ended set of arguments and flags. Any content on the command line
 can be accessed from within your `deploy` make target.
 
+## CONFIGURATION SETTINGS
+
+No TIBET configuration variables are utilized by this command.
+
+## ENVIRONMENT VARIABLES
+
+No process environment variables are required by this command.
+
 ## EXAMPLES
 
 ### Using Shipit for deployments
@@ -53,6 +61,13 @@ can be accessed from within your `deploy` make target.
 
     Deploying via your `makefile.js`-based `deploy` target is as simple as
     entering either `tibet deploy` or `tibet make deploy`.
+
+## TIBET SHELL
+
+This command has no client-side TSH peer command.
+
+## TROUBLESHOOTING
+
 
 ## SEE ALSO
 
