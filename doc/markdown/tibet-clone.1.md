@@ -3,34 +3,47 @@
 
 ## SYNOPSIS
 
-tibet clone <target> [--list] [--force] [--name <appname>] [--dna <template>]
+tibet clone <target>|[--name <appname>] [--dir <dirname>] [--dna <template>] [--list] [--force] [--update]
 
 ## DESCRIPTION
 
 Clones a template directory, considered the `dna`, to create a new project.
 
-`<target>` is required and must be a valid directory name to clone to.
+`<target>` or `--name` is required and should be a valid name for use within a
+JavaScript context. The application name becomes part of automatically generated
+types in the TIBET system.
 
-By default the target will be the new project's appname unless otherwise
-specified. You can use `.` to clone to the current directory HOWEVER no checks
-are currently done to prevent potential data loss. Be careful!
+By default the target `--dir` will be the new project's appname unless otherwise
+specified via `--dir`. You can use `.` to clone to the current directory HOWEVER
+*no checks are currently done to prevent potential data loss*. Be careful!
 
-NOTE this command is currently being re-evaluated and will likely become a
-front-end for Yeoman functionality in a future release.
+NOTE: a future update to this command should provide interactive use that
+will allow you to manage the clone process in a more incremental fashion.
 
 Once a project template has been cloned you use the `tibet init` command to
 initialize the project by triggering installation of all project dependencies.
 
 ## OPTIONS
 
-  * `--list` :
-    Output a list of available dna options. No project is created if you use
-this option.
+  * `--dir` :
+    Specify a particular target directory. Defaults to the value of the `--name`
+parameter so `tibet clone hello` will presume `--dir=./hello` for example. The
+value `.` can be used to target the current directory without creating a new
+subdirectory.
+
+  * `--dna` :
+    Lets you clone any valid template in TIBET's `dna` directory or a
+directory of your choosing. This latter option lets you create your own reusable
+custom application templates.
 
   * `--force` :
     Required if you use `.` as a simple reminder to be careful. You can also
 use `--force` with existing directories but *no checks are done* to avoid
 overwriting existing files.
+
+  * `--list` :
+    Output a list of available dna options. No project is created if you use
+this option.
 
   * `--name` :
     Lets you rename from the directory name to an alternative name. This lets
@@ -38,14 +51,20 @@ the directory and appname vary. This is common when cloning to existing
 directories or poorly named ones like those required for GitHub Pages
 repositories.
 
-  * `--dna` :
-    Lets you clone any valid template in TIBET's `dna` directory or a
-directory of your choosing. This latter option lets you create your own reusable
-custom application templates.
+  * `--update` :
+    Attempts to update the existing project from the files found in the source
+dna. This option tries to avoid overwriting existing files but should be *used
+with extreme caution*.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `npm.name` :
+    The project name, used only when cloning to an existing directory with an
+existing `package.json` file that can supply this value.
+
+  * `tibet.dna` :
+    Read to determine the default project DNA to clone for this new project. If
+this value doesn't exist then `default` is the name used.
 
 ## ENVIRONMENT VARIABLES
 

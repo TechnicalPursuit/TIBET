@@ -21,7 +21,7 @@
 
 <h1 id="tibet-apropos-1-list-objects-methods-related-to-one-or-more-terms">tibet-apropos(1) -- list objects/methods related to one or more terms</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet apropros &lt;terms&gt; [--comments] [--limit=N] [--no-ignorecase]</p>
+<p>tibet apropros &lt;terms&gt; [--comments] [--limit=N] [--ignorecase]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH <code>:apropos</code> command to find methods related to one or more topics.</p>
 <p>This is a good command to use when you know what you&#39;d like to do conceptually
@@ -43,14 +43,15 @@ simple string or a JavaScript RegExp literal.</p>
 Search comment text in addition to the method name. This will greatly expand
 the set of returned values depending on the term in question.</p>
 </li>
+<li><p><code>--ignorecase</code> :
+Use a case-insensitive search. Searches are normally case-insensitive to
+improve the chances you will find appropriate suggestions in the result list.
+You can use <code>--no-ignorecase</code> as an alternative to using <code>false</code> here.</p>
+</li>
 <li><p><code>--limit</code> :
 Set a minimum match count for success. Items which don&#39;t match the search
 term at least <code>--limit</code> number of times will be discarded. The default value is
 2.</p>
-</li>
-<li><p><code>--no-ignorecase</code> :
-Use a case-sensitive search. Searches are normally case-insensitive to
-improve the chances you will find appropriate suggestions in the result list.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
@@ -87,7 +88,15 @@ TIBET loaded in 3516 ms. Starting execution.
 #
 TP.elementSetClipRect
 TP.elementGetClipRect
-</code></pre><h3 id="expand-that-search-to-include-method-comment-text-">Expand that search to include method comment text:</h3>
+</code></pre><h3 id="search-with-case-sensitivity-">Search with case-sensitivity:</h3>
+<pre><code>$ tibet apropos clip --no-ignorecase
+
+Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms. Starting execution.
+
+# by name
+#
+</code></pre><h3 id="expand-the-case-insensitive-search-to-include-method-comment-text-">Expand the case-insensitive search to include method comment text:</h3>
 <pre><code>$ tibet apropos clip --comments
 
 Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
@@ -100,7 +109,7 @@ TP.elementGetClipRect (7)
 #
 # by comment
 #
-</code></pre><h3 id="expand-that-search-to-include-method-comments-and-only-1-match-">Expand that search to include method comments and only 1 match:</h3>
+</code></pre><h3 id="expand-that-search-to-include-method-comments-and-lower-match-counts-">Expand that search to include method comments and lower match counts:</h3>
 <pre><code>$ tibet apropos clip --comments --limit 1
 
 Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
@@ -116,38 +125,45 @@ TP.elementGetClipRect (7)
 TP.gui.MultiTransition.Inst.step (1)
 TP.xctrls.clipbox.Inst.setDisplayValue (1)
 TP.elementWrapToContent (1)
-</code></pre><h3 id="reflect-on-one-of-the-result-items">Reflect on one of the result items</h3>
-<pre><code>$ tibet reflect TP.elementSetClipRect
+</code></pre><h3 id="reflect-on-a-resulting-method-directly-">Reflect on a resulting method directly:</h3>
+<pre><code>$ tibet reflect TP.elementGetClipRect
 
-Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:16:59 MDT
-TIBET loaded in 3852 ms. Starting execution.
+# Loading TIBET platform at 2019-08-03T17:11:29.832Z
+# TIBET reflection suite loaded and active in 5981ms
 
-TP.elementSetClipRect
+TP.elementGetClipRect
+
+function elementGetClipRect(anElement)
 
 /**
- * @method elementSetClipRect
- * @summary Sets the element&#39;s clipping rectangle.
- * @description If a Number is supplied to top, right, bottom or left, a
- *     default unit of &#39;px&#39; is assumed.
- * @param {HTMLElement} anElement The element to set the clip rect on.
- * @param {Number|String} top The value to set the top coordinate of the
- *     element&#39;s clipping rectangle to.
- * @param {Number|String} right The value to set the right coordinate of the
- *     element&#39;s clipping rectangle to.
- * @param {Number|String} bottom The value to set the bottom coordinate of
- *     the element&#39;s clipping rectangle to.
- * @param {Number|String} left The value to set the left coordinate of the
- *     element&#39;s clipping rectangle to.
+ * @method elementGetClipRect
+ * @summary Returns the element&#39;s clipping rectangle.
+ * @description The clipping rectangle is assumed to be in pixels (something
+ *     like &#39;rect(10px 10px 10px 10px)&#39;). If the clipping rectangle is not a
+ *     &#39;4 valued&#39; value, null is returned. Each individual value is
+ *     processed and turned from its current value into pixels (i.e. the
+ *     value might be &#39;4em&#39; - this is converted into pixels). If the value
+ *     is &#39;auto&#39;, a null is placed into that position in the Array.
+ * @param {HTMLElement} anElement The element to extract the clipping
+ *     rectangle from.
  * @exception TP.sig.InvalidElement
+ * @exception TP.sig.InvalidStyleDeclaration
+ * @returns {Number[]} An Array of Numbers containing the element&#39;s clipping
+ *     rectangle *expressed in number of pixels*. The numbers are arranged
+ *     in the following order: top, right, bottom, left.
  */
 
-~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
+./public/TIBET-INF/tibet/src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
-<p>This command has no client-side TSH peer command.</p>
+<p>This command invokes the client-side <code>:apropos</code> command, passing all flags and
+command line arguments to that command for processing.</p>
+<p>Command invocation is done via the <code>tibet tsh</code> command machinery, which is
+inherited by this command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
 <li><a class="crossref" href="./tibet-reflect.1.html">tibet-reflect(1)</a></li>
+<li><a class="crossref" href="./tibet-tsh.1.html">tibet-tsh(1)</a></li>
 </ul>
 
 </div>

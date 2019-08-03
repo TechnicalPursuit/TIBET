@@ -1,4 +1,4 @@
-{{topic}}({{section}}) -- outputs current context information to stdout
+{{topic}}({{section}}) -- outputs current context information
 =============================================
 
 ## SYNOPSIS
@@ -8,9 +8,11 @@ tibet context
 ## DESCRIPTION
 
 Displays core contextual information about the current project including values
-for the library root, application root, current project name, etc. The data
-provided is often helpful in showing you where the key paths for project launch
-point and what the baseline boot profile elements are.
+for the library root, application root, current project name, current boot
+profile, package, config, and package configuration options.
+
+The data provided is often helpful in showing you where the key paths for
+project launch point and what the baseline boot profile elements are.
 
 ## OPTIONS
 
@@ -18,7 +20,23 @@ No command options or flags are checked by this command.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `npm.name` :
+    The project name.
+
+  * `npm.version` :
+    The project version.
+
+  * `boot.config` :
+    If no `boot.package` is found `boot.config` is read to try to determine the
+package configuration that is set to boot by default.
+
+  * `boot.package` :
+    If no `boot.profile` is found `boot.package` is read to get the package
+name that is set to boot by default.
+
+  * `boot.profile` :
+    Read to determine if a `package@config` has been set for booting.
+
 
 ## ENVIRONMENT VARIABLES
 
@@ -31,16 +49,18 @@ No process environment variables are required by this command.
     $ tibet context
 
     {
-        "name": "d2d",
+        "name": "hello",
         "version": "0.1.0",
         "in_library": false,
         "in_project": true,
-        "~": "~/tmp/d2d",
+        "~": "/Users/ss/temporary/hello",
         "~app": "~/public",
-        "~lib": "~app/TIBET-INF/tibet",
+        "~lib": "/Users/ss/temporary/hello/node_modules/tibet",
         "boot": {
+            "profile": null,
             "package": "~app_cfg/main.xml",
-            "configs": ["base", "contributor", "developer", "full", "test"]
+            "configs": ["base", "baseui", "contributor", "developer", "full", "production"],
+            "config": "production"
         }
     }
 
@@ -50,15 +70,17 @@ No process environment variables are required by this command.
 
     {
         "name": "tibet",
-        "version": "v5.0.0-dev.7",
+        "version": "5.0.0-pre.51",
         "in_library": true,
         "in_project": false,
-        "~": "~/dev/TPI/TIBET",
-        "~app": "~/dev/TPI/TIBET",
-        "~lib": "~/dev/TPI/TIBET",
+        "~": "/Users/ss/dev/TPI/TIBET",
+        "~app": "/Users/ss/dev/TPI/TIBET",
+        "~lib": "/Users/ss/dev/TPI/TIBET",
         "boot": {
+            "profile": null,
             "package": "~lib_cfg/TIBET.xml",
-            "configs": ["base", "developer", "full", "test"]
+            "configs": ["base", "base-inlined", "baseui", "baseui-inlined", "contributor", "developer", "full", "hook", "inlined", "kernel", "loader", "login", "sherpa-inlined", "small", "standard", "test-inlined", "testing", "worker", "xctrls-inlined"],
+            "config": "base"
         }
     }
 
@@ -71,4 +93,5 @@ This command has no client-side TSH peer command.
 
 ## SEE ALSO
 
-  * tibet-config(2)
+  * tibet-config(1)
+

@@ -21,27 +21,40 @@
 
 <h1 id="tibet-clone-1-clones-a-project-from-a-template-directory">tibet-clone(1) -- clones a project from a template directory</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet clone &lt;target&gt; [--list] [--force] [--name &lt;appname&gt;] [--dna &lt;template&gt;]</p>
+<p>tibet clone &lt;target&gt;|[--name &lt;appname&gt;] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--list] [--force] [--update]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Clones a template directory, considered the <code>dna</code>, to create a new project.</p>
-<p><code>&lt;target&gt;</code> is required and must be a valid directory name to clone to.</p>
-<p>By default the target will be the new project&#39;s appname unless otherwise
-specified. You can use <code>.</code> to clone to the current directory HOWEVER no checks
-are currently done to prevent potential data loss. Be careful!</p>
-<p>NOTE this command is currently being re-evaluated and will likely become a
-front-end for Yeoman functionality in a future release.</p>
+<p><code>&lt;target&gt;</code> or <code>--name</code> is required and should be a valid name for use within a
+JavaScript context. The application name becomes part of automatically generated
+types in the TIBET system.</p>
+<p>By default the target <code>--dir</code> will be the new project&#39;s appname unless otherwise
+specified via <code>--dir</code>. You can use <code>.</code> to clone to the current directory HOWEVER
+<em>no checks are currently done to prevent potential data loss</em>. Be careful!</p>
+<p>NOTE: a future update to this command should provide interactive use that
+will allow you to manage the clone process in a more incremental fashion.</p>
 <p>Once a project template has been cloned you use the <code>tibet init</code> command to
 initialize the project by triggering installation of all project dependencies.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>--list</code> :
-Output a list of available dna options. No project is created if you use
-this option.</p>
+<li><p><code>--dir</code> :
+Specify a particular target directory. Defaults to the value of the <code>--name</code>
+parameter so <code>tibet clone hello</code> will presume <code>--dir=./hello</code> for example. The
+value <code>.</code> can be used to target the current directory without creating a new
+subdirectory.</p>
+</li>
+<li><p><code>--dna</code> :
+Lets you clone any valid template in TIBET&#39;s <code>dna</code> directory or a
+directory of your choosing. This latter option lets you create your own reusable
+custom application templates.</p>
 </li>
 <li><p><code>--force</code> :
 Required if you use <code>.</code> as a simple reminder to be careful. You can also
 use <code>--force</code> with existing directories but <em>no checks are done</em> to avoid
 overwriting existing files.</p>
+</li>
+<li><p><code>--list</code> :
+Output a list of available dna options. No project is created if you use
+this option.</p>
 </li>
 <li><p><code>--name</code> :
 Lets you rename from the directory name to an alternative name. This lets
@@ -49,14 +62,23 @@ the directory and appname vary. This is common when cloning to existing
 directories or poorly named ones like those required for GitHub Pages
 repositories.</p>
 </li>
-<li><p><code>--dna</code> :
-Lets you clone any valid template in TIBET&#39;s <code>dna</code> directory or a
-directory of your choosing. This latter option lets you create your own reusable
-custom application templates.</p>
+<li><p><code>--update</code> :
+Attempts to update the existing project from the files found in the source
+dna. This option tries to avoid overwriting existing files but should be <em>used
+with extreme caution</em>.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<p>No TIBET configuration variables are utilized by this command.</p>
+<ul>
+<li><p><code>npm.name</code> :
+The project name, used only when cloning to an existing directory with an
+existing <code>package.json</code> file that can supply this value.</p>
+</li>
+<li><p><code>tibet.dna</code> :
+Read to determine the default project DNA to clone for this new project. If
+this value doesn&#39;t exist then <code>default</code> is the name used.</p>
+</li>
+</ul>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>

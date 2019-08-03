@@ -1,21 +1,41 @@
 .TH "TIBET\-CONTEXT" "1" "August 2019" "" ""
 .SH "NAME"
-\fBtibet-context\fR \- outputs current context information to stdout
+\fBtibet-context\fR \- outputs current context information
 .SH SYNOPSIS
 .P
 tibet context
 .SH DESCRIPTION
 .P
 Displays core contextual information about the current project including values
-for the library root, application root, current project name, etc\. The data
-provided is often helpful in showing you where the key paths for project launch
-point and what the baseline boot profile elements are\.
+for the library root, application root, current project name, current boot
+profile, package, config, and package configuration options\.
+.P
+The data provided is often helpful in showing you where the key paths for
+project launch point and what the baseline boot profile elements are\.
 .SH OPTIONS
 .P
 No command options or flags are checked by this command\.
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP :
+The project name\.
+.IP \(bu 2
+\fBnpm\.version\fP :
+The project version\.
+.IP \(bu 2
+\fBboot\.config\fP :
+If no \fBboot\.package\fP is found \fBboot\.config\fP is read to try to determine the
+package configuration that is set to boot by default\.
+.IP \(bu 2
+\fBboot\.package\fP :
+If no \fBboot\.profile\fP is found \fBboot\.package\fP is read to get the package
+name that is set to boot by default\.
+.IP \(bu 2
+\fBboot\.profile\fP :
+Read to determine if a \fBpackage@config\fP has been set for booting\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.
@@ -27,16 +47,18 @@ No process environment variables are required by this command\.
 $ tibet context
 
 {
-    "name": "d2d",
+    "name": "hello",
     "version": "0\.1\.0",
     "in_library": false,
     "in_project": true,
-    "~": "~/tmp/d2d",
+    "~": "/Users/ss/temporary/hello",
     "~app": "~/public",
-    "~lib": "~app/TIBET\-INF/tibet",
+    "~lib": "/Users/ss/temporary/hello/node_modules/tibet",
     "boot": {
+        "profile": null,
         "package": "~app_cfg/main\.xml",
-        "configs": ["base", "contributor", "developer", "full", "test"]
+        "configs": ["base", "baseui", "contributor", "developer", "full", "production"],
+        "config": "production"
     }
 }
 .fi
@@ -49,15 +71,17 @@ $ tibet context
 
 {
     "name": "tibet",
-    "version": "v5\.0\.0\-dev\.7",
+    "version": "5\.0\.0\-pre\.51",
     "in_library": true,
     "in_project": false,
-    "~": "~/dev/TPI/TIBET",
-    "~app": "~/dev/TPI/TIBET",
-    "~lib": "~/dev/TPI/TIBET",
+    "~": "/Users/ss/dev/TPI/TIBET",
+    "~app": "/Users/ss/dev/TPI/TIBET",
+    "~lib": "/Users/ss/dev/TPI/TIBET",
     "boot": {
+        "profile": null,
         "package": "~lib_cfg/TIBET\.xml",
-        "configs": ["base", "developer", "full", "test"]
+        "configs": ["base", "base\-inlined", "baseui", "baseui\-inlined", "contributor", "developer", "full", "hook", "inlined", "kernel", "loader", "login", "sherpa\-inlined", "small", "standard", "test\-inlined", "testing", "worker", "xctrls\-inlined"],
+        "config": "base"
     }
 }
 .fi
@@ -69,7 +93,7 @@ This command has no client\-side TSH peer command\.
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2
-tibet\-config(2)
+tibet\-config(1)
 
 .RE
 

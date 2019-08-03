@@ -3,33 +3,46 @@
 \fBtibet-clone\fR \- clones a project from a template directory
 .SH SYNOPSIS
 .P
-tibet clone <target> [\-\-list] [\-\-force] [\-\-name <appname>] [\-\-dna <template>]
+tibet clone <target>|[\-\-name <appname>] [\-\-dir <dirname>] [\-\-dna <template>] [\-\-list] [\-\-force] [\-\-update]
 .SH DESCRIPTION
 .P
 Clones a template directory, considered the \fBdna\fP, to create a new project\.
 .P
-\fB<target>\fP is required and must be a valid directory name to clone to\.
+\fB<target>\fP or \fB\-\-name\fP is required and should be a valid name for use within a
+JavaScript context\. The application name becomes part of automatically generated
+types in the TIBET system\.
 .P
-By default the target will be the new project's appname unless otherwise
-specified\. You can use \fB\|\.\fP to clone to the current directory HOWEVER no checks
-are currently done to prevent potential data loss\. Be careful!
+By default the target \fB\-\-dir\fP will be the new project's appname unless otherwise
+specified via \fB\-\-dir\fP\|\. You can use \fB\|\.\fP to clone to the current directory HOWEVER
+\fIno checks are currently done to prevent potential data loss\fR\|\. Be careful!
 .P
-NOTE this command is currently being re\-evaluated and will likely become a
-front\-end for Yeoman functionality in a future release\.
+NOTE: a future update to this command should provide interactive use that
+will allow you to manage the clone process in a more incremental fashion\.
 .P
 Once a project template has been cloned you use the \fBtibet init\fP command to
 initialize the project by triggering installation of all project dependencies\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
-\fB\-\-list\fP :
-Output a list of available dna options\. No project is created if you use
-this option\.
+\fB\-\-dir\fP :
+Specify a particular target directory\. Defaults to the value of the \fB\-\-name\fP
+parameter so \fBtibet clone hello\fP will presume \fB\-\-dir=\./hello\fP for example\. The
+value \fB\|\.\fP can be used to target the current directory without creating a new
+subdirectory\.
+.IP \(bu 2
+\fB\-\-dna\fP :
+Lets you clone any valid template in TIBET's \fBdna\fP directory or a
+directory of your choosing\. This latter option lets you create your own reusable
+custom application templates\.
 .IP \(bu 2
 \fB\-\-force\fP :
 Required if you use \fB\|\.\fP as a simple reminder to be careful\. You can also
 use \fB\-\-force\fP with existing directories but \fIno checks are done\fR to avoid
 overwriting existing files\.
+.IP \(bu 2
+\fB\-\-list\fP :
+Output a list of available dna options\. No project is created if you use
+this option\.
 .IP \(bu 2
 \fB\-\-name\fP :
 Lets you rename from the directory name to an alternative name\. This lets
@@ -37,15 +50,24 @@ the directory and appname vary\. This is common when cloning to existing
 directories or poorly named ones like those required for GitHub Pages
 repositories\.
 .IP \(bu 2
-\fB\-\-dna\fP :
-Lets you clone any valid template in TIBET's \fBdna\fP directory or a
-directory of your choosing\. This latter option lets you create your own reusable
-custom application templates\.
+\fB\-\-update\fP :
+Attempts to update the existing project from the files found in the source
+dna\. This option tries to avoid overwriting existing files but should be \fIused
+with extreme caution\fR\|\.
 
 .RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP :
+The project name, used only when cloning to an existing directory with an
+existing \fBpackage\.json\fP file that can supply this value\.
+.IP \(bu 2
+\fBtibet\.dna\fP :
+Read to determine the default project DNA to clone for this new project\. If
+this value doesn't exist then \fBdefault\fP is the name used\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.

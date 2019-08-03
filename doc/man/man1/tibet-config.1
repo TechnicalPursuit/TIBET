@@ -3,29 +3,37 @@
 \fBtibet-config\fR \- manages and displays TIBET configuration data
 .SH SYNOPSIS
 .P
-tibet config [property[=value]] [\-\-env <env>]
+tibet config [property[=value]] [\-\-env <env>] [\-\-users]
 .SH DESCRIPTION
 .P
 The \fBconfig\fP command can output one or more configuration values to the
-console based on current configuration data for your application or
-update a particular value to a string, number or boolean value\.
+console based on current application configuration data\. You can also use
+this command to set a particular value to a string, number or boolean value\.
 .P
 You can view the entire configuration list by leaving off any specific
 value\. You can view all values for a particular prefix by listing just
 the prefix\. You can view a specific value by naming that value directly\.
 .P
-You can dump virtual paths by quoting them as in: \fB\|'~app'\fP or \fB\|'~lib'\fP as needed
-by whichever native shell you may be using\.
+You can dump virtual paths by quoting them as in: \fB\|'~app'\fP or \fB\|'~lib'\fP\|\. Specific
+quoting depends on the native shell you may be using\. You can alternatively use
+the prefix \fBpath\fP to list all virtual paths or a specific one\.
 .P
-For set operations you can specify an optional environment value\. In the
-current implementation this applies only to TDS settings (\fBtds\.\\*\fP values)\.
+A special \fB\-\-users\fP flag lets you view a summary of users from the
+application's user data\. NOTE that TIBET's file\-based user support is only
+provided to let you simulate user accounts during development\. It is \fInot
+secure\fR and it should \fInever be used for production\fR systems\.
+.P
+Configuration data can be updated by adding an \fB=\fP and value to a properly
+defined property name\.
+.P
+For updates you can specify an optional environment value using the \fB\-\-env\fP
+flag\. The \fBenv\fP will default to \fBdevelopment\fP otherwise\. In the current
+implementation the concept of an \fBenv\fP applies only to TDS settings (\fBtds\.\\*\fP
+values)\.
 .P
 NOTE that if you use this command to set values it will rewrite \fBtibet\.json\fP
 by using the beautify npm module to process the stringified JSON content\.
 As a result your file may not retain its appearance after updates\.
-.P
-Configuration data can also be updated by adding an \fB=\fP and value to
-a properly defined property name\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -41,7 +49,10 @@ only done for server configuration values\.
 .RE
 .SH CONFIGURATION SETTINGS
 .P
-No TIBET configuration variables are utilized by this command\.
+This command manages the entire TIBET configuration system\. It can be used to
+read and/or update any value with a string, number, or boolean value\.
+.P
+This command not rely on any configuration values for its own operation\.
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.
@@ -117,12 +128,18 @@ $ tibet config boot
 .RE
 .SH TIBET SHELL
 .P
-This command has no client\-side TSH peer command\.
+There is a client\-side TSH command \fB:config\fP which mirrors the core
+functionality of this command in that it can be used to view or update
+configuration settings\.
+.P
+The client\-side \fB:config\fP command is not invoked by this command\.
 .SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2
 tibet\-context(1)
+.IP \(bu 2
+tibet\-user(1)
 
 .RE
 

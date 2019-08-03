@@ -31,15 +31,15 @@ simple string or a JavaScript RegExp literal.
     Search comment text in addition to the method name. This will greatly expand
 the set of returned values depending on the term in question.
 
-  * `--limit` :
-    Set a minimum match count for success. Items which don't match the search
-term at least `--limit` number of times will be discarded. The default value is
-2.
-
   * `--ignorecase` :
     Use a case-insensitive search. Searches are normally case-insensitive to
 improve the chances you will find appropriate suggestions in the result list.
 You can use `--no-ignorecase` as an alternative to using `false` here.
+
+  * `--limit` :
+    Set a minimum match count for success. Items which don't match the search
+term at least `--limit` number of times will be discarded. The default value is
+2.
 
 ## CONFIGURATION SETTINGS
 
@@ -84,7 +84,17 @@ No process environment variables are required by this command.
     TP.elementSetClipRect
     TP.elementGetClipRect
 
-### Expand that search to include method comment text:
+### Search with case-sensitivity:
+
+    $ tibet apropos clip --no-ignorecase
+
+    Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
+    TIBET loaded in 3516 ms. Starting execution.
+
+    # by name
+    #
+
+### Expand the case-insensitive search to include method comment text:
 
     $ tibet apropos clip --comments
 
@@ -99,7 +109,7 @@ No process environment variables are required by this command.
     # by comment
     #
 
-### Expand that search to include method comments and only 1 match:
+### Expand that search to include method comments and lower match counts:
 
     $ tibet apropos clip --comments --limit 1
 
@@ -117,37 +127,44 @@ No process environment variables are required by this command.
     TP.xctrls.clipbox.Inst.setDisplayValue (1)
     TP.elementWrapToContent (1)
 
-### Reflect on one of the result items
+### Reflect on a resulting method directly:
 
-    $ tibet reflect TP.elementSetClipRect
+    $ tibet reflect TP.elementGetClipRect
 
-    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:16:59 MDT
-    TIBET loaded in 3852 ms. Starting execution.
+    # Loading TIBET platform at 2019-08-03T17:11:29.832Z
+    # TIBET reflection suite loaded and active in 5981ms
 
-    TP.elementSetClipRect
+    TP.elementGetClipRect
+
+    function elementGetClipRect(anElement)
 
     /**
-     * @method elementSetClipRect
-     * @summary Sets the element's clipping rectangle.
-     * @description If a Number is supplied to top, right, bottom or left, a
-     *     default unit of 'px' is assumed.
-     * @param {HTMLElement} anElement The element to set the clip rect on.
-     * @param {Number|String} top The value to set the top coordinate of the
-     *     element's clipping rectangle to.
-     * @param {Number|String} right The value to set the right coordinate of the
-     *     element's clipping rectangle to.
-     * @param {Number|String} bottom The value to set the bottom coordinate of
-     *     the element's clipping rectangle to.
-     * @param {Number|String} left The value to set the left coordinate of the
-     *     element's clipping rectangle to.
+     * @method elementGetClipRect
+     * @summary Returns the element's clipping rectangle.
+     * @description The clipping rectangle is assumed to be in pixels (something
+     *     like 'rect(10px 10px 10px 10px)'). If the clipping rectangle is not a
+     *     '4 valued' value, null is returned. Each individual value is
+     *     processed and turned from its current value into pixels (i.e. the
+     *     value might be '4em' - this is converted into pixels). If the value
+     *     is 'auto', a null is placed into that position in the Array.
+     * @param {HTMLElement} anElement The element to extract the clipping
+     *     rectangle from.
      * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyleDeclaration
+     * @returns {Number[]} An Array of Numbers containing the element's clipping
+     *     rectangle *expressed in number of pixels*. The numbers are arranged
+     *     in the following order: top, right, bottom, left.
      */
 
-    ~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
+    ./public/TIBET-INF/tibet/src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+This command invokes the client-side `:apropos` command, passing all flags and
+command line arguments to that command for processing.
+
+Command invocation is done via the `tibet tsh` command machinery, which is
+inherited by this command.
 
 ## TROUBLESHOOTING
 
@@ -155,3 +172,5 @@ This command has no client-side TSH peer command.
 ## SEE ALSO
 
   * tibet-reflect(1)
+  * tibet-tsh(1)
+

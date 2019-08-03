@@ -3,30 +3,38 @@
 
 ## SYNOPSIS
 
-tibet config [property[=value]] [--env <env>]
+tibet config [property[=value]] [--env <env>] [--users]
 
 ## DESCRIPTION
 
 The `config` command can output one or more configuration values to the
-console based on current configuration data for your application or
-update a particular value to a string, number or boolean value.
+console based on current application configuration data. You can also use
+this command to set a particular value to a string, number or boolean value.
 
 You can view the entire configuration list by leaving off any specific
 value. You can view all values for a particular prefix by listing just
 the prefix. You can view a specific value by naming that value directly.
 
-You can dump virtual paths by quoting them as in: `'~app'` or `'~lib'` as needed
-by whichever native shell you may be using.
+You can dump virtual paths by quoting them as in: `'~app'` or `'~lib'`. Specific
+quoting depends on the native shell you may be using. You can alternatively use
+the prefix `path` to list all virtual paths or a specific one.
 
-For set operations you can specify an optional environment value. In the
-current implementation this applies only to TDS settings (`tds.\*` values).
+A special `--users` flag lets you view a summary of users from the
+application's user data. NOTE that TIBET's file-based user support is only
+provided to let you simulate user accounts during development. It is *not
+secure* and it should *never be used for production* systems.
+
+Configuration data can be updated by adding an `=` and value to a properly
+defined property name.
+
+For updates you can specify an optional environment value using the `--env`
+flag. The `env` will default to `development` otherwise. In the current
+implementation the concept of an `env` applies only to TDS settings (`tds.\*`
+values).
 
 NOTE that if you use this command to set values it will rewrite `tibet.json`
 by using the beautify npm module to process the stringified JSON content.
 As a result your file may not retain its appearance after updates.
-
-Configuration data can also be updated by adding an `=` and value to
-a properly defined property name.
 
 ## OPTIONS
 
@@ -41,7 +49,10 @@ only done for server configuration values.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+This command manages the entire TIBET configuration system. It can be used to
+read and/or update any value with a string, number, or boolean value.
+
+This command not rely on any configuration values for its own operation.
 
 ## ENVIRONMENT VARIABLES
 
@@ -105,7 +116,11 @@ No process environment variables are required by this command.
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+There is a client-side TSH command `:config` which mirrors the core
+functionality of this command in that it can be used to view or update
+configuration settings.
+
+The client-side `:config` command is not invoked by this command.
 
 ## TROUBLESHOOTING
 
@@ -113,3 +128,5 @@ This command has no client-side TSH peer command.
 ## SEE ALSO
 
   * tibet-context(1)
+  * tibet-user(1)
+
