@@ -23,8 +23,9 @@ together to the data that's defined in a `tibet:data` tag in the `<head>` of the
 document. TIBET hooks into the React lifecycle method mechanism to allow data
 binding from TIBET data sources into a React component (via `setState()`).
 
-This type, a subtype of `TP.dom.ReactElement`, has some interesting constructs
-worth discussing:
+This type, a subtype of `TP.tag.CustomTag` that mixes in the
+`TP.dom.ReactElement` trait type (you can read more about TIBET type traits in
+the core documentation), has some interesting constructs worth discussing:
 
 - It defines two 'type local' attributes that tell TIBET that this component
 doesn't have either core style or theme style files associated with it. This

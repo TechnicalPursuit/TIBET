@@ -20,8 +20,9 @@ In this markup file, you'll see a single custom tag, `<demo:reactlikebutton/>`.
 This is an instance of the custom tag type, `TP.demo.reactlikebutton`, which is
 defined in `TP.demo.reactlikebutton.js`.
 
-This type, a subtype of `TP.dom.ReactElement`, has some interesting constructs
-worth discussing:
+This type, a subtype of `TP.tag.CustomTag` that mixes in the
+`TP.dom.ReactElement` trait type (you can read more about TIBET type traits in
+the core documentation), has some interesting constructs worth discussing:
 
 - It defines two 'type local' attributes that tell TIBET that this component
 doesn't have either core style or theme style files associated with it. This

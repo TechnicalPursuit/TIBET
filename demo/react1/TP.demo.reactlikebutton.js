@@ -15,7 +15,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.defineSubtype('demo:reactlikebutton');
+TP.tag.CustomTag.defineSubtype('demo:reactlikebutton');
+
+TP.demo.reactlikebutton.addTraits(TP.dom.ReactElement);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

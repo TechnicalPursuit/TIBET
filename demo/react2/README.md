@@ -22,8 +22,9 @@ defined in `TP.demo.reactgreeting.js`. It is really important to see that we've
 given our element an `id` here - this will be considered the React 'root' and is
 needed for the JSX component definition.
 
-This type, a subtype of `TP.dom.ReactElement`, has some interesting constructs
-worth discussing:
+This type, a subtype of `TP.tag.CustomTag` that mixes in the
+`TP.dom.ReactElement` trait type (you can read more about TIBET type traits in
+the core documentation), has some interesting constructs worth discussing:
 
 - It defines two 'type local' attributes that tell TIBET that this component
 doesn't have either core style or theme style files associated with it. This
