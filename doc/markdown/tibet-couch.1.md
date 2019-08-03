@@ -11,6 +11,10 @@ Interacts with CouchDB to provide command line data access and admin utilities.
 Particularly helpful for TIBET applications which rely on CouchDB for data or
 TIBET Workflow System functionality.
 
+The various subcommands are largely self-describing in that they compact,
+create, list, push an app, remove an app, delete, and query a database
+respectively. See the `EXAMPLES` for more information.
+
 Required CouchDB parameters such as server URL, database name, and application
 name are first checked against `ENVIRONMENT VARIABLES`, then against a set of
 TIBET configuration values. If the `--confirm` flag is active (the default) the

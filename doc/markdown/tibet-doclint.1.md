@@ -3,34 +3,41 @@
 
 ## SYNOPSIS
 
-tibet doclint [<target>] [--filter <filter>] [--context <app|lib|all>]
+tibet doclint [<target>] [--filter <filter>] [--missing] [--tap] [--context <app|lib|all>]
 
 ## DESCRIPTION
 
 Runs the TSH `:doclint` command to validate method comment content.
 
 The doclint command uses TIBET reflection to find all methods in your
-application and check their comment text for conformance to JSDoc3 and
-TIBET comment standards. This check can be a part of an overall quality
-pass which includes running `tibet lint` and `tibet test` on your code.
+application that match an optional `<target>` and/or `--filter`. Matched methods
+then have their comment text checked for conformance to JSDoc3 and TIBET comment
+standards. This check can be a part of an overall quality pass which includes
+running `tibet lint` and `tibet test` on your code.
 
-If you provide an optional string parameter it will be used as a target
-ID which must resolve via TP.bySystemId. Only methods owned by that target will
-be checked.
+If you provide an optional string parameter it will be used as a target ID which
+must resolve via TP.bySystemId. Only methods owned by that target will be
+checked.
 
 If you provide a --filter the method names themselves will be filtered to match
 only the pattern or string provided.
+
+If you specify `--missing` only missing comments will be reported. No additional
+checks on content will be performed.
 
 The context (app, lib, or all) is generally defaulted based on any target data
 given. For example, using a target of `APP.*` will cause an `app` context while
 using a target of `TP.*` will default to a lib context. To use the `all` context
 you must specify it explicitly.
 
-Note that because it uses method reflection, not file lists, to drive
-the checks when this command outputs file counts they represent the
-number of unique files containing matching methods, not a full list
-of project files. This can be disconcerting at first if you are used
-to listings which are built by file-driven tools.
+By default output from this command follows the 'TAP' format. You can turn that
+off using `--tap=false` or `--no-tap`.
+
+Note that because it uses method reflection, not file lists, to drive the checks
+when this command outputs file counts they represent the number of unique files
+containing matching methods, not a full list of project files. This can be
+disconcerting at first if you are used to listings which are built by
+file-driven tools.
 
 ## OPTIONS
 
@@ -45,6 +52,12 @@ resources. Other values are `lib` and `all`.
   * `--filter` :
     An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.
+
+  * `--missing` :
+    Optional flag which restricts lint warnings/errors to just missing comments.
+
+  * `--tap` :
+    Optional flag to turn on/off TAP formatted output. The default is true.
 
 ## CONFIGURATION SETTINGS
 
@@ -120,7 +133,11 @@ Note that you can also do case-insensitive filtering (with `i`) as follows:
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+This command invokes the client-side `:doclint` command, passing all flags and
+command line arguments to that command for processing.
+
+Command invocation is done via the `tibet tsh` command machinery, which is
+inherited by this command.
 
 ## TROUBLESHOOTING
 
@@ -128,3 +145,4 @@ This command has no client-side TSH peer command.
 ## SEE ALSO
 
   * tibet-lint(1)
+

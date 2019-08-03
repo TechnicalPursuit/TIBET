@@ -3,33 +3,40 @@
 \fBtibet-doclint\fR \- validates method comment content
 .SH SYNOPSIS
 .P
-tibet doclint [<target>] [\-\-filter <filter>] [\-\-context <app|lib|all>]
+tibet doclint [<target>] [\-\-filter <filter>] [\-\-missing] [\-\-tap] [\-\-context <app|lib|all>]
 .SH DESCRIPTION
 .P
 Runs the TSH \fB:doclint\fP command to validate method comment content\.
 .P
 The doclint command uses TIBET reflection to find all methods in your
-application and check their comment text for conformance to JSDoc3 and
-TIBET comment standards\. This check can be a part of an overall quality
-pass which includes running \fBtibet lint\fP and \fBtibet test\fP on your code\.
+application that match an optional \fB<target>\fP and/or \fB\-\-filter\fP\|\. Matched methods
+then have their comment text checked for conformance to JSDoc3 and TIBET comment
+standards\. This check can be a part of an overall quality pass which includes
+running \fBtibet lint\fP and \fBtibet test\fP on your code\.
 .P
-If you provide an optional string parameter it will be used as a target
-ID which must resolve via TP\.bySystemId\. Only methods owned by that target will
-be checked\.
+If you provide an optional string parameter it will be used as a target ID which
+must resolve via TP\.bySystemId\. Only methods owned by that target will be
+checked\.
 .P
 If you provide a \-\-filter the method names themselves will be filtered to match
 only the pattern or string provided\.
+.P
+If you specify \fB\-\-missing\fP only missing comments will be reported\. No additional
+checks on content will be performed\.
 .P
 The context (app, lib, or all) is generally defaulted based on any target data
 given\. For example, using a target of \fBAPP\.*\fP will cause an \fBapp\fP context while
 using a target of \fBTP\.*\fP will default to a lib context\. To use the \fBall\fP context
 you must specify it explicitly\.
 .P
-Note that because it uses method reflection, not file lists, to drive
-the checks when this command outputs file counts they represent the
-number of unique files containing matching methods, not a full list
-of project files\. This can be disconcerting at first if you are used
-to listings which are built by file\-driven tools\.
+By default output from this command follows the 'TAP' format\. You can turn that
+off using \fB\-\-tap=false\fP or \fB\-\-no\-tap\fP\|\.
+.P
+Note that because it uses method reflection, not file lists, to drive the checks
+when this command outputs file counts they represent the number of unique files
+containing matching methods, not a full list of project files\. This can be
+disconcerting at first if you are used to listings which are built by
+file\-driven tools\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -44,6 +51,12 @@ resources\. Other values are \fBlib\fP and \fBall\fP\|\.
 \fB\-\-filter\fP :
 An optional regular expression, expressed in /foo/ig form\. This filter will
 be applied to fully\-qualified method names\.
+.IP \(bu 2
+\fB\-\-missing\fP :
+Optional flag which restricts lint warnings/errors to just missing comments\.
+.IP \(bu 2
+\fB\-\-tap\fP :
+Optional flag to turn on/off TAP formatted output\. The default is true\.
 
 .RE
 .SH CONFIGURATION SETTINGS
@@ -138,7 +151,11 @@ ok \- ~app_tags/APP\.test1\.app/APP\.test1\.app\.js
 .RE
 .SH TIBET SHELL
 .P
-This command has no client\-side TSH peer command\.
+This command invokes the client\-side \fB:doclint\fP command, passing all flags and
+command line arguments to that command for processing\.
+.P
+Command invocation is done via the \fBtibet tsh\fP command machinery, which is
+inherited by this command\.
 .SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0

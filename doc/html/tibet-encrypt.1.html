@@ -19,28 +19,49 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-encrypt-1-encrypt-a-string-using-the-tds-encrypt-approach">tibet-encrypt(1) -- encrypt a string using the TDS.encrypt approach</h1>
+<h1 id="tibet-encrypt-1-encrypt-a-string">tibet-encrypt(1) -- encrypt a string</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>tibet encrypt &lt;string&gt;</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Encrypts a string using the same approach used by the TDS. This command is
-provided as a convenience allowing you to set a TDS_CRYPTO_KEY environment value
-and then encrypt passwords or API keys prior to storing them.</p>
+<p>Encrypts a string using the same approach used by other TIBET components.</p>
+<p>This command is provided as a convenience allowing you to encrypt passwords or
+API keys prior to storing them.</p>
 <p>The TIBET Workflow System (TWS) tasks expect passwords/keys to be provided in
 encrypted form as output by this command. This allows you to store task-specific
 passwords or API keys as part of your task definitions or parameters.</p>
-<p>Note that you can also set TDS_CRYPTO_SALT to alter the salt value used for the
-encryption and decryption processes.</p>
 <h2 id="options">OPTIONS</h2>
 <p>No command options or flags are checked by this command.</p>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<p>No TIBET configuration variables are utilized by this command.</p>
+<ul>
+<li><p><code>tibet.crypto.cipher</code> :
+The encryption/decryption mechanism to use. Defaults to <code>aes-256-ctr</code>.</p>
+</li>
+<li><p><code>tibet.crypto.keylen</code> :
+The encryption/decryption key length. Defaults to 32.</p>
+</li>
+<li><p><code>tibet.crypto.saltlen</code> :
+The encryption/decryption salt length. Defaults to 16.</p>
+</li>
+</ul>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
-<p>No process environment variables are required by this command.</p>
+<ul>
+<li><p><code>TIBET_CRYPTO_CIPHER</code> :
+The encryption/decryption mechanism to use.</p>
+</li>
+<li><p><code>TIBET_CRYPTO_KEY</code> :
+The secret key used to drive the encryption/decryption.</p>
+</li>
+<li><p><code>TIBET_CRYPTO_KEYLEN</code> :
+The encryption/decryption key length.</p>
+</li>
+<li><p><code>TIBET_CRYPTO_SALTLEN</code> :
+The encryption/decryption salt length.</p>
+</li>
+</ul>
 <h2 id="examples">EXAMPLES</h2>
-<pre><code>$ export TDS_CRYPTO_KEY=&#39;TOPsecretKEY&#39;
+<pre><code>$ export TIBET_CRYPTO_KEY=&#39;TOPsecretKEY&#39;
 $ tibet encrypt &#39;myrestserviceapikey&#39;
-f92d28cf96fb590cf92a206a9b4c3af4
+b460c7357dde9fdb50767791307cc4cb:98bb6a27b27cec1630467accf25d62a8d60348
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>

@@ -21,27 +21,32 @@
 
 <h1 id="tibet-doclint-1-validates-method-comment-content">tibet-doclint(1) -- validates method comment content</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet doclint [&lt;target&gt;] [--filter &lt;filter&gt;] [--context &lt;app|lib|all&gt;]</p>
+<p>tibet doclint [&lt;target&gt;] [--filter &lt;filter&gt;] [--missing] [--tap] [--context &lt;app|lib|all&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH <code>:doclint</code> command to validate method comment content.</p>
 <p>The doclint command uses TIBET reflection to find all methods in your
-application and check their comment text for conformance to JSDoc3 and
-TIBET comment standards. This check can be a part of an overall quality
-pass which includes running <code>tibet lint</code> and <code>tibet test</code> on your code.</p>
-<p>If you provide an optional string parameter it will be used as a target
-ID which must resolve via TP.bySystemId. Only methods owned by that target will
-be checked.</p>
+application that match an optional <code>&lt;target&gt;</code> and/or <code>--filter</code>. Matched methods
+then have their comment text checked for conformance to JSDoc3 and TIBET comment
+standards. This check can be a part of an overall quality pass which includes
+running <code>tibet lint</code> and <code>tibet test</code> on your code.</p>
+<p>If you provide an optional string parameter it will be used as a target ID which
+must resolve via TP.bySystemId. Only methods owned by that target will be
+checked.</p>
 <p>If you provide a --filter the method names themselves will be filtered to match
 only the pattern or string provided.</p>
+<p>If you specify <code>--missing</code> only missing comments will be reported. No additional
+checks on content will be performed.</p>
 <p>The context (app, lib, or all) is generally defaulted based on any target data
 given. For example, using a target of <code>APP.*</code> will cause an <code>app</code> context while
 using a target of <code>TP.*</code> will default to a lib context. To use the <code>all</code> context
 you must specify it explicitly.</p>
-<p>Note that because it uses method reflection, not file lists, to drive
-the checks when this command outputs file counts they represent the
-number of unique files containing matching methods, not a full list
-of project files. This can be disconcerting at first if you are used
-to listings which are built by file-driven tools.</p>
+<p>By default output from this command follows the &#39;TAP&#39; format. You can turn that
+off using <code>--tap=false</code> or <code>--no-tap</code>.</p>
+<p>Note that because it uses method reflection, not file lists, to drive the checks
+when this command outputs file counts they represent the number of unique files
+containing matching methods, not a full list of project files. This can be
+disconcerting at first if you are used to listings which are built by
+file-driven tools.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
 <li><p><code>target</code> :
@@ -55,6 +60,12 @@ resources. Other values are <code>lib</code> and <code>all</code>.</p>
 <li><p><code>--filter</code> :
 An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.</p>
+</li>
+<li><p><code>--missing</code> :
+Optional flag which restricts lint warnings/errors to just missing comments.</p>
+</li>
+<li><p><code>--tap</code> :
+Optional flag to turn on/off TAP formatted output. The default is true.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
@@ -112,7 +123,10 @@ ok - ~app_tags/APP.test1.app/APP.test1.app.js
 # PASS: 0 errors in 0 of 2 files.
 # Finished in 10556 ms w/TSH exec time of 6344 ms.
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
-<p>This command has no client-side TSH peer command.</p>
+<p>This command invokes the client-side <code>:doclint</code> command, passing all flags and
+command line arguments to that command for processing.</p>
+<p>Command invocation is done via the <code>tibet tsh</code> command machinery, which is
+inherited by this command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
