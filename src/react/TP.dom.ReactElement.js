@@ -404,7 +404,8 @@ function() {
      * @returns {TP.dom.ReactElement} The receiver.
      */
 
-    var sourceURI,
+    var sourceLoc,
+        sourceURI,
 
         response,
         jsxText,
@@ -422,10 +423,11 @@ function() {
 
         reactComponent;
 
-    //  If the receiver has a component definition URL, then it's going be
+    //  If the receiver has a component definition location, then it's going be
     //  bringing in a file of React definitions, probably in JSX.
-    sourceURI = this.getComponentDefinitionURL();
-    if (TP.isURI(sourceURI)) {
+    sourceLoc = this.getComponentDefinitionLocation();
+    if (TP.notEmpty(sourceLoc)) {
+        sourceURI = TP.uc(sourceLoc);
         response = sourceURI.getResource(
                                 TP.hc('async', false, 'resultType', TP.TEXT));
         jsxText = response.get('result');
@@ -599,17 +601,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Inst.defineMethod('getComponentDefinitionURL',
+TP.dom.ReactElement.Inst.defineMethod('getComponentDefinitionLocation',
 function() {
 
     /**
-     * @method getComponentDefinitionURL
-     * @summary Returns a URL instance that will
-     * @returns {TP.core.URL|null}
+     * @method getComponentDefinitionLocation
+     * @summary Returns a location that will define the component. The resource
+     *     pointed to by this URL may contain regular JavaScript or JSX.
+     * @returns {String|null} The component definition location.
      */
 
-    var src,
-        path;
+    var src;
 
     //  Grab the source location from our attribute.
     src = this.getAttribute('src');
@@ -617,10 +619,7 @@ function() {
         return null;
     }
 
-    //  Compute a path from our source collection path and our source location.
-    path = TP.uriJoinPaths(TP.objectGetSourceCollectionPath(this), src);
-
-    return TP.uc(path);
+    return this.qualifyToSourcePath(src);
 });
 
 //  ------------------------------------------------------------------------
@@ -784,13 +783,14 @@ function() {
      * @returns {TP.dom.ReactElement} The receiver.
      */
 
-    var sourceURI;
+    var sourceLoc,
+        sourceURI;
 
     this.buildReactComponent();
 
-    sourceURI = this.getComponentDefinitionURL();
-
-    if (TP.isURI(sourceURI)) {
+    sourceLoc = this.getComponentDefinitionLocation();
+    if (TP.notEmpty(sourceLoc)) {
+        sourceURI = TP.uc(sourceLoc);
         this.observe(sourceURI, 'TP.sig.ValueChange');
     }
 
@@ -1003,11 +1003,12 @@ function() {
      * @returns {TP.dom.ReactElement} The receiver.
      */
 
-    var sourceURI;
+    var sourceLoc,
+        sourceURI;
 
-    sourceURI = this.getComponentDefinitionURL();
-
-    if (TP.isURI(sourceURI)) {
+    sourceLoc = this.getComponentDefinitionLocation();
+    if (TP.notEmpty(sourceLoc)) {
+        sourceURI = TP.uc(sourceLoc);
         this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
@@ -1036,11 +1037,19 @@ function(anAspect, options) {
      *     the receiver.
      */
 
+    var sourceLoc,
+        sourceURI;
+
     switch (anAspect) {
 
         case 'Structure':
-            //  NB: We're returning the TP.uri.URI instance itself here.
-            return this.getComponentDefinitionURL();
+            sourceLoc = this.getComponentDefinitionLocation();
+            if (TP.notEmpty(sourceLoc)) {
+                sourceURI = TP.uc(sourceLoc);
+                return sourceURI;
+            }
+
+            return this.callNextMethod();
 
         default:
             return this.callNextMethod();
