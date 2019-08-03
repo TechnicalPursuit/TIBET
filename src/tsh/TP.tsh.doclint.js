@@ -36,7 +36,7 @@ function(aRequest) {
      */
 
     var shell,
-
+        tap,
         methods,
         results,
         context,
@@ -72,6 +72,7 @@ function(aRequest) {
 
     aRequest.atPut('cmdTAP',
         shell.getArgument(aRequest, 'tsh:tap', null, true));
+    tap = aRequest.at('cmdTAP');
 
     missing = shell.getArgument(aRequest, 'tsh:missing', null, false);
 
@@ -939,7 +940,7 @@ function(aRequest) {
                 entries = fileDict.at(key);
                 if (TP.notValid(entries)) {
                     if (TP.notEmpty(key)) {
-                        results.push('ok - ' +
+                        results.push((tap ? 'ok - ' : '') +
                             TP.uriExpandPath(key).replace('file://', ''));
                     }
                     return;
@@ -948,7 +949,7 @@ function(aRequest) {
                 errorFiles++;
 
                 //  Output the file name.
-                results.push('not ok - ' +
+                results.push((tap ? 'not ok - ' : '') +
                     TP.uriExpandPath(key).replace('file://', ''));
 
                 entries.forEach(
@@ -964,16 +965,20 @@ function(aRequest) {
                             totalErrors += errors.length;
 
                             results.push(
-                                '# ' + name + ' (' + errors.length +
+                                (tap ? '# ' : '' ) + name + ' (' + errors.length +
                                 ') -> [' + errors.join(', ') + ']');
                         });
             });
 
     //  Output some summary data.
-    if (totalErrors > 0) {
-        prefix = '# FAIL: ';
+    if (tap) {
+        if (totalErrors > 0) {
+            prefix = '# FAIL: ';
+        } else {
+            prefix = '# PASS: ';
+        }
     } else {
-        prefix = '# PASS: ';
+        prefix = '';
     }
 
     results.push(prefix + totalErrors + ' errors in ' + errorFiles +
