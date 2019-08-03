@@ -85,7 +85,8 @@ Cmd.prototype.execute = function() {
         option,
         keys,
         newcfg,
-        str;
+        str,
+        cmd;
 
     if (this.options._.length > 1) {
         option = this.options._[1];
@@ -146,33 +147,41 @@ Cmd.prototype.execute = function() {
         return 0;
     }
 
-    // Filter TDS user keys...
-    if (!this.options.users) {
-        try {
-            keys = Object.keys(cfg).filter(function(key) {
+    // Filter TDS user keys...we don't show them by default...
+    try {
+        cmd = this;
+        keys = Object.keys(cfg).filter(function(key) {
+            if (key.indexOf('//') === 0) {
+                return false;
+            }
+            if (cmd.options.users) {
+                return key.indexOf('users') === 0;
+            } else {
                 return key.indexOf('users') !== 0;
-            });
-            newcfg = {};
-            keys.forEach(function(key) {
-                if (CLI.isValid(cfg[key])) {
-                    newcfg[key] = cfg[key];
-                }
-            });
-            cfg = newcfg;
-        } catch (e) {
-            //  Ignore, probably not an object with keys.
-            void 0;
-        }
+            }
+        });
+        newcfg = {};
+        keys.forEach(function(key) {
+            if (CLI.isValid(cfg[key])) {
+                newcfg[key] = cfg[key];
+            }
+        });
+        cfg = newcfg;
+    } catch (e) {
+        //  Ignore, probably not an object with keys.
+        void 0;
     }
 
     // Object.keys will throw for anything other than Object/Array...
     try {
         str = '{\n';
 
-        if (CLI.isEmpty(option) || option.indexOf('path') === 0) {
-            str += '\t"~": "' + CLI.getAppHead() + '",\n';
-            str += '\t"~app": "' + CLI.getAppRoot() + '",\n';
-            str += '\t"~lib": "' + CLI.getLibRoot() + '",\n';
+        if (!this.options.users) {
+            if (CLI.isEmpty(option) || option.indexOf('path') === 0) {
+                str += '\t"~": "' + CLI.getAppHead() + '",\n';
+                str += '\t"~app": "' + CLI.getAppRoot() + '",\n';
+                str += '\t"~lib": "' + CLI.getLibRoot() + '",\n';
+            }
         }
         Object.keys(cfg).sort().forEach(function(key) {
             str += '\t"' + key + '": ' + // key.replace(/_/g, '.') + '": ' +
