@@ -680,6 +680,38 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  ReactJS lifecycle methods
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Inst.defineMethod('reactDidMount',
+function(anObject) {
+
+    /**
+     * @method reactDidMount
+     * @summary This method is invoked when the React peer component has mounted
+     *     into its environment.
+     * @param {Object} anObject The React peer component.
+     * @returns {TP.dom.ReactElement} The receiver.
+     */
+
+    var vals;
+
+    //  Grab all of the bound values into a TP.lang.Hash
+    vals = this.getBoundValues('bind:io',
+                                this.getBindingScopeValues(),
+                                this.getAttribute('bind:io'));
+
+    //  Set the state on the React peer using a POJO'ed version of the hash.
+    anObject.setState(vals.asObject());
+
+    this.set('$reactPeer', anObject);
+
+    this.set('$isMounted', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 
 TP.dom.ReactElement.Inst.defineMethod('reactDidUpdate',
 function(anObject, prevProps, prevState) {
@@ -718,36 +750,6 @@ function(anObject, prevProps, prevState) {
     this.set('$$updating', false);
 
     this.changed('value', TP.UPDATE);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.ReactElement.Inst.defineMethod('reactDidMount',
-function(anObject) {
-
-    /**
-     * @method reactDidMount
-     * @summary This method is invoked when the React peer component has mounted
-     *     into its environment.
-     * @param {Object} anObject The React peer component.
-     * @returns {TP.dom.ReactElement} The receiver.
-     */
-
-    var vals;
-
-    //  Grab all of the bound values into a TP.lang.Hash
-    vals = this.getBoundValues('bind:io',
-                                this.getBindingScopeValues(),
-                                this.getAttribute('bind:io'));
-
-    //  Set the state on the React peer using a POJO'ed version of the hash.
-    anObject.setState(vals.asObject());
-
-    this.set('$reactPeer', anObject);
-
-    this.set('$isMounted', true);
 
     return this;
 });
