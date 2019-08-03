@@ -72,15 +72,9 @@ Cmd.prototype.USAGE = 'tibet context';
  */
 Cmd.prototype.execute = function() {
     var context,
-        text,
-        cfg,
-        doc,
-        parser,
-        result,
-        configs;
+        result;
 
     result = 0;
-    parser = new dom.DOMParser();
 
     context = {};
 
@@ -94,18 +88,59 @@ Cmd.prototype.execute = function() {
     context['~app'] = CLI.getAppRoot();
     context['~lib'] = CLI.getLibRoot();
 
-    context.boot = {};
-    context.boot.package = CLI.getcfg('boot.package') ||
+    context.boot = this.getBootData();
+    if (!context.boot) {
+        result = 1;
+    }
+
+    this.info(CLI.beautify(JSON.stringify(context)));
+
+    return result;
+};
+
+/**
+ * Returns information on the current project's boot target(s).
+ * @returns {Object} An object containing boot package/config information.
+ */
+Cmd.prototype.getBootData = function() {
+    var info,
+        profile,
+        pkg,
+        config,
+        parser,
+        doc,
+        text,
+        elem,
+        cfg,
+        configs;
+
+    parser = new dom.DOMParser();
+
+    info = {};
+
+    profile = CLI.getcfg('boot.profile');
+    if (CLI.notEmpty(profile)) {
+        profile = profile.split('@');
+        pkg = profile[0];
+        config = profile[1];
+    }
+
+    config = config || CLI.getcfg('boot.config');
+
+    pkg = pkg || CLI.getcfg('boot.package') ||
         CLI.getcfg('boot.default_package') ||
         CLI.PACKAGE_FILE;
 
-    cfg = CLI.expandPath(context.boot.package);
+    cfg = CLI.expandPath(pkg);
     if (sh.test('-f', cfg)) {
         text = sh.cat(cfg);
     } else {
         this.error('Unable to locate boot.package: ' + cfg);
-        result = 1;
+        return;
     }
+
+    info.profile = profile;
+    info.package = pkg;
 
     if (text) {
         doc = parser.parseFromString(text);
@@ -113,20 +148,26 @@ Cmd.prototype.execute = function() {
             this.error('Error parsing ' + cfg + '. Not well-formed?');
             throw new Error();
         }
+
+        if (CLI.isEmpty(config)) {
+            elem = doc.getElementsByTagName('package')[0];
+            config = elem.getAttribute('default');
+        }
+
         configs = doc.getElementsByTagName('config');
         configs = Array.prototype.slice.call(configs, 0);
-        configs = configs.filter(function(config) {
-            return CLI.notEmpty(config.getAttribute('id'));
+        configs = configs.filter(function(cfgtag) {
+            return CLI.notEmpty(cfgtag.getAttribute('id'));
         });
 
-        context.boot.configs = configs.map(function(config) {
-            return config.getAttribute('id');
+        info.configs = configs.map(function(cfgtag) {
+            return cfgtag.getAttribute('id');
         }).sort();
     }
 
-    this.info(CLI.beautify(JSON.stringify(context)));
+    info.config = config;
 
-    return result;
+    return info;
 };
 
 
