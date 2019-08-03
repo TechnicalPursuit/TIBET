@@ -105,14 +105,15 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Type.defineMethod('getComponentScriptURLs',
+TP.dom.ReactElement.Type.defineMethod('getComponentScriptLocations',
 function(aRequest) {
 
     /**
-     * @method getComponentScriptURLs
-     * @summary Returns an Array of URLs that contain JavaScript code used to
-     *     implement the React component that the receiver is representing.
-     * @returns {String[]} An Array of script URLs containing the React
+     * @method getComponentScriptLocations
+     * @summary Returns an Array of URL locations that contain JavaScript code
+     *     used to implement the React component that the receiver is
+     *     representing.
+     * @returns {String[]} An Array of script URL locations containing the React
      *     component code.
      */
 
@@ -230,8 +231,8 @@ function(aRequest) {
 
         doc = TP.doc(elem);
 
-        //  Grab all of the React 'component' script URLs.
-        componentScripts = this.getComponentScriptURLs();
+        //  Grab all of the React 'component' script URL locations.
+        componentScripts = this.getComponentScriptLocations();
 
         //  Build an Array starting with the core React & ReactDOM code and then
         //  concatenating all of the component scripts onto it.
@@ -423,7 +424,7 @@ function() {
 
     //  If the receiver has a component definition URL, then it's going be
     //  bringing in a file of React definitions, probably in JSX.
-    sourceURI = this.getReactComponentDefinitionURL();
+    sourceURI = this.getComponentDefinitionURL();
     if (TP.isURI(sourceURI)) {
         response = sourceURI.getResource(
                                 TP.hc('async', false, 'resultType', TP.TEXT));
@@ -441,7 +442,7 @@ function() {
 
         //  Grab the component's ECMAScript class name. If it's empty, exit
         //  here.
-        reactComponentClassName = this.getReactComponentClassName();
+        reactComponentClassName = this.getComponentClassName();
         if (TP.isEmpty(reactComponentClassName)) {
             return this.raise(
                 'TP.sig.InvalidName', 'No React component class name defined');
@@ -463,8 +464,8 @@ function() {
 
             doc = this.getNativeDocument();
 
-            //  Grab all of the React 'component' script URLs.
-            componentScripts = this.getType().getComponentScriptURLs();
+            //  Grab all of the React 'component' script URL locations.
+            componentScripts = this.getType().getComponentScriptLocations();
 
             //  Iterate over all of the script locations, loading them one at a
             //  time via Promises. When everything is complete, then proceed
@@ -583,11 +584,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Inst.defineMethod('getReactComponentClassName',
+TP.dom.ReactElement.Inst.defineMethod('getComponentClassName',
 function() {
 
     /**
-     * @method getReactComponentClassName
+     * @method getComponentClassName
      * @summary Returns the React component's ECMAScript class name. This is
      *     used by the TIBET machinery when invoking the ReactDOM.render call.
      * @returns {String} The React component's ECMAScript class name.
@@ -598,11 +599,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Inst.defineMethod('getReactComponentDefinitionURL',
+TP.dom.ReactElement.Inst.defineMethod('getComponentDefinitionURL',
 function() {
 
     /**
-     * @method getReactComponentDefinitionURL
+     * @method getComponentDefinitionURL
      * @summary Returns a URL instance that will
      * @returns {TP.core.URL|null}
      */
@@ -787,7 +788,7 @@ function() {
 
     this.buildReactComponent();
 
-    sourceURI = this.getReactComponentDefinitionURL();
+    sourceURI = this.getComponentDefinitionURL();
 
     if (TP.isURI(sourceURI)) {
         this.observe(sourceURI, 'TP.sig.ValueChange');
@@ -895,7 +896,7 @@ function(aContentObject, aRequest) {
 
         //  Grab the component's ECMAScript class name. If it's empty, exit
         //  here.
-        reactComponentClassName = this.getReactComponentClassName();
+        reactComponentClassName = this.getComponentClassName();
         if (TP.isEmpty(reactComponentClassName)) {
             return this.raise(
                 'TP.sig.InvalidName', 'No React component class name defined');
@@ -1004,7 +1005,7 @@ function() {
 
     var sourceURI;
 
-    sourceURI = this.getReactComponentDefinitionURL();
+    sourceURI = this.getComponentDefinitionURL();
 
     if (TP.isURI(sourceURI)) {
         this.ignore(sourceURI, 'TP.sig.ValueChange');
@@ -1039,7 +1040,7 @@ function(anAspect, options) {
 
         case 'Structure':
             //  NB: We're returning the TP.uri.URI instance itself here.
-            return this.getReactComponentDefinitionURL();
+            return this.getComponentDefinitionURL();
 
         default:
             return this.callNextMethod();
