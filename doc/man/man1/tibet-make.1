@@ -1,28 +1,34 @@
 .TH "TIBET\-MAKE" "1" "August 2019" "" ""
 .SH "NAME"
-\fBtibet-make\fR \- runs a TIBET makefile\.js target
+\fBtibet-make\fR \- runs a function as a task
 .SH SYNOPSIS
 .P
-tibet make <target> [\-\-list]
+tibet make <target> [\-\-list] [\-\-private] [\-\-timeout <ms>]
 .SH DESCRIPTION
 .P
-Runs a target function in a TIBET \fBmakefile\.js\fP file via a JS Promise\.
+This command runs lightweight commands in the form of functions, much like Grunt
+or Gulp\. There's no dependency checking or true 'make'\-like functionality but
+\fBtibet make\fP does leverage JavaScript Promises to coordinate tasks and their
+interactions, particularly when calling nested or asynchronous tasks\.
 .P
-This command supports lightweight commands in the form of functions, much
-like Grunt or Gulp\. There's no dependency checking or true 'make'\-like
-functionality but \fBmakefile\.js\fP code does leverage JavaScript Promises to
-coordinate tasks and their interactions, particularly when calling tasks
-within tasks and when dealing with asynchronous tasks\.
+TIBET provides a set of default functions for \fBmake\fP which support basic
+operations such as \fBclean\fP, \fBbuild\fP, and \fBrollup\fP that are common in TIBET
+applications\. By providing these commands as make targets it's easy for you to
+modify them to meet your specific project requirements\.
 .P
-TIBET provides a default \fBmakefile\.js\fP which supports basic operations such as
-clean, build, and rollup that are common in TIBET applications\. By providing
-these commands as make targets it is easy for you to modify them to meet your
-specific project requirements\.
+When you use the \fBtibet\fP command all available make targets are checked if no
+concrete command is found\. For example, you can run \fBtibet clean\fP and, since
+there is no concrete \fBclean\fP command the \fBtibet\fP command will delegate to the
+\fBtibet make clean\fP operation\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fB\-\-list\fP :
-Used to list the available \fBmakefile\.js\fP targets you can run\.
+Used to list the available \fBtibet make\fP targets you can run\.
+.IP \(bu 2
+\fB\-\-private\fP :
+Tells the \fB\-\-list\fP operation to also include private tasks, tasks whose
+names begin with \fB_\fP so they are normally filtered by the list option\.
 .IP \(bu 2
 \fB\-\-timeout <ms>\fP :
 Gives you a way to provide a millisecond timeout value in which each task
@@ -30,17 +36,52 @@ must complete successfully\. The default is 15 seconds (15000)\.
 
 .RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fB\-\-make\.compression\.parse_options\fP:
+Set by this command to pass command line options along to any
+compression\-related make operations\.
+.IP \(bu 2
+\fB\-\-make\.package\.parse_options\fP:
+Set by this command to pass command line options to any packaging\-related
+operations\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.
 .SH EXAMPLES
-.SS List available makefile\.js targets
+.SS Sample function (the lint task in make):
 .P
 .RS 2
 .nf
-$ tibet make \-\-list
+(function() {
+    'use strict';
+
+    var task;
+
+    task = function(make, resolve, reject) {
+        var proc;
+
+        make\.log('checking for lint\.\.\.');
+
+        proc = make\.spawn('tibet lint \-\-stop');
+        proc\.on('exit', function(code) {
+            code === 0 ? resolve() : reject();
+        });
+    };
+
+    task\.options = {timeout: 1000 * 60 * 5};
+
+    module\.exports = task;
+}());
+.fi
+.RE
+.SS List available targets
+.P
+.RS 2
+.nf
+$ tibet make
 
 Available targets:
 

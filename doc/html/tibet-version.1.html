@@ -35,7 +35,14 @@ released version. This operation relies on <code>npm info tibet --json</code> to
 data about publicly available TIBET releases.</li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<p>No TIBET configuration variables are utilized by this command.</p>
+<ul>
+<li><p><code>npm.name</code> :
+The project name.</p>
+</li>
+<li><p><code>npm.version</code> :
+The project version.</p>
+</li>
+</ul>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
@@ -46,13 +53,9 @@ hello 0.1.0 running on TIBET v5.0.0-dev.7
 </code></pre><h3 id="check-on-whether-there-s-a-newer-release-of-tibet-available">Check on whether there&#39;s a newer release of TIBET available</h3>
 <pre><code>$ tibet version --check
 
-Your current version v5.0.0-dev.7 is the latest.
+Your current version 5.0.0-pre.51 is the latest.
 </code></pre><p>If a new version is available you&#39;ll see something similar to:</p>
 <pre><code>Version v5.0.0-dev.11 is available. You have v5.0.0-dev.7
-</code></pre><h3 id="view-the-current-mapping-for-the-tibet-latest-release-file">View the current mapping for the TIBET latest-release file</h3>
-<pre><code>$ tibet config path.lib_version_latest
-
-http://www.technicalpursuit.com/tibet/latest.js
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>

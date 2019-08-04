@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet help <topic>
+tibet help <topic> [--missing]
 
 ## DESCRIPTION
 
@@ -12,17 +12,27 @@ Displays help for a specific command or the 'tibet' command.
 You can alternatively get usage data via the `--usage` flag on each command
 or complete help output by using the `--help` flag on the target command.
 
+If you specify the `--missing` option a list of commands and `tibet make`
+targets for which no documentation file can be found is listed.
+
 ## OPTIONS
 
-No command options or flags are checked by this command.
+  * `--missing` :
+    Optional list any commands or make targets with missing documentation.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `npm.name` :
+    The project name.
+
+  * `npm.version` :
+    The project version.
 
 ## ENVIRONMENT VARIABLES
 
-No process environment variables are required by this command.
+  * `MANPATH` :
+    The standard environment variable telling the `man` command (or in this case
+the `tibet help` command where to look for help files.
 
 ## EXAMPLES
 

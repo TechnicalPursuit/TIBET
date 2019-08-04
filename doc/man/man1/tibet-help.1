@@ -3,22 +3,41 @@
 \fBtibet-help\fR \- displays help specific to TIBET
 .SH SYNOPSIS
 .P
-tibet help <topic>
+tibet help <topic> [\-\-missing]
 .SH DESCRIPTION
 .P
 Displays help for a specific command or the 'tibet' command\.
 .P
 You can alternatively get usage data via the \fB\-\-usage\fP flag on each command
 or complete help output by using the \fB\-\-help\fP flag on the target command\.
+.P
+If you specify the \fB\-\-missing\fP option a list of commands and \fBtibet make\fP
+targets for which no documentation file can be found is listed\.
 .SH OPTIONS
-.P
-No command options or flags are checked by this command\.
+.RS 0
+.IP \(bu 2
+\fB\-\-missing\fP :
+Optional list any commands or make targets with missing documentation\.
+
+.RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP :
+The project name\.
+.IP \(bu 2
+\fBnpm\.version\fP :
+The project version\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
-.P
-No process environment variables are required by this command\.
+.RS 0
+.IP \(bu 2
+\fBMANPATH\fP :
+The standard environment variable telling the \fBman\fP command (or in this case
+the \fBtibet help\fP command where to look for help files\.
+
+.RE
 .SH EXAMPLES
 .SS List help on the \fBtibet\fP command itself
 .P

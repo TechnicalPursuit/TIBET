@@ -7,6 +7,9 @@ tibet thaw [--force]
 
 ## DESCRIPTION
 
+NOTE: this command will be removed in a future release once splitting
+of the TIBET npm package into `tibet-cli` and `tibet` is complete.
+
 Thaws (un-freezes) the current application's TIBET library in `~app_inf`.
 
 By default `~app_inf` refers to `public/TIBET-INF`, the default location for

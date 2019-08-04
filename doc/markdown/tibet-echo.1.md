@@ -1,4 +1,4 @@
-{{topic}}({{section}}) -- echo command line arguments to stdout
+{{topic}}({{section}}) -- echo command line arguments
 =============================================
 
 ## SYNOPSIS
@@ -40,7 +40,12 @@ No process environment variables are required by this command.
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+There is a client-side TSH command `:echo` which mirrors the core
+functionality of this command in that it can be used to view how
+command line arguments and flags are being parsed.
+
+The client-side `:echo` command is not invoked by this command.
+
 
 ## TROUBLESHOOTING
 

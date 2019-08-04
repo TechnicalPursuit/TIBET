@@ -22,7 +22,11 @@ data about publicly available TIBET releases.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `npm.name` :
+    The project name.
+
+  * `npm.version` :
+    The project version.
 
 ## ENVIRONMENT VARIABLES
 
@@ -40,18 +44,11 @@ No process environment variables are required by this command.
 
     $ tibet version --check
 
-    Your current version v5.0.0-dev.7 is the latest.
+    Your current version 5.0.0-pre.51 is the latest.
 
 If a new version is available you'll see something similar to:
 
     Version v5.0.0-dev.11 is available. You have v5.0.0-dev.7
-
-
-### View the current mapping for the TIBET latest-release file
-
-    $ tibet config path.lib_version_latest
-
-    http://www.technicalpursuit.com/tibet/latest.js
 
 ## TIBET SHELL
 

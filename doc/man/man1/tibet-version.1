@@ -21,8 +21,15 @@ data about publicly available TIBET releases\.
 
 .RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP :
+The project name\.
+.IP \(bu 2
+\fBnpm\.version\fP :
+The project version\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.
@@ -42,7 +49,7 @@ hello 0\.1\.0 running on TIBET v5\.0\.0\-dev\.7
 .nf
 $ tibet version \-\-check
 
-Your current version v5\.0\.0\-dev\.7 is the latest\.
+Your current version 5\.0\.0\-pre\.51 is the latest\.
 .fi
 .RE
 .P
@@ -51,15 +58,6 @@ If a new version is available you'll see something similar to:
 .RS 2
 .nf
 Version v5\.0\.0\-dev\.11 is available\. You have v5\.0\.0\-dev\.7
-.fi
-.RE
-.SS View the current mapping for the TIBET latest\-release file
-.P
-.RS 2
-.nf
-$ tibet config path\.lib_version_latest
-
-http://www\.technicalpursuit\.com/tibet/latest\.js
 .fi
 .RE
 .SH TIBET SHELL
