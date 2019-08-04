@@ -98,10 +98,11 @@ Cmd.initialize = function(cmdType) {
 
     //  Parse options for compression-related tasks in helpers.
     options = {
-        boolean: ['brotli', 'zip'],
+        boolean: ['brotli', 'zip', 'list'],
         default: {
             brotli: false,
-            zip: true
+            zip: true,
+            list: true
         }
     };
     Cmd.setcfg('make.compression.parse_options', options);
@@ -546,7 +547,7 @@ Cmd.setcfg = function(property, value) {
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--timeout <ms>]';
+Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--private] [--timeout <ms>]';
 
 //  ---
 //  Module Mappings
@@ -672,6 +673,11 @@ Cmd.prototype.execute = function() {
     if (CLI.notValid(targets)) {
         // Errors are reported by the getTargets call, just exit.
         process.exit(1);
+    }
+
+    if (this.options.list) {
+        return this.executeList(Cmd.getTargetNames(
+            this.getArgument('private')));
     }
 
     // When 'tibet make' is invoked directly the value at options[0] is 'make'.
