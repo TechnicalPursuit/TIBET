@@ -53,7 +53,7 @@
     font-family: "Lucida Sans", "Lucida Grande", "Verdana", "Arial", sans-serif;
     font-size: 10px;
 
-    content: attr(sherpa|outliner-tagname);
+    content: attr(sherpa_outliner-tagname);
 
     min-width: 2em;
     min-height: 1em;
