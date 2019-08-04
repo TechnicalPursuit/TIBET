@@ -3,8 +3,10 @@
 \fBtibet-reflect\fR \- reflects on TIBET objects and methods
 .SH SYNOPSIS
 .P
-tibet reflect [target] [\-\-interface <interface>]
-    [\-\-filter <filter>] [\-\-types] [\-\-methods] [\-\-owners] [\-\-slots]
+tibet reflect [target] [\-\-interface <interface>] [\-\-filter <filter>]
+    [\-\-context=[\|'app'|'lib'|'all']] [\-\-types] [\-\-methods] [\-\-attributes]
+    [\-\-owners] [\-\-slots] [\-\-known] [\-\-hidden] [\-\-unique] [\-\-inherited]
+    [\-\-local] [\-\-introduced] [\-\-overridden]
 .SH DESCRIPTION
 .P
 Runs the TSH :reflect command to show object or system reflection data\.
@@ -20,12 +22,15 @@ method, or publicly registed object such as window or a TIBET URI\.
 For objects which support it the \-\-interface option lets you restrict
 the results to a specific interface of the object\. The values here must
 be found in the TP\.SLOT_FILTERS object as used by TP\.interface()\. Some
-interesting options are \fBknown\fP, \fBpublic\fP, and \fBunique\fP\|\.
+interesting options are \fBknown\fP, \fBpublic\fP, and \fBunique\fP which have their own
+flags to help you set your intention clearly\.
 .P
 Note that not all flags will work for every target object type\. Namespace
 objects don't support \-\-owners for example\. When a flag is ignored it is
 not typically reported since working combinations are so target\-dependant\.
-The best thing to do is experiment a little and see what reflect finds\.
+The best thing to do is experiment a little and see what reflect finds\. The
+\fBgetInterface\fP call in TIBET is ultimately the routine being invoked so see the
+documentation on that method for more\.
 .P
 The \-\-filter option allows you to refine your result data by checking the
 keys returned against either a regular expression or string\. The filter value
@@ -38,12 +43,18 @@ syntax is possible to the extent your shell will allow it\. For example, using
 \fBtarget\fP :
 An optional target, usually a type name, to check\.
 .IP \(bu 2
+\fB\-\-attributes\fP :
+Signify that the search should work against attributes\. This can list all
+attributes (or a subset by combining with \fB\-\-filter\fP) or just the attributes of
+a particular target\.
+.IP \(bu 2
 \fB\-\-filter\fP :
 An optional regular expression, expressed in /foo/ig form\. This filter will
 be applied to fully\-qualified method names\.
 .IP \(bu 2
 \fB\-\-interface\fP :
-An interface value from the \fBTP\.SLOT_FILTERS\fP list in TIBET\.
+An interface value from the \fBTP\.SLOT_FILTERS\fP list in TIBET\. Note that not
+all combinations make sense\. Experiment to get familiar with these\.
 .IP \(bu 2
 \fB\-\-methods\fP :
 Signify that the search should work against methods\. This can list all
@@ -253,7 +264,9 @@ TIBET loaded in 3779 ms\. Starting execution\.
 .RE
 .SH TIBET SHELL
 .P
-This command has no client\-side TSH peer command\.
+This command marshals arguments which it then passes to the client\-side
+\fB:reflect\fP command\. That command invokes TIBET's getInterface mechanisms to
+reflect on the various aspects of the system you've requested\.
 .SH TROUBLESHOOTING
 .SH SEE ALSO
 .RS 0

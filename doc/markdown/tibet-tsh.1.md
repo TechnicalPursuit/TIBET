@@ -14,7 +14,7 @@ needed to ensure that it can be captured as a single string to pass to
 the TIBET Shell. For example: `tibet tsh ':echo "Hello World!"'.`
 You can also use the `--script` argument to provide the TSH script.
 
-`<headless_args>` refers to the various flags and paramters you can
+`<headless_args>` refers to the various flags and parameters you can
 provide to Headless Chrome.
 
 ## OPTIONS
@@ -32,7 +32,21 @@ the script.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `project.start_page`:
+    The file path to use for the initial page to pass to headless Chrome.
+
+  * `puppeteer.chromium_args`:
+    Array of default puppeteer command line arguments. Includes flags to allow
+local file access and more flexible security during operation.
+
+  * `puppeteer.devtools`:
+    Should puppeteer be run with devtools open? Default is false.
+
+  * `puppeteer.headless`:
+    Should puppeteer be run in headless mode? Default is true.
+
+  * `puppeteer.slowMo`:
+    Should puppeteer be run in slowMo mode? Default is false.
 
 ## ENVIRONMENT VARIABLES
 
@@ -81,10 +95,9 @@ tool. As it turns out, this is exactly what the `tibet test` command does. The
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+This command invokes the client-side TIBET Shell to run a TSH script/command.
 
 ## TROUBLESHOOTING
 
 
 ## SEE ALSO
-

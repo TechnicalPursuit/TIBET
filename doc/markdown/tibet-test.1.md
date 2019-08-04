@@ -3,7 +3,9 @@
 
 ## SYNOPSIS
 
-tibet test [<target>] [--suite <filter>] [--cases <filter>] [--karma] [--context <app|lib|all>]
+tibet test [<target>] [--suite <filter>] [--cases <filter>] [--karma]
+    [--inherit] [--subtypes] [--ignore-only] [--ignore-skip] [--tap]
+    [--context <app|lib|all>] [--profile <profilename>]
 
 ## DESCRIPTION
 
@@ -14,17 +16,27 @@ testing module and `karma` have been installed in your project. If so the
 command delegates to `karma start` to run your tests.
 
 If `karma` isn't installed or the `--karma` flag is false (the default)
-tests will run in the context of headless chrome if found.
+tests will run in the context of headless Chrome.
 
 In both cases (karma or headless) you can specify a particular test target
 object or test suite to run as the first argument to the command. If you need to
 specify both a target and suite use `--target` and `--suite` respectively.
 
+You can use a wide variety of targets to scope your tests. For example, `APP`,
+`APP.hello`, and `hello:`  will all resolve and test your entire APP-rooted set
+of tests, the application's `hello`-rooted tests, or the `hello`-namespace.
+Essentially any "root" object path works like a wildcard specification for all
+tests rooted at that object.
+
 You can limit testing to a particular case or set of cases by using the
 `--cases` parameter. Both `--suite` and `--cases` accept either a string or a
 regular expression in JavaScript syntax such as `--cases /foo/i`.
 
-For headless testing output is to the terminal in colorized TAP format by
+Ultimately this command marshals a call to the TIBET client which uses
+reflection and other metadata to determine the specific tests to run. Those
+tests are then invoked and the output is passed back to the CLI.
+
+For headless testing output to the terminal is in colorized TAP format by
 default. Future versions will support additional test output formatters.
 
 ## OPTIONS
@@ -42,13 +54,28 @@ type. This lets you quickly test a type by simply specifying it as a `target`.
 which scans only application-level resources, ignoring any potential library
 resources. Other values are `lib` and `all`.
 
-  * `--karma` :
+  * `--ignore-only`:
+    If a test has the 'only' flag set ignore it, run all the tests found.
+
+  * `--ignore-skip`:
+    If a test has the 'skip' flag set ignore it and run the test anyway.
+
+  * `--inherit`:
+    Include tests from the target object's inheritance chain in the tests.
+
+* `--karma` :
     Turns on/off the search for a `karma` binary and `karma.conf.js` file. Using
 `--no-karma` will force TIBET's basic headless test execution. The
 default value is false.
 
+  * `--subtypes`:
+    Include subtypes of a target type when selecting test suites.
+
   * `--suite` :
     A specific suite name or a /pattern/ to match to filter suite names.
+
+  * `--tap`:
+    Turn on/off TAP output format.
 
 ## CONFIGURATION SETTINGS
 

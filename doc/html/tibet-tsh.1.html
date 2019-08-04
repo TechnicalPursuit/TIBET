@@ -28,7 +28,7 @@
 needed to ensure that it can be captured as a single string to pass to
 the TIBET Shell. For example: <code>tibet tsh &#39;:echo &quot;Hello World!&quot;&#39;.</code>
 You can also use the <code>--script</code> argument to provide the TSH script.</p>
-<p><code>&lt;headless_args&gt;</code> refers to the various flags and paramters you can
+<p><code>&lt;headless_args&gt;</code> refers to the various flags and parameters you can
 provide to Headless Chrome.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
@@ -45,7 +45,24 @@ An optional argument used to define the <code>command</code>.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<p>No TIBET configuration variables are utilized by this command.</p>
+<ul>
+<li><p><code>project.start_page</code>:
+The file path to use for the initial page to pass to headless Chrome.</p>
+</li>
+<li><p><code>puppeteer.chromium_args</code>:
+Array of default puppeteer command line arguments. Includes flags to allow
+local file access and more flexible security during operation.</p>
+</li>
+<li><p><code>puppeteer.devtools</code>:
+Should puppeteer be run with devtools open? Default is false.</p>
+</li>
+<li><p><code>puppeteer.headless</code>:
+Should puppeteer be run in headless mode? Default is true.</p>
+</li>
+<li><p><code>puppeteer.slowMo</code>:
+Should puppeteer be run in slowMo mode? Default is false.</p>
+</li>
+</ul>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
@@ -84,7 +101,7 @@ ok - Is a templated tag.
 
 Finished in 4209 ms w/TSH exec time of 104 ms.
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
-<p>This command has no client-side TSH peer command.</p>
+<p>This command invokes the client-side TIBET Shell to run a TSH script/command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 

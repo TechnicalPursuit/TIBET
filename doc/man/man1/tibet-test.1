@@ -3,7 +3,9 @@
 \fBtibet-test\fR \- runs unit/functional tests on your application
 .SH SYNOPSIS
 .P
-tibet test [<target>] [\-\-suite <filter>] [\-\-cases <filter>] [\-\-karma] [\-\-context <app|lib|all>]
+tibet test [<target>] [\-\-suite <filter>] [\-\-cases <filter>] [\-\-karma]
+    [\-\-inherit] [\-\-subtypes] [\-\-ignore\-only] [\-\-ignore\-skip] [\-\-tap]
+    [\-\-context <app|lib|all>] [\-\-profile <profilename>]
 .SH DESCRIPTION
 .P
 Runs unit, functional, and/or integration tests on your application\.
@@ -13,17 +15,27 @@ testing module and \fBkarma\fP have been installed in your project\. If so the
 command delegates to \fBkarma start\fP to run your tests\.
 .P
 If \fBkarma\fP isn't installed or the \fB\-\-karma\fP flag is false (the default)
-tests will run in the context of headless chrome if found\.
+tests will run in the context of headless Chrome\.
 .P
 In both cases (karma or headless) you can specify a particular test target
 object or test suite to run as the first argument to the command\. If you need to
 specify both a target and suite use \fB\-\-target\fP and \fB\-\-suite\fP respectively\.
 .P
+You can use a wide variety of targets to scope your tests\. For example, \fBAPP\fP,
+\fBAPP\.hello\fP, and \fBhello:\fP  will all resolve and test your entire APP\-rooted set
+of tests, the application's \fBhello\fP\-rooted tests, or the \fBhello\fP\-namespace\.
+Essentially any "root" object path works like a wildcard specification for all
+tests rooted at that object\.
+.P
 You can limit testing to a particular case or set of cases by using the
 \fB\-\-cases\fP parameter\. Both \fB\-\-suite\fP and \fB\-\-cases\fP accept either a string or a
 regular expression in JavaScript syntax such as \fB\-\-cases /foo/i\fP\|\.
 .P
-For headless testing output is to the terminal in colorized TAP format by
+Ultimately this command marshals a call to the TIBET client which uses
+reflection and other metadata to determine the specific tests to run\. Those
+tests are then invoked and the output is passed back to the CLI\.
+.P
+For headless testing output to the terminal is in colorized TAP format by
 default\. Future versions will support additional test output formatters\.
 .SH OPTIONS
 .RS 0
@@ -41,13 +53,34 @@ Sets the context of the scan which is run\. The default is \fBapp\fP
 which scans only application\-level resources, ignoring any potential library
 resources\. Other values are \fBlib\fP and \fBall\fP\|\.
 .IP \(bu 2
+\fB\-\-ignore\-only\fP:
+If a test has the 'only' flag set ignore it, run all the tests found\.
+.IP \(bu 2
+\fB\-\-ignore\-skip\fP:
+If a test has the 'skip' flag set ignore it and run the test anyway\.
+.IP \(bu 2
+\fB\-\-inherit\fP:
+Include tests from the target object's inheritance chain in the tests\.
+
+.RE
+.RS 0
+.IP \(bu 2
 \fB\-\-karma\fP :
-Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\. Using
+  Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\. Using
 \fB\-\-no\-karma\fP will force TIBET's basic headless test execution\. The
 default value is false\.
+.RS 0
+.IP \(bu 2
+\fB\-\-subtypes\fP:
+Include subtypes of a target type when selecting test suites\.
 .IP \(bu 2
 \fB\-\-suite\fP :
 A specific suite name or a /pattern/ to match to filter suite names\.
+.IP \(bu 2
+\fB\-\-tap\fP:
+Turn on/off TAP output format\.
+
+.RE
 
 .RE
 .SH CONFIGURATION SETTINGS

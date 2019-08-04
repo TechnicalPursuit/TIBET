@@ -21,17 +21,37 @@
 
 <h1 id="tibet-open-1-open-a-file-using-the-os-open-command">tibet-open(1) -- open a file using the OS open command</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet open [&lt;args&gt;]</p>
+<p>tibet open &lt;vpath[:file[:char]]&gt; [--editor &lt;cmd&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
+<p>Attempts to open the specified file on the operating system using the editor
+provided, or the editor specified by <code>cli.open.editor</code>.</p>
+<p>This command is typically invoked from the Sherpa when running on the local
+machine. It allows the Sherpa to open a file under development in <code>vi</code> or
+<code>VisualStudio Code</code> for example.</p>
 <h2 id="options">OPTIONS</h2>
-<p>No command options or flags are checked by this command.</p>
+<ul>
+<li><p><code>vpath[:file[:char]]</code>:
+An editor-specific file path, line, character specification. This argument
+is run through TIBET&#39;s expandPath operation to expand any virtual path portions.</p>
+</li>
+<li><p><code>editor</code>:
+The command name of the editor to try to launch on the local machine.</p>
+</li>
+</ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<p>No TIBET configuration variables are utilized by this command.</p>
+<ul>
+<li><code>cli.open.editor</code>:
+The default editor command to try to launch.</li>
+</ul>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
 <h2 id="tibet-shell">TIBET SHELL</h2>
-<p>This command has no client-side TSH peer command.</p>
+<p>This command is invoked by the client-side TSH <code>:open</code> command.</p>
+<p>The client-side <code>:open</code> command is a simple argument marshalling operation which
+creates the proper arguments for a TDS route call and then passes it to the TDS
+via a secure &quot;only if running on the same host&quot; and &quot;only if running in
+development&quot; route (which is never loaded outside of development).</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 

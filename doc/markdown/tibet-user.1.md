@@ -3,24 +3,32 @@
 
 ## SYNOPSIS
 
-tibet user <username> <password>
+tibet user <username> <password> [--env <env>]
+    [--role <role|roles>] [--org <org|orgs>] [--unit unit]
 
 ## DESCRIPTION
 
-Manages and/or displays current TIBET user configuration data.
+!!! NOTE: this command and the file(s) it manages are NOT SECURE and should
+never be used in production. This command is provided for convenience to let you
+simulate users, roles, orgs, and units during development only. !!!
 
-The TIBET Data Server (TDS) uses a simple default authentication model
-which relies on usernames and hashed passwords stored in the users.json
-file loaded by the server when it starts. While this is clearly not a
-production-capable approach it does allow you to experiment with logins.
+Manages and/or displays current TIBET user configuration data in the form of a
+user file and one or more associated vcards, one per username.
 
-This command lets you list, add, or update user data stored in users.json
-such that the resulting data will work properly with default authenticate
-logic from the TDS plugin catalog.
+This command lets you add, or update user data stored in `~user_file` (usually
+`users.json`) such that the resulting data will work properly with default
+lightweight authentication logic from the TDS.
 
-NOTE that if you use this command to set values it will rewrite users.json
-by using the beautify npm module to process the stringified JSON content.
-As a result your file may not retain its appearance after updates.
+When you add a new user that user will have a vcard generated for them and
+stored in `~app_dat/{username}_vcard.xml`. If you specify an existing user that
+user's vcard is updated with any new data provided.
+
+A user's vcard is sent to the client by the TDS in response to requests when
+that user logs in, providing the client with role, org, and unit data.
+
+NOTE that if you use this command to set values it will rewrite the user file by
+using the beautify npm module to process the stringified JSON content. As a
+result your file may not retain its appearance after updates.
 
 ## OPTIONS
 
@@ -33,6 +41,18 @@ As a result your file may not retain its appearance after updates.
 
   * `--pass` :
     Flag to use to set a password for a particular user.
+
+  * `--role` :
+    One or more role names, separated by commas. The resulting set of roles is
+injected into the user's associated vcard.
+
+  * `--org` :
+    One or more org names, separated by commas. The resulting set of orgs is
+injected into the user's associated vcard.
+
+  * `--unit` :
+    A unit name. If you're using a unit you should supply only a single org.
+
 
 ## CONFIGURATION SETTINGS
 

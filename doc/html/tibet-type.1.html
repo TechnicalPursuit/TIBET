@@ -48,10 +48,10 @@ specified as a fully-qualified {root}.{namespace}.{typename} triplet.</p>
 The name of the dna (essentially a directory reference) to clone and process
 to produce the new type. The default is <code>default</code>. Other options are <code>content</code>
 for <code>TP.core.Content</code> subtypes, <code>controller</code> for <code>TP.core.Controller</code> subtypes,
-<code>ComputedTag</code> for <code>TP.tag.ComputedTag</code> and <code>templatedtag</code> for
+<code>computedtag</code> for <code>TP.tag.ComputedTag</code> and <code>templatedtag</code> for
 <code>TP.tag.TemplatedTag</code> subtypes. (As you can see the dna name is often simply
-the name of a type to use as the supertype, but each does in fact refer to a
-unique dna directory.</p>
+the lowercased name of a type to use as the supertype, but each does in fact
+refer to a unique dna directory.</p>
 </li>
 <li><p><code>--config</code> :
 Used as the name of the config package in the cfg package file that the
@@ -73,7 +73,10 @@ the TIBET library is <code>~lib_src/</code>.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
-<p>No TIBET configuration variables are utilized by this command.</p>
+<ul>
+<li><code>npm.name</code>:
+The &#39;appname&#39; as represented by the name of the project.</li>
+</ul>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>

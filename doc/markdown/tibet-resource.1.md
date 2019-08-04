@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet resource [--build] [--list] [<package-opts>]
+tibet resource [--build] [--list] [--raw] [--type] [<package-opts>]
 
 ## DESCRIPTION
 
@@ -13,6 +13,15 @@ The `tibet resource` command is used to build JavaScript-based versions of
 various resources such as templates, style sheets, JSON data files, etc. The
 resulting files can be rolled up into build packages, significantly
 reducing the number of HTTP calls necessary to load application resources.
+
+You don't typically need to run this command yourself, the various `build` and
+`rollup`-related `tibet make` tasks in your project invoke this command
+indirectly and manage most resource-related work for you.
+
+One aspect of this command to be aware of is that the client-side code can only
+compute what it believes to be the proper resource paths when no specific paths
+are found. These computed paths are checked by the server-side CLI command for
+existence and filtered from the final list if the computed filename isn't found.
 
 In addition to building loadable versions of resources this command will
 maintain the `resources` `<config/>` in your application's package file. By
@@ -28,6 +37,11 @@ package with any missing resource entries.
   * `--list` :
     List but don't build the resources. This is the default flag.
 
+  * `--raw`:
+    Don't filter out the raw output from the client list. This will include
+references to files which may not exist since no checks are done and some
+client-side information is based on computed names from convention.
+
   * `[package-opts]` :
     Refers to valid options for a TIBET Package object. These include --package,
 --config, --phase, --assets, etc. The package@config defaults to
@@ -37,7 +51,20 @@ information.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `path`:
+    This command reads the entire set of virtual path settings to help it
+determine where it should look for existence of files.
+
+  * `package.name`:
+    The package name is read to help with determining the name of the default
+package file to load.
+
+  * `boot.config`:
+    The boot.config is read to determine which package configuration is being
+processed.
+
+  * `boot.package`:
+    The boot.package is read to determine which package is being processed.
 
 ## ENVIRONMENT VARIABLES
 
@@ -113,7 +140,10 @@ package configurations to adjust loading as you require.
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+This server-side CLI command builds a command line for execution by the
+client-side `:resource` command. That command relies on reflection and other
+metadata to determine all run-time resources which are appropriate for the
+targeted type or build operation.
 
 ## TROUBLESHOOTING
 

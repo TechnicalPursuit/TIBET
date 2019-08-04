@@ -18,7 +18,7 @@ data (aka 'headers') to assist TIBET by providing file load metadata.
 
 You can minify output via the `--minify` flag, and turn off headers via
 `--no-headers` should you choose. Normally these flags are managed by one
-or more `makefile.js` targets used to build library or app-level bundles.
+or more `tibet make` targets used to build library or app-level bundles.
 
 Note that in its current form TIBET does not play well with minifiers which
 rename functions. TIBET makes extensive use of dynamic method invocations which
@@ -32,17 +32,14 @@ Future extensions to this command will support TIBET-specific obfuscations.
 source file(s) used in the rollup. This information is necessary for certain
 TIBET reflection operations at runtime.
 
-  * `--minify` :
+ * `--minify` :
     Signifies that the rollup output should pass through the minification
 process. Note that overly agressive obfuscation will cause TIBET code to fail.
 Future additions to TIBET will support more agressive minification.
 
   * `[package-opts]` :
-    Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package@config defaults to
-`~app_cfg/main.xml` and its default config (usually @base) so your typical
-configuration is built. See help on the `tibet package` command for more
-information.
+    Refers to valid options for a TIBET Package object. See help from the `tibet
+package` command for the full list of options here.
 
 ## CONFIGURATION SETTINGS
 

@@ -38,10 +38,10 @@ specified as a fully-qualified {root}.{namespace}.{typename} triplet.
     The name of the dna (essentially a directory reference) to clone and process
 to produce the new type. The default is `default`. Other options are `content`
 for `TP.core.Content` subtypes, `controller` for `TP.core.Controller` subtypes,
-`ComputedTag` for `TP.tag.ComputedTag` and `templatedtag` for
+`computedtag` for `TP.tag.ComputedTag` and `templatedtag` for
 `TP.tag.TemplatedTag` subtypes. (As you can see the dna name is often simply
-the name of a type to use as the supertype, but each does in fact refer to a
-unique dna directory.
+the lowercased name of a type to use as the supertype, but each does in fact
+refer to a unique dna directory.
 
   * `--config` :
     Used as the name of the config package in the cfg package file that the
@@ -63,7 +63,8 @@ the TIBET library is `~lib_src/{{type_nsname}}`.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+  * `npm.name`:
+    The 'appname' as represented by the name of the project.
 
 ## ENVIRONMENT VARIABLES
 

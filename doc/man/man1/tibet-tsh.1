@@ -13,7 +13,7 @@ needed to ensure that it can be captured as a single string to pass to
 the TIBET Shell\. For example: \fBtibet tsh ':echo "Hello World!"'\.\fP
 You can also use the \fB\-\-script\fP argument to provide the TSH script\.
 .P
-\fB<headless_args>\fP refers to the various flags and paramters you can
+\fB<headless_args>\fP refers to the various flags and parameters you can
 provide to Headless Chrome\.
 .SH OPTIONS
 .RS 0
@@ -31,8 +31,25 @@ An optional argument used to define the \fBcommand\fP\|\.
 
 .RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBproject\.start_page\fP:
+The file path to use for the initial page to pass to headless Chrome\.
+.IP \(bu 2
+\fBpuppeteer\.chromium_args\fP:
+Array of default puppeteer command line arguments\. Includes flags to allow
+local file access and more flexible security during operation\.
+.IP \(bu 2
+\fBpuppeteer\.devtools\fP:
+Should puppeteer be run with devtools open? Default is false\.
+.IP \(bu 2
+\fBpuppeteer\.headless\fP:
+Should puppeteer be run in headless mode? Default is true\.
+.IP \(bu 2
+\fBpuppeteer\.slowMo\fP:
+Should puppeteer be run in slowMo mode? Default is false\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.
@@ -84,7 +101,7 @@ Finished in 4209 ms w/TSH exec time of 104 ms\.
 .RE
 .SH TIBET SHELL
 .P
-This command has no client\-side TSH peer command\.
+This command invokes the client\-side TIBET Shell to run a TSH script/command\.
 .SH TROUBLESHOOTING
 .SH SEE ALSO
 

@@ -3,8 +3,10 @@
 
 ## SYNOPSIS
 
-tibet reflect [target] [--interface <interface>]
-    [--filter <filter>] [--types] [--methods] [--owners] [--slots]
+tibet reflect [target] [--interface <interface>] [--filter <filter>]
+    [--context=['app'|'lib'|'all']] [--types] [--methods] [--attributes]
+    [--owners] [--slots] [--known] [--hidden] [--unique] [--inherited]
+    [--local] [--introduced] [--overridden]
 
 ## DESCRIPTION
 
@@ -21,12 +23,15 @@ method, or publicly registed object such as window or a TIBET URI.
 For objects which support it the --interface option lets you restrict
 the results to a specific interface of the object. The values here must
 be found in the TP.SLOT\_FILTERS object as used by TP.interface(). Some
-interesting options are `known`, `public`, and `unique`.
+interesting options are `known`, `public`, and `unique` which have their own
+flags to help you set your intention clearly.
 
 Note that not all flags will work for every target object type. Namespace
 objects don't support --owners for example. When a flag is ignored it is
 not typically reported since working combinations are so target-dependant.
-The best thing to do is experiment a little and see what reflect finds.
+The best thing to do is experiment a little and see what reflect finds. The
+`getInterface` call in TIBET is ultimately the routine being invoked so see the
+documentation on that method for more.
 
 The --filter option allows you to refine your result data by checking the
 keys returned against either a regular expression or string. The filter value
@@ -39,12 +44,18 @@ syntax is possible to the extent your shell will allow it. For example, using
   * `target` :
     An optional target, usually a type name, to check.
 
+  * `--attributes` :
+    Signify that the search should work against attributes. This can list all
+attributes (or a subset by combining with `--filter`) or just the attributes of
+a particular target.
+
   * `--filter` :
     An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.
 
   * `--interface` :
-    An interface value from the `TP.SLOT_FILTERS` list in TIBET.
+    An interface value from the `TP.SLOT_FILTERS` list in TIBET. Note that not
+all combinations make sense. Experiment to get familiar with these.
 
   * `--methods` :
     Signify that the search should work against methods. This can list all
@@ -233,7 +244,9 @@ No process environment variables are required by this command.
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+This command marshals arguments which it then passes to the client-side
+`:reflect` command. That command invokes TIBET's getInterface mechanisms to
+reflect on the various aspects of the system you've requested.
 
 ## TROUBLESHOOTING
 

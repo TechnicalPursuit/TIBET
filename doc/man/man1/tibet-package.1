@@ -14,35 +14,86 @@ Outputs a list of package assets either as asset nodes or asset paths\.
 .P
 This command is a useful way to view the files TIBET will load or process
 via commands such as \fBtibet rollup\fP or \fBtibet lint\fP\|\. The best way to get a sense
-of this command is to run it with various options, of which there are many:
+of this command is to run it with various options, of which there are many\.
 .P
-\-\-profile    a profile in the form of package@config\.
-\-\-package    the file path to the package to process\.
-\-\-config     the name of an individual config to process\.
-\-\-phase      boot phase subset to process <all | one | two | app | lib>\|\.
-\-\-all        process all the config tags in the package\.
+You generally don't need to run this command yourself, most operations around
+packaging, rollups, minification, etc\. are managed by the various \fBtibet make\fP
+targets which support \fBbuild\fP operations in various forms\. See the files in your
+project's \fB~app_cmd/make\fP directory for specifics\.
 .P
-\-\-add        list of resources to add to the package\.
-\-\-remove     list of resources to remove from the package\.
-\-\-unresolved output a list of unresolved (not found) assets of all types\.
-\-\-unlisted   output a list of potentially overlooked source files\.
-.P
-\-\-include    a space\-separated list of asset tags to include\.
-\-\-exclude    a space\-separated list of asset tags to include\.
-.P
-\-\-nodes      output asset nodes rather than asset paths\.
-.P
-\-\-images     include all image assets\.
-\-\-templates  include all template assets\.
-\-\-resources  include all style, template, and resource assets\.
-\-\-scripts    include all JavaScript source\-containing assets\.
-\-\-styles     include all CSS containing assets\.
-.P
-\-\-inlined    include boot\.resourced resources (inlined URI content)
+The underlying machinery of the \fBpackage\fP command is shared by a number of other
+TIBET commands, all of which leverage TIBET's application package/config files\.
+This includes the \fBrollup\fP, \fBresources\fP, and \fBlint\fP commands as well as any
+command line which launches TIBET headlessly to leverage reflection\.
 .SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBprofile\fP:
+A profile in the form of package@config\.
+.IP \(bu 2
+\fBpackage\fP:
+The file path to the package to process\.
+.IP \(bu 2
+\fBconfig\fP:
+The name of an individual config to process\.
+.IP \(bu 2
+\fBphase\fP:
+Boot phase subset to process <all | one | two | app | lib>\|\.
+.IP \(bu 2
+\fBall\fP:
+Process all the config tags in the package\.
+.IP \(bu 2
+\fBadd\fP:
+List of resources to add to the package\.
+.IP \(bu 2
+\fBremove\fP:
+List of resources to remove from the package\.
+.IP \(bu 2
+\fBunresolved\fP:
+Output a list of unresolved (not found) assets of all types\.
+.IP \(bu 2
+\fBunlisted\fP:
+Output a list of potentially overlooked source files\.
+.IP \(bu 2
+\fBinclude\fP:
+A space\-separated list of asset tags to include\.
+.IP \(bu 2
+\fBexclude\fP:
+A space\-separated list of asset tags to include\.
+.IP \(bu 2
+\fBnodes\fP:
+Output asset nodes rather than asset paths\.
+.IP \(bu 2
+\fBimages\fP:
+Include all image assets\.
+.IP \(bu 2
+\fBtemplates\fP:
+Include all template assets\.
+.IP \(bu 2
+\fBresources\fP:
+Include all style, template, and resource assets\.
+.IP \(bu 2
+\fBscripts\fP:
+Include all JavaScript source\-containing assets\.
+.IP \(bu 2
+\fBstyles\fP:
+Include all CSS containing assets\.
+.IP \(bu 2
+\fBinlined\fP:
+Include boot\.resourced resources (inlined URI content)
+
+.RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBboot\.package\fP:
+Read if there is no profile or other package info provided\.
+.IP \(bu 2
+\fBtds\.pouch\.prefix\fP:
+Read to determine what directory (if any) should be ignored so we avoid
+trying to package anything from PouchDB\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.

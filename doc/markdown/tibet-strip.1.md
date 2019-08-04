@@ -7,6 +7,7 @@ tibet strip [<args>]
 
 ## DESCRIPTION
 
+This command is experimental and should not be used at the present time.
 
 ## OPTIONS
 

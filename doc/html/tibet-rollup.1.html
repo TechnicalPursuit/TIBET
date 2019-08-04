@@ -31,7 +31,7 @@ By default the output is not minified but it does it contain filename
 data (aka &#39;headers&#39;) to assist TIBET by providing file load metadata.</p>
 <p>You can minify output via the <code>--minify</code> flag, and turn off headers via
 <code>--no-headers</code> should you choose. Normally these flags are managed by one
-or more <code>makefile.js</code> targets used to build library or app-level bundles.</p>
+or more <code>tibet make</code> targets used to build library or app-level bundles.</p>
 <p>Note that in its current form TIBET does not play well with minifiers which
 rename functions. TIBET makes extensive use of dynamic method invocations which
 preclude using generic obfuscators, at least in their more agressive forms.
@@ -42,18 +42,16 @@ Future extensions to this command will support TIBET-specific obfuscations.</p>
 Tells the rollup process to include &#39;header&#39; information which points to the
 source file(s) used in the rollup. This information is necessary for certain
 TIBET reflection operations at runtime.</p>
-</li>
-<li><p><code>--minify</code> :
+<ul>
+<li><code>--minify</code> :
 Signifies that the rollup output should pass through the minification
 process. Note that overly agressive obfuscation will cause TIBET code to fail.
-Future additions to TIBET will support more agressive minification.</p>
+Future additions to TIBET will support more agressive minification.</li>
+</ul>
 </li>
 <li><p><code>[package-opts]</code> :
-Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package@config defaults to
-<code>~app_cfg/main.xml</code> and its default config (usually @base) so your typical
-configuration is built. See help on the <code>tibet package</code> command for more
-information.</p>
+Refers to valid options for a TIBET Package object. See help from the <code>tibet
+package</code> command for the full list of options here.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>

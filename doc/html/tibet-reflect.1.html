@@ -21,8 +21,10 @@
 
 <h1 id="tibet-reflect-1-reflects-on-tibet-objects-and-methods">tibet-reflect(1) -- reflects on TIBET objects and methods</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet reflect [target] [--interface &lt;interface&gt;]
-    [--filter &lt;filter&gt;] [--types] [--methods] [--owners] [--slots]</p>
+<p>tibet reflect [target] [--interface &lt;interface&gt;] [--filter &lt;filter&gt;]
+    [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]] [--types] [--methods] [--attributes]
+    [--owners] [--slots] [--known] [--hidden] [--unique] [--inherited]
+    [--local] [--introduced] [--overridden]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH :reflect command to show object or system reflection data.</p>
 <p>You can list all of TIBET&#39;s types via <code>tibet reflect --types</code> or list all
@@ -34,11 +36,14 @@ method, or publicly registed object such as window or a TIBET URI.</p>
 <p>For objects which support it the --interface option lets you restrict
 the results to a specific interface of the object. The values here must
 be found in the TP.SLOT_FILTERS object as used by TP.interface(). Some
-interesting options are <code>known</code>, <code>public</code>, and <code>unique</code>.</p>
+interesting options are <code>known</code>, <code>public</code>, and <code>unique</code> which have their own
+flags to help you set your intention clearly.</p>
 <p>Note that not all flags will work for every target object type. Namespace
 objects don&#39;t support --owners for example. When a flag is ignored it is
 not typically reported since working combinations are so target-dependant.
-The best thing to do is experiment a little and see what reflect finds.</p>
+The best thing to do is experiment a little and see what reflect finds. The
+<code>getInterface</code> call in TIBET is ultimately the routine being invoked so see the
+documentation on that method for more.</p>
 <p>The --filter option allows you to refine your result data by checking the
 keys returned against either a regular expression or string. The filter value
 is always used as a RegExp if one can be created from the string. Full RegExp
@@ -49,12 +54,18 @@ syntax is possible to the extent your shell will allow it. For example, using
 <li><p><code>target</code> :
 An optional target, usually a type name, to check.</p>
 </li>
+<li><p><code>--attributes</code> :
+Signify that the search should work against attributes. This can list all
+attributes (or a subset by combining with <code>--filter</code>) or just the attributes of
+a particular target.</p>
+</li>
 <li><p><code>--filter</code> :
 An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.</p>
 </li>
 <li><p><code>--interface</code> :
-An interface value from the <code>TP.SLOT_FILTERS</code> list in TIBET.</p>
+An interface value from the <code>TP.SLOT_FILTERS</code> list in TIBET. Note that not
+all combinations make sense. Experiment to get familiar with these.</p>
 </li>
 <li><p><code>--methods</code> :
 Signify that the search should work against methods. This can list all
@@ -221,7 +232,9 @@ TIBET loaded in 3779 ms. Starting execution.
 
 &quot;2016-07-02T04:09:25.148Z&quot;
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
-<p>This command has no client-side TSH peer command.</p>
+<p>This command marshals arguments which it then passes to the client-side
+<code>:reflect</code> command. That command invokes TIBET&#39;s getInterface mechanisms to
+reflect on the various aspects of the system you&#39;ve requested.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>

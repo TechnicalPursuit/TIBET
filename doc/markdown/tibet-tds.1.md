@@ -40,11 +40,11 @@ server should start on.
 
 ## CONFIGURATION SETTINGS
 
-No TIBET configuration variables are utilized by this command.
+    See `tibet start` for specific variables checked by the `server.js` file.
 
 ## ENVIRONMENT VARIABLES
 
-No process environment variables are required by this command.
+    See `tibet start` for specific variables checked by the `server.js` file.
 
 ## EXAMPLES
 
