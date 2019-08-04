@@ -6,7 +6,11 @@
 tibet freeze [\-\-tibet <bundle>] [\-\-minify] [\-\-all] [\-\-raw] [\-\-zipped]
 .SH DESCRIPTION
 .P
-Freezes the current application's TIBET library in \fB~app_inf\fP\|\.
+NOTE: this command will be removed in a future release once splitting
+of the TIBET npm package into \fBtibet\-cli\fP and \fBtibet\fP is complete\.
+.P
+Freezes the current application's TIBET library in \fB~app_inf\fP by copying the
+current TIBET library code to \fB~app_inf/tibet\fP rather than using a link\.
 .P
 By default \fB~app_inf\fP refers to \fBTIBET\-INF\fP, the default location for
 package data, custom commands, etc\. TIBET is configured to allow
@@ -29,24 +33,24 @@ Takes a bundle name minus any \fBtibet_\fP prefix For example, \fB\-\-tibet full
 will freeze the \fBtibet_full\fP bundle\. This flag defaults to the value \fBbase\fP so
 \fBtibet_base\fP is frozen\.
 .IP \(bu 2
+\fB\-\-all\fP :
+Overrides any filtering of bundle content and preserves all bundles of TIBET
+source found in the \fB~lib_build\fP directory\.
+.IP \(bu 2
 \fB\-\-minify\fP :
 Controls whether you freeze minified source code and is used in conjunction
 with the \fB\-\-tibet\fP flag to filter bundles\. The default value is true, so only
 minified code is frozen by default\.
 .IP \(bu 2
-\fB\-\-zipped\fP :
-Controls whether zipped copies are preserved or pruned\. This flag works
-after any minify processing so if you set both minify and zipped you will retain
-\fB\|\.min\.js\.gz\fP files\.
-.IP \(bu 2
-\fB\-\-all\fP :
-Overrides any filtering of bundle content and preserves all bundles of TIBET
-source found in the \fB~lib_build\fP directory\.
-.IP \(bu 2
 \fB\-\-raw\fP :
 Causes the current TIBET source tree to be copied into the target directory\.
 This option supports dynamic development with TIBET source code but does have a
 performance impact\.
+.IP \(bu 2
+\fB\-\-zipped\fP :
+Controls whether zipped copies are preserved or pruned\. This flag works
+after any minify processing so if you set both minify and zipped you will retain
+\fB\|\.min\.js\.gz\fP files\.
 
 .RE
 .SH CONFIGURATION SETTINGS

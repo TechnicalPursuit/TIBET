@@ -1,6 +1,6 @@
 .TH "TIBET\-ECHO" "1" "August 2019" "" ""
 .SH "NAME"
-\fBtibet-echo\fR \- echo command line arguments to stdout
+\fBtibet-echo\fR \- echo command line arguments
 .SH SYNOPSIS
 .P
 tibet echo [<args>]
@@ -38,7 +38,11 @@ Options:
 .RE
 .SH TIBET SHELL
 .P
-This command has no client\-side TSH peer command\.
+There is a client\-side TSH command \fB:echo\fP which mirrors the core
+functionality of this command in that it can be used to view how
+command line arguments and flags are being parsed\.
+.P
+The client\-side \fB:echo\fP command is not invoked by this command\.
 .SH TROUBLESHOOTING
 .SH SEE ALSO
 

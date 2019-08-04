@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-echo-1-echo-command-line-arguments-to-stdout">tibet-echo(1) -- echo command line arguments to stdout</h1>
+<h1 id="tibet-echo-1-echo-command-line-arguments">tibet-echo(1) -- echo command line arguments</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>tibet echo [&lt;args&gt;]</p>
 <h2 id="description">DESCRIPTION</h2>
@@ -46,7 +46,10 @@ Options:
     &quot;param&quot;: &quot;foo&quot;
 }
 </code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
-<p>This command has no client-side TSH peer command.</p>
+<p>There is a client-side TSH command <code>:echo</code> which mirrors the core
+functionality of this command in that it can be used to view how
+command line arguments and flags are being parsed.</p>
+<p>The client-side <code>:echo</code> command is not invoked by this command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 

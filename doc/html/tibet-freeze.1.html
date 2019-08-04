@@ -23,7 +23,10 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--raw] [--zipped]</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Freezes the current application&#39;s TIBET library in <code>~app_inf</code>.</p>
+<p>NOTE: this command will be removed in a future release once splitting
+of the TIBET npm package into <code>tibet-cli</code> and <code>tibet</code> is complete.</p>
+<p>Freezes the current application&#39;s TIBET library in <code>~app_inf</code> by copying the
+current TIBET library code to <code>~app_inf/tibet</code> rather than using a link.</p>
 <p>By default <code>~app_inf</code> refers to <code>TIBET-INF</code>, the default location for
 package data, custom commands, etc. TIBET is configured to allow
 a version of TIBET to be frozen into <code>TIBET-INF/tibet</code> rather than
@@ -42,24 +45,24 @@ Takes a bundle name minus any <code>tibet_</code> prefix For example, <code>--ti
 will freeze the <code>tibet_full</code> bundle. This flag defaults to the value <code>base</code> so
 <code>tibet_base</code> is frozen.</p>
 </li>
+<li><p><code>--all</code> :
+Overrides any filtering of bundle content and preserves all bundles of TIBET
+source found in the <code>~lib_build</code> directory.</p>
+</li>
 <li><p><code>--minify</code> :
 Controls whether you freeze minified source code and is used in conjunction
 with the <code>--tibet</code> flag to filter bundles. The default value is true, so only
 minified code is frozen by default.</p>
 </li>
-<li><p><code>--zipped</code> :
-Controls whether zipped copies are preserved or pruned. This flag works
-after any minify processing so if you set both minify and zipped you will retain
-<code>.min.js.gz</code> files.</p>
-</li>
-<li><p><code>--all</code> :
-Overrides any filtering of bundle content and preserves all bundles of TIBET
-source found in the <code>~lib_build</code> directory.</p>
-</li>
 <li><p><code>--raw</code> :
 Causes the current TIBET source tree to be copied into the target directory.
 This option supports dynamic development with TIBET source code but does have a
 performance impact.</p>
+</li>
+<li><p><code>--zipped</code> :
+Controls whether zipped copies are preserved or pruned. This flag works
+after any minify processing so if you set both minify and zipped you will retain
+<code>.min.js.gz</code> files.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
