@@ -47,7 +47,14 @@ function(moveAction) {
      * @returns {TP.dom.UIElementNode} The receiver.
      */
 
-    return this.getFirstChildElement().focus(moveAction);
+    var firstChildTPElement;
+
+    firstChildTPElement = this.getFirstChildElement();
+    if (TP.canInvoke(firstChildTPElement, 'focus')) {
+        return firstChildTPElement.focus();
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
