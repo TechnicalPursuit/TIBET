@@ -6208,6 +6208,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 //  unextracted value of the data value to it.
                 if (!hasTransformFunc && shouldExtractVal) {
                     exprVal = TP.val(exprVal);
+                } else if (/tibet:\/\/uicanvas/.test(expr)) {
+                    exprVal = TP.val(exprVal);
                 }
 
             } else if (TP.isValid(customGetterName) &&
