@@ -1703,7 +1703,7 @@
             ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
             ['Tag Store', 'TP.sherpa.TWSRootInspectorSource'],
             ['Summit', 'TP.sherpa.TWSRootInspectorSource'],
-            ['Support', 'TP.sherpa.TWSRootInspectorSource']
+            ['Support', 'TP.sherpa.SupportRootInspectorSource']
         ]);
 
     //  REST entries for the REST inspector
