@@ -34,7 +34,7 @@ sherpa|bindingConnectionAssistant > .body {
     top: 0;
     right: 0;
     left: 0;
-    bottom: 6em;
+    bottom: 7em;
 
     text-align: left;
 }
@@ -240,7 +240,7 @@ sherpa|bindingConnectionAssistant > .foot {
     right: 0;
     width: 100%;
 
-    height: 6em;
+    height: 7em;
 }
 
 sherpa|bindingConnectionAssistant > .foot #generatedAttr {
