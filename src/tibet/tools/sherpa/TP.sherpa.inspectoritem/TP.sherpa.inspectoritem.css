@@ -87,6 +87,14 @@ sherpa|inspectoritem > div > textarea {
 sherpa|inspectoritem[childtype="html:div"] {
 }
 
+sherpa|inspectoritem[childtype="html:iframe"] > iframe {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
 sherpa|inspectoritem[class~="doublewide"] {
 
     /* CSS custom property */
