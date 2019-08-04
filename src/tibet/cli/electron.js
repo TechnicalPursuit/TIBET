@@ -63,8 +63,7 @@ Cmd.NAME = 'electron';
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     CLI.blend({
-        boolean: ['debugger', 'devtools', 'empty', 'v', 'version', 'a', 'abi'],
-        string: ['inspect', 'inspect-brk']
+        boolean: ['debugger', 'devtools', 'empty']
     }, TDS.PARSE_OPTIONS),       //  we use the TDS's list here so
     Cmd.Parent.prototype.PARSE_OPTIONS);    //  we create a 'copy' first.
 
@@ -72,7 +71,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet electron [<path>|--empty] [--debugger] [--devtools] [<electron options>]';
+Cmd.prototype.USAGE = 'tibet electron [<path>|--empty] [--devtools] [--debugger] [<electron options>]';
 
 
 //  ---
@@ -114,37 +113,18 @@ Cmd.prototype.execute = function() {
     //  start electron process...
     //  ---
 
-    args = ['electron'];
+    args = this.getArgv();
 
-    //  push on any debugger-related arguments
-    if (this.options.inspect) {
-        args.push('--inspect', this.options.inspect || 5858);
-    } else if (this.options['inspect-brk'] || this.options.debugger) {
-        args.push('--inspect-brk', this.options['inspect-brk'] || 5858);
-    }
-
-    //  NOTE: we pass this flag but it's not a strict electron flag, we read it
-    //  in our electron.js to toggle whether the openDevTools call is made.
-    if (this.options.devtools) {
-        args.push('--devtools');
-    }
-
-    //  Push any additional electron command line options...
-    if (this.options.a || this.options.abi) {
-        args.push('--abi');
-    }
-
-    if (this.options.v || this.options.version) {
-        args.push('--version');
+    //  If our TIBET-style debugger flag is set push on inspection arguments.
+    if (this.options.debugger) {
+        args.push('--inspect-brk');
     }
 
     //  make sure there's at least a '.' on the command line for what to
     //  launch or electron won't actually try to load a file.
     if (!this.options.empty) {
-        if (!this.options.arg0) {
+        if (!this.options._[1]) {
             args.push('.');
-        } else {
-            args.push(this.options.arg0);
         }
     }
 
