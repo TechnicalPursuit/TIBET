@@ -1440,17 +1440,6 @@ function(aSignal) {
             didBlur = true;
         }
 
-        /*
-        if (currentTargetTPElem.haloCanBlur(halo)) {
-
-            halo.blur();
-
-            if (newTargetTPElem.haloCanFocus(halo)) {
-                halo.focusOn(newTargetTPElem);
-            }
-        }
-        */
-
         if (didBlur && newTargetTPElem.haloCanFocus(halo)) {
             //  Focus the halo on our new element, passing true to actually
             //  show the halo if it's hidden.
