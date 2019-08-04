@@ -1006,6 +1006,13 @@ function(aSignal) {
                         sigIndexes);
             } else {
 
+                //  Otherwise, the signal's origin was not a URI, so it must've
+                //  been another GUI control within the page. Because we don't
+                //  have 'changed data paths' to go by, we update all 'direct
+                //  GUI' bindings.
+
+                //  Gather up all of the bound attributes.
+
                 boundAttrNodes = TP.ac();
 
                 //  Loop over all of the elements that were found.
@@ -1030,11 +1037,6 @@ function(aSignal) {
                         }
                     }
                 }
-
-                //  Otherwise, the signal's origin was not a URI, so it must've
-                //  been another GUI control within the page. Because we don't
-                //  have 'changed data paths' to go by, we update all 'direct
-                //  GUI' bindings.
 
                 //  Sort the attribute nodes so that 'bind:in' attributes come
                 //  first. This is important when an element has both 'bind:in'
