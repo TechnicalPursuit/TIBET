@@ -921,12 +921,12 @@ function(aSignal) {
         return tagName;
     };
 
-    //  Add a 'sherpa-outliner-tagname' attribute on the target and all of its
+    //  Add a 'sherpa:outliner-tagname' attribute on the target and all of its
     //  descendants. This is used by a CSS rule to display the tagname labels
     //  for each element in the outline.
 
     TP.elementSetAttribute(targetElement,
-                            'sherpa-outliner-tagname',
+                            'sherpa:outliner-tagname',
                             labelStr(targetElement),
                             true);
 
@@ -945,7 +945,7 @@ function(aSignal) {
 
             TP.elementSetAttribute(
                             anElement,
-                            'sherpa-outliner-tagname',
+                            'sherpa:outliner-tagname',
                             labelStr(anElement),
                             true);
 
@@ -1026,12 +1026,12 @@ function(aSignal) {
         return tagName;
     };
 
-    //  Add a 'sherpa-outliner-tagname' attribute on the target and all of its
+    //  Add a 'sherpa:outliner-tagname' attribute on the target and all of its
     //  descendants. This is used by a CSS rule to display the tagname labels
     //  for each element in the outline.
 
     TP.elementSetAttribute(targetElement,
-                            'sherpa-outliner-tagname',
+                            'sherpa:outliner-tagname',
                             labelStr(targetElement),
                             true);
 
@@ -1050,7 +1050,7 @@ function(aSignal) {
 
             TP.elementSetAttribute(
                             anElement,
-                            'sherpa-outliner-tagname',
+                            'sherpa:outliner-tagname',
                             labelStr(anElement),
                             true);
 
@@ -1547,12 +1547,12 @@ function() {
         return tagName;
     };
 
-    //  Add a 'sherpa-outliner-tagname' attribute on the target and all of its
+    //  Add a 'sherpa:outliner-tagname' attribute on the target and all of its
     //  descendants. This is used by a CSS rule to display the tagname labels
     //  for each element in the outline.
 
     TP.elementSetAttribute(targetElement,
-                            'sherpa-outliner-tagname',
+                            'sherpa:outliner-tagname',
                             labelStr(targetElement),
                             true);
 
@@ -1571,7 +1571,7 @@ function() {
 
             TP.elementSetAttribute(
                             anElement,
-                            'sherpa-outliner-tagname',
+                            'sherpa:outliner-tagname',
                             labelStr(anElement),
                             true);
 
@@ -1744,15 +1744,15 @@ function() {
     //  No longer need this attribute - no more DND here.
     TP.elementRemoveAttribute(targetElement, 'dnd:accept');
 
-    //  Remove the 'sherpa-outliner-tagname' attribute on the target and all of
+    //  Remove the 'sherpa:outliner-tagname' attribute on the target and all of
     //  its descendants. This is used by a CSS rule to display the tagname
     //  labels for each element in the outline.
-    TP.elementRemoveAttribute(targetElement, 'sherpa-outliner-tagname', true);
+    TP.elementRemoveAttribute(targetElement, 'sherpa:outliner-tagname', true);
     TP.nodeDescendantElementsPerform(
                     targetElement,
                     function(anElement) {
                         TP.elementRemoveAttribute(
-                            anElement, 'sherpa-outliner-tagname', true);
+                            anElement, 'sherpa:outliner-tagname', true);
                         TP.elementRemoveAttribute(
                             anElement, 'sherpa:outliner-depth', true);
 
