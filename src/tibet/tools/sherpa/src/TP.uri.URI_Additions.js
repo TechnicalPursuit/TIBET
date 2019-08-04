@@ -54,6 +54,10 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in the
     //  inspector.
     loc = this.getLocation();
+    if (/^(http|https)/.test(loc) && TP.uriNeedsPrivileges(loc)) {
+        return false;
+    }
+
     tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 loc);
 
@@ -107,13 +111,19 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
-                                                                loc);
+    if (loc.indexOf(TP.sys.getLaunchRoot()) === TP.NOT_FOUND) {
+        options.atPut(TP.ATTR + '_childtype', 'html:iframe');
+        options.atPut(TP.ATTR + '_class', 'doublewide');
+    } else {
 
-    //  If not, then possibly reset the content type to be that for a Sherpa
-    //  urieditor.
-    if (!tabHasValue) {
-        options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
+        tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
+                                                                    loc);
+
+        //  If not, then possibly reset the content type to be that for a Sherpa
+        //  urieditor.
+        if (!tabHasValue) {
+            options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
+        }
     }
 
     return options;
@@ -155,6 +165,10 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
+    if (/^(http|https)/.test(loc) && TP.uriNeedsPrivileges(loc)) {
+        return TP.xhtmlnode('<iframe src="' + loc + '"/>');
+    }
+
     tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 loc);
 
@@ -354,6 +368,10 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
+    if (/^(http|https)/.test(loc) && TP.uriNeedsPrivileges(loc)) {
+        return null;
+    }
+
     tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 loc);
 
