@@ -3163,7 +3163,7 @@ function() {
                     context = sourceTPElem;
                 }
 
-                return TP.byCSSPath('html|input', context, false, false);
+                return TP.byCSSPath('html|body *', context, false, false);
             },
         'signalsource',
             function(sourceTPElem) {
