@@ -862,7 +862,7 @@ function(aSignal) {
         haloTargetTPElem.addClass('sherpa-outliner-haloed');
 
         this.set('$haloTargetDepth',
-            haloTargetTPElem.getAttribute('sherpa-outliner-depth').asNumber());
+            haloTargetTPElem.getAttribute('sherpa:outliner-depth').asNumber());
 
         displayVal = haloTargetTPElem.getComputedStyleProperty('display');
         if (displayVal === 'inline') {
@@ -955,7 +955,7 @@ function(aSignal) {
             depth = TP.nodeGetDocumentPosition(anElement).split('.').getSize();
             TP.elementSetAttribute(
                             anElement,
-                            'sherpa-outliner-depth',
+                            'sherpa:outliner-depth',
                             depth,
                             true);
 
@@ -1060,7 +1060,7 @@ function(aSignal) {
             depth = TP.nodeGetDocumentPosition(anElement).split('.').getSize();
             TP.elementSetAttribute(
                             anElement,
-                            'sherpa-outliner-depth',
+                            'sherpa:outliner-depth',
                             depth,
                             true);
 
@@ -1581,7 +1581,7 @@ function() {
             depth = TP.nodeGetDocumentPosition(anElement).split('.').getSize();
             TP.elementSetAttribute(
                             anElement,
-                            'sherpa-outliner-depth',
+                            'sherpa:outliner-depth',
                             depth,
                             true);
 
@@ -1682,7 +1682,7 @@ function() {
         haloTargetTPElem.addClass('sherpa-outliner-haloed');
 
         this.set('$haloTargetDepth',
-            haloTargetTPElem.getAttribute('sherpa-outliner-depth').asNumber());
+            haloTargetTPElem.getAttribute('sherpa:outliner-depth').asNumber());
 
         displayVal = haloTargetTPElem.getComputedStyleProperty('display');
         if (displayVal === 'inline') {
@@ -1754,7 +1754,7 @@ function() {
                         TP.elementRemoveAttribute(
                             anElement, 'sherpa-outliner-tagname', true);
                         TP.elementRemoveAttribute(
-                            anElement, 'sherpa-outliner-depth', true);
+                            anElement, 'sherpa:outliner-depth', true);
 
                         //  If the element has a class where it has been set to
                         //  overflow: visible, remove that class and pop
