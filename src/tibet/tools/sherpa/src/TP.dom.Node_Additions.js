@@ -1485,7 +1485,7 @@ function() {
     elem = this.getNativeNode();
 
     //  If we're a multiplied element, just return ourself.
-    if (TP.elementHasAttribute(elem, 'sherpa-multiplied')) {
+    if (TP.elementHasAttribute(elem, 'sherpa:multiplied')) {
         return this;
     }
 
@@ -1502,7 +1502,7 @@ function() {
     TP.nodeAncestorsPerform(
         elem,
         function(ancestor) {
-            if (TP.elementHasAttribute(ancestor, 'sherpa-multiplied')) {
+            if (TP.elementHasAttribute(ancestor, 'sherpa:multiplied')) {
                 multiplierGrid = ancestor;
                 return TP.BREAK;
             }

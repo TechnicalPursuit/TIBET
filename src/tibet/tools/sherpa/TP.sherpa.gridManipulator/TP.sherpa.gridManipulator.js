@@ -114,7 +114,7 @@ function(aTargetTPElem) {
                                                 'div',
                                                 TP.w3.Xmlns.XHTML);
 
-        TP.elementSetAttribute(gridElem, 'sherpa-multiplied', 'true', true);
+        TP.elementSetAttribute(gridElem, 'sherpa:multiplied', 'true', true);
         gridTPElement = TP.wrap(gridElem);
 
         this.$set('$multiplierNumRows', 1, false);
