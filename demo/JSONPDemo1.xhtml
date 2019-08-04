@@ -4,7 +4,7 @@
 
 <head>
 
-	<title></title>
+    <title></title>
 
     <script src="../lib/src/tibet_hook.min.js"></script>
 
@@ -16,20 +16,20 @@
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>Search Results Retrieved from Google AJAX APIs</h2><br/>
-	<br/>
+    <h2>Search Results Retrieved from Google AJAX APIs</h2><br/>
+    <br/>
 
     <input id="searchTerm" autofocus="true" tabindex="1"/>
     <button on:click="{signal: UIActivate, origin:'googleEndpoint'}" tabindex="2">Query it!</button>
 
-	<br/>
+    <br/>
     <br/>
 
     Fetch status code: <span bind:in="{value: tibet://uicanvas#googleEndpoint@statuscode}"/>
-	<br/>
+    <br/>
     Fetch status text: <span bind:in="{value: tibet://uicanvas#googleEndpoint@statustext}"/>
 
-	<br/>
+    <br/>
     <br/>
 
     <!-- Set up a 'bind:scope' that points to the URN holding the query results.
@@ -67,12 +67,12 @@
         </table>
     </span>
 
-	<br/>
+    <br/>
     <br/>
 
     Raw JSON data:
 
-	<br/>
+    <br/>
     <br/>
 
     <code>[[urn:tibet:queryResults#tibet($_) .% JSONSource]]</code>

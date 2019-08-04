@@ -4,7 +4,7 @@
 
 <head>
 
-	<title></title>
+    <title></title>
 
     <script src="../lib/src/tibet_hook.min.js"></script>
 
@@ -16,21 +16,21 @@
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>PouchDB Show All Databases</h2><br/>
-	<br/>
+    <h2>PouchDB Show All Databases</h2><br/>
+    <br/>
 
     <!-- Send a 'UIActivate' signal to the element with ID 'dbProvider'. Because
          this is a <tibet:service/> tag, this will cause it to refresh. -->
     <button on:click="{signal: UIActivate, origin: 'dbProvider'}">Refresh it!</button>
 
-	<br/>
+    <br/>
     <br/>
 
     Fetch status code: <span bind:in="{value: tibet://uicanvas#dbProvider@statuscode}"/>
-	<br/>
+    <br/>
     Fetch status text: <span bind:in="{value: tibet://uicanvas#dbProvider@statustext}"/>
 
-	<br/>
+    <br/>
     <br/>
 
     <div>Databases:</div>
