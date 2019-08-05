@@ -65,18 +65,22 @@ If you are missing TIBET's node/npm <a href="#prereqs">prerequisites</a> install
 
 #### Installing TIBET via `npm`
 
-TIBET should be installed globally using `npm install -g`:<br/>
+TIBET is currently installed globally using `npm install -g`:<br/>
 
 ```bash
 npm install -g tibet
 ```
 
-And TIBET's developer dependencies:
+To complete the installation run the following command to install
+npm devDependencies in the global TIBET installation package:
 
 ```bash
 $(npm root -g)/tibet/bin/tibet_develop_init.bash
 ```
 
+<i>Note that the above operation may be simplified in an upcoming release so you
+only install the TIBET CLI globally and install the TIBET library locally in
+each project.</i>
 
 Initial installation process can take several minutes depending on the speed of
 your network connection and the particular version being installed. Be patient
@@ -352,10 +356,7 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
 components are **fully-supported on MacOS and common Linux variants**.
 
-TIBET's command line and server components are **being ported to Windows**. In
-the meantime we recommend using Docker or similar container technology if you
-are a Windows-based developer. Pre-built Docker images are available now. See
-above.
+For Windows we recommend using Docker or similar container technology. Pre-built Docker images are available now. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com/contact.xhtml">Contact us</a> if you require native Windows server or CLI components.
 
 
 ###### TIBET Client / Sherpa
@@ -363,10 +364,11 @@ above.
 | Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
 |:---------|:----------------------|:--------------------|:-------------|
 | Google Chrome | Yes | Yes | Yes |
-| Mozilla Firefox | Yes | Yes | Coming Soon |
-| Apple Safari | Yes | Yes | Coming Soon |
+| Mozilla Firefox | Yes | Yes | No |
+| Apple Safari | Yes | Yes | No |
 | Electron | Yes | Coming Soon | Coming Soon |
-| Microsoft Edge | Future | Future | Future |
+| Microsoft Edge (Chromium) | Coming Soon | Coming Soon | Coming Soon |
+| Microsoft Edge (EdgeHTML) | No | No | No |
 | Microsoft IE | No | No | No |
 
 
