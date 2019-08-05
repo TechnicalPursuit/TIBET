@@ -113,7 +113,6 @@
     },
     "scripts": {
         "preinstall": "npm install -g bower --allow-root",
-        "postinstall": "[ \"$NODE_ENV\" != production ] && echo \"To install development dependencies, execute: $(npm root -g)/tibet/bin/tibet_develop_init.bash\"",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
