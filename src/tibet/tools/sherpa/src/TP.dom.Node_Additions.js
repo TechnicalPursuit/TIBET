@@ -1695,36 +1695,6 @@ function(options) {
 });
 
 //  ========================================================================
-
-TP.tag.CustomTag.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',
-function(mutatedVisualNode, operation, currentAddressPosition,
-followingAddresses, allAddresses) {
-
-    /**
-     * @method sherpaGetNodeForVisualDOMChange
-     * @summary Returns the node that should be modified when the Sherpa
-     *     modifies the visual DOM that was rendered from this content. This
-     *     allows the original source DOM node more control over modifications
-     *     that the Sherpa is making
-     * @param {Node} mutatedVisualNode The visual node being mutated.
-     * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
-     *     TP.DELETE that is currently causing the mutation.
-     * @param {String} currentAddressPosition The dot-separated document address
-     *     of the node being modified.
-     * @param {String[]} followingAddresses The Array of dot-separated document
-     *     addresses of all of the nodes being modified following the current
-     *     node being modified
-     * @param {String[]} allAddresses The Array of dot-separated document
-     *     addresses of all of the nodes being modified.
-     * @returns {Node|TP.CONTINUE} The node that should be the target for
-     *     modifications or TP.CONTINUE if this node and it's descendants should
-     *     be skipped for modification.
-     */
-
-    return TP.CONTINUE;
-});
-
-//  ========================================================================
 //  TP.tag.TemplatedTag Additions
 //  ========================================================================
 
