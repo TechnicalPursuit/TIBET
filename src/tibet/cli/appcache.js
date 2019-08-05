@@ -585,17 +585,12 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     this.log('checking application cache status...');
 
-    startpage = CLI.getcfg('project.start_page');
+    startpage = CLI.getcfg('project.start_page', '~app/index.html');
+    file = CLI.expandPath(startpage);
 
-    file = CLI.expandPath('~/views/index.handlebars');
     if (!sh.test('-e', file)) {
-
-        //  Static projects such as ghpages may not be vending via TDS.
-        file = CLI.expandPath(startpage);
-        if (!sh.test('-e', file)) {
-            this.error('Cannot find ' + startpage);
-            return -1;
-        }
+        this.error('Cannot find ' + startpage);
+        return -1;
     }
 
     text = sh.cat(file);
