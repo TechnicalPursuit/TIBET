@@ -10,6 +10,10 @@ tibet appcache [--file <cachefile>] [--enable|--disable|--status]
 
 Manages a project's HTML5 application manifest file for offline caching.
 
+!!! NOTE: the older appcache approach supported by this command is being removed
+from the browser platform(s) over the coming years. This command will be updated
+to support the newer manifest approach in an upcoming release. !!!
+
 TIBET projects include a manifest file named `{npm.name}.appcache` which is
 managed by this command. Specific comment blocks in TIBET versions of the
 manifest file help delimit the content of the file for easier processing.
