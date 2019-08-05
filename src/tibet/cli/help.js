@@ -22,16 +22,12 @@ var CLI,
     opener,
     path,
     sh,
-    hb,
-    nodecli,
     Cmd;
 
 CLI = require('./_cli');
 opener = require('opener');
 path = require('path');
 sh = require('shelljs');
-hb = require('handlebars');
-nodecli = require('shelljs-nodecli');
 
 //  ---
 //  Type Construction

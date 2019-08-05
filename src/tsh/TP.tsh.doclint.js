@@ -965,7 +965,7 @@ function(aRequest) {
                             totalErrors += errors.length;
 
                             results.push(
-                                (tap ? '# ' : '' ) + name + ' (' + errors.length +
+                                (tap ? '# ' : '') + name + ' (' + errors.length +
                                 ') -> [' + errors.join(', ') + ']');
                         });
             });
