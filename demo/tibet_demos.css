@@ -82,7 +82,6 @@ tr {
 td {
 
     background-color: white;
-    background: gradient-linear(top, #fbfbfb, #fafafa);
 }
 
 td:first-child {
