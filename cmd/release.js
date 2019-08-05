@@ -232,6 +232,8 @@ Cmd.prototype.getSuffix = function(suffix) {
 
     // All other suffixes must conform to semver rules.
     if (/^([a-zA-Z0-9])+$/.test(suffix)) {
+        this.warn('Using non-standard TIBET suffix \'' + suffix + '\'...');
+        this.warn('Perhaps one of these? ' + this.SUFFIXES.join(', '));
         return suffix;
     }
 
@@ -300,7 +302,7 @@ Cmd.prototype.phaseOne = function() {
     result = this.shexec(cmd);
     cmd = 'git rev-parse @{u}';
     result2 = this.shexec(cmd);
-    if (result.output !== result2.output && !this.options.local) {
+    if (result.output !== result2.output && !this.options.local && !this.options.dirty) {
         throw new Error('Cannot release from out-of-date local branch.');
     }
 
