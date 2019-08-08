@@ -548,7 +548,8 @@ function() {
      *     React component that are not represented as element attributes. These
      *     will be added to the element's attributes and then supplied to React
      *     when the element is created.
-     * @returns {TP.lang.Hash} A hash containing values that should be
+     * @returns {TP.lang.Hash} A hash containing values that will be supplied to
+     *     the React component upon instantiation.
      */
 
     return TP.hc();
