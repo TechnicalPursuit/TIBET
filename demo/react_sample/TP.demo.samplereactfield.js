@@ -33,7 +33,7 @@ TP.demo.samplereactfield.defineAttribute('themeURI', TP.NO_RESULT);
 //  ------------------------------------------------------------------------
 
 TP.demo.samplereactfield.Type.defineMethod('getComponentScriptLocations',
-function(aRequest) {
+function() {
 
     /**
      * @method getComponentScriptLocations

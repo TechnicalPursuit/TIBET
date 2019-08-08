@@ -33,7 +33,7 @@ TP.demo.reactlikebutton.defineAttribute('themeURI', TP.NO_RESULT);
 //  ------------------------------------------------------------------------
 
 TP.demo.reactlikebutton.Type.defineMethod('getComponentScriptLocations',
-function(aRequest) {
+function() {
 
     /**
      * @method getComponentScriptLocations
