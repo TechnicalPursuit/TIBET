@@ -42,10 +42,20 @@
 
 # Installation
 
-#### To Install TIBET via Docker <a href="#dockerinstall">see the Docker instructions</a>.
 
+###### Microsoft Windows developers should install and run TIBET via Docker.
 
-#### Check TIBET's <a href="#prereqs">prerequisites</a> first.
+###### See <a href="#dockerinstall">Installing via Docker</a> to install one of our <a href="https://hub.docker.com/r/technicalpursuit/tibet">pre-built Docker images</a>.
+
+###### To install a Git fork of TIBET see the <a href="#gitinstall">TIBET Git Installation</a> instructions.
+
+<br/>
+
+#### Installing TIBET via `npm`:
+
+###### Check TIBET's <a href="#prereqs">prerequisites</a> first.
+
+Check TIBET's <a href="#supported">supported platform chart</a> for your target platform(s).
 
 We recommend using `nvm` to install Node.js v8+. You can confirm your nvm, node, and npm versions using:
 
@@ -62,8 +72,6 @@ npm --version
 
 If you are missing TIBET's node/npm <a href="#prereqs">prerequisites</a> install those first.
 
-
-#### Installing TIBET via `npm`
 
 TIBET is currently installed globally using `npm install -g`:<br/>
 
@@ -88,10 +96,6 @@ your network connection and the particular version being installed. Be patient
 
 **Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.**
 
-#### Installing TIBET via `git`
-
-If you prefer to install via `git` see the <a href="#gitinstall">TIBET Git
-Installation</a> instructions.
 
 
 <br/>
@@ -205,12 +209,14 @@ you'll want to perform the step above, or the appropriate step for your
 operating system. See <a
 href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
 
+<br/>
+
 ---
 
 <img alt="Install via Docker" src="./lib/media/docker_logo.jpg" width="162px" height="128px"/>
 
 <a name="dockerinstall" href="#"></a>
-# Installing TIBET via Docker
+# Installing TIBET via Docker:
 
 Running TIBET via Docker is very easy. TIBET Docker container images exist on
 DockerHub and are prebuilt for ease of development.
@@ -273,12 +279,14 @@ the container will be lost!!! Therefore, you need to use Docker to either mount
 a volume or use bind mounts to persist your TIBET project. Follow the
 instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and <a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>
 
+<br/>
+
 ---
 
 <img alt="Install via Git" src="./lib/media/git_logo@2x.png" width="128px" height="128px"/>
 
 <a name="gitinstall" href="#"></a>
-# Installing TIBET via Git
+# Installing TIBET via Git:
 
 If you prefer working from a git repository you can install TIBET via git. This
 approach can take a fair amount of time depending on connection and machine
@@ -347,16 +355,19 @@ dependent modules in addition to TIBET itself.
 
 With TIBET cloned, initialized, linked, and built you're ready to rock.
 
+<br/>
+
 ---
 
-# Supported platforms
+<a name="supported" href="#"></a>
+# Supported Platforms
 
 ###### TIBET CLI / Server
 
 The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
 components are **fully-supported on MacOS and common Linux variants**.
 
-For Windows we recommend using Docker or similar container technology. Pre-built Docker images are available now. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com/contact.xhtml">Contact us</a> if you require native Windows server or CLI components.
+For Microsoft Windows we recommend using Docker or similar container technology. Pre-built <a href="https://hub.docker.com/r/technicalpursuit/tibet">Docker images are available</a>. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com/contact.xhtml">Contact us</a> if you require native Windows server or CLI components.
 
 
 ###### TIBET Client / Sherpa
@@ -371,6 +382,7 @@ For Windows we recommend using Docker or similar container technology. Pre-built
 | Microsoft Edge (EdgeHTML) | No | No | No |
 | Microsoft IE | No | No | No |
 
+<br/>
 
 ---
 
@@ -382,13 +394,15 @@ TIBET is Open Source under the OSI-approved <a
 href="http://opensource.org/licenses/RPL-1.5">Reciprocal Public License
 (RPL)</a>.
 
-You should read the license but, in short, the RPL requires those who deploy
+**You should read the license** but, in short, the RPL requires those who deploy
 applications incorporating RPL'd code to reciprocate by open sourcing their code.
 
-If you are unable to open source your TIBET-related code you can purchase a
-privacy waiver which allows you to keep your source code private while helping
-fund further TIBET development. Read more about privacy waivers at <a
-href="http://www.technicalpursuit.com/license.xhtml">https://www.technicalpursuit.com/license.xhtml</a>.
+If you are unable to open source your TIBET-related code you have two options:
+
+- You can <a href="http://www.technicalpursuit.com/license.xhtml">purchase a privacy waiver</a> which lets you keep your code private.
+- You can <a href="http://www.technicalpursuit.com/contact.xhtml">contact TPI</a> for commercial, OEM, or reseller licensing options.
+
+<br/>
 
 ---
 
@@ -400,8 +414,9 @@ The best way to communicate an issue, feature request, or code-related
 concern is to use the GitHub-based <a
 href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open">issues list</a> for TIBET.
 
-Additional contact info is provided on the <a href="http://www.technicalpursuit.com/contact.xhtml">contact page</a> at <a
-href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
+For other feedback options see the <a href="http://www.technicalpursuit.com/contact.xhtml">contact page</a> at <a href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
+
+<br/>
 
 ---
 
