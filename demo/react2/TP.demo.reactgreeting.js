@@ -47,14 +47,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.demo.reactgreeting.Inst.defineMethod('getComponentDefinitionLocation',
+TP.demo.reactgreeting.Inst.defineMethod('getComponentCreationLocation',
 function() {
 
     /**
-     * @method getComponentDefinitionLocation
-     * @summary Returns a location that will define the component. The resource
-     *     pointed to by this URL may contain regular JavaScript or JSX.
-     * @returns {String|null} The component definition location.
+     * @method getComponentCreationLocation
+     * @summary Returns a location containing the ReactJS script that will
+     *     create the component. The resource pointed to by this URL may contain
+     *     regular JavaScript or JSX.
+     * @returns {String|null} The component creation location.
      */
 
     return this.qualifyToSourcePath('react_greeting.jsx');

@@ -425,7 +425,7 @@ function() {
 
     //  If the receiver has a component definition location, then it's going be
     //  bringing in a file of React definitions, probably in JSX.
-    sourceLoc = this.getComponentDefinitionLocation();
+    sourceLoc = this.getComponentCreationLocation();
     if (TP.notEmpty(sourceLoc)) {
         sourceURI = TP.uc(sourceLoc);
         response = sourceURI.getResource(
@@ -602,14 +602,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Inst.defineMethod('getComponentDefinitionLocation',
+TP.dom.ReactElement.Inst.defineMethod('getComponentCreationLocation',
 function() {
 
     /**
-     * @method getComponentDefinitionLocation
-     * @summary Returns a location that will define the component. The resource
-     *     pointed to by this URL may contain regular JavaScript or JSX.
-     * @returns {String|null} The component definition location.
+     * @method getComponentCreationLocation
+     * @summary Returns a location containing the ReactJS script that will
+     *     create the component. The resource pointed to by this URL may contain
+     *     regular JavaScript or JSX.
+     * @returns {String|null} The component creation location.
      */
 
     var src;
@@ -789,7 +790,7 @@ function() {
 
     this.buildReactComponent();
 
-    sourceLoc = this.getComponentDefinitionLocation();
+    sourceLoc = this.getComponentCreationLocation();
     if (TP.notEmpty(sourceLoc)) {
         sourceURI = TP.uc(sourceLoc);
         this.observe(sourceURI, 'TP.sig.ValueChange');
@@ -1007,7 +1008,7 @@ function() {
     var sourceLoc,
         sourceURI;
 
-    sourceLoc = this.getComponentDefinitionLocation();
+    sourceLoc = this.getComponentCreationLocation();
     if (TP.notEmpty(sourceLoc)) {
         sourceURI = TP.uc(sourceLoc);
         this.ignore(sourceURI, 'TP.sig.ValueChange');
@@ -1044,7 +1045,7 @@ function(anAspect, options) {
     switch (anAspect) {
 
         case 'Structure':
-            sourceLoc = this.getComponentDefinitionLocation();
+            sourceLoc = this.getComponentCreationLocation();
             if (TP.notEmpty(sourceLoc)) {
                 sourceURI = TP.uc(sourceLoc);
                 return sourceURI;
