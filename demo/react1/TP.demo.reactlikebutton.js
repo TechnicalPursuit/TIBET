@@ -32,16 +32,15 @@ TP.demo.reactlikebutton.defineAttribute('themeURI', TP.NO_RESULT);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.demo.reactlikebutton.Type.defineMethod('getComponentScriptLocations',
+TP.demo.reactlikebutton.Type.defineMethod('getComponentDefinitionLocations',
 function() {
 
     /**
-     * @method getComponentScriptLocations
+     * @method getComponentDefinitionLocations
      * @summary Returns an Array of URL locations that contain JavaScript code
-     *     used to implement the React component that the receiver is
-     *     representing.
+     *     used to define the React component that the receiver is representing.
      * @returns {String[]} An Array of script URL locations containing the React
-     *     component code.
+     *     component definition code.
      */
 
     return TP.ac(this.qualifyToSourcePath('like_button.js'));

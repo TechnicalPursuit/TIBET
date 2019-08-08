@@ -105,16 +105,15 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Type.defineMethod('getComponentScriptLocations',
+TP.dom.ReactElement.Type.defineMethod('getComponentDefinitionLocations',
 function(aRequest) {
 
     /**
-     * @method getComponentScriptLocations
+     * @method getComponentDefinitionLocations
      * @summary Returns an Array of URL locations that contain JavaScript code
-     *     used to implement the React component that the receiver is
-     *     representing.
+     *     used to define the React component that the receiver is representing.
      * @returns {String[]} An Array of script URL locations containing the React
-     *     component code.
+     *     component definition code.
      */
 
     return TP.ac();
@@ -231,8 +230,8 @@ function(aRequest) {
 
         doc = TP.doc(elem);
 
-        //  Grab all of the React 'component' script URL locations.
-        componentScripts = this.getComponentScriptLocations();
+        //  Grab all of the React 'component' definition script URL locations.
+        componentScripts = this.getComponentDefinitionLocations();
 
         //  Build an Array starting with the core React & ReactDOM code and then
         //  concatenating all of the component scripts onto it.
@@ -466,8 +465,8 @@ function() {
 
             doc = this.getNativeDocument();
 
-            //  Grab all of the React 'component' script URL locations.
-            componentScripts = this.getType().getComponentScriptLocations();
+            //  Grab all of the React component definition script URL locations.
+            componentScripts = this.getType().getComponentDefinitionLocations();
 
             //  Iterate over all of the script locations, loading them one at a
             //  time via Promises. When everything is complete, then proceed
