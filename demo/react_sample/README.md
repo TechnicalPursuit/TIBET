@@ -31,9 +31,10 @@ the core documentation), has some interesting constructs worth discussing:
 doesn't have either core style or theme style files associated with it. This
 tells TIBET to not bother trying to fetch these files during development.
 
-- It has a type-level method, `getComponentScriptLocations` that returns an
+- It has a type-level method, `getComponentDefinitionLocations` that returns an
 Array of paths to JavaScript files containing React code, 'sample_input.js',
-which located in the source directory that this file is in.
+which is located in the source directory that this file is in. These file
+locations should contain definition code that defines the component.
 
 - It has an instance-level method, `getComponentClassName` that returns a String
 that tells TIBET the name of the React component constructor Function to use to

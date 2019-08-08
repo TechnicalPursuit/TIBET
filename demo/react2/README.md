@@ -34,14 +34,14 @@ tells TIBET to not bother trying to fetch these files during development.
 that tells TIBET the name of the React component constructor Function to use to
 construct the underlying React component.
 
-- It has another instance-level method, `getComponentDefinitionLocation`, that
+- It has another instance-level method, `getComponentCreationLocation`, that
 returns a String that tells TIBET where to find the underlying component
-definition, typically a JSX file. This is different than the component script
-location given at the type level for other types of React components (and
-omitted here because its unnecessary). Those files *describe* the component
+creation code, typically a JSX file. This is different than the component
+definition location given at the type level. Those files *define* the component
 class but leave it up to the machinery to instantiate Element instances of them.
-By supplying a component definition, both the *description* and *instantiation*
-of the element are given in the React Javascript file.
+In this case, both the *definition* and *creation* of the element are given in
+this React Javascript file and so we can omit the type-level definition
+locations.
 
 - It also contains examples of the 3 TIBET methods that show how the ReactJS
 'component lifecycle' methods can be hooked in the TIBET code simply by
