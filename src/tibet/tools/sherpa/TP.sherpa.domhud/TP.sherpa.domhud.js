@@ -363,7 +363,7 @@ function(aTPElement) {
     //  supplied element is last.
     nodes.reverse();
 
-    children = aTPElement.getChildElements();
+    children = aTPElement.sherpaGetChildElements();
 
     //  Filter out children that are generated - TIBET generated them and we
     //  don't want them 'visible' to app authors.

@@ -110,6 +110,40 @@ function(aHUD, droppingTPElem) {
     return false;
 });
 
+//  ========================================================================
+//  TP.dom.CollectionNode Additions
+//  ========================================================================
+
+TP.dom.CollectionNode.Inst.defineMethod('sherpaGetChildNodes',
+function() {
+
+    /**
+     * @method sherpaGetChildNodes
+     * @summary Returns an Array of the receiver's child nodes that should be
+     *    relevant to the Sherpa.
+     * @returns {Node[]} An Array of the receiver's child nodes that are
+     *    relevant to the Sherpa.
+     */
+
+    return this.getChildNodes();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.CollectionNode.Inst.defineMethod('sherpaGetChildElements',
+function() {
+
+    /**
+     * @method sherpaGetChildElements
+     * @summary Returns an Array of the receiver's child elements that should be
+     *    relevant to the Sherpa.
+     * @returns {Element[]} An Array of the receiver's child elements that are
+     *    relevant to the Sherpa.
+     */
+
+    return this.getChildElements();
+});
+
 //  ------------------------------------------------------------------------
 
 TP.dom.Node.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',

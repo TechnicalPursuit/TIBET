@@ -162,23 +162,6 @@ function(aTagTypeName) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tofu.Inst.defineMethod('getChildElements',
-function() {
-
-    /**
-     * @method getChildElements
-     * @summary Returns an Array of the children of the receiver which are
-     *     Element nodes. For this type, this returns the empty Array since tofu
-     *     elements are 'opaque' and don't show their structure.
-     * @returns {Element[]} An Array of the Element children of the supplied
-     *     Node.
-     */
-
-    return TP.ac();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.tofu.Inst.defineHandler('TagAssist',
 function(aSignal) {
 
@@ -212,6 +195,25 @@ function(aSignal) {
                 ));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Sherpa Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tofu.Inst.defineMethod('sherpaGetChildElements',
+function() {
+
+    /**
+     * @method sherpaGetChildElements
+     * @summary Returns an Array of the receiver's child elements that should be
+     *    relevant to the Sherpa. For this type, this returns the empty Array
+     *    since tofu elements are 'opaque' and don't show their structure.
+     * @returns {Element[]} An Array of the receiver's child elements that are
+     *    relevant to the Sherpa.
+     */
+
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
