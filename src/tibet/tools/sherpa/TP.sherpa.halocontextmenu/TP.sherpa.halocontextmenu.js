@@ -73,34 +73,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halocontextmenu.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
-
-    /**
-     * @method setAttrHidden
-     * @summary The setter for the receiver's hidden state.
-     * @param {Boolean} beHidden Whether or not the receiver is in a hidden
-     *     state.
-     * @returns {Boolean} Whether the receiver's state is hidden.
-     */
-
-    var wasHidden;
-
-    wasHidden = TP.bc(this.getAttribute('hidden'));
-
-    if (wasHidden === beHidden) {
-        return this;
-    }
-
-    if (!beHidden) {
-        this.render();
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.halocontextmenu.Inst.defineMethod('render',
 function() {
 

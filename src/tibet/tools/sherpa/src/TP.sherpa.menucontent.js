@@ -183,41 +183,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.menucontent.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
-
-    /**
-     * @method refresh
-     * @summary Updates the receiver's content by refreshing all bound aspects
-     *     in the receiver and all of the descendants of the receiver that are
-     *     bound.
-     * @description This method is overridden from its supertype, since it has
-     *     no internal 'aspects' that can be compared to the bound aspects for
-     *     change, which means it won't re-render by default.
-     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
-     *     re-rendering if the data source changes. If not supplied, this
-     *     parameter will default to true if the bound data changed and false if
-     *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
-     * @returns {Boolean} Whether or not the bound value was different than the
-     *     receiver already had and, therefore, truly changed.
-     */
-
-    this.callNextMethod();
-
-    //  Unless the caller has specifically stated that they don't want a
-    //  re-render, we render here.
-    if (TP.notFalse(shouldRender)) {
-        this.render();
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.menucontent.Inst.defineMethod('render',
 function() {
 
