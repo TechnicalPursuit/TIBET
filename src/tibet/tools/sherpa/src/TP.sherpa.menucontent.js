@@ -79,7 +79,7 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        bodyContentTPElem;
+        scrollingContentTPElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -92,9 +92,9 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    //  Grab the body content and set up scrolling on it.
-    bodyContentTPElem = tpElem.get('bodyContent');
-    tpElem.setupScrollingOn(bodyContentTPElem);
+    //  Grab the scrolling content and set up scrolling on it.
+    scrollingContentTPElem = tpElem.getScrollingContentElement();
+    tpElem.setupScrollingOn(scrollingContentTPElem);
 
     return;
 });
@@ -114,7 +114,7 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        bodyContentTPElem;
+        scrollingContentTPElem;
 
     //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -124,9 +124,9 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    //  Grab the body content and tear down scrolling on it.
-    bodyContentTPElem = tpElem.get('bodyContent');
-    tpElem.teardownScrollingOn(bodyContentTPElem);
+    //  Grab the scrolling content and tear down scrolling on it.
+    scrollingContentTPElem = tpElem.getScrollingContentElement();
+    tpElem.teardownScrollingOn(scrollingContentTPElem);
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -144,6 +144,22 @@ TP.sherpa.menucontent.Inst.defineAttribute('bodyContent',
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.menucontent.Inst.defineMethod('getScrollingContentElement',
+function() {
+
+    /**
+     * @method getScrollingContentElement
+     * @summary Returns the content element that will be scrolling when the menu
+     *     content needs to scroll.
+     * @returns {TP.dom.ElementNode} The element that contains the content that
+     *     will scroll.
+     */
+
+    return this.get('bodyContent');
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.menucontent.Inst.defineHandler('DOMScroll',
@@ -211,16 +227,15 @@ function() {
      * @returns {TP.sherpa.menucontent} The receiver.
      */
 
-    var menuContentTPElem;
-
-    menuContentTPElem = this.get('menuContent');
-
     //  Update the scrolling buttons based whether our *menu* (not body) content
     //  is overflowing.
     //  Note how we do this on the next repaint so that our overflow
     //  calculations are based on our size after layout has taken place.
     (function() {
-        if (menuContentTPElem.isOverflowing(TP.VERTICAL)) {
+        var scrollingContentTPElem;
+
+        scrollingContentTPElem = this.getScrollingContentElement();
+        if (scrollingContentTPElem.isOverflowing(TP.VERTICAL)) {
             this.addClass('overflowing');
             this.updateScrollButtons();
         } else {

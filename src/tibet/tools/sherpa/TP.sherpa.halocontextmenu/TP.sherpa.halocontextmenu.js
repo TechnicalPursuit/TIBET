@@ -30,6 +30,22 @@ TP.sherpa.halocontextmenu.Inst.defineAttribute('menuContent',
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halocontextmenu.Inst.defineMethod('getScrollingContentElement',
+function() {
+
+    /**
+     * @method getScrollingContentElement
+     * @summary Returns the content element that will be scrolling when the menu
+     *     content needs to scroll.
+     * @returns {TP.dom.ElementNode} The element that contains the content that
+     *     will scroll.
+     */
+
+    return this.get('menuContent');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halocontextmenu.Inst.defineHandler('SelectMenuItem',
 function(aSignal) {
 
