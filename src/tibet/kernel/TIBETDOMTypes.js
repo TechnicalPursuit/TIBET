@@ -11674,6 +11674,18 @@ function(anElement, nodesAdded) {
         TP.signal(TP.wrap(root),
                     'TP.sig.AttachComplete',
                     TP.hc('mutatedNodeIDs', mutatedGIDs));
+        //  If root is a collection node (i.e. Element, Document or
+        //  DocumentFragment), then we stamp TP.AWAKENED on all of its
+        //  descendant nodes. The awakening process will have awakened them too.
+        //  That way, if another mutation signal is sent with one of them as a
+        //  root, they will be filtered out of this loop. Note that they will
+        //  still get a 'TP.sig.AttachComplete' signal sent from them below.
+        if (TP.isCollectionNode(root)) {
+            TP.nodeGetDescendants(root).forEach(
+                function(aNode) {
+                    aNode[TP.AWAKENED] = true;
+                });
+        }
 
         //  If the node is an element, then remove any 'tibet:recasting' flag
         //  that might have been put on the element by our redraw machinery.
