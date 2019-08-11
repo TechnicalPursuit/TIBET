@@ -11670,10 +11670,6 @@ function(anElement, nodesAdded) {
 
         processor.processTree(root);
 
-        //  Signal from the root node that attach processing is complete.
-        TP.signal(TP.wrap(root),
-                    'TP.sig.AttachComplete',
-                    TP.hc('mutatedNodeIDs', mutatedGIDs));
         //  If root is a collection node (i.e. Element, Document or
         //  DocumentFragment), then we stamp TP.AWAKENED on all of its
         //  descendant nodes. The awakening process will have awakened them too.
@@ -11692,6 +11688,35 @@ function(anElement, nodesAdded) {
         if (TP.isElement(root)) {
             TP.elementRemoveAttribute(root, 'tibet:recasting', true);
         }
+    }
+
+    //  Now, we iterate again over all of our root nodes and, whether they were
+    //  already awakened as part of their parents awakening and ignoring their
+    //  (or a parent's) 'tibet:no-awaken' attribute, we send a
+    //  'TP.sig.AttachComplete' signal from them and containing all of the
+    //  mutated GIDs that we gathered above.
+    for (i = 0; i < len; i++) {
+        root = rootNodesAdded.at(i);
+
+        //  Check to make sure this isn't a 'generated node'. If so we want to
+        //  exit.
+        if (root[TP.GENERATED]) {
+            continue;
+        }
+
+        //  It seems weird that the root might be detached since it was 'added',
+        //  but the way that mutation observers work (they trigger this code) is
+        //  that the root might have been added and then removed all before the
+        //  'mutation records' are processed. We need to make sure the DOM root
+        //  is still attached.
+        if (TP.nodeIsDetached(root)) {
+            continue;
+        }
+
+        //  Signal from the root node that attach processing is complete.
+        TP.signal(TP.wrap(root),
+                    'TP.sig.AttachComplete',
+                    TP.hc('mutatedNodeIDs', mutatedGIDs));
     }
 
     //  Signal from our target element's document that we attached nodes due to
