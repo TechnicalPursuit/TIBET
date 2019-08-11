@@ -125,7 +125,7 @@ function() {
 
             menuContentTPElem = this.get('menuContent');
             if (TP.isValid(menuContentTPElem)) {
-                this.setupScrollingOn(this.get('menuContent'));
+                this.setupScrollingOn(menuContentTPElem);
             }
         }
     }
