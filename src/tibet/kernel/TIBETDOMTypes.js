@@ -11604,7 +11604,9 @@ function(anElement, nodesAdded) {
         len,
         i,
 
-        root;
+        root,
+
+        beforeProcessingDescendants;
 
     if (!TP.isElement(anElement)) {
         return this.raise('TP.sig.InvalidElement');
@@ -11668,16 +11670,27 @@ function(anElement, nodesAdded) {
             mutatedGIDs.push(TP.gid(root.parentNode, true));
         }
 
-        processor.processTree(root);
-
         //  If root is a collection node (i.e. Element, Document or
         //  DocumentFragment), then we stamp TP.AWAKENED on all of its
         //  descendant nodes. The awakening process will have awakened them too.
         //  That way, if another mutation signal is sent with one of them as a
         //  root, they will be filtered out of this loop. Note that they will
         //  still get a 'TP.sig.AttachComplete' signal sent from them below.
+
+        //  NOTE: We do this *before* processing the DOM tree starting with
+        //  root, in case any descendants are added in that process. We *only*
+        //  want descendants who were there *prior* to the processing to be
+        //  stamped.
         if (TP.isCollectionNode(root)) {
-            TP.nodeGetDescendants(root).forEach(
+            beforeProcessingDescendants = TP.nodeGetDescendants(root);
+        } else {
+            beforeProcessingDescendants = null;
+        }
+
+        processor.processTree(root);
+
+        if (TP.isValid(beforeProcessingDescendants)) {
+            beforeProcessingDescendants.forEach(
                 function(aNode) {
                     aNode[TP.AWAKENED] = true;
                 });
