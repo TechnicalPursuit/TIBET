@@ -20,9 +20,6 @@ TP.sherpa.menucontent.defineSubtype('snippetMenuContent');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetMenuContent.Inst.defineAttribute('bodyContent',
-    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
-
 TP.sherpa.snippetMenuContent.Inst.defineAttribute('menuContent',
     TP.cpc('> .body > ul', TP.hc('shouldCollapse', true)));
 

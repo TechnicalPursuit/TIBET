@@ -23,9 +23,6 @@ TP.sherpa.halocontextmenu.Inst.defineAttribute('title',
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halocontextmenu.Inst.defineAttribute('bodyContent',
-    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
-
 TP.sherpa.halocontextmenu.Inst.defineAttribute('menuContent',
     TP.cpc('> .body > *', TP.hc('shouldCollapse', true)));
 
