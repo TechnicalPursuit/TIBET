@@ -130,9 +130,6 @@ function() {
         }
     }
 
-    //  Signal to observers that this control has rendered.
-    this.signal('TP.sig.DidRender');
-
     if (TP.isValid(haloTarget)) {
 
         //  If we have valid menu content, scroll it to the top.
