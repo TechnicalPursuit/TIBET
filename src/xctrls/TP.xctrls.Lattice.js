@@ -256,7 +256,7 @@ TP.xctrls.Lattice.Inst.defineHandler('DOMVisible',
 function(aSignal) {
 
     /**
-     * @method handleDOMResize
+     * @method handleDOMVisible
      * @param {TP.sig.DOMVisible} aSignal The signal that caused this handler to
      *     trip.
      * @returns {TP.xctrls.Lattice} The receiver.

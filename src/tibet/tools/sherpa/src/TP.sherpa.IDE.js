@@ -691,7 +691,7 @@ function(aTargetTPElement, initialRuleText) {
         sherpaID = TP.elementGetAttribute(targetElem, 'sherpa', true);
         if (TP.isEmpty(sherpaID)) {
             //  Generate a unique ID for the target element, but do *not* assign
-            //  it because we want to use it for a different, attribute, not
+            //  it because we want to use it for a different attribute, not
             //  'id'. 'id' attributes have a special XML-ish meaning and are
             //  stripped before the document is saved and we want this one to
             //  persist.
