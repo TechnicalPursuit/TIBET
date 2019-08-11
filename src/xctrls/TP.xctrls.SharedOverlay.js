@@ -880,6 +880,12 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     //  into our 'content' div.
     tpContent = this.setContent(content);
 
+    //  **NOTE** We *must* remove the id here. If our content is coming from an
+    //  element that is somewhere else in the visible DOM, but hidden, we don't
+    //  want it getting our signals. A new ID will be generated for this
+    //  content the next time it is needed.
+    tpContent.removeAttribute('id');
+
     //  Show the overlay content
     tpContent.setAttribute('hidden', false);
 
