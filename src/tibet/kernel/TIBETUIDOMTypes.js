@@ -858,7 +858,7 @@ function(styleTPElem) {
     var body,
 
         gids,
-        existingInstances;
+        notReadyToRenderInstances;
 
     //  Grab the body and, if its a real Element, then reset the CSS rule caches
     //  of all of the elements in it.
@@ -867,21 +867,28 @@ function(styleTPElem) {
         TP.elementResetAppliedNativeStyleRules(body);
     }
 
+    //  Grab all of the existing instances in that document and then iterate
+    //  and notify them.
+    notReadyToRenderInstances = TP.byCSSPath(
+                            this.getQueryPath(true, true),
+                            styleTPElem.getNativeDocument(),
+                            false,
+                            true);
+
+    //  Filter out any instances that are already ready to render. No sense in
+    //  sending them a method that might do things like cause extra rendering.
+    notReadyToRenderInstances = notReadyToRenderInstances.filter(
+        function(anInstance) {
+            return !anInstance.isReadyToRender();
+        });
+
     //  Add the Document global ID of the stylesheet Element to our list of
     //  where the stylesheet has been successfully installed.
     gids = this.get('loadedStylesheetDocumentGIDs');
     gids.push(styleTPElem.getDocument().getGlobalID());
     gids.unique();
 
-    //  Grab all of the existing instances in that document and then iterate
-    //  and notify them.
-    existingInstances = TP.byCSSPath(
-                            this.getQueryPath(true, true),
-                            styleTPElem.getNativeDocument(),
-                            false,
-                            true);
-
-    existingInstances.forEach(
+    notReadyToRenderInstances.forEach(
         function(aTPElem) {
             aTPElem.stylesheetReady(styleTPElem);
         });
