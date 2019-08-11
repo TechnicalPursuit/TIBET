@@ -2055,7 +2055,9 @@ function(aDocument) {
         //  record.
         recordGroups = mutationRecords.groupBy(
                             function(aRecord) {
-                                return aRecord.target;
+                                //  Use the target's GID (and assign it if
+                                //  necessary).
+                                return TP.gid(aRecord.target, true);
                             });
 
         //  Iterate over the groups that were produced (i.e. groups of
