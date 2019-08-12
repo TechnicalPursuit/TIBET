@@ -608,8 +608,8 @@ function(aTargetTPElement, initialRuleText) {
      *     method, this is an optional chunk of rule text that will be used to
      *     start the rule with. This should *not* include the surrounding
      *     opening and closing braces ('{' and '}').
-     * @returns {CSSRule} An existing or newly constructed CSS rule that will
-     *     match the supplied element uniquely.
+     * @returns {CSSRule|null} An existing or newly constructed CSS rule that
+     *     will match the supplied element uniquely.
      */
 
     var stylesHUD,
@@ -737,19 +737,25 @@ function(aTargetTPElement, initialRuleText) {
             //  computed selector.
 
             //  Grab the style sheet for the generator.
-            generatorSheet = generatorTPElem.
-                                getStylesheetForStyleResource();
+            generatorSheet = generatorTPElem.getNearestGeneratorStylesheet();
 
-            ruleText = TP.ifInvalid(initialRuleText, '');
+            //  If we got a valid generator sheet, then go ahead and insert the
+            //  rule.
+            if (TP.isStyleSheet(generatorSheet)) {
+                ruleText = TP.ifInvalid(initialRuleText, '');
 
-            //  Create a new rule and add it to the end of the stylesheet.
-            newRuleIndex = TP.styleSheetInsertRule(generatorSheet,
-                                                    ruleSelector,
-                                                    ruleText,
-                                                    null,
-                                                    false);
+                //  Create a new rule and add it to the end of the stylesheet.
+                newRuleIndex = TP.styleSheetInsertRule(generatorSheet,
+                                                        ruleSelector,
+                                                        ruleText,
+                                                        null,
+                                                        false);
 
-            modifyingRule = generatorSheet.cssRules[newRuleIndex];
+                modifyingRule = generatorSheet.cssRules[newRuleIndex];
+            } else {
+                //  TODO: Raise an exception
+                modifyingRule = null;
+            }
         }
     }
 

@@ -682,9 +682,56 @@ function(aHalo) {
     //  one that is a TP.tag.CustomTag (the parent type of computed and
     //  templated tag types). Return the first one found.
     while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
-
         if (TP.isKindOf(generatorTPElem, TP.tag.CustomTag)) {
             return generatorTPElem;
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getNearestGeneratorStylesheet',
+function(aHalo) {
+
+    /**
+     * @method getNearestGeneratorStylesheet
+     * @summary Returns the stylesheet of the next 'generator' ancestor element
+     *     of the receiver.
+     * @description This method returns the stylesheet of the next parent up the
+     *     ancestor chain that is a 'tag generator' *and* has an associated
+     *     stylesheet. A generator is an Element that is usually a computed or
+     *     templated tag that is responsible for generating content.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the nearest
+     *     generator ancestor.
+     * @returns {CSSStyleSheet} The stylesheet of the next generator ancestor of
+     *     the receiver that has a stylesheet.
+     */
+
+    var generatorTPElem,
+        generatorSheet;
+
+    /* eslint-disable consistent-this */
+    generatorTPElem = this;
+    /* eslint-enable consistent-this */
+
+    if (TP.isKindOf(generatorTPElem, TP.tag.CustomTag)) {
+        generatorSheet = generatorTPElem.getStylesheetForStyleResource();
+        if (TP.isStyleSheet(generatorSheet)) {
+            return generatorSheet;
+        }
+    }
+
+    //  Keep iterating up the ancestors of the receiver, looking for one that is
+    //  a TP.tag.CustomTag (the parent type of computed and templated tag types)
+    //  and has a stylesheet. Return the stylesheet of the first one found.
+    while (TP.isValid(generatorTPElem = generatorTPElem.getParentNode(aHalo))) {
+        if (TP.isKindOf(generatorTPElem, TP.tag.CustomTag)) {
+            generatorSheet = generatorTPElem.getStylesheetForStyleResource();
+            if (TP.isStyleSheet(generatorSheet)) {
+                return generatorSheet;
+            }
         }
     }
 
