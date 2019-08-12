@@ -400,6 +400,10 @@ function(anObject) {
     //  Iterate over all of the defined expressions
     if (TP.notEmpty(val = info.at('expressions'))) {
 
+        //  Tell the main Sherpa object that it should go ahead and process DOM
+        //  mutations to the source DOM.
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+
         scopeVal = this.computeScopeAttributeValue(info);
         if (TP.notEmpty(scopeVal)) {
             destTPElement.setAttribute('bind:scope', scopeVal);
