@@ -201,10 +201,12 @@ function(anElement, hintElement, tooltipParams) {
                         this.$tooltipOverHandler.params.at('contentID'),
                         overSignal.getDocument());
 
-                    hintContent = hintContentElem.getTextContent();
-                    if (hintContent === TP.xctrls.hint.NO_HINT) {
-                        hintShown = false;
-                        return this;
+                    if (TP.isValid(hintContentElem)) {
+                        hintContent = hintContentElem.getTextContent();
+                        if (hintContent === TP.xctrls.hint.NO_HINT) {
+                            hintShown = false;
+                            return this;
+                        }
                     }
 
                     hintShown = true;
