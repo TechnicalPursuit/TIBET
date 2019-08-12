@@ -18,6 +18,13 @@
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:hint');
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  A constant used by consumers that tells the hint to not show.
+TP.xctrls.hint.Type.defineConstant('NO_HINT', '__NO_HINT__');
+
+//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -148,7 +155,9 @@ function(anElement, hintElement, tooltipParams) {
 
         params,
 
-        handler;
+        handler,
+
+        hintShown;
 
     if (!TP.isElement(anElement)) {
         //  TODO: Raise an exception
@@ -176,7 +185,29 @@ function(anElement, hintElement, tooltipParams) {
                 'mouseover',
                 handler = function(evt) {
 
-                    var overParams;
+                    var overSignal,
+
+                        hintContentElem,
+                        hintContent,
+                        overParams;
+
+                    overSignal = TP.wrap(evt);
+
+                    //  Grab the hint content. If it is our special value of
+                    //  NO_HINT, then just set the flag telling the mouseout
+                    //  method that we didn't show and return.
+
+                    hintContentElem = TP.byId(
+                        this.$tooltipOverHandler.params.at('contentID'),
+                        overSignal.getDocument());
+
+                    hintContent = hintContentElem.getTextContent();
+                    if (hintContent === TP.xctrls.hint.NO_HINT) {
+                        hintShown = false;
+                        return this;
+                    }
+
+                    hintShown = true;
 
                     //  Note here how we copy the params that we captured when
                     //  the overall method was defined and add the signal
@@ -194,6 +225,11 @@ function(anElement, hintElement, tooltipParams) {
     anElement.addEventListener(
                 'mouseout',
                 handler = function(evt) {
+
+                    if (!hintShown) {
+                        return this;
+                    }
+
                     //  Cancel it if isn't showing yet.
                     TP.wrap(this).signal('TP.sig.CancelTooltip');
 

@@ -1411,8 +1411,25 @@ function(enterSelection) {
                 hintContent = TP.extern.d3.select(this).append('xctrls:hint');
                 hintContent.html(
                     function(d, i) {
+
+                        var dataVal,
+                            hintVal;
+
+                        dataVal = d[0];
+
+                        //  If the data value is a SPACING or GROUPING value
+                        //  then we don't want the hint/tooltip to show so we
+                        //  use a special value to prevent that from happening.
+                        if (TP.regex.SPACING.test(dataVal)) {
+                            hintVal = TP.xctrls.hint.NO_HINT;
+                        } else if (TP.regex.GROUPING.test(dataVal)) {
+                            hintVal = TP.xctrls.hint.NO_HINT;
+                        } else {
+                            hintVal = dataVal;
+                        }
+
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                                d[0] +
+                                hintVal +
                                 '</span>';
                     }
                 );
@@ -2040,7 +2057,23 @@ function(updateSelection) {
                 //  Update that content.
                 hintContent.text(
                     function(d, i) {
-                        return data[0];
+                        var dataVal,
+                            hintVal;
+
+                        dataVal = data[0];
+
+                        //  If the data value is a SPACING or GROUPING value
+                        //  then we don't want the hint/tooltip to show so we
+                        //  use a special value to prevent that from happening.
+                        if (TP.regex.SPACING.test(dataVal)) {
+                            hintVal = TP.xctrls.hint.NO_HINT;
+                        } else if (TP.regex.GROUPING.test(dataVal)) {
+                            hintVal = TP.xctrls.hint.NO_HINT;
+                        } else {
+                            hintVal = dataVal;
+                        }
+
+                        return hintVal;
                     }
                 );
             }

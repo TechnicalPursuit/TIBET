@@ -990,8 +990,23 @@ function(enterSelection) {
                 hintContent = TP.extern.d3.select(this).append('xctrls:hint');
                 hintContent.html(
                     function(d, i) {
+                        var dataVal,
+                            hintVal;
+
+                        dataVal = d;
+
+                        //  If the data value is a SPACING or GROUPING value
+                        //  then we don't want the hint/tooltip to show so we
+                        //  use a special value to prevent that from happening.
+                        if (TP.regex.SPACING.test(dataVal)) {
+                            hintVal = TP.xctrls.hint.NO_HINT;
+                        } else if (TP.regex.GROUPING.test(dataVal)) {
+                            hintVal = TP.xctrls.hint.NO_HINT;
+                        } else {
+                            hintVal = dataVal;
+                        }
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                                d +
+                                hintVal +
                                 '</span>';
                     }
                 );
