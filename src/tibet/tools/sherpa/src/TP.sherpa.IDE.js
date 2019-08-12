@@ -671,7 +671,7 @@ function(aTargetTPElement, initialRuleText) {
             if (TP.w3.Xmlns.isNativeNS(targetElem.namespaceURI)) {
                 ruleSelector += '*[tibet|tag="' +
                                 targetType.get('nsPrefix') + ':' +
-                                targetType.get('localName');
+                                targetType.get('localName') +
                                 '"]';
             } else {
                 ruleSelector += targetType.get('nsPrefix') + '|' +
