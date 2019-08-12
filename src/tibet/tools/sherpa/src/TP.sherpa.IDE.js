@@ -640,6 +640,10 @@ function(aTargetTPElement, initialRuleText) {
     //  Try to obtain a 'modifying rule' that we can use to manipulate.
     modifyingRule = stylesHUD.getModifiableRule(true);
     if (TP.notValid(modifyingRule)) {
+
+        //  Grab the type of the target element.
+        targetType = aTargetTPElement.getType();
+
         //  Grab the nearest 'generator' element to the target element. This
         //  will be the element (usually a CustomTag) that would have generated
         //  the target element (and which could be the target element itself).
@@ -649,16 +653,20 @@ function(aTargetTPElement, initialRuleText) {
             return;
         }
 
-        //  Compute a unique selector for the targeted element
-        generatorType = generatorTPElem.getType();
-        targetType = aTargetTPElement.getType();
+        if (generatorTPElem !== aTargetTPElement) {
+            //  Compute a unique selector for the targeted element
+            generatorType = generatorTPElem.getType();
 
-        //  First, we scope it by the generator type.
-        ruleSelector = generatorType.get('nsPrefix') + '|' +
-                        generatorType.get('localName');
+            //  First, we scope it by the generator type.
+            ruleSelector = generatorType.get('nsPrefix') + '|' +
+                            generatorType.get('localName');
 
-        //  With a descendant selector
-        ruleSelector += ' ';
+            //  With a descendant selector
+            ruleSelector += ' ';
+        } else {
+            //  The generator and the target are the same element
+            ruleSelector = '';
+        }
 
         targetElem = aTargetTPElement.getNativeNode();
 
