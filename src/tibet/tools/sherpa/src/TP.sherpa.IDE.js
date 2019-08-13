@@ -2240,7 +2240,7 @@ shouldShowAssistant) {
                 if (TP.isTrue(shouldShowAssistant)) {
                     TP.byId('DOMHUD', viewDoc).showAssistant();
                 }
-            }.bind(this), 250);
+            }.bind(this), 1000);
     }
 
     //  Set up a timeout to delete those flags after a set amount of time
