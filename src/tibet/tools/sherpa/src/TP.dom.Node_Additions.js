@@ -148,14 +148,15 @@ function() {
 
 TP.dom.Node.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',
 function(mutatedVisualNode, operation, currentAddressPosition,
-followingAddresses, allAddresses) {
+followingAddresses, allAddresses, attributeName, attributeValue,
+oldAttributeValue) {
 
     /**
      * @method sherpaGetNodeForVisualDOMChange
      * @summary Returns the node that should be modified when the Sherpa
      *     modifies the visual DOM that was rendered from this content. This
      *     allows the original source DOM node more control over modifications
-     *     that the Sherpa is making
+     *     that the Sherpa is making.
      * @param {Node} mutatedVisualNode The visual node being mutated.
      * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
      *     TP.DELETE that is currently causing the mutation.
@@ -166,6 +167,13 @@ followingAddresses, allAddresses) {
      *     node being modified
      * @param {String[]} allAddresses The Array of dot-separated document
      *     addresses of all of the nodes being modified.
+     * @param {String} [attributeName] The name of the attribute that is changing
+     *     (if this is an 'attributes' mutation).
+     * @param {String} [attributeValue] The value of the attribute that is
+     *     changing (if this is an 'attributes' mutation).
+     * @param {String} [oldAttributeValue] The prior value of the attribute that
+     *     is changing (if this is an 'attributes' mutation and the operation is
+     *     TP.UPDATE or TP.DELETE).
      * @returns {Node|TP.CONTINUE} The node that should be the target for
      *     modifications or TP.CONTINUE if this node and it's descendants should
      *     be skipped for modification.
@@ -1992,14 +2000,15 @@ function() {
 
 TP.tag.ComputedTag.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',
 function(mutatedVisualNode, operation, currentAddressPosition,
-followingAddresses, allAddresses) {
+followingAddresses, allAddresses, attributeName, attributeValue,
+oldAttributeValue) {
 
     /**
      * @method sherpaGetNodeForVisualDOMChange
      * @summary Returns the node that should be modified when the Sherpa
      *     modifies the visual DOM that was rendered from this content. This
      *     allows the original source DOM node more control over modifications
-     *     that the Sherpa is making
+     *     that the Sherpa is making.
      * @param {Node} mutatedVisualNode The visual node being mutated.
      * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
      *     TP.DELETE that is currently causing the mutation.
@@ -2010,6 +2019,13 @@ followingAddresses, allAddresses) {
      *     node being modified
      * @param {String[]} allAddresses The Array of dot-separated document
      *     addresses of all of the nodes being modified.
+     * @param {String} [attributeName] The name of the attribute that is changing
+     *     (if this is an 'attributes' mutation).
+     * @param {String} [attributeValue] The value of the attribute that is
+     *     changing (if this is an 'attributes' mutation).
+     * @param {String} [oldAttributeValue] The prior value of the attribute that
+     *     is changing (if this is an 'attributes' mutation and the operation is
+     *     TP.UPDATE or TP.DELETE).
      * @returns {Node|TP.CONTINUE} The node that should be the target for
      *     modifications or TP.CONTINUE if this node and it's descendants should
      *     be skipped for modification.
@@ -2432,14 +2448,15 @@ function(insertionPointElement, insertionPosition) {
 
 TP.tibet.template.Inst.defineMethod('sherpaGetNodeForVisualDOMChange',
 function(mutatedVisualNode, operation, currentAddressPosition,
-followingAddresses, allAddresses) {
+followingAddresses, allAddresses, attributeName, attributeValue,
+oldAttributeValue) {
 
     /**
      * @method sherpaGetNodeForVisualDOMChange
      * @summary Returns the node that should be modified when the Sherpa
      *     modifies the visual DOM that was rendered from this content. This
      *     allows the original source DOM node more control over modifications
-     *     that the Sherpa is making
+     *     that the Sherpa is making.
      * @param {Node} mutatedVisualNode The visual node being mutated.
      * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
      *     TP.DELETE that is currently causing the mutation.
@@ -2450,6 +2467,13 @@ followingAddresses, allAddresses) {
      *     node being modified
      * @param {String[]} allAddresses The Array of dot-separated document
      *     addresses of all of the nodes being modified.
+     * @param {String} [attributeName] The name of the attribute that is changing
+     *     (if this is an 'attributes' mutation).
+     * @param {String} [attributeValue] The value of the attribute that is
+     *     changing (if this is an 'attributes' mutation).
+     * @param {String} [oldAttributeValue] The prior value of the attribute that
+     *     is changing (if this is an 'attributes' mutation and the operation is
+     *     TP.UPDATE or TP.DELETE).
      * @returns {Node|TP.CONTINUE} The node that should be the target for
      *     modifications or TP.CONTINUE if this node and it's descendants should
      *     be skipped for modification.

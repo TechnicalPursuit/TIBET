@@ -4611,6 +4611,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         leni,
         i,
 
+        afterAddresses,
+
         lenj,
         j,
 
@@ -4888,6 +4890,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         for (j = 0; j < lenj; j++) {
 
             address = addresses.at(j);
+            afterAddresses = addresses.slice(j + 1);
 
             if (!TP.isNode(currentNode)) {
                 //  TODO: Raise an exception.
@@ -4920,9 +4923,12 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                                     sherpaGetNodeForVisualDOMChange(
                                         mutatedNode,
                                         operation,
-                                        addresses.at(j),
-                                        addresses.slice(j + 1),
-                                        addresses);
+                                        address,
+                                        afterAddresses,
+                                        addresses,
+                                        attributeName,
+                                        attributeValue,
+                                        oldAttributeValue);
 
                         //  If the result is TP.CONTINUE, then the receiving
                         //  node does not want to be modified (or have
@@ -4951,9 +4957,12 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 result = wrappedTestNode.sherpaGetNodeForVisualDOMChange(
                                 mutatedNode,
                                 operation,
-                                addresses.at(j),
-                                addresses.slice(j + 1),
-                                addresses);
+                                address,
+                                afterAddresses,
+                                addresses,
+                                attributeName,
+                                attributeValue,
+                                oldAttributeValue);
 
                 //  If the result is TP.CONTINUE, then the receiving node does
                 //  not want to be modified (or have modifications performed
