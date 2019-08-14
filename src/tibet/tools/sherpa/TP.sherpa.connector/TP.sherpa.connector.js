@@ -75,34 +75,28 @@ function(aSignal) {
     var targetElement,
         targetTPElem,
 
-        connectorDest,
-
-        validTPElemParent;
+        connectorDest;
 
     //  Grab the real target element at the current page point.
     targetElement = aSignal.getElementAtPagePoint();
     targetTPElem = TP.wrap(targetElement);
 
-    //  If the target itself is a valid connector destination, then just return
-    //  it.
-    connectorDest = targetTPElem.getConnectorDestination();
-    if (TP.isValid(connectorDest)) {
-        return connectorDest;
-    }
-
-    //  Otherwise, iterate up the ancestor chain, looking for a valid connector
+    //  Iterate up the ancestor chain, looking for a valid connector
     //  destination.
-    validTPElemParent = targetTPElem.detectAncestor(
+    connectorDest = targetTPElem.detectAncestor(
         function(aParent) {
-            return TP.isValid(aParent.getConnectorDestination());
+            if (aParent.isConnectorOpaque()) {
+                return aParent;
+            }
         });
 
-    //  Found one? Return it's connector destination.
-    if (TP.isValid(validTPElemParent)) {
-        return validTPElemParent.getConnectorDestination();
+    //  If we couldn't compute a valid connector destination by iterating up the
+    //  ancestor chain, then just as the target for it's connector destination.
+    if (TP.notValid(connectorDest)) {
+        connectorDest = targetTPElem.getConnectorDestination();
     }
 
-    return null;
+    return connectorDest;
 });
 
 //  ------------------------------------------------------------------------
