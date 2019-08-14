@@ -212,11 +212,11 @@ Cmd.prototype.getSuffix = function(suffix) {
 
     // If empty default to 'dev'.
     if (CLI.isEmpty(suffix)) {
-        re = new RegExp('\-' + this.SUFFIXES.join('|') + '\.');
+        re = new RegExp('\-(' + this.SUFFIXES.join('|') + ')\.');
         data = CLI.config.npm.version;
         match = re.exec(data);
         if (CLI.notEmpty(match)) {
-            return match[0];
+            return match[1];
         }
         return 'dev';
     }
