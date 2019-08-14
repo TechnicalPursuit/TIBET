@@ -4183,7 +4183,7 @@ function(shouldRender, shouldSendEvent) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$refreshBranches',
-function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pathAction, isScoped, sigOrigin, originWasURI, changeSource, updateIndexes) {
+function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathParts, pathAction, isScoped, sigOrigin, originWasURI, changeSource, updateIndexes) {
 
     /**
      * @method $refreshBranches
@@ -4197,9 +4197,9 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
      * @param {Object} initialVal The initial value to use to update the
      *     binding. This could be mutated inside of this method to a final,
      *     massaged, value.
-     * @param {Element[]} boundElems An array of elements that are descendants
-     *     of the receiver that need to be refreshed from their binding
-     *     expressions.
+     * @param {Element[]} needsRefreshElems An array of elements that are
+     *     descendants of the receiver that need to be refreshed from their
+     *     binding expressions.
      * @param {Number} [aPathType] The path type that is contained in the
      *     binding expression.
      * @param {String[]} [pathParts] An array of parts of the data binding path
@@ -4227,6 +4227,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
     var elem,
 
         subscopes,
+
+        boundElems,
 
         nextElems,
 
@@ -4355,6 +4357,8 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                 return true;
             });
+
+    boundElems = needsRefreshElems;
 
     //  Get the set of elements that are contained within the receiver, but in a
     //  'shallow' fashion - that is, 'under' the receiver but not under any
@@ -4680,10 +4684,12 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
 
                         //  Now, we must remove the ownerTPElem from the list of
                         //  bound elements, or we'll recurse endlessly.
+                        /* eslint-disable no-loop-func */
                         boundElems = boundElems.filter(
                             function(anElem) {
                                 return anElem !== ownerTPElem.getNativeNode();
                             });
+                        /* eslint-enable no-loop-func */
                     }
                 }
 
