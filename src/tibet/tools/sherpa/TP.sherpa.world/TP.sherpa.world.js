@@ -258,8 +258,10 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
      * @method createScreen
      * @summary Creates a new screen element and inserts it before the supplied
      *     beforeIndex (or appends it if beforeIndex isn't supplied).
-     * @param {String} iframeID The ID of the *iframe* that will be created
-     *     under the new sherpa:screen element.
+     * @param {String} [iframeID] The ID of the *iframe* that will be created
+     *     under the new sherpa:screen element. If this is not supplied, an
+     *     iframe with an ID of 'SCREEN_' and the index number of the newly
+     *     created screen (i.e. 'SCREEN_3').
      * @param {Number} [beforeIndex] The index of the existing screen that the
      *     new sherpa:screen will be inserted before. If null, the new screen
      *     will be appended to the end of the list of screens.
@@ -271,6 +273,8 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
      */
 
     var screenCount,
+
+        screenIFrameID,
 
         screenHolderTPElem,
         screenHolderElem,
@@ -286,6 +290,8 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
     //  Grab the screen count before we start messing with the DOM
     screenCount = this.get('screens').getSize();
 
+    screenIFrameID = TP.ifInvalid(iFrameID, 'SCREEN_' + screenCount);
+
     screenHolderTPElem = this.getChildElementAt(0);
     screenHolderElem = TP.unwrap(screenHolderTPElem);
 
@@ -296,7 +302,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
     newIFrameElem = TP.documentConstructElement(this.getNativeDocument(),
                                                 'iframe',
                                                 TP.w3.Xmlns.XHTML);
-    TP.elementSetAttribute(newIFrameElem, 'id', iFrameID);
+    TP.elementSetAttribute(newIFrameElem, 'id', screenIFrameID);
     TP.elementSetAttribute(newIFrameElem, 'frameborder', '0');
 
     //  Build a screen using the newly created iframe and the count, index, etc
