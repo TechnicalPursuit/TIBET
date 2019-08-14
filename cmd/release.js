@@ -702,6 +702,93 @@ Cmd.prototype.phaseThree = function(meta) {
     });
 
 
+    // ---
+    // npm repository updates... this is optional
+    // ---
+
+    commands = [
+        'npm publish ./'
+    ];
+
+    this.info('Preparing to: ');
+    commands.forEach(function(cmd) {
+        release.log(cmd);
+    });
+
+    result = this.prompt.question(
+        'Upload release ' + mastertag + ' to the npm repository? ' +
+        '? Enter \'yes\' after inspection: ');
+    if (!/^y/i.test(result)) {
+        this.log('npm publish cancelled.');
+        return;
+    }
+
+    commands.forEach(function(cmd) {
+        var res;
+
+        if (release.options['dry-run']) {
+            release.warn('dry-run. bypassing ' + cmd);
+        } else {
+            release.log('executing ' + cmd);
+            res = release.shexec(cmd);
+        }
+
+        if (res && res.output.slice(0, -1)) {
+            release.info(res.output);
+        }
+    });
+
+
+    // ---
+    // dockerhub updates... this is optional
+    // ---
+
+    commands = [
+        'docker build --no-cache -t technicalpursuit/tibet:latest .',
+        'docker push technicalpursuit/tibet:latest',
+        'docker tag technicalpursuit/tibet:latest technicalpursuit/tibet:' +
+        meta.source.major,
+        'docker push technicalpursuit/tibet:' +
+        meta.source.major,
+        'docker tag technicalpursuit/tibet:latest technicalpursuit/tibet:' +
+        meta.source.major + '.' + meta.source.minor,
+        'docker push technicalpursuit/tibet:' +
+        meta.source.major + '.' + meta.source.minor,
+        'docker tag technicalpursuit/tibet:latest technicalpursuit/tibet:' +
+        meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch,
+        'docker push technicalpursuit/tibet:' +
+        meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch,
+    ];
+
+    this.info('Preparing to: ');
+    commands.forEach(function(cmd) {
+        release.log(cmd);
+    });
+
+    result = this.prompt.question(
+        'Build Docker image release ' + mastertag + ' and upload to the' +
+        ' DockerHub docker repository using those labels? ' +
+        '? Enter \'yes\' after inspection: ');
+    if (!/^y/i.test(result)) {
+        this.log('Docker build and upload cancelled.');
+        return;
+    }
+
+    commands.forEach(function(cmd) {
+        var res;
+
+        if (release.options['dry-run']) {
+            release.warn('dry-run. bypassing ' + cmd);
+        } else {
+            release.log('executing ' + cmd);
+            res = release.shexec(cmd);
+        }
+
+        if (res && res.output.slice(0, -1)) {
+            release.info(res.output);
+        }
+    });
+
    /*
     * At this point the develop branch is updated, tagged, and pushed and the
     * changes there have been merged into master, tagged, and pushed. So for the
