@@ -4576,56 +4576,56 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     var isAttrChange,
 
-        tagSrcElem,
-        tagTPSrcElem,
+        visualGeneratorElem,
+        visualGeneratorTPElem,
 
-        searchElem,
+        visualSourceSearchElem,
 
-        originatingDoc,
+        visualSourceDocument,
 
         sourceLoc,
         sourceURI,
 
         sourceNode,
 
+        sourceMatchingNodes,
+
+        visualMutatedNode,
+        visualMutatedElem,
+
         wasTextBinding,
 
-        processingNodes,
-        mutatedNode,
-        mutatedElem,
+        visualOriginatingAddress,
+        visualAddressParts,
+        visualAncestorAddresses,
 
-        originatingAddress,
-        addresses,
-        ancestorAddresses,
-
-        currentNode,
-
-        mutatedVisualNode,
-        mutatedVisualTPElem,
+        visualMutationTestNode,
+        visualMutationTestTPElem,
         allowMutations,
 
         leni,
         i,
 
-        afterAddresses,
+        visualAfterAddresses,
 
         lenj,
         j,
 
         address,
 
-        insertionParent,
+        sourceInsertionParent,
+        sourceCurrentNode,
 
-        testNode,
+        sourceTestNode,
         wrappedTestNode,
 
         result,
 
-        updatingAnsTPElem,
+        mutationAncestorTPElem,
         bindInfo,
         bindExprStr,
 
-        newNode,
+        newSourceNode,
 
         shouldMarkDirty,
         wasDirty;
@@ -4657,15 +4657,15 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     //  Search the hierarchy for the nearest custom tag (using the same search
     //  criteria as above) to set as the tag source element.
-    tagSrcElem = mutationAncestor;
+    visualGeneratorElem = mutationAncestor;
 
-    while (TP.isElement(tagSrcElem)) {
-        tagTPSrcElem = TP.wrap(tagSrcElem);
-        if (tagTPSrcElem.sherpaShouldAlterTemplate()) {
+    while (TP.isElement(visualGeneratorElem)) {
+        visualGeneratorTPElem = TP.wrap(visualGeneratorElem);
+        if (visualGeneratorTPElem.sherpaShouldAlterTemplate()) {
             break;
         }
 
-        tagSrcElem = tagSrcElem.parentNode;
+        visualGeneratorElem = visualGeneratorElem.parentNode;
     }
 
     //  If the target Node is detached (or its not an Element), that means it
@@ -4675,20 +4675,20 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     //  position in the DOM.
     if (TP.nodeIsDetached(mutatedNodes.first()) ||
         !TP.isElement(mutatedNodes.first())) {
-        searchElem = mutationAncestor;
+        visualSourceSearchElem = mutationAncestor;
     } else {
-        searchElem = mutatedNodes.first();
+        visualSourceSearchElem = mutatedNodes.first();
     }
 
     //  If no tag source element could be computed, that means we're going to
     //  use the whole document as the source.
-    if (!TP.isElement(tagSrcElem)) {
-        originatingDoc = TP.nodeGetDocument(searchElem);
-        sourceLoc = originatingDoc[TP.SRC_LOCATION];
+    if (!TP.isElement(visualGeneratorElem)) {
+        visualSourceDocument = TP.nodeGetDocument(visualSourceSearchElem);
+        sourceLoc = visualSourceDocument[TP.SRC_LOCATION];
     } else {
         //  Otherwise, grab the computed resource URI for the 'template' of the
         //  tag source element.
-        sourceLoc = TP.wrap(tagSrcElem).
+        sourceLoc = TP.wrap(visualGeneratorElem).
                         getType().
                         computeResourceURI('template');
     }
@@ -4716,21 +4716,21 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     //  that represents the underlying DOM structure of the source that we're
     //  modifying.
 
-    processingNodes = TP.ac();
+    sourceMatchingNodes = TP.ac();
 
     leni = mutatedNodes.getSize();
     for (i = 0; i < leni; i++) {
 
-        mutatedNode = mutatedNodes.at(i);
+        visualMutatedNode = mutatedNodes.at(i);
 
         //  Compute a 'mutated element' from the mutated node. This may be the
         //  node itself, if it's an Element.
-        if (TP.isElement(mutatedNode)) {
-            mutatedElem = mutatedNode;
-        } else if (TP.isElement(mutatedNode.parentNode)) {
-            mutatedElem = mutatedNode.parentNode;
+        if (TP.isElement(visualMutatedNode)) {
+            visualMutatedElem = visualMutatedNode;
+        } else if (TP.isElement(visualMutatedNode.parentNode)) {
+            visualMutatedElem = visualMutatedNode.parentNode;
         } else {
-            mutatedElem = mutationAncestor;
+            visualMutatedElem = mutationAncestor;
         }
 
         //  If the mutated *element* (which could be the parent Element of the
@@ -4740,26 +4740,26 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         //  and creates a 'span' to wrap them.
         wasTextBinding =
             TP.elementHasAttribute(
-                mutatedElem, 'tibet:textbinding');
+                visualMutatedElem, 'tibet:textbinding');
 
         /* eslint-disable no-extra-parens */
-        if (TP.nodeIsDetached(mutatedNode) ||
+        if (TP.nodeIsDetached(visualMutatedNode) ||
             (operation === TP.DELETE &&
-                TP.notEmpty(mutatedNode[TP.PREVIOUS_POSITION]))) {
+                TP.notEmpty(visualMutatedNode[TP.PREVIOUS_POSITION]))) {
         /* eslint-enable no-extra-parens */
 
-            //  If mutatedNode was a Text node that was a desugared text
-            //  binding, then we normalize the mutatedElem (which will be the
-            //  parent Element node) and grab it's address to use to find the
-            //  source DOM's corresponding Text node.
+            //  If visualMutatedNode was a Text node that was a desugared text
+            //  binding, then we normalize the visualMutatedElem (which will be
+            //  the parent Element node) and grab it's address to use to find
+            //  the source DOM's corresponding Text node.
             if (wasTextBinding) {
-                TP.nodeNormalize(mutatedElem);
+                TP.nodeNormalize(visualMutatedElem);
 
-                originatingAddress = TP.nodeGetDocumentPosition(
-                                        mutatedElem,
+                visualOriginatingAddress = TP.nodeGetDocumentPosition(
+                                        visualMutatedElem,
                                         null,
-                                        tagSrcElem);
-                addresses = originatingAddress.split('.');
+                                        visualGeneratorElem);
+                visualAddressParts = visualOriginatingAddress.split('.');
 
                 //  Now, because the last address will be the generated span
                 //  that TIBET generated for this desugared text binding, and
@@ -4768,7 +4768,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  basically ignoring the span.
                 //  The set of addresses will now address the element that was
                 //  the element that the expression was originally placed into.
-                addresses.pop();
+                visualAddressParts.pop();
             } else {
 
                 //  Now, we need to make sure that our detached node has a
@@ -4777,19 +4777,20 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  position that the node had before it was removed. We need
                 //  this, because the node is detached and we no longer have
                 //  access to its (former) parentNode.
-                originatingAddress = mutatedNode[TP.PREVIOUS_POSITION];
-                if (TP.isEmpty(originatingAddress)) {
+                visualOriginatingAddress =
+                    visualMutatedNode[TP.PREVIOUS_POSITION];
+                if (TP.isEmpty(visualOriginatingAddress)) {
                     //  TODO: Raise an exception here
                     return this;
                 }
 
-                addresses = originatingAddress.split('.');
+                visualAddressParts = visualOriginatingAddress.split('.');
 
                 //  Note here how we get the ancestor addresses all the way to
                 //  the top of the document. This is by design because the
                 //  TP.PREVIOUS_POSITION for the detached node will have been
                 //  computed the same way.
-                ancestorAddresses =
+                visualAncestorAddresses =
                     TP.nodeGetDocumentPosition(mutationAncestor).split('.');
 
                 //  If the size difference between the ancestor addresses and
@@ -4799,7 +4800,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  children of the ancestor (an ancestor of our detached node)
                 //  will be detached via this mechanism, thereby taking care of
                 //  us.
-                if (addresses.getSize() - ancestorAddresses.getSize() > 1) {
+                if (visualAddressParts.getSize() -
+                    visualAncestorAddresses.getSize() > 1) {
                     return this;
                 }
 
@@ -4807,13 +4809,14 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  be between the updating ancestor and the tag source Element.
                 //  This will then be accurate to update the source DOM, which
                 //  is always relative to the tag source element.
-                ancestorAddresses = TP.nodeGetDocumentPosition(
-                                        mutationAncestor, null, tagSrcElem);
+                visualAncestorAddresses = TP.nodeGetDocumentPosition(
+                                mutationAncestor, null, visualGeneratorElem);
 
-                //  This will be empty if mutationAncestor and tagSrcElem are
+                //  This will be empty if mutationAncestor and
+                //  visualGeneratorElem are
                 //  the same node.
-                if (TP.isEmpty(ancestorAddresses)) {
-                    ancestorAddresses = TP.ac();
+                if (TP.isEmpty(visualAncestorAddresses)) {
+                    visualAncestorAddresses = TP.ac();
 
                     //  If the source node is a Document, then we need to
                     //  unshift a '0' onto the ancestor addresses because of
@@ -4821,10 +4824,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     //  (the original computation will have included the index
                     //  off of the Document).
                     if (TP.isDocument(sourceNode)) {
-                        ancestorAddresses.unshift('0');
+                        visualAncestorAddresses.unshift('0');
                     }
                 } else {
-                    ancestorAddresses = ancestorAddresses.split('.');
+                    visualAncestorAddresses = visualAncestorAddresses.split('.');
                 }
 
                 //  Finally, we push on the last position of the address that
@@ -4832,28 +4835,30 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  than 1 level between the updating ancestor and the detached
                 //  node', this will complete the path that we need to update
                 //  the source DOM.
-                ancestorAddresses.push(addresses.last());
+                visualAncestorAddresses.push(visualAddressParts.last());
 
-                if (TP.notEmpty(ancestorAddresses)) {
+                if (TP.notEmpty(visualAncestorAddresses)) {
                     //  Set it to be ready to go for logic below.
-                    addresses = ancestorAddresses;
+                    visualAddressParts = visualAncestorAddresses;
                 }
 
                 //  If it just contains one item, the empty string, then empty
                 //  it.
-                if (addresses.getSize() === 1 && addresses.first() === '') {
-                    addresses.empty();
+                if (visualAddressParts.getSize() === 1 &&
+                    visualAddressParts.first() === '') {
+                    visualAddressParts.empty();
                 }
             }
         } else {
             //  Now we get the address from the target element that the user is
             //  actually manipulating as offset by the tag source element. We
             //  will use this address information to traverse the source DOM.
-            originatingAddress = TP.nodeGetDocumentPosition(mutatedNode,
-                                                            null,
-                                                            tagSrcElem);
-            if (TP.notEmpty(originatingAddress)) {
-                addresses = originatingAddress.split('.');
+            visualOriginatingAddress = TP.nodeGetDocumentPosition(
+                                            visualMutatedNode,
+                                            null,
+                                            visualGeneratorElem);
+            if (TP.notEmpty(visualOriginatingAddress)) {
+                visualAddressParts = visualOriginatingAddress.split('.');
 
                 //  Now, if we're processing a desugared text binding, the last
                 //  address will be the text node that we're updating in the DOM
@@ -4865,30 +4870,30 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  The set of addresses will now address the element that was
                 //  the element that the expression was originally placed into.
                 if (wasTextBinding) {
-                    addresses.pop();
-                    addresses.pop();
+                    visualAddressParts.pop();
+                    visualAddressParts.pop();
                 }
             } else {
-                addresses = TP.ac();
+                visualAddressParts = TP.ac();
             }
         }
 
         //  It's ok if the source node is a Document since addresses take into
         //  account the index from the #document into the root Element.
 
-        insertionParent = sourceNode;
+        sourceInsertionParent = sourceNode;
 
-        currentNode = sourceNode;
+        sourceCurrentNode = sourceNode;
 
         //  Loop over all of the addresses and traverse the source DOM using
         //  those addresses until we find the target of the mutations.
-        lenj = addresses.getSize();
+        lenj = visualAddressParts.getSize();
         for (j = 0; j < lenj; j++) {
 
-            address = addresses.at(j);
-            afterAddresses = addresses.slice(j + 1);
+            address = visualAddressParts.at(j);
+            visualAfterAddresses = visualAddressParts.slice(j + 1);
 
-            if (!TP.isNode(currentNode)) {
+            if (!TP.isNode(sourceCurrentNode)) {
                 //  TODO: Raise an exception.
                 return this;
             }
@@ -4897,7 +4902,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  'destination' node.
             if (j === lenj - 1) {
 
-                insertionParent = currentNode;
+                sourceInsertionParent = sourceCurrentNode;
 
                 //  Iterate from the destination node and track whether any of
                 //  its ancestors will disallow mutations.
@@ -4906,16 +4911,16 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  result from one of the ancestors set it to false.
                 allowMutations = true;
 
-                mutatedVisualNode = mutatedNode.parentNode;
+                visualMutationTestNode = visualMutatedNode.parentNode;
 
-                while (TP.isElement(mutatedVisualNode)) {
-                    mutatedVisualTPElem = TP.wrap(mutatedVisualNode);
-                    if (!mutatedVisualTPElem.
+                while (TP.isElement(visualMutationTestNode)) {
+                    visualMutationTestTPElem = TP.wrap(visualMutationTestNode);
+                    if (!visualMutationTestTPElem.
                         sherpaAllowDescendantMutations(
                                 operation,
                                 address,
-                                afterAddresses,
-                                addresses,
+                                visualAfterAddresses,
+                                visualAddressParts,
                                 attributeName,
                                 attributeValue,
                                 oldAttributeValue)) {
@@ -4927,7 +4932,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                         break;
                     }
 
-                    mutatedVisualNode = mutatedVisualNode.parentNode;
+                    visualMutationTestNode = visualMutationTestNode.parentNode;
                 }
 
                 //  One of the ancestors didn't allow the mutation - set the
@@ -4938,33 +4943,33 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     break;
                 }
 
-                mutatedNode = mutatedVisualNode;
+                visualMutatedNode = visualMutationTestNode;
 
                 //  If we're not currently processing an attribute change, then
                 //  set the current node based on whether we're doing a pure
                 //  append or not.
                 if (!isAttrChange) {
-                    testNode = currentNode.childNodes[address];
+                    sourceTestNode = sourceCurrentNode.childNodes[address];
 
                     //  If there isn't a Node (even a Text node) at the final
                     //  address, then we're doing a pure append (in the case of
                     //  the operation being a TP.CREATE). Therefore, we set
-                    //  currentNode (our insertion point) to null.
-                    if (!TP.isNode(testNode)) {
-                        currentNode = null;
+                    //  sourceCurrentNode (our insertion point) to null.
+                    if (!TP.isNode(sourceTestNode)) {
+                        sourceCurrentNode = null;
                     } else {
-                        //  Otherwise, set the currentNode (used as the
+                        //  Otherwise, set the sourceCurrentNode (used as the
                         //  insertion point in a TP.CREATE) to the childNode at
                         //  the last address.
-                        wrappedTestNode = TP.wrap(testNode);
+                        wrappedTestNode = TP.wrap(sourceTestNode);
 
                         result = wrappedTestNode.
                                     sherpaGetNodeForVisualDOMChange(
-                                        mutatedNode,
+                                        visualMutatedNode,
                                         operation,
                                         address,
-                                        afterAddresses,
-                                        addresses,
+                                        visualAfterAddresses,
+                                        visualAddressParts,
                                         attributeName,
                                         attributeValue,
                                         oldAttributeValue);
@@ -4977,7 +4982,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                             break;
                         }
 
-                        currentNode = result;
+                        sourceCurrentNode = result;
                     }
 
                     break;
@@ -4986,19 +4991,19 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
             //  Grab the child of the current node and use it to test to figure
             //  out where to move next.
-            testNode = currentNode.childNodes[address];
+            sourceTestNode = sourceCurrentNode.childNodes[address];
 
             //  If we got a valid test node, then wrap it and query it for the
             //  node to modify for a visual change.
-            if (TP.isNode(testNode)) {
-                wrappedTestNode = TP.wrap(testNode);
+            if (TP.isNode(sourceTestNode)) {
+                wrappedTestNode = TP.wrap(sourceTestNode);
 
                 result = wrappedTestNode.sherpaGetNodeForVisualDOMChange(
-                                mutatedNode,
+                                visualMutatedNode,
                                 operation,
                                 address,
-                                afterAddresses,
-                                addresses,
+                                visualAfterAddresses,
+                                visualAddressParts,
                                 attributeName,
                                 attributeValue,
                                 oldAttributeValue);
@@ -5012,18 +5017,18 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
                 //  Otherwise, reset the node we'll use from here to the result
                 //  that was returned.
-                testNode = result;
+                sourceTestNode = result;
             }
 
             //  If the test node is a Text node containing only whitespace and
             //  we're not actually mutating a Text node (i.e. setting it), then
             //  we skip it and move on to the next node.
-            if (TP.isTextNode(testNode) &&
-                TP.regex.ONLY_WHITESPACE.test(testNode.nodeValue) &&
-                !TP.isTextNode(mutatedNode)) {
-                currentNode = currentNode.childNodes[address + 1];
+            if (TP.isTextNode(sourceTestNode) &&
+                TP.regex.ONLY_WHITESPACE.test(sourceTestNode.nodeValue) &&
+                !TP.isTextNode(visualMutatedNode)) {
+                sourceCurrentNode = sourceCurrentNode.childNodes[address + 1];
             } else {
-                currentNode = testNode;
+                sourceCurrentNode = sourceTestNode;
             }
         }
 
@@ -5035,10 +5040,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         //  NB: This might push 'null'... and for non-attribute TP.CREATE
         //  operations, "that's ok" (since it will basically become an 'append'
         //  below).
-        processingNodes.push(currentNode);
+        sourceMatchingNodes.push(sourceCurrentNode);
     }
 
-    if (TP.isEmpty(processingNodes)) {
+    if (TP.isEmpty(sourceMatchingNodes)) {
 
         //  TODO: Raise an exception.
         return this;
@@ -5046,7 +5051,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     //  If we're changing the attribute, but don't have at last one element to
     //  change it on, then raise an exception and exit
-    if (isAttrChange && TP.isEmpty(processingNodes)) {
+    if (isAttrChange && TP.isEmpty(sourceMatchingNodes)) {
 
         //  TODO: Raise an exception.
         return this;
@@ -5054,34 +5059,34 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     shouldMarkDirty = false;
 
-    leni = processingNodes.getSize();
+    leni = sourceMatchingNodes.getSize();
     for (i = 0; i < leni; i++) {
 
-        currentNode = processingNodes.at(i);
+        sourceCurrentNode = sourceMatchingNodes.at(i);
 
         if (operation === TP.CREATE) {
 
             if (isAttrChange) {
-                TP.elementSetAttribute(currentNode,
+                TP.elementSetAttribute(sourceCurrentNode,
                                         attributeName,
                                         attributeValue,
                                         true);
                 shouldMarkDirty = true;
             } else {
 
-                mutatedNode = mutatedNodes.at(i);
+                visualMutatedNode = mutatedNodes.at(i);
 
-                if (TP.isElement(mutatedNode)) {
-                    mutatedElem = mutatedNode;
-                } else if (TP.isElement(mutatedNode.parentNode)) {
-                    mutatedElem = mutatedNode.parentNode;
+                if (TP.isElement(visualMutatedNode)) {
+                    visualMutatedElem = visualMutatedNode;
+                } else if (TP.isElement(visualMutatedNode.parentNode)) {
+                    visualMutatedElem = visualMutatedNode.parentNode;
                 } else {
-                    mutatedElem = mutationAncestor;
+                    visualMutatedElem = mutationAncestor;
                 }
 
                 wasTextBinding =
                     TP.elementHasAttribute(
-                        mutatedElem, 'tibet:textbinding');
+                        visualMutatedElem, 'tibet:textbinding');
 
                 //  If this was a Text node representing a desugared text
                 //  binding then we have to update the text expression by using
@@ -5089,10 +5094,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 //  (to the Text node) binding information.
                 if (wasTextBinding) {
 
-                    updatingAnsTPElem = TP.wrap(mutationAncestor);
-                    bindInfo = updatingAnsTPElem.getBindingInfoFrom(
-                                    'bind:in',
-                                    updatingAnsTPElem.getAttribute('bind:in'));
+                    mutationAncestorTPElem = TP.wrap(mutationAncestor);
+                    bindInfo = mutationAncestorTPElem.getBindingInfoFrom(
+                            'bind:in',
+                            mutationAncestorTPElem.getAttribute('bind:in'));
 
                     bindExprStr = bindInfo.at('value').at('fullExpr');
 
@@ -5102,8 +5107,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     //  node containing the old binding expression will have
                     //  already been removed by a prior mutation.
                     TP.nodeAppendChild(
-                        currentNode,
-                        TP.nodeGetDocument(currentNode).createTextNode(
+                        sourceCurrentNode,
+                        TP.nodeGetDocument(sourceCurrentNode).createTextNode(
                                                                 bindExprStr),
                         false);
 
@@ -5111,24 +5116,25 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 } else {
 
                     //  Clone the node
-                    newNode = TP.nodeCloneNode(mutatedNode, true, false);
+                    newSourceNode = TP.nodeCloneNode(
+                                        visualMutatedNode, true, false);
 
-                    if (TP.isElement(newNode)) {
+                    if (TP.isElement(newSourceNode)) {
 
                         //  'Clean' the Element of any runtime constructs put
                         //  there by TIBET.
-                        TP.elementClean(newNode);
+                        TP.elementClean(newSourceNode);
 
-                        TP.nodeInsertBefore(insertionParent,
-                                            newNode,
-                                            currentNode,
+                        TP.nodeInsertBefore(sourceInsertionParent,
+                                            newSourceNode,
+                                            sourceCurrentNode,
                                             false);
-                    } else if (TP.isTextNode(newNode)) {
+                    } else if (TP.isTextNode(newSourceNode)) {
 
                         //  It's just a Text node - we use it and it's contents
                         //  literally.
-                        TP.nodeAppendChild(insertionParent,
-                                            newNode,
+                        TP.nodeAppendChild(sourceInsertionParent,
+                                            newSourceNode,
                                             false);
                     }
 
@@ -5138,17 +5144,18 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         } else if (operation === TP.DELETE) {
 
             if (isAttrChange) {
-                TP.elementRemoveAttribute(currentNode, attributeName, true);
+                TP.elementRemoveAttribute(
+                            sourceCurrentNode, attributeName, true);
                 shouldMarkDirty = true;
             } else {
                 if (wasTextBinding) {
-                    //  NB: currentNode is the ancestor Element that is holding
-                    //  the text node that represents the sugared binding
-                    //  expression.
-                    TP.nodeDetach(currentNode.firstChild);
+                    //  NB: sourceCurrentNode is the ancestor Element that is
+                    //  holding the text node that represents the sugared
+                    //  binding expression.
+                    TP.nodeDetach(sourceCurrentNode.firstChild);
                     shouldMarkDirty = true;
                 } else {
-                    TP.nodeDetach(currentNode);
+                    TP.nodeDetach(sourceCurrentNode);
                     shouldMarkDirty = true;
                 }
             }
@@ -5166,7 +5173,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                             attributeValue.contains('TP.go2(\'#')) {
                     //  empty
                 } else {
-                    TP.elementSetAttribute(currentNode,
+                    TP.elementSetAttribute(sourceCurrentNode,
                                             attributeName,
                                             attributeValue,
                                             true);
@@ -5175,35 +5182,35 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             } else {
 
                 //  Clone the node
-                newNode = TP.nodeCloneNode(replacementNode, true, false);
+                newSourceNode = TP.nodeCloneNode(replacementNode, true, false);
 
-                if (TP.isElement(newNode)) {
+                if (TP.isElement(newSourceNode)) {
 
-                    //  'Clean' the Element of any runtime constructs put
-                    //  there by TIBET.
-                    TP.elementClean(newNode);
+                    //  'Clean' the Element of any runtime constructs put there
+                    //  by TIBET.
+                    TP.elementClean(newSourceNode);
 
                     //  Only replace the node and mark for dirty if the two
                     //  nodes aren't equal.
-                    if (!TP.nodeEqualsNode(currentNode, newNode)) {
-                        TP.nodeReplaceChild(currentNode.parentNode,
-                                            newNode,
-                                            currentNode,
+                    if (!TP.nodeEqualsNode(sourceCurrentNode, newSourceNode)) {
+                        TP.nodeReplaceChild(sourceCurrentNode.parentNode,
+                                            newSourceNode,
+                                            sourceCurrentNode,
                                             false);
 
                         shouldMarkDirty = true;
                     }
-                } else if (TP.isTextNode(newNode)) {
+                } else if (TP.isTextNode(newSourceNode)) {
 
                     //  It's just a Text node - we use it and it's contents
                     //  literally.
 
                     //  Only replace the node and mark for dirty if the two
                     //  nodes aren't equal.
-                    if (!TP.nodeEqualsNode(currentNode, newNode)) {
-                        TP.nodeReplaceChild(currentNode.parentNode,
-                                            newNode,
-                                            currentNode,
+                    if (!TP.nodeEqualsNode(sourceCurrentNode, newSourceNode)) {
+                        TP.nodeReplaceChild(sourceCurrentNode.parentNode,
+                                            newSourceNode,
+                                            sourceCurrentNode,
                                             false);
 
                         shouldMarkDirty = true;
