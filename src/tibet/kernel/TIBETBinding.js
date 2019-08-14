@@ -4658,6 +4658,33 @@ function(primarySource, aFacet, initialVal, boundElems, aPathType, pathParts, pa
                             ownerTPElem.$updateRepeatRowIndices(branchVal);
                         }
                     }
+                } else if (attrName === 'scope') {
+
+                    //  If the owner element had both a 'bind:scope' and one of
+                    //  the binding attributes on it, then we refresh the
+                    //  element itself.
+                    if (ownerTPElem.isBoundElement()) {
+                        aspectNames = ownerTPElem.$computeMatchingAspects(
+                                                        boundAttr.name,
+                                                        attrVal,
+                                                        primaryLocMatcher);
+                        ownerTPElem.$refreshLeaf(
+                            aFacet,
+                            branchVal,
+                            aspectNames,
+                            boundAttr,
+                            pathType,
+                            changeSource,
+                            null,
+                            null);
+
+                        //  Now, we must remove the ownerTPElem from the list of
+                        //  bound elements, or we'll recurse endlessly.
+                        boundElems = boundElems.filter(
+                            function(anElem) {
+                                return anElem !== ownerTPElem.getNativeNode();
+                            });
+                    }
                 }
 
                 ownerTPElem.$refreshBranches(
