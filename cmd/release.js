@@ -757,7 +757,7 @@ Cmd.prototype.phaseThree = function(meta) {
         'docker tag technicalpursuit/tibet:latest technicalpursuit/tibet:' +
         meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch,
         'docker push technicalpursuit/tibet:' +
-        meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch,
+        meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch
     ];
 
     this.info('Preparing to: ');
