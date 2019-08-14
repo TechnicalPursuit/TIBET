@@ -116,8 +116,7 @@ function(anElement) {
      * @returns {TP.meta.sherpa.IDE} The receiver.
      */
 
-    var newTagContent,
-        newElement;
+    var newElement;
 
     //  Build a chunk of markup that is a 'sherpa:tofu' element with identifying
     //  information about the element that it is standing in for.
