@@ -14216,8 +14216,8 @@ function(storageInfo) {
 
             case 'class':
 
-                attrValue = attrValue.strip(/sherpa-\w+\s{1,}/g);
-                attrValue = attrValue.strip(/\s{1,}sherpa-\w+/g);
+                attrValue = attrValue.strip(/sherpa(\-\w+)+\s{0,}/g).trim();
+                attrValue = attrValue.strip(/\s{0,}sherpa(\-\w+)+/g).trim();
 
                 break;
 
