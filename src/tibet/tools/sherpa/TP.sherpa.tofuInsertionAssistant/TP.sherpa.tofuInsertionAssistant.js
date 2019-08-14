@@ -537,6 +537,26 @@ function(anObj) {
     typeData.sort();
     typesObj.push(typeData);
 
+    //  Demo tags
+    if (TP.isNamespace(TP.demo)) {
+        typesObj.push(TP.GROUPING_PREFIX + ' - demo tags');
+        typeData = TP.demo.getTypeNames().collect(
+                    function(aTypeName) {
+                        return TP.sys.getTypeByName(aTypeName);
+                    });
+
+        typeData = typeData.filter(
+                        function(aType) {
+                            return !aType.isAbstract();
+                        });
+        typeData = typeData.collect(
+                        function(aType) {
+                            return aType.getCanonicalName();
+                        });
+        typeData.sort();
+        typesObj.push(typeData);
+    }
+
     //  TIBET tags
     typesObj.push(TP.GROUPING_PREFIX + ' - tibet tags');
     typeData = TP.ac(
