@@ -110,6 +110,40 @@ function(aHUD, droppingTPElem) {
     return false;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.dom.Node.Inst.defineMethod('sherpaAllowDescendantMutations',
+function(operation, currentAddressPosition, followingAddresses, allAddresses,
+attributeName, attributeValue, oldAttributeValue) {
+
+    /**
+     * @method sherpaAllowDescendantMutations
+     * @summary Returns the node that should be modified when the Sherpa
+     *     modifies the visual DOM that was rendered from this content. This
+     *     allows the original source DOM node more control over modifications
+     *     that the Sherpa is making
+     * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
+     *     TP.DELETE that is currently causing the mutation.
+     * @param {String} currentAddressPosition The dot-separated document address
+     *     of the node being modified.
+     * @param {String[]} followingAddresses The Array of dot-separated document
+     *     addresses of all of the nodes being modified following the current
+     *     node being modified
+     * @param {String[]} allAddresses The Array of dot-separated document
+     *     addresses of all of the nodes being modified.
+     * @param {String} [attributeName] The name of the attribute that is changing
+     *     (if this is an 'attributes' mutation).
+     * @param {String} [attributeValue] The value of the attribute that is
+     *     changing (if this is an 'attributes' mutation).
+     * @param {String} [oldAttributeValue] The prior value of the attribute that
+     *     is changing (if this is an 'attributes' mutation and the operation is
+     *     TP.UPDATE or TP.DELETE).
+     * @returns {Boolean}
+     */
+
+    return true;
+});
+
 //  ========================================================================
 //  TP.dom.CollectionNode Additions
 //  ========================================================================
@@ -1815,6 +1849,57 @@ function() {
      */
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.CustomTag.Inst.defineMethod('sherpaAllowDescendantMutations',
+function(operation, currentAddressPosition, followingAddresses, allAddresses,
+attributeName, attributeValue, oldAttributeValue) {
+
+    /**
+     * @method sherpaAllowDescendantMutations
+     * @summary Returns the node that should be modified when the Sherpa
+     *     modifies the visual DOM that was rendered from this content. This
+     *     allows the original source DOM node more control over modifications
+     *     that the Sherpa is making
+     * @param {String} operation The action such as TP.CREATE, TP.UPDATE or
+     *     TP.DELETE that is currently causing the mutation.
+     * @param {String} currentAddressPosition The dot-separated document address
+     *     of the node being modified.
+     * @param {String[]} followingAddresses The Array of dot-separated document
+     *     addresses of all of the nodes being modified following the current
+     *     node being modified
+     * @param {String[]} allAddresses The Array of dot-separated document
+     *     addresses of all of the nodes being modified.
+     * @param {String} [attributeName] The name of the attribute that is changing
+     *     (if this is an 'attributes' mutation).
+     * @param {String} [attributeValue] The value of the attribute that is
+     *     changing (if this is an 'attributes' mutation).
+     * @param {String} [oldAttributeValue] The prior value of the attribute that
+     *     is changing (if this is an 'attributes' mutation and the operation is
+     *     TP.UPDATE or TP.DELETE).
+     * @returns {Node|TP.CONTINUE} The node that should be the target for
+     *     modifications or TP.CONTINUE if this node and it's descendants should
+     *     be skipped for modification.
+     */
+
+    var ourName,
+        appTagName;
+
+    ourName = this.getCanonicalName();
+
+    //  NB: We pass false here to skip returning any Sherpa tag since we're
+    //  running in a Sherpa-enabled environment.
+    appTagName = TP.tibet.root.computeAppTagTypeName(false);
+
+    //  If our (canonical) name is the same as the app tag name, then we allow
+    //  descendant mutations.
+    if (ourName === appTagName) {
+        return true;
+    }
+
+    return false;
 });
 
 //  ========================================================================

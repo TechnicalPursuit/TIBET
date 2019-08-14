@@ -4601,6 +4601,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         currentNode,
 
+        mutatedVisualNode,
+        mutatedVisualTPElem,
+        allowMutations,
+
         leni,
         i,
 
@@ -4890,9 +4894,52 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 return this;
             }
 
+            //  If we're at the last address, that means we've reached our
+            //  'destination' node.
             if (j === lenj - 1) {
 
                 insertionParent = currentNode;
+
+                //  Iterate from the destination node and track whether any of
+                //  its ancestors will disallow mutations.
+
+                //  We initially set this flag to true and allow a negative
+                //  result from one of the ancestors set it to false.
+                allowMutations = true;
+
+                mutatedVisualNode = mutatedNode.parentNode;
+
+                while (TP.isElement(mutatedVisualNode)) {
+                    mutatedVisualTPElem = TP.wrap(mutatedVisualNode);
+                    if (!mutatedVisualTPElem.
+                        sherpaAllowDescendantMutations(
+                                operation,
+                                address,
+                                afterAddresses,
+                                addresses,
+                                attributeName,
+                                attributeValue,
+                                oldAttributeValue)) {
+
+                        allowMutations = false;
+
+                        //  If one of the ancestors isn't going to allow the
+                        //  mutation, then we might as well break.
+                        break;
+                    }
+
+                    mutatedVisualNode = mutatedVisualNode.parentNode;
+                }
+
+                //  One of the ancestors didn't allow the mutation - set the
+                //  result to TP.CONTINUE to pass this node over and break from
+                //  the outer loop.
+                if (!allowMutations) {
+                    result = TP.CONTINUE;
+                    break;
+                }
+
+                mutatedNode = mutatedVisualNode;
 
                 //  If we're not currently processing an attribute change, then
                 //  set the current node based on whether we're doing a pure
