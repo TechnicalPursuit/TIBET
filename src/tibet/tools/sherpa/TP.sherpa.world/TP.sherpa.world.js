@@ -251,11 +251,11 @@ function(iFrameElement, screenIndex, beforeIndex, screenHolderElement,
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineMethod('createScreenElement',
+TP.sherpa.world.Inst.defineMethod('createScreen',
 function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
     /**
-     * @method createScreenElement
+     * @method createScreen
      * @summary Creates a new screen element and inserts it before the supplied
      *     beforeIndex (or appends it if beforeIndex isn't supplied).
      * @param {String} iframeID The ID of the *iframe* that will be created
@@ -512,7 +512,7 @@ function(locations) {
 
     if (locationCount > screenCount) {
         for (i = 0; i < locationCount - screenCount; i++) {
-            this.createScreenElement('SCREEN_' + (i + screenCount));
+            this.createScreen('SCREEN_' + (i + screenCount));
         }
 
         //  Refetch the list of screens since we created more.
@@ -577,11 +577,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineMethod('removeScreenElement',
+TP.sherpa.world.Inst.defineMethod('removeScreen',
 function(anIndex) {
 
     /**
-     * @method removeScreenElement
+     * @method removeScreen
      * @summary Removes the screen element at the supplied index.
      * @param {Number} anIndex The index of the existing screen to be removed.
      * @returns {TP.sherpa.world} The receiver.

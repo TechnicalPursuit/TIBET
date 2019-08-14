@@ -4378,7 +4378,7 @@ function() {
     if (configNumIFrames > numIFrames) {
 
         for (i = 0; i < configNumIFrames - numIFrames; i++) {
-            worldTPElem.createScreenElement('SCREEN_' + (i + numIFrames));
+            worldTPElem.createScreen('SCREEN_' + (i + numIFrames));
         }
     }
 
