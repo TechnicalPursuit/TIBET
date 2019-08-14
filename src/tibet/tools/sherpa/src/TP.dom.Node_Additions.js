@@ -1848,6 +1848,21 @@ function() {
      *     being 'opaque' and not connect to any of its descendants.
      */
 
+    var ourName,
+        appTagName;
+
+    ourName = this.getCanonicalName();
+
+    //  NB: We pass false here to skip returning any Sherpa tag since we're
+    //  running in a Sherpa-enabled environment.
+    appTagName = TP.tibet.root.computeAppTagTypeName(false);
+
+    //  If our (canonical) name is the same as the app tag name, then we allow
+    //  descendants to be connected.
+    if (ourName === appTagName) {
+        return false;
+    }
+
     return true;
 });
 
