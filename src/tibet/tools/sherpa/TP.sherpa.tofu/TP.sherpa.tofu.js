@@ -27,7 +27,8 @@ TP.sherpa.tofu.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  The setting that determines whether or not we descend into our descendants
 //  when serializing. We override the value from our supertype and set this to
-//  TP.CONTINUE.
+//  TP.CONTINUE. This means that only select descendants, as determined by this
+//  type's getDescendantsForSerialization method will be serialized.
 TP.sherpa.tofu.Type.set('serializationTraversal', TP.CONTINUE);
 
 //  ------------------------------------------------------------------------
