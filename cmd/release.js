@@ -302,7 +302,9 @@ Cmd.prototype.phaseOne = function() {
     result = this.shexec(cmd);
     cmd = 'git rev-parse @{u}';
     result2 = this.shexec(cmd);
-    if (result.output !== result2.output && !this.options.local && !this.options.dirty) {
+    if (result.output !== result2.output &&
+        !this.options.local &&
+        !this.options.dirty) {
         throw new Error('Cannot release from out-of-date local branch.');
     }
 
@@ -571,7 +573,8 @@ Cmd.prototype.phaseTwo = function(source) {
                             ' Enter \'yes\' after inspection: ');
                         if (!/^y/i.test(result)) {
                             release.log(
-                                'Release cancelled. Revert uncommitted branch changes.');
+                                'Release cancelled. Revert uncommitted branch' +
+                                ' changes.');
                             return;
                         }
                     }
