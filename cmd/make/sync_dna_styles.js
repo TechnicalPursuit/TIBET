@@ -12,8 +12,7 @@
             ['dna', 'default', 'public'],
             ['dna', 'couch', 'public'],
             ['dna', 'ghpages'],
-            ['dna', 'electron'],
-            ['dna', 'noserver']
+            ['dna', 'electron']
         ];
 
         root = make.CLI.expandPath('~');

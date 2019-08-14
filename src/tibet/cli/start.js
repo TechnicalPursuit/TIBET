@@ -112,8 +112,7 @@ Cmd.prototype.execute = function() {
         msg = 'No server.js found...';
         cmd.warn(msg);
 
-        // If there's no server.js assume a 'noserver' template or 'couch'
-        // template of some sort and default to opening the index.html.
+        //  If there's no server.js test to see if Electron is available.
 
         //  If we see electron.js delegate to the electron command....
         if (sh.test('-f', 'electron.js')) {

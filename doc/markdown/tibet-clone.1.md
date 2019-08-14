@@ -80,7 +80,6 @@ No process environment variables are required by this command.
     default
     electron
     ghpages
-    noserver
 
 ### Create a new project with `default` dna
 
