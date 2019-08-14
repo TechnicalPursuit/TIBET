@@ -3166,18 +3166,18 @@ function() {
         'bindingsource',
             function(sourceTPElem) {
                 var uiDoc,
-                    context;
+                    elems;
 
                 //  For binding sources, if the source element is not in the
                 //  current UI canvas, then the context should be the UI canvas.
                 uiDoc = TP.sys.uidoc();
                 if (!uiDoc.contains(sourceTPElem)) {
-                    context = uiDoc;
+                    elems = TP.byCSSPath('html|body *', uiDoc, false, false);
                 } else {
-                    context = sourceTPElem;
+                    elems = TP.byCSSPath('*', sourceTPElem, false, false);
                 }
 
-                return TP.byCSSPath('html|body *', context, false, false);
+                return elems;
             },
         'signalsource',
             function(sourceTPElem) {
