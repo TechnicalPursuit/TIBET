@@ -119,8 +119,6 @@ function(anElement) {
     var newTagContent,
         newElement;
 
-    newTagContent = TP.str(anElement);
-
     //  Build a chunk of markup that is a 'sherpa:tofu' element with identifying
     //  information about the element that it is standing in for.
     newElement = TP.xhtmlnode(
@@ -128,11 +126,6 @@ function(anElement) {
                 ' proxyfor="' + TP.name(anElement) + '">' +
             '<span class="name">' +
                 '&lt;' + TP.name(anElement) + '... /&gt;' +
-            '</span>' +
-            '<span class="content">' +
-                '<![CDATA[' +
-                newTagContent +
-                ']]>' +
             '</span>' +
         '</sherpa:tofu>');
 
