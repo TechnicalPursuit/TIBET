@@ -1003,8 +1003,8 @@ function() {
         snippetEntries,
         bookmarkEntries,
         editorTabEntries,
-        deployInfoEntries;
-        // screenEntries;
+        deployInfoEntries,
+        screenLocEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
 
@@ -1130,17 +1130,19 @@ function() {
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
             //  ---
-            //  Screens
+            //  Screen Locations
             //  ---
-/*
-            screenEntries = dataSet.at('screens');
 
-            if (TP.notEmpty(screenEntries)) {
-                TP.byId('SherpaWorld', TP.sys.getUIRoot()).setScreenLocations(
-                                                                screenEntries);
+            screenLocEntries = dataSet.at('screenlocs');
+
+            if (TP.isEmpty(screenLocEntries)) {
+                screenLocEntries = TP.ac();
             }
-*/
 
+            TP.uc('urn:tibet:sherpa_screenlocs').setResource(
+                                            screenLocEntries,
+                                            TP.hc('observeResource', true,
+                                                    'signalChange', true));
             //  ---
             //  Console Editor Tabs
             //  ---
@@ -1210,7 +1212,7 @@ function() {
         bookmarkEntries,
         editorTabEntries,
         deployInfoEntries,
-//        screenEntries,
+        screenLocEntries,
 
         userData,
         profileStorage;
@@ -1281,14 +1283,14 @@ function() {
         //  ---
         //  Screens
         //  ---
-/*
-        screenEntries =
-            TP.byId('SherpaWorld', TP.sys.getUIRoot()).getScreenLocations();
 
-        if (TP.isEmpty(screenEntries)) {
-            screenEntries = TP.ac();
+        screenLocEntries =
+            TP.uc('urn:tibet:sherpa_screenlocs').getResource().get('result');
+
+        if (TP.isEmpty(screenLocEntries)) {
+            screenLocEntries = TP.ac();
         }
-*/
+
         //  ---
         //  Save it all
         //  ---
@@ -1298,8 +1300,8 @@ function() {
                     'snippets', snippetEntries,
                     'bookmarks', bookmarkEntries,
                     'editortabs', editorTabEntries,
-                    'deployinfos', deployInfoEntries);
-                    // 'screens', screenEntries);
+                    'deployinfos', deployInfoEntries,
+                    'screenlocs', screenLocEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
         profileStorage.atPut('user_' + name, TP.js2json(userData));
