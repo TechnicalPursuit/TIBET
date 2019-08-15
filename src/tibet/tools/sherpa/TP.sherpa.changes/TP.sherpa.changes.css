@@ -117,20 +117,29 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content #processRemoteChanges {
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton {
+
     position: absolute;
+
     right: 20px;
+
     height: 1.5em;
+
     line-height: 1;
+
     border: 0;
+
     box-shadow: none;
+
     text-decoration: underline;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:focus {
+
     background: cornsilk;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|content #PushAllButton:hover {
+
     background: gold;
 }
 
@@ -155,10 +164,12 @@ sherpa|changes #SherpaChangesPanelbox xctrls|content xctrls|list {
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem {
+
     border-right: 0;
 }
 
 sherpa|changes #SherpaChangesPanelbox xctrls|list xctrls|textitem:first-child {
+
     border-top: #efefef;
 }
 
