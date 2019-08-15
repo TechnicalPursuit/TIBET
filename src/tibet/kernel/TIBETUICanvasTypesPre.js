@@ -1141,13 +1141,15 @@ function(aURL, aRequest) {
      * @returns {TP.core.Window} The receiver.
      */
 
-    var win,
-        url,
+    var url,
         blank,
-        blankURI,
-        frame,
+        win,
         thisref,
-        handler;
+        frame,
+        needsPrivileges,
+        handler,
+        reqLoadFunc,
+        blankURI;
 
     //  Default URL to the blank page when empty or null/undefined.
     if (TP.isEmpty(aURL)) {
@@ -1184,17 +1186,34 @@ function(aURL, aRequest) {
         //  Capture variable binding references.
         frame = win.frameElement;
 
-        handler = function() {
+        //  See if the URI needs special privileges (i.e. is outside our
+        //  domain). If so, then just use 'window.location' to load it.
+        needsPrivileges = TP.uriNeedsPrivileges(url.getLocation());
+
+        handler = function(evt) {
             frame.removeEventListener('load', handler, false);
-            if (!blank) {
+
+            //  If it wasn't the blank xhtml file URL and it didn't need
+            //  privileges, then use setContent() to set its content. Note that
+            //  this will invoke any callback Function in the request's
+            //  TP.ONLOAD slot, so we don't have to do it here.
+            if (!blank && !needsPrivileges) {
                 thisref.setContent(url, aRequest);
             } else if (TP.isValid(aRequest)) {
-                aRequest.complete();
+                //  If there was a callback Function defined, make sure to
+                //  invoke it.
+                if (TP.isCallable(reqLoadFunc = aRequest.at(TP.ONLOAD))) {
+                    reqLoadFunc(evt);
+                }
             }
+
+            aRequest.complete();
         };
         frame.addEventListener('load', handler, false);
 
-        if (blank) {
+        //  If the URL points to the blank xhtml file.or needs privileges, then
+        //  just use 'window.location' to load it.
+        if (blank || needsPrivileges) {
             win.location = url.getLocation();
         } else {
             blankURI = TP.uc(TP.sys.cfg('path.blank_page'));
