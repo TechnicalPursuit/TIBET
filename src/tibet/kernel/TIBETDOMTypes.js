@@ -16554,11 +16554,15 @@ function() {
      * @returns {String|undefined} The location of the receiver's URI.
      */
 
-    var url;
+    var loc,
+        url;
 
-    url = TP.documentGetLocation(this.getNativeNode());
-    if (TP.isURIString(url)) {
-        return TP.uc(url).getLocation();
+    loc = TP.documentGetLocation(this.getNativeNode());
+    if (TP.isURIString(loc)) {
+        url = TP.uc(loc);
+        if (TP.isURI(url)) {
+            return url.getLocation();
+        }
     }
 
     return;
