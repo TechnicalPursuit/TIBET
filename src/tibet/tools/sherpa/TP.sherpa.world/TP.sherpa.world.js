@@ -481,7 +481,11 @@ function() {
                 var uri;
 
                 uri = TP.uc(aScreen.getLocation());
-                locs.push(uri.getVirtualLocation());
+                if (TP.isURI(uri)) {
+                    locs.push(uri.getVirtualLocation());
+                } else {
+                    locs.push('');
+                }
             });
 
     return locs;
