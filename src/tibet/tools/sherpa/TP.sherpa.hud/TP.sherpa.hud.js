@@ -100,6 +100,8 @@ function(aSignal) {
                         TP.ac('DocumentLoaded', 'DocumentUnloaded'));
     }
 
+    this.setupInjectedStyleSheet();
+
     return this;
 });
 
