@@ -363,22 +363,20 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hudsidebar.Inst.defineHandler('ToggleScreen',
+TP.sherpa.hudsidebar.Inst.defineHandler('ScreenWillToggle',
 function(aSignal) {
 
     /**
-     * @method handleToggleScreen
-     * @summary Handles notifications of screen toggle signals.
-     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     * @method handleScreenWillToggle
+     * @summary Handles notifications of screen will toggle signals.
+     * @param {TP.sig.ScreenWillToggle} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     var world,
-        oldScreenTPWin,
 
-        newScreen,
-        newScreenTPWin;
+        oldScreenTPWin;
 
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
 
@@ -386,6 +384,29 @@ function(aSignal) {
     //  DocumentLoaded/DocumentUnloaded signals coming from it.
     oldScreenTPWin = world.get('selectedScreen').getContentWindow();
     this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hudsidebar.Inst.defineHandler('ScreenDidToggle',
+function(aSignal) {
+
+    /**
+     * @method handleScreenDidToggle
+     * @summary Handles notifications of screen did toggle signals.
+     * @param {TP.sig.ScreenDidToggle} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    var world,
+
+        newScreen,
+        newScreenTPWin;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
 
     //  Grab the new screen TP.core.Window and observe
     //  DocumentLoaded/DocumentUnloaded signals coming from it.
@@ -542,11 +563,11 @@ function(shouldObserve) {
     currentScreenTPWin = world.get('selectedScreen').getContentWindow();
 
     if (shouldObserve) {
-        this.observe(world, 'ToggleScreen');
+        this.observe(world, TP.ac('ScreenWillToggle', 'ScreenDidToggle'));
         this.observe(currentScreenTPWin,
                         TP.ac('DocumentLoaded', 'DocumentUnloaded'));
     } else {
-        this.ignore(world, 'ToggleScreen');
+        this.ignore(world, TP.ac('ScreenWillToggle', 'ScreenDidToggle'));
         this.ignore(currentScreenTPWin,
                         TP.ac('DocumentLoaded', 'DocumentUnloaded'));
     }

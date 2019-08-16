@@ -5307,6 +5307,9 @@ TP.sig.SherpaSignal.defineSubtype('BreadcrumbSelected');
 TP.sig.SherpaSignal.defineSubtype('ToggleScreen');
 TP.sig.SherpaSignal.defineSubtype('FocusScreen');
 
+TP.sig.SherpaSignal.defineSubtype('ScreenWillToggle');
+TP.sig.SherpaSignal.defineSubtype('ScreenDidToggle');
+
 //  GUI Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaHaloToggle');
 TP.sig.ResponderSignal.defineSubtype('SherpaOutlinerToggle');

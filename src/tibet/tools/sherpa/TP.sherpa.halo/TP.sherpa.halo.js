@@ -1190,35 +1190,65 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('ToggleScreen',
+TP.sherpa.halo.Inst.defineHandler('ScreenWillToggle',
 function(aSignal) {
 
     /**
-     * @method handleToggleScreen
-     * @summary Handles notifications of screen toggle signals.
-     * @param {TP.sig.ToggleScreen} aSignal The TIBET signal which triggered
+     * @method handleScreenWillToggle
+     * @summary Handles notifications of screen will toggle signals.
+     * @param {TP.sig.ScreenWillToggle} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
     var world,
-        oldScreenTPWin,
+
+        oldScreenTPWin;
+
+    //  Ignore the current UI canvas document for click & context menu
+    this.ignore(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the world's current screen TP.core.Window and ignore it for when
+    //  it's document unloads & loads so that we can stop managing our click &
+    //  context menu observations.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('ScreenDidToggle',
+function(aSignal) {
+
+    /**
+     * @method handleScreenDidToggle
+     * @summary Handles notifications of screen did toggle signals.
+     * @param {TP.sig.ScreenDidToggle} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var world,
 
         newScreen,
         newScreenTPWin;
 
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
 
-    //  Grab the old screen TP.core.Window and ignore
-    //  DocumentLoaded/DocumentUnloaded signals coming from it.
-    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
-    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
-
     //  Grab the new screen TP.core.Window and observe
     //  DocumentLoaded/DocumentUnloaded signals coming from it.
     newScreen = world.get('screens').at(aSignal.at('screenIndex'));
 
     if (TP.isValid(newScreen)) {
+        //  Observe the current UI canvas document for click & context menu
+        this.observe(TP.sys.uidoc(),
+                        TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
         newScreenTPWin = newScreen.getContentWindow();
         this.observe(newScreenTPWin,
                         TP.ac('DocumentLoaded', 'DocumentUnloaded'));
@@ -1821,7 +1851,7 @@ function(shouldObserve) {
         //  when it's document unloads & loads so that we can manage our click &
         //  context menu observations.
         world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-        this.observe(world, 'ToggleScreen');
+        this.observe(world, TP.ac('ScreenWillToggle', 'ScreenDidToggle'));
 
         currentScreenTPWin = world.get('selectedScreen').getContentWindow();
         this.observe(currentScreenTPWin,
@@ -1831,15 +1861,15 @@ function(shouldObserve) {
     } else {
         this.ignore(TP.ANY, 'SherpaHaloToggle');
 
-        //  Observe the current UI canvas document for click & context menu
+        //  Ignore the current UI canvas document for click & context menu
         this.ignore(TP.sys.uidoc(),
                         TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
-        //  Grab the world's current screen TP.core.Window and observe it for
-        //  when it's document unloads & loads so that we can manage our click &
-        //  context menu observations.
+        //  Grab the world's current screen TP.core.Window and ignore it for
+        //  when it's document unloads & loads so that we can stop managing our
+        //  click & context menu observations.
         world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-        this.ignore(world, 'ToggleScreen');
+        this.ignore(world, TP.ac('ScreenWillToggle', 'ScreenDidToggle'));
 
         currentScreenTPWin = world.get('selectedScreen').getContentWindow();
         this.ignore(currentScreenTPWin,
