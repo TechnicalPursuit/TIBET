@@ -91,28 +91,40 @@ sherpa|world > div.infos {
     top: 0;
     left: 0;
 
-    width: 100%;
-    height: 100%;
+    right: auto;
+    bottom: auto;
 }
 
 sherpa|hud:not([pclass|closed]) sherpa|world[mode="thumbnail"] > div.infos {
 
-    display: block;
+    display: grid;
+
+    background-color: initial;
+
+    grid-template-rows: repeat(var(--sherpa-screen-rows), auto);
+    grid-template-columns: repeat(var(--sherpa-screen-cols), auto);
 }
 
 sherpa|world div.info {
 
+    position: relative;
+
+    display: block;
+
     top: 0;
     left: 0;
+    right: auto;
+    bottom: auto;
 
-    width: 512px;
-    height: 384px;
-
-    outline: solid 1px blue;
+    width: calc(var(--sherpa-screen-width) / var(--sherpa-screen-cols));
+    height: calc(var(--sherpa-screen-height) / var(--sherpa-screen-rows));
 
     margin: calc(var(--sherpa-screen-thumbnail-margin) / 2);
 
-    float: left;
+    grid-column-start: auto;
+    grid-row-start: auto;
+
+    outline: solid 1px blue;
 }
 
 sherpa|world div.info[pclass|selected] {
