@@ -75,7 +75,7 @@ function(aRequest) {
                 anArrow.set('scrollingContentTPElem', thumbnailListTPElem);
             });
 
-    tpElem.observe(TP.ANY, 'TP.sig.ToggleScreen');
+    tpElem.observe(TP.ANY, 'TP.sig.ScreenDidToggle');
 
     return;
 });
@@ -108,7 +108,7 @@ function(aRequest) {
     thumbnailListTPElem = tpElem.get('thumbnailList');
     tpElem.ignore(thumbnailListTPElem, 'TP.sig.DOMScroll');
 
-    tpElem.ignore(TP.ANY, 'TP.sig.ToggleScreen');
+    tpElem.ignore(TP.ANY, 'TP.sig.ScreenDidToggle');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -161,7 +161,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.worldthumbnails.Inst.defineHandler('ToggleScreen',
+TP.sherpa.worldthumbnails.Inst.defineHandler('ScreenDidToggle',
 function(aSignal) {
 
     var screenIndex,
