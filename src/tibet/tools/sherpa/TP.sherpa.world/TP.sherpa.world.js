@@ -320,6 +320,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
         loadRequest.atPut(
             TP.ONLOAD,
             function(evt) {
+                TP.boot.initializeCanvas(newIFrameElem.contentWindow);
                 if (TP.isCallable(creationCompleteFunc)) {
                     creationCompleteFunc();
                 }
