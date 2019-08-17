@@ -481,6 +481,10 @@ function(finalizationFunc) {
     thisref = this;
     setTimeout(function() {
         var tpElem,
+
+            screenLocEntries,
+            homeURL,
+
             consoleService,
 
             hudElem,
@@ -500,6 +504,22 @@ function(finalizationFunc) {
         //  Make sure to refresh all of the descendant document positions for
         //  the UI canvas.
         TP.nodeRefreshDescendantDocumentPositions(TP.sys.uidoc(true));
+
+        //  Grab the current screen location entries. If they're empty, populate
+        //  them with at least one entry: the home URL that we're going to put
+        //  into SCREEN_0.
+        screenLocEntries =
+            TP.uc('urn:tibet:sherpa_screenlocs').getResource().get(
+                                                            'result');
+        if (TP.isEmpty(screenLocEntries)) {
+            homeURL = TP.sys.getHomeURL(true);
+            screenLocEntries = TP.ac(TP.uriInTIBETFormat(homeURL));
+            TP.uc('urn:tibet:sherpa_screenlocs').setResource(
+                                        screenLocEntries,
+                                        TP.hc('observeResource', true,
+                                                'signalChange', true));
+            TP.bySystemId('TSH').saveProfile();
+        }
 
         consoleService = TP.bySystemId('SherpaConsoleService');
 
