@@ -283,7 +283,6 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
         screenHolderElem,
         infoHolderElem,
 
-        newScreenElem,
         newIFrameElem,
 
         loadRequest,
@@ -333,6 +332,54 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
     }
 
     return newScreenTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('destroyScreen',
+function(iFrameID) {
+
+    /**
+     * @method destroyScreen
+     * @summary Destroys the screen element with the given iframeID and removes
+     *     it from the set of the world's screens.
+     * @param {String} iframeID The ID of the *iframe* that will be destroyed
+     *     under the new sherpa:screen element.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var iframeTPElem,
+        screenTPElem,
+
+        infoElem;
+
+    if (TP.isEmpty(iFrameID)) {
+        return this;
+    }
+
+    //  Grab the *iframe* element that will be destroyed.
+    iframeTPElem = TP.byId(iFrameID, TP.sys.getUIRoot());
+    if (TP.notValid(iframeTPElem)) {
+        return this;
+    }
+
+    //  **MAKE SURE TO SWITCH SCREENS HERE**
+    //  If we don't switch screens here, then the rest of the Sherpa will be
+    //  pointing at an old screen, which is now destroyed, which causes all
+    //  kinds of problems.
+    this.switchToScreen(0, false);
+
+    //  The TIBET screen element will be the iframe's parent node.
+    screenTPElem = iframeTPElem.getParentNode();
+
+    //  Grab the info element from the screen.
+    infoElem = screenTPElem.get('infoElement');
+
+    //  Detach them both.
+    screenTPElem.detach();
+    TP.nodeDetach(infoElem);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
