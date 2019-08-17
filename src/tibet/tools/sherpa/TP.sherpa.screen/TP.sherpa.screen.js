@@ -20,6 +20,8 @@ TP.sherpa.Element.defineSubtype('screen');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.screen.Inst.defineAttribute('infoElement');
+
 TP.sherpa.screen.Inst.defineAttribute('contentIFrame',
     TP.cpc('> iframe', TP.hc('shouldCollapse', true)));
 

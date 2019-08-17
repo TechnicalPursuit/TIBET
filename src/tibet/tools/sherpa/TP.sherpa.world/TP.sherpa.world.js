@@ -244,6 +244,9 @@ function(iFrameElement, screenIndex, beforeIndex, screenHolderElement,
                                     insertionElem,
                                     false);
 
+    screen = TP.wrap(screen);
+    screen.set('infoElement', infoDiv);
+
     return screen;
 });
 
@@ -328,8 +331,6 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
         TP.wrap(newIFrameElem.contentWindow).setLocation(loadURL, loadRequest);
     }
-
-    newScreenTPElem = TP.wrap(newScreenElem);
 
     return newScreenTPElem;
 });
