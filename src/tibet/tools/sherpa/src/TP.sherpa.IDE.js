@@ -1134,8 +1134,7 @@ function(aSignal) {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
-    var world,
-        currentScreenTPWin,
+    var currentScreenTPWin,
         currentCanvasDoc;
 
     //  Set up managed mutation observer machinery that uses our
@@ -1151,10 +1150,9 @@ function(aSignal) {
         return this;
     }
 
-    //  Grab the Sherpa's 'world' element and get the currently viewed canvas
-    //  document from it.
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+    //  Create a TP.core.Window from the signal origin (which should be a String
+    //  with the window's name).
+    currentScreenTPWin = TP.core.Window.construct(aSignal.getOrigin());
     currentCanvasDoc = currentScreenTPWin.getDocument();
 
     //  Make sure to refresh all of the descendant document positions for the UI
