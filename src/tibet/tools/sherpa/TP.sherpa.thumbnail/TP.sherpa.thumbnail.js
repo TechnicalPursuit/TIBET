@@ -106,10 +106,8 @@ function(aSignal) {
      * @returns {TP.sherpa.thumbnail} The receiver.
      */
 
-    var targetTPElem,
-        location;
+    var location;
 
-    targetTPElem = TP.wrap(aSignal.getTarget());
     location = TP.wrap(aSignal.getResolvedDOMTarget().previousSibling).
                                                             getTextContent();
 

@@ -308,7 +308,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
     TP.elementSetAttribute(newIFrameElem, 'frameborder', '0');
 
     //  Build a screen using the newly created iframe and the count, index, etc
-    newScreenElem = this.getType().$buildScreenFromIFrame(
+    this.getType().$buildScreenFromIFrame(
                             newIFrameElem,
                             screenCount,
                             beforeIndex,
