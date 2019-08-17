@@ -322,6 +322,9 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
         loadRequest.atPut(
             TP.ONLOAD,
             function(evt) {
+
+                //  Make sure to initialize the new iframe's contentWindow. This
+                //  will install event hooks, etc.
                 TP.boot.initializeCanvas(newIFrameElem.contentWindow);
                 if (TP.isCallable(creationCompleteFunc)) {
                     creationCompleteFunc();
