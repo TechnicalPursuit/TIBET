@@ -1438,7 +1438,9 @@ function(selection) {
     var selectedIndexes,
         startOffset,
 
-        selectAll;
+        selectAll,
+
+        groupID;
 
     //  Update any selection indices before we retrieve them
     this.$updateSelectionIndices();
@@ -1457,6 +1459,8 @@ function(selection) {
                         });
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
+
+    groupID = this.getLocalID() + '_group';
 
     selection.attr('tibet:tag', 'TP.xctrls.item').each(
             function(d, i) {
@@ -1511,8 +1515,26 @@ function(selection) {
                 //  attribute.
                 return null;
             }).attr(
+            'tabindex', function(d, i) {
+                if (TP.regex.SPACING.test(d[0])) {
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }
+
+                return '0';
+            }).attr(
             'hidefocus', function(d, i) {
                 return 'true';
+            }).attr(
+            'tibet:group', function(d, i) {
+                if (TP.regex.SPACING.test(d[0])) {
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }
+
+                return groupID;
             }
         );
 

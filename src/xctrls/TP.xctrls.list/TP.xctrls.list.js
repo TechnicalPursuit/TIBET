@@ -1879,7 +1879,9 @@ function(selection) {
      */
 
     var selectedValues,
-        selectAll;
+        selectAll,
+
+        groupID;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1887,6 +1889,8 @@ function(selection) {
     }
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
+
+    groupID = this.get('group').getLocalID();
 
     selection.each(
             function(d) {
@@ -1944,6 +1948,24 @@ function(selection) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
+            }).attr(
+            'tabindex', function(d, i) {
+                if (TP.regex.SPACING.test(d[0])) {
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }
+
+                return '0';
+            }).attr(
+            'tibet:group', function(d, i) {
+                if (TP.regex.SPACING.test(d[0])) {
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }
+
+                return groupID;
             }
         );
 
