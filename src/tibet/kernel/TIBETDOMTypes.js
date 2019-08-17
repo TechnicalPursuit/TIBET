@@ -14216,6 +14216,10 @@ function(storageInfo) {
 
             case 'class':
 
+                if (TP.isEmpty(attrValue)) {
+                    continue;
+                }
+
                 attrValue = attrValue.strip(/sherpa(\-\w+)+\s{0,}/g).trim();
                 attrValue = attrValue.strip(/\s{0,}sherpa(\-\w+)+/g).trim();
 
