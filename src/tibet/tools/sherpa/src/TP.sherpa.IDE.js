@@ -268,6 +268,59 @@ function(toolID) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('addScreenLocation',
+function(aLocation) {
+
+    /**
+     * @method addScreenLocation
+     * @summary Adds a screen location to the Sherpa's list of managed screen
+     *     locations.
+     * @returns {String} aLocation The URI location that should be added to the
+     *     list of screens.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var loc,
+
+        screenLocEntries,
+        locs;
+
+    //  Grab the fully expanded location of the supplied location.
+    loc = TP.uc(aLocation).getLocation();
+
+    //  Grab the set of managed screen locations and convert them to their fully
+    //  expanded form. This will allow us to compare to the supplied location in
+    //  a canonicalized way.
+    screenLocEntries =
+        TP.uc('urn:tibet:sherpa_screenlocs').getResource().get(
+                                                        'result');
+    locs = screenLocEntries.collect(
+                function(aLoc) {
+                    return TP.uc(aLoc).getLocation();
+                });
+
+    //  If the list of managed screen locations already contain the supplied
+    //  location, exit here. We only allow one occurrence.
+    if (locs.contains(aLocation)) {
+        return;
+    }
+
+    //  Add the virtualized form of the supplied location to the list.
+    screenLocEntries.push(TP.uriInTIBETFormat(loc));
+
+    //  Let everyone who is observing the list of managed screen locations know
+    //  that it just changed.
+    TP.uc('urn:tibet:sherpa_screenlocs').$changed();
+
+    //  Tell the TSH to save its profile, which will cause it to save the list
+    //  of managed screen locations, amongst other things.
+    TP.bySystemId('TSH').saveProfile();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('asJSONSource',
 function() {
 
@@ -3007,6 +3060,77 @@ function(mutationRecords) {
                     record.new);
         }
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('removeScreenLocation',
+function(aLocation) {
+
+    /**
+     * @method removeScreenLocation
+     * @summary Removes a screen location from the Sherpa's list of managed
+     *     screen locations.
+     * @returns {String} aLocation The URI location that should be removed from
+     *     the list of screens.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var loc,
+
+        screenLocEntries,
+        locs,
+
+        index,
+
+        viewDoc,
+        worldTPElem;
+
+    //  Grab the fully expanded location of the supplied location.
+    loc = TP.uc(aLocation).getLocation();
+
+    //  Grab the set of managed screen locations and convert them to their fully
+    //  expanded form. This will allow us to compare to the supplied location in
+    //  a canonicalized way.
+    screenLocEntries =
+        TP.uc('urn:tibet:sherpa_screenlocs').getResource().get(
+                                                        'result');
+    locs = screenLocEntries.collect(
+                function(aLoc) {
+                    return TP.uc(aLoc).getLocation();
+                });
+
+    //  If the list of managed screen locations don't contain the supplied
+    //  location, exit here. It's not in our list.
+    if (!locs.contains(loc)) {
+        return;
+    }
+
+    index = locs.indexOf(loc);
+    if (index === 0) {
+        return this;
+    }
+
+    //  Remove the virtualized form of the supplied location from the list.
+    loc = TP.uriInTIBETFormat(aLocation);
+    screenLocEntries.remove(loc);
+
+    //  Let everyone who is observing the list of managed screen locations know
+    //  that it just changed.
+    TP.uc('urn:tibet:sherpa_screenlocs').$changed();
+
+    //  Tell the TSH to save its profile, which will cause it to save the list
+    //  of managed screen locations, amongst other things.
+    TP.bySystemId('TSH').saveProfile();
+
+    //  Grab the world and tell it to destroy the screen that is containing the
+    //  location (as identified by its index).
+    viewDoc = this.get('vWin').document;
+    worldTPElem = TP.byId('SherpaWorld', viewDoc);
+
+    worldTPElem.destroyScreen('SCREEN_' + index);
 
     return this;
 });
