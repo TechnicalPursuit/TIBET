@@ -10,13 +10,13 @@
         </div>
     </div>
     <div class="content">
-        <div>
-            <button id="AddLocationButton" on:click="AddLocation">Add Location</button>
-        </div>
         <xctrls:panelbox id="SherpaThumbnailPanelbox">
             <xctrls:panel pclass:selected="true">
                 <xctrls:value>URIs</xctrls:value>
                 <xctrls:content>
+                    <span>
+                        <button id="AddLocationButton" on:click="AddLocation">Add Location</button>
+                    </span>
                     <xctrls:list bind:in="{data: urn:tibet:sherpa_screenlocs}" on:dblclick="NavigateToScreen">
                         <tibet:template>
                             <xctrls:textitem>
