@@ -255,7 +255,7 @@ function(iFrameElement, screenIndex, beforeIndex, screenHolderElement,
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('createScreen',
-function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
+function(iFrameID, beforeIndex, loadURL, aRequest, creationCompleteFunc) {
 
     /**
      * @method createScreen
@@ -269,6 +269,8 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
      *     new sherpa:screen will be inserted before. If null, the new screen
      *     will be appended to the end of the list of screens.
      * @param {TP.uri.URI} [loadURL] The URL to load into the screen iframe.
+     * @param {TP.sig.Request} [aRequest] A request object which defines further
+     *     parameters.
      * @param {Function} [creationCompleteFunc] The Function to call when the
      *     content of the iframe (if supplied by the loadURL) is finished
      *     loading.
@@ -317,7 +319,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
     //  If we were supplied a URL, then load it into the iframe window.
     if (TP.isURI(loadURL)) {
-        loadRequest = TP.request();
+        loadRequest = TP.request(aRequest);
 
         loadRequest.atPut(
             TP.ONLOAD,
@@ -556,7 +558,8 @@ function(locations) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('switchToScreen',
-function(aScreenIndex, shouldCreate, newScreenLocation) {
+function(aScreenIndex, shouldCreate, newScreenLocation, aRequest,
+switchCompleteFunc) {
 
     /**
      * @method switchToScreen
@@ -567,6 +570,10 @@ function(aScreenIndex, shouldCreate, newScreenLocation) {
      *     created using the supplied location.
      * @param {String} [newScreenLocation] The location that a created screen
      *     should be set to if it doesn't exist.
+     * @param {TP.sig.Request} [aRequest] A request object which defines further
+     *     parameters.
+     * @param {Function} [switchCompleteFunc] The Function to call when the
+     *     switching to the screen is finished.
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -635,6 +642,10 @@ function(aScreenIndex, shouldCreate, newScreenLocation) {
 
         TP.sys.setUICanvas('UIROOT.' + newTPWindow.getLocalID());
 
+        if (TP.isCallable(switchCompleteFunc)) {
+            switchCompleteFunc();
+        }
+
         //  Make sure to scroll it into view.
         this.scrollSelectedScreenIntoView();
 
@@ -661,6 +672,7 @@ function(aScreenIndex, shouldCreate, newScreenLocation) {
                 'SCREEN_' + newIndex,
                 null,
                 TP.uc(newScreenLocation),
+                aRequest,
                 function() {
                     //  This function will be called after the iframe associated
                     //  with the new screen is loaded.
@@ -681,7 +693,7 @@ function(aScreenIndex, shouldCreate, newScreenLocation) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('switchToScreenWithLocation',
-function(aLocation, shouldCreate) {
+function(aLocation, shouldCreate, aRequest, switchCompleteFunc) {
 
     /**
      * @method switchToScreenWithLocation
@@ -690,6 +702,10 @@ function(aLocation, shouldCreate) {
      *     switched to.
      * @param {Boolean} [shouldCreate=false] Whether or not a screen should be
      *     created using the supplied location if it doesn't exist.
+     * @param {TP.sig.Request} [aRequest] A request object which defines further
+     *     parameters.
+     * @param {Function} [switchCompleteFunc] The Function to call when the
+     *     switching to the screen is finished.
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -715,7 +731,7 @@ function(aLocation, shouldCreate) {
     index = locs.indexOf(loc);
 
     //  Switch to that screen (or create it with the supplied location).
-    this.switchToScreen(index, shouldCreate, loc);
+    this.switchToScreen(index, shouldCreate, loc, aRequest, switchCompleteFunc);
 
     return this;
 });
