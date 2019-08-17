@@ -461,7 +461,7 @@ function(aSignal) {
         //  then grab the removed data's 'name' value and remove the
         //  corresponding attribute.
         removedData = aSignal.at('removedData');
-        if (TP.isValid(removedData)) {
+        if (TP.isValid(removedData) && removedData.tagAttrs) {
             name = removedData.tagAttrs.tagAttrName;
 
             if (TP.notEmpty(name)) {

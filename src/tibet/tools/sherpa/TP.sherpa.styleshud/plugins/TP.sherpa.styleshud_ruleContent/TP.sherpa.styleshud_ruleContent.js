@@ -246,6 +246,7 @@ function(aSignal) {
         hadProperty,
 
         removedData,
+        ruleProps,
 
         targetTPElem,
         haloTPElem;
@@ -361,17 +362,21 @@ function(aSignal) {
         //  corresponding attribute.
         removedData = aSignal.at('removedData');
         if (TP.isValid(removedData)) {
-            name = removedData.at('ruleProps').at('rulePropName');
+            ruleProps = removedData.at('ruleProps');
 
-            if (TP.notEmpty(name)) {
-                //  Remove the name from our list of attribute names.
-                allPropNames.remove(name);
+            if (TP.isValid(ruleProps)) {
+                name = ruleProps.at('rulePropName');
 
-                try {
-                    TP.styleRuleRemoveProperty(rule, name);
-                } catch (e) {
-                    TP.ifError() ?
-                        TP.error('Error removing CSS property: ' + name) : 0;
+                if (TP.notEmpty(name)) {
+                    //  Remove the name from our list of attribute names.
+                    allPropNames.remove(name);
+
+                    try {
+                        TP.styleRuleRemoveProperty(rule, name);
+                    } catch (e) {
+                        TP.ifError() ?
+                            TP.error('Error removing CSS property: ' + name) : 0;
+                    }
                 }
             }
         }
