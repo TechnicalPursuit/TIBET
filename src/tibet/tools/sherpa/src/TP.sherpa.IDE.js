@@ -1796,6 +1796,119 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineHandler('ScreenWillToggle',
+function(aSignal) {
+
+    /**
+     * @method handleScreenWillToggle
+     * @summary Handles notifications of screen will toggle signals.
+     * @param {TP.sig.ScreenWillToggle} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var world,
+
+        oldScreenTPWin,
+        oldCanvasDoc;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the old screen TP.core.Window and ignore
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    oldScreenTPWin = world.get('selectedScreen').getContentWindow();
+    this.ignore(oldScreenTPWin, TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    oldCanvasDoc = oldScreenTPWin.getDocument();
+
+    //  Grab the canvas document and ignore mutation style change signals from
+    //  it.
+    this.ignore(oldCanvasDoc, 'TP.sig.MutationStyleChange');
+
+    //  Ignore the canvas document for DOMDragDown and DOMMouseDown in a
+    //  *capturing* fashion (to match our observation in the DocumentLoaded
+    //  handler).
+    this.ignore(oldCanvasDoc,
+                TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                null,
+                TP.CAPTURING);
+
+    //  Ignore the canvas document for when connections are completed to
+    //  destination elements *within* the UI canvas (or are cancelled).
+    this.ignore(oldCanvasDoc, TP.ac(
+                                    'TP.sig.SherpaConnectCancelled',
+                                    'TP.sig.SherpaConnectCompleted'));
+
+    TP.deactivateMutationObserver('BUILDER_OBSERVER');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('ScreenDidToggle',
+function(aSignal) {
+
+    /**
+     * @method handleScreenDidToggle
+     * @summary Handles notifications of screen did toggle signals.
+     * @param {TP.sig.ScreenDidToggle} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var world,
+
+        newScreen,
+        newScreenTPWin,
+        newCanvasDoc;
+
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+
+    //  Grab the new screen TP.core.Window and observe
+    //  DocumentLoaded/DocumentUnloaded signals coming from it.
+    newScreen = world.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(newScreen)) {
+        newScreenTPWin = newScreen.getContentWindow();
+        this.observe(newScreenTPWin,
+                        TP.ac('DocumentLoaded', 'DocumentUnloaded'));
+    }
+
+    newCanvasDoc = newScreenTPWin.getDocument();
+
+    //  Make sure to refresh all of the descendant document positions for the UI
+    //  canvas.
+    TP.nodeRefreshDescendantDocumentPositions(TP.unwrap(newCanvasDoc));
+
+    //  Grab the canvas document and observe mutation style change signals from
+    //  it.
+    this.observe(newCanvasDoc, 'TP.sig.MutationStyleChange');
+
+    //  Observe the canvas document for DOMDragDown and DOMMouseDown in a
+    //  *capturing* fashion (to avoid having issues with the standard platform's
+    //  implementation of mouse/drag down - in this way, we can preventDefault()
+    //  on these events before they get in the way).
+    this.observe(newCanvasDoc,
+                    TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                    null,
+                    TP.CAPTURING);
+
+    //  Observe just the canvas document for when connections are completed to
+    //  destination elements *within* the UI canvas (or are cancelled). Panels
+    //  in the HUD (which  are in the UI root document) will observe this
+    //  method themselves for connections made *to* elements in them.
+    this.observe(newCanvasDoc, TP.ac(
+                                    'TP.sig.SherpaConnectCancelled',
+                                    'TP.sig.SherpaConnectCompleted'));
+
+    TP.activateMutationObserver(TP.unwrap(newCanvasDoc),
+                                'BUILDER_OBSERVER');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineHandler('SherpaConnectCancelled',
 function(aSignal) {
 
