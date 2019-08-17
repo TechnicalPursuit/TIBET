@@ -398,7 +398,7 @@ function(aSignal) {
      * @summary Handles notifications of screen did toggle signals.
      * @param {TP.sig.ScreenDidToggle} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.hud} The receiver.
+     * @returns {TP.sherpa.hudsidebar} The receiver.
      */
 
     var world,
