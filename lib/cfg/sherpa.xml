@@ -119,7 +119,6 @@
     <script src="./TP.sherpa.statusbar/TP.sherpa.statusbar.js"/>
     <script src="./TP.sherpa.bookmarkMenuContent/TP.sherpa.bookmarkMenuContent.js"/>
     <script src="./TP.sherpa.snippetMenuContent/TP.sherpa.snippetMenuContent.js"/>
-    <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>
     <script src="./TP.sherpa.toolbar/TP.sherpa.toolbar.js"/>
     <script src="./TP.sherpa.typeToolbarContent/TP.sherpa.typeToolbarContent.js"/>
     <script src="./TP.sherpa.typesToolbarContent/TP.sherpa.typesToolbarContent.js"/>
