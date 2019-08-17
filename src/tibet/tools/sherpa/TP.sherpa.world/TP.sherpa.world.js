@@ -447,61 +447,7 @@ function(aSignal) {
      * @returns {TP.sherpa.world} The receiver.
      */
 
-    var consoleService,
-
-        oldScreen,
-        oldInfo,
-
-        newScreen,
-        newInfo,
-
-        newTPWindow;
-
-    //  Get the old selected screen
-    oldScreen = this.get('selectedScreen');
-
-    //  Get the new selected screen
-    newScreen = this.get('screens').at(aSignal.at('screenIndex'));
-
-    if (newScreen.identicalTo(oldScreen)) {
-        return this;
-    }
-
-    //  Get the old selected information overlay
-    oldInfo = this.get('selectedInfo');
-
-    //  Get the new selected information overlay
-    newInfo = this.get('infos').at(aSignal.at('screenIndex'));
-
-    consoleService = TP.bySystemId('SherpaConsoleService');
-
-    //  If there was an old selected screen, deselect it and the associated
-    //  information overlay. Also, set the console's UICANVAS to null.
-    if (TP.isValid(oldScreen)) {
-        oldScreen.setSelected(false);
-        oldInfo.setSelected(false);
-
-        consoleService.get('model').setVariable('UICANVAS', null);
-    }
-
-    //  If there is a new selected screen, select it and the associated
-    //  information overlay. Also, set the console's UICANVAS to that screen's
-    //  content window and the current UI canvas to be that window.
-    if (TP.isValid(newScreen)) {
-        newScreen.setSelected(true);
-        newInfo.setSelected(true);
-
-        newTPWindow = newScreen.getContentWindow();
-
-        consoleService.get('model').setVariable('UICANVAS', newTPWindow);
-
-        TP.sys.setUICanvas('UIROOT.' + newTPWindow.getLocalID());
-
-        //  Make sure to scroll it into view.
-        this.scrollSelectedScreenIntoView();
-    } else {
-        //  TODO: Raise an exception - there will be no UI canvas.
-    }
+    this.switchToScreen(aSignal.at('screenIndex'), false);
 
     return this;
 });
@@ -600,6 +546,173 @@ function(locations) {
     };
 
     loadFunc();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('switchToScreen',
+function(aScreenIndex, shouldCreate, newScreenLocation) {
+
+    /**
+     * @method switchToScreen
+     * @summary Switch to the screen indicated by the supplied index.
+     * @param {Number} aScreenIndex The index of the screen that should be made
+     *     active.
+     * @param {Boolean} [shouldCreate=false] Whether or not a screen should be
+     *     created using the supplied location.
+     * @param {String} [newScreenLocation] The location that a created screen
+     *     should be set to if it doesn't exist.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var oldScreen,
+        newScreen,
+
+        oldInfo,
+
+        consoleService,
+        halo,
+
+        postSwitchFunc,
+
+        newInfo,
+
+        newIndex;
+
+    //  Get the old selected screen
+    oldScreen = this.get('selectedScreen');
+
+    if (aScreenIndex !== TP.NOT_FOUND) {
+        //  Get the new selected screen
+        newScreen = this.get('screens').at(aScreenIndex);
+        if (newScreen.identicalTo(oldScreen)) {
+            return this;
+        }
+    }
+
+    //  Get the old selected information overlay
+    oldInfo = this.get('selectedInfo');
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
+    this.signal('ScreenWillToggle');
+
+    //  If there was an old selected screen, deselect it and the associated
+    //  information overlay. Also, set the console's UICANVAS to null.
+    if (TP.isValid(oldScreen)) {
+        oldScreen.setSelected(false);
+        oldInfo.setSelected(false);
+
+        consoleService.get('model').setVariable('UICANVAS', null);
+    }
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+    if (TP.isValid(halo)) {
+        //  Note that we do not worry here whether the current target can be
+        //  blurred or not. The screen content is changing and we can't stop it.
+        halo.blur();
+        halo.setAttribute('hidden', true);
+    }
+
+    //  Create a Function that will be invoked after the screens are switched.
+    //  If a new screen is created, then this method will be invoked
+    //  asynchronously after the iframe associated with the screen is loaded.
+    postSwitchFunc = function() {
+        var newTPWindow;
+
+        newScreen.setSelected(true);
+        newInfo.setSelected(true);
+
+        newTPWindow = newScreen.getContentWindow();
+
+        consoleService.get('model').setVariable('UICANVAS', newTPWindow);
+
+        TP.sys.setUICanvas('UIROOT.' + newTPWindow.getLocalID());
+
+        //  Make sure to scroll it into view.
+        this.scrollSelectedScreenIntoView();
+
+        this.signal('ScreenDidToggle', TP.request('screenIndex', newIndex));
+    }.bind(this);
+
+    //  If there is a new selected screen, select it and the associated
+    //  information overlay.
+    if (TP.isValid(newScreen)) {
+        newIndex = aScreenIndex;
+
+        //  Get the new selected information overlay
+        newInfo = this.get('infos').at(aScreenIndex);
+
+        //  Invoke the post switching Function immediately.
+        postSwitchFunc();
+    } else if (TP.isTrue(shouldCreate)) {
+
+        //  Otherwise, if the caller supplied true for shouldCreate, then set
+        //  the newIndex to the size of the list of locations and create a
+        //  screen with the supplied location.
+        newIndex = this.getScreenLocations().getSize();
+        this.createScreen(
+                'SCREEN_' + newIndex,
+                null,
+                TP.uc(newScreenLocation),
+                function() {
+                    //  This function will be called after the iframe associated
+                    //  with the new screen is loaded.
+
+                    //  Now that the new screen and info are there, grab
+                    //  references to them
+                    newScreen = this.get('screens').at(newIndex);
+                    newInfo = this.get('infos').at(newIndex);
+
+                    //  Invoke the post switching Function.
+                    postSwitchFunc();
+                }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('switchToScreenWithLocation',
+function(aLocation, shouldCreate) {
+
+    /**
+     * @method switchToScreenWithLocation
+     * @summary Switch to the screen containing the supplied location.
+     * @param {String} aLocation The location that matches the screen to be
+     *     switched to.
+     * @param {Boolean} [shouldCreate=false] Whether or not a screen should be
+     *     created using the supplied location if it doesn't exist.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var loc,
+        locs,
+
+        index;
+
+    this.setAttribute('mode', 'normal');
+
+    //  Grab the fully expanded location of the supplied location.
+    loc = TP.uc(aLocation).getLocation();
+
+    //  Grab the set of managed screen locations and convert them to their fully
+    //  expanded form. This will allow us to compare to the supplied location in
+    //  a canonicalized way.
+    locs = this.getScreenLocations().collect(
+                function(aLoc) {
+                    return TP.uc(aLoc).getLocation();
+                });
+
+    //  Grab the index of the location. This will match the index of the screen.
+    index = locs.indexOf(loc);
+
+    //  Switch to that screen (or create it with the supplied location).
+    this.switchToScreen(index, shouldCreate, loc);
 
     return this;
 });
