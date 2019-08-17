@@ -29,10 +29,18 @@ function(aSignal) {
      * @returns {TP.sherpa.thumbnail} The receiver.
      */
 
-    var world;
+    var world,
+        currentMode;
 
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    world.setAttribute('mode', 'thumbnail');
+
+    currentMode = world.getAttribute('mode');
+
+    if (currentMode === 'thumbnail') {
+        world.setAttribute('mode', 'normal');
+    } else {
+        world.setAttribute('mode', 'thumbnail');
+    }
 
     return this;
 });
