@@ -124,21 +124,25 @@ sherpa|world div.info {
     grid-column-start: auto;
     grid-row-start: auto;
 
-    outline: solid 1px blue;
+    outline: solid 1px lightgray;
 }
 
 sherpa|world div.info[pclass|selected] {
 
-    outline: solid 1px red;
+    outline: solid 1px gold;
 }
 
 sherpa|world div.infotab {
+
+    position: relative;
+
+    left: calc(50% - 2.5em);
 
     width: 5em;
     height: 1.5em;
 
     color: white;
-    background-color: blue;
+    background-color: lightgray;
 
     font-size: 10px;
     line-height: 1.5;
@@ -148,7 +152,12 @@ sherpa|world div.infotab {
 
 sherpa|world div.info[pclass|selected] div.infotab {
 
-    background-color: red;
+    background-color: gold;
+}
+
+sherpa|world div.info:not([pclass|selected]) div.infotab:hover {
+
+    outline: dashed 1px black;
 }
 
 sherpa|hud:not([pclass|closed]) sherpa|world[mode="normal"] > div.screens {
