@@ -16,12 +16,20 @@ sherpa|uriEditorToolbarContent {
 
 sherpa|uriEditorToolbarContent > button {
 
-    margin-bottom: 2px;
+    height: 1,5em;
+
+    margin-bottom: 5px;
     margin-right: 2px;
 
-    font-size: 10px;
+    font-size: 12px;
 
-    line-height: 0.8;
+    line-height: 1;
+
+    border: 0;
+    box-shadow: none;
+    background-color: transparent;
+
+    text-decoration: underline;
 }
 
 sherpa|uriEditorToolbarContent > button[action="revert"] {
