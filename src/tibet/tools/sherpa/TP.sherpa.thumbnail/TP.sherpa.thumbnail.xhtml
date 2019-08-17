@@ -10,7 +10,23 @@
         </div>
     </div>
     <div class="content">
-        <div><a target="_blank"
-                href="https://www.technicalpursuit.com/docs/roadmap.html#sherpa_thumbnail">Coming Soon</a></div>
+        <div>
+            <button id="AddLocationButton" on:click="AddLocation">Add Location</button>
+        </div>
+        <xctrls:panelbox id="SherpaThumbnailPanelbox">
+            <xctrls:panel pclass:selected="true">
+                <xctrls:value>URIs</xctrls:value>
+                <xctrls:content>
+                    <xctrls:list bind:in="{data: urn:tibet:sherpa_screenlocs}" on:dblclick="NavigateToScreen">
+                        <tibet:template>
+                            <xctrls:textitem>
+                                <xctrls:label>[[value.1]]<button on:click="RemoveLocation">Remove</button></xctrls:label>
+                                <xctrls:value>[[value.0]]</xctrls:value>
+                            </xctrls:textitem>
+                        </tibet:template>
+                    </xctrls:list>
+                </xctrls:content>
+            </xctrls:panel>
+        </xctrls:panelbox>
     </div>
 </sherpa:thumbnail>
