@@ -550,7 +550,8 @@ function(finalizationFunc) {
         //  tools) element and *before* it.
         stripElem = TP.xhtmlnode(
             '<div class="cssToolButtonStrip" pclass:hidden="true">' +
-                '<div class="toolButton closeButton" on:click="CloseActiveTool"/>' +
+                '<div class="toolButton closeButton"' +
+                        ' on:click="CloseActiveTool"/>' +
             '</div>');
         TP.nodeInsertContent(contentElem, stripElem, TP.BEFORE_BEGIN);
 
