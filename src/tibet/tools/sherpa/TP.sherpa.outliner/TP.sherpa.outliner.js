@@ -1681,13 +1681,15 @@ function() {
     //  Set it up.
     this.setupTargetElement();
 
+    //  The stylesheet has probably already been injected, but this will cause
+    //  it to become enabled if we have already been toggle off and on again.
+    //  This is also necessary if we're now in a different screen's document
+    //  than the stylesheet was originally injected into.
+    this.setupInjectedStyleSheet();
+
     //  Update both the target element and it's descendants style.
     this.updateTargetElementStyle();
     this.updateOutlinedDescendantStyle();
-
-    //  The stylesheet has probably already been injected, but this will cause
-    //  it to become enabled if we have already been toggle off and on again.
-    this.setupInjectedStyleSheet();
 
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.
