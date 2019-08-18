@@ -5573,7 +5573,10 @@ function(newContent, aRequest, stdinContent) {
         containsElemMarkup,
         containsEntities,
 
-        nativeContent;
+        nativeContent,
+
+        targetPath,
+        targetTPElem;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -5676,9 +5679,24 @@ function(newContent, aRequest, stdinContent) {
         }
     }
 
-    //  Note that if content was a DocumentFragment here, this call will return
-    //  the *first* DOM node that was added.
-    return this.setRawContent(content, request);
+    //  If a 'targetPath' is defined, then that means that the caller intended
+    //  for the content to go into a portion of the document and provided a path
+    //  to get there.
+    targetPath = request.at('targetPath');
+    if (TP.isValid(targetPath)) {
+
+        targetTPElem = this.get(targetPath);
+
+        //  If we found a target element, then set its content and return the
+        //  value of that.
+        if (TP.isKindOf(targetTPElem, TP.dom.CollectionNode)) {
+            return targetTPElem.setRawContent(content, request);
+        }
+    } else {
+        //  Note that if content was a DocumentFragment here, this call will
+        //  return the *first* DOM node that was added.
+        return this.setRawContent(content, request);
+    }
 });
 
 //  ------------------------------------------------------------------------
