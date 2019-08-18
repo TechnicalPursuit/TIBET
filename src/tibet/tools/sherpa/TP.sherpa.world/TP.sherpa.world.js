@@ -466,7 +466,7 @@ function() {
      * @method getScreenLocations
      * @summary Returns a list of URLs currently being held by the various
      *     screens that have content loaded into them from a URL.
-     * @returns {String[]} A list of screen URLs
+     * @returns {String[]} A list of screen URLs.
      */
 
     var screens,
