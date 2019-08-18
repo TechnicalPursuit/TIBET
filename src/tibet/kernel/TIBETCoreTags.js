@@ -44,10 +44,6 @@ TP.tag.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.dom.UIElementNode);
 
-//  The setting that determines whether or not we descend into our descendants
-//  when serializing. The default is TP.DESCEND.
-TP.tag.CustomTag.Type.defineAttribute('serializationTraversal', TP.DESCEND);
-
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -120,6 +116,39 @@ function() {
      */
 
     return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.CustomTag.Inst.defineMethod('getSerializationTraversal',
+function() {
+
+    /**
+     * @method getSerializationTraversal
+     * @summary Returns a constant, either TP.DESCEND or TP.CONTINUE, that
+     *     determines whether serialization will descend into descendant nodes
+     *     of this node or not. If TP.CONTINUE is returned that means that only
+     *     select descendants, as determined by this type's
+     *     getDescendantsForSerialization method will be serialized.
+     * @returns {Number} Either TP.DESCEND or TP.CONTINUE.
+     */
+
+    var ourName,
+        appTagName;
+
+    ourName = this.getCanonicalName();
+
+    //  NB: We pass false here to skip returning any Sherpa tag since we're
+    //  running in a Sherpa-enabled environment.
+    appTagName = TP.tibet.root.computeAppTagTypeName(false);
+
+    //  If our (canonical) name is the same as the app tag name, then we allow
+    //  descendant mutations.
+    if (ourName === appTagName) {
+        return TP.DESCEND;
+    }
+
+    return TP.CONTINUE;
 });
 
 //  ------------------------------------------------------------------------
@@ -231,7 +260,7 @@ function(storageInfo) {
 
         //  Grab the traversal setting. If it's not TP.DESCEND (which is the
         //  default), then call a method to serialize select descendants.
-        traversalSetting = this.getType().get('serializationTraversal');
+        traversalSetting = this.get('serializationTraversal');
         if (traversalSetting !== TP.DESCEND) {
             //  Serialize descendants. Set whether or not we serialize as empty
             //  as to whether there was actual descendant content.
@@ -629,6 +658,43 @@ function(nodeSpec, varargs) {
     }
 
     return retVal;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.tag.TemplatedTag.Inst.defineMethod('getSerializationTraversal',
+function() {
+
+    /**
+     * @method getSerializationTraversal
+     * @summary Returns a constant, either TP.DESCEND or TP.CONTINUE, that
+     *     determines whether serialization will descend into descendant nodes
+     *     of this node or not. If TP.CONTINUE is returned that means that only
+     *     select descendants, as determined by this type's
+     *     getDescendantsForSerialization method will be serialized.
+     * @returns {Number} Either TP.DESCEND or TP.CONTINUE.
+     */
+
+    var docSourceLoc,
+        docSourceURI,
+
+        templateSourceURI;
+
+    docSourceLoc = this.getDocument().getDocumentElement().
+                                        getAttribute('tibet:globaldocid');
+
+    if (TP.isURIString(docSourceLoc, true)) {
+        docSourceURI = TP.uc(docSourceLoc).getPrimaryURI();
+        templateSourceURI = this.getType().getResourceURI('template');
+
+        if (TP.equal(docSourceURI, templateSourceURI)) {
+            return TP.DESCEND;
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ========================================================================
