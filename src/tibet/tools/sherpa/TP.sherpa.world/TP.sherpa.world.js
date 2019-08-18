@@ -389,6 +389,69 @@ function(iFrameID) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.world.Inst.defineMethod('getScreenDocuments',
+function() {
+
+    /**
+     * @method getScreenDocuments
+     * @summary Returns all of the documents associated with the current set of
+     *     world screens.
+     * @returns {TP.dom.Document[]} A list of documents in the current set of
+     *     screens.
+     */
+
+    var screens,
+        tpDocs;
+
+    screens = this.get('screens');
+
+    tpDocs = screens.collect(
+                function(aScreen) {
+                    return aScreen.getContentDocument();
+                });
+
+    return tpDocs;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('getScreensWithLocation',
+function(aLocation) {
+
+    /**
+     * @method getScreensWithLocation
+     * @summary Returns the screens that have content loaded into them from the
+     *     supplied location.
+     * @param {String} aLocation The location that matches the screen to be
+     *     switched to.
+     * @returns {TP.sherpa.screen[]} A list of screen objects.
+     */
+
+    var screens,
+        loc,
+        matchingScreens;
+
+    screens = this.get('screens');
+
+    loc = TP.uc(aLocation).getLocation();
+
+    matchingScreens = TP.ac();
+
+    screens.forEach(
+            function(aScreen) {
+                var screenLoc;
+
+                screenLoc = TP.uc(aScreen.getLocation(true)).getLocation();
+                if (screenLoc === loc) {
+                    matchingScreens.push(aScreen);
+                }
+            });
+
+    return matchingScreens;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.world.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
