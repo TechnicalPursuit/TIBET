@@ -415,6 +415,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.world.Inst.defineMethod('getScreenLocations',
+function() {
+
+    /**
+     * @method getScreenLocations
+     * @summary Returns a list of URLs currently being held by the various
+     *     screens that have content loaded into them from a URL.
+     * @returns {String[]} A list of screen URLs.
+     */
+
+    var screens,
+        locs;
+
+    screens = this.get('screens');
+
+    locs = TP.ac();
+
+    screens.forEach(
+            function(aScreen) {
+                var uri;
+
+                uri = TP.uc(aScreen.getLocation());
+                if (TP.isURI(uri)) {
+                    locs.push(uri.getVirtualLocation());
+                } else {
+                    locs.push('');
+                }
+            });
+
+    return locs;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.world.Inst.defineMethod('getScreensWithLocation',
 function(aLocation) {
 
@@ -518,40 +552,6 @@ function(aSignal) {
     this.switchToScreen(aSignal.at('screenIndex'), false);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('getScreenLocations',
-function() {
-
-    /**
-     * @method getScreenLocations
-     * @summary Returns a list of URLs currently being held by the various
-     *     screens that have content loaded into them from a URL.
-     * @returns {String[]} A list of screen URLs.
-     */
-
-    var screens,
-        locs;
-
-    screens = this.get('screens');
-
-    locs = TP.ac();
-
-    screens.forEach(
-            function(aScreen) {
-                var uri;
-
-                uri = TP.uc(aScreen.getLocation());
-                if (TP.isURI(uri)) {
-                    locs.push(uri.getVirtualLocation());
-                } else {
-                    locs.push('');
-                }
-            });
-
-    return locs;
 });
 
 //  ------------------------------------------------------------------------
