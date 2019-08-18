@@ -3664,8 +3664,11 @@ function(aDocument) {
     var originals,
 
         cssQuery,
-        doc,
-        instances;
+
+        allInstances,
+
+        world,
+        screenDocs;
 
     //  Grab our 'originals' registry. This is where we store clones of the
     //  original node.
@@ -3685,18 +3688,30 @@ function(aDocument) {
     //  this same type) and processed representations of this element.
     cssQuery = this.getQueryPath(true, true);
 
-    //  Default the document to the uicanvas's document. Note the 'true' here to
-    //  get the native document.
-    doc = aDocument;
-    if (TP.notValid(doc)) {
-        doc = TP.sys.uidoc(true);
+    allInstances = TP.ac();
+
+    //  Get all of the world's documents
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    screenDocs = world.getScreenDocuments();
+
+    //  Go through each document in the world and query it for elements that
+    //  match the instance we're replacing.
+    screenDocs.forEach(
+        function(aTPDoc) {
+            var docInstances;
+
+            //  Find any instances that are currently drawn on the document.
+            docInstances = TP.byCSSPath(cssQuery, aTPDoc.getNativeNode());
+
+            allInstances = allInstances.concat(docInstances);
+        });
+
+    if (TP.isEmpty(allInstances)) {
+        return this;
     }
 
-    //  Find any instances that are currently drawn on the document.
-    instances = TP.byCSSPath(cssQuery, doc);
-
     //  Iterate over the instances that were found.
-    instances.forEach(
+    allInstances.forEach(
         function(aTPElem) {
 
             var authoredElem,
