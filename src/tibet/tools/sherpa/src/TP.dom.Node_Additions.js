@@ -1899,18 +1899,13 @@ attributeName, attributeValue, oldAttributeValue) {
      *     be skipped for modification.
      */
 
-    var ourName,
-        appTagName;
+    var traversalVal;
 
-    ourName = this.getCanonicalName();
+    traversalVal = this.getSerializationTraversal();
 
-    //  NB: We pass false here to skip returning any Sherpa tag since we're
-    //  running in a Sherpa-enabled environment.
-    appTagName = TP.tibet.root.computeAppTagTypeName(false);
-
-    //  If our (canonical) name is the same as the app tag name, then we allow
-    //  descendant mutations.
-    if (ourName === appTagName) {
+    if (traversalVal === TP.CONTINUE) {
+        return false;
+    } else if (traversalVal === TP.DESCEND) {
         return true;
     }
 
