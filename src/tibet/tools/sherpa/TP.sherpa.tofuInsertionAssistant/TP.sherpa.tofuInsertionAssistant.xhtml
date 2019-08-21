@@ -31,7 +31,7 @@
         </div>
 
         <div class="typeChooserFieldGroup">
-            <label for="tofuInsertionAssistant_NewTagNameField">New Type:</label>
+            <label for="tofuInsertionAssistant_NewTagNameField">New Tag:</label>
             <input type="text" id="tofuInsertionAssistant_NewTagNameField" autofocus="autofocus" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.enteredTagName)}" ui:incremental="model" autocomplete="off"/>
         </div>
         <xctrls:list id="tofuInsertionAssistant_TagTypes" bind:in="{data: urn:tibet:tagtypelist}" bind:io="{value: urn:tibet:tofuInsertionAssistant_source#jpath($.info.chosenTagName)}" filter="true" on:dblclick="DialogOk"/>
