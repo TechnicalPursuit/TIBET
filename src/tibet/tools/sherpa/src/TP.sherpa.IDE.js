@@ -519,9 +519,6 @@ function(finalizationFunc) {
     //  Set up the inspector
     this.setupInspector();
 
-    //  Set up the thumbnail viewer
-    this.setupThumbnail();
-
     //  Set up the mutation observer that manages keeping all of the DOM and
     //  markup that we're managing in sync.
     this.setupBuilderObserver();
@@ -4505,18 +4502,6 @@ function() {
     //  construct it. This will set its ID and register it so that it can be
     //  found.
     TP.sherpa.outliner.construct();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.IDE.Inst.defineMethod('setupThumbnail',
-function() {
-
-    /*
-    TP.byId('SherpaThumbnail', this.get('vWin')).setup();
-    */
 
     return this;
 });

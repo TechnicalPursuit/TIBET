@@ -55,9 +55,9 @@
     <script src="./TP.sherpa.typedisplay/TP.sherpa.typedisplay.js"/>
     <script src="./TP.sherpa.drawer/TP.sherpa.drawer.js"/>
     <script src="./TP.sherpa.tofu/TP.sherpa.tofu.js"/>
-    <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
     <script src="./TP.sherpa.workbench/TP.sherpa.workbench.js"/>
     <script src="./TP.sherpa.opener/TP.sherpa.opener.js"/>
+    <script src="./TP.sherpa.screens/TP.sherpa.screens.js"/>
     <script src="./TP.sherpa.scrollbutton/TP.sherpa.scrollbutton.js"/>
     <script src="./TP.sherpa.splitbox/TP.sherpa.splitbox.js"/>
     <script src="./TP.sherpa.splitbar/TP.sherpa.splitbar.js"/>
