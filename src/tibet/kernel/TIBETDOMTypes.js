@@ -14249,12 +14249,12 @@ function(storageInfo) {
 
             case 'class':
 
+                attrValue = attrValue.strip(/sherpa(\-\w+)+\s{0,}/g).trim();
+                attrValue = attrValue.strip(/\s{0,}sherpa(\-\w+)+/g).trim();
+
                 if (TP.isEmpty(attrValue)) {
                     continue;
                 }
-
-                attrValue = attrValue.strip(/sherpa(\-\w+)+\s{0,}/g).trim();
-                attrValue = attrValue.strip(/\s{0,}sherpa(\-\w+)+/g).trim();
 
                 break;
 
