@@ -9,16 +9,16 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.thumbnail}
+ * @type {TP.sherpa.screens}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('thumbnail');
+TP.sherpa.TemplatedTag.defineSubtype('screens');
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.thumbnail.Inst.defineHandler('AddLocation',
+TP.sherpa.screens.Inst.defineHandler('AddLocation',
 function(aSignal) {
 
     /**
@@ -27,7 +27,7 @@ function(aSignal) {
      *     TSH managed locations
      * @param {TP.sig.AddLocation} aSignal The TIBET signal which triggered this
      *     method.
-     * @returns {TP.sherpa.thumbnail} The receiver.
+     * @returns {TP.sherpa.screens} The receiver.
      */
 
     TP.prompt('Enter URI address for the new location:',
@@ -52,7 +52,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.thumbnail.Inst.defineHandler('NavigateToScreen',
+TP.sherpa.screens.Inst.defineHandler('NavigateToScreen',
 function(aSignal) {
 
     /**
@@ -61,7 +61,7 @@ function(aSignal) {
      *     the location from the set of TSH managed locations. If
      * @param {TP.sig.NavigateToScreen} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.thumbnail} The receiver.
+     * @returns {TP.sherpa.screens} The receiver.
      */
 
     var targetTPElem,
@@ -94,7 +94,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.thumbnail.Inst.defineHandler('RemoveLocation',
+TP.sherpa.screens.Inst.defineHandler('RemoveLocation',
 function(aSignal) {
 
     /**
@@ -103,7 +103,7 @@ function(aSignal) {
      *     TSH managed locations.
      * @param {TP.sig.RemoveLocation} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.thumbnail} The receiver.
+     * @returns {TP.sherpa.screens} The receiver.
      */
 
     var location;
@@ -121,7 +121,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.thumbnail.Inst.defineHandler('ShowAllScreens',
+TP.sherpa.screens.Inst.defineHandler('ShowAllScreens',
 function(aSignal) {
 
     /**
@@ -129,7 +129,7 @@ function(aSignal) {
      * @summary Handles when the user wants to show all the world's screens.
      * @param {TP.sig.ShowAllScreens} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.thumbnail} The receiver.
+     * @returns {TP.sherpa.screens} The receiver.
      */
 
     var world,

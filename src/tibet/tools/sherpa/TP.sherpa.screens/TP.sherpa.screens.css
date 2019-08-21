@@ -3,7 +3,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
-sherpa|thumbnail {
+sherpa|screens {
 
     display: block;
     position: absolute;
@@ -12,7 +12,7 @@ sherpa|thumbnail {
     width: 100%;
 }
 
-sherpa|thumbnail > .header {
+sherpa|screens > .header {
 
     position: absolute;
 
@@ -29,7 +29,7 @@ sherpa|thumbnail > .header {
     background-color: #efefef;
 }
 
-sherpa|thumbnail > .header > .trigger.button {
+sherpa|screens > .header > .trigger.button {
 
     position: absolute;
 
@@ -51,19 +51,19 @@ sherpa|thumbnail > .header > .trigger.button {
     cursor: pointer;
 }
 
-sherpa|thumbnail > .header > .trigger.button:hover {
+sherpa|screens > .header > .trigger.button:hover {
 
     background-color: gold;
 
     color: #333;
 }
 
-sherpa|thumbnail > .header > .content:hover > * {
+sherpa|screens > .header > .content:hover > * {
 
     background-color: white;
 }
 
-sherpa|thumbnail > .header > .button[name="showall"] {
+sherpa|screens > .header > .button[name="showall"] {
 
     position: absolute;
 
@@ -81,14 +81,14 @@ sherpa|thumbnail > .header > .button[name="showall"] {
     cursor: pointer;
 }
 
-sherpa|thumbnail > .header > .button[name="showall"]:hover {
+sherpa|screens > .header > .button[name="showall"]:hover {
 
     background-color: gold;
 
     color: #333;
 }
 
-sherpa|thumbnail > .content {
+sherpa|screens > .content {
 
     position: absolute;
 
@@ -105,16 +105,16 @@ sherpa|thumbnail > .content {
     border-top: 1px solid #aaa;
 }
 
-sherpa|thumbnail > .content > div {
+sherpa|screens > .content > div {
 }
 
-sherpa|thumbnail > .content > xctrls|panelbox {
+sherpa|screens > .content > xctrls|panelbox {
 
     width: 100%;
     height: 100%;
 }
 
-sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|content xctrls|list {
+sherpa|screens #SherpaScreensPanelbox xctrls|content xctrls|list {
 
     position: absolute;
 
@@ -134,17 +134,17 @@ sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|content xctrls|list {
     border: 0;
 }
 
-sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|list xctrls|textitem {
+sherpa|screens #SherpaScreensPanelbox xctrls|list xctrls|textitem {
 
     border-right: 0;
 }
 
-sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|list xctrls|textitem:first-child {
+sherpa|screens #SherpaScreensPanelbox xctrls|list xctrls|textitem:first-child {
 
     border-top: #efefef;
 }
 
-sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|list xctrls|textitem button {
+sherpa|screens #SherpaScreensPanelbox xctrls|list xctrls|textitem button {
 
     position: absolute;
     display: none;
@@ -164,12 +164,12 @@ sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|list xctrls|textitem button {
     box-shadow: none;
 }
 
-sherpa|thumbnail #SherpaThumbnailPanelbox xctrls|list xctrls|textitem:hover button {
+sherpa|screens #SherpaScreensPanelbox xctrls|list xctrls|textitem:hover button {
 
     display: inline-block;
 }
 
-sherpa|thumbnail #AddLocationButton {
+sherpa|screens #AddLocationButton {
 
     position: absolute;
 
@@ -186,29 +186,29 @@ sherpa|thumbnail #AddLocationButton {
     text-decoration: underline;
 }
 
-sherpa|thumbnail #AddLocationButton:focus {
+sherpa|screens #AddLocationButton:focus {
 
     background: cornsilk;
 }
 
-sherpa|thumbnail #AddLocationButton:hover {
+sherpa|screens #AddLocationButton:hover {
 
     background: gold;
 }
 
 /* Rules that trigger when the corner is closed */
 
-#background:not(.edge-west-open) sherpa|thumbnail > .header > *:not(.trigger) {
+#background:not(.edge-west-open) sherpa|screens > .header > *:not(.trigger) {
 
     display: none;
 }
 
-.framing.south.west.corner[pclass|closed] sherpa|thumbnail > .content {
+.framing.south.west.corner[pclass|closed] sherpa|screens > .content {
 
     display: none;
 }
 
-#background:not(.edge-west-open) .framing.corner:not([pclass|closed]) sherpa|thumbnail > .header > * {
+#background:not(.edge-west-open) .framing.corner:not([pclass|closed]) sherpa|screens > .header > * {
 
     display: block;
 }
