@@ -10654,8 +10654,24 @@ function() {
      * @returns {String}
      */
 
-    return this.getNamespaceRoot() + '.meta.' +
-            this.getNamespacePrefix() + '.' + this.getLocalName();
+    var owner,
+        str;
+
+    if (TP.isPrototype(this)) {
+        owner = this[TP.OWNER];
+        if (!TP.isType(owner)) {
+            TP.ifError() ?
+                TP.error('Invalid prototype: ' + TP.id(this)) : 0;
+            return null;
+        }
+    } else {
+        owner = this;
+    }
+
+    str = owner.getNamespaceRoot() + '.meta.' +
+            owner.getNamespacePrefix() + '.' + owner.getLocalName();
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
