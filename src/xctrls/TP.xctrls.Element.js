@@ -249,11 +249,25 @@ TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 TP.xctrls.TemplatedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
-//  The setting that determines whether or not we descend into our descendants
-//  when serializing. We override the value from our supertype and set this to
-//  TP.CONTINUE. This means that only select descendants, as determined by this
-//  type's getDescendantsForSerialization method will be serialized.
-TP.xctrls.TemplatedTag.Type.set('serializationTraversal', TP.CONTINUE);
+//  ------------------------------------------------------------------------
+//  Instance Method
+//  ------------------------------------------------------------------------
+
+TP.xctrls.TemplatedTag.Inst.defineMethod('getSerializationTraversal',
+function() {
+
+    /**
+     * @method getSerializationTraversal
+     * @summary Returns a constant, either TP.DESCEND or TP.CONTINUE, that
+     *     determines whether serialization will descend into descendant nodes
+     *     of this node or not. If TP.CONTINUE is return that means that only
+     *     select descendants, as determined by this type's
+     *     getDescendantsForSerialization method will be serialized.
+     * @returns {Number} Either TP.DESCEND or TP.CONTINUE.
+     */
+
+    return TP.CONTINUE;
+});
 
 //  ========================================================================
 //  TP.xctrls.value
