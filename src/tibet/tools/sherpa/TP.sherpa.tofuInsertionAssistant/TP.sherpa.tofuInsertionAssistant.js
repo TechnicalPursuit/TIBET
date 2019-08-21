@@ -532,7 +532,8 @@ function(anObj) {
                     });
     typeData = typeData.collect(
                     function(aType) {
-                        return aType.getCanonicalName();
+                        return aType.generateMarkupContent(
+                                        '', false, '').slice(1, -2);
                     });
     typeData.sort();
     typesObj.push(typeData);
@@ -551,7 +552,8 @@ function(anObj) {
                         });
         typeData = typeData.collect(
                         function(aType) {
-                            return aType.getCanonicalName();
+                            return aType.generateMarkupContent(
+                                            '', false, '').slice(1, -2);
                         });
         typeData.sort();
         typesObj.push(typeData);
@@ -565,7 +567,8 @@ function(anObj) {
                 TP.tibet.service);
     typeData = typeData.collect(
                     function(aType) {
-                        return aType.getCanonicalName();
+                        return aType.generateMarkupContent(
+                                        '', false, '').slice(1, -2);
                     });
     typeData.sort();
     typesObj.push(typeData);
@@ -587,8 +590,9 @@ function(anObj) {
                 TP.xctrls.textitem);
 
     typeData = typeData.collect(
-                    function(item) {
-                        return item.getCanonicalName();
+                    function(aType) {
+                        return aType.generateMarkupContent(
+                                        '', false, '').slice(1, -2);
                     });
     typeData.sort();
     typesObj.push(typeData);
@@ -601,8 +605,9 @@ function(anObj) {
                         return !aType.isAbstract();
                     });
     typeData = typeData.collect(
-                    function(item) {
-                        return item.getCanonicalName();
+                    function(aType) {
+                        return aType.generateMarkupContent(
+                                        '', false, '').slice(1, -2);
                     });
     typeData.sort();
     typesObj.push(typeData);
@@ -615,8 +620,9 @@ function(anObj) {
                         return !aType.isAbstract();
                     });
     typeData = typeData.collect(
-                    function(item) {
-                        return item.getCanonicalName();
+                    function(aType) {
+                        return aType.generateMarkupContent(
+                                        '', false, '').slice(1, -2);
                     });
     typeData.sort();
     typesObj.push(typeData);
