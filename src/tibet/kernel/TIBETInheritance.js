@@ -10657,6 +10657,7 @@ function() {
     var owner,
         str;
 
+    /* eslint-disable consistent-this */
     if (TP.isPrototype(this)) {
         owner = this[TP.OWNER];
         if (!TP.isType(owner)) {
@@ -10667,6 +10668,7 @@ function() {
     } else {
         owner = this;
     }
+    /* eslint-enable consistent-this */
 
     str = owner.getNamespaceRoot() + '.meta.' +
             owner.getNamespacePrefix() + '.' + owner.getLocalName();
