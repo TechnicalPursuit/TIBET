@@ -2688,7 +2688,7 @@ TP.core.Mouse.Type.defineAttribute('$notValidDragTarget', false);
 //  a hash of any window offsets that were computed between a mouse down/drag
 //  and a mouse up. This is cleared in the mouse up and (re)created when the
 //  call is made to compute the window offsets.
-TP.core.Mouse.Type.defineAttribute('$interWindowPointOffsets', false);
+TP.core.Mouse.Type.defineAttribute('$interWindowPointOffsets');
 
 TP.core.Mouse.Type.defineAttribute('leftDown', false);
 TP.core.Mouse.Type.defineAttribute('middleDown', false);
