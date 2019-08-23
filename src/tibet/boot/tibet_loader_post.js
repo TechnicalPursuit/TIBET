@@ -1319,7 +1319,15 @@ TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc, alternateHan
         theEventName = 'DOMMouseScroll';
     }
 
-    anObject.addEventListener(eventName, handlerFunc, true);
+    //  We use the updated form here and specify that no listeners are to be
+    //  passive - we want the flexibility of being able to preventDefault() on
+    //  any of the ones that allow it.
+    anObject.addEventListener(eventName,
+                                handlerFunc,
+                                {
+                                    capture: true,
+                                    passive: false
+                                });
 
     //  Cache the handler function on the TP.boot object using the event
     //  name so that we can use it later when we remove the handler.
@@ -1365,7 +1373,15 @@ TP.boot.$$removeUIHandler = function(anObject, eventName, alternateHandlerName) 
         theEventName = 'DOMMouseScroll';
     }
 
-    anObject.removeEventListener(eventName, handlerFunc, true);
+    //  We use the updated form here because we did so when we added these -
+    //  we wanted the flexibility of being able to preventDefault() on any of
+    //  the ones that allow it.
+    anObject.removeEventListener(eventName,
+                                    handlerFunc,
+                                    {
+                                        capture: true,
+                                        passive: false
+                                    });
 
     //  Clear the slot on the TP.boot object, so that we don't leave little
     //  bits, like unused Functions, around.
