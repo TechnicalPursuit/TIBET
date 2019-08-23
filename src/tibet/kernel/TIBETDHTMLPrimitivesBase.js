@@ -1764,10 +1764,10 @@ function(anElement) {
     }
 
     a = transformMatrix[0][0];
-    b = transformMatrix[0][1];
-    c = transformMatrix[0][2];
-    d = transformMatrix[1][0];
-    tx = transformMatrix[1][1];
+    b = transformMatrix[1][0];
+    c = transformMatrix[0][1];
+    d = transformMatrix[1][1];
+    tx = transformMatrix[0][2];
     ty = transformMatrix[1][2];
 
     //  Make sure the matrix is invertible
