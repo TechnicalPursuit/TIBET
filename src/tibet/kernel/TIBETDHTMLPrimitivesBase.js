@@ -1760,7 +1760,11 @@ function(anElement) {
 
     if (TP.notValid(transformMatrix =
                     TP.elementGetTransformMatrix(anElement, true))) {
-        return TP.hc();
+        return TP.hc(
+                TP.ROTATE, 0.0,
+                TP.SKEW, 0.0,
+                TP.SCALE, TP.ac(1.0, 1.0),
+                TP.TRANSLATE, TP.ac(0.0, 0.0));
     }
 
     a = transformMatrix[0][0];
