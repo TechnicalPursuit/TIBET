@@ -1634,6 +1634,42 @@ function(anElement, aProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementPeekStyleProperty',
+function(anElement, aProperty) {
+
+    /**
+     * @method elementPeekStyleProperty
+     * @summary 'Peek's the previously pushed style property named by aProperty
+     *     from the receiver and returns that value. NB: This call does *not*
+     *     set any style properties of the supplied element.
+     * @param {HTMLElement} anElement The element to peek the style property
+     *     from.
+     * @param {String} aProperty The name of the style property to peek.
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
+     * @returns {Object} The value of the style property named by aProperty on
+     *     anElement that had been pushed earlier.
+     */
+
+    var vals;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(aProperty)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    if (TP.isArray(vals = anElement[aProperty + '_vals'])) {
+        return vals.last();
+    } else {
+        return null;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementPopStyleProperty',
 function(anElement, aProperty) {
 
