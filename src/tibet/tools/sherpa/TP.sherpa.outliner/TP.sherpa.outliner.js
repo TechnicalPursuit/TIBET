@@ -1516,7 +1516,6 @@ function() {
      */
 
     var targetElement,
-        prevValue,
 
         acceptedDNDTypes,
 
@@ -1528,13 +1527,11 @@ function() {
 
     targetElement = TP.unwrap(this.get('targetTPElement'));
 
-    prevValue = TP.elementPopStyleProperty(targetElement, 'transform');
-
-    //  NB: We use isValid(), not isEmpty(), here since an empty String is a
-    //  valid CSS value.
-    if (TP.isValid(prevValue)) {
-        TP.elementSetStyleProperty(targetElement, 'transform', prevValue);
-    }
+    //  Stash off current 'local' values for 'transform' and 'transform-origin'
+    //  and set them to the empty string to allow the outliner's style rules to
+    //  take effect.
+    TP.elementPushAndSetStyleProperty(targetElement, 'transform', '');
+    TP.elementPushAndSetStyleProperty(targetElement, 'transform-origin', '');
 
     //  Add the top-level 'sherpa-outliner' class. This let's the rules in the
     //  injected style sheet work as they are qualified by this class.
@@ -1749,7 +1746,8 @@ function() {
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
-    var targetElement;
+    var targetElement,
+        prevValue;
 
     //  Make sure to suspend all mutation observer machinery for performance
     //  here. There will be no observers of us turning on outlining.
@@ -1758,8 +1756,26 @@ function() {
     //  Grab the target element
     targetElement = TP.unwrap(this.get('targetTPElement'));
 
-    //  Set it's transform back to ''
-    TP.elementSetStyleProperty(targetElement, 'transform', '');
+    //  Grab any 'local' value of 'transform' that was stashed to allow the
+    //  outliner's rules to take effect and restore it.
+    prevValue = TP.elementPopStyleProperty(targetElement, 'transform');
+
+    //  NB: We use isValid(), not isEmpty(), here since an empty String is a
+    //  valid CSS value.
+    if (TP.isValid(prevValue)) {
+        TP.elementSetStyleProperty(targetElement, 'transform', prevValue);
+    }
+
+    //  Grab any 'local' value of 'transform-origin' that was stashed to allow
+    //  the outliner's rules to take effect and restore it.
+    prevValue = TP.elementPopStyleProperty(targetElement, 'transform-origin');
+
+    //  NB: We use isValid(), not isEmpty(), here since an empty String is a
+    //  valid CSS value.
+    if (TP.isValid(prevValue)) {
+        TP.elementSetStyleProperty(
+                    targetElement, 'transform-origin', prevValue);
+    }
 
     //  Remove the top-level 'sherpa-outliner' class
     TP.elementRemoveClass(targetElement, 'sherpa-outliner');
