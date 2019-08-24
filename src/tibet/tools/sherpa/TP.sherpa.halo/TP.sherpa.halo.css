@@ -60,7 +60,7 @@ sherpa|halo[no-display="true"][ancestor="body"] {
     left: calc(50% - (var(--sherpa-halo-width) / 2));
 }
 
-sherpa|halo > div {
+sherpa|halo > div.haloCorner {
 
     position: absolute;
 
@@ -68,7 +68,7 @@ sherpa|halo > div {
     height: 10px;
 }
 
-.haloCorner {
+div.haloCorner {
 
     border: solid 1px black;
     border-radius: 0.7em;
@@ -80,7 +80,7 @@ sherpa|halo > div {
     pointer-events: auto;
 }
 
-.haloCorner:hover {
+div.haloCorner:hover {
 
     opacity: 1;
 }
