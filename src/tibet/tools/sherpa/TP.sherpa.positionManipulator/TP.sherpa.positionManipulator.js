@@ -25,6 +25,14 @@ TP.sherpa.positionManipulator.Inst.defineAttribute('$parentOffsets');
 TP.sherpa.positionManipulator.Inst.defineAttribute('$thisOffsets');
 
 TP.sherpa.positionManipulator.Inst.defineAttribute(
+    'offsetparentoutline',
+    TP.cpc('> #offsetparentoutline', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.positionManipulator.Inst.defineAttribute(
+    'offsetguide',
+    TP.cpc('> #offsetguide', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.positionManipulator.Inst.defineAttribute(
     'positioncoordinates',
     TP.cpc('> #positioncoordinates', TP.hc('shouldCollapse', true)));
 
@@ -151,6 +159,8 @@ function(aSignal) {
         parentOffsets,
         thisOffsets,
 
+        targetOffsetRect,
+
         natWindow;
 
     modifyingRule = this.$get('$currentModifyingRule');
@@ -173,6 +183,9 @@ function(aSignal) {
 
     TP.styleRuleSetProperty(modifyingRule, 'left', targetLeft + 'px', false);
     TP.styleRuleSetProperty(modifyingRule, 'top', targetTop + 'px', false);
+
+    targetOffsetRect = haloTargetTPElem.getOffsetParent().getPageRect(false);
+    this.get('offsetparentoutline').setOffsetPositionAndSize(targetOffsetRect);
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
 
@@ -263,6 +276,9 @@ function() {
         x,
         y,
 
+        targetOffsetRect,
+        guideRect,
+
         width,
         height,
 
@@ -284,9 +300,17 @@ function() {
     targetRect = haloTargetTPElem.getHaloRect(halo);
     targetRect.subtractByPoint(offsetRect.getXYPoint());
 
+    targetOffsetRect = haloTargetTPElem.getOffsetParent().getPageRect(false);
+    x = targetOffsetRect.getX();
+    y = targetOffsetRect.getY();
+    width = targetRect.getX() - x;
+    height = targetRect.getY() - y;
+
+    guideRect = TP.rtc(x, y, width, height);
+    this.get('offsetguide').setOffsetPositionAndSize(guideRect);
+
     x = targetRect.getX();
     y = targetRect.getY();
-
     width = TP.elementGetPixelValue(halo.getNativeNode(), '10em', 'width');
     height = TP.elementGetPixelValue(halo.getNativeNode(), '1.5em', 'height');
 

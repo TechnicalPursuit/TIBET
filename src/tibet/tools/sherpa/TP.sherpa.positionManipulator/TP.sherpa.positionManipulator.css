@@ -10,10 +10,21 @@ sherpa|positionManipulator {
     z-index: var(--tibet-HALO-POPUP-TIER);
 }
 
+sherpa|positionManipulator #offsetparentoutline {
+
+    position: absolute;
+    border: dotted 2px orange;
+}
+
 sherpa|positionManipulator .guide {
 
     position: absolute;
-    border: dotted 1px red;
+}
+
+sherpa|positionManipulator #offsetguide {
+
+    width: 25%;
+    background: linear-gradient(to top right, transparent calc(50% - 1px), red, transparent calc(50% + 1px));
 }
 
 sherpa|positionManipulator .readout {
