@@ -1659,7 +1659,9 @@ function(beHidden) {
      */
 
     var wasHidden,
-        doc;
+        doc,
+
+        haloStyleElement;
 
     wasHidden = TP.bc(this.getAttribute('hidden'));
 
@@ -1692,6 +1694,13 @@ function(beHidden) {
         this.ignore(TP.bySystemId('Sherpa'), 'CanvasChanged');
 
         this.set('haloRect', null);
+
+        //  Grab the styles that the halo injects into the UI canvas and disable
+        //  that style element.
+        haloStyleElement = TP.byId('halo_injected_generated', doc, false);
+        if (TP.isElement(haloStyleElement)) {
+            haloStyleElement.disabled = true;
+        }
 
         //  Remove the CSS class from the UI canvas's document element that
         //  qualifies elements in the injected style element
@@ -1727,6 +1736,13 @@ function(beHidden) {
         this.observe(TP.bySystemId('Sherpa'), 'CanvasChanged');
 
         this.moveAndSizeToTarget(this.get('currentTargetTPElem'));
+
+        //  Grab the styles that the halo injects into the UI canvas and enable
+        //  that style element.
+        haloStyleElement = TP.byId('halo_injected_generated', doc, false);
+        if (TP.isElement(haloStyleElement)) {
+            haloStyleElement.disabled = false;
+        }
 
         //  Add the CSS class to the UI canvas's document element that qualifies
         //  elements in the injected style element
