@@ -230,6 +230,8 @@ function() {
 
         x,
         y,
+        width,
+        height,
 
         northRect,
         westRect,
@@ -257,22 +259,22 @@ function() {
     x = targetRect.getX();
     y = targetRect.getY();
 
-    northRect = TP.rtc(x, y, targetRect.getWidth(), 0.0);
+    width = targetRect.getWidth();
+    height = targetRect.getHeight();
+
+    northRect = TP.rtc(x, y, width, 0.0);
     this.get('northguide').setOffsetPositionAndSize(northRect);
 
-    westRect = TP.rtc(x, y, 0.0, targetRect.getHeight());
+    westRect = TP.rtc(x, y, 0.0, height);
     this.get('westguide').setOffsetPositionAndSize(westRect);
 
-    southRect = TP.rtc(x, y + targetRect.getHeight(),
-                        targetRect.getWidth(), 0.0);
+    southRect = TP.rtc(x, y + height, width, 0.0);
     this.get('southguide').setOffsetPositionAndSize(southRect);
 
-    eastRect = TP.rtc(x + targetRect.getWidth(), y,
-                        0.0, targetRect.getHeight());
+    eastRect = TP.rtc(x + width, y, 0.0, height);
     this.get('eastguide').setOffsetPositionAndSize(eastRect);
 
-    coordsRect = TP.rtc(x + targetRect.getWidth(), y + targetRect.getHeight(),
-                        targetRect.getWidth(), targetRect.getHeight());
+    coordsRect = TP.rtc(x + width, y + height, width, height);
     this.get('sizecoordinates').setOffsetPositionAndSize(coordsRect);
     this.get('sizecoordinates').setTextContent(
         '(' + haloTargetTPElem.getWidth().floor() +
