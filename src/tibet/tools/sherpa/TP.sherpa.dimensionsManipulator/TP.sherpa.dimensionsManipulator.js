@@ -215,7 +215,7 @@ function() {
      * @returns {TP.sherpa.dimensionsManipulator} The receiver.
      */
 
-    var ourRect,
+    var offsetRect,
 
         haloTargetTPElem,
         halo,
@@ -232,13 +232,13 @@ function() {
 
         coordsRect;
 
-    ourRect = this.getOffsetParent().getGlobalRect(false);
-
     haloTargetTPElem = this.$get('$currentTargetTPElement');
+    offsetRect = this.getOffsetParent().getGlobalRect(false);
+
     halo = TP.byId('SherpaHalo', TP.sys.getUIRoot());
 
     targetRect = haloTargetTPElem.getHaloRect(halo);
-    targetRect.subtractByPoint(ourRect.getXYPoint());
+    targetRect.subtractByPoint(offsetRect.getXYPoint());
 
     x = targetRect.getX();
     y = targetRect.getY();
