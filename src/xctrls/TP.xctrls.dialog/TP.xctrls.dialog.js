@@ -117,41 +117,20 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
-    var curtainTPElem,
-        thisref;
-
-    //  If the panel is modal, then we need to manage the curtain appropriately.
-    if (this.getAttribute('modal') === 'true') {
-
-        //  If we have a valid curtain element
-        if (TP.isValid(curtainTPElem = this.get('curtain'))) {
-
-            //  If we're showing the curtain, then we capture whether or not the
-            //  curtain was already showing. This may be if we're displaying a
-            //  'nested' set of dialogs.
-            if (!beHidden) {
-                if (curtainTPElem.getAttribute('hidden') === false) {
-                    this.set('curtainWasShowing', true, false);
-                }
-
-                //  Go ahead and show the curtain.
-                curtainTPElem.setAttribute('hidden', false);
-            } else {
-
-                //  If the curtain *wasn't* already showing when we first
-                //  appeared, then we go ahead and hide it.
-                if (!this.get('curtainWasShowing')) {
-                    curtainTPElem.setAttribute('hidden', true);
-                }
-            }
-        }
-    }
+    var thisref;
 
     //  If we're about to show, we need to tell the system that we're switching
     //  focus contexts in an async fashion. Otherwise, it can't properly track
     //  previously focused elements.
     if (!beHidden) {
         this.asyncActivatingFocusContext();
+    }
+
+    //  If we're hiding, toggle the curtain to be hidden as well. Note that
+    //  toggling the curtain to show is done in the 'dialog' primitive defined
+    //  below.
+    if (beHidden) {
+        this.toggleCurtain(beHidden);
     }
 
     thisref = this;
@@ -284,7 +263,9 @@ function(info) {
 
                 contentResource,
 
-                beforeShowCallback;
+                beforeShowCallback,
+
+                isShowing;
 
             //  Default the dialog ID and whether we're displaying in a modal
             //  fashion
@@ -365,15 +346,69 @@ function(info) {
                 beforeShowCallback(dialogTPElem);
             }
 
-            //  Show the dialog
-            dialogTPElem.setAttribute('hidden', false);
+            //  If the panel is modal, then we need to manage the curtain
+            //  appropriately.
+            if (dialogTPElem.getAttribute('modal') === 'true') {
+                isShowing = dialogTPElem.getAttribute('hidden') === false;
+                dialogTPElem.toggleCurtain(isShowing);
+            }
 
-            //  Call the Promise's resolver with the created TP.xctrls.dialog
-            //  object.
-            resolver(dialogTPElem);
+            //  Set up a timeout, allowing the curtain to show before fetching
+            //  and displaying the dialog.
+            setTimeout(
+                function() {
+                    //  Show the dialog
+                    dialogTPElem.setAttribute('hidden', false);
+
+                    //  Call the Promise's resolver with the created
+                    //  TP.xctrls.dialog object.
+                    resolver(dialogTPElem);
+                }, 50);
         });
 
     return promise;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.dialog.Inst.defineMethod('toggleCurtain',
+function(beHidden) {
+
+    /**
+     * @method toggleCurtain
+     * @summary Toggles the curtain that the dialog will be using to block
+     *     events from the rest of the app.
+     * @param {Boolean} beHidden Whether or not the curtain should be in  a
+     *     hidden state.
+     * @returns {TP.sherpa.dialog} The receiver.
+     */
+
+    var curtainTPElem;
+
+    //  If we have a valid curtain element
+    if (TP.isValid(curtainTPElem = this.get('curtain'))) {
+
+        //  If we're showing the curtain, then we capture whether or not the
+        //  curtain was already showing. This may be if we're displaying a
+        //  'nested' set of dialogs.
+        if (!beHidden) {
+            if (curtainTPElem.getAttribute('hidden') === false) {
+                this.set('curtainWasShowing', true, false);
+            }
+
+            //  Go ahead and show the curtain.
+            curtainTPElem.setAttribute('hidden', false);
+        } else {
+
+            //  If the curtain *wasn't* already showing when we first
+            //  appeared, then we go ahead and hide it.
+            if (!this.get('curtainWasShowing')) {
+                curtainTPElem.setAttribute('hidden', true);
+            }
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
