@@ -60,12 +60,39 @@ sherpa|halo[no-display="true"][ancestor="body"] {
     left: calc(50% - (var(--sherpa-halo-width) / 2));
 }
 
+sherpa|halo[mini-size="true"] {
+
+    --sherpa-halo-corner-size: 1.75px;
+    --sherpa-halo-corner-offset: -1.75px;
+}
+
+sherpa|halo[micro-size="true"] {
+
+    --sherpa-halo-corner-size: 0;
+    --sherpa-halo-corner-offset: 0;
+
+    background-color: red;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.62' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 sherpa|halo > div.haloCorner {
 
     position: absolute;
 
     width: 10px;
     height: 10px;
+}
+
+sherpa|halo[mini-size="true"] > div.haloCorner {
+
+    width: 2.5px;
+    height: 2.5px;
+}
+
+sherpa|halo[micro-size="true"] > div.haloCorner {
+
+    width: 0;
+    height: 0;
 }
 
 div.haloCorner {

@@ -17,6 +17,13 @@
 TP.sherpa.Element.defineSubtype('halo');
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Type.defineConstant('MICRO_WIDTH_THRESHOLD', 8);
+TP.sherpa.halo.Type.defineConstant('MICRO_HEIGHT_THRESHOLD', 8);
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -1390,7 +1397,11 @@ function(newTargetTPElem, shouldUnhide) {
 
         haloStyleElement,
 
-        newTargetTPDoc;
+        newTargetTPDoc,
+
+        sherpaHaloCornerSize,
+        minRegularSizeWidth,
+        minRegularSizeHeight;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
@@ -1483,6 +1494,8 @@ function(newTargetTPElem, shouldUnhide) {
 
     this.removeAttribute('no-display');
     this.removeAttribute('ancestor');
+    this.removeAttribute('mini-size');
+    this.removeAttribute('micro-size');
 
     if (TP.isValid(newTargetTPElem)) {
 
@@ -1498,6 +1511,39 @@ function(newTargetTPElem, shouldUnhide) {
             } else if (newTargetTPDoc.getBody().contains(
                             newTargetTPElem, TP.IDENTITY)) {
                 this.setAttribute('ancestor', 'body');
+            }
+        } else {
+            //  Grab the current value of '--sherpa-halo-corner-size' and make
+            //  it a Number.
+            sherpaHaloCornerSize = TP.cssElementGetCustomCSSPropertyValue(
+                                    haloStyleElement,
+                                    'sherpa|halo',
+                                    '--sherpa-halo-corner-size');
+            sherpaHaloCornerSize = sherpaHaloCornerSize.asNumber();
+
+            //  Make sure that the target element is at least as big as the
+            //  halo. If not, set the 'mini-size' attribute on the halo.
+            //  NOTE: We're using the same calculations as those in the CSS
+            //  sheet,
+            /* eslint-disable no-extra-parens */
+            minRegularSizeWidth = (sherpaHaloCornerSize * 3) + 3;
+            minRegularSizeHeight = (sherpaHaloCornerSize * 3) + 2;
+            /* eslint-enable no-extra-parens */
+
+            //  If either the width or height of the rect of the focusing
+            //  element is below the minimum for 'regular size', then we set
+            //  'mini-size' to true.
+            if (theRect.getWidth() < minRegularSizeWidth ||
+                theRect.getHeight() < minRegularSizeHeight) {
+                this.setAttribute('mini-size', 'true');
+            }
+
+            //  If either the width or height of the rect of the focusing
+            //  element is below the thresholds for 'micro size', then we set
+            //  'micro-size' to true.
+            if (theRect.getWidth() < this.getType().MICRO_WIDTH_THRESHOLD ||
+                theRect.getHeight() < this.getType().MICRO_HEIGHT_THRESHOLD) {
+                this.setAttribute('micro-size', 'true');
             }
         }
     }
