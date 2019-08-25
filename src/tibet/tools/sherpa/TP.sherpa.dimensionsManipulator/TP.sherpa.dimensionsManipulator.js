@@ -128,7 +128,9 @@ function(aSignal) {
         currentTargetBox,
 
         targetWidth,
-        targetHeight;
+        targetHeight,
+
+        natWindow;
 
     modifyingRule = this.$get('$currentModifyingRule');
 
@@ -147,9 +149,13 @@ function(aSignal) {
     TP.styleRuleSetProperty(modifyingRule, 'height', targetHeight + 'px', false);
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    halo.moveAndSizeToTarget();
 
-    this.render();
+    natWindow = this.getNativeWindow();
+
+    (function() {
+        halo.moveAndSizeToTarget();
+        this.render();
+    }.bind(this)).queueForNextRepaint(natWindow);
 
     return this;
 });
@@ -233,6 +239,14 @@ function() {
         coordsRect;
 
     haloTargetTPElem = this.$get('$currentTargetTPElement');
+
+    //  Sometimes, depending on how redrawing gets sequenced with mouse up
+    //  events, the current target will have already been set to null by the
+    //  mouse up. Check for that here and simply return if that's the case.
+    if (TP.notValid(haloTargetTPElem)) {
+        return this;
+    }
+
     offsetRect = this.getOffsetParent().getGlobalRect(false);
 
     halo = TP.byId('SherpaHalo', TP.sys.getUIRoot());
