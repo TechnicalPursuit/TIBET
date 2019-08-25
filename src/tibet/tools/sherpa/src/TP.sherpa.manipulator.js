@@ -14,44 +14,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('manipulator');
+TP.sherpa.canvastool.defineSubtype('manipulator');
 
 //  This type is intended to be used as a supertype of concrete types, so we
 //  don't allow instance creation
 TP.sherpa.manipulator.isAbstract(true);
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    tpElem.setup();
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -62,79 +29,6 @@ TP.sherpa.manipulator.Inst.defineAttribute('$currentModifyingRule');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Inst.defineMethod('activate',
-function(aTargetTPElem) {
-
-    /**
-     * @method activate
-     * @summary Activates the receiver.
-     * @param {TP.dom.ElementNode} aTargetTPElem The element that the receiver
-     *     will be activated on.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    this.setAttribute('hidden', false);
-
-    this.render();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Inst.defineMethod('deactivate',
-function() {
-
-    /**
-     * @method deactivate
-     * @summary Deactivates the receiver.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    this.setAttribute('hidden', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Inst.defineHandler('DOMDragMove',
-function(aSignal) {
-
-    /**
-     * @method handleDOMDragMove
-     * @summary Handles notification of when the receiver might need to be
-     *     updated because the user is dragging.
-     * @param {TP.sig.DOMDragMove} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Inst.defineHandler('DOMDragUp',
-function(aSignal) {
-
-    /**
-     * @method handleDOMDragUp
-     * @summary Handles notification of when the receiver might need to be
-     *     updated because the user is done with dragging and the mouse button
-     *     has gone up.
-     * @param {TP.sig.DOMDragUp} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    this.deactivate();
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.sherpa.manipulator.Inst.defineHandler('DOMResize',
@@ -185,57 +79,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.manipulator.Inst.defineHandler('PclassClosedChange',
-function(aSignal) {
-
-    /**
-     * @method handlePclassClosedChangeFromSherpaHUD
-     * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    var hudIsClosed;
-
-    //  Grab the HUD and see if it's currently open or closed.
-    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
-
-    //  If the HUD is closed, then we also hide ourself. But not before
-    //  capturing whether we were 'currently showing' or not (i.e. the HUD can
-    //  hide or show independent of us). Otherwise, if the HUD is open, then
-    //  we set ourself to whatever value we had when the HUD last hid.
-    if (hudIsClosed) {
-        this.toggleObservations(false);
-    } else {
-        this.toggleObservations(true);
-    }
-
-    return this;
-}, {
-    origin: 'SherpaHUD'
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Inst.defineMethod('render',
-function() {
-
-    /**
-     * @method render
-     * @summary Renders the receiver. At this type level, this method does
-     *     nothing.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    //  Signal to observers that this control has rendered.
-    this.signal('TP.sig.DidRender');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.manipulator.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
@@ -251,8 +94,6 @@ function(beHidden) {
     var wasHidden,
 
         sherpaMain,
-
-        toolsLayer,
 
         haloTPElem,
 
@@ -273,8 +114,6 @@ function(beHidden) {
 
     sherpaMain = TP.bySystemId('Sherpa');
 
-    toolsLayer = sherpaMain.getToolsLayer();
-
     haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
 
     targetTPElem = haloTPElem.get('currentTargetTPElem');
@@ -291,15 +130,10 @@ function(beHidden) {
         this.$set('$currentTargetTPElement', null);
         this.$set('$currentModifyingRule', null);
 
-        this.ignore(TP.core.Mouse, 'TP.sig.DOMDragMove');
-        this.ignore(TP.core.Mouse, 'TP.sig.DOMDragUp');
-
         this.ignore(this.getDocument(),
                     TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
         this.ignore(TP.sys.getUICanvas().getDocument(),
                     TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-
-        toolsLayer.removeAttribute('activetool');
 
     } else {
 
@@ -310,37 +144,15 @@ function(beHidden) {
             this.$set('$currentTargetTPElement', targetTPElem);
             this.$set('$currentModifyingRule', modifyingRule);
 
-            this.observe(TP.core.Mouse, 'TP.sig.DOMDragMove');
-            this.observe(TP.core.Mouse, 'TP.sig.DOMDragUp');
-
             this.observe(this.getDocument(),
                             TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
             this.observe(TP.sys.getUICanvas().getDocument(),
                             TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-
-            toolsLayer.setAttribute('activetool', this.getLocalID());
         }
     }
 
     //  Need to 'call up' to make sure the attribute value is actually captured.
     return beHidden;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.manipulator.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Perform the initial setup for the receiver.
-     * @returns {TP.sherpa.manipulator} The receiver.
-     */
-
-    this.observe(TP.byId('SherpaHUD', this.getNativeDocument()),
-                    'PclassClosedChange');
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -30,6 +30,7 @@
 
     <script src="./src/TP.sherpa.ToolAPI.js"/>
 
+    <script src="./src/TP.sherpa.canvastool.js"/>
     <script src="./src/TP.sherpa.manipulator.js"/>
 
     <script src="./TP.sherpa.dimensionsManipulator/TP.sherpa.dimensionsManipulator.js"/>
