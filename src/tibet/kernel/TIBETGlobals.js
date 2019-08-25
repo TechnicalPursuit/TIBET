@@ -1281,6 +1281,8 @@ TP.PRERENDER = 'prerender';
 
 TP.NO_SOURCE_REP = '<<No Source Rep>>'; //  No source representation
 
+TP.POSITION = 'position';
+
 //  CSS transformation types
 TP.ROTATE = 'ROTATE';         //  Rotation transformation
 TP.SKEW = 'SKEW';             //  Skew transformation
