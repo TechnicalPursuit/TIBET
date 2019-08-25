@@ -93,15 +93,13 @@ function(aTargetTPElem) {
                 'relative';
     this.$set('$isRelative', isRelative);
 
-    if (isRelative) {
-        parentOffsets = TP.elementGetOffsetFromContainer(
-                                            aTargetTPElem.getNativeNode());
-        this.$set('$parentOffsets', parentOffsets);
+    parentOffsets = TP.elementGetOffsetFromContainer(
+                                        aTargetTPElem.getNativeNode());
+    this.$set('$parentOffsets', parentOffsets);
 
-        thisOffsets = TP.ac(aTargetTPElem.getComputedStyleProperty('left', true),
-                            aTargetTPElem.getComputedStyleProperty('top', true));
-        this.$set('$thisOffsets', thisOffsets);
-    }
+    thisOffsets = TP.ac(aTargetTPElem.getComputedStyleProperty('left', true),
+                        aTargetTPElem.getComputedStyleProperty('top', true));
+    this.$set('$thisOffsets', thisOffsets);
 
     return this;
 }, {
@@ -167,13 +165,11 @@ function(aSignal) {
     targetLeft = aSignal.getPageXAdjustedFor(targetElem);
     targetTop = aSignal.getPageYAdjustedFor(targetElem);
 
-    if (this.$get('$isRelative')) {
-        parentOffsets = this.$get('$parentOffsets');
-        thisOffsets = this.$get('$thisOffsets');
+    parentOffsets = this.$get('$parentOffsets');
+    thisOffsets = this.$get('$thisOffsets');
 
-        targetLeft -= parentOffsets.first() - thisOffsets.first();
-        targetTop -= parentOffsets.last() - thisOffsets.last();
-    }
+    targetLeft -= parentOffsets.first() - thisOffsets.first();
+    targetTop -= parentOffsets.last() - thisOffsets.last();
 
     TP.styleRuleSetProperty(modifyingRule, 'left', targetLeft + 'px', false);
     TP.styleRuleSetProperty(modifyingRule, 'top', targetTop + 'px', false);
@@ -230,13 +226,11 @@ function(aSignal) {
     targetLeft = aSignal.getPageXAdjustedFor(targetElem);
     targetTop = aSignal.getPageYAdjustedFor(targetElem);
 
-    if (this.$get('$isRelative')) {
-        parentOffsets = this.$get('$parentOffsets');
-        thisOffsets = this.$get('$thisOffsets');
+    parentOffsets = this.$get('$parentOffsets');
+    thisOffsets = this.$get('$thisOffsets');
 
-        targetLeft -= parentOffsets.first() - thisOffsets.first();
-        targetTop -= parentOffsets.last() - thisOffsets.last();
-    }
+    targetLeft -= parentOffsets.first() - thisOffsets.first();
+    targetTop -= parentOffsets.last() - thisOffsets.last();
 
     TP.styleRuleSetProperty(modifyingRule, 'left', targetLeft + 'px', true);
     TP.styleRuleSetProperty(modifyingRule, 'top', targetTop + 'px', true);
