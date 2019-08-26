@@ -4453,6 +4453,27 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('setupOutliner',
+function() {
+
+    /**
+     * @method setupOutliner
+     * @summary Sets up the Sherpa's 'outliner' component. The outliner is the
+     *     component that allows a user to visualize and manipulate the
+     *     underlying DOM structure of their application.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    //  The outliner doesn't have a visual 'tag' representation, so we manually
+    //  construct it. This will set its ID and register it so that it can be
+    //  found.
+    TP.sherpa.outliner.construct();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('setupTools',
 function() {
 
@@ -4500,27 +4521,6 @@ function() {
     toolTPElem.compile();
 
     toolsLayerTPElem.addContent(toolTPElem);
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.IDE.Inst.defineMethod('setupOutliner',
-function() {
-
-    /**
-     * @method setupOutliner
-     * @summary Sets up the Sherpa's 'outliner' component. The outliner is the
-     *     component that allows a user to visualize and manipulate the
-     *     underlying DOM structure of their application.
-     * @returns {TP.sherpa.IDE} The receiver.
-     */
-
-    //  The outliner doesn't have a visual 'tag' representation, so we manually
-    //  construct it. This will set its ID and register it so that it can be
-    //  found.
-    TP.sherpa.outliner.construct();
 
     return this;
 });
