@@ -1323,17 +1323,28 @@ function(aSignal) {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
-    var connector;
-
-    connector = TP.byId('SherpaConnector', TP.sys.getUIRoot());
-    if (TP.notValid(connector)) {
-        return this;
-    }
+    var connector,
+        tool;
 
     //  If the Shift key is down and the Alt key is as well, then start a
     //  connector session.
     if (aSignal.getShiftKey() && aSignal.getAltKey()) {
+        connector = TP.byId('SherpaConnector', TP.sys.getUIRoot());
+        if (TP.notValid(connector)) {
+            return this;
+        }
+
         connector.startConnecting(aSignal);
+    }
+
+    //  If only the Alt key is down, then activate the grouping tool.
+    if (aSignal.getAltKey()) {
+        tool = TP.byId('SherpaGroupingTool', TP.sys.getUIRoot());
+        if (TP.notValid(tool)) {
+            return this;
+        }
+
+        tool.activate(aSignal);
     }
 
     return this;
@@ -4475,6 +4486,14 @@ function() {
     toolsLayerTPElem.addContent(toolTPElem);
 
     toolTPElem = TP.sherpa.gridManipulator.
+                            getResourceElement('template', TP.ietf.mime.XHTML);
+
+    toolTPElem = toolTPElem.clone();
+    toolTPElem.compile();
+
+    toolsLayerTPElem.addContent(toolTPElem);
+
+    toolTPElem = TP.sherpa.groupingTool.
                             getResourceElement('template', TP.ietf.mime.XHTML);
 
     toolTPElem = toolTPElem.clone();
