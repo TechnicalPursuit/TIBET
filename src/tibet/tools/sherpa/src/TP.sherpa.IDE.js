@@ -508,7 +508,7 @@ function(finalizationFunc) {
     //  NB: We set these up *after* the halo is set up.
 
     //  Set up the manipulators
-    this.setupManipulators();
+    this.setupTools();
 
     //  Set up the outliner
     this.setupOutliner();
@@ -4442,11 +4442,11 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.IDE.Inst.defineMethod('setupManipulators',
+TP.sherpa.IDE.Inst.defineMethod('setupTools',
 function() {
 
     /**
-     * @method setupManipulators
+     * @method setupTools
      * @summary Sets up the Sherpa's 'manipulator' components. These componest
      *     aid in visual editing of various properties of target elements -
      *     usually CSS properties.
@@ -4454,33 +4454,33 @@ function() {
      */
 
     var toolsLayerTPElem,
-        manipulatorTPElem;
+        toolTPElem;
 
     toolsLayerTPElem = this.getToolsLayer();
 
-    manipulatorTPElem = TP.sherpa.dimensionsManipulator.
+    toolTPElem = TP.sherpa.dimensionsManipulator.
                             getResourceElement('template', TP.ietf.mime.XHTML);
 
-    manipulatorTPElem = manipulatorTPElem.clone();
-    manipulatorTPElem.compile();
+    toolTPElem = toolTPElem.clone();
+    toolTPElem.compile();
 
-    toolsLayerTPElem.addContent(manipulatorTPElem);
+    toolsLayerTPElem.addContent(toolTPElem);
 
-    manipulatorTPElem = TP.sherpa.positionManipulator.
+    toolTPElem = TP.sherpa.positionManipulator.
                             getResourceElement('template', TP.ietf.mime.XHTML);
 
-    manipulatorTPElem = manipulatorTPElem.clone();
-    manipulatorTPElem.compile();
+    toolTPElem = toolTPElem.clone();
+    toolTPElem.compile();
 
-    toolsLayerTPElem.addContent(manipulatorTPElem);
+    toolsLayerTPElem.addContent(toolTPElem);
 
-    manipulatorTPElem = TP.sherpa.gridManipulator.
+    toolTPElem = TP.sherpa.gridManipulator.
                             getResourceElement('template', TP.ietf.mime.XHTML);
 
-    manipulatorTPElem = manipulatorTPElem.clone();
-    manipulatorTPElem.compile();
+    toolTPElem = toolTPElem.clone();
+    toolTPElem.compile();
 
-    toolsLayerTPElem.addContent(manipulatorTPElem);
+    toolsLayerTPElem.addContent(toolTPElem);
 
     return this;
 });
