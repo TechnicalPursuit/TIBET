@@ -141,7 +141,13 @@ function(beHidden) {
         if (beHidden) {
             //  Blur any focused element that is enclosed within us.
             thisref.blurFocusedDescendantElement();
+
+            this.ignoreKeybindingsDirectly();
+
         } else {
+
+            this.observeKeybindingsDirectly();
+
             //  Focus any autofocused element or the first focusable element
             //  under us.
             thisref.focusAutofocusedOrFirstFocusableDescendant();
@@ -151,7 +157,7 @@ function(beHidden) {
                 focusedTPElem.select();
             }
         }
-    }, 75);
+    }.bind(this), 75);
 
     return this.callNextMethod();
 });
