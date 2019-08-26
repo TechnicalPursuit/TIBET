@@ -240,9 +240,9 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hud-TP.sherpa.hud.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hud-TP.sherpa.hud.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.hud-TP.sherpa.hud_injected.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.groupingTool-TP.sherpa.groupingTool.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.groupingTool-TP.sherpa.groupingTool.css.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.groupingTool-TP.sherpa.grouping_injected.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.groupingtool-TP.sherpa.groupingTool.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.groupingtool-TP.sherpa.groupingTool.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.groupingtool-TP.sherpa.grouping_injected.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.outliner-TP.sherpa.outliner_injected.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.world-TP.sherpa.world.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.screen-TP.sherpa.screen.css.js"/>

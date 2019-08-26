@@ -33,7 +33,7 @@
     <script src="./src/TP.sherpa.canvastool.js"/>
     <script src="./src/TP.sherpa.manipulator.js"/>
 
-    <script src="./TP.sherpa.groupingTool/TP.sherpa.groupingTool.js"/>
+    <script src="./TP.sherpa.groupingtool/TP.sherpa.groupingTool.js"/>
 
     <script src="./TP.sherpa.dimensionsManipulator/TP.sherpa.dimensionsManipulator.js"/>
     <script src="./TP.sherpa.gridManipulator/TP.sherpa.gridManipulator.js"/>
@@ -185,7 +185,7 @@
 
     <resource href="~ide_root/TP.sherpa.halo/TP.sherpa.halo_injected.css"/>
     <resource href="~ide_root/TP.sherpa.hud/TP.sherpa.hud_injected.css"/>
-    <resource href="~ide_root/TP.sherpa.groupingTool/TP.sherpa.grouping_injected.css"/>
+    <resource href="~ide_root/TP.sherpa.groupingtool/TP.sherpa.grouping_injected.css"/>
     <resource href="~ide_root/TP.sherpa.outliner/TP.sherpa.outliner_injected.css"/>
 
 </config>
