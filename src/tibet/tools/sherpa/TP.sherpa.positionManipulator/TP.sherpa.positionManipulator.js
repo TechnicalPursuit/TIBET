@@ -63,10 +63,11 @@ function(aTargetTPElem) {
 
     if (TP.notEmpty(cantAlterReasons)) {
         if (cantAlterReasons.contains(TP.ELEMENT_NEEDS_TO_BE_POSITIONED)) {
-            TP.prompt(
-                'This element needs a "position" property value of:' +
-                ' "relative", "absolute", or "fixed" to be movable. Enter a' +
-                ' value for the "position" property:', 'relative').then(
+            TP.promptWithChoices(
+                'This element needs one of the following a "position"' +
+                ' property values to be moveable:',
+                TP.ac('relative', 'absolute', 'fixed'),
+                'relative').then(
                 function(positionVal) {
                     var modifyingRule;
 
