@@ -81,6 +81,45 @@ xctrls|dialog {
         white-space: pre-wrap;
     }
 
+    & .choiceContent {
+
+        text-align: left;
+    }
+
+    & .choiceContent > label {
+
+        display: inline-block;
+        height: 1.35em;
+
+        margin-left: 2px;
+
+        vertical-align: text-bottom;
+    }
+
+    & .choiceContent > label[for="overrideField"] {
+
+        height: 1.15em;
+    }
+
+    & .choiceContent > select {
+
+        margin-left: 1.7em;
+    }
+
+    & .choiceContent > input[type="checkbox"],
+    & .choiceContent > input[type="radio"] {
+
+        margin-left: 1.7em;
+    }
+
+    & .choiceContent > select[multiple] {
+
+        height: 6.25em;
+        line-height: 1.5em;
+
+        padding: 0;
+    }
+
     & .dialogControls {
 
         display: flex;

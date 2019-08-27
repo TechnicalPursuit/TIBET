@@ -721,6 +721,241 @@ function(aQuestion, aDefaultAnswer, info) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('promptWithChoices',
+function(aQuestion, choices, aDefaultAnswer, info) {
+
+    /**
+     * @method promptWithChoices
+     * @summary Displays a prompt to the user asking for data from a constrained
+     *     set of choices.
+     * @param {String} aQuestion The question for the user.
+     * @param {String[]} choices The constrained set of choices to present to
+     *     the user.
+     * @param {String} [aDefaultAnswer] The default answer, provided in the
+     *     input field.
+     * @param {TP.core.Hash} [info] An optional hash containing additional
+     *     information to control the dialog that gets displayed. Keys on this
+     *     hash could include:
+     *          templateURI:        A URI to use for the dialog template instead
+     *                              of the standard template.
+     *          dialogID:           The ID to use for the dialog. This defaults
+     *                              to 'systemDialog'.
+     *          isMultiple:         Whether or not the set of choices should be
+     *                              presented such that the user can choose
+     *                              multiple values.
+     *          isOpen:             Whether or not the set of choices should be
+     *                              augmented with a text field such that the
+     *                              user can alternatively supply an open-ended
+     *                              value as an answer. Note that this value
+     *                              will be given preference over what the user
+     *                              selects from the set of choices.
+     *          selectThreshold:    A Number that will determine whether or not
+     *                              the set of choices should be presented as a
+     *                              an HTML select element or set of a checkbox
+     *                              or radio elements. If the number of choices
+     *                              is greater than or equal to this number,
+     *                              then an HTML select will be used (and set to
+     *                              'multiple' if caller specified multiple
+     *                              values).
+     *          ctrlType:           The type of control, either 'radio',
+     *                              'checkbox' or 'select'. This method will
+     *                              normally compute this based on the other
+     *                              settings above, but the type can be forced
+     *                              by supplying a value for this key.
+     * @example Obtain an answer from the user:
+     *     <code>
+     *          TP.prompt('Favorite color', 'Black');
+     *     </code>
+     * @returns {Promise} A Promise to be used as necessary. Since this is a
+     *     prompt(), this Promise's resolver Function will be called with the
+     *     value returned by the user.
+     */
+
+    var templateURI,
+        dialogID,
+
+        isMultiple,
+        isOpen,
+        selectThreshold,
+        ctrlType,
+
+        str,
+        choicesNode,
+
+        promise;
+
+    //  Grab the template URI and dialog ID for the 'prompt' panel (and
+    //  defaulting if they are not supplied in the separate hash).
+    if (TP.isValid(info)) {
+        templateURI = info.atIfInvalid(
+                'templateURI',
+                TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml'));
+        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+
+        isMultiple = info.atIfInvalid('multiple', false);
+        isOpen = info.atIfInvalid('open', false);
+        selectThreshold = info.atIfInvalid('selectThreshold', 5);
+        ctrlType = info.at('ctrlType');
+        if (TP.notValid(ctrlType)) {
+            if (isMultiple) {
+                ctrlType = choices.getSize() < selectThreshold ? 'checkbox' :
+                                                                    'select';
+            } else {
+                ctrlType = choices.getSize() < selectThreshold ? 'radio' :
+                                                                    'select';
+            }
+        }
+    } else {
+        templateURI =
+            TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml');
+        dialogID = 'systemDialog';
+        isMultiple = false;
+        isOpen = false;
+        selectThreshold = 5;
+        ctrlType = choices.getSize() < selectThreshold ? 'radio' : 'select';
+    }
+
+    str = '';
+
+    switch (ctrlType) {
+        case 'checkbox':
+        case 'radio':
+
+            //  Build up a set of HTML checkboxes or radio buttons.
+            choices.forEach(
+                function(aChoice, index) {
+                    str += '<input id="field_' + index + '"' +
+                            ' name="inputChooser"' +
+                            ' type="' + ctrlType + '"' +
+                            ' value="' + aChoice + '"/>' +
+                            '<label for="field_' + index + '">' +
+                                aChoice +
+                            '</label>' +
+                            '<br/>';
+                });
+            break;
+        case 'select':
+
+            //  Build up an HTML select
+            str += '<select id="field_0"';
+            if (isMultiple) {
+                str += ' multiple="multiple"';
+            }
+            str += '>';
+
+            if (!isMultiple) {
+                str += '<option value="">Choose...</option>';
+            }
+
+            choices.forEach(
+                function(aChoice, index) {
+                    str += '<option value="' + aChoice + '">' +
+                            aChoice +
+                            '</option>';
+                });
+            str += '</select>';
+            break;
+        default:
+            break;
+    }
+
+    //  If the user specified that this is an 'open' set of choices, then we
+    //  have to provide an 'override' field.
+    if (isOpen) {
+        if (ctrlType === 'select') {
+            str += '<br/>';
+        }
+
+        str += '<label for="overrideField">Or:</label>' +
+                '<input type="text" id="overrideField"/>';
+    }
+
+    //  Make a node out of the built HTML - we'll inject this into the
+    //  'choiceContent' div below.
+    choicesNode = TP.xhtmlnode(str);
+
+    //  Call the TP.dialog() method with that data and specifying that the panel
+    //  is to be modal and what the message it.
+    promise = TP.dialog(
+                    TP.hc('templateURI', templateURI,
+                            'dialogID', dialogID,
+                            'isModal', true,
+                            'templateData', TP.hc('message', aQuestion)));
+
+    //  After displaying, if a default answer was provided, set the value of the
+    //  input field and select the text in the field. If not, just focus the
+    //  input field. Then build another promise that will install DialogOk and
+    //  DialogCancel handlers as local handlers directly on the dialog object.
+    //  Return that nested Promise.
+    return promise.then(
+        function(dialogTPElem) {
+
+            var choiceContent,
+
+                inputField,
+                overrideField,
+
+                answerPromise;
+
+            //  Grab the choiceContent and inject the node that we built above.
+            choiceContent = TP.byCSSPath(' .choiceContent', dialogTPElem, true);
+            choiceContent.setContent(choicesNode);
+
+            //  Grab both the input field (which won't be a text field here -
+            //  this is either the select or the group of checkboxes or radio
+            //  buttons).
+            inputField = TP.byCSSPath(' .dialogContent #field_0',
+                                        dialogTPElem,
+                                        true);
+
+            //  Grab the override text field.
+            overrideField = TP.byCSSPath(' .dialogContent #overrideField',
+                                        dialogTPElem,
+                                        true);
+
+            //  If the default answer is specified, then set the input field to
+            //  it.
+            if (TP.notEmpty(aDefaultAnswer)) {
+                inputField.set('value', aDefaultAnswer);
+            }
+
+            answerPromise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    dialogTPElem.defineHandler('DialogOk',
+                    function(aSignal) {
+
+                        var value;
+
+                        //  Hide the panel and call the resolver with true,
+                        //  since they activated a control that fired 'DialogOk'
+                        this.setAttribute('hidden', true);
+
+                        if (TP.isValid(overrideField)) {
+                            value = overrideField.get('value');
+                        }
+
+                        if (TP.isEmpty(value)) {
+                            value = inputField.get('value');
+                        }
+
+                        resolver(value);
+                    });
+                    dialogTPElem.defineHandler('DialogCancel',
+                    function(aSignal) {
+
+                        //  Hide the panel and call the resolver with false,
+                        //  since they activated a control that fired
+                        //  'DialogCancel'
+                        this.setAttribute('hidden', true);
+                        resolver(null);
+                    });
+                });
+
+            return answerPromise;
+        });
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-
