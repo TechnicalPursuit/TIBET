@@ -285,7 +285,9 @@ function(accumHash, schemaData, keyPrefix) {
                 values,
 
                 localValues,
-                subValues;
+                subValues,
+
+                schemaType;
 
             localKey = kvPair.first();
             localSchema = kvPair.last();
@@ -323,9 +325,19 @@ function(accumHash, schemaData, keyPrefix) {
                                 return fullKey + '.' + aKeyName;
                             });
 
+            //  Get the schema type but don't bother for any keys that start
+            //  with '//' - they're a comment.
+            if (fullKey.startsWith('/')) {
+                schemaType = 'none';
+            } else {
+                schemaType = this.getSchemaTypeOfProperty(fullKey);
+            }
+
             //  Place all of the locally-computed values into the hash at the
             //  computed key.
-            accumHash.atPut(fullKey, localValues);
+            accumHash.atPut(fullKey,
+                            TP.hc('exprs', localValues,
+                                    'schemaType', schemaType));
         }.bind(this));
 
     //  Return our keys with all of the sub values accumulated from levels

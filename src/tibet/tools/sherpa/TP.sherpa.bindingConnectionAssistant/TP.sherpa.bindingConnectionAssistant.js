@@ -671,7 +671,7 @@ function(anObj) {
         scopePrefix = scopeParts.join('.');
     }
 
-    exprs = propInfo.at(scopePrefix);
+    exprs = propInfo.at(scopePrefix).at('exprs');
 
     if (TP.notEmpty(exprs)) {
         exprs = exprs.collect(
