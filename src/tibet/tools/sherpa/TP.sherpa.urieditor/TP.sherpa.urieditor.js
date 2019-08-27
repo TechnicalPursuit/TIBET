@@ -320,7 +320,8 @@ function(aSourceTPElement) {
         loc = TP.uriJoinFragments.apply(TP, fragParts);
         uriWithFrag = TP.uc(loc);
 
-        return TP.hc('sourceURI', uriWithFrag,
+        return TP.hc('path', pathParts.join('.'),
+                        'sourceURI', uriWithFrag,
                         'propInfo', propInfo,
                         'isLeaf', isLeaf);
     }
