@@ -6281,6 +6281,109 @@ function(x, y) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('zoomToPoint',
+function(aPoint, aDelta, incrementFactor, maximumScale) {
+
+    /**
+     * @method zoomToPoint
+     * @summary Zooms around the point given, using the given delta, which is
+     *     clamped to a value of -1 to 1.
+     * @param {TP.gui.Point} aPoint The point to zoom around.
+     * @param {Number} aDelta The amount of change in the zoom factor that will
+     *     be made in this invocation of the call.
+     * @param {Number} [incrementFactor=0.1] The factor to increment or
+     *     decrement the zoom by.
+     * @param {Number} [maximumScale=4] The maximum scaling factor to allow (the
+     *     minimum scaling factor is 1).
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var elem,
+
+        width,
+        height,
+
+        delta,
+
+        transformVals,
+
+        position,
+        scale,
+
+        posX,
+        posY,
+
+        zoomTargetPoint,
+
+        factor,
+        maxScale;
+
+    elem = this.getNativeNode();
+
+    width = this.getWidth();
+    height = this.getHeight();
+
+    //  Keep delta to -1,1
+    delta = Math.max(-1, Math.min(1, aDelta));
+
+    //  Get the current set of transformation values. This is how the element is
+    //  already transformed.
+    transformVals = this.getTransformValues();
+
+    //  Grab the scale first. We'll need to use that to compute the unscaled
+    //  position.
+    scale = transformVals.at(TP.SCALE).first();
+
+    //  Compute the unscaled position. We need it unscaled so that we can use it
+    //  along with the untransformed point that we've been handed.
+    posX = transformVals.at(TP.TRANSLATE).first() / scale;
+    posY = transformVals.at(TP.TRANSLATE).last() / scale;
+
+    zoomTargetPoint = TP.pc(
+        (aPoint.getX() - posX) / scale,
+        (aPoint.getY() - posY) / scale);
+
+    factor = TP.ifInvalid(incrementFactor, 0.1);
+    maxScale = TP.ifInvalid(maximumScale, 4);
+
+    scale += delta * factor * scale;
+    scale = Math.max(1, Math.min(maxScale, scale));
+
+    position = TP.pc(
+        -zoomTargetPoint.getX() * scale + aPoint.getX(),
+        -zoomTargetPoint.getY() * scale + aPoint.getY());
+
+    //  Clamp the X values to some reasonable values.
+
+    if (position.getX() > 0) {
+        position.setX(0);
+    }
+
+    if (position.getX() + width * scale < width) {
+        position.setX(-width * (scale - 1));
+    }
+
+    //  Clamp the Y values to some reasonable values.
+
+    if (position.getY() > 0) {
+        position.setY(0);
+    }
+
+    if (position.getY() + height * scale < height) {
+        position.setY(-height * (scale - 1));
+    }
+
+    this.setTransform(
+        'scale(' + scale + ',' + scale + ')' +
+        ' translate(' + position.getX() + 'px,' + position.getY() + 'px)');
+
+    this.setTransformOrigin(position.getX(), position.getY());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  STATE TESTING/MANIPULATION
 //  ------------------------------------------------------------------------
 
