@@ -1335,6 +1335,14 @@ function(aSignal) {
         }
 
         connector.startConnecting(aSignal);
+
+        return this;
+    }
+
+    //  If the signal didn't happen in the current UI canvas, then we move on.
+    //  All of the remaining controls are limited to UI canvas only.
+    if (aSignal.getDocument() !== TP.sys.uidoc()) {
+        return this;
     }
 
     //  If only the Alt key is down, then activate the grouping tool.
@@ -1345,6 +1353,8 @@ function(aSignal) {
         }
 
         tool.activate(aSignal);
+
+        return this;
     }
 
     return this;
