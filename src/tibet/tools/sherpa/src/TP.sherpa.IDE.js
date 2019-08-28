@@ -1385,9 +1385,10 @@ function(aSignal) {
         //  this case, though, the 'builder' aspect of the Sherpa is going to
         //  override that.
         target = aSignal.getTarget();
-        if (TP.isElement(target)) {
-            TP.elementRemoveAttribute(target, 'tibet:no-dragtrap', true);
-            this.$set('$nodragtrapTarget', target);
+        if (TP.isElement(target) &&
+            TP.elementHasAttribute(target, 'tibet:no-dragtrap', true)) {
+                TP.elementRemoveAttribute(target, 'tibet:no-dragtrap', true);
+                this.$set('$nodragtrapTarget', target);
         }
     }
 
