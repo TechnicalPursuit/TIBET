@@ -3972,6 +3972,9 @@ function(aTargetElem, anEvent) {
     }
 
     dragStateMachine = TP.dnd.DragResponder.get('dragStateMachine');
+    if (!dragStateMachine.isActive()) {
+        return this;
+    }
 
     //  Grab the target element before we deactivate.
     //  TODO: This is a little cheesy - we should have another way to get back
@@ -4017,12 +4020,19 @@ function(aTargetElem, anEvent) {
      * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
+    var dragStateMachine,
+
+        evtTargetTPElem,
 
         targetTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
+    }
+
+    dragStateMachine = TP.dnd.DragResponder.get('dragStateMachine');
+    if (!dragStateMachine.isActive()) {
+        return this;
     }
 
     evtTargetTPElem = TP.wrap(aTargetElem);
@@ -4059,10 +4069,17 @@ function(aTargetElem, anEvent) {
      * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
-    var targetTPElem;
+    var dragStateMachine,
+
+        targetTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
+    }
+
+    dragStateMachine = TP.dnd.DragResponder.get('dragStateMachine');
+    if (!dragStateMachine.isActive()) {
+        return this;
     }
 
     if (TP.notValid(targetTPElem =
