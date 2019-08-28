@@ -28,6 +28,7 @@
     <resource href="system_alert.xhtml"/>
     <resource href="system_confirm.xhtml"/>
     <resource href="system_prompt.xhtml"/>
+    <resource href="system_prompt_with_choices.xhtml"/>
 </config>
 
 <config id="tests">
