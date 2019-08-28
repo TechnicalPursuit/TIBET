@@ -1409,6 +1409,36 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineHandler('DOMMouseWheel',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseWheel
+     * @summary Handles notifications of mouse wheel signals.
+     * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var targetTPElem;
+
+    if (aSignal.getCtrlKey()) {
+        aSignal.preventDefault();
+
+        //  Zoom the body to the point supplied by the signal.
+        targetTPElem = TP.sys.uidoc().getBody();
+        targetTPElem.zoomToPoint(
+                        aSignal.getPagePoint(),
+                        aSignal.getWheelDelta(),
+                        .1,
+                        4);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineHandler('EditObject',
 function(aSignal) {
 
@@ -1857,6 +1887,8 @@ function(aSignal) {
                                     'TP.sig.SherpaConnectCancelled',
                                     'TP.sig.SherpaConnectCompleted'));
 
+    this.ignore(oldCanvasDoc, 'TP.sig.DOMMouseWheel');
+
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
     return this;
@@ -1919,6 +1951,8 @@ function(aSignal) {
     this.observe(newCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
                                     'TP.sig.SherpaConnectCompleted'));
+
+    this.observe(newCanvasDoc, 'TP.sig.DOMMouseWheel');
 
     TP.activateMutationObserver(TP.unwrap(newCanvasDoc),
                                 'BUILDER_OBSERVER');
@@ -4380,6 +4414,8 @@ function() {
     this.observe(currentCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
                                     'TP.sig.SherpaConnectCompleted'));
+
+    this.observe(currentCanvasDoc, 'TP.sig.DOMMouseWheel');
 
     //  Observe the Sherpa's connector itself for connection initiation and
     //  termination.
