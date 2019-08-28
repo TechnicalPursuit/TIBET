@@ -3776,7 +3776,7 @@ function(aTargetElem, anEvent) {
     //  Check to see if the event target will move. If so, activate the shared
     //  MoveService (an instance of TP.dnd.MoveResponder), set it up, activate
     //  it and exit.
-    if (evtTargetTPElem.willMove()) {
+    if (evtTargetTPElem.willMove(anEvent)) {
         if (TP.isValid(moveResponder = TP.bySystemId('MoveService'))) {
 
             //  Cache the target element - we'll need this ondragup
@@ -3813,7 +3813,7 @@ function(aTargetElem, anEvent) {
     //  Check to see if the event target will resize. If so, activate the shared
     //  ResizeService (an instance of TP.dnd.ResizeResponder), set it up,
     //  activate it and exit.
-    if (evtTargetTPElem.willResize()) {
+    if (evtTargetTPElem.willResize(anEvent)) {
         if (TP.isValid(resizeResponder = TP.bySystemId('ResizeService'))) {
 
             //  Cache the target element - we'll need this ondragup
@@ -3847,7 +3847,7 @@ function(aTargetElem, anEvent) {
 
     //  Check to see if the event target will grab. If so, obtain the
     //  drag-and-drop 'source' TP.dom.ElementNode and proceed from there.
-    if (evtTargetTPElem.willGrab() &&
+    if (evtTargetTPElem.willGrab(anEvent) &&
         TP.isValid(sourceTPElem = evtTargetTPElem.getDNDSource())) {
         if (TP.isValid(dndResponder = TP.bySystemId('DNDService'))) {
             //  Send a 'TP.sig.DOMDNDInitiate' signal and make sure no one
@@ -4554,12 +4554,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Inst.defineMethod('willGrab',
-function() {
+function(normalizedEvent) {
 
     /**
      * @method willGrab
      * @summary Returns whether or not items can be grabbed to start a drag and
      *     drop session.
+     * @param {Event} normalizedEvent The native event containing the signal's
+     *     raw data.
      * @returns {Boolean} Whether or not items can be grabbed to start a drag
      *     and drop session.
      */
@@ -4570,12 +4572,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Inst.defineMethod('willMove',
-function() {
+function(normalizedEvent) {
 
     /**
      * @method willMove
      * @summary Returns whether or not the receiver can be moved via a drag
      *     session.
+     * @param {Event} normalizedEvent The native event containing the signal's
+     *     raw data.
      * @returns {Boolean} Whether or not the receiver can be moved via a drag
      *     session.
      */
@@ -4626,12 +4630,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Inst.defineMethod('willResize',
-function() {
+function(normalizedEvent) {
 
     /**
      * @method willResize
      * @summary Returns whether or not the receiver can be resized via a drag
      *     session.
+     * @param {Event} normalizedEvent The native event containing the signal's
+     *     raw data.
      * @returns {Boolean} Whether or not the receiver can be resized via a drag
      *     session.
      */
