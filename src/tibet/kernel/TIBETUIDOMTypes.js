@@ -3551,6 +3551,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('getTransformValues',
+function() {
+
+    /**
+     * @method getTransformValues
+     * @summary Returns the values of any CSS3 transforms of the receiver.
+     * @returns {TP.core.Hash} A hash of values, keyed by the following keys:
+     *     TP.ROTATE, TP.SKEW, TP.SCALE, TP.TRANSLATE
+     */
+
+    return TP.elementGetTransformValues(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('getWidth',
 function() {
 
