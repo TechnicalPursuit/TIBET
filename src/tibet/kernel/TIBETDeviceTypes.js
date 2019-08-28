@@ -2867,6 +2867,24 @@ function(aWindow, otherWindow) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Mouse.Type.defineMethod('isDragging',
+function() {
+
+    /**
+     * @method isDragging
+     * @summary Returns true if the mouse is currently in a 'dragging' mode.
+     * @returns {Boolean} True if dragging, false otherwise.
+     */
+
+    var lastMove;
+
+    lastMove = TP.core.Mouse.$get('lastMove');
+
+    return this.$$isDragging(lastMove);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Mouse.Type.defineMethod('resetEventData',
 function(filterWindow) {
 
