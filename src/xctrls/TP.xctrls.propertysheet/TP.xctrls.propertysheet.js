@@ -753,6 +753,10 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
             objKey = propertyKVPair.first();
             objDesc = propertyKVPair.last();
 
+            if (objKey.startsWith('/')) {
+                return;
+            }
+
             type = objDesc.at('type');
 
             if (TP.isEmpty(type)) {
