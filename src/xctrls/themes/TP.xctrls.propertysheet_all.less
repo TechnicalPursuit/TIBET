@@ -13,8 +13,8 @@
 
     xctrls|propertysheet {
 
-        width: 100%;
-        height: 100%;
+        width: auto;
+        height: auto;
 
         overflow: auto;
 
@@ -28,28 +28,21 @@
         &:not([pclass|disabled]) xctrls|label {
         }
 
-        * > fieldset {
+        & > span.propertyfields {
 
-            overflow: hidden;
+            display: block;
 
-            & div {
+            & span.propertyfield {
 
-                align-items: center;
+                display: block;
 
                 & label {
-
-                    order: 1;
 
                     white-space: nowrap;
 
                     user-select: none;
 
                     cursor: pointer;
-                }
-
-                & label + *|* {
-
-                    order: 2;
                 }
             }
         }

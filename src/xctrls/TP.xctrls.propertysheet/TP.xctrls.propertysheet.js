@@ -145,6 +145,9 @@ function(topLevelSchema, params) {
 
             //  ---
 
+            str += '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="propertyfields">';
+
             type = definitionDesc.at('type');
 
             if (type === 'array') {
@@ -160,6 +163,8 @@ function(topLevelSchema, params) {
                                                     prefix,
                                                     renderInfo);
             }
+
+            str += '</span>';
 
             //  ---
 
@@ -474,7 +479,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
             len = enumValues.getSize();
 
             //  If the caller wanted radio buttons used for enumerations, then
-            //  generate a fieldset wrapping a set of XHTML 'input type="radio"'
+            //  generate a span wrapping a set of XHTML 'input type="radio"'
             //  controls.
             if (TP.isTrue(renderInfo.at('useRadiosForEnums'))) {
 
@@ -484,7 +489,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                         label + ': ' +
                         '</label>';
 
-                str += '<fieldset id="' + id + '">';
+                str += '<span class="fluffy" id="' + id + '">';
                 for (i = 0; i < len; i++) {
                     str += '<label' +
                             ' for="' + id + '_' + i + '"' +
@@ -498,7 +503,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                         ' bind:io="{' + 'checked' + ': ' + propertyKey + '}"' +
                         '/>\n';
                 }
-                str += '</fieldset>';
+                str += '</span>';
 
             } else {
 
@@ -723,7 +728,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
         subPrefix;
 
-    str = '<fieldset xmlns="' + TP.w3.Xmlns.XHTML + '"';
+    str = '<span';
 
     if (this.get('currentDefinitionName') !== propertyKey) {
         str += ' bind:scope="' + propertyKey + '">\n';
@@ -763,20 +768,25 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                 return;
             }
 
-            //  Note here how we wrap each chunk of markup generated for a
-            //  property with an XHTML '<div>'. This is to providing a 'wrapping
-            //  context' for further per-property styling.
-            str +=
-                '<div>\n' +
-                this.fromJSONSchema(
-                                type, objKey, objDesc, subPrefix, renderInfo) +
-                '</div>\n';
-
+            if (type === 'object' || type === 'array') {
+                str +=
+                    this.fromJSONSchema(
+                                    type, objKey, objDesc, subPrefix, renderInfo);
+            } else {
+                //  Note here how we wrap each chunk of markup generated for a
+                //  property with an XHTML '<span>'. This is to providing a
+                //  'wrapping context' for further per-property styling.
+                str +=
+                    '<span class="propertyfield">\n' +
+                    this.fromJSONSchema(
+                                    type, objKey, objDesc, subPrefix, renderInfo) +
+                    '</span>\n';
+                }
         }.bind(this));
 
     //  ---
 
-    str += '</fieldset>\n';
+    str += '</span>\n';
 
     //  ---
 

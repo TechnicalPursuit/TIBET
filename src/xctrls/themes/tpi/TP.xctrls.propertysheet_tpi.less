@@ -28,7 +28,7 @@
 
         /* The propertysheet fieldset */
 
-        & > fieldset {
+        & span.propertyfields {
 
             margin: 0;
 
@@ -42,27 +42,15 @@
             border-radius: @xctrls_propertysheet-border-radius;
             border-color: @xctrls_propertysheet-border-color-normal;
 
-            & div {
+            & span.propertyfield {
 
-                padding-top: 1px;
+                & *:nth-child(even) {
 
-                & label {
+                    position: sticky;
 
-                    flex: 1 0 120px;
+                    left: 100px;
 
-                    max-width: 120px;
-                }
-
-                & label + *|* {
-
-                    margin: 0;
-
-                    flex: 1 0 auto;
-
-                    border-width: @xctrls_propertysheet-border-width;
-                    border-style: @xctrls_propertysheet-border-style;
-                    border-radius: @xctrls_propertysheet-border-radius;
-                    border-color: @xctrls_propertysheet-border-color-normal;
+                    margin-top: 2px;
                 }
             }
         }
@@ -70,8 +58,6 @@
         /* The save button */
 
         & > xctrls|button[class~="saveButton"] {
-
-            position: absolute;
 
             margin-top: 10px;
         }
