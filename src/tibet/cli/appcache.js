@@ -654,9 +654,12 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     operation = this.options.enable ? 'enabled' : 'disabled';
 
     if (this.options.enable) {
+        this.log('Cache enabled.');
         this.warn('Remember first launch after enable initializes the cache.');
     } else {
-        this.warn('Clear chrome://appcache-internals/ etc. to fully disable.');
+        this.log('Cache disabled.');
+        this.warn('Use chrome://appcache-internals/ (or other mechanisms for' +
+                    ' other UAs) to fully clear.');
     }
 
     this.log('Application cache ' + operation + '.', 'success');
