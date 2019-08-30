@@ -4954,6 +4954,12 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
                                     pathType = TP.ifInvalid(aPathType,
                                                             TP.JSON_PATH_TYPE);
+                                } else if (TP.isKindOf(
+                                        theVal, TP.core.JSONContent) &&
+                                        TP.regex.JS_IDENTIFIER.test(attrVal)) {
+                                    attrVal = '$.' + attrVal;
+                                    branchVal = theVal.get(attrVal);
+                                    pathType = TP.JSON_PATH_TYPE;
                                 } else {
                                     branchVal = theVal.get(attrVal);
                                     pathType = TP.ifInvalid(aPathType,
