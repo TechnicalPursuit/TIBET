@@ -2391,7 +2391,7 @@ function(aSignal) {
 
 TP.sherpa.IDE.Inst.defineMethod('insertElementIntoCanvas',
 function(newElement, insertionPointElement, aPositionOrPath, shouldFocusHalo,
-shouldShowAssistant) {
+shouldShowAssistant, insertionCompletedHandler) {
 
     /**
      * @method insertElementIntoCanvas
@@ -2414,6 +2414,8 @@ shouldShowAssistant) {
      * @param {Boolean} [shouldShowAssistant=false] Whether or not we should
      *     show the element's DOMHUD assistant after insertion. The default is
      *     false and is dependent on whether we're focusing the halo as well.
+     * @param {Function} [insertionCompletedHandler] A Function to execute when
+     *     the element has been inserted and any halo focusing has occurred.
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
@@ -2467,6 +2469,10 @@ shouldShowAssistant) {
                     halo.focusOn(insertedTPElem, true);
                 }
 
+                if (TP.isCallable(insertionCompletedHandler)) {
+                    insertionCompletedHandler(insertedTPElem);
+                }
+
                 if (TP.isTrue(shouldShowAssistant)) {
                     TP.byId('DOMHUD', viewDoc).showAssistant();
                 }
@@ -2487,7 +2493,7 @@ shouldShowAssistant) {
 
 TP.sherpa.IDE.Inst.defineMethod('insertServiceElementIntoCanvas',
 function(remoteLocation, localLocation, insertionPointElement, aPositionOrPath,
-shouldFocusHalo, shouldShowAssistant) {
+shouldFocusHalo, shouldShowAssistant, insertionCompletedHandler) {
 
     /**
      * @method insertServiceElementIntoCanvas
@@ -2512,6 +2518,8 @@ shouldFocusHalo, shouldShowAssistant) {
      * @param {Boolean} [shouldShowAssistant=false] Whether or not we should
      *     show the element's DOMHUD assistant after insertion. The default is
      *     false and is dependent on whether we're focusing the halo as well.
+     * @param {Function} [insertionCompletedHandler] A Function to execute when
+     *     the element has been inserted and any halo focusing has occurred.
      * @returns {TP.tibet.service} The wrapped newly inserted 'tibet:service'
      *     element.
      */
@@ -2552,7 +2560,8 @@ shouldFocusHalo, shouldShowAssistant) {
             insertionPointElement,
             aPositionOrPath,
             shouldFocusHalo,
-            shouldShowAssistant);
+            shouldShowAssistant,
+            insertionCompletedHandler);
 
     return TP.wrap(newServiceElem);
 });
