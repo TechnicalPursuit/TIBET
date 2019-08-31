@@ -2551,6 +2551,87 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Inst.defineMethod('getMIMEType',
+function(newResource) {
+
+    /**
+     * @method getMIMEType
+     * @summary Returns the MIME type of the receiver, if available. See the
+     *     TP.ietf.mime.getMIMEType() method for more information about how
+     *     TIBET tries to guess the MIME type based on file name and data
+     *     content.
+     * @param {Object} [newResource] An optional resource object that will be
+     *     used to compute the MIME type. If this is not supplied, then the
+     *     receiver's existing resource object will be used.
+     * @returns {String} The receiver's MIME type.
+     */
+
+    var url,
+        mimeType,
+
+        resource,
+        fragment,
+        content;
+
+    //  if there's a valid computed MIME we can use it first
+    if (TP.notEmpty(mimeType = this.get('computedMIMEType'))) {
+        return mimeType;
+    }
+
+    //  TODO:   if we're a fragment then is it possible that our MIME type
+    //  could differ from that of our container?
+    //  Always defer to the primary URI if we have a distinct one.
+    if ((url = this.getPrimaryURI()) !== this) {
+        return url.getMIMEType();
+    }
+
+    //  Need to avoid recursion here so we check the resource slot, but
+    //  don't actually invoke getResource
+    if (TP.isValid(newResource)) {
+        content = newResource;
+    } else if (this.isLoaded()) {
+        resource = this.$get('resource');
+        if (this.hasFragment() && TP.canInvoke(resource, 'get')) {
+            fragment = this.getFragment();
+            if (TP.isKindOf(resource, TP.dom.Node)) {
+                fragment = fragment.startsWith('#') ?
+                            fragment :
+                            '#' + fragment;
+            }
+            content = resource.get(fragment);
+        } else {
+            content = resource;
+        }
+    }
+
+    //  assuming we got content we can ask it, which is what we'd
+    //  prefer to do to get the best value
+    if (TP.canInvoke(content, 'getContentMIMEType')) {
+        mimeType = content.getContentMIMEType(content);
+
+        //  if we found one cache it for next time :)
+        if (TP.isString(mimeType)) {
+            this.$set('computedMIMEType', mimeType);
+
+            return mimeType;
+        }
+    }
+
+    //  if we couldn't ask the content then we can try to guess via the
+    //  MIME type itself
+    mimeType = TP.ietf.mime.guessMIMEType(
+                                content, this, this.get('defaultMIMEType'));
+
+    if (TP.isString(mimeType)) {
+        //  note that we don't cache the guess
+        return mimeType;
+    }
+
+    return this.get('defaultMIMEType');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Inst.defineMethod('getName',
 function() {
 
@@ -5875,87 +5956,6 @@ function(aSeparator) {
     }
 
     return TP.uriExtension(this.getLocation(), aSeparator);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.uri.URL.Inst.defineMethod('getMIMEType',
-function(newResource) {
-
-    /**
-     * @method getMIMEType
-     * @summary Returns the MIME type of the receiver, if available. See the
-     *     TP.ietf.mime.getMIMEType() method for more information about how
-     *     TIBET tries to guess the MIME type based on file name and data
-     *     content.
-     * @param {Object} [newResource] An optional resource object that will be
-     *     used to compute the MIME type. If this is not supplied, then the
-     *     receiver's existing resource object will be used.
-     * @returns {String} The receiver's MIME type.
-     */
-
-    var url,
-        mimeType,
-
-        resource,
-        fragment,
-        content;
-
-    //  if there's a valid computed MIME we can use it first
-    if (TP.notEmpty(mimeType = this.get('computedMIMEType'))) {
-        return mimeType;
-    }
-
-    //  TODO:   if we're a fragment then is it possible that our MIME type
-    //  could differ from that of our container?
-    //  Always defer to the primary URI if we have a distinct one.
-    if ((url = this.getPrimaryURI()) !== this) {
-        return url.getMIMEType();
-    }
-
-    //  Need to avoid recursion here so we check the resource slot, but
-    //  don't actually invoke getResource
-    if (TP.isValid(newResource)) {
-        content = newResource;
-    } else if (this.isLoaded()) {
-        resource = this.$get('resource');
-        if (this.hasFragment() && TP.canInvoke(resource, 'get')) {
-            fragment = this.getFragment();
-            if (TP.isKindOf(resource, TP.dom.Node)) {
-                fragment = fragment.startsWith('#') ?
-                            fragment :
-                            '#' + fragment;
-            }
-            content = resource.get(fragment);
-        } else {
-            content = resource;
-        }
-    }
-
-    //  assuming we got content we can ask it, which is what we'd
-    //  prefer to do to get the best value
-    if (TP.canInvoke(content, 'getContentMIMEType')) {
-        mimeType = content.getContentMIMEType(content);
-
-        //  if we found one cache it for next time :)
-        if (TP.isString(mimeType)) {
-            this.$set('computedMIMEType', mimeType);
-
-            return mimeType;
-        }
-    }
-
-    //  if we couldn't ask the content then we can try to guess via the
-    //  MIME type itself
-    mimeType = TP.ietf.mime.guessMIMEType(
-                                content, this, this.get('defaultMIMEType'));
-
-    if (TP.isString(mimeType)) {
-        //  note that we don't cache the guess
-        return mimeType;
-    }
-
-    return this.get('defaultMIMEType');
 });
 
 //  ------------------------------------------------------------------------
