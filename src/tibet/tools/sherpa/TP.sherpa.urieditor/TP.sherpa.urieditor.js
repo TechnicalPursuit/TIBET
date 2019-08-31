@@ -486,6 +486,9 @@ function(aSignal) {
     //  Apply the changes from the editor to the resource.
     this.applyResource();
 
+    //  Update the editor GUI.
+    this.updateEditorGUI();
+
     //  Update the editor's state, including its dirty state.
     this.updateEditorState();
 
@@ -946,10 +949,7 @@ function() {
     sourceResource.then(
         function(sourceResult) {
 
-            var sourceStr,
-                mimeType,
-
-                themeName;
+            var sourceStr;
 
             //  Now that we're done reverting the content, we can unset the
             //  'changing content' flag.
@@ -991,55 +991,8 @@ function() {
                 return this;
             }
 
-            if (TP.isKindOf(sourceURI, TP.uri.URL)) {
-
-                //  Get the MIME type from guessing based on content and URI. We
-                //  do this rather than ask the URI for a MIME type, since the
-                //  URI might be holding 'plain text' content that will report
-                //  as TP.PLAIN_TEXT_ENCODED and we want a 'higher level' MIME
-                //  type for use when setting the editor's syntax highlighting,
-                //  etc.
-                mimeType = TP.ietf.mime.guessMIMEType(
-                        sourceStr, sourceURI, sourceURI.get('defaultMIMEType'));
-
-                //  CodeMirror won't understand XHTML as distinct from XML.
-                if (mimeType === TP.XHTML_ENCODED) {
-                    mimeType = TP.XML_ENCODED;
-                }
-            } else {
-                if (TP.isKindOf(sourceResult, TP.core.Content)) {
-                    mimeType = sourceResult.getContentMIMEType();
-                    if (mimeType === TP.OCTET_ENCODED) {
-                        if (TP.isJSONString(sourceStr)) {
-                            mimeType = TP.JSON_ENCODED;
-                        } else if (TP.isXMLString(sourceStr)) {
-                            mimeType = TP.XML_ENCODED;
-                        }
-                    }
-                } else if (TP.regex.FUNCTION_LITERAL.test(sourceResult)) {
-                    mimeType = TP.JS_TEXT_ENCODED;
-                } else {
-                    mimeType = TP.PLAIN_TEXT_ENCODED;
-                }
-            }
-
-            //  If the content was JSON encoded, then try to format it using the
-            //  'plain text encoding' (i.e. newlines and spaces). CodeMirror
-            //  will format that into the proper markup for display.
-            if (mimeType === TP.JSON_ENCODED) {
-                sourceStr = TP.sherpa.pp.runFormattedJSONModeOn(
-                            sourceStr,
-                            TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
-            }
-
-            editor.setEditorModeFromMIMEType(mimeType);
-
-            themeName = TP.sys.cfg('sherpa.rich_input_theme', 'dawn');
-            editor.setEditorTheme('ace/theme/' + themeName);
-
-            editor.unsetEditorEventHandler('change', this.get('changeHandler'));
-            editor.setValue(sourceStr);
-            editor.setEditorEventHandler('change', this.get('changeHandler'));
+            //  Update the editor GUI.
+            this.updateEditorGUI();
 
             //  Initialize our local copy of the content with the source String
             //  and set the dirty flag to false.
@@ -1234,9 +1187,8 @@ function(shouldRefresh) {
                 return this;
             }
 
-            editor.unsetEditorEventHandler('change', this.get('changeHandler'));
-            editor.setValue(sourceStr);
-            editor.setEditorEventHandler('change', this.get('changeHandler'));
+            //  Update the editor GUI.
+            this.updateEditorGUI();
 
             //  Initialize our local copy of the content with the source String
             //  and set the dirty flag to false.
@@ -1497,6 +1449,97 @@ function(aValue, shouldSignal) {
         }.bind(this), TP.sys.cfg('editor.select.delay', 50));
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('updateEditorGUI',
+function() {
+
+    /**
+     * @method updateEditorGUI
+     * @summary Updates the editor's GUI, such as how it's rendering its
+     *     current content, like whether it's displaying formatted JSON, etc.
+     * @returns {TP.sherpa.urieditor} The receiver.
+     */
+
+    var editor,
+
+        sourceURI,
+        sourceResult,
+        sourceStr,
+
+        mimeType,
+
+        themeName;
+
+    //  Grab our underlying editor object (an xctrls:codeeditor)
+    editor = this.get('editor');
+
+    sourceURI = this.get('sourceURI');
+
+    sourceResult = sourceURI.getResource().get('result');
+
+    //  Grab a 'clean String' from the underlying content. This will be
+    //  the 'most canonicalized' version that TIBET can produce. For
+    //  these serializations, we do *not* want 'xmlns:' attributes to be
+    //  output. TIBET handles prefixed markup very well through its
+    //  'auto-prefixing' mechanism.
+    sourceStr = sourceResult.asCleanString(
+                            TP.hc('wantsPrefixedXMLNSAttrs', false,
+                                    'lockStore', true));
+
+    if (TP.isKindOf(sourceURI, TP.uri.URL)) {
+
+        //  Get the MIME type from guessing based on content and URI. We
+        //  do this rather than ask the URI for a MIME type, since the
+        //  URI might be holding 'plain text' content that will report
+        //  as TP.PLAIN_TEXT_ENCODED and we want a 'higher level' MIME
+        //  type for use when setting the editor's syntax highlighting,
+        //  etc.
+        mimeType = TP.ietf.mime.guessMIMEType(
+                sourceStr, sourceURI, sourceURI.get('defaultMIMEType'));
+
+        //  CodeMirror won't understand XHTML as distinct from XML.
+        if (mimeType === TP.XHTML_ENCODED) {
+            mimeType = TP.XML_ENCODED;
+        }
+    } else {
+        if (TP.isKindOf(sourceResult, TP.core.Content)) {
+            mimeType = sourceResult.getContentMIMEType();
+            if (mimeType === TP.OCTET_ENCODED) {
+                if (TP.isJSONString(sourceStr)) {
+                    mimeType = TP.JSON_ENCODED;
+                } else if (TP.isXMLString(sourceStr)) {
+                    mimeType = TP.XML_ENCODED;
+                }
+            }
+        } else if (TP.regex.FUNCTION_LITERAL.test(sourceResult)) {
+            mimeType = TP.JS_TEXT_ENCODED;
+        } else {
+            mimeType = TP.PLAIN_TEXT_ENCODED;
+        }
+    }
+
+    //  If the content was JSON encoded, then try to format it using the
+    //  'plain text encoding' (i.e. newlines and spaces). CodeMirror
+    //  will format that into the proper markup for display.
+    if (mimeType === TP.JSON_ENCODED) {
+        sourceStr = TP.sherpa.pp.runFormattedJSONModeOn(
+                    sourceStr,
+                    TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
+    }
+
+    editor.setEditorModeFromMIMEType(mimeType);
+
+    themeName = TP.sys.cfg('sherpa.rich_input_theme', 'dawn');
+    editor.setEditorTheme('ace/theme/' + themeName);
+
+    editor.unsetEditorEventHandler('change', this.get('changeHandler'));
+    editor.setValue(sourceStr);
+    editor.setEditorEventHandler('change', this.get('changeHandler'));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
