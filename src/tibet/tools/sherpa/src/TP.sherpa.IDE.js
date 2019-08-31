@@ -1430,7 +1430,7 @@ function(aSignal) {
         targetTPElem.zoomToPoint(
                         aSignal.getPagePoint(),
                         aSignal.getWheelDelta(),
-                        .1,
+                        0.1,
                         4);
     }
 

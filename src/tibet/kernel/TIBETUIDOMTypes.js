@@ -6299,9 +6299,7 @@ function(aPoint, aDelta, incrementFactor, maximumScale) {
      * @returns {TP.dom.UIElementNode} The receiver.
      */
 
-    var elem,
-
-        width,
+    var width,
         height,
 
         delta,
@@ -6318,8 +6316,6 @@ function(aPoint, aDelta, incrementFactor, maximumScale) {
 
         factor,
         maxScale;
-
-    elem = this.getNativeNode();
 
     width = this.getWidth();
     height = this.getHeight();
