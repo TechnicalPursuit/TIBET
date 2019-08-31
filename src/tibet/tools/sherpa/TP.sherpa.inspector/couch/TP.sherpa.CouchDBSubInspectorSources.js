@@ -869,7 +869,7 @@ function(options) {
 
                     var data;
 
-                    data = result.get(TP.tpc('rows[0:].id',
+                    data = result.get(TP.jpc('rows[0:].id',
                                         TP.hc('shouldCollapse', false)));
 
                     data = data.collect(
@@ -916,7 +916,7 @@ function(options) {
 
                     var data;
 
-                    data = result.get(TP.tpc('rows[0:].id',
+                    data = result.get(TP.jpc('rows[0:].id',
                                         TP.hc('shouldCollapse', false)));
 
                     data = data.collect(
@@ -975,7 +975,7 @@ function(options) {
 
                         promises;
 
-                    data = result.get(TP.tpc('rows[0:].id',
+                    data = result.get(TP.jpc('rows[0:].id',
                                         TP.hc('shouldCollapse', false)));
 
                     startLoc = serverAddr + '/' + dbName + '/';
