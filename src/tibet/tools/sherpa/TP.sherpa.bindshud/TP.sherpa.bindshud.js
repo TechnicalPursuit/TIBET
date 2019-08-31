@@ -629,26 +629,33 @@ function(sourceContent, sourceURI) {
      * @returns {TP.sherpa.bindshud} The receiver.
      */
 
-    var mimeType,
+    var srcContent,
+
+        mimeType,
         formattedResult;
 
-    if (TP.notEmpty(sourceContent)) {
-        if (TP.isKindOf(sourceContent, TP.core.Content)) {
-            mimeType = sourceContent.getContentMIMEType();
-        } else if (TP.isKindOf(sourceContent, TP.dom.Node)) {
+    srcContent = sourceContent;
+
+    if (TP.notEmpty(srcContent)) {
+        if (TP.isKindOf(srcContent, TP.core.Content)) {
+            mimeType = srcContent.getContentMIMEType();
+        } else if (TP.isKindOf(srcContent, TP.dom.Node)) {
             mimeType = TP.XML_ENCODED;
         } else {
             mimeType = TP.JSON_ENCODED;
+            if (TP.isPlainObject(srcContent)) {
+                srcContent = TP.hc(srcContent);
+            }
         }
 
         if (mimeType === TP.XML_ENCODED) {
             formattedResult = TP.sherpa.pp.runXMLModeOn(
-                                sourceContent.asString());
+                                srcContent.asString());
         } else if (mimeType === TP.JSON_ENCODED) {
             formattedResult = TP.sherpa.pp.runFormattedJSONModeOn(
-                                sourceContent.asJSONSource());
+                                srcContent.asJSONSource());
         } else {
-            formattedResult = TP.str(sourceContent);
+            formattedResult = TP.str(srcContent);
         }
     } else {
         formattedResult = 'No result for:<br/>' +
