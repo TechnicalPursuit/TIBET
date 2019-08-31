@@ -54,10 +54,6 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in the
     //  inspector.
     loc = this.getLocation();
-    if (/^(http|https)/.test(loc) && TP.uriNeedsPrivileges(loc)) {
-        return false;
-    }
-
     tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 loc);
 
@@ -105,25 +101,20 @@ function(options) {
 
     this.callNextMethod();
 
-    //  Initially configure the content type to be an 'html:div'.
-    options.atPut(TP.ATTR + '_childtype', 'html:div');
-
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    if (loc.indexOf(TP.sys.getLaunchRoot()) === TP.NOT_FOUND) {
-        options.atPut(TP.ATTR + '_childtype', 'html:iframe');
-        options.atPut(TP.ATTR + '_class', 'doublewide');
-    } else {
 
-        tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
-                                                                    loc);
+    //  Initially configure the content type to be an 'html:div'.
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
 
-        //  If not, then possibly reset the content type to be that for a Sherpa
-        //  urieditor.
-        if (!tabHasValue) {
-            options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
-        }
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
+                                                                loc);
+
+    //  If not, then possibly reset the content type to be that for a Sherpa
+    //  urieditor.
+    if (!tabHasValue) {
+        options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
     }
 
     return options;
@@ -165,9 +156,6 @@ function(options) {
     //  Grab our location and see if there's already tab representing us in
     //  the inspector.
     loc = this.getLocation();
-    if (/^(http|https)/.test(loc) && TP.uriNeedsPrivileges(loc)) {
-        return TP.xhtmlnode('<iframe src="' + loc + '"/>');
-    }
 
     tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
                                                                 loc);
@@ -381,6 +369,205 @@ function(options) {
         return TP.elem(
             '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
     }
+});
+
+//  ========================================================================
+//  TP.uri.URL Additions
+//  ========================================================================
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+TP.uri.URL.Inst.defineMethod('canReuseContentForInspector',
+function(options) {
+
+    /**
+     * @method canReuseContentForInspector
+     * @summary Returns whether or not content hosted in an inspector bay can be
+     *     'reused', even though the underlying data will change. If this
+     *     returns true, then the underlying content needs to be able to respond
+     *     to its data changing underneath it. It can leverage the TIBET data
+     *     binding system to do this.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     check the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Boolean} Whether or not the current content can be reused even
+     *     though the underlying data is changing.
+     */
+
+    var loc,
+        tabHasValue;
+
+    //  Grab our location and see if there's already tab representing us in the
+    //  inspector.
+    loc = this.getLocation();
+    if (!TP.isFalse(options.at('useiframe')) &&
+        /^(http|https)/.test(loc) &&
+        TP.uriNeedsPrivileges(loc)) {
+        return false;
+    }
+
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
+                                                                loc);
+
+    //  If so, then we want to return false to force the inspector bay to use
+    //  whatever content we hand it. This is based on more sophisticated logic
+    //  than what is inherited.
+    if (tabHasValue) {
+        return false;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URL.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_childtype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
+     */
+
+    var loc,
+        tabHasValue;
+
+    this.callNextMethod();
+
+    //  Initially configure the content type to be an 'html:div'.
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
+
+    //  Grab our location and see if there's already tab representing us in
+    //  the inspector.
+    loc = this.getLocation();
+    if (!TP.isFalse(options.at('useiframe')) &&
+        /^(http|https)/.test(loc) &&
+        TP.uriNeedsPrivileges(loc)) {
+        options.atPut(TP.ATTR + '_childtype', 'html:iframe');
+        options.atPut(TP.ATTR + '_class', 'doublewide');
+    } else {
+
+        tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
+                                                                    loc);
+
+        //  If not, then possibly reset the content type to be that for a Sherpa
+        //  urieditor.
+        if (!tabHasValue) {
+            options.atPut(TP.ATTR + '_childtype', 'sherpa:urieditor');
+        }
+    }
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URL.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
+     */
+
+    var loc,
+        tabHasValue,
+
+        dataURI,
+
+        inspectorElem,
+        uriEditorTPElem;
+
+    //  Grab our location and see if there's already tab representing us in
+    //  the inspector.
+    loc = this.getLocation();
+    if (!TP.isFalse(options.at('useiframe')) &&
+        /^(http|https)/.test(loc) &&
+        TP.uriNeedsPrivileges(loc)) {
+        return TP.xhtmlnode('<iframe src="' + loc + '"/>');
+    }
+
+    tabHasValue = TP.byId('SherpaConsole', TP.sys.getUIRoot()).hasTabForValue(
+                                                                loc);
+
+
+    //  If so, then set the value of both the tabbar and the panel box to our
+    //  location, causing them to switch. And return content that points the
+    //  user down to the tabbar in the south drawer.
+    if (tabHasValue) {
+        TP.byId('SherpaConsoleTabbar', TP.sys.getUIRoot()).setValue(loc);
+        TP.byId('SherpaConsolePanelbox', TP.sys.getUIRoot()).
+                                                        setValue(loc);
+
+        return TP.xhtmlnode(
+                    '<div>' +
+                        '...currently displayed in a TDC tab...' +
+                    '</div>');
+    }
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
+                            'template',
+                            TP.ietf.mime.XHTML);
+
+    uriEditorTPElem = uriEditorTPElem.clone();
+
+    uriEditorTPElem.setAttribute('id', 'inspectorEditor');
+    uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
+
+    inspectorElem = TP.unwrap(uriEditorTPElem);
+
+    return inspectorElem;
 });
 
 //  ------------------------------------------------------------------------

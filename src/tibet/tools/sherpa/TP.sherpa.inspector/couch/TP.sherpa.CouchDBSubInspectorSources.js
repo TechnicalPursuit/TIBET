@@ -718,6 +718,7 @@ function(options) {
             this.get('databaseName');
     locURI = TP.uc(loc);
 
+    options.atPut('useiframe', false);
     uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
     return uriEditorElem;
@@ -741,6 +742,7 @@ function(options) {
             this.get('documentID');
     locURI = TP.uc(loc);
 
+    options.atPut('useiframe', false);
     uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
     return uriEditorElem;
@@ -775,6 +777,7 @@ function(options) {
     loc = this.get('serverAddress');
     locURI = TP.uc(loc);
 
+    options.atPut('useiframe', false);
     uriEditorElem = TP.getContentForTool(locURI, 'Inspector', options);
 
     return uriEditorElem;
