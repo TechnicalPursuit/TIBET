@@ -71,6 +71,10 @@ function(aTargetTPElem) {
                 function(positionVal) {
                     var modifyingRule;
 
+                    if (TP.isEmpty(positionVal)) {
+                        return;
+                    }
+
                     if (positionVal === 'absolute' ||
                         positionVal === 'relative' ||
                         positionVal === 'fixed') {

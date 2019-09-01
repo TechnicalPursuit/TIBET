@@ -71,6 +71,10 @@ function(aTargetTPElem) {
                 function(displayVal) {
                     var modifyingRule;
 
+                    if (TP.isEmpty(displayVal)) {
+                        return;
+                    }
+
                     if (displayVal === 'block' ||
                         displayVal === 'inline-block' ||
                         displayVal === 'list-item' ||

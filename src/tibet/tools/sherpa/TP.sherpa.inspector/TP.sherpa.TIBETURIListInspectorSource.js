@@ -34,25 +34,27 @@ function(aSignal) {
             var inspector,
                 uri;
 
-            if (TP.notEmpty(userValue)) {
-                //  Grab the inspector.
-                inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
-
-                //  This will build and register the URI.
-                uri = TP.uc(userValue);
-
-                //  Refresh the current bay (the URI list) to include the newly
-                //  created URI.
-                inspector.refreshBay();
-
-                //  Focus this using a forked function to give the modal panel
-                //  time to dismiss.
-                setTimeout(function() {
-                    inspector.focusUsingInfo(
-                                TP.hc('targetAspect', userValue,
-                                        'targetObject', uri));
-                }, TP.sys.cfg('fork.delay'));
+            if (TP.isEmpty(userValue)) {
+                return;
             }
+
+            //  Grab the inspector.
+            inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
+
+            //  This will build and register the URI.
+            uri = TP.uc(userValue);
+
+            //  Refresh the current bay (the URI list) to include the newly
+            //  created URI.
+            inspector.refreshBay();
+
+            //  Focus this using a forked function to give the modal panel
+            //  time to dismiss.
+            setTimeout(function() {
+                inspector.focusUsingInfo(
+                            TP.hc('targetAspect', userValue,
+                                    'targetObject', uri));
+            }, TP.sys.cfg('fork.delay'));
         });
 });
 
