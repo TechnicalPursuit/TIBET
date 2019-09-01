@@ -46,7 +46,7 @@ function() {
 
         test.assert.hasAttribute(propertySheetTPElem, 'bind:scope');
 
-        fieldSets = propertySheetTPElem.get(TP.cpc('fieldset'));
+        fieldSets = propertySheetTPElem.get(TP.cpc('span.fieldset'));
 
         shallowFieldSet = fieldSets.at(0);
         deepFieldSet = fieldSets.at(1);

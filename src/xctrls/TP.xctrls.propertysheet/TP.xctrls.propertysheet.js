@@ -728,7 +728,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
 
         subPrefix;
 
-    str = '<span';
+    str = '<span class="fieldset"';
 
     if (this.get('currentDefinitionName') !== propertyKey) {
         str += ' bind:scope="' + propertyKey + '">\n';
