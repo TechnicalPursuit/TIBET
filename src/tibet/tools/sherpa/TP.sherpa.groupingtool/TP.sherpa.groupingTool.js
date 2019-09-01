@@ -22,6 +22,7 @@ TP.sherpa.canvastool.defineSubtype('groupingTool');
 
 TP.sherpa.groupingTool.Inst.defineAttribute('$sizingRect');
 TP.sherpa.groupingTool.Inst.defineAttribute('$containedElems');
+TP.sherpa.groupingTool.Inst.defineAttribute('$childRecords');
 TP.sherpa.groupingTool.Inst.defineAttribute('$descendantRecords');
 
 TP.sherpa.groupingTool.Inst.defineAttribute(
@@ -47,11 +48,17 @@ function(aSignal) {
 
         groupingBoxStyleVals,
 
-        descendantRecords,
-        containedElems,
+        halo,
+        uiTarget,
 
-        uiBody,
-        allUITPElems;
+        allChildTPElems,
+        allDescendantTPElems,
+
+        appTPElem,
+
+        childRecords,
+        descendantRecords,
+        containedElems;
 
     this.callNextMethod();
 
@@ -77,17 +84,36 @@ function(aSignal) {
                     groupingBoxStyleVals.at('borderTopWidth') +
                     groupingBoxStyleVals.at('borderBottomWidth'));
 
-    uiBody = TP.sys.uidoc().getBody();
+    //  Grab the halo and make sure it's focused. If not, we just bail out here.
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+    if (!halo.isFocused()) {
+        uiTarget = TP.sys.uidoc().getBody();
+    } else {
+        uiTarget = halo.get('currentTargetTPElem');
+    }
 
-    allUITPElems = uiBody.getDescendantElements();
+    allChildTPElems = uiTarget.getChildElements();
+    allDescendantTPElems = uiTarget.getDescendantElements();
 
-    //  TODO: Make sure we're removing the app element here
-    allUITPElems.shift();
+    appTPElem = TP.bySystemId('Sherpa').getAppElement();
+
+    //  Make sure to remov the app element from both collections here
+    allChildTPElems.remove(appTPElem);
+    allDescendantTPElems.remove(appTPElem);
+
+    childRecords = TP.hc();
+    this.$set('$childRecords', childRecords);
+
+    allChildTPElems.forEach(
+        function(aTPElem) {
+            childRecords.atPut(aTPElem.getLocalID(true),
+                                    aTPElem.getPageRect());
+        });
 
     descendantRecords = TP.hc();
     this.$set('$descendantRecords', descendantRecords);
 
-    allUITPElems.forEach(
+    allDescendantTPElems.forEach(
         function(aTPElem) {
             descendantRecords.atPut(aTPElem.getLocalID(true),
                                     aTPElem.getPageRect());
@@ -139,24 +165,44 @@ function(aSignal) {
         doc,
 
         containedElems,
-        descendantRecords,
+        oldTargetRecords,
+        targetRecords,
 
         natWindow;
 
     sizingRect = this.$get('$sizingRect');
 
-    offsetX = this.$get('$screenOffsetPoint').getX();
-    offsetY = this.$get('$screenOffsetPoint').getY();
+    if (TP.isKindOf(aSignal, TP.sig.DOMMouseSignal)) {
+        offsetX = this.$get('$screenOffsetPoint').getX();
+        offsetY = this.$get('$screenOffsetPoint').getY();
 
-    sizingRect.setWidth(aSignal.getPageX() - sizingRect.getX() + offsetX);
-    sizingRect.setHeight(aSignal.getPageY() - sizingRect.getY() + offsetY);
+        sizingRect.setWidth(aSignal.getPageX() - sizingRect.getX() + offsetX);
+        sizingRect.setHeight(aSignal.getPageY() - sizingRect.getY() + offsetY);
+    }
 
     doc = TP.sys.uidoc(true);
 
     containedElems = this.$get('$containedElems');
 
-    descendantRecords = this.$get('$descendantRecords');
-    descendantRecords.perform(
+    if (aSignal.getMetaKey() === true) {
+        oldTargetRecords = this.$get('$childRecords');
+        targetRecords = this.$get('$descendantRecords');
+    } else {
+        oldTargetRecords = this.$get('$descendantRecords');
+        targetRecords = this.$get('$childRecords');
+    }
+
+    oldTargetRecords.perform(
+        function(kvPair) {
+            var elem;
+
+            elem = TP.byId(kvPair.first(), doc, false);
+            TP.elementRemoveClass(elem, 'sherpa-grouping-grouped');
+        });
+
+    containedElems.empty();
+
+    targetRecords.perform(
         function(kvPair) {
             var elem,
                 rect;
@@ -168,17 +214,9 @@ function(aSignal) {
                 if (containedElems.indexOf(elem) === TP.NOT_FOUND) {
                     containedElems.push(elem);
                 }
-            } else {
-                if (containedElems.indexOf(elem) !== TP.NOT_FOUND) {
-                    containedElems.splice(containedElems.indexOf(elem), 1);
-                    TP.elementRemoveClass(elem, 'sherpa-grouping-grouped');
-                }
-            }
-        });
 
-    containedElems.forEach(
-        function(anElem) {
-            TP.elementAddClass(anElem, 'sherpa-grouping-grouped');
+                TP.elementAddClass(elem, 'sherpa-grouping-grouped');
+            }
         });
 
     natWindow = this.getNativeWindow();
@@ -208,12 +246,33 @@ function(aSignal) {
     var containedElems;
 
     containedElems = this.$get('$containedElems');
-    containedElems.forEach(
-        function(anElem) {
-            TP.elementRemoveClass(anElem, 'sherpa-grouping-grouped');
-        });
+
+    if (TP.notEmpty(containedElems)) {
+        containedElems.forEach(
+            function(anElem) {
+                TP.elementRemoveClass(anElem, 'sherpa-grouping-grouped');
+            });
+
+        TP.sys.uidoc().signal('SherpaGroupingCompleted',
+                                TP.hc('groupedElements', containedElems));
+    }
 
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.groupingTool.Inst.defineHandler('DOMModifierKeyChange',
+function(aSignal) {
+
+    /**
+     * @method handleDOMModifierKeyChange
+     * @param {TP.sig.DOMModifierKeyChange} aSignal The TIBET signal which
+     *     triggered this handler.
+     * @returns {TP.sherpa.groupingTool} The receiver.
+     */
+
+    return this.handleDOMDragMoveFromANYWhenANY(aSignal);
 });
 
 //  ------------------------------------------------------------------------
