@@ -7025,7 +7025,7 @@ function(moveAction) {
     }
 
     //  First, see if there's a focused element (without considering the
-    //  '.activeElement' property)
+    //  '.activeElement' property). Note that this may be null.
     focusedElem = TP.documentGetFocusedElement(node.ownerDocument, false);
 
     //  If so and it's identical to our native node, then just return.
@@ -7036,6 +7036,13 @@ function(moveAction) {
     //  Then, see if there's a focused element (including considering the
     //  '.activeElement')
     focusedElem = TP.documentGetFocusedElement(node.ownerDocument);
+
+    //  If the focused element (including considering the '.activeElement') is
+    //  the same as our native node and the top of the focus stack is the same
+    //  as ourself, then just return here.
+    if (focusedElem === node && TP.$focus_stack.last() === this) {
+        return this;
+    }
 
     //  If that's not identical to our native node, then calculate a focusing
     //  context (either from any set calculated focusing TP.dom.ElementNode or

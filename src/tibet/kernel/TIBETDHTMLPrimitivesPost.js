@@ -9832,6 +9832,14 @@ function(aWindow) {
             var focusedElemIncludingActive,
                 focusedElemNotIncludingActive;
 
+            //  If we're in the middle of focusing a calculated element, then
+            //  don't try to focus possibly something else in the middle of that
+            //  process.
+            if (TP.isValid(
+                TP.dom.UIElementNode.get('$calculatedFocusingTPElem'))) {
+                return;
+            }
+
             //  Grab what TIBET considers to be the 'focused element' in both
             //  forms - including whatever element has the '.activeElement'
             //  property and not including whatever element has the
