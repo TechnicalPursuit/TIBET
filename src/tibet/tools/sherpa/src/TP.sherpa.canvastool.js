@@ -140,6 +140,21 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.canvastool.Inst.defineHandler('DOMModifierKeyChange',
+function(aSignal) {
+
+    /**
+     * @method handleDOMModifierKeyChange
+     * @param {TP.sig.DOMModifierKeyChange} aSignal The TIBET signal which
+     *     triggered this handler.
+     * @returns {TP.sherpa.canvastool} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.canvastool.Inst.defineHandler('PclassClosedChange',
 function(aSignal) {
 
@@ -229,12 +244,19 @@ function(beHidden) {
         this.ignore(TP.core.Mouse, 'TP.sig.DOMDragMove');
         this.ignore(TP.core.Mouse, 'TP.sig.DOMDragUp');
 
+        this.ignore(TP.core.Keyboard.getCurrentKeyboard(),
+                        'TP.sig.DOMModifierKeyChange');
+
+        toolsLayer.setAttribute('activetool', this.getLocalID());
         toolsLayer.removeAttribute('activetool');
 
     } else {
 
         this.observe(TP.core.Mouse, 'TP.sig.DOMDragMove');
         this.observe(TP.core.Mouse, 'TP.sig.DOMDragUp');
+
+        this.observe(TP.core.Keyboard.getCurrentKeyboard(),
+                        'TP.sig.DOMModifierKeyChange');
 
         toolsLayer.setAttribute('activetool', this.getLocalID());
     }
