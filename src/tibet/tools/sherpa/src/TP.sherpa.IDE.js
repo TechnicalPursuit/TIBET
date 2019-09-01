@@ -656,6 +656,51 @@ function(aTimeout, aCallback) {
     return this;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('getAppElement',
+function() {
+
+    /**
+     * @method getAppElement
+     * @summary Returns the application element.
+     * @returns {TP.dom.Element} The 'application' element.
+     */
+
+    var appTagName,
+        appTagNameQuery,
+
+        world,
+        screenDocs,
+
+        len,
+        i,
+
+        appTPElem;
+
+    //  NB: We pass false here to skip returning any Sherpa tag since we're
+    //  running in a Sherpa-enabled environment.
+    appTagName = TP.tibet.root.computeAppTagTypeName(false);
+    appTagNameQuery = appTagName.replace(':', '|');
+
+    //  Grab all of the world's 'screen' documents. We'll look for the
+    //  application element in each of them until we find one.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    screenDocs = world.getScreenDocuments();
+
+    len = screenDocs.getSize();
+    for (i = 0; i < len; i++) {
+        //  Try to get the application element. If we find one in this screen's
+        //  document, then break.
+        appTPElem = screenDocs.at(i).get(appTagNameQuery);
+        if (TP.isValid(appTPElem)) {
+            break;
+        }
+    }
+
+    return appTPElem;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('getOrMakeModifiableRule',
