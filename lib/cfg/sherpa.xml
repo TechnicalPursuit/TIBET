@@ -150,6 +150,8 @@
     <script src="./TP.sherpa.adjusterNameMenuContent/TP.sherpa.adjusterNameMenuContent.js"/>
     <script src="./TP.sherpa.adjusterValueMenuContent/TP.sherpa.adjusterValueMenuContent.js"/>
 
+    <script src="./TP.sherpa.formBuilderAssistant/TP.sherpa.formBuilderAssistant.js"/>
+
     <script src="./TP.sherpa.couchDocumentURIInsertionAssistant/TP.sherpa.couchDocumentURIInsertionAssistant.js"/>
     <script src="./TP.sherpa.couchViewURIInsertionAssistant/TP.sherpa.couchViewURIInsertionAssistant.js"/>
 

@@ -517,6 +517,7 @@ function(aSignal) {
 
     switch (vendType) {
         case 'breadcrumb':
+        case 'json_schema':
         case 'tofu':
         case 'tdc_output_node':
 
@@ -630,6 +631,14 @@ function(aSignal) {
         tdcOutputItem,
         tdcRequest,
 
+        dataSource,
+        schemaData,
+
+        path,
+        schemaType,
+
+        assistantData,
+
         containingBlockElem;
 
     //  Capture this *before* we hide ourself - it will be nulled out by that
@@ -692,6 +701,17 @@ function(aSignal) {
                                             dndTargetElem,
                                             this.get('insertionPosition'));
 
+                    break;
+
+                case 'json_schema':
+
+                    //  Message the drop target that we dropped JSON schema
+                    //  into it at the insertion position determined by the
+                    //  user.
+                    TP.wrap(dndTargetElem).sherpaDidInsertJSONSchema(
+                                            dndTargetElem,
+                                            this.get('insertionPosition'),
+                                            dndSourceTPElem.getNativeNode());
                     break;
 
                 case 'tofu':
@@ -1541,6 +1561,7 @@ function() {
                                 'dom_node',
                                 'dom_node_copy',
                                 'breadcrumb',
+                                'json_schema',
                                 'tdc_output_node');
 
     //  Enable DND by setting this attribute.

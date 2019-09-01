@@ -2515,6 +2515,75 @@ function(insertionPointElement, insertionPosition) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('sherpaDidInsertJSONSchema',
+function(insertionPointElement, insertionPosition, schemaSourceElement) {
+
+    /**
+     * @method sherpaDidInsertJSONSchema
+     * @summary Responds to the fact that the Sherpa initiated a DOM insertion
+     *     by dropping a 'JSON schema' tile somewhere in a DOM visualization.
+     * @param {Element} insertionPointElement The element that provides the
+     *     insertion point to the insertion operation. This, in combination with
+     *     the insertion position, will provide the place in the DOM to insert
+     *     the new DOM node.
+     * @param {String} insertionPosition The insertion position, relative to
+     *     the insertion point element, that the new node should be inserted at.
+     *     This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.BEFORE_END,
+     *     TP.AFTER_END.
+     * @param {Element} schemaSourceElement The element that provides the
+     *     link back to the object providing the schema information.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var schemaSourceTPElem,
+
+        dataSource,
+
+        schemaData,
+        path,
+
+        schemaType;
+
+    schemaSourceTPElem = TP.wrap(schemaSourceElement);
+
+    dataSource =
+        schemaSourceTPElem.getAttribute('dnd:vend-source');
+
+    if (TP.notEmpty(dataSource)) {
+
+        dataSource = TP.bySystemId(
+                        dataSource,
+                        schemaSourceTPElem.getNativeDocument());
+
+        if (TP.isValid(dataSource)) {
+
+            schemaData = dataSource.getSchemaData(schemaSourceTPElem);
+            path = schemaData.at('path');
+
+            schemaType = schemaData.at('propInfo').at(path).at('schemaType');
+
+            if (schemaType === 'object') {
+                assistantData = TP.hc(
+                                'insertionPosition',
+                                    this.get('insertionPosition'),
+                                'insertionPoint',
+                                    insertionPointElement,
+                                'uri',
+                                    schemaData.at('sourceURI').getPrimaryURI(),
+                                'localStorageID',
+                                    'json_doc' + TP.genID().replace('$', '_'));
+
+                //  Show the assistant.
+                TP.sherpa.formBuilderAssistant.showAssistant(assistantData);
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('sherpaDidInsertTofu',
 function(insertionPointElement, insertionPosition) {
 

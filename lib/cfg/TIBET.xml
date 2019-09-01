@@ -109,6 +109,8 @@
     <config ref="xctrls-inlined"/>
     <config ref="sherpa-inlined"/>
     <config ref="test-inlined"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.formBuilderAssistant-TP.sherpa.formBuilderAssistant.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.formBuilderAssistant-TP.sherpa.formBuilderAssistant.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">
