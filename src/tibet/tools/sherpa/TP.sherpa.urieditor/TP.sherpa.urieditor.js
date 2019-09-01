@@ -1480,6 +1480,12 @@ function() {
 
     sourceResult = sourceURI.getResource().get('result');
 
+    //  Make sure that result is a content object that can produce a 'clean'
+    //  String.
+    if (!TP.canInvoke(sourceResult, 'asCleanString')) {
+        sourceResult = TP.core.Content.construct(sourceResult, sourceURI);
+    }
+
     //  Grab a 'clean String' from the underlying content. This will be
     //  the 'most canonicalized' version that TIBET can produce. For
     //  these serializations, we do *not* want 'xmlns:' attributes to be
