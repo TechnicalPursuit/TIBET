@@ -489,7 +489,7 @@ function(propertyKey, propertyDesc, prefix, renderInfo) {
                         label + ': ' +
                         '</label>';
 
-                str += '<span class="fluffy" id="' + id + '">';
+                str += '<span id="' + id + '">';
                 for (i = 0; i < len; i++) {
                     str += '<label' +
                             ' for="' + id + '_' + i + '"' +
