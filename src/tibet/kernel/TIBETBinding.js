@@ -2915,6 +2915,11 @@ function(branchExpr, initialVal, initialPathType) {
                                                 null);
 
                 pathType = TP.ifInvalid(initialPathType, TP.JSON_PATH_TYPE);
+            } else if (TP.isKindOf(theVal, TP.core.JSONContent) &&
+                        TP.regex.JS_IDENTIFIER.test(branchExpr)) {
+                branchExpr = '$.' + branchExpr;
+                branchVal = theVal.get(branchExpr);
+                pathType = TP.JSON_PATH_TYPE;
             } else if (TP.notValid(theVal)) {
                 branchVal = null;
             } else {
