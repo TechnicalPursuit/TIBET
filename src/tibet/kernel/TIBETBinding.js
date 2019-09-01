@@ -2831,8 +2831,8 @@ function(branchExpr, initialVal, initialPathType) {
      * @summary Returns the branch value given the expression and the initial
      *     value. If a path type is supplied, it is used to further refine the
      *     value extraction.
-     * @param {String} [aFacet=value] The facet of the binding expressions that
-     *     we're refreshing. This defaults to 'value' which is the 99% case.
+     * @param {String} branchExpr The branch binding expressions that we're
+     *     using to retrieve the value.
      * @param {Object} initialVal The initial value to use to compute the branch
      *     value.
      * @param {Number} [initialPathType] The path type that was precomputed by
@@ -2917,8 +2917,7 @@ function(branchExpr, initialVal, initialPathType) {
                 pathType = TP.ifInvalid(initialPathType, TP.JSON_PATH_TYPE);
             } else if (TP.isKindOf(theVal, TP.core.JSONContent) &&
                         TP.regex.JS_IDENTIFIER.test(branchExpr)) {
-                branchExpr = '$.' + branchExpr;
-                branchVal = theVal.get(branchExpr);
+                branchVal = theVal.get('$.' + branchExpr);
                 pathType = TP.JSON_PATH_TYPE;
             } else if (TP.notValid(theVal)) {
                 branchVal = null;

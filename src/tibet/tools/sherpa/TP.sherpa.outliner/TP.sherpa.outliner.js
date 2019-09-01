@@ -631,14 +631,6 @@ function(aSignal) {
         tdcOutputItem,
         tdcRequest,
 
-        dataSource,
-        schemaData,
-
-        path,
-        schemaType,
-
-        assistantData,
-
         containingBlockElem;
 
     //  Capture this *before* we hide ourself - it will be nulled out by that

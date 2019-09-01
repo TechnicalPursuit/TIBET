@@ -2542,7 +2542,9 @@ function(insertionPointElement, insertionPosition, schemaSourceElement) {
         schemaData,
         path,
 
-        schemaType;
+        schemaType,
+
+        assistantData;
 
     schemaSourceTPElem = TP.wrap(schemaSourceElement);
 
