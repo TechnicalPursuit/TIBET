@@ -5174,8 +5174,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                                 mutationAncestor, null, visualGeneratorElem);
 
                 //  This will be empty if mutationAncestor and
-                //  visualGeneratorElem are
-                //  the same node.
+                //  visualGeneratorElem are the same node.
                 if (TP.isEmpty(visualAncestorAddresses)) {
                     visualAncestorAddresses = TP.ac();
 
