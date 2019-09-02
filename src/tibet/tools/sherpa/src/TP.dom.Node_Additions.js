@@ -1054,13 +1054,13 @@ function(aHalo, aSignal, haloCorner) {
                 manipulator =
                     TP.byId('SherpaDimensionsManipulator', TP.win('UIROOT'));
             }
-            manipulator.activate(aHalo.get('currentTargetTPElem'));
+            manipulator.activate(aHalo.get('currentTargetTPElem'), aSignal);
             break;
 
         case TP.NORTHWEST:
             manipulator =
                 TP.byId('SherpaPositionManipulator', TP.win('UIROOT'));
-            manipulator.activate(aHalo.get('currentTargetTPElem'));
+            manipulator.activate(aHalo.get('currentTargetTPElem'), aSignal);
             break;
         default:
             break;

@@ -45,13 +45,15 @@ TP.sherpa.dimensionsManipulator.Inst.defineAttribute(
 //  ------------------------------------------------------------------------
 
 TP.sherpa.dimensionsManipulator.Inst.defineMethod('activate',
-function(aTargetTPElem) {
+function(aTargetTPElem, aSignal) {
 
     /**
      * @method activate
      * @summary Activates the receiver.
      * @param {TP.dom.ElementNode} aTargetTPElem The element that the receiver
      *     will be activated on.
+     * @param {TP.sig.Signal} [aSignal] An optional signal that caused the
+     *     receiver to activate.
      * @returns {TP.sherpa.dimensionsManipulator} The receiver.
      */
 

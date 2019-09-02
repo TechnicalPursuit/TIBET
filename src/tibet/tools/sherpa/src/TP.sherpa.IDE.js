@@ -1397,7 +1397,7 @@ function(aSignal) {
             return this;
         }
 
-        tool.activate(aSignal);
+        tool.activate(null, aSignal);
 
         return this;
     }

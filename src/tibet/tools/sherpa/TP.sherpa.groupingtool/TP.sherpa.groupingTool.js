@@ -35,13 +35,15 @@ TP.sherpa.groupingTool.Inst.defineAttribute(
 //  ------------------------------------------------------------------------
 
 TP.sherpa.groupingTool.Inst.defineMethod('activate',
-function(aSignal) {
+function(aTargetTPElem, aSignal) {
 
     /**
      * @method activate
      * @summary Activates the receiver.
      * @param {TP.dom.ElementNode} aTargetTPElem The element that the receiver
      *     will be activated on.
+     * @param {TP.sig.Signal} [aSignal] An optional signal that caused the
+     *     receiver to activate.
      * @returns {TP.sherpa.groupingTool} The receiver.
      */
 
