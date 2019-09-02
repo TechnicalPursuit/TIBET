@@ -5384,8 +5384,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  If the test node is a Text node containing only whitespace and
             //  we're not actually mutating a Text node (i.e. setting it), then
             //  we skip it and move on to the next node.
-            if (TP.isTextNode(sourceTestNode) &&
-                TP.regex.ONLY_WHITESPACE.test(sourceTestNode.nodeValue) &&
+            if (TP.isWhitespaceTextNode(sourceTestNode) &&
                 !TP.isTextNode(visualMutatedNode)) {
                 sourceCurrentNode = sourceCurrentNode.childNodes[address + 1];
             } else {

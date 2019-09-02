@@ -9729,6 +9729,29 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isWhitespaceTextNode',
+function(anObj) {
+
+    /**
+     * @method isWhitespaceTextNode
+     * @summary Returns true if the object provided is an XML or HTML Text node
+     *     (Node.TEXT_NODE) that contains *only whitespace*.
+     * @param {Object} anObj The object to test.
+     * @example Test what's a text node with whitespace and what's not:
+     *     <code>
+     *          TP.isWhitespaceTextNode(document.documentElement);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is an Text node
+     *     with only whitespace in it.
+     */
+
+    return TP.isTextNode(anObj) &&
+            TP.regex.ONLY_WHITESPACE.test(anObj.nodeValue);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isXHTMLDocument',
 function(anObj) {
 
