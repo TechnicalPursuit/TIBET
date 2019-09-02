@@ -15770,6 +15770,41 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.TextNode.Inst.defineMethod('getPageRect',
+function(wantsTransformed) {
+
+    /**
+     * @method getPageRect
+     * @summary Returns the receiver's page position and size as a
+     *     TP.gui.Rect. The page position is the text node's position relative
+     *     to its overall page.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. For this type, this parameter
+     *     is ignored. According to the CSS specification, for Text nodes, this
+     *     will always return transformed values.
+     * @returns {TP.gui.Rect} The receiver's page position and size.
+     */
+
+    var range,
+
+        domRects;
+
+    range = this.getNativeDocument().createRange();
+
+    range.selectNode(this.getNativeNode());
+
+    domRects = range.getClientRects();
+
+    if (TP.notEmpty(domRects)) {
+        return TP.rtc(domRects[0]);
+    }
+
+    return TP.rtc();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.TextNode.Inst.defineMethod('serializeNonTag',
 function(storageInfo) {
 
