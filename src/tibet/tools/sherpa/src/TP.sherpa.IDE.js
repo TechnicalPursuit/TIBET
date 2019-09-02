@@ -5386,6 +5386,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  we skip it and move on to the next node.
             if (TP.isWhitespaceTextNode(sourceTestNode) &&
                 !TP.isTextNode(visualMutatedNode)) {
+                address = parseInt(address);
                 sourceCurrentNode = sourceCurrentNode.childNodes[address + 1];
             } else {
                 sourceCurrentNode = sourceTestNode;
