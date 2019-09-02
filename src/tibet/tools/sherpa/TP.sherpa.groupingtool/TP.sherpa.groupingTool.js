@@ -24,6 +24,7 @@ TP.sherpa.groupingTool.Inst.defineAttribute('$sizingRect');
 TP.sherpa.groupingTool.Inst.defineAttribute('$containedElems');
 TP.sherpa.groupingTool.Inst.defineAttribute('$childRecords');
 TP.sherpa.groupingTool.Inst.defineAttribute('$descendantRecords');
+TP.sherpa.groupingTool.Inst.defineAttribute('$uiTarget');
 
 TP.sherpa.groupingTool.Inst.defineAttribute(
     'groupingbox',
@@ -91,6 +92,7 @@ function(aSignal) {
     } else {
         uiTarget = halo.get('currentTargetTPElem');
     }
+    this.$set('$uiTarget', uiTarget);
 
     allChildTPElems = uiTarget.getChildElements();
     allDescendantTPElems = uiTarget.getDescendantElements();
@@ -254,7 +256,8 @@ function(aSignal) {
             });
 
         TP.sys.uidoc().signal('SherpaGroupingCompleted',
-                                TP.hc('groupedElements', containedElems));
+                                TP.hc('groupingTarget', this.get('$uiTarget'),
+                                        'groupedElements', containedElems));
     }
 
     return this.callNextMethod();
