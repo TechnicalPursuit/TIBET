@@ -21,7 +21,7 @@ TP.sherpa.canvastool.defineSubtype('groupingTool');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.groupingTool.Inst.defineAttribute('$sizingRect');
-TP.sherpa.groupingTool.Inst.defineAttribute('$containedElems');
+TP.sherpa.groupingTool.Inst.defineAttribute('$containedNodes');
 TP.sherpa.groupingTool.Inst.defineAttribute('$childRecords');
 TP.sherpa.groupingTool.Inst.defineAttribute('$descendantRecords');
 TP.sherpa.groupingTool.Inst.defineAttribute('$uiTarget');
@@ -54,14 +54,14 @@ function(aTargetTPElem, aSignal) {
         halo,
         uiTarget,
 
-        allChildTPElems,
-        allDescendantTPElems,
+        allChildTPNodes,
+        allDescendantTPNodes,
 
         appTPElem,
 
         childRecords,
         descendantRecords,
-        containedElems;
+        containedNodes;
 
     this.callNextMethod();
 
@@ -96,35 +96,45 @@ function(aTargetTPElem, aSignal) {
     }
     this.$set('$uiTarget', uiTarget);
 
-    allChildTPElems = uiTarget.getChildElements();
-    allDescendantTPElems = uiTarget.getDescendantElements();
+    allChildTPNodes = uiTarget.getDescendants();
+    allDescendantTPNodes = uiTarget.getDescendants();
 
     appTPElem = TP.bySystemId('Sherpa').getAppElement();
 
     //  Make sure to remov the app element from both collections here
-    allChildTPElems.remove(appTPElem);
-    allDescendantTPElems.remove(appTPElem);
+    allChildTPNodes.remove(appTPElem);
+    allDescendantTPNodes.remove(appTPElem);
 
-    childRecords = TP.hc();
+    childRecords = TP.ac();
     this.$set('$childRecords', childRecords);
 
-    allChildTPElems.forEach(
-        function(aTPElem) {
-            childRecords.atPut(aTPElem.getLocalID(true),
-                                    aTPElem.getPageRect());
+    allChildTPNodes.forEach(
+        function(aTPNode) {
+            var rect;
+
+            rect = aTPNode.getPageRect();
+
+            if (TP.notEmpty(rect)) {
+                childRecords.push(TP.ac(aTPNode.getNativeNode(), rect));
+            }
         });
 
-    descendantRecords = TP.hc();
+    descendantRecords = TP.ac();
     this.$set('$descendantRecords', descendantRecords);
 
-    allDescendantTPElems.forEach(
-        function(aTPElem) {
-            descendantRecords.atPut(aTPElem.getLocalID(true),
-                                    aTPElem.getPageRect());
+    allDescendantTPNodes.forEach(
+        function(aTPNode) {
+            var rect;
+
+            rect = aTPNode.getPageRect();
+
+            if (TP.notEmpty(rect)) {
+                descendantRecords.push(TP.ac(aTPNode.getNativeNode(), rect));
+            }
         });
 
-    containedElems = TP.ac();
-    this.$set('$containedElems', containedElems);
+    containedNodes = TP.ac();
+    this.$set('$containedNodes', containedNodes);
 
     return this;
 });
@@ -168,7 +178,7 @@ function(aSignal) {
 
         doc,
 
-        containedElems,
+        containedNodes,
         oldTargetRecords,
         targetRecords,
 
@@ -186,7 +196,7 @@ function(aSignal) {
 
     doc = TP.sys.uidoc(true);
 
-    containedElems = this.$get('$containedElems');
+    containedNodes = this.$get('$containedNodes');
 
     if (aSignal.getMetaKey() === true) {
         oldTargetRecords = this.$get('$childRecords');
@@ -197,29 +207,34 @@ function(aSignal) {
     }
 
     oldTargetRecords.perform(
-        function(kvPair) {
-            var elem;
+        function(record) {
+            var node;
 
-            elem = TP.byId(kvPair.first(), doc, false);
-            TP.elementRemoveClass(elem, 'sherpa-grouping-grouped');
+            node = record.first();
+
+            if (TP.isElement(node)) {
+                TP.elementRemoveClass(node, 'sherpa-grouping-grouped');
+            }
         });
 
-    containedElems.empty();
+    containedNodes.empty();
 
     targetRecords.perform(
-        function(kvPair) {
-            var elem,
+        function(record) {
+            var node,
                 rect;
 
-            elem = TP.byId(kvPair.first(), doc, false);
-            rect = kvPair.last();
+            node = record.first();
+            rect = record.last();
 
             if (sizingRect.containsRect(rect)) {
-                if (containedElems.indexOf(elem) === TP.NOT_FOUND) {
-                    containedElems.push(elem);
+                if (containedNodes.indexOf(node) === TP.NOT_FOUND) {
+                    containedNodes.push(node);
                 }
 
-                TP.elementAddClass(elem, 'sherpa-grouping-grouped');
+                if (TP.isElement(node)) {
+                    TP.elementAddClass(node, 'sherpa-grouping-grouped');
+                }
             }
         });
 
@@ -247,19 +262,21 @@ function(aSignal) {
      * @returns {TP.sherpa.groupingTool} The receiver.
      */
 
-    var containedElems;
+    var containedNodes;
 
-    containedElems = this.$get('$containedElems');
+    containedNodes = this.$get('$containedNodes');
 
-    if (TP.notEmpty(containedElems)) {
-        containedElems.forEach(
-            function(anElem) {
-                TP.elementRemoveClass(anElem, 'sherpa-grouping-grouped');
+    if (TP.notEmpty(containedNodes)) {
+        containedNodes.forEach(
+            function(aNode) {
+                if (TP.isElement(aNode)) {
+                    TP.elementRemoveClass(aNode, 'sherpa-grouping-grouped');
+                }
             });
 
         TP.sys.uidoc().signal('SherpaGroupingCompleted',
                                 TP.hc('groupingTarget', this.get('$uiTarget'),
-                                        'groupedElements', containedElems));
+                                        'groupedNodes', containedNodes));
     }
 
     return this.callNextMethod();
