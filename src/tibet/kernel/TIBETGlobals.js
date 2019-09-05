@@ -2887,6 +2887,41 @@ TP.sort.CSS_RULE_SORT = function(a, b) {
     return 0;
 };
 
+//  a sort that orders DOM nodes first by position in the document using the
+//  TP.PREVIOUS_POSITION slot (shallower DOM nodes first) and then, if the
+//  'depth' is equal, the position of the Node in its parent's child node list
+//  ('earlier' nodes first).
+TP.sort.DOM_POSITION_SORT = function(a, b) {
+
+    var aPosition,
+        bPosition,
+
+        aSum,
+        bSum;
+
+    aPosition = a[TP.PREVIOUS_POSITION];
+    bPosition = b[TP.PREVIOUS_POSITION];
+
+    if (aPosition.length < bPosition.length) {
+        return -1;
+    } else if (aPosition.length > bPosition.length) {
+        return 1;
+    }
+
+    //  The 'depth' was equal - sort by the position in the parent's child node
+    //  list by summing the positions.
+    aSum = aPosition.split('.').sum();
+    bSum = bPosition.split('.').sum();
+
+    if (aSum < bSum) {
+        return -1;
+    } else if (aSum > bSum) {
+        return 1;
+    }
+
+    return 0;
+};
+
 //  Sorts keymap XML elements by whether they have no qualifier, just
 //  'platform', just 'browser' or 'platform' AND 'browser'. This is considered
 //  'least to most specific' for keymaps.
