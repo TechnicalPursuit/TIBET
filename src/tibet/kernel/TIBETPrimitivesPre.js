@@ -2426,10 +2426,20 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  information, etc. of the real method, since that's where and how the
     //  method is truly defined.
     if (realMethod[TP.DISPLAY] !== undefined) {
-        TP.defineSlot(target, name, realMethod,
-                        TP.METHOD, track, realMethod[TP.DESCRIPTOR]);
 
-        return realMethod;
+        //  When anonymous Functions are bound, they will end with
+        //  'Function.FunctionProto' as their display name. Even though this
+        //  Function object has a TP.DISPLAY slot, we need to proceed with
+        //  registering this method, especially if its a signal handler.
+
+        //  Therefore, we only exit here if the display name value that this
+        //  Function already has is *not* 'Function.FunctionProto'.
+        if (realMethod[TP.DISPLAY] !== 'Function.FunctionProto') {
+            TP.defineSlot(target, name, realMethod,
+                            TP.METHOD, track, realMethod[TP.DESCRIPTOR]);
+
+            return realMethod;
+        }
     }
 
     if (!TP.isCallable(realMethod) ||
