@@ -18,6 +18,17 @@
 TP.tag.CustomTag.defineSubtype('dom.ReactElement');
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.dom.ReactElement.Type.defineConstant('REACT_LOCATION',
+            'https://unpkg.com/react@16/umd/react.development.js');
+TP.dom.ReactElement.Type.defineConstant('REACT_DOM_LOCATION',
+            'https://unpkg.com/react-dom@16/umd/react-dom.development.js');
+TP.dom.ReactElement.Type.defineConstant('BABEL_LOCATION',
+            'https://unpkg.com/@babel/standalone/babel.min.js');
+
+//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -235,10 +246,7 @@ function(aRequest) {
 
         //  Build an Array starting with the core React & ReactDOM code and then
         //  concatenating all of the component scripts onto it.
-        allScriptLocs = TP.ac(
-            'https://unpkg.com/react@16/umd/react.development.js',
-            'https://unpkg.com/react-dom@16/umd/react-dom.development.js',
-            'https://unpkg.com/@babel/standalone/babel.min.js');
+        allScriptLocs = TP.ac(this.REACT_LOCATION, this.REACT_DOM_LOCATION);
 
         allScriptLocs = allScriptLocs.concat(componentScripts);
 
@@ -403,11 +411,15 @@ function() {
      * @returns {TP.dom.ReactElement} The receiver.
      */
 
-    var sourceLoc,
+    var doc,
+
+        sourceLoc,
         sourceURI,
 
         response,
-        jsxText,
+        componentResult,
+
+        query,
 
         reactComponentClassName,
 
@@ -417,10 +429,11 @@ function() {
 
         reactType,
 
-        doc,
         componentScripts,
 
         reactComponent;
+
+    doc = this.getNativeDocument();
 
     //  If the receiver has a component definition location, then it's going be
     //  bringing in a file of React definitions, probably in JSX.
@@ -429,15 +442,38 @@ function() {
         sourceURI = TP.uc(sourceLoc);
         response = sourceURI.getResource(
                                 TP.hc('async', false, 'resultType', TP.TEXT));
-        jsxText = response.get('result');
+        componentResult = response.get('result');
 
-        if (TP.isEmpty(jsxText)) {
+        if (TP.isEmpty(componentResult)) {
             return this.raise(
                 'TP.sig.InvalidString',
                 'No React source code at: ' + sourceURI.getLocation());
         }
 
-        this.setContent(jsxText);
+        //  If we're bringing in a JSX component and we don't have Babel
+        //  standalone available, bring it in and then go ahead and render the
+        //  component.
+        if (sourceURI.getExtension() === 'jsx') {
+
+            //  Query first to see if we've already loaded it.
+            query = 'script[src^="' + this.getType().BABEL_LOCATION + '"]';
+            if (TP.notValid(TP.byCSSPath(query, doc, true, false))) {
+                TP.sys.fetchScriptInto(
+                        this.getType().BABEL_LOCATION,
+                        this.getNativeDocument(),
+                        null,
+                        TP.hc('crossorigin', true)).then(
+                            function() {
+                                //  Now that babel standalone is available, we
+                                //  can set the result.
+                                this.setContent(componentResult);
+                            }.bind(this));
+            } else {
+                this.setContent(componentResult);
+            }
+        } else {
+            this.setContent(componentResult);
+        }
 
     } else {
 
@@ -462,8 +498,6 @@ function() {
             //  Set '$$loading' immediately so that if we're loading multiple
             //  components, we won't see multiple tries.
             this.getType().set('$$loading', true);
-
-            doc = this.getNativeDocument();
 
             //  Grab all of the React component definition script URL locations.
             componentScripts = this.getType().getComponentDefinitionLocations();
