@@ -100,6 +100,7 @@
         "eslint": "^5.16.0",
         "iltorb": "^2.4.3",
         "mocha": "^5.2.0",
+        "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^4.12.0",
         "puppeteer": "^1.19.0",
         "sinon": "^7.4.2",

@@ -173,6 +173,13 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/mutation-summary-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('MutationSummary', window.MutationSummary);
+        ]]>
+    </script>
+
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
 

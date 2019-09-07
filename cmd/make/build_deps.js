@@ -31,6 +31,7 @@
             '_rollup_jqueryxpath',
             '_rollup_less',
             '_rollup_moment',
+            '_rollup_mutation_summary',
             '_rollup_pouchdb',
             '_rollup_pouchdb_all_dbs',
             '_rollup_sinon',
