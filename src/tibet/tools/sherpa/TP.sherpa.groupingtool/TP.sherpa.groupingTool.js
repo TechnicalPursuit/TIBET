@@ -20,6 +20,7 @@ TP.sherpa.canvastool.defineSubtype('groupingTool');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.groupingTool.Inst.defineAttribute('$startPoint');
 TP.sherpa.groupingTool.Inst.defineAttribute('$sizingRect');
 TP.sherpa.groupingTool.Inst.defineAttribute('$containedNodes');
 TP.sherpa.groupingTool.Inst.defineAttribute('$childRecords');
@@ -64,6 +65,10 @@ function(aTargetTPElem, aSignal) {
         containedNodes;
 
     this.callNextMethod();
+
+    this.$set('$startPoint',
+                TP.pc(aSignal.getPageX(), aSignal.getPageY()),
+                false);
 
     sizingRect = TP.rtc(
                     aSignal.getPageX(),
@@ -176,7 +181,16 @@ function(aSignal) {
         offsetX,
         offsetY,
 
-        doc,
+        startX,
+        startY,
+
+        currentX,
+        currentY,
+
+        rectX,
+        rectY,
+        rectWidth,
+        rectHeight,
 
         containedNodes,
         oldTargetRecords,
@@ -190,11 +204,35 @@ function(aSignal) {
         offsetX = this.$get('$screenOffsetPoint').getX();
         offsetY = this.$get('$screenOffsetPoint').getY();
 
-        sizingRect.setWidth(aSignal.getPageX() - sizingRect.getX() + offsetX);
-        sizingRect.setHeight(aSignal.getPageY() - sizingRect.getY() + offsetY);
-    }
+        startX = this.$get('$startPoint').getX();
+        startY = this.$get('$startPoint').getY();
 
-    doc = TP.sys.uidoc(true);
+        currentX = aSignal.getPageX();
+        currentY = aSignal.getPageY();
+
+        if (currentX <= startX) {
+            rectX = currentX + offsetX;
+            rectWidth = startX - currentX;
+        } else {
+            rectX = startX + offsetX;
+            rectWidth = currentX - startX;
+        }
+
+        if (currentY <= startY) {
+            rectY = currentY + offsetY;
+            rectHeight = startY - currentY;
+        } else {
+            rectY = startY + offsetY;
+            rectHeight = currentY - startY;
+        }
+
+        sizingRect.$set('data', {
+            x: rectX,
+            y: rectY,
+            width: rectWidth,
+            height: rectHeight
+        });
+    }
 
     containedNodes = this.$get('$containedNodes');
 
