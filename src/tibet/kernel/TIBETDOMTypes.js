@@ -14052,7 +14052,7 @@ function(storageInfo) {
         //  Iterate until we run out of sibling or run into an Element and, if
         //  the sibling is a Text node, test to see if it's already providing a
         //  newline.
-        hadNewlineTN = false
+        hadNewlineTN = false;
         while (TP.isValid(nextSib) && !TP.isElement(nextSib)) {
             if (TP.isTextNode(nextSib) &&
                 TP.regex.ONLY_NEWLINE_WHITESPACE.test(nextSib.nodeValue)) {
@@ -14453,6 +14453,7 @@ function(storageInfo) {
         //  append a newline.
         result.push('>');
         childTextNodes = TP.nodeGetChildNodesByType(elem, Node.TEXT_NODE);
+        /* eslint-disable no-extra-parens */
         if (TP.isEmpty(childTextNodes) ||
             (TP.notEmpty(childTextNodes) &&
                 (TP.regex.ONLY_NON_NEWLINE_WHITESPACE.test(
@@ -14461,6 +14462,7 @@ function(storageInfo) {
                                 childTextNodes.last().nodeValue)))) {
             result.push('\n');
         }
+        /* eslint-enable no-extra-parens */
     }
 
     //  Clear out any current namespace prefixes we are tracking.
