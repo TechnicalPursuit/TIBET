@@ -9,7 +9,6 @@ addons:
           - google-chrome
         packages:
           - google-chrome-stable
-          - google-chrome-beta
 
 node_js:
     - "8"
