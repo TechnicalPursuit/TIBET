@@ -14025,7 +14025,11 @@ function(storageInfo) {
      */
 
     var result,
-        elem;
+        elem,
+
+        nextSib,
+
+        hadNewlineTN;
 
     result = TP.ac();
 
@@ -14033,11 +14037,37 @@ function(storageInfo) {
 
     //  If the tag serializes as empty, then the serializeOpenTag() method will
     //  have written 'empty XML syntax', so we don't need to do anything here.
-    if (this.isSerializationEmpty()) {
-        return '';
+    if (!this.isSerializationEmpty()) {
+        result.push('</', elem.tagName.toLowerCase(), '>');
     }
 
-    result.push('</', elem.tagName.toLowerCase(), '>');
+    //  Otherwise, let's test the next sibling to see if it's an Element or
+    //  already contains a newline.
+    nextSib = elem.nextSibling;
+    if (TP.isElement(nextSib)) {
+        //  It's an Element it won't contain a newline - add one.
+        result.push('\n');
+    } else {
+
+        //  Iterate until we run out of sibling or run into an Element and, if
+        //  the sibling is a Text node, test to see if it's already providing a
+        //  newline.
+        hadNewlineTN = false
+        while (TP.isValid(nextSib) && !TP.isElement(nextSib)) {
+            if (TP.isTextNode(nextSib) &&
+                TP.regex.ONLY_NEWLINE_WHITESPACE.test(nextSib.nodeValue)) {
+                hadNewlineTN = true;
+                break;
+            }
+
+            nextSib = nextSib.nextSibling;
+        }
+
+        //  No newline was found - add one.
+        if (!hadNewlineTN) {
+            result.push('\n');
+        }
+    }
 
     return result.join('');
 });
