@@ -3901,7 +3901,9 @@ function(shouldProcess) {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
-    var shouldProcessTimeout;
+    var shouldProcessTimeout,
+
+        doc;
 
     //  It is currently true - clear any existing timeout and get ready to reset
     //  it.
@@ -3920,6 +3922,12 @@ function(shouldProcess) {
             TP.sys.cfg('sherpa.mutation_track_clear_timeout', 1000));
 
         this.set('$shouldProcessTimeout', shouldProcessTimeout);
+
+        doc = TP.sys.uidoc(true);
+
+        //  Make sure to refresh all of the descendant document positions for
+        //  the UI canvas.
+        TP.nodeRefreshDescendantDocumentPositions(doc);
     } else {
 
         //  It was false - clear any existing timeout.
