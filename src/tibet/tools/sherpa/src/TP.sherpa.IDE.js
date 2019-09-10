@@ -165,6 +165,9 @@ TP.sherpa.IDE.Inst.defineAttribute('connectorCollectors');
 //  when the connector session has ended.
 TP.sherpa.IDE.Inst.defineAttribute('$nodragtrapTarget');
 
+//  The current active builder MutationSummary object.
+TP.sherpa.IDE.Inst.defineAttribute('$builderMutationSummary');
+
 //  An Array of 'mutation observer filter Function' object built specifically
 //  for the builder.
 TP.sherpa.IDE.Inst.defineAttribute('$builderMOFilterFuncs');
@@ -1253,10 +1256,6 @@ function(aSignal) {
     var currentScreenTPWin,
         currentCanvasDoc;
 
-    //  Set up managed mutation observer machinery that uses our
-    //  'processUICanvasMutationRecords' method to manage changes to the UI
-    //  canvas.
-
     if (!this.get('setupComplete')) {
         return this;
     }
@@ -1293,8 +1292,10 @@ function(aSignal) {
                                     'TP.sig.SherpaConnectCompleted',
                                     'TP.sig.SherpaGroupingCompleted'));
 
-    TP.activateMutationObserver(TP.unwrap(currentCanvasDoc),
-                                'BUILDER_OBSERVER');
+    //  Set up a Mutation Summary observer on the document. This will process
+    //  changes made to the UI document and propagate them to the correct source
+    //  document for saving.
+    this.setupMutationSummaryOn(currentCanvasDoc);
 
     return this;
 });
@@ -1347,7 +1348,8 @@ function(aSignal) {
                                     'TP.sig.SherpaConnectCompleted',
                                     'TP.sig.SherpaGroupingCompleted'));
 
-    TP.deactivateMutationObserver('BUILDER_OBSERVER');
+    //  Tear down any Mutation Summary observer on the document.
+    this.teardownCurrentMutationSummary();
 
     return this;
 });
@@ -1933,7 +1935,8 @@ function(aSignal) {
 
     this.ignore(oldCanvasDoc, 'TP.sig.DOMMouseWheel');
 
-    TP.deactivateMutationObserver('BUILDER_OBSERVER');
+    //  Tear down any Mutation Summary observer on the document.
+    this.teardownCurrentMutationSummary();
 
     return this;
 });
@@ -1995,8 +1998,10 @@ function(aSignal) {
 
     this.observe(newCanvasDoc, 'TP.sig.DOMMouseWheel');
 
-    TP.activateMutationObserver(TP.unwrap(newCanvasDoc),
-                                'BUILDER_OBSERVER');
+    //  Set up a Mutation Summary observer on the document. This will process
+    //  changes made to the UI document and propagate them to the correct source
+    //  document for saving.
+    this.setupMutationSummaryOn(newCanvasDoc);
 
     return this;
 });
@@ -2971,6 +2976,334 @@ function(anID, headerText, tileParent) {
         TP.pc(centerTPElemPageRect.getX(), centerTPElemPageRect.getY()));
 
     return tileTPElem;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('processDeletionSummary',
+function(aSummary, removedNodes) {
+
+    /**
+     * @method processDeletionSummary
+     * @summary Processes a 'deletion' summary from the MutationSummary
+     *     machinery.
+     * @param {Object} aSummary A 'deletion' summary object produced by the
+     *     MutationSummary object.
+     * @param {Node[]} removedNodes The Array of nodes that were removed from
+     *     the current UI canvas document.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var records,
+
+        roots;
+
+    //  Grab all of the native MutationObserver records.
+    records = aSummary.projection.mutations;
+
+    //  Filter out non-roots. This leaves only the 'roots' of the collection and
+    //  significantly reduces the processing when moving nodes around inside of
+    //  both the UI canvas document and any source documents.
+
+    //  Unfortunately, we cannot use our normal TP.nodeListFilterNonRoots method
+    //  here, since by the time the MutationObserver/MutationSummary machinery
+    //  has been able to process the mutation, these nodes have already been
+    //  removed from the DOM tree and their parentNode slot is undefined.
+    //  Therefore, we need to filter down to roots by using value of the
+    //  TP.PREVIOUS_POSITION slot.
+    roots = removedNodes.filter(
+        function(aNode) {
+            var len,
+                i;
+
+            len = removedNodes.getSize();
+            for (i = 0; i < len; i++) {
+                if (aNode !== removedNodes.at(i) &&
+                    aNode[TP.PREVIOUS_POSITION].startsWith(
+                        removedNodes.at(i)[TP.PREVIOUS_POSITION])) {
+                    return false;
+                }
+            }
+
+            return true;
+    });
+
+    //  Sort the remaining root nodes so that they are in 'document order' *by
+    //  using their TP.PREVIOUS value*.
+    roots.sort(TP.sort.DOM_POSITION_SORT);
+
+    //  Reverse that so that we're coming 'up' the DOM tree from the 'lower
+    //  right' leafs 'up' to the 'upper left'. This helps significantly when
+    //  processing mutations by mutating the least significant nodes first.
+    roots.reverse();
+
+    //  Iterate over each root node and update the source document(s)
+    //  represented by the UI currently drawn in the UI canvas document.
+    roots.forEach(
+        function(aRoot) {
+
+            var matchingRecord,
+                mutationAncestor;
+
+            //  Grab the low-level MutationObserver record associated with the
+            //  root. We want to use it's 'target' Node when updating the UI
+            //  canvas sources below.
+            matchingRecord = records.detect(
+                function(aRecord) {
+                    if (TP.ac(aRecord.removedNodes).indexOf(
+                                    aRoot) !== TP.NOT_FOUND) {
+                        return true;
+                    }
+                });
+
+            //  MutationSummary has a nice facility where it will preserve the
+            //  'old parent' references (which, unfortunately, we cannot wire
+            //  into the parentNode slot, or we could use this technique above).
+            //  But we do use this technique to compute a mutation ancestor for
+            //  updating the UI canvas sources below. We iterate 'up' from the
+            //  target through the 'old parent's looking for the 'topmost' node
+            //  that has been detached.
+            mutationAncestor = matchingRecord.target;
+            while (TP.nodeIsDetached(mutationAncestor)) {
+                mutationAncestor = aSummary.getOldParentNode(
+                                                mutationAncestor);
+            }
+
+            //  If we could grab a matching MutationObserver record, then update
+            //  the UI canvas.
+            if (TP.isValid(matchingRecord)) {
+                this.updateUICanvasSource(
+                        TP.ac(aRoot),
+                        mutationAncestor,
+                        TP.DELETE);
+            }
+        }.bind(this));
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('processInsertionSummary',
+function(aSummary, addedNodes) {
+
+    /**
+     * @method processInsertionSummary
+     * @summary Processes an 'insertion' summary from the MutationSummary
+     *     machinery.
+     * @param {Object} aSummary An 'insertion' summary object produced by the
+     *     MutationSummary object.
+     * @param {Node[]} addedNodes The Array of nodes that were added to the
+     *     current UI canvas document.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var records,
+
+        roots;
+
+    //  Grab all of the native MutationObserver records.
+    records = aSummary.projection.mutations;
+
+    //  When the Sherpa has it's 'shouldProcessDOMMutations' flag set, it
+    //  updates all of the visual nodes with a TP.PREVIOUS_POSITION value. Some
+    //  added nodes, however, might not have TP.PREVIOUS_POSITION values -
+    //  iterate over them and make sure, but don't overwrite any current values.
+    addedNodes.forEach(
+        function(aNode) {
+            //  Don't overwrite any value it already has.
+            if (TP.notValid(aNode[TP.PREVIOUS_POSITION])) {
+                aNode[TP.PREVIOUS_POSITION] =
+                                TP.nodeGetDocumentPosition(aNode);
+            }
+        });
+
+    //  Filter out non-roots. This leaves only the 'roots' of the collection and
+    //  significantly reduces the processing when moving nodes around inside of
+    //  both the UI canvas document and any source documents.
+    roots = TP.nodeListFilterNonRoots(addedNodes);
+
+    //  Sort the remaining root nodes so that they are in 'document order' *by
+    //  using their TP.PREVIOUS value*.
+    roots.sort(TP.sort.DOM_POSITION_SORT);
+
+    //  Iterate over each root node and update the source document(s)
+    //  represented by the UI currently drawn in the UI canvas document.
+    roots.forEach(
+        function(aRoot) {
+
+            var matchingRecord;
+
+            //  Grab the low-level MutationObserver record associated with the
+            //  root. We want to use it's 'target' Node when updating the UI
+            //  canvas sources below.
+            matchingRecord = records.detect(
+                function(aRecord) {
+                    if (addedNodes.indexOf(aRoot) !== TP.NOT_FOUND) {
+                        return true;
+                    }
+                });
+
+            //  If we could grab a matching MutationObserver record, then update
+            //  the UI canvas.
+            if (TP.isValid(matchingRecord)) {
+                this.updateUICanvasSource(
+                        TP.ac(aRoot),
+                        matchingRecord.target,
+                        TP.CREATE);
+            }
+        }.bind(this));
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('processSummaries',
+function(summaries) {
+
+    /**
+     * @method processSummaries
+     * @summary Processes one or more 'mutation summary' records from the
+     *     current MutationSummary object that is using a MutationObserver to
+     *     object the UI canvas document to service the builder functionality.
+     * @param {Object[]} summaries One or more summary objects produced by the
+     *     current MutationSummary object.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var thisref;
+
+    thisref = this;
+
+    //  Process each summary.
+    summaries.forEach(
+        function(aSummary) {
+            var changedAttributes,
+
+                allMoved,
+                movedAndNeedsInsertion;
+
+            //  All of the moved nodes (not simply added or deleted) are either
+            //  in the 'reparented' Array or in the 'reordered' Array.
+            allMoved = aSummary.reparented.concat(aSummary.reordered);
+
+            //  If there were truly 'removed' nodes, process those as 'deletes'.
+            if (TP.notEmpty(aSummary.removed)) {
+                thisref.processDeletionSummary(aSummary, aSummary.removed);
+            }
+
+            //  If there were 'moved' nodes', process those as 'deletes'.
+            if (TP.notEmpty(allMoved)) {
+                thisref.processDeletionSummary(aSummary, allMoved);
+            }
+
+            //  If there were truly 'added' nodes, process those as 'adds'.
+            if (TP.notEmpty(aSummary.added)) {
+                thisref.processInsertionSummary(aSummary, aSummary.added);
+            }
+
+            //  If there were 'moved' nodes', process those *again* as 'adds'.
+            if (TP.notEmpty(allMoved)) {
+
+                //  If there were also truly 'added' nodes, filter out any
+                //  'moved' nodes that were under an 'added' root. Otherwise,
+                //  we're just doing a lot of extra work.
+                if (TP.notEmpty(aSummary.added)) {
+                    movedAndNeedsInsertion = allMoved.filter(
+                        function(aNode) {
+                            var len,
+                                i;
+
+                            len = aSummary.added.getSize();
+                            for (i = 0; i < len; i++) {
+                                if (aSummary.added.at(i).contains(aNode)) {
+                                    return false;
+                                }
+                            }
+
+                            return true;
+                        });
+
+                } else {
+                    movedAndNeedsInsertion = allMoved;
+                }
+
+                //  If there were moved (and possibly filtered above) nodes,
+                //  then update their TP.PREVIOUS_POSITION (since they moved)
+                //  and go ahead and process them as 'adds'.
+                if (TP.notEmpty(movedAndNeedsInsertion)) {
+                    movedAndNeedsInsertion.forEach(
+                        function(aNode) {
+                            aNode[TP.PREVIOUS_POSITION] =
+                                            TP.nodeGetDocumentPosition(aNode);
+                        });
+
+                    thisref.processInsertionSummary(
+                                aSummary, movedAndNeedsInsertion);
+                }
+            }
+
+            //  Process attribute changes.
+            changedAttributes = aSummary.attributeChanged;
+            if (TP.notEmpty(changedAttributes)) {
+                TP.keys(changedAttributes).forEach(
+                    function(attrName) {
+
+                        var elems;
+
+                        elems = changedAttributes[attrName];
+                        elems.forEach(
+                            function(anElem) {
+                                var oldVal,
+                                    newVal,
+
+                                    attrIsEmpty,
+                                    attrWasEmpty,
+
+                                    op;
+
+                                oldVal = aSummary.getOldAttribute(
+                                            anElem,
+                                            attrName);
+
+                                newVal = TP.elementGetAttribute(
+                                            anElem,
+                                            attrName,
+                                            true);
+
+                                attrIsEmpty = TP.isEmpty(newVal);
+                                attrWasEmpty = TP.isEmpty(oldVal);
+
+                                //  Select the proper 'operation' depending on
+                                //  the new value, the old value and whether or
+                                //  not the attribute was empty and is now
+                                //  empty.
+                                if (!attrIsEmpty && attrWasEmpty) {
+                                    op = TP.CREATE;
+                                } else if (!attrIsEmpty && !attrWasEmpty &&
+                                            newVal !== oldVal) {
+                                    op = TP.UPDATE;
+                                } else if (attrIsEmpty) {
+                                    //  NB: We don't care about attrWasEmpty
+                                    //  here - we just delete it.
+                                    op = TP.DELETE;
+                                }
+
+                                //  Update the UI canvas sources.
+                                thisref.updateUICanvasSource(
+                                        TP.ac(anElem),
+                                        anElem,
+                                        op,
+                                        attrName,
+                                        newVal,
+                                        oldVal);
+                            });
+                    });
+            }
+        });
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -4341,27 +4674,16 @@ function() {
     //  'processUICanvasMutationRecords' method to manage changes to the UI
     //  canvas.
 
-    observerConfig = {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeOldValue: true
-    };
-
-    TP.addMutationObserver(
-        this.processUICanvasMutationRecords.bind(this),
-        observerConfig,
-        'BUILDER_OBSERVER');
-
     //  Because the 'DocumentLoaded' handler that normally activates this
     //  managed mutation observer has already been executed when the UI canvas
     //  was first displayed, we need to activate the first time here.
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
     currentScreenTPWin = world.get('selectedScreen').getContentWindow();
 
-    TP.activateMutationObserver(
-        currentScreenTPWin.getNativeDocument(),
-        'BUILDER_OBSERVER');
+    //  Set up a Mutation Summary observer on the document. This will process
+    //  changes made to the UI document and propagate them to the correct source
+    //  document for saving.
+    this.setupMutationSummaryOn(currentScreenTPWin.getNativeDocument());
 
     //  Grab the canvas document and observe mutation style change signals from
     //  it.
@@ -4515,6 +4837,92 @@ function() {
         menuTPElem = menuTPElem.clone();
         hudTPElem.addRawContent(menuTPElem);
     }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('setupMutationSummaryOn',
+function(aNode) {
+
+    /**
+     * @method setupMutationSummaryOn
+     * @summary Sets up a MutationSummary object on the supplied node. This
+     *     object services the builder functionality of the Sherpa to keep any
+     *     source document(s) up-to-date as the user mutates the DOM visually.
+     * @param {Node} aNode The Node that the MutationSummary object should be
+     *     observing for DOM mutations.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var summaryConfig,
+        mutationSummary,
+
+        allFilterFuncs,
+        activeFilterFuncs;
+
+    //  Build a configuration POJO to create the MutationSummary with. Note here
+    //  how we supply a bound Function that is our 'processSummaries' method and
+    //  we ask for *all* mutation summaries (no CSS queries at this level -
+    //  we're interested in everything).
+    summaryConfig = {
+        callback: this.processSummaries.bind(this),
+        rootNode: aNode,
+        queries: [
+            {all: true}
+        ]
+    };
+
+    //  Create a MutationSummary and store it away. The teardown method will
+    //  need that reference to cause the current MutationSummary to disconnect.
+    mutationSummary = new TP.extern.MutationSummary(summaryConfig);
+    this.$set('$builderMutationSummary', mutationSummary);
+
+    //  TIBET's 'managed mutation observer' infrastructure already has the
+    //  facility for filter functions that will filter out MutationObserver
+    //  records that we're not interested in processing. Unfortunately, the
+    //  MutationSummary object doesn't have a similar facility for filtering
+    //  these records before computing its summary from them. So we wire
+    //  capability that in by 'hooking' the MutationSummary's 'createSummaries'
+    //  method and filtering the records before invoking the MutationSummary's
+    //  'old' createSummaries method.
+
+    //  Obtain the filter Functions that we're interested in. The first set are
+    //  the Functions registered to filter all MutationObserver records for any
+    //  of TIBET's managed mutation observers. The second set is a list of
+    //  builder-specific MutationObserver filter functions.
+    allFilterFuncs = TP.$$mutationObserverRegistry.at('$ALL_FILTER_FUNCS');
+    activeFilterFuncs = allFilterFuncs.concat(
+                                this.$get('$builderMOFilterFuncs'));
+
+    //  Hook the created MutationSummary's 'createSummaries' method and overlay
+    //  it with our own version that filters the MutationObserver records before
+    //  calling the old hooked method with those that remain after we ran our
+    //  filter Functions.
+    mutationSummary._oldCreateSummaries = mutationSummary.createSummaries;
+    mutationSummary.createSummaries = function(mutations) {
+
+        var filteredMutations;
+
+        filteredMutations = mutations.filter(
+            function(aRecord) {
+
+                var len,
+                    i;
+
+                len = activeFilterFuncs.getSize();
+                for (i = 0; i < len; i++) {
+                    if (activeFilterFuncs.at(i)(aRecord) === false) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+        return this._oldCreateSummaries(filteredMutations);
+    };
 
     return this;
 });
@@ -4969,6 +5377,24 @@ function(styleLoc) {
     }
 
     return true;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineMethod('teardownCurrentMutationSummary',
+function() {
+
+    /**
+     * @method teardownCurrentMutationSummary
+     * @summary Disconnects the currently active MutationSummary object
+     *     servicing the builder functionality from the piece of DOM that it is
+     *     observing and providing summaries for.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    this.$get('$builderMutationSummary').disconnect();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
