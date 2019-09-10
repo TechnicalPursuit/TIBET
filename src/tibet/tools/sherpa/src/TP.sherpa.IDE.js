@@ -2814,7 +2814,6 @@ function(aTPElem) {
 
                             newTPElem,
 
-                            prevPosition,
                             oldElemClone,
                             newElemClone,
 
