@@ -14718,7 +14718,6 @@ function(aNode, anObject) {
         case Node.ELEMENT_NODE:
         case Node.DOCUMENT_FRAGMENT_NODE:
 
-            TP.nodeRefreshDescendantDocumentPositions(aNode);
             aNode.textContent = content;
 
             break;

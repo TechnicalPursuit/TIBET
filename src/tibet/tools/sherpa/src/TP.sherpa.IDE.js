@@ -551,10 +551,6 @@ function(finalizationFunc) {
         tpElem = TP.byId('center', viewDoc);
         tpElem.setAttribute('tibet:no-mutations', true);
 
-        //  Make sure to refresh all of the descendant document positions for
-        //  the UI canvas.
-        TP.nodeRefreshDescendantDocumentPositions(TP.sys.uidoc(true));
-
         //  Grab the current screen location entries. If they're empty, populate
         //  them with at least one entry: the home URL that we're going to put
         //  into SCREEN_0.
@@ -1271,10 +1267,6 @@ function(aSignal) {
     currentScreenTPWin = TP.core.Window.construct(aSignal.getOrigin());
     currentCanvasDoc = currentScreenTPWin.getDocument();
 
-    //  Make sure to refresh all of the descendant document positions for the UI
-    //  canvas.
-    TP.nodeRefreshDescendantDocumentPositions(TP.unwrap(currentCanvasDoc));
-
     //  Grab the canvas document and observe mutation style change signals from
     //  it.
     this.observe(currentCanvasDoc, 'TP.sig.MutationStyleChange');
@@ -1971,10 +1963,6 @@ function(aSignal) {
     }
 
     newCanvasDoc = newScreenTPWin.getDocument();
-
-    //  Make sure to refresh all of the descendant document positions for the UI
-    //  canvas.
-    TP.nodeRefreshDescendantDocumentPositions(TP.unwrap(newCanvasDoc));
 
     //  Grab the canvas document and observe mutation style change signals from
     //  it.
@@ -5601,9 +5589,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 TP.hc(TP.OLDVAL, true, TP.NEWVAL, true));
         }
     }
-
-    //  Make sure to refresh all of the descendant document positions.
-    TP.nodeRefreshDescendantDocumentPositions(TP.sys.uidoc(true));
 
     return this;
 });
