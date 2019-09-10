@@ -165,6 +165,10 @@ TP.sherpa.IDE.Inst.defineAttribute('connectorCollectors');
 //  when the connector session has ended.
 TP.sherpa.IDE.Inst.defineAttribute('$nodragtrapTarget');
 
+//  An Array of 'mutation observer filter Function' object built specifically
+//  for the builder.
+TP.sherpa.IDE.Inst.defineAttribute('$builderMOFilterFuncs');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -3974,7 +3978,7 @@ function() {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
-    var observerConfig,
+    var builderFilterFuncs,
 
         world,
         currentScreenTPWin;
@@ -3984,34 +3988,37 @@ function() {
         return this;
     }
 
+    //  Set up an Array that will collect filter functions for the builder's
+    //  MutationSummary observer.
+    builderFilterFuncs = TP.ac();
+    this.$set('$builderMOFilterFuncs', builderFilterFuncs);
+
     //  Add a managed Mutation Observer filter Function that will filter all
     //  mutation records for when we're currently not configured to process
     //  current UI canvas DOM mutations.
 
-    TP.addMutationObserverFilter(
+    builderFilterFuncs.push(
         function(aMutationRecord) {
             return this.get('shouldProcessDOMMutations');
-        }.bind(this),
-        'BUILDER_OBSERVER');
+        }.bind(this));
 
     //  Add a managed Mutation Observer filter Function that will filter all
     //  mutation records for when we're testing:
 
-    TP.addMutationObserverFilter(
+    builderFilterFuncs.push(
         function(aMutationRecord) {
             //  The builder doesn't process MO events if we're testing.
             if (TP.sys.isTesting()) {
                 return false;
             }
-        },
-        'BUILDER_OBSERVER');
+        });
 
     //  Add a managed Mutation Observer filter Function that will filter all
     //  mutation records for bind:in attribute mutations when the target element
     //  is a desugared text span. This is because this 'bind:in' was *generated*
     //  because of the desugaring and it won't be found in the source document.
 
-    TP.addMutationObserverFilter(
+    builderFilterFuncs.push(
         function(aMutationRecord) {
             if (aMutationRecord.type === 'attributes' &&
                 aMutationRecord.attributeName === 'in' &&
@@ -4021,8 +4028,7 @@ function() {
                                         true)) {
                 return false;
             }
-        },
-        'BUILDER_OBSERVER');
+        });
 
     //  Add a managed Mutation Observer filter Function that will filter
     //  attribute mutation records for:
@@ -4042,7 +4048,7 @@ function() {
     //      - Sherpa-related 'class' attributes
     //      - Sherpa-related other attributes
 
-    TP.addMutationObserverFilter(
+    builderFilterFuncs.push(
         function(aMutationRecord) {
 
             var elem,
@@ -4200,15 +4206,14 @@ function() {
             }
 
             return true;
-        },
-        'BUILDER_OBSERVER');
+        });
 
     //  Add managed Mutation Observer filter Functions that will filter child
     //  tree mutation records for:
     //
     //      - generated elements
 
-    TP.addMutationObserverFilter(
+    builderFilterFuncs.push(
         function(aMutationRecord) {
 
             var len,
@@ -4270,10 +4275,9 @@ function() {
             }
 
             return true;
-        },
-        'BUILDER_OBSERVER');
+        });
 
-    TP.addMutationObserverFilter(
+    builderFilterFuncs.push(
         function(aMutationRecord) {
 
             var len,
@@ -4331,8 +4335,7 @@ function() {
             }
 
             return true;
-        },
-        'BUILDER_OBSERVER');
+        });
 
     //  Set up managed mutation observer machinery that uses our
     //  'processUICanvasMutationRecords' method to manage changes to the UI
