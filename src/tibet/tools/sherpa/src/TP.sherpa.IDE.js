@@ -2739,13 +2739,8 @@ function(aTPElem) {
 
                             newElem = TP.unwrap(newTPElem);
 
-                            prevPosition = oldElem[TP.PREVIOUS_POSITION];
-
                             oldElemClone = TP.nodeCloneNode(oldElem, false);
-                            oldElemClone[TP.PREVIOUS_POSITION] = prevPosition;
-
                             newElemClone = TP.nodeCloneNode(newElem, false);
-                            newElemClone[TP.PREVIOUS_POSITION] = prevPosition;
 
                             this.updateUICanvasSource(
                                     TP.ac(oldElemClone),
