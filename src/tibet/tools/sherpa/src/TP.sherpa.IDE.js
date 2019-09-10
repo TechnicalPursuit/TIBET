@@ -1286,7 +1286,8 @@ function(aSignal) {
     //  method themselves for connections made *to* elements in them.
     this.observe(currentCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
-                                    'TP.sig.SherpaConnectCompleted'));
+                                    'TP.sig.SherpaConnectCompleted',
+                                    'TP.sig.SherpaGroupingCompleted'));
 
     TP.activateMutationObserver(TP.unwrap(currentCanvasDoc),
                                 'BUILDER_OBSERVER');
@@ -1339,7 +1340,8 @@ function(aSignal) {
     //  destination elements *within* the UI canvas (or are cancelled).
     this.ignore(currentCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
-                                    'TP.sig.SherpaConnectCompleted'));
+                                    'TP.sig.SherpaConnectCompleted',
+                                    'TP.sig.SherpaGroupingCompleted'));
 
     TP.deactivateMutationObserver('BUILDER_OBSERVER');
 
@@ -1922,7 +1924,8 @@ function(aSignal) {
     //  destination elements *within* the UI canvas (or are cancelled).
     this.ignore(oldCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
-                                    'TP.sig.SherpaConnectCompleted'));
+                                    'TP.sig.SherpaConnectCompleted',
+                                    'TP.sig.SherpaGroupingCompleted'));
 
     this.ignore(oldCanvasDoc, 'TP.sig.DOMMouseWheel');
 
@@ -1983,7 +1986,8 @@ function(aSignal) {
     //  method themselves for connections made *to* elements in them.
     this.observe(newCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
-                                    'TP.sig.SherpaConnectCompleted'));
+                                    'TP.sig.SherpaConnectCompleted',
+                                    'TP.sig.SherpaGroupingCompleted'));
 
     this.observe(newCanvasDoc, 'TP.sig.DOMMouseWheel');
 
@@ -2276,6 +2280,111 @@ function(aSignal) {
         connector = TP.byId('SherpaConnector', TP.sys.getUIRoot());
         connector.hideAllConnectorVisuals();
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('SherpaGroupingCompleted',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaGroupingCompleted
+     * @summary Handles notifications of the fact that the Sherpa grouping tool
+     *     has finished a grouping session.
+     * @param {TP.sig.SherpaGroupingCompleted} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var groupedNodes;
+
+    //  Grab all of the nodes that were grouped. This includes all kinds of
+    //  Nodes, not just Elements.
+    groupedNodes = aSignal.at('groupedNodes');
+    if (TP.isEmpty(groupedNodes)) {
+        return this;
+    }
+
+    //  Prompt the user to give a 'grouping tag name', with pre-supplied values
+    //  for XHTML 'span' and 'div'.
+    TP.promptWithChoices(
+        'Group these elements under a common parent:',
+        TP.ac('html:span', 'html:div'),
+        'html:span',
+        TP.hc('open', true)).then(
+        function(groupingTagName) {
+
+            var halo,
+
+                tagName,
+                groupingElem,
+
+                roots,
+
+                firstElem,
+                insertedGroupingElem,
+
+                len,
+                i;
+
+            if (TP.isEmpty(groupingTagName)) {
+                return;
+            }
+
+            //  Grab the halo and see if it's focused.
+            halo = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+            if (halo.isFocused()) {
+                halo.blur();
+            }
+
+            //  Tell ourself that it should go ahead and process DOM mutations
+            //  to the source DOM.
+            this.set('shouldProcessDOMMutations', true);
+
+            //  If the grouping tag name that the user supplied began with
+            //  'html:', then slice off the prefix and create the Element using
+            //  a default namespace of XHTML.
+            if (/html:/.test(groupingTagName)) {
+                tagName = groupingTagName.slice(5);
+                groupingElem = TP.xhtmlnode('<' + tagName + '/>');
+            } else {
+                //  Otherwise, use whatever tag name they gave.
+                tagName = groupingTagName;
+                groupingElem = TP.elem('<' + tagName + '/>');
+            }
+
+            //  Filter out non-roots. This leaves only the 'roots' of the
+            //  collection and significantly reduces the processing when moving
+            //  nodes around inside of both the UI canvas document and any
+            //  source documents.
+            roots = TP.nodeListFilterNonRoots(groupedNodes);
+
+            //  Grab the first root and replace it with the grouping element.
+            firstElem = roots.first();
+            insertedGroupingElem = TP.elementReplaceWith(
+                                        firstElem, groupingElem, null, false);
+
+            //  Move all of the nodes under the grouping element, making sure to
+            //  pass false to not awaken the nodes.
+            len = roots.getSize();
+            for (i = 0; i < len; i++) {
+                TP.nodeAppendChild(insertedGroupingElem,
+                                    roots.at(i),
+                                    false);
+            }
+
+            //  After a 1000ms timeout, focus the halo on the element
+            //  representing the grouping element that was actually inserted in
+            //  the UI canvas.
+            setTimeout(
+                function() {
+                    //  Focus the halo on our new grouping element, passing true
+                    //  to actually show the halo if it's hidden.
+                    halo.focusOn(TP.wrap(insertedGroupingElem), true);
+                }, 1000);
+        }.bind(this));
 
     return this;
 });
@@ -4450,7 +4559,8 @@ function() {
     //  method themselves for connections made *to* elements in them.
     this.observe(currentCanvasDoc, TP.ac(
                                     'TP.sig.SherpaConnectCancelled',
-                                    'TP.sig.SherpaConnectCompleted'));
+                                    'TP.sig.SherpaConnectCompleted',
+                                    'TP.sig.SherpaGroupingCompleted'));
 
     this.observe(currentCanvasDoc, 'TP.sig.DOMMouseWheel');
 
@@ -5662,6 +5772,9 @@ TP.sig.SherpaSignal.defineSubtype('CanvasChanged');
 
 //  Tools layer signals
 TP.sig.SherpaSignal.defineSubtype('CloseActiveTool');
+
+//  Grouping tool signals
+TP.sig.SherpaSignal.defineSubtype('SherpaGroupingCompleted');
 
 //  ----------------------------------------------------------------------------
 //  end
