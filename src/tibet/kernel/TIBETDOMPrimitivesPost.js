@@ -5581,7 +5581,9 @@ function(aNodeList, aTestFunction) {
         rootNodes,
         isDescendant,
         testNode,
-        j;
+        j,
+
+        ndx;
 
     if (!TP.isArray(aNodeList)) {
         allNodes = TP.ac(aNodeList);
@@ -5629,6 +5631,15 @@ function(aNodeList, aTestFunction) {
         //  If it wasn't a descendant, then add it to the root list.
         if (!isDescendant) {
             rootNodes.push(testNode);
+        } else {
+            //  Otherwise, if it was a descendant and was found in the set of
+            //  root nodes, then splice it out. If it wasn't a descendant for
+            //  another node, but was for us, it doesn't belong in the list of
+            //  root nodes.
+            ndx = rootNodes.indexOf(testNode);
+            if (ndx !== TP.NOT_FOUND) {
+                rootNodes.splice(ndx, 1);
+            }
         }
     }
 
