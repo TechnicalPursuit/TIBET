@@ -5070,6 +5070,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         sourceNode,
 
+        computePositionDiff,
+
         sourceMatchingNodes,
 
         visualMutatedNode,
@@ -5204,6 +5206,47 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     //  that represents the underlying DOM structure of the source that we're
     //  modifying.
 
+    computePositionDiff = function(nodeA, nodeB) {
+
+        var posAParts,
+            posBParts,
+
+            posALen,
+            posBLen,
+
+            ndx,
+
+            retParts;
+
+        if (TP.notValid(nodeA[TP.PREVIOUS_POSITION])) {
+            //  TODO: Raise an exception.
+            return TP.ac();
+        }
+        if (TP.notValid(nodeB[TP.PREVIOUS_POSITION])) {
+            //  TODO: Raise an exception.
+            return TP.ac();
+        }
+
+        posAParts = nodeA[TP.PREVIOUS_POSITION].split('.');
+        posBParts = nodeB[TP.PREVIOUS_POSITION].split('.');
+
+        posALen = posAParts.getSize();
+        posBLen = posBParts.getSize();
+
+        if (posALen === posBLen) {
+            return TP.ac();
+        }
+
+        for (ndx = 0; ndx < posBLen; ndx++) {
+            if (posAParts.at(ndx) !== posBParts.at(ndx)) {
+                retParts = posBParts.slice(ndx);
+                break;
+            }
+        }
+
+        return retParts;
+    };
+
     sourceMatchingNodes = TP.ac();
 
     leni = mutatedNodes.getSize();
@@ -5229,6 +5272,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 TP.notEmpty(visualMutatedNode[TP.PREVIOUS_POSITION]))) {
         /* eslint-enable no-extra-parens */
 
+            //  Compute the difference in addresses between the visual generator
+            //  element and the node that was mutated.
+            visualAddressParts = computePositionDiff(visualGeneratorElem,
+                                                        visualMutatedNode);
             //  If visualMutatedNode was a Text node that was a desugared text
             //  binding, then we normalize the visualMutatedElem (which will be
             //  the parent Element node) and grab it's address to use to find
@@ -5330,6 +5377,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 }
             }
         } else {
+            //  Compute the difference in addresses between the visual generator
+            //  element and the node that was mutated.
+            visualAddressParts = computePositionDiff(visualGeneratorElem,
+                                                        visualMutatedNode);
             //  Now we get the address from the target element that the user is
             //  actually manipulating as offset by the tag source element. We
             //  will use this address information to traverse the source DOM.
