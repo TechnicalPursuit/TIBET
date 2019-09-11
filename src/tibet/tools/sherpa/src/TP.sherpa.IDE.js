@@ -5211,24 +5211,17 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         visualMutatedNode = mutatedNodes.at(i);
 
-        //  Compute a 'mutated element' from the mutated node. This may be the
-        //  node itself, if it's an Element.
         if (TP.isElement(visualMutatedNode)) {
-            visualMutatedElem = visualMutatedNode;
-        } else if (TP.isElement(visualMutatedNode.parentNode)) {
-            visualMutatedElem = visualMutatedNode.parentNode;
+            //  If the mutated node is an *Element* and has a
+            //  'tibet:textbinding' attribute on it, that means that it was
+            //  created by the mechanism that looks for ACP expressions in
+            //  markup and creates a 'span' to wrap them.
+            wasTextBinding =
+                TP.elementHasAttribute(
+                    visualMutatedNode, 'tibet:textbinding');
         } else {
-            visualMutatedElem = mutationAncestor;
+            wasTextBinding = false;
         }
-
-        //  If the mutated *element* (which could be the parent Element of the
-        //  mutated node, if the mutated node is a Text node) has a
-        //  'tibet:textbinding' attribute on it, that means that it was
-        //  created by the mechanism that looks for ACP expressions in markup
-        //  and creates a 'span' to wrap them.
-        wasTextBinding =
-            TP.elementHasAttribute(
-                visualMutatedElem, 'tibet:textbinding');
 
         /* eslint-disable no-extra-parens */
         if (TP.nodeIsDetached(visualMutatedNode) ||
@@ -5564,16 +5557,16 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 visualMutatedNode = mutatedNodes.at(i);
 
                 if (TP.isElement(visualMutatedNode)) {
-                    visualMutatedElem = visualMutatedNode;
-                } else if (TP.isElement(visualMutatedNode.parentNode)) {
-                    visualMutatedElem = visualMutatedNode.parentNode;
+                    //  If the mutated node is an *Element* and has a
+                    //  'tibet:textbinding' attribute on it, that means that it
+                    //  was created by the mechanism that looks for ACP
+                    //  expressions in markup and creates a 'span' to wrap them.
+                    wasTextBinding =
+                        TP.elementHasAttribute(
+                            visualMutatedNode, 'tibet:textbinding');
                 } else {
-                    visualMutatedElem = mutationAncestor;
+                    wasTextBinding = false;
                 }
-
-                wasTextBinding =
-                    TP.elementHasAttribute(
-                        visualMutatedElem, 'tibet:textbinding');
 
                 //  If this was a Text node representing a desugared text
                 //  binding then we have to update the text expression by using
