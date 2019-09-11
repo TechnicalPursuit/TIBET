@@ -5170,6 +5170,9 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     if (!TP.isElement(visualGeneratorElem)) {
         visualSourceDocument = TP.nodeGetDocument(visualSourceSearchElem);
         sourceLoc = visualSourceDocument[TP.SRC_LOCATION];
+        if (TP.isDocument(visualGeneratorElem)) {
+            visualGeneratorElem[TP.PREVIOUS_POSITION] = '';
+        }
     } else {
         //  Otherwise, grab the computed resource URI for the 'template' of the
         //  tag source element.
