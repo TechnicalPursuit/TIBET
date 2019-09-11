@@ -5407,16 +5407,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  element and the node that was mutated.
             visualAddressParts = computePositionDiff(visualGeneratorElem,
                                                         visualMutatedNode);
-            //  Now we get the address from the target element that the user is
-            //  actually manipulating as offset by the tag source element. We
-            //  will use this address information to traverse the source DOM.
-            visualOriginatingAddress = TP.nodeGetDocumentPosition(
-                                            visualMutatedNode,
-                                            null,
-                                            visualGeneratorElem);
-            if (TP.notEmpty(visualOriginatingAddress)) {
-                visualAddressParts = visualOriginatingAddress.split('.');
 
+            if (TP.notEmpty(visualAddressParts)) {
                 //  Now, if we're processing a desugared text binding, the last
                 //  address will be the text node that we're updating in the DOM
                 //  with the new value and the next to last address will be the
