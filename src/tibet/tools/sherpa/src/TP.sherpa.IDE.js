@@ -5098,6 +5098,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         address,
 
+        sourceTestNextSibling,
+
         sourceInsertionParent,
         sourceCurrentNode,
 
@@ -5423,6 +5425,22 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     if (!TP.isNode(sourceTestNode)) {
                         sourceCurrentNode = null;
                     } else {
+
+                        //  If the test node is a Text node containing only
+                        //  whitespace and we're not actually mutating a Text
+                        //  node (i.e. setting it), then we skip it and move on
+                        //  to the next node.
+                        if (TP.isWhitespaceTextNode(sourceTestNode) &&
+                            !TP.isTextNode(visualMutatedNode)) {
+                            address = parseInt(address, 10);
+                            sourceTestNextSibling =
+                                    sourceCurrentNode.childNodes[address + 1];
+
+                            if (TP.isNode(sourceTestNextSibling)) {
+                                sourceTestNode = sourceTestNextSibling;
+                            }
+                        }
+
                         //  Otherwise, set the sourceCurrentNode (used as the
                         //  insertion point in a TP.CREATE) to the childNode at
                         //  the last address.
