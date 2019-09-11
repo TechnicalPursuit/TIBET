@@ -5089,6 +5089,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         visualAfterAddresses,
 
+        templateTestNode,
+        len,
+        testAddressParts,
+
         lenj,
         j,
 
@@ -5273,6 +5277,31 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  element and the node that was mutated.
             visualAddressParts = computePositionDiff(visualGeneratorElem,
                                                         visualMutatedNode);
+
+            //  Now, iterate 'down' from the visual generator element and test
+            //  for ACP template expr 'span' elements that were inserted. We
+            //  want to skip those addresses, so we build a new set of addresses
+            //  and use those moving forward.
+            templateTestNode = visualGeneratorElem;
+            len = visualAddressParts.getSize();
+            testAddressParts = TP.ac();
+
+            for (i = 0; i < len; i++) {
+                if (TP.isElement(templateTestNode) &&
+                    TP.elementHasAttribute(
+                            templateTestNode, 'tibet:templateexpr', true)) {
+                    //  empty
+                } else {
+                    testAddressParts.push(visualAddressParts.at(i));
+                }
+
+                templateTestNode = templateTestNode.childNodes[
+                                                    visualAddressParts.at(i)];
+            }
+
+            //  Reset our visual address parts to whatever we computed.
+            visualAddressParts = testAddressParts;
+
             //  If visualMutatedNode was a Text node that was a desugared text
             //  binding, then we normalize the visualMutatedElem (which will be
             //  the parent Element node) and grab it's address to use to find
