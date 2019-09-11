@@ -5075,13 +5075,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         sourceMatchingNodes,
 
         visualMutatedNode,
-        visualMutatedElem,
 
         wasTextBinding,
 
-        visualOriginatingAddress,
         visualAddressParts,
-        visualAncestorAddresses,
 
         visualMutationTestNode,
         visualMutationTestTPElem,
