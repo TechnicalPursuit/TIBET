@@ -5307,100 +5307,14 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             //  the parent Element node) and grab it's address to use to find
             //  the source DOM's corresponding Text node.
             if (wasTextBinding) {
-                TP.nodeNormalize(visualMutatedElem);
-
-                visualOriginatingAddress = TP.nodeGetDocumentPosition(
-                                        visualMutatedElem,
-                                        null,
-                                        visualGeneratorElem);
-                visualAddressParts = visualOriginatingAddress.split('.');
-
-                //  Now, because the last address will be the generated span
-                //  that TIBET generated for this desugared text binding, and
-                //  we're going to be removing the originally-authored text node
-                //  from the source document, we need to pop one address off,
+                //  Because the last address will be the generated span that
+                //  TIBET generated for this desugared text binding, and we're
+                //  going to be removing the originally-authored text node from
+                //  the source document, we need to pop one address off,
                 //  basically ignoring the span.
                 //  The set of addresses will now address the element that was
                 //  the element that the expression was originally placed into.
                 visualAddressParts.pop();
-            } else {
-
-                //  Now, we need to make sure that our detached node has a
-                //  TP.PREVIOUS_POSITION value. This is placed by TIBET routines
-                //  before the node is deleted and provides the document
-                //  position that the node had before it was removed. We need
-                //  this, because the node is detached and we no longer have
-                //  access to its (former) parentNode.
-                visualOriginatingAddress =
-                    visualMutatedNode[TP.PREVIOUS_POSITION];
-                if (TP.isEmpty(visualOriginatingAddress)) {
-                    //  TODO: Raise an exception here
-                    return this;
-                }
-
-                visualAddressParts = visualOriginatingAddress.split('.');
-
-                //  Note here how we get the ancestor addresses all the way to
-                //  the top of the document. This is by design because the
-                //  TP.PREVIOUS_POSITION for the detached node will have been
-                //  computed the same way.
-                visualAncestorAddresses =
-                    TP.nodeGetDocumentPosition(mutationAncestor).split('.');
-
-                //  If the size difference between the ancestor addresses and
-                //  the originating address is more than 1, then the node is
-                //  more than 1 level 'deeper' from the ancestor and we don't
-                //  worry about it because we assume that one of the direct
-                //  children of the ancestor (an ancestor of our detached node)
-                //  will be detached via this mechanism, thereby taking care of
-                //  us.
-                if (visualAddressParts.getSize() -
-                    visualAncestorAddresses.getSize() > 1) {
-                    return this;
-                }
-
-                //  Now, we recompute the addresses for the traversal below to
-                //  be between the updating ancestor and the tag source Element.
-                //  This will then be accurate to update the source DOM, which
-                //  is always relative to the tag source element.
-                visualAncestorAddresses = TP.nodeGetDocumentPosition(
-                                mutationAncestor, null, visualGeneratorElem);
-
-                //  This will be empty if mutationAncestor and
-                //  visualGeneratorElem are the same node.
-                if (TP.isEmpty(visualAncestorAddresses)) {
-                    visualAncestorAddresses = TP.ac();
-
-                    //  If the source node is a Document, then we need to
-                    //  unshift a '0' onto the ancestor addresses because of
-                    //  differences in how the computation will have occurred
-                    //  (the original computation will have included the index
-                    //  off of the Document).
-                    if (TP.isDocument(sourceNode)) {
-                        visualAncestorAddresses.unshift('0');
-                    }
-                } else {
-                    visualAncestorAddresses = visualAncestorAddresses.split('.');
-                }
-
-                //  Finally, we push on the last position of the address that
-                //  the detached node had. Given our test above of 'not more
-                //  than 1 level between the updating ancestor and the detached
-                //  node', this will complete the path that we need to update
-                //  the source DOM.
-                visualAncestorAddresses.push(visualAddressParts.last());
-
-                if (TP.notEmpty(visualAncestorAddresses)) {
-                    //  Set it to be ready to go for logic below.
-                    visualAddressParts = visualAncestorAddresses;
-                }
-
-                //  If it just contains one item, the empty string, then empty
-                //  it.
-                if (visualAddressParts.getSize() === 1 &&
-                    visualAddressParts.first() === '') {
-                    visualAddressParts.empty();
-                }
             }
         } else {
             //  Compute the difference in addresses between the visual generator
@@ -5495,8 +5409,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     result = TP.CONTINUE;
                     break;
                 }
-
-                visualMutatedNode = visualMutationTestNode;
 
                 //  If we're not currently processing an attribute change, then
                 //  set the current node based on whether we're doing a pure
