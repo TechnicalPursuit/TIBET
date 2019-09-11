@@ -5056,6 +5056,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     var isAttrChange,
 
+        visualAppElem,
+
         visualGeneratorElem,
         visualGeneratorTPElem,
 
@@ -5135,11 +5137,14 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     isAttrChange = TP.notEmpty(attributeName);
 
+    visualAppElem = TP.unwrap(this.getAppElement());
+
     //  Search the hierarchy for the nearest custom tag (using the same search
     //  criteria as above) to set as the tag source element.
     visualGeneratorElem = mutationAncestor;
 
-    while (TP.isElement(visualGeneratorElem)) {
+    while (TP.isElement(visualGeneratorElem) &&
+            visualGeneratorElem !== visualAppElem) {
         visualGeneratorTPElem = TP.wrap(visualGeneratorElem);
         if (visualGeneratorTPElem.sherpaShouldAlterTemplate()) {
             break;
