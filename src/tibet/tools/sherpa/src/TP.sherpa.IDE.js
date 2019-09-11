@@ -5454,7 +5454,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 sourceInsertionParent = sourceCurrentNode;
 
                 //  Iterate from the destination node and track whether any of
-                //  its ancestors will disallow mutations.
+                //  its ancestors (up until the visual generator element) will
+                //  disallow mutations.
 
                 //  We initially set this flag to true and allow a negative
                 //  result from one of the ancestors set it to false.
@@ -5462,7 +5463,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
                 visualMutationTestNode = visualMutatedNode.parentNode;
 
-                while (TP.isElement(visualMutationTestNode)) {
+                //  Note here how we make sure we don't go 'above' the visual
+                //  generator element.
+                while (TP.isElement(visualMutationTestNode) &&
+                        visualMutationTestNode !== visualGeneratorElem) {
                     visualMutationTestTPElem = TP.wrap(visualMutationTestNode);
                     if (!visualMutationTestTPElem.
                         sherpaAllowDescendantMutations(
