@@ -45,11 +45,13 @@ before_script:
 
     - export CHROME_BIN=/usr/bin/google-chrome
     - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
 
     # Make sure to sleep for 3 seconds to give Chrome a chance to start under
     # xvfb
     - sleep 3
+
+services:
+    - xvfb
 
 script:
     - karma start --debug
