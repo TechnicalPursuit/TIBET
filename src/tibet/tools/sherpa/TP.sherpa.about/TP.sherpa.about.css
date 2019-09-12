@@ -153,6 +153,8 @@ sherpa|about > .content > .product > .trade {
 
 sherpa|about > .content > .tagline {
 
+    width: 100%;
+
     float: left;
     clear: left;
 
