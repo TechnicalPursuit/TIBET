@@ -893,6 +893,17 @@ sherpa|hud:not([pclass|closed]) #center {
 }
 
 /* -----------------------------*
+ * FormBuilder assistant dialog
+ * ---------------------------- */
+
+#FormBuilderAssistantDialog {
+
+    /* For now, limits us to webkit, will be standardized to 'stretch' */
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+}
+
+/* -----------------------------*
  * Tofu assistant dialog
  * ---------------------------- */
 
