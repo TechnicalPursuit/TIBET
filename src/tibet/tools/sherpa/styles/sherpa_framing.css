@@ -462,6 +462,14 @@ hr.clear {
     border: 0;
 }
 
+.centerContent {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
 #commonTileLayer {
 
     position: absolute;
