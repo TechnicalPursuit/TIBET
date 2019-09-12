@@ -21,8 +21,8 @@ TP.sherpa.TemplatedTag.defineSubtype('about');
 TP.sherpa.about.Inst.defineHandler('Feedback',
 function(aSignal) {
 
-    window.open(
-        'mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
+    window.open('mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
+
     this.signal('UIToggle');
 
     return this;
