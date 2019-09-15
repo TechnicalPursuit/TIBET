@@ -66,7 +66,7 @@ function(aTargetTPElem, aSignal) {
     if (TP.notEmpty(cantAlterReasons)) {
         if (cantAlterReasons.contains(TP.ELEMENT_NEEDS_TO_BE_POSITIONED)) {
             TP.promptWithChoices(
-                'This element needs one of the following a "position"' +
+                'This element needs one of the following "position"' +
                 ' property values to be moveable:',
                 TP.ac('relative', 'absolute', 'fixed'),
                 'relative').then(
