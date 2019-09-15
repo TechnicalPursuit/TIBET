@@ -33,9 +33,7 @@ TP.sherpa.gridManipulator.Type.defineConstant('RULE_TEMPLATE',
     'min-height: --sherpa-halo-multiplier-min-height;' +
 
     'grid-template-columns: repeat(var(--sherpa-halo-multiplier-cols), 1fr);' +
-    'grid-template-rows: repeat(var(--sherpa-halo-multiplier-rows), 1fr);' +
-
-    'border: dashed 1px black;');
+    'grid-template-rows: repeat(var(--sherpa-halo-multiplier-rows), 1fr);');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -201,6 +199,8 @@ function(aTargetTPElem, aSignal) {
         //  element.
     }
 
+    TP.elementPushAndSetStyleProperty(gridElem, 'border', 'dashed 1px black');
+
     this.$set('$currentGridTPElement', gridTPElement);
     this.$set('$multiplierTemplateTPElement', multiplierTemplateTPElement);
 
@@ -219,6 +219,12 @@ function() {
      * @summary Deactivates the receiver.
      * @returns {TP.sherpa.gridManipulator} The receiver.
      */
+
+    var gridElem;
+
+    gridElem = this.$get('$currentGridTPElement').getNativeNode();
+
+    TP.elementPopAndSetStyleProperty(gridElem, 'border');
 
     this.$set('$multiplierNumRows', -1);
     this.$set('$multiplierNumCols', -1);
