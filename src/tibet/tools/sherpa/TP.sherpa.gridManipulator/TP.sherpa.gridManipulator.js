@@ -96,6 +96,7 @@ function(aTargetTPElem, aSignal) {
         height,
 
         gridCellElem,
+        gridCellTPElem,
 
         modifyingRule,
 
@@ -122,28 +123,34 @@ function(aTargetTPElem, aSignal) {
         this.$set('$multiplierNumRows', 1, false);
         this.$set('$multiplierNumCols', 1, false);
 
-        width = aTargetTPElem.getWidth();
-        height = aTargetTPElem.getHeight();
+        this.callNextMethod();
+
+        //  Create a grid cell element that we can clone as we drag using the
+        //  target.
+        gridCellElem = this.$makeMultiplierCell(gridElem, targetElem);
+
+        //  Swap the target element for the grid element.
+        gridElem = TP.nodeReplaceChild(
+                            targetElem.parentNode, gridElem, targetElem, false);
+        gridTPElement = TP.wrap(gridElem);
+
+        //  Append an initial cell element into the grid. This effectively 'puts
+        //  back' the target, but now wrapped in the grid element.
+        gridCellElem = TP.nodeAppendChild(gridElem, gridCellElem, false);
+
+        gridCellTPElem = TP.wrap(gridCellElem);
+
+        //  Grab the width and height of the newly added grid cell element. This
+        //  is the only accurate way to measure - we wants the dimensions of the
+        //  element that we're really multiplying.
+        width = gridCellTPElem.getWidth();
+        height = gridCellTPElem.getHeight();
 
         this.$set('$multiplierTargetWidth', width, false);
         this.$set('$multiplierTargetHeight', height, false);
 
         gridTPElement.setWidth(width);
         gridTPElement.setHeight(height);
-
-        this.callNextMethod();
-
-        //  Swap the target for the multiplier *after* we adjust for size
-        //  (otherwise, the numbers might be skewed or non-existent if the target is
-        //  gone from the canvas).
-
-        gridCellElem = this.$makeMultiplierCell(gridElem, targetElem);
-
-        gridElem = TP.nodeReplaceChild(
-                            targetElem.parentNode, gridElem, targetElem, false);
-        gridTPElement = TP.wrap(gridElem);
-
-        TP.nodeAppendChild(gridElem, gridCellElem, false);
 
         modifyingRule = TP.bySystemId('Sherpa').getOrMakeModifiableRule(
                                     gridTPElement,
