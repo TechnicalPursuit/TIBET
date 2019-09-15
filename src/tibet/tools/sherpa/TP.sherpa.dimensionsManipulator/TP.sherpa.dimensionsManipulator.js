@@ -65,11 +65,16 @@ function(aTargetTPElem, aSignal) {
 
     if (TP.notEmpty(cantAlterReasons)) {
         if (cantAlterReasons.contains(TP.ELEMENT_NEEDS_TO_BE_BLOCK)) {
-            TP.prompt(
-                'This element needs a "display" property value of:' +
-                ' "block", "inline-block", "list-item", "run-in", "table" or' +
-                ' "table-cell" to be sizable. Enter a value for the "display"' +
-                ' property:', 'block').then(
+            TP.promptWithChoices(
+                'This element needs one of the following "display"' +
+                ' property values to be sizable:',
+                TP.ac('block',
+                        'inline-block',
+                        'list-items',
+                        'run-in',
+                        'table',
+                        'table-cell'),
+                'block').then(
                 function(displayVal) {
                     var modifyingRule;
 
