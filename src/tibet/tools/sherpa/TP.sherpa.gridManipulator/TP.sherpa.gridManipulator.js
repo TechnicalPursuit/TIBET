@@ -396,7 +396,7 @@ function(gridElem, targetElem) {
     doc = TP.nodeGetDocument(gridElem);
 
     wrapperElem = TP.documentConstructElement(doc, 'div', TP.w3.Xmlns.XHTML);
-    wrapperElem = TP.nodeAppendChild(gridElem, wrapperElem, false);
+
     targetCloneElem = TP.nodeCloneNode(targetElem);
 
     TP.nodeAppendChild(wrapperElem, targetCloneElem, false);
