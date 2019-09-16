@@ -1221,12 +1221,15 @@ function(anElement, flushCaches) {
 
     /**
      * @method elementGetAppliedNativeStyleRules
-     * @summary Returns an Array of CSSRule objects that apply to the
-     *     supplied element.
-     * @param {Element} anElement The element to retrieve the CSS style
-     *     rules for.
+     * @summary Returns an Array of CSSRule objects that apply to the supplied
+     *     element.
+     * @param {Element} anElement The element to retrieve the CSS style rules
+     *     for.
      * @param {Boolean} [flushCaches=false] Whether or not to flush the
-     *     element's cached ruleset.
+     *     element's cached ruleset. Note that if this is forced to false (i.e.
+     *     it is specified and the value is false) and the element does *not*
+     *     have a rules cache, then the document-level rules cache will *not* be
+     *     refreshed and an empty Array will be returned.
      * @exception TP.sig.InvalidElement
      * @returns {CSSStyleRule[]} The native style rules.
      */
@@ -1248,7 +1251,7 @@ function(anElement, flushCaches) {
 
     //  We check to see if the element has a 'TP.APPLIED_RULES' Array. If not,
     //  we have to run the refresh call (which can be slow).
-    if (TP.notValid(anElement[TP.APPLIED_RULES])) {
+    if (TP.notValid(anElement[TP.APPLIED_RULES]) && TP.notFalse(flushCaches)) {
         TP.$documentRefreshAppliedRulesCaches(TP.nodeGetDocument(anElement));
     }
 
@@ -1295,7 +1298,10 @@ function(anElement, flushCaches) {
      * @param {Element} anElement The element to retrieve the CSS style
      *     info for.
      * @param {Boolean} [flushCaches=false] Whether or not to flush the
-     *     element's cached ruleset.
+     *     element's cached ruleset. Note that if this is forced to false (i.e.
+     *     it is specified and the value is false) and the element does *not*
+     *     have a rules cache, then the document-level rules cache will *not* be
+     *     refreshed and an empty Array will be returned.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash[]} An Array of TP.core.Hash objects with style
      *     rule information for each style rule that matches the supplied
@@ -1304,7 +1310,8 @@ function(anElement, flushCaches) {
      *          selector:           The simple selector split out from the whole
      *                              selector.
      *          specificityInfo:    Specificity information about the selector.
-     *                              See the calculateSingleCSSSelectorSpecificity()
+     *                              See the
+     *                              calculateSingleCSSSelectorSpecificity()
      *                              method for more information on the values
      *                              here.
      *          sheetLocation:      The URL location of the stylesheet.
