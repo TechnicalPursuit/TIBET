@@ -46,11 +46,17 @@ function(assistantData) {
      * @summary Shows the assistant, using the supplied data.
      * @param {TP.core.Hash} assistantData The data that the assistant will use
      *     to wire the signal source and target together. This hash should have
-     *     three slots:
-     *          'destTPElement': The TP.core.ElementNode that the binding
-     *          is being made to.
-     *          'sourceURI': The source URI that the element is binding to.
-     *          'pathParts': An array of path parts to the source data.
+     *     four slots:
+     *          'insertionPosition': The insertion position, relative to the
+     *          insertion point element, that the new node should be inserted
+     *          at. This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN,
+     *          TP.BEFORE_END, TP.AFTER_END.
+     *          'insertionPoint' The element that provides the insertion point
+     *          to the insertion operation. This, in combination with the
+     *          insertion position, will provide the place in the DOM to insert
+     *          the new DOM node.
+     *          'uri': The URI holding the data.
+                'localStorageID': A temporary data holder for the form data.
      * @returns {TP.meta.sherpa.formBuilderAssistant} The receiver.
      */
 
