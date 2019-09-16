@@ -807,7 +807,7 @@ function(aTargetTPElement, initialRuleText) {
                             targetType.get('localName');
         }
 
-        sherpaID = TP.elementGetAttribute(targetElem, 'sherpa', true);
+        sherpaID = TP.elementGetAttribute(targetElem, 'sherpaID', true);
         if (TP.isEmpty(sherpaID)) {
             //  Generate a unique ID for the target element, but do *not* assign
             //  it because we want to use it for a different attribute, not
@@ -816,7 +816,7 @@ function(aTargetTPElement, initialRuleText) {
             //  persist.
             sherpaID = TP.elemGenID(targetElem, false);
 
-            aTargetTPElement.setAttribute('sherpa', sherpaID);
+            aTargetTPElement.setAttribute('sherpaID', sherpaID);
 
             //  Manually update the canvas source of the target element.
             //  Because we're in the midst of a D&D operation, mutation
@@ -826,13 +826,13 @@ function(aTargetTPElement, initialRuleText) {
                 TP.ac(targetElem),
                 targetElem.parentNode,
                 TP.CREATE,
-                'sherpa',
+                'sherpaID',
                 sherpaID,
                 null);
         }
 
         //  Add the SherpaID as an attribute selector.
-        ruleSelector += '[sherpa="' + sherpaID + '"]';
+        ruleSelector += '[sherpaID="' + sherpaID + '"]';
 
         targetDoc = aTargetTPElement.getNativeDocument();
 
