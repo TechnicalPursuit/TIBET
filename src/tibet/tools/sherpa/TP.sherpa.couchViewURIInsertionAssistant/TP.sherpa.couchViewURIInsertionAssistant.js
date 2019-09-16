@@ -192,7 +192,7 @@ function(anObject) {
 
     newElem = TP.xhtmlnode('<div/>');
 
-    localID = suppliedData.at('insertionID');
+    localID = suppliedData.at('localStorageID');
     localLoc = info.at('localLocation');
 
     remoteLoc = info.at('remoteLocation');
@@ -339,7 +339,7 @@ function(anObj) {
     newInsertionInfo.atPut('remoteLocation',
                             anObj.at('uri').getLocation());
     newInsertionInfo.atPut('localLocation',
-                            'urn:tibet:' + anObj.at('insertionID'));
+                            'urn:tibet:' + anObj.at('localStorageID'));
     newInsertionInfo.atPut('generateDetailView',
                             true);
 

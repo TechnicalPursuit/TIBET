@@ -217,7 +217,7 @@ function(anObject) {
     newTPElem = TP.xctrls.propertysheet.from(schemaObj);
     newElem = TP.unwrap(newTPElem);
 
-    localID = suppliedData.at('insertionID');
+    localID = suppliedData.at('localStorageID');
     localLoc = 'urn:tibet:' + localID;
 
     remoteLoc = suppliedData.at('uri').getLocation();
