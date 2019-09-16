@@ -1679,7 +1679,11 @@ function(anElement) {
     var doc,
 
         computedStyle,
-        displayVal;
+        displayVal,
+
+        isReplaced,
+
+        fullName;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -1711,17 +1715,42 @@ function(anElement) {
     //  Grab the parent's display value.
     displayVal = computedStyle.display;
 
-    //  An element with a display value of any of the following can be sized.
-    if (displayVal === 'block' ||
-        displayVal === 'inline-block' ||
-        displayVal === 'list-item' ||
-        displayVal === 'run-in' ||
-        displayVal === 'table' ||
-        displayVal === 'table-cell') {
-        return true;
+    isReplaced = false;
+
+    fullName = TP.elementGetFullName(anElement);
+
+    switch (fullName) {
+        case 'iframe':
+        case 'video':
+        case 'embed':
+        case 'img':
+            isReplaced = true;
+            break;
+        default:
+            break;
     }
 
-    return false;
+    //  width/height cannot be applied to non-replaced inline elements
+    if (!isReplaced) {
+        switch (displayVal) {
+            case 'inline':
+            case 'inline-block':
+            case 'inline-table':
+            case 'inline-flex':
+            case 'inline-grid':
+            case 'inline-list-item':
+                return false;
+            default:
+                break;
+        }
+    }
+
+    if (displayVal === 'table-row' ||
+        displayVal === 'table-row-group') {
+        return false;
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
