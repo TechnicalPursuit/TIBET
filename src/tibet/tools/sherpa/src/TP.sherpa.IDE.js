@@ -821,14 +821,17 @@ function(aTargetTPElement, initialRuleText) {
             //  Manually update the canvas source of the target element.
             //  Because we're in the midst of a D&D operation, mutation
             //  observers will have been temporarily suspended.
-            //  Therefore, we do this manually.
+            //  Therefore, we do this manually. Note here how we do not signal
+            //  CanvasChanged. This is due to the fact that 'sherpaID' is an
+            //  internal attribute that we don't care about observers knowing.
             this.updateUICanvasSource(
                 TP.ac(targetElem),
                 targetElem.parentNode,
                 TP.CREATE,
                 'sherpaID',
                 sherpaID,
-                null);
+                null,
+                false);
         }
 
         //  Add the SherpaID as an attribute selector.
