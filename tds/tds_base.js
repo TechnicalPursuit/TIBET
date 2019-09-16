@@ -423,7 +423,12 @@
             msg,
 
             builddir,
-            artifacts;
+            artifacts,
+
+            buildmsg,
+            buildstr,
+            sherpastr,
+            nonsherpastr;
 
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
         project += ' ' + TDS.colorize(
@@ -443,40 +448,61 @@
             host = '127.0.0.1';
         }
 
+        //  First output the 'default' or 'prod' or 'build' version which
+        //  should be the one all projects default to without any '@'
+        //  parameters....but only if we see build artifacts.
+        builddir = TDS.expandPath('~app_build');
+        if (sh.test('-d', builddir)) {
+            artifacts = sh.ls(builddir);
+        } else {
+            artifacts = [];
+        }
+
+        buildmsg = 'Project not built. Build your project using `tibet build`' +
+                    ' and then launch production version from: ' +
+                    TDS.colorize(protocol + '://' + host +
+                        (port === 80 ? '' : ':' + port), 'host');
+
+        buildstr = project +
+                    TDS.colorize(' @ ', 'dim') +
+                    TDS.colorize(protocol + '://' + host +
+                        (port === 80 ? '' : ':' + port), 'host') +
+                    TDS.colorize(' (production build)', 'dim');
+
+        sherpastr = project +
+                    TDS.colorize(' @ ', 'dim') +
+                    TDS.colorize(protocol + '://' + host +
+                        (port === 80 ? '' : ':' + port +
+                         '#?boot.profile=development@developer'),
+                        'host');
+
+        nonsherpastr = project +
+                    TDS.colorize(' @ ', 'dim') +
+                    TDS.colorize(protocol + '://' + host +
+                        (port === 80 ? '' : ':' + port +
+                         '#?boot.profile=development'),
+                        'host');
+
         if (TDS.getEnv(env) !== 'development') {
-            //  First output the 'default' or 'prod' or 'build' version which
-            //  should be the one all projects default to without any '@'
-            //  parameters....but only if we see build artifacts.
-            builddir = TDS.expandPath('~app_build');
-            if (sh.test('-d', builddir)) {
-                artifacts = sh.ls(builddir);
-                if (artifacts.length) {
-                    msg = project +
-                        TDS.colorize(' @ ', 'dim') +
-                        TDS.colorize(protocol + '://' + host +
-                            (port === 80 ? '' : ':' + port), 'host') +
-                        TDS.colorize(' (production build)', 'dim');
+            if (artifacts.length > 0) {
+                //  Output a production link.
+                msg = buildstr;
 
-                    logger.system(msg,
-                        {
-                            comp: 'TDS',
-                            type: 'tds',
-                            name: 'build'
-                        });
+                logger.system(msg,
+                    {
+                        comp: 'TDS',
+                        type: 'tds',
+                        name: 'build'
+                    });
 
-                    if (!TDS.hasConsole()) {
-                        process.stdout.write(msg);
-                    }
+                if (!TDS.hasConsole()) {
+                    process.stdout.write(msg);
                 }
             }
         } else if (TDS.getcfg('sherpa.enabled')) {
             //  And a sherpa-enabled link for those who want to run the sherpa.
-            msg = project +
-                TDS.colorize(' @ ', 'dim') +
-                TDS.colorize(protocol + '://' + host +
-                    (port === 80 ? '' : ':' + port +
-                     '#?boot.profile=development@developer'),
-                    'host');
+            msg = sherpastr;
+
             logger.system(msg,
                 {
                     comp: 'TDS',
@@ -487,14 +513,40 @@
             if (!TDS.hasConsole()) {
                 process.stdout.write(msg);
             }
+
+            if (artifacts.length > 0) {
+                //  Output a production link.
+                msg = buildstr;
+
+                logger.system(msg,
+                    {
+                        comp: 'TDS',
+                        type: 'tds',
+                        name: 'build'
+                    });
+
+                if (!TDS.hasConsole()) {
+                    process.stdout.write(msg);
+                }
+            } else {
+                //  Output a message telling the user how to build.
+                msg = buildmsg;
+
+                logger.system(msg,
+                    {
+                        comp: 'TDS',
+                        type: 'tds',
+                        name: 'build'
+                    });
+
+                if (!TDS.hasConsole()) {
+                    process.stdout.write(msg);
+                }
+            }
         } else {
             //  Output a development link for non-sherpa operation ala the basic
             //  quickstart/essentials guide approach to development.
-            msg = project +
-                TDS.colorize(' @ ', 'dim') +
-                TDS.colorize(protocol + '://' + host +
-                    (port === 80 ? '' : ':' + port +
-                     '#?boot.profile=development'), 'host');
+            msg = nonsherpastr;
 
             logger.system(msg,
                 {
@@ -505,6 +557,36 @@
 
             if (!TDS.hasConsole()) {
                 process.stdout.write(msg);
+            }
+
+            if (artifacts.length > 0) {
+                //  Output a production link.
+                msg = buildstr;
+
+                logger.system(msg,
+                    {
+                        comp: 'TDS',
+                        type: 'tds',
+                        name: 'build'
+                    });
+
+                if (!TDS.hasConsole()) {
+                    process.stdout.write(msg);
+                }
+            } else {
+                //  Output a message telling the user how to build.
+                msg = buildmsg;
+
+                logger.system(msg,
+                    {
+                        comp: 'TDS',
+                        type: 'tds',
+                        name: 'build'
+                    });
+
+                if (!TDS.hasConsole()) {
+                    process.stdout.write(msg);
+                }
             }
         }
     };
