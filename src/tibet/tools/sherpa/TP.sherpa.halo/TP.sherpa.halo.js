@@ -1492,12 +1492,12 @@ function(newTargetTPElem, shouldUnhide) {
 
     this.set('haloRect', theRect);
 
-    this.removeAttribute('no-display');
-    this.removeAttribute('ancestor');
-    this.removeAttribute('mini-size');
-    this.removeAttribute('micro-size');
-
     if (TP.isValid(newTargetTPElem)) {
+
+        this.removeAttribute('no-display');
+        this.removeAttribute('ancestor');
+        this.removeAttribute('mini-size');
+        this.removeAttribute('micro-size');
 
         if (!newTargetTPElem.isDisplayed()) {
             this.setAttribute('no-display', 'true');
