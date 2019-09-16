@@ -3867,7 +3867,9 @@ function() {
             keyname,
 
             sigName,
-            sigType;
+            sigType,
+
+            focusedTPElem;
 
         //  Look in the external keybindings map. If there's an entry there,
         //  then we get the signal name from there.
@@ -3887,7 +3889,20 @@ function() {
         //  the 'target' of this signal.
         sigType = TP.sys.getTypeByName(sigName);
         if (TP.isType(sigType)) {
-            this.signal(sigName, TP.hc('trigger', TP.wrap(evt)));
+            if (TP.notValid(focusedTPElem)) {
+                focusedTPElem = this.getFocusedElement(true);
+            }
+            focusedTPElem.signal(sigName, TP.hc('trigger', TP.wrap(evt)));
+            if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
+                TP.eventPreventDefault(evt);
+            }
+        } else {
+            //  Otherwise, it should just be sent as a keyboard event. We
+            //  found a map entry for it, but there was no real type.
+            this.signal(sigName,
+                        TP.hc('trigger', TP.wrap(evt)),
+                        TP.DOM_FIRING,
+                                    'TP.sig.' + keyname);
         }
 
         return this;
