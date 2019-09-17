@@ -53,7 +53,10 @@ function(assistantData) {
      *          'destTPElement': The TP.core.ElementNode that the binding
      *          is being made to.
      *          'sourceURI': The source URI that the element is binding to.
-     *          'pathParts': An array of path parts to the source data.
+     *          'path': An array of path parts to the source data.
+     *          'propInfo': A hash of property information (such as the type of
+     *          property, etc.)
+     *          'isLeaf': Whether or not the property was a 'leaf' property.
      * @returns {TP.meta.sherpa.bindingConnectionAssistant} The receiver.
      */
 
