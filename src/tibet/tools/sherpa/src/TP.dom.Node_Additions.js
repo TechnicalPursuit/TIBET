@@ -2332,10 +2332,9 @@ function(insertionPointElement, insertionPosition) {
     var inspector,
         childType,
 
-        assistantData,
+        insertedCouchURI,
 
-        assistantContentTPElem,
-        dialogPromise,
+        assistantData,
 
         currentServiceTPElems,
 

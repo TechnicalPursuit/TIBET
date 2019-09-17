@@ -312,9 +312,8 @@ function(anObject) {
 
                     var newDetailGroupStr,
 
-                        result,
+                        data,
 
-                        rows,
                         names,
 
                         len,
@@ -328,10 +327,9 @@ function(anObject) {
                         '" style="display: grid;' +
                                     ' grid-template-columns: 5em 1fr">';
 
-                    result = aResponse.get('result');
+                    data = aResponse.get('result');
 
-                    rows = result.get('$.rows');
-                    names = TP.keys(result.get('$.rows[0].value'));
+                    names = TP.keys(data.get('$.rows[0].value'));
 
                     len = names.getSize();
                     for (i = 0; i < len; i++) {
