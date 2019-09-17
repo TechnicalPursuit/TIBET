@@ -333,18 +333,26 @@ function(aNode, aSelector, autoCollapse) {
 
     //  First, let's check the length of the results against the
     //  auto-reduction flag.
-    if (matchResults.length === 0 && TP.isTrue(autoCollapse)) {
-        return null;
+    if (matchResults.length === 0) {
+        return TP.isTrue(autoCollapse) ? null : TP.ac();
     }
 
-    //  We only auto-collapse if the number of elements matched by the query
-    //  is exactly 1.
-    if (matchResults.length === 1 && TP.isTrue(autoCollapse)) {
+    if (matchResults.length === 1) {
         result = matchResults.item(0);
-        if (TP.notValid(result[TP.GENERATED])) {
-            return result;
+        //  We only auto-collapse if the number of elements matched by the query
+        //  is exactly 1.
+        if (TP.isTrue(autoCollapse)) {
+            if (TP.notValid(result[TP.GENERATED])) {
+                return result;
+            } else {
+                return null;
+            }
         } else {
-            return null;
+            if (TP.notValid(result[TP.GENERATED])) {
+                return TP.ac(result);
+            } else {
+                return TP.ac();
+            }
         }
     }
 

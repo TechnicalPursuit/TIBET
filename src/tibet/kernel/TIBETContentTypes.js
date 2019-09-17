@@ -4713,6 +4713,8 @@ function(aReturnValue, targetObj) {
 
         retVal,
 
+        shouldCollapse,
+
         extractWith,
 
         keys,
@@ -4726,6 +4728,8 @@ function(aReturnValue, targetObj) {
 
     retVal = aReturnValue;
 
+    shouldCollapse = this.get('shouldCollapse');
+
     //  NB: We only do this if the return value is valid *and* its not an empty
     //  Array. Otherwise, we run the fallback function below if it's available.
     if (TP.isValid(retVal) && !isEmptyArray) {
@@ -4733,7 +4737,7 @@ function(aReturnValue, targetObj) {
         //  If we're configured to collapse, then do it.
 
         /* eslint-disable no-extra-parens */
-        if (this.get('shouldCollapse')) {
+        if (shouldCollapse) {
             retVal = TP.collapse(retVal);
         }
         /* eslint-enable no-extra-parens */
@@ -4784,8 +4788,19 @@ function(aReturnValue, targetObj) {
     } else {
         //  If we collapse results and the results are an empty Array, then we
         //  return null.
-        if (this.get('shouldCollapse') && isEmptyArray) {
+        if (shouldCollapse && isEmptyArray) {
             retVal = null;
+        }
+    }
+
+    //  If we're not collapsing (either because the flag is false or was
+    //  undefined), then return the proper value (consistent with other
+    //  collapsing logic in TIBET).
+    if (TP.notTrue(shouldCollapse)) {
+        if (TP.notValid(retVal)) {
+            retVal = TP.ac();
+        } else if (!TP.isArray(retVal)) {
+            retVal = TP.ac(retVal);
         }
     }
 
