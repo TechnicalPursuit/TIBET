@@ -197,7 +197,8 @@ function(anObject) {
         return this;
     }
 
-    tSchema = TP.json2js(schemaText);
+    //  Note the 'false' here - we want a POJO
+    tSchema = TP.json2js(schemaText, false);
 
     schemaObj = TP.json.JSONSchemaContent.construct(tSchema);
 
@@ -373,7 +374,7 @@ function(anObj) {
                     'contentType', TP.core.Content
                 )).get('result').get('data');
 
-    definitionName = 'Couch_Doc_' + data.at('_id');
+    definitionName = 'Couch_Doc_' + data._id;
 
     //  Build a JSON Schema from the POJO data and with the ID of the Couch
     //  document as the JSON Schema 'definition name'.
