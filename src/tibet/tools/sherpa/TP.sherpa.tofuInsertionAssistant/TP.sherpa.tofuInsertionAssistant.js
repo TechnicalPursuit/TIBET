@@ -38,6 +38,65 @@ TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('generatedTag',
 TP.sherpa.tofuInsertionAssistant.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tofuInsertionAssistant.Type.defineMethod('showAssistant',
+function(assistantData) {
+
+    /**
+     * @method showAssistant
+     * @summary Shows the assistant, using the supplied data.
+     * @param {TP.core.Hash} assistantData The data that the assistant will use
+     *     to place the inserted element. This hash should have two slots:
+     *          'insertionPosition': The insertion position, relative to the
+     *          insertion point element, that the new node should be inserted
+     *          at. This could be TP.BEFORE_BEGIN, TP.AFTER_BEGIN,
+     *          TP.BEFORE_END, TP.AFTER_END.
+     *          'insertionPoint' The element that provides the insertion point
+     *          to the insertion operation. This, in combination with the
+     *          insertion position, will provide the place in the DOM to insert
+     *          the new DOM node.
+     * @returns {TP.meta.sherpa.tofuInsertionAssistant} The receiver.
+     */
+
+    var assistantContentTPElem,
+        dialogPromise;
+
+    //  Grab the TP.sherpa.tofuInsertionAssistant type's template.
+    assistantContentTPElem =
+        TP.sherpa.tofuInsertionAssistant.getResourceElement(
+                        'template',
+                        TP.ietf.mime.XHTML);
+
+    //  Open a dialog with the connection assistant's content.
+    dialogPromise = TP.dialog(
+        TP.hc(
+            'dialogID', 'TofuAssistantDialog',
+            'isModal', true,
+            'title', 'Insert New Tag',
+            'templateContent', assistantContentTPElem));
+
+    //  After the dialog is showing, set the assistant parameters on the content
+    //  object from those defined in the original signal's payload.
+    dialogPromise.then(
+        function(aDialogTPElem) {
+            var contentTPElem;
+
+            contentTPElem = aDialogTPElem.get('bodyGroup').
+                                        getFirstChildElement();
+
+            //  Pass along the insertion position and the peer element
+            //  as the insertion point to the dialog info.
+            contentTPElem.set('data', assistantData);
+
+            return;
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
