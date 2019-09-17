@@ -1007,7 +1007,7 @@ function(options) {
 
                     data = result.collect(
                             function(record) {
-                                return record.get(TP.tpc('views')).getKeys();
+                                return TP.keys(record.get(TP.jpc('$.views')));
                             });
 
                     data = data.flatten();
