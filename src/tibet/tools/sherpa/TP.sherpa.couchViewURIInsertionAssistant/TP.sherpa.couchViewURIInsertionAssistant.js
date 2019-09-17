@@ -252,7 +252,8 @@ function(anObject) {
 
     //  ---
 
-    newElem = TP.xhtmlnode('<div/>');
+    newElem = TP.xhtmlnode('<div' +
+                            ' style="display: flex; flex-direction: column"/>');
 
     localID = suppliedData.at('localStorageID');
     localLoc = info.at('localLocation');
@@ -311,26 +312,36 @@ function(anObject) {
 
                     var newDetailGroupStr,
 
-                        columnCount,
+                        result,
 
-                        newDetailGroupElem,
+                        rows,
+                        names,
 
-                        i;
+                        len,
+                        i,
+
+                        newDetailGroupElem;
 
                     newDetailGroupStr =
-                        '<span bind:scope="' +
+                        '<div bind:scope="' +
                         selectionLoc +
-                        '" style="margin-left: 10px">';
+                        '" style="display: grid;' +
+                                    ' grid-template-columns: 5em 1fr">';
 
-                    columnCount =
-                        aResponse.get('result').get('$.rows[0].value').getSize();
+                    result = aResponse.get('result');
 
-                    for (i = 0; i < columnCount; i++) {
+                    rows = result.get('$.rows');
+                    names = TP.keys(result.get('$.rows[0].value'));
+
+                    len = names.getSize();
+                    for (i = 0; i < len; i++) {
+                        newDetailGroupStr += '<label>' + names.at(i) + ':</label>';
                         newDetailGroupStr +=
-                            '<input type="text" bind:io="value[' + i + ']"/>';
+                            '<input type="text"' +
+                            ' bind:io="value.' + names.at(i) + '"/>';
                     }
 
-                    newDetailGroupStr += '</span>';
+                    newDetailGroupStr += '</div>';
 
                     newDetailGroupElem = TP.xhtmlnode(newDetailGroupStr);
                     TP.nodeAppendChild(newElem, newDetailGroupElem, false);
