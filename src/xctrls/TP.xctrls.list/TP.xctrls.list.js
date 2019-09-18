@@ -1379,15 +1379,19 @@ function(enterSelection) {
             labelContent.html(
                 function(d, i) {
 
+                    var labelVal;
+
                     if (TP.regex.SPACING.test(d[0])) {
                         return '&#160;';
                     }
 
                     if (TP.regex.GROUPING.test(d[0])) {
-                        return TP.regex.GROUPING.exec(d[0])[1];
+                        labelVal = TP.regex.GROUPING.exec(d[0])[1];
+                    } else {
+                        labelVal = d[1];
                     }
 
-                    return d[1];
+                    return TP.xmlLiteralsToEntities(labelVal);
                 }
             );
 
@@ -1403,7 +1407,7 @@ function(enterSelection) {
                         return '';
                     }
 
-                    return d[0];
+                    return TP.xmlLiteralsToEntities(d[0]);
                 }
             );
 
@@ -1427,6 +1431,8 @@ function(enterSelection) {
                         } else {
                             hintVal = dataVal;
                         }
+
+                        hintVal = TP.xmlLiteralsToEntities(hintVal);
 
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
                                 hintVal +
@@ -2040,15 +2046,19 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
+                    var labelVal;
+
                     if (TP.regex.SPACING.test(data[0])) {
                         return '&#160;';
                     }
 
                     if (TP.regex.GROUPING.test(data[0])) {
-                        return TP.regex.GROUPING.exec(data[0])[1];
+                        labelVal = TP.regex.GROUPING.exec(data[0])[1];
+                    } else {
+                        labelVal = data[1];
                     }
 
-                    return data[1];
+                    return TP.xmlLiteralsToEntities(labelVal);
                 }
             );
 
@@ -2065,7 +2075,7 @@ function(updateSelection) {
                         return '';
                     }
 
-                    return data[0];
+                    return TP.xmlLiteralsToEntities(data[0]);
                 }
             );
 
@@ -2094,6 +2104,8 @@ function(updateSelection) {
                         } else {
                             hintVal = dataVal;
                         }
+
+                        hintVal = TP.xmlLiteralsToEntities(hintVal);
 
                         return hintVal;
                     }

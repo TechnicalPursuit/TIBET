@@ -953,6 +953,8 @@ function(enterSelection) {
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
                 function(d) {
+                    var labelVal;
+
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
@@ -961,10 +963,12 @@ function(enterSelection) {
                     }
 
                     if (TP.regex.GROUPING.test(d)) {
-                        return TP.regex.GROUPING.exec(d)[1];
+                        labelVal = TP.regex.GROUPING.exec(d)[1];
+                    } else {
+                        labelVal = d;
                     }
 
-                    return d;
+                    return TP.xmlLiteralsToEntities(labelVal);
                 }
             );
 
@@ -1005,6 +1009,9 @@ function(enterSelection) {
                         } else {
                             hintVal = dataVal;
                         }
+
+                        hintVal = TP.xmlLiteralsToEntities(hintVal);
+
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
                                 hintVal +
                                 '</span>';
@@ -1581,15 +1588,19 @@ function(updateSelection) {
                 labelContent.html(
                     function() {
 
+                        var labelVal;
+
                         if (TP.regex.SPACING.test(datum)) {
                             return '&#160;';
                         }
 
                         if (TP.regex.GROUPING.test(datum)) {
-                            return TP.regex.GROUPING.exec(datum)[1];
+                            labelVal = TP.regex.GROUPING.exec(datum)[1];
+                        } else {
+                            labelVal = datum;
                         }
 
-                        return datum;
+                        return TP.xmlLiteralsToEntities(labelVal);
                     }
                 );
 

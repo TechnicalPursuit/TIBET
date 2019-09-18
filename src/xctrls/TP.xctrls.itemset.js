@@ -1157,7 +1157,7 @@ function(enterSelection) {
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
                 function(d, i) {
-                    return d[1];
+                    return TP.xmlLiteralsToEntities(d[1]);
                 }
             );
 
@@ -1169,7 +1169,7 @@ function(enterSelection) {
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
                 function(d, i) {
-                    return d[0];
+                    return TP.xmlLiteralsToEntities(d[0]);
                 }
             );
 
@@ -1178,7 +1178,7 @@ function(enterSelection) {
                 hintContent.html(
                     function(d, i) {
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                                d[0] +
+                                TP.xmlLiteralsToEntities(d[0]) +
                                 '</span>';
                     }
                 );
@@ -1560,7 +1560,7 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    return data[1];
+                    return TP.xmlLiteralsToEntities(data[1]);
                 }
             );
 
@@ -1569,7 +1569,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    return data[0];
+                    return TP.xmlLiteralsToEntities(data[0]);
                 }
             );
         });
