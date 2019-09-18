@@ -69,11 +69,16 @@ function(aTargetTPElem, aSignal) {
                 'This element needs one of the following "display"' +
                 ' property values to be sizable:',
                 TP.ac('block',
-                        'inline-block',
-                        'list-items',
-                        'run-in',
+                        'flow',
+                        'flow-root',
                         'table',
-                        'table-cell'),
+                        'flex',
+                        'grid',
+                        'ruby',
+                        'list-item',
+                        'table-cell',
+                        'run-in'
+                ),
                 'block').then(
                 function(displayVal) {
                     var modifyingRule;
@@ -82,27 +87,16 @@ function(aTargetTPElem, aSignal) {
                         return;
                     }
 
-                    if (displayVal === 'block' ||
-                        displayVal === 'inline-block' ||
-                        displayVal === 'list-item' ||
-                        displayVal === 'run-in' ||
-                        displayVal === 'table' ||
-                        displayVal === 'table-cell') {
+                    modifyingRule = TP.bySystemId('Sherpa').
+                                    getOrMakeModifiableRule(aTargetTPElem);
 
-                        modifyingRule = TP.bySystemId('Sherpa').
-                                        getOrMakeModifiableRule(aTargetTPElem);
-
-                        if (TP.notValid(modifyingRule)) {
-                            return this;
-                        }
-
-                        TP.styleRuleSetProperty(
-                                modifyingRule, 'display', displayVal, true);
-
-                    } else {
-                        TP.alert(
-                            'Invalid "display" property value: ' + displayVal);
+                    if (TP.notValid(modifyingRule)) {
+                        return this;
                     }
+
+                    TP.styleRuleSetProperty(
+                            modifyingRule, 'display', displayVal, true);
+
                 }.bind(this));
             }
 
