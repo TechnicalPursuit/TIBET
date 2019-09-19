@@ -496,8 +496,25 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue('value', aValue);
 
-    //  If the values are equal, there's nothing to do here - bail out.
+    //  If the values are equal, then either re-render if the new value is a
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+
+        //  If the new value is a collection itself, then it will have changed
+        //  'beneath' us and we won't see it as a change (i.e. oldValue and
+        //  newValue will be the same, because we're holding a collection of
+        //  collections). In this case, we reset the convertedData (so that the
+        //  re-rendering will regenerate this data and d3.js will 'see' it as a
+        //  change), call render and return true (since we assume the value
+        //  changed).
+        //  Otherwise, we just return false
+
+        if (TP.isCollection(newValue)) {
+            this.set('$convertedData', null, false);
+            this.render();
+
+            return true;
+        }
+
         return false;
     }
 
