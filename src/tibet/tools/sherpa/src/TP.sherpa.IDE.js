@@ -3142,7 +3142,8 @@ function(aSummary, addedNodes) {
             //  canvas sources below.
             matchingRecord = records.detect(
                 function(aRecord) {
-                    if (addedNodes.indexOf(aRoot) !== TP.NOT_FOUND) {
+                    if (TP.ac(aRecord.addedNodes).indexOf(
+                                    aRoot) !== TP.NOT_FOUND) {
                         return true;
                     }
                 });
