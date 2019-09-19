@@ -8224,11 +8224,10 @@ function(targetObj, attributeValue, shouldSignal) {
     thisType = this.getType();
 
     //  Whether or not we build structures depends on whether we are configured
-    //  to build structures. If the we have no configuration one way or the other
-    //  (neither true or false), then however the source object is configured
-    //  will be used.
+    //  to build structures. If the we have no configuration one way or the
+    //  other (neither true or false), then however the source object is
+    //  configured will be used.
     shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
-
 
     if (/,/.test(head)) {
         //  Make sure to strip off the leading '[' and trailing ']'
