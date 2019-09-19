@@ -3053,7 +3053,8 @@ function(aSummary, removedNodes) {
             //  canvas sources below.
             matchingRecord = records.detect(
                 function(aRecord) {
-                    if (TP.ac(aRecord.removedNodes).indexOf(
+                    if (aRecord.type === 'childList' &&
+                        TP.ac(aRecord.removedNodes).indexOf(
                                     aRoot) !== TP.NOT_FOUND) {
                         return true;
                     }
@@ -3142,7 +3143,8 @@ function(aSummary, addedNodes) {
             //  canvas sources below.
             matchingRecord = records.detect(
                 function(aRecord) {
-                    if (TP.ac(aRecord.addedNodes).indexOf(
+                    if (aRecord.type === 'childList' &&
+                        TP.ac(aRecord.addedNodes).indexOf(
                                     aRoot) !== TP.NOT_FOUND) {
                         return true;
                     }
