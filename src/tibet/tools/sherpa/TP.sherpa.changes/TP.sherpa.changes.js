@@ -140,6 +140,9 @@ function(aSignal) {
      */
 
     var list,
+
+        val,
+
         selectedLoc,
 
         cmdText;
