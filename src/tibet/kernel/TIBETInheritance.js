@@ -12335,6 +12335,127 @@ function() {
     return namelist;
 });
 
+//  -----------------------------------------------------------------------
+//  TP.lang.ValueHolder
+//  -----------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('lang.ValueHolder');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.lang.ValueHolder.Inst.defineAttribute('$$isValueHolder', true);
+
+TP.lang.ValueHolder.Inst.defineAttribute('value');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.lang.ValueHolder.Inst.defineMethod('init',
+function(initialValue) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {Object} initialValue The initial value to 'hold'
+     * @returns {TP.lang.ValueHolder} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.set('value', initialValue, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.ValueHolder.Inst.defineMethod('get',
+function(attributeName) {
+
+    /**
+     * @method get
+     * @summary Returns the value, if any, of the attribute provided. Note
+     *     however that special parsing rules apply to TP.dom.Node types.
+     * @param {String} attributeName The name of the attribute to return.
+     * @returns {String|Object} The value of the desired attribute.
+     */
+
+    var attrName,
+        heldVal;
+
+    if (TP.isEmpty(attributeName)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    attrName = TP.str(attributeName);
+
+    heldVal = this.$get('value');
+
+    //  A shortcut - if the attribute name is '.' or '$_', then that's
+    //  shorthand for returning ourselves.
+    if (TP.regex.ONLY_PERIOD.test(attrName) ||
+        TP.regex.ONLY_STDIN.test(attrName) ||
+        TP.isEmpty(attrName) ||
+        attrName === 'value') {
+        return heldVal;
+    }
+
+    return heldVal.get(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.ValueHolder.Inst.defineMethod('set',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @method set
+     * @summary Sets the value of the named attribute or path target to the
+     *     value provided.
+     * @param {String} attributeName The attribute name to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The result of setting the attribute on the receiver.
+     *     This can vary in actual type.
+     */
+
+    var attrName,
+        attrVal,
+
+        valueVal,
+
+        retVal;
+
+    if (TP.isEmpty(attributeName)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    attrName = TP.str(attributeName);
+    attrVal = attributeValue;
+
+    //  If we're setting the held value and it's a POJO, then construct a
+    //  TP.core.JSONContent object around it and set that as the held value.
+    if (attrName === 'value') {
+        if (TP.isPlainObject(attrVal)) {
+            attrVal = TP.core.JSONContent.construct(attrVal);
+        }
+
+        return this.callNextMethod(attributeName, attrVal, shouldSignal);
+    }
+
+    valueVal = this.$get('value');
+
+    retVal = valueVal.set(attributeName, attributeValue, false);
+
+    this.changed('value', TP.UPDATE);
+
+    return retVal;
+});
+
 //  ------------------------------------------------------------------------
 //  Primitives
 //  ------------------------------------------------------------------------

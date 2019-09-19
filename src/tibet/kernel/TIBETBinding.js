@@ -5936,21 +5936,14 @@ ignoreBidiInfo) {
                 frag = wholeURI.getFragment();
 
                 //  Grab the result from the 'primary URI'. If the value can't
-                //  be retrieved, then create an Object and set it's 'value'
-                //  value to the value that we're trying to set. Then set that
-                //  as the 'whole resource' of the primary URI.
+                //  be retrieved, then create a TP.lang.ValueHolder object and
+                //  set it's 'value' value to the value that we're trying to
+                //  set. Then set that as the 'whole resource' of the primary
+                //  URI.
                 if (TP.notValid(
                         result = primaryURI.getResource().get('result'))) {
 
-                    newValue = TP.lang.Object.construct();
-
-                    //  Make a slot to hold the value.
-                    newValue.defineAttribute('value');
-                    newValue.set('value', aValue);
-
-                    //  Mark the object as a value holder.
-                    newValue.defineAttribute('$$isValueHolder');
-                    newValue.set('$$isValueHolder', true);
+                    newValue = TP.lang.ValueHolder.construct(aValue);
 
                     //  NB: This will mark the primaryURI as dirty.
                     primaryURI.setResource(
