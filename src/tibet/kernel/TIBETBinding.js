@@ -2921,6 +2921,8 @@ function(branchExpr, initialVal, initialPathType) {
                 pathType = TP.JSON_PATH_TYPE;
             } else if (TP.notValid(theVal)) {
                 branchVal = null;
+            } else if (TP.isPlainObject(theVal)) {
+                branchVal = theVal[branchExpr];
             } else {
                 branchVal = theVal.get(branchExpr);
             }
@@ -6412,6 +6414,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                             //  If it's a String, Number or Boolean, then
                             //  scopedVal is the actual value we want to use.
                             exprVal = scopedVal;
+                        } else if (TP.isPlainObject(scopedVal)) {
+                            exprVal = scopedVal[expr];
                         } else {
                             exprVal = scopedVal.get(expr);
                         }
