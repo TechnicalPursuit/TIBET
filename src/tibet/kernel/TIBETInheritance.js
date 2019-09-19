@@ -12372,6 +12372,24 @@ function(initialValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.ValueHolder.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the receiver as a simple string.
+     * @returns {String} The simple string form of the receiver.
+     */
+
+    var heldVal;
+
+    heldVal = this.$get('value');
+
+    return heldVal.asString();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.ValueHolder.Inst.defineMethod('get',
 function(attributeName) {
 
