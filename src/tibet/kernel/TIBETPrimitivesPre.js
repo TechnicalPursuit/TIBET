@@ -8819,7 +8819,7 @@ function(anObj) {
     /**
      * @method isCollection
      * @summary Returns true if the value passed in is an instance of a
-     *     Collection type such as Array or TP.core.Hash.
+     *     Collection type such as Array or TP.core.Hash or a plain Object.
      * @description While String instances can be thought of as collections of
      *     characters this routine will not return true for Strings. Likewise,
      *     although documents and elements can be thought of as collections of
@@ -8829,7 +8829,9 @@ function(anObj) {
      *     instance.
      */
 
-    if (TP.isNodeList(anObj) || TP.isNamedNodeMap(anObj)) {
+    if (TP.isNodeList(anObj) ||
+        TP.isNamedNodeMap(anObj) ||
+        TP.isPlainObject(anObj)) {
         return true;
     }
 
