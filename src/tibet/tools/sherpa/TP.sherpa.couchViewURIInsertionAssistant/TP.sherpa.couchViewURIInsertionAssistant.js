@@ -324,7 +324,7 @@ function(anObject) {
                     newDetailGroupStr =
                         '<div bind:scope="' +
                         selectionLoc +
-                        '" style="display: grid;' +
+                        '#jpath()" style="display: grid;' +
                                     ' grid-template-columns: 5em 1fr">';
 
                     data = aResponse.get('result');
@@ -336,7 +336,7 @@ function(anObject) {
                         newDetailGroupStr += '<label>' + names.at(i) + ':</label>';
                         newDetailGroupStr +=
                             '<input type="text"' +
-                            ' bind:io="value.' + names.at(i) + '"/>';
+                            ' bind:io="$.' + names.at(i) + '"/>';
                     }
 
                     newDetailGroupStr += '</div>';
