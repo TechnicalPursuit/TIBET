@@ -236,6 +236,12 @@ Cmd.prototype.execute = function() {
                     ' directory: ' + rmerr);
                 return 1;
             }
+            rmerr = sh.rm('-rf', CLI.NPM_LOCK_FILE);
+            if (rmerr) {
+                this.error('Error removing ' + CLI.NPM_LOCK_FILE +
+                    ' file: ' + rmerr);
+                return 1;
+            }
         } else {
             //  node_modules exists but not tibet package...npm unlinked
             //  it...probably during a npm 5+ install of a new package.
