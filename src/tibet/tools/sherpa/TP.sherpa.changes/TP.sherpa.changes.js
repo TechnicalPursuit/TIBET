@@ -147,7 +147,13 @@ function(aSignal) {
     //  Grab the value of item that was clicked on the list. This will be the
     //  URI value.
     list = TP.wrap(aSignal.getTarget());
-    selectedLoc = list.get('data').at(list.get('value'));
+
+    val = list.get('value');
+    if (TP.notValid(val)) {
+        return this;
+    }
+
+    selectedLoc = list.get('data').at(val);
 
     //  Make sure to escape any slashes - this is important as the Sherpa
     //  inspector can use '/' as a 'path separator' and we want the URI to be
