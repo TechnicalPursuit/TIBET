@@ -132,6 +132,10 @@ function(aTargetTPElem, aSignal) {
                             targetElem.parentNode, gridElem, targetElem, false);
         gridTPElement = TP.wrap(gridElem);
 
+        modifyingRule = TP.bySystemId('Sherpa').getOrMakeModifiableRule(
+                                    gridTPElement,
+                                    this.getType().RULE_TEMPLATE);
+
         //  Append an initial cell element into the grid. This effectively 'puts
         //  back' the target, but now wrapped in the grid element.
         gridCellElem = TP.nodeAppendChild(gridElem, gridCellElem, false);
@@ -147,12 +151,10 @@ function(aTargetTPElem, aSignal) {
         this.$set('$multiplierTargetWidth', width, false);
         this.$set('$multiplierTargetHeight', height, false);
 
-        gridTPElement.setWidth(width);
-        gridTPElement.setHeight(height);
-
-        modifyingRule = TP.bySystemId('Sherpa').getOrMakeModifiableRule(
-                                    gridTPElement,
-                                    this.getType().RULE_TEMPLATE);
+        //  Set the initial width & height of the overall grid element to the
+        //  width and height of the multiplier element.
+        modifyingRule.style.setProperty('width', width + 'px');
+        modifyingRule.style.setProperty('height', height + 'px');
 
         modifyingRule.style.setProperty('--sherpa-halo-multiplier-min-width',
                                         width + 'px');
@@ -300,8 +302,10 @@ function(aSignal) {
     gridHeight = aSignal.getPageYAdjustedFor(gridElem) -
                     currentGridBox.at('top');
 
-    gridTPElement.setWidth(gridWidth);
-    gridTPElement.setHeight(gridHeight);
+    modifyingRule = this.$get('$currentModifyingRule');
+
+    modifyingRule.style.setProperty('width', gridWidth + 'px');
+    modifyingRule.style.setProperty('height', gridHeight + 'px');
 
     numRows = (gridHeight / targetHeight).floor();
     numCols = (gridWidth / targetWidth).floor();
