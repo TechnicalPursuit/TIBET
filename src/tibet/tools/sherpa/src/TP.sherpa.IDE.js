@@ -3830,26 +3830,32 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.IDE.Inst.defineMethod('setShouldProcessDOMMutations',
-function(shouldProcess) {
+function(shouldProcess, isSticky, fromNode) {
 
     /**
      * @method setShouldProcessDOMMutations
      * @summary Sets the flag to tell this object whether or not to process
      *     mutations to the source DOM it is managing.
-     * @description Note that if shouldProcess is true, this flag will be reset
-     *     to false after a certain amount of time. This is due to the fact that
-     *     mutations 'come in' asynchronously and so the flag never has a chance
-     *     to reset to false otherwise, as setting to false cannot be done at
-     *     the 'point of mutation' in the code..
+     * @description Note that if shouldProcess is true and isSticky is false,
+     *     this flag will be reset to false after a certain amount of time.
+     *     This is due to the fact that mutations 'come in' asynchronously and
+     *     so the flag never has a chance to reset to false otherwise, as
+     *     setting to false cannot be done at the 'point of mutation' in the
+     *     code..
      * @param {Boolean} shouldProcess Whether or not the receiver should process
      *     mutations to the source DOM of the currently displayed DOM in the UI
      *     canvas fails.
+     * @param {Boolean} [isSticky=false] Whether or not this method should set
+     *     up a timer to reset the flag to false after a period of time. The
+     *     default is false, which means the method *will* set up a timer.
+     * @param {Node} [fromNode] The node to monitor for DOM mutations. This
+     *     defaults to the UICANVAS's document node.
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
     var shouldProcessTimeout,
 
-        doc;
+        node;
 
     //  It is currently true - clear any existing timeout and get ready to reset
     //  it.
@@ -3858,22 +3864,30 @@ function(shouldProcess) {
         this.set('$shouldProcessTimeout', null);
     }
 
-    //  If the flag was true, then set up a timeout that will reset the flag
-    //  back after a certain amount of time (default to 1000ms).
+    //  If the flag was true and isSticky is not true, then set up a timeout
+    //  that will reset the flag back after a certain amount of time (default to
+    //  1000ms).
     if (shouldProcess) {
-        shouldProcessTimeout = setTimeout(
-            function() {
-                this.$set('shouldProcessDOMMutations', false);
-            }.bind(this),
-            TP.sys.cfg('sherpa.mutation_track_clear_timeout', 1000));
 
-        this.set('$shouldProcessTimeout', shouldProcessTimeout);
+        if (TP.notTrue(isSticky)) {
+            shouldProcessTimeout = setTimeout(
+                function() {
+                    this.$set('shouldProcessDOMMutations', false);
+                }.bind(this),
+                TP.sys.cfg('sherpa.mutation_track_clear_timeout', 1000));
 
-        doc = TP.sys.uidoc(true);
+            this.set('$shouldProcessTimeout', shouldProcessTimeout);
+        }
+
+        if (TP.notValid(fromNode)) {
+            node = TP.sys.uidoc(true);
+        } else {
+            node = fromNode;
+        }
 
         //  Make sure to refresh all of the descendant document positions for
         //  the UI canvas.
-        TP.nodeRefreshDescendantDocumentPositions(doc);
+        TP.nodeRefreshDescendantDocumentPositions(node);
     } else {
 
         //  It was false - clear any existing timeout.
