@@ -218,6 +218,13 @@ function(aTargetTPElem, aSignal) {
     } else {
         gridElem = gridTPElement.getNativeNode();
 
+        //  Set the Sherpa to process DOM mutations. Note that we set the
+        //  'isSticky' parameter of this method to true (the 2nd 'true'), which
+        //  means that the setting with *not* reset until we deactivate and we
+        //  also supply the grid element as the root of the mutations.
+        TP.bySystemId('Sherpa').set(
+                'shouldProcessDOMMutations', true, true, gridElem);
+
         modifyingRule = TP.bySystemId('Sherpa').getOrMakeModifiableRule(
                                     gridTPElement,
                                     this.getType().RULE_TEMPLATE);
@@ -290,6 +297,19 @@ function() {
 
     this.$set('$currentGridTPElement', null);
     this.$set('$multiplierTemplateTPElement', null);
+
+    //  If there were changes made *after* the drag up, then we go ahead and set
+    //  the shouldProcessDOMMutations flag to true again, but this time without
+    //  the 'isSticky' parameter set to true, which means it will time out after
+    //  a certain amount of time and reset itself back to false.
+    if (TP.isTrue(this.$get('$changesMadeAfterDragUp'))) {
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+    } else {
+        //  No changes after the drag up, which means that all of the mutations
+        //  will have been processed during the drag itself, so we just turn the
+        //  shouldProcessDOMMutations flag to false.
+        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', false);
+    }
 
     return this.callNextMethod();
 });
