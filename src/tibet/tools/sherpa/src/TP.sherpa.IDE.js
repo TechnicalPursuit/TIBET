@@ -3194,14 +3194,24 @@ function(summaries) {
             //  in the 'reparented' Array or in the 'reordered' Array.
             allMoved = aSummary.reparented.concat(aSummary.reordered);
 
+            //  If there were 'moved' nodes', process them as 'deletes' first
+            //  and then reset their 'previous position' numbers and process
+            //  them as additions..
+            if (TP.notEmpty(allMoved)) {
+                thisref.processDeletionSummary(aSummary, allMoved);
+
+                allMoved.forEach(
+                    function(aNode) {
+                        aNode[TP.PREVIOUS_POSITION] =
+                                        TP.nodeGetDocumentPosition(aNode);
+                    });
+
+                thisref.processInsertionSummary(aSummary, allMoved);
+            }
+
             //  If there were truly 'removed' nodes, process those as 'deletes'.
             if (TP.notEmpty(aSummary.removed)) {
                 thisref.processDeletionSummary(aSummary, aSummary.removed);
-            }
-
-            //  If there were 'moved' nodes', process those as 'deletes'.
-            if (TP.notEmpty(allMoved)) {
-                thisref.processDeletionSummary(aSummary, allMoved);
             }
 
             //  If there were truly 'added' nodes, process those as 'adds'.
