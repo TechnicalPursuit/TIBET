@@ -62,8 +62,8 @@ sherpa|halo[no-display="true"][ancestor="body"] {
 
 sherpa|halo[mini-size="true"] {
 
-    --sherpa-halo-corner-size: 1.75px;
-    --sherpa-halo-corner-offset: -1.75px;
+    --sherpa-halo-corner-size: 3.5px;
+    --sherpa-halo-corner-offset: -3.5px;
 }
 
 sherpa|halo[micro-size="true"] {
@@ -85,8 +85,8 @@ sherpa|halo > div.haloCorner {
 
 sherpa|halo[mini-size="true"] > div.haloCorner {
 
-    width: 2.5px;
-    height: 2.5px;
+    width: 5px;
+    height: 5px;
 }
 
 sherpa|halo[micro-size="true"] > div.haloCorner {
