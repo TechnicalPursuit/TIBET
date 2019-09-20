@@ -153,13 +153,21 @@ function(aTargetTPElem, aSignal) {
 
         //  Set the initial width & height of the overall grid element to the
         //  width and height of the multiplier element.
-        modifyingRule.style.setProperty('width', width + 'px');
-        modifyingRule.style.setProperty('height', height + 'px');
 
-        modifyingRule.style.setProperty('--sherpa-halo-multiplier-min-width',
-                                        width + 'px');
-        modifyingRule.style.setProperty('--sherpa-halo-multiplier-min-height',
-                                        height + 'px');
+        //  Note that we can pass 'false' for these two properties, since we set
+        //  them one final time in the DOMDragUp handler with a 'true'.
+        TP.styleRuleSetProperty(modifyingRule, 'width', width + 'px', false);
+        TP.styleRuleSetProperty(modifyingRule, 'height', height + 'px', false);
+
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-min-width',
+                                width + 'px',
+                                true);
+
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-min-height',
+                                height + 'px',
+                                true);
 
         multiplierTemplateTPElement = aTargetTPElem;
 
@@ -190,10 +198,15 @@ function(aTargetTPElem, aSignal) {
         this.$set('$multiplierTargetWidth', width, false);
         this.$set('$multiplierTargetHeight', height, false);
 
-        modifyingRule.style.setProperty('--sherpa-halo-multiplier-min-width',
-                                        width + 'px');
-        modifyingRule.style.setProperty('--sherpa-halo-multiplier-min-height',
-                                        height + 'px');
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-min-width',
+                                width + 'px',
+                                true);
+
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-min-height',
+                                height + 'px',
+                                true);
 
         this.callNextMethod();
 
@@ -304,8 +317,8 @@ function(aSignal) {
 
     modifyingRule = this.$get('$currentModifyingRule');
 
-    modifyingRule.style.setProperty('width', gridWidth + 'px');
-    modifyingRule.style.setProperty('height', gridHeight + 'px');
+    TP.styleRuleSetProperty(modifyingRule, 'width', gridWidth + 'px', false);
+    TP.styleRuleSetProperty(modifyingRule, 'height', gridHeight + 'px', false);
 
     numRows = (gridHeight / targetHeight).floor();
     numCols = (gridWidth / targetWidth).floor();
@@ -335,14 +348,17 @@ function(aSignal) {
             }
         }
 
-        modifyingRule = this.$get('$currentModifyingRule');
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-rows',
+                                numRows,
+                                false);
 
-        modifyingRule.style.setProperty('--sherpa-halo-multiplier-rows',
-                                        numRows);
         this.$set('$multiplierNumRows', numRows, false);
 
-        modifyingRule.style.setProperty('--sherpa-halo-multiplier-cols',
-                                        numCols);
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-cols',
+                                numCols,
+                                false);
 
         this.$set('$multiplierNumCols', numCols, false);
     }
