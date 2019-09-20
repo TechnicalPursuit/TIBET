@@ -27,8 +27,6 @@ TP.sherpa.gridManipulator.Type.defineConstant('RULE_TEMPLATE',
     '--sherpa-halo-multiplier-min-width: 10px;' +
     '--sherpa-halo-multiplier-min-height: 10px;' +
 
-    'display: inline-grid;' +
-
     'min-width: --sherpa-halo-multiplier-min-width;' +
     'min-height: --sherpa-halo-multiplier-min-height;' +
 
@@ -90,6 +88,12 @@ function(aTargetTPElem, aSignal) {
         gridTPElement,
         gridElem,
 
+        wasPositioned,
+        position,
+        pageBox,
+        top,
+        left,
+
         width,
         height,
 
@@ -123,9 +127,34 @@ function(aTargetTPElem, aSignal) {
 
         this.callNextMethod();
 
+        wasPositioned = false;
+
+        //  If the element that we're going to be multiplying is positioned,
+        //  then grab it's position, top and left values. We're going to
+        //  position the grid element and want those values.
+        if (TP.elementIsPositioned(targetElem)) {
+            wasPositioned = true;
+
+            position = TP.elementGetComputedStyleProperty(targetElem,
+                                                            'position');
+
+            pageBox = TP.elementGetBorderBox(targetElem);
+            top = pageBox.at('top');
+            left = pageBox.at('left');
+        }
+
         //  Create a grid cell element that we can clone as we drag using the
-        //  target.
+        //  target. Note that the target element will be cloned here and, after
+        //  it is replaced below, targetElem will no longer point to any element
+        //  in the visual DOM.
         gridCellElem = this.$makeMultiplierCell(gridElem, targetElem);
+
+        //  Set the Sherpa to process DOM mutations. Note that we set the
+        //  'isSticky' parameter of this method to true (the 2nd 'true'), which
+        //  means that the setting with *not* reset until we deactivate and we
+        //  also supply the grid element as the root of the mutations.
+        TP.bySystemId('Sherpa').set(
+                'shouldProcessDOMMutations', true, true, targetElem.parentNode);
 
         //  Swap the target element for the grid element.
         gridElem = TP.nodeReplaceChild(
@@ -135,6 +164,18 @@ function(aTargetTPElem, aSignal) {
         modifyingRule = TP.bySystemId('Sherpa').getOrMakeModifiableRule(
                                     gridTPElement,
                                     this.getType().RULE_TEMPLATE);
+
+        //  If the original element was positioned, then we want to position the
+        //  grid element where it was.
+        if (wasPositioned) {
+            TP.styleRuleSetProperty(modifyingRule, 'display', 'grid', true);
+            TP.styleRuleSetProperty(modifyingRule, 'position', position, true);
+            TP.styleRuleSetProperty(modifyingRule, 'top', top + 'px', true);
+            TP.styleRuleSetProperty(modifyingRule, 'left', left + 'px', true);
+        } else {
+            TP.styleRuleSetProperty(
+                                modifyingRule, 'display', 'inline-grid', true);
+        }
 
         //  Append an initial cell element into the grid. This effectively 'puts
         //  back' the target, but now wrapped in the grid element.
