@@ -46,6 +46,9 @@ TP.sherpa.gridManipulator.Inst.defineAttribute('$multiplierTargetHeight');
 TP.sherpa.gridManipulator.Inst.defineAttribute('$currentGridTPElement');
 TP.sherpa.gridManipulator.Inst.defineAttribute('$multiplierTemplateTPElement');
 
+TP.sherpa.gridManipulator.Inst.defineAttribute('$changesMadeAfterDragUp');
+TP.sherpa.gridManipulator.Inst.defineAttribute('$targetSherpaID');
+
 TP.sherpa.gridManipulator.Inst.defineAttribute(
     'northguide',
     TP.cpc('> #northguide', TP.hc('shouldCollapse', true)));
@@ -212,6 +215,7 @@ function(aTargetTPElem, aSignal) {
 
         multiplierTemplateTPElement = aTargetTPElem;
 
+        //  Focus the halo onto the grid element.
         halo = TP.byId('SherpaHalo', this.getNativeDocument());
         halo.focusOn(gridTPElement, true);
 
@@ -268,6 +272,8 @@ function(aTargetTPElem, aSignal) {
 
     this.$set('$currentModifyingRule', modifyingRule);
 
+    this.$set('$changesMadeAfterDragUp', false);
+
     return this;
 });
 
@@ -296,6 +302,8 @@ function() {
 
     this.$set('$currentGridTPElement', null);
     this.$set('$multiplierTemplateTPElement', null);
+
+    this.$set('$targetSherpaID', null);
 
     //  If there were changes made *after* the drag up, then we go ahead and set
     //  the shouldProcessDOMMutations flag to true again, but this time without
@@ -446,10 +454,85 @@ function(aSignal) {
      * @returns {TP.sherpa.gridManipulator} The receiver.
      */
 
-    var halo;
+    var numRows,
+        numCols,
+
+        halo,
+
+        gridTPElem,
+        gridElem,
+
+        soleTargetElem,
+
+        targetSherpaID,
+
+        soleTargetTPElem,
+
+        modifyingRule,
+
+        gridWidth,
+        gridHeight;
+
+    numRows = this.$get('$multiplierNumRows');
+    numCols = this.$get('$multiplierNumCols');
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
-    halo.moveAndSizeToTarget();
+
+    gridTPElem = this.$get('$currentGridTPElement');
+
+    //  If there is only one row and column, then the user shrank the grid back
+    //  to 1X1 and we'll just take out the grid and put (a clone of) the target
+    //  element back.
+    if (numRows === 1 && numCols === 1) {
+        gridElem = gridTPElem.getNativeNode();
+
+        soleTargetElem = gridElem.firstElementChild.firstElementChild;
+
+        soleTargetElem =
+            TP.nodeReplaceChild(
+                        gridElem.parentNode, soleTargetElem, gridElem, false);
+
+        //  If there was a target sherpaID, that means that the user *started*
+        //  with a 1X1 grid as well and is just 'putting things back to what
+        //  they were before', so we just put the sherpaID back.
+        targetSherpaID = this.$get('$targetSherpaID');
+        if (TP.isValid(targetSherpaID)) {
+            TP.elementSetAttribute(
+                soleTargetElem, 'sherpaID', targetSherpaID, true);
+        }
+
+        soleTargetTPElem = TP.wrap(soleTargetElem);
+
+        //  Focus the halo onto the grid element.
+        halo.focusOn(soleTargetTPElem, true);
+
+        this.$set('$changesMadeAfterDragUp', true);
+
+    } else {
+
+        modifyingRule = this.$get('$currentModifyingRule');
+
+        gridWidth = gridTPElem.getWidth();
+        gridHeight = gridTPElem.getHeight();
+
+        TP.styleRuleSetProperty(modifyingRule, 'width', gridWidth + 'px', true);
+        TP.styleRuleSetProperty(modifyingRule, 'height', gridHeight + 'px', true);
+
+        numCols = this.$get('$multiplierNumCols');
+        numRows = this.$get('$multiplierNumRows');
+
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-rows',
+                                numRows,
+                                true);
+
+        TP.styleRuleSetProperty(modifyingRule,
+                                '--sherpa-halo-multiplier-cols',
+                                numCols,
+                                true);
+
+        halo.moveAndSizeToTarget();
+    }
 
     return this.callNextMethod();
 });
@@ -478,6 +561,20 @@ function(gridElem, targetElem) {
     wrapperElem = TP.documentConstructElement(doc, 'div', TP.w3.Xmlns.XHTML);
 
     targetCloneElem = TP.nodeCloneNode(targetElem);
+
+    TP.elementRemoveAttribute(targetCloneElem, 'id', true);
+
+    //  If the element has a 'sherpaID', then stash it away before we remove it.
+    //  This is because, if the grid is starting from one target element to
+    //  clone and then the user changes their mind and we end up with one row
+    //  and one column, then the grid will be removed and a clone of the target
+    //  element (the first cell) will be put in its place. We want that to have
+    //  the same sherpaID if possible.
+    if (TP.elementHasAttribute(targetCloneElem, 'sherpaID', true)) {
+        this.$set('$targetSherpaID',
+                    TP.elementGetAttribute(targetCloneElem, 'sherpaID', true));
+        TP.elementRemoveAttribute(targetCloneElem, 'sherpaID', true);
+    }
 
     TP.nodeAppendChild(wrapperElem, targetCloneElem, false);
 
