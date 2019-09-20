@@ -237,8 +237,7 @@ function(aTargetTPElem, aSignal) {
         this.$set('$multiplierNumRows', numRows, false);
         this.$set('$multiplierNumCols', numCols, false);
 
-        multiplierTemplateTPElement =
-            gridTPElement.getFirstChildElement().getFirstChildElement();
+        multiplierTemplateTPElement = gridTPElement.getFirstChildElement();
 
         width = multiplierTemplateTPElement.getWidth();
         height = multiplierTemplateTPElement.getHeight();
