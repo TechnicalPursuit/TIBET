@@ -1824,7 +1824,8 @@ function(aSignal) {
 
     //  Generate a RegExp that will match the name of the mutated property and
     //  it's declaration through the semicolon (';').
-    propertyMatcher = TP.rc(aSignal.at('mutatedProperty') +
+    propertyMatcher = TP.rc('(^|;\\s*)+' +
+                            aSignal.at('mutatedProperty') +
                             '\\s*:.+;[\\n\\r]?');
 
     //  If the signal indicated an operation of TP.UPDATE, we need to test to
@@ -1853,8 +1854,14 @@ function(aSignal) {
             //  value with the new value.
             newStr = ruleText.replace(
                         propertyMatcher,
-                        aSignal.at('mutatedProperty') + ': ' +
-                        aSignal.at(TP.NEWVAL) + ';\n');
+                        function(wholeMatch, prefix) {
+                            return prefix +
+                                    aSignal.at('mutatedProperty') +
+                                    ': ' +
+                                    aSignal.at(TP.NEWVAL) +
+                                    ';\n';
+                        });
+
             break;
         case TP.DELETE:
             //  If we're updating an existing property, using the property
