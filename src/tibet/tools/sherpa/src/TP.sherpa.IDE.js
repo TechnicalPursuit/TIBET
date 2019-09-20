@@ -1889,7 +1889,7 @@ function(aSignal) {
     TP.elementSetAttribute(ownerElem, 'tibet:no-reload', 'true', true);
 
     //  Set the resource of the sheetURI. This should dirty it.
-    sheetURI.setResource(finalContent);
+    sheetURI.setResource(finalContent, TP.request('isDirty', true));
 
     //  Remove the 'tibet:no-reload' attribute from the owner element so that
     //  it will now reload when its content changes.
