@@ -2895,6 +2895,48 @@ function(aProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('serializeForStorage',
+function(storageInfo) {
+
+    /**
+     * @method serializeForStorage
+     * @summary Serialize the receiver in a manner appropriate for storage.
+     * @description This method provides a serialized representation of the
+     *     receiver that can be used to store it in a persistent storage. The
+     *     supplied storageInfo hash should contain a storage key under the
+     *     'store' key that will be used to uniquely identify the content
+     *     produced for this receiver. Note that nested nodes might produce
+     *     their own 'serialization stores'. All of the stores can be found
+     *     under the 'stores' key in the storageInfo after the serialization
+     *     process is complete.
+     *     For this type, serialization means simply returning the node's value.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the receiver's document
+     *          node should include an 'XML declaration' at the start of its
+     *          serialization. The default is false.
+     *          'wantsPrefixedXMLNSAttrs': Whether or not the receiver and its
+     *          decendant elements should generate prefixed (i.e. 'xmlns:foo')
+     *          attributes to support their proper serialization. The default is
+     *          true.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {TP.dom.Node} The receiver.
+     */
+
+    return TP.unwrap(this).nodeValue;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('serializeNonTag',
 function(storageInfo) {
 
