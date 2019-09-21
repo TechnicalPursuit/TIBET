@@ -2399,6 +2399,30 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('getSiblings',
+function(aSubset) {
+
+    /**
+     * @method getSiblings
+     * @summary Returns an Array containing the sibling nodes of the receiver.
+     *     Order is from the parent's first child to the parent's last child,
+     *     with aNode removed from the list.
+     * @description Order is from the parent's first child to the parent's last
+     *     child, with aNode removed from the list. Unlike other methods for
+     *     node collections this method does *not* normalize content, so a text
+     *     node's siblings will be found when multiple text nodes were created
+     *     by the browser. This means that that sibling list won't be consistent
+     *     for all node types across browsers.
+     * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
+     *     siblings.
+     * @returns {TP.dom.Node[]} An Array containing the nodes found.
+     */
+
+    return TP.wrap(TP.nodeGetSiblings(this.getNativeNode(), aSubset));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('getTargetPhase',
 function(phaseList, outerElem) {
 
@@ -6225,30 +6249,6 @@ function(aName, aNamespaceURI) {
     return TP.wrap(TP.nodeGetElementsByTagName(this.getNativeNode(),
                                                 aName,
                                                 aNamespaceURI));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.CollectionNode.Inst.defineMethod('getSiblings',
-function(aSubset) {
-
-    /**
-     * @method getSiblings
-     * @summary Returns an Array containing the sibling nodes of the receiver.
-     *     Order is from the parent's first child to the parent's last child,
-     *     with aNode removed from the list.
-     * @description Order is from the parent's first child to the parent's last
-     *     child, with aNode removed from the list. Unlike other methods for
-     *     node collections this method does *not* normalize content, so a text
-     *     node's siblings will be found when multiple text nodes were created
-     *     by the browser. This means that that sibling list won't be consistent
-     *     for all node types across browsers.
-     * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
-     *     siblings.
-     * @returns {TP.dom.Node[]} An Array containing the nodes found.
-     */
-
-    return TP.wrap(TP.nodeGetSiblings(this.getNativeNode(), aSubset));
 });
 
 //  ------------------------------------------------------------------------
