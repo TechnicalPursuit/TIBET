@@ -2193,6 +2193,26 @@ function(aRequest) {
     }
 });
 
+//  ========================================================================
+//  TP.dom.MultipliedElement
+//  ========================================================================
+
+/**
+ * @type {TP.dom.MultipliedElement}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.tag.CustomTag.defineSubtype('dom.MultipliedElement');
+
+TP.dom.MultipliedElement.addTraits(TP.dom.ElementNode);
+
+TP.dom.MultipliedElement.Inst.resolveTraits(
+        TP.ac('serializeCloseTag', 'serializeOpenTag'),
+        TP.dom.ElementNode);
+
+TP.dom.MultipliedElement.defineAttribute('styleURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

@@ -123,6 +123,8 @@ function(aTargetTPElem, aSignal) {
                                                 TP.w3.Xmlns.XHTML);
 
         TP.elementSetAttribute(gridElem, 'sherpa:multiplied', 'true', true);
+        TP.elementSetAttribute(
+                gridElem, 'tibet:tag', 'dom:MultipliedElement', true);
         gridTPElement = TP.wrap(gridElem);
 
         this.$set('$multiplierNumRows', 1, false);
