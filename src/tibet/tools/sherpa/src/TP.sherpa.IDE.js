@@ -4634,8 +4634,6 @@ function(aTargetNode) {
                 endVal,
                 val,
 
-                keyName,
-
                 direction,
 
                 searchElem,
@@ -4719,7 +4717,7 @@ function(aTargetNode) {
             //  Remove the editor and set the value.
             removeEditorAndSetValue();
 
-            this.removeEventListener('keydown', keyupHandler, false);
+            this.removeEventListener('keydown', keydownHandler, false);
         });
 });
 
