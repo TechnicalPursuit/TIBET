@@ -218,6 +218,26 @@ oldAttributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('sherpaGetSuccessorEditableTextNode',
+function(direction, currentEditingNode) {
+
+    /**
+     * @method sherpaGetSuccessorEditableTextNode
+     * @summary Searches for the next editable text node for use with the
+     *     Sherpa's inline text node editor. The default, at this level, is to
+     *     return null to indicate there isn't one.
+     * @param {String} aDirection The direction to search for the next editable
+     *     text node. This should be TP.NEXT or TP.PREVIOUS.
+     * @param {Element} currentEditingElement The element that contains the
+     *     text node that is currently being edited.
+     * @returns {TP.dom.TextNode|null} The text node to edit next or null.
+     */
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('sherpaGetWorldScreen',
 function() {
 
@@ -2597,6 +2617,90 @@ oldAttributeValue) {
      */
 
     return TP.CONTINUE;
+});
+
+//  ========================================================================
+//  TP.dom.MultipliedElement Additions
+//  ========================================================================
+
+TP.dom.MultipliedElement.Inst.defineMethod('sherpaGetSuccessorEditableTextNode',
+function(direction, currentEditingElement) {
+
+    /**
+     * @method sherpaGetSuccessorEditableTextNode
+     * @summary Searches for the next editable text node for use with the
+     *     Sherpa's inline text node editor. The default, at this level, is to
+     *     return null to indicate there isn't one.
+     * @param {String} aDirection The direction to search for the next editable
+     *     text node. This should be TP.NEXT or TP.PREVIOUS.
+     * @param {Element} currentEditingElement The element that contains the
+     *     text node that is currently being edited.
+     * @returns {TP.dom.TextNode|null} The text node to edit next or null.
+     */
+
+    var searchElem,
+
+        cellElem,
+        newCellElem,
+
+        query,
+
+        newEditingElement,
+        newEditingTextNode;
+
+    cellElem = null;
+
+    searchElem = currentEditingElement;
+
+    //  Search up from the element that contains the text node that we're
+    //  currently editing for an Element that has a 'sherpa:multipliercell'
+    //  attribute on it. Every cell created by the grid manipulator has this
+    //  attribute, so we should find the one that contains it.
+    while (TP.isElement(searchElem)) {
+        if (TP.elementHasAttribute(searchElem, 'sherpa:multipliercell', true)) {
+            cellElem = searchElem;
+            break;
+        }
+        searchElem = searchElem.parentNode;
+    }
+
+    //  If we successfully found a cell, then try to compute the 'next' or
+    //  'previous' one.
+    if (TP.isElement(cellElem)) {
+
+        //  Depending on the value of direction, compute the successor element,
+        //  'wrapping' if necessary.
+        if (direction === TP.NEXT) {
+            newCellElem = cellElem.nextElementSibling;
+            if (!TP.isElement(newCellElem)) {
+                newCellElem = cellElem.parentNode.firstElementChild;
+            }
+        } else if (direction === TP.PREVIOUS) {
+            newCellElem = cellElem.previousElementSibling;
+            if (!TP.isElement(newCellElem)) {
+                newCellElem = cellElem.parentNode.lastElementChild;
+            }
+        }
+
+        //  Build a query of the current editing element under the current cell.
+        //  Then use this to try to find the element under the new cell that is
+        //  the closest match.
+        query = TP.name(currentEditingElement).replace(':', '|');
+
+        newEditingElement = TP.byCSSPath(query, newCellElem, true, false);
+
+        //  If we found one, then get it's first Text node, if it has one. If it
+        //  does, return that.
+        if (TP.isElement(newEditingElement)) {
+            newEditingTextNode = TP.nodeGetFirstChildByType(newEditingElement,
+                                                            Node.TEXT_NODE);
+            if (TP.isTextNode(newEditingTextNode)) {
+                return newEditingTextNode;
+            }
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------

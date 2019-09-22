@@ -1282,7 +1282,9 @@ function(aSignal) {
     //  implementation of mouse/drag down - in this way, we can preventDefault()
     //  on these events before they get in the way).
     this.observe(currentCanvasDoc,
-                    TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                    TP.ac('TP.sig.DOMDragDown',
+                            'TP.sig.DOMMouseDown',
+                            'TP.sig.DOMDblClick'),
                     null,
                     TP.CAPTURING);
 
@@ -1340,7 +1342,9 @@ function(aSignal) {
     //  *capturing* fashion (to match our observation in the DocumentLoaded
     //  handler).
     this.ignore(currentCanvasDoc,
-                TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                TP.ac('TP.sig.DOMDragDown',
+                        'TP.sig.DOMMouseDown',
+                        'TP.sig.DOMDblClick'),
                 null,
                 TP.CAPTURING);
 
@@ -1355,6 +1359,37 @@ function(aSignal) {
     this.teardownCurrentMutationSummary();
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.IDE.Inst.defineHandler('DOMDblClick',
+function(aSignal) {
+
+    /**
+     * @method handleDOMDblClick
+     * @summary Handles when a text node (or wrapping Element) in the current
+     *     UI canvas is double clicked for editing.
+     * @param {TP.sig.DOMDblClick} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
+    var targetElem;
+
+    //  If the Shift key is down, then we go ahead and resolve the target and
+    //  set up an 'inline editor' on it.
+    if (aSignal.getShiftKey()) {
+
+        //  Compute the target element from the underlying DOM signal.
+        targetElem = aSignal.getResolvedTarget();
+
+        this.setupEditorOn(targetElem);
+    }
+
+    return this;
+}, {
+    phase: TP.CAPTURING
 });
 
 //  ------------------------------------------------------------------------
@@ -1932,7 +1967,9 @@ function(aSignal) {
     //  *capturing* fashion (to match our observation in the DocumentLoaded
     //  handler).
     this.ignore(oldCanvasDoc,
-                TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                TP.ac('TP.sig.DOMDragDown',
+                        'TP.sig.DOMMouseDown',
+                        'TP.sig.DOMDblClick'),
                 null,
                 TP.CAPTURING);
 
@@ -1993,7 +2030,9 @@ function(aSignal) {
     //  implementation of mouse/drag down - in this way, we can preventDefault()
     //  on these events before they get in the way).
     this.observe(newCanvasDoc,
-                    TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+                    TP.ac('TP.sig.DOMDragDown',
+                            'TP.sig.DOMMouseDown',
+                            'TP.sig.DOMDblClick'),
                     null,
                     TP.CAPTURING);
 
@@ -4470,6 +4509,222 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.IDE.Inst.defineMethod('setupEditorOn',
+function(aTargetNode) {
+
+    var targetElem,
+        textNode,
+
+        fontVal,
+        hiddenSpan,
+        editor,
+
+        sizeEditorToContent,
+        removeEditorAndSetValue,
+
+        initialContent,
+
+        thisref,
+
+        keydownHandler;
+
+    //  If the target was a Text node, then we use its parent node.
+    if (TP.isTextNode(aTargetNode)) {
+        textNode = aTargetNode;
+        targetElem = aTargetNode.parentNode;
+    } else {
+        textNode = aTargetNode.firstChild;
+        targetElem = aTargetNode;
+    }
+
+    //  Set up a span that will provide a way to measure the width of the text
+    //  in the inline editor.
+
+    //  We need the target element's 'font' values for the most accurate width
+    //  measurements.
+    fontVal = TP.elementGetComputedStyleObj(targetElem).font;
+
+    //  Construct the span. Note here how we can't set 'display: none' (even
+    //  though we don't want this span to show to the user, because otherwise
+    //  the CSS OM will always return a width of 0. Therefore, we 'show' it to
+    //  the user, but set it's height to be 0 so that they can't actually see
+    //  it..
+    hiddenSpan = TP.documentConstructElement(
+                    TP.nodeGetDocument(textNode),
+                    'span',
+                    TP.w3.Xmlns.XHTML);
+
+    //  Set the span as TP.GENERATED so that the mutation system ignores it.
+    hiddenSpan[TP.GENERATED] = true;
+    TP.elementSetStyleString(
+        hiddenSpan,
+        'position: absolute;' +
+        ' height: 0;' +
+        ' overflow: hidden;' +
+        ' white-space: pre;' +
+        ' font: ' + fontVal + ';' +
+        ' padding: 0;' +
+        ' margin: 0');
+
+    TP.nodeAppendChild(targetElem, hiddenSpan, false);
+
+    //  Replace the text node with an editor and style it.
+    editor = TP.nodeReplaceTextWithEditor(textNode);
+    TP.elementSetStyleString(
+        editor,
+        ' border: solid 1px darkgray;' +
+        ' outline: none !important;' +
+        ' font: ' + fontVal + ';' +
+        ' padding: 0;' +
+        ' margin: 0');
+
+    //  A Function that sizes the text content so that we can resize the editor
+    //  to that width.
+    sizeEditorToContent = function(content) {
+        var width;
+
+        TP.nodeSetTextContent(hiddenSpan, content);
+
+        width = TP.elementGetWidth(hiddenSpan);
+        (function() {
+            TP.elementSetWidth(editor, width + 'px');
+        }).queueForNextRepaint(TP.nodeGetWindow(editor));
+    };
+
+    //  A Function that tears down the editor and sets the bound value.
+    removeEditorAndSetValue = function() {
+
+        var newText,
+            newTextNode;
+
+        //  Grab the value from the editor and create a new Text node from
+        //  it.
+        newText = editor.value;
+        newTextNode = TP.nodeGetDocument(editor).createTextNode(newText);
+
+        //  Detach our measuring span.
+        TP.nodeDetach(hiddenSpan);
+
+        //  Set the flag that will determine whether or not we're processing DOM
+        //  mutations for the current UI DOM mutations. We need to update the
+        //  text node here, so we need this.
+        this.set('shouldProcessDOMMutations', true);
+
+        //  Replace the editor with the newly generated text node
+        TP.nodeReplaceChild(editor.parentNode,
+                            newTextNode,
+                            editor,
+                            false);
+    }.bind(this);
+
+    //  Grab the initial content of the Text node and size the editor to it.
+    initialContent = TP.nodeGetTextContent(textNode);
+    sizeEditorToContent(initialContent);
+
+    thisref = this;
+
+    //  Set up a 'keydown' handler on the editor. Capture the Function so that
+    //  we can use it later to remove it as a listener.
+    editor.addEventListener(
+        'keydown',
+        keydownHandler = function(evt) {
+            var keyName,
+
+                startVal,
+                endVal,
+                val,
+
+                keyName,
+
+                direction,
+
+                searchElem,
+                searchTPElem,
+
+                successorTN;
+
+            keyName = TP.eventGetDOMSignalName(evt);
+
+            //  If the character is a printable character or Backspace, then add
+            //  or remove it from the editor's value. Note here how we splice
+            //  any content preceding or coming after the selection, since we
+            //  need that plus the character that is being inserted to compute
+            //  the proper width.
+            if (TP.core.Keyboard.getCurrentKeyboard().isPrintable(evt) ||
+                keyName === 'DOM_Backspace_Down') {
+
+                startVal = this.value.slice(0, this.selectionStart);
+                endVal = this.value.slice(this.selectionEnd);
+
+                val = startVal +
+                        String.fromCharCode(TP.eventGetKeyCode(evt)) +
+                        endVal;
+
+                sizeEditorToContent(val);
+
+                return;
+            }
+
+            if (keyName === 'DOM_Tab_Down' ||
+                keyName === 'DOM_Shift_Tab_Down') {
+
+                if (TP.wrap(evt).getShiftKey()) {
+                    direction = TP.PREVIOUS;
+                } else {
+                    direction = TP.NEXT;
+                }
+
+                searchElem = targetElem;
+
+                //  Search up from the target element, looking for an Element
+                //  that will give us a non-null Text node value.
+                while (TP.isElement(searchElem)) {
+                    searchTPElem = TP.wrap(searchElem);
+                    successorTN =
+                        searchTPElem.sherpaGetSuccessorEditableTextNode(
+                                        direction,
+                                        targetElem);
+
+                    //  Found a text node - break here.
+                    if (TP.isTextNode(successorTN)) {
+                        break;
+                    }
+
+                    searchElem = searchElem.parentNode;
+                }
+
+                //  Remove the editor and set the value.
+                removeEditorAndSetValue();
+
+                //  Remove the keydown handler (which is where we're at) as a
+                //  listener.
+                this.removeEventListener('keydown', keydownHandler, false);
+
+                //  If we successfully computed a successor text node (either
+                //  forwards or backwards), then set up an editor on that.
+                if (TP.isTextNode(successorTN)) {
+                    thisref.setupEditorOn(successorTN);
+                }
+
+                return;
+            }
+
+            //  If the key isn't an Enter, then it was another non-printable,
+            //  non-Tab character. In any case, we don't want it. and so we
+            //  return here.
+            if (keyName !== 'DOM_Enter_Down') {
+                return;
+            }
+
+            //  Remove the editor and set the value.
+            removeEditorAndSetValue();
+
+            this.removeEventListener('keydown', keyupHandler, false);
+        });
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.IDE.Inst.defineMethod('setupMutationSummaryOn',
 function(aNode) {
 
@@ -4594,7 +4849,9 @@ function() {
     //  on these events before they get in the way).
     this.observe(
             docs,
-            TP.ac('TP.sig.DOMDragDown', 'TP.sig.DOMMouseDown'),
+            TP.ac('TP.sig.DOMDragDown',
+                    'TP.sig.DOMMouseDown',
+                    'TP.sig.DOMDblClick'),
             null,
             TP.CAPTURING);
 
