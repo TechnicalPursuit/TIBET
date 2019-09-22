@@ -550,8 +550,9 @@ function(gridElem, targetElem) {
      * @method $makeMultiplierCell
      * @summary Creates a new 'cell' containing a cloned version of the supplied
      *     target element and a wrapping 'cell' element.
-     * @param {Element} gridElem
-     * @param {Element} targetElem The element to wrap into a multiplier 'cell'
+     * @param {Element} gridElem The grid element that the multiplier 'cell'
+     *     will be added to.
+     * @param {Element} targetElem The element to wrap into a multiplier cell.
      * @returns {Element} The wrapping 'cell' element.
      */
 
