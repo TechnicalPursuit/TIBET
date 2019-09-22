@@ -380,6 +380,11 @@ function(newTargetTPElem, shouldUnhide) {
             return this;
         }
 
+        //  If we have a current target element, then blur.
+        if (TP.isValid(currentTargetTPElem)) {
+            this.blur();
+        }
+
         //  Set the current halo target to be the target passed in.
         this.set('currentTargetTPElem', newTargetTPElem);
 
