@@ -122,9 +122,11 @@ function(aTargetTPElem, aSignal) {
                                                 'div',
                                                 TP.w3.Xmlns.XHTML);
 
-        TP.elementSetAttribute(gridElem, 'sherpa:multiplied', 'true', true);
         TP.elementSetAttribute(
                 gridElem, 'tibet:tag', 'dom:MultipliedElement', true);
+        TP.elementSetAttribute(
+                gridElem, 'sherpa:multiplied', 'true', true);
+
         gridTPElement = TP.wrap(gridElem);
 
         this.$set('$multiplierNumRows', 1, false);
@@ -561,6 +563,7 @@ function(gridElem, targetElem) {
     doc = TP.nodeGetDocument(gridElem);
 
     wrapperElem = TP.documentConstructElement(doc, 'div', TP.w3.Xmlns.XHTML);
+    TP.elementSetAttribute(wrapperElem, 'sherpa:multipliercell', 'true', true);
 
     targetCloneElem = TP.nodeCloneNode(targetElem);
 
