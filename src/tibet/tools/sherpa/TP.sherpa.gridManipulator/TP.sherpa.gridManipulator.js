@@ -161,7 +161,7 @@ function(aTargetTPElem, aSignal) {
         //  means that the setting with *not* reset until we deactivate and we
         //  also supply the grid element as the root of the mutations.
         TP.bySystemId('Sherpa').set(
-                'shouldProcessDOMMutations', true, true, targetElem.parentNode);
+                'shouldProcessDOMMutations', true, true);
 
         //  Swap the target element for the grid element.
         gridElem = TP.nodeReplaceChild(
@@ -231,7 +231,7 @@ function(aTargetTPElem, aSignal) {
         //  means that the setting with *not* reset until we deactivate and we
         //  also supply the grid element as the root of the mutations.
         TP.bySystemId('Sherpa').set(
-                'shouldProcessDOMMutations', true, true, gridElem);
+                'shouldProcessDOMMutations', true, true);
 
         modifyingRule = TP.bySystemId('Sherpa').getOrMakeModifiableRule(
                                     gridTPElement,
