@@ -269,8 +269,6 @@ function(aTargetTPElem, aSignal) {
         //  element.
     }
 
-    TP.elementPushAndSetStyleProperty(gridElem, 'border', 'dashed 1px black');
-
     this.$set('$currentGridTPElement', gridTPElement);
     this.$set('$multiplierTemplateTPElement', multiplierTemplateTPElement);
 
@@ -291,12 +289,6 @@ function() {
      * @summary Deactivates the receiver.
      * @returns {TP.sherpa.gridManipulator} The receiver.
      */
-
-    var gridElem;
-
-    gridElem = this.$get('$currentGridTPElement').getNativeNode();
-
-    TP.elementPopAndSetStyleProperty(gridElem, 'border');
 
     this.$set('$multiplierNumRows', -1);
     this.$set('$multiplierNumCols', -1);
