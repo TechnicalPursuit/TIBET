@@ -671,6 +671,8 @@ function(aSignal) {
 
         aspectNames,
 
+        originVal,
+
         allRefreshedElements;
 
     //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
@@ -956,10 +958,9 @@ function(aSignal) {
         //  If we have an aspect and the facet that we're updating is *not*
         //  'value', then that means we're updating other facets such as
         //  'readonly', 'required', etc. This means that we try to compute the
-        //  path parts if our origin was a URI or just use the
-        //  singular aspect as the 'path parts'. In either case, we use a
-        //  TIBET-type path for non-'value' facets (no matter how the 'value'
-        //  facet is bound).
+        //  path parts if our origin was a URI or just use the singular aspect
+        //  as the 'path parts'. In either case, we use a TIBET-type path for
+        //  non-'value' facets (no matter how the 'value' facet is bound).
         if (TP.notEmpty(aspect) && facet !== 'value') {
 
             if (originWasURI) {
@@ -985,31 +986,15 @@ function(aSignal) {
                     sigIndexes);
         } else if (TP.notEmpty(facet)) {
 
-            //  Otherwise, if the signal's origin is a URI (usually a data-bound
-            //  URI), then (because we don't have 'changed data paths' to go
-            //  by), we just update all of the bind expressions that are on the
-            //  computed bound elements.
-            if (TP.isKindOf(sigOrigin, TP.uri.URI)) {
+            //  Otherwise, we're updating a 'value' fact.
 
-                tpDocElem.$refreshBranches(
-                        primarySource,
-                        facet,
-                        primarySource,
-                        boundElems,
-                        null,
-                        null,
-                        null,
-                        false,
-                        sigOrigin,
-                        originWasURI,
-                        sigSource,
-                        sigIndexes);
-            } else {
-
-                //  Otherwise, the signal's origin was not a URI, so it must've
-                //  been another GUI control within the page. Because we don't
-                //  have 'changed data paths' to go by, we update all 'direct
-                //  GUI' bindings.
+            //  If the signal origin is either a TIBETURL with a non-empty
+            //  canvas or the signal origin wasn't a URI at all, it must've been
+            //  another GUI control within the page. Because we don't have
+            //  'changed data paths' to go by, we update all 'direct GUI'
+            //  bindings.
+            if ((TP.isKindOf(sigOrigin, TP.uri.TIBETURL) &&
+                TP.notEmpty(sigOrigin.getCanvasName())) || !originWasURI) {
 
                 //  Gather up all of the bound attributes.
 
@@ -1057,6 +1042,12 @@ function(aSignal) {
                         return 0;
                     });
 
+                if (originWasURI) {
+                    originVal = sigOrigin.getContent();
+                } else {
+                    originVal = sigOrigin;
+                }
+
                 len = boundAttrNodes.getSize();
                 for (i = 0; i < len; i++) {
 
@@ -1088,7 +1079,7 @@ function(aSignal) {
                             //  isScalarValued, etc.)
                             ownerTPElem.$refreshLeaf(
                                     facet,
-                                    sigOrigin,
+                                    originVal,
                                     aspectNames,
                                     boundAttrNodes[i],
                                     null,
@@ -1098,6 +1089,20 @@ function(aSignal) {
                         }
                     }
                 }
+            } else {
+                tpDocElem.$refreshBranches(
+                        primarySource,
+                        facet,
+                        primarySource,
+                        boundElems,
+                        null,
+                        null,
+                        null,
+                        false,
+                        sigOrigin,
+                        originWasURI,
+                        sigSource,
+                        sigIndexes);
             }
         }
 
