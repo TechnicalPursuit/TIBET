@@ -818,6 +818,11 @@ function(aTargetTPElement, initialRuleText) {
 
             aTargetTPElement.setAttribute('sherpaID', sherpaID);
 
+            //  Make sure to refresh all of the descendant document positions
+            //  for the UI canvas since we're going to be updating the canvas
+            //  source.
+            TP.nodeRefreshDescendantDocumentPositions(TP.sys.uidoc(true));
+
             //  Manually update the canvas source of the target element.
             //  Because we're in the midst of a D&D operation, mutation
             //  observers will have been temporarily suspended.
@@ -2895,6 +2900,12 @@ function(aTPElem) {
 
                             oldElemClone = TP.nodeCloneNode(oldElem, false);
                             newElemClone = TP.nodeCloneNode(newElem, false);
+
+                            //  Make sure to refresh all of the descendant
+                            //  document positions for the UI canvas since we're
+                            //  going to be updating the canvas source.
+                            TP.nodeRefreshDescendantDocumentPositions(
+                                                            TP.sys.uidoc(true));
 
                             this.updateUICanvasSource(
                                     TP.ac(oldElemClone),
