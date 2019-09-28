@@ -160,6 +160,8 @@ function(anObject, optFormat) {
         str = '';
     }
 
+    str = str.asEscapedXML();
+
     if (TP.sys.shouldLogStack() && TP.sys.cfg('sherpa.console_stack') &&
         TP.notEmpty(stackEntries = TP.getStackInfo(anObject))) {
         stackStr = '';
