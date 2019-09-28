@@ -5450,6 +5450,23 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         visualGeneratorElem = visualGeneratorElem.parentNode;
     }
 
+    //  We need to make sure to have positions for the visual generator element
+    //  and the mutated nodes
+    if (TP.notValid(visualGeneratorElem[TP.PREVIOUS_POSITION])) {
+        return this.raise(
+                    'InvalidObject',
+                    'Visual generator node needs node position');
+    }
+
+    leni = mutatedNodes.getSize();
+    for (i = 0; i < leni; i++) {
+        if (TP.notValid(visualGeneratorElem[TP.PREVIOUS_POSITION])) {
+            return this.raise(
+                    'InvalidObject',
+                    'Mutated node at: ' + i + ' needs node position');
+        }
+    }
+
     //  If the target Node is detached (or its not an Element), that means it
     //  must be being deleted from the visible DOM. By the time this method is
     //  called, because of the way MutationObservers work, its parentNode will
