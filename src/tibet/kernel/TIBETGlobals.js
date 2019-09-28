@@ -3312,6 +3312,9 @@ TP.regex.TEST_FUNCTION = /test[a-zA-Z0-9$_'"]+/;
 //  markup
 //  ---
 
+TP.regex.UTF8_BUT_NOT_XML_CHARS =
+    /[^\x09\x0A\x0D\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm;  // need reset
+
 TP.regex.XML_IDREF = new RegExp(
                     '^' + TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*' + '$');
 

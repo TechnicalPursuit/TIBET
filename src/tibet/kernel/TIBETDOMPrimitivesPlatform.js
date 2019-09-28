@@ -558,6 +558,10 @@ TP.hc(
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
+        //  Make sure to replace any characters that are valid UTF-8, but not
+        //  valid XML characters.
+        str = str.replace(TP.regex.UTF8_BUT_NOT_XML_CHARS);
+
         parser = new DOMParser();
 
         xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
@@ -922,6 +926,10 @@ TP.hc(
             !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
+
+        //  Make sure to replace any characters that are valid UTF-8, but not
+        //  valid XML characters.
+        str = str.replace(TP.regex.UTF8_BUT_NOT_XML_CHARS);
 
         parser = new DOMParser();
 
