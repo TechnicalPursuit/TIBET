@@ -74,7 +74,7 @@
         "moment": "^2.24.0",
         "nano": "github:TechnicalPursuit/couchdb-nano",
         "node-forge": "^0.7.6",
-        "open-editor": "^1.2.0",
+        "open-editor": "^2.0.1",
         "opener": "^1.5.1",
         "permessage-deflate": "^0.1.7",
         "pouchdb-all-dbs": "^1.0.2",
