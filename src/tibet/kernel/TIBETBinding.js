@@ -993,8 +993,10 @@ function(aSignal) {
             //  another GUI control within the page. Because we don't have
             //  'changed data paths' to go by, we update all 'direct GUI'
             //  bindings.
+            /* eslint-disable no-extra-parens */
             if ((TP.isKindOf(sigOrigin, TP.uri.TIBETURL) &&
                 TP.notEmpty(sigOrigin.getCanvasName())) || !originWasURI) {
+            /* eslint-enable no-extra-parens */
 
                 //  Gather up all of the bound attributes.
 

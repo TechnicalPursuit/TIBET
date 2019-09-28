@@ -3312,6 +3312,8 @@ TP.regex.TEST_FUNCTION = /test[a-zA-Z0-9$_'"]+/;
 //  markup
 //  ---
 
+/* eslint-disable no-control-regex */
+
 TP.regex.UTF8_BUT_NOT_XML_CHARS =
     /[^\x09\x0A\x0D\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm;  // need reset
 
@@ -3450,7 +3452,6 @@ TP.regex.HTML_CSS_STYLE_ELEM =
 TP.regex.HTML_IMG_ELEM =
         /<img((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/img)>/gi; //  needs reset
 
-/* eslint-disable no-control-regex */
 
 //  A RegExp that matches non-prefixed namespace attribute entries.
 TP.regex.NON_PREFIXED_NS_ATTR =
