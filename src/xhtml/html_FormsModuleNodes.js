@@ -2386,6 +2386,12 @@ TP.html.inputClickable.defineSubtype('inputButton');
 
 TP.html.inputClickable.defineSubtype('inputColor');
 
+TP.html.inputColor.addTraits(TP.html.textUtilities);
+
+TP.html.inputColor.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
 //  ========================================================================
 //  TP.html.inputDate
 //  ========================================================================
@@ -2398,6 +2404,12 @@ TP.html.inputClickable.defineSubtype('inputColor');
 //  ------------------------------------------------------------------------
 
 TP.html.inputClickable.defineSubtype('inputDate');
+
+TP.html.inputDate.addTraits(TP.html.textUtilities);
+
+TP.html.inputDate.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
 
 //  ========================================================================
 //  TP.html.inputDateTime
@@ -2412,6 +2424,12 @@ TP.html.inputClickable.defineSubtype('inputDate');
 
 TP.html.inputClickable.defineSubtype('inputDateTime');
 
+TP.html.inputDateTime.addTraits(TP.html.textUtilities);
+
+TP.html.inputDateTime.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
 //  ========================================================================
 //  TP.html.inputDateTimeLocal
 //  ========================================================================
@@ -2424,6 +2442,12 @@ TP.html.inputClickable.defineSubtype('inputDateTime');
 //  ------------------------------------------------------------------------
 
 TP.html.inputClickable.defineSubtype('inputDateTimeLocal');
+
+TP.html.inputDateTimeLocal.addTraits(TP.html.textUtilities);
+
+TP.html.inputDateTimeLocal.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
 
 //  ========================================================================
 //  TP.html.inputMonth
@@ -2438,6 +2462,12 @@ TP.html.inputClickable.defineSubtype('inputDateTimeLocal');
 
 TP.html.inputClickable.defineSubtype('inputMonth');
 
+TP.html.inputMonth.addTraits(TP.html.textUtilities);
+
+TP.html.inputMonth.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
 //  ========================================================================
 //  TP.html.inputRange
 //  ========================================================================
@@ -2450,6 +2480,12 @@ TP.html.inputClickable.defineSubtype('inputMonth');
 //  ------------------------------------------------------------------------
 
 TP.html.inputClickable.defineSubtype('inputRange');
+
+TP.html.inputRange.addTraits(TP.html.textUtilities);
+
+TP.html.inputRange.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
 
 //  ========================================================================
 //  TP.html.inputCheckbox
@@ -2522,6 +2558,10 @@ TP.html.inputSelectable.defineSubtype('inputEmail');
 TP.html.inputEmail.addTraits(TP.html.textUtilities);
 
 TP.html.inputEmail.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
+TP.html.inputEmail.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.inputSelectable);
 
@@ -2567,6 +2607,10 @@ TP.html.inputSelectable.defineSubtype('inputNumber');
 TP.html.inputNumber.addTraits(TP.html.textUtilities);
 
 TP.html.inputNumber.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
+TP.html.inputNumber.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.inputSelectable);
 
@@ -2597,6 +2641,10 @@ TP.html.input.defineSubtype('inputImage');
 TP.html.inputSelectable.defineSubtype('inputPassword');
 
 TP.html.inputPassword.addTraits(TP.html.textUtilities);
+
+TP.html.inputPassword.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
 
 TP.html.inputPassword.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
@@ -2715,6 +2763,10 @@ TP.html.inputClickable.defineSubtype('inputSubmit');
 TP.html.inputSelectable.defineSubtype('inputTel');
 
 TP.html.inputTel.addTraits(TP.html.textUtilities);
+
+TP.html.inputTel.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
 
 TP.html.inputTel.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
