@@ -2877,9 +2877,6 @@ function(aTPElem) {
 
                             newTPElem,
 
-                            oldElemClone,
-                            newElemClone,
-
                             halo;
 
                         newElem = TP.nodeFromString('<' + tagName + '/>');
@@ -2898,9 +2895,6 @@ function(aTPElem) {
 
                             newElem = TP.unwrap(newTPElem);
 
-                            oldElemClone = TP.nodeCloneNode(oldElem, false);
-                            newElemClone = TP.nodeCloneNode(newElem, false);
-
                             //  Make sure to refresh all of the descendant
                             //  document positions for the UI canvas since we're
                             //  going to be updating the canvas source.
@@ -2908,7 +2902,7 @@ function(aTPElem) {
                                                             TP.sys.uidoc(true));
 
                             this.updateUICanvasSource(
-                                    TP.ac(oldElemClone),
+                                    TP.ac(oldElem),
                                     oldElem.parentNode,
                                     TP.DELETE,
                                     null,
@@ -2919,8 +2913,11 @@ function(aTPElem) {
                             newElem = TP.nodeReplaceChild(
                                         parentElem, newElem, oldElem);
 
+                            TP.nodeRefreshDescendantDocumentPositions(
+                                                            TP.sys.uidoc(true));
+
                             this.updateUICanvasSource(
-                                    TP.ac(newElemClone),
+                                    TP.ac(newElem),
                                     newElem.parentNode,
                                     TP.CREATE,
                                     null,
