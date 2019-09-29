@@ -1488,8 +1488,9 @@
         };
 
         /**
-         * Simple dictionary of loaded task handlers by name.
+         * Simple dictionaries of loaded task modules and task handlers by name.
          */
+        TDS.workflow.taskModules = {};
         TDS.workflow.tasks = {};
 
 
@@ -1502,7 +1503,10 @@
         if (sh.test('-d', taskdir)) {
             files = sh.ls(taskdir);
             files.sort().forEach(function(file) {
-                var taskMeta;
+                var taskMeta,
+                    taskModule,
+                    taskFunction,
+                    taskName;
 
                 //  Ignore directories
                 if (TDS.shell.test('-d', path.join(taskdir, file))) {
@@ -1535,8 +1539,21 @@
                 options.logger = logger.getContextualLogger(taskMeta);
 
                 try {
-                    TDS.workflow.tasks[name] =
-                        require(path.join(taskdir, file))(options);
+                    taskModule = require(path.join(taskdir, file));
+                    taskFunction = taskModule(options);
+
+                    //  name is the module name that we found it in the
+                    //  filesystem, but the module itself might publish an
+                    //  alternate 'taskName'. If it does, we'll register these
+                    //  under both.
+                    TDS.workflow.taskModules[name] = taskModule;
+                    TDS.workflow.tasks[name] = taskFunction;
+
+                    taskName = taskModule.taskName;
+                    if (TDS.notEmpty(taskName)) {
+                        TDS.workflow.taskModules[taskName] = taskModule;
+                        TDS.workflow.tasks[taskName] = taskFunction;
+                    }
                 } catch (e) {
                     logger.error('Error loading task: ' + name);
                     logger.error(e.message);
