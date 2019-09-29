@@ -741,10 +741,10 @@ function(aQuestion, choices, aDefaultAnswer, info) {
      *                              of the standard template.
      *          dialogID:           The ID to use for the dialog. This defaults
      *                              to 'systemDialog'.
-     *          isMultiple:         Whether or not the set of choices should be
+     *          multiple:           Whether or not the set of choices should be
      *                              presented such that the user can choose
      *                              multiple values.
-     *          isOpen:             Whether or not the set of choices should be
+     *          open:               Whether or not the set of choices should be
      *                              augmented with a text field such that the
      *                              user can alternatively supply an open-ended
      *                              value as an answer. Note that this value
