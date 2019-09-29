@@ -661,6 +661,28 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('isSingleValued',
+function(aspectName) {
+
+    /**
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
+     * @returns {Boolean} True when single valued.
+     */
+
+    if (aspectName === 'filterValue') {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
