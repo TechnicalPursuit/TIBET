@@ -879,7 +879,7 @@ function(styleTPElem) {
     //  sending them a method that might do things like cause extra rendering.
     notReadyToRenderInstances = notReadyToRenderInstances.filter(
         function(anInstance) {
-            return !anInstance.isReadyToRender();
+            return anInstance.isReadyToRender();
         });
 
     //  Add the Document global ID of the stylesheet Element to our list of
