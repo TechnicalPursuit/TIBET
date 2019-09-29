@@ -5445,7 +5445,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     visualAppElem = TP.unwrap(this.getAppElement());
 
     //  Search the hierarchy for the nearest custom tag (using the same search
-    //  criteria as above) to set as the tag source element.
+    //  criteria as above) to set as the 'visual generator' element.
     visualGeneratorElem = mutationAncestor;
 
     while (TP.isElement(visualGeneratorElem) &&
