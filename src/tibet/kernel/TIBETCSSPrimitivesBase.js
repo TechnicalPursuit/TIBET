@@ -611,6 +611,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
     if (!TP.isElement(inlinedStyleElem)) {
 
         inlinedStyleElem = TP.documentConstructCSSStyleElement(aDocument);
+        inlinedStyleElem[TP.GENERATED] = true;
 
         //  Track the original source from the URI - this is what the author
         //  originally typed and might be a virtual URI. We'd like to track it
