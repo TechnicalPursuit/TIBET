@@ -2645,6 +2645,9 @@ shouldShowAssistant, insertionCompletedHandler) {
                                 newTPElem, aPositionOrPath);
 
     insertedElem = TP.unwrap(insertedTPElem);
+
+    TP.nodeRefreshDescendantDocumentPositions(insertedElem);
+
     insertedElem[TP.INSERTION_POSITION] = aPositionOrPath;
     insertedElem[TP.SHERPA_MUTATION] = TP.INSERT;
 
