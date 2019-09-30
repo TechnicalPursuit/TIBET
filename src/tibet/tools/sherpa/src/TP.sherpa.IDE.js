@@ -2375,8 +2375,7 @@ function(aSignal) {
     TP.promptWithChoices(
         'Group these elements under a common parent:',
         TP.ac('html:span', 'html:div'),
-        'html:span',
-        TP.hc('open', true)).then(
+        'html:span').then(
         function(groupingTagName) {
 
             var halo,
