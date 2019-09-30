@@ -2623,6 +2623,23 @@ oldAttributeValue) {
 //  TP.dom.MultipliedElement Additions
 //  ========================================================================
 
+TP.dom.MultipliedElement.Inst.defineMethod('isConnectorOpaque',
+function() {
+
+    /**
+     * @method isConnectorOpaque
+     * @summary Returns whether the receiver is 'connector opaque', which means
+     *     that any connections to descendants of the receiver should be made
+     *     to the receiver itself.
+     * @returns {Boolean} Whether Sherpa connectors should treat the receiver as
+     *     being 'opaque' and not connect to any of its descendants.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.MultipliedElement.Inst.defineMethod('sherpaGetSuccessorEditableTextNode',
 function(direction, currentEditingElement) {
 
