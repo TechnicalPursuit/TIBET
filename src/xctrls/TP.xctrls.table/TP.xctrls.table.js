@@ -953,7 +953,10 @@ function(enterSelection) {
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
                 function(d) {
-                    var labelVal;
+                    var labelVal,
+
+                        preIndex,
+                        postIndex;
 
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
@@ -968,7 +971,22 @@ function(enterSelection) {
                         labelVal = d;
                     }
 
-                    return TP.xmlLiteralsToEntities(labelVal);
+                    if (/match_result">/g.test(labelVal)) {
+                        preIndex = labelVal.indexOf('<span');
+                        postIndex = labelVal.indexOf('</span>') + 7;
+
+                        labelVal =
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(0, preIndex)) +
+                            labelVal.slice(preIndex, postIndex) +
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(postIndex));
+
+                    } else {
+                        labelVal = TP.xmlLiteralsToEntities(labelVal);
+                    }
+
+                    return labelVal;
                 }
             );
 
@@ -1588,7 +1606,10 @@ function(updateSelection) {
                 labelContent.html(
                     function() {
 
-                        var labelVal;
+                        var labelVal,
+
+                            preIndex,
+                            postIndex;
 
                         if (TP.regex.SPACING.test(datum)) {
                             return '&#160;';
@@ -1600,7 +1621,22 @@ function(updateSelection) {
                             labelVal = datum;
                         }
 
-                        return TP.xmlLiteralsToEntities(labelVal);
+                        if (/match_result">/g.test(labelVal)) {
+                            preIndex = labelVal.indexOf('<span');
+                            postIndex = labelVal.indexOf('</span>') + 7;
+
+                            labelVal =
+                                TP.xmlLiteralsToEntities(
+                                    labelVal.slice(0, preIndex)) +
+                                labelVal.slice(preIndex, postIndex) +
+                                TP.xmlLiteralsToEntities(
+                                    labelVal.slice(postIndex));
+
+                        } else {
+                            labelVal = TP.xmlLiteralsToEntities(labelVal);
+                        }
+
+                        return labelVal;
                     }
                 );
 

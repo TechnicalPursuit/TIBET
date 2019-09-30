@@ -1157,7 +1157,30 @@ function(enterSelection) {
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
                 function(d, i) {
-                    return TP.xmlLiteralsToEntities(d[1]);
+
+                    var labelVal,
+
+                        preIndex,
+                        postIndex;
+
+                    labelVal = d[1];
+
+                    if (/match_result">/g.test(labelVal)) {
+                        preIndex = labelVal.indexOf('<span');
+                        postIndex = labelVal.indexOf('</span>') + 7;
+
+                        labelVal =
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(0, preIndex)) +
+                            labelVal.slice(preIndex, postIndex) +
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(postIndex));
+
+                    } else {
+                        labelVal = TP.xmlLiteralsToEntities(labelVal);
+                    }
+
+                    return labelVal;
                 }
             );
 
@@ -1169,7 +1192,7 @@ function(enterSelection) {
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
                 function(d, i) {
-                    return TP.xmlLiteralsToEntities(d[0]);
+                    return d[0];
                 }
             );
 
@@ -1560,7 +1583,29 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    return TP.xmlLiteralsToEntities(data[1]);
+                    var labelVal,
+
+                        preIndex,
+                        postIndex;
+
+                    labelVal = data[1];
+
+                    if (/match_result">/g.test(labelVal)) {
+                        preIndex = labelVal.indexOf('<span');
+                        postIndex = labelVal.indexOf('</span>') + 7;
+
+                        labelVal =
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(0, preIndex)) +
+                            labelVal.slice(preIndex, postIndex) +
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(postIndex));
+
+                    } else {
+                        labelVal = TP.xmlLiteralsToEntities(labelVal);
+                    }
+
+                    return labelVal;
                 }
             );
 
@@ -1569,7 +1614,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    return TP.xmlLiteralsToEntities(data[0]);
+                    return data[0];
                 }
             );
         });

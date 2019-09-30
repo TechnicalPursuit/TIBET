@@ -307,7 +307,7 @@ function(aValue, matchers) {
                                     '<span xmlns="' +
                                         TP.w3.Xmlns.XHTML +
                                         '" class="match_result">' +
-                                        highlightText +
+                                        TP.xmlLiteralsToEntities(highlightText) +
                                     '</span>';
 
                                 if (i === len - 1) {

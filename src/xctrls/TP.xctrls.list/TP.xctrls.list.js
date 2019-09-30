@@ -1401,7 +1401,10 @@ function(enterSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    var labelVal;
+                    var labelVal,
+
+                        preIndex,
+                        postIndex;
 
                     if (TP.regex.SPACING.test(d[0])) {
                         return '&#160;';
@@ -1413,7 +1416,22 @@ function(enterSelection) {
                         labelVal = d[1];
                     }
 
-                    return TP.xmlLiteralsToEntities(labelVal);
+                    if (/match_result">/g.test(labelVal)) {
+                        preIndex = labelVal.indexOf('<span');
+                        postIndex = labelVal.indexOf('</span>') + 7;
+
+                        labelVal =
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(0, preIndex)) +
+                            labelVal.slice(preIndex, postIndex) +
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(postIndex));
+
+                    } else {
+                        labelVal = TP.xmlLiteralsToEntities(labelVal);
+                    }
+
+                    return labelVal;
                 }
             );
 
@@ -1429,7 +1447,7 @@ function(enterSelection) {
                         return '';
                     }
 
-                    return TP.xmlLiteralsToEntities(d[0]);
+                    return d[0];
                 }
             );
 
@@ -2068,7 +2086,10 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    var labelVal;
+                    var labelVal,
+
+                        preIndex,
+                        postIndex;
 
                     if (TP.regex.SPACING.test(data[0])) {
                         return '&#160;';
@@ -2080,7 +2101,22 @@ function(updateSelection) {
                         labelVal = data[1];
                     }
 
-                    return TP.xmlLiteralsToEntities(labelVal);
+                    if (/match_result">/g.test(labelVal)) {
+                        preIndex = labelVal.indexOf('<span');
+                        postIndex = labelVal.indexOf('</span>') + 7;
+
+                        labelVal =
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(0, preIndex)) +
+                            labelVal.slice(preIndex, postIndex) +
+                            TP.xmlLiteralsToEntities(
+                                labelVal.slice(postIndex));
+
+                    } else {
+                        labelVal = TP.xmlLiteralsToEntities(labelVal);
+                    }
+
+                    return labelVal;
                 }
             );
 
@@ -2097,7 +2133,7 @@ function(updateSelection) {
                         return '';
                     }
 
-                    return TP.xmlLiteralsToEntities(data[0]);
+                    return data[0];
                 }
             );
 
