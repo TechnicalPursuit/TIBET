@@ -109,8 +109,6 @@
     <config ref="xctrls-inlined"/>
     <config ref="sherpa-inlined"/>
     <config ref="test-inlined"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.formBuilderAssistant-TP.sherpa.formBuilderAssistant.xhtml.js"/>
-    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.formBuilderAssistant-TP.sherpa.formBuilderAssistant.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">
@@ -292,6 +290,8 @@
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindshudContextMenuContent-TP.sherpa.bindshudContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindshudItemContextMenuContent-TP.sherpa.bindshudItemContextMenuContent.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.bindshudItemContextMenuContent-TP.sherpa.bindshudItemContextMenuContent.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.formBuilderAssistant-TP.sherpa.formBuilderAssistant.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.formBuilderAssistant-TP.sherpa.formBuilderAssistant.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.opener-TP.sherpa.opener.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.opener-TP.sherpa.opener.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-sherpa-TP.sherpa.scrollbutton-TP.sherpa.scrollbutton.css.js"/>
