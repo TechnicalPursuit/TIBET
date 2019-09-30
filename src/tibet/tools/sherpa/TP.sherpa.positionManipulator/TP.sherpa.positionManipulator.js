@@ -57,6 +57,8 @@ function(aTargetTPElem, aSignal) {
     //  element (assuming we can alter 'top' as well).
     var cantAlterReasons,
 
+        currentPositionVal,
+
         isRelative,
         parentOffsets,
         thisOffsets;
@@ -65,9 +67,15 @@ function(aTargetTPElem, aSignal) {
 
     if (TP.notEmpty(cantAlterReasons)) {
         if (cantAlterReasons.contains(TP.ELEMENT_NEEDS_TO_BE_POSITIONED)) {
+
+            //  Grab the current 'position' CSS property value for the target.
+            currentPositionVal = aTargetTPElem.getComputedStyleProperty(
+                                                                'position');
+
             TP.promptWithChoices(
-                'This element needs one of the following "position"' +
-                ' property values to be moveable:',
+                'This element has a "position" CSS property value of: ' +
+                '<b>' + currentPositionVal + '</b>' +
+                ' and needs one of the following values to be moveable:',
                 TP.ac('relative', 'absolute', 'fixed'),
                 'relative').then(
                 function(positionVal) {

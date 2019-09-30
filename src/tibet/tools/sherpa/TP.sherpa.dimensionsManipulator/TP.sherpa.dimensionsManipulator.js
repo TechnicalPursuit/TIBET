@@ -59,15 +59,22 @@ function(aTargetTPElem, aSignal) {
 
     //  Check to make sure we can alter the 'width' property on the target
     //  element (assuming we can alter 'height' as well).
-    var cantAlterReasons;
+    var cantAlterReasons,
+        currentDisplayVal;
 
     cantAlterReasons = aTargetTPElem.canAlterCSSProperty('width');
 
     if (TP.notEmpty(cantAlterReasons)) {
         if (cantAlterReasons.contains(TP.ELEMENT_NEEDS_TO_BE_BLOCK)) {
+
+            //  Grab the current 'display' CSS property value for the target.
+            currentDisplayVal = aTargetTPElem.getComputedStyleProperty(
+                                                                'display');
+
             TP.promptWithChoices(
-                'This element needs one of the following "display"' +
-                ' property values to be sizable:',
+                'This element has a "display" CSS property value of: ' +
+                '<b>' + currentDisplayVal + '</b>' +
+                ' and needs one of the following values to be sizable:',
                 TP.ac('block',
                         'flow',
                         'flow-root',
