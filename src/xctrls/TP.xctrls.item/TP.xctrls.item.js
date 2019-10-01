@@ -23,6 +23,11 @@ TP.xctrls.item.addTraits(TP.dom.SelectableItemUIElementNode);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
+//  design.
+TP.xctrls.item.defineAttribute('styleURI', TP.NO_RESULT);
+TP.xctrls.item.defineAttribute('themeURI', TP.NO_RESULT);
+
 TP.xctrls.item.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac('TP.sig.DOMMouseDown',
                 'TP.sig.DOMMouseUp',
