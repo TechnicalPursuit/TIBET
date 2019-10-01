@@ -34,7 +34,7 @@ You trade one hammer for another; you get incremental improvement; but you're
 still hammering.
 
 TIBET is different. Instead of a slightly better hammer, <a
-href="https://www.technicalpursuit.com/sherpa.xhtml">TIBET gives you a
+href="https://www.technicalpursuit.com/docs/sherpa.html">TIBET gives you a
 nailgun</a>, changing the fundamental nature of the work. With TIBET you build
 apps top-down using <a
 href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
