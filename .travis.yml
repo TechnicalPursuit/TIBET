@@ -29,6 +29,8 @@ before_install:
 
 before_script:
 
+    - echo "export TRAVIS_HOME=$TRAVIS_HOME" | cat - ~/.bashrc > ~/.bashrc.mod
+    - mv -v ~/.bashrc.mod ~/.bashrc
     - npm link .
     - tibet build
     - cd ..
