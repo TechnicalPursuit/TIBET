@@ -24,8 +24,6 @@ before_install:
     - sudo apt-get install -y libappindicator1 fonts-liberation
     - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     - sudo dpkg -i google-chrome*.deb
-    - npm install npm -g
-    - npm cache clean --force
 
 before_script:
     - echo "export TRAVIS_HOME=$TRAVIS_HOME" | cat - ~/.bashrc > ~/.bashrc.mod
@@ -38,7 +36,6 @@ before_script:
     - tibet init --link
     - tibet lint
     - rm -rf ./node_modules/*/.git/
-    - bash rehash
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
