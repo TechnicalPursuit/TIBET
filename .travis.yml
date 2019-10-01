@@ -28,7 +28,6 @@ before_install:
     - npm cache clean --force
 
 before_script:
-
     - echo "export TRAVIS_HOME=$TRAVIS_HOME" | cat - ~/.bashrc > ~/.bashrc.mod
     - mv -v ~/.bashrc.mod ~/.bashrc
     - npm link .
@@ -39,6 +38,7 @@ before_script:
     - tibet init --link
     - tibet lint
     - rm -rf ./node_modules/*/.git/
+    - rehash
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
