@@ -8301,6 +8301,11 @@ function() {
 
     arr = TP.objectGetKeys(this.$get('$$hash'));
 
+    arr = arr.filter(
+            function(aKey) {
+                return !TP.regex.INTERNAL_SLOT.test(aKey);
+            });
+
     func = this.getSortFunction();
     if (!func) {
         return arr;
