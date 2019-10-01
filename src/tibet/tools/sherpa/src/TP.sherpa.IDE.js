@@ -4883,7 +4883,7 @@ function(aNode) {
                         removedNodes: aRecord.removedNodes,
                         target: aRecord.target,
                         type: aRecord.type
-                    }
+                    };
 
                     return fauxRecord;
                 }
