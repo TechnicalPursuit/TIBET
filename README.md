@@ -26,47 +26,43 @@
 
 #### **The web was built with markup, your apps should be too.**
 
-<br/>
 
 Swapping out one JavaScript framework for another has been going on for over
-twenty years and for twenty years the result has pretty much been the same.
-You trade one hammer for another; you get incremental improvement; but you're
-still hammering.
+twenty years and for twenty years the results have been the same...you trade one
+hammer for another; you may see some incremental improvement; but you're still
+hammering.
 
 TIBET is different. Instead of a slightly better hammer, <a
 href="https://www.technicalpursuit.com/docs/sherpa.html">TIBET gives you a
 nailgun</a>, changing the fundamental nature of the work. With TIBET you build
-apps top-down using <a
+apps top-down, <a
 href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
-first</a>, minimizing coding. With TIBET you can truly <a href="https://www.youtube.com/channel/UCVs7Oj4NMJzlLDn32aqVUZg">"Drag, Drop,
-Deploy.&#8482;"</a>.
+first</a>, minimizing code. With TIBET you <a href="https://www.youtube.com/channel/UCVs7Oj4NMJzlLDn32aqVUZg">"Drag, Drop, Deploy.&#8482;"</a> applications via markup.
 
 Yes, underneath TIBET's <a
 href="https://www.technicalpursuit.com/docs/platform.html#tools">advanced
 tooling</a> there's a JavaScript framework, one with <a
 href="https://www.technicalpursuit.com/docs/platform.html#client">unmatched
 power and scope</a>, but far more importantly it's a framework built with a
-unique mission: eliminate coding. As we say, "We write JavaScript so you don't
+unique mission: minimize coding. As we say, "We write JavaScript so you don't
 have to.&#8482;"
 
-The web didn't grow to ~6 billion pages by coding in JavaScript, it got there
-via markup. Authoring in markup is the only approach that scales, that can
-handle developing the millions of applications being ported to the web, that
-addresses <a
-href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's
-hiring problem</a> head on.
+The web didn't grow to 6 billion pages using JavaScript. Authoring in
+markup is the only approach that scales, the only approach that can handle
+the millions of applications being ported to the web, the only
+approach that addresses <a href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's hiring problem</a> head on.
 
-Likewise, TIBET is the only framework designed to let you author in <a
+Likewise, TIBET is the only platform designed to let you author in <a
 href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
-first</a>; the only framework that solves <a
-href="https://www.technicalpursuit.com/docs">the three biggest problems</a> web
-projects face; the only framework offering <a
+first</a>; the only platform created to solve <a
+href="https://www.technicalpursuit.com/docs">the real problems web projects face</a>;
+the only platform offering <a
 href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build
-solution</a>; and the only <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported framework</a>.
+solution</a>; and the only platform <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
 
-**Still coding in JavaScript and expecting different results?**
+##### **Still coding in JavaScript and expecting different results?**
 
-**Try TIBET -- different focus; different tools; different results.**
+##### **Try TIBET. Different goals; different tools; different results.**
 
 <br/>
 
