@@ -1,6 +1,4 @@
-# TIBET&#8482; <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
-
-## The Sum Of The Parts, Not Some Of The Parts&#8482;
+# TIBET&#8482; -- The future is written in markup&#8482;
 
 
                                      ,`
@@ -24,15 +22,51 @@
 
 <br/>
 
-#### **Building a desktop-class web application? We built TIBET for you.**
+### **Still coding your web apps? You're doing it wrong...**
 
-**TIBET is a seamlessly integrated web platform, not an à la carte mashup**, a solution offering **<a href="https://www.technicalpursuit.com/docs/platform.html#stack">the web's most complete client stack</a>** coupled with **<a href="https://www.technicalpursuit.com/docs/platform.html#tools">revolutionary tooling</a>**.
+#### **The web was built with markup, your apps should be too.**
 
-**TIBET is built for projects that need a <a href="https://www.technicalpursuit.com/docs/platform.html#client">turnkey client</a> OR <a href="https://www.technicalpursuit.com/docs/platform.html#server">full-stack web platform</a>** and the confidence that comes from using **a <a href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> open source solution**.
+<br/>
 
-**TIBET is <a href="https://www.technicalpursuit.com/docs/index.html">business focused</a>**, reducing <a href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical complexity</a> and costly dependence on jedis, gurus, ninjas, rockstars, superheros, wizards, warlords, and other forms of unobtainium.
+Swapping out one JavaScript framework for another has been going on for over
+twenty years and for twenty years the result has pretty much been the same.
+You trade one hammer for another; you get incremental improvement; but you're
+still hammering.
 
-#### **Reduced cost and reduced risk are TIBET's performance metrics.**
+TIBET is different. Instead of a slightly better hammer, <a
+href="https://www.technicalpursuit.com/docs/sherpa.html">TIBET gives you a
+nailgun</a>, changing the fundamental nature of the work. With TIBET you build
+apps top-down using <a
+href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
+first</a>, minimizing coding. With TIBET you can truly <a href="https://www.youtube.com/channel/UCVs7Oj4NMJzlLDn32aqVUZg">"Drag, Drop,
+Deploy.&#8482;"</a>.
+
+Yes, underneath TIBET's <a
+href="https://www.technicalpursuit.com/docs/platform.html#tools">advanced
+tooling</a> there's a JavaScript framework, one with <a
+href="https://www.technicalpursuit.com/docs/platform.html#client">unmatched
+power and scope</a>, but far more importantly it's a framework built with a
+unique mission: eliminate coding. As we say, "We write JavaScript so you don't
+have to.&#8482;"
+
+The web didn't grow to ~6 billion pages by coding in JavaScript, it got there
+via markup. Authoring in markup is the only approach that scales, that can
+handle developing the millions of applications being ported to the web, that
+addresses <a
+href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's
+hiring problem</a> head on.
+
+Likewise, TIBET is the only framework designed to let you author in <a
+href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
+first</a>; the only framework that solves <a
+href="https://www.technicalpursuit.com/docs">the three biggest problems</a> web
+projects face; the only framework offering <a
+href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build
+solution</a>; and the only <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported framework</a>.
+
+**Still coding in JavaScript and expecting different results?**
+
+**Try TIBET -- different focus; different tools; different results.**
 
 <br/>
 
@@ -42,63 +76,26 @@
 
 # Installation
 
+Before installing, check TIBET's <a href="#supported">supported platform chart</a> for your target platform(s).
 
-###### Microsoft Windows developers should install and run TIBET via Docker.
+See the <a href="./INSTALL.md">full installation instructions</a> if you're running on Windows, want to run TIBET via Docker, or are interested in installing a development fork via Git.
 
-###### See <a href="#dockerinstall">Installing via Docker</a> to install one of our <a href="https://hub.docker.com/r/technicalpursuit/tibet">pre-built Docker images</a>.
-
-###### To install a Git fork of TIBET see the <a href="#gitinstall">TIBET Git Installation</a> instructions.
-
-<br/>
-
-#### Installing TIBET via `npm`:
-
-###### Check TIBET's <a href="#prereqs">prerequisites</a> first.
-
-Check TIBET's <a href="#supported">supported platform chart</a> for your target platform(s).
-
-We recommend using `nvm` to install Node.js v8+. You can confirm your nvm, node, and npm versions using:
+TIBET is currently installed globally via `npm install -g`:<br/>
 
 ```
-nvm --version
-nvm v0.5.0
-
-node --version
-v8.11.1
-
-npm --version
-5.6.0
-```
-
-If you are missing TIBET's node/npm <a href="#prereqs">prerequisites</a> install those first.
-
-
-TIBET is currently installed globally using `npm install -g`:<br/>
-
-```bash
 npm install -g tibet
 ```
 
-To complete the installation run the following command to install
-npm devDependencies in the global TIBET installation package:
+<i>NOTE: Future versions will install the TIBET CLI globally and install the
+library locally.</i>
+
+Due to limitations in `npm`, complete the installation by running the following command to install TIBET's `devDependencies` in the newly-installed TIBET global package:
 
 ```bash
 $(npm root -g)/tibet/bin/tibet_develop_init.bash
 ```
 
-<i>Note that the above operation may be simplified in an upcoming release so you
-only install the TIBET CLI globally and install the TIBET library locally in
-each project.</i>
-
-Initial installation process can take several minutes depending on the speed of
-your network connection and the particular version being installed. Be patient
-:).
-
 **Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.**
-
-
-
-<br/>
 
 ---
 
@@ -106,28 +103,16 @@ your network connection and the particular version being installed. Be patient
 
 # Documentation
 
+#### Screencasts
+
+Be sure to check out the <a href="https://www.youtube.com/channel/UCVs7Oj4NMJzlLDn32aqVUZg">TIBET JS Channel</a>...it has videos covering both the vision behind TIBET as well as specific features of the TIBET platform.
+
+
 #### Concepts
 
 The <a href="https://www.technicalpursuit.com">Technical Pursuit website</a> provides extensive tutorials,
 whitepapers, and other conceptual and design documentation. We strongly
 recommend you take a few minutes to scan it.
-
-<a name="tutorials" href="#"></a>
-#### Tutorials
-
-- <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart</a> - Hello World! for TIBET developers.
-- <a href="https://www.technicalpursuit.com/docs/essentials.html">TIBET Essentials</a> - Core features of the TIBET platform.
-
-
-<a name="guidelines" href="#"></a>
-#### Guidelines
-
-- <a href="https://www.technicalpursuit.com/docs/faq.html">TIBET FAQ</a> - Answers to common
-  TIBET-related questions.
-- <a href="https://www.technicalpursuit.com/docs/tibet4js.html">TIBET For JS Programmers</a> - JavaScript: the TIBET
-parts&#8482;.
-- <a href="https://www.technicalpursuit.com/docs/coding-standards.html">TIBET Coding Standards</a> - The coding standards used in TIBET.
-- <a href="https://www.technicalpursuit.com/docs/troubleshooting.html">TIBET Troubleshooting</a> - Tips to keep you developing smoothly.
 
 <a name="whitepapers" href="#"></a>
 #### White Papers
@@ -142,6 +127,18 @@ target="_blank">The Axes Of TIBET</a> - Comparing web architecture and authoring
   href="http://www.technicalpursuit.com/docs/TheOriginsOfTIBET.pdf"
 target="_blank">The Origins Of TIBET</a> - The evolution of TIBET from 1997 to
 the present.
+
+<a name="tutorials" href="#"></a>
+#### Tutorials
+
+- <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart</a> - Hello World! for TIBET developers.
+- <a href="https://www.technicalpursuit.com/docs/essentials.html">TIBET Essentials</a> - Core features of the TIBET platform.
+
+<a name="guidelines" href="#"></a>
+#### Guidelines
+
+- <a href="https://www.technicalpursuit.com/docs/faq.html">TIBET FAQ</a> - Answers to common
+  TIBET-related questions.
 
 #### Command Line
 
@@ -168,196 +165,7 @@ relates to a topic.
 
 ---
 
-<img alt="Prerequisites" src="./lib/media/primitives.png" width="128px" height="128px"/>
-
-<a name="prereqs" href="#"></a>
-# Prerequisites
-
-#### Install Node.js
-
-TIBET requires Node.js version 8+
-
-We also recommend using `npm` version `5.x` or higher.
-
-**We strongly recommend you use the Node Version Manager (`nvm`)** to manage
-your Node.js installation. Using `nvm` lets you install multiple versions of
-Node.js and switch between them with ease which is great for development and
-helpful if you need to adjust the version running in production while
-maintaining an easy rollback strategy.
-
-To install Node.js via `nvm` see the instructions at <a
-href="https://github.com/creationix/nvm">the nvm GitHub repo</a>.
-
-To install Node.js without `nvm` follow the instructions at <a href="http://nodejs.org">nodejs.org</a>.
-
-#### Update/Adjust npm
-
-If you already have a recent version of Node.js installed you should have a
-valid version of `npm`. We suggest using at least npm `3.x`. The latest
-versions of npm `5.x` also appear stable.
-
-```
-npm install -g npm@3
-
-# OR
-
-npm install -g npm@5
-```
-
-If you see errors from any npm-based operations mentioning `cb() never called!`
-you'll want to perform the step above, or the appropriate step for your
-operating system. See <a
-href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
-
-<br/>
-
----
-
-<img alt="Install via Docker" src="./lib/media/docker_logo.jpg" width="162px" height="128px"/>
-
-<a name="dockerinstall" href="#"></a>
-# Installing TIBET via Docker:
-
-Running TIBET via Docker is very easy. TIBET Docker container images exist on
-DockerHub and are prebuilt for ease of development.
-
-##### First, install the Docker software for your machine.
-
-To install Docker, follow the instructions at <a href="https://docs.docker.com">Docker Documentation</a>
-
-##### Then, install the TIBET Docker image from Dockerhub
-
-```
-docker pull technicalpursuit/tibet
-```
-
-Note that, this will pull the latest TIBET release (by default `docker pull`
-will pull the tag with the `:latest` tag). Therefore, the following is
-equivalent:
-
-```
-docker pull technicalpursuit/tibet:latest
-```
-
-Team TIBET follows a 'semver' release versioning scheme. You could also pull any
-one of the following:
-
-```
-docker pull technicalpursuit/tibet:5
-OR
-docker pull technicalpursuit/tibet:5.0
-OR
-docker pull technicalpursuit/tibet:5.0.0
-```
-
-##### Instantiate a Docker container from the TIBET Docker image
-
-Create a Docker container and execute it by running the TIBET Docker image. Note
-that, inside of the TIBET Docker container, port 1407 (the traditional TIBET
-port) is exposed. To execute the environment and expose the port into your host
-environment, execute the following:
-
-```
-docker run -i -p 127.0.0.1:1407:1407/tcp -t technicalpursuit/tibet
-```
-
-You are now inside of the Docker environment, inside of the home directory of
-the 'developer' user that the TIBET Docker image created for you, ready to start
-TIBET development!
-
-After you create your TIBET project and build it (see instructions later on how
-to do that), you can access the TIBET Data Server running in your Docker
-container by going to this address in a browser in your host environment:
-
-```
-http://127.0.0.01:1407
-```
-
-***NOTE*** Be aware that Docker does **NOT** preserve the environment after you
-exit the container (by executing `exit` from the shell). Any work you've done in
-the container will be lost!!! Therefore, you need to use Docker to either mount
-a volume or use bind mounts to persist your TIBET project. Follow the
-instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and <a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>
-
-<br/>
-
----
-
-<img alt="Install via Git" src="./lib/media/git_logo@2x.png" width="128px" height="128px"/>
-
-<a name="gitinstall" href="#"></a>
-# Installing TIBET via Git:
-
-If you prefer working from a git repository you can install TIBET via git. This
-approach can take a fair amount of time depending on connection and machine
-speed since you'll need to download all of TIBET's dependencies and build them
-locally.
-
-##### First, uninstall any npm-installed version of TIBET
-
-If you have already installed TIBET via npm you need to first remove that
-installation to avoid conflicts with your Git-based installation:
-
-```bash
-npm uninstall -g tibet
-```
-
-##### Create a Fork
-
-If you are going to install TIBET via Git we recommend that you first create a
-fork of TIBET so you can manage updates in a stable, predictable fashion.
-
-Follow these instructions to <a href="https://help.github.com/articles/fork-a-repo/">create
-your own fork</a>.
-
-##### Clone your Fork
-
-```bash
-git clone {{your_fork_repo_url}}
-```
-
-##### Initialize your Fork
-
-Once your fork has been cloned move into the new fork directory and install the
-package dependencies:
-
-```bash
-cd {{your_fork_repo_directory}}
-npm install .
-```
-
-##### Link TIBET via npm
-
-With your fork initialized you'll need to link the repository via `npm link` so
-that the `tibet` command will function. From the top of your TIBET fork type:
-
-```bash
-npm link .
-```
-<br/>
-You should now be able to use the `tibet` command which lets you run `tibet
-build`.
-
-##### Build TIBET Dependencies and Packages
-
-When working with a `git`-based repository you'll need to rebuild TIBET packages
-and dependencies, depending on your individual project launch configuration.
-
-To build the full set of TIBET dependencies and launch packages use:
-
-```
-tibet build_all
-```
-
-NOTE: the above command can take _quite some time_ depending on your network
-connection, machine performance, etc. since it's building a large set of
-dependent modules in addition to TIBET itself.
-
-With TIBET cloned, initialized, linked, and built you're ready to rock.
-
-<br/>
-
----
+<img alt="Platforms" src="./lib/media/framing.png" width="128px" height="128px"/>
 
 <a name="supported" href="#"></a>
 # Supported Platforms
@@ -372,7 +180,7 @@ For Microsoft Windows we recommend using Docker or similar container technology.
 
 ###### TIBET Client / Sherpa
 
-| Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
+| Platform | TIBET Client | Live Patching | TIBET Sherpa |
 |:---------|:----------------------|:--------------------|:-------------|
 | Google Chrome | Yes | Yes | Yes |
 | Mozilla Firefox | Yes | Yes | No |

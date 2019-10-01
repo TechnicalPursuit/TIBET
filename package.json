@@ -2,20 +2,33 @@
     "name": "tibet",
     "version": "5.0.0-rc.6",
     "description": "The TIBET Platform.",
-    "keywords": ["CLI", "CouchDB", "Framework", "IDE", "Microservice", "MVC", "MVVC", "TIBET", "Workflow"],
+    "keywords": [
+        "CLI",
+        "CouchDB",
+        "Framework",
+        "IDE",
+        "Microservice",
+        "MVC",
+        "MVVC",
+        "TIBET",
+        "Workflow"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
         "url": "http://www.technicalpursuit.com"
     },
-    "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
+    "contributors": [
+        {
+            "name": "Scott Shattuck",
+            "email": "ss@technicalpursuit.com"
+        },
+        {
+            "name": "William J. Edney",
+            "email": "bedney@technicalpursuit.com"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"
@@ -74,7 +87,8 @@
         "moment": "^2.24.0",
         "nano": "github:TechnicalPursuit/couchdb-nano",
         "node-forge": "^0.7.6",
-        "open-editor": "^2.0.1",
+        "npm": "^6.11.3",
+        "open-editor": "^1.2.0",
         "opener": "^1.5.1",
         "permessage-deflate": "^0.1.7",
         "pouchdb-all-dbs": "^1.0.2",
