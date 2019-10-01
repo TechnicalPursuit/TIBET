@@ -4848,6 +4848,49 @@ function(aNode) {
                 return true;
             });
 
+        //  Because the MutationSummary library does not handle namespaced
+        //  attributes properly (i.e. when looking at an attribute name, it
+        //  won't also consider the attributeNamespace, prepend the computed
+        //  prefix onto it and then try to fetch the value), we build 'faux'
+        //  MutationObserver records for any 'attributes' mutation and do that
+        //  work ourselves. We then pass those in to the Mutation Summary
+        //  library.
+        filteredMutations = filteredMutations.collect(
+            function(aRecord) {
+                var fauxRecord,
+                    prefix;
+
+                //  If it was an 'attributes' mutation and had a real attributes
+                //  namespace, then generate a faux record.
+                if (aRecord.type === 'attributes' &&
+                    TP.notEmpty(aRecord.attributeNamespace)) {
+
+                    //  Look up the prefix for the given namespace from the
+                    //  target element 'outward'..
+                    prefix = aRecord.target.lookupPrefix(
+                                    aRecord.attributeNamespace);
+
+                    //  Generate the faux record, which will mostly be a shallow
+                    //  copy of a Mutation Observer record, but with the 'full'
+                    //  attribute name.
+                    fauxRecord = {
+                        addedNodes: aRecord.addedNodes,
+                        attributeName: prefix + ':' + aRecord.attributeName,
+                        attributeNamespace: aRecord.attributeNamespace,
+                        nextSibling: aRecord.nextSibling,
+                        oldValue: aRecord.oldValue,
+                        previousSibling: aRecord.previousSibling,
+                        removedNodes: aRecord.removedNodes,
+                        target: aRecord.target,
+                        type: aRecord.type
+                    }
+
+                    return fauxRecord;
+                }
+
+                return aRecord;
+            });
+
         return this._oldCreateSummaries(filteredMutations);
     };
 
