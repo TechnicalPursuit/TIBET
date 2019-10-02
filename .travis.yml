@@ -26,9 +26,10 @@ before_install:
     - sudo dpkg -i google-chrome*.deb
 
 before_script:
-    - nvm use v10.16.3
     - rm -rf ./node_modules/*/.git/
     - p=$(which npm)
+    - rm $p
+    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
     - npm link .
     # - tibet build
     - cd ..
@@ -36,8 +37,6 @@ before_script:
     - cd travis
     - tibet init --link
     - tibet lint
-    - echo $p
-    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
