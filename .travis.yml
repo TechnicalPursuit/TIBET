@@ -58,4 +58,7 @@ services:
     - xvfb
 
 script:
+    - p=$(which npm)
+    - rm $p
+    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
     - karma start --debug
