@@ -38,6 +38,7 @@ before_script:
     # - npm link tibet
     - tibet init --link
     # - tibet lint
+    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
