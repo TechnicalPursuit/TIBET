@@ -36,7 +36,7 @@ before_script:
     # Link TIBET into npm global lib
     - npm link .
     # Build TIBET so that packages are available.
-      # - tibet build
+    - tibet build
     - cd ..
     # Build and initialize test project called 'travis'
     - tibet clone travis
