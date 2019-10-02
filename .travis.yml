@@ -27,17 +27,20 @@ before_install:
 
 before_script:
     - rm -rf ./node_modules/*/.git/
+    - p=$(which npm)
     - npm link .
-    - tibet build
+    # - tibet build
     - cd ..
     - tibet clone travis
     - cd travis
+    - tibet init --link
+    - tibet lint
+    - rm $p
+    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
     - npm install --save-dev karma-tibet
-    - tibet init --link --force
-    - tibet lint
     - tibet config karma.boot.profile="main@contributor"
     - tibet config karma.script=":test --context='all'"
     - tibet config sherpa.enabled=false
