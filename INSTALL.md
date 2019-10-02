@@ -239,17 +239,17 @@ For Microsoft Windows we recommend using Docker or similar container technology.
 
 #### Install Node.js
 
-TIBET requires Node.js version 8+
+TIBET requires Node.js version 10+ for proper operation.
 
-We also recommend using `npm` version `5.x` or higher.
+We also recommend using `npm` version `6.x` or higher.
 
 You can confirm your node, and npm versions using:
 
     node --version
-    v8.11.1
+    v10.16.3
 
     npm --version
-    5.6.0
+    6.9.0
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
 your Node.js installation. Using `nvm` lets you install multiple versions of
@@ -265,15 +265,10 @@ To install Node.js without `nvm` follow the instructions at <a href="http://node
 #### Update/Adjust npm
 
 If you already have a recent version of Node.js installed you should have a
-valid version of `npm`. We suggest using at least npm `3.x`. The latest
-versions of npm `5.x` also appear stable.
-
-    npm install -g npm@3
-    # OR
-    npm install -g npm@5
+valid version of `npm`. We suggest using at least npm `5.x`.
 
 If you see errors from any npm-based operations mentioning `cb() never called!`
-you'll want to perform the step above, or the appropriate step for your
+you'll want to perform the appropriate steps for your
 operating system. See <a
 href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-version-of-npm">this npm troubleshooting topic</a> for more.
 
