@@ -28,15 +28,15 @@ before_install:
 before_script:
     - rm -rf ./node_modules/*/.git/
     - p=$(which npm)
-    - rm $p
-    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
     - npm link .
     # - tibet build
     - cd ..
     - tibet clone travis
     - cd travis
     - tibet init --link
-    - tibet lint
+    # - tibet lint
+    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
+    - npm link tibet
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
