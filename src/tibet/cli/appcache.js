@@ -140,6 +140,11 @@ Cmd.prototype.execute = function() {
         args.unshift('--status');
     }
 
+    this.warn('!!! NOTE: the older appcache approach supported by this command' +
+                ' is being removed from the browser platform(s) over the' +
+                ' coming years. This command will be updated to support the' +
+                ' newer service worker approach in an upcoming release. !!!');
+
     // Verify our flags make sense. We're either doing enable/disable which
     // focus on the index file or we're doing missing/rebuild which focus
     // on the cache file itself.
