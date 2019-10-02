@@ -36,7 +36,7 @@ before_script:
     - cd travis
     - tibet init --link
     - tibet lint
-    - rm -rf ./node_modules/*/.git/
+    - rm -rf ./node_modules/*/.git/ && rehash
     - npm install -g karma-cli
     - npm install --save-dev karma
     - npm install --save-dev karma-chrome-launcher
