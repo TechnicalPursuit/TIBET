@@ -26,6 +26,7 @@ before_install:
     - sudo dpkg -i google-chrome*.deb
 
 before_script:
+    - rm -rf ./node_modules/*/.git/
     - npm link .
     - tibet build
     - cd ..
