@@ -325,16 +325,7 @@ function(aTPElement) {
 
         ruleInfo,
 
-        currentRuleIndex,
-
-        tileTPElem,
-
-        centerElem,
-        centerElemPageRect,
-
-        currentItemTPElem,
-
-        targetElemPageRect;
+        currentRuleIndex;
 
     //  If the element is tofu, then we don't show any style for it.
     if (aTPElement.getCanonicalName() === 'sherpa:tofu') {
@@ -414,29 +405,6 @@ function(aTPElement) {
             //  Scroll our list content to its bottom.
             this.get('listcontent').scrollTo(TP.BOTTOM);
 
-            tileTPElem = TP.byId('StyleSummary_Tile', this.getNativeDocument());
-            if (TP.isValid(tileTPElem) && tileTPElem.isVisible()) {
-
-                //  Grab the center element and it's page rectangle.
-                centerElem = TP.byId('center', this.getNativeWindow());
-                centerElemPageRect = centerElem.getPageRect();
-
-                //  Get the currently displayed lozenge given that the peerID
-                //  should be the same as it was for the old lozenge.
-                currentItemTPElem = TP.byCSSPath(
-                            '> ul li[dataindex="' + currentRuleIndex + '"]',
-                            this.getNativeNode(),
-                            true);
-
-                //  Grab it's page rect.
-                targetElemPageRect = currentItemTPElem.getPageRect();
-
-                //  Set the page position of the tile based on the two
-                //  rectangles X and Y, respectively.
-                tileTPElem.setPagePosition(
-                    TP.pc(centerElemPageRect.getX(),
-                            targetElemPageRect.getY()));
-            }
         }.bind(this), 10);
 
     return this;

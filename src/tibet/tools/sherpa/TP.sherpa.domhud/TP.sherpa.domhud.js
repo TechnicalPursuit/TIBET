@@ -341,15 +341,7 @@ function(aTPElement) {
 
         tileTPElem,
 
-        targetTPElem,
-
-        centerElem,
-        centerElemPageRect,
-
-        itemID,
-        currentItemTPElem,
-
-        targetElemPageRect;
+        targetTPElem;
 
     info = TP.ac();
 
@@ -429,26 +421,6 @@ function(aTPElement) {
         //  Update the tile's header text.
         tileTPElem.setHeaderText(
                     targetTPElem.getFullName() + ' Info');
-
-        //  Grab the center element and it's page rectangle.
-        centerElem = TP.byId('center', this.getNativeWindow());
-        centerElemPageRect = centerElem.getPageRect();
-
-        itemID = targetTPElem.getLocalID();
-
-        //  Get the currently displayed lozenge given that the peerID should
-        //  be the same as it was for the old lozenge.
-        currentItemTPElem = TP.byCSSPath('> ul li[peer="' + itemID + '"]',
-                                            this.getNativeNode(),
-                                            true);
-
-        //  Grab it's page rect.
-        targetElemPageRect = currentItemTPElem.getPageRect();
-
-        //  Set the page position of the tile based on the two rectangles X
-        //  and Y, respectively.
-        tileTPElem.setPagePosition(
-            TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
     }
 
     return this;
