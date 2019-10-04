@@ -515,8 +515,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.adjuster.Inst.defineMethod('showAdjusterTile',
-function() {
+TP.sherpa.adjuster.Inst.defineMethod('showAdjusterTileAt',
+function(aPoint) {
 
     /**
      * @method showAdjusterTile
@@ -587,6 +587,9 @@ function() {
 
     value = modelURI.getResource().get('result');
     this.setValue(value);
+
+    //  Position the tile
+    tileTPElem.setPagePosition(aPoint);
 
     tileTPElem.setAttribute('hidden', false);
 

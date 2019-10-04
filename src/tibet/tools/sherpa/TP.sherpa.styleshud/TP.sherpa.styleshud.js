@@ -131,11 +131,13 @@ function(aSignal) {
         data,
         itemData,
 
+        targetTPElem,
+        targetElemPageRect,
+
         centerElem,
         centerElemPageRect,
 
-        targetTPElem,
-        targetElemPageRect,
+        positioningPoint,
 
         halo,
         sourceTPElem,
@@ -185,20 +187,24 @@ function(aSignal) {
     data = this.get('data');
     itemData = data.at(dataIndex);
 
-    if (itemData.at(0) === '[cascaded]') {
-        TP.byId('SherpaAdjuster', this.getNativeDocument()).showAdjusterTile();
-        return this;
-    }
+    targetTPElem = TP.wrap(targetElem);
+
+    //  Use the 'Y' coordinate where the target element is located in the page.
+    targetElemPageRect = targetTPElem.getPageRect();
 
     //  Use the same 'X' coordinate where the 'center' div is located in the
     //  page.
     centerElem = TP.byId('center', this.getNativeWindow());
     centerElemPageRect = centerElem.getPageRect();
 
-    targetTPElem = TP.wrap(targetElem);
+    positioningPoint =
+        TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY());
 
-    //  Use the 'Y' coordinate where the target element is located in the page.
-    targetElemPageRect = targetTPElem.getPageRect();
+    if (itemData.at(0) === '[cascaded]') {
+        TP.byId('SherpaAdjuster', this.getNativeDocument()).
+                                showAdjusterTileAt(positioningPoint);
+        return this;
+    }
 
     halo = TP.byId('SherpaHalo', this.getNativeDocument());
     sourceTPElem = halo.get('currentTargetTPElem');
@@ -246,8 +252,7 @@ function(aSignal) {
     modelURI.setResource(itemData, setResourceParams);
 
     //  Position the tile
-    tileTPElem.setPagePosition(
-        TP.pc(centerElemPageRect.getX(), targetElemPageRect.getY()));
+    tileTPElem.setPagePosition(positioningPoint);
 
     (function() {
         tileTPElem.get('body').
