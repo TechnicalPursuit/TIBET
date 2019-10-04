@@ -3,7 +3,7 @@
 <sherpa:bookmarkMenuContent id="SherpaBookmarkMenu" pclass:hidden="true" bind:in="{data: urn:tibet:sherpa_bookmarks}">
     <div class="header"/>
     <div class="body">
-        <ul on:mouseup="SelectMenuItem"/>
+        <ul on:mouseup="SelectMenuItem" on:dragup="SelectMenuItem"/>
     </div>
     <div class="footer">
         <sherpa:scrollbutton orientation="up" on:click="ScrollUp">
