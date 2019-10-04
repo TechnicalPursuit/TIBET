@@ -21,7 +21,7 @@ TP.sherpa.TemplatedTag.defineSubtype('about');
 TP.sherpa.about.Inst.defineHandler('Feedback',
 function(aSignal) {
 
-    window.open('mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
+    TP.open('mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
 
     this.signal('UIToggle');
 
@@ -31,7 +31,7 @@ function(aSignal) {
 TP.sherpa.about.Inst.defineHandler('Help',
 function(aSignal) {
 
-    window.open('https://www.technicalpursuit.com/support.xhtml', '_blank');
+    TP.open('https://www.technicalpursuit.com/support.xhtml', '_blank');
 
     this.signal('UIToggle');
 
@@ -41,7 +41,7 @@ function(aSignal) {
 TP.sherpa.about.Inst.defineHandler('Issue',
 function(aSignal) {
 
-    window.open('https://github.com/TechnicalPursuit/TIBET/issues', '_blank');
+    TP.open('https://github.com/TechnicalPursuit/TIBET/issues', '_blank');
 
     this.signal('UIToggle');
 

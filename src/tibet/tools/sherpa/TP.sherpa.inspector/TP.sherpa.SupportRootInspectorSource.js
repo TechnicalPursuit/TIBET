@@ -51,7 +51,7 @@ function(options) {
 
     return TP.xhtmlnode(
             '<div class="centerContent">' +
-                '<button onclick="window.open(\'https://www.technicalpursuit.com/support.xhtml\', \'_blank\')">Go to TPI support.</button>' +
+                '<button onclick="TP.open(\'https://www.technicalpursuit.com/support.xhtml\', \'_blank\')">Go to TPI support.</button>' +
             '</div>');
 });
 
