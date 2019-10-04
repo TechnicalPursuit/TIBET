@@ -68,18 +68,6 @@ sherpa|adjusterNameMenuContent > .body > ul > li {
     cursor: pointer;
 }
 
-sherpa|adjusterNameMenuContent > .body > ul > li a {
-
-    color: initial;
-
-    text-decoration: none;
-}
-
-sherpa|adjusterNameMenuContent > .body > ul > li a:focus {
-
-    outline: none;
-}
-
 sherpa|adjusterNameMenuContent > .body > ul > li:hover {
 
     background-color: #ddd;

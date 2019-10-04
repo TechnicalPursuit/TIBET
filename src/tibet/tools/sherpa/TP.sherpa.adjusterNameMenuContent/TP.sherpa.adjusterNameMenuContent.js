@@ -38,8 +38,20 @@ function(aSignal) {
      * @returns {TP.sherpa.adjusterNameMenuContent} The receiver.
      */
 
+    var val;
+
+    //  Grab the value of the 'data-value' attribute.
+    val = aSignal.getDOMTarget().getAttribute('data-value');
+
+    if (TP.isEmpty(val)) {
+        return this;
+    }
+
+    //  Open a window using that value.
+    TP.open(val, '_blank');
+
     //  Send a signal that an item has been selected.
-    this.signal('TP.sig.UISelect');
+    this.signal('TP.sig.UISelect', TP.hc('value', val));
 
     return this;
 });
@@ -74,10 +86,8 @@ function() {
 
     data.forEach(
         function(pairArr, index) {
-            str += '<li>' +
-                    '<a href="' + pairArr.first() + '" target="_blank">' +
+            str += '<li data-value="' + pairArr.first() + '">' +
                     pairArr.last() +
-                    '</a>' +
                     '</li>';
         });
 
