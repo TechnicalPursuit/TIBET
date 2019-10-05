@@ -2194,18 +2194,23 @@ function(aStyleRule) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('styleRuleGetSourceInfo',
-function(aStyleRule, sourceASTs) {
+function(aStyleRule, sourceASTs, aStyleURI) {
 
     /**
      * @method styleRuleGetSourceInfo
      * @summary Returns source information for the supplied style rule.
      * @param {CSSStyleRule} aStyleRule The style rule to retrieve the source
      *     information for.
+     *     inlined content will be acting in place of.
      * @param {TP.core.Hash} sourceASTs A cache, supplied by the caller, that
      *     this method will use to generate the AST for a particular sheet only
      *     once and then cache in this object. In this way, this method can be
      *     called more than once (maybe in a loop) and the ASTs will not be
      *     generated for each rule in each sheet.
+     * @param {TP.uri.URI} [styleURI] The URI of the CSS content that will
+     *     act as the source to produce style information from. If this
+     *     parameter is not supplied, then the raw content from the style sheet
+     *     that the supplied style rule belongs to will be used.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Hash} A hash containing the source information for the
      *     supplied rule.
@@ -2273,27 +2278,40 @@ function(aStyleRule, sourceASTs) {
             TP.notValid(sheetAST = sourceASTs.at(sheetLoc)))) {
     /* eslint-enable no-extra-parens */
 
-        //  If there is no sheet location, then it must be a sheet that was
-        //  generated for an inline 'style' element.
-        if (!TP.isString(sheetLoc)) {
-            styleElem = TP.styleSheetGetOwnerNode(ownerSheet);
-            if (!TP.isElement(styleElem)) {
-                return TP.hc();
+        //  If the supplied style URI is real fetch it's contents
+        //  *synchronously*.
+        if (TP.isURI(aStyleURI)) {
+            request = TP.request('async', false, 'signalChange', false);
+            srcText = aStyleURI.getContent(request);
+
+            //  Always get the String, in case we get a
+            //  TP.core.CSSStyleSheetContent object
+            srcText = srcText.asString();
+        }
+
+        if (TP.isEmpty(srcText)) {
+            //  If there is no sheet location, then it must be a sheet that was
+            //  generated for an inline 'style' element.
+            if (!TP.isString(sheetLoc)) {
+                styleElem = TP.styleSheetGetOwnerNode(ownerSheet);
+                if (!TP.isElement(styleElem)) {
+                    return TP.hc();
+                }
+
+                //  The sheet location is the global ID of the style element and
+                //  the source text to process is the content of that element.
+                sheetLoc = TP.gid(styleElem);
+                srcText = TP.nodeGetTextContent(styleElem);
+            } else {
+
+                //  Otherwise, it's an external sheet - fetch it's contents
+                //  *synchronously*.
+                //  TODO:   rebuilt to eliminate the sync call here.
+                request = TP.request('async', false);
+                TP.httpGet(sheetLoc, request);
+                httpObj = request.at('commObj');
+                srcText = httpObj.responseText;
             }
-
-            //  The sheet location is the global ID of the style element and the
-            //  source text to process is the content of that element.
-            sheetLoc = TP.gid(styleElem);
-            srcText = TP.nodeGetTextContent(styleElem);
-        } else {
-
-            //  Otherwise, it's an external sheet - fetch it's contents
-            //  *synchronously*.
-            //  TODO:   rebuilt to eliminate the sync call here.
-            request = TP.request('async', false);
-            TP.httpGet(sheetLoc, request);
-            httpObj = request.at('commObj');
-            srcText = httpObj.responseText;
         }
 
         //  If we couldn't get source text, then we return an empty Hash.
