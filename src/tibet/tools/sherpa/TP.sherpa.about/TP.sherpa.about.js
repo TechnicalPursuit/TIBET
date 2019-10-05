@@ -21,6 +21,15 @@ TP.sherpa.TemplatedTag.defineSubtype('about');
 TP.sherpa.about.Inst.defineHandler('Feedback',
 function(aSignal) {
 
+    /**
+     * @method handleFeedback
+     * @summary Handles notification of when the receiver wants to provide
+     *     feedback to Technical Pursuit Inc.
+     * @param {TP.sig.Feedback} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.about} The receiver.
+     */
+
     TP.open('mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
 
     this.signal('UIToggle');
@@ -28,8 +37,19 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
 TP.sherpa.about.Inst.defineHandler('Help',
 function(aSignal) {
+
+    /**
+     * @method handleHelp
+     * @summary Handles notification of when the receiver wants to obtain help
+     *     from Technical Pursuit Inc.
+     * @param {TP.sig.Help} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.about} The receiver.
+     */
 
     TP.open('https://www.technicalpursuit.com/support.xhtml', '_blank');
 
@@ -38,8 +58,19 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
 TP.sherpa.about.Inst.defineHandler('Issue',
 function(aSignal) {
+
+    /**
+     * @method handleIssue
+     * @summary Handles notification of when the receiver wants to file an issue
+     *     with Technical Pursuit Inc.
+     * @param {TP.sig.Issue} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.about} The receiver.
+     */
 
     TP.open('https://github.com/TechnicalPursuit/TIBET/issues', '_blank');
 

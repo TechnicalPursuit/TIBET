@@ -874,13 +874,13 @@ function() {
     for (i = 0; i < len; i++) {
 
         //  Push in a data row and then a spacer row.
-        //  NOTE: We construct the spacer row to take into account the fact, in
-        //  the 3rd slot, what the 'condition' (i.e. 'normal', 'target',
-        //  'child') is of the data row that it's a spacer for. This is because,
-        //  if the data row is being removed for some reason, we want the spacer
-        //  row to be removed as well. Otherwise, spurious spacer rows are left
-        //  around and, with the 'append' in the buildNewContent method, things
-        //  will get out of order in a hurry.
+        //  NOTE: We construct the spacer row to take into account that the 3rd
+        //  slot will contain the 'condition' (i.e. 'normal', 'target', 'child')
+        //  of the data row that it's a spacer for. This is because, if the data
+        //  row is being removed for some reason, we want the spacer row to be
+        //  removed as well. Otherwise, spurious spacer rows are left around
+        //  and, with the 'append' in the buildNewContent method, things will
+        //  get out of order in a hurry.
         newData.push(
             data.at(i),
             TP.ac('spacer_' + i, 'spacer', 'spacer_' + data.at(i).at(2)));

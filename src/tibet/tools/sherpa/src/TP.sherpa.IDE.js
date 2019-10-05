@@ -4565,6 +4565,15 @@ function() {
 TP.sherpa.IDE.Inst.defineMethod('setupEditorOn',
 function(aTargetNode) {
 
+    /**
+     * @method setupEditorOn
+     * @summary Sets up an 'inline editor' on the supplied node. This inline
+     *     editor allows editing of the supplied Node, if its a Text node, or
+     *     the first child of the supplied Node, if it's an Element.
+     * @param {Node} aNode The Node that the editor should be set up on.
+     * @returns {TP.sherpa.IDE} The receiver.
+     */
+
     var targetElem,
         textNode,
 
@@ -4772,6 +4781,8 @@ function(aTargetNode) {
 
             this.removeEventListener('keydown', keydownHandler, false);
         });
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
