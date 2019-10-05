@@ -37,6 +37,12 @@
         logger = logger.getContextualLogger(meta);
 
         //  ---
+        //  Task name
+        //  ---
+
+        module.exports.taskName = 's3';
+
+        //  ---
         //  Task
         //  ---
 

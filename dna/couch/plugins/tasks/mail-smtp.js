@@ -34,6 +34,14 @@
         };
         logger = logger.getContextualLogger(meta);
 
+        //  ---
+        //  Task name
+        //  ---
+
+        module.exports.taskName = 'smtp';
+
+        //  ---
+
         nodemailer = require('nodemailer');
 
         //  ---

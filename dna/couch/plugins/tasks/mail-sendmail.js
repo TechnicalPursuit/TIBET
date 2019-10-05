@@ -38,6 +38,14 @@
         };
         logger = logger.getContextualLogger(meta);
 
+        //  ---
+        //  Task name
+        //  ---
+
+        module.exports.taskName = 'sendmail';
+
+        //  ---
+
         nodemailer = require('nodemailer');
 
         //  ---

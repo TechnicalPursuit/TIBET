@@ -1,0 +1,10 @@
+{
+    "type": "task",
+    "name": "stripe",
+    "owner": "DEFAULT",
+    "plugin": "stripe",
+    "params": {
+        "public_key": "",
+        "description": ""
+    }
+}
