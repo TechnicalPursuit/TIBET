@@ -1,7 +1,7 @@
 {
     "type": "task",
     "name": "smtp",
-    "owner": "Team TIBET",
+    "owner": "DEFAULT",
     "plugin": "mail-smtp",
     "params": {
         "transport": {

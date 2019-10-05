@@ -1,7 +1,7 @@
 {
     "type": "task",
     "name": "sendmail",
-    "owner": "Team TIBET",
+    "owner": "DEFAULT",
     "plugin": "mail-sendmail",
     "params": {
         "transport": {

@@ -1,7 +1,7 @@
 {
     "type": "task",
     "name": "templater",
-    "owner": "Team TIBET",
+    "owner": "DEFAULT",
     "plugin": "templater",
     "params": {
         "template": "~tds_templates/templateone.html",

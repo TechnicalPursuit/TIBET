@@ -1,7 +1,7 @@
 {
     "type": "task",
     "name": "s3",
-    "owner": "Team TIBET",
+    "owner": "DEFAULT",
     "plugin": "s3-upload",
     "params": {
         "auth": {
