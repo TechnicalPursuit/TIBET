@@ -775,7 +775,7 @@ function(enterSelection) {
             'dataindex',
             function(d, i) {
                 if (d[1] !== 'spacer') {
-                    return i / 2;
+                    return (i / 2).floor();
                 }
             }).text(
             function(d) {
@@ -917,7 +917,7 @@ function(updateSelection) {
             'dataindex',
             function(d, i) {
                 if (d[1] !== 'spacer') {
-                    return i / 2;
+                    return (i / 2).floor();
                 }
             }).text(
             function(d) {
