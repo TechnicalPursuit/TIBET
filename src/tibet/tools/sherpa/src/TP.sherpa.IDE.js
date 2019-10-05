@@ -1382,6 +1382,12 @@ function(aSignal) {
 
     var targetElem;
 
+    //  If the signal didn't happen in the current UI canvas, then we move on.
+    //  Inline editing is limited to UI canvas only.
+    if (aSignal.getDocument() !== TP.sys.uidoc()) {
+        return this;
+    }
+
     //  If the Shift key is down, then we go ahead and resolve the target and
     //  set up an 'inline editor' on it.
     if (aSignal.getShiftKey()) {
