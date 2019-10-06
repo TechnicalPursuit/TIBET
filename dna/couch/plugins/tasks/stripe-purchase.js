@@ -20,10 +20,6 @@
         var app,
             logger,
             TDS,
-            fs,
-            path,
-            SFTPClient,
-            archiver,
             meta;
 
         //  ---

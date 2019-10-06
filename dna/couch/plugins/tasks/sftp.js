@@ -67,7 +67,7 @@
         return function(job, step, params) {
             var sftpOpts,
 
-                root,
+                rootPath,
                 fullpath,
 
                 sftpObj,
@@ -121,12 +121,12 @@
             sftpOpts = {};
 
             //  The root path will get us into the root of the project.
-            root = path.resolve(TDS.expandPath('~'));
+            rootPath = path.resolve(TDS.expandPath('~'));
 
             //  If there is a key file, read it into the 'privateKey' field of
             //  the params.
             if (params.keyfile) {
-                fullpath = path.join(root, params.keyfile);
+                fullpath = path.join(rootPath, params.keyfile);
                 sftpOpts.privateKey = fs.readFileSync(fullpath);
             } else {
                 sftpOpts.password = TDS.decrypt(params.password);
@@ -177,7 +177,7 @@
                 //  Compute the local file name that will be temporarily used to
                 //  create the .zip archive. We will delete this when it's all
                 //  done.
-                sourceFullFilePath = path.join(root, 'zips', targetFileName);
+                sourceFullFilePath = path.join(rootPath, 'zips', targetFileName);
                 sourceFile = fs.createWriteStream(sourceFullFilePath);
 
                 //  Create the .zip archive object.
