@@ -9,18 +9,20 @@
  * This subcommand expects the following fields, shown here as a set of
  * configuration parameters in the project's 'tds.json' file:
  *
-        "deploy": {
-            "awselasticbeanstalk": {
-                "profile": "development",
-                "region": "us-east-1",
-                "appname": "TIBETAWSEBSTest"
-            }
-        }
+ *      "deploy": {
+ *          "awselasticbeanstalk": {
+ *              "profile": "development",
+ *              "region": "us-east-1",
+ *              "appname": "TIBETAWSEBSTest"
+ *          }
+ *      }
  *
- * and as an inline parameter to the command, which is not placed in the
- * 'tds.json' file for obvious reasons:
+ * and/or as an inline parameter to the command, which here shows a parameter
+ * that is not placed in the 'tds.json' file for obvious reasons:
  *
  *      tibet deploy awselasticbeanstalk '{"password":"passwordMyPassword"}'
+ *
+ * These parameter sets are combined to form the full parameter set.
  */
 
 (function() {

@@ -9,23 +9,25 @@
  * This subcommand expects the following fields, shown here as a set of
  * configuration parameters in the project's 'tds.json' file:
  *
-        "deploy": {
-            "azurewebapps": {
-                "username": "bedney@technicalpursuit.com",
-                "resourcegroupname": "TIBETAzureTestResourceGroup",
-                "resourcegrouplocation": "Central US",
-                "containerregistryname": "TIBETAzureTestContainerRegistry",
-                "containerregistrysku": "Basic",
-                "appserviceplanname": "TIBETAzureTestPlan",
-                "appservicesku": "B1",
-                "appname": "TIBETAzureTest"
-            }
-        }
+ *      "deploy": {
+ *          "azurewebapps": {
+ *              "username": "bedney@technicalpursuit.com",
+ *              "resourcegroupname": "TIBETAzureTestResourceGroup",
+ *              "resourcegrouplocation": "Central US",
+ *              "containerregistryname": "TIBETAzureTestContainerRegistry",
+ *              "containerregistrysku": "Basic",
+ *              "appserviceplanname": "TIBETAzureTestPlan",
+ *              "appservicesku": "B1",
+ *              "appname": "TIBETAzureTest"
+ *          }
+ *      }
  *
- * and as an inline parameter to the command, which is not placed in the
- * 'tds.json' file for obvious reasons:
+ * and/or as an inline parameter to the command, which here shows a parameter
+ * that is not placed in the 'tds.json' file for obvious reasons:
  *
  *      tibet deploy azurewebapps '{"password":"passwordMyPassword"}'
+ *
+ * These parameter sets are combined to form the full parameter set.
  */
 
 (function() {

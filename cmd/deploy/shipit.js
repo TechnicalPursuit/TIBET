@@ -3,6 +3,22 @@
  * JavaScript-based 'Shipit!' tool. This one is built to handle invocations of
  * the TIBET CLI with a command line of:
  * 'tibet deploy shipit <shipit_environment>'.
+ *
+ * This subcommand expects the following fields, shown here as a set of
+ * configuration parameters in the project's 'tds.json' file:
+ *
+ *      "deploy": {
+ *          "shipit": {
+ *              "environment": "development",
+ *              "rollback": false
+ *          }
+ *      }
+ *
+ * and/or as an inline parameter to the command:
+ *
+ *      tibet deploy shipit '{"environment":"test"}'
+ *
+ * These parameter sets are combined to form the full parameter set.
  */
 
 (function() {
