@@ -226,7 +226,7 @@ function(aSignal) {
         //  group, we want the *whole* displayed value (which, in that case,
         //  would be an Array). Therefore, we need to fetch the whole display
         //  value here to set as the bound value.
-        this.setBoundValueIfBound(this.getDisplayValue());
+        this.setBoundValueIfBound(this.getValue());
 
         this.shouldSignalChange(wasSignalingChange);
 

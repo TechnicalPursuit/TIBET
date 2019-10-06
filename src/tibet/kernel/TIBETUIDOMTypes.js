@@ -1412,7 +1412,7 @@ function(aTargetElem, anEvent) {
         //  'model' and 'both'. We handle 'model' and 'both' here.
         if (incrementalVal === 'model' || incrementalVal === 'both') {
             evtTargetTPElem.setBoundValueIfBound(
-                                    evtTargetTPElem.getDisplayValue());
+                                    evtTargetTPElem.getValue());
         }
     }
 

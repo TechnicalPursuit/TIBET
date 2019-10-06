@@ -400,7 +400,7 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(displayValue);
+        this.setBoundValueIfBound(this.getValue());
     }
 
     //  If this flag is true, then that means that we're setting the value from

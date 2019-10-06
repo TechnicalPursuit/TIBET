@@ -1231,7 +1231,7 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(displayValue);
+        this.setBoundValueIfBound(this.getValue());
     }
 
     return true;
@@ -2319,7 +2319,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
+    tpElem.setBoundValueIfBound(tpElem.getValue());
 
     if (TP.isValid(tpElem)) {
         tpElem.changed('value', TP.UPDATE);
@@ -2933,7 +2933,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
+    tpElem.setBoundValueIfBound(tpElem.getValue());
 
     if (TP.isValid(tpElem)) {
         tpElem.changed('value', TP.UPDATE);
@@ -3503,7 +3503,7 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(displayValue);
+        this.setBoundValueIfBound(this.getValue());
     }
 
     return this;
@@ -3563,7 +3563,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
+    tpElem.setBoundValueIfBound(tpElem.getValue());
 
     if (TP.isValid(tpElem)) {
         tpElem.changed('value', TP.UPDATE);
