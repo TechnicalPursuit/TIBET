@@ -52,17 +52,17 @@ markup is the only approach that scales, the only approach that can handle
 the millions of applications being ported to the web, the only
 approach that addresses <a href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's hiring problem</a> head on.
 
-Likewise, TIBET is the only platform designed to let you author in <a
-href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
-first</a>; the only platform created to solve <a
-href="https://www.technicalpursuit.com/docs">the real problems web projects face</a>;
-the only platform offering <a
-href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build
-solution</a>; and the only platform <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
+Likewise, TIBET is the only platform designed to:
+
+- let you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup first</a>;
+- solve <a href="https://www.technicalpursuit.com/docs">the real problems web projects face</a>;
+- offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build
+solution</a>; and
+- <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
 
 ##### **Still coding in JavaScript and expecting different results?**
 
-##### **Try TIBET. Different goals; different tools; different results.**
+##### **Switch to TIBET...different results require different tools.**
 
 <br/>
 
