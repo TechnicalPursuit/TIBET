@@ -534,6 +534,9 @@ function(aValue, shouldSignal) {
             var isMutable,
 
                 rule,
+
+                sourceURI,
+
                 info,
                 decls,
 
