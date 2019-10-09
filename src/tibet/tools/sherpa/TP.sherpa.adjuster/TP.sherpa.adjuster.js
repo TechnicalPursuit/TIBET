@@ -423,7 +423,15 @@ function(aValue, shouldSignal) {
                                         aRuleInfo.at('sheetLocation'));
 
             rule = aRuleInfo.at('rule');
-            info = TP.styleRuleGetSourceInfo(rule, TP.hc());
+
+            //  Obtain the source URI to get the style rule text from. This is
+            //  used as an optional parameter to getting the source info below
+            //  and provides more fidelity with what the actual source text is
+            //  in the stylesheet than what the stylesheet object model
+            //  provides.
+            sourceURI = TP.uc(aRuleInfo.at('sheetLocation'));
+
+            info = TP.styleRuleGetSourceInfo(rule, TP.hc(), sourceURI);
 
             //  Sometimes we get entries that are not rules - like '@namespace'
             //  or '@import' declarations. If that's the case, move on here.
