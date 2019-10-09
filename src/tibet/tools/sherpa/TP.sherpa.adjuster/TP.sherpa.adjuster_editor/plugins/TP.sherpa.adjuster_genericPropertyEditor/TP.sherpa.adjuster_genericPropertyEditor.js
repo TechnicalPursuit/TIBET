@@ -666,7 +666,14 @@ function(infoData, mainPropName, aSlotName) {
                 break;
 
             case 'Identifier':
-                str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
+                //  If it's a named color, then create a color slot editor and
+                //  use the hex value to supply to the control.
+                if (TP.CSS_COLOR_NAMES.at(slotVal)) {
+                    str += ' tibet:tag="sherpa:CSSColorSlotEditor"';
+                    slotVal = TP.CSS_COLOR_NAMES.at(slotVal);
+                } else {
+                    str += ' tibet:tag="sherpa:CSSIdentifierSlotEditor"';
+                }
                 break;
 
             case 'Percentage':
@@ -676,6 +683,11 @@ function(infoData, mainPropName, aSlotName) {
             //  Editable slots
             case 'Function':
             case 'HexColor':
+                str += ' tibet:tag="sherpa:CSSColorSlotEditor"';
+                //  Note that the CSS parser strips the '#' but the normal
+                //  platform 'input type="color"' control needs it.
+                slotVal = '#' + slotVal;
+                break;
             case 'Number':
             case 'String':
                 str += ' tibet:tag="sherpa:CSSSlotEditor"';
@@ -1396,6 +1408,124 @@ function() {
     //  Allow the adjuster editor to update any constructs that it is managing
     //  with the new value.
     ourAdjusterEditorTPElem.updateRuleValue(false);
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.CSSColorSlotEditor
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.CSSColorSlotEditor}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSSlotEditor.defineSubtype('CSSColorSlotEditor');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  This tag has no associated CSS. Note how these properties are *not*
+//  TYPE_LOCAL, by design.
+TP.sherpa.CSSColorSlotEditor.Type.defineAttribute('styleURI', TP.NO_RESULT);
+TP.sherpa.CSSColorSlotEditor.Type.defineAttribute('themeURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSColorSlotEditor.Inst.defineAttribute(
+    'valuePart',
+    TP.cpc('> *[part="value"]', TP.hc('shouldCollapse', true)));
+
+TP.sherpa.CSSColorSlotEditor.Inst.defineAttribute(
+    'colorControl',
+    TP.cpc('> *[part="value"] > input[type="color"]', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSColorSlotEditor.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    var elem,
+
+        val,
+
+        str,
+        newFrag;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    val = TP.nodeGetTextContent(elem);
+
+    str = '<span part="value">' +
+            '<input type="color"' +
+                    ' value="' + val + '" on:change="PickerValueChange"/>' +
+            '</span>';
+
+    newFrag = TP.xhtmlnode(str);
+
+    TP.elementSetContent(elem, newFrag, null, false);
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSColorSlotEditor.Inst.defineMethod('getValueForCSSRule',
+function() {
+
+    /**
+     * @method getValueForCSSRule
+     * @summary Returns the value that can be used to update the property that
+     *     the receiver is managing in its host CSSRule.
+     * @returns {String} The value that can be used to update the associated
+     *     CSSRule.
+     */
+
+    return this.get('colorControl').getValue();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CSSColorSlotEditor.Inst.defineHandler('PickerValueChange',
+function(aSignal) {
+
+    /**
+     * @method handlePickerValueChange
+     * @summary Handles notification of when the user has changed the color
+     *     picker value.
+     * @param {TP.sig.PickerValueChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.CSSColorSlotEditor} The receiver.
+     */
+
+    //  Complete updating the rule passing true to force the system to send a
+    //  notification that the style rule changed and a false to let it know that
+    //  it doesn't have to resize/reposition the halo (this is a color change).
+    this.completeUpdatingRule(true, false);
 
     return this;
 });
