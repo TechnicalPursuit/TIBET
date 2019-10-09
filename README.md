@@ -22,47 +22,54 @@
 
 <br/>
 
-### **Still coding your web apps? You're doing it wrong...**
+### **Still coding your web apps? You're doing it wrong :)**
 
 #### **The web was built with markup, your apps should be too.**
 
+<br/>
 
-Swapping out one JavaScript framework for another has been going on for over
-twenty years and for twenty years the results have been the same...you trade one
-hammer for another; you may see some incremental improvement; but you're still
-hammering.
+##### Think about your current framework...
 
-TIBET is different. Instead of a slightly better hammer, <a
-href="https://www.technicalpursuit.com/docs/sherpa.html">TIBET gives you a
-nailgun</a>, changing the fundamental nature of the work. With TIBET you build
-apps top-down, <a
-href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">markup
-first</a>, minimizing code. With TIBET you <a href="https://www.youtube.com/channel/UCVs7Oj4NMJzlLDn32aqVUZg">"Drag, Drop, Deploy.&#8482;"</a> applications via markup.
+If you're using React, Angular, Vue, etc. your applications are written with at
+least 80% code and less than 20% markup. That 4-to-1 ratio of coding over
+markup directly influences your ability to hire, to scale your teams, to share
+components, to maintain applications over time.
 
-Yes, underneath TIBET's <a
-href="https://www.technicalpursuit.com/docs/platform.html#tools">advanced
-tooling</a> there's a JavaScript framework, one with <a
-href="https://www.technicalpursuit.com/docs/platform.html#client">unmatched
-power and scope</a>, but far more importantly it's a framework built with a
-unique mission: minimize coding. As we say, "We write JavaScript so you don't
-have to.&#8482;"
+Now imagine instead of hiring 4 JavaScript coders per HTML/CSS developer you
+could hire a single JavaScript developer per four HTML/CSS developers. You'd be
+able to scale faster, hire more cost-effectively, share components more easily;
+everything would improve.
 
-The web didn't grow to 6 billion pages using JavaScript. Authoring in
-markup is the only approach that scales, the only approach that can handle
-the millions of applications being ported to the web, the only
-approach that addresses <a href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's hiring problem</a> head on.
+##### Think about the web...
 
-Likewise, TIBET is the only platform designed to:
+The web isn't 6 billion pages of markup embedded in JavaScript. The web grew to
+6 billion pages by putting markup first, markup <i>augmented</i> by JavaScript, not
+embedded in it.
 
-- let you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup first</a>;
-- solve <a href="https://www.technicalpursuit.com/docs">the real problems web projects face</a>;
+Authoring in markup is the only approach that truly scales, the only approach
+that can handle the millions of applications being ported to the web, the only
+approach that addresses <a
+href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's
+hiring problem</a> head on. More code just creates more problems.
+
+##### Think about switching to TIBET...
+
+TIBET's inverts today's 4-to-1 code-to-markup ratio, providing a platform where
+you get 80% of your authoring done in markup, a platform where a small number of
+JavaScript developers can support a much larger team of HTML/CSS
+developers. We call it the "authoring pyramid".
+
+Simply put, TIBET is the only platform:
+
+- where you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup first</a>;
+- solving <a href="https://www.technicalpursuit.com/docs">the real problems web projects face</a>;
 - offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build
 solution</a>; and
 - <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
 
 ##### **Still coding in JavaScript and expecting different results?**
 
-##### **Switch to TIBET...different results require different tools.**
+##### **80/20... meet 20/80... The future is written in markup.**
 
 <br/>
 
