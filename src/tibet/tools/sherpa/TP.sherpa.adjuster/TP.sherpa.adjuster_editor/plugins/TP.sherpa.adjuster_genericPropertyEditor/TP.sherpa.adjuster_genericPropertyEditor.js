@@ -1167,14 +1167,17 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.adjuster_genericPropertyEditor.Inst.defineMethod('updateRuleValue',
-function(updateRuleSource) {
+function(updateRuleSource, adjustHalo) {
 
     /**
      * @method updateRuleValue
      * @summary Allows the receiver to update using the supplied value. This
      *     value should be specific to the property that the receiver is
      *     managing.
-     * @param {Boolean} updateRuleSource
+     * @param {Boolean} [updateRuleSource=true] Whether or not to signal that
+     *     the style has changed.
+     * @param {Boolean} [adjustHalo=true] Whether or not to adjust the halo to
+     *     match any dimension or position style changes.
      * @returns {TP.sherpa.adjuster_genericPropertyEditor} The receiver.
      */
 
@@ -1222,17 +1225,20 @@ function(updateRuleSource) {
 
     //  Tell the adjuster that we're only interested in updating rules, not in
     //  redrawing all of the editors as if the sheet got completely changed.
-    TP.byId('SherpaAdjuster', this.getNativeDocument()).set('$updateRulesOnly', true);
+    TP.byId('SherpaAdjuster',
+            this.getNativeDocument()).set('$updateRulesOnly', true);
 
     //  Set the property to the supplied value. Note here how we pass along the
     //  flag as to whether to broadcast a CSSStyleRule change.
     TP.styleRuleSetProperty(propRule, propName, val, updateRuleSource);
 
-    //  Grab the halo and adjust it's size & position in case the property
-    //  we were manipulating affected that.
-    haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
-    haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
-    haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
+    if (TP.notFalse(adjustHalo)) {
+        //  Grab the halo and adjust it's size & position in case the property
+        //  we were manipulating affected that.
+        haloTPElem = TP.byId('SherpaHalo', this.getNativeDocument());
+        haloTargetTPElem = haloTPElem.get('currentTargetTPElem');
+        haloTPElem.moveAndSizeToTarget(haloTargetTPElem);
+    }
 
     return this;
 });
