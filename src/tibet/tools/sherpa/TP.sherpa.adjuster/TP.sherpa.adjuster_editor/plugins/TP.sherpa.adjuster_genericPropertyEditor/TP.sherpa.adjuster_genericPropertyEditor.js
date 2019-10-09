@@ -1317,7 +1317,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CSSSlotEditor.Inst.defineMethod('completeUpdatingRule',
-function() {
+function(updateRuleSource, adjustHalo) {
 
     /**
      * @method completeUpdatingRule
@@ -1325,6 +1325,10 @@ function() {
      *     editor is (possibly partly) managing with a final version of the
      *     receiver's value. Note that this method *will* signal a change when
      *     the rule is updated.
+     * @param {Boolean} [updateRuleSource=true] Whether or not to signal that
+     *     the style has changed.
+     * @param {Boolean} [adjustHalo=true] Whether or not to adjust the halo to
+     *     match any dimension or position style changes.
      * @returns {TP.sherpa.CSSSlotEditor} The receiver.
      */
 
@@ -1335,7 +1339,7 @@ function() {
 
     //  Allow the adjuster editor to update any constructs that it is managing
     //  with the new value.
-    ourAdjusterEditorTPElem.updateRuleValue(true);
+    ourAdjusterEditorTPElem.updateRuleValue(updateRuleSource, adjustHalo);
 
     return this;
 });
