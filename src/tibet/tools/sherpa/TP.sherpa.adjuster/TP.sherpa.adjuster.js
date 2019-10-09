@@ -579,6 +579,14 @@ function(aValue, shouldSignal) {
                 propName = decls.at(i).property;
                 propVal = decls.at(i).value;
 
+                //  If the property value is an RGB or HSL value, then convert
+                //  it to a hex value, which we can handle (for now - function
+                //  support is future).
+                if (TP.regex.CSS_RGB.test(propVal) ||
+                    TP.regex.CSS_HSL.test(propVal)) {
+                    propVal = TP.colorStringAsHex(propVal);
+                }
+
                 //  Grab a specific editor Element for this property name and
                 //  value.
                 editorElem = this.getEditorForPropertyNameAndValue(
