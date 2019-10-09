@@ -20,6 +20,91 @@ TP.sherpa.Element.defineSubtype('adjuster');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.adjuster.Type.defineMethod('getSupportedCSSProperties',
+function() {
+
+    /**
+     * @method getSupportedCSSProperties
+     * @summary Returns the list of properties that we can adjust.
+     * @returns {String[]} The list of CSS properties that this control can
+     *     adjust.
+     */
+
+    var props;
+
+    props = TP.ac(
+        'animation-direction',
+        'backface-visibility',
+        'background-color',
+        'background-image',
+        'border-bottom-color',
+        'border-bottom-style',
+        'border-bottom-width',
+        'border-collapse',
+        'border-image-source',
+        'border-left-color',
+        'border-left-style',
+        'border-left-width',
+        'border-right-color',
+        'border-right-style',
+        'border-right-width',
+        'border-top-color',
+        'border-top-style',
+        'border-top-width',
+        'bottom',
+        'box-sizing',
+        'caret-color',
+        'clear',
+        'color',
+        'column-rule-color',
+        'direction',
+        'display',
+        'empty-cells',
+        'float',
+        'font-style',
+        'font-weight',
+        'height',
+        'left',
+        'line-height',
+        'list-style-image',
+        'list-style-position',
+        'margin-bottom',
+        'margin-left',
+        'margin-right',
+        'margin-top',
+        'object-position',
+        'opacity',
+        'outline-color',
+        'outline-style',
+        'overflow-anchor',
+        'overflow-x',
+        'overflow-y',
+        'padding-bottom',
+        'padding-left',
+        'padding-right',
+        'padding-top',
+        'position',
+        'resize',
+        'right',
+        'shape-outside',
+        'text-align',
+        'text-decoration-color',
+        'text-decoration-style',
+        'text-transform',
+        'top',
+        'transform',
+        'transition-duration',
+        'vertical-align',
+        'visibility',
+        'white-space',
+        'width'
+    );
+
+    return props;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.adjuster.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -99,7 +184,49 @@ function(aSignal) {
      * @returns {TP.sherpa.adjuster} The receiver.
      */
 
-    TP.todo();
+    var currentlySupportedProps;
+
+    //  Grab the supported CSS properties from our type.
+    currentlySupportedProps = this.getType().getSupportedCSSProperties();
+
+    //  Prompt the user to define a property name and property value.
+    TP.promptWithChoices(
+        'Choose one of the following CSS properties:',
+        currentlySupportedProps,
+        'background-color').then(
+        function(cssPropName) {
+            if (TP.isEmpty(cssPropName)) {
+                return;
+            }
+
+            TP.prompt('Enter a value for <b>' + cssPropName + '</b>:').then(
+                function(cssPropValue) {
+
+                    var haloTPElem,
+                        targetTPElem,
+
+                        modifyingRule;
+
+                    if (TP.isEmpty(cssPropValue)) {
+                        return;
+                    }
+
+                    haloTPElem = TP.byId('SherpaHalo', TP.sys.getUIRoot());
+                    targetTPElem = haloTPElem.get('currentTargetTPElem');
+
+                    //  Obtain or make a rule that can be used to modify the
+                    //  target element.
+                    modifyingRule =
+                        TP.bySystemId('Sherpa').getOrMakeModifiableRule(
+                                                                targetTPElem);
+
+                    TP.styleRuleSetProperty(
+                                modifyingRule, cssPropName, cssPropValue, true);
+
+                    this.setValue(targetTPElem, true);
+                }.bind(this));
+
+        }.bind(this));
 
     return this;
 });
