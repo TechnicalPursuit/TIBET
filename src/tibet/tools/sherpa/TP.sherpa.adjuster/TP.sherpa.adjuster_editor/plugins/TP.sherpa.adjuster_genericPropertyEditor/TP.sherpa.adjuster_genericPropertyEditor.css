@@ -92,6 +92,15 @@ sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[part="value
     margin-right: 1px;
 }
 
+sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[part="value"] input[type="color"] {
+
+    margin: 0;
+    border: 0;
+    padding: 0;
+
+    -webkit-appearance: none;
+}
+
 sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slottype="Percentage"] span[part="value"]:hover,
 sherpa|adjuster_genericPropertyEditor div[name="propertyValue"] span[slottype="Dimension"] span[part="value"]:hover {
 
