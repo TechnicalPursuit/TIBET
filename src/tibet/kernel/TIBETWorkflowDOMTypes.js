@@ -1872,6 +1872,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     query = 'descendant-or-self::*[namespace-uri() = "' +
                                         TP.w3.Xmlns.XINCLUDE +
                                         '"]';
@@ -1936,6 +1942,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     query = './/processing-instruction()[name()="tibet-stylesheet"]';
@@ -2089,6 +2101,12 @@ function(aNode) {
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  See the type constants for a description of this query.
@@ -2346,6 +2364,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  See the type constants for a description of this query.
     query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY_NO_AWAKEN;
 
@@ -2409,6 +2433,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  We're only interested in elements that either are in the 'ev:' namespace
@@ -2483,6 +2513,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  We're only interested in elements that have attributes in the 'on:'
     //  namespace
     query = 'descendant-or-self::*' +
@@ -2550,6 +2586,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  We're only interested in elements that have attributes in the 'on:'
@@ -2620,6 +2662,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  We're only interested in elements that have a local name of 'info'.
@@ -2856,6 +2904,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  We're only interested in elements that have attributes in the 'on:'
     //  namespace
     query = 'descendant-or-self::*' +
@@ -2923,6 +2977,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  We're only interested in elements that have attributes in the 'on:'
@@ -3023,6 +3083,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  We're only interested in elements that either are in the 'ev:' namespace
     //  or have attributes in the 'ev:' namespace
     query = 'descendant-or-self::*' +
@@ -3095,6 +3161,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  We're only interested in elements that have attributes in the 'on:'
     //  namespace
     query = 'descendant-or-self::*' +
@@ -3165,6 +3237,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  We're only interested in elements that have attributes in the 'on:'
     //  namespace
     query = 'descendant-or-self::*' +
@@ -3232,6 +3310,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  We're only interested in elements that have a local name of 'info'.
@@ -3468,6 +3552,12 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
     //  We're only interested in elements that have attributes in the 'on:'
     //  namespace
     query = 'descendant-or-self::*' +
@@ -3535,6 +3625,12 @@ function(aNode) {
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
     }
 
     //  We're only interested in elements that have attributes in the 'on:'
