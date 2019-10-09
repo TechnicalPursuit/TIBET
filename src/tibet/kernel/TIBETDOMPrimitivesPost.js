@@ -7628,7 +7628,7 @@ function(aNode, anXPath, resultType, logErrors) {
      *     TP.NODESET or TP.FIRST_NODE.
      * @param {Boolean} logErrors Used to turn off error notification,
      *     particularly during operations such as string localization which
-     *     can cause recusion issues.
+     *     can cause recursion issues.
      * @example Use XPath to select a set of nodes from a mixed namespace
      *     document:
      *     <code>
