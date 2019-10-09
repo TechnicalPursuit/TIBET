@@ -22,7 +22,7 @@
 
 <br/>
 
-### **Still coding your web apps? You're doing it wrong :)**
+### **Still coding your web apps? You're doing it wrong...**
 
 #### **The web was built with markup, your apps should be too.**
 
@@ -31,9 +31,9 @@
 ##### Think about your current framework...
 
 If you're using React, Angular, Vue, etc. your applications are written with at
-least 80% code and less than 20% markup. That 4-to-1 ratio of coding over
-markup directly influences your ability to hire, to scale your teams, to share
-components, to maintain applications over time.
+least 80% code and less than 20% markup. That 4-to-1 ratio directly influences
+your development speed, your ability to hire, to share components, to maintain
+your applications over time.
 
 Now imagine instead of hiring 4 JavaScript coders per HTML/CSS developer you
 could hire a single JavaScript developer per four HTML/CSS developers. You'd be
