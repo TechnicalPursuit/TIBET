@@ -932,7 +932,7 @@
                                     TDS.blend(params, block.params);
                                 } else {
                                     throw new Error(
-                                        'Job param sequence out of order.' +
+                                        'Job param sequence out of order. ' +
                                         block.task + ' !== ' + task.name + '.');
                                 }
                             } else {
