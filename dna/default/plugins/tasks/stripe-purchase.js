@@ -110,10 +110,13 @@
                     'Misconfigured Stripe task. Missing token.'));
             }
 
-            amount = parseFloat(body_data.payment_amount);
-            if (TDS.isEmpty(amount)) {
-                return TDS.Promise.reject(new Error(
-                    'Misconfigured Stripe task. Missing amount.'));
+            amount = parseFloat(body_data.payment_amount_other);
+            if (TDS.isEmpty(amount) || isNaN(amount)) {
+                amount = parseFloat(body_data.payment_amount);
+                if (TDS.isEmpty(amount) || isNaN(amount)) {
+                    return TDS.Promise.reject(new Error(
+                        'Misconfigured Stripe task. Missing amount.'));
+                }
             }
 
             //  Stripe wants us to move the decimal 2 places to the right (e.g.
