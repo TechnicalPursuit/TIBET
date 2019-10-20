@@ -26,6 +26,94 @@ TP.dom.UIDataElement.defineSubtype('tibet:data');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
+TP.tibet.data.Type.defineMethod('tagPrecompile',
+function(aRequest) {
+
+    /**
+     * @method tagPrecompile
+     * @summary Precompiles the content by running any substitution expressions
+     *     in it.
+     * @description At this level, this method runs substitutions against the
+     *     the text content of any attributes *only* (and *not* its text content
+     *     like the supertype, in case that has ACP expressions embedded in its
+     *     data) and supplies the following variables to the substitutions
+     *     expressions:
+     *
+     *          TP         ->  The TP root.
+     *          APP        ->  The APP root.
+     *          $REQUEST    ->  The request that triggered this processing.
+     *          $TAG        ->  The TP.dom.ElementNode that is being processed.
+     *          $TARGET     ->  The target TP.dom.DocumentNode, if any, that
+     *                          the result of this processing will be rendered
+     *                          into.
+     *          $SOURCE     ->  The original source tag, if this is being
+     *                          processed as part of a nested template.
+     *          $SELECTION  ->  The current selection. This could be text or an
+     *                          Array of objects determined by the selection
+     *                          manager.
+     *          $*          ->  An alias for $SELECTION
+     *          $FOCUS      ->  The currently focused TP.dom.ElementNode in the
+     *                          target TP.dom.DocumentNode.
+     *          $@          ->  An alias for $FOCUS
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        tpNode,
+
+        info,
+
+        str,
+
+        result,
+        elem,
+        frag,
+
+        attrs,
+        len,
+        j;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        return;
+    }
+
+    //  Wrap it so that when we ask for its text content, we're getting the best
+    //  representation.
+    tpNode = TP.wrap(node);
+
+    //  Populate the substitution information with various variables, etc.
+    info = this.populateSubstitutionInfo(aRequest);
+
+    //  The $TAG will have been set to our parent node (the default behavior of
+    //  the call above), so we need to set it to the wrapper currently
+    //  processing node.
+    info.atPut('$TAG', tpNode);
+
+    info.atPut('shouldEcho', false);
+    info.atPut('annotateMarkup', this.shouldWrapACPOutput());
+
+    //  Make sure that any required data (i.e. 'id' attributes and others) are
+    //  defined. id attributes, in particular, because they can be dynamically
+    //  assigned by TIBET, are assumed to 'always exist'. This insures that they
+    //  do for use in ACP template processing. Note that we always use the outer
+    //  content here, since there may be attributes that we need to detect.
+    tpNode.prepopulateRequiredTemplateData(info, tpNode.getOuterContent());
+
+    //  Process the attributes. This method should resolve any ACP expressions
+    //  in the attributes themselves.
+    attrs = TP.elementGetAttributeNodes(node);
+    len = attrs.getSize();
+    for (j = 0; j < len; j++) {
+        tpNode.transformAttributeNode(attrs.at(j), info);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.data.Type.defineMethod('tagAttachComplete',
 function(aRequest) {
 
