@@ -798,6 +798,13 @@ Cmd.prototype.phaseThree = function(meta) {
     */
 
     this.info('Read https://gist.github.com/coolaj86/1318304 and npm publish.');
+    this.info('\n\n');
+
+    this.info('Release is done.');
+    this.info('\n\n');
+
+    this.info('FINAL NOTE: YOU ARE CHECKED OUT ON THE \'MASTER\' BRANCH -' +
+                ' Reset accordingly');
 };
 
 
