@@ -371,19 +371,19 @@ Cmd.prototype.phaseOne = function() {
         patch = 0;
     } else if (this.options.patch) {
         patch = parseInt(patch, 10) + 1;
+    }
+
+    // Incremental. We need to compute an increment that works if one isn't
+    // provided.
+    if (this.options.increment) {
+        increment = this.options.increment;
     } else {
-        // Incremental. We need to compute an increment that works if one isn't
-        // provided.
-        if (this.options.increment) {
-            increment = this.options.increment;
+        match = version.match(/(v)*(\d+)\.(\d+)\.(\d+)\-([a-z]*)\.(\d+)(.*)/);
+        if (CLI.notEmpty(match)) {
+            increment = match[6];
+            increment = parseInt(increment, 10) + 1;
         } else {
-            match = version.match(/(v)*(\d+)\.(\d+)\.(\d+)\-([a-z]*)\.(\d+)(.*)/);
-            if (CLI.notEmpty(match)) {
-                increment = match[6];
-                increment = parseInt(increment, 10) + 1;
-            } else {
-                increment = 0;
-            }
+            increment = 0;
         }
     }
 
