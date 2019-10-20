@@ -130,12 +130,13 @@
                 return TDS.Promise.resolve();
             }
 
-            return stripe.charges.create({
-                amount: amount,
-                currency: 'usd',
-                description: params.description,
-                source: token
-            }).then(
+            return TDS.Promise.resolve(
+                stripe.charges.create({
+                    amount: amount,
+                    currency: 'usd',
+                    description: params.description,
+                    source: token
+                })).then(
                 function(result) {
                     step.stdout.status = 'Stripe charge succeeded.';
                     return result;
