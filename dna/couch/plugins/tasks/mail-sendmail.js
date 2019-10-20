@@ -183,8 +183,7 @@
                         rawmsg: 'sendmail failed: ' + err.toString()
                     };
 
-                    return TDS.Promise.reject(
-                            new Error('sendmail task failed: ' + err));
+                    throw new Error('sendmail task failed: ' + err);
                 });
         };
     };

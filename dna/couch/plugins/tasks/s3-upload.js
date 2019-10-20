@@ -136,8 +136,7 @@
                         rawmsg: 'S3 upload failed: ' + err.toString()
                     };
 
-                    return TDS.Promise.reject(
-                            new Error('S3 upload failed: ' + err));
+                    throw new Error('S3 upload failed: ' + err);
                 });
         };
     };

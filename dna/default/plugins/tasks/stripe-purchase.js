@@ -146,8 +146,7 @@
                         rawmsg: 'Stripe charge failed: ' + err.toString()
                     };
 
-                    return TDS.Promise.reject(
-                            new Error('Stripe charge failed: ' + err));
+                    throw new Error('Stripe charge failed: ' + err);
                 });
         };
     };

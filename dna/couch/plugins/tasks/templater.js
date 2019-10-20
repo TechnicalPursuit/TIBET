@@ -141,8 +141,7 @@
                         rawmsg: 'Templating failed: ' + err.toString()
                     };
 
-                    return TDS.Promise.reject(
-                            new Error('Templating failed: ' + err));
+                    throw new Error('Templating failed: ' + err);
                 }
             );
         };

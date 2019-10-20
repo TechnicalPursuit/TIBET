@@ -266,8 +266,7 @@
                                 rawmsg: 'SFTP upload failed: ' + err.toString()
                             };
 
-                            return TDS.Promise.reject(
-                                    new Error('SFTP upload failed: ' + err));
+                            throw new Error('SFTP upload failed: ' + err);
                         });
             }
         };

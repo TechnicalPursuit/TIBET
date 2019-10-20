@@ -190,8 +190,7 @@
                         rawmsg: 'SMTP failed: ' + err.toString()
                     };
 
-                    return TDS.Promise.reject(
-                            new Error('SMTP task failed: ' + err));
+                    throw new Error('SMTP task failed: ' + err);
                 });
         };
     };
