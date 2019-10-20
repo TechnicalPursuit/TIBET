@@ -146,6 +146,7 @@
                 }).catch(
                 function(err) {
                     var stripeErrMsg;
+
                     stripeErrMsg = err.toString();
                     if (/^Error: /i.test(stripeErrMsg)) {
                         stripeErrMsg = stripeErrMsg.slice(7);

@@ -64,12 +64,6 @@ function(aRequest) {
 
         info,
 
-        str,
-
-        result,
-        elem,
-        frag,
-
         attrs,
         len,
         j;
