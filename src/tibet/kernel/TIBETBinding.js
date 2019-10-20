@@ -6381,7 +6381,13 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                                                                         expr)) {
                             exprVal = scopedVal;
                         } else if (TP.isPlainObject(scopedVal)) {
-                            exprVal = TP.hc(scopedVal).at(expr);
+                            scopedVal = TP.core.JSONContent.construct(
+                                                                scopedVal);
+                            exprVal = this.$extractValue(scopedVal,
+                                                            expr,
+                                                            TP.jpc,
+                                                            pathOptions);
+
                         } else if (TP.isXMLNode(scopedVal)) {
                             exprVal = TP.wrap(scopedVal).get(
                                                     TP.xpc(expr, pathOptions));
