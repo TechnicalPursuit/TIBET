@@ -128,7 +128,7 @@
             //  In a dry run environment, just write the Stripe options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                stripeOpts.status = 'Stripe charge successful';
+                stripeOpts.status = 'Stripe charge successful in dry run.';
                 step.stdout = stripeOpts;
                 return TDS.Promise.resolve();
             }
@@ -145,8 +145,14 @@
                     return result;
                 }).catch(
                 function(err) {
+                    var stripeErrMsg;
+                    stripeErrMsg = err.toString();
+                    if (/^Error: /i.test(stripeErrMsg)) {
+                        stripeErrMsg = stripeErrMsg.slice(7);
+                    }
+
                     step.stderr = {
-                        status: 'Stripe charge failed.',
+                        status: 'Stripe charge failed: ' + stripeErrMsg,
                         rawmsg: 'Stripe charge failed: ' + err.toString()
                     };
 
