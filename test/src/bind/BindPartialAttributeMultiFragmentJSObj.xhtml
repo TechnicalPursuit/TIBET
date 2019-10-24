@@ -43,10 +43,24 @@
         <!-- Set up a span to define the second part of the binding scope -->
         <span bind:scope="#tibet(people[3])">
 
-        <label for="colorField">Color: </label>
-        Pamela's Favorite Color: <input type="text" id="colorField" value="[[color]]" tabindex="0"/><br/>
+        <label for="colorField1">Color: </label>
+        Pamela's Favorite Color: <input type="text" id="colorField1" value="[[color]]" tabindex="0"/><br/>
 
-        <span id="colorSpan" style="background-color: [[color]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
+        <span id="colorSpan1" style="background-color: [[color]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
+
+        </span>
+    </span>
+
+    <!-- Set up a span to define the first part of the binding scope -->
+    <span bind:scope="urn:tibet:test_people">
+
+        <!-- Set up a span to define the second part of the binding scope -->
+        <span bind:scope="#tibet()">
+
+        <label for="colorField2">Color: </label>
+        Joe's Favorite Color: <input type="text" id="colorField2" value="[[people[0].color]]" tabindex="0"/><br/>
+
+        <span id="colorSpan2" style="background-color: [[people[0].color]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
 
         </span>
     </span>

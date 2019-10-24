@@ -6916,18 +6916,22 @@ function() {
                 var windowContext,
 
                     modelObj,
-                    colorField,
-                    colorSpan;
+
+                    colorField1,
+                    colorSpan1,
+
+                    colorField2,
+                    colorSpan2;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
-                colorField = TP.byId('colorField', windowContext);
-                colorSpan = TP.byId('colorSpan', windowContext);
+                colorField1 = TP.byId('colorField1', windowContext);
+                colorSpan1 = TP.byId('colorSpan1', windowContext);
 
                 test.assert.isEqualTo(
-                    colorField.get('value'),
+                    colorField1.get('value'),
                     'yellow');
 
                 //  NB: We convert this into a TP.gui.Color object to compare
@@ -6935,7 +6939,7 @@ function() {
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
                     TP.gui.Color.fromString(
-                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                        colorSpan1.getComputedStyleProperty('backgroundColor')),
                     TP.gui.Color.fromString('yellow'));
 
                 test.assert.isEqualTo(
@@ -6944,27 +6948,73 @@ function() {
 
                 test.getDriver().constructSequence().
                     exec(function() {
-                        colorField.clearValue();
+                        colorField1.clearValue();
                     }).
-                    sendKeys('blue', colorField).
-                    sendEvent(TP.hc('type', 'change'), colorField).
+                    sendKeys('blue', colorField1).
+                    sendEvent(TP.hc('type', 'change'), colorField1).
                     run();
 
                 test.chain(
                     function() {
                         test.assert.isEqualTo(
-                            colorField.get('value'),
+                            colorField1.get('value'),
                             'blue');
 
                         test.assert.isEqualTo(
                             TP.gui.Color.fromString(
-                                colorSpan.getComputedStyleProperty(
+                                colorSpan1.getComputedStyleProperty(
                                                         'backgroundColor')),
                             TP.gui.Color.fromString('blue'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[4]/color')),
                             'blue');
+                    });
+
+                //  ---
+
+                colorField2 = TP.byId('colorField2', windowContext);
+                colorSpan2 = TP.byId('colorSpan2', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField2.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.gui.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.gui.Color.fromString(
+                        colorSpan2.getComputedStyleProperty('backgroundColor')),
+                    TP.gui.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/color')),
+                    'red');
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        colorField2.clearValue();
+                    }).
+                    sendKeys('purple', colorField2).
+                    sendEvent(TP.hc('type', 'change'), colorField2).
+                    run();
+
+                test.chain(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField2.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.gui.Color.fromString(
+                                colorSpan2.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.gui.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/color')),
+                            'purple');
                     });
             },
             function(error) {
@@ -7421,18 +7471,22 @@ function() {
                 var windowContext,
 
                     modelObj,
-                    colorField,
-                    colorSpan;
+
+                    colorField1,
+                    colorSpan1,
+
+                    colorField2,
+                    colorSpan2;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
-                colorField = TP.byId('colorField', windowContext);
-                colorSpan = TP.byId('colorSpan', windowContext);
+                colorField1 = TP.byId('colorField1', windowContext);
+                colorSpan1 = TP.byId('colorSpan1', windowContext);
 
                 test.assert.isEqualTo(
-                    colorField.get('value'),
+                    colorField1.get('value'),
                     'yellow');
 
                 //  NB: We convert this into a TP.gui.Color object to compare
@@ -7440,7 +7494,7 @@ function() {
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
                     TP.gui.Color.fromString(
-                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                        colorSpan1.getComputedStyleProperty('backgroundColor')),
                     TP.gui.Color.fromString('yellow'));
 
                 test.assert.isEqualTo(
@@ -7449,27 +7503,73 @@ function() {
 
                 test.getDriver().constructSequence().
                     exec(function() {
-                        colorField.clearValue();
+                        colorField1.clearValue();
                     }).
-                    sendKeys('blue', colorField).
-                    sendEvent(TP.hc('type', 'change'), colorField).
+                    sendKeys('blue', colorField1).
+                    sendEvent(TP.hc('type', 'change'), colorField1).
                     run();
 
                 test.chain(
                     function() {
                         test.assert.isEqualTo(
-                            colorField.get('value'),
+                            colorField1.get('value'),
                             'blue');
 
                         test.assert.isEqualTo(
                             TP.gui.Color.fromString(
-                                colorSpan.getComputedStyleProperty(
+                                colorSpan1.getComputedStyleProperty(
                                                         'backgroundColor')),
                             TP.gui.Color.fromString('blue'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('$.people[3].color')),
                             'blue');
+                    });
+
+                //  ---
+
+                colorField2 = TP.byId('colorField2', windowContext);
+                colorSpan2 = TP.byId('colorSpan2', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField2.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.gui.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.gui.Color.fromString(
+                        colorSpan2.getComputedStyleProperty('backgroundColor')),
+                    TP.gui.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].color')),
+                    'red');
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        colorField2.clearValue();
+                    }).
+                    sendKeys('purple', colorField2).
+                    sendEvent(TP.hc('type', 'change'), colorField2).
+                    run();
+
+                test.chain(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField2.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.gui.Color.fromString(
+                                colorSpan2.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.gui.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].color')),
+                            'purple');
                     });
             },
             function(error) {
@@ -7926,18 +8026,22 @@ function() {
                 var windowContext,
 
                     modelObj,
-                    colorField,
-                    colorSpan;
+
+                    colorField1,
+                    colorSpan1,
+
+                    colorField2,
+                    colorSpan2;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
-                colorField = TP.byId('colorField', windowContext);
-                colorSpan = TP.byId('colorSpan', windowContext);
+                colorField1 = TP.byId('colorField1', windowContext);
+                colorSpan1 = TP.byId('colorSpan1', windowContext);
 
                 test.assert.isEqualTo(
-                    colorField.get('value'),
+                    colorField1.get('value'),
                     'yellow');
 
                 //  NB: We convert this into a TP.gui.Color object to compare
@@ -7945,7 +8049,7 @@ function() {
                 //  return RGB values, etc.
                 test.assert.isEqualTo(
                     TP.gui.Color.fromString(
-                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                        colorSpan1.getComputedStyleProperty('backgroundColor')),
                     TP.gui.Color.fromString('yellow'));
 
                 test.assert.isEqualTo(
@@ -7954,27 +8058,73 @@ function() {
 
                 test.getDriver().constructSequence().
                     exec(function() {
-                        colorField.clearValue();
+                        colorField1.clearValue();
                     }).
-                    sendKeys('blue', colorField).
-                    sendEvent(TP.hc('type', 'change'), colorField).
+                    sendKeys('blue', colorField1).
+                    sendEvent(TP.hc('type', 'change'), colorField1).
                     run();
 
                 test.chain(
                     function() {
                         test.assert.isEqualTo(
-                            colorField.get('value'),
+                            colorField1.get('value'),
                             'blue');
 
                         test.assert.isEqualTo(
                             TP.gui.Color.fromString(
-                                colorSpan.getComputedStyleProperty(
+                                colorSpan1.getComputedStyleProperty(
                                                         'backgroundColor')),
                             TP.gui.Color.fromString('blue'));
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('people[3].color')),
                             'blue');
+                    });
+
+                //  ---
+
+                colorField2 = TP.byId('colorField2', windowContext);
+                colorSpan2 = TP.byId('colorSpan2', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField2.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.gui.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.gui.Color.fromString(
+                        colorSpan2.getComputedStyleProperty('backgroundColor')),
+                    TP.gui.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].color')),
+                    'red');
+
+                test.getDriver().constructSequence().
+                    exec(function() {
+                        colorField2.clearValue();
+                    }).
+                    sendKeys('purple', colorField2).
+                    sendEvent(TP.hc('type', 'change'), colorField2).
+                    run();
+
+                test.chain(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField2.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.gui.Color.fromString(
+                                colorSpan2.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.gui.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].color')),
+                            'purple');
                     });
             },
             function(error) {
