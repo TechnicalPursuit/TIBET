@@ -4709,102 +4709,13 @@ function(aReturnValue, targetObj) {
      * @returns {Object} The final value to be returned from this path.
      */
 
-    var isEmptyArray,
-
-        retVal,
-
-        shouldCollapse,
-
-        extractWith,
-
-        keys,
-
-        packageWith,
-        packageType,
-
-        fallbackWith;
-
-    isEmptyArray = TP.isEmptyArray(aReturnValue);
-
-    retVal = aReturnValue;
-
-    shouldCollapse = this.get('shouldCollapse');
-
-    //  NB: We only do this if the return value is valid *and* its not an empty
-    //  Array. Otherwise, we run the fallback function below if it's available.
-    if (TP.isValid(retVal) && !isEmptyArray) {
-
-        //  If we're configured to collapse, then do it.
-
-        /* eslint-disable no-extra-parens */
-        if (shouldCollapse) {
-            retVal = TP.collapse(retVal);
-        }
-        /* eslint-enable no-extra-parens */
-
-        //  If we're configured to extract with either an aspect name or a
-        //  Function, then do that. Note that if we have a collection then we
-        //  extract each value in the collection using our extractor.
-        if (TP.isValid(extractWith = this.get('extractWith'))) {
-            if (TP.isCollection(retVal)) {
-                keys = TP.keys(retVal);
-
-                keys.perform(
-                        function(aKey) {
-                            retVal.atPut(
-                                aKey,
-                                TP.val(retVal.at(aKey), extractWith));
-                        });
-            } else {
-                retVal = TP.val(retVal, extractWith);
-            }
-        }
-
-        //  If we have a 'packageWith' configured, then it's either a Function
-        //  or a Type (or String type name or format). Use it to package the
-        //  results.
-        if (TP.isValid(packageWith = this.get('packageWith'))) {
-            if (TP.isCallable(packageWith)) {
-                retVal = packageWith(retVal);
-            } else if (TP.isType(packageWith)) {
-                retVal = packageWith.construct(retVal);
-            } else if (TP.isString(packageWith)) {
-                if (TP.isType(packageType =
-                            TP.sys.getTypeByName(packageWith)) &&
-                        packageType !== Object) {
-                    retVal = packageType.construct(retVal);
-                } else {
-                    retVal = TP.format(retVal,
-                                        packageWith,
-                                        TP.hc('shouldWrap', true));
-                }
-            }
-        }
-    } else if (TP.isCallable(fallbackWith = this.get('fallbackWith'))) {
-        //  If we didn't have a suitable return value, but we were configured
-        //  with a fallback Function, then go ahead and use it to try to return
-        //  an initial value.
-        retVal = fallbackWith(targetObj);
-    } else {
-        //  If we collapse results and the results are an empty Array, then we
-        //  return null.
-        if (shouldCollapse && isEmptyArray) {
-            retVal = null;
-        }
-    }
-
-    //  If we're not collapsing (either because the flag is false or was
-    //  undefined), then return the proper value (consistent with other
-    //  collapsing logic in TIBET).
-    if (TP.notTrue(shouldCollapse)) {
-        if (TP.notValid(retVal)) {
-            retVal = TP.ac();
-        } else if (!TP.isArray(retVal)) {
-            retVal = TP.ac(retVal);
-        }
-    }
-
-    return retVal;
+    return TP.processValueUsingConfig(
+            aReturnValue,
+            targetObj,
+            this.get('shouldCollapse'),
+            this.get('extractWith'),
+            this.get('packageWith'),
+            this.get('fallbackWith'));
 });
 
 //  ------------------------------------------------------------------------

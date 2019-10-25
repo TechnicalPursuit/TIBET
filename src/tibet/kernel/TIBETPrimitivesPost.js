@@ -1479,6 +1479,134 @@ function(aStr) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('processValueUsingConfig',
+function(initialValue, targetObj, shouldCollapse, extractWith, packageWith,
+fallbackWith) {
+
+    /**
+     * @method processValueUsingConfig
+     * @summary Processes the supplied value based on the parameters that are
+     *     supplied to this method.
+     * @description This method processes the supplied value before it is
+     *     returned based on values supplied in its parameter list. This
+     *     processing includes the following steps, if they are supplied:
+     *          1.  Collapsing any single-valued Collection results
+     *          2.  Using an extractor to extract a final value 'beyond' the
+     *          last path step
+     *          3.  Packaging any remaining results into a type or by using a
+     *          Function
+     *          4.  Using a fallback Function to create a result if one
+     *          couldn't be found (i.e. the value is not valid).
+     * @param {Object} initialValue The initial value.
+     * @param {Object} targetObj The object to that the receiver has just
+     *     extracted from.
+     * @param {Boolean} [shouldCollapse=false] Whether or not this method should
+     *     collapse a single return value that's in an Array to just the value
+     *     itself.
+     * @param {String|Function} [extractWith] A slot name or Function to use to
+     *     further extract the returned value from the computed value.
+     * @param {String|Function|TP.meta.lang.RootObject} [packageWith] A type or
+     *     type name or Function to use to further package the returned value
+     *     from the computed value.
+     * @param {Function} [fallbackWidth] A Function that will provide a
+     *     'fallback value' if the supplied value is not valid or collapses to a
+     *     not valid value.
+     * @returns {Object} The processed value.
+     */
+
+    var isEmptyArray,
+
+        retVal,
+
+        keys,
+
+        packageType,
+
+        fallbackWith;
+
+    isEmptyArray = TP.isEmptyArray(initialValue);
+
+    retVal = initialValue;
+
+    //  NB: We only do this if the return value is valid *and* its not an empty
+    //  Array. Otherwise, we run the fallback function below if it's available.
+    if (TP.isValid(retVal) && !isEmptyArray) {
+
+        //  If we're configured to collapse, then do it.
+
+        /* eslint-disable no-extra-parens */
+        if (shouldCollapse) {
+            retVal = TP.collapse(retVal);
+        }
+        /* eslint-enable no-extra-parens */
+
+        //  If we're configured to extract with either an aspect name or a
+        //  Function, then do that. Note that if we have a collection then we
+        //  extract each value in the collection using our extractor.
+        if (TP.isValid(extractWith)) {
+            if (TP.isCollection(retVal)) {
+                keys = TP.keys(retVal);
+
+                keys.perform(
+                        function(aKey) {
+                            retVal.atPut(
+                                aKey,
+                                TP.val(retVal.at(aKey), extractWith));
+                        });
+            } else {
+                retVal = TP.val(retVal, extractWith);
+            }
+        }
+
+        //  If we have a 'packageWith' configured, then it's either a Function
+        //  or a Type (or String type name or format). Use it to package the
+        //  results.
+        if (TP.isValid(packageWith)) {
+            if (TP.isCallable(packageWith)) {
+                retVal = packageWith(retVal);
+            } else if (TP.isType(packageWith)) {
+                retVal = packageWith.construct(retVal);
+            } else if (TP.isString(packageWith)) {
+                if (TP.isType(packageType =
+                            TP.sys.getTypeByName(packageWith)) &&
+                        packageType !== Object) {
+                    retVal = packageType.construct(retVal);
+                } else {
+                    retVal = TP.format(retVal,
+                                        packageWith,
+                                        TP.hc('shouldWrap', true));
+                }
+            }
+        }
+    } else if (TP.isCallable(fallbackWith)) {
+        //  If we didn't have a suitable return value, but we were configured
+        //  with a fallback Function, then go ahead and use it to try to return
+        //  an initial value.
+        retVal = fallbackWith(targetObj);
+    } else {
+        //  If we collapse results and the results are an empty Array, then we
+        //  return null.
+        if (shouldCollapse && isEmptyArray) {
+            retVal = null;
+        }
+    }
+
+    //  If we're not collapsing (either because the flag is false or was
+    //  undefined), then return the proper value (consistent with other
+    //  collapsing logic in TIBET).
+    if (TP.notTrue(shouldCollapse)) {
+        if (TP.notValid(retVal)) {
+            retVal = TP.ac();
+        } else if (!TP.isArray(retVal)) {
+            retVal = TP.ac(retVal);
+        }
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
 //  ID/NAME FUNCTIONS
 //  ------------------------------------------------------------------------
 
