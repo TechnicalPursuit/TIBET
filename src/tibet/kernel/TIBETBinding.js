@@ -6115,6 +6115,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
         exprVal,
 
+        pathExpr,
+
         isXMLResource,
         xmlTestVal,
 
@@ -6374,6 +6376,10 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
                     if (TP.isValid(scopedVal)) {
 
+                        //  Note use of 'primitive' fetch in some places here -
+                        //  at this level we're just trying to extract values,
+                        //  not track data interests or anything like that.
+
                         if (TP.regex.COMPOSITE_PATH.test(expr)) {
                             exprVal = TP.wrap(scopedVal).get(
                                                 TP.apc(expr, pathOptions));
@@ -6381,37 +6387,111 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                                                                         expr)) {
                             exprVal = scopedVal;
                         } else if (TP.isPlainObject(scopedVal)) {
-                            scopedVal = TP.core.JSONContent.construct(
-                                                                scopedVal);
-                            exprVal = this.$extractValue(scopedVal,
-                                                            expr,
-                                                            TP.jpc,
-                                                            pathOptions);
+                            exprVal = TP.extern.jsonpath.nodes(
+                                                    scopedVal, expr)[0];
 
+                            if (TP.isValid(exprVal)) {
+                                exprVal = exprVal.value;
+                                exprVal =
+                                    TP.processValueUsingConfig(
+                                    exprVal,
+                                    scopedVal,
+                                    shouldCollapseVal,
+                                    shouldExtractVal ? 'value' : null);
+                            }
                         } else if (TP.isXMLNode(scopedVal)) {
-                            exprVal = TP.wrap(scopedVal).get(
-                                                    TP.xpc(expr, pathOptions));
-                        } else if (TP.isKindOf(scopedVal,
-                                                TP.dom.Node)) {
-                            exprVal = scopedVal.get(TP.xpc(expr, pathOptions));
+                            exprVal = TP.nodeEvaluatePath(
+                                        scopedVal,
+                                        expr,
+                                        TP.XPATH_PATH_TYPE,
+                                        false);
+
+                            exprVal =
+                                TP.processValueUsingConfig(
+                                exprVal,
+                                scopedVal,
+                                shouldCollapseVal,
+                                shouldExtractVal ? 'value' : null);
+
+                        } else if (TP.isKindOf(scopedVal, TP.dom.Node)) {
+                            exprVal = TP.nodeEvaluatePath(
+                                        TP.unwrap(scopedVal),
+                                        expr,
+                                        TP.XPATH_PATH_TYPE,
+                                        false);
+
+                            exprVal =
+                                TP.processValueUsingConfig(
+                                exprVal,
+                                scopedVal,
+                                shouldCollapseVal,
+                                shouldExtractVal ? 'value' : null);
+
                         } else if (TP.isKindOf(scopedVal,
                                                 TP.core.JSONContent)) {
-                            exprVal = scopedVal.get(TP.jpc(expr, pathOptions));
-                        } else if (TP.isKindOf(scopedVal,
-                                                TP.core.XMLContent)) {
-                            exprVal = scopedVal.get(TP.xpc(expr, pathOptions));
-                        } else if (TP.regex.JSON_POINTER.test(expr) ||
-                                    TP.regex.JSON_PATH.test(expr)) {
-                            if (!TP.isKindOf(scopedVal, TP.core.JSONContent)) {
-                                scopedVal = TP.core.JSONContent.construct(
-                                                                    scopedVal);
+                            pathExpr = expr;
+
+                            if (TP.regex.JSON_POINTER.test(pathExpr)) {
+                                pathExpr =
+                                    TP.regex.JSON_POINTER.match(pathExpr).at(1);
                             }
 
-                            exprVal = this.$extractValue(scopedVal,
-                                                            expr,
-                                                            TP.jpc,
-                                                            pathOptions);
+                            exprVal = TP.extern.jsonpath.nodes(
+                                    scopedVal.get('data'), pathExpr)[0];
 
+                            if (TP.isValid(exprVal)) {
+                                exprVal = exprVal.value;
+                                exprVal =
+                                    TP.processValueUsingConfig(
+                                    exprVal,
+                                    scopedVal,
+                                    shouldCollapseVal,
+                                    shouldExtractVal ? 'value' : null);
+                            }
+                        } else if (TP.isKindOf(scopedVal,
+                                                TP.core.XMLContent)) {
+                            pathExpr = expr;
+
+                            if (TP.regex.XPATH_POINTER.test(pathExpr)) {
+                                pathExpr =
+                                    TP.regex.XPATH_POINTER.match(pathExpr).at(2);
+                            }
+
+                            exprVal = TP.nodeEvaluatePath(
+                                        TP.unwrap(scopedVal.get('data')),
+                                        pathExpr,
+                                        TP.XPATH_PATH_TYPE,
+                                        false);
+
+                            exprVal =
+                                TP.processValueUsingConfig(
+                                exprVal,
+                                scopedVal,
+                                shouldCollapseVal,
+                                shouldExtractVal ? 'value' : null);
+                        } else if (TP.regex.JSON_POINTER.test(expr) ||
+                                    TP.regex.JSON_PATH.test(expr)) {
+                            pathExpr = expr;
+
+                            if (TP.regex.JSON_POINTER.test(pathExpr)) {
+                                pathExpr =
+                                    TP.regex.JSON_POINTER.match(pathExpr).at(1);
+                            }
+
+                            if (TP.isKindOf(scopedVal, TP.core.JSONContent)) {
+                                exprVal = TP.extern.jsonpath.nodes(
+                                    scopedVal.get('data'), pathExpr)[0].value;
+                            } else {
+                                exprVal = TP.extern.jsonpath.nodes(
+                                    scopedVal, pathExpr)[0].value;
+                            }
+
+                            exprVal =
+                                TP.processValueUsingConfig(
+                                exprVal,
+                                scopedVal,
+                                shouldCollapseVal,
+                                shouldExtractVal ? 'value' : null);
                         } else if (TP.notValid(scopedVal)) {
                             exprVal = null;
                         } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
