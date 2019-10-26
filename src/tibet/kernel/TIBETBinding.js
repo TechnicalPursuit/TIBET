@@ -4072,9 +4072,12 @@ function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
         }
 
         //  Create a URI from the scoped expression and get its result. This
-        //  will provide with the 'closest scoped expression'.
+        //  will provide with the 'closest scoped expression'. Note here how we
+        //  specifically tell the URI to *not* signal change if it has to fetch
+        //  new content.
         scopedURI = TP.uc(scopedValExpr);
-        scopedVal = scopedURI.getResource().get('result');
+        scopedVal = scopedURI.getResource(
+                            TP.request('signalChange', false)).get('result');
 
         //  Obtain the branching value and path type, given the scoped value
         //  expression and the value as we've computed it so far.
