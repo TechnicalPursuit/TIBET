@@ -372,7 +372,13 @@ Cmd.loadTasks = function() {
             task,
             filepath;
 
+        //  Don't load old (deprecated) makefile*.js content files.
         if (/^makefile.*\.js$/.test(file)) {
+            return;
+        }
+
+        //  Treat double-underscore as a "helper" and don't load as a task.
+        if (/^__/.test(file)) {
             return;
         }
 
