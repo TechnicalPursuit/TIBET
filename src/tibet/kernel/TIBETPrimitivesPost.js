@@ -1521,9 +1521,7 @@ fallbackWith) {
 
         keys,
 
-        packageType,
-
-        fallbackWith;
+        packageType;
 
     isEmptyArray = TP.isEmptyArray(initialValue);
 
