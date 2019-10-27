@@ -3171,13 +3171,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
-function() {
+function(repeatElem) {
 
     /**
      * @method $getRepeatSourceAndIndex
      * @summary Returns the repeating data source and index for the receiver if
      *     the receiver is under a 'bind:repeat' and is participating in the
      *     repeating iteration mechanics.
+     * @param {Element} repeatElem The element containing the repeat.
      * @returns {Array<Object,Number>} An Array containing the repeat source and
      *     repeat index.
      */
@@ -3186,7 +3187,6 @@ function() {
 
         cachedPropsParent,
 
-        repeatElem,
         repeatAttrVal,
 
         repeatSource,
@@ -3214,27 +3214,6 @@ function() {
         return TP.ac(cachedPropsParent[TP.REPEAT_SOURCE],
                         cachedPropsParent[TP.REPEAT_INDEX]);
     }
-
-    //  Iterate up through the ancestor chain, looking for the nearest ancestor
-    //  with a 'bind:repeat'. If one is found, then grab the value of the
-    //  'bind:repeat' attribute before exiting.
-    repeatElem = TP.nodeDetectAncestor(
-                    elem,
-                    function(aNode) {
-                        var isRepeat;
-
-                        isRepeat = TP.isElement(aNode) &&
-                                    TP.elementHasAttribute(
-                                            aNode, 'bind:repeat', true);
-
-                        if (isRepeat) {
-                            repeatAttrVal =
-                                    TP.elementGetAttribute(
-                                            aNode, 'bind:repeat', true);
-                        }
-
-                        return isRepeat;
-                    });
 
     //  If we successfully detected a 'bind:repeat' ancestor, then try to
     //  calculate a repeat resource and our index within that repeat resource.
@@ -4761,9 +4740,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                 repeatIndex = NaN;
 
                 if (inRepeatContext) {
-                    //  Grab the repeating information. If it's valid, that means
-                    //  that we're in a repeating context.
-                    repeatInfo = this.$getRepeatSourceAndIndex();
+                    //  Grab the repeating information.
+                    repeatInfo = this.$getRepeatSourceAndIndex(repeatElem);
 
                     if (TP.isValid(repeatInfo)) {
                         repeatSource = repeatInfo.first();
@@ -4771,7 +4749,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     }
                 }
 
-                //  Otherwise, go ahead and process this as a leaf.
+                //  Go ahead and process this as a leaf.
                 ownerTPElem.$refreshLeaf(
                     aFacet,
                     theVal,
@@ -5140,9 +5118,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     repeatIndex = NaN;
 
                     if (inRepeatContext) {
-                        //  Grab the repeating information. If it's valid, that
-                        //  means that we're in a repeating context.
-                        repeatInfo = this.$getRepeatSourceAndIndex();
+                        //  Grab the repeating information.
+                        repeatInfo = this.$getRepeatSourceAndIndex(repeatElem);
 
                         if (TP.isValid(repeatInfo)) {
                             repeatSource = repeatInfo.first();
