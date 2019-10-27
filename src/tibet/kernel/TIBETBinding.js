@@ -3185,7 +3185,7 @@ function(repeatElem) {
 
     var elem,
 
-        cachedPropsParent,
+        cachedIndexingSource,
 
         repeatAttrVal,
 
@@ -3201,18 +3201,19 @@ function(repeatElem) {
 
     //  See if there's a parent element where we've cached the repeat source
     //  (and repeat index) when we generated the repeat.
-    cachedPropsParent = TP.nodeDetectAncestor(
-                        elem,
-                        function(aNode) {
-                            return TP.isValid(aNode[TP.REPEAT_SOURCE]);
-                        });
+    cachedIndexingSource = TP.nodeDetectAncestor(
+                            elem,
+                            function(aNode) {
+                                return TP.isValid(aNode[TP.REPEAT_SOURCE]) &&
+                                        TP.isNumber(aNode[TP.REPEAT_INDEX]);
+                            });
 
     //  If we successfully found a cached properties parent, return the value of
     //  the cached source and cached index for this element.
-    if (TP.isElement(cachedPropsParent)) {
+    if (TP.isElement(cachedIndexingSource)) {
         //  Return an Array containing the repeat source and repeat index.
-        return TP.ac(cachedPropsParent[TP.REPEAT_SOURCE],
-                        cachedPropsParent[TP.REPEAT_INDEX]);
+        return TP.ac(cachedIndexingSource[TP.REPEAT_SOURCE],
+                        cachedIndexingSource[TP.REPEAT_INDEX]);
     }
 
     //  If we successfully detected a 'bind:repeat' ancestor, then try to
