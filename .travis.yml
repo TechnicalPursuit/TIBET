@@ -29,10 +29,12 @@ before_script:
     # Clean up detritus left by npm modules that include '.git' directories
     # (like LESS)
     - rm -rf ./node_modules/*/.git/
+    # Capture node version
+    - v=$(node --version)
     # Remove broken npm location and link 'good' npm location to it.
     - p=$(which npm)
     - rm $p
-    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
+    - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Link TIBET into npm global lib
     - npm link .
     # Build TIBET so that packages are available.
@@ -44,7 +46,7 @@ before_script:
     - tibet init --link
     - tibet lint
     # Repair npm path after 'tibet init' due to npm bug with linked modules
-    - ln -s /home/travis/.nvm/versions/node/v10.16.3/bin/npm $p || true
+    - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Install Karma bits
     - npm install -g karma-cli
     - npm install --save-dev karma
