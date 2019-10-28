@@ -7245,68 +7245,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  STYLE UTILITIES
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getAppliedCSSRulesForElements',
-function(elements, matchesOnlySuppliedElements) {
-
-    /**
-     * @method getAppliedCSSRulesForElements
-     * @summary
-     * @param {Element[]} elements
-     * @param {Boolean} matchesOnlySuppliedElements
-     */
-
-    var docs,
-        ruleEntries;
-
-    docs = TP.ac();
-
-    elements.forEach(
-        function(anElement) {
-            docs.push(TP.nodeGetDocument(anElement));
-        });
-
-    docs.unique();
-
-    docs.forEach(
-        function(aDoc) {
-            TP.$documentRefreshAppliedRulesCaches(aDoc);
-        });
-
-    ruleEntries = TP.ac();
-
-    elements.forEach(
-        function(anElement) {
-            var entries;
-
-            //  NB: Notice how we force 'false' here - we don't want the
-            //  element's document to refresh on each call here.
-            entries = TP.elementGetAppliedStyleInfo(anElement, false);
-            ruleEntries.push(entries);
-        });
-
-    ruleEntries = ruleEntries.flatten();
-
-    //  If we want rules that will match only the supplied elements here, then
-    //  we need to run each selector, and make sure the resulting elements only
-    //  include one or more of those that we supplied.
-    if (TP.isTrue(matchesOnlySuppliedElements)) {
-
-    }
-
-    return ruleEntries;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getAppliedCSSRulesForElementsAndProperty',
-function(elements, matchesOnlySuppliedElements, aProperty) {
-
-});
-
-//  ------------------------------------------------------------------------
 //  TIBET - ENVIRONMENT PLUGIN INFORMATION
 //  ------------------------------------------------------------------------
 
