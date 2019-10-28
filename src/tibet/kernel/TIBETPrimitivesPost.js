@@ -3142,6 +3142,60 @@ TP.definePrimitive('jsonsrc', TP.objectJSONSource);
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectEntries',
+function(anObject, includeNonenumerables, includePrototypeProps) {
+
+    /**
+     * @method objectEntries
+     * @alias entries
+     * @summary Returns the entries of the object - that is, the key/value pairs
+     *     that the object consists of.
+     * @param {Object} anObject The object to return the keys for.
+     * @param {Boolean} [includeNonenumerables=false] Whether or not to include
+     *     the supplied object's 'non enumerable' properties.
+     * @param {Boolean} [includePrototypeProps=false] Whether or not to include
+     *     properties that the supplied object inherits through it's prototype
+     *     chain.
+     * @returns {Array[]} The object's key/value pairs.
+     */
+
+    var keys,
+        result;
+
+    //  no valid source object means no work
+    if (TP.notValid(anObject)) {
+        return [];
+    }
+
+    if (!includeNonenumerables && !includePrototypeProps) {
+        //  Note that we only call 'getKVPairs' if the object has it *and*
+        //  neither of the two flags are set.
+        if (TP.canInvoke(anObject, 'getKVPairs')) {
+            return anObject.getKVPairs();
+        }
+    }
+
+    keys = TP.objectKeys(anObject,
+                            includeNonenumerables,
+                            includePrototypeProps);
+
+    result = keys.map(
+                function(aKey) {
+                    //  NB: The object might be a POJO, so we use direct access
+                    //  here (and direct Array creation for speed of
+                    //  construction).
+                    return [aKey, anObject[aKey]];
+                });
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('entries', TP.objectEntries);
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectKeys',
 function(anObject, includeNonenumerables, includePrototypeProps) {
 
@@ -7188,6 +7242,68 @@ function() {
         });
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+//  STYLE UTILITIES
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getAppliedCSSRulesForElements',
+function(elements, matchesOnlySuppliedElements) {
+
+    /**
+     * @method getAppliedCSSRulesForElements
+     * @summary
+     * @param {Element[]} elements
+     * @param {Boolean} matchesOnlySuppliedElements
+     */
+
+    var docs,
+        ruleEntries;
+
+    docs = TP.ac();
+
+    elements.forEach(
+        function(anElement) {
+            docs.push(TP.nodeGetDocument(anElement));
+        });
+
+    docs.unique();
+
+    docs.forEach(
+        function(aDoc) {
+            TP.$documentRefreshAppliedRulesCaches(aDoc);
+        });
+
+    ruleEntries = TP.ac();
+
+    elements.forEach(
+        function(anElement) {
+            var entries;
+
+            //  NB: Notice how we force 'false' here - we don't want the
+            //  element's document to refresh on each call here.
+            entries = TP.elementGetAppliedStyleInfo(anElement, false);
+            ruleEntries.push(entries);
+        });
+
+    ruleEntries = ruleEntries.flatten();
+
+    //  If we want rules that will match only the supplied elements here, then
+    //  we need to run each selector, and make sure the resulting elements only
+    //  include one or more of those that we supplied.
+    if (TP.isTrue(matchesOnlySuppliedElements)) {
+
+    }
+
+    return ruleEntries;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getAppliedCSSRulesForElementsAndProperty',
+function(elements, matchesOnlySuppliedElements, aProperty) {
+
 });
 
 //  ------------------------------------------------------------------------
