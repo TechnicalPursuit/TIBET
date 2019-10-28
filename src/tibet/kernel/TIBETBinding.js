@@ -5312,6 +5312,8 @@ function(regenerateIfNecessary) {
         repeatWholeResult,
         repeatResult,
 
+        repeatItem,
+
         boundElems,
 
         allRefreshedElements;
@@ -5335,25 +5337,21 @@ function(regenerateIfNecessary) {
     repeatWholeResult = repeatWholeURI.getResource(
                     TP.request('shouldCollapse', false)).get('result');
 
-    //  If repeatResult is a POJO, make it into a TP.core.Hash.
-    if (TP.isPlainObject(repeatResult)) {
-        repeatResult = TP.hc(repeatResult);
+    if (TP.notValid(repeatResult)) {
+        return this;
     }
 
     //  Make sure that repeatResult is a collection.
     if (TP.isCollection(repeatResult)) {
 
-        //  If repeatResult is a TP.core.Hash, then convert it into an Array of
-        //  key/value pairs. Binding repeats need a collection they can index
-        //  numerically.
-        if (TP.isHash(repeatResult)) {
-            repeatResult = repeatResult.getKVPairs();
-        }
+        //  If there's only one item in the result, then see if it's a Hash or
+        //  POJO. If so, we get its key/value entries.
+        if (repeatResult.getSize() === 1) {
+            repeatItem = repeatResult.first();
 
-        //  If the repeatResult isn't an Array, then make it be the single item
-        //  in an Array.
-        if (!TP.isArray(repeatResult)) {
-            repeatResult = TP.ac(repeatResult);
+            if (TP.isPlainObject(repeatItem) || TP.isHash(repeatItem)) {
+                repeatResult = TP.entries(repeatItem);
+            }
         }
 
         //  If this flag is true, then go ahead and regenerate (if necessary).
