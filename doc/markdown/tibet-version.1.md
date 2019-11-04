@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet version [--check]
+`tibet version [--check]`
 
 ## DESCRIPTION
 

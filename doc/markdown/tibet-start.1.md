@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet start [<options>] [--env <name>]
+`tibet start [<options>] [--env <name>]`
 
 ## DESCRIPTION
 

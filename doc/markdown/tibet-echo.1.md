@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet echo [<args>]
+`tibet echo [<args>]`
 
 ## DESCRIPTION
 

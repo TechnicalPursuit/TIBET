@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet release
+`tibet release`
 
 ## DESCRIPTION
 

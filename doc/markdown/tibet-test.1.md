@@ -3,9 +3,9 @@
 
 ## SYNOPSIS
 
-tibet test [<target>] [--suite <filter>] [--cases <filter>] [--karma]
+`tibet test [<target>] [--suite <filter>] [--cases <filter>] [--karma]
     [--inherit] [--subtypes] [--ignore-only] [--ignore-skip] [--tap]
-    [--context <app|lib|all>] [--profile <profilename>]
+    [--context <app|lib|all>] [--profile <profilename>]`
 
 ## DESCRIPTION
 

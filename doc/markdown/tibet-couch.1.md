@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet couch <compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]
+`tibet couch <compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]`
 
 ## DESCRIPTION
 

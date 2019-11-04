@@ -3,11 +3,11 @@
 
 ## SYNOPSIS
 
-tibet package [ [--profile] <pkg_cfg> | [--package <package>] [--config <cfg>] ]
+`tibet package [ [--profile] <pkg_cfg> | [--package <package>] [--config <cfg>] ]
     [--phase <phase>] [--all] [--scripts] [--styles] [--images] [--resources]
     [--templates] [--inlined] [--nodes]
     [--include <asset names>] [--exclude <asset names>]
-    [--add <list>] [--remove <list>] [--unresolved] [--unlisted]
+    [--add <list>] [--remove <list>] [--unresolved] [--unlisted]`
 
 ## DESCRIPTION
 

@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet help <topic> [--missing]
+`tibet help <topic> [--missing]`
 
 ## DESCRIPTION
 

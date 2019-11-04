@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet tsh [--script=]<command> [<headless_args>]
+`tibet tsh [--script=]<command> [<headless_args>]`
 
 ## DESCRIPTION
 

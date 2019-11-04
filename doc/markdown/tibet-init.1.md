@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet init [--freeze]
+`tibet init [--freeze]`
 
 ## DESCRIPTION
 

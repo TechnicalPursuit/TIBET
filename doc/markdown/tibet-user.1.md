@@ -3,8 +3,8 @@
 
 ## SYNOPSIS
 
-tibet user <username> <password> [--env <env>]
-    [--role <role|roles>] [--org <org|orgs>] [--unit unit]
+`tibet user <username> <password> [--env <env>]
+    [--role <role|roles>] [--org <org|orgs>] [--unit unit]`
 
 ## DESCRIPTION
 

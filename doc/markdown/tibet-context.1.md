@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet context
+`tibet context`
 
 ## DESCRIPTION
 

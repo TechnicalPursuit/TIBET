@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet thaw [--force]
+`tibet thaw [--force]`
 
 ## DESCRIPTION
 

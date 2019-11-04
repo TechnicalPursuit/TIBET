@@ -3,8 +3,7 @@
 
 ## SYNOPSIS
 
-tibet appcache [--file <cachefile>] [--enable|--disable|--status]
-    [--missing] [--develop] [--rebuild] [--touch] [--context <app|lib|all>]
+`tibet appcache [--file <cachefile>] [--enable|--disable|--status] [--missing] [--develop] [--rebuild] [--touch] [--context <app|lib|all>]`
 
 ## DESCRIPTION
 

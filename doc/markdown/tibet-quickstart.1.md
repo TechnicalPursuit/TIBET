@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet quickstart
+`tibet quickstart`
 
 ## DESCRIPTION
 

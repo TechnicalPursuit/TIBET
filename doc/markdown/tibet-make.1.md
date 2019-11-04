@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet make <target> [--list] [--private] [--timeout <ms>]
+`tibet make <target> [--list] [--private] [--timeout <ms>]`
 
 ## DESCRIPTION
 

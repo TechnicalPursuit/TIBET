@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet deploy <helper> [<options>]
+`tibet deploy <helper> [<options>]`
 
 ## DESCRIPTION
 

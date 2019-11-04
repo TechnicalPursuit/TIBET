@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet open <vpath[:file[:char]]> [--editor <cmd>]
+`tibet open <vpath[:file[:char]]> [--editor <cmd>]`
 
 ## DESCRIPTION
 

@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet resource [--build] [--list] [--raw] [--type] [<package-opts>]
+`tibet resource [--build] [--list] [--raw] [--type] [<package-opts>]`
 
 ## DESCRIPTION
 

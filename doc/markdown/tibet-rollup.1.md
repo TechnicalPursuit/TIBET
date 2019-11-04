@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet rollup [package-opts] [--headers] [--minify]
+`tibet rollup [package-opts] [--headers] [--minify]`
 
 ## DESCRIPTION
 

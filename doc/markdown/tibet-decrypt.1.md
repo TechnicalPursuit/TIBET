@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet decrypt <string>
+`tibet decrypt <string>`
 
 ## DESCRIPTION
 

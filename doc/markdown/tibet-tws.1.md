@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-'tibet tws <cancel|disable|enable|init|list|push|remove|restart|retry|submit|validate> [<flags>]';
+`tibet tws <cancel|disable|enable|init|list|push|remove|restart|retry|submit|validate> [<flags>]`
 
 ## DESCRIPTION
 

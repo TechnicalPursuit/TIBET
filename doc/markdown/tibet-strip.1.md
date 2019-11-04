@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet strip [<args>]
+`tibet strip [<args>]`
 
 ## DESCRIPTION
 

@@ -3,10 +3,10 @@
 
 ## SYNOPSIS
 
-tibet reflect [target] [--interface <interface>] [--filter <filter>]
+`tibet reflect [target] [--interface <interface>] [--filter <filter>]
     [--context=['app'|'lib'|'all']] [--types] [--methods] [--attributes]
     [--owners] [--slots] [--known] [--hidden] [--unique] [--inherited]
-    [--local] [--introduced] [--overridden]
+    [--local] [--introduced] [--overridden]`
 
 ## DESCRIPTION
 

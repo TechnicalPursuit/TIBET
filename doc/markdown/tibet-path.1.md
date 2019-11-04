@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet path <virtual_path>
+`tibet path <virtual_path>`
 
 ## DESCRIPTION
 

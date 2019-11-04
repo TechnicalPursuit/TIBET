@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet tds start [<options>] [--env <name>]
+`tibet tds start [<options>] [--env <name>]`
 
 ## DESCRIPTION
 

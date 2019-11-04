@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet type [--name] [[<root>.]<namespace>:]<typename> [--supertype <typename] [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]
+`tibet type [--name] [[<root>.]<namespace>:]<typename> [--supertype <typename] [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]`
 
 ## DESCRIPTION
 

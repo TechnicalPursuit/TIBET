@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet electron [<path>] [--empty] [--devtools] [--debugger] [<electron options>]
+`tibet electron [<path>] [--empty] [--devtools] [--debugger] [<electron options>]`
 
 ## DESCRIPTION
 

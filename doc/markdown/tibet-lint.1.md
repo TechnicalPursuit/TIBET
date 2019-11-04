@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet lint [[--filter] <filter>] [--force] [--nodes] [[--style] [--js] [--json] [--xml] [--only]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]
+`tibet lint [[--filter] <filter>] [--force] [--nodes] [[--style] [--js] [--json] [--xml] [--only]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]`
 
 ## DESCRIPTION
 
