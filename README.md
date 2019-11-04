@@ -1,4 +1,4 @@
-# TIBET&#8482; -- The future is written in markup&#8482;
+<h1>TIBET&#8482; -- The future is written in markup&#8482;</h1>
 
 
                                      ,`
@@ -22,25 +22,21 @@
 
 <br/>
 
-### **Still coding your web apps? You're doing it wrong...**
+### **The web was built with markup, your apps should be too.**
 
-#### **The web was built with markup, your apps should be too.**
-
-<br/>
-
-##### Think about your current framework...
+#### Think about your current framework...
 
 If you're using React, Angular, Vue, etc. your applications are written with at
 least 80% code and less than 20% markup. That 4-to-1 ratio directly influences
 your development speed, your ability to hire, to share components, to maintain
 your applications over time.
 
-Now imagine instead of hiring 4 JavaScript coders per HTML/CSS developer you
+Now imagine instead of hiring four JavaScript coders per HTML/CSS developer you
 could hire a single JavaScript developer per four HTML/CSS developers. You'd be
 able to scale faster, hire more cost-effectively, share components more easily;
 everything would improve.
 
-##### Think about the web...
+#### Think about the web...
 
 The web isn't 6 billion pages of markup embedded in JavaScript. The web grew to
 6 billion pages by putting markup first, markup <i>augmented</i> by JavaScript, not
@@ -52,7 +48,7 @@ approach that addresses <a
 href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's
 hiring problem</a> head on. More code just creates more problems.
 
-##### Think about switching to TIBET...
+#### Think about switching to TIBET...
 
 TIBET's inverts today's 4-to-1 code-to-markup ratio, providing a platform where
 you get 80% of your authoring done in markup, a platform where a small number of
