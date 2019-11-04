@@ -45,7 +45,7 @@ embedded in it.
 Authoring in markup is the only approach that truly scales, the only approach
 that can handle the millions of applications being ported to the web, the only
 approach that addresses <a
-href="https://www.technicalpursuit.com/docs/index.html#staffing">the web's
+href="https://www.technicalpursuit.com/docs/why-tibet.html#staffing">the web's
 hiring problem</a> head on. More code just creates more problems.
 
 #### Think about switching to TIBET...
@@ -58,9 +58,8 @@ developers. We call it the "authoring pyramid".
 Simply put, TIBET is the only platform:
 
 - where you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup first</a>;
-- solving <a href="https://www.technicalpursuit.com/docs">the real problems web projects face</a>;
-- offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build
-solution</a>; and
+- solving <a href="https://www.technicalpursuit.com/docs/why-tibet.html">the real problems web projects face</a>;
+- offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build solution</a>; and
 - <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
 
 ##### **Still coding in JavaScript and expecting different results?**
@@ -174,7 +173,7 @@ relates to a topic.
 The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
 components are **fully-supported on MacOS and common Linux variants**.
 
-For Microsoft Windows we recommend using Docker or similar container technology. Pre-built <a href="https://hub.docker.com/r/technicalpursuit/tibet">Docker images are available</a>. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com/contact.xhtml">Contact us</a> if you require native Windows server or CLI components.
+For Microsoft Windows we recommend using Docker or similar container technology. Pre-built <a href="https://hub.docker.com/r/technicalpursuit/tibet">Docker images are available</a>. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com">Contact us</a> if you require native Windows server or CLI components.
 
 
 ###### TIBET Client / Sherpa
