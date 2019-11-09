@@ -648,8 +648,8 @@ function(name, classDefFunction) {
             newinst = newinst.$init.apply(newinst, args);
             optinst = newinst.init.apply(newinst, args);
 
-            //  if init() returns a non-null object that's our return value.
-            //  this lets init() cheat and return an object of its choice
+            //  If init() returns a non-null object that's our return value.
+            //  This lets init() cheat and return an object of its choice.
             if (TP.isValid(optinst)) {
                 return optinst;
             } else {

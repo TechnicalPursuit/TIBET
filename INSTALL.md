@@ -131,7 +131,7 @@ container by going to this address in a browser in your host environment:
 exit the container (by executing `exit` from the shell). Any work you've done in
 the container will be lost!!! Therefore, you need to use Docker to either mount
 a volume or use bind mounts to persist your TIBET project. Follow the
-instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and <a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>
+instructions at <a href="https://docs.docker.com/storage/volumes/">Docker Volumes</a> and <a href="https://docs.docker.com/storage/bind-mounts/">Docker Bind Mounts</a>.
 
 <br/>
 
