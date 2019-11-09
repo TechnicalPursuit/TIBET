@@ -90,8 +90,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect --types
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
-    TIBET loaded in 3867 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     APP.hello.Application
     APP.hello.app
@@ -110,8 +110,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect --types --filter /APP/
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
-    TIBET loaded in 3867 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     APP.hello.Application
     APP.hello.app
@@ -122,8 +122,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect --methods
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
-    TIBET loaded in 3632 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     APP.hello.Application.Inst.handleAppDidInitializeFromANYWhenANY
     Array.Inst.$$isCollection
@@ -147,8 +147,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect --methods --filter /element/i
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:13:25 MDT
-    TIBET loaded in 3597 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     TP.$$elementPreserveIFrameContent
     TP.$$elementRestoreIFrameContent
@@ -167,8 +167,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect --methods TP.log.Manager.Type
 
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:11:37 MDT
-    TIBET loaded in 3560 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     exists
     getLogger
@@ -185,8 +185,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect TP.log.Manager.Type.getLoggers
 
-    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:23:46 MDT
-    TIBET loaded in 3783 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     TP.log.Manager.Type.getLoggers
 
@@ -204,8 +204,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect json2xml
 
-    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:25:29 MDT
-    TIBET loaded in 3701 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     TP.json2xml
 
@@ -228,8 +228,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect TP.boot.$uitime
 
-    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 22:09:04 MDT
-    TIBET loaded in 4236 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     TP.boot. not found.
 
@@ -237,8 +237,8 @@ No process environment variables are required by this command.
 
     $ tibet reflect 'TP.boot.$uitime'
 
-    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 22:09:21 MDT
-    TIBET loaded in 3779 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     "2016-07-02T04:09:25.148Z"
 

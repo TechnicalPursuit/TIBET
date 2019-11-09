@@ -79,8 +79,8 @@ believes should be processed and will display an example of the `<config/>`
 entries it would build:
 
     $ tibet resource
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 09:45:14 MDT
-    TIBET loaded in 3064 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     Filtering 927 potential resources...
     Found 3 concrete resources...
     Configuration Entries (not saved):
@@ -95,8 +95,8 @@ entries it would build:
 To build resources add the `--build` flag:
 
     $ tibet resource --build
-    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 09:43:01 MDT
-    TIBET loaded in 3680 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     Filtering 927 potential resources...
     Building 3 concrete resources...
     ~app_tags/APP.hello.app/APP.hello.app.xhtml

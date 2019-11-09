@@ -388,10 +388,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
-    //  NB: This logic is duplicated in the 'cancel', 'error' and 'fail' methods
-    //  because of problems with PhantomJS when factoring it into a common
-    //  method.
-
     info = TP.hc(aFaultInfo);
     if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
         code = TP.ifInvalid(aFaultCode, TP.CANCELLED);
@@ -559,10 +555,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('result', undefined);
     this.set('statusCode', TP.ERRORING);
 
-    //  NB: This logic is duplicated in the 'cancel', 'error' and 'fail' methods
-    //  because of problems with PhantomJS when factoring it into a common
-    //  method.
-
     info = TP.hc(aFaultInfo);
     if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
         code = TP.ifInvalid(aFaultCode, TP.ERRORED);
@@ -661,10 +653,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     this.set('result', undefined);
     this.set('statusCode', TP.FAILING);
-
-    //  NB: This logic is duplicated in the 'cancel', 'error' and 'fail' methods
-    //  because of problems with PhantomJS when factoring it into a common
-    //  method.
 
     info = TP.hc(aFaultInfo);
     if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {

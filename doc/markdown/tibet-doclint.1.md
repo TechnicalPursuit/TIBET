@@ -76,15 +76,15 @@ so an initial test won't find any methods and hence will list no files:
 
     $ tibet doclint APP.hello.Application
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:46:13 MDT
-    # TIBET loaded in 3633 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     # PASS: 0 errors in 0 of 0 files.
     # Finished in 3710 ms w/TSH exec time of 77 ms.
 
 If we add a method but fail to add a proper comment we see different output:
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:45:44 MDT
-    # TIBET loaded in 3910 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     not ok - ~app_src/APP.test1.Application.js
     # APP.test1.Application.TypeLocal.test (1) -> [missing comment]
     # FAIL: 1 errors in 1 of 1 files.
@@ -92,8 +92,8 @@ If we add a method but fail to add a proper comment we see different output:
 
 If we then comment our new method we'll see output to that effect:
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:48:56 MDT
-    # TIBET loaded in 3622 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     ok - ~app_src/APP.test1.Application.js
     # PASS: 0 errors in 0 of 1 files.
 
@@ -103,8 +103,8 @@ If we then comment our new method we'll see output to that effect:
 
     $ tibet doclint
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:48:56 MDT
-    # TIBET loaded in 3622 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     ok - ~app_src/APP.test1.Application.js
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.
@@ -114,8 +114,8 @@ If we then comment our new method we'll see output to that effect:
 
     $ tibet doclint --filter /app/
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:57:26 MDT
-    # TIBET loaded in 3712 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 1 files.
     # Finished in 10435 ms w/TSH exec time of 6723 ms.
@@ -124,8 +124,8 @@ Note that you can also do case-insensitive filtering (with `i`) as follows:
 
     $ tibet doclint --filter /app/i
 
-    # Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:57:26 MDT
-    # TIBET loaded in 4212 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
     ok - ~app_src/APP.test1.Application.js
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.

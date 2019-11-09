@@ -21,7 +21,6 @@ TP.test.Root.isAbstract(true);
 
 //  Add support for job control status tracking and querying.
 
-//  NB: For PhantomJS, we resolve the traits right away, due to a crashing bug.
 TP.test.Root.addTraits(TP.core.JobStatus);
 
 TP.test.Root.Inst.resolveTrait('resume', TP.core.JobStatus);

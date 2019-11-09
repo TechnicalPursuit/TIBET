@@ -2031,11 +2031,6 @@ function(aDocument) {
 
         styleChangesHandler;
 
-    //  PhantomJS (at least at the time of this writing, doesn't support these).
-    if (TP.notValid(TP.global.MutationObserver)) {
-        return this;
-    }
-
     method = TP.composeHandlerName('MutationEvent');
 
     //  Install a managed MutationObserver that will monitor the document for

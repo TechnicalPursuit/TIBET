@@ -78,20 +78,20 @@ Optional flag to turn on/off TAP formatted output. The default is true.</p>
 so an initial test won&#39;t find any methods and hence will list no files:</p>
 <pre><code>$ tibet doclint APP.hello.Application
 
-# Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:46:13 MDT
-# TIBET loaded in 3633 ms. Starting execution.
+# Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
 # PASS: 0 errors in 0 of 0 files.
 # Finished in 3710 ms w/TSH exec time of 77 ms.
 </code></pre><p>If we add a method but fail to add a proper comment we see different output:</p>
-<pre><code># Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:45:44 MDT
-# TIBET loaded in 3910 ms. Starting execution.
+<pre><code># Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
 not ok - ~app_src/APP.test1.Application.js
 # APP.test1.Application.TypeLocal.test (1) -&gt; [missing comment]
 # FAIL: 1 errors in 1 of 1 files.
 # Finished in 3985 ms w/TSH exec time of 75 ms.
 </code></pre><p>If we then comment our new method we&#39;ll see output to that effect:</p>
-<pre><code># Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:48:56 MDT
-# TIBET loaded in 3622 ms. Starting execution.
+<pre><code># Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
 ok - ~app_src/APP.test1.Application.js
 # PASS: 0 errors in 0 of 1 files.
 
@@ -99,8 +99,8 @@ ok - ~app_src/APP.test1.Application.js
 </code></pre><h3 id="checking-your-entire-application-for-documentation-lint">Checking your entire application for documentation lint</h3>
 <pre><code>$ tibet doclint
 
-# Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:48:56 MDT
-# TIBET loaded in 3622 ms. Starting execution.
+# Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
 ok - ~app_src/APP.test1.Application.js
 ok - ~app_tags/APP.test1.app/APP.test1.app.js
 # PASS: 0 errors in 0 of 2 files.
@@ -108,16 +108,16 @@ ok - ~app_tags/APP.test1.app/APP.test1.app.js
 </code></pre><h3 id="checking-a-specific-filtered-set-of-targets-for-doclint">Checking a specific filtered set of targets for doclint</h3>
 <pre><code>$ tibet doclint --filter /app/
 
-# Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:57:26 MDT
-# TIBET loaded in 3712 ms. Starting execution.
+# Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
 ok - ~app_tags/APP.test1.app/APP.test1.app.js
 # PASS: 0 errors in 0 of 1 files.
 # Finished in 10435 ms w/TSH exec time of 6723 ms.
 </code></pre><p>Note that you can also do case-insensitive filtering (with <code>i</code>) as follows:</p>
 <pre><code>$ tibet doclint --filter /app/i
 
-# Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 12:57:26 MDT
-# TIBET loaded in 4212 ms. Starting execution.
+# Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
 ok - ~app_src/APP.test1.Application.js
 ok - ~app_tags/APP.test1.app/APP.test1.app.js
 # PASS: 0 errors in 0 of 2 files.

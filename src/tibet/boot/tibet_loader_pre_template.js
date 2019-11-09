@@ -649,7 +649,7 @@ TP.boot.$$propertyQueries = {};
 
 //  We use 'modes' (browser, and console) to group different definitions of how
 //  a color is actually applied..or not. The JavaScript console and terminal (in
-//  the case of PhantomJS or Electron) need just the string. Browser output has
+//  the case of Puppeteer or Electron) need just the string. Browser output has
 //  HTML/CSS content to wrap the target strings instead of ANSI escape codes.
 TP.boot.$$styles = {};
 

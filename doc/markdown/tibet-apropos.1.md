@@ -55,8 +55,8 @@ No process environment variables are required by this command.
 
     $ tibet apropos '/nodeGetFirst/'
 
-    Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
-    TIBET loaded in 3516 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     # by name
     #
@@ -76,8 +76,8 @@ No process environment variables are required by this command.
 
     $ tibet apropos clip
 
-    Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
-    TIBET loaded in 3516 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     # by name
     #
@@ -88,8 +88,8 @@ No process environment variables are required by this command.
 
     $ tibet apropos clip --no-ignorecase
 
-    Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
-    TIBET loaded in 3516 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     # by name
     #
@@ -98,8 +98,8 @@ No process environment variables are required by this command.
 
     $ tibet apropos clip --comments
 
-    Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
-    TIBET loaded in 3516 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     # by name
     #
@@ -113,8 +113,8 @@ No process environment variables are required by this command.
 
     $ tibet apropos clip --comments --limit 1
 
-    Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
-    TIBET loaded in 3516 ms. Starting execution.
+    # Loading TIBET platform at 2019-11-09T17:43:17.668Z
+    # TIBET reflection suite loaded and active in 5219ms
 
     # by name
     #
