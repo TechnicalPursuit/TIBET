@@ -1442,7 +1442,11 @@ TP.hc(
         //  NB: DO NOT move this line above the 'toString()' line. NaN is a
         //  weird value and won't test properly.
         try {
-            if (isNaN(anObject)) {
+
+            //  NB: Firefox can occasionally hang at 100% CPU  on the native
+            //  isNaN call if handed an 'orphaned' (i.e. prototype-less) object,
+            //  so we check for the __proto__ slot here as well.
+            if (TP.notValid(anObject.__proto__) || isNaN(anObject)) {
                 return 'NaN';
             }
         } catch (e) {

@@ -2887,7 +2887,11 @@ function(aValue) {
      * @returns {Boolean} Whether or not the value is NaN.
      */
 
+    //  NB: Firefox can occasionally hang at 100% CPU  on the native isNaN call
+    //  if handed an 'orphaned' (i.e. prototype-less) object, so we check for
+    //  the __proto__ slot here as well.
     if (TP.isValid(aValue) &&
+        TP.isValid(aValue.__proto__) &&
         aValue.constructor === Number &&
         isNaN(aValue)) {
         return true;
