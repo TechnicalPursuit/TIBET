@@ -1097,7 +1097,7 @@ function(targetUrl, aRequest, httpObj) {
                 httpObj.setRequestHeader(key, val.join(', '));
             } else {
                 for (j = 0; j < val.getSize(); j++) {
-                    httpObj.setRequestHeader(key, val.at(i));
+                    httpObj.setRequestHeader(key, val.at(j));
                 }
             }
         } else {
