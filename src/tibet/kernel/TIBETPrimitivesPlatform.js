@@ -1446,7 +1446,7 @@ TP.hc(
             //  NB: Firefox can occasionally hang at 100% CPU  on the native
             //  isNaN call if handed an 'orphaned' (i.e. prototype-less) object,
             //  so we check for the __proto__ slot here as well.
-            if (TP.notValid(anObject.__proto__) || isNaN(anObject)) {
+            if (TP.isValid(anObject.__proto__) && isNaN(anObject)) {
                 return 'NaN';
             }
         } catch (e) {
