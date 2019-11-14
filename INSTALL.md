@@ -221,10 +221,10 @@ For Microsoft Windows we recommend using Docker or similar container technology.
 | Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
 |:---------|:----------------------|:--------------------|:-------------|
 | Google Chrome | Yes | Yes | Yes |
+| Microsoft Edge (Chromium) | Yes | Yes | Yes |
 | Mozilla Firefox | Yes | Yes | No |
 | Apple Safari | Yes | Yes | No |
 | Electron | Yes | Coming Soon | Coming Soon |
-| Microsoft Edge (Chromium) | Coming Soon | Coming Soon | Coming Soon |
 | Microsoft Edge (EdgeHTML) | No | No | No |
 | Microsoft IE | No | No | No |
 
