@@ -50,7 +50,7 @@ hiring problem</a> head on. More code just creates more problems.
 
 #### Think about switching to TIBET...
 
-TIBET's inverts today's 4-to-1 code-to-markup ratio, providing a platform where
+TIBET inverts today's 4-to-1 code-to-markup ratio, providing a platform where
 you get 80% of your authoring done in markup, a platform where a small number of
 JavaScript developers can support a much larger team of HTML/CSS
 developers. We call it the "authoring pyramid".
