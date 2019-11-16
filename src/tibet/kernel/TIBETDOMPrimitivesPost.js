@@ -1679,7 +1679,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementBubbleXMLNSAttributes',
-function(anElement) {
+function(anElement, stopAncestor) {
 
     /**
      * @method elementBubbleXMLNSAttributes
@@ -1689,6 +1689,10 @@ function(anElement) {
      *     only be redefined further up the chain if it has both the same prefix
      *     and same namespace URI value).
      * @param {Element} anElement The element to bubble the namespaces up from.
+     * @param {Element} [stopAncestor] An element between anElement and
+     *     anElement's document node that the xmlns bubbling will 'stop' at.
+     *     Therefore, this will be the element that any added xmlns attributes
+     *     will be added to. This parameter is optional.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      */
@@ -1753,8 +1757,9 @@ function(anElement) {
 
                 //  If the ancestor has no value
                 if (TP.isEmpty(nsVal)) {
-                    //  If it's not the document element, then continue on up.
-                    if (ancestor !== docElem) {
+                    //  If it's not the document element and its not the stop
+                    //  ancestor, then continue on up.
+                    if (ancestor !== docElem && ancestor !== stopAncestor) {
                         continue;
                     } else {
                         //  If it is the document element, then go ahead and
@@ -1777,8 +1782,8 @@ function(anElement) {
 
                 //  If we find one that defines the same namespace prefix, but
                 //  with a different namespace URI value, then we have to go one
-                //  level below it and put a namespace attribute there and
-                //  remove it from ourself.
+                //  level below it, put a namespace attribute there, remove it
+                //  from ourself and take no further action.
                 if (nsVal !== nsURIVal && i > 0) {
 
                     TP.elementAddNSURI(
@@ -1796,7 +1801,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementBubbleXMLNSAttributesOnDescendants',
-function(anElement) {
+function(anElement, stopAncestor) {
 
     /**
      * @method elementBubbleXMLNSAttributesOnDescendants
@@ -1808,6 +1813,10 @@ function(anElement) {
      *     value).
      * @param {Element} anElement The element to query for descendants to bubble
      *     the namespaces up from.
+     * @param {Element} [stopAncestor] An element between anElement and
+     *     anElement's document node that the xmlns bubbling will 'stop' at.
+     *     Therefore, this will be the element that any added xmlns attributes
+     *     will be added to. This parameter is optional.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      */
@@ -1819,14 +1828,14 @@ function(anElement) {
     }
 
     //  Bubble xmlns attributes from the supplied Element.
-    TP.elementBubbleXMLNSAttributes(anElement);
+    TP.elementBubbleXMLNSAttributes(anElement, stopAncestor);
 
     //  Get all descendants, as long as they're Elements.
     allElems = TP.nodeGetDescendantElements(anElement);
 
     allElems.forEach(
         function(anElem) {
-            TP.elementBubbleXMLNSAttributes(anElem);
+            TP.elementBubbleXMLNSAttributes(anElem, stopAncestor);
         });
 
     return this;
