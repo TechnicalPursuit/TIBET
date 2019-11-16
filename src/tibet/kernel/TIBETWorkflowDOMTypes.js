@@ -1401,13 +1401,9 @@ function(aNode, aRequest, allowDetached) {
         }
     }
 
-    //  To reduce markup clutter, try to propagate namespaces as high
-    //  up as possible.
-    if (TP.isElement(aNode)) {
-        TP.elementBubbleXMLNSAttributesOnDescendants(aNode);
-    } else if (TP.isDocument(aNode)) {
-        TP.elementBubbleXMLNSAttributesOnDescendants(aNode.documentElement);
-    }
+    //  NB: We do *not* bubble XML namespaces here, since they will just end up
+    //  on our processing node, doing us no good and - in some cases - actually
+    //  doing harm.
 
     return this;
 });
