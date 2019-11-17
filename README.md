@@ -38,7 +38,7 @@ Authoring primarily in markup is the only approach that scales over time. Your c
 
 #### Think about switching to TIBET...
 
-TIBET is the only platform where the code you write today directly correlates with writing pure markup tomorrow; the only platform where a small number of component developers can support a much larger team of markup developers. We call it the .
+TIBET is the only platform where the code you write today directly correlates with writing pure markup tomorrow; the only platform where a small number of component developers can support a much larger team of markup developers.
 
 TIBET lets you consume components entirely from markup...zero code required. TIBET tags are not limited to UI display, you can invoke remote services, access local client data, bind data, trigger events. In short, you can do virtually everything from markup.
 
