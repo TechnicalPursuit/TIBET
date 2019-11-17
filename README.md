@@ -26,45 +26,32 @@
 
 #### Think about your current framework...
 
-If you're using React, Angular, Vue, etc. your applications are written with at
-least 80% code and less than 20% markup. That 4-to-1 ratio directly influences
-your development speed, your ability to hire, to share components, to maintain
-your applications over time.
+If you're using React, Angular, Vue, etc. your applications are written with at least 80% code and less than 20% markup. That 4-to-1 ratio directly influences your development speed, your ability to hire, to share components, to maintain your applications over time.
 
-Now imagine instead of hiring four JavaScript coders per HTML/CSS developer you
-could hire a single JavaScript developer per four HTML/CSS developers. You'd be
-able to scale faster, hire more cost-effectively, share components more easily;
-everything would improve.
+The problem? Most frameworks don't put you on a path toward eliminating coding over time. The "component consumption model" for these frameworks, how you access and use widgets, always requires writing more code.
 
 #### Think about the web...
 
-The web isn't 6 billion pages of markup embedded in JavaScript. The web grew to
-6 billion pages by putting markup first, markup <i>augmented</i> by JavaScript, not
-embedded in it.
+The web isn't 6 billion pages of markup embedded in JavaScript. The web grew to 6 billion pages by putting markup first, markup augmented by JavaScript, not embedded in it.
 
-Authoring in markup is the only approach that truly scales, the only approach
-that can handle the millions of applications being ported to the web, the only
-approach that addresses <a
-href="https://www.technicalpursuit.com/docs/why-tibet.html#staffing">the web's
-hiring problem</a> head on. More code just creates more problems.
+Authoring primarily in markup is the only approach that scales over time. Your coding effort today should pay you back by allowing you to write less code in the future. If your framework locks you into coding perhaps you need a new framework.
 
 #### Think about switching to TIBET...
 
-TIBET inverts today's 4-to-1 code-to-markup ratio, providing a platform where
-you get 80% of your authoring done in markup, a platform where a small number of
-JavaScript developers can support a much larger team of HTML/CSS
-developers. We call it the "authoring pyramid".
+TIBET is the only platform where the code you write today directly correlates with writing pure markup tomorrow; the only platform where a small number of component developers can support a much larger team of markup developers. We call it the .
 
-Simply put, TIBET is the only platform:
+TIBET lets you consume components entirely from markup...zero code required. TIBET tags are not limited to UI display, you can invoke remote services, access local client data, bind data, trigger events. In short, you can do virtually everything from markup.
 
-- where you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup first</a>;
-- solving <a href="https://www.technicalpursuit.com/docs/why-tibet.html">the real problems web projects face</a>;
-- offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a complete buy-vs-build solution</a>; and
+### Still coding JavaScript and expecting different results?
+
+#### TIBET is the only platform:
+
+- where you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup</a>;
+- solving <a href="https://www.technicalpursuit.com/docs/why-tibet.html">the real problems projects face</a>;
+- offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a full buy-vs-build solution</a>; and
 - <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
 
-##### **Still coding in JavaScript and expecting different results?**
-
-##### **80/20... meet 20/80... The future is written in markup.**
+#### 80/20... meet 20/80... The future is written in markup.
 
 <br/>
 
