@@ -1264,6 +1264,10 @@ function(aSignal) {
     var currentScreenTPWin,
         currentCanvasDoc;
 
+    //  If the Sherpa hasn't 'set up' yet, that means it hasn't even opened
+    //  once. This signal got dispatched because the Sherpa is in the controller
+    //  stack, but hasn't yet been opened. In that case, we don't want to
+    //  observe any signals.
     if (!this.get('setupComplete')) {
         return this;
     }
@@ -1327,6 +1331,14 @@ function(aSignal) {
         currentScreenTPWin,
 
         currentCanvasDoc;
+
+    //  If the Sherpa hasn't 'set up' yet, that means it hasn't even opened
+    //  once. This signal got dispatched because the Sherpa is in the controller
+    //  stack, but hasn't yet been opened. In that case, we don't want to
+    //  ignore any signals.
+    if (!this.get('setupComplete')) {
+        return this;
+    }
 
     //  If we're testing, then just exit here.
     if (TP.sys.isTesting()) {
