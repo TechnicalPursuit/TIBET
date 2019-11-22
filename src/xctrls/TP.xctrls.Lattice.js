@@ -546,6 +546,26 @@ function(aValue, shouldSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.xctrls.Lattice} The receiver.
+     */
+
+    this.render();
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  TP.dom.D3Tag Methods
 //  ------------------------------------------------------------------------
 
