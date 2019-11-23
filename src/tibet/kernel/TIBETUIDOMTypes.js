@@ -917,20 +917,16 @@ function(styleTPElemToObserve) {
     //  instances that the stylesheet has loaded.
     loadedHandler = function(aSignal) {
 
-        var origin;
+        var target;
 
         //  Make sure to ignore() the signal once we've been notified.
-        origin = aSignal.getOrigin();
-        loadedHandler.ignore(origin, 'TP.sig.DOMReady');
+        loadedHandler.ignore(aSignal.getOrigin(), 'TP.sig.DOMReady');
 
-        //  Make sure we have a real TP.xhtml.style element
-        if (TP.isString(origin)) {
-            origin = TP.bySystemId(origin);
-        }
+        target = aSignal.at('target');
 
         //  Notify any existing instances of this type that the stylesheet has
         //  been loaded.
-        this.$notifyInstancesThatStylesheetLoaded(origin);
+        this.$notifyInstancesThatStylesheetLoaded(TP.wrap(target));
 
     }.bind(this);
 

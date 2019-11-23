@@ -162,7 +162,8 @@ function(aRequest) {
             //  Note that we use 'dispatch()' here because this is a DOM signal
             //  and we want all of the characteristics of a DOM signal.
             if (!TP.elementHasAttribute(elem, 'imports', true)) {
-                TP.wrap(elem).dispatch('TP.sig.DOMReady');
+                TP.wrap(elem).dispatch(
+                            'TP.sig.DOMReady', null, TP.hc('target', elem));
             }
         };
 
