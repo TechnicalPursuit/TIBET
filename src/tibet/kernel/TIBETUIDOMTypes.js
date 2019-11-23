@@ -8917,11 +8917,11 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.Inst.defineMethod('signalAfterRepaint',
+TP.dom.UIElementNode.Inst.defineMethod('signalAfterNextRepaint',
 function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
-     * @method signalAfterRepaint
+     * @method signalAfterNextRepaint
      * @summary Signals activity to registered observers, but does so just
      *     after the browser has repainted. This is useful when the signaler
      *     doesn't care about the possibility that the signal could be cancelled
