@@ -2267,7 +2267,7 @@ function(indexes) {
     (function() {
         thisref.signal('TP.sig.UIDidDelete',
                         TP.hc('target', thisref, 'indexes', indexes));
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     TP.$elementCSSFlush(elem);
 
@@ -3785,7 +3785,7 @@ function(indexes) {
         //  attribute - 'bind:focusfirst' or something).
         (function() {
             TP.wrap(firstRow).focusAutofocusedOrFirstFocusableDescendant();
-        }).queueForNextRepaint(this.getNativeWindow());
+        }).queueBeforeNextRepaint(this.getNativeWindow());
     }
 
     //  Send a UIDidInsert with ourself as the target and the set of indexes
@@ -3795,7 +3795,7 @@ function(indexes) {
     (function() {
         thisref.signal('TP.sig.UIDidInsert',
                         TP.hc('target', thisref, 'indexes', indexes));
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     TP.$elementCSSFlush(elem);
 

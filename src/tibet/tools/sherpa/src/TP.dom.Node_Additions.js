@@ -1436,7 +1436,7 @@ function(insertionPointElement, insertionPosition) {
             haloTPElem.focusOn(newInsertedTPElem, true);
         }
 
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -1497,7 +1497,7 @@ function(insertionPointElement, insertionPosition, tdcRequest) {
             haloTPElem.focusOn(newInsertedTPElem, true);
         }
 
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -1563,7 +1563,7 @@ function(insertionPointElement, insertionPosition) {
             haloTPElem.focusOn(newInsertedTPElem, true);
         }
 
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });

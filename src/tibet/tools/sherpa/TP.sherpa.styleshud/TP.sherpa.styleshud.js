@@ -257,7 +257,7 @@ function(aSignal) {
     (function() {
         tileTPElem.get('body').
             focusAutofocusedOrFirstFocusableDescendant();
-    }).queueForNextRepaint(tileTPElem.getNativeWindow());
+    }).queueBeforeNextRepaint(tileTPElem.getNativeWindow());
 
     tileTPElem.setAttribute('hidden', false);
 
@@ -608,7 +608,7 @@ function(anIndex) {
                             'showBusy', true,
                             'extraTargetInfo',
                                 TP.hc('findContent', ruleMatcher)));
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });

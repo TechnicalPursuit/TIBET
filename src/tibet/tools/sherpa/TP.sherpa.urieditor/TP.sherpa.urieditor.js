@@ -1108,7 +1108,7 @@ function() {
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');
 
-            }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+            }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
 
             return this;
@@ -1309,7 +1309,7 @@ function(shouldRefresh) {
                 //  Signal to observers that this control has rendered.
                 this.signal('TP.sig.DidRender');
 
-            }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+            }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             /* eslint-enable no-extra-parens */
         }.bind(this),
         function(error) {

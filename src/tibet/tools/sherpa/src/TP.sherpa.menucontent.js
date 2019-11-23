@@ -210,7 +210,7 @@ function() {
         //  Signal to observers that this control has rendered.
         this.signal('TP.sig.DidRender');
 
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -293,7 +293,7 @@ function(aStyleTPElem) {
         } else {
             this.render();
         }
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });

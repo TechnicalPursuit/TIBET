@@ -269,7 +269,7 @@ function() {
                         TP.elementRemoveClass(itemElem, 'overflowing');
                     }
                 });
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -921,7 +921,7 @@ function(uniqueID, dataRecord) {
             styleObj.transitionDuration =
                 TP.sys.cfg('sherpa.tdc.item_fadeout_duration', 2000) + 'ms';
 
-        }).queueForNextRepaint(this.getNativeWindow());
+        }).queueBeforeNextRepaint(this.getNativeWindow());
     }
 
     //  Grab all of the 'meta' data about the output from the supplied data
@@ -1354,7 +1354,7 @@ function(uniqueID, dataRecord) {
                 }
             }
 
-        }.bind(this).queueForNextRepaint(this.getNativeWindow());
+        }.bind(this).queueBeforeNextRepaint(this.getNativeWindow());
 
         //  Capture the output coalescing lock.
         this.set('outputCoalesceLock', flushLock);

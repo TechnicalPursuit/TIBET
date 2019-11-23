@@ -51,7 +51,7 @@ function(aSignal) {
     //  Send the command to execute on to the Sherpa' console service.
     (function() {
         TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     //  Send a signal that an item has been selected.
     this.signal('TP.sig.UISelect');
@@ -107,7 +107,7 @@ function() {
 
     (function() {
         menuContentTPElem.scrollTo(TP.TOP);
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });

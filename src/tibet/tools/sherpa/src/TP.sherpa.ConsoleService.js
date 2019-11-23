@@ -2634,7 +2634,7 @@ function(aSignal) {
 
         (function() {
             consoleGUI.focusInput();
-        }).queueForNextRepaint(consoleGUI.getNativeWindow());
+        }).queueBeforeNextRepaint(consoleGUI.getNativeWindow());
 
     }.bind(this);
 

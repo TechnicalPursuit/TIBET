@@ -423,7 +423,7 @@ function() {
 
                 lineElem.setAttribute('y1', y1);
                 lineElem.setAttribute('y2', y2);
-            }).queueForNextRepaint(natWindow);
+            }).queueBeforeNextRepaint(natWindow);
         });
 
     return this;

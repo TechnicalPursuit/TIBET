@@ -1109,7 +1109,7 @@ function(aStyleTPElem) {
         //  Call render one-time to get things going.
         this.render();
 
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });

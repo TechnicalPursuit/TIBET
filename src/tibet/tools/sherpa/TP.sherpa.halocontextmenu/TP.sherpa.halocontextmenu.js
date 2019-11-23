@@ -122,7 +122,7 @@ function() {
         if (TP.isValid(menuContentTPElem)) {
             (function() {
                 menuContentTPElem.scrollTo(TP.TOP);
-            }).queueForNextRepaint(this.getNativeWindow());
+            }).queueBeforeNextRepaint(this.getNativeWindow());
         }
     }
 

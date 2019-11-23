@@ -1644,7 +1644,7 @@ function(aspectPathParts) {
 
     (function() {
         TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     return TP.TSH_NO_VALUE;
 });

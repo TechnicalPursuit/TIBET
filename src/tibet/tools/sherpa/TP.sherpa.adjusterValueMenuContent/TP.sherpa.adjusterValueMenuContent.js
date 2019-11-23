@@ -146,7 +146,7 @@ function() {
 
     (function() {
         menuContentTPElem.scrollTo(TP.TOP);
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });

@@ -3745,7 +3745,7 @@ function() {
                                 loadingSVGElem);
                     TP.elementHide(contentElem);
 
-                }).queueForNextRepaint(TP.nodeGetWindow(contentElem));
+                }).queueBeforeNextRepaint(TP.nodeGetWindow(contentElem));
             });
 
         TP.httpGet(loadingImageLoc, loadingImageReq);
@@ -4662,7 +4662,7 @@ function(aTargetNode) {
         width = TP.elementGetWidth(hiddenSpan);
         (function() {
             TP.elementSetWidth(editor, width + 'px');
-        }).queueForNextRepaint(TP.nodeGetWindow(editor));
+        }).queueBeforeNextRepaint(TP.nodeGetWindow(editor));
     };
 
     //  A Function that tears down the editor and sets the bound value.

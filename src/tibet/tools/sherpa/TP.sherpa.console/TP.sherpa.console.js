@@ -1680,7 +1680,7 @@ function(shouldAnimate) {
                 editorObj.resize();
             }
 
-        }).queueForNextRepaint(this.getNativeWindow());
+        }).queueBeforeNextRepaint(this.getNativeWindow());
     }
 
     return this;
@@ -1845,7 +1845,7 @@ function(anObject, shouldAppend) {
         this.focusInput();
         this.setInputCursorToEnd();
 
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
 });

@@ -191,7 +191,7 @@ function(beHidden) {
     //  as well.
     (function() {
         this.setAttribute('active', !beHidden);
-    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });

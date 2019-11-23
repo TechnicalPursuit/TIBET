@@ -442,7 +442,7 @@ function(shouldRefresh) {
         //  Signal to observers that this control has rendered.
         this.signal('TP.sig.DidRender');
 
-    }).queueForNextRepaint(this.getNativeWindow());
+    }).queueBeforeNextRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;

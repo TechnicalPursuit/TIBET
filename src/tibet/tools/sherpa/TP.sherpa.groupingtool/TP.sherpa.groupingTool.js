@@ -280,7 +280,7 @@ function(aSignal) {
 
     (function() {
         this.render();
-    }.bind(this)).queueForNextRepaint(natWindow);
+    }.bind(this)).queueBeforeNextRepaint(natWindow);
 
     return this;
 });

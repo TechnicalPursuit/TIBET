@@ -265,7 +265,7 @@ function() {
         TP.uc('urn:tibet:hosturi').setResource(
                                     TP.uc('~').getConcreteURI());
 
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     (function() {
         var i;
@@ -308,7 +308,7 @@ function() {
 
             throw e;
         }
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     (function() {
 
@@ -329,7 +329,7 @@ function() {
             TP.boot.$stderr(msg, e);
             throw e;
         }
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     (function() {
 
@@ -348,7 +348,7 @@ function() {
             TP.boot.$stderr(msg, e);
             throw e;
         }
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     (function() {
 
@@ -370,7 +370,7 @@ function() {
             TP.boot.$stderr(msg, e);
             throw e;
         }
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     (function() {
 
@@ -405,7 +405,7 @@ function() {
             TP.boot.$stderr(msg, e);
             throw e;
         }
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     (function() {
 
@@ -483,7 +483,7 @@ function() {
 
         //  Load the UI. This will ultimately trigger UIReady.
         TP.sys.loadUIRoot();
-    }).queueForNextRepaint(rootWindow);
+    }).queueBeforeNextRepaint(rootWindow);
 
     return this;
 }, {
