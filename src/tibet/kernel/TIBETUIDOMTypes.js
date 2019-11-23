@@ -8955,7 +8955,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
                             aPolicy,
                             isCancelable,
                             isBubbling);
-    }).queueBeforeNextRepaint(this.getNativeWindow());
+    }).queueAfterNextRepaint(this.getNativeWindow());
 });
 
 //  ========================================================================

@@ -611,7 +611,7 @@ function() {
      *     fork as it leverage some underlying platform capabilities, but
      *     shouldn't be used when waiting for the screen to refresh as the GUI
      *     thread might not have been serviced yet. Instead, use the
-     *     queueForNextRepaint() method.
+     *     queueBeforeNextRepaint()/queueAfterNextRepaint() methods.
      * @returns {Function} The receiver.
      */
 
@@ -759,6 +759,73 @@ function(aWindow) {
     //  This will 'schedule' the call for just before next time the screen is
     //  repainted.
     return win.requestAnimationFrame(func);
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('queueAfterNextRepaint',
+function(aWindow, afterWaitMS) {
+
+    /**
+     * @method queueAfterNextRepaint
+     * @summary Causes the receiver to be executed after the browser begins its
+     *     next repainting of the screen.
+     * @description This method provides a convenient way for the receiver to
+     *     execute just after the browser repaints the screen. If you want to
+     *     pass arguments to the function itself, simply pass them as parameters
+     *     to this method:
+     *         f.queueAfterNextRepaint(farg1, farg2, ...).
+     * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
+     *     refresh. This is an optional parameter that will default to the
+     *     current UI canvas.
+     * @param {Number} [afterWaitMS] The amount of time in milliseconds to wait
+     *     after repaint to execute the receiver. This is optional and defaults
+     *     to 0.
+     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
+     *     prematurely (via cancelAnimationFrame()).
+     */
+
+    var thisref,
+        arglist,
+
+        func,
+
+        win,
+
+        waitMS;
+
+    //  we'll want to invoke the receiver (this) but need a way to get it
+    //  to close properly into the function we'll use for argument passing
+    thisref = this;
+    arglist = TP.args(arguments);
+
+    //  have to build a second function to ensure the arguments are used
+    func = function() {
+        return thisref.apply(thisref, arglist);
+    };
+
+    //  Just in case we were handed a TP.core.Window
+    win = TP.unwrap(aWindow);
+
+    if (!TP.isWindow(win)) {
+        win = TP.sys.getUICanvas(true);
+    }
+
+    if (TP.isNumber(afterWaitMS)) {
+        waitMS = afterWaitMS;
+    } else {
+        waitMS = 0;
+    }
+
+    //  Call requestAnimationFrame with the a Function that wraps Function that
+    //  we calculated above in a setTimeout that will invoke after the supplied
+    //  number of milliseconds (or 0).
+    //  This will 'schedule' the call for just after next time the screen is
+    //  repainted.
+    return win.requestAnimationFrame(
+                function() {
+                    setTimeout(func, waitMS);
+                });
 });
 
 //  ------------------------------------------------------------------------
