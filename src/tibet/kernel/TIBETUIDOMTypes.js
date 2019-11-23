@@ -6640,9 +6640,9 @@ function(beActive) {
     this.$isInState('pclass:active', beActive);
 
     if (TP.isTrue(beActive)) {
-        this.signalAfterRepaint('TP.sig.UIDidActivate');
+        this.signal('TP.sig.UIDidActivate');
     } else {
-        this.signalAfterRepaint('TP.sig.UIDidDeactivate');
+        this.signal('TP.sig.UIDidDeactivate');
     }
 
     return this.$isInState('pclass:active');
@@ -6666,11 +6666,11 @@ function(beBusy, busyMsg) {
     if (TP.isTrue(beBusy)) {
         this.displayBusy(busyMsg);
 
-        this.signalAfterRepaint('TP.sig.UIDidBusy');
+        this.signal('TP.sig.UIDidBusy');
     } else {
         this.hideBusy();
 
-        this.signalAfterRepaint('TP.sig.UIDidIdle');
+        this.signal('TP.sig.UIDidIdle');
     }
 
     return this.$isInState('pclass:busy');
@@ -6692,9 +6692,9 @@ function(beClosed) {
     this.$isInState('pclass:closed', beClosed);
 
     if (TP.isTrue(beClosed)) {
-        this.signalAfterRepaint('TP.sig.UIDidClose');
+        this.signal('TP.sig.UIDidClose');
     } else {
-        this.signalAfterRepaint('TP.sig.UIDidOpen');
+        this.signal('TP.sig.UIDidOpen');
     }
 
     return this.$isInState('pclass:closed');
@@ -6716,9 +6716,9 @@ function(beCollapsed) {
     this.$isInState('pclass:collapsed', beCollapsed);
 
     if (TP.isTrue(beCollapsed)) {
-        this.signalAfterRepaint('TP.sig.UIDidCollapse');
+        this.signal('TP.sig.UIDidCollapse');
     } else {
-        this.signalAfterRepaint('TP.sig.UIDidExpand');
+        this.signal('TP.sig.UIDidExpand');
     }
 
     return this.$isInState('pclass:collapsed');
@@ -6787,9 +6787,9 @@ function(beHidden) {
     this.$isInState('pclass:hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
-        this.signalAfterRepaint('TP.sig.UIDidHide');
+        this.signal('TP.sig.UIDidHide');
     } else {
-        this.signalAfterRepaint('TP.sig.UIDidShow');
+        this.signal('TP.sig.UIDidShow');
     }
 
     return this.$isInState('pclass:hidden');
@@ -7625,7 +7625,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayAlert(aSignal.getPayload().at('msg'));
 
-        this.signalAfterRepaint('TP.sig.UIDidAlert');
+        this.signal('TP.sig.UIDidAlert');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7682,7 +7682,7 @@ function(aSignal) {
     //  Go ahead and tell ourself to resign from being the focused responder
     this.resignFocusedResponder();
 
-    this.signalAfterRepaint('TP.sig.UIDidBlur');
+    this.signal('TP.sig.UIDidBlur');
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
     //  'on:UIBlur'), then dispatch whatever signal is configured to fire
@@ -7873,7 +7873,7 @@ function(aSignal) {
 
         this.removeAttribute('selected');
 
-        this.signalAfterRepaint('TP.sig.UIDidDeselect');
+        this.signal('TP.sig.UIDidDeselect');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -8110,7 +8110,7 @@ function(aSignal) {
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);
 
-    this.signalAfterRepaint('TP.sig.UIDidFocus');
+    this.signal('TP.sig.UIDidFocus');
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
     //  'on:UIFocus'), then dispatch whatever signal is configured to fire
@@ -8198,7 +8198,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHelp(aSignal.getPayload().at('msg'));
 
-        this.signalAfterRepaint('TP.sig.UIDidHelp');
+        this.signal('TP.sig.UIDidHelp');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -8255,7 +8255,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHint(aSignal.getPayload().at('msg'));
 
-        this.signalAfterRepaint('TP.sig.UIDidHint');
+        this.signal('TP.sig.UIDidHint');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -8566,7 +8566,7 @@ function(aSignal) {
 
         this.setAttribute('selected', 'true');
 
-        this.signalAfterRepaint('TP.sig.UIDidSelect');
+        this.signal('TP.sig.UIDidSelect');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.

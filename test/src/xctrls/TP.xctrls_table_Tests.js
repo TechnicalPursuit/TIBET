@@ -135,7 +135,7 @@ function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
                 test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                // test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -158,7 +158,7 @@ function() {
                 test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
                 test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                // test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -202,7 +202,7 @@ function() {
                 test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
                 test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                // test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -265,7 +265,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                // test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -284,7 +284,7 @@ function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                // test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -314,7 +314,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                // test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
 });

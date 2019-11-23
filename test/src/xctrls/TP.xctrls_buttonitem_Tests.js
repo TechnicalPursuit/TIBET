@@ -115,7 +115,7 @@ function() {
                 test.refute.hasAttribute(buttonitem, 'pclass:active');
 
                 test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                // test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -138,7 +138,7 @@ function() {
                 test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
                 test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                // test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -179,7 +179,7 @@ function() {
                 test.refute.hasAttribute(buttonitem, 'pclass:active');
 
                 test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                // test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -235,7 +235,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                // test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -254,7 +254,7 @@ function() {
                 test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
                 test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                // test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -284,7 +284,7 @@ function() {
         test.chain(
             function() {
                 test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                // test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
             });
     });
 });
