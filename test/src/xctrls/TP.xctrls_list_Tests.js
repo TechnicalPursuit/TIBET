@@ -905,13 +905,10 @@ function() {
 TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - no multiple',
 function() {
 
-    var driver,
-        windowContext,
+    var windowContext,
 
         unloadURI,
         loadURI;
-
-    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -923,11 +920,11 @@ function() {
             var loc,
                 listID;
 
-            windowContext = driver.get('windowContext');
+            windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            this.getDriver().setLocation(loadURI);
 
             listID = TP.computeOriginID(windowContext, loc, 'list8');
             this.andWaitFor(listID, 'TP.sig.DidRender');
@@ -939,7 +936,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1006,13 +1003,10 @@ function() {
 TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - multiple',
 function() {
 
-    var driver,
-        windowContext,
+    var windowContext,
 
         unloadURI,
         loadURI;
-
-    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -1024,11 +1018,11 @@ function() {
             var loc,
                 listID;
 
-            windowContext = driver.get('windowContext');
+            windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            this.getDriver().setLocation(loadURI);
 
             listID = TP.computeOriginID(windowContext, loc, 'list9');
             this.andWaitFor(listID, 'TP.sig.DidRender');
@@ -1040,7 +1034,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
