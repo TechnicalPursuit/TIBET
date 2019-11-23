@@ -906,8 +906,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             TP.core.Window.installLoadUnloadHooks(TP.nodeGetWindow(aDocument));
 
             //  There are no more scripts - invoke the Function that signals
-            //  that all content has been loaded.
-            allContentLoadedFunc();
+            //  that all content has been loaded, but do so *after* the next
+            //  repaint.
+            allContentLoadedFunc.queueAfterNextRepaint(aDocument.defaultView);
         }
     };
 
