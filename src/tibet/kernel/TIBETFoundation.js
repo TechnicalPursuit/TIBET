@@ -712,57 +712,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('queueBeforeNextRepaint',
-function(aWindow) {
-
-    /**
-     * @method queueBeforeNextRepaint
-     * @summary Causes the receiver to be executed before the browser begins its
-     *     next repainting of the screen.
-     * @description This method provides a convenient way for the receiver to
-     *     execute just before the browser repaints the screen. If you want to
-     *     pass arguments to the function itself, simply pass them as parameters
-     *     to this method:
-     *         f.queueBeforeNextRepaint(farg1, farg2, ...).
-     * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
-     *     refresh. This is an optional parameter that will default to the
-     *     current UI canvas.
-     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
-     *     prematurely (via cancelAnimationFrame()).
-     */
-
-    var thisref,
-        arglist,
-
-        func,
-
-        win;
-
-    //  we'll want to invoke the receiver (this) but need a way to get it
-    //  to close properly into the function we'll use for argument passing
-    thisref = this;
-    arglist = TP.args(arguments);
-
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
-
-    //  Just in case we were handed a TP.core.Window
-    win = TP.unwrap(aWindow);
-
-    if (!TP.isWindow(win)) {
-        win = TP.sys.getUICanvas(true);
-    }
-
-    //  Call requestAnimationFrame with the Function that we calculated above.
-    //  This will 'schedule' the call for just before next time the screen is
-    //  repainted.
-    return win.requestAnimationFrame(func);
-});
-
-//  ------------------------------------------------------------------------
-
 Function.Inst.defineMethod('queueAfterNextRepaint',
 function(aWindow, afterWaitMS) {
 
@@ -826,6 +775,57 @@ function(aWindow, afterWaitMS) {
                 function() {
                     setTimeout(func, waitMS);
                 });
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('queueBeforeNextRepaint',
+function(aWindow) {
+
+    /**
+     * @method queueBeforeNextRepaint
+     * @summary Causes the receiver to be executed before the browser begins its
+     *     next repainting of the screen.
+     * @description This method provides a convenient way for the receiver to
+     *     execute just before the browser repaints the screen. If you want to
+     *     pass arguments to the function itself, simply pass them as parameters
+     *     to this method:
+     *         f.queueBeforeNextRepaint(farg1, farg2, ...).
+     * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
+     *     refresh. This is an optional parameter that will default to the
+     *     current UI canvas.
+     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
+     *     prematurely (via cancelAnimationFrame()).
+     */
+
+    var thisref,
+        arglist,
+
+        func,
+
+        win;
+
+    //  we'll want to invoke the receiver (this) but need a way to get it
+    //  to close properly into the function we'll use for argument passing
+    thisref = this;
+    arglist = TP.args(arguments);
+
+    //  have to build a second function to ensure the arguments are used
+    func = function() {
+        return thisref.apply(thisref, arglist);
+    };
+
+    //  Just in case we were handed a TP.core.Window
+    win = TP.unwrap(aWindow);
+
+    if (!TP.isWindow(win)) {
+        win = TP.sys.getUICanvas(true);
+    }
+
+    //  Call requestAnimationFrame with the Function that we calculated above.
+    //  This will 'schedule' the call for just before next time the screen is
+    //  repainted.
+    return win.requestAnimationFrame(func);
 });
 
 //  ------------------------------------------------------------------------
