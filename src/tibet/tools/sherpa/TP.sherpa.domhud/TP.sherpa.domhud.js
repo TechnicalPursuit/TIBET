@@ -734,9 +734,8 @@ function(aTPElem) {
                                         itemElemPageRect.getY()));
 
     (function() {
-        tileTPElem.get('body').
-            focusAutofocusedOrFirstFocusableDescendant();
-    }).queueBeforeNextRepaint(tileTPElem.getNativeWindow());
+        tileTPElem.get('body').focusAutofocusedOrFirstFocusableDescendant();
+    }).queueAfterNextRepaint(tileTPElem.getNativeWindow());
 
     //  If the assistant is already focused on another item, then remove the
     //  'assistantfocus' class on that item.

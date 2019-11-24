@@ -1354,7 +1354,7 @@ function(uniqueID, dataRecord) {
                 }
             }
 
-        }.bind(this).queueBeforeNextRepaint(this.getNativeWindow());
+        }.bind(this).queueAfterNextRepaint(this.getNativeWindow());
 
         //  Capture the output coalescing lock.
         this.set('outputCoalesceLock', flushLock);

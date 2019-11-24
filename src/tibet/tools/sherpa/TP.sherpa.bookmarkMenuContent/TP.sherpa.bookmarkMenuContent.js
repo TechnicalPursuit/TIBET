@@ -54,7 +54,7 @@ function(aSignal) {
     //  Send the command to execute on to the Sherpa' console service.
     (function() {
         TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
-    }).queueBeforeNextRepaint(this.getNativeWindow());
+    }).queueAfterNextRepaint(this.getNativeWindow());
 
     //  Send a signal that an item has been selected.
     this.signal('TP.sig.UISelect');

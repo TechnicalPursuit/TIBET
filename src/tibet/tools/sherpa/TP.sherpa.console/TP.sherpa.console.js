@@ -1845,7 +1845,7 @@ function(anObject, shouldAppend) {
         this.focusInput();
         this.setInputCursorToEnd();
 
-    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
 });

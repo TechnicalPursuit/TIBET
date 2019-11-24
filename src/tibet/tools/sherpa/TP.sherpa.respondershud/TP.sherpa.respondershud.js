@@ -862,7 +862,7 @@ function(aSignal) {
                             'targetAspect', TP.id(target),
                             'targetPath', '__TARGET__/Instance Handlers',
                             'showBusy', true));
-    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -907,7 +907,7 @@ function(aSignal) {
             this.signal('InspectObject',
                         TP.hc('targetObject', target,
                                 'showBusy', true));
-        }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
+        }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
     }
 
     return this;

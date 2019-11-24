@@ -194,7 +194,7 @@ function(options) {
                 usernameTPElem.focus();
             });
 
-    }).queueBeforeNextRepaint(win);
+    }).queueAfterNextRepaint(win);
 
     //  Grab the result of the response and return it's documentElement (i.e.
     //  root element).

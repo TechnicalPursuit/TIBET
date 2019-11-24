@@ -255,9 +255,8 @@ function(aSignal) {
     tileTPElem.setPagePosition(positioningPoint);
 
     (function() {
-        tileTPElem.get('body').
-            focusAutofocusedOrFirstFocusableDescendant();
-    }).queueBeforeNextRepaint(tileTPElem.getNativeWindow());
+        tileTPElem.get('body').focusAutofocusedOrFirstFocusableDescendant();
+    }).queueAfterNextRepaint(tileTPElem.getNativeWindow());
 
     tileTPElem.setAttribute('hidden', false);
 
@@ -608,7 +607,7 @@ function(anIndex) {
                             'showBusy', true,
                             'extraTargetInfo',
                                 TP.hc('findContent', ruleMatcher)));
-    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
 });
