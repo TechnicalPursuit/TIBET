@@ -311,8 +311,7 @@ function(aDocument, shouldFocusPrevious) {
 
     var focusedElem,
 
-        lastDoc,
-        lastTPElem;
+        lastDoc;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -336,12 +335,11 @@ function(aDocument, shouldFocusPrevious) {
 
         //  If the document of what we just focused was the same as the supplied
         //  document, then we need to pop off the last item as we end up with
-        //  one extra and focus it.
+        //  one extra
 
         //  TODO: Investigate why this is the case.
         if (lastDoc === aDocument) {
-            lastTPElem = TP.dom.UIElementNode.popOffFocusStack();
-            lastTPElem.focus();
+            TP.dom.UIElementNode.popOffFocusStack();
         } else {
             //  Go ahead and just focus the last item that's on the stack.
             TP.$focus_stack.last().focus();
