@@ -710,7 +710,11 @@ function(aRequest) {
 
     errorVal = TP.ac(Error, Object);
     eventVal = TP.ac(MouseEvent, UIEvent, Object);
-    xhrVal = TP.ac(XMLHttpRequest, Object);
+    if (TP.sys.isUA('GECKO')) {
+        xhrVal = TP.ac(XMLHttpRequest, XMLHttpRequestEventTarget, Object);
+    } else {
+        xhrVal = TP.ac(XMLHttpRequest, Object);
+    }
 
     tibetTypeVal = TP.ac(TP.meta.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
 
