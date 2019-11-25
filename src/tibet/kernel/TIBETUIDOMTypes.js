@@ -7025,10 +7025,6 @@ function(moveAction) {
         TP.gid(node));
     */
 
-    //  Make sure that we reset the 'async switching contexts' flag that might
-    //  have been set to let us know about an asynchronous focusing situation.
-    TP.dom.UIElementNode.set('$asyncSwitchingContexts', false, false);
-
     //  If the element is disabled, then just bail here - no sense in going any
     //  further.
     if (TP.elementIsDisabled(node)) {
