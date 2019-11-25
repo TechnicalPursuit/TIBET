@@ -40,7 +40,9 @@ before_script:
     # Build TIBET so that packages are available.
     - tibet build
     - cd ..
-    # Build and initialize test project called 'travis'
+    # Build and initialize test project called 'travis'.
+    # IMPORTANT: There may be tests that switch on or off based on this project
+    # name. Keep them in sync if this is changed!
     - tibet clone travis
     - cd travis
     - tibet init --link
