@@ -28,6 +28,7 @@ function() {
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWait(2000);
 
             this.chain(
                 function() {
@@ -352,6 +353,7 @@ function() {
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---
@@ -783,6 +785,7 @@ function() {
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---
@@ -1001,6 +1004,7 @@ function() {
 
             tableID = TP.computeOriginID(windowContext, loc, 'table8');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---
@@ -1099,6 +1103,7 @@ function() {
 
             tableID = TP.computeOriginID(windowContext, loc, 'table9');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---

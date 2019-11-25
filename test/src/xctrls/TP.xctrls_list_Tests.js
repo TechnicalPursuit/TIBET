@@ -28,6 +28,7 @@ function() {
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.andWaitFor(listID, 'TP.sig.DidRender');
+            this.andWait(2000);
 
             this.chain(
                 function() {
@@ -350,6 +351,7 @@ function() {
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.andWaitFor(listID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---
@@ -736,6 +738,7 @@ function() {
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.andWaitFor(listID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---
@@ -928,6 +931,7 @@ function() {
 
             listID = TP.computeOriginID(windowContext, loc, 'list8');
             this.andWaitFor(listID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---
@@ -1026,6 +1030,7 @@ function() {
 
             listID = TP.computeOriginID(windowContext, loc, 'list9');
             this.andWaitFor(listID, 'TP.sig.DidRender');
+            this.andWait(2000);
         });
 
     //  ---

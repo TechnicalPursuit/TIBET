@@ -143,6 +143,7 @@ function() {
                                     'isModal', true,
                                     'templateData',
                                         TP.hc('message', 'Hi There')));
+
                 return promise;
             });
 
