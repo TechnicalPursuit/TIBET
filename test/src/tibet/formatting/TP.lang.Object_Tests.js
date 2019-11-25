@@ -541,10 +541,10 @@ function() {
         testRep = TP.uc('~lib_xsl/tp_xmlarrs2xhtmltable.xsl').transform(
                                                         dataDoc).get('result');
 
-        //  If we're running in IE, the output will be slightly different - but
+        //  If we're running in Gecko, the output will be slightly different - but
         //  it's still correct.
-        if (TP.sys.isUA('IE')) {
-            correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" xmlns:tibet="http://www.technicalpursuit.com/1999/tibet" style="border: 1px solid black; border-image: none; border-collapse: collapse; border-spacing: 0;"><html:th style="border: 1px solid black; border-image: none; color: white; background-color: gray;">1</html:th><html:td style="border: 1px solid black; border-image: none;">2</html:td><html:td style="border: 1px solid black; border-image: none;">3</html:td><html:td style="border: 1px solid black; border-image: none;">4</html:td><html:td style="border: 1px solid black; border-image: none;">5</html:td><html:td style="border: 1px solid black; border-image: none;">6</html:td></html:table>';
+        if (TP.sys.isUA('GECKO')) {
+            correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><html:th style="background-color: gray; color: white; border: solid 1px black">1</html:th><html:td style="border: solid 1px black">2</html:td><html:td style="border: solid 1px black">3</html:td><html:td style="border: solid 1px black">4</html:td><html:td style="border: solid 1px black">5</html:td><html:td style="border: solid 1px black">6</html:td></html:table>';
         } else {
             correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" xmlns:tibet="http://www.technicalpursuit.com/1999/tibet" style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><html:th style="background-color: gray; color: white; border: solid 1px black">1</html:th><html:td style="border: solid 1px black">2</html:td><html:td style="border: solid 1px black">3</html:td><html:td style="border: solid 1px black">4</html:td><html:td style="border: solid 1px black">5</html:td><html:td style="border: solid 1px black">6</html:td></html:table>';
         }
