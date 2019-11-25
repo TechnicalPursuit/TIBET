@@ -117,7 +117,7 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
-    var thisref;
+    var focusedTPElem;
 
     //  If we're about to show, we need to tell the system that we're switching
     //  focus contexts in an async fashion. Otherwise, it can't properly track
@@ -133,31 +133,25 @@ function(beHidden) {
         this.toggleCurtain(beHidden);
     }
 
-    thisref = this;
-    setTimeout(function() {
+    if (beHidden) {
+        //  Blur any focused element that is enclosed within us.
+        this.blurFocusedDescendantElement();
 
-        var focusedTPElem;
+        this.ignoreKeybindingsDirectly();
 
-        if (beHidden) {
-            //  Blur any focused element that is enclosed within us.
-            thisref.blurFocusedDescendantElement();
+    } else {
 
-            this.ignoreKeybindingsDirectly();
+        this.observeKeybindingsDirectly();
 
-        } else {
+        //  Focus any autofocused element or the first focusable element
+        //  under us.
+        this.focusAutofocusedOrFirstFocusableDescendant();
 
-            this.observeKeybindingsDirectly();
-
-            //  Focus any autofocused element or the first focusable element
-            //  under us.
-            thisref.focusAutofocusedOrFirstFocusableDescendant();
-
-            focusedTPElem = thisref.getDocument().getFocusedElement();
-            if (TP.canInvoke(focusedTPElem, 'select')) {
-                focusedTPElem.select();
-            }
+        focusedTPElem = this.getDocument().getFocusedElement();
+        if (TP.canInvoke(focusedTPElem, 'select')) {
+            focusedTPElem.select();
         }
-    }.bind(this), 75);
+    }
 
     return this.callNextMethod();
 });
@@ -361,15 +355,14 @@ function(info) {
 
             //  Set up a timeout, allowing the curtain to show before fetching
             //  and displaying the dialog.
-            setTimeout(
-                function() {
+                (function() {
                     //  Show the dialog
                     dialogTPElem.setAttribute('hidden', false);
 
                     //  Call the Promise's resolver with the created
                     //  TP.xctrls.dialog object.
                     resolver(dialogTPElem);
-                }, 50);
+                }).queueAfterNextRepaint(win);
         });
 
     return promise;
