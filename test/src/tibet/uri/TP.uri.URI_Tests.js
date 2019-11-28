@@ -2424,8 +2424,6 @@ function() {
 
         xmlValue = TP.core.XMLContent.construct(
             '<emp><lname valid="true">Edney</lname><age>47</age></emp>');
-
-        jsonValue = TP.ac('foo', 'bar', 'baz');
     });
 
     //  ---
@@ -2591,7 +2589,9 @@ function() {
 
         jsonSourceURI,
         jsonSingleValueURI,
-        jsonMultipleValueURI;
+        jsonMultipleValueURI,
+
+        jsonNoValueURI;
 
     //  ---
 

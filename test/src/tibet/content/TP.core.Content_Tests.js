@@ -1509,7 +1509,10 @@ function() {
         xmlPath3,
         xmlPath4,
         xmlPath5,
-        xmlPath6;
+        xmlPath6,
+        xmlPath7,
+        xmlPath8,
+        xmlPath9;
 
     //  ---
 
@@ -1659,7 +1662,10 @@ function() {
         jsonPath3,
         jsonPath4,
         jsonPath5,
-        jsonPath6;
+        jsonPath6,
+        jsonPath7,
+        jsonPath8,
+        jsonPath9;
 
     //  ---
 
