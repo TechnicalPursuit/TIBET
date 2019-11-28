@@ -2397,6 +2397,366 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+//  ------------------------------------------------------------------------
+
+TP.uri.TIBETURN.Inst.describe('value collapsing - XML content',
+function() {
+
+    //  By default, URIs collapse their values.
+
+    var noCollapseRequest,
+        collapseRequest,
+
+        xmlValue,
+
+        xmlSourceURI,
+        xmlSingleValueURI,
+        xmlMultipleValueURI,
+
+        xmlNoValueURI;
+
+    //  ---
+
+    this.before(function() {
+
+        noCollapseRequest = TP.request('shouldCollapse', false);
+        collapseRequest = TP.request('shouldCollapse', true);
+
+        xmlValue = TP.core.XMLContent.construct(
+            '<emp><lname valid="true">Edney</lname><age>47</age></emp>');
+
+        jsonValue = TP.ac('foo', 'bar', 'baz');
+    });
+
+    //  ---
+
+    this.beforeEach(function() {
+
+        xmlSourceURI = TP.uc('urn:tibet:xmlData');
+        xmlSingleValueURI = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
+        xmlMultipleValueURI = TP.uc('urn:tibet:xmlData#xpath1(//*)');
+        xmlNoValueURI = TP.uc('urn:tibet:xmlData#xpath1(//goo)');
+    });
+
+    this.afterEach(function() {
+
+        TP.uri.URI.removeInstance(xmlSourceURI);
+        TP.uri.URI.removeInstance(xmlSingleValueURI);
+        TP.uri.URI.removeInstance(xmlMultipleValueURI);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found item', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlSingleValueURI.getResource().get('result');
+
+        test.assert.isElement(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found item', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlSingleValueURI.getResource(noCollapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found item', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlSingleValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isElement(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found multiple items', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlMultipleValueURI.getResource().get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 3);
+        test.assert.isElement(results.at(0));
+        test.assert.isElement(results.at(1));
+        test.assert.isElement(results.at(2));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found multiple items', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlMultipleValueURI.getResource(noCollapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 3);
+        test.assert.isElement(results.at(0));
+        test.assert.isElement(results.at(1));
+        test.assert.isElement(results.at(2));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found multiple items', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlMultipleValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 3);
+        test.assert.isElement(results.at(0));
+        test.assert.isElement(results.at(1));
+        test.assert.isElement(results.at(2));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - didn\'t find item', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlNoValueURI.getResource().get('result');
+
+        test.assert.isNull(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - didn\'t find item', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlNoValueURI.getResource(noCollapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - didn\'t find item', function(test, options) {
+
+        var results;
+
+        xmlSourceURI.setResource(xmlValue);
+
+        results = xmlNoValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isNull(results);
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.TIBETURN.Inst.describe('value collapsing - JSON content',
+function() {
+
+    var noCollapseRequest,
+        collapseRequest,
+
+        jsonValue,
+
+        jsonSourceURI,
+        jsonSingleValueURI,
+        jsonMultipleValueURI;
+
+    //  ---
+
+    this.before(function() {
+
+        noCollapseRequest = TP.request('shouldCollapse', false);
+        collapseRequest = TP.request('shouldCollapse', true);
+
+        jsonValue = TP.core.JSONContent.construct(
+                    '{"foo":["1st","2nd",{"hi":"there"}]}');
+    });
+
+    //  ---
+
+    this.beforeEach(function() {
+
+        jsonSourceURI = TP.uc('urn:tibet:jsonData');
+        jsonSingleValueURI = TP.uc('urn:tibet:jsonData#jpath($.foo[0])');
+        jsonMultipleValueURI = TP.uc('urn:tibet:jsonData#jpath($.foo[:])');
+        jsonNoValueURI = TP.uc('urn:tibet:jsonData#jpath($.goo)');
+    });
+
+    this.afterEach(function() {
+
+        TP.uri.URI.removeInstance(jsonSourceURI);
+        TP.uri.URI.removeInstance(jsonSingleValueURI);
+        TP.uri.URI.removeInstance(jsonMultipleValueURI);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found item', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonSingleValueURI.getResource().get('result');
+
+        test.assert.isString(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found item', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonSingleValueURI.getResource(noCollapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isString(results.at(0));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found item', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonSingleValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isString(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found multiple items', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonMultipleValueURI.getResource().get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 3);
+        test.assert.isString(results.at(0));
+        test.assert.isString(results.at(1));
+        test.assert.isPlainObject(results.at(2));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found multiple items', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonMultipleValueURI.getResource(noCollapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 3);
+        test.assert.isString(results.at(0));
+        test.assert.isString(results.at(1));
+        test.assert.isPlainObject(results.at(2));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found multiple items', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonMultipleValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 3);
+        test.assert.isString(results.at(0));
+        test.assert.isString(results.at(1));
+        test.assert.isPlainObject(results.at(2));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - didn\'t find item', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonNoValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isNull(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - didn\'t find item', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonNoValueURI.getResource(noCollapseRequest).get('result');
+
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - didn\'t find item', function(test, options) {
+
+        var results;
+
+        jsonSourceURI.setResource(jsonValue);
+
+        results = jsonNoValueURI.getResource(collapseRequest).get('result');
+
+        test.assert.isNull(results);
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.TIBETURN.Inst.describe('loaded and dirty checking',
 function() {
 
