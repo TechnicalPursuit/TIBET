@@ -1496,6 +1496,308 @@ function() {
     });
 });
 
+//  ========================================================================
+//  TP.core.Content Values
+//  ========================================================================
+
+TP.core.XMLContent.Inst.describe('value collapsing',
+function() {
+
+    var modelObj,
+        xmlPath1,
+        xmlPath2,
+        xmlPath3,
+        xmlPath4,
+        xmlPath5,
+        xmlPath6;
+
+    //  ---
+
+    this.before(function() {
+
+        xmlPath1 = TP.apc('//bar');
+        xmlPath2 = TP.apc('//bar').set('shouldCollapse', false);
+        xmlPath3 = TP.apc('//bar').set('shouldCollapse', true);
+        xmlPath4 = TP.apc('//baz');
+        xmlPath5 = TP.apc('//baz').set('shouldCollapse', false);
+        xmlPath6 = TP.apc('//baz').set('shouldCollapse', true);
+        xmlPath7 = TP.apc('//goo');
+        xmlPath8 = TP.apc('//goo').set('shouldCollapse', false);
+        xmlPath9 = TP.apc('//goo').set('shouldCollapse', true);
+    });
+
+    //  ---
+
+    this.beforeEach(function() {
+
+        modelObj = TP.core.XMLContent.construct('<foo><bar/><baz/><baz/></foo>');
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath1.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath2.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isElement(results.at(0));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath3.executeGet(modelObj);
+        test.assert.isElement(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found multiple items', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath4.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 2);
+        test.assert.isElement(results.at(0));
+        test.assert.isElement(results.at(1));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found multiple items', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath5.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 2);
+        test.assert.isElement(results.at(0));
+        test.assert.isElement(results.at(1));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found multiple items', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath6.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 2);
+        test.assert.isElement(results.at(0));
+        test.assert.isElement(results.at(1));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath7.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath8.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = xmlPath9.executeGet(modelObj);
+        test.assert.isNull(results);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.describe('value collapsing',
+function() {
+
+    var modelObj,
+        jsonPath1,
+        jsonPath2,
+        jsonPath3,
+        jsonPath4,
+        jsonPath5,
+        jsonPath6;
+
+    //  ---
+
+    this.before(function() {
+
+        jsonPath1 = TP.apc('$.emp.lname');
+        jsonPath2 = TP.apc('$.emp.lname').set('shouldCollapse', false);
+        jsonPath3 = TP.apc('$.emp.lname').set('shouldCollapse', true);
+        jsonPath4 = TP.apc('$.emp.address');
+        jsonPath5 = TP.apc('$.emp.address').set('shouldCollapse', false);
+        jsonPath6 = TP.apc('$.emp.address').set('shouldCollapse', true);
+        jsonPath7 = TP.apc('$.emp.foo');
+        jsonPath8 = TP.apc('$.emp.foo').set('shouldCollapse', false);
+        jsonPath9 = TP.apc('$.emp.foo').set('shouldCollapse', true);
+    });
+
+    //  ---
+
+    this.beforeEach(function() {
+
+        modelObj = TP.core.JSONContent.construct('{"emp":{"lname":"Jones","age":"47", "address": [{"zip":"11111"}, {"zip":"22222"}]}}');
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath1.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isString(results.at(0));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath2.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 1);
+        test.assert.isString(results.at(0));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath3.executeGet(modelObj);
+        test.assert.isString(results);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - found multiple items', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath4.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 2);
+        test.assert.isPlainObject(results.at(0));
+        test.assert.isPlainObject(results.at(1));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - found multiple items', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath5.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 2);
+        test.assert.isPlainObject(results.at(0));
+        test.assert.isPlainObject(results.at(1));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - found multiple items', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath6.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 2);
+        test.assert.isPlainObject(results.at(0));
+        test.assert.isPlainObject(results.at(1));
+    });
+
+    //  ---
+
+    this.it('shouldCollapse defaulted - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath7.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse false - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath8.executeGet(modelObj);
+        test.assert.isArray(results);
+        test.assert.isSizeOf(results, 0);
+    });
+
+    //  ---
+
+    this.it('shouldCollapse true - didn\'t find item', function(test, options) {
+
+        var results;
+
+        //  Ensure that the last name is correct
+        results = jsonPath9.executeGet(modelObj);
+        test.assert.isNull(results);
+    });
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
