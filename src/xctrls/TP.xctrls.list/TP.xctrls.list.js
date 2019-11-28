@@ -1041,8 +1041,8 @@ function(aDataObject, shouldSignal, isFiltered) {
             keys = dataObj.getKeys();
             filteringSource = dataObj.getValues();
         } else if (TP.isPlainObject(dataObj)) {
-            obj = TP.hc(dataObj);
             //  Make sure to convert a POJO into a TP.core.Hash
+            obj = TP.hc(dataObj);
             keys = obj.getKeys();
             filteringSource = obj.getValues();
         } else if (TP.isPair(dataObj.first())) {
