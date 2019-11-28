@@ -1020,6 +1020,16 @@ function(aDataObject, shouldSignal, isFiltered) {
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
+    //  If the data object is an Array and only has 1 item, which must be a
+    //  non-Array Collection (Hash, POJO, NodeList, NamedNodeMap), then we use
+    //  the entries collection as our data object.
+    if (TP.isArray(dataObj) &&
+        dataObj.getSize() === 1 &&
+        TP.isCollection(dataObj.first()) &&
+        !TP.isArray(dataObj.first())) {
+        dataObj = TP.entries(dataObj.first());
+    }
+
     this.$set('data', dataObj, false);
 
     //  Make sure to clear our converted data.
