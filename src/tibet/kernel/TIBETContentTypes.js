@@ -5564,12 +5564,6 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
-    if (TP.isHash(config)) {
-        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
-    } else {
-        this.set('shouldCollapse', true);
-    }
-
     return this;
 });
 

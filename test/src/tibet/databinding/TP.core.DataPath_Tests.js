@@ -4670,11 +4670,11 @@ function() {
     this.before(function() {
         singleLevelModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":"there"}}');
-        singleLevelPath = TP.apc('$.foo.hi');
+        singleLevelPath = TP.apc('$.foo.hi', TP.hc('shouldCollapse', true));
 
         multiLevelModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
-        multiLevelPath = TP.apc('$.foo.hi.boo');
+        multiLevelPath = TP.apc('$.foo.hi.boo', TP.hc('shouldCollapse', true));
     });
 
     this.it('single level get', function(test, options) {
@@ -4732,11 +4732,11 @@ function() {
     this.before(function() {
         singleLevelModel = TP.core.JSONContent.construct(
             '{"value":["one", "two", ["a", "b", "c"]]}');
-        singleLevelPath = TP.apc('$.value[2][1]');
+        singleLevelPath = TP.apc('$.value[2][1]', TP.hc('shouldCollapse', true));
 
         multiLevelModel = TP.core.JSONContent.construct(
             '{"value":["one", "two", ["a", ["6", "7", "8"], "c"]]}');
-        multiLevelPath = TP.apc('$.value[2][1][2]');
+        multiLevelPath = TP.apc('$.value[2][1][2]', TP.hc('shouldCollapse', true));
     });
 
     this.it('single level get', function(test, options) {
@@ -4794,11 +4794,11 @@ function() {
     this.before(function() {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
-        tailResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\']');
+        tailResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\']', TP.hc('shouldCollapse', true));
 
         middleResultsModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":{"gar":"bar"},"moo":{"gar":"tar"}}}}');
-        middleResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\'].gar');
+        middleResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\'].gar', TP.hc('shouldCollapse', true));
     });
 
     this.it('tail results get', function(test, options) {
@@ -4877,10 +4877,10 @@ function() {
     this.before(function() {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"value": ["one", "two", ["a", ["6", "7", "8"], "c"]]}');
-        tailResultsPath = TP.apc('$.value[2][1,2]');
+        tailResultsPath = TP.apc('$.value[2][1,2]', TP.hc('shouldCollapse', true));
 
         middleResultsModel = tailResultsModel;
-        middleResultsPath = TP.apc('$.value[2][1,2][2]');
+        middleResultsPath = TP.apc('$.value[2][1,2][2]', TP.hc('shouldCollapse', true));
     });
 
     this.it('tail results get', function(test, options) {
@@ -4949,7 +4949,7 @@ function() {
         var val,
             path;
 
-        path = TP.apc('$.value[0:2]');
+        path = TP.apc('$.value[0:2]', TP.hc('shouldCollapse', true));
         val = path.executeGet(slicingResultsModel);
 
         test.assert.isEqualTo(val, TP.ac('one', 'two'));
@@ -4959,7 +4959,7 @@ function() {
         var val,
             path;
 
-        path = TP.apc('$.value[:2]');
+        path = TP.apc('$.value[:2]', TP.hc('shouldCollapse', true));
         val = path.executeGet(slicingResultsModel);
 
         test.assert.isEqualTo(val, TP.ac('one', 'two'));
@@ -4969,7 +4969,7 @@ function() {
         var val,
             path;
 
-        path = TP.apc('$.value[2:]');
+        path = TP.apc('$.value[2:]', TP.hc('shouldCollapse', true));
         val = path.executeGet(slicingResultsModel);
 
         test.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37, 'hi'));
@@ -4979,7 +4979,7 @@ function() {
         var val,
             path;
 
-        path = TP.apc('$.value[-2:]');
+        path = TP.apc('$.value[-2:]', TP.hc('shouldCollapse', true));
         val = path.executeGet(slicingResultsModel);
 
         test.assert.isEqualTo(val, TP.ac(37, 'hi'));
@@ -4989,7 +4989,7 @@ function() {
         var val,
             path;
 
-        path = TP.apc('$.value[:-2]');
+        path = TP.apc('$.value[:-2]', TP.hc('shouldCollapse', true));
         val = path.executeGet(slicingResultsModel);
 
         test.assert.isEqualTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6', '7', '8'), 'c')));
@@ -4999,7 +4999,7 @@ function() {
         var val,
             path;
 
-        path = TP.apc('$.value[2:-1]');
+        path = TP.apc('$.value[2:-1]', TP.hc('shouldCollapse', true));
         val = path.executeGet(slicingResultsModel);
 
         test.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37));
@@ -5020,10 +5020,10 @@ function() {
     this.before(function() {
         singleLevelModel = TP.core.JSONContent.construct(
                             '{"foo":["1st","2nd",{"hi":"there"}]}');
-        singleLevelPath = TP.apc('$.foo[1]');
+        singleLevelPath = TP.apc('$.foo[1]', TP.hc('shouldCollapse', true));
 
         multiLevelModel = singleLevelModel;
-        multiLevelPath = TP.apc('$.foo[2].hi');
+        multiLevelPath = TP.apc('$.foo[2].hi', TP.hc('shouldCollapse', true));
     });
 
     this.it('single level get', function(test, options) {
@@ -5089,10 +5089,10 @@ function() {
                     '{"fname":"june", "lname":"cleaver"}' +
                 ']}');
 
-            path1 = TP.apc('$.value[0].fname');
-            path2 = TP.apc('$.value[0,2].fname');
-            path3 = TP.apc('$.value[0].aliases[1:2]');
-            path4 = TP.apc('$.value[0].aliases[:-1]');
+            path1 = TP.apc('$.value[0].fname', TP.hc('shouldCollapse', true));
+            path2 = TP.apc('$.value[0,2].fname', TP.hc('shouldCollapse', true));
+            path3 = TP.apc('$.value[0].aliases[1:2]', TP.hc('shouldCollapse', true));
+            path4 = TP.apc('$.value[0].aliases[:-1]', TP.hc('shouldCollapse', true));
         });
 
     this.afterEach(
@@ -5223,8 +5223,8 @@ function() {
 
     this.before(function() {
         model1 = TP.core.JSONContent.construct('{"foo":{"hi":"there"}}');
-        path1 = TP.apc('$.bar.moo');
-        path2 = TP.apc('$.bar[\'moo\',\'too\'].noo');
+        path1 = TP.apc('$.bar.moo', TP.hc('shouldCollapse', true));
+        path2 = TP.apc('$.bar[\'moo\',\'too\'].noo', TP.hc('shouldCollapse', true));
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -5328,9 +5328,9 @@ function() {
 
     this.before(function() {
         model1 = TP.core.JSONContent.construct('{"value": ["one", "two", ["a", "b", "c"]]}');
-        path1 = TP.apc('$.value[3][1]');
-        path2 = TP.apc('$.value[3][1][0,4]');
-        path3 = TP.apc('$.value[3][1][1:4]');
+        path1 = TP.apc('$.value[3][1]', TP.hc('shouldCollapse', true));
+        path2 = TP.apc('$.value[3][1][0,4]', TP.hc('shouldCollapse', true));
+        path3 = TP.apc('$.value[3][1][1:4]', TP.hc('shouldCollapse', true));
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -5486,8 +5486,8 @@ function() {
 
     this.before(function() {
         model1 = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
-        path1 = TP.apc('$.foo[3].bar');
-        path2 = TP.apc('$.foo[3][\'bar\',\'moo\',\'too\'].roo');
+        path1 = TP.apc('$.foo[3].bar', TP.hc('shouldCollapse', true));
+        path2 = TP.apc('$.foo[3][\'bar\',\'moo\',\'too\'].roo', TP.hc('shouldCollapse', true));
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -5608,10 +5608,10 @@ function() {
                 '{"fname":"june", "lname":"cleaver"}' +
             ']}');
 
-        path1 = TP.apc('$.value[\'{{0}}\'].fname');
-        path2 = TP.apc('$.value[{{0}}:{{1}}].fname');
-        path3 = TP.apc('$.value[\'{{0}}\',\'{{1}}\'].fname');
-        path4 = TP.apc('$.value[\'{{0}}\'].aliases[{{1}}:{{2}}]');
+        path1 = TP.apc('$.value[\'{{0}}\'].fname', TP.hc('shouldCollapse', true));
+        path2 = TP.apc('$.value[{{0}}:{{1}}].fname', TP.hc('shouldCollapse', true));
+        path3 = TP.apc('$.value[\'{{0}}\',\'{{1}}\'].fname', TP.hc('shouldCollapse', true));
+        path4 = TP.apc('$.value[\'{{0}}\'].aliases[{{1}}:{{2}}]', TP.hc('shouldCollapse', true));
     });
 
     this.afterEach(
@@ -5748,7 +5748,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$.store.book[*].author');
+        queryPath = TP.apc('$.store.book[*].author', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         test.assert.isEqualTo(val, TP.ac('Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'J. R. R. Tolkien'));
@@ -5758,7 +5758,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..author');
+        queryPath = TP.apc('$..author', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         test.assert.isEqualTo(val, TP.ac('Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'J. R. R. Tolkien'));
@@ -5768,7 +5768,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$.store.*');
+        queryPath = TP.apc('$.store.*', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5780,7 +5780,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$.store..price');
+        queryPath = TP.apc('$.store..price', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         test.assert.isEqualTo(val, TP.ac(8.95, 12.99, 8.99, 22.99, 19.95));
@@ -5790,7 +5790,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[2]');
+        queryPath = TP.apc('$..book[2]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5802,7 +5802,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[(@.length-1)]');
+        queryPath = TP.apc('$..book[(@.length-1)]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5814,7 +5814,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[:-1]');
+        queryPath = TP.apc('$..book[:-1]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5826,7 +5826,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[:2]');
+        queryPath = TP.apc('$..book[:2]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5838,7 +5838,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[1:2]');
+        queryPath = TP.apc('$..book[1:2]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5850,7 +5850,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[-2:]');
+        queryPath = TP.apc('$..book[-2:]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5862,7 +5862,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[2:]');
+        queryPath = TP.apc('$..book[2:]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5874,7 +5874,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[?(@.isbn)]');
+        queryPath = TP.apc('$..book[?(@.isbn)]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5886,7 +5886,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[?(@.price < 10)]');
+        queryPath = TP.apc('$..book[?(@.price < 10)]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5898,7 +5898,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[?(@.isbn && @.price < 10)]');
+        queryPath = TP.apc('$..book[?(@.isbn && @.price < 10)]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5910,7 +5910,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..book[?(@.isbn || @.price < 10)]');
+        queryPath = TP.apc('$..book[?(@.isbn || @.price < 10)]', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */
@@ -5923,7 +5923,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$..*');
+        queryPath = TP.apc('$..*', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         //  TODO: This doesn't return quite the correct results
@@ -5935,7 +5935,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$');
+        queryPath = TP.apc('$', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         //  TODO: This doesn't return quite the correct results
@@ -5946,7 +5946,7 @@ function() {
         var queryPath,
             val;
 
-        queryPath = TP.apc('$.store');
+        queryPath = TP.apc('$.store', TP.hc('shouldCollapse', true));
         val = queryPath.executeGet(jsonContent);
 
         /* eslint-disable quote-props,quotes,object-curly-newline */

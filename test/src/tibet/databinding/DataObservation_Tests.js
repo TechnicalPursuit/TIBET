@@ -1079,7 +1079,7 @@ function() {
         aspectObsFunction =
                 function(aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
-                    valueChangedResults.push(aSignal.getValue());
+                    valueChangedResults.push(aSignal.getValue().first());
                 };
 
         newEmployee = TP.test.JSONPathEmployee.construct(

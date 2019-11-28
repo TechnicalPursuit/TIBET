@@ -172,7 +172,7 @@ function(aRequest) {
         } else if (TP.regex.JS_IDENTIFIER.test.facetSrc) {
             facetVal = facetSrc;
         } else {
-            facetVal = TP.apc(facetSrc);
+            facetVal = TP.apc(facetSrc, TP.hc('shouldCollapse', true));
         }
 
         return facetVal;
