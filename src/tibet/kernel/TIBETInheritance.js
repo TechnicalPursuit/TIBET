@@ -7484,6 +7484,16 @@ function(aString) {
      * @returns {String[]} The String as an Array of characters.
      */
 
+    var val;
+
+    if (TP.isJSONString(aString)) {
+
+        val = TP.json2js(aString);
+        if (TP.isValid(val)) {
+            return val;
+        }
+    }
+
     return aString.split('');
 });
 
