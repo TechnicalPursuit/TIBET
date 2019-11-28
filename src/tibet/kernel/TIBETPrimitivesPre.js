@@ -4598,7 +4598,17 @@ function(methodName, methodBody, methodDescriptor) {
         //  method install method and we leave that version alone.
         if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
-            continue;
+            if (TP.isNativeFunction(existingMethod)) {
+                target['ECMA' + methodName] = existingMethod;
+                TP.ifWarn() ?
+                    TP.warn('Replacing native method definition \'' +
+                            methodName + '\' on: ' + target + ' with TIBET' +
+                            ' meta-type method. Aliased native method \'' +
+                            methodName + '\' to \'ECMA' + methodName +
+                            '\'.') : 0;
+            } else {
+                continue;
+            }
         }
 
         TP.defineMethodSlot(
@@ -4723,7 +4733,17 @@ function(methodName, methodBody, methodDescriptor) {
         //  method install method and we leave that version alone.
         if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
-            continue;
+            if (TP.isNativeFunction(existingMethod)) {
+                target['ECMA' + methodName] = existingMethod;
+                TP.ifWarn() ?
+                    TP.warn('Replacing native method definition \'' +
+                            methodName + '\' on: ' + target + ' with TIBET' +
+                            ' meta-type method. Aliased native method \'' +
+                            methodName + '\' to \'ECMA' + methodName +
+                            '\'.') : 0;
+            } else {
+                continue;
+            }
         }
 
         TP.defineMethodSlot(
