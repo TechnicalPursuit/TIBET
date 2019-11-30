@@ -2695,7 +2695,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 var randomBytes = function randomBytes(nBytes) {
-  return __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.random(nBytes).toString(), 'hex');
+	return __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.random(nBytes).toString(), 'hex');
 };
 
 
@@ -2707,323 +2707,323 @@ var newPasswordRequiredChallengeUserAttributePrefix = 'userAttributes.';
 /** @class */
 
 var AuthenticationHelper = function () {
-  /**
-   * Constructs a new AuthenticationHelper object
-   * @param {string} PoolName Cognito user pool name.
-   */
-  function AuthenticationHelper(PoolName) {
-    _classCallCheck(this, AuthenticationHelper);
+	/**
+  * Constructs a new AuthenticationHelper object
+  * @param {string} PoolName Cognito user pool name.
+  */
+	function AuthenticationHelper(PoolName) {
+		_classCallCheck(this, AuthenticationHelper);
 
-    this.N = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](initN, 16);
-    this.g = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */]('2', 16);
-    this.k = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash('00' + this.N.toString(16) + '0' + this.g.toString(16)), 16);
+		this.N = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](initN, 16);
+		this.g = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */]('2', 16);
+		this.k = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash('00' + this.N.toString(16) + '0' + this.g.toString(16)), 16);
 
-    this.smallAValue = this.generateRandomSmallA();
-    this.getLargeAValue(function () {});
+		this.smallAValue = this.generateRandomSmallA();
+		this.getLargeAValue(function () {});
 
-    this.infoBits = __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from('Caldera Derived Key', 'utf8');
+		this.infoBits = __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from('Caldera Derived Key', 'utf8');
 
-    this.poolName = PoolName;
-  }
+		this.poolName = PoolName;
+	}
 
-  /**
-   * @returns {BigInteger} small A, a random number
-   */
+	/**
+  * @returns {BigInteger} small A, a random number
+  */
 
 
-  AuthenticationHelper.prototype.getSmallAValue = function getSmallAValue() {
-    return this.smallAValue;
-  };
+	AuthenticationHelper.prototype.getSmallAValue = function getSmallAValue() {
+		return this.smallAValue;
+	};
 
-  /**
-   * @param {nodeCallback<BigInteger>} callback Called with (err, largeAValue)
-   * @returns {void}
-   */
+	/**
+  * @param {nodeCallback<BigInteger>} callback Called with (err, largeAValue)
+  * @returns {void}
+  */
 
 
-  AuthenticationHelper.prototype.getLargeAValue = function getLargeAValue(callback) {
-    var _this = this;
+	AuthenticationHelper.prototype.getLargeAValue = function getLargeAValue(callback) {
+		var _this = this;
 
-    if (this.largeAValue) {
-      callback(null, this.largeAValue);
-    } else {
-      this.calculateA(this.smallAValue, function (err, largeAValue) {
-        if (err) {
-          callback(err, null);
-        }
+		if (this.largeAValue) {
+			callback(null, this.largeAValue);
+		} else {
+			this.calculateA(this.smallAValue, function (err, largeAValue) {
+				if (err) {
+					callback(err, null);
+				}
 
-        _this.largeAValue = largeAValue;
-        callback(null, _this.largeAValue);
-      });
-    }
-  };
+				_this.largeAValue = largeAValue;
+				callback(null, _this.largeAValue);
+			});
+		}
+	};
 
-  /**
-   * helper function to generate a random big integer
-   * @returns {BigInteger} a random value.
-   * @private
-   */
+	/**
+  * helper function to generate a random big integer
+  * @returns {BigInteger} a random value.
+  * @private
+  */
 
 
-  AuthenticationHelper.prototype.generateRandomSmallA = function generateRandomSmallA() {
-    var hexRandom = randomBytes(128).toString('hex');
+	AuthenticationHelper.prototype.generateRandomSmallA = function generateRandomSmallA() {
+		var hexRandom = randomBytes(128).toString('hex');
 
-    var randomBigInt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](hexRandom, 16);
-    var smallABigInt = randomBigInt.mod(this.N);
+		var randomBigInt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](hexRandom, 16);
+		var smallABigInt = randomBigInt.mod(this.N);
 
-    return smallABigInt;
-  };
+		return smallABigInt;
+	};
 
-  /**
-   * helper function to generate a random string
-   * @returns {string} a random value.
-   * @private
-   */
+	/**
+  * helper function to generate a random string
+  * @returns {string} a random value.
+  * @private
+  */
 
 
-  AuthenticationHelper.prototype.generateRandomString = function generateRandomString() {
-    return randomBytes(40).toString('base64');
-  };
+	AuthenticationHelper.prototype.generateRandomString = function generateRandomString() {
+		return randomBytes(40).toString('base64');
+	};
 
-  /**
-   * @returns {string} Generated random value included in password hash.
-   */
+	/**
+  * @returns {string} Generated random value included in password hash.
+  */
 
 
-  AuthenticationHelper.prototype.getRandomPassword = function getRandomPassword() {
-    return this.randomPassword;
-  };
+	AuthenticationHelper.prototype.getRandomPassword = function getRandomPassword() {
+		return this.randomPassword;
+	};
 
-  /**
-   * @returns {string} Generated random value included in devices hash.
-   */
+	/**
+  * @returns {string} Generated random value included in devices hash.
+  */
 
 
-  AuthenticationHelper.prototype.getSaltDevices = function getSaltDevices() {
-    return this.SaltToHashDevices;
-  };
+	AuthenticationHelper.prototype.getSaltDevices = function getSaltDevices() {
+		return this.SaltToHashDevices;
+	};
 
-  /**
-   * @returns {string} Value used to verify devices.
-   */
+	/**
+  * @returns {string} Value used to verify devices.
+  */
 
 
-  AuthenticationHelper.prototype.getVerifierDevices = function getVerifierDevices() {
-    return this.verifierDevices;
-  };
+	AuthenticationHelper.prototype.getVerifierDevices = function getVerifierDevices() {
+		return this.verifierDevices;
+	};
 
-  /**
-   * Generate salts and compute verifier.
-   * @param {string} deviceGroupKey Devices to generate verifier for.
-   * @param {string} username User to generate verifier for.
-   * @param {nodeCallback<null>} callback Called with (err, null)
-   * @returns {void}
-   */
+	/**
+  * Generate salts and compute verifier.
+  * @param {string} deviceGroupKey Devices to generate verifier for.
+  * @param {string} username User to generate verifier for.
+  * @param {nodeCallback<null>} callback Called with (err, null)
+  * @returns {void}
+  */
 
-
-  AuthenticationHelper.prototype.generateHashDevice = function generateHashDevice(deviceGroupKey, username, callback) {
-    var _this2 = this;
-
-    this.randomPassword = this.generateRandomString();
-    var combinedString = '' + deviceGroupKey + username + ':' + this.randomPassword;
-    var hashedString = this.hash(combinedString);
-
-    var hexRandom = randomBytes(16).toString('hex');
-    this.SaltToHashDevices = this.padHex(new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](hexRandom, 16));
-
-    this.g.modPow(new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash(this.SaltToHashDevices + hashedString), 16), this.N, function (err, verifierDevicesNotPadded) {
-      if (err) {
-        callback(err, null);
-      }
-
-      _this2.verifierDevices = _this2.padHex(verifierDevicesNotPadded);
-      callback(null, null);
-    });
-  };
-
-  /**
-   * Calculate the client's public value A = g^a%N
-   * with the generated random number a
-   * @param {BigInteger} a Randomly generated small A.
-   * @param {nodeCallback<BigInteger>} callback Called with (err, largeAValue)
-   * @returns {void}
-   * @private
-   */
-
-
-  AuthenticationHelper.prototype.calculateA = function calculateA(a, callback) {
-    var _this3 = this;
-
-    this.g.modPow(a, this.N, function (err, A) {
-      if (err) {
-        callback(err, null);
-      }
-
-      if (A.mod(_this3.N).equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
-        callback(new Error('Illegal paramater. A mod N cannot be 0.'), null);
-      }
-
-      callback(null, A);
-    });
-  };
-
-  /**
-   * Calculate the client's value U which is the hash of A and B
-   * @param {BigInteger} A Large A value.
-   * @param {BigInteger} B Server B value.
-   * @returns {BigInteger} Computed U value.
-   * @private
-   */
-
-
-  AuthenticationHelper.prototype.calculateU = function calculateU(A, B) {
-    this.UHexHash = this.hexHash(this.padHex(A) + this.padHex(B));
-    var finalU = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.UHexHash, 16);
-
-    return finalU;
-  };
-
-  /**
-   * Calculate a hash from a bitArray
-   * @param {Buffer} buf Value to hash.
-   * @returns {String} Hex-encoded hash.
-   * @private
-   */
-
-
-  AuthenticationHelper.prototype.hash = function hash(buf) {
-    var str = buf instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(buf) : buf;
-    var hashHex = __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256___default()(str).toString();
-
-    return new Array(64 - hashHex.length).join('0') + hashHex;
-  };
-
-  /**
-   * Calculate a hash from a hex string
-   * @param {String} hexStr Value to hash.
-   * @returns {String} Hex-encoded hash.
-   * @private
-   */
-
-
-  AuthenticationHelper.prototype.hexHash = function hexHash(hexStr) {
-    return this.hash(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(hexStr, 'hex'));
-  };
-
-  /**
-   * Standard hkdf algorithm
-   * @param {Buffer} ikm Input key material.
-   * @param {Buffer} salt Salt value.
-   * @returns {Buffer} Strong key material.
-   * @private
-   */
-
-
-  AuthenticationHelper.prototype.computehkdf = function computehkdf(ikm, salt) {
-    var infoBitsWordArray = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([this.infoBits, __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(String.fromCharCode(1), 'utf8')]));
-    var ikmWordArray = ikm instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(ikm) : ikm;
-    var saltWordArray = salt instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(salt) : salt;
-
-    var prk = __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(ikmWordArray, saltWordArray);
-    var hmac = __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(infoBitsWordArray, prk);
-    return __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(hmac.toString(), 'hex').slice(0, 16);
-  };
-
-  /**
-   * Calculates the final hkdf based on computed S value, and computed U value and the key
-   * @param {String} username Username.
-   * @param {String} password Password.
-   * @param {BigInteger} serverBValue Server B value.
-   * @param {BigInteger} salt Generated salt.
-   * @param {nodeCallback<Buffer>} callback Called with (err, hkdfValue)
-   * @returns {void}
-   */
-
-
-  AuthenticationHelper.prototype.getPasswordAuthenticationKey = function getPasswordAuthenticationKey(username, password, serverBValue, salt, callback) {
-    var _this4 = this;
-
-    if (serverBValue.mod(this.N).equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
-      throw new Error('B cannot be zero.');
-    }
-
-    this.UValue = this.calculateU(this.largeAValue, serverBValue);
-
-    if (this.UValue.equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
-      throw new Error('U cannot be zero.');
-    }
-
-    var usernamePassword = '' + this.poolName + username + ':' + password;
-    var usernamePasswordHash = this.hash(usernamePassword);
-
-    var xValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash(this.padHex(salt) + usernamePasswordHash), 16);
-    this.calculateS(xValue, serverBValue, function (err, sValue) {
-      if (err) {
-        callback(err, null);
-      }
-
-      var hkdf = _this4.computehkdf(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this4.padHex(sValue), 'hex'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
-
-      callback(null, hkdf);
-    });
-  };
-
-  /**
-   * Calculates the S value used in getPasswordAuthenticationKey
-   * @param {BigInteger} xValue Salted password hash value.
-   * @param {BigInteger} serverBValue Server B value.
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  AuthenticationHelper.prototype.calculateS = function calculateS(xValue, serverBValue, callback) {
-    var _this5 = this;
-
-    this.g.modPow(xValue, this.N, function (err, gModPowXN) {
-      if (err) {
-        callback(err, null);
-      }
-
-      var intValue2 = serverBValue.subtract(_this5.k.multiply(gModPowXN));
-      intValue2.modPow(_this5.smallAValue.add(_this5.UValue.multiply(xValue)), _this5.N, function (err2, result) {
-        if (err2) {
-          callback(err2, null);
-        }
-
-        callback(null, result.mod(_this5.N));
-      });
-    });
-  };
-
-  /**
+
+	AuthenticationHelper.prototype.generateHashDevice = function generateHashDevice(deviceGroupKey, username, callback) {
+		var _this2 = this;
+
+		this.randomPassword = this.generateRandomString();
+		var combinedString = '' + deviceGroupKey + username + ':' + this.randomPassword;
+		var hashedString = this.hash(combinedString);
+
+		var hexRandom = randomBytes(16).toString('hex');
+		this.SaltToHashDevices = this.padHex(new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](hexRandom, 16));
+
+		this.g.modPow(new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash(this.SaltToHashDevices + hashedString), 16), this.N, function (err, verifierDevicesNotPadded) {
+			if (err) {
+				callback(err, null);
+			}
+
+			_this2.verifierDevices = _this2.padHex(verifierDevicesNotPadded);
+			callback(null, null);
+		});
+	};
+
+	/**
+  * Calculate the client's public value A = g^a%N
+  * with the generated random number a
+  * @param {BigInteger} a Randomly generated small A.
+  * @param {nodeCallback<BigInteger>} callback Called with (err, largeAValue)
+  * @returns {void}
+  * @private
+  */
+
+
+	AuthenticationHelper.prototype.calculateA = function calculateA(a, callback) {
+		var _this3 = this;
+
+		this.g.modPow(a, this.N, function (err, A) {
+			if (err) {
+				callback(err, null);
+			}
+
+			if (A.mod(_this3.N).equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
+				callback(new Error('Illegal paramater. A mod N cannot be 0.'), null);
+			}
+
+			callback(null, A);
+		});
+	};
+
+	/**
+  * Calculate the client's value U which is the hash of A and B
+  * @param {BigInteger} A Large A value.
+  * @param {BigInteger} B Server B value.
+  * @returns {BigInteger} Computed U value.
+  * @private
+  */
+
+
+	AuthenticationHelper.prototype.calculateU = function calculateU(A, B) {
+		this.UHexHash = this.hexHash(this.padHex(A) + this.padHex(B));
+		var finalU = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.UHexHash, 16);
+
+		return finalU;
+	};
+
+	/**
+  * Calculate a hash from a bitArray
+  * @param {Buffer} buf Value to hash.
+  * @returns {String} Hex-encoded hash.
+  * @private
+  */
+
+
+	AuthenticationHelper.prototype.hash = function hash(buf) {
+		var str = buf instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(buf) : buf;
+		var hashHex = __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256___default()(str).toString();
+
+		return new Array(64 - hashHex.length).join('0') + hashHex;
+	};
+
+	/**
+  * Calculate a hash from a hex string
+  * @param {String} hexStr Value to hash.
+  * @returns {String} Hex-encoded hash.
+  * @private
+  */
+
+
+	AuthenticationHelper.prototype.hexHash = function hexHash(hexStr) {
+		return this.hash(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(hexStr, 'hex'));
+	};
+
+	/**
+  * Standard hkdf algorithm
+  * @param {Buffer} ikm Input key material.
+  * @param {Buffer} salt Salt value.
+  * @returns {Buffer} Strong key material.
+  * @private
+  */
+
+
+	AuthenticationHelper.prototype.computehkdf = function computehkdf(ikm, salt) {
+		var infoBitsWordArray = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([this.infoBits, __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(String.fromCharCode(1), 'utf8')]));
+		var ikmWordArray = ikm instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(ikm) : ikm;
+		var saltWordArray = salt instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(salt) : salt;
+
+		var prk = __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(ikmWordArray, saltWordArray);
+		var hmac = __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(infoBitsWordArray, prk);
+		return __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(hmac.toString(), 'hex').slice(0, 16);
+	};
+
+	/**
+  * Calculates the final hkdf based on computed S value, and computed U value and the key
+  * @param {String} username Username.
+  * @param {String} password Password.
+  * @param {BigInteger} serverBValue Server B value.
+  * @param {BigInteger} salt Generated salt.
+  * @param {nodeCallback<Buffer>} callback Called with (err, hkdfValue)
+  * @returns {void}
+  */
+
+
+	AuthenticationHelper.prototype.getPasswordAuthenticationKey = function getPasswordAuthenticationKey(username, password, serverBValue, salt, callback) {
+		var _this4 = this;
+
+		if (serverBValue.mod(this.N).equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
+			throw new Error('B cannot be zero.');
+		}
+
+		this.UValue = this.calculateU(this.largeAValue, serverBValue);
+
+		if (this.UValue.equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
+			throw new Error('U cannot be zero.');
+		}
+
+		var usernamePassword = '' + this.poolName + username + ':' + password;
+		var usernamePasswordHash = this.hash(usernamePassword);
+
+		var xValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash(this.padHex(salt) + usernamePasswordHash), 16);
+		this.calculateS(xValue, serverBValue, function (err, sValue) {
+			if (err) {
+				callback(err, null);
+			}
+
+			var hkdf = _this4.computehkdf(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this4.padHex(sValue), 'hex'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
+
+			callback(null, hkdf);
+		});
+	};
+
+	/**
+  * Calculates the S value used in getPasswordAuthenticationKey
+  * @param {BigInteger} xValue Salted password hash value.
+  * @param {BigInteger} serverBValue Server B value.
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	AuthenticationHelper.prototype.calculateS = function calculateS(xValue, serverBValue, callback) {
+		var _this5 = this;
+
+		this.g.modPow(xValue, this.N, function (err, gModPowXN) {
+			if (err) {
+				callback(err, null);
+			}
+
+			var intValue2 = serverBValue.subtract(_this5.k.multiply(gModPowXN));
+			intValue2.modPow(_this5.smallAValue.add(_this5.UValue.multiply(xValue)), _this5.N, function (err2, result) {
+				if (err2) {
+					callback(err2, null);
+				}
+
+				callback(null, result.mod(_this5.N));
+			});
+		});
+	};
+
+	/**
   * Return constant newPasswordRequiredChallengeUserAttributePrefix
   * @return {newPasswordRequiredChallengeUserAttributePrefix} constant prefix value
   */
 
 
-  AuthenticationHelper.prototype.getNewPasswordRequiredChallengeUserAttributePrefix = function getNewPasswordRequiredChallengeUserAttributePrefix() {
-    return newPasswordRequiredChallengeUserAttributePrefix;
-  };
+	AuthenticationHelper.prototype.getNewPasswordRequiredChallengeUserAttributePrefix = function getNewPasswordRequiredChallengeUserAttributePrefix() {
+		return newPasswordRequiredChallengeUserAttributePrefix;
+	};
 
-  /**
-   * Converts a BigInteger (or hex string) to hex format padded with zeroes for hashing
-   * @param {BigInteger|String} bigInt Number or string to pad.
-   * @returns {String} Padded hex string.
-   */
+	/**
+  * Converts a BigInteger (or hex string) to hex format padded with zeroes for hashing
+  * @param {BigInteger|String} bigInt Number or string to pad.
+  * @returns {String} Padded hex string.
+  */
 
 
-  AuthenticationHelper.prototype.padHex = function padHex(bigInt) {
-    var hashStr = bigInt.toString(16);
-    if (hashStr.length % 2 === 1) {
-      hashStr = '0' + hashStr;
-    } else if ('89ABCDEFabcdef'.indexOf(hashStr[0]) !== -1) {
-      hashStr = '00' + hashStr;
-    }
-    return hashStr;
-  };
+	AuthenticationHelper.prototype.padHex = function padHex(bigInt) {
+		var hashStr = bigInt.toString(16);
+		if (hashStr.length % 2 === 1) {
+			hashStr = '0' + hashStr;
+		} else if ('89ABCDEFabcdef'.indexOf(hashStr[0]) !== -1) {
+			hashStr = '00' + hashStr;
+		}
+		return hashStr;
+	};
 
-  return AuthenticationHelper;
+	return AuthenticationHelper;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (AuthenticationHelper);
@@ -3393,12 +3393,12 @@ var AuthenticationHelper = function () {
 
 // (public) Constructor
 function BigInteger(a, b) {
-  if (a != null) this.fromString(a, b);
+	if (a != null) this.fromString(a, b);
 }
 
 // return new, unset BigInteger
 function nbi() {
-  return new BigInteger(null);
+	return new BigInteger(null);
 }
 
 // Bits per digit
@@ -3417,55 +3417,55 @@ var j_lm = (canary & 0xffffff) == 0xefcafe;
 // max digit bits should be 26 because
 // max internal value = 2*dvalue^2-2*dvalue (< 2^53)
 function am1(i, x, w, j, c, n) {
-  while (--n >= 0) {
-    var v = x * this[i++] + w[j] + c;
-    c = Math.floor(v / 0x4000000);
-    w[j++] = v & 0x3ffffff;
-  }
-  return c;
+	while (--n >= 0) {
+		var v = x * this[i++] + w[j] + c;
+		c = Math.floor(v / 0x4000000);
+		w[j++] = v & 0x3ffffff;
+	}
+	return c;
 }
 // am2 avoids a big mult-and-extract completely.
 // Max digit bits should be <= 30 because we do bitwise ops
 // on values up to 2*hdvalue^2-hdvalue-1 (< 2^31)
 function am2(i, x, w, j, c, n) {
-  var xl = x & 0x7fff,
-      xh = x >> 15;
-  while (--n >= 0) {
-    var l = this[i] & 0x7fff;
-    var h = this[i++] >> 15;
-    var m = xh * l + h * xl;
-    l = xl * l + ((m & 0x7fff) << 15) + w[j] + (c & 0x3fffffff);
-    c = (l >>> 30) + (m >>> 15) + xh * h + (c >>> 30);
-    w[j++] = l & 0x3fffffff;
-  }
-  return c;
+	var xl = x & 0x7fff,
+	    xh = x >> 15;
+	while (--n >= 0) {
+		var l = this[i] & 0x7fff;
+		var h = this[i++] >> 15;
+		var m = xh * l + h * xl;
+		l = xl * l + ((m & 0x7fff) << 15) + w[j] + (c & 0x3fffffff);
+		c = (l >>> 30) + (m >>> 15) + xh * h + (c >>> 30);
+		w[j++] = l & 0x3fffffff;
+	}
+	return c;
 }
 // Alternately, set max digit bits to 28 since some
 // browsers slow down when dealing with 32-bit numbers.
 function am3(i, x, w, j, c, n) {
-  var xl = x & 0x3fff,
-      xh = x >> 14;
-  while (--n >= 0) {
-    var l = this[i] & 0x3fff;
-    var h = this[i++] >> 14;
-    var m = xh * l + h * xl;
-    l = xl * l + ((m & 0x3fff) << 14) + w[j] + c;
-    c = (l >> 28) + (m >> 14) + xh * h;
-    w[j++] = l & 0xfffffff;
-  }
-  return c;
+	var xl = x & 0x3fff,
+	    xh = x >> 14;
+	while (--n >= 0) {
+		var l = this[i] & 0x3fff;
+		var h = this[i++] >> 14;
+		var m = xh * l + h * xl;
+		l = xl * l + ((m & 0x3fff) << 14) + w[j] + c;
+		c = (l >> 28) + (m >> 14) + xh * h;
+		w[j++] = l & 0xfffffff;
+	}
+	return c;
 }
-var inBrowser = typeof navigator !== "undefined";
-if (inBrowser && j_lm && navigator.appName == "Microsoft Internet Explorer") {
-  BigInteger.prototype.am = am2;
-  dbits = 30;
-} else if (inBrowser && j_lm && navigator.appName != "Netscape") {
-  BigInteger.prototype.am = am1;
-  dbits = 26;
+var inBrowser = typeof navigator !== 'undefined';
+if (inBrowser && j_lm && navigator.appName == 'Microsoft Internet Explorer') {
+	BigInteger.prototype.am = am2;
+	dbits = 30;
+} else if (inBrowser && j_lm && navigator.appName != 'Netscape') {
+	BigInteger.prototype.am = am1;
+	dbits = 26;
 } else {
-  // Mozilla/Netscape seems to prefer am3
-  BigInteger.prototype.am = am3;
-  dbits = 28;
+	// Mozilla/Netscape seems to prefer am3
+	BigInteger.prototype.am = am3;
+	dbits = 28;
 }
 
 BigInteger.prototype.DB = dbits;
@@ -3478,378 +3478,378 @@ BigInteger.prototype.F1 = BI_FP - dbits;
 BigInteger.prototype.F2 = 2 * dbits - BI_FP;
 
 // Digit conversions
-var BI_RM = "0123456789abcdefghijklmnopqrstuvwxyz";
+var BI_RM = '0123456789abcdefghijklmnopqrstuvwxyz';
 var BI_RC = new Array();
 var rr, vv;
-rr = "0".charCodeAt(0);
+rr = '0'.charCodeAt(0);
 for (vv = 0; vv <= 9; ++vv) {
-  BI_RC[rr++] = vv;
-}rr = "a".charCodeAt(0);
+	BI_RC[rr++] = vv;
+}rr = 'a'.charCodeAt(0);
 for (vv = 10; vv < 36; ++vv) {
-  BI_RC[rr++] = vv;
-}rr = "A".charCodeAt(0);
+	BI_RC[rr++] = vv;
+}rr = 'A'.charCodeAt(0);
 for (vv = 10; vv < 36; ++vv) {
-  BI_RC[rr++] = vv;
+	BI_RC[rr++] = vv;
 }function int2char(n) {
-  return BI_RM.charAt(n);
+	return BI_RM.charAt(n);
 }
 function intAt(s, i) {
-  var c = BI_RC[s.charCodeAt(i)];
-  return c == null ? -1 : c;
+	var c = BI_RC[s.charCodeAt(i)];
+	return c == null ? -1 : c;
 }
 
 // (protected) copy this to r
 function bnpCopyTo(r) {
-  for (var i = this.t - 1; i >= 0; --i) {
-    r[i] = this[i];
-  }r.t = this.t;
-  r.s = this.s;
+	for (var i = this.t - 1; i >= 0; --i) {
+		r[i] = this[i];
+	}r.t = this.t;
+	r.s = this.s;
 }
 
 // (protected) set from integer value x, -DV <= x < DV
 function bnpFromInt(x) {
-  this.t = 1;
-  this.s = x < 0 ? -1 : 0;
-  if (x > 0) this[0] = x;else if (x < -1) this[0] = x + this.DV;else this.t = 0;
+	this.t = 1;
+	this.s = x < 0 ? -1 : 0;
+	if (x > 0) this[0] = x;else if (x < -1) this[0] = x + this.DV;else this.t = 0;
 }
 
 // return bigint initialized to value
 function nbv(i) {
-  var r = nbi();
+	var r = nbi();
 
-  r.fromInt(i);
+	r.fromInt(i);
 
-  return r;
+	return r;
 }
 
 // (protected) set from string and radix
 function bnpFromString(s, b) {
-  var k;
-  if (b == 16) k = 4;else if (b == 8) k = 3;else if (b == 2) k = 1;else if (b == 32) k = 5;else if (b == 4) k = 2;else throw new Error("Only radix 2, 4, 8, 16, 32 are supported");
-  this.t = 0;
-  this.s = 0;
-  var i = s.length,
-      mi = false,
-      sh = 0;
-  while (--i >= 0) {
-    var x = intAt(s, i);
-    if (x < 0) {
-      if (s.charAt(i) == "-") mi = true;
-      continue;
-    }
-    mi = false;
-    if (sh == 0) this[this.t++] = x;else if (sh + k > this.DB) {
-      this[this.t - 1] |= (x & (1 << this.DB - sh) - 1) << sh;
-      this[this.t++] = x >> this.DB - sh;
-    } else this[this.t - 1] |= x << sh;
-    sh += k;
-    if (sh >= this.DB) sh -= this.DB;
-  }
-  this.clamp();
-  if (mi) BigInteger.ZERO.subTo(this, this);
+	var k;
+	if (b == 16) k = 4;else if (b == 8) k = 3;else if (b == 2) k = 1;else if (b == 32) k = 5;else if (b == 4) k = 2;else throw new Error('Only radix 2, 4, 8, 16, 32 are supported');
+	this.t = 0;
+	this.s = 0;
+	var i = s.length,
+	    mi = false,
+	    sh = 0;
+	while (--i >= 0) {
+		var x = intAt(s, i);
+		if (x < 0) {
+			if (s.charAt(i) == '-') mi = true;
+			continue;
+		}
+		mi = false;
+		if (sh == 0) this[this.t++] = x;else if (sh + k > this.DB) {
+			this[this.t - 1] |= (x & (1 << this.DB - sh) - 1) << sh;
+			this[this.t++] = x >> this.DB - sh;
+		} else this[this.t - 1] |= x << sh;
+		sh += k;
+		if (sh >= this.DB) sh -= this.DB;
+	}
+	this.clamp();
+	if (mi) BigInteger.ZERO.subTo(this, this);
 }
 
 // (protected) clamp off excess high words
 function bnpClamp() {
-  var c = this.s & this.DM;
-  while (this.t > 0 && this[this.t - 1] == c) {
-    --this.t;
-  }
+	var c = this.s & this.DM;
+	while (this.t > 0 && this[this.t - 1] == c) {
+		--this.t;
+	}
 }
 
 // (public) return string representation in given radix
 function bnToString(b) {
-  if (this.s < 0) return "-" + this.negate().toString();
-  var k;
-  if (b == 16) k = 4;else if (b == 8) k = 3;else if (b == 2) k = 1;else if (b == 32) k = 5;else if (b == 4) k = 2;else throw new Error("Only radix 2, 4, 8, 16, 32 are supported");
-  var km = (1 << k) - 1,
-      d,
-      m = false,
-      r = "",
-      i = this.t;
-  var p = this.DB - i * this.DB % k;
-  if (i-- > 0) {
-    if (p < this.DB && (d = this[i] >> p) > 0) {
-      m = true;
-      r = int2char(d);
-    }
-    while (i >= 0) {
-      if (p < k) {
-        d = (this[i] & (1 << p) - 1) << k - p;
-        d |= this[--i] >> (p += this.DB - k);
-      } else {
-        d = this[i] >> (p -= k) & km;
-        if (p <= 0) {
-          p += this.DB;
-          --i;
-        }
-      }
-      if (d > 0) m = true;
-      if (m) r += int2char(d);
-    }
-  }
-  return m ? r : "0";
+	if (this.s < 0) return '-' + this.negate().toString();
+	var k;
+	if (b == 16) k = 4;else if (b == 8) k = 3;else if (b == 2) k = 1;else if (b == 32) k = 5;else if (b == 4) k = 2;else throw new Error('Only radix 2, 4, 8, 16, 32 are supported');
+	var km = (1 << k) - 1,
+	    d,
+	    m = false,
+	    r = '',
+	    i = this.t;
+	var p = this.DB - i * this.DB % k;
+	if (i-- > 0) {
+		if (p < this.DB && (d = this[i] >> p) > 0) {
+			m = true;
+			r = int2char(d);
+		}
+		while (i >= 0) {
+			if (p < k) {
+				d = (this[i] & (1 << p) - 1) << k - p;
+				d |= this[--i] >> (p += this.DB - k);
+			} else {
+				d = this[i] >> (p -= k) & km;
+				if (p <= 0) {
+					p += this.DB;
+					--i;
+				}
+			}
+			if (d > 0) m = true;
+			if (m) r += int2char(d);
+		}
+	}
+	return m ? r : '0';
 }
 
 // (public) -this
 function bnNegate() {
-  var r = nbi();
+	var r = nbi();
 
-  BigInteger.ZERO.subTo(this, r);
+	BigInteger.ZERO.subTo(this, r);
 
-  return r;
+	return r;
 }
 
 // (public) |this|
 function bnAbs() {
-  return this.s < 0 ? this.negate() : this;
+	return this.s < 0 ? this.negate() : this;
 }
 
 // (public) return + if this > a, - if this < a, 0 if equal
 function bnCompareTo(a) {
-  var r = this.s - a.s;
-  if (r != 0) return r;
-  var i = this.t;
-  r = i - a.t;
-  if (r != 0) return this.s < 0 ? -r : r;
-  while (--i >= 0) {
-    if ((r = this[i] - a[i]) != 0) return r;
-  }return 0;
+	var r = this.s - a.s;
+	if (r != 0) return r;
+	var i = this.t;
+	r = i - a.t;
+	if (r != 0) return this.s < 0 ? -r : r;
+	while (--i >= 0) {
+		if ((r = this[i] - a[i]) != 0) return r;
+	}return 0;
 }
 
 // returns bit length of the integer x
 function nbits(x) {
-  var r = 1,
-      t;
-  if ((t = x >>> 16) != 0) {
-    x = t;
-    r += 16;
-  }
-  if ((t = x >> 8) != 0) {
-    x = t;
-    r += 8;
-  }
-  if ((t = x >> 4) != 0) {
-    x = t;
-    r += 4;
-  }
-  if ((t = x >> 2) != 0) {
-    x = t;
-    r += 2;
-  }
-  if ((t = x >> 1) != 0) {
-    x = t;
-    r += 1;
-  }
-  return r;
+	var r = 1,
+	    t;
+	if ((t = x >>> 16) != 0) {
+		x = t;
+		r += 16;
+	}
+	if ((t = x >> 8) != 0) {
+		x = t;
+		r += 8;
+	}
+	if ((t = x >> 4) != 0) {
+		x = t;
+		r += 4;
+	}
+	if ((t = x >> 2) != 0) {
+		x = t;
+		r += 2;
+	}
+	if ((t = x >> 1) != 0) {
+		x = t;
+		r += 1;
+	}
+	return r;
 }
 
 // (public) return the number of bits in "this"
 function bnBitLength() {
-  if (this.t <= 0) return 0;
-  return this.DB * (this.t - 1) + nbits(this[this.t - 1] ^ this.s & this.DM);
+	if (this.t <= 0) return 0;
+	return this.DB * (this.t - 1) + nbits(this[this.t - 1] ^ this.s & this.DM);
 }
 
 // (protected) r = this << n*DB
 function bnpDLShiftTo(n, r) {
-  var i;
-  for (i = this.t - 1; i >= 0; --i) {
-    r[i + n] = this[i];
-  }for (i = n - 1; i >= 0; --i) {
-    r[i] = 0;
-  }r.t = this.t + n;
-  r.s = this.s;
+	var i;
+	for (i = this.t - 1; i >= 0; --i) {
+		r[i + n] = this[i];
+	}for (i = n - 1; i >= 0; --i) {
+		r[i] = 0;
+	}r.t = this.t + n;
+	r.s = this.s;
 }
 
 // (protected) r = this >> n*DB
 function bnpDRShiftTo(n, r) {
-  for (var i = n; i < this.t; ++i) {
-    r[i - n] = this[i];
-  }r.t = Math.max(this.t - n, 0);
-  r.s = this.s;
+	for (var i = n; i < this.t; ++i) {
+		r[i - n] = this[i];
+	}r.t = Math.max(this.t - n, 0);
+	r.s = this.s;
 }
 
 // (protected) r = this << n
 function bnpLShiftTo(n, r) {
-  var bs = n % this.DB;
-  var cbs = this.DB - bs;
-  var bm = (1 << cbs) - 1;
-  var ds = Math.floor(n / this.DB),
-      c = this.s << bs & this.DM,
-      i;
-  for (i = this.t - 1; i >= 0; --i) {
-    r[i + ds + 1] = this[i] >> cbs | c;
-    c = (this[i] & bm) << bs;
-  }
-  for (i = ds - 1; i >= 0; --i) {
-    r[i] = 0;
-  }r[ds] = c;
-  r.t = this.t + ds + 1;
-  r.s = this.s;
-  r.clamp();
+	var bs = n % this.DB;
+	var cbs = this.DB - bs;
+	var bm = (1 << cbs) - 1;
+	var ds = Math.floor(n / this.DB),
+	    c = this.s << bs & this.DM,
+	    i;
+	for (i = this.t - 1; i >= 0; --i) {
+		r[i + ds + 1] = this[i] >> cbs | c;
+		c = (this[i] & bm) << bs;
+	}
+	for (i = ds - 1; i >= 0; --i) {
+		r[i] = 0;
+	}r[ds] = c;
+	r.t = this.t + ds + 1;
+	r.s = this.s;
+	r.clamp();
 }
 
 // (protected) r = this >> n
 function bnpRShiftTo(n, r) {
-  r.s = this.s;
-  var ds = Math.floor(n / this.DB);
-  if (ds >= this.t) {
-    r.t = 0;
-    return;
-  }
-  var bs = n % this.DB;
-  var cbs = this.DB - bs;
-  var bm = (1 << bs) - 1;
-  r[0] = this[ds] >> bs;
-  for (var i = ds + 1; i < this.t; ++i) {
-    r[i - ds - 1] |= (this[i] & bm) << cbs;
-    r[i - ds] = this[i] >> bs;
-  }
-  if (bs > 0) r[this.t - ds - 1] |= (this.s & bm) << cbs;
-  r.t = this.t - ds;
-  r.clamp();
+	r.s = this.s;
+	var ds = Math.floor(n / this.DB);
+	if (ds >= this.t) {
+		r.t = 0;
+		return;
+	}
+	var bs = n % this.DB;
+	var cbs = this.DB - bs;
+	var bm = (1 << bs) - 1;
+	r[0] = this[ds] >> bs;
+	for (var i = ds + 1; i < this.t; ++i) {
+		r[i - ds - 1] |= (this[i] & bm) << cbs;
+		r[i - ds] = this[i] >> bs;
+	}
+	if (bs > 0) r[this.t - ds - 1] |= (this.s & bm) << cbs;
+	r.t = this.t - ds;
+	r.clamp();
 }
 
 // (protected) r = this - a
 function bnpSubTo(a, r) {
-  var i = 0,
-      c = 0,
-      m = Math.min(a.t, this.t);
-  while (i < m) {
-    c += this[i] - a[i];
-    r[i++] = c & this.DM;
-    c >>= this.DB;
-  }
-  if (a.t < this.t) {
-    c -= a.s;
-    while (i < this.t) {
-      c += this[i];
-      r[i++] = c & this.DM;
-      c >>= this.DB;
-    }
-    c += this.s;
-  } else {
-    c += this.s;
-    while (i < a.t) {
-      c -= a[i];
-      r[i++] = c & this.DM;
-      c >>= this.DB;
-    }
-    c -= a.s;
-  }
-  r.s = c < 0 ? -1 : 0;
-  if (c < -1) r[i++] = this.DV + c;else if (c > 0) r[i++] = c;
-  r.t = i;
-  r.clamp();
+	var i = 0,
+	    c = 0,
+	    m = Math.min(a.t, this.t);
+	while (i < m) {
+		c += this[i] - a[i];
+		r[i++] = c & this.DM;
+		c >>= this.DB;
+	}
+	if (a.t < this.t) {
+		c -= a.s;
+		while (i < this.t) {
+			c += this[i];
+			r[i++] = c & this.DM;
+			c >>= this.DB;
+		}
+		c += this.s;
+	} else {
+		c += this.s;
+		while (i < a.t) {
+			c -= a[i];
+			r[i++] = c & this.DM;
+			c >>= this.DB;
+		}
+		c -= a.s;
+	}
+	r.s = c < 0 ? -1 : 0;
+	if (c < -1) r[i++] = this.DV + c;else if (c > 0) r[i++] = c;
+	r.t = i;
+	r.clamp();
 }
 
 // (protected) r = this * a, r != this,a (HAC 14.12)
 // "this" should be the larger one if appropriate.
 function bnpMultiplyTo(a, r) {
-  var x = this.abs(),
-      y = a.abs();
-  var i = x.t;
-  r.t = i + y.t;
-  while (--i >= 0) {
-    r[i] = 0;
-  }for (i = 0; i < y.t; ++i) {
-    r[i + x.t] = x.am(0, y[i], r, i, 0, x.t);
-  }r.s = 0;
-  r.clamp();
-  if (this.s != a.s) BigInteger.ZERO.subTo(r, r);
+	var x = this.abs(),
+	    y = a.abs();
+	var i = x.t;
+	r.t = i + y.t;
+	while (--i >= 0) {
+		r[i] = 0;
+	}for (i = 0; i < y.t; ++i) {
+		r[i + x.t] = x.am(0, y[i], r, i, 0, x.t);
+	}r.s = 0;
+	r.clamp();
+	if (this.s != a.s) BigInteger.ZERO.subTo(r, r);
 }
 
 // (protected) r = this^2, r != this (HAC 14.16)
 function bnpSquareTo(r) {
-  var x = this.abs();
-  var i = r.t = 2 * x.t;
-  while (--i >= 0) {
-    r[i] = 0;
-  }for (i = 0; i < x.t - 1; ++i) {
-    var c = x.am(i, x[i], r, 2 * i, 0, 1);
-    if ((r[i + x.t] += x.am(i + 1, 2 * x[i], r, 2 * i + 1, c, x.t - i - 1)) >= x.DV) {
-      r[i + x.t] -= x.DV;
-      r[i + x.t + 1] = 1;
-    }
-  }
-  if (r.t > 0) r[r.t - 1] += x.am(i, x[i], r, 2 * i, 0, 1);
-  r.s = 0;
-  r.clamp();
+	var x = this.abs();
+	var i = r.t = 2 * x.t;
+	while (--i >= 0) {
+		r[i] = 0;
+	}for (i = 0; i < x.t - 1; ++i) {
+		var c = x.am(i, x[i], r, 2 * i, 0, 1);
+		if ((r[i + x.t] += x.am(i + 1, 2 * x[i], r, 2 * i + 1, c, x.t - i - 1)) >= x.DV) {
+			r[i + x.t] -= x.DV;
+			r[i + x.t + 1] = 1;
+		}
+	}
+	if (r.t > 0) r[r.t - 1] += x.am(i, x[i], r, 2 * i, 0, 1);
+	r.s = 0;
+	r.clamp();
 }
 
 // (protected) divide this by m, quotient and remainder to q, r (HAC 14.20)
 // r != q, this != m.  q or r may be null.
 function bnpDivRemTo(m, q, r) {
-  var pm = m.abs();
-  if (pm.t <= 0) return;
-  var pt = this.abs();
-  if (pt.t < pm.t) {
-    if (q != null) q.fromInt(0);
-    if (r != null) this.copyTo(r);
-    return;
-  }
-  if (r == null) r = nbi();
-  var y = nbi(),
-      ts = this.s,
-      ms = m.s;
-  var nsh = this.DB - nbits(pm[pm.t - 1]);
-  // normalize modulus
-  if (nsh > 0) {
-    pm.lShiftTo(nsh, y);
-    pt.lShiftTo(nsh, r);
-  } else {
-    pm.copyTo(y);
-    pt.copyTo(r);
-  }
-  var ys = y.t;
-  var y0 = y[ys - 1];
-  if (y0 == 0) return;
-  var yt = y0 * (1 << this.F1) + (ys > 1 ? y[ys - 2] >> this.F2 : 0);
-  var d1 = this.FV / yt,
-      d2 = (1 << this.F1) / yt,
-      e = 1 << this.F2;
-  var i = r.t,
-      j = i - ys,
-      t = q == null ? nbi() : q;
-  y.dlShiftTo(j, t);
-  if (r.compareTo(t) >= 0) {
-    r[r.t++] = 1;
-    r.subTo(t, r);
-  }
-  BigInteger.ONE.dlShiftTo(ys, t);
-  t.subTo(y, y);
-  // "negative" y so we can replace sub with am later
-  while (y.t < ys) {
-    y[y.t++] = 0;
-  }while (--j >= 0) {
-    // Estimate quotient digit
-    var qd = r[--i] == y0 ? this.DM : Math.floor(r[i] * d1 + (r[i - 1] + e) * d2);
-    if ((r[i] += y.am(0, qd, r, j, 0, ys)) < qd) {
-      // Try it out
-      y.dlShiftTo(j, t);
-      r.subTo(t, r);
-      while (r[i] < --qd) {
-        r.subTo(t, r);
-      }
-    }
-  }
-  if (q != null) {
-    r.drShiftTo(ys, q);
-    if (ts != ms) BigInteger.ZERO.subTo(q, q);
-  }
-  r.t = ys;
-  r.clamp();
-  if (nsh > 0) r.rShiftTo(nsh, r);
-  // Denormalize remainder
-  if (ts < 0) BigInteger.ZERO.subTo(r, r);
+	var pm = m.abs();
+	if (pm.t <= 0) return;
+	var pt = this.abs();
+	if (pt.t < pm.t) {
+		if (q != null) q.fromInt(0);
+		if (r != null) this.copyTo(r);
+		return;
+	}
+	if (r == null) r = nbi();
+	var y = nbi(),
+	    ts = this.s,
+	    ms = m.s;
+	var nsh = this.DB - nbits(pm[pm.t - 1]);
+	// normalize modulus
+	if (nsh > 0) {
+		pm.lShiftTo(nsh, y);
+		pt.lShiftTo(nsh, r);
+	} else {
+		pm.copyTo(y);
+		pt.copyTo(r);
+	}
+	var ys = y.t;
+	var y0 = y[ys - 1];
+	if (y0 == 0) return;
+	var yt = y0 * (1 << this.F1) + (ys > 1 ? y[ys - 2] >> this.F2 : 0);
+	var d1 = this.FV / yt,
+	    d2 = (1 << this.F1) / yt,
+	    e = 1 << this.F2;
+	var i = r.t,
+	    j = i - ys,
+	    t = q == null ? nbi() : q;
+	y.dlShiftTo(j, t);
+	if (r.compareTo(t) >= 0) {
+		r[r.t++] = 1;
+		r.subTo(t, r);
+	}
+	BigInteger.ONE.dlShiftTo(ys, t);
+	t.subTo(y, y);
+	// "negative" y so we can replace sub with am later
+	while (y.t < ys) {
+		y[y.t++] = 0;
+	}while (--j >= 0) {
+		// Estimate quotient digit
+		var qd = r[--i] == y0 ? this.DM : Math.floor(r[i] * d1 + (r[i - 1] + e) * d2);
+		if ((r[i] += y.am(0, qd, r, j, 0, ys)) < qd) {
+			// Try it out
+			y.dlShiftTo(j, t);
+			r.subTo(t, r);
+			while (r[i] < --qd) {
+				r.subTo(t, r);
+			}
+		}
+	}
+	if (q != null) {
+		r.drShiftTo(ys, q);
+		if (ts != ms) BigInteger.ZERO.subTo(q, q);
+	}
+	r.t = ys;
+	r.clamp();
+	if (nsh > 0) r.rShiftTo(nsh, r);
+	// Denormalize remainder
+	if (ts < 0) BigInteger.ZERO.subTo(r, r);
 }
 
 // (public) this mod a
 function bnMod(a) {
-  var r = nbi();
-  this.abs().divRemTo(a, null, r);
-  if (this.s < 0 && r.compareTo(BigInteger.ZERO) > 0) a.subTo(r, r);
-  return r;
+	var r = nbi();
+	this.abs().divRemTo(a, null, r);
+	if (this.s < 0 && r.compareTo(BigInteger.ZERO) > 0) a.subTo(r, r);
+	return r;
 }
 
 // (protected) return "-1/this % 2^DB"; useful for Mont. reduction
@@ -3863,160 +3863,160 @@ function bnMod(a) {
 // should reduce x and y(2-xy) by m^2 at each step to keep size bounded.
 // JS multiply "overflows" differently from C/C++, so care is needed here.
 function bnpInvDigit() {
-  if (this.t < 1) return 0;
-  var x = this[0];
-  if ((x & 1) == 0) return 0;
-  var y = x & 3;
-  // y == 1/x mod 2^2
-  y = y * (2 - (x & 0xf) * y) & 0xf;
-  // y == 1/x mod 2^4
-  y = y * (2 - (x & 0xff) * y) & 0xff;
-  // y == 1/x mod 2^8
-  y = y * (2 - ((x & 0xffff) * y & 0xffff)) & 0xffff;
-  // y == 1/x mod 2^16
-  // last step - calculate inverse mod DV directly;
-  // assumes 16 < DB <= 32 and assumes ability to handle 48-bit ints
-  y = y * (2 - x * y % this.DV) % this.DV;
-  // y == 1/x mod 2^dbits
-  // we really want the negative inverse, and -DV < y < DV
-  return y > 0 ? this.DV - y : -y;
+	if (this.t < 1) return 0;
+	var x = this[0];
+	if ((x & 1) == 0) return 0;
+	var y = x & 3;
+	// y == 1/x mod 2^2
+	y = y * (2 - (x & 0xf) * y) & 0xf;
+	// y == 1/x mod 2^4
+	y = y * (2 - (x & 0xff) * y) & 0xff;
+	// y == 1/x mod 2^8
+	y = y * (2 - ((x & 0xffff) * y & 0xffff)) & 0xffff;
+	// y == 1/x mod 2^16
+	// last step - calculate inverse mod DV directly;
+	// assumes 16 < DB <= 32 and assumes ability to handle 48-bit ints
+	y = y * (2 - x * y % this.DV) % this.DV;
+	// y == 1/x mod 2^dbits
+	// we really want the negative inverse, and -DV < y < DV
+	return y > 0 ? this.DV - y : -y;
 }
 
 function bnEquals(a) {
-  return this.compareTo(a) == 0;
+	return this.compareTo(a) == 0;
 }
 
 // (protected) r = this + a
 function bnpAddTo(a, r) {
-  var i = 0,
-      c = 0,
-      m = Math.min(a.t, this.t);
-  while (i < m) {
-    c += this[i] + a[i];
-    r[i++] = c & this.DM;
-    c >>= this.DB;
-  }
-  if (a.t < this.t) {
-    c += a.s;
-    while (i < this.t) {
-      c += this[i];
-      r[i++] = c & this.DM;
-      c >>= this.DB;
-    }
-    c += this.s;
-  } else {
-    c += this.s;
-    while (i < a.t) {
-      c += a[i];
-      r[i++] = c & this.DM;
-      c >>= this.DB;
-    }
-    c += a.s;
-  }
-  r.s = c < 0 ? -1 : 0;
-  if (c > 0) r[i++] = c;else if (c < -1) r[i++] = this.DV + c;
-  r.t = i;
-  r.clamp();
+	var i = 0,
+	    c = 0,
+	    m = Math.min(a.t, this.t);
+	while (i < m) {
+		c += this[i] + a[i];
+		r[i++] = c & this.DM;
+		c >>= this.DB;
+	}
+	if (a.t < this.t) {
+		c += a.s;
+		while (i < this.t) {
+			c += this[i];
+			r[i++] = c & this.DM;
+			c >>= this.DB;
+		}
+		c += this.s;
+	} else {
+		c += this.s;
+		while (i < a.t) {
+			c += a[i];
+			r[i++] = c & this.DM;
+			c >>= this.DB;
+		}
+		c += a.s;
+	}
+	r.s = c < 0 ? -1 : 0;
+	if (c > 0) r[i++] = c;else if (c < -1) r[i++] = this.DV + c;
+	r.t = i;
+	r.clamp();
 }
 
 // (public) this + a
 function bnAdd(a) {
-  var r = nbi();
+	var r = nbi();
 
-  this.addTo(a, r);
+	this.addTo(a, r);
 
-  return r;
+	return r;
 }
 
 // (public) this - a
 function bnSubtract(a) {
-  var r = nbi();
+	var r = nbi();
 
-  this.subTo(a, r);
+	this.subTo(a, r);
 
-  return r;
+	return r;
 }
 
 // (public) this * a
 function bnMultiply(a) {
-  var r = nbi();
+	var r = nbi();
 
-  this.multiplyTo(a, r);
+	this.multiplyTo(a, r);
 
-  return r;
+	return r;
 }
 
 // (public) this / a
 function bnDivide(a) {
-  var r = nbi();
+	var r = nbi();
 
-  this.divRemTo(a, r, null);
+	this.divRemTo(a, r, null);
 
-  return r;
+	return r;
 }
 
 // Montgomery reduction
 function Montgomery(m) {
-  this.m = m;
-  this.mp = m.invDigit();
-  this.mpl = this.mp & 0x7fff;
-  this.mph = this.mp >> 15;
-  this.um = (1 << m.DB - 15) - 1;
-  this.mt2 = 2 * m.t;
+	this.m = m;
+	this.mp = m.invDigit();
+	this.mpl = this.mp & 0x7fff;
+	this.mph = this.mp >> 15;
+	this.um = (1 << m.DB - 15) - 1;
+	this.mt2 = 2 * m.t;
 }
 
 // xR mod m
 function montConvert(x) {
-  var r = nbi();
-  x.abs().dlShiftTo(this.m.t, r);
-  r.divRemTo(this.m, null, r);
-  if (x.s < 0 && r.compareTo(BigInteger.ZERO) > 0) this.m.subTo(r, r);
-  return r;
+	var r = nbi();
+	x.abs().dlShiftTo(this.m.t, r);
+	r.divRemTo(this.m, null, r);
+	if (x.s < 0 && r.compareTo(BigInteger.ZERO) > 0) this.m.subTo(r, r);
+	return r;
 }
 
 // x/R mod m
 function montRevert(x) {
-  var r = nbi();
-  x.copyTo(r);
-  this.reduce(r);
-  return r;
+	var r = nbi();
+	x.copyTo(r);
+	this.reduce(r);
+	return r;
 }
 
 // x = x/R mod m (HAC 14.32)
 function montReduce(x) {
-  while (x.t <= this.mt2) {
-    // pad x so am has enough room later
-    x[x.t++] = 0;
-  }for (var i = 0; i < this.m.t; ++i) {
-    // faster way of calculating u0 = x[i]*mp mod DV
-    var j = x[i] & 0x7fff;
-    var u0 = j * this.mpl + ((j * this.mph + (x[i] >> 15) * this.mpl & this.um) << 15) & x.DM;
-    // use am to combine the multiply-shift-add into one call
-    j = i + this.m.t;
-    x[j] += this.m.am(0, u0, x, i, 0, this.m.t);
-    // propagate carry
-    while (x[j] >= x.DV) {
-      x[j] -= x.DV;
-      x[++j]++;
-    }
-  }
-  x.clamp();
-  x.drShiftTo(this.m.t, x);
-  if (x.compareTo(this.m) >= 0) x.subTo(this.m, x);
+	while (x.t <= this.mt2) {
+		// pad x so am has enough room later
+		x[x.t++] = 0;
+	}for (var i = 0; i < this.m.t; ++i) {
+		// faster way of calculating u0 = x[i]*mp mod DV
+		var j = x[i] & 0x7fff;
+		var u0 = j * this.mpl + ((j * this.mph + (x[i] >> 15) * this.mpl & this.um) << 15) & x.DM;
+		// use am to combine the multiply-shift-add into one call
+		j = i + this.m.t;
+		x[j] += this.m.am(0, u0, x, i, 0, this.m.t);
+		// propagate carry
+		while (x[j] >= x.DV) {
+			x[j] -= x.DV;
+			x[++j]++;
+		}
+	}
+	x.clamp();
+	x.drShiftTo(this.m.t, x);
+	if (x.compareTo(this.m) >= 0) x.subTo(this.m, x);
 }
 
 // r = "x^2/R mod m"; x != r
 function montSqrTo(x, r) {
-  x.squareTo(r);
+	x.squareTo(r);
 
-  this.reduce(r);
+	this.reduce(r);
 }
 
 // r = "xy/R mod m"; x,y != r
 function montMulTo(x, y, r) {
-  x.multiplyTo(y, r);
+	x.multiplyTo(y, r);
 
-  this.reduce(r);
+	this.reduce(r);
 }
 
 Montgomery.prototype.convert = montConvert;
@@ -4027,81 +4027,81 @@ Montgomery.prototype.sqrTo = montSqrTo;
 
 // (public) this^e % m (HAC 14.85)
 function bnModPow(e, m, callback) {
-  var i = e.bitLength(),
-      k,
-      r = nbv(1),
-      z = new Montgomery(m);
-  if (i <= 0) return r;else if (i < 18) k = 1;else if (i < 48) k = 3;else if (i < 144) k = 4;else if (i < 768) k = 5;else k = 6;
+	var i = e.bitLength(),
+	    k,
+	    r = nbv(1),
+	    z = new Montgomery(m);
+	if (i <= 0) return r;else if (i < 18) k = 1;else if (i < 48) k = 3;else if (i < 144) k = 4;else if (i < 768) k = 5;else k = 6;
 
-  // precomputation
-  var g = new Array(),
-      n = 3,
-      k1 = k - 1,
-      km = (1 << k) - 1;
-  g[1] = z.convert(this);
-  if (k > 1) {
-    var g2 = nbi();
-    z.sqrTo(g[1], g2);
-    while (n <= km) {
-      g[n] = nbi();
-      z.mulTo(g2, g[n - 2], g[n]);
-      n += 2;
-    }
-  }
+	// precomputation
+	var g = new Array(),
+	    n = 3,
+	    k1 = k - 1,
+	    km = (1 << k) - 1;
+	g[1] = z.convert(this);
+	if (k > 1) {
+		var g2 = nbi();
+		z.sqrTo(g[1], g2);
+		while (n <= km) {
+			g[n] = nbi();
+			z.mulTo(g2, g[n - 2], g[n]);
+			n += 2;
+		}
+	}
 
-  var j = e.t - 1,
-      w,
-      is1 = true,
-      r2 = nbi(),
-      t;
-  i = nbits(e[j]) - 1;
-  while (j >= 0) {
-    if (i >= k1) w = e[j] >> i - k1 & km;else {
-      w = (e[j] & (1 << i + 1) - 1) << k1 - i;
-      if (j > 0) w |= e[j - 1] >> this.DB + i - k1;
-    }
+	var j = e.t - 1,
+	    w,
+	    is1 = true,
+	    r2 = nbi(),
+	    t;
+	i = nbits(e[j]) - 1;
+	while (j >= 0) {
+		if (i >= k1) w = e[j] >> i - k1 & km;else {
+			w = (e[j] & (1 << i + 1) - 1) << k1 - i;
+			if (j > 0) w |= e[j - 1] >> this.DB + i - k1;
+		}
 
-    n = k;
-    while ((w & 1) == 0) {
-      w >>= 1;
-      --n;
-    }
-    if ((i -= n) < 0) {
-      i += this.DB;
-      --j;
-    }
-    if (is1) {
-      // ret == 1, don't bother squaring or multiplying it
-      g[w].copyTo(r);
-      is1 = false;
-    } else {
-      while (n > 1) {
-        z.sqrTo(r, r2);
-        z.sqrTo(r2, r);
-        n -= 2;
-      }
-      if (n > 0) z.sqrTo(r, r2);else {
-        t = r;
-        r = r2;
-        r2 = t;
-      }
-      z.mulTo(r2, g[w], r);
-    }
+		n = k;
+		while ((w & 1) == 0) {
+			w >>= 1;
+			--n;
+		}
+		if ((i -= n) < 0) {
+			i += this.DB;
+			--j;
+		}
+		if (is1) {
+			// ret == 1, don't bother squaring or multiplying it
+			g[w].copyTo(r);
+			is1 = false;
+		} else {
+			while (n > 1) {
+				z.sqrTo(r, r2);
+				z.sqrTo(r2, r);
+				n -= 2;
+			}
+			if (n > 0) z.sqrTo(r, r2);else {
+				t = r;
+				r = r2;
+				r2 = t;
+			}
+			z.mulTo(r2, g[w], r);
+		}
 
-    while (j >= 0 && (e[j] & 1 << i) == 0) {
-      z.sqrTo(r, r2);
-      t = r;
-      r = r2;
-      r2 = t;
-      if (--i < 0) {
-        i = this.DB - 1;
-        --j;
-      }
-    }
-  }
-  var result = z.revert(r);
-  callback(null, result);
-  return result;
+		while (j >= 0 && (e[j] & 1 << i) == 0) {
+			z.sqrTo(r, r2);
+			t = r;
+			r = r2;
+			r2 = t;
+			if (--i < 0) {
+				i = this.DB - 1;
+				--j;
+			}
+		}
+	}
+	var result = z.revert(r);
+	callback(null, result);
+	return result;
 }
 
 // protected
@@ -4223,60 +4223,60 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** @class */
 
 var CognitoJwtToken = function () {
-  /**
-   * Constructs a new CognitoJwtToken object
-   * @param {string=} token The JWT token.
-   */
-  function CognitoJwtToken(token) {
-    _classCallCheck(this, CognitoJwtToken);
+	/**
+  * Constructs a new CognitoJwtToken object
+  * @param {string=} token The JWT token.
+  */
+	function CognitoJwtToken(token) {
+		_classCallCheck(this, CognitoJwtToken);
 
-    // Assign object
-    this.jwtToken = token || '';
-    this.payload = this.decodePayload();
-  }
+		// Assign object
+		this.jwtToken = token || '';
+		this.payload = this.decodePayload();
+	}
 
-  /**
-   * @returns {string} the record's token.
-   */
-
-
-  CognitoJwtToken.prototype.getJwtToken = function getJwtToken() {
-    return this.jwtToken;
-  };
-
-  /**
-   * @returns {int} the token's expiration (exp member).
-   */
+	/**
+  * @returns {string} the record's token.
+  */
 
 
-  CognitoJwtToken.prototype.getExpiration = function getExpiration() {
-    return this.payload.exp;
-  };
+	CognitoJwtToken.prototype.getJwtToken = function getJwtToken() {
+		return this.jwtToken;
+	};
 
-  /**
-   * @returns {int} the token's "issued at" (iat member).
-   */
-
-
-  CognitoJwtToken.prototype.getIssuedAt = function getIssuedAt() {
-    return this.payload.iat;
-  };
-
-  /**
-   * @returns {object} the token's payload.
-   */
+	/**
+  * @returns {int} the token's expiration (exp member).
+  */
 
 
-  CognitoJwtToken.prototype.decodePayload = function decodePayload() {
-    var payload = this.jwtToken.split('.')[1];
-    try {
-      return JSON.parse(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(payload, 'base64').toString('utf8'));
-    } catch (err) {
-      return {};
-    }
-  };
+	CognitoJwtToken.prototype.getExpiration = function getExpiration() {
+		return this.payload.exp;
+	};
 
-  return CognitoJwtToken;
+	/**
+  * @returns {int} the token's "issued at" (iat member).
+  */
+
+
+	CognitoJwtToken.prototype.getIssuedAt = function getIssuedAt() {
+		return this.payload.iat;
+	};
+
+	/**
+  * @returns {object} the token's payload.
+  */
+
+
+	CognitoJwtToken.prototype.decodePayload = function decodePayload() {
+		var payload = this.jwtToken.split('.')[1];
+		try {
+			return JSON.parse(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(payload, 'base64').toString('utf8'));
+		} catch (err) {
+			return {};
+		}
+	};
+
+	return CognitoJwtToken;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (CognitoJwtToken);
@@ -4490,336 +4490,343 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** @class */
 
 var CognitoUser = function () {
-  /**
-   * Constructs a new CognitoUser object
-   * @param {object} data Creation options
-   * @param {string} data.Username The user's username.
-   * @param {CognitoUserPool} data.Pool Pool containing the user.
-   * @param {object} data.Storage Optional storage object.
-   */
-  function CognitoUser(data) {
-    _classCallCheck(this, CognitoUser);
+	/**
+  * Constructs a new CognitoUser object
+  * @param {object} data Creation options
+  * @param {string} data.Username The user's username.
+  * @param {CognitoUserPool} data.Pool Pool containing the user.
+  * @param {object} data.Storage Optional storage object.
+  */
+	function CognitoUser(data) {
+		_classCallCheck(this, CognitoUser);
 
-    if (data == null || data.Username == null || data.Pool == null) {
-      throw new Error('Username and pool information are required.');
-    }
+		if (data == null || data.Username == null || data.Pool == null) {
+			throw new Error('Username and pool information are required.');
+		}
 
-    this.username = data.Username || '';
-    this.pool = data.Pool;
-    this.Session = null;
+		this.username = data.Username || '';
+		this.pool = data.Pool;
+		this.Session = null;
 
-    this.client = data.Pool.client;
+		this.client = data.Pool.client;
 
-    this.signInUserSession = null;
-    this.authenticationFlowType = 'USER_SRP_AUTH';
+		this.signInUserSession = null;
+		this.authenticationFlowType = 'USER_SRP_AUTH';
 
-    this.storage = data.Storage || new __WEBPACK_IMPORTED_MODULE_13__StorageHelper__["a" /* default */]().getStorage();
+		this.storage = data.Storage || new __WEBPACK_IMPORTED_MODULE_13__StorageHelper__["a" /* default */]().getStorage();
 
-    this.keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
-    this.userDataKey = this.keyPrefix + '.' + this.username + '.userData';
-  }
+		this.keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
+		this.userDataKey = this.keyPrefix + '.' + this.username + '.userData';
+	}
 
-  /**
-   * Sets the session for this user
-   * @param {CognitoUserSession} signInUserSession the session
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.setSignInUserSession = function setSignInUserSession(signInUserSession) {
-    this.clearCachedUserData();
-    this.signInUserSession = signInUserSession;
-    this.cacheTokens();
-  };
-
-  /**
-   * @returns {CognitoUserSession} the current session for this user
-   */
+	/**
+  * Sets the session for this user
+  * @param {CognitoUserSession} signInUserSession the session
+  * @returns {void}
+  */
 
 
-  CognitoUser.prototype.getSignInUserSession = function getSignInUserSession() {
-    return this.signInUserSession;
-  };
+	CognitoUser.prototype.setSignInUserSession = function setSignInUserSession(signInUserSession) {
+		this.clearCachedUserData();
+		this.signInUserSession = signInUserSession;
+		this.cacheTokens();
+	};
 
-  /**
-   * @returns {string} the user's username
-   */
-
-
-  CognitoUser.prototype.getUsername = function getUsername() {
-    return this.username;
-  };
-
-  /**
-   * @returns {String} the authentication flow type
-   */
+	/**
+  * @returns {CognitoUserSession} the current session for this user
+  */
 
 
-  CognitoUser.prototype.getAuthenticationFlowType = function getAuthenticationFlowType() {
-    return this.authenticationFlowType;
-  };
+	CognitoUser.prototype.getSignInUserSession = function getSignInUserSession() {
+		return this.signInUserSession;
+	};
 
-  /**
-   * sets authentication flow type
-   * @param {string} authenticationFlowType New value.
-   * @returns {void}
-   */
+	/**
+  * @returns {string} the user's username
+  */
 
 
-  CognitoUser.prototype.setAuthenticationFlowType = function setAuthenticationFlowType(authenticationFlowType) {
-    this.authenticationFlowType = authenticationFlowType;
-  };
+	CognitoUser.prototype.getUsername = function getUsername() {
+		return this.username;
+	};
 
-  /**
-   * This is used for authenticating the user through the custom authentication flow.
-   * @param {AuthenticationDetails} authDetails Contains the authentication data
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {customChallenge} callback.customChallenge Custom challenge
-   *        response required to continue.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   */
+	/**
+  * @returns {String} the authentication flow type
+  */
 
 
-  CognitoUser.prototype.initiateAuth = function initiateAuth(authDetails, callback) {
-    var _this = this;
+	CognitoUser.prototype.getAuthenticationFlowType = function getAuthenticationFlowType() {
+		return this.authenticationFlowType;
+	};
 
-    var authParameters = authDetails.getAuthParameters();
-    authParameters.USERNAME = this.username;
-
-    var jsonReq = {
-      AuthFlow: 'CUSTOM_AUTH',
-      ClientId: this.pool.getClientId(),
-      AuthParameters: authParameters,
-      ClientMetadata: authDetails.getValidationData()
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-
-    this.client.request('InitiateAuth', jsonReq, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      var challengeName = data.ChallengeName;
-      var challengeParameters = data.ChallengeParameters;
-
-      if (challengeName === 'CUSTOM_CHALLENGE') {
-        _this.Session = data.Session;
-        return callback.customChallenge(challengeParameters);
-      }
-      _this.signInUserSession = _this.getCognitoUserSession(data.AuthenticationResult);
-      _this.cacheTokens();
-      return callback.onSuccess(_this.signInUserSession);
-    });
-  };
-
-  /**
-   * This is used for authenticating the user.
-   * stuff
-   * @param {AuthenticationDetails} authDetails Contains the authentication data
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {newPasswordRequired} callback.newPasswordRequired new
-   *        password and any required attributes are required to continue
-   * @param {mfaRequired} callback.mfaRequired MFA code
-   *        required to continue.
-   * @param {customChallenge} callback.customChallenge Custom challenge
-   *        response required to continue.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   */
+	/**
+  * sets authentication flow type
+  * @param {string} authenticationFlowType New value.
+  * @returns {void}
+  */
 
 
-  CognitoUser.prototype.authenticateUser = function authenticateUser(authDetails, callback) {
-    if (this.authenticationFlowType === 'USER_PASSWORD_AUTH') {
-      return this.authenticateUserPlainUsernamePassword(authDetails, callback);
-    } else if (this.authenticationFlowType === 'USER_SRP_AUTH' || this.authenticationFlowType === 'CUSTOM_AUTH') {
-      return this.authenticateUserDefaultAuth(authDetails, callback);
-    }
-    return callback.onFailure(new Error('Authentication flow type is invalid.'));
-  };
+	CognitoUser.prototype.setAuthenticationFlowType = function setAuthenticationFlowType(authenticationFlowType) {
+		this.authenticationFlowType = authenticationFlowType;
+	};
 
-  /**
-   * PRIVATE ONLY: This is an internal only method and should not
-   * be directly called by the consumers.
-   * It calls the AuthenticationHelper for SRP related
-   * stuff
-   * @param {AuthenticationDetails} authDetails Contains the authentication data
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {newPasswordRequired} callback.newPasswordRequired new
-   *        password and any required attributes are required to continue
-   * @param {mfaRequired} callback.mfaRequired MFA code
-   *        required to continue.
-   * @param {customChallenge} callback.customChallenge Custom challenge
-   *        response required to continue.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   */
+	/**
+  * This is used for authenticating the user through the custom authentication flow.
+  * @param {AuthenticationDetails} authDetails Contains the authentication data
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {customChallenge} callback.customChallenge Custom challenge
+  *        response required to continue.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @returns {void}
+  */
 
 
-  CognitoUser.prototype.authenticateUserDefaultAuth = function authenticateUserDefaultAuth(authDetails, callback) {
-    var _this2 = this;
+	CognitoUser.prototype.initiateAuth = function initiateAuth(authDetails, callback) {
+		var _this = this;
 
-    var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
-    var dateHelper = new __WEBPACK_IMPORTED_MODULE_11__DateHelper__["a" /* default */]();
+		var authParameters = authDetails.getAuthParameters();
+		authParameters.USERNAME = this.username;
 
-    var serverBValue = void 0;
-    var salt = void 0;
-    var authParameters = {};
+		var clientMetaData = Object.keys(authDetails.getValidationData()).length !== 0 ? authDetails.getValidationData() : authDetails.getClientMetadata();
 
-    if (this.deviceKey != null) {
-      authParameters.DEVICE_KEY = this.deviceKey;
-    }
+		var jsonReq = {
+			AuthFlow: 'CUSTOM_AUTH',
+			ClientId: this.pool.getClientId(),
+			AuthParameters: authParameters,
+			ClientMetadata: clientMetaData
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
 
-    authParameters.USERNAME = this.username;
-    authenticationHelper.getLargeAValue(function (errOnAValue, aValue) {
-      // getLargeAValue callback start
-      if (errOnAValue) {
-        callback.onFailure(errOnAValue);
-      }
+		this.client.request('InitiateAuth', jsonReq, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			var challengeName = data.ChallengeName;
+			var challengeParameters = data.ChallengeParameters;
 
-      authParameters.SRP_A = aValue.toString(16);
+			if (challengeName === 'CUSTOM_CHALLENGE') {
+				_this.Session = data.Session;
+				return callback.customChallenge(challengeParameters);
+			}
+			_this.signInUserSession = _this.getCognitoUserSession(data.AuthenticationResult);
+			_this.cacheTokens();
+			return callback.onSuccess(_this.signInUserSession);
+		});
+	};
 
-      if (_this2.authenticationFlowType === 'CUSTOM_AUTH') {
-        authParameters.CHALLENGE_NAME = 'SRP_A';
-      }
-
-      var jsonReq = {
-        AuthFlow: _this2.authenticationFlowType,
-        ClientId: _this2.pool.getClientId(),
-        AuthParameters: authParameters,
-        ClientMetadata: authDetails.getValidationData()
-      };
-      if (_this2.getUserContextData(_this2.username)) {
-        jsonReq.UserContextData = _this2.getUserContextData(_this2.username);
-      }
-
-      _this2.client.request('InitiateAuth', jsonReq, function (err, data) {
-        if (err) {
-          return callback.onFailure(err);
-        }
-
-        var challengeParameters = data.ChallengeParameters;
-
-        _this2.username = challengeParameters.USER_ID_FOR_SRP;
-        serverBValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SRP_B, 16);
-        salt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SALT, 16);
-        _this2.getCachedDeviceKeyAndPassword();
-
-        authenticationHelper.getPasswordAuthenticationKey(_this2.username, authDetails.getPassword(), serverBValue, salt, function (errOnHkdf, hkdf) {
-          // getPasswordAuthenticationKey callback start
-          if (errOnHkdf) {
-            callback.onFailure(errOnHkdf);
-          }
-
-          var dateNow = dateHelper.getNowString();
-
-          var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this2.pool.getUserPoolId().split('_')[1], 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this2.username, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(dateNow, 'utf8')]));
-          var key = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(hkdf);
-          var signatureString = __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default.a.stringify(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(message, key));
-
-          var challengeResponses = {};
-
-          challengeResponses.USERNAME = _this2.username;
-          challengeResponses.PASSWORD_CLAIM_SECRET_BLOCK = challengeParameters.SECRET_BLOCK;
-          challengeResponses.TIMESTAMP = dateNow;
-          challengeResponses.PASSWORD_CLAIM_SIGNATURE = signatureString;
-
-          if (_this2.deviceKey != null) {
-            challengeResponses.DEVICE_KEY = _this2.deviceKey;
-          }
-
-          var respondToAuthChallenge = function respondToAuthChallenge(challenge, challengeCallback) {
-            return _this2.client.request('RespondToAuthChallenge', challenge, function (errChallenge, dataChallenge) {
-              if (errChallenge && errChallenge.code === 'ResourceNotFoundException' && errChallenge.message.toLowerCase().indexOf('device') !== -1) {
-                challengeResponses.DEVICE_KEY = null;
-                _this2.deviceKey = null;
-                _this2.randomPassword = null;
-                _this2.deviceGroupKey = null;
-                _this2.clearCachedDeviceKeyAndPassword();
-                return respondToAuthChallenge(challenge, challengeCallback);
-              }
-              return challengeCallback(errChallenge, dataChallenge);
-            });
-          };
-
-          var jsonReqResp = {
-            ChallengeName: 'PASSWORD_VERIFIER',
-            ClientId: _this2.pool.getClientId(),
-            ChallengeResponses: challengeResponses,
-            Session: data.Session
-          };
-          if (_this2.getUserContextData()) {
-            jsonReqResp.UserContextData = _this2.getUserContextData();
-          }
-          respondToAuthChallenge(jsonReqResp, function (errAuthenticate, dataAuthenticate) {
-            if (errAuthenticate) {
-              return callback.onFailure(errAuthenticate);
-            }
-
-            return _this2.authenticateUserInternal(dataAuthenticate, authenticationHelper, callback);
-          });
-          return undefined;
-          // getPasswordAuthenticationKey callback end
-        });
-        return undefined;
-      });
-      // getLargeAValue callback end
-    });
-  };
-
-  /**
-   * PRIVATE ONLY: This is an internal only method and should not
-   * be directly called by the consumers.
-   * @param {AuthenticationDetails} authDetails Contains the authentication data.
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {mfaRequired} callback.mfaRequired MFA code
-   *        required to continue.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   */
+	/**
+  * This is used for authenticating the user.
+  * stuff
+  * @param {AuthenticationDetails} authDetails Contains the authentication data
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {newPasswordRequired} callback.newPasswordRequired new
+  *        password and any required attributes are required to continue
+  * @param {mfaRequired} callback.mfaRequired MFA code
+  *        required to continue.
+  * @param {customChallenge} callback.customChallenge Custom challenge
+  *        response required to continue.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @returns {void}
+  */
 
 
-  CognitoUser.prototype.authenticateUserPlainUsernamePassword = function authenticateUserPlainUsernamePassword(authDetails, callback) {
-    var _this3 = this;
+	CognitoUser.prototype.authenticateUser = function authenticateUser(authDetails, callback) {
+		if (this.authenticationFlowType === 'USER_PASSWORD_AUTH') {
+			return this.authenticateUserPlainUsernamePassword(authDetails, callback);
+		} else if (this.authenticationFlowType === 'USER_SRP_AUTH' || this.authenticationFlowType === 'CUSTOM_AUTH') {
+			return this.authenticateUserDefaultAuth(authDetails, callback);
+		}
+		return callback.onFailure(new Error('Authentication flow type is invalid.'));
+	};
 
-    var authParameters = {};
-    authParameters.USERNAME = this.username;
-    authParameters.PASSWORD = authDetails.getPassword();
-    if (!authParameters.PASSWORD) {
-      callback.onFailure(new Error('PASSWORD parameter is required'));
-      return;
-    }
-    var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
-    this.getCachedDeviceKeyAndPassword();
-    if (this.deviceKey != null) {
-      authParameters.DEVICE_KEY = this.deviceKey;
-    }
+	/**
+  * PRIVATE ONLY: This is an internal only method and should not
+  * be directly called by the consumers.
+  * It calls the AuthenticationHelper for SRP related
+  * stuff
+  * @param {AuthenticationDetails} authDetails Contains the authentication data
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {newPasswordRequired} callback.newPasswordRequired new
+  *        password and any required attributes are required to continue
+  * @param {mfaRequired} callback.mfaRequired MFA code
+  *        required to continue.
+  * @param {customChallenge} callback.customChallenge Custom challenge
+  *        response required to continue.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @returns {void}
+  */
 
-    var jsonReq = {
-      AuthFlow: 'USER_PASSWORD_AUTH',
-      ClientId: this.pool.getClientId(),
-      AuthParameters: authParameters,
-      ClientMetadata: authDetails.getValidationData()
-    };
-    if (this.getUserContextData(this.username)) {
-      jsonReq.UserContextData = this.getUserContextData(this.username);
-    }
-    // USER_PASSWORD_AUTH happens in a single round-trip: client sends userName and password,
-    // Cognito UserPools verifies password and returns tokens.
-    this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return _this3.authenticateUserInternal(authResult, authenticationHelper, callback);
-    });
-  };
 
-  /**
+	CognitoUser.prototype.authenticateUserDefaultAuth = function authenticateUserDefaultAuth(authDetails, callback) {
+		var _this2 = this;
+
+		var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
+		var dateHelper = new __WEBPACK_IMPORTED_MODULE_11__DateHelper__["a" /* default */]();
+
+		var serverBValue = void 0;
+		var salt = void 0;
+		var authParameters = {};
+
+		if (this.deviceKey != null) {
+			authParameters.DEVICE_KEY = this.deviceKey;
+		}
+
+		authParameters.USERNAME = this.username;
+		authenticationHelper.getLargeAValue(function (errOnAValue, aValue) {
+			// getLargeAValue callback start
+			if (errOnAValue) {
+				callback.onFailure(errOnAValue);
+			}
+
+			authParameters.SRP_A = aValue.toString(16);
+
+			if (_this2.authenticationFlowType === 'CUSTOM_AUTH') {
+				authParameters.CHALLENGE_NAME = 'SRP_A';
+			}
+
+			var clientMetaData = Object.keys(authDetails.getValidationData()).length !== 0 ? authDetails.getValidationData() : authDetails.getClientMetadata();
+
+			var jsonReq = {
+				AuthFlow: _this2.authenticationFlowType,
+				ClientId: _this2.pool.getClientId(),
+				AuthParameters: authParameters,
+				ClientMetadata: clientMetaData
+			};
+			if (_this2.getUserContextData(_this2.username)) {
+				jsonReq.UserContextData = _this2.getUserContextData(_this2.username);
+			}
+
+			_this2.client.request('InitiateAuth', jsonReq, function (err, data) {
+				if (err) {
+					return callback.onFailure(err);
+				}
+
+				var challengeParameters = data.ChallengeParameters;
+
+				_this2.username = challengeParameters.USER_ID_FOR_SRP;
+				serverBValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SRP_B, 16);
+				salt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SALT, 16);
+				_this2.getCachedDeviceKeyAndPassword();
+
+				authenticationHelper.getPasswordAuthenticationKey(_this2.username, authDetails.getPassword(), serverBValue, salt, function (errOnHkdf, hkdf) {
+					// getPasswordAuthenticationKey callback start
+					if (errOnHkdf) {
+						callback.onFailure(errOnHkdf);
+					}
+
+					var dateNow = dateHelper.getNowString();
+
+					var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this2.pool.getUserPoolId().split('_')[1], 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this2.username, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(dateNow, 'utf8')]));
+					var key = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(hkdf);
+					var signatureString = __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default.a.stringify(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(message, key));
+
+					var challengeResponses = {};
+
+					challengeResponses.USERNAME = _this2.username;
+					challengeResponses.PASSWORD_CLAIM_SECRET_BLOCK = challengeParameters.SECRET_BLOCK;
+					challengeResponses.TIMESTAMP = dateNow;
+					challengeResponses.PASSWORD_CLAIM_SIGNATURE = signatureString;
+
+					if (_this2.deviceKey != null) {
+						challengeResponses.DEVICE_KEY = _this2.deviceKey;
+					}
+
+					var respondToAuthChallenge = function respondToAuthChallenge(challenge, challengeCallback) {
+						return _this2.client.request('RespondToAuthChallenge', challenge, function (errChallenge, dataChallenge) {
+							if (errChallenge && errChallenge.code === 'ResourceNotFoundException' && errChallenge.message.toLowerCase().indexOf('device') !== -1) {
+								challengeResponses.DEVICE_KEY = null;
+								_this2.deviceKey = null;
+								_this2.randomPassword = null;
+								_this2.deviceGroupKey = null;
+								_this2.clearCachedDeviceKeyAndPassword();
+								return respondToAuthChallenge(challenge, challengeCallback);
+							}
+							return challengeCallback(errChallenge, dataChallenge);
+						});
+					};
+
+					var jsonReqResp = {
+						ChallengeName: 'PASSWORD_VERIFIER',
+						ClientId: _this2.pool.getClientId(),
+						ChallengeResponses: challengeResponses,
+						Session: data.Session,
+						ClientMetadata: clientMetaData
+					};
+					if (_this2.getUserContextData()) {
+						jsonReqResp.UserContextData = _this2.getUserContextData();
+					}
+					respondToAuthChallenge(jsonReqResp, function (errAuthenticate, dataAuthenticate) {
+						if (errAuthenticate) {
+							return callback.onFailure(errAuthenticate);
+						}
+
+						return _this2.authenticateUserInternal(dataAuthenticate, authenticationHelper, callback);
+					});
+					return undefined;
+					// getPasswordAuthenticationKey callback end
+				});
+				return undefined;
+			});
+			// getLargeAValue callback end
+		});
+	};
+
+	/**
+  * PRIVATE ONLY: This is an internal only method and should not
+  * be directly called by the consumers.
+  * @param {AuthenticationDetails} authDetails Contains the authentication data.
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {mfaRequired} callback.mfaRequired MFA code
+  *        required to continue.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.authenticateUserPlainUsernamePassword = function authenticateUserPlainUsernamePassword(authDetails, callback) {
+		var _this3 = this;
+
+		var authParameters = {};
+		authParameters.USERNAME = this.username;
+		authParameters.PASSWORD = authDetails.getPassword();
+		if (!authParameters.PASSWORD) {
+			callback.onFailure(new Error('PASSWORD parameter is required'));
+			return;
+		}
+		var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
+		this.getCachedDeviceKeyAndPassword();
+		if (this.deviceKey != null) {
+			authParameters.DEVICE_KEY = this.deviceKey;
+		}
+
+		var clientMetaData = Object.keys(authDetails.getValidationData()).length !== 0 ? authDetails.getValidationData() : authDetails.getClientMetadata();
+
+		var jsonReq = {
+			AuthFlow: 'USER_PASSWORD_AUTH',
+			ClientId: this.pool.getClientId(),
+			AuthParameters: authParameters,
+			ClientMetadata: clientMetaData
+		};
+		if (this.getUserContextData(this.username)) {
+			jsonReq.UserContextData = this.getUserContextData(this.username);
+		}
+		// USER_PASSWORD_AUTH happens in a single round-trip: client sends userName and password,
+		// Cognito UserPools verifies password and returns tokens.
+		this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return _this3.authenticateUserInternal(authResult, authenticationHelper, callback);
+		});
+	};
+
+	/**
   * PRIVATE ONLY: This is an internal only method and should not
   * be directly called by the consumers.
   * @param {object} dataAuthenticate authentication data
@@ -4829,109 +4836,109 @@ var CognitoUser = function () {
   */
 
 
-  CognitoUser.prototype.authenticateUserInternal = function authenticateUserInternal(dataAuthenticate, authenticationHelper, callback) {
-    var _this4 = this;
+	CognitoUser.prototype.authenticateUserInternal = function authenticateUserInternal(dataAuthenticate, authenticationHelper, callback) {
+		var _this4 = this;
 
-    var challengeName = dataAuthenticate.ChallengeName;
-    var challengeParameters = dataAuthenticate.ChallengeParameters;
+		var challengeName = dataAuthenticate.ChallengeName;
+		var challengeParameters = dataAuthenticate.ChallengeParameters;
 
-    if (challengeName === 'SMS_MFA') {
-      this.Session = dataAuthenticate.Session;
-      return callback.mfaRequired(challengeName, challengeParameters);
-    }
+		if (challengeName === 'SMS_MFA') {
+			this.Session = dataAuthenticate.Session;
+			return callback.mfaRequired(challengeName, challengeParameters);
+		}
 
-    if (challengeName === 'SELECT_MFA_TYPE') {
-      this.Session = dataAuthenticate.Session;
-      return callback.selectMFAType(challengeName, challengeParameters);
-    }
+		if (challengeName === 'SELECT_MFA_TYPE') {
+			this.Session = dataAuthenticate.Session;
+			return callback.selectMFAType(challengeName, challengeParameters);
+		}
 
-    if (challengeName === 'MFA_SETUP') {
-      this.Session = dataAuthenticate.Session;
-      return callback.mfaSetup(challengeName, challengeParameters);
-    }
+		if (challengeName === 'MFA_SETUP') {
+			this.Session = dataAuthenticate.Session;
+			return callback.mfaSetup(challengeName, challengeParameters);
+		}
 
-    if (challengeName === 'SOFTWARE_TOKEN_MFA') {
-      this.Session = dataAuthenticate.Session;
-      return callback.totpRequired(challengeName, challengeParameters);
-    }
+		if (challengeName === 'SOFTWARE_TOKEN_MFA') {
+			this.Session = dataAuthenticate.Session;
+			return callback.totpRequired(challengeName, challengeParameters);
+		}
 
-    if (challengeName === 'CUSTOM_CHALLENGE') {
-      this.Session = dataAuthenticate.Session;
-      return callback.customChallenge(challengeParameters);
-    }
+		if (challengeName === 'CUSTOM_CHALLENGE') {
+			this.Session = dataAuthenticate.Session;
+			return callback.customChallenge(challengeParameters);
+		}
 
-    if (challengeName === 'NEW_PASSWORD_REQUIRED') {
-      this.Session = dataAuthenticate.Session;
+		if (challengeName === 'NEW_PASSWORD_REQUIRED') {
+			this.Session = dataAuthenticate.Session;
 
-      var userAttributes = null;
-      var rawRequiredAttributes = null;
-      var requiredAttributes = [];
-      var userAttributesPrefix = authenticationHelper.getNewPasswordRequiredChallengeUserAttributePrefix();
+			var userAttributes = null;
+			var rawRequiredAttributes = null;
+			var requiredAttributes = [];
+			var userAttributesPrefix = authenticationHelper.getNewPasswordRequiredChallengeUserAttributePrefix();
 
-      if (challengeParameters) {
-        userAttributes = JSON.parse(dataAuthenticate.ChallengeParameters.userAttributes);
-        rawRequiredAttributes = JSON.parse(dataAuthenticate.ChallengeParameters.requiredAttributes);
-      }
+			if (challengeParameters) {
+				userAttributes = JSON.parse(dataAuthenticate.ChallengeParameters.userAttributes);
+				rawRequiredAttributes = JSON.parse(dataAuthenticate.ChallengeParameters.requiredAttributes);
+			}
 
-      if (rawRequiredAttributes) {
-        for (var i = 0; i < rawRequiredAttributes.length; i++) {
-          requiredAttributes[i] = rawRequiredAttributes[i].substr(userAttributesPrefix.length);
-        }
-      }
-      return callback.newPasswordRequired(userAttributes, requiredAttributes);
-    }
+			if (rawRequiredAttributes) {
+				for (var i = 0; i < rawRequiredAttributes.length; i++) {
+					requiredAttributes[i] = rawRequiredAttributes[i].substr(userAttributesPrefix.length);
+				}
+			}
+			return callback.newPasswordRequired(userAttributes, requiredAttributes);
+		}
 
-    if (challengeName === 'DEVICE_SRP_AUTH') {
-      this.getDeviceResponse(callback);
-      return undefined;
-    }
+		if (challengeName === 'DEVICE_SRP_AUTH') {
+			this.getDeviceResponse(callback);
+			return undefined;
+		}
 
-    this.signInUserSession = this.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
-    this.challengeName = challengeName;
-    this.cacheTokens();
+		this.signInUserSession = this.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
+		this.challengeName = challengeName;
+		this.cacheTokens();
 
-    var newDeviceMetadata = dataAuthenticate.AuthenticationResult.NewDeviceMetadata;
-    if (newDeviceMetadata == null) {
-      return callback.onSuccess(this.signInUserSession);
-    }
+		var newDeviceMetadata = dataAuthenticate.AuthenticationResult.NewDeviceMetadata;
+		if (newDeviceMetadata == null) {
+			return callback.onSuccess(this.signInUserSession);
+		}
 
-    authenticationHelper.generateHashDevice(dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey, dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey, function (errGenHash) {
-      if (errGenHash) {
-        return callback.onFailure(errGenHash);
-      }
+		authenticationHelper.generateHashDevice(dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey, dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey, function (errGenHash) {
+			if (errGenHash) {
+				return callback.onFailure(errGenHash);
+			}
 
-      var deviceSecretVerifierConfig = {
-        Salt: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
-        PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
-      };
+			var deviceSecretVerifierConfig = {
+				Salt: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
+				PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
+			};
 
-      _this4.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
-      _this4.deviceGroupKey = newDeviceMetadata.DeviceGroupKey;
-      _this4.randomPassword = authenticationHelper.getRandomPassword();
+			_this4.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
+			_this4.deviceGroupKey = newDeviceMetadata.DeviceGroupKey;
+			_this4.randomPassword = authenticationHelper.getRandomPassword();
 
-      _this4.client.request('ConfirmDevice', {
-        DeviceKey: newDeviceMetadata.DeviceKey,
-        AccessToken: _this4.signInUserSession.getAccessToken().getJwtToken(),
-        DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
-        DeviceName: navigator.userAgent
-      }, function (errConfirm, dataConfirm) {
-        if (errConfirm) {
-          return callback.onFailure(errConfirm);
-        }
+			_this4.client.request('ConfirmDevice', {
+				DeviceKey: newDeviceMetadata.DeviceKey,
+				AccessToken: _this4.signInUserSession.getAccessToken().getJwtToken(),
+				DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
+				DeviceName: navigator.userAgent
+			}, function (errConfirm, dataConfirm) {
+				if (errConfirm) {
+					return callback.onFailure(errConfirm);
+				}
 
-        _this4.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
-        _this4.cacheDeviceKeyAndPassword();
-        if (dataConfirm.UserConfirmationNecessary === true) {
-          return callback.onSuccess(_this4.signInUserSession, dataConfirm.UserConfirmationNecessary);
-        }
-        return callback.onSuccess(_this4.signInUserSession);
-      });
-      return undefined;
-    });
-    return undefined;
-  };
+				_this4.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
+				_this4.cacheDeviceKeyAndPassword();
+				if (dataConfirm.UserConfirmationNecessary === true) {
+					return callback.onSuccess(_this4.signInUserSession, dataConfirm.UserConfirmationNecessary);
+				}
+				return callback.onSuccess(_this4.signInUserSession);
+			});
+			return undefined;
+		});
+		return undefined;
+	};
 
-  /**
+	/**
   * This method is user to complete the NEW_PASSWORD_REQUIRED challenge.
   * Pass the new password with any new user attributes to be updated.
   * User attribute keys must be of format userAttributes.<attribute_name>.
@@ -4943,1339 +4950,1365 @@ var CognitoUser = function () {
   * @param {customChallenge} callback.customChallenge Custom challenge
   *         response required to continue.
   * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
   * @returns {void}
   */
 
 
-  CognitoUser.prototype.completeNewPasswordChallenge = function completeNewPasswordChallenge(newPassword, requiredAttributeData, callback) {
-    var _this5 = this;
-
-    if (!newPassword) {
-      return callback.onFailure(new Error('New password is required.'));
-    }
-    var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
-    var userAttributesPrefix = authenticationHelper.getNewPasswordRequiredChallengeUserAttributePrefix();
-
-    var finalUserAttributes = {};
-    if (requiredAttributeData) {
-      Object.keys(requiredAttributeData).forEach(function (key) {
-        finalUserAttributes[userAttributesPrefix + key] = requiredAttributeData[key];
-      });
-    }
-
-    finalUserAttributes.NEW_PASSWORD = newPassword;
-    finalUserAttributes.USERNAME = this.username;
-    var jsonReq = {
-      ChallengeName: 'NEW_PASSWORD_REQUIRED',
-      ClientId: this.pool.getClientId(),
-      ChallengeResponses: finalUserAttributes,
-      Session: this.Session
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-
-    this.client.request('RespondToAuthChallenge', jsonReq, function (errAuthenticate, dataAuthenticate) {
-      if (errAuthenticate) {
-        return callback.onFailure(errAuthenticate);
-      }
-      return _this5.authenticateUserInternal(dataAuthenticate, authenticationHelper, callback);
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to get a session using device authentication. It is called at the end of user
-   * authentication
-   *
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   * @private
-   */
-
-
-  CognitoUser.prototype.getDeviceResponse = function getDeviceResponse(callback) {
-    var _this6 = this;
-
-    var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.deviceGroupKey);
-    var dateHelper = new __WEBPACK_IMPORTED_MODULE_11__DateHelper__["a" /* default */]();
-
-    var authParameters = {};
-
-    authParameters.USERNAME = this.username;
-    authParameters.DEVICE_KEY = this.deviceKey;
-    authenticationHelper.getLargeAValue(function (errAValue, aValue) {
-      // getLargeAValue callback start
-      if (errAValue) {
-        callback.onFailure(errAValue);
-      }
-
-      authParameters.SRP_A = aValue.toString(16);
-
-      var jsonReq = {
-        ChallengeName: 'DEVICE_SRP_AUTH',
-        ClientId: _this6.pool.getClientId(),
-        ChallengeResponses: authParameters
-      };
-      if (_this6.getUserContextData()) {
-        jsonReq.UserContextData = _this6.getUserContextData();
-      }
-      _this6.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
-        if (err) {
-          return callback.onFailure(err);
-        }
-
-        var challengeParameters = data.ChallengeParameters;
-
-        var serverBValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SRP_B, 16);
-        var salt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SALT, 16);
-
-        authenticationHelper.getPasswordAuthenticationKey(_this6.deviceKey, _this6.randomPassword, serverBValue, salt, function (errHkdf, hkdf) {
-          // getPasswordAuthenticationKey callback start
-          if (errHkdf) {
-            return callback.onFailure(errHkdf);
-          }
-
-          var dateNow = dateHelper.getNowString();
-
-          var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this6.deviceGroupKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this6.deviceKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(dateNow, 'utf8')]));
-          var key = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(hkdf);
-          var signatureString = __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default.a.stringify(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(message, key));
-
-          var challengeResponses = {};
-
-          challengeResponses.USERNAME = _this6.username;
-          challengeResponses.PASSWORD_CLAIM_SECRET_BLOCK = challengeParameters.SECRET_BLOCK;
-          challengeResponses.TIMESTAMP = dateNow;
-          challengeResponses.PASSWORD_CLAIM_SIGNATURE = signatureString;
-          challengeResponses.DEVICE_KEY = _this6.deviceKey;
-
-          var jsonReqResp = {
-            ChallengeName: 'DEVICE_PASSWORD_VERIFIER',
-            ClientId: _this6.pool.getClientId(),
-            ChallengeResponses: challengeResponses,
-            Session: data.Session
-          };
-          if (_this6.getUserContextData()) {
-            jsonReqResp.UserContextData = _this6.getUserContextData();
-          }
-
-          _this6.client.request('RespondToAuthChallenge', jsonReqResp, function (errAuthenticate, dataAuthenticate) {
-            if (errAuthenticate) {
-              return callback.onFailure(errAuthenticate);
-            }
-
-            _this6.signInUserSession = _this6.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
-            _this6.cacheTokens();
-
-            return callback.onSuccess(_this6.signInUserSession);
-          });
-          return undefined;
-          // getPasswordAuthenticationKey callback end
-        });
-        return undefined;
-      });
-      // getLargeAValue callback end
-    });
-  };
-
-  /**
-   * This is used for a certain user to confirm the registration by using a confirmation code
-   * @param {string} confirmationCode Code entered by user.
-   * @param {bool} forceAliasCreation Allow migrating from an existing email / phone number.
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.confirmRegistration = function confirmRegistration(confirmationCode, forceAliasCreation, callback) {
-    var jsonReq = {
-      ClientId: this.pool.getClientId(),
-      ConfirmationCode: confirmationCode,
-      Username: this.username,
-      ForceAliasCreation: forceAliasCreation
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-    this.client.request('ConfirmSignUp', jsonReq, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-  };
-
-  /**
-   * This is used by the user once he has the responses to a custom challenge
-   * @param {string} answerChallenge The custom challenge answer.
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {customChallenge} callback.customChallenge
-   *    Custom challenge response required to continue.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.sendCustomChallengeAnswer = function sendCustomChallengeAnswer(answerChallenge, callback) {
-    var _this7 = this;
-
-    var challengeResponses = {};
-    challengeResponses.USERNAME = this.username;
-    challengeResponses.ANSWER = answerChallenge;
-
-    var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
-    this.getCachedDeviceKeyAndPassword();
-    if (this.deviceKey != null) {
-      challengeResponses.DEVICE_KEY = this.deviceKey;
-    }
-
-    var jsonReq = {
-      ChallengeName: 'CUSTOM_CHALLENGE',
-      ChallengeResponses: challengeResponses,
-      ClientId: this.pool.getClientId(),
-      Session: this.Session
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-    this.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-
-      return _this7.authenticateUserInternal(data, authenticationHelper, callback);
-    });
-  };
-
-  /**
-   * This is used by the user once he has an MFA code
-   * @param {string} confirmationCode The MFA code entered by the user.
-   * @param {object} callback Result callback map.
-   * @param {string} mfaType The mfa we are replying to.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {authSuccess} callback.onSuccess Called on success with the new session.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.sendMFACode = function sendMFACode(confirmationCode, callback, mfaType) {
-    var _this8 = this;
-
-    var challengeResponses = {};
-    challengeResponses.USERNAME = this.username;
-    challengeResponses.SMS_MFA_CODE = confirmationCode;
-    var mfaTypeSelection = mfaType || 'SMS_MFA';
-    if (mfaTypeSelection === 'SOFTWARE_TOKEN_MFA') {
-      challengeResponses.SOFTWARE_TOKEN_MFA_CODE = confirmationCode;
-    }
-
-    if (this.deviceKey != null) {
-      challengeResponses.DEVICE_KEY = this.deviceKey;
-    }
-
-    var jsonReq = {
-      ChallengeName: mfaTypeSelection,
-      ChallengeResponses: challengeResponses,
-      ClientId: this.pool.getClientId(),
-      Session: this.Session
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-
-    this.client.request('RespondToAuthChallenge', jsonReq, function (err, dataAuthenticate) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-
-      var challengeName = dataAuthenticate.ChallengeName;
-
-      if (challengeName === 'DEVICE_SRP_AUTH') {
-        _this8.getDeviceResponse(callback);
-        return undefined;
-      }
-
-      _this8.signInUserSession = _this8.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
-      _this8.cacheTokens();
-
-      if (dataAuthenticate.AuthenticationResult.NewDeviceMetadata == null) {
-        return callback.onSuccess(_this8.signInUserSession);
-      }
-
-      var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](_this8.pool.getUserPoolId().split('_')[1]);
-      authenticationHelper.generateHashDevice(dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey, dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey, function (errGenHash) {
-        if (errGenHash) {
-          return callback.onFailure(errGenHash);
-        }
-
-        var deviceSecretVerifierConfig = {
-          Salt: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
-          PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
-        };
-
-        _this8.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
-        _this8.deviceGroupKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey;
-        _this8.randomPassword = authenticationHelper.getRandomPassword();
-
-        _this8.client.request('ConfirmDevice', {
-          DeviceKey: dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey,
-          AccessToken: _this8.signInUserSession.getAccessToken().getJwtToken(),
-          DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
-          DeviceName: navigator.userAgent
-        }, function (errConfirm, dataConfirm) {
-          if (errConfirm) {
-            return callback.onFailure(errConfirm);
-          }
-
-          _this8.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
-          _this8.cacheDeviceKeyAndPassword();
-          if (dataConfirm.UserConfirmationNecessary === true) {
-            return callback.onSuccess(_this8.signInUserSession, dataConfirm.UserConfirmationNecessary);
-          }
-          return callback.onSuccess(_this8.signInUserSession);
-        });
-        return undefined;
-      });
-      return undefined;
-    });
-  };
-
-  /**
-   * This is used by an authenticated user to change the current password
-   * @param {string} oldUserPassword The current password.
-   * @param {string} newUserPassword The requested new password.
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.changePassword = function changePassword(oldUserPassword, newUserPassword, callback) {
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('ChangePassword', {
-      PreviousPassword: oldUserPassword,
-      ProposedPassword: newUserPassword,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to enable MFA for itself
-   * @deprecated
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.enableMFA = function enableMFA(callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    var mfaOptions = [];
-    var mfaEnabled = {
-      DeliveryMedium: 'SMS',
-      AttributeName: 'phone_number'
-    };
-    mfaOptions.push(mfaEnabled);
-
-    this.client.request('SetUserSettings', {
-      MFAOptions: mfaOptions,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to enable MFA for itself
-   * @param {IMfaSettings} smsMfaSettings the sms mfa settings
-   * @param {IMFASettings} softwareTokenMfaSettings the software token mfa settings
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.setUserMfaPreference = function setUserMfaPreference(smsMfaSettings, softwareTokenMfaSettings, callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('SetUserMFAPreference', {
-      SMSMfaSettings: smsMfaSettings,
-      SoftwareTokenMfaSettings: softwareTokenMfaSettings,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to disable MFA for itself
-   * @deprecated
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.disableMFA = function disableMFA(callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    var mfaOptions = [];
-
-    this.client.request('SetUserSettings', {
-      MFAOptions: mfaOptions,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to delete itself
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.deleteUser = function deleteUser(callback) {
-    var _this9 = this;
-
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('DeleteUser', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      _this9.clearCachedUser();
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * @typedef {CognitoUserAttribute | { Name:string, Value:string }} AttributeArg
-   */
-  /**
-   * This is used by an authenticated user to change a list of attributes
-   * @param {AttributeArg[]} attributes A list of the new user attributes.
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.updateAttributes = function updateAttributes(attributes, callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('UpdateUserAttributes', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      UserAttributes: attributes
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to get a list of attributes
-   * @param {nodeCallback<CognitoUserAttribute[]>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getUserAttributes = function getUserAttributes(callback) {
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('GetUser', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err, userData) {
-      if (err) {
-        return callback(err, null);
-      }
-
-      var attributeList = [];
-
-      for (var i = 0; i < userData.UserAttributes.length; i++) {
-        var attribute = {
-          Name: userData.UserAttributes[i].Name,
-          Value: userData.UserAttributes[i].Value
-        };
-        var userAttribute = new __WEBPACK_IMPORTED_MODULE_12__CognitoUserAttribute__["a" /* default */](attribute);
-        attributeList.push(userAttribute);
-      }
-
-      return callback(null, attributeList);
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to get the MFAOptions
-   * @param {nodeCallback<MFAOptions>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getMFAOptions = function getMFAOptions(callback) {
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('GetUser', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err, userData) {
-      if (err) {
-        return callback(err, null);
-      }
-
-      return callback(null, userData.MFAOptions);
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated users to get the userData
-   * @param {nodeCallback<UserData>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getUserData = function getUserData(callback, params) {
-    var _this10 = this;
-
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      this.clearCachedUserData();
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    var bypassCache = params ? params.bypassCache : false;
-
-    var userData = this.storage.getItem(this.userDataKey);
-    // get the cached user data
-
-    if (!userData || bypassCache) {
-      this.client.request('GetUser', {
-        AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-      }, function (err, latestUserData) {
-        if (err) {
-          return callback(err, null);
-        }
-        _this10.cacheUserData(latestUserData);
-        var refresh = _this10.signInUserSession.getRefreshToken();
-        if (refresh && refresh.getToken()) {
-          _this10.refreshSession(refresh, function (refreshError, data) {
-            if (refreshError) {
-              return callback(refreshError, null);
-            }
-            return callback(null, latestUserData);
-          });
-        } else {
-          return callback(null, latestUserData);
-        }
-      });
-    } else {
-      try {
-        return callback(null, JSON.parse(userData));
-      } catch (err) {
-        this.clearCachedUserData();
-        return callback(err, null);
-      }
-    }
-    return undefined;
-  };
-
-  /**
-   * This is used by an authenticated user to delete a list of attributes
-   * @param {string[]} attributeList Names of the attributes to delete.
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.deleteAttributes = function deleteAttributes(attributeList, callback) {
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      return callback(new Error('User is not authenticated'), null);
-    }
-
-    this.client.request('DeleteUserAttributes', {
-      UserAttributeNames: attributeList,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, 'SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used by a user to resend a confirmation code
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.resendConfirmationCode = function resendConfirmationCode(callback) {
-    var jsonReq = {
-      ClientId: this.pool.getClientId(),
-      Username: this.username
-    };
-
-    this.client.request('ResendConfirmationCode', jsonReq, function (err, result) {
-      if (err) {
-        return callback(err, null);
-      }
-      return callback(null, result);
-    });
-  };
-
-  /**
-   * This is used to get a session, either from the session object
-   * or from  the local storage, or by using a refresh token
-   *
-   * @param {nodeCallback<CognitoUserSession>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getSession = function getSession(callback) {
-    if (this.username == null) {
-      return callback(new Error('Username is null. Cannot retrieve a new session'), null);
-    }
-
-    if (this.signInUserSession != null && this.signInUserSession.isValid()) {
-      return callback(null, this.signInUserSession);
-    }
-
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
-    var idTokenKey = keyPrefix + '.idToken';
-    var accessTokenKey = keyPrefix + '.accessToken';
-    var refreshTokenKey = keyPrefix + '.refreshToken';
-    var clockDriftKey = keyPrefix + '.clockDrift';
-
-    if (this.storage.getItem(idTokenKey)) {
-      var idToken = new __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__["a" /* default */]({
-        IdToken: this.storage.getItem(idTokenKey)
-      });
-      var accessToken = new __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__["a" /* default */]({
-        AccessToken: this.storage.getItem(accessTokenKey)
-      });
-      var refreshToken = new __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__["a" /* default */]({
-        RefreshToken: this.storage.getItem(refreshTokenKey)
-      });
-      var clockDrift = parseInt(this.storage.getItem(clockDriftKey), 0) || 0;
-
-      var sessionData = {
-        IdToken: idToken,
-        AccessToken: accessToken,
-        RefreshToken: refreshToken,
-        ClockDrift: clockDrift
-      };
-      var cachedSession = new __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__["a" /* default */](sessionData);
-      if (cachedSession.isValid()) {
-        this.signInUserSession = cachedSession;
-        return callback(null, this.signInUserSession);
-      }
-
-      if (!refreshToken.getToken()) {
-        return callback(new Error('Cannot retrieve a new session. Please authenticate.'), null);
-      }
-
-      this.refreshSession(refreshToken, callback);
-    } else {
-      callback(new Error('Local storage is missing an ID Token, Please authenticate'), null);
-    }
-
-    return undefined;
-  };
-
-  /**
-   * This uses the refreshToken to retrieve a new session
-   * @param {CognitoRefreshToken} refreshToken A previous session's refresh token.
-   * @param {nodeCallback<CognitoUserSession>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.refreshSession = function refreshSession(refreshToken, callback) {
-    var _this11 = this;
-
-    var authParameters = {};
-    authParameters.REFRESH_TOKEN = refreshToken.getToken();
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
-    var lastUserKey = keyPrefix + '.LastAuthUser';
-
-    if (this.storage.getItem(lastUserKey)) {
-      this.username = this.storage.getItem(lastUserKey);
-      var deviceKeyKey = keyPrefix + '.' + this.username + '.deviceKey';
-      this.deviceKey = this.storage.getItem(deviceKeyKey);
-      authParameters.DEVICE_KEY = this.deviceKey;
-    }
-
-    var jsonReq = {
-      ClientId: this.pool.getClientId(),
-      AuthFlow: 'REFRESH_TOKEN_AUTH',
-      AuthParameters: authParameters
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-    this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
-      if (err) {
-        if (err.code === 'NotAuthorizedException') {
-          _this11.clearCachedUser();
-        }
-        return callback(err, null);
-      }
-      if (authResult) {
-        var authenticationResult = authResult.AuthenticationResult;
-        if (!Object.prototype.hasOwnProperty.call(authenticationResult, 'RefreshToken')) {
-          authenticationResult.RefreshToken = refreshToken.getToken();
-        }
-        _this11.signInUserSession = _this11.getCognitoUserSession(authenticationResult);
-        _this11.cacheTokens();
-        return callback(null, _this11.signInUserSession);
-      }
-      return undefined;
-    });
-  };
-
-  /**
-   * This is used to save the session tokens to local storage
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.cacheTokens = function cacheTokens() {
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
-    var idTokenKey = keyPrefix + '.' + this.username + '.idToken';
-    var accessTokenKey = keyPrefix + '.' + this.username + '.accessToken';
-    var refreshTokenKey = keyPrefix + '.' + this.username + '.refreshToken';
-    var clockDriftKey = keyPrefix + '.' + this.username + '.clockDrift';
-    var lastUserKey = keyPrefix + '.LastAuthUser';
-
-    this.storage.setItem(idTokenKey, this.signInUserSession.getIdToken().getJwtToken());
-    this.storage.setItem(accessTokenKey, this.signInUserSession.getAccessToken().getJwtToken());
-    this.storage.setItem(refreshTokenKey, this.signInUserSession.getRefreshToken().getToken());
-    this.storage.setItem(clockDriftKey, '' + this.signInUserSession.getClockDrift());
-    this.storage.setItem(lastUserKey, this.username);
-  };
-
-  /**
-   * This is to cache user data
-   */
-
-
-  CognitoUser.prototype.cacheUserData = function cacheUserData(userData) {
-    this.storage.setItem(this.userDataKey, JSON.stringify(userData));
-  };
-
-  /**
-   * This is to remove cached user data
-   */
-
-
-  CognitoUser.prototype.clearCachedUserData = function clearCachedUserData() {
-    this.storage.removeItem(this.userDataKey);
-  };
-
-  CognitoUser.prototype.clearCachedUser = function clearCachedUser() {
-    this.clearCachedTokens();
-    this.clearCachedUserData();
-  };
-
-  /**
-   * This is used to cache the device key and device group and device password
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.cacheDeviceKeyAndPassword = function cacheDeviceKeyAndPassword() {
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
-    var deviceKeyKey = keyPrefix + '.deviceKey';
-    var randomPasswordKey = keyPrefix + '.randomPasswordKey';
-    var deviceGroupKeyKey = keyPrefix + '.deviceGroupKey';
-
-    this.storage.setItem(deviceKeyKey, this.deviceKey);
-    this.storage.setItem(randomPasswordKey, this.randomPassword);
-    this.storage.setItem(deviceGroupKeyKey, this.deviceGroupKey);
-  };
-
-  /**
-   * This is used to get current device key and device group and device password
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getCachedDeviceKeyAndPassword = function getCachedDeviceKeyAndPassword() {
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
-    var deviceKeyKey = keyPrefix + '.deviceKey';
-    var randomPasswordKey = keyPrefix + '.randomPasswordKey';
-    var deviceGroupKeyKey = keyPrefix + '.deviceGroupKey';
-
-    if (this.storage.getItem(deviceKeyKey)) {
-      this.deviceKey = this.storage.getItem(deviceKeyKey);
-      this.randomPassword = this.storage.getItem(randomPasswordKey);
-      this.deviceGroupKey = this.storage.getItem(deviceGroupKeyKey);
-    }
-  };
-
-  /**
-   * This is used to clear the device key info from local storage
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.clearCachedDeviceKeyAndPassword = function clearCachedDeviceKeyAndPassword() {
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
-    var deviceKeyKey = keyPrefix + '.deviceKey';
-    var randomPasswordKey = keyPrefix + '.randomPasswordKey';
-    var deviceGroupKeyKey = keyPrefix + '.deviceGroupKey';
-
-    this.storage.removeItem(deviceKeyKey);
-    this.storage.removeItem(randomPasswordKey);
-    this.storage.removeItem(deviceGroupKeyKey);
-  };
-
-  /**
-   * This is used to clear the session tokens from local storage
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.clearCachedTokens = function clearCachedTokens() {
-    var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
-    var idTokenKey = keyPrefix + '.' + this.username + '.idToken';
-    var accessTokenKey = keyPrefix + '.' + this.username + '.accessToken';
-    var refreshTokenKey = keyPrefix + '.' + this.username + '.refreshToken';
-    var lastUserKey = keyPrefix + '.LastAuthUser';
-    var clockDriftKey = keyPrefix + '.' + this.username + '.clockDrift';
-
-    this.storage.removeItem(idTokenKey);
-    this.storage.removeItem(accessTokenKey);
-    this.storage.removeItem(refreshTokenKey);
-    this.storage.removeItem(lastUserKey);
-    this.storage.removeItem(clockDriftKey);
-  };
-
-  /**
-   * This is used to build a user session from tokens retrieved in the authentication result
-   * @param {object} authResult Successful auth response from server.
-   * @returns {CognitoUserSession} The new user session.
-   * @private
-   */
-
-
-  CognitoUser.prototype.getCognitoUserSession = function getCognitoUserSession(authResult) {
-    var idToken = new __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__["a" /* default */](authResult);
-    var accessToken = new __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__["a" /* default */](authResult);
-    var refreshToken = new __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__["a" /* default */](authResult);
-
-    var sessionData = {
-      IdToken: idToken,
-      AccessToken: accessToken,
-      RefreshToken: refreshToken
-    };
-
-    return new __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__["a" /* default */](sessionData);
-  };
-
-  /**
-   * This is used to initiate a forgot password request
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {inputVerificationCode?} callback.inputVerificationCode
-   *    Optional callback raised instead of onSuccess with response data.
-   * @param {onSuccess} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.forgotPassword = function forgotPassword(callback) {
-    var jsonReq = {
-      ClientId: this.pool.getClientId(),
-      Username: this.username
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-    this.client.request('ForgotPassword', jsonReq, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      if (typeof callback.inputVerificationCode === 'function') {
-        return callback.inputVerificationCode(data);
-      }
-      return callback.onSuccess(data);
-    });
-  };
-
-  /**
-   * This is used to confirm a new password using a confirmationCode
-   * @param {string} confirmationCode Code entered by user.
-   * @param {string} newPassword Confirm new password.
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<void>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.confirmPassword = function confirmPassword(confirmationCode, newPassword, callback) {
-    var jsonReq = {
-      ClientId: this.pool.getClientId(),
-      Username: this.username,
-      ConfirmationCode: confirmationCode,
-      Password: newPassword
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-    this.client.request('ConfirmForgotPassword', jsonReq, function (err) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess();
-    });
-  };
-
-  /**
-   * This is used to initiate an attribute confirmation request
-   * @param {string} attributeName User attribute that needs confirmation.
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {inputVerificationCode} callback.inputVerificationCode Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getAttributeVerificationCode = function getAttributeVerificationCode(attributeName, callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('GetUserAttributeVerificationCode', {
-      AttributeName: attributeName,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      if (typeof callback.inputVerificationCode === 'function') {
-        return callback.inputVerificationCode(data);
-      }
-      return callback.onSuccess();
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to confirm an attribute using a confirmation code
-   * @param {string} attributeName Attribute being confirmed.
-   * @param {string} confirmationCode Code entered by user.
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<string>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.verifyAttribute = function verifyAttribute(attributeName, confirmationCode, callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('VerifyUserAttribute', {
-      AttributeName: attributeName,
-      Code: confirmationCode,
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess('SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to get the device information using the current device key
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<*>} callback.onSuccess Called on success with device data.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getDevice = function getDevice(callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('GetDevice', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      DeviceKey: this.deviceKey
-    }, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess(data);
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to forget a specific device
-   * @param {string} deviceKey Device key.
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<string>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.forgetSpecificDevice = function forgetSpecificDevice(deviceKey, callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('ForgetDevice', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      DeviceKey: deviceKey
-    }, function (err) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess('SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to forget the current device
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<string>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.forgetDevice = function forgetDevice(callback) {
-    var _this12 = this;
-
-    this.forgetSpecificDevice(this.deviceKey, {
-      onFailure: callback.onFailure,
-      onSuccess: function onSuccess(result) {
-        _this12.deviceKey = null;
-        _this12.deviceGroupKey = null;
-        _this12.randomPassword = null;
-        _this12.clearCachedDeviceKeyAndPassword();
-        return callback.onSuccess(result);
-      }
-    });
-  };
-
-  /**
-   * This is used to set the device status as remembered
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<string>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.setDeviceStatusRemembered = function setDeviceStatusRemembered(callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('UpdateDeviceStatus', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      DeviceKey: this.deviceKey,
-      DeviceRememberedStatus: 'remembered'
-    }, function (err) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess('SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to set the device status as not remembered
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<string>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.setDeviceStatusNotRemembered = function setDeviceStatusNotRemembered(callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('UpdateDeviceStatus', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      DeviceKey: this.deviceKey,
-      DeviceRememberedStatus: 'not_remembered'
-    }, function (err) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess('SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to list all devices for a user
-   *
-   * @param {int} limit the number of devices returned in a call
-   * @param {string} paginationToken the pagination token in case any was returned before
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<*>} callback.onSuccess Called on success with device list.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.listDevices = function listDevices(limit, paginationToken, callback) {
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('ListDevices', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      Limit: limit,
-      PaginationToken: paginationToken
-    }, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      return callback.onSuccess(data);
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used to globally revoke all tokens issued to a user
-   * @param {object} callback Result callback map.
-   * @param {onFailure} callback.onFailure Called on any error.
-   * @param {onSuccess<string>} callback.onSuccess Called on success.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.globalSignOut = function globalSignOut(callback) {
-    var _this13 = this;
-
-    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
-      return callback.onFailure(new Error('User is not authenticated'));
-    }
-
-    this.client.request('GlobalSignOut', {
-      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-    }, function (err) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      _this13.clearCachedUser();
-      return callback.onSuccess('SUCCESS');
-    });
-    return undefined;
-  };
-
-  /**
-   * This is used for the user to signOut of the application and clear the cached tokens.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.signOut = function signOut() {
-    this.signInUserSession = null;
-    this.clearCachedUser();
-  };
-
-  /**
-   * This is used by a user trying to select a given MFA
-   * @param {string} answerChallenge the mfa the user wants
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
-    var _this14 = this;
-
-    var challengeResponses = {};
-    challengeResponses.USERNAME = this.username;
-    challengeResponses.ANSWER = answerChallenge;
-
-    var jsonReq = {
-      ChallengeName: 'SELECT_MFA_TYPE',
-      ChallengeResponses: challengeResponses,
-      ClientId: this.pool.getClientId(),
-      Session: this.Session
-    };
-    if (this.getUserContextData()) {
-      jsonReq.UserContextData = this.getUserContextData();
-    }
-    this.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
-      if (err) {
-        return callback.onFailure(err);
-      }
-      _this14.Session = data.Session;
-      if (answerChallenge === 'SMS_MFA') {
-        return callback.mfaRequired(data.challengeName, data.challengeParameters);
-      }
-      if (answerChallenge === 'SOFTWARE_TOKEN_MFA') {
-        return callback.totpRequired(data.challengeName, data.challengeParameters);
-      }
-      return undefined;
-    });
-  };
-
-  /**
-   * This returns the user context data for advanced security feature.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.getUserContextData = function getUserContextData() {
-    var pool = this.pool;
-    return pool.getUserContextData(this.username);
-  };
-
-  /**
-   * This is used by an authenticated or a user trying to authenticate to associate a TOTP MFA
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.associateSoftwareToken = function associateSoftwareToken(callback) {
-    var _this15 = this;
-
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      this.client.request('AssociateSoftwareToken', {
-        Session: this.Session
-      }, function (err, data) {
-        if (err) {
-          return callback.onFailure(err);
-        }
-        _this15.Session = data.Session;
-        return callback.associateSecretCode(data.SecretCode);
-      });
-    } else {
-      this.client.request('AssociateSoftwareToken', {
-        AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-      }, function (err, data) {
-        if (err) {
-          return callback.onFailure(err);
-        }
-        return callback.associateSecretCode(data.SecretCode);
-      });
-    }
-  };
-
-  /**
-   * This is used by an authenticated or a user trying to authenticate to verify a TOTP MFA
-   * @param {string} totpCode The MFA code entered by the user.
-   * @param {string} friendlyDeviceName The device name we are assigning to the device.
-   * @param {nodeCallback<string>} callback Called on success or error.
-   * @returns {void}
-   */
-
-
-  CognitoUser.prototype.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
-    var _this16 = this;
-
-    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      this.client.request('VerifySoftwareToken', {
-        Session: this.Session,
-        UserCode: totpCode,
-        FriendlyDeviceName: friendlyDeviceName
-      }, function (err, data) {
-        if (err) {
-          return callback.onFailure(err);
-        }
-        _this16.Session = data.Session;
-        var challengeResponses = {};
-        challengeResponses.USERNAME = _this16.username;
-        var jsonReq = {
-          ChallengeName: 'MFA_SETUP',
-          ClientId: _this16.pool.getClientId(),
-          ChallengeResponses: challengeResponses,
-          Session: _this16.Session
-        };
-        if (_this16.getUserContextData()) {
-          jsonReq.UserContextData = _this16.getUserContextData();
-        }
-        _this16.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
-          if (errRespond) {
-            return callback.onFailure(errRespond);
-          }
-          _this16.signInUserSession = _this16.getCognitoUserSession(dataRespond.AuthenticationResult);
-          _this16.cacheTokens();
-          return callback.onSuccess(_this16.signInUserSession);
-        });
-        return undefined;
-      });
-    } else {
-      this.client.request('VerifySoftwareToken', {
-        AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-        UserCode: totpCode,
-        FriendlyDeviceName: friendlyDeviceName
-      }, function (err, data) {
-        if (err) {
-          return callback.onFailure(err);
-        }
-        return callback.onSuccess(data);
-      });
-    }
-  };
-
-  return CognitoUser;
+	CognitoUser.prototype.completeNewPasswordChallenge = function completeNewPasswordChallenge(newPassword, requiredAttributeData, callback, clientMetadata) {
+		var _this5 = this;
+
+		if (!newPassword) {
+			return callback.onFailure(new Error('New password is required.'));
+		}
+		var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
+		var userAttributesPrefix = authenticationHelper.getNewPasswordRequiredChallengeUserAttributePrefix();
+
+		var finalUserAttributes = {};
+		if (requiredAttributeData) {
+			Object.keys(requiredAttributeData).forEach(function (key) {
+				finalUserAttributes[userAttributesPrefix + key] = requiredAttributeData[key];
+			});
+		}
+
+		finalUserAttributes.NEW_PASSWORD = newPassword;
+		finalUserAttributes.USERNAME = this.username;
+		var jsonReq = {
+			ChallengeName: 'NEW_PASSWORD_REQUIRED',
+			ClientId: this.pool.getClientId(),
+			ChallengeResponses: finalUserAttributes,
+			Session: this.Session,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+
+		this.client.request('RespondToAuthChallenge', jsonReq, function (errAuthenticate, dataAuthenticate) {
+			if (errAuthenticate) {
+				return callback.onFailure(errAuthenticate);
+			}
+			return _this5.authenticateUserInternal(dataAuthenticate, authenticationHelper, callback);
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to get a session using device authentication. It is called at the end of user
+  * authentication
+  *
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  * @private
+  */
+
+
+	CognitoUser.prototype.getDeviceResponse = function getDeviceResponse(callback, clientMetadata) {
+		var _this6 = this;
+
+		var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.deviceGroupKey);
+		var dateHelper = new __WEBPACK_IMPORTED_MODULE_11__DateHelper__["a" /* default */]();
+
+		var authParameters = {};
+
+		authParameters.USERNAME = this.username;
+		authParameters.DEVICE_KEY = this.deviceKey;
+		authenticationHelper.getLargeAValue(function (errAValue, aValue) {
+			// getLargeAValue callback start
+			if (errAValue) {
+				callback.onFailure(errAValue);
+			}
+
+			authParameters.SRP_A = aValue.toString(16);
+
+			var jsonReq = {
+				ChallengeName: 'DEVICE_SRP_AUTH',
+				ClientId: _this6.pool.getClientId(),
+				ChallengeResponses: authParameters,
+				ClientMetadata: clientMetadata
+			};
+			if (_this6.getUserContextData()) {
+				jsonReq.UserContextData = _this6.getUserContextData();
+			}
+			_this6.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
+				if (err) {
+					return callback.onFailure(err);
+				}
+
+				var challengeParameters = data.ChallengeParameters;
+
+				var serverBValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SRP_B, 16);
+				var salt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SALT, 16);
+
+				authenticationHelper.getPasswordAuthenticationKey(_this6.deviceKey, _this6.randomPassword, serverBValue, salt, function (errHkdf, hkdf) {
+					// getPasswordAuthenticationKey callback start
+					if (errHkdf) {
+						return callback.onFailure(errHkdf);
+					}
+
+					var dateNow = dateHelper.getNowString();
+
+					var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this6.deviceGroupKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this6.deviceKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(dateNow, 'utf8')]));
+					var key = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(hkdf);
+					var signatureString = __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default.a.stringify(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(message, key));
+
+					var challengeResponses = {};
+
+					challengeResponses.USERNAME = _this6.username;
+					challengeResponses.PASSWORD_CLAIM_SECRET_BLOCK = challengeParameters.SECRET_BLOCK;
+					challengeResponses.TIMESTAMP = dateNow;
+					challengeResponses.PASSWORD_CLAIM_SIGNATURE = signatureString;
+					challengeResponses.DEVICE_KEY = _this6.deviceKey;
+
+					var jsonReqResp = {
+						ChallengeName: 'DEVICE_PASSWORD_VERIFIER',
+						ClientId: _this6.pool.getClientId(),
+						ChallengeResponses: challengeResponses,
+						Session: data.Session
+					};
+					if (_this6.getUserContextData()) {
+						jsonReqResp.UserContextData = _this6.getUserContextData();
+					}
+
+					_this6.client.request('RespondToAuthChallenge', jsonReqResp, function (errAuthenticate, dataAuthenticate) {
+						if (errAuthenticate) {
+							return callback.onFailure(errAuthenticate);
+						}
+
+						_this6.signInUserSession = _this6.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
+						_this6.cacheTokens();
+
+						return callback.onSuccess(_this6.signInUserSession);
+					});
+					return undefined;
+					// getPasswordAuthenticationKey callback end
+				});
+				return undefined;
+			});
+			// getLargeAValue callback end
+		});
+	};
+
+	/**
+  * This is used for a certain user to confirm the registration by using a confirmation code
+  * @param {string} confirmationCode Code entered by user.
+  * @param {bool} forceAliasCreation Allow migrating from an existing email / phone number.
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.confirmRegistration = function confirmRegistration(confirmationCode, forceAliasCreation, callback, clientMetadata) {
+		var jsonReq = {
+			ClientId: this.pool.getClientId(),
+			ConfirmationCode: confirmationCode,
+			Username: this.username,
+			ForceAliasCreation: forceAliasCreation,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+		this.client.request('ConfirmSignUp', jsonReq, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+	};
+
+	/**
+  * This is used by the user once he has the responses to a custom challenge
+  * @param {string} answerChallenge The custom challenge answer.
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {customChallenge} callback.customChallenge
+  *    Custom challenge response required to continue.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.sendCustomChallengeAnswer = function sendCustomChallengeAnswer(answerChallenge, callback, clientMetadata) {
+		var _this7 = this;
+
+		var challengeResponses = {};
+		challengeResponses.USERNAME = this.username;
+		challengeResponses.ANSWER = answerChallenge;
+
+		var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](this.pool.getUserPoolId().split('_')[1]);
+		this.getCachedDeviceKeyAndPassword();
+		if (this.deviceKey != null) {
+			challengeResponses.DEVICE_KEY = this.deviceKey;
+		}
+
+		var jsonReq = {
+			ChallengeName: 'CUSTOM_CHALLENGE',
+			ChallengeResponses: challengeResponses,
+			ClientId: this.pool.getClientId(),
+			Session: this.Session,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+		this.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+
+			return _this7.authenticateUserInternal(data, authenticationHelper, callback);
+		});
+	};
+
+	/**
+  * This is used by the user once he has an MFA code
+  * @param {string} confirmationCode The MFA code entered by the user.
+  * @param {object} callback Result callback map.
+  * @param {string} mfaType The mfa we are replying to.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {authSuccess} callback.onSuccess Called on success with the new session.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.sendMFACode = function sendMFACode(confirmationCode, callback, mfaType, clientMetadata) {
+		var _this8 = this;
+
+		var challengeResponses = {};
+		challengeResponses.USERNAME = this.username;
+		challengeResponses.SMS_MFA_CODE = confirmationCode;
+		var mfaTypeSelection = mfaType || 'SMS_MFA';
+		if (mfaTypeSelection === 'SOFTWARE_TOKEN_MFA') {
+			challengeResponses.SOFTWARE_TOKEN_MFA_CODE = confirmationCode;
+		}
+
+		if (this.deviceKey != null) {
+			challengeResponses.DEVICE_KEY = this.deviceKey;
+		}
+
+		var jsonReq = {
+			ChallengeName: mfaTypeSelection,
+			ChallengeResponses: challengeResponses,
+			ClientId: this.pool.getClientId(),
+			Session: this.Session,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+
+		this.client.request('RespondToAuthChallenge', jsonReq, function (err, dataAuthenticate) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+
+			var challengeName = dataAuthenticate.ChallengeName;
+
+			if (challengeName === 'DEVICE_SRP_AUTH') {
+				_this8.getDeviceResponse(callback);
+				return undefined;
+			}
+
+			_this8.signInUserSession = _this8.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
+			_this8.cacheTokens();
+
+			if (dataAuthenticate.AuthenticationResult.NewDeviceMetadata == null) {
+				return callback.onSuccess(_this8.signInUserSession);
+			}
+
+			var authenticationHelper = new __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__["a" /* default */](_this8.pool.getUserPoolId().split('_')[1]);
+			authenticationHelper.generateHashDevice(dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey, dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey, function (errGenHash) {
+				if (errGenHash) {
+					return callback.onFailure(errGenHash);
+				}
+
+				var deviceSecretVerifierConfig = {
+					Salt: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
+					PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
+				};
+
+				_this8.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
+				_this8.deviceGroupKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey;
+				_this8.randomPassword = authenticationHelper.getRandomPassword();
+
+				_this8.client.request('ConfirmDevice', {
+					DeviceKey: dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey,
+					AccessToken: _this8.signInUserSession.getAccessToken().getJwtToken(),
+					DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
+					DeviceName: navigator.userAgent
+				}, function (errConfirm, dataConfirm) {
+					if (errConfirm) {
+						return callback.onFailure(errConfirm);
+					}
+
+					_this8.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
+					_this8.cacheDeviceKeyAndPassword();
+					if (dataConfirm.UserConfirmationNecessary === true) {
+						return callback.onSuccess(_this8.signInUserSession, dataConfirm.UserConfirmationNecessary);
+					}
+					return callback.onSuccess(_this8.signInUserSession);
+				});
+				return undefined;
+			});
+			return undefined;
+		});
+	};
+
+	/**
+  * This is used by an authenticated user to change the current password
+  * @param {string} oldUserPassword The current password.
+  * @param {string} newUserPassword The requested new password.
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.changePassword = function changePassword(oldUserPassword, newUserPassword, callback, clientMetadata) {
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('ChangePassword', {
+			PreviousPassword: oldUserPassword,
+			ProposedPassword: newUserPassword,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			ClientMetadata: clientMetadata
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to enable MFA for itself
+  * @deprecated
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.enableMFA = function enableMFA(callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		var mfaOptions = [];
+		var mfaEnabled = {
+			DeliveryMedium: 'SMS',
+			AttributeName: 'phone_number'
+		};
+		mfaOptions.push(mfaEnabled);
+
+		this.client.request('SetUserSettings', {
+			MFAOptions: mfaOptions,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to enable MFA for itself
+  * @param {IMfaSettings} smsMfaSettings the sms mfa settings
+  * @param {IMFASettings} softwareTokenMfaSettings the software token mfa settings
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.setUserMfaPreference = function setUserMfaPreference(smsMfaSettings, softwareTokenMfaSettings, callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('SetUserMFAPreference', {
+			SMSMfaSettings: smsMfaSettings,
+			SoftwareTokenMfaSettings: softwareTokenMfaSettings,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to disable MFA for itself
+  * @deprecated
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.disableMFA = function disableMFA(callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		var mfaOptions = [];
+
+		this.client.request('SetUserSettings', {
+			MFAOptions: mfaOptions,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to delete itself
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.deleteUser = function deleteUser(callback, clientMetadata) {
+		var _this9 = this;
+
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('DeleteUser', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			ClientMetadata: clientMetadata
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			_this9.clearCachedUser();
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * @typedef {CognitoUserAttribute | { Name:string, Value:string }} AttributeArg
+  */
+	/**
+  * This is used by an authenticated user to change a list of attributes
+  * @param {AttributeArg[]} attributes A list of the new user attributes.
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.updateAttributes = function updateAttributes(attributes, callback, clientMetadata) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('UpdateUserAttributes', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			UserAttributes: attributes,
+			ClientMetadata: clientMetadata
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to get a list of attributes
+  * @param {nodeCallback<CognitoUserAttribute[]>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getUserAttributes = function getUserAttributes(callback) {
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('GetUser', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err, userData) {
+			if (err) {
+				return callback(err, null);
+			}
+
+			var attributeList = [];
+
+			for (var i = 0; i < userData.UserAttributes.length; i++) {
+				var attribute = {
+					Name: userData.UserAttributes[i].Name,
+					Value: userData.UserAttributes[i].Value
+				};
+				var userAttribute = new __WEBPACK_IMPORTED_MODULE_12__CognitoUserAttribute__["a" /* default */](attribute);
+				attributeList.push(userAttribute);
+			}
+
+			return callback(null, attributeList);
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to get the MFAOptions
+  * @param {nodeCallback<MFAOptions>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getMFAOptions = function getMFAOptions(callback) {
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('GetUser', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err, userData) {
+			if (err) {
+				return callback(err, null);
+			}
+
+			return callback(null, userData.MFAOptions);
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated users to get the userData
+  * @param {nodeCallback<UserData>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getUserData = function getUserData(callback, params) {
+		var _this10 = this;
+
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			this.clearCachedUserData();
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		var bypassCache = params ? params.bypassCache : false;
+
+		var userData = this.storage.getItem(this.userDataKey);
+		// get the cached user data
+
+		if (!userData || bypassCache) {
+			this.client.request('GetUser', {
+				AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+			}, function (err, latestUserData) {
+				if (err) {
+					return callback(err, null);
+				}
+				_this10.cacheUserData(latestUserData);
+				var refresh = _this10.signInUserSession.getRefreshToken();
+				if (refresh && refresh.getToken()) {
+					_this10.refreshSession(refresh, function (refreshError, data) {
+						if (refreshError) {
+							return callback(refreshError, null);
+						}
+						return callback(null, latestUserData);
+					});
+				} else {
+					return callback(null, latestUserData);
+				}
+			});
+		} else {
+			try {
+				return callback(null, JSON.parse(userData));
+			} catch (err) {
+				this.clearCachedUserData();
+				return callback(err, null);
+			}
+		}
+		return undefined;
+	};
+
+	/**
+  * This is used by an authenticated user to delete a list of attributes
+  * @param {string[]} attributeList Names of the attributes to delete.
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.deleteAttributes = function deleteAttributes(attributeList, callback) {
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			return callback(new Error('User is not authenticated'), null);
+		}
+
+		this.client.request('DeleteUserAttributes', {
+			UserAttributeNames: attributeList,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, 'SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used by a user to resend a confirmation code
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.resendConfirmationCode = function resendConfirmationCode(callback, clientMetadata) {
+		var jsonReq = {
+			ClientId: this.pool.getClientId(),
+			Username: this.username,
+			ClientMetadata: clientMetadata
+		};
+
+		this.client.request('ResendConfirmationCode', jsonReq, function (err, result) {
+			if (err) {
+				return callback(err, null);
+			}
+			return callback(null, result);
+		});
+	};
+
+	/**
+  * This is used to get a session, either from the session object
+  * or from  the local storage, or by using a refresh token
+  *
+  * @param {nodeCallback<CognitoUserSession>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getSession = function getSession(callback) {
+		if (this.username == null) {
+			return callback(new Error('Username is null. Cannot retrieve a new session'), null);
+		}
+
+		if (this.signInUserSession != null && this.signInUserSession.isValid()) {
+			return callback(null, this.signInUserSession);
+		}
+
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
+		var idTokenKey = keyPrefix + '.idToken';
+		var accessTokenKey = keyPrefix + '.accessToken';
+		var refreshTokenKey = keyPrefix + '.refreshToken';
+		var clockDriftKey = keyPrefix + '.clockDrift';
+
+		if (this.storage.getItem(idTokenKey)) {
+			var idToken = new __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__["a" /* default */]({
+				IdToken: this.storage.getItem(idTokenKey)
+			});
+			var accessToken = new __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__["a" /* default */]({
+				AccessToken: this.storage.getItem(accessTokenKey)
+			});
+			var refreshToken = new __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__["a" /* default */]({
+				RefreshToken: this.storage.getItem(refreshTokenKey)
+			});
+			var clockDrift = parseInt(this.storage.getItem(clockDriftKey), 0) || 0;
+
+			var sessionData = {
+				IdToken: idToken,
+				AccessToken: accessToken,
+				RefreshToken: refreshToken,
+				ClockDrift: clockDrift
+			};
+			var cachedSession = new __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__["a" /* default */](sessionData);
+			if (cachedSession.isValid()) {
+				this.signInUserSession = cachedSession;
+				return callback(null, this.signInUserSession);
+			}
+
+			if (!refreshToken.getToken()) {
+				return callback(new Error('Cannot retrieve a new session. Please authenticate.'), null);
+			}
+
+			this.refreshSession(refreshToken, callback);
+		} else {
+			callback(new Error('Local storage is missing an ID Token, Please authenticate'), null);
+		}
+
+		return undefined;
+	};
+
+	/**
+  * This uses the refreshToken to retrieve a new session
+  * @param {CognitoRefreshToken} refreshToken A previous session's refresh token.
+  * @param {nodeCallback<CognitoUserSession>} callback Called on success or error.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.refreshSession = function refreshSession(refreshToken, callback, clientMetadata) {
+		var _this11 = this;
+
+		var authParameters = {};
+		authParameters.REFRESH_TOKEN = refreshToken.getToken();
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
+		var lastUserKey = keyPrefix + '.LastAuthUser';
+
+		if (this.storage.getItem(lastUserKey)) {
+			this.username = this.storage.getItem(lastUserKey);
+			var deviceKeyKey = keyPrefix + '.' + this.username + '.deviceKey';
+			this.deviceKey = this.storage.getItem(deviceKeyKey);
+			authParameters.DEVICE_KEY = this.deviceKey;
+		}
+
+		var jsonReq = {
+			ClientId: this.pool.getClientId(),
+			AuthFlow: 'REFRESH_TOKEN_AUTH',
+			AuthParameters: authParameters,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+		this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
+			if (err) {
+				if (err.code === 'NotAuthorizedException') {
+					_this11.clearCachedUser();
+				}
+				return callback(err, null);
+			}
+			if (authResult) {
+				var authenticationResult = authResult.AuthenticationResult;
+				if (!Object.prototype.hasOwnProperty.call(authenticationResult, 'RefreshToken')) {
+					authenticationResult.RefreshToken = refreshToken.getToken();
+				}
+				_this11.signInUserSession = _this11.getCognitoUserSession(authenticationResult);
+				_this11.cacheTokens();
+				return callback(null, _this11.signInUserSession);
+			}
+			return undefined;
+		});
+	};
+
+	/**
+  * This is used to save the session tokens to local storage
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.cacheTokens = function cacheTokens() {
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
+		var idTokenKey = keyPrefix + '.' + this.username + '.idToken';
+		var accessTokenKey = keyPrefix + '.' + this.username + '.accessToken';
+		var refreshTokenKey = keyPrefix + '.' + this.username + '.refreshToken';
+		var clockDriftKey = keyPrefix + '.' + this.username + '.clockDrift';
+		var lastUserKey = keyPrefix + '.LastAuthUser';
+
+		this.storage.setItem(idTokenKey, this.signInUserSession.getIdToken().getJwtToken());
+		this.storage.setItem(accessTokenKey, this.signInUserSession.getAccessToken().getJwtToken());
+		this.storage.setItem(refreshTokenKey, this.signInUserSession.getRefreshToken().getToken());
+		this.storage.setItem(clockDriftKey, '' + this.signInUserSession.getClockDrift());
+		this.storage.setItem(lastUserKey, this.username);
+	};
+
+	/**
+  * This is to cache user data
+  */
+
+
+	CognitoUser.prototype.cacheUserData = function cacheUserData(userData) {
+		this.storage.setItem(this.userDataKey, JSON.stringify(userData));
+	};
+
+	/**
+  * This is to remove cached user data
+  */
+
+
+	CognitoUser.prototype.clearCachedUserData = function clearCachedUserData() {
+		this.storage.removeItem(this.userDataKey);
+	};
+
+	CognitoUser.prototype.clearCachedUser = function clearCachedUser() {
+		this.clearCachedTokens();
+		this.clearCachedUserData();
+	};
+
+	/**
+  * This is used to cache the device key and device group and device password
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.cacheDeviceKeyAndPassword = function cacheDeviceKeyAndPassword() {
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
+		var deviceKeyKey = keyPrefix + '.deviceKey';
+		var randomPasswordKey = keyPrefix + '.randomPasswordKey';
+		var deviceGroupKeyKey = keyPrefix + '.deviceGroupKey';
+
+		this.storage.setItem(deviceKeyKey, this.deviceKey);
+		this.storage.setItem(randomPasswordKey, this.randomPassword);
+		this.storage.setItem(deviceGroupKeyKey, this.deviceGroupKey);
+	};
+
+	/**
+  * This is used to get current device key and device group and device password
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getCachedDeviceKeyAndPassword = function getCachedDeviceKeyAndPassword() {
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
+		var deviceKeyKey = keyPrefix + '.deviceKey';
+		var randomPasswordKey = keyPrefix + '.randomPasswordKey';
+		var deviceGroupKeyKey = keyPrefix + '.deviceGroupKey';
+
+		if (this.storage.getItem(deviceKeyKey)) {
+			this.deviceKey = this.storage.getItem(deviceKeyKey);
+			this.randomPassword = this.storage.getItem(randomPasswordKey);
+			this.deviceGroupKey = this.storage.getItem(deviceGroupKeyKey);
+		}
+	};
+
+	/**
+  * This is used to clear the device key info from local storage
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.clearCachedDeviceKeyAndPassword = function clearCachedDeviceKeyAndPassword() {
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId() + '.' + this.username;
+		var deviceKeyKey = keyPrefix + '.deviceKey';
+		var randomPasswordKey = keyPrefix + '.randomPasswordKey';
+		var deviceGroupKeyKey = keyPrefix + '.deviceGroupKey';
+
+		this.storage.removeItem(deviceKeyKey);
+		this.storage.removeItem(randomPasswordKey);
+		this.storage.removeItem(deviceGroupKeyKey);
+	};
+
+	/**
+  * This is used to clear the session tokens from local storage
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.clearCachedTokens = function clearCachedTokens() {
+		var keyPrefix = 'CognitoIdentityServiceProvider.' + this.pool.getClientId();
+		var idTokenKey = keyPrefix + '.' + this.username + '.idToken';
+		var accessTokenKey = keyPrefix + '.' + this.username + '.accessToken';
+		var refreshTokenKey = keyPrefix + '.' + this.username + '.refreshToken';
+		var lastUserKey = keyPrefix + '.LastAuthUser';
+		var clockDriftKey = keyPrefix + '.' + this.username + '.clockDrift';
+
+		this.storage.removeItem(idTokenKey);
+		this.storage.removeItem(accessTokenKey);
+		this.storage.removeItem(refreshTokenKey);
+		this.storage.removeItem(lastUserKey);
+		this.storage.removeItem(clockDriftKey);
+	};
+
+	/**
+  * This is used to build a user session from tokens retrieved in the authentication result
+  * @param {object} authResult Successful auth response from server.
+  * @returns {CognitoUserSession} The new user session.
+  * @private
+  */
+
+
+	CognitoUser.prototype.getCognitoUserSession = function getCognitoUserSession(authResult) {
+		var idToken = new __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__["a" /* default */](authResult);
+		var accessToken = new __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__["a" /* default */](authResult);
+		var refreshToken = new __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__["a" /* default */](authResult);
+
+		var sessionData = {
+			IdToken: idToken,
+			AccessToken: accessToken,
+			RefreshToken: refreshToken
+		};
+
+		return new __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__["a" /* default */](sessionData);
+	};
+
+	/**
+  * This is used to initiate a forgot password request
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {inputVerificationCode?} callback.inputVerificationCode
+  *    Optional callback raised instead of onSuccess with response data.
+  * @param {onSuccess} callback.onSuccess Called on success.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.forgotPassword = function forgotPassword(callback, clientMetadata) {
+		var jsonReq = {
+			ClientId: this.pool.getClientId(),
+			Username: this.username,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+		this.client.request('ForgotPassword', jsonReq, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			if (typeof callback.inputVerificationCode === 'function') {
+				return callback.inputVerificationCode(data);
+			}
+			return callback.onSuccess(data);
+		});
+	};
+
+	/**
+  * This is used to confirm a new password using a confirmationCode
+  * @param {string} confirmationCode Code entered by user.
+  * @param {string} newPassword Confirm new password.
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<void>} callback.onSuccess Called on success.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.confirmPassword = function confirmPassword(confirmationCode, newPassword, callback, clientMetadata) {
+		var jsonReq = {
+			ClientId: this.pool.getClientId(),
+			Username: this.username,
+			ConfirmationCode: confirmationCode,
+			Password: newPassword,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+		this.client.request('ConfirmForgotPassword', jsonReq, function (err) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess();
+		});
+	};
+
+	/**
+  * This is used to initiate an attribute confirmation request
+  * @param {string} attributeName User attribute that needs confirmation.
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {inputVerificationCode} callback.inputVerificationCode Called on success.
+  * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getAttributeVerificationCode = function getAttributeVerificationCode(attributeName, callback, clientMetadata) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('GetUserAttributeVerificationCode', {
+			AttributeName: attributeName,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			ClientMetadata: clientMetadata
+		}, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			if (typeof callback.inputVerificationCode === 'function') {
+				return callback.inputVerificationCode(data);
+			}
+			return callback.onSuccess();
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to confirm an attribute using a confirmation code
+  * @param {string} attributeName Attribute being confirmed.
+  * @param {string} confirmationCode Code entered by user.
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<string>} callback.onSuccess Called on success.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.verifyAttribute = function verifyAttribute(attributeName, confirmationCode, callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('VerifyUserAttribute', {
+			AttributeName: attributeName,
+			Code: confirmationCode,
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess('SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to get the device information using the current device key
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<*>} callback.onSuccess Called on success with device data.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getDevice = function getDevice(callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('GetDevice', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			DeviceKey: this.deviceKey
+		}, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess(data);
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to forget a specific device
+  * @param {string} deviceKey Device key.
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<string>} callback.onSuccess Called on success.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.forgetSpecificDevice = function forgetSpecificDevice(deviceKey, callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('ForgetDevice', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			DeviceKey: deviceKey
+		}, function (err) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess('SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to forget the current device
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<string>} callback.onSuccess Called on success.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.forgetDevice = function forgetDevice(callback) {
+		var _this12 = this;
+
+		this.forgetSpecificDevice(this.deviceKey, {
+			onFailure: callback.onFailure,
+			onSuccess: function onSuccess(result) {
+				_this12.deviceKey = null;
+				_this12.deviceGroupKey = null;
+				_this12.randomPassword = null;
+				_this12.clearCachedDeviceKeyAndPassword();
+				return callback.onSuccess(result);
+			}
+		});
+	};
+
+	/**
+  * This is used to set the device status as remembered
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<string>} callback.onSuccess Called on success.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.setDeviceStatusRemembered = function setDeviceStatusRemembered(callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('UpdateDeviceStatus', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			DeviceKey: this.deviceKey,
+			DeviceRememberedStatus: 'remembered'
+		}, function (err) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess('SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to set the device status as not remembered
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<string>} callback.onSuccess Called on success.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.setDeviceStatusNotRemembered = function setDeviceStatusNotRemembered(callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('UpdateDeviceStatus', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			DeviceKey: this.deviceKey,
+			DeviceRememberedStatus: 'not_remembered'
+		}, function (err) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess('SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to list all devices for a user
+  *
+  * @param {int} limit the number of devices returned in a call
+  * @param {string} paginationToken the pagination token in case any was returned before
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<*>} callback.onSuccess Called on success with device list.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.listDevices = function listDevices(limit, paginationToken, callback) {
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('ListDevices', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+			Limit: limit,
+			PaginationToken: paginationToken
+		}, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			return callback.onSuccess(data);
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used to globally revoke all tokens issued to a user
+  * @param {object} callback Result callback map.
+  * @param {onFailure} callback.onFailure Called on any error.
+  * @param {onSuccess<string>} callback.onSuccess Called on success.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.globalSignOut = function globalSignOut(callback) {
+		var _this13 = this;
+
+		if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
+			return callback.onFailure(new Error('User is not authenticated'));
+		}
+
+		this.client.request('GlobalSignOut', {
+			AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+		}, function (err) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			_this13.clearCachedUser();
+			return callback.onSuccess('SUCCESS');
+		});
+		return undefined;
+	};
+
+	/**
+  * This is used for the user to signOut of the application and clear the cached tokens.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.signOut = function signOut() {
+		this.signInUserSession = null;
+		this.clearCachedUser();
+	};
+
+	/**
+  * This is used by a user trying to select a given MFA
+  * @param {string} answerChallenge the mfa the user wants
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
+		var _this14 = this;
+
+		var challengeResponses = {};
+		challengeResponses.USERNAME = this.username;
+		challengeResponses.ANSWER = answerChallenge;
+
+		var jsonReq = {
+			ChallengeName: 'SELECT_MFA_TYPE',
+			ChallengeResponses: challengeResponses,
+			ClientId: this.pool.getClientId(),
+			Session: this.Session
+		};
+		if (this.getUserContextData()) {
+			jsonReq.UserContextData = this.getUserContextData();
+		}
+		this.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
+			if (err) {
+				return callback.onFailure(err);
+			}
+			_this14.Session = data.Session;
+			if (answerChallenge === 'SMS_MFA') {
+				return callback.mfaRequired(data.challengeName, data.challengeParameters);
+			}
+			if (answerChallenge === 'SOFTWARE_TOKEN_MFA') {
+				return callback.totpRequired(data.challengeName, data.challengeParameters);
+			}
+			return undefined;
+		});
+	};
+
+	/**
+  * This returns the user context data for advanced security feature.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.getUserContextData = function getUserContextData() {
+		var pool = this.pool;
+		return pool.getUserContextData(this.username);
+	};
+
+	/**
+  * This is used by an authenticated or a user trying to authenticate to associate a TOTP MFA
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.associateSoftwareToken = function associateSoftwareToken(callback) {
+		var _this15 = this;
+
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			this.client.request('AssociateSoftwareToken', {
+				Session: this.Session
+			}, function (err, data) {
+				if (err) {
+					return callback.onFailure(err);
+				}
+				_this15.Session = data.Session;
+				return callback.associateSecretCode(data.SecretCode);
+			});
+		} else {
+			this.client.request('AssociateSoftwareToken', {
+				AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+			}, function (err, data) {
+				if (err) {
+					return callback.onFailure(err);
+				}
+				return callback.associateSecretCode(data.SecretCode);
+			});
+		}
+	};
+
+	/**
+  * This is used by an authenticated or a user trying to authenticate to verify a TOTP MFA
+  * @param {string} totpCode The MFA code entered by the user.
+  * @param {string} friendlyDeviceName The device name we are assigning to the device.
+  * @param {nodeCallback<string>} callback Called on success or error.
+  * @returns {void}
+  */
+
+
+	CognitoUser.prototype.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
+		var _this16 = this;
+
+		if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+			this.client.request('VerifySoftwareToken', {
+				Session: this.Session,
+				UserCode: totpCode,
+				FriendlyDeviceName: friendlyDeviceName
+			}, function (err, data) {
+				if (err) {
+					return callback.onFailure(err);
+				}
+				_this16.Session = data.Session;
+				var challengeResponses = {};
+				challengeResponses.USERNAME = _this16.username;
+				var jsonReq = {
+					ChallengeName: 'MFA_SETUP',
+					ClientId: _this16.pool.getClientId(),
+					ChallengeResponses: challengeResponses,
+					Session: _this16.Session
+				};
+				if (_this16.getUserContextData()) {
+					jsonReq.UserContextData = _this16.getUserContextData();
+				}
+				_this16.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
+					if (errRespond) {
+						return callback.onFailure(errRespond);
+					}
+					_this16.signInUserSession = _this16.getCognitoUserSession(dataRespond.AuthenticationResult);
+					_this16.cacheTokens();
+					return callback.onSuccess(_this16.signInUserSession);
+				});
+				return undefined;
+			});
+		} else {
+			this.client.request('VerifySoftwareToken', {
+				AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+				UserCode: totpCode,
+				FriendlyDeviceName: friendlyDeviceName
+			}, function (err, data) {
+				if (err) {
+					return callback.onFailure(err);
+				}
+				return callback.onSuccess(data);
+			});
+		}
+	};
+
+	return CognitoUser;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (CognitoUser);
@@ -6306,95 +6339,95 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /** @class */
 var CognitoUserSession = function () {
-  /**
-   * Constructs a new CognitoUserSession object
-   * @param {CognitoIdToken} IdToken The session's Id token.
-   * @param {CognitoRefreshToken=} RefreshToken The session's refresh token.
-   * @param {CognitoAccessToken} AccessToken The session's access token.
-   * @param {int} ClockDrift The saved computer's clock drift or undefined to force calculation.
-   */
-  function CognitoUserSession() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        IdToken = _ref.IdToken,
-        RefreshToken = _ref.RefreshToken,
-        AccessToken = _ref.AccessToken,
-        ClockDrift = _ref.ClockDrift;
+	/**
+  * Constructs a new CognitoUserSession object
+  * @param {CognitoIdToken} IdToken The session's Id token.
+  * @param {CognitoRefreshToken=} RefreshToken The session's refresh token.
+  * @param {CognitoAccessToken} AccessToken The session's access token.
+  * @param {int} ClockDrift The saved computer's clock drift or undefined to force calculation.
+  */
+	function CognitoUserSession() {
+		var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+		    IdToken = _ref.IdToken,
+		    RefreshToken = _ref.RefreshToken,
+		    AccessToken = _ref.AccessToken,
+		    ClockDrift = _ref.ClockDrift;
 
-    _classCallCheck(this, CognitoUserSession);
+		_classCallCheck(this, CognitoUserSession);
 
-    if (AccessToken == null || IdToken == null) {
-      throw new Error('Id token and Access Token must be present.');
-    }
+		if (AccessToken == null || IdToken == null) {
+			throw new Error('Id token and Access Token must be present.');
+		}
 
-    this.idToken = IdToken;
-    this.refreshToken = RefreshToken;
-    this.accessToken = AccessToken;
-    this.clockDrift = ClockDrift === undefined ? this.calculateClockDrift() : ClockDrift;
-  }
+		this.idToken = IdToken;
+		this.refreshToken = RefreshToken;
+		this.accessToken = AccessToken;
+		this.clockDrift = ClockDrift === undefined ? this.calculateClockDrift() : ClockDrift;
+	}
 
-  /**
-   * @returns {CognitoIdToken} the session's Id token
-   */
-
-
-  CognitoUserSession.prototype.getIdToken = function getIdToken() {
-    return this.idToken;
-  };
-
-  /**
-   * @returns {CognitoRefreshToken} the session's refresh token
-   */
+	/**
+  * @returns {CognitoIdToken} the session's Id token
+  */
 
 
-  CognitoUserSession.prototype.getRefreshToken = function getRefreshToken() {
-    return this.refreshToken;
-  };
+	CognitoUserSession.prototype.getIdToken = function getIdToken() {
+		return this.idToken;
+	};
 
-  /**
-   * @returns {CognitoAccessToken} the session's access token
-   */
-
-
-  CognitoUserSession.prototype.getAccessToken = function getAccessToken() {
-    return this.accessToken;
-  };
-
-  /**
-   * @returns {int} the session's clock drift
-   */
+	/**
+  * @returns {CognitoRefreshToken} the session's refresh token
+  */
 
 
-  CognitoUserSession.prototype.getClockDrift = function getClockDrift() {
-    return this.clockDrift;
-  };
+	CognitoUserSession.prototype.getRefreshToken = function getRefreshToken() {
+		return this.refreshToken;
+	};
 
-  /**
-   * @returns {int} the computer's clock drift
-   */
-
-
-  CognitoUserSession.prototype.calculateClockDrift = function calculateClockDrift() {
-    var now = Math.floor(new Date() / 1000);
-    var iat = Math.min(this.accessToken.getIssuedAt(), this.idToken.getIssuedAt());
-
-    return now - iat;
-  };
-
-  /**
-   * Checks to see if the session is still valid based on session expiry information found
-   * in tokens and the current time (adjusted with clock drift)
-   * @returns {boolean} if the session is still valid
-   */
+	/**
+  * @returns {CognitoAccessToken} the session's access token
+  */
 
 
-  CognitoUserSession.prototype.isValid = function isValid() {
-    var now = Math.floor(new Date() / 1000);
-    var adjusted = now - this.clockDrift;
+	CognitoUserSession.prototype.getAccessToken = function getAccessToken() {
+		return this.accessToken;
+	};
 
-    return adjusted < this.accessToken.getExpiration() && adjusted < this.idToken.getExpiration();
-  };
+	/**
+  * @returns {int} the session's clock drift
+  */
 
-  return CognitoUserSession;
+
+	CognitoUserSession.prototype.getClockDrift = function getClockDrift() {
+		return this.clockDrift;
+	};
+
+	/**
+  * @returns {int} the computer's clock drift
+  */
+
+
+	CognitoUserSession.prototype.calculateClockDrift = function calculateClockDrift() {
+		var now = Math.floor(new Date() / 1000);
+		var iat = Math.min(this.accessToken.getIssuedAt(), this.idToken.getIssuedAt());
+
+		return now - iat;
+	};
+
+	/**
+  * Checks to see if the session is still valid based on session expiry information found
+  * in tokens and the current time (adjusted with clock drift)
+  * @returns {boolean} if the session is still valid
+  */
+
+
+	CognitoUserSession.prototype.isValid = function isValid() {
+		var now = Math.floor(new Date() / 1000);
+		var adjusted = now - this.clockDrift;
+
+		return adjusted < this.accessToken.getExpiration() && adjusted < this.idToken.getExpiration();
+	};
+
+	return CognitoUserSession;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (CognitoUserSession);
@@ -6429,44 +6462,44 @@ var weekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 /** @class */
 
 var DateHelper = function () {
-  function DateHelper() {
-    _classCallCheck(this, DateHelper);
-  }
+	function DateHelper() {
+		_classCallCheck(this, DateHelper);
+	}
 
-  /**
-   * @returns {string} The current time in "ddd MMM D HH:mm:ss UTC YYYY" format.
-   */
-  DateHelper.prototype.getNowString = function getNowString() {
-    var now = new Date();
+	/**
+  * @returns {string} The current time in "ddd MMM D HH:mm:ss UTC YYYY" format.
+  */
+	DateHelper.prototype.getNowString = function getNowString() {
+		var now = new Date();
 
-    var weekDay = weekNames[now.getUTCDay()];
-    var month = monthNames[now.getUTCMonth()];
-    var day = now.getUTCDate();
+		var weekDay = weekNames[now.getUTCDay()];
+		var month = monthNames[now.getUTCMonth()];
+		var day = now.getUTCDate();
 
-    var hours = now.getUTCHours();
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
+		var hours = now.getUTCHours();
+		if (hours < 10) {
+			hours = '0' + hours;
+		}
 
-    var minutes = now.getUTCMinutes();
-    if (minutes < 10) {
-      minutes = '0' + minutes;
-    }
+		var minutes = now.getUTCMinutes();
+		if (minutes < 10) {
+			minutes = '0' + minutes;
+		}
 
-    var seconds = now.getUTCSeconds();
-    if (seconds < 10) {
-      seconds = '0' + seconds;
-    }
+		var seconds = now.getUTCSeconds();
+		if (seconds < 10) {
+			seconds = '0' + seconds;
+		}
 
-    var year = now.getUTCFullYear();
+		var year = now.getUTCFullYear();
 
-    // ddd MMM D HH:mm:ss UTC YYYY
-    var dateNow = weekDay + ' ' + month + ' ' + day + ' ' + hours + ':' + minutes + ':' + seconds + ' UTC ' + year;
+		// ddd MMM D HH:mm:ss UTC YYYY
+		var dateNow = weekDay + ' ' + month + ' ' + day + ' ' + hours + ':' + minutes + ':' + seconds + ' UTC ' + year;
 
-    return dateNow;
-  };
+		return dateNow;
+	};
 
-  return DateHelper;
+	return DateHelper;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (DateHelper);
@@ -6497,86 +6530,86 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /** @class */
 var CognitoUserAttribute = function () {
-  /**
-   * Constructs a new CognitoUserAttribute object
-   * @param {string=} Name The record's name
-   * @param {string=} Value The record's value
-   */
-  function CognitoUserAttribute() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        Name = _ref.Name,
-        Value = _ref.Value;
+	/**
+  * Constructs a new CognitoUserAttribute object
+  * @param {string=} Name The record's name
+  * @param {string=} Value The record's value
+  */
+	function CognitoUserAttribute() {
+		var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+		    Name = _ref.Name,
+		    Value = _ref.Value;
 
-    _classCallCheck(this, CognitoUserAttribute);
+		_classCallCheck(this, CognitoUserAttribute);
 
-    this.Name = Name || '';
-    this.Value = Value || '';
-  }
+		this.Name = Name || '';
+		this.Value = Value || '';
+	}
 
-  /**
-   * @returns {string} the record's value.
-   */
-
-
-  CognitoUserAttribute.prototype.getValue = function getValue() {
-    return this.Value;
-  };
-
-  /**
-   * Sets the record's value.
-   * @param {string} value The new value.
-   * @returns {CognitoUserAttribute} The record for method chaining.
-   */
+	/**
+  * @returns {string} the record's value.
+  */
 
 
-  CognitoUserAttribute.prototype.setValue = function setValue(value) {
-    this.Value = value;
-    return this;
-  };
+	CognitoUserAttribute.prototype.getValue = function getValue() {
+		return this.Value;
+	};
 
-  /**
-   * @returns {string} the record's name.
-   */
-
-
-  CognitoUserAttribute.prototype.getName = function getName() {
-    return this.Name;
-  };
-
-  /**
-   * Sets the record's name
-   * @param {string} name The new name.
-   * @returns {CognitoUserAttribute} The record for method chaining.
-   */
+	/**
+  * Sets the record's value.
+  * @param {string} value The new value.
+  * @returns {CognitoUserAttribute} The record for method chaining.
+  */
 
 
-  CognitoUserAttribute.prototype.setName = function setName(name) {
-    this.Name = name;
-    return this;
-  };
+	CognitoUserAttribute.prototype.setValue = function setValue(value) {
+		this.Value = value;
+		return this;
+	};
 
-  /**
-   * @returns {string} a string representation of the record.
-   */
-
-
-  CognitoUserAttribute.prototype.toString = function toString() {
-    return JSON.stringify(this);
-  };
-
-  /**
-   * @returns {object} a flat object representing the record.
-   */
+	/**
+  * @returns {string} the record's name.
+  */
 
 
-  CognitoUserAttribute.prototype.toJSON = function toJSON() {
-    return {
-      Name: this.Name,
-      Value: this.Value
-    };
-  };
+	CognitoUserAttribute.prototype.getName = function getName() {
+		return this.Name;
+	};
 
-  return CognitoUserAttribute;
+	/**
+  * Sets the record's name
+  * @param {string} name The new name.
+  * @returns {CognitoUserAttribute} The record for method chaining.
+  */
+
+
+	CognitoUserAttribute.prototype.setName = function setName(name) {
+		this.Name = name;
+		return this;
+	};
+
+	/**
+  * @returns {string} a string representation of the record.
+  */
+
+
+	CognitoUserAttribute.prototype.toString = function toString() {
+		return JSON.stringify(this);
+	};
+
+	/**
+  * @returns {object} a flat object representing the record.
+  */
+
+
+	CognitoUserAttribute.prototype.toJSON = function toJSON() {
+		return {
+			Name: this.Name,
+			Value: this.Value
+		};
+	};
+
+	return CognitoUserAttribute;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (CognitoUserAttribute);
@@ -6610,90 +6643,89 @@ var dataMemory = {};
 /** @class */
 
 var MemoryStorage = function () {
-  function MemoryStorage() {
-    _classCallCheck(this, MemoryStorage);
-  }
+	function MemoryStorage() {
+		_classCallCheck(this, MemoryStorage);
+	}
 
-  /**
-   * This is used to set a specific item in storage
-   * @param {string} key - the key for the item
-   * @param {object} value - the value
-   * @returns {string} value that was set
-   */
-  MemoryStorage.setItem = function setItem(key, value) {
-    dataMemory[key] = value;
-    return dataMemory[key];
-  };
+	/**
+  * This is used to set a specific item in storage
+  * @param {string} key - the key for the item
+  * @param {object} value - the value
+  * @returns {string} value that was set
+  */
+	MemoryStorage.setItem = function setItem(key, value) {
+		dataMemory[key] = value;
+		return dataMemory[key];
+	};
 
-  /**
-   * This is used to get a specific key from storage
-   * @param {string} key - the key for the item
-   * This is used to clear the storage
-   * @returns {string} the data item
-   */
-
-
-  MemoryStorage.getItem = function getItem(key) {
-    return Object.prototype.hasOwnProperty.call(dataMemory, key) ? dataMemory[key] : undefined;
-  };
-
-  /**
-   * This is used to remove an item from storage
-   * @param {string} key - the key being set
-   * @returns {string} value - value that was deleted
-   */
+	/**
+  * This is used to get a specific key from storage
+  * @param {string} key - the key for the item
+  * This is used to clear the storage
+  * @returns {string} the data item
+  */
 
 
-  MemoryStorage.removeItem = function removeItem(key) {
-    return delete dataMemory[key];
-  };
+	MemoryStorage.getItem = function getItem(key) {
+		return Object.prototype.hasOwnProperty.call(dataMemory, key) ? dataMemory[key] : undefined;
+	};
 
-  /**
-   * This is used to clear the storage
-   * @returns {string} nothing
-   */
+	/**
+  * This is used to remove an item from storage
+  * @param {string} key - the key being set
+  * @returns {string} value - value that was deleted
+  */
 
 
-  MemoryStorage.clear = function clear() {
-    dataMemory = {};
-    return dataMemory;
-  };
+	MemoryStorage.removeItem = function removeItem(key) {
+		return delete dataMemory[key];
+	};
 
-  return MemoryStorage;
+	/**
+  * This is used to clear the storage
+  * @returns {string} nothing
+  */
+
+
+	MemoryStorage.clear = function clear() {
+		dataMemory = {};
+		return dataMemory;
+	};
+
+	return MemoryStorage;
 }();
 
 /** @class */
 
 
 var StorageHelper = function () {
+	/**
+  * This is used to get a storage object
+  * @returns {object} the storage
+  */
+	function StorageHelper() {
+		_classCallCheck(this, StorageHelper);
 
-  /**
-   * This is used to get a storage object
-   * @returns {object} the storage
-   */
-  function StorageHelper() {
-    _classCallCheck(this, StorageHelper);
+		try {
+			this.storageWindow = window.localStorage;
+			this.storageWindow.setItem('aws.cognito.test-ls', 1);
+			this.storageWindow.removeItem('aws.cognito.test-ls');
+		} catch (exception) {
+			this.storageWindow = MemoryStorage;
+		}
+	}
 
-    try {
-      this.storageWindow = window.localStorage;
-      this.storageWindow.setItem('aws.cognito.test-ls', 1);
-      this.storageWindow.removeItem('aws.cognito.test-ls');
-    } catch (exception) {
-      this.storageWindow = MemoryStorage;
-    }
-  }
-
-  /**
-   * This is used to return the storage
-   * @returns {object} the storage
-   */
+	/**
+  * This is used to return the storage
+  * @returns {object} the storage
+  */
 
 
-  StorageHelper.prototype.getStorage = function getStorage() {
-    return this.storageWindow;
-  };
+	StorageHelper.prototype.getStorage = function getStorage() {
+		return this.storageWindow;
+	};
 
-  return StorageHelper;
+	return StorageHelper;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (StorageHelper);
@@ -6781,66 +6813,77 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /** @class */
 var AuthenticationDetails = function () {
-  /**
-   * Constructs a new AuthenticationDetails object
-   * @param {object=} data Creation options.
-   * @param {string} data.Username User being authenticated.
-   * @param {string} data.Password Plain-text password to authenticate with.
-   * @param {(AttributeArg[])?} data.ValidationData Application extra metadata.
-   * @param {(AttributeArg[])?} data.AuthParamaters Authentication paramaters for custom auth.
-   */
-  function AuthenticationDetails(data) {
-    _classCallCheck(this, AuthenticationDetails);
+	/**
+  * Constructs a new AuthenticationDetails object
+  * @param {object=} data Creation options.
+  * @param {string} data.Username User being authenticated.
+  * @param {string} data.Password Plain-text password to authenticate with.
+  * @param {(AttributeArg[])?} data.ValidationData Application extra metadata.
+  * @param {(AttributeArg[])?} data.AuthParamaters Authentication paramaters for custom auth.
+  */
+	function AuthenticationDetails(data) {
+		_classCallCheck(this, AuthenticationDetails);
 
-    var _ref = data || {},
-        ValidationData = _ref.ValidationData,
-        Username = _ref.Username,
-        Password = _ref.Password,
-        AuthParameters = _ref.AuthParameters;
+		var _ref = data || {},
+		    ValidationData = _ref.ValidationData,
+		    Username = _ref.Username,
+		    Password = _ref.Password,
+		    AuthParameters = _ref.AuthParameters,
+		    ClientMetadata = _ref.ClientMetadata;
 
-    this.validationData = ValidationData || {};
-    this.authParameters = AuthParameters || {};
-    this.username = Username;
-    this.password = Password;
-  }
+		this.validationData = ValidationData || {};
+		this.authParameters = AuthParameters || {};
+		this.clientMetadata = ClientMetadata || {};
+		this.username = Username;
+		this.password = Password;
+	}
 
-  /**
-   * @returns {string} the record's username
-   */
-
-
-  AuthenticationDetails.prototype.getUsername = function getUsername() {
-    return this.username;
-  };
-
-  /**
-   * @returns {string} the record's password
-   */
+	/**
+  * @returns {string} the record's username
+  */
 
 
-  AuthenticationDetails.prototype.getPassword = function getPassword() {
-    return this.password;
-  };
+	AuthenticationDetails.prototype.getUsername = function getUsername() {
+		return this.username;
+	};
 
-  /**
-   * @returns {Array} the record's validationData
-   */
-
-
-  AuthenticationDetails.prototype.getValidationData = function getValidationData() {
-    return this.validationData;
-  };
-
-  /**
-   * @returns {Array} the record's authParameters
-   */
+	/**
+  * @returns {string} the record's password
+  */
 
 
-  AuthenticationDetails.prototype.getAuthParameters = function getAuthParameters() {
-    return this.authParameters;
-  };
+	AuthenticationDetails.prototype.getPassword = function getPassword() {
+		return this.password;
+	};
 
-  return AuthenticationDetails;
+	/**
+  * @returns {Array} the record's validationData
+  */
+
+
+	AuthenticationDetails.prototype.getValidationData = function getValidationData() {
+		return this.validationData;
+	};
+
+	/**
+  * @returns {Array} the record's authParameters
+  */
+
+
+	AuthenticationDetails.prototype.getAuthParameters = function getAuthParameters() {
+		return this.authParameters;
+	};
+
+	/**
+  * @returns {ClientMetadata} the clientMetadata for a Lambda trigger
+  */
+
+
+	AuthenticationDetails.prototype.getClientMetadata = function getClientMetadata() {
+		return this.clientMetadata;
+	};
+
+	return AuthenticationDetails;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (AuthenticationDetails);
@@ -6944,7 +6987,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -7453,172 +7497,174 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** @class */
 
 var CognitoUserPool = function () {
-  /**
-   * Constructs a new CognitoUserPool object
-   * @param {object} data Creation options.
-   * @param {string} data.UserPoolId Cognito user pool id.
-   * @param {string} data.ClientId User pool application client id.
-   * @param {object} data.Storage Optional storage object.
-   * @param {boolean} data.AdvancedSecurityDataCollectionFlag Optional:
-   *        boolean flag indicating if the data collection is enabled
-   *        to support cognito advanced security features. By default, this
-   *        flag is set to true.
+	/**
+  * Constructs a new CognitoUserPool object
+  * @param {object} data Creation options.
+  * @param {string} data.UserPoolId Cognito user pool id.
+  * @param {string} data.ClientId User pool application client id.
+  * @param {object} data.Storage Optional storage object.
+  * @param {boolean} data.AdvancedSecurityDataCollectionFlag Optional:
+  *        boolean flag indicating if the data collection is enabled
+  *        to support cognito advanced security features. By default, this
+  *        flag is set to true.
+  */
+	function CognitoUserPool(data) {
+		_classCallCheck(this, CognitoUserPool);
+
+		var _ref = data || {},
+		    UserPoolId = _ref.UserPoolId,
+		    ClientId = _ref.ClientId,
+		    endpoint = _ref.endpoint,
+		    AdvancedSecurityDataCollectionFlag = _ref.AdvancedSecurityDataCollectionFlag;
+
+		if (!UserPoolId || !ClientId) {
+			throw new Error('Both UserPoolId and ClientId are required.');
+		}
+		if (!/^[\w-]+_.+$/.test(UserPoolId)) {
+			throw new Error('Invalid UserPoolId format.');
+		}
+		var region = UserPoolId.split('_')[0];
+
+		this.userPoolId = UserPoolId;
+		this.clientId = ClientId;
+
+		this.client = new __WEBPACK_IMPORTED_MODULE_0__Client__["a" /* default */](region, endpoint);
+
+		/**
+   * By default, AdvancedSecurityDataCollectionFlag is set to true,
+   * if no input value is provided.
    */
-  function CognitoUserPool(data) {
-    _classCallCheck(this, CognitoUserPool);
+		this.advancedSecurityDataCollectionFlag = AdvancedSecurityDataCollectionFlag !== false;
 
-    var _ref = data || {},
-        UserPoolId = _ref.UserPoolId,
-        ClientId = _ref.ClientId,
-        endpoint = _ref.endpoint,
-        AdvancedSecurityDataCollectionFlag = _ref.AdvancedSecurityDataCollectionFlag;
+		this.storage = data.Storage || new __WEBPACK_IMPORTED_MODULE_2__StorageHelper__["a" /* default */]().getStorage();
+	}
 
-    if (!UserPoolId || !ClientId) {
-      throw new Error('Both UserPoolId and ClientId are required.');
-    }
-    if (!/^[\w-]+_.+$/.test(UserPoolId)) {
-      throw new Error('Invalid UserPoolId format.');
-    }
-    var region = UserPoolId.split('_')[0];
-
-    this.userPoolId = UserPoolId;
-    this.clientId = ClientId;
-
-    this.client = new __WEBPACK_IMPORTED_MODULE_0__Client__["a" /* default */](region, endpoint);
-
-    /**
-     * By default, AdvancedSecurityDataCollectionFlag is set to true,
-     * if no input value is provided.
-     */
-    this.advancedSecurityDataCollectionFlag = AdvancedSecurityDataCollectionFlag !== false;
-
-    this.storage = data.Storage || new __WEBPACK_IMPORTED_MODULE_2__StorageHelper__["a" /* default */]().getStorage();
-  }
-
-  /**
-   * @returns {string} the user pool id
-   */
+	/**
+  * @returns {string} the user pool id
+  */
 
 
-  CognitoUserPool.prototype.getUserPoolId = function getUserPoolId() {
-    return this.userPoolId;
-  };
+	CognitoUserPool.prototype.getUserPoolId = function getUserPoolId() {
+		return this.userPoolId;
+	};
 
-  /**
-   * @returns {string} the client id
-   */
-
-
-  CognitoUserPool.prototype.getClientId = function getClientId() {
-    return this.clientId;
-  };
-
-  /**
-   * @typedef {object} SignUpResult
-   * @property {CognitoUser} user New user.
-   * @property {bool} userConfirmed If the user is already confirmed.
-   */
-  /**
-   * method for signing up a user
-   * @param {string} username User's username.
-   * @param {string} password Plain-text initial password entered by user.
-   * @param {(AttributeArg[])=} userAttributes New user attributes.
-   * @param {(AttributeArg[])=} validationData Application metadata.
-   * @param {nodeCallback<SignUpResult>} callback Called on error or with the new user.
-   * @returns {void}
-   */
+	/**
+  * @returns {string} the client id
+  */
 
 
-  CognitoUserPool.prototype.signUp = function signUp(username, password, userAttributes, validationData, callback) {
-    var _this = this;
+	CognitoUserPool.prototype.getClientId = function getClientId() {
+		return this.clientId;
+	};
 
-    var jsonReq = {
-      ClientId: this.clientId,
-      Username: username,
-      Password: password,
-      UserAttributes: userAttributes,
-      ValidationData: validationData
-    };
-    if (this.getUserContextData(username)) {
-      jsonReq.UserContextData = this.getUserContextData(username);
-    }
-    this.client.request('SignUp', jsonReq, function (err, data) {
-      if (err) {
-        return callback(err, null);
-      }
-
-      var cognitoUser = {
-        Username: username,
-        Pool: _this,
-        Storage: _this.storage
-      };
-
-      var returnData = {
-        user: new __WEBPACK_IMPORTED_MODULE_1__CognitoUser__["a" /* default */](cognitoUser),
-        userConfirmed: data.UserConfirmed,
-        userSub: data.UserSub,
-        codeDeliveryDetails: data.CodeDeliveryDetails
-      };
-
-      return callback(null, returnData);
-    });
-  };
-
-  /**
-   * method for getting the current user of the application from the local storage
-   *
-   * @returns {CognitoUser} the user retrieved from storage
-   */
+	/**
+  * @typedef {object} SignUpResult
+  * @property {CognitoUser} user New user.
+  * @property {bool} userConfirmed If the user is already confirmed.
+  */
+	/**
+  * method for signing up a user
+  * @param {string} username User's username.
+  * @param {string} password Plain-text initial password entered by user.
+  * @param {(AttributeArg[])=} userAttributes New user attributes.
+  * @param {(AttributeArg[])=} validationData Application metadata.
+  * @param {(AttributeArg[])=} clientMetadata Client metadata.
+  * @param {nodeCallback<SignUpResult>} callback Called on error or with the new user.
+  * @returns {void}
+  */
 
 
-  CognitoUserPool.prototype.getCurrentUser = function getCurrentUser() {
-    var lastUserKey = 'CognitoIdentityServiceProvider.' + this.clientId + '.LastAuthUser';
+	CognitoUserPool.prototype.signUp = function signUp(username, password, userAttributes, validationData, callback, clientMetadata) {
+		var _this = this;
 
-    var lastAuthUser = this.storage.getItem(lastUserKey);
-    if (lastAuthUser) {
-      var cognitoUser = {
-        Username: lastAuthUser,
-        Pool: this,
-        Storage: this.storage
-      };
+		var jsonReq = {
+			ClientId: this.clientId,
+			Username: username,
+			Password: password,
+			UserAttributes: userAttributes,
+			ValidationData: validationData,
+			ClientMetadata: clientMetadata
+		};
+		if (this.getUserContextData(username)) {
+			jsonReq.UserContextData = this.getUserContextData(username);
+		}
+		this.client.request('SignUp', jsonReq, function (err, data) {
+			if (err) {
+				return callback(err, null);
+			}
 
-      return new __WEBPACK_IMPORTED_MODULE_1__CognitoUser__["a" /* default */](cognitoUser);
-    }
+			var cognitoUser = {
+				Username: username,
+				Pool: _this,
+				Storage: _this.storage
+			};
 
-    return null;
-  };
+			var returnData = {
+				user: new __WEBPACK_IMPORTED_MODULE_1__CognitoUser__["a" /* default */](cognitoUser),
+				userConfirmed: data.UserConfirmed,
+				userSub: data.UserSub,
+				codeDeliveryDetails: data.CodeDeliveryDetails
+			};
 
-  /**
-   * This method returns the encoded data string used for cognito advanced security feature.
-   * This would be generated only when developer has included the JS used for collecting the
-   * data on their client. Please refer to documentation to know more about using AdvancedSecurity
-   * features
-   * @param {string} username the username for the context data
-   * @returns {string} the user context data
-   **/
+			return callback(null, returnData);
+		});
+	};
+
+	/**
+  * method for getting the current user of the application from the local storage
+  *
+  * @returns {CognitoUser} the user retrieved from storage
+  */
 
 
-  CognitoUserPool.prototype.getUserContextData = function getUserContextData(username) {
-    if (typeof AmazonCognitoAdvancedSecurityData === 'undefined') {
-      return undefined;
-    }
-    /* eslint-disable */
-    var amazonCognitoAdvancedSecurityDataConst = AmazonCognitoAdvancedSecurityData;
-    /* eslint-enable */
+	CognitoUserPool.prototype.getCurrentUser = function getCurrentUser() {
+		var lastUserKey = 'CognitoIdentityServiceProvider.' + this.clientId + '.LastAuthUser';
 
-    if (this.advancedSecurityDataCollectionFlag) {
-      var advancedSecurityData = amazonCognitoAdvancedSecurityDataConst.getData(username, this.userPoolId, this.clientId);
-      if (advancedSecurityData) {
-        var userContextData = {
-          EncodedData: advancedSecurityData
-        };
-        return userContextData;
-      }
-    }
-    return {};
-  };
+		var lastAuthUser = this.storage.getItem(lastUserKey);
+		if (lastAuthUser) {
+			var cognitoUser = {
+				Username: lastAuthUser,
+				Pool: this,
+				Storage: this.storage
+			};
 
-  return CognitoUserPool;
+			return new __WEBPACK_IMPORTED_MODULE_1__CognitoUser__["a" /* default */](cognitoUser);
+		}
+
+		return null;
+	};
+
+	/**
+  * This method returns the encoded data string used for cognito advanced security feature.
+  * This would be generated only when developer has included the JS used for collecting the
+  * data on their client. Please refer to documentation to know more about using AdvancedSecurity
+  * features
+  * @param {string} username the username for the context data
+  * @returns {string} the user context data
+  **/
+
+
+	CognitoUserPool.prototype.getUserContextData = function getUserContextData(username) {
+		if (typeof AmazonCognitoAdvancedSecurityData === 'undefined') {
+			return undefined;
+		}
+		/* eslint-disable */
+		var amazonCognitoAdvancedSecurityDataConst = AmazonCognitoAdvancedSecurityData;
+		/* eslint-enable */
+
+		if (this.advancedSecurityDataCollectionFlag) {
+			var advancedSecurityData = amazonCognitoAdvancedSecurityDataConst.getData(username, this.userPoolId, this.clientId);
+			if (advancedSecurityData) {
+				var userContextData = {
+					EncodedData: advancedSecurityData
+				};
+				return userContextData;
+			}
+		}
+		return {};
+	};
+
+	return CognitoUserPool;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (CognitoUserPool);
@@ -7635,104 +7681,104 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** @class */
 
 var Client = function () {
-  /**
-   * Constructs a new AWS Cognito Identity Provider client object
-   * @param {string} region AWS region
-   * @param {string} endpoint endpoint
-   */
-  function Client(region, endpoint) {
-    _classCallCheck(this, Client);
+	/**
+  * Constructs a new AWS Cognito Identity Provider client object
+  * @param {string} region AWS region
+  * @param {string} endpoint endpoint
+  */
+	function Client(region, endpoint) {
+		_classCallCheck(this, Client);
 
-    this.endpoint = endpoint || 'https://cognito-idp.' + region + '.amazonaws.com/';
-    this.userAgent = __WEBPACK_IMPORTED_MODULE_0__UserAgent__["a" /* default */].prototype.userAgent || 'aws-amplify/0.1.x js';
-  }
+		this.endpoint = endpoint || 'https://cognito-idp.' + region + '.amazonaws.com/';
+		this.userAgent = __WEBPACK_IMPORTED_MODULE_0__UserAgent__["a" /* default */].prototype.userAgent || 'aws-amplify/0.1.x js';
+	}
 
-  /**
-   * Makes an unauthenticated request on AWS Cognito Identity Provider API
-   * using fetch
-   * @param {string} operation API operation
-   * @param {object} params Input parameters
-   * @param {function} callback Callback called when a response is returned
-   * @returns {void}
+	/**
+  * Makes an unauthenticated request on AWS Cognito Identity Provider API
+  * using fetch
+  * @param {string} operation API operation
+  * @param {object} params Input parameters
+  * @param {function} callback Callback called when a response is returned
+  * @returns {void}
   */
 
 
-  Client.prototype.request = function request(operation, params, callback) {
-    var headers = {
-      'Content-Type': 'application/x-amz-json-1.1',
-      'X-Amz-Target': 'AWSCognitoIdentityProviderService.' + operation,
-      'X-Amz-User-Agent': this.userAgent
-    };
+	Client.prototype.request = function request(operation, params, callback) {
+		var headers = {
+			'Content-Type': 'application/x-amz-json-1.1',
+			'X-Amz-Target': 'AWSCognitoIdentityProviderService.' + operation,
+			'X-Amz-User-Agent': this.userAgent
+		};
 
-    var options = {
-      headers: headers,
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      body: JSON.stringify(params)
-    };
+		var options = {
+			headers: headers,
+			method: 'POST',
+			mode: 'cors',
+			cache: 'no-cache',
+			body: JSON.stringify(params)
+		};
 
-    var response = void 0;
-    var responseJsonData = void 0;
+		var response = void 0;
+		var responseJsonData = void 0;
 
-    fetch(this.endpoint, options).then(function (resp) {
-      response = resp;
-      return resp;
-    }, function (err) {
-      // If error happens here, the request failed
-      // if it is TypeError throw network error
-      if (err instanceof TypeError) {
-        throw new Error('Network error');
-      }
-      throw err;
-    }).then(function (resp) {
-      return resp.json().catch(function () {
-        return {};
-      });
-    }).then(function (data) {
-      // return parsed body stream
-      if (response.ok) return callback(null, data);
-      responseJsonData = data;
+		fetch(this.endpoint, options).then(function (resp) {
+			response = resp;
+			return resp;
+		}, function (err) {
+			// If error happens here, the request failed
+			// if it is TypeError throw network error
+			if (err instanceof TypeError) {
+				throw new Error('Network error');
+			}
+			throw err;
+		}).then(function (resp) {
+			return resp.json().catch(function () {
+				return {};
+			});
+		}).then(function (data) {
+			// return parsed body stream
+			if (response.ok) return callback(null, data);
+			responseJsonData = data;
 
-      // Taken from aws-sdk-js/lib/protocol/json.js
-      // eslint-disable-next-line no-underscore-dangle
-      var code = (data.__type || data.code).split('#').pop();
-      var error = {
-        code: code,
-        name: code,
-        message: data.message || data.Message || null
-      };
-      return callback(error);
-    }).catch(function (err) {
-      // first check if we have a service error
-      if (response && response.headers && response.headers.get('x-amzn-errortype')) {
-        try {
-          var code = response.headers.get('x-amzn-errortype').split(':')[0];
-          var error = {
-            code: code,
-            name: code,
-            statusCode: response.status,
-            message: response.status ? response.status.toString() : null
-          };
-          return callback(error);
-        } catch (ex) {
-          return callback(err);
-        }
-        // otherwise check if error is Network error
-      } else if (err instanceof Error && err.message === 'Network error') {
-        var _error = {
-          code: 'NetworkError',
-          name: err.name,
-          message: err.message
-        };
-        return callback(_error);
-      } else {
-        return callback(err);
-      }
-    });
-  };
+			// Taken from aws-sdk-js/lib/protocol/json.js
+			// eslint-disable-next-line no-underscore-dangle
+			var code = (data.__type || data.code).split('#').pop();
+			var error = {
+				code: code,
+				name: code,
+				message: data.message || data.Message || null
+			};
+			return callback(error);
+		}).catch(function (err) {
+			// first check if we have a service error
+			if (response && response.headers && response.headers.get('x-amzn-errortype')) {
+				try {
+					var code = response.headers.get('x-amzn-errortype').split(':')[0];
+					var error = {
+						code: code,
+						name: code,
+						statusCode: response.status,
+						message: response.status ? response.status.toString() : null
+					};
+					return callback(error);
+				} catch (ex) {
+					return callback(err);
+				}
+				// otherwise check if error is Network error
+			} else if (err instanceof Error && err.message === 'Network error') {
+				var _error = {
+					code: 'NetworkError',
+					name: err.name,
+					message: err.message
+				};
+				return callback(_error);
+			} else {
+				return callback(err);
+			}
+		});
+	};
 
-  return Client;
+	return Client;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (Client);
@@ -7763,101 +7809,100 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** @class */
 
 var CookieStorage = function () {
+	/**
+  * Constructs a new CookieStorage object
+  * @param {object} data Creation options.
+  * @param {string} data.domain Cookies domain (mandatory).
+  * @param {string} data.path Cookies path (default: '/')
+  * @param {integer} data.expires Cookie expiration (in days, default: 365)
+  * @param {boolean} data.secure Cookie secure flag (default: true)
+  */
+	function CookieStorage(data) {
+		_classCallCheck(this, CookieStorage);
 
-  /**
-   * Constructs a new CookieStorage object
-   * @param {object} data Creation options.
-   * @param {string} data.domain Cookies domain (mandatory).
-   * @param {string} data.path Cookies path (default: '/')
-   * @param {integer} data.expires Cookie expiration (in days, default: 365)
-   * @param {boolean} data.secure Cookie secure flag (default: true)
-   */
-  function CookieStorage(data) {
-    _classCallCheck(this, CookieStorage);
+		if (data.domain) {
+			this.domain = data.domain;
+		} else {
+			throw new Error('The domain of cookieStorage can not be undefined.');
+		}
+		if (data.path) {
+			this.path = data.path;
+		} else {
+			this.path = '/';
+		}
+		if (Object.prototype.hasOwnProperty.call(data, 'expires')) {
+			this.expires = data.expires;
+		} else {
+			this.expires = 365;
+		}
+		if (Object.prototype.hasOwnProperty.call(data, 'secure')) {
+			this.secure = data.secure;
+		} else {
+			this.secure = true;
+		}
+	}
 
-    if (data.domain) {
-      this.domain = data.domain;
-    } else {
-      throw new Error('The domain of cookieStorage can not be undefined.');
-    }
-    if (data.path) {
-      this.path = data.path;
-    } else {
-      this.path = '/';
-    }
-    if (Object.prototype.hasOwnProperty.call(data, 'expires')) {
-      this.expires = data.expires;
-    } else {
-      this.expires = 365;
-    }
-    if (Object.prototype.hasOwnProperty.call(data, 'secure')) {
-      this.secure = data.secure;
-    } else {
-      this.secure = true;
-    }
-  }
-
-  /**
-   * This is used to set a specific item in storage
-   * @param {string} key - the key for the item
-   * @param {object} value - the value
-   * @returns {string} value that was set
-   */
-
-
-  CookieStorage.prototype.setItem = function setItem(key, value) {
-    __WEBPACK_IMPORTED_MODULE_0_js_cookie__["set"](key, value, {
-      path: this.path,
-      expires: this.expires,
-      domain: this.domain,
-      secure: this.secure
-    });
-    return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"](key);
-  };
-
-  /**
-   * This is used to get a specific key from storage
-   * @param {string} key - the key for the item
-   * This is used to clear the storage
-   * @returns {string} the data item
-   */
+	/**
+  * This is used to set a specific item in storage
+  * @param {string} key - the key for the item
+  * @param {object} value - the value
+  * @returns {string} value that was set
+  */
 
 
-  CookieStorage.prototype.getItem = function getItem(key) {
-    return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"](key);
-  };
+	CookieStorage.prototype.setItem = function setItem(key, value) {
+		__WEBPACK_IMPORTED_MODULE_0_js_cookie__["set"](key, value, {
+			path: this.path,
+			expires: this.expires,
+			domain: this.domain,
+			secure: this.secure
+		});
+		return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"](key);
+	};
 
-  /**
-   * This is used to remove an item from storage
-   * @param {string} key - the key being set
-   * @returns {string} value - value that was deleted
-   */
-
-
-  CookieStorage.prototype.removeItem = function removeItem(key) {
-    return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["remove"](key, {
-      path: this.path,
-      domain: this.domain,
-      secure: this.secure
-    });
-  };
-
-  /**
-   * This is used to clear the storage
-   * @returns {string} nothing
-   */
+	/**
+  * This is used to get a specific key from storage
+  * @param {string} key - the key for the item
+  * This is used to clear the storage
+  * @returns {string} the data item
+  */
 
 
-  CookieStorage.prototype.clear = function clear() {
-    var cookies = __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"]();
-    var index = void 0;
-    for (index = 0; index < cookies.length; ++index) {
-      __WEBPACK_IMPORTED_MODULE_0_js_cookie__["remove"](cookies[index]);
-    }
-    return {};
-  };
+	CookieStorage.prototype.getItem = function getItem(key) {
+		return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"](key);
+	};
 
-  return CookieStorage;
+	/**
+  * This is used to remove an item from storage
+  * @param {string} key - the key being set
+  * @returns {string} value - value that was deleted
+  */
+
+
+	CookieStorage.prototype.removeItem = function removeItem(key) {
+		return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["remove"](key, {
+			path: this.path,
+			domain: this.domain,
+			secure: this.secure
+		});
+	};
+
+	/**
+  * This is used to clear the storage
+  * @returns {string} nothing
+  */
+
+
+	CookieStorage.prototype.clear = function clear() {
+		var cookies = __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"]();
+		var index = void 0;
+		for (index = 0; index < cookies.length; ++index) {
+			__WEBPACK_IMPORTED_MODULE_0_js_cookie__["remove"](cookies[index]);
+		}
+		return {};
+	};
+
+	return CookieStorage;
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (CookieStorage);
@@ -7867,14 +7912,14 @@ var CookieStorage = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * JavaScript Cookie v2.2.0
+ * JavaScript Cookie v2.2.1
  * https://github.com/js-cookie/js-cookie
  *
  * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
  * Released under the MIT license
  */
 ;(function (factory) {
-	var registeredInModuleLoader = false;
+	var registeredInModuleLoader;
 	if (true) {
 		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
@@ -7908,125 +7953,123 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 		return result;
 	}
 
+	function decode (s) {
+		return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);
+	}
+
 	function init (converter) {
-		function api (key, value, attributes) {
-			var result;
+		function api() {}
+
+		function set (key, value, attributes) {
 			if (typeof document === 'undefined') {
 				return;
 			}
 
-			// Write
+			attributes = extend({
+				path: '/'
+			}, api.defaults, attributes);
 
-			if (arguments.length > 1) {
-				attributes = extend({
-					path: '/'
-				}, api.defaults, attributes);
-
-				if (typeof attributes.expires === 'number') {
-					var expires = new Date();
-					expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
-					attributes.expires = expires;
-				}
-
-				// We're using "expires" because "max-age" is not supported by IE
-				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
-				try {
-					result = JSON.stringify(value);
-					if (/^[\{\[]/.test(result)) {
-						value = result;
-					}
-				} catch (e) {}
-
-				if (!converter.write) {
-					value = encodeURIComponent(String(value))
-						.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-				} else {
-					value = converter.write(value, key);
-				}
-
-				key = encodeURIComponent(String(key));
-				key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
-				key = key.replace(/[\(\)]/g, escape);
-
-				var stringifiedAttributes = '';
-
-				for (var attributeName in attributes) {
-					if (!attributes[attributeName]) {
-						continue;
-					}
-					stringifiedAttributes += '; ' + attributeName;
-					if (attributes[attributeName] === true) {
-						continue;
-					}
-					stringifiedAttributes += '=' + attributes[attributeName];
-				}
-				return (document.cookie = key + '=' + value + stringifiedAttributes);
+			if (typeof attributes.expires === 'number') {
+				attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
 			}
 
-			// Read
+			// We're using "expires" because "max-age" is not supported by IE
+			attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
 
-			if (!key) {
-				result = {};
+			try {
+				var result = JSON.stringify(value);
+				if (/^[\{\[]/.test(result)) {
+					value = result;
+				}
+			} catch (e) {}
+
+			value = converter.write ?
+				converter.write(value, key) :
+				encodeURIComponent(String(value))
+					.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+
+			key = encodeURIComponent(String(key))
+				.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+				.replace(/[\(\)]/g, escape);
+
+			var stringifiedAttributes = '';
+			for (var attributeName in attributes) {
+				if (!attributes[attributeName]) {
+					continue;
+				}
+				stringifiedAttributes += '; ' + attributeName;
+				if (attributes[attributeName] === true) {
+					continue;
+				}
+
+				// Considers RFC 6265 section 5.2:
+				// ...
+				// 3.  If the remaining unparsed-attributes contains a %x3B (";")
+				//     character:
+				// Consume the characters of the unparsed-attributes up to,
+				// not including, the first %x3B (";") character.
+				// ...
+				stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
 			}
 
+			return (document.cookie = key + '=' + value + stringifiedAttributes);
+		}
+
+		function get (key, json) {
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			var jar = {};
 			// To prevent the for loop in the first place assign an empty array
-			// in case there are no cookies at all. Also prevents odd result when
-			// calling "get()"
+			// in case there are no cookies at all.
 			var cookies = document.cookie ? document.cookie.split('; ') : [];
-			var rdecode = /(%[0-9A-Z]{2})+/g;
 			var i = 0;
 
 			for (; i < cookies.length; i++) {
 				var parts = cookies[i].split('=');
 				var cookie = parts.slice(1).join('=');
 
-				if (!this.json && cookie.charAt(0) === '"') {
+				if (!json && cookie.charAt(0) === '"') {
 					cookie = cookie.slice(1, -1);
 				}
 
 				try {
-					var name = parts[0].replace(rdecode, decodeURIComponent);
-					cookie = converter.read ?
-						converter.read(cookie, name) : converter(cookie, name) ||
-						cookie.replace(rdecode, decodeURIComponent);
+					var name = decode(parts[0]);
+					cookie = (converter.read || converter)(cookie, name) ||
+						decode(cookie);
 
-					if (this.json) {
+					if (json) {
 						try {
 							cookie = JSON.parse(cookie);
 						} catch (e) {}
 					}
 
-					if (key === name) {
-						result = cookie;
-						break;
-					}
+					jar[name] = cookie;
 
-					if (!key) {
-						result[name] = cookie;
+					if (key === name) {
+						break;
 					}
 				} catch (e) {}
 			}
 
-			return result;
+			return key ? jar[key] : jar;
 		}
 
-		api.set = api;
+		api.set = set;
 		api.get = function (key) {
-			return api.call(api, key);
+			return get(key, false /* read as raw */);
 		};
-		api.getJSON = function () {
-			return api.apply({
-				json: true
-			}, [].slice.call(arguments));
+		api.getJSON = function (key) {
+			return get(key, true /* read as json */);
 		};
-		api.defaults = {};
-
 		api.remove = function (key, attributes) {
-			api(key, '', extend(attributes, {
+			set(key, '', extend(attributes, {
 				expires: -1
 			}));
 		};
+
+		api.defaults = {};
 
 		api.withConverter = init;
 
