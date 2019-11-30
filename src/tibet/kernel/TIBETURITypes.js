@@ -7601,6 +7601,7 @@ function(parts) {
     this.set('port', parts.at('port'), false);
 
     this.set('path', parts.at('path'), false);
+    this.set('fragment', parts.at('fragment'), false);
     this.set('query', parts.at('query'), false);
     this.set('queryDict', parts.at('queryDict'), false);
 
