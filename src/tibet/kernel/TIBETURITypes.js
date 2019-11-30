@@ -2308,15 +2308,14 @@ function(textOnly) {
      * @method getFragmentParameters
      * @summary Returns any "parameters" from the receiver's fragment string.
      *     The parameter set is derived by treating a fragment as a potential
-     *     URI and processing it using normal parsing based on ?, &, and =.
-     * @param {Boolean} [textOnly=false] Return just the text parameter string
+     *     URI and processing it using normal parsing based on & and =.
+     * @param {Boolean} [textOnly=false] Return just the text fragment string
      *     if any.
      * @returns {TP.core.Hash} The fragment parameters if any.
      */
 
     var text,
-        hash,
-        params;
+        hash;
 
     text = this.getFragment();
     hash = TP.hc();
@@ -2329,19 +2328,11 @@ function(textOnly) {
         return hash;
     }
 
-    if (!/\?/.test(text)) {
-        if (textOnly) {
-            return '';
-        }
-        return hash;
-    }
-
-    params = text.slice(text.indexOf('?') + 1);
     if (textOnly) {
-        return params;
+        return text;
     }
 
-    return TP.boot.$parseURIParameters(params);
+    return TP.boot.$parseURIParameters(text);
 });
 
 //  ------------------------------------------------------------------------
