@@ -129,11 +129,7 @@
 
 <config id="text_processing">
 
-    <script src="~lib_deps/fuse-tpi.min.js"
-        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
-
-    <script src="~lib_deps/fuse-tpi.js"
-        unless="boot.minified" no-lint="no-lint" />
+    <script src="~lib_deps/fuse-tpi.js" no-lint="no-lint" />
 
     <script>
         <![CDATA[
