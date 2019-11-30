@@ -2149,6 +2149,8 @@ TP.boot.$parseURIParameters = function(uriParams) {
             value = true;
         }
 
+        value = decodeURIComponent(value);
+
         args[key] = TP.boot.$getArgumentPrimitive(value);
     });
 
