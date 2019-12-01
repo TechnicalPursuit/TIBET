@@ -64,6 +64,7 @@
         "jquery": "github:TechnicalPursuit/jquery",
         "jquery-xpath": "^0.3.1",
         "js-beautify": "^1.10.2",
+        "jsforce": "^1.9.3",
         "jsonpath": "github:TechnicalPursuit/jsonpath",
         "less": "github:TechnicalPursuit/less.js",
         "marked": "^0.4.0",

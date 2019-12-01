@@ -33,6 +33,7 @@
             '_rollup_jsonpath',
             '_rollup_jquery',
             '_rollup_jqueryxpath',
+            '_rollup_jsforce',
             '_rollup_less',
             '_rollup_moment',
             '_rollup_mutation_summary',
