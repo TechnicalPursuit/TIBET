@@ -7622,18 +7622,48 @@ function(schemeSpecificString) {
      * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
-    this.callNextMethod();
+    var str,
 
-    //  TODO TODO TODO TODO TODO
-    //  TODO: relying on TP.core.Hash for parsing is a poor design, we
-    //  should change that so the parsing is local to this type. Here, we
-    //  invoke the parser directly because of the ambiguities with the style
-    //  string parser.
+        natURL,
+        dict,
 
-    //  TODO: Also, what about 'https:' URLs here - we're ASSuming 'http:'
-    /* eslint-disable new-cap */
-    return TP.core.Hash.URI_STRING_PARSER('http:' + schemeSpecificString);
-    /* eslint-enable new-cap */
+        queryPart,
+        queryDict;
+
+    if (this.uri.startsWith('https')) {
+        str = 'https:' + schemeSpecificString;
+    } else if (this.uri.startsWith('http')) {
+        str = 'http:' + schemeSpecificString;
+    }
+
+    natURL = new URL(str);
+
+    dict = TP.hc(
+            'source', str,
+            'scheme', natURL.protocol.slice(-1),
+            'authority', natURL.host,
+            'userinfo', natURL.username + ':' + natURL.password,
+            'user', natURL.username,
+            'password', natURL.password,
+            'hostname', natURL.hostname,
+            'port', natURL.port,
+            'relative', natURL.pathname,
+            'path', natURL.pathname,
+            'directory',
+                natURL.pathname.slice(0, natURL.pathname.lastIndexOf('/') + 1),
+            'file',
+                natURL.pathname.slice(natURL.pathname.lastIndexOf('/') + 1),
+            'query', natURL.search,
+            'fragment', decodeURIComponent(natURL.hash)
+            );
+
+    //  If we also got a query, construct a TP.core.Hash from it.
+    if (TP.notEmpty(queryPart = dict.at('query'))) {
+        queryDict = TP.core.Hash.fromString(queryPart);
+        dict.atPut('queryDict', queryDict);
+    }
+
+    return dict;
 });
 
 //  ------------------------------------------------------------------------
