@@ -5074,7 +5074,7 @@ function(aHash, aLevel) {
     nullValue = TP.ifInvalid(params.at('nullValue'), 'null');
     filter = TP.ifInvalid(params.at('filter'), 'unique_attributes');
 
-    if (TP.isArray(this)) {
+    if (TP.isArray(this) || TP.isHash(this)) {
         useKeys = TP.ifInvalid(params.at('useKeys'), true);
     } else {
         useKeys = TP.ifInvalid(params.at('useKeys'), false);
@@ -5129,9 +5129,11 @@ function(aHash, aLevel) {
     if (useKeys) {
         k = this.getKeys();
 
-        //  Make sure we don't leave the 'length' key in the Array - it will
-        //  mess up our sort:
-        k.splice(k.indexOf('length'), 1);
+        if (TP.isArray(this)) {
+            //  Make sure we don't leave the 'length' key in the Array - it will
+            //  mess up our sort:
+            k.splice(k.indexOf('length'), 1);
+        }
     } else {
         //  keys for anything here that's got a unique value
         k = this.getLocalInterface(filter);
