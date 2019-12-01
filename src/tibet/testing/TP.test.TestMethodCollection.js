@@ -689,6 +689,21 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('isHash',
+function(anObject, aComment) {
+
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
+    return this.assert(
+            TP.isHash(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an Hash.'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('isMediaQueryList',
 function(anObject, aComment) {
 
