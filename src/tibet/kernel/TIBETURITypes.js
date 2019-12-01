@@ -7654,7 +7654,7 @@ function(schemeSpecificString) {
             'file',
                 natURL.pathname.slice(natURL.pathname.lastIndexOf('/') + 1),
             'query', natURL.search,
-            'fragment', decodeURIComponent(natURL.hash)
+            'fragment', decodeURIComponent(natURL.hash.slice(1))
             );
 
     //  If we also got a query, construct a TP.core.Hash from it.
