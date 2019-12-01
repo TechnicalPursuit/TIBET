@@ -1446,9 +1446,11 @@ TP.hc(
             //  NB: Firefox can occasionally hang at 100% CPU  on the native
             //  isNaN call if handed an 'orphaned' (i.e. prototype-less) object,
             //  so we check for the __proto__ slot here as well.
+            /* eslint-disable no-proto */
             if (TP.isValid(anObject.__proto__) && isNaN(anObject)) {
                 return 'NaN';
             }
+            /* eslint-enable no-proto */
         } catch (e) {
             //  empty
         }
