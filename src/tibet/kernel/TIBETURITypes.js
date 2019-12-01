@@ -2332,7 +2332,7 @@ function(textOnly) {
         return text;
     }
 
-    return TP.boot.$parseURIParameters(text);
+    return TP.hc(TP.boot.$parseURIParameters(text));
 });
 
 //  ------------------------------------------------------------------------
