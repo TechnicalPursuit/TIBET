@@ -2818,6 +2818,87 @@ function(wantsShallowScope) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getBoundValue',
+function(aspectName) {
+
+    /**
+     * @method getBoundValue
+     * @summary Returns the bound value of the aspect on the receiver.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     the bound value for.
+     * @returns {Object} The value of the bound aspect.
+     */
+
+    var result,
+
+        scopeValues,
+
+        bindingInfo,
+
+        keys,
+        len,
+        i,
+
+        bindEntry,
+        bindAspectName,
+        bindVal;
+
+    result = null;
+
+    scopeValues = this.getBindingScopeValues();
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:in', this.getAttribute('bind:in'));
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.first();
+
+        if (bindAspectName === aspectName) {
+            bindVal = bindEntry.last();
+
+            result = this.$computeValueForBoundAspect(bindVal, scopeValues);
+
+            return result;
+        }
+    }
+
+    //  It might not have been in the 'bind:in', so we do it again with
+    //  'bind:io'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'));
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.first();
+
+        if (bindAspectName === aspectName) {
+            bindVal = bindEntry.last();
+
+            result = this.$computeValueForBoundAspect(bindVal, scopeValues);
+
+            return result;
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getBoundValues',
 function(attributeName, scopeValues, bindingInfoValue) {
 
