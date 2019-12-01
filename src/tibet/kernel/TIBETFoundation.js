@@ -5113,10 +5113,10 @@ function(aHash, aLevel) {
             }
 
             if (TP.canInvoke(it, 'asString')) {
-                return it.asString().asSource();
+                return it.asString();
             }
 
-            return TP.str(it).asSource();
+            return TP.str(it);
         };
 
     //  and this references the sourceTransform :)
