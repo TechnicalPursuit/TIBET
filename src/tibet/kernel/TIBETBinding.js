@@ -1849,6 +1849,106 @@ function(attributeName, aspectName, expression) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$computeValueForBoundAspect',
+function(bindInfo, scopeValues) {
+
+    /**
+     * @method $computeValueForBoundAspect
+     * @summary Computes the bound value for a particular bound aspect of the
+     *     receiver.
+     * @param {TP.core.Hash} bindInfo The hash of binding information for the
+     *     particular bound aspect that we want a value for.
+     * @param {String[]} scopeValues The list of scoping values (i.e. parts
+     *     that, when combined, make up the entire bind scoping path).
+     * @returns {Object|String} The value of the bound aspect. Note that if the
+     *     supplied binding information for this aspect has more than 1 data
+     *     expressions, this will be a String with all of the values
+     *     concatenated together.
+     */
+
+    var dataExprs,
+        len,
+        i,
+
+        dataExpr,
+
+        allVals,
+        fullExpr,
+
+        wholeURI,
+
+        result,
+        finalResult;
+
+    //  There will be 1...n data expressions here. Iterate over them and compute
+    //  a model reference.
+    dataExprs = bindInfo.at('dataExprs');
+    len = dataExprs.getSize();
+
+    for (i = 0; i < len; i++) {
+        dataExpr = TP.trim(dataExprs.at(i));
+
+        if (TP.isEmpty(dataExpr)) {
+            continue;
+        }
+
+        if (TP.notEmpty(scopeValues)) {
+            //  Concatenate the binding value onto the scope values array
+            //  (thereby creating a new Array) and use it to join all of the
+            //  values together.
+            allVals = scopeValues.concat(dataExpr);
+            fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+            //  If we weren't able to compute a real URI from the fully expanded
+            //  URI value, then raise an exception and return here.
+            if (!TP.isURIString(fullExpr)) {
+                this.raise('TP.sig.InvalidURI');
+
+                break;
+            }
+
+            wholeURI = TP.uc(fullExpr);
+        } else {
+            //  Scope values is empty - this is (hopefully) a fully qualified
+            //  binding expression.
+
+            //  If we weren't able to compute a real URI from the fully expanded
+            //  URI value, then raise an exception and return here.
+            if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                this.raise('TP.sig.InvalidURI');
+
+                break;
+            }
+
+            wholeURI = TP.uc(dataExpr);
+        }
+
+        if (!TP.isURI(wholeURI)) {
+            this.raise('TP.sig.InvalidURI');
+
+            break;
+        }
+
+        //  Grab the result from the computed URI.
+        result = wholeURI.getResource().get('result');
+
+        //  If we have a valid result, then either set the finalResult to it or
+        //  append it onto the finalResult if that already exists (this will
+        //  occur if we have multiple data expressions).
+        if (TP.isValid(result)) {
+            if (TP.isValid(finalResult)) {
+                finalResult = TP.str(finalResult) + result;
+            } else {
+                finalResult = result;
+            }
+        }
+    }
+
+    return finalResult;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$computeMatchingAspects',
 function(attributeName, attributeValue, valueMatcher) {
 
@@ -2719,14 +2819,14 @@ function(wantsShallowScope) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('getBoundValues',
-function(attributeName, scopeVals, bindingInfoValue) {
+function(attributeName, scopeValues, bindingInfoValue) {
 
     /**
      * @method getBoundValues
      * @summary Returns a hash of the bound values of the receiver.
      * @param {String} attributeName The name of the attribute that binding
      *     information is coming from.
-     * @param {String[]} scopeVals The list of scoping values (i.e. parts
+     * @param {String[]} scopeValues The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
@@ -2750,79 +2850,18 @@ function(attributeName, scopeVals, bindingInfoValue) {
     //  Iterate over each binding expression in the binding information.
     bindingInfo.perform(
         function(bindEntry) {
-
             var aspectName,
 
                 bindVal,
 
-                dataExprs,
-                i,
-                dataExpr,
-
-                allVals,
-                fullExpr,
-
-                wholeURI,
-
                 result;
 
             aspectName = bindEntry.first();
-
             bindVal = bindEntry.last();
 
-            //  There will be 1...n data expressions here. Iterate over them and
-            //  compute a model reference.
-            dataExprs = bindVal.at('dataExprs');
-            for (i = 0; i < dataExprs.getSize(); i++) {
-                dataExpr = TP.trim(dataExprs.at(i));
+            result = this.$computeValueForBoundAspect(bindVal, scopeValues);
 
-                if (TP.isEmpty(dataExpr)) {
-                    continue;
-                }
-
-                if (TP.notEmpty(scopeVals)) {
-                    //  Concatenate the binding value onto the scope values
-                    //  array (thereby creating a new Array) and use it to
-                    //  join all of the values together.
-                    allVals = scopeVals.concat(dataExpr);
-                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
-
-                    //  If we weren't able to compute a real URI from the
-                    //  fully expanded URI value, then raise an exception
-                    //  and return here.
-                    if (!TP.isURIString(fullExpr)) {
-                        this.raise('TP.sig.InvalidURI');
-
-                        break;
-                    }
-
-                    wholeURI = TP.uc(fullExpr);
-                } else {
-                    //  Scope values is empty - this is (hopefully) a fully
-                    //  qualified binding expression.
-
-                    //  If we weren't able to compute a real URI from the
-                    //  fully expanded URI value, then raise an exception
-                    //  and return here.
-                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
-                        this.raise('TP.sig.InvalidURI');
-
-                        break;
-                    }
-
-                    wholeURI = TP.uc(dataExpr);
-                }
-
-                if (!TP.isURI(wholeURI)) {
-                    this.raise('TP.sig.InvalidURI');
-
-                    break;
-                }
-
-                if (TP.isValid(result = wholeURI.getResource().get('result'))) {
-                    retVal.atPut(aspectName, result);
-                }
-            }
+            retVal.atPut(aspectName, result);
         }.bind(this));
 
     return retVal;
