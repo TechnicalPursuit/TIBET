@@ -417,7 +417,10 @@ function() {
         tpElem.set('value', 'Smith;Joe;42');
         value = tpElem.get('value');
         test.assert.isArray(value);
-        test.assert.isEmpty(value);
+        test.refute.isEmpty(value);
+
+        //  reset
+        tpElem.deselectAll();
 
         //  Number
         tpElem.set('value', testData.at('Number'));
@@ -472,10 +475,16 @@ function() {
         tableWithHashes.set('value', TP.ac('Smith', 'Joe', 42));
         value = tableWithHashes.get('value');
         test.assert.isArray(value);
-        test.assert.isEmpty(value);
+        //  tableWithHashes is single selection.
+        test.assert.isEqualTo(value, TP.ac('Smith', 'Joe', 42));
+
+        //  reset
+        tableWithHashes.deselectAll();
 
         tableWithArrays.set('value', TP.ac('Smith', 'Joe', 42));
         value = tableWithArrays.get('value');
+        test.assert.isArray(value);
+        //  tableWithArrays is multiple selection.
         test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42)));
 
         //  reset
@@ -494,15 +503,19 @@ function() {
         tableWithHashes.set('value',
             TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
         value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        //  tableWithHashes is single selection.
         test.assert.isEqualTo(
-            value,
-            TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
+            value, TP.ac('Jones', 'Jeff', 41));
 
         tableWithArrays.set('value',
             TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
         value = tableWithArrays.get('value');
         test.assert.isArray(value);
-        test.assert.isEmpty(value);
+        //  tableWithArrays is multiple selection.
+        test.assert.isEqualTo(
+            value,
+            TP.ac(TP.ac('Jones', 'Jeff', 41)));
     });
 
     //  ---

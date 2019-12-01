@@ -704,7 +704,24 @@ function(aDataObject, shouldSignal) {
      */
 
     var dataObj,
-        keys;
+        keys,
+
+        leni,
+        i,
+
+        row,
+
+        isHash,
+        isPOJO,
+
+        alreadyCopied,
+
+        columns,
+
+        lenj,
+        j,
+
+        newRow;
 
     if (TP.notValid(aDataObject)) {
         return this;
@@ -713,27 +730,73 @@ function(aDataObject, shouldSignal) {
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
+    //  xctrl:tables can only operate on an Array.
     if (!TP.isArray(dataObj)) {
         //  TODO: Raise an exception
         return this;
     }
 
+    keys = TP.ac();
+
+    alreadyCopied = false;
+
+    leni = dataObj.getSize();
+    for (i = 0; i < leni; i++) {
+        row = dataObj.at(i);
+
+        keys.push(i.toString());
+
+        //  If the value is either a TP.core.Hash or a plain object, then we
+        //  need to convert it to an Array so that we can deal with it. Note
+        //  that we will order it based on matching the key of the hash/POJO
+        //  entry with the column name, if possible. If this isn't possible,
+        //  we'll just use the key names in the hash or POJO.
+
+        isHash = TP.isHash(row);
+        isPOJO = TP.isPlainObject(row);
+
+        if (isHash || isPOJO) {
+
+            //  Make a copy of the overall data object before we start modifying
+            //  it. We'll use this copy. Otherwise, we end up overlaying data
+            //  we'll need.
+            if (!alreadyCopied) {
+                dataObj = TP.copy(dataObj);
+                row = dataObj.at(i);
+                alreadyCopied = true;
+            }
+
+            if (!TP.isArray(columns)) {
+                columns = this.get('columns');
+                if (TP.notValid(columns)) {
+                    columns = this.getBoundValue('columns');
+                }
+
+                if (TP.notValid(columns)) {
+                    columns = TP.keys(row);
+                }
+            }
+
+            newRow = TP.ac();
+
+            lenj = columns.getSize();
+            for (j = 0; j < lenj; j++) {
+                if (isHash) {
+                    newRow.push(row.at(columns.at(j)));
+                } else if (isPOJO) {
+                    newRow.push(row[columns.at(j)]);
+                }
+            }
+
+            dataObj.atPut(i, newRow);
+        }
+    }
+
     this.$set('data', dataObj, false);
+    this.set('$dataKeys', keys, false);
 
     //  Make sure to clear our converted data.
     this.set('$convertedData', null, false);
-
-    if (TP.isValid(dataObj)) {
-        keys = dataObj.getIndices().collect(
-                function(item) {
-                    //  Note that we want a String here.
-                    return item.toString();
-                });
-    } else {
-        keys = null;
-    }
-
-    this.set('$dataKeys', keys, false);
 
     //  Clear the selection model, since we're setting a whole new data set for
     //  the receiver.
@@ -775,14 +838,21 @@ function(aValue) {
     var separator,
         value,
 
-        allowsMultiples,
+        isHash,
+        isPOJO,
 
-        data,
+        newValue,
 
-        selectionEntry,
+        columns,
 
         leni,
         i,
+
+        allowsMultiples,
+
+        selectionEntry,
+
+        data,
 
         lenj,
         j,
@@ -805,6 +875,41 @@ function(aValue) {
     if (TP.isString(value)) {
         value = value.split(separator);
         value = TP.ac(value);
+    }
+
+    //  If the value is either a TP.core.Hash or a plain object, then we need to
+    //  convert it to an Array so that we can deal with it. Note that we will
+    //  order it based on matching the key of the hash/POJO entry with the
+    //  column name, if possible. If this isn't possible, we'll just use the key
+    //  names in the hash or POJO.
+
+    isHash = TP.isHash(value);
+    isPOJO = TP.isPlainObject(value);
+
+    if (isHash || isPOJO) {
+        newValue = TP.ac();
+
+        if (!TP.isArray(columns)) {
+            columns = this.get('columns');
+            if (TP.notValid(columns)) {
+                columns = this.getBoundValue('columns');
+            }
+
+            if (TP.notValid(columns)) {
+                columns = TP.keys(value);
+            }
+        }
+
+        leni = columns.getSize();
+        for (i = 0; i < leni; i++) {
+            if (isHash) {
+                newValue.push(value.at(columns.at(i)));
+            } else if (isPOJO) {
+                newValue.push(value[columns.at(i)]);
+            }
+        }
+
+        value = newValue;
     }
 
     //  If the value itself isn't an Array, then make it the first item in one.
