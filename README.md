@@ -22,36 +22,25 @@
 
 <br/>
 
-### **The web was built with markup, your apps should be too.**
+<blockquote>
+<p>“…in awe of what you’ve done with JS.”</p>
+<p>Brendan Eich, JavaScript’s creator.</p>
+</blockquote>
 
-#### Think about your current framework...
+<br/>
 
-If you're using React, Angular, Vue, etc. your applications are written with at least 80% code and less than 20% markup. That 4-to-1 ratio directly influences your development speed, your ability to hire, to share components, to maintain your applications over time.
+### We write JavaScript so you don't have to...
 
-The problem? Most frameworks don't put you on a path toward eliminating coding over time. The "component consumption model" for these frameworks, how you access and use widgets, always requires writing more code.
+Angular; React; Vue; frameworks that force you to write code today, tomorrow, indefinitely. Your struggles to staff up, to stablize your stack, to get support are, ironically, designed in.
 
-#### Think about the web...
 
-The web isn't 6 billion pages of markup embedded in JavaScript. The web grew to 6 billion pages by putting markup first, markup augmented by JavaScript, not embedded in it.
+#### TIBET is different. By design TIBET:
 
-Authoring primarily in markup is the only approach that scales over time. Your coding effort today should pay you back by allowing you to write less code in the future. If your framework locks you into coding perhaps you need a new framework.
+- lets you <a href="https://www.technicalpursuit.com/docs/why-tibet.html#staffing">eliminate coding over time</a>;
+- is a <a href="https://www.technicalpursuit.com/docs/index.html">fully-integrated full-stack solution</a>;
+- has <a href="https://www.technicalpursuit.com/docs/index.html#tools">unmatched CLI and IDE tooling</a>;
+- is <a href="https://www.technicalpursuit.com/support.html">fully-supported</a> by one vendor...us.
 
-#### Think about switching to TIBET...
-
-TIBET is the only platform where the code you write today directly correlates with writing pure markup tomorrow; the only platform where a small number of component developers can support a much larger team of markup developers.
-
-TIBET lets you consume components entirely from markup...zero code required. TIBET tags are not limited to UI display, you can invoke remote services, access local client data, bind data, trigger events. In short, you can do virtually everything from markup.
-
-### Still coding JavaScript and expecting different results?
-
-#### TIBET is the only platform:
-
-- where you <a href="https://www.technicalpursuit.com/docs/good-parts.html#markupfirst">author top-down in markup</a>;
-- solving <a href="https://www.technicalpursuit.com/docs/why-tibet.html">the real problems projects face</a>;
-- offering <a href="https://www.technicalpursuit.com/solutions.xhtml">a full buy-vs-build solution</a>; and
-- <a href="https://www.technicalpursuit.com/support.xhtml">fully-supported by the vendor</a> that built it.
-
-#### 80/20... meet 20/80... The future is written in markup.
 
 <br/>
 
@@ -63,7 +52,7 @@ TIBET lets you consume components entirely from markup...zero code required. TIB
 
 Before installing, check TIBET's <a href="#supported">supported platform chart</a> for your target platform(s).
 
-See the <a href="./INSTALL.md">full installation instructions</a> if you're running on Windows, want to run TIBET via Docker, or are interested in installing a development fork via Git.
+See the <a href="https://github.com/TechnicalPursuit/TIBET/blob/master/INSTALL.md#installation">full installation instructions</a> if you're running on Windows, want to run TIBET via Docker, or are interested in installing a development fork via Git.
 
 TIBET is currently installed globally via `npm install -g`:<br/>
 
@@ -81,6 +70,8 @@ $(npm root -g)/tibet/bin/tibet_develop_init.bash
 ```
 
 **Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.**
+
+<br/>
 
 ---
 
@@ -147,6 +138,8 @@ or `:apropos` from the <a
 href="https://www.technicalpursuit.com/docs/tsh.html">TIBET Shell</a>. The `apropos` feature scans method names and
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
+
+<br/>
 
 ---
 
