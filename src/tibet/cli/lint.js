@@ -328,8 +328,6 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    debugger;
-
     //  For now we do style last since it's Promise-based and will force async
     //  processing. We simplify by just having it summarize when it's done.
     if (this.options.style) {
