@@ -120,8 +120,7 @@ body.showlog #BOOT-CONSOLE {
 
     margin: 6px;
 
-    overflow: hidden;
-    overflow-x: auto;
+    overflow: auto;
 
     position: absolute;
     top: 0;
