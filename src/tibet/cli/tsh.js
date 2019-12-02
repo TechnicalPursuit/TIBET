@@ -375,6 +375,8 @@ Cmd.prototype.execute = function() {
 
         page.on('console', function(msg) {
 
+            var text;
+
             //  Strip browser messages we don't initiate.
             if (ignoreChromeOutput(msg)) {
                 return;
@@ -385,10 +387,16 @@ Cmd.prototype.execute = function() {
                 return;
             }
 
+            text = msg.text();
+
             switch (msg.type()) {
                 case 'error':
-                    cmd.stderr(msg);
-                    if (/Boot terminated/i.test(msg.text())) {
+                    if (/Failed to load/i.test(text)) {
+                        cmd.stderr(text + ' : ' + msg.location().url);
+                    } else {
+                        cmd.stderr(msg);
+                    }
+                    if (/Boot terminated/i.test(text)) {
                         cmd.close(1, puppetBrowser);
                     }
                     break;
@@ -396,7 +404,7 @@ Cmd.prototype.execute = function() {
                     //  Only reason to output in this case is a startup error.
                     if (!cmd.$$active && !cmd.options.verbose) {
                         cmd.stderr(msg);
-                        if (/Boot terminated/i.test(msg.text())) {
+                        if (/Boot terminated/i.test(text)) {
                             cmd.close(1, puppetBrowser);
                         }
                     } else {
