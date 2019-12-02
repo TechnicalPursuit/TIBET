@@ -31,7 +31,7 @@
 
 ### We write JavaScript so you don't have to...
 
-Angular; React; Vue; frameworks that force you to write code today, tomorrow, indefinitely. Your struggles to staff up, to stablize your stack, to get support are, ironically, designed in.
+Angular; React; Vue; frameworks that force you to write code today, tomorrow, indefinitely. Your struggles to staff up, to stabilize your stack, to get support are, ironically, designed in.
 
 
 #### TIBET is different. By design TIBET:
