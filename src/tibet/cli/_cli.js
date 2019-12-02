@@ -1857,6 +1857,23 @@ CLI.runCommand = function(command, cmdPath) {
         // } else {
         // TODO:    reactivate this after reviewing all commands/promises.
             // this.warn(command + ' returned non-numeric status value');
+        } else if (CLI.isValid(result) && CLI.isFunction(result.then)) {
+            result.then(
+                function(val) {
+                    if (typeof val === 'number') {
+                        /* eslint-disable no-process-exit */
+                        process.exit(val);
+                        /* eslint-enable no-process-exit */
+                    }
+                }).catch(function(err) {
+                    if (typeof err === 'number') {
+                        /* eslint-disable no-process-exit */
+                        process.exit(err);
+                        /* eslint-enable no-process-exit */
+                    }
+                    //  It got bad - real bad
+                    process.exit(127);
+                });
         }
     } catch (e) {
         return this.handleError(e, 'processing', command);
