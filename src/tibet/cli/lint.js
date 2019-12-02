@@ -328,21 +328,16 @@ Cmd.prototype.execute = function() {
         }
     }
 
+    debugger;
+
     //  For now we do style last since it's Promise-based and will force async
     //  processing. We simplify by just having it summarize when it's done.
     if (this.options.style) {
 
-        this.validateStyleFiles(files.style, result).then(function(data) {
-            var res;
+        return this.validateStyleFiles(files.style, result).then(function(data) {
 
-            res = cmd.summarize(data);
-            if (res.errors > 0) {
-                throw new Error();
-            }
-        },
-        function(err) {
-            cmd.error(err);
-            throw new Error();
+            cmd.summarize(data);
+            return data.errors;
         }).catch(function(err) {
             cmd.error(err);
             throw new Error();
@@ -352,12 +347,8 @@ Cmd.prototype.execute = function() {
 
         //  If not doing promise-based logic for style then wrapup.
         this.summarize(result);
-        if (result.errors > 0) {
-            throw new Error();
-        }
+        return result.errors;
     }
-
-    return 0;
 };
 
 
