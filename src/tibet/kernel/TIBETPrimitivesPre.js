@@ -4602,8 +4602,8 @@ function(methodName, methodBody, methodDescriptor) {
             existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
             if (TP.isNativeFunction(existingMethod)) {
                 target['ECMA' + methodName] = existingMethod;
-                TP.ifWarn() ?
-                    TP.warn('Replacing native method definition \'' +
+                TP.ifInfo() ?
+                    TP.info('Replacing native method definition \'' +
                             methodName + '\' on: ' + target + ' with TIBET' +
                             ' meta-type method. Aliased native method \'' +
                             methodName + '\' to \'ECMA' + methodName +
@@ -4737,8 +4737,8 @@ function(methodName, methodBody, methodDescriptor) {
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             if (TP.isNativeFunction(existingMethod)) {
                 target['ECMA' + methodName] = existingMethod;
-                TP.ifWarn() ?
-                    TP.warn('Replacing native method definition \'' +
+                TP.ifInfo() ?
+                    TP.info('Replacing native method definition \'' +
                             methodName + '\' on: ' + target + ' with TIBET' +
                             ' meta-type method. Aliased native method \'' +
                             methodName + '\' to \'ECMA' + methodName +
