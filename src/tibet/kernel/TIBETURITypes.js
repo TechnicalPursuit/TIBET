@@ -11216,10 +11216,6 @@ function(path) {
         parameters,
         result;
 
-    if (path === '/') {
-        return TP.ac(this.get('root'), TP.hc());
-    }
-
     processors = this.get('processors');
     matches = TP.ac();
 
