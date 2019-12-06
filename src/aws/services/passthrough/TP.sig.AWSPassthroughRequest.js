@@ -24,22 +24,21 @@
  *     Defining request parameters:
  *
  *     Note that the service will also identification and authentication
- *     credentials. See the type comment in TP.aws.AWSPassthroughService for more
- *     information.
+ *     credentials. See the type comment in TP.aws.AWSPassthroughService for
+ *     more information.
  *
  *     Here is an example of them defined in the request:
  *
  *     requestParams = TP.hc(
- *              'action', 'invoke',
- *              'params',
- *                  TP.hc('FunctionName, 'hello',
- *                          'Payload', TP.js2json(TP.hc('param1', 'John'))));
+ *              'action', 'listFunctions',
+ *              'params', TP.hc('remoteService', 'Lambda'));
  *
  *     Request parameters examples:
  *
  *     List all functions:
  *
- *     requestParams = TP.hc('action', 'listFunctions');
+ *     requestParams = TP.hc('action', 'listFunctions',
+ *                              'params', TP.hc('remoteService', 'Lambda'));
  *
  *     Package and fire the request:
  *

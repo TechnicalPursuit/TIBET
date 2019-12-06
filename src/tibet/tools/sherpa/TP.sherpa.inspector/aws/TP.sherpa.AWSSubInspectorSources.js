@@ -75,7 +75,7 @@ function() {
                     'All Buckets'
                     ));
 
-    //  S3
+    //  Lambda
 
     //  What methods will be resolved and queried when 'Lambda' is *selected*.
     this.registerMethodSuffixForPath(

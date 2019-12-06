@@ -35,12 +35,6 @@
  *                  TP.hc('FunctionName, 'hello',
  *                          'Payload', TP.js2json(TP.hc('param1', 'John'))));
  *
- *     Request parameters examples:
- *
- *     List all functions:
- *
- *     requestParams = TP.hc('action', 'listFunctions');
- *
  *     Package and fire the request:
  *
  *     lambdaReq = TP.sig.AWSLambdaRequest.construct(requestParams);

@@ -71,7 +71,7 @@ function(serviceName, username, password) {
      *     instance using this name.
      * @param {String} username The username to use to authenticate.
      * @param {String} password The password to use to authenticate.
-     * @returns {TP.sig.HTTPRequest} The authentication request.
+     * @returns {TP.sig.AWSAuthenticationRequest} The authentication request.
      */
 
     var serviceInfo,

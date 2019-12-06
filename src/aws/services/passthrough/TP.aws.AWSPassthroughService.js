@@ -42,8 +42,16 @@ function() {
 
     /**
      * @method getServiceInfo
-     * @summary
-     * @returns {Promise} The promisified request to the AWS Lambda function.
+     * @summary Returns a hash containing service information needed by AWS to
+     *     identify and work with the service.
+     * @description This hash should contain the following keys that will be
+     *     used by AWS:
+     *          region
+     *          apiVersion
+     *          userPoolID
+     *          appID
+     *          identityPoolID
+     * @returns {TP.core.Hash} A hash of service information.
      */
 
     var serviceInfo;
@@ -66,16 +74,19 @@ TP.aws.AWSPassthroughService.Inst.defineHandler('AWSPassthroughRequest',
 function(aRequest) {
 
     /**
-     * @method handleAWSLambdaRequest
-     * @summary Handles when an TP.sig.AWSLambdaRequest is fired. Since
+     * @method handleAWSPassthroughRequest
+     * @summary Handles when an TP.sig.AWSPassthroughRequest is fired. Since
      *     this service will register itself as the default handler for these
      *     kinds of requests, the default instance of it will usually handle all
      *     of these kinds of requests.
-     * @param {TP.sig.AWSLambdaRequest} aRequest The request object to take
+     * @param {TP.sig.AWSPassthroughRequest} aRequest The request object to take
      *     the request parameters from.
-     * @returns {TP.aws.AWSLambdaService} The receiver.
+     * @returns {TP.aws.AWSPassthroughService} The receiver.
      */
 
+    //  Since we're the observer of these types of signals, because of the way
+    //  TP.core.Resource objects work we have to catch this signal here and then
+    //  'call up' to the next-most-specific handler.
     return this.callNextHandler();
 });
 

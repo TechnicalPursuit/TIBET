@@ -190,7 +190,7 @@ function(aURI, username, password) {
 
             //  Note that we add the authenticated root *first* before we 'call
             //  up'. That way, any handlers that rely on this setting are seeing
-            //  an accurate authenicated root list.
+            //  an accurate authenticated root list.
             thisref.addAuthenticatedRoot(rootLoc, result);
 
             this.callNextMethod();
