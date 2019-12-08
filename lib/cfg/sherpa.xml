@@ -102,6 +102,9 @@
     <script src="./TP.sherpa.inspector/aws/TP.sherpa.AWSRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/aws/TP.sherpa.AWSSubInspectorSources.js"/>
 
+    <script src="./TP.sherpa.inspector/salesforce/TP.sherpa.SalesforceRootInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/salesforce/TP.sherpa.SalesforceSubInspectorSources.js"/>
+
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETConfigListInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETLocalStorageListInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TIBETSessionStorageListInspectorSource.js"/>

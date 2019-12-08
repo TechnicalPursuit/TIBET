@@ -1712,6 +1712,7 @@
         [
             ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource'],
             ['AWS', 'TP.sherpa.AWSRootInspectorSource'],
+            ['Salesforce', 'TP.sherpa.SalesforceRootInspectorSource'],
             ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
             ['TWS', 'TP.sherpa.TWSRootInspectorSource']
         ]);
@@ -2093,6 +2094,20 @@
     TP.sys.setcfg('aws.passthrough.appID', '7ibvg9a5d3f45lclk2ob9jaqc8');
     TP.sys.setcfg('aws.passthrough.identityPoolID',
                     'us-east-1:22f26cd1-9384-44d9-b6f3-7d948a4ea87b');
+
+    //  ---
+    //  Salesforce
+    //  ---
+
+    //  Salesforce services known to the system.
+    TP.sys.setcfg('salesforce.known_services',
+        [
+            'Query'
+        ]);
+
+    TP.sys.setcfg('salesforce.query.appID',
+                '3MVG9LBJLApeX_PBpOAVJZ.x1BHN1HaKOE2a4YZLv2Ipw6xMKILG3.ZzeYcVS_v8tdqTR0LjyS4drCBuANyto');
+    TP.sys.setcfg('salesforce.query.redirectURI', '~lib_xhtml/blank.xhtml');
 
     //  ---
     //  xctrls

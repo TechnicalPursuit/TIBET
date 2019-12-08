@@ -160,6 +160,16 @@
         ]]>
     </script>
 
+    <script src="./sf/services/TP.sf.SalesforceService.js"/>
+
+    <script src="./sf/services/TP.sig.SalesforceAuthenticationRequest.js"/>
+    <script src="./sf/services/TP.sig.SalesforceAuthenticationResponse.js"/>
+
+    <script src="./sf/services/query/TP.sf.SalesforceQueryService.js"/>
+
+    <script src="./sf/services/query/TP.sig.SalesforceQueryRequest.js"/>
+    <script src="./sf/services/query/TP.sig.SalesforceQueryResponse.js"/>
+
 </config>
 
 <config id="workflow">
