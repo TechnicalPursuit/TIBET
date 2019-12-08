@@ -448,29 +448,35 @@ function(options) {
 TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod('getDataForInspectorForSFQueryResults',
 function(options) {
 
-    var service,
-        dataURI,
+    var dataURI,
 
-        query;
+        query,
 
-    service = TP.sf.SalesforceService.getResourceById('SALESFORCE_QUERY');
+        requestParams,
+        sfRequest;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
     query = this.get('$query');
 
-    // service.query('SELECT Id, Name FROM Account').then(
-    service.query(query).then(
-        function(results) {
-            var records;
+    requestParams = TP.hc('query', query);
 
-            records = results.records.collect(
-                            function(aRecord) {
-                                return TP.ac(aRecord.Id, aRecord.Name);
+    sfRequest = TP.sig.SalesforceQueryRequest.construct(requestParams);
+    sfRequest.defineHandler('RequestSucceeded',
+                            function(aResponse) {
+
+                                var data;
+
+                                data = aResponse.get('result').records.collect(
+                                            function(aRecord) {
+                                                return TP.ac(aRecord.Id,
+                                                                aRecord.Name);
+                                            });
+
+                                dataURI.setResource(data);
                             });
 
-            dataURI.setResource(records);
-        });
+    sfRequest.fire();
 
     return TP.ac('Data Loading...');
 });
