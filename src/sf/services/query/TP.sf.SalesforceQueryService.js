@@ -76,7 +76,49 @@ function(aRequest) {
      * @returns {TP.sf.SalesforceQueryService} The receiver.
      */
 
-    return this.callNextHandler();
+    var request,
+
+        query,
+
+        isAuthenticated,
+
+        promise;
+
+    request = TP.request(aRequest);
+
+    //  rewrite the mode, whether we're async or sync. This will only change
+    //  the value if it hasn't been set to something already, but it may
+    //  warn when the value appears to be inconsistent with what the service
+    //  is capable of processing.
+    request.atPut('async', this.rewriteRequestMode(request));
+
+    query = request.at('query');
+
+    isAuthenticated = this.isAuthenticated();
+
+    if (!isAuthenticated) {
+        promise = TP.extern.Promise.reject();
+    } else {
+        promise = TP.extern.Promise.resolve();
+    }
+
+    //  Invoke the Salesforce SOQL query call with the query of 'query'. This
+    //  call returns a Promise. We set up a resolver and rejector on that
+    //  Promise to either complete or fail the request, depending on the
+    //  outcome.
+    promise.then(
+        function() {
+            return this.query(
+                    query
+                    ).then(
+                function(result) {
+                    request.complete(result);
+                }).catch(function(err) {
+                    request.fail(err);
+                });
+        }.bind(this));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
