@@ -123,7 +123,9 @@ function(oqlQuery) {
         return this.raise('InvalidQuery', 'Missing query.');
     }
 
-    return connection.query(oqlQuery);
+    //  Make sure to return a Bluebird-enhanced Promise here to keep things
+    //  consistent.
+    return TP.extern.Promise.resolve(connection.query(oqlQuery));
 });
 
 //  ------------------------------------------------------------------------
