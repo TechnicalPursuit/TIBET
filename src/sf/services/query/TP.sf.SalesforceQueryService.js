@@ -86,9 +86,10 @@ function(oqlQuery) {
 
     /**
      * @method query
-     * @summary
-     * @param {String} oqlQuery
-     * @returns {Promise} The promisified query.
+     * @summary Executes the supplied query against the Salesforce SOQL service.
+     * @param {String} oqlQuery The SOQL query to execute.
+     * @returns {Promise} The promisified query call. When this call resolves or
+     *     rejects, the query action is complete.
      */
 
     var serviceInfo,
