@@ -353,7 +353,7 @@ function(options) {
 TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod('getConfigForInspectorForSFQueryResults',
 function(options) {
 
-    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:table');
 
     return options;
 });
@@ -428,7 +428,7 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
+            '<xctrls:table bind:in="{data: ' +
             dataURI.asString() +
             '}" filter="true" alwayschange="true" itemtoggle="false"/>');
 });

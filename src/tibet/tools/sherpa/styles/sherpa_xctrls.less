@@ -42,6 +42,41 @@ sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|list {
 sherpa|inspectoritem[childtype="xctrls:list"] {
 }
 
+/* Inspector tables */
+
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|table {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 100%;
+    width: 100%;
+
+    max-height: initial;
+
+    line-height: 1.5em;
+
+    border: none;
+
+    overflow-y: auto;
+
+    *[tibet|pelem="choices"] {
+
+        & > xctrls|textitem {
+
+            & > xctrls|label {
+
+                font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            }
+        }
+    }
+}
+
+sherpa|inspectoritem[childtype="xctrls:table"] {
+}
+
 /* Inspector property sheets */
 
 sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|propertysheet {
