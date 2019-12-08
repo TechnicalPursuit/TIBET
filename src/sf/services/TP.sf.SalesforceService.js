@@ -140,9 +140,9 @@ function(serviceName) {
                             TP.hc('kvSeparator', '=', 'itemSeparator', ','));
 
     //  Open a new window. This is the window that we'll force a *separate* copy
-    //  of the jsForce library. We'll use this to do the OAuth2 authentication
-    //  and then grab the access token from its location hash once it redirects
-    //  back to our domain.
+    //  of the jsForce library into. We'll use this to do the OAuth2
+    //  authentication and then grab the access token from its location hash once
+    //  it redirects back to our domain.
 
     //  NB: We specify null here because that's what the jsForce library uses.
     //  When we force the separate copy of that lib into this window, their code
@@ -155,6 +155,14 @@ function(serviceName) {
     //  Construct an authentication request.
     authRequest = TP.sig.SalesforceAuthenticationRequest.construct();
 
+    //  Fetch the jsForce library into the newly opened window. This will cause
+    //  the Salesforce authentication mechanism to load and 'take over' the
+    //  window. When the user has finished the authentication process with that
+    //  window, that window's location will be redirected back to the URL that
+    //  we'll supply, at which time we'll be able to read the location (since
+    //  it's back on our domain - but this time with the authentication
+    //  information as part of its hash).
+
     TP.sys.fetchScriptInto(
                 jsForceScriptURL,
                 authWindow.document,
@@ -162,22 +170,30 @@ function(serviceName) {
                 TP.hc('crossorigin', true)).
         then(
             function() {
+                //  Call our $login method with the authentication window and
+                //  success and failure Functions.
+
                 this.$login(authWindow,
                             function(params) {
                                 var serviceInst;
 
                                 //  Construct a new service using the supplied
-                                //  service name as the resource ID and register it.
+                                //  service name as the resource ID and register
+                                //  it.
                                 serviceInst = this.construct(serviceName);
                                 serviceInst.register();
 
+                                //  Establish the connection.
                                 serviceInst.$establishConnection(params);
 
-                                authRequest.complete(
-                                    this.isAuthenticated(serviceName));
+                                //  We succeeded in authenticating - complete
+                                //  the authenication request.
+                                authRequest.complete();
                             }.bind(this),
-                            function(err) {
-                                authRequest.fail(err);
+                            function(errMsg) {
+                                //  We failed to authenticate - fail the request
+                                //  with the error message.
+                                authRequest.fail(errMsg);
                             });
             }.bind(this));
 
@@ -189,13 +205,24 @@ function(serviceName) {
 TP.sf.SalesforceService.Type.defineMethod('$login',
 function(authWindow, authSuccess, authFailure) {
 
+    /**
+     * @method $login
+     * @summary Log in using the Salesforce OAuth2 authentication mechanism.
+     * @param {Window} authWindow The window that we'll force the Salesforce
+     *     OAuth2 authentication mechanism to run in.
+     * @param {Function} authSuccess The function to invoke if we successfully
+     *     log in to Salesforce.
+     * @param {Function} authFailure The function to invoke if we fail to
+     *     successfully log in to Salesforce.
+     * @returns {TP.sf.SalesforceService} The receiver.
+     */
+
     var serviceInfo,
         appID,
         redirectURI,
 
         redirectLoc,
-
-        gotAuthToken;
+        redirectLastPart;
 
     serviceInfo = this.get('serviceInfo');
 
@@ -216,7 +243,20 @@ function(authWindow, authSuccess, authFailure) {
         return this.raise('InvalidQuery', 'Missing redirectURI.');
     }
 
-    redirectLoc = TP.uc(redirectURI).getLocation();
+    redirectURI = TP.uc(redirectURI);
+
+    //  Grab the redirection location that is configured for this Salesforce app
+    //  in the TIBET config system. This is the redirection URI that we'll hand
+    //  to the Salesforce authentication code.
+    redirectLoc = redirectURI.getLocation();
+
+    //  Grab the last 'part' of the URI path for use in comparison below.
+    redirectLastPart = redirectURI.getPathParts().last();
+
+    //  Use the Salesforce authentication code to force the user to log in. This
+    //  will pop up the window *that we already issued an 'open' for* (thereby
+    //  giving us a handle to it) and use the Salesforce OAuth2 login
+    //  authentication mechansim to allow the user to log into Salesforce.
 
     authWindow.jsforce.browser.init({
             clientId: appID,
@@ -225,9 +265,11 @@ function(authWindow, authSuccess, authFailure) {
 
     authWindow.jsforce.browser.login();
 
-    gotAuthToken = false;
+    //  Schedule a TIBET job to wait for the window to return to the redirection
+    //  location that we supplied, but this time with the OAuth2 auth token as a
+    //  fragment parameter in its URL. We'll be able to read this since the
+    //  redirect URI is in our domain.
 
-    //  schedule a job to check on the window's close status
     TP.schedule(TP.hc(
                 'step',
                 function() {
@@ -235,16 +277,38 @@ function(authWindow, authSuccess, authFailure) {
                         url,
                         params;
 
+                    //  NB: We put this in a try...catch block with an empty
+                    //  catch block on purpose. We're going to keep trying to
+                    //  get the href of the authWindow (that we opened, but has
+                    //  now been navigated to another domain by the Salesforce
+                    //  code). This will cause it to throw *until the window
+                    //  returns to our domain due to the fact that it has been
+                    //  redirected back to here by the Salesforce code*.
                     try {
-                        loc = authWindow.location.href;
-                        if (TP.notEmpty(loc) && loc.contains('blank.xhtml')) {
-                            gotAuthToken = true;
 
+                        //  If we can successfully read this, the Salesforce
+                        //  code has redirected us back here and our auth token
+                        //  will be in the location href.
+                        loc = authWindow.location.href;
+
+                        //  If our successfully read location contains the last
+                        //  part of our redirect URI, then we're good.
+                        if (TP.notEmpty(loc) && loc.contains(redirectLastPart)) {
+
+                            //  Close the authentication window. Since we're not
+                            //  using the Salesforce code as they intend, we
+                            //  have to do this manually.
                             authWindow.close();
 
+                            //  Grab the location and get its fragment
+                            //  parameters. They will contain a variety of
+                            //  information, but we're really interested in the
+                            //  auth token first and foremost.
                             url = TP.uc(loc);
                             params = url.getFragmentParameters();
 
+                            //  We successfully got an authentication token -
+                            //  call the success function that we were supplied.
                             if (params.hasKey('access_token')) {
                                 authSuccess(params);
                             }
@@ -264,13 +328,10 @@ function(authWindow, authSuccess, authFailure) {
 
                     //  don't run more than 120 times (2 minutes)
                     if (aJob.get('iteration') > 120) {
-                        authFailure();
-                        return true;
-                    }
 
-                    //  don't run if we've extracted an authWindow location
-                    if (gotAuthToken) {
-                        authFailure();
+                        //  We've waited long enough - call the failure function
+                        //  that we were supplied.
+                        authFailure(TP.sc('Failed to authenticate - timed out'));
                         return true;
                     }
 
@@ -309,6 +370,16 @@ TP.sf.SalesforceService.Inst.defineAttribute('$connection');
 
 TP.sf.SalesforceService.Inst.defineMethod('$establishConnection',
 function(params) {
+
+    /**
+     * @method $establishConnection
+     * @summary Sets up the connection to the Salesforce service based on the
+     *     supplied parameters, which should include values for 'instance_url'
+     *     and 'access_token'.
+     * @param {TP.core.Hash} params A hash of the parameters to establish the
+     *     connection with.
+     * @returns {TP.sf.SalesforceService} The receiver.
+     */
 
     var conn;
 
