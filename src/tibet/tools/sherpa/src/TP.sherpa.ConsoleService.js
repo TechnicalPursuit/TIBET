@@ -3229,6 +3229,14 @@ function(deltaInfo) {
     return this;
 });
 
+//  ============================================================================
+//  Sherpa-specific TP.sig.Signal subtypes for the console service
+//  ============================================================================
+
+TP.sig.DOMKeyUp.defineSubtype('DOM_Shift_Up__DOM_Shift_Up');
+
+TP.sig.DOM_Shift_Up__DOM_Shift_Up.defineConstant('COMPLETION_TIMEOUT', 250);
+
 //  ----------------------------------------------------------------------------
 //  end
 //  ============================================================================
