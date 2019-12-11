@@ -899,6 +899,11 @@ function(singletonName, normalizedEvent, aSignal) {
         dict,
 
         signames,
+
+        matchedShortcutSegment,
+        shouldClearTimer,
+        wasAnUp,
+
         len,
         i,
 
@@ -912,14 +917,16 @@ function(singletonName, normalizedEvent, aSignal) {
         handler,
         signame,
 
-        matchedShortcutSegment,
         shortcutData,
         shortcutName,
         shortcutSig,
         shortcuts,
 
-        shouldClearTimer,
-        timer;
+        timer,
+
+        shortcutSignalName,
+        shortcutSignalType,
+        completionTimeout;
 
     if (!TP.sys.hasInitialized()) {
         return;
@@ -989,6 +996,14 @@ function(singletonName, normalizedEvent, aSignal) {
 
     matchedShortcutSegment = false;
     shouldClearTimer = false;
+
+    //  Detect whether the most specific key signal name was an 'Up'. We use
+    //  this flag down below to make sure we're only looking at 'Up'-type
+    //  signals. Note that the less specific signal names in this list (as we
+    //  work our way up the signal type hierarchy) very well might not have 'Up'
+    //  as part of their name, so we set the flag based on the first, most
+    //  specific, one.
+    wasAnUp = /Up$/.test(signames.first());
 
     len = signames.getSize();
     for (i = 0; i < len; i++) {
@@ -1154,17 +1169,24 @@ function(singletonName, normalizedEvent, aSignal) {
                 this.set('shortcutIndex', this.get('shortcuts'));
             }
         } else if (i === len - 1 &&
-                    /Up$/.test(signame) &&
+                    wasAnUp &&
                     this.get('shortcuts') !== this.get('shortcutIndex') &&
                     !matchedShortcutSegment) {
 
-            //  If we didn't find shortcut data (but we were in the middle of
-            //  trying to which means the current shortcut index is different
-            //  that the overall shortcuts hash) and this is the last signal
-            //  name we're processing and none of the other signal names found a
-            //  shortcut segment, we reset to the 'top-level' hash. Note
-            //  that we only reset to the top for Up events. Down and Press are
-            //  ignored which avoids problems with modifier keys and
+            //  if this is the last signal name we're processing
+
+            //  AND what we've been processing is an 'Up' signal of some sort.
+
+            //  AND we didn't find shortcut data (but we were in the middle of
+            //  trying to, which means the current shortcut index is different
+            //  that the overall shortcuts hash)
+
+            //  AND none of the other signal names found a shortcut segment THEN
+
+            //  we reset to the 'top-level' hash.
+
+            //  Note that we only reset to the top for Up events. Down and Press
+            //  are ignored which avoids problems with modifier keys and
             //  intermediate events.
 
             //  if it's an up and it's a modifier-only, then don't reset
