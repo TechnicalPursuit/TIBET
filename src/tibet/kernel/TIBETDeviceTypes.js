@@ -512,6 +512,10 @@ TP.core.Keyboard.Type.defineAttribute('downTimer');
 //  a timer used when the keyboard is processing keyboard shortcuts.
 TP.core.Keyboard.Type.defineAttribute('shortcutsTimer');
 
+//  a date containing the start time of when keyboard processing of shortcuts is
+//  taking place.
+TP.core.Keyboard.Type.defineAttribute('shortcutsStartTime');
+
 //  a map of keyboard shortcuts which have been observed via a__b syntax
 TP.core.Keyboard.Type.defineAttribute('shortcuts', TP.hc());
 TP.core.Keyboard.Type.defineAttribute('shortcutIndex', TP.core.Keyboard.shortcuts);
@@ -1111,24 +1115,50 @@ function(singletonName, normalizedEvent, aSignal) {
                 handlersLen = handlers.getSize();
 
                 if (handlersLen > 0) {
-                    shortcutSig = signal.getType().construct(
-                                                    signal.getPayload());
-                    shortcutSig.setSignalName(shortcutName);
-                    shortcutSig.setOrigin(signal.getOrigin());
-                }
 
-                for (j = 0; j < handlersLen; j++) {
-                    if (shortcutSig.shouldStop()) {
-                        break;
+                    //  See if we can compute a type from the shortcut name. If
+                    //  not, we'll use our signal type.
+                    shortcutSignalName = 'TP.sig.' +
+                                            TP.contractSignalName(shortcutName);
+
+                    shortcutSignalType =
+                        TP.sys.getTypeByName(shortcutSignalName);
+
+                    if (!TP.isType(shortcutSignalType)) {
+                        shortcutSignalType = signal.getType();
                     }
 
-                    handler = handlers.at(j);
+                    //  See if the signal type itself has a completion timeout.
+                    //  If it does and the current time minus that timeout is
+                    //  greater than or equal to when the first shortcut key was
+                    //  pressed, then we take no action and set the flag to
+                    //  clear the timer.
+                    completionTimeout = shortcutSignalType.COMPLETION_TIMEOUT;
+                    if (TP.isNumber(completionTimeout) &&
+                        Date.now() - completionTimeout >=
+                            TP.core.Keyboard.$get('shortcutsStartTime')) {
+                        //  empty
+                    } else {
 
-                    try {
-                        TP.handle(handler, shortcutSig);
-                    } catch (e) {
-                        TP.raise(this, 'TP.sig.HandlerException',
-                                    TP.ec(e));
+                        shortcutSig = shortcutSignalType.construct(
+                                                        signal.getPayload());
+                        shortcutSig.setSignalName(shortcutName);
+                        shortcutSig.setOrigin(signal.getOrigin());
+
+                        for (j = 0; j < handlersLen; j++) {
+                            if (shortcutSig.shouldStop()) {
+                                break;
+                            }
+
+                            handler = handlers.at(j);
+
+                            try {
+                                TP.handle(handler, shortcutSig);
+                            } catch (e) {
+                                TP.raise(this, 'TP.sig.HandlerException',
+                                            TP.ec(e));
+                            }
+                        }
                     }
                 }
 
@@ -1148,6 +1178,7 @@ function(singletonName, normalizedEvent, aSignal) {
                             //  clear so press/up don't get confused and try to
                             //  process their timer-specific logic
                             TP.core.Keyboard.$set('shortcutsTimer', null);
+                            TP.core.Keyboard.$set('shortcutsStartTime', null);
 
                             //  Reset to the top-most hash because we couldn't
                             //  complete a shortcut in the allotted amount of
@@ -1156,6 +1187,8 @@ function(singletonName, normalizedEvent, aSignal) {
                         }.bind(this),
                             TP.sys.cfg('keyboard.shortcut_cancel_delay')));
                 /* eslint-enable no-loop-func */
+
+                TP.core.Keyboard.$set('shortcutsStartTime', Date.now());
 
                 //  If we're not at the end of the sequence migrate our hash
                 //  reference "down" to the next level and mark the fact that we
@@ -1206,6 +1239,7 @@ function(singletonName, normalizedEvent, aSignal) {
             if (TP.isNumber(timer = TP.core.Keyboard.$get('shortcutsTimer'))) {
                 clearTimeout(timer);
                 TP.core.Keyboard.$set('shortcutsTimer', null);
+                TP.core.Keyboard.$set('shortcutsStartTime', null);
             }
         }
 
