@@ -1996,6 +1996,62 @@ function(aSlotPosition) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getBayNumForPathParts',
+function(pathParts) {
+
+    /**
+     * @method getBayNumForPathParts
+     * @summary Returns the number of the bay that the supplied path is
+     *     currently loaded into.
+     * @param {String[]} pathParts The Array of path parts to use to obtain the
+     *     content item.
+     * @returns {Number} The number of the bay that the path is loaded into.
+     */
+
+    var matcher,
+        currentPathParts,
+        currentPath,
+
+        bayNum;
+
+    //  Compute a RegExp from the path parts joined together with the path
+    //  separator, looking for an exact match from start to end.
+    matcher = TP.rc('^' +
+                    TP.PATH_START + pathParts.join(TP.PATH_SEP) + TP.PATH_END +
+                    '$'),
+
+    //  Grab the set of currently selected labels and copy them.
+    currentPathParts = TP.copy(this.getSelectedLabels());
+
+    while (!currentPathParts.isEmpty()) {
+        //  Start with the most specific path.
+
+        //  Join the path together with the PATH_SEP and then bookend it
+        //  PATH_START and PATH_END. This will provide the most accurate match
+        //  with the registered method matchers.
+        currentPath = TP.PATH_START +
+                        currentPathParts.join(TP.PATH_SEP) +
+                        TP.PATH_END;
+
+        //  Test that path against the RegExp computed from the supplied path
+        //  parts. If it matches, then return the bay number as computed from
+        //  the size of the current path parts. Note that this is a '1-index'
+        //  Number by design.
+        if (matcher.test(currentPath)) {
+            bayNum = currentPathParts.getSize();
+            return bayNum;
+        }
+
+        //  Didn't match the path. Pop an entry off of the end and try again
+        //  with the next most specific path.
+        currentPathParts.pop();
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('getCurrentHistoryEntryAsPath',
 function() {
 

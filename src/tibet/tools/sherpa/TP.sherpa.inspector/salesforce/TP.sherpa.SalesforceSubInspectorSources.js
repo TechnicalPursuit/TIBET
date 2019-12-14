@@ -315,12 +315,20 @@ function() {
      */
 
     var inspector,
+        bayNum,
         content,
         queryField;
 
     inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
 
-    content = inspector.getInspectorBayContentItem();
+    //  Grab the number for the bay that the 'query' content has been loaded
+    //  into.
+    bayNum = inspector.getBayNumForPathParts(
+                TP.ac('REST', 'Salesforce', 'Query'));
+
+    //  Grab the underlying content for that bay. That is where our query form
+    //  will be found.
+    content = inspector.getInspectorBayContentItem(bayNum);
 
     queryField = TP.byCSSPath('.query', content, true);
     this.set('$query', queryField.getValue());
