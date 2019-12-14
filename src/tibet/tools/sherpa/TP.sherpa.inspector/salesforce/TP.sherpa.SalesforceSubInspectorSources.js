@@ -89,14 +89,16 @@ function() {
 
     var isAuthenticated;
 
-    isAuthenticated = TP.sf.SalesforceService.isAuthenticated('SALESFORCE_QUERY');
+    isAuthenticated = TP.sf.SalesforceService.isAuthenticated(
+                                                    'SALESFORCE_QUERY');
 
     return isAuthenticated;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod('getAuthenticationContent',
+TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod(
+'getAuthenticationContent',
 function(options) {
 
     /**
@@ -123,7 +125,8 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod('getConfigForInspector',
+TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod(
+'getConfigForInspector',
 function(options) {
 
     /**
@@ -160,7 +163,8 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod('getContentForInspector',
+TP.sherpa.SalesforceSubInspectorSources.Inst.defineMethod(
+'getContentForInspector',
 function(options) {
 
     /**
