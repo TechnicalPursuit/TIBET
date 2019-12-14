@@ -352,6 +352,17 @@ TP.hc(
             return;
         }
 
+        //  We've assembled all of the information we need to see if a 'simple
+        //  CORS' request is doable. If the caller has specified 'simple CORS'
+        //  then we should check it and return if it's not doable. Note that the
+        //  method we call here will log warnings with more information.
+        if (TP.sys.cfg('http.simple_cors_only') ||
+            request.at('simple_cors_only')) {
+            if (!TP.httpRequestPassesSimpleCORSRestrictions(request)) {
+                return;
+            }
+        }
+
         //  configure for async processing as needed
         if (async) {
             //  going to be async? then we'll want a timeout option
@@ -628,6 +639,17 @@ TP.hc(
             return;
         }
 
+        //  We've assembled all of the information we need to see if a 'simple
+        //  CORS' request is doable. If the caller has specified 'simple CORS'
+        //  then we should check it and return if it's not doable. Note that the
+        //  method we call here will log warnings with more information.
+        if (TP.sys.cfg('http.simple_cors_only') ||
+            request.at('simple_cors_only')) {
+            if (!TP.httpRequestPassesSimpleCORSRestrictions(request)) {
+                return;
+            }
+        }
+
         //  configure for async processing as needed
         if (async) {
             //  going to be async? then we'll want a timeout option via a
@@ -873,6 +895,17 @@ TP.hc(
 
             TP.httpError(targetUrl, 'HTTPHeaderException', request);
             return;
+        }
+
+        //  We've assembled all of the information we need to see if a 'simple
+        //  CORS' request is doable. If the caller has specified 'simple CORS'
+        //  then we should check it and return if it's not doable. Note that the
+        //  method we call here will log warnings with more information.
+        if (TP.sys.cfg('http.simple_cors_only') ||
+            request.at('simple_cors_only')) {
+            if (!TP.httpRequestPassesSimpleCORSRestrictions(request)) {
+                return;
+            }
         }
 
         //  configure for async processing as needed

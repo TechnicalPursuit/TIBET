@@ -1518,6 +1518,31 @@ TP.HTTP_TRACE = 'TRACE';
 TP.HTTP_BASIC = 'BASIC';
 TP.HTTP_DIGEST = 'DIGEST';
 
+//  HTTP 'simple' CORS allowed methods, header keys, encodings
+TP.HTTP_ALLOWED_SIMPLE_CORS_METHODS = [
+        'GET',
+        'HEAD',
+        'POST'
+];
+
+TP.HTTP_ALLOWED_SIMPLE_CORS_HEADERS = [
+        'Accept',
+        'Accept-Language',
+        'Content-Language',
+        'Content-Type',
+        'Last-Event-ID',
+        'DPR',
+        'Save-Data',
+        'Viewport-Width',
+        'Width'
+];
+
+TP.HTTP_ALLOWED_SIMPLE_CORS_ENCODINGS = [
+        'application/x-www-form-urlencoded',
+        'multipart/form-data',
+        'text/plain'
+];
+
 //  WebDAV call types
 TP.WEBDAV_CHECKIN = 'CHECKIN';
 TP.WEBDAV_CHECKOUT = 'CHECKOUT';

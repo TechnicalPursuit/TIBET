@@ -935,6 +935,60 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('httpRequestPassesSimpleCORSRestrictions',
+function(aRequest) {
+
+    /**
+     * @method httpRequestPassesSimpleCORSRestrictions
+     * @summary Checks a set of information about the supplied HTTP request to
+     *     make sure that a 'simple CORS' request can be made. This includes
+     *     checking the requests 'method', 'mimetype' and 'headers'.
+     * @param {TP.sig.HTTPRequest} aRequest The request to be checked to see if
+     *     it is 'simple CORS' capable.
+     * @returns {Boolean} Whether or not the request is 'simple CORS' capable.
+     */
+
+    var method,
+        mimetype,
+
+        headers,
+        headerKeys,
+        len,
+        i;
+
+    method = aRequest.at('method');
+    if (!TP.HTTP_ALLOWED_SIMPLE_CORS_METHODS.contains(method)) {
+        TP.ifWarn() ?
+            TP.warn('HTTP method: \'' + method + '\' is not a usable' +
+                    ' \'simple CORS\' method') : 0;
+        return false;
+    }
+
+    mimetype = aRequest.at('mimetype');
+    if (!TP.HTTP_ALLOWED_SIMPLE_CORS_ENCODINGS.contains(mimetype)) {
+        TP.ifWarn() ?
+            TP.warn('HTTP encoding: \'' + mimetype + '\' is not a usable' +
+                    ' \'simple CORS\' encoding') : 0;
+        return false;
+    }
+
+    headers = aRequest.at('headers');
+    headerKeys = headers.getKeys();
+    len = headerKeys.getSize();
+    for (i = 0; i < len; i++) {
+        if (!TP.HTTP_ALLOWED_SIMPLE_CORS_HEADERS.contains(headerKeys.at(i))) {
+            TP.ifWarn() ?
+                TP.warn('HTTP header: \'' + headerKeys.at(i) +
+                        '\' is not a usable \'simple CORS\' header') : 0;
+            return false;
+        }
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('httpSetHeaders',
 function(targetUrl, aRequest, httpObj) {
 
