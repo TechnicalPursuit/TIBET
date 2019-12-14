@@ -61,24 +61,14 @@ function() {
     //  What methods will be resolved and queried when 'Query' is *selected*.
     this.registerMethodSuffixForPath(
             'SFQuery',
-            TP.ac('REST',
-                    TP.PATH_SEP,
-                    'Salesforce',
-                    TP.PATH_SEP,
-                    'Query'
-                    ));
+            TP.ac('REST', 'Salesforce', 'Query'));
+
+    //  Query Results
 
     //  What methods will be resolved and queried when 'Results' is *selected*.
     this.registerMethodSuffixForPath(
             'SFQueryResults',
-            TP.ac('REST',
-                    TP.PATH_SEP,
-                    'Salesforce',
-                    TP.PATH_SEP,
-                    'Query',
-                    TP.PATH_SEP,
-                    'Results'
-                    ));
+            TP.ac('REST', 'Salesforce', 'Query', 'Results'));
 
     /* eslint-enable no-useless-escape */
 

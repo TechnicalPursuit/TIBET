@@ -789,12 +789,13 @@ function(methodSuffix, regExpParts) {
      */
 
     this.get('methodRegister').atPut(
-            methodSuffix,
-            TP.ac(
-                TP.rc('^' +
-                        TP.PATH_START + regExpParts.join('') + TP.PATH_END +
-                        '$'),
-                regExpParts.getSize()));
+        methodSuffix,
+        TP.ac(
+            TP.rc(
+                '^' +
+                TP.PATH_START + regExpParts.join(TP.PATH_SEP) + TP.PATH_END +
+                '$'),
+            regExpParts.getSize()));
 
     return this;
 });
