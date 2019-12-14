@@ -1069,8 +1069,7 @@ function(aRequest) {
     /**
      * @method rewriteRequestHeaders
      * @summary Returns a TP.core.Hash of HTTP headers appropriate for the
-     *     service. Typical headers include an X-Request-Id for the request ID
-     *     to help identify "conversations" related to a particular request.
+     *     service.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
      * @returns {TP.core.Hash} The hash of rewritten request headers.
@@ -1089,18 +1088,6 @@ function(aRequest) {
     url = aRequest.at('uri');
     if (TP.notValid(url)) {
         return aRequest.fail('TP.sig.InvalidURI');
-    }
-
-    //  make sure we provide the request ID in the call headers for
-    //  tracking purposes
-    if (TP.uriNeedsPrivileges(url) &&
-        (TP.sys.cfg('http.simple_cors_only') ||
-            aRequest.at('simple_cors_only'))) {
-            //  url needs privileges but we're configured for 'simple CORS'
-            //  only, which disallows custom 'X-' headers.
-        void 0;
-    } else {
-        headers.atPutIfAbsent('X-Request-Id', aRequest.getRequestID());
     }
 
     //  If there is no header defined for Content-Type in the request, use the
