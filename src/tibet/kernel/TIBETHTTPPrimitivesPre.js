@@ -1000,25 +1000,34 @@ function(targetUrl, aRequest, httpObj) {
     }
 
     //  typically we turn off cache behavior for these requests so we're
-    //  sure we're getting the most current data
+    //  sure we're getting the most current data. In the case where we have a
+    //  URI that need privileges and the caller has specified 'simple CORS',
+    //  though, we can't specify these headers since they are not part of
+    //  simple CORS.
 
-    //  on moz we have to avoid duplication of this header, which seems
-    //  to appear as if by magic...
-    if (TP.sys.isUA('GECKO')) {
-        if (TP.isDefined(header = headers.at('Pragma'))) {
-            if (header === 'no-cache') {
-                headers.removeKey('Pragma');
-            } else if (TP.isArray(header)) {
-                header.remove('no-cache');
+    if (TP.uriNeedsPrivileges(targetUrl) && simpleCORSOnly) {
+        //  targetUrl needs privileges but we're configured for 'simple
+        //  CORS' only, which disallows these headers.
+        void 0;
+    } else {
+        //  on moz we have to avoid duplication of this header, which seems
+        //  to appear as if by magic...
+        if (TP.sys.isUA('GECKO')) {
+            if (TP.isDefined(header = headers.at('Pragma'))) {
+                if (header === 'no-cache') {
+                    headers.removeKey('Pragma');
+                } else if (TP.isArray(header)) {
+                    header.remove('no-cache');
+                }
             }
+        } else if (TP.notDefined(headers.at('Pragma'))) {
+            headers.atPut('Pragma', 'no-cache');
         }
-    } else if (TP.notDefined(headers.at('Pragma'))) {
-        headers.atPut('Pragma', 'no-cache');
-    }
 
-    //  when no Cache-control is specified we want to bypass caches
-    if (TP.notDefined(headers.at('Cache-Control'))) {
-        headers.atPut('Cache-Control', TP.ac('no-cache', 'no-store'));
+        //  when no Cache-control is specified we want to bypass caches
+        if (TP.notDefined(headers.at('Cache-Control'))) {
+            headers.atPut('Cache-Control', TP.ac('no-cache', 'no-store'));
+        }
     }
 
     //  add a header for Content-Type if not already found. default is
