@@ -827,7 +827,20 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                             '</label>' +
                             '<br/>';
                 });
+
+            //  If the user specified that this is an 'open' set of choices,
+            //  then we have to provide an 'open' field.
+            if (isOpen) {
+                str += '<input id="field_' + choices.getSize() + '"' +
+                        ' name="inputChooser"' +
+                        ' type="' + ctrlType + '"' +
+                        ' value="open"/>';
+                str += '<input type="text" id="openField"/>';
+                str += '<br/>';
+            }
+
             break;
+
         case 'select':
 
             //  Build up an HTML select
@@ -838,7 +851,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
             str += '>';
 
             if (!isMultiple) {
-                str += '<option value="">Choose...</option>';
+                str += '<option value="open">Choose...</option>';
             }
 
             choices.forEach(
@@ -848,20 +861,17 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                             '</option>';
                 });
             str += '</select>';
+
+            //  If the user specified that this is an 'open' set of choices,
+            //  then we have to provide an 'open' field.
+            if (isOpen) {
+                str += '<br/>';
+                str += '<input type="text" id="openField"/>';
+            }
+
             break;
         default:
             break;
-    }
-
-    //  If the user specified that this is an 'open' set of choices, then we
-    //  have to provide an 'override' field.
-    if (isOpen) {
-        if (ctrlType === 'select') {
-            str += '<br/>';
-        }
-
-        str += '<label for="overrideField">Or:</label>' +
-                '<input type="text" id="overrideField"/>';
     }
 
     //  Make a node out of the built HTML - we'll inject this into the
@@ -887,7 +897,9 @@ function(aQuestion, choices, aDefaultAnswer, info) {
             var choiceContent,
 
                 inputField,
-                overrideField,
+                openField,
+
+                val,
 
                 answerPromise;
 
@@ -895,22 +907,82 @@ function(aQuestion, choices, aDefaultAnswer, info) {
             choiceContent = TP.byCSSPath(' .choiceContent', dialogTPElem, true);
             choiceContent.setContent(choicesNode);
 
-            //  Grab both the input field (which won't be a text field here -
-            //  this is either the select or the group of checkboxes or radio
-            //  buttons).
+            //  Grab the input field (which won't be a text field here - this is
+            //  either the select or the group of checkboxes or radio buttons).
             inputField = TP.byCSSPath(' .dialogContent #field_0',
                                         dialogTPElem,
                                         true);
 
-            //  Grab the override text field.
-            overrideField = TP.byCSSPath(' .dialogContent #overrideField',
-                                        dialogTPElem,
-                                        true);
+            if (isOpen) {
+                //  Grab the override text field.
+                openField = TP.byCSSPath(' .dialogContent #openField',
+                                            dialogTPElem,
+                                            true);
+
+                openField.getNativeNode().onclick = function() {
+                    var inputVal;
+
+                    if (isMultiple) {
+                        inputVal = inputField.getValue();
+                        inputVal.push('open');
+                        inputField.set('value', inputVal);
+                    } else {
+                        inputField.set('value', 'open');
+                    }
+                };
+            }
 
             //  If the default answer is specified, then set the input field to
             //  it.
             if (TP.notEmpty(aDefaultAnswer)) {
                 inputField.set('value', aDefaultAnswer);
+
+                switch (ctrlType) {
+                    case 'checkbox':
+                        if (TP.isArray(aDefaultAnswer)) {
+                            val = inputField.getValue();
+                            if (!val.containsAll(aDefaultAnswer)) {
+                                openField.set('value',
+                                    aDefaultAnswer.difference(val).first());
+                                val.push('open');
+                                inputField.set('value', val);
+                            }
+                        } else {
+                            if (TP.isEmpty(inputField.get('value')) && isOpen) {
+                                inputField.set('value', 'open');
+                                openField.set('value', aDefaultAnswer);
+                            }
+                        }
+                        break;
+
+                    case 'radio':
+                        //  If the input field doesn't have value after we've
+                        //  set it, that means that the default answer wasn't
+                        //  represented by one of the choices in the input
+                        //  field. In that case, if we are open, we set the
+                        //  openField to that value.
+                        if (TP.isEmpty(inputField.get('value')) && isOpen) {
+                            inputField.set('value', 'open');
+                            openField.set('value', aDefaultAnswer);
+                        }
+                        break;
+
+                    case 'select':
+                        if (TP.isArray(aDefaultAnswer)) {
+                            val = inputField.getValue();
+                            if (!val.containsAll(aDefaultAnswer)) {
+                                openField.set('value',
+                                    aDefaultAnswer.difference(val).first());
+                            }
+                        } else {
+                            if (TP.isEmpty(inputField.get('value')) && isOpen) {
+                                openField.set('value', aDefaultAnswer);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
             answerPromise = TP.extern.Promise.construct(
@@ -918,22 +990,54 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                     dialogTPElem.defineHandler('DialogOk',
                     function(aSignal) {
 
-                        var value;
+                        var value,
+
+                            openValue;
 
                         //  Hide the panel and call the resolver with true,
                         //  since they activated a control that fired 'DialogOk'
                         this.setAttribute('hidden', true);
 
-                        if (TP.isValid(overrideField)) {
-                            value = overrideField.get('value');
+                        value = inputField.get('value');
+
+                        switch (ctrlType) {
+                            case 'checkbox':
+                                if (value.contains('open')) {
+                                    if (TP.isValid(openField)) {
+                                        value.push(openField.get('value'));
+                                    }
+                                }
+                                break;
+                            case 'radio':
+                                if (value === 'open') {
+                                    if (TP.isValid(openField)) {
+                                        value = openField.get('value');
+                                    }
+                                }
+                                break;
+                            case 'select':
+                                if (TP.isValid(openField)) {
+                                    openValue = openField.get('value');
+                                    if (TP.notEmpty(openValue)) {
+                                        if (isMultiple) {
+                                            value.push(openValue);
+                                        } else {
+                                            value = openValue;
+                                        }
+                                    }
+                                }
+                                break;
+                            default:
+                                break;
                         }
 
-                        if (TP.isEmpty(value)) {
-                            value = inputField.get('value');
+                        if (TP.isArray(value)) {
+                            value.remove('open');
                         }
 
                         resolver(value);
                     });
+
                     dialogTPElem.defineHandler('DialogCancel',
                     function(aSignal) {
 
