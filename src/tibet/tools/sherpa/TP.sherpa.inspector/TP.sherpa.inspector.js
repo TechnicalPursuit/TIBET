@@ -2021,7 +2021,7 @@ function(pathParts) {
     //  separator, looking for an exact match from start to end.
     matcher = TP.rc('^' +
                     TP.PATH_START + pathParts.join(TP.PATH_SEP) + TP.PATH_END +
-                    '$'),
+                    '$');
 
     //  Grab the set of currently selected labels and copy them.
     currentPathParts = TP.copy(this.getSelectedLabels());
