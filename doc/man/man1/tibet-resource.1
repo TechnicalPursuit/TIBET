@@ -1,0 +1,165 @@
+.TH "TIBET\-RESOURCE" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-resource\fR \- builds template/css/resource files and config entries
+.SH SYNOPSIS
+.P
+\fBtibet resource [\-\-build] [\-\-list] [\-\-raw] [\-\-type] [<package\-opts>]\fP
+.SH DESCRIPTION
+.P
+Reflects on application resource requirements and builds rollup resources\.
+.P
+The \fBtibet resource\fP command is used to build JavaScript\-based versions of
+various resources such as templates, style sheets, JSON data files, etc\. The
+resulting files can be rolled up into build packages, significantly
+reducing the number of HTTP calls necessary to load application resources\.
+.P
+You don't typically need to run this command yourself, the various \fBbuild\fP and
+\fBrollup\fP\-related \fBtibet make\fP tasks in your project invoke this command
+indirectly and manage most resource\-related work for you\.
+.P
+One aspect of this command to be aware of is that the client\-side code can only
+compute what it believes to be the proper resource paths when no specific paths
+are found\. These computed paths are checked by the server\-side CLI command for
+existence and filtered from the final list if the computed filename isn't found\.
+.P
+In addition to building loadable versions of resources this command will
+maintain the \fBresources\fP \fB<config/>\fP in your application's package file\. By
+updating the package this command ensures the \fBrollup\fP command will find all
+built resources and include them\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-build\fP :
+Tell the command to actually build resources and update the application
+package with any missing resource entries\.
+.IP \(bu 2
+\fB\-\-list\fP :
+List but don't build the resources\. This is the default flag\.
+.IP \(bu 2
+\fB\-\-raw\fP:
+Don't filter out the raw output from the client list\. This will include
+references to files which may not exist since no checks are done and some
+client\-side information is based on computed names from convention\.
+.IP \(bu 2
+\fB[package\-opts]\fP :
+Refers to valid options for a TIBET Package object\. These include \-\-package,
+\-\-config, \-\-phase, \-\-assets, etc\. The package@config defaults to
+\fB~app_cfg/main\.xml\fP and its default config (usually @base) so your typical
+configuration is built\. See help on the \fBtibet package\fP command for more
+information\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBpath\fP:
+This command reads the entire set of virtual path settings to help it
+determine where it should look for existence of files\.
+.IP \(bu 2
+\fBpackage\.name\fP:
+The package name is read to help with determining the name of the default
+package file to load\.
+.IP \(bu 2
+\fBboot\.config\fP:
+The boot\.config is read to determine which package configuration is being
+processed\.
+.IP \(bu 2
+\fBboot\.package\fP:
+The boot\.package is read to determine which package is being processed\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS Listing application resource data
+.P
+By default the \fBtibet resource\fP command will list concrete resources it
+believes should be processed and will display an example of the \fB<config/>\fP
+entries it would build:
+.P
+.RS 2
+.nf
+$ tibet resource
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+Filtering 927 potential resources\.\.\.
+Found 3 concrete resources\.\.\.
+Configuration Entries (not saved):
+<config id="resources" if="boot\.phase_two">
+    <script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.app\.xhtml\.js"/>
+    <script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.app\.css\.js"/>
+    <script src="~app_build/app_tags\.test\.less\.js"/>
+</config>
+.fi
+.RE
+.SS Building application resources
+.P
+To build resources add the \fB\-\-build\fP flag:
+.P
+.RS 2
+.nf
+$ tibet resource \-\-build
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+Filtering 927 potential resources\.\.\.
+Building 3 concrete resources\.\.\.
+~app_tags/APP\.hello\.app/APP\.hello\.app\.xhtml
+~app_tags/APP\.hello\.app/APP\.hello\.app\.css
+~app_tags/test\.less
+Writing package resource entries\.\.\.
+<script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.app\.xhtml\.js"/> (added)
+<script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.app\.css\.js"/> (added)
+<script src="~app_build/app_tags\.test\.css\.js"/> (added)
+.fi
+.RE
+.P
+Note that if you build multiple times the \fB(added)\fP qualifier will show
+\fB(exists)\fP for any resources the package already contains\.
+.SS Modularizing application resources
+.P
+For larger applications or applications which need to load resources in
+different bundles you can use nested \fB<config/>\fP elements\. To accomplish
+this run the \fBtibet resource\fP command once to load the initial set of
+resources, then partition them into separate \fB<config/>\fP elements:
+.P
+.RS 2
+.nf
+<config id="resources" if="boot\.phase_two boot\.resourced">
+    <config ref="startup\-resources"/>
+    <config ref="extra\-resources"/>
+</config>
+
+<config id="startup\-resources">
+    <script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.app\.xhtml\.js"/>
+    <script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.app\.css\.js"/>
+</config>
+
+<config id="extra\-resources">
+    <script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.specialsauce\.xhtml\.js"/>
+    <script src="~app_build/app_tags\.APP\.hello\.app\.APP\.hello\.specialsauce\.css\.js"/>
+</config>
+.fi
+.RE
+.P
+When you use a configuration like the one above TIBET will automatically
+recognize that nested entries do not need to be added\.
+.P
+You can then refer to the individual <config/> elements in your other
+package configurations to adjust loading as you require\.
+.SH TIBET SHELL
+.P
+This server\-side CLI command builds a command line for execution by the
+client\-side \fB:resource\fP command\. That command relies on reflection and other
+metadata to determine all run\-time resources which are appropriate for the
+targeted type or build operation\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-package(1)
+.IP \(bu 2
+tibet\-rollup(1)
+
+.RE
+

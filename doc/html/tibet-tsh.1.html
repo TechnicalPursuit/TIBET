@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-tsh</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-tsh</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-tsh-1-runs-a-tibet-shell-tsh-expression">tibet-tsh(1) -- runs a TIBET Shell (TSH) expression</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet tsh [--script=]&lt;command&gt; [&lt;headless_args&gt;]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Runs the TIBET headless environment to execute a TSH script.</p>
+<p>The script to execute is presumed to be the first argument, quoted as
+needed to ensure that it can be captured as a single string to pass to
+the TIBET Shell. For example: <code>tibet tsh &#39;:echo &quot;Hello World!&quot;&#39;.</code>
+You can also use the <code>--script</code> argument to provide the TSH script.</p>
+<p><code>&lt;headless_args&gt;</code> refers to the various flags and parameters you can
+provide to Headless Chrome.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>command</code> :
+A properly quoted command line for the TSH, escaped as necessary based on
+the requirements of your shell.</p>
+</li>
+<li><p><code>headless_args</code>
+Optional arguments to Headless Chrome which is responsible for processing
+the script.</p>
+</li>
+<li><p><code>--script</code> :
+An optional argument used to define the <code>command</code>.</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>project.start_page</code>:
+The file path to use for the initial page to pass to headless Chrome.</p>
+</li>
+<li><p><code>puppeteer.chromium_args</code>:
+Array of default puppeteer command line arguments. Includes flags to allow
+local file access and more flexible security during operation.</p>
+</li>
+<li><p><code>puppeteer.devtools</code>:
+Should puppeteer be run with devtools open? Default is false.</p>
+</li>
+<li><p><code>puppeteer.headless</code>:
+Should puppeteer be run in headless mode? Default is true.</p>
+</li>
+<li><p><code>puppeteer.slowMo</code>:
+Should puppeteer be run in slowMo mode? Default is false.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="run-a-simple-tsh-script-via-the-command-line">Run a simple TSH script via the command line</h3>
+<pre><code>$ tibet tsh --script=&#39;:echo &quot;Hello World!&quot;&#39;
+
+# Loading TIBET at 2018-08-23T13:32:03.632Z
+# TIBET loaded and active in 6736ms
+{
+    &quot;ARGV&quot;: [&quot;Hello World!&quot;],
+    &quot;ARG0&quot;: &quot;Hello World!&quot;
+}
+Finished in 4173 ms w/TSH exec time of 79 ms.
+</code></pre><h3 id="run-a-more-complex-tsh-script-via-the-command-line">Run a more complex TSH script via the command line</h3>
+<p>In the example below we run the TSH <code>:test</code> command via the <code>tsh</code> command line
+tool. As it turns out, this is exactly what the <code>tibet test</code> command does. The
+<code>tibet test</code> command is actually a subtype of the <code>tsh</code> command.</p>
+<pre><code>$ tibet tsh --script &#39;:test&#39;
+
+# Loading TIBET at 2018-08-23T13:32:03.632Z
+# TIBET loaded and active in 6736ms
+# TIBET starting test run
+# 2 suite(s) found.
+1..3
+#
+# tibet test APP --suite=&#39;APP&#39;
+ok - Has a namespace.
+ok - Has an application type.
+# pass: 2 total, 2 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
+#
+# tibet test APP.todomvc.app --suite=&#39;APP.todomvc:app&#39;
+ok - Is a templated tag.
+# pass: 1 total, 1 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
+#
+# PASS: 3 total, 3 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only.
+
+Finished in 4209 ms w/TSH exec time of 104 ms.
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command invokes the client-side TIBET Shell to run a TSH script/command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

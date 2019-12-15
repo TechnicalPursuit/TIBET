@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-resource</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-resource</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-resource-1-builds-template-css-resource-files-and-config-entries">tibet-resource(1) -- builds template/css/resource files and config entries</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet resource [--build] [--list] [--raw] [--type] [&lt;package-opts&gt;]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Reflects on application resource requirements and builds rollup resources.</p>
+<p>The <code>tibet resource</code> command is used to build JavaScript-based versions of
+various resources such as templates, style sheets, JSON data files, etc. The
+resulting files can be rolled up into build packages, significantly
+reducing the number of HTTP calls necessary to load application resources.</p>
+<p>You don&#39;t typically need to run this command yourself, the various <code>build</code> and
+<code>rollup</code>-related <code>tibet make</code> tasks in your project invoke this command
+indirectly and manage most resource-related work for you.</p>
+<p>One aspect of this command to be aware of is that the client-side code can only
+compute what it believes to be the proper resource paths when no specific paths
+are found. These computed paths are checked by the server-side CLI command for
+existence and filtered from the final list if the computed filename isn&#39;t found.</p>
+<p>In addition to building loadable versions of resources this command will
+maintain the <code>resources</code> <code>&lt;config/&gt;</code> in your application&#39;s package file. By
+updating the package this command ensures the <code>rollup</code> command will find all
+built resources and include them.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--build</code> :
+Tell the command to actually build resources and update the application
+package with any missing resource entries.</p>
+</li>
+<li><p><code>--list</code> :
+List but don&#39;t build the resources. This is the default flag.</p>
+</li>
+<li><p><code>--raw</code>:
+Don&#39;t filter out the raw output from the client list. This will include
+references to files which may not exist since no checks are done and some
+client-side information is based on computed names from convention.</p>
+</li>
+<li><p><code>[package-opts]</code> :
+Refers to valid options for a TIBET Package object. These include --package,
+--config, --phase, --assets, etc. The package@config defaults to
+<code>~app_cfg/main.xml</code> and its default config (usually @base) so your typical
+configuration is built. See help on the <code>tibet package</code> command for more
+information.</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>path</code>:
+This command reads the entire set of virtual path settings to help it
+determine where it should look for existence of files.</p>
+</li>
+<li><p><code>package.name</code>:
+The package name is read to help with determining the name of the default
+package file to load.</p>
+</li>
+<li><p><code>boot.config</code>:
+The boot.config is read to determine which package configuration is being
+processed.</p>
+</li>
+<li><p><code>boot.package</code>:
+The boot.package is read to determine which package is being processed.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="listing-application-resource-data">Listing application resource data</h3>
+<p>By default the <code>tibet resource</code> command will list concrete resources it
+believes should be processed and will display an example of the <code>&lt;config/&gt;</code>
+entries it would build:</p>
+<pre><code>$ tibet resource
+# Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
+Filtering 927 potential resources...
+Found 3 concrete resources...
+Configuration Entries (not saved):
+&lt;config id=&quot;resources&quot; if=&quot;boot.phase_two&quot;&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.test.less.js&quot;/&gt;
+&lt;/config&gt;
+</code></pre><h3 id="building-application-resources">Building application resources</h3>
+<p>To build resources add the <code>--build</code> flag:</p>
+<pre><code>$ tibet resource --build
+# Loading TIBET platform at 2019-11-09T17:43:17.668Z
+# TIBET reflection suite loaded and active in 5219ms
+Filtering 927 potential resources...
+Building 3 concrete resources...
+~app_tags/APP.hello.app/APP.hello.app.xhtml
+~app_tags/APP.hello.app/APP.hello.app.css
+~app_tags/test.less
+Writing package resource entries...
+&lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_build/app_tags.test.css.js&quot;/&gt; (added)
+</code></pre><p>Note that if you build multiple times the <code>(added)</code> qualifier will show
+<code>(exists)</code> for any resources the package already contains.</p>
+<h3 id="modularizing-application-resources">Modularizing application resources</h3>
+<p>For larger applications or applications which need to load resources in
+different bundles you can use nested <code>&lt;config/&gt;</code> elements. To accomplish
+this run the <code>tibet resource</code> command once to load the initial set of
+resources, then partition them into separate <code>&lt;config/&gt;</code> elements:</p>
+<pre><code>&lt;config id=&quot;resources&quot; if=&quot;boot.phase_two boot.resourced&quot;&gt;
+    &lt;config ref=&quot;startup-resources&quot;/&gt;
+    &lt;config ref=&quot;extra-resources&quot;/&gt;
+&lt;/config&gt;
+
+&lt;config id=&quot;startup-resources&quot;&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt;
+&lt;/config&gt;
+
+&lt;config id=&quot;extra-resources&quot;&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.xhtml.js&quot;/&gt;
+    &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.css.js&quot;/&gt;
+&lt;/config&gt;
+</code></pre><p>When you use a configuration like the one above TIBET will automatically
+recognize that nested entries do not need to be added.</p>
+<p>You can then refer to the individual &lt;config/&gt; elements in your other
+package configurations to adjust loading as you require.</p>
+<h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This server-side CLI command builds a command line for execution by the
+client-side <code>:resource</code> command. That command relies on reflection and other
+metadata to determine all run-time resources which are appropriate for the
+targeted type or build operation.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-package.1.html">tibet-package(1)</a></li>
+<li><a class="crossref" href="./tibet-rollup.1.html">tibet-rollup(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

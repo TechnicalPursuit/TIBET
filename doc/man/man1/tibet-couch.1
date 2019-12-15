@@ -1,0 +1,252 @@
+.TH "TIBET\-COUCH" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-couch\fR \- manage CouchDB databases and applications
+.SH SYNOPSIS
+.P
+\fBtibet couch <compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]\fP
+.SH DESCRIPTION
+.P
+Interacts with CouchDB to provide command line data access and admin utilities\.
+Particularly helpful for TIBET applications which rely on CouchDB for data or
+TIBET Workflow System functionality\.
+.P
+The various subcommands are largely self\-describing in that they compact,
+create, list, push an app, remove an app, delete, and query a database
+respectively\. See the \fBEXAMPLES\fP for more information\.
+.P
+Required CouchDB parameters such as server URL, database name, and application
+name are first checked against \fBENVIRONMENT VARIABLES\fP, then against a set of
+TIBET configuration values\. If the \fB\-\-confirm\fP flag is active (the default) the
+values discovered are presented to you for confirmation/adjustment\. Prompting
+can be turned off via the \fB\-\-no\-confirm\fP flag\.
+.P
+.RS 2
+.nf
+For example:
+
+$ export COUCH_DATABASE=dbtest_tasks
+$ export COUCH_APPLICATION=tws
+$ export COUCH_USER={username}
+$ export COUCH_PASS={password}
+$ export COUCH_KEY={api_key}  # optional
+
+$ tibet couch view tasks \-\-keys
+CouchDB url [http://127\.0\.0\.1:5984] ?
+using base url 'http://127\.0\.0\.1:5984'\.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+["s3::Team TIBET", "sample::DEFAULT", "sample::Team TIBET", "sendmail::Team TIBET",
+"smtp::Team TIBET"]
+.fi
+.RE
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-confirm\fP :
+Should database URL and other parameters be confirmed when provided\. Default
+is true\. Use \fB\-\-no\-confirm\fP to disable\. If you want to disable confirmations in
+general you can set the TIBET configuration value \fBcli\.couch\.confirm\fP to false\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBtds\.couch\.scheme\fP :
+The CouchDB server scheme\. Default is \fBhttp\fP\|\.
+.IP \(bu 2
+\fBtds\.couch\.host\fP :
+The CouchDB server hostname or IP address\. Default is \fB127\.0\.0\.1\fP\|\.
+.IP \(bu 2
+\fBtds\.couch\.port\fP :
+The CouchDB server port\. Default is \fB5984\fP\|\.
+.IP \(bu 2
+\fBtds\.couch\.db_name\fP:
+The CouchDB database name to use\. Defaults to the current project name\.
+.IP \(bu 2
+\fBtds\.couch\.app_name\fP:
+The CouchDB application name to use\. Defaults to the current project name\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.RS 0
+.IP \(bu 2
+\fBCOUCH_DATABASE\fP :
+The name of the CouchDB database to use for operations\. Normally defaults to
+the project name in a TIBET+CouchDB project\.
+.IP \(bu 2
+\fBCOUCH_APPNAME\fP :
+The name of the design document (application) in the database to use for
+view lookup and application\-related operations\. Defaults to project name\.
+.IP \(bu 2
+\fBCOUCH_URL\fP :
+The URL of the CouchDB server\. For example \fBhttp://127\.0\.0\.1:5984\fP\|\. This URL
+can include username and password information but for more security it is
+recommended you use \fBCOUCH_USER\fP, \fBCOUCH_PASS\fP, and \fBCOUCH_KEY\fP variables
+instead\. If you do supply credentials be aware these values should be
+URL\-encoded (for example 'pass/word' must be provided as 'pass%2fword')\. A
+sample basic auth URL will resemble the following:
+\fBhttp://admin:pass%2fword@127\.0\.0\.1:5984\fP\|\.
+.IP \(bu 2
+\fBCOUCH_USER\fP :
+The username for the CouchDB server being accessed\. Should be exported as a
+URL\-encoded value\.
+.IP \(bu 2
+\fBCOUCH_PASS\fP :
+The password for the CouchDB server account being accessed\. Should be
+exported as a URL\-encoded value\.
+.IP \(bu 2
+\fBCOUCH_KEY\fP :
+The API key (if used) for the CouchDB server being accessed\. Should be
+exported as a URL\-encoded value\.
+
+.RE
+.SH EXAMPLES
+.SS Creating a database
+.P
+.RS 2
+.nf
+Use the `tibet couch createdb` command:
+
+$ tibet couch createdb dbtest
+creating database: http://127\.0\.0\.1:5984/dbtest
+database ready at http://127\.0\.0\.1:5984/dbtest
+.fi
+.RE
+.SS Compacting a database
+.P
+.RS 2
+.nf
+Use the `tibet couch compactdb` command:
+
+$ tibet couch compactdb dbtest
+Compact database [http://127\.0\.0\.1:5984/dbtest] ?
+Enter database name to confirm: dbtest
+compacting database: http://127\.0\.0\.1:5984/dbtest
+database compacted\.
+.fi
+.RE
+.SS List all databases
+.P
+.RS 2
+.nf
+Use the `tibet couch listall` command:
+
+$ tibet couch listall
+CouchDB url [http://127\.0\.0\.1:5984] ?
+using base url 'http://127\.0\.0\.1:5984'\.
+_global_changes
+_metadata
+_replicator
+_users
+d2d
+dbtest
+.fi
+.RE
+.SS Pushing/updating a CouchDB application
+.P
+.RS 2
+.nf
+TIBET can push content to a CouchDB design document to create a TIBET\-an
+variant of a "couchapp"\. TIBET+CouchDB applications do not use show or list
+functions, they rely on pure Client/Server communication between CouchDB and
+the TIBET client\.
+
+Resources used to accomplish this task are typically found in your project's
+root `couch/app` subdirectory\. If you have multiple applications each will
+have it's own subdirectory containing the resources specific to that app\.
+
+For your TIBET+CouchDB application to function properly you need to perform
+two preliminary steps: build your application, freeze a copy of the TIBET
+library minus the node_modules overhead\.
+
+//  Build your application's packaged resources so they're available\.
+
+$ tibet build
+Delegating to 'tibet make build'
+building app\.\.\.
+removing build artifacts\.\.\.
+processing resources\.\.\.
+\|\.\.\.
+Task complete: 12331ms\.
+
+//  Freeze a copy of the library
+
+$ tibet freeze \-\-raw
+freezing packaged library resources\.\.\.
+freezing library dependencies\.\.\.
+freezing library support resources\.\.\.
+freezing standard library docs\.\.\.
+freezing raw library source\.\.\.
+freezing raw library tests\.\.\.
+freezing raw library demos\.\.\.
+updating embedded lib_root references\.\.\.
+updating project lib_root setting\.\.\.
+Application frozen\. TIBET now boots from ~app_inf/tibet\.
+
+//  Push the application and library resources to CouchDB\.
+
+tibet couch pushapp sample
+marshalling content for: http://127\.0\.0\.1:5984/dbtest/_design/sample
+\|\.\.\.
+application ready at http://127\.0\.0\.1:5984/dbtest/_design/sample/index\.html
+.fi
+.RE
+.SS Removing a CouchDB application
+.P
+.RS 2
+.nf
+Use the `tibet couch removeapp` command:
+
+$ tibet couch removeapp sample
+Delete [http://127\.0\.0\.1:5984/dbtest/_design/sample] ?
+Enter database name to confirm: sample
+deleting http://127\.0\.0\.1:5984/dbtest/_design/sample
+application removed\.
+.fi
+.RE
+.SS Removing a CouchDB database
+.P
+.RS 2
+.nf
+Use the `tibet couch removedb` command:
+
+$ tibet couch removedb dbtest
+Delete ENTIRE database [http://127\.0\.0\.1:5984/dbtest] ?
+Enter database name to confirm: dbtest
+deleting database: http://127\.0\.0\.1:5984/dbtest
+database removed\.
+.fi
+.RE
+.SS Querying a CouchDB view
+.P
+.RS 2
+.nf
+Use the `couch view` subcommand, which takes a dot\-separated specifier for
+database\.appname\.viewname:
+
+$ tibet couch view dbtest_tasks\.tws\.tasks \-\-keys
+CouchDB url [http://127\.0\.0\.1:5984] ?
+using base url 'http://127\.0\.0\.1:5984'\.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+["s3::Team TIBET", "sample::DEFAULT", "sample::Team TIBET", "sendmail::Team TIBET",
+"smtp::Team TIBET"]
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.P
+During any operation if you receive a message including output to the effect
+that \fBYou are not a server admin\.\fP either export the the proper environment
+variables or provide your credentials in your \fBCouchDB url\fP prompt response\.
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-tws(1)
+
+.RE
+

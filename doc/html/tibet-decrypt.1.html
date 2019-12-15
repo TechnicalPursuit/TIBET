@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-decrypt</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-decrypt</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-decrypt-1-decrypt-a-string">tibet-decrypt(1) -- decrypt a string</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet decrypt &lt;string&gt;</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Decrypts a string using the same approach used by various TIBET server-side
+components. This command is provided as a convenience allowing you to
+decrypt API and service configuration values as needed to verify them.</p>
+<h2 id="options">OPTIONS</h2>
+<p>No command options or flags are checked by this command.</p>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>tibet.crypto.cipher</code> :
+The encryption/decryption mechanism to use. Defaults to <code>aes-256-ctr</code>.</p>
+</li>
+<li><p><code>tibet.crypto.keylen</code> :
+The encryption/decryption key length. Defaults to 32.</p>
+</li>
+<li><p><code>tibet.crypto.saltlen</code> :
+The encryption/decryption salt length. Defaults to 16.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<ul>
+<li><p><code>TIBET_CRYPTO_CIPHER</code> :
+The encryption/decryption mechanism to use.</p>
+</li>
+<li><p><code>TIBET_CRYPTO_KEY</code> :
+The secret key used to drive the encryption/decryption.</p>
+</li>
+<li><p><code>TIBET_CRYPTO_KEYLEN</code> :
+The encryption/decryption key length.</p>
+</li>
+<li><p><code>TIBET_CRYPTO_SALTLEN</code> :
+The encryption/decryption salt length.</p>
+</li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<pre><code>$ export TIBET_CRYPTO_KEY=&#39;TOPsecretKEY&#39;
+$ tibet encrypt &#39;myrestserviceapikey&#39;
+b460c7357dde9fdb50767791307cc4cb:98bb6a27b27cec1630467accf25d62a8d60348
+$ tibet decrypt b460c7357dde9fdb50767791307cc4cb:98bb6a27b27cec1630467accf25d62a8d60348
+myrestserviceapikey
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-encrypt.1.html">tibet-encrypt(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

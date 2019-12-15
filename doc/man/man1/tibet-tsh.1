@@ -1,0 +1,107 @@
+.TH "TIBET\-TSH" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-tsh\fR \- runs a TIBET Shell (TSH) expression
+.SH SYNOPSIS
+.P
+\fBtibet tsh [\-\-script=]<command> [<headless_args>]\fP
+.SH DESCRIPTION
+.P
+Runs the TIBET headless environment to execute a TSH script\.
+.P
+The script to execute is presumed to be the first argument, quoted as
+needed to ensure that it can be captured as a single string to pass to
+the TIBET Shell\. For example: \fBtibet tsh ':echo "Hello World!"'\.\fP
+You can also use the \fB\-\-script\fP argument to provide the TSH script\.
+.P
+\fB<headless_args>\fP refers to the various flags and parameters you can
+provide to Headless Chrome\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBcommand\fP :
+A properly quoted command line for the TSH, escaped as necessary based on
+the requirements of your shell\.
+.IP \(bu 2
+\fBheadless_args\fP
+Optional arguments to Headless Chrome which is responsible for processing
+the script\.
+.IP \(bu 2
+\fB\-\-script\fP :
+An optional argument used to define the \fBcommand\fP\|\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBproject\.start_page\fP:
+The file path to use for the initial page to pass to headless Chrome\.
+.IP \(bu 2
+\fBpuppeteer\.chromium_args\fP:
+Array of default puppeteer command line arguments\. Includes flags to allow
+local file access and more flexible security during operation\.
+.IP \(bu 2
+\fBpuppeteer\.devtools\fP:
+Should puppeteer be run with devtools open? Default is false\.
+.IP \(bu 2
+\fBpuppeteer\.headless\fP:
+Should puppeteer be run in headless mode? Default is true\.
+.IP \(bu 2
+\fBpuppeteer\.slowMo\fP:
+Should puppeteer be run in slowMo mode? Default is false\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS Run a simple TSH script via the command line
+.P
+.RS 2
+.nf
+$ tibet tsh \-\-script=':echo "Hello World!"'
+
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
+{
+    "ARGV": ["Hello World!"],
+    "ARG0": "Hello World!"
+}
+Finished in 4173 ms w/TSH exec time of 79 ms\.
+.fi
+.RE
+.SS Run a more complex TSH script via the command line
+.P
+In the example below we run the TSH \fB:test\fP command via the \fBtsh\fP command line
+tool\. As it turns out, this is exactly what the \fBtibet test\fP command does\. The
+\fBtibet test\fP command is actually a subtype of the \fBtsh\fP command\.
+.P
+.RS 2
+.nf
+$ tibet tsh \-\-script ':test'
+
+# Loading TIBET at 2018\-08\-23T13:32:03\.632Z
+# TIBET loaded and active in 6736ms
+# TIBET starting test run
+# 2 suite(s) found\.
+1\.\.3
+#
+# tibet test APP \-\-suite='APP'
+ok \- Has a namespace\.
+ok \- Has an application type\.
+# pass: 2 total, 2 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only\.
+#
+# tibet test APP\.todomvc\.app \-\-suite='APP\.todomvc:app'
+ok \- Is a templated tag\.
+# pass: 1 total, 1 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only\.
+#
+# PASS: 3 total, 3 pass, 0 fail, 0 error, 0 skip, 0 todo, 0 only\.
+
+Finished in 4209 ms w/TSH exec time of 104 ms\.
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command invokes the client\-side TIBET Shell to run a TSH script/command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+

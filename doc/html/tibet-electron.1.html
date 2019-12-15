@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-electron</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-electron</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-electron-1-start-a-tibet-electron-application">tibet-electron(1) -- start a TIBET electron application</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet electron [&lt;path&gt;] [--empty] [--devtools] [--debugger] [&lt;electron options&gt;]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Starts an Electron application by invoking the Electron binary with appropriate
+ocmmand line arguments and flags.</p>
+<p>By default the file <code>electron.js</code> in the standard TIBET electron project dna is
+launched. This file is similar in scope and content to the default file you&#39;ll
+find in Electron&#39;s standard <code>electron-quick-start</code> project.</p>
+<p>You can use the --devtools flag, specific to TIBET, to let the logic in
+<code>electron.js</code> determine whether to open Chrome DevTools or not on startup.</p>
+<p>The <code>--debugger</code> flag is a common flag in TIBET which will add <code>inspect-brk</code> to
+the command line so the application is launched with debugger access to the main
+process.</p>
+<p>The <code>--empty</code> flag offers a way to open an empty Electron application shell.
+This command option will let you see the full set of Electron command line
+options in the console and will open a clean Electron environment.</p>
+<p>All other command line arguments are passed as-is to the Electron binary. See
+the output from the <code>--empty</code> flag version for Electron&#39;s description of these
+options.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>debugger</code> :
+Add <code>inspect-brk</code> to the command line.</p>
+</li>
+<li><p><code>devtools</code> :
+Open the application with Chrome DevTools open and active.</p>
+</li>
+<li><p><code>empty</code> :
+Open the application without an initial page (aka empty). This will also
+cause the console to output Electron&#39;s &#39;usage&#39; data including all flags and
+options.</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<p>No TIBET configuration variables are utilized by this command.</p>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="start-electron-with-the-default-page-code-code-">Start Electron with the default page (<code>.</code>):</h3>
+<pre><code>tibet electron
+</code></pre><h3 id="start-electron-with-a-specific-start-page-">Start Electron with a specific start page:</h3>
+<pre><code>tibet electron ./index.html
+</code></pre><h3 id="start-electron-with-chrome-devtools-open-">Start Electron with Chrome DevTools open:</h3>
+<pre><code>tibet electron --devtools
+</code></pre><h3 id="start-electron-with-the-debugger-active-">Start Electron with the debugger active:</h3>
+<pre><code>tibet electron  --debugger
+
+Debugger listening on ws://127.0.0.1:9229/584efeb0-18cb-4e50-b12e-8b63a906b197
+For help, see: https://nodejs.org/en/docs/inspector
+</code></pre><h3 id="opening-an-empty-electron-application-">Opening an empty Electron application:</h3>
+<pre><code>$ tibet electron --empty
+
+Electron 6.0.0 - Build cross platform desktop apps with JavaScript, HTML, and CSS
+Usage: electron [options] [path]
+
+A path to an Electron app may be specified. It must be one of the following:
+  - index.js file.
+  - Folder containing a package.json file.
+  - Folder containing an index.js file.
+  - .html/.htm file.
+  - http://, https://, or file:// URL.
+
+Options:
+  -i, --interactive     Open a REPL to the main process.
+  -r, --require         Module to preload (option can be repeated).
+  -v, --version         Print the version.
+  -a, --abi             Print the Node ABI version.
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-start.1.html">tibet-start(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

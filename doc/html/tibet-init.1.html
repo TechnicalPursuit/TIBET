@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-init</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-init</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-init-1-initialize-a-tibet-project">tibet-init(1) -- initialize a TIBET project</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet init [--freeze]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Initializes a TIBET project, linking and installing dependencies.</p>
+<p>This command must be run prior to most activity within a TIBET
+project. Many of the TIBET cli commands will fail to run until
+you have run a <code>tibet init</code> command.</p>
+<p>The optional <code>--freeze</code> is effectively like running <code>tibet freeze</code> during
+initialization. This parameter will cause TIBET to make a copy of
+the current globally installed version in the project and update the
+package.json to refer to that version. Normally the current running release is
+simply linked into position via <code>npm link tibet</code>.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><code>--freeze</code> :
+Used to lock your project to a specific version of TIBET within the
+package.json and node_modules locations.</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>npm.name</code> :
+The project name, used only when cloning to an existing directory with an
+existing <code>package.json</code> file that can supply this value.</p>
+</li>
+<li><p><code>tibet.dna</code> :
+Read to determine the default project DNA to clone for this new project. If
+this value doesn&#39;t exist then <code>default</code> is the name used.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="initialize-a-fresh-project">Initialize a fresh project</h3>
+<pre><code>$ tibet init
+
+Initializing new default project...
+installing project dependencies via `npm install`.
+linking TIBET into project via `npm link tibet`.
+TIBET development dependency linked.
+Project initialized successfully.
+</code></pre><h3 id="initialize-a-fresh-project-and-lock-tibet-to-the-current-version-">Initialize a fresh project and lock TIBET to the current version.</h3>
+<pre><code>$ tibet init --freeze
+Initializing new default project...
+installing dependencies via `npm install`, be patient.
+installing TIBET version v5.0.0-pre.1 via `cp -R`.
+Project initialized successfully.
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-clone.1.html">tibet-clone(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

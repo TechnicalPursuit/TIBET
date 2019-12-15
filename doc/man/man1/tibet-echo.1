@@ -1,0 +1,48 @@
+.TH "TIBET\-ECHO" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-echo\fR \- echo command line arguments
+.SH SYNOPSIS
+.P
+\fBtibet echo [<args>]\fP
+.SH DESCRIPTION
+.P
+This command can be used as a template for your own custom commands or
+to help view how arguments are being parsed\.
+.SH OPTIONS
+.P
+No command options or flags are checked by this command\.
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.P
+.RS 2
+.nf
+$ tibet echo 'I am a string' \-\-param=foo
+
+Options:
+{
+    "_": ["echo", "I am a string"],
+    "color": true,
+    "help": false,
+    "usage": false,
+    "debug": false,
+    "stack": false,
+    "verbose": false,
+    "param": "foo"
+}
+.fi
+.RE
+.SH TIBET SHELL
+.P
+There is a client\-side TSH command \fB:echo\fP which mirrors the core
+functionality of this command in that it can be used to view how
+command line arguments and flags are being parsed\.
+.P
+The client\-side \fB:echo\fP command is not invoked by this command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+

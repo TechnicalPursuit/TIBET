@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-type</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-type</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-type-1-creates-a-new-tibet-type">tibet-type(1) -- creates a new TIBET type</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet type [--name] [[&lt;root&gt;.]&lt;namespace&gt;:]&lt;typename&gt; [--supertype &lt;typename] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--package &lt;pkgname&gt;] [--config &lt;cfgname&gt;]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Creates a new TIBET type using the supplied type name and parameters.</p>
+<p>Type names can supply one, two or three parts, separated by <code>.</code> or <code>:</code>.</p>
+<p>If three parts are supplied, they are used as the root namespace,
+the type namespace and the type name, respectively.</p>
+<p>If two parts are supplied, they are used for the type namespace and the type
+name and the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending on
+whether this command is being executed in an application project or the TIBET
+library.</p>
+<p>If one part is supplied, and this command is being executed in an application
+project, the type namespace is defaulted to the application project name and
+the root namespace is defaulted as it is when two parts are supplied. It is not
+a valid operation to execute this command with one part when executed inside of
+the TIBET library.</p>
+<p>Depending on the DNA chosen the result will be creation of the type and
+optionally a template, style sheet, and test file.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--supertype</code> :
+The name of the supertype to use for the target type. This should be
+specified as a fully-qualified {root}.{namespace}.{typename} triplet.</p>
+</li>
+<li><p><code>--dna</code> :
+The name of the dna (essentially a directory reference) to clone and process
+to produce the new type. The default is <code>default</code>. Other options are <code>content</code>
+for <code>TP.core.Content</code> subtypes, <code>controller</code> for <code>TP.core.Controller</code> subtypes,
+<code>computedtag</code> for <code>TP.tag.ComputedTag</code> and <code>templatedtag</code> for
+<code>TP.tag.TemplatedTag</code> subtypes. (As you can see the dna name is often simply
+the lowercased name of a type to use as the supertype, but each does in fact
+refer to a unique dna directory.</p>
+</li>
+<li><p><code>--config</code> :
+Used as the name of the config package in the cfg package file that the
+new type will be made a part of. If this parameter is not supplied, the default
+for a type being created in a project is <code>scripts</code> and for a type being created
+in the TIBET library is the same as the type namespace name.</p>
+</li>
+<li><p><code>--package</code> :
+Used to determine the cfg package file that will be updated with entries to
+load the new type and configure it. If this parameter is not supplied, the
+default for a type being created in a project is <code>~app_cfg/.xml</code>. For
+a type created in the TIBET library it&#39;s <code>lib_cfg/lib_namespaces.xml</code>.</p>
+</li>
+<li><p><code>--dir</code> :
+Used as the destination directory for the newly created source code files
+representing the type. If this parameter is not supplied, the default for a type
+being created in a project is <code>~app_tags</code> and for a type being created in
+the TIBET library is <code>~lib_src/</code>.</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><code>npm.name</code>:
+The &#39;appname&#39; as represented by the name of the project.</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="create-a-new-type-in-the-default-application-namespace">Create a new type in the default application namespace</h3>
+<pre><code>$ tibet type testing
+
+working in: /Users/ss/temporary/tmp/test/_testing_
+processing files...
+templating complete...
+positioning files...
+positioning complete...
+adjusting package entries...
+&lt;script src=&quot;~app_src/APP.test.testing.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_src/APP.test.testing_test.js&quot;/&gt; (added)
+New configuration entries created. Review/Rebuild as needed.
+Cleaning up working directory.
+Type DNA &#39;default&#39; cloned to ~app_src as &#39;testing&#39;.
+</code></pre><p>In this case we can see TIBET has generated a type as well as an associated
+unit test file.</p>
+<h3 id="create-a-new-custom-type-in-a-specific-namespace">Create a new custom type in a specific namespace</h3>
+<pre><code>$ tibet type APP.special.Type
+
+working in: /Users/ss/temporary/tmp/test/_Type_
+processing files...
+templating complete...
+positioning files...
+positioning complete...
+adjusting package entries...
+&lt;script src=&quot;~app_src/APP.special.Type.js&quot;/&gt; (added)
+&lt;script src=&quot;~app_src/APP.special.Type_test.js&quot;/&gt; (added)
+New configuration entries created. Review/Rebuild as needed.
+Cleaning up working directory.
+Type DNA &#39;default&#39; cloned to ~app_src as &#39;Type&#39;.
+</code></pre><p>Note that the current <code>type</code> command does not define new namespaces so if you
+use this approach you should be referring to an existing namespace or you should
+be prepared to define the namespace as part of your application startup
+sequence.</p>
+<p>Also note that TIBET has also updated the package@config so our types load:</p>
+<pre><code>&lt;config id=&quot;scripts&quot;&gt;
+    &lt;!-- put your source scripts here --&gt;
+    ...
+
+    &lt;script src=&quot;~app_src/APP.special.Type.js&quot;/&gt;
+&lt;/config&gt;
+</code></pre><p>...and so do their tests:</p>
+<pre><code>&lt;config id=&quot;tests&quot;&gt;
+    &lt;!-- put your test scripts here --&gt;
+    ...
+
+    &lt;script src=&quot;~app_src/APP.special.Type_test.js&quot;/&gt;
+&lt;/config&gt;
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-clone.1.html">tibet-clone(1)</a></li>
+<li><a class="crossref" href="./tibet-package.1.html">tibet-package(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+.TH "TIBET\-PACKAGE" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-package\fR \- list package assets either as asset paths or nodes
+.SH SYNOPSIS
+.P
+\fBtibet package [ [\-\-profile] <pkg_cfg> | [\-\-package <package>] [\-\-config <cfg>] ]
+    [\-\-phase <phase>] [\-\-all] [\-\-scripts] [\-\-styles] [\-\-images] [\-\-resources]
+    [\-\-templates] [\-\-inlined] [\-\-nodes]
+    [\-\-include <asset names>] [\-\-exclude <asset names>]
+    [\-\-add <list>] [\-\-remove <list>] [\-\-unresolved] [\-\-unlisted]\fP
+.SH DESCRIPTION
+.P
+Outputs a list of package assets either as asset nodes or asset paths\.
+.P
+This command is a useful way to view the files TIBET will load or process
+via commands such as \fBtibet rollup\fP or \fBtibet lint\fP\|\. The best way to get a sense
+of this command is to run it with various options, of which there are many\.
+.P
+You generally don't need to run this command yourself, most operations around
+packaging, rollups, minification, etc\. are managed by the various \fBtibet make\fP
+targets which support \fBbuild\fP operations in various forms\. See the files in your
+project's \fB~app_cmd/make\fP directory for specifics\.
+.P
+The underlying machinery of the \fBpackage\fP command is shared by a number of other
+TIBET commands, all of which leverage TIBET's application package/config files\.
+This includes the \fBrollup\fP, \fBresources\fP, and \fBlint\fP commands as well as any
+command line which launches TIBET headlessly to leverage reflection\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBprofile\fP:
+A profile in the form of package@config\.
+.IP \(bu 2
+\fBpackage\fP:
+The file path to the package to process\.
+.IP \(bu 2
+\fBconfig\fP:
+The name of an individual config to process\.
+.IP \(bu 2
+\fBphase\fP:
+Boot phase subset to process <all | one | two | app | lib>\|\.
+.IP \(bu 2
+\fBall\fP:
+Process all the config tags in the package\.
+.IP \(bu 2
+\fBadd\fP:
+List of resources to add to the package\.
+.IP \(bu 2
+\fBremove\fP:
+List of resources to remove from the package\.
+.IP \(bu 2
+\fBunresolved\fP:
+Output a list of unresolved (not found) assets of all types\.
+.IP \(bu 2
+\fBunlisted\fP:
+Output a list of potentially overlooked source files\.
+.IP \(bu 2
+\fBinclude\fP:
+A space\-separated list of asset tags to include\.
+.IP \(bu 2
+\fBexclude\fP:
+A space\-separated list of asset tags to include\.
+.IP \(bu 2
+\fBnodes\fP:
+Output asset nodes rather than asset paths\.
+.IP \(bu 2
+\fBimages\fP:
+Include all image assets\.
+.IP \(bu 2
+\fBtemplates\fP:
+Include all template assets\.
+.IP \(bu 2
+\fBresources\fP:
+Include all style, template, and resource assets\.
+.IP \(bu 2
+\fBscripts\fP:
+Include all JavaScript source\-containing assets\.
+.IP \(bu 2
+\fBstyles\fP:
+Include all CSS containing assets\.
+.IP \(bu 2
+\fBinlined\fP:
+Include boot\.resourced resources (inlined URI content)
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBboot\.package\fP:
+Read if there is no profile or other package info provided\.
+.IP \(bu 2
+\fBtds\.pouch\.prefix\fP:
+Read to determine what directory (if any) should be ignored so we avoid
+trying to package anything from PouchDB\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS List known resources from the current application package
+.P
+.RS 2
+.nf
+$ tibet package
+
+~app_src/APP\.sample\.js
+~app_src/APP\.sample\.Application\.js
+~app_tags/APP\.sample\.app/APP\.sample\.app\.js
+.fi
+.RE
+.SS List resources from a specific package@config pair
+.P
+.RS 2
+.nf
+$ tibet package \-\-profile development@developer
+
+~app_src/APP\.sample\.js
+~app_src/APP\.sample\.Application\.js
+~app_tags/APP\.sample\.app/APP\.sample\.app\.js
+~app_test/APP_test\.js
+~app_tags/APP\.sample\.app/APP\.sample\.app_test\.js
+.fi
+.RE
+.P
+Here we see that the test files for our application are now listed\.
+.SS List resources from a specific package@config pair for APP and LIB
+.P
+.RS 2
+.nf
+$ tibet package \-\-profile development@developer \-\-context all
+
+~lib_build/tibet_developer\.min\.js
+~app_src/APP\.sample\.js
+~app_src/APP\.sample\.Application\.js
+~app_tags/APP\.sample\.app/APP\.sample\.app\.js
+~app_test/APP_test\.js
+~app_tags/APP\.sample\.app/APP\.sample\.app_test\.js
+.fi
+.RE
+.P
+Note that with \fB\-\-context all\fP we now see library resources (in this case
+\fBtibet_developer\.min\.js\fP) as well as our application's resources\.
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-resources(1)
+.IP \(bu 2
+tibet\-rollup(1)
+
+.RE
+

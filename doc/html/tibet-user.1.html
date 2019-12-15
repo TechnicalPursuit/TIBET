@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-user</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-user</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-user-1-adds-updates-user-configuration-data">tibet-user(1) -- adds/updates user configuration data</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet user &lt;username&gt; &lt;password&gt; [--env &lt;env&gt;]
+    [--role &lt;role|roles&gt;] [--org &lt;org|orgs&gt;] [--unit unit]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>!!! NOTE: this command and the file(s) it manages are NOT SECURE and should
+never be used in production. This command is provided for convenience to let you
+simulate users, roles, orgs, and units during development only. !!!</p>
+<p>Manages and/or displays current TIBET user configuration data in the form of a
+user file and one or more associated vcards, one per username.</p>
+<p>This command lets you add, or update user data stored in <code>~user_file</code> (usually
+<code>users.json</code>) such that the resulting data will work properly with default
+lightweight authentication logic from the TDS.</p>
+<p>When you add a new user that user will have a vcard generated for them and
+stored in <code>~app_dat/{username}_vcard.xml</code>. If you specify an existing user that
+user&#39;s vcard is updated with any new data provided.</p>
+<p>A user&#39;s vcard is sent to the client by the TDS in response to requests when
+that user logs in, providing the client with role, org, and unit data.</p>
+<p>NOTE that if you use this command to set values it will rewrite the user file by
+using the beautify npm module to process the stringified JSON content. As a
+result your file may not retain its appearance after updates.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>username</code> :
+The username to define or verify.</p>
+</li>
+<li><p><code>--env</code> :
+Provides a way to specifically target a particular environment such as
+<code>development</code> within a configuration file.</p>
+</li>
+<li><p><code>--pass</code> :
+Flag to use to set a password for a particular user.</p>
+</li>
+<li><p><code>--role</code> :
+One or more role names, separated by commas. The resulting set of roles is
+injected into the user&#39;s associated vcard.</p>
+</li>
+<li><p><code>--org</code> :
+One or more org names, separated by commas. The resulting set of orgs is
+injected into the user&#39;s associated vcard.</p>
+</li>
+<li><p><code>--unit</code> :
+A unit name. If you&#39;re using a unit you should supply only a single org.</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<p>No TIBET configuration variables are utilized by this command.</p>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="check-to-see-if-a-particular-user-has-been-defined">Check to see if a particular user has been defined</h3>
+<pre><code>$ tibet user fluffy
+
+User was found.
+</code></pre><h3 id="define-a-new-user">Define a new user</h3>
+<pre><code>$ tibet user fuzzy --pass tooeasytoguess
+
+User added.
+</code></pre><p>Note that passwords are hashed and encrypted in the <code>users.json</code> file so they
+are not stored in plain text.</p>
+<pre><code>$ cat users.json
+{
+    &quot;default&quot;: {},
+    &quot;development&quot;: {
+        &quot;guest&quot;: &quot;a3bc2645acb9cf7051998cb6b7539b79253d67cadb4a1c514e077b882a1b17bc&quot;,
+        &quot;fluffy&quot;: &quot;a468ebdb2000c154dad108949333a588d7545efa86d3beb673349223e43cb9ed&quot;,
+        &quot;testy&quot;: &quot;e9381a7cef0756c6c57c41e80ac491a48b37df21300b0180a635117061c9e9fd&quot;
+    }
+}
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

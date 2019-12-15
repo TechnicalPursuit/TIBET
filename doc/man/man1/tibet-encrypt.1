@@ -1,0 +1,68 @@
+.TH "TIBET\-ENCRYPT" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-encrypt\fR \- encrypt a string
+.SH SYNOPSIS
+.P
+\fBtibet encrypt <string>\fP
+.SH DESCRIPTION
+.P
+Encrypts a string using the same approach used by other TIBET components\.
+.P
+This command is provided as a convenience allowing you to encrypt passwords or
+API keys prior to storing them\.
+.P
+The TIBET Workflow System (TWS) tasks expect passwords/keys to be provided in
+encrypted form as output by this command\. This allows you to store task\-specific
+passwords or API keys as part of your task definitions or parameters\.
+.SH OPTIONS
+.P
+No command options or flags are checked by this command\.
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBtibet\.crypto\.cipher\fP :
+The encryption/decryption mechanism to use\. Defaults to \fBaes\-256\-ctr\fP\|\.
+.IP \(bu 2
+\fBtibet\.crypto\.keylen\fP :
+The encryption/decryption key length\. Defaults to 32\.
+.IP \(bu 2
+\fBtibet\.crypto\.saltlen\fP :
+The encryption/decryption salt length\. Defaults to 16\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.RS 0
+.IP \(bu 2
+\fBTIBET_CRYPTO_CIPHER\fP :
+The encryption/decryption mechanism to use\.
+.IP \(bu 2
+\fBTIBET_CRYPTO_KEY\fP :
+The secret key used to drive the encryption/decryption\.
+.IP \(bu 2
+\fBTIBET_CRYPTO_KEYLEN\fP :
+The encryption/decryption key length\.
+.IP \(bu 2
+\fBTIBET_CRYPTO_SALTLEN\fP :
+The encryption/decryption salt length\.
+
+.RE
+.SH EXAMPLES
+.P
+.RS 2
+.nf
+$ export TIBET_CRYPTO_KEY='TOPsecretKEY'
+$ tibet encrypt 'myrestserviceapikey'
+b460c7357dde9fdb50767791307cc4cb:98bb6a27b27cec1630467accf25d62a8d60348
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-decrypt(1)
+
+.RE
+

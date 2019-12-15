@@ -1,0 +1,116 @@
+.TH "TIBET\-ELECTRON" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-electron\fR \- start a TIBET electron application
+.SH SYNOPSIS
+.P
+\fBtibet electron [<path>] [\-\-empty] [\-\-devtools] [\-\-debugger] [<electron options>]\fP
+.SH DESCRIPTION
+.P
+Starts an Electron application by invoking the Electron binary with appropriate
+ocmmand line arguments and flags\.
+.P
+By default the file \fBelectron\.js\fP in the standard TIBET electron project dna is
+launched\. This file is similar in scope and content to the default file you'll
+find in Electron's standard \fBelectron\-quick\-start\fP project\.
+.P
+You can use the \-\-devtools flag, specific to TIBET, to let the logic in
+\fBelectron\.js\fP determine whether to open Chrome DevTools or not on startup\.
+.P
+The \fB\-\-debugger\fP flag is a common flag in TIBET which will add \fBinspect\-brk\fP to
+the command line so the application is launched with debugger access to the main
+process\.
+.P
+The \fB\-\-empty\fP flag offers a way to open an empty Electron application shell\.
+This command option will let you see the full set of Electron command line
+options in the console and will open a clean Electron environment\.
+.P
+All other command line arguments are passed as\-is to the Electron binary\. See
+the output from the \fB\-\-empty\fP flag version for Electron's description of these
+options\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBdebugger\fP :
+Add \fBinspect\-brk\fP to the command line\.
+.IP \(bu 2
+\fBdevtools\fP :
+Open the application with Chrome DevTools open and active\.
+.IP \(bu 2
+\fBempty\fP :
+Open the application without an initial page (aka empty)\. This will also
+cause the console to output Electron's 'usage' data including all flags and
+options\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS Start Electron with the default page (\fB\|\.\fP):
+.P
+.RS 2
+.nf
+tibet electron
+.fi
+.RE
+.SS Start Electron with a specific start page:
+.P
+.RS 2
+.nf
+tibet electron \./index\.html
+.fi
+.RE
+.SS Start Electron with Chrome DevTools open:
+.P
+.RS 2
+.nf
+tibet electron \-\-devtools
+.fi
+.RE
+.SS Start Electron with the debugger active:
+.P
+.RS 2
+.nf
+tibet electron  \-\-debugger
+
+Debugger listening on ws://127\.0\.0\.1:9229/584efeb0\-18cb\-4e50\-b12e\-8b63a906b197
+For help, see: https://nodejs\.org/en/docs/inspector
+.fi
+.RE
+.SS Opening an empty Electron application:
+.P
+.RS 2
+.nf
+$ tibet electron \-\-empty
+
+Electron 6\.0\.0 \- Build cross platform desktop apps with JavaScript, HTML, and CSS
+Usage: electron [options] [path]
+
+A path to an Electron app may be specified\. It must be one of the following:
+  \- index\.js file\.
+  \- Folder containing a package\.json file\.
+  \- Folder containing an index\.js file\.
+  \- \.html/\.htm file\.
+  \- http://, https://, or file:// URL\.
+
+Options:
+  \-i, \-\-interactive     Open a REPL to the main process\.
+  \-r, \-\-require         Module to preload (option can be repeated)\.
+  \-v, \-\-version         Print the version\.
+  \-a, \-\-abi             Print the Node ABI version\.
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-start(1)
+
+.RE
+

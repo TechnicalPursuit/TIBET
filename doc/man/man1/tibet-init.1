@@ -1,0 +1,78 @@
+.TH "TIBET\-INIT" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-init\fR \- initialize a TIBET project
+.SH SYNOPSIS
+.P
+\fBtibet init [\-\-freeze]\fP
+.SH DESCRIPTION
+.P
+Initializes a TIBET project, linking and installing dependencies\.
+.P
+This command must be run prior to most activity within a TIBET
+project\. Many of the TIBET cli commands will fail to run until
+you have run a \fBtibet init\fP command\.
+.P
+The optional \fB\-\-freeze\fP is effectively like running \fBtibet freeze\fP during
+initialization\. This parameter will cause TIBET to make a copy of
+the current globally installed version in the project and update the
+package\.json to refer to that version\. Normally the current running release is
+simply linked into position via \fBnpm link tibet\fP\|\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-freeze\fP :
+Used to lock your project to a specific version of TIBET within the
+package\.json and node_modules locations\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP :
+The project name, used only when cloning to an existing directory with an
+existing \fBpackage\.json\fP file that can supply this value\.
+.IP \(bu 2
+\fBtibet\.dna\fP :
+Read to determine the default project DNA to clone for this new project\. If
+this value doesn't exist then \fBdefault\fP is the name used\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS Initialize a fresh project
+.P
+.RS 2
+.nf
+$ tibet init
+
+Initializing new default project\.\.\.
+installing project dependencies via `npm install`\.
+linking TIBET into project via `npm link tibet`\.
+TIBET development dependency linked\.
+Project initialized successfully\.
+.fi
+.RE
+.SS Initialize a fresh project and lock TIBET to the current version\.
+.P
+.RS 2
+.nf
+$ tibet init \-\-freeze
+Initializing new default project\.\.\.
+installing dependencies via `npm install`, be patient\.
+installing TIBET version v5\.0\.0\-pre\.1 via `cp \-R`\.
+Project initialized successfully\.
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-clone(1)
+
+.RE
+

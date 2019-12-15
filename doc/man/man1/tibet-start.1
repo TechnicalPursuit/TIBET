@@ -1,0 +1,180 @@
+.TH "TIBET\-START" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-start\fR \- starts the project's TIBET Data Server
+.SH SYNOPSIS
+.P
+\fBtibet start [<options>] [\-\-env <name>]\fP
+.SH DESCRIPTION
+.P
+Performs project\-specific start operations\.
+.P
+For a TDS\-based project this command will attempt to start the TDS by running
+the file \fBserver\.js\fP in your project root dirctory\.
+.P
+For an Electron project this command will delegate to the \fBtibet electron\fP
+command to launch your Electron project with appropriate flags\.
+.P
+For other project types this command will typically call the current operating
+system's \fBopen\fP command with your \fBproject\.start_page\fP value\. This last option
+will rarely work given modern browser security but is still included for
+historical reasons\.
+.P
+You can also start your project using \fBnpm start\fP, however that does not provide
+as many options for passing additional options as needed\.
+.P
+For typical TDS\-based projects the \fBserver\.js\fP file will attempt to load a
+series of plugins from the \fB~/plugins\fP directory\. The list itself is determined
+by the \fBtds\.plugins\.core\fP list but normally involves a list such as:
+.P
+.RS 2
+.nf
+body\-parser
+logger
+compression
+reconfig
+public\-static
+session
+security
+view\-engine
+authenticate
+private\-static
+routes
+tds
+user
+proxy
+fallback
+errors
+.fi
+.RE
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-env\fP :
+Specify an environment value to control the server\. This value is used by
+the system when loading values from \fBtds\.json\fP, the server's config file\. Common
+values are \fBdevelopment\fP (the default), and \fBproduction\fP\|\.
+.IP \(bu 2
+\fB\-\-tds\.port\fP :
+A commonly used \fBtibet config\fP option value which alters the port number the
+server should start on\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fB\-\-project\.start_page\fP:
+The initial page to be opened when no \fBserver\.js\fP file or \fBelectron\.js\fP
+files are found in the project root\.
+.IP \(bu 2
+\fBtds\.cert\.path\fP:
+Read by \fBserver\.js\fP\|\. The directory where certificate information can
+be found if running with HTTPS\.
+.IP \(bu 2
+\fBtds\.cert\.key\fP:
+Read by \fBserver\.js\fP\|\. The name of the certificate key file to use if running
+with HTTPS\.
+.IP \(bu 2
+\fBtds\.cert\.file\fP:
+Read by \fBserver\.js\fP\|\. The name of the actualy cert file to use if running
+with HTTPS\.
+.IP \(bu 2
+\fBtds\.https\fP:
+Read by \fBserver\.js\fP to determine if HTTPS should be used\. Default is false\.
+.IP \(bu 2
+\fBtds\.https_port\fP:
+Read by \fBserver\.js\fP to determine what port to use for HTTPS operation\. The
+default is 443\.
+.IP \(bu 2
+\fBtds\.plugins\.core\fP:
+Read by \fBserver\.js\fP\|\. Defines the list of plugins to load and in what order\.
+.IP \(bu 2
+\fBtds\.port\fP:
+Read by \fBserver\.js\fP\|\. Defines the default port if there is no port on the
+command line or in the environment\. The default is 1407\.
+.IP \(bu 2
+\fBtds\.secure_requests\fP:
+Read by \fBserver\.js\fP\|\. If the server is not HTTPS but is running behind
+\fBnginx\fP or another secure proxy this flag should be set to properly manage
+redirections\.
+.IP \(bu 2
+\fBtds\.stop_onerror\fP:
+Read by \fBserver\.js\fP\|\. If true, the server will terminate on an error\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.RS 0
+.IP \(bu 2
+\fBHTTPS_PORT\fP:
+Read by \fBserver\.js\fP\|\. The HTTPS port to be used if none is specified on the command line\.
+.IP \(bu 2
+\fBPORT\fP:
+Read by \fBserver\.js\fP\|\. The HTTP port to be used if none is specified on the command line\.
+.IP \(bu 2
+\fBnpm_package_config_port\fP:
+Read by \fBserver\.js\fP\|\. The port to use if no other option is configured\.
+
+.RE
+.SH EXAMPLES
+.SS Start the server on a default port (1407)
+.P
+.RS 2
+.nf
+$ tibet start
+
+                                  ,`
+                            __,~//`
+   ,///,_            \.~////////'`
+  '///////,       //////''`
+         '//,   ///'`
+            '/_/'
+              `
+    ////////////////////     ///////////////////  ////
+    `//'````````````///      `//'```````````````  '''
+     /`              //       /'
+    /                //      '/
+   ,/____             /'    ,/_____
+  /////////;;,,_      //   ,//////////;,_
+              `'/,_   '/              `'///,_
+                 `'/,_ /                   '//,
+                    '/,/,                    '/_
+                      `/,                     `/,
+                        '                      `/
+                                               '/
+                                                /
+
+info: hello 0\.1\.0 (development) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:1407
+.fi
+.RE
+.SS Start the server on a custom port
+.P
+.RS 2
+.nf
+$ tibet start \-\-tds\.port 2222
+
+\|\.\.\.
+info: test1 0\.1\.0 (development) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:2222
+.fi
+.RE
+.SS Start the server with a different environment
+.P
+.RS 2
+.nf
+$ tibet start \-\-env testing
+
+\|\.\.\.
+info: hello 0\.1\.0 (testing) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:1407
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-electron(1)
+.IP \(bu 2
+tibet\-tds(1)
+
+.RE
+

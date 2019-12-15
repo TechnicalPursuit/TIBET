@@ -1,0 +1,279 @@
+.TH "TIBET\-REFLECT" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-reflect\fR \- reflects on TIBET objects and methods
+.SH SYNOPSIS
+.P
+\fBtibet reflect [target] [\-\-interface <interface>] [\-\-filter <filter>]
+    [\-\-context=['app'|'lib'|'all']] [\-\-types] [\-\-methods] [\-\-attributes]
+    [\-\-owners] [\-\-slots] [\-\-known] [\-\-hidden] [\-\-unique] [\-\-inherited]
+    [\-\-local] [\-\-introduced] [\-\-overridden]\fP
+.SH DESCRIPTION
+.P
+Runs the TSH :reflect command to show object or system reflection data\.
+.P
+You can list all of TIBET's types via \fBtibet reflect \-\-types\fP or list all
+methods via \fBtibet reflect \-\-methods\fP\|\. Without a target object this
+approach lets you view the top\-most metadata collections in TIBET\.
+.P
+The [target] parameter can be any object reference TIBET can resolve
+using TIBET's getObjectById() function\. That means any namespace, type,
+method, or publicly registed object such as window or a TIBET URI\.
+.P
+For objects which support it the \-\-interface option lets you restrict
+the results to a specific interface of the object\. The values here must
+be found in the TP\.SLOT_FILTERS object as used by TP\.interface()\. Some
+interesting options are \fBknown\fP, \fBpublic\fP, and \fBunique\fP which have their own
+flags to help you set your intention clearly\.
+.P
+Note that not all flags will work for every target object type\. Namespace
+objects don't support \-\-owners for example\. When a flag is ignored it is
+not typically reported since working combinations are so target\-dependant\.
+The best thing to do is experiment a little and see what reflect finds\. The
+\fBgetInterface\fP call in TIBET is ultimately the routine being invoked so see the
+documentation on that method for more\.
+.P
+The \-\-filter option allows you to refine your result data by checking the
+keys returned against either a regular expression or string\. The filter value
+is always used as a RegExp if one can be created from the string\. Full RegExp
+syntax is possible to the extent your shell will allow it\. For example, using
+\fB\-\-filter '/example/i'\fP will filter for example in a case\-insensitive fashion\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBtarget\fP :
+An optional target, usually a type name, to check\.
+.IP \(bu 2
+\fB\-\-attributes\fP :
+Signify that the search should work against attributes\. This can list all
+attributes (or a subset by combining with \fB\-\-filter\fP) or just the attributes of
+a particular target\.
+.IP \(bu 2
+\fB\-\-filter\fP :
+An optional regular expression, expressed in /foo/ig form\. This filter will
+be applied to fully\-qualified method names\.
+.IP \(bu 2
+\fB\-\-interface\fP :
+An interface value from the \fBTP\.SLOT_FILTERS\fP list in TIBET\. Note that not
+all combinations make sense\. Experiment to get familiar with these\.
+.IP \(bu 2
+\fB\-\-methods\fP :
+Signify that the search should work against methods\. This can list all
+methods (or a subset by combining with \fB\-\-filter\fP) or just the methods of a
+particular target\.
+.IP \(bu 2
+\fB\-\-owners\fP :
+Signify the search should produce owners\. This flag is primarily useful only
+when reflecting on a function\. In that case it should return a list of the
+owners (implementers) of the function\. You can also use this flag alone to list
+all known \fBowners\fP of methods in the system\.
+.IP \(bu 2
+\fB\-\-slots\fP :
+Focus the search on attributes if no other flags are provided\. Otherwise
+focus on all keys on the target object, not just methods etc\.
+.IP \(bu 2
+\fB\-\-types\fP :
+Normally used to list all types, or to filter types in conjunction with the
+\fB\-\-filter\fP option\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.P
+No TIBET configuration variables are utilized by this command\.
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS List all types in the system
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-types
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+APP\.hello\.Application
+APP\.hello\.app
+Array
+ArrayBuffer
+ArrayBufferView
+Attr
+\|\.\.\.
+\|\.\.\.
+XPathException
+XPathExpression
+XPathResult
+XSLTProcessor
+.fi
+.RE
+.SS List all types in the APP namespace
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-types \-\-filter /APP/
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+APP\.hello\.Application
+APP\.hello\.app
+
+Finished in 3762 ms w/TSH exec time of 201 ms\.
+.fi
+.RE
+.SS List all methods in the system
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-methods
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+APP\.hello\.Application\.Inst\.handleAppDidInitializeFromANYWhenANY
+Array\.Inst\.$$isCollection
+Array\.Inst\.$$isMemberOf
+Array\.Inst\.$$isPair
+Array\.Inst\.$get
+Array\.Inst\.$getEqualityValue
+Array\.Inst\.$set
+Array\.Inst\.$sortIfNeeded
+Array\.Inst\.add
+Array\.Inst\.addAfter
+Array\.Inst\.addAll
+Array\.Inst\.addAllAfter
+\|\.\.\.
+\|\.\.\.
+Window\.Inst\.getTypeName
+Window\.Inst\.setID
+Window\.Type\.getName
+.fi
+.RE
+.SS List all methods that include 'element' in their names
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-methods \-\-filter /element/i
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+TP\.$$elementPreserveIFrameContent
+TP\.$$elementRestoreIFrameContent
+TP\.$elementCSSFlush
+TP\.$elementGetBusyLayer
+TP\.$elementGetOffsetParent
+\|\.\.\.
+\|\.\.\.
+TP\.xctrls\.SwitchableElement\.Inst\.setDisplayValue
+TP\.xctrls\.SwitchableElement\.Inst\.setValue
+TP\.xmpp\.Error\.Inst\.getErrorElement
+TP\.xmpp\.Node\.Inst\.getErrorElement
+TP\.xs\.XMLSchemaComplexCompositeType\.Type\.validateElements
+.fi
+.RE
+.SS List all methods For a specific target
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-methods TP\.log\.Manager\.Type
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+exists
+getLogger
+getLoggerFactory
+getLoggers
+getRootLogger
+initialize
+registerLogger
+removeLogger
+
+Finished in 3630 ms w/TSH exec time of 70 ms\.
+.fi
+.RE
+.SS View reflection data for a specific method
+.P
+.RS 2
+.nf
+$ tibet reflect TP\.log\.Manager\.Type\.getLoggers
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+TP\.log\.Manager\.Type\.getLoggers
+
+/**
+ * @method getLoggers
+ * @summary Returns the dictionary of all known loggers\. The keys of this
+ *     dictionary are the logger names converted to lowercase to normalize
+ *     them\. The entries are the logger instances themselves\.
+ * @returns {TP\.core\.Hash} The logger dictionary\.
+ */
+
+~lib_src/tibet/kernel/TIBETLogging\.js
+.fi
+.RE
+.SS View reflection data for a TIBET Primitive
+.P
+.RS 2
+.nf
+$ tibet reflect json2xml
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+TP\.json2xml
+
+/**
+ * @method json2xml
+ * @summary Transforms a JSON\-formatted string into roughly equivalent XML\.
+ * @description The transformation is in two steps, first to JS and then
+ *     into simple XML where keys are element names and values are content
+ *     text nodes\.
+ * @param {String} aString A JSON\-formatted string\.
+ * @returns {Node} An XML node representing the same data structures found
+ *     in the JSON string\.
+ */
+
+~lib_src/tibet/kernel/TIBETContentPrimitives\.js
+.fi
+.RE
+.SH TROUBLESHOOTING
+.SS You may need to escape certain values for your shell
+.P
+.RS 2
+.nf
+$ tibet reflect TP\.boot\.$uitime
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+TP\.boot\. not found\.
+
+Finished in 4304 ms w/TSH exec time of 68 ms\.
+
+$ tibet reflect 'TP\.boot\.$uitime'
+
+# Loading TIBET platform at 2019\-11\-09T17:43:17\.668Z
+# TIBET reflection suite loaded and active in 5219ms
+
+"2016\-07\-02T04:09:25\.148Z"
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command marshals arguments which it then passes to the client\-side
+\fB:reflect\fP command\. That command invokes TIBET's getInterface mechanisms to
+reflect on the various aspects of the system you've requested\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-apropos(1)
+.IP \(bu 2
+tibet\-help(1)
+
+.RE
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-make</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-make</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-make-1-runs-a-function-as-a-task">tibet-make(1) -- runs a function as a task</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet make &lt;target&gt; [--list] [--private] [--timeout &lt;ms&gt;]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>This command runs lightweight commands in the form of functions, much like Grunt
+or Gulp. There&#39;s no dependency checking or true &#39;make&#39;-like functionality but
+<code>tibet make</code> does leverage JavaScript Promises to coordinate tasks and their
+interactions, particularly when calling nested or asynchronous tasks.</p>
+<p>TIBET provides a set of default functions for <code>make</code> which support basic
+operations such as <code>clean</code>, <code>build</code>, and <code>rollup</code> that are common in TIBET
+applications. By providing these commands as make targets it&#39;s easy for you to
+modify them to meet your specific project requirements.</p>
+<p>When you use the <code>tibet</code> command all available make targets are checked if no
+concrete command is found. For example, you can run <code>tibet clean</code> and, since
+there is no concrete <code>clean</code> command the <code>tibet</code> command will delegate to the
+<code>tibet make clean</code> operation.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--list</code> :
+Used to list the available <code>tibet make</code> targets you can run.</p>
+</li>
+<li><p><code>--private</code> :
+Tells the <code>--list</code> operation to also include private tasks, tasks whose
+names begin with <code>_</code> so they are normally filtered by the list option.</p>
+</li>
+<li><p><code>--timeout &lt;ms&gt;</code> :
+Gives you a way to provide a millisecond timeout value in which each task
+must complete successfully. The default is 15 seconds (15000).</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>--make.compression.parse_options</code>:
+Set by this command to pass command line options along to any
+compression-related make operations.</p>
+</li>
+<li><p><code>--make.package.parse_options</code>:
+Set by this command to pass command line options to any packaging-related
+operations.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="sample-function-the-lint-task-in-make-">Sample function (the lint task in make):</h3>
+<pre><code>(function() {
+    &#39;use strict&#39;;
+
+    var task;
+
+    task = function(make, resolve, reject) {
+        var proc;
+
+        make.log(&#39;checking for lint...&#39;);
+
+        proc = make.spawn(&#39;tibet lint --stop&#39;);
+        proc.on(&#39;exit&#39;, function(code) {
+            code === 0 ? resolve() : reject();
+        });
+    };
+
+    task.options = {timeout: 1000 * 60 * 5};
+
+    module.exports = task;
+}());
+</code></pre><h3 id="list-available-targets">List available targets</h3>
+<pre><code>$ tibet make
+
+Available targets:
+
+    build checkup clean deploy resources rollup
+</code></pre><h3 id="run-a-make-target-explicitly">Run a make target explicitly</h3>
+<pre><code>$ tibet make clean
+
+cleaning...
+Task complete: 7ms.
+</code></pre><h3 id="run-a-make-target-implicitly">Run a make target implicitly</h3>
+<pre><code>$ tibet clean
+
+Delegating to &#39;tibet make clean&#39;
+cleaning...
+Task complete: 4ms.
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-build.1.html">tibet-build(1)</a></li>
+<li><a class="crossref" href="./tibet-deploy.1.html">tibet-deploy(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

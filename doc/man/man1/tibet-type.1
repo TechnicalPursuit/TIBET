@@ -1,0 +1,159 @@
+.TH "TIBET\-TYPE" "1" "December 2019" "" ""
+.SH "NAME"
+\fBtibet-type\fR \- creates a new TIBET type
+.SH SYNOPSIS
+.P
+\fBtibet type [\-\-name] [[<root>\.]<namespace>:]<typename> [\-\-supertype <typename] [\-\-dir <dirname>] [\-\-dna <template>] [\-\-package <pkgname>] [\-\-config <cfgname>]\fP
+.SH DESCRIPTION
+.P
+Creates a new TIBET type using the supplied type name and parameters\.
+.P
+Type names can supply one, two or three parts, separated by \fB\|\.\fP or \fB:\fP\|\.
+.P
+If three parts are supplied, they are used as the root namespace,
+the type namespace and the type name, respectively\.
+.P
+If two parts are supplied, they are used for the type namespace and the type
+name and the root namespace is defaulted to either \fBAPP\fP or \fBTP\fP, depending on
+whether this command is being executed in an application project or the TIBET
+library\.
+.P
+If one part is supplied, and this command is being executed in an application
+project, the type namespace is defaulted to the application project name and
+the root namespace is defaulted as it is when two parts are supplied\. It is not
+a valid operation to execute this command with one part when executed inside of
+the TIBET library\.
+.P
+Depending on the DNA chosen the result will be creation of the type and
+optionally a template, style sheet, and test file\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-supertype\fP :
+The name of the supertype to use for the target type\. This should be
+specified as a fully\-qualified {root}\.{namespace}\.{typename} triplet\.
+.IP \(bu 2
+\fB\-\-dna\fP :
+The name of the dna (essentially a directory reference) to clone and process
+to produce the new type\. The default is \fBdefault\fP\|\. Other options are \fBcontent\fP
+for \fBTP\.core\.Content\fP subtypes, \fBcontroller\fP for \fBTP\.core\.Controller\fP subtypes,
+\fBcomputedtag\fP for \fBTP\.tag\.ComputedTag\fP and \fBtemplatedtag\fP for
+\fBTP\.tag\.TemplatedTag\fP subtypes\. (As you can see the dna name is often simply
+the lowercased name of a type to use as the supertype, but each does in fact
+refer to a unique dna directory\.
+.IP \(bu 2
+\fB\-\-config\fP :
+Used as the name of the config package in the cfg package file that the
+new type will be made a part of\. If this parameter is not supplied, the default
+for a type being created in a project is \fBscripts\fP and for a type being created
+in the TIBET library is the same as the type namespace name\.
+.IP \(bu 2
+\fB\-\-package\fP :
+Used to determine the cfg package file that will be updated with entries to
+load the new type and configure it\. If this parameter is not supplied, the
+default for a type being created in a project is \fB~app_cfg/\.xml\fP\|\. For
+a type created in the TIBET library it's \fBlib_cfg/lib_namespaces\.xml\fP\|\.
+.IP \(bu 2
+\fB\-\-dir\fP :
+Used as the destination directory for the newly created source code files
+representing the type\. If this parameter is not supplied, the default for a type
+being created in a project is \fB~app_tags\fP and for a type being created in
+the TIBET library is \fB~lib_src/\fP\|\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBnpm\.name\fP:
+The 'appname' as represented by the name of the project\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS Create a new type in the default application namespace
+.P
+.RS 2
+.nf
+$ tibet type testing
+
+working in: /Users/ss/temporary/tmp/test/_testing_
+processing files\.\.\.
+templating complete\.\.\.
+positioning files\.\.\.
+positioning complete\.\.\.
+adjusting package entries\.\.\.
+<script src="~app_src/APP\.test\.testing\.js"/> (added)
+<script src="~app_src/APP\.test\.testing_test\.js"/> (added)
+New configuration entries created\. Review/Rebuild as needed\.
+Cleaning up working directory\.
+Type DNA 'default' cloned to ~app_src as 'testing'\.
+.fi
+.RE
+.P
+In this case we can see TIBET has generated a type as well as an associated
+unit test file\.
+.SS Create a new custom type in a specific namespace
+.P
+.RS 2
+.nf
+$ tibet type APP\.special\.Type
+
+working in: /Users/ss/temporary/tmp/test/_Type_
+processing files\.\.\.
+templating complete\.\.\.
+positioning files\.\.\.
+positioning complete\.\.\.
+adjusting package entries\.\.\.
+<script src="~app_src/APP\.special\.Type\.js"/> (added)
+<script src="~app_src/APP\.special\.Type_test\.js"/> (added)
+New configuration entries created\. Review/Rebuild as needed\.
+Cleaning up working directory\.
+Type DNA 'default' cloned to ~app_src as 'Type'\.
+.fi
+.RE
+.P
+Note that the current \fBtype\fP command does not define new namespaces so if you
+use this approach you should be referring to an existing namespace or you should
+be prepared to define the namespace as part of your application startup
+sequence\.
+.P
+Also note that TIBET has also updated the package@config so our types load:
+.P
+.RS 2
+.nf
+<config id="scripts">
+    <!\-\- put your source scripts here \-\->
+    \.\.\.
+
+    <script src="~app_src/APP\.special\.Type\.js"/>
+</config>
+.fi
+.RE
+.P
+\|\.\.\.and so do their tests:
+.P
+.RS 2
+.nf
+<config id="tests">
+    <!\-\- put your test scripts here \-\->
+    \.\.\.
+
+    <script src="~app_src/APP\.special\.Type_test\.js"/>
+</config>
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+tibet\-clone(1)
+.IP \(bu 2
+tibet\-package(1)
+
+.RE
+

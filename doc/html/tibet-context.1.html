@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-context</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-context</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-context-1-outputs-current-context-information">tibet-context(1) -- outputs current context information</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet context</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Displays core contextual information about the current project including values
+for the library root, application root, current project name, current boot
+profile, package, config, and package configuration options.</p>
+<p>The data provided is often helpful in showing you where the key paths for
+project launch point and what the baseline boot profile elements are.</p>
+<h2 id="options">OPTIONS</h2>
+<p>No command options or flags are checked by this command.</p>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><p><code>npm.name</code> :
+The project name.</p>
+</li>
+<li><p><code>npm.version</code> :
+The project version.</p>
+</li>
+<li><p><code>boot.config</code> :
+If no <code>boot.package</code> is found <code>boot.config</code> is read to try to determine the
+package configuration that is set to boot by default.</p>
+</li>
+<li><p><code>boot.package</code> :
+If no <code>boot.profile</code> is found <code>boot.package</code> is read to get the package
+name that is set to boot by default.</p>
+</li>
+<li><p><code>boot.profile</code> :
+Read to determine if a <code>package@config</code> has been set for booting.</p>
+</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="in-a-tibet-project">In a TIBET project</h3>
+<pre><code>$ tibet context
+
+{
+    &quot;name&quot;: &quot;hello&quot;,
+    &quot;version&quot;: &quot;0.1.0&quot;,
+    &quot;in_library&quot;: false,
+    &quot;in_project&quot;: true,
+    &quot;~&quot;: &quot;/Users/ss/temporary/hello&quot;,
+    &quot;~app&quot;: &quot;~/public&quot;,
+    &quot;~lib&quot;: &quot;/Users/ss/temporary/hello/node_modules/tibet&quot;,
+    &quot;boot&quot;: {
+        &quot;profile&quot;: null,
+        &quot;package&quot;: &quot;~app_cfg/main.xml&quot;,
+        &quot;configs&quot;: [&quot;base&quot;, &quot;baseui&quot;, &quot;contributor&quot;, &quot;developer&quot;, &quot;full&quot;, &quot;production&quot;],
+        &quot;config&quot;: &quot;production&quot;
+    }
+}
+</code></pre><h3 id="in-the-tibet-library">In the TIBET library</h3>
+<pre><code>$ tibet context
+
+{
+    &quot;name&quot;: &quot;tibet&quot;,
+    &quot;version&quot;: &quot;5.0.0-pre.51&quot;,
+    &quot;in_library&quot;: true,
+    &quot;in_project&quot;: false,
+    &quot;~&quot;: &quot;/Users/ss/dev/TPI/TIBET&quot;,
+    &quot;~app&quot;: &quot;/Users/ss/dev/TPI/TIBET&quot;,
+    &quot;~lib&quot;: &quot;/Users/ss/dev/TPI/TIBET&quot;,
+    &quot;boot&quot;: {
+        &quot;profile&quot;: null,
+        &quot;package&quot;: &quot;~lib_cfg/TIBET.xml&quot;,
+        &quot;configs&quot;: [&quot;base&quot;, &quot;base-inlined&quot;, &quot;baseui&quot;, &quot;baseui-inlined&quot;, &quot;contributor&quot;, &quot;developer&quot;, &quot;full&quot;, &quot;hook&quot;, &quot;inlined&quot;, &quot;kernel&quot;, &quot;loader&quot;, &quot;login&quot;, &quot;sherpa-inlined&quot;, &quot;small&quot;, &quot;standard&quot;, &quot;test-inlined&quot;, &quot;testing&quot;, &quot;worker&quot;, &quot;xctrls-inlined&quot;],
+        &quot;config&quot;: &quot;base&quot;
+    }
+}
+</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./tibet-config.1.html">tibet-config(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET 5.0.5 - Copyright (C) 2019 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>
