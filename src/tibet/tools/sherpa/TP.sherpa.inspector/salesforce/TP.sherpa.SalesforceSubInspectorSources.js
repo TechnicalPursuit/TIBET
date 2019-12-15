@@ -307,11 +307,10 @@ function() {
 
     /**
      * @method handleQuerySalesforce
-     * @summary Handles when the user has completed authentication information
-     *     in the UI in an attempt to authenticate a CouchDB connection.
+     * @summary Handles when the user wants to query Salesforce.
      * @param {TP.sig.QuerySalesforce} aSignal The signal indicating that
-     *     the user has dismisse
-     * @returns {TP.sherpa.CouchDBSubInspectorSources} The receiver.
+     *     the user wants to query Salesforce.
+     * @returns {TP.sherpa.SalesforceDBSubInspectorSources} The receiver.
      */
 
     var inspector,

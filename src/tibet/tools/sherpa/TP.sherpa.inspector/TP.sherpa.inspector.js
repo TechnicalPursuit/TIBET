@@ -788,6 +788,9 @@ function(methodSuffix, regExpParts) {
      * @returns {TP.sherpa.InspectorPathSource} The receiver.
      */
 
+    //  Compute a RegExp from the path parts joined together with the path
+    //  separator, looking for an exact match from start to end and register
+    //  that, along with the number of parts, in the method register.
     this.get('methodRegister').atPut(
         methodSuffix,
         TP.ac(
