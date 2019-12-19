@@ -79,7 +79,7 @@
         "js-beautify": "^1.10.2",
         "jsforce": "^1.9.3",
         "jsonpath": "github:TechnicalPursuit/jsonpath",
-        "less": "^3.10.3",
+        "less": "github:TechnicalPursuit/less.js",
         "marked": "^0.4.0",
         "marked-man": "github:TechnicalPursuit/marked-man",
         "mime-types": "^2.1.25",
