@@ -36,6 +36,10 @@ TP.tsh.eval.addTraits(TP.tsh.Element);
 //  processed by the tsh:script tag during XML desugaring.
 TP.tsh.eval.Type.defineAttribute('$tshOperators', TP.ac('^'));
 
+//  The initial key set that the context has before we populate slots onto it,
+//  either via the captured scope object or eval()ing code.
+TP.tsh.eval.Type.defineAttribute('$originalContextKeySet');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -907,6 +911,7 @@ function(REQUEST$$) {
         END$$,
         TIME$$,
         RESULT$$,
+        SCOPE$$,
         TOKENS$$,
         ERR$$,
         SCRIPT$$,
@@ -1011,7 +1016,21 @@ function(REQUEST$$) {
         SCRIPT$$ = $SCRIPT;
 
         START$$ = Date.now();
+
+        //  Grab the execution scope.
+        SCOPE$$ = $SHELL.getExecutionInstance($REQUEST);
+
+        //  Capture the 'pre eval' state of the context and place the slots from
+        //  the scope onto the context.
+        TP.tsh.eval.$populateContextFromScope($CONTEXT, SCOPE$$);
+
+        //  Eval the script
         RESULT$$ = $CONTEXT.eval(SCRIPT$$);
+
+        //  Capture the current state of the context and place the slots from
+        //  the context onto the scope.
+        TP.tsh.eval.$populateScopeFromContext($CONTEXT, SCOPE$$);
+
         END$$ = Date.now();
 
         TIME$$ = TP.ifInvalid($REQUEST.get('$evaltime'), 0);
@@ -1415,6 +1434,7 @@ function(REQUEST$$, CMDTYPE$$) {
             LEN$$,
             I$$,
             START$$,
+            SCOPE$$,
             END$$,
             ERR$$,
             TIME$$,
@@ -1480,22 +1500,70 @@ function(REQUEST$$, CMDTYPE$$) {
                 START$$ = Date.now();
                 if (LOOP$$) {
                     if (TP.isCollection($INPUT)) {
+                        //  Grab the execution scope.
+                        SCOPE$$ = $SHELL.getExecutionInstance($REQUEST);
                         RESULT$$ = $INPUT.collect(
                             function(ITEM$$, INDEX$$) {
+                                var result;
 
                                 $INDEX = INDEX$$;
                                 $_ = ITEM$$;
 
-                                return $CONTEXT.eval(SCRIPT$$);
+                                //  Capture the 'pre eval' state of the context
+                                //  and place the slots from the scope onto the
+                                //  context.
+                                TP.tsh.eval.$populateContextFromScope(
+                                                            $CONTEXT, SCOPE$$);
+
+                                //  Eval the script.
+                                result = $CONTEXT.eval(SCRIPT$$);
+
+                                //  Capture the current state of the context and
+                                //  place the slots from the context onto the
+                                //  scope.
+                                TP.tsh.eval.$populateScopeFromContext(
+                                                            $CONTEXT, SCOPE$$);
+
+                                return result;
                             });
                     } else {
                         //  splatted on non-collection...
                         $_ = $INPUT;
+
+                        //  Grab the execution scope.
+                        SCOPE$$ = $SHELL.getExecutionInstance($REQUEST);
+
+                        //  Capture the 'pre eval' state of the context and
+                        //  place the slots from the scope onto the context.
+                        TP.tsh.eval.$populateContextFromScope(
+                                                        $CONTEXT, SCOPE$$);
+
+                        //  Eval the script.
                         RESULT$$ = TP.ac($CONTEXT.eval(SCRIPT$$));
+
+                        //  Capture the current state of the context and place
+                        //  the slots from the context onto the scope.
+                        TP.tsh.eval.$populateScopeFromContext(
+                                                        $CONTEXT, SCOPE$$);
                     }
                 } else {
                     $_ = $INPUT;
+
+                    //  Grab the execution scope.
+                    SCOPE$$ = $SHELL.getExecutionInstance($REQUEST);
+
+                    //  Capture the 'pre eval' state of the context and place
+                    //  the slots from the scope onto the context.
+                    TP.tsh.eval.$populateContextFromScope(
+                                                    $CONTEXT, SCOPE$$);
+
+                    //  Eval the script.
                     RESULT$$ = $CONTEXT.eval(SCRIPT$$);
+
+                    //  Capture the current state of the context and place the
+                    //  slots from the context onto the scope.
+                    TP.tsh.eval.$populateScopeFromContext(
+                                                    $CONTEXT, SCOPE$$);
                 }
                 END$$ = Date.now();
 
@@ -1800,8 +1868,9 @@ function(aString, aShell, aRequest) {
 
     var result,
 
-        RESULT$$,
         SCRIPT$$,
+        SCOPE$$,
+        RESULT$$,
 
     //  standard "special variables" we're willing to expose to scripts
         $LASTREQ,
@@ -1979,7 +2048,19 @@ function(aString, aShell, aRequest) {
             // $SCRIPT = TP.$condenseJS($SCRIPT, true);
             SCRIPT$$ = $SCRIPT;
 
+            //  Grab the execution scope.
+            SCOPE$$ = $SHELL.getExecutionInstance($REQUEST);
+
+            //  Capture the 'pre eval' state of the context and place the slots
+            //  from the scope onto the context.
+            TP.tsh.eval.$populateContextFromScope($CONTEXT, SCOPE$$);
+
+            //  Eval the script.
             RESULT$$ = $CONTEXT.eval(SCRIPT$$);
+
+            //  Capture the current state of the context and place the slots
+            //  from the context onto the scope.
+            TP.tsh.eval.$populateScopeFromContext($CONTEXT, SCOPE$$);
         } catch (e) {
 
             if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
@@ -2026,6 +2107,92 @@ function(aString, aShell, aRequest) {
     }
 
     return result.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.eval.Type.defineMethod('$populateContextFromScope',
+function(context, scope) {
+
+    /**
+     * @method $populateContextFromScope
+     * @summary Populates the supplied context from the supplied scope. This is
+     *     typically called before a shell 'eval' operation.
+     * @param {Object} context The context that the eval will happen in.
+     * @param {Object} scope The scope object that 'global' properties will be
+     *     placed in when code is eval'ed.
+     * @returns {TP.meta.tsh.eval} The receiver.
+     */
+
+    var originalKeys,
+        originalKeySet;
+
+    //  Grab the keys that currently exist on the context and make a Set from
+    //  them.
+    originalKeys = Object.keys(context);
+    originalKeySet = new Set(originalKeys);
+
+    this.$set('$originalContextKeySet', originalKeySet, false);
+
+    //  Grab the keys from the scope, iterate over them and wire them over to
+    //  the context.
+    TP.keys(scope).forEach(
+        function(aKey) {
+            context[aKey] = scope[aKey];
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.eval.Type.defineMethod('$populateScopeFromContext',
+function(context, scope) {
+
+    /**
+     * @method $populateScopeFromContext
+     * @summary Populates the supplied scope from the supplied context. This is
+     *     typically called before a shell 'eval' operation.
+     * @param {Object} context The context that the eval will happen in.
+     * @param {Object} scope The scope object that 'global' properties will be
+     *     placed in when code is eval'ed.
+     * @returns {TP.meta.tsh.eval} The receiver.
+     */
+
+    var originalKeySet,
+
+        currentKeys,
+        diffKeys;
+
+    //  This will be the set of keys that the context originally had before we
+    //  put slots from the scope onto it.
+    originalKeySet = this.$get('$originalContextKeySet');
+
+    //  Grab the set of keys that are currently on the context and filter them
+    //  against the set of keys that were there before we put slots from the
+    //  scope onto it. This will result in the set of keys that should be copied
+    //  over to the scope and deleted from the context.
+    currentKeys = Object.keys(context);
+    diffKeys = currentKeys.filter(
+                function(aKey) {
+                    return !originalKeySet.has(aKey);
+                });
+
+    diffKeys.forEach(
+        function(aKey) {
+            var val;
+
+            //  Grab the value for the key from the context and set it onto the
+            //  scope.
+            val = context[aKey];
+            scope.atPut(aKey, val);
+
+            //  Delete the key from the context. Note that context here is
+            //  normally the global object.
+            delete context[aKey];
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
