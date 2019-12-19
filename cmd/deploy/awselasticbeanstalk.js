@@ -174,11 +174,11 @@
         cmdType.prototype.findAWSCLITools = function() {
             var awsclipath;
 
-            this.info('checking for Azure CLI tools support...');
+            this.info('checking for AWS CLI tools support...');
 
             awsclipath = sh.which(AWS_COMMAND);
             if (awsclipath) {
-                this.info('found Azure CLI tools...');
+                this.info('found AWS CLI tools...');
                 return awsclipath;
             }
 

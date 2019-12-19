@@ -2543,9 +2543,8 @@ function(aRequest) {
     if (TP.notValid(obj = this.$get('executionInstance'))) {
 
         //  NOTE! This *MUST* be an object that 'slots' can be placed directly
-        //  on. In order for the shell to work properly, it will use a with(...)
-        //  statement in conjunction with this object (which will become $SCOPE)
-        //  to do things like resolve object references.
+        //  on. In order for the shell to work properly, these slots will be
+        //  copied back and forth to the context that the eval is happening in.
 
         obj = {};
 
