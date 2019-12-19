@@ -166,6 +166,19 @@ APP.getName = function() {
     return APP[TP.NAME];
 };
 
+TP.toString = function() {
+    return TP[TP.NAME];
+};
+TP.sys.toString = function() {
+    return TP.sys[TP.NAME];
+};
+TP.boot.toString = function() {
+    return TP.boot[TP.NAME];
+};
+APP.toString = function() {
+    return APP[TP.NAME];
+};
+
 //  ------------------------------------------------------------------------
 
 TP.isCallable = function(anObj) {

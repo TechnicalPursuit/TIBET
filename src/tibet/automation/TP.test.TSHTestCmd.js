@@ -134,17 +134,20 @@ function(aRequest) {
                 originalValue = values.at(j).first();
                 expandedValue = values.at(j).last();
 
-                if (TP.notDefined(expandedValue)) {
+                if (TP.notDefined(expandedValue) ||
+                                            expandedValue === 'undefined') {
                     expandedValue = TP.UNDEF;
                     expandedTN = 'Undefined';
-                } else if (TP.isNull(expandedValue)) {
+                } else if (TP.isNull(expandedValue) ||
+                                            expandedValue === 'null') {
                     expandedValue = TP.NULL;
                     expandedTN = 'Null';
                 } else {
                     expandedTN = TP.tname(expandedValue);
                 }
 
-                if (originalValue.unquoted().quoted('\'') === originalValue) {
+                if (TP.isString(originalValue) &&
+                    originalValue.unquoted().quoted('\'') === originalValue) {
                     resolvedValue = expandedValue;
                 } else {
                     resolvedValue = shell.resolveObjectReference(
@@ -176,17 +179,18 @@ function(aRequest) {
             originalValue = item.last().first();
             expandedValue = item.last().last();
 
-            if (TP.notDefined(expandedValue)) {
+            if (TP.notDefined(expandedValue) || expandedValue === 'undefined') {
                 expandedValue = TP.UNDEF;
                 expandedTN = 'Undefined';
-            } else if (TP.isNull(expandedValue)) {
+            } else if (TP.isNull(expandedValue) || expandedValue === 'null') {
                 expandedValue = TP.NULL;
                 expandedTN = 'Null';
             } else {
                 expandedTN = TP.tname(expandedValue);
             }
 
-            if (originalValue.unquoted().quoted('\'') === originalValue) {
+            if (TP.isString(originalValue) &&
+                originalValue.unquoted().quoted('\'') === originalValue) {
                 resolvedValue = expandedValue;
             } else {
                 resolvedValue = shell.resolveObjectReference(

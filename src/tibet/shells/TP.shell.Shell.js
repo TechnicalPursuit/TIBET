@@ -3298,9 +3298,9 @@ function(aRequest, forms) {
                         //  for the closing token and then cause our index to
                         //  adjust beyond the range of the object.
                         if (argvPart === '[]') {
-                            expandedVal = [];
+                            expandedVal = '[]';
                         } else if (argvPart === '{}') {
-                            expandedVal = {};
+                            expandedVal = '{}';
                         } else {
                             stop = part.value.charAt(0) === '[' ? ']' : '}';
                             chunk = '';
@@ -3348,18 +3348,45 @@ function(aRequest, forms) {
                         }
                     }
 
+                    //  If the expanded value is an Array or a plain Object,
+                    //  then we use the JSON representation as the final
+                    //  expanded value. Otherwise, if we use toString(), an
+                    //  empty Array will produce an empty string, rather than
+                    //  '[]' and plain Objects will always produce '[object
+                    //  Object]'.
+                    if (TP.isArray(expandedVal) ||
+                        TP.isPlainObject(expandedVal)) {
+                        expandedVal = TP.js2json(expandedVal);
+                    } else {
+                        expandedVal = TP.tostr(expandedVal);
+                    }
+
                     //  The value we use for the 'original' value depends on
                     //  whether the initial value was quoted. When we get
                     //  unquoted arguments (42, true, etc) we consider the
                     //  original to be that value, not the string version.
                     if (TP.regex.TSH_QUOTECHAR.test(part.value.charAt(0))) {
                         part = TP.ac(part.value, expandedVal);
-                    } else if (format !== TP.EXPANDED) {
-                        //  requestor asked for original values as part of
-                        //  return value so we explicitly don't convert here.
-                        part = TP.ac(chunk || part.value, expandedVal);
                     } else {
-                        part = TP.ac(expandedVal, expandedVal);
+                        switch (format) {
+                            case TP.ORIGINAL:
+                                //  requestor asked for original values as part
+                                //  of return value so we explicitly don't
+                                //  convert here.
+                                part = TP.ac(chunk || part.value, expandedVal);
+                                break;
+                            case TP.EXPANDED:
+                                part = TP.ac(expandedVal, expandedVal);
+                                break;
+                            case TP.ALLFORMS:
+                                //  requestor asked for all forms of the values
+                                //  as part of return value so we explicitly
+                                //  don't convert here.
+                                part = TP.ac(chunk || part.value, expandedVal);
+                                break;
+                            default:
+                                break;
+                        }
                     }
 
                     dict.atPut('ARG' + index, part);
@@ -3431,18 +3458,43 @@ function(aRequest, forms) {
                     }
                 }
 
+                //  If the expanded value is an Array or a plain Object, then we
+                //  use the JSON representation as the final expanded value.
+                //  Otherwise, if we use toString(), an empty Array will produce
+                //  an empty string, rather than '[]' and plain Objects will
+                //  always produce '[object Object]'.
+                if (TP.isArray(expandedVal) || TP.isPlainObject(expandedVal)) {
+                    expandedVal = TP.js2json(expandedVal);
+                } else {
+                    expandedVal = TP.tostr(expandedVal);
+                }
+
                 //  The value we use for the 'original' value depends on whether
                 //  the initial value was quoted. When we get unquoted arguments
                 //  (42, true, etc) we consider the original to be that value,
                 //  not the string version.
                 if (TP.regex.TSH_QUOTECHAR.test(value.charAt(0))) {
                     dict.atPut(name, TP.ac(value, expandedVal));
-                } else if (format !== TP.EXPANDED) {
-                    //  requestor asked for original values as part of return
-                    //  value so we explicitly don't convert here.
-                    dict.atPut(name, TP.ac(value, expandedVal));
                 } else {
-                    dict.atPut(name, TP.ac(expandedVal, expandedVal));
+                    switch (format) {
+                        case TP.ORIGINAL:
+                            //  requestor asked for original values as part of
+                            //  return value so we explicitly don't convert
+                            //  here.
+                            dict.atPut(name, TP.ac(value, expandedVal));
+                            break;
+                        case TP.EXPANDED:
+                            dict.atPut(name, TP.ac(expandedVal, expandedVal));
+                            break;
+                        case TP.ALLFORMS:
+                            //  requestor asked for all forms of the values as
+                            //  part of return value so we explicitly don't
+                            //  convert here.
+                            dict.atPut(name, TP.ac(value, expandedVal));
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
