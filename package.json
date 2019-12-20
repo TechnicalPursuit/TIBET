@@ -60,7 +60,6 @@
         "chokidar": "^2.1.8",
         "codemirror": "github:TechnicalPursuit/codemirror",
         "cors": "^2.8.5",
-        "crypto": "0.0.3",
         "d3-dispatch": "^1.0.6",
         "d3-interpolate": "^1.4.0",
         "d3-selection": "^1.4.1",
