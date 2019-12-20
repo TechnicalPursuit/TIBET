@@ -1111,7 +1111,7 @@ function() {
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
-    });
+    }).skip(TP.sys.cfg('project.name') === 'travis');
 
     this.it('test:TSHTestCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"', function(test, options) {
 
