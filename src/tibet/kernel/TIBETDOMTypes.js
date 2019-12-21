@@ -3891,16 +3891,18 @@ function(aDocument) {
                                 if (!TP.nodeEqualsNode(
                                         oldNodeClone, newNodeClone)) {
 
-                                    TP.bySystemId('Sherpa').
-                                        updateUICanvasSource(
-                                            TP.ac(oldNode),
-                                            oldParentNode,
-                                            TP.UPDATE,
-                                            null,
-                                            null,
-                                            null,
-                                            false,
-                                            newNode);
+                                    if (TP.sys.hasFeature('sherpa')) {
+                                        TP.bySystemId('Sherpa').
+                                            updateUICanvasSource(
+                                                TP.ac(oldNode),
+                                                oldParentNode,
+                                                TP.UPDATE,
+                                                null,
+                                                null,
+                                                null,
+                                                false,
+                                                newNode);
+                                    }
                                 }
 
                                 //  Signal that we did recast the node.
