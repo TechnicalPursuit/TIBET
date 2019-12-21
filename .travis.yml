@@ -3,6 +3,8 @@ language: node_js
 sudo: required
 dist: xenial
 
+cache: yarn
+
 addons:
     apt:
         sources:
@@ -36,7 +38,7 @@ before_script:
     # - rm $p
     # - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Link TIBET into npm global lib
-    - npm link .
+    - yarn link .
     # Build TIBET so that packages are available.
     - tibet build
     - cd ..
@@ -50,13 +52,13 @@ before_script:
     # Repair npm path after 'tibet init' due to npm bug with linked modules
     # - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Install Karma bits
-    - npm install -g karma-cli
-    - npm install --save-dev karma
-    - npm install --save-dev karma-chrome-launcher
-    - npm install --save-dev karma-tibet
+    - yarn install -g karma-cli
+    - yarn install --save-dev karma
+    - yarn install --save-dev karma-chrome-launcher
+    - yarn install --save-dev karma-tibet
     # Relink TIBET after 'npm install' due to npm bug with linked modules
     # (again...)
-    - npm link tibet
+    - yarn link tibet
     # Configure Karma
     # NOTE These value will load and test the entire TIBET framework. More
     # appropriate values for testing a TIBET application *only* are:
