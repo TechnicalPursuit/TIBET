@@ -435,10 +435,10 @@ function() {
         //  Final signal before UI begins processing.
         TP.signal('TP.sys', 'AppDidInitialize');
 
-        if (TP.sys.hasFeature('sherpa')) {
+        if (TP.sys.inDeveloperMode()) {
 
             //  Set up handler for tibet.json changes... NOTE that because we're
-            //  referencing via TIBETURL we want to get the concrete URI to
+            //  referencing via a TIBETURL we want to get the concrete URI to
             //  actually apply the handler to. The TIBETURL will delegate to
             //  that during processing.
             TP.uc('~app/tibet.json').getConcreteURI().defineMethod(

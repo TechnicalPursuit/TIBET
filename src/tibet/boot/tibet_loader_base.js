@@ -1344,16 +1344,15 @@ TP.sys.isUA = function(browser, varargs) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.needsLoadingIndicator = function() {
+TP.sys.inDeveloperMode = function() {
 
     /**
-     * @method needsLoadingIndicator
-     * @summary Whether or not some sort of loading indication needs to be
-     *     presented to the user. For bigger packages, such as 'developer' and
-     *     'contributor', we need to display to the user that TIBET is still
-     *     loading.
-     * @returns {Boolean} Whether or not we need a visual indicator that we're
-     *     loading.
+     * @method inDeveloperMode
+     * @summary Whether or not the system is running in a 'developer mode'. That
+     *     is, is a boot profile or boot package loaded and running such that
+     *     certain developer mode flags and other utilities are enabled.
+     * @returns {Boolean} Whether or not we are currently running in a
+     *     'developer mode'.
      */
 
     var profile,
@@ -1371,6 +1370,26 @@ TP.sys.needsLoadingIndicator = function() {
     matcher = /(developer|contributor)/;
 
     return matcher.test(profile) || matcher.test(package);
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.needsLoadingIndicator = function() {
+
+    /**
+     * @method needsLoadingIndicator
+     * @summary Whether or not some sort of loading indication needs to be
+     *     presented to the user. For bigger packages, such as 'developer' and
+     *     'contributor', we need to display to the user that TIBET is still
+     *     loading.
+     * @returns {Boolean} Whether or not we need a visual indicator that we're
+     *     loading.
+     */
+
+    //  We currently only show a loading indicator during boot if we're running
+    //  in a developer mode. Otherwise, the boot process is so fast that it's
+    //  not worth it :-).
+    return this.inDeveloperMode();
 };
 
 //  ----------------------------------------------------------------------------
