@@ -53,9 +53,9 @@ before_script:
     # - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Install Karma bits
     - yarn global add karma-cli
-    - yarn install --save-dev karma
-    - yarn install --save-dev karma-chrome-launcher
-    - yarn install --save-dev karma-tibet
+    - yarn add karma --dev
+    - yarn add karma-chrome-launcher --dev
+    - yarn add karma-tibet --dev
     # Relink TIBET after 'npm install' due to npm bug with linked modules
     # (again...)
     - yarn link tibet
