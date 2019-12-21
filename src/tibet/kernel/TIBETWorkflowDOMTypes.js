@@ -483,6 +483,31 @@ function(aVCard) {
 
 //  ------------------------------------------------------------------------
 
+TP.ietf.vcard.Inst.defineMethod('asJSONSource',
+function() {
+
+    /**
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
+     * @returns {String} A JSON-formatted string.
+     */
+
+    var str;
+
+    str = '["vcard",' +
+            '[' +
+            '["version", {}, "text", "4.0"],';
+
+    str += ']' +
+            ']';
+
+    //  TODO: Finish the implementation here according to RFC 7095
+
+    return TP.todo();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.ietf.vcard.Inst.defineMethod('getAccessKeys',
 function() {
 
