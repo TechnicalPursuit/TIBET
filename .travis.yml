@@ -52,7 +52,7 @@ before_script:
     # Repair npm path after 'tibet init' due to npm bug with linked modules
     # - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Install Karma bits
-    - yarn install -g karma-cli
+    - yarn global add karma-cli
     - yarn install --save-dev karma
     - yarn install --save-dev karma-chrome-launcher
     - yarn install --save-dev karma-tibet
