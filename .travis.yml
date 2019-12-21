@@ -38,7 +38,7 @@ before_script:
     # - rm $p
     # - ln -s /home/travis/.nvm/versions/node/$v/bin/npm $p || true
     # Link TIBET into npm global lib
-    - yarn link .
+    - yarn link
     # Build TIBET so that packages are available.
     - tibet build
     - cd ..
