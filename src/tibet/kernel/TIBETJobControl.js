@@ -374,13 +374,38 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var code,
+    var stat,
+
+        code,
         text,
         info;
 
-    //  avoid issues with perhaps calling this more than once
-    if (this.isCompleting() || this.didComplete()) {
-        return this;
+    stat = this.get('statusCode');
+    switch (stat) {
+
+        case TP.ERRORING:
+        case TP.FAILING:
+        case TP.CANCELLING:
+        case TP.COMPLETING:
+        case TP.CANCELLED:
+        case TP.ERRORED:
+        case TP.FAILED:
+        case TP.TIMED_OUT:
+        case TP.SUCCEEDED:
+        case TP.COMPLETED:
+
+            //  Don't cancel the receiver - just return.
+            return this;
+
+        case TP.PAUSING:
+        case TP.SUCCEEDING:
+        case TP.PAUSED:
+        case TP.SKIPPED:
+        case TP.IGNORED:
+        default:
+
+            //  Go ahead and allow the receiver to cancel.
+            void 0;
     }
 
     //  TODO: setting undefined here may throw off reflection which depends on
@@ -469,9 +494,34 @@ function(aResult) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    //  avoid issues with perhaps calling this more than once
-    if (this.isCompleting() || this.didComplete()) {
-        return this;
+    var stat;
+
+    stat = this.get('statusCode');
+    switch (stat) {
+
+        case TP.ERRORING:
+        case TP.FAILING:
+        case TP.CANCELLING:
+        case TP.COMPLETING:
+        case TP.CANCELLED:
+        case TP.ERRORED:
+        case TP.FAILED:
+        case TP.TIMED_OUT:
+        case TP.SUCCEEDED:
+        case TP.COMPLETED:
+
+            //  Don't cancel the receiver - just return.
+            return this;
+
+        case TP.PAUSING:
+        case TP.SUCCEEDING:
+        case TP.PAUSED:
+        case TP.SKIPPED:
+        case TP.IGNORED:
+        default:
+
+            //  Go ahead and allow the receiver to cancel.
+            void 0;
     }
 
     this.set('statusCode', TP.COMPLETING);
@@ -539,17 +589,43 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var code,
+    var stat,
+
+        code,
         text,
         info;
 
-    //  avoid issues with perhaps calling this more than once...but allow a
     //  failure that comes in async after the job may believe it finished to
-    //  override a "success" status.
-    if (this.isCompleting() || this.didComplete()) {
-        if (!this.isSucceeding() && !this.didSucceed()) {
+    //  override a "success" status. Therefore, we need to allow or not allow
+    //  the receiver to be failed based on a more sophisticated check of the
+    //  current status code.
+
+    stat = this.get('statusCode');
+    switch (stat) {
+
+        case TP.ERRORING:
+        case TP.FAILING:
+        case TP.COMPLETING:
+        case TP.ERRORED:
+        case TP.FAILED:
+        case TP.CANCELLED:
+        case TP.SUCCEEDED:
+        case TP.COMPLETED:
+
+            //  Don't fail the receiver - just return.
             return this;
-        }
+
+        case TP.PAUSING:
+        case TP.CANCELLING:
+        case TP.SUCCEEDING:
+        case TP.PAUSED:
+        case TP.SKIPPED:
+        case TP.TIMED_OUT:
+        case TP.IGNORED:
+        default:
+
+            //  Go ahead and allow the receiver to fail.
+            void 0;
     }
 
     this.set('result', undefined);
@@ -639,16 +715,43 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var code,
+    var stat,
+
+        code,
         text,
         info;
 
     //  failure that comes in async after the job may believe it finished to
-    //  override a "success" status.
-    if (this.isCompleting() || this.didComplete()) {
-        if (!this.isSucceeding() && !this.didSucceed()) {
+    //  override a "success" status. Therefore, we need to allow or not allow
+    //  the receiver to be failed based on a more sophisticated check of the
+    //  current status code.
+
+    stat = this.get('statusCode');
+    switch (stat) {
+
+        case TP.ERRORING:
+        case TP.FAILING:
+        case TP.COMPLETING:
+        case TP.ERRORED:
+        case TP.FAILED:
+        case TP.CANCELLED:
+        case TP.SUCCEEDED:
+        case TP.COMPLETED:
+
+            //  Don't fail the receiver - just return.
             return this;
-        }
+
+        case TP.PAUSING:
+        case TP.CANCELLING:
+        case TP.SUCCEEDING:
+        case TP.PAUSED:
+        case TP.SKIPPED:
+        case TP.TIMED_OUT:
+        case TP.IGNORED:
+        default:
+
+            //  Go ahead and allow the receiver to fail.
+            void 0;
     }
 
     this.set('result', undefined);
