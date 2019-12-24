@@ -2095,7 +2095,9 @@ function() {
     //  The signal being handled (or another instance of some kind of
     //  TP.sig.Signal) should be the first argument. If it isn't, we have
     //  serious problems.
-    theSignal = theArgs.first();
+    //  NB: We use primitive index syntax here since theArgs might be an
+    //  'arguments' object.
+    theSignal = theArgs[0];
     if (!TP.isKindOf(theSignal, TP.sig.Signal)) {
         return this.raise('TP.sig.InvalidParameter');
     }
