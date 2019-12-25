@@ -360,9 +360,7 @@ function() {
     //  display the authentication UI and size the inspector to the new content.
     authRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
-            inspector.repopulateBay();
-            inspector.sizeBays();
-            inspector.scrollBaysToEnd();
+            inspector.reloadCurrentBay();
         });
 
     //  The authentication failed - let the user know by setting the message

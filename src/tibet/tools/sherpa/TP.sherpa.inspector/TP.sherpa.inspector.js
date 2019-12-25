@@ -3217,6 +3217,29 @@ function(aBayNum) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('reloadCurrentBay',
+function(scrollToLastBay) {
+
+    /**
+     * @method reloadCurrentBay
+     * @summary Reloads the current bay's content.
+     * @param {Boolean} [scrollToLastBay=true] Whether or not to scroll to the
+     *     end of the list of bays.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    this.repopulateBay();
+    this.sizeBays();
+
+    if (TP.notFalse(scrollToLastBay)) {
+        this.scrollBaysToEnd();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('repopulateBay',
 function(aBayNum) {
 
