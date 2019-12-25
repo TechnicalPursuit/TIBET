@@ -5665,6 +5665,173 @@ function() {
 });
 
 //  ========================================================================
+//  TP.core.AuthenticatedService
+//  ========================================================================
+
+/**
+ * @type {TP.core.AuthenticatedService}
+ * @summary Traits type for authenticated services.
+ */
+
+TP.core.Service.defineSubtype('AuthenticatedService');
+
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.core.AuthenticatedService.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.AuthenticatedService.Type.defineMethod('isAuthenticated',
+function(serviceName) {
+
+    /**
+     * @method isAuthenticated
+     * @summary Returns whether or not the service is authenticated.
+     * @param {String} [serviceName=this.getID()] The service name to test to
+     *     see if its authenticated.
+     * @returns {Boolean} true if the service is authenticated.
+     */
+
+    var name,
+        inst;
+
+    name = TP.ifInvalid(serviceName, this.getID());
+
+    inst = this.getResourceById(name);
+
+    if (TP.isValid(inst)) {
+        return inst.isAuthenticated();
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AuthenticatedService.Type.defineMethod('authenticate',
+function(serviceName) {
+
+    /**
+     * @method authenticate
+     * @summary Authenticate the service associated with the supplied name.
+     * @param {String} serviceName The name of the service to authenticate. This
+     *     should have been already registered with the receiver as a registered
+     *     instance using this name.
+     * @returns {TP.sig.AuthenticationRequest} The authentication request.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.AuthenticatedService.Inst.defineMethod('isAuthenticated',
+function() {
+
+    /**
+     * @method isAuthenticated
+     * @summary Returns whether or not the service is authenticated.
+     * @returns {Boolean} true if the service is authenticated.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AuthenticatedService.Inst.defineMethod('authenticateAndHandle',
+function(aRequest) {
+
+    /**
+     * @method authenticateAndHandle
+     * @param {TP.sig.Request} aRequest The request to handle after
+     *     authentication (if necessary).
+     * @returns {TP.core.AuthenticatedService} The receiver.
+     */
+
+    var isAuthenticated,
+
+        authRequest;
+
+    isAuthenticated = this.isAuthenticated();
+
+    if (isAuthenticated) {
+        this.processAuthenticatedRequest(aRequest);
+    } else {
+        authRequest = this.getType().authenticate(this.getID());
+
+        //  The authentication succeeded.
+        authRequest.defineHandler('RequestSucceeded',
+            function(aResponse) {
+                this.processAuthenticatedRequest(aRequest);
+            }.bind(this));
+
+        //  The authentication failed.
+        authRequest.defineHandler('RequestFailed',
+            function(aResponse) {
+                aRequest.fail(aResponse);
+            });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AuthenticatedService.Inst.defineMethod('processAuthenticatedRequest',
+function(aRequest) {
+
+    /**
+     * @method processAuthenticatedRequest
+     * @summary Processes the supplied request in an authenticated context. This
+     *     means that the TIBET machinery has ensured that any required
+     *     authentication has taken place (if necessary).
+     * @param {TP.sig.Request} aRequest The request to handle after
+     *     authentication (if necessary).
+     * @returns {TP.core.AuthenticatedService} The receiver.
+     */
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sig.AuthenticationRequest
+//  ========================================================================
+
+/**
+ * @type {TP.sig.AuthenticationRequest}
+ * @summary Common supertype for authentication requests.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.defineSubtype('AuthenticationRequest');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.AuthenticationRequest.Type.defineAttribute('responseType',
+'TP.sig.AuthenticationResponse');
+
+//  ========================================================================
+//  TP.sig.AuthenticationResponse
+//  ========================================================================
+
+/**
+ * @type {TP.sig.AuthenticationResponse}
+ * @summary Common supertype for authentication responses.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.defineSubtype('AuthenticationResponse');
+
+//  ========================================================================
 //  TP.sig.URIRequest
 //  ========================================================================
 
