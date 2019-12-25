@@ -76,6 +76,8 @@
     <script src="aws/services/TP.aws.AWSService.js"/>
     <script src="aws/services/TP.sig.AWSAuthenticationRequest.js"/>
     <script src="aws/services/TP.sig.AWSAuthenticationResponse.js"/>
+    <script src="aws/services/TP.sig.AWSAuthenticationInfoRequest.js"/>
+    <script src="aws/services/TP.sig.AWSAuthenticationInfoResponse.js"/>
 
     <script src="aws/services/s3/TP.sig.AWSS3Request.js"/>
     <script src="aws/services/s3/TP.sig.AWSS3Response.js"/>

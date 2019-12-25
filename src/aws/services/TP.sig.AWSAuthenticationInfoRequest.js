@@ -16,14 +16,20 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sig.AuthenticationRequest.defineSubtype('AWSAuthenticationRequest');
+TP.sig.IORequest.defineSubtype('AWSAuthenticationInfoRequest');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.AWSAuthenticationRequest.Type.defineAttribute('responseType',
-    'TP.sig.AWSAuthenticationResponse');
+TP.sig.AWSAuthenticationInfoRequest.Type.defineAttribute('responseType',
+    'TP.sig.AWSAuthenticationInfoResponse');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.AWSAuthenticationInfoRequest.Inst.defineAttribute('authRequest');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -47,16 +47,30 @@ function(aRequest) {
      * @returns {TP.aws.AWSLambdaService} The receiver.
      */
 
+    return this.authenticateAndHandle(aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.aws.AWSLambdaService.Inst.defineMethod('processAuthenticatedRequest',
+function(lambdaRequest) {
+
+    /**
+     * @method processAuthenticatedRequest
+     * @summary Processes the supplied request in an authenticated context. This
+     *     means that the TIBET machinery has ensured that any required
+     *     authentication has taken place (if necessary).
+     * @param {TP.sig.AWSLambdaRequest} lambdaRequest The request to handle after
+     *     authentication (if necessary).
+     * @returns {TP.aws.AWSLambdaService} The receiver.
+     */
+
     var request,
 
         action,
-        paramDict,
+        paramDict;
 
-        isAuthenticated,
-
-        promise;
-
-    request = TP.request(aRequest);
+    request = TP.request(lambdaRequest);
 
     //  rewrite the mode, whether we're async or sync. This will only change
     //  the value if it hasn't been set to something already, but it may
@@ -68,17 +82,9 @@ function(aRequest) {
 
     paramDict = TP.ifInvalid(request.at('params'), TP.hc());
 
-    isAuthenticated = this.isAuthenticated();
-
-    if (!isAuthenticated) {
-        promise = TP.extern.Promise.reject();
-    } else {
-        promise = TP.extern.Promise.resolve();
-    }
-
     //  Invoke the AWS Lambda function with the name of 'action' and the params
     //  from the paramsDict as its parameters.
-    promise.then(
+    TP.extern.Promise.resolve().then(
         function() {
             return this.invoke(
                     action,

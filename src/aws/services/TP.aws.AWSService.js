@@ -21,6 +21,9 @@ TP.core.IOService.defineSubtype('aws.AWSService');
 //  Can't construct concrete instances of this type.
 TP.aws.AWSService.isAbstract(true);
 
+//  This is an authenticated service.
+TP.aws.AWSService.addTraits(TP.core.AuthenticatedService);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -34,34 +37,8 @@ TP.aws.AWSService.Type.defineAttribute(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.aws.AWSService.Type.defineMethod('isAuthenticated',
-function(serviceName) {
-
-    /**
-     * @method isAuthenticated
-     * @summary Returns whether or not the service is authenticated.
-     * @param {String} serviceName The service name to test to see if its
-     *     authenticated.
-     * @returns {Boolean} true if the service is authenticated.
-     */
-
-    var inst;
-
-    inst = this.getResourceById(serviceName);
-
-    if (TP.isValid(inst)) {
-        return inst.isAuthenticated();
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
 TP.aws.AWSService.Type.defineMethod('authenticate',
-function(serviceName, username, password) {
+function(serviceName) {
 
     /**
      * @method authenticate
@@ -69,8 +46,6 @@ function(serviceName, username, password) {
      * @param {String} serviceName The name of the service to authenticate. This
      *     should have been already registered with the receiver as a registered
      *     instance using this name.
-     * @param {String} username The username to use to authenticate.
-     * @param {String} password The password to use to authenticate.
      * @returns {TP.sig.AWSAuthenticationRequest} The authentication request.
      */
 
@@ -82,21 +57,13 @@ function(serviceName, username, password) {
         appID,
         identityPoolID,
 
-        authData,
-        authDetails,
-
-        poolData,
-        userPool,
-
-        userData,
-
-        cognitoUser,
-
-        promise,
-
         thisref,
 
-        authRequest;
+        authRequest,
+
+        finishAuthentication,
+
+        authInfoRequest;
 
     serviceInfo = this.get('serviceInfo');
 
@@ -136,130 +103,169 @@ function(serviceName, username, password) {
         return this.raise('InvalidQuery', 'Missing identityPoolID.');
     }
 
-    //  Authenticate the user, based on username and password
-
-    authData = TP.hc('Username', username,
-                        'Password', password).asObject();
-    authDetails = new TP.extern.AmazonCognitoIdentity.AuthenticationDetails(
-                                                                    authData);
-
-    poolData = TP.hc('UserPoolId', userPoolID,
-                        'ClientId', appID).asObject();
-    userPool = new TP.extern.AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-    userData = TP.hc('Username', username,
-                        'Pool', userPool).asObject();
-
-    cognitoUser = new TP.extern.AmazonCognitoIdentity.CognitoUser(userData);
-
-    //  Construct a Promise that will call on the AWS Cognito library to
-    //  authenticate the service given the Cognito User data structure computed
-    //  above. This will resolve the Promise with the JWT token returned if the
-    //  authentication happened and will reject the Promise if it didn't.
-    promise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
-
-            cognitoUser.authenticateUser(authDetails, {
-                onSuccess: function(result) {
-                    var idToken;
-
-                    idToken = result.getIdToken().getJwtToken();
-                    resolver(idToken);
-                },
-
-                onFailure: function(err) {
-                    rejector(err);
-                }
-            });
-        });
-
     thisref = this;
-
-    //  Add a Promise that will take the resultant JWT token and establish a
-    //  session with it.
-    promise = promise.then(
-        function(result) {
-
-            //  'result' here is the JWT token
-
-            var loginInfo,
-
-                authDomain,
-
-                credentialsInfo,
-                credentials,
-
-                sessionPromise;
-
-            //  Compute an authentication domain for use in conjunction with the
-            //  JWT for login information.
-            authDomain = 'cognito-idp.' + region + '.amazonaws.com/' +
-                            userPoolID;
-            loginInfo = TP.hc(authDomain, result);
-
-            //  Now, in conjunction with the Identity Pool ID, compute the login
-            //  credentials.
-            credentialsInfo =
-                TP.hc('IdentityPoolId', identityPoolID,
-                        'Logins', loginInfo);
-
-            //  Convert to a POJO for use with the AWS Cognito library.
-            credentialsInfo = credentialsInfo.asObject();
-
-            credentials = new TP.extern.AWS.CognitoIdentityCredentials(
-                                                            credentialsInfo);
-
-            //  Update the AWS config with the region and credentials computed
-            //  from Cognito.
-            TP.extern.AWS.config.update({
-                region: region,
-                credentials: credentials
-            });
-
-            //  Now that the credentials have been updated, construct a nested
-            //  Promise that will attempt to obtain a session using the Cognito
-            //  user.
-            sessionPromise = TP.extern.Promise.construct(
-                function(resolver, rejector) {
-
-                    cognitoUser.getSession(
-                        function(err, session) {
-
-                            var serviceInst;
-
-                            if (TP.isValid(err)) {
-                                return rejector(
-                                        err.message || JSON.stringify(err));
-                            }
-
-                            //  Construct a new service using the supplied
-                            //  service name as the resource ID and register it.
-                            serviceInst = thisref.construct(serviceName);
-                            serviceInst.register();
-
-                            //  Cache our session.
-                            serviceInst.set('$session', session);
-
-                            resolver();
-                        });
-                });
-
-            return sessionPromise;
-        });
 
     //  Construct an authentication request.
     authRequest = TP.sig.AWSAuthenticationRequest.construct();
 
-    //  When the above Promise(s) resolve, then complete the authentication
-    //  request with a Boolean value as to whether we have an authenicated
-    //  session.
-    promise.then(
-        function(result) {
-            authRequest.complete(this.isAuthenticated(serviceName));
-        }.bind(this)).catch(
-        function(err) {
-            authRequest.fail(err);
+    finishAuthentication = function(username, password) {
+
+        var authData,
+            authDetails,
+
+            poolData,
+            userPool,
+
+            userData,
+
+            cognitoUser,
+
+            promise;
+
+        //  Authenticate the user, based on username and password
+
+        authData = TP.hc('Username', username,
+                            'Password', password).asObject();
+        authDetails = new TP.extern.AmazonCognitoIdentity.AuthenticationDetails(
+                                                                    authData);
+
+        poolData = TP.hc('UserPoolId', userPoolID,
+                            'ClientId', appID).asObject();
+        userPool = new TP.extern.AmazonCognitoIdentity.CognitoUserPool(
+                                                                    poolData);
+
+        userData = TP.hc('Username', username,
+                            'Pool', userPool).asObject();
+
+        cognitoUser = new TP.extern.AmazonCognitoIdentity.CognitoUser(userData);
+
+        //  Construct a Promise that will call on the AWS Cognito library to
+        //  authenticate the service given the Cognito User data structure
+        //  computed above. This will resolve the Promise with the JWT token
+        //  returned if the authentication happened and will reject the Promise
+        //  if it didn't.
+        promise = TP.extern.Promise.construct(
+            function(resolver, rejector) {
+
+                cognitoUser.authenticateUser(authDetails, {
+                    onSuccess: function(result) {
+                        var idToken;
+
+                        idToken = result.getIdToken().getJwtToken();
+                        resolver(idToken);
+                    },
+
+                    onFailure: function(err) {
+                        rejector(err);
+                    }
+                });
+            });
+
+        //  Add a Promise that will take the resultant JWT token and establish a
+        //  session with it.
+        promise = promise.then(
+            function(result) {
+
+                //  'result' here is the JWT token
+
+                var loginInfo,
+
+                    authDomain,
+
+                    credentialsInfo,
+                    credentials,
+
+                    sessionPromise;
+
+                //  Compute an authentication domain for use in conjunction with
+                //  the JWT for login information.
+                authDomain = 'cognito-idp.' + region + '.amazonaws.com/' +
+                                userPoolID;
+                loginInfo = TP.hc(authDomain, result);
+
+                //  Now, in conjunction with the Identity Pool ID, compute the
+                //  login credentials.
+                credentialsInfo =
+                    TP.hc('IdentityPoolId', identityPoolID,
+                            'Logins', loginInfo);
+
+                //  Convert to a POJO for use with the AWS Cognito library.
+                credentialsInfo = credentialsInfo.asObject();
+
+                credentials = new TP.extern.AWS.CognitoIdentityCredentials(
+                                                            credentialsInfo);
+
+                //  Update the AWS config with the region and credentials
+                //  computed from Cognito.
+                TP.extern.AWS.config.update({
+                    region: region,
+                    credentials: credentials
+                });
+
+                //  Now that the credentials have been updated, construct a
+                //  nested Promise that will attempt to obtain a session using
+                //  the Cognito user.
+                sessionPromise = TP.extern.Promise.construct(
+                    function(resolver, rejector) {
+
+                        cognitoUser.getSession(
+                            function(err, session) {
+
+                                var serviceInst;
+
+                                if (TP.isValid(err)) {
+                                    return rejector(
+                                            err.message || JSON.stringify(err));
+                                }
+
+                                //  Construct a new service using the supplied
+                                //  service name as the resource ID and register
+                                //  it.
+                                serviceInst = thisref.construct(serviceName);
+                                serviceInst.register();
+
+                                //  Cache our session.
+                                serviceInst.set('$session', session);
+
+                                resolver();
+                            });
+                    });
+
+                return sessionPromise;
+            });
+
+        promise.then(
+            function(result) {
+                //  We succeeded in authenticating - complete the authenication
+                //  request.
+                authRequest.complete();
+            }).catch(
+            function(err) {
+                //  We failed to authenticate - fail the request with the error.
+                authRequest.fail(err);
+            });
+    };
+
+    //  Allocate and initialize an AWS authentication information request. It
+    //  will be expected that this request will return a username and password
+    //  to authenticate with AWS.
+    authInfoRequest = TP.sig.AWSAuthenticationInfoRequest.construct();
+    authInfoRequest.defineHandler('RequestSucceeded',
+        function(aResponse) {
+            var result;
+
+            result = aResponse.getResult();
+            finishAuthentication(result.at('username'), result.at('password'));
         });
+
+    //  Set the main authentication request as a slot on the authentication info
+    //  request so that consumers who are providing authentication info can also
+    //  hook into the main authentication request to know when it succeeds or
+    //  fails.
+    authInfoRequest.set('authRequest', authRequest);
+
+    //  Fire the info request to get things started.
+    authInfoRequest.fire();
 
     return authRequest;
 });

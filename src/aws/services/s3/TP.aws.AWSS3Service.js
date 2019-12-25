@@ -47,42 +47,23 @@ function(aRequest) {
      * @returns {TP.aws.AWSS3Service} The receiver.
      */
 
-    //  TODO: Until we finish this logic, we turn off eslint 'no-unused-vars'
+    return this.authenticateAndHandle(aRequest);
+});
 
-    /* eslint-disable no-unused-vars */
+//  ------------------------------------------------------------------------
 
-    var request,
+TP.aws.AWSS3Service.Inst.defineMethod('processAuthenticatedRequest',
+function(s3Request) {
 
-        action,
-        paramDict,
-
-        isAuthenticated,
-
-        promise;
-
-    request = TP.request(aRequest);
-
-    //  rewrite the mode, whether we're async or sync. This will only change
-    //  the value if it hasn't been set to something already, but it may
-    //  warn when the value appears to be inconsistent with what the service
-    //  is capable of processing.
-    request.atPut('async', this.rewriteRequestMode(request));
-
-    action = request.at('action');
-
-    paramDict = TP.ifInvalid(request.at('params'), TP.hc());
-
-    isAuthenticated = this.isAuthenticated();
-
-    if (!isAuthenticated) {
-        promise = TP.extern.Promise.reject();
-    } else {
-        promise = TP.extern.Promise.resolve();
-    }
-    /* eslint-enable no-unused-vars */
-
-
-    //  TODO: Need to finish this
+    /**
+     * @method processAuthenticatedRequest
+     * @summary Processes the supplied request in an authenticated context. This
+     *     means that the TIBET machinery has ensured that any required
+     *     authentication has taken place (if necessary).
+     * @param {TP.sig.AWSS3Request} s3Request The request to handle after
+     *     authentication (if necessary).
+     * @returns {TP.aws.AWSS3Service} The receiver.
+     */
 
     return TP.todo();
 });

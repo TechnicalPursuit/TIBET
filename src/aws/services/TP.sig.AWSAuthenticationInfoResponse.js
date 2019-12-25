@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sig.AuthenticationResponse.defineSubtype('AWSAuthenticationResponse');
+TP.sig.IOResponse.defineSubtype('AWSAuthenticationInfoResponse');
 
 //  ------------------------------------------------------------------------
 //  end
