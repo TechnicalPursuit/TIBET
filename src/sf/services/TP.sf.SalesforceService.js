@@ -21,6 +21,9 @@ TP.core.IOService.defineSubtype('sf.SalesforceService');
 //  Can't construct concrete instances of this type.
 TP.sf.SalesforceService.isAbstract(true);
 
+//  This is an authenticated service.
+TP.sf.SalesforceService.addTraits(TP.core.AuthenticatedService);
+
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
@@ -36,32 +39,6 @@ TP.sf.SalesforceService.Type.defineAttribute(
                         'supportedModes', TP.core.SyncAsync.ASYNCHRONOUS);
 TP.sf.SalesforceService.Type.defineAttribute(
                         'mode', TP.core.SyncAsync.ASYNCHRONOUS);
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sf.SalesforceService.Type.defineMethod('isAuthenticated',
-function(serviceName) {
-
-    /**
-     * @method isAuthenticated
-     * @summary Returns whether or not the service is authenticated.
-     * @param {String} serviceName The service name to test to see if its
-     *     authenticated.
-     * @returns {Boolean} true if the service is authenticated.
-     */
-
-    var inst;
-
-    inst = this.getResourceById(serviceName);
-
-    if (TP.isValid(inst)) {
-        return inst.isAuthenticated();
-    }
-
-    return false;
-});
 
 //  ------------------------------------------------------------------------
 //  Type Methods

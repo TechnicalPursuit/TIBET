@@ -76,15 +76,29 @@ function(aRequest) {
      * @returns {TP.sf.SalesforceQueryService} The receiver.
      */
 
+    return this.authenticateAndHandle(aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sf.SalesforceQueryService.Inst.defineMethod('processAuthenticatedRequest',
+function(queryRequest) {
+
+    /**
+     * @method processAuthenticatedRequest
+     * @summary Processes the supplied request in an authenticated context. This
+     *     means that the TIBET machinery has ensured that any required
+     *     authentication has taken place (if necessary).
+     * @param {TP.sig.SalesforceQueryRequest} queryRequest The request to handle
+     *     after authentication (if necessary).
+     * @returns {TP.sf.SalesforceQueryService} The receiver.
+     */
+
     var request,
 
-        query,
+        query;
 
-        isAuthenticated,
-
-        promise;
-
-    request = TP.request(aRequest);
+    request = TP.request(queryRequest);
 
     //  rewrite the mode, whether we're async or sync. This will only change
     //  the value if it hasn't been set to something already, but it may
@@ -94,19 +108,11 @@ function(aRequest) {
 
     query = request.at('query');
 
-    isAuthenticated = this.isAuthenticated();
-
-    if (!isAuthenticated) {
-        promise = TP.extern.Promise.reject();
-    } else {
-        promise = TP.extern.Promise.resolve();
-    }
-
     //  Invoke the Salesforce SOQL query call with the query of 'query'. This
     //  call returns a Promise. We set up a resolver and rejector on that
     //  Promise to either complete or fail the request, depending on the
     //  outcome.
-    promise.then(
+    TP.extern.Promise.resolve().then(
         function() {
             return this.query(
                     query

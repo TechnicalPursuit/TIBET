@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sig.IORequest.defineSubtype('SalesforceAuthenticationRequest');
+TP.sig.AuthenticationRequest.defineSubtype('SalesforceAuthenticationRequest');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

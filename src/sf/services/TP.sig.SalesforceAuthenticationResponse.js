@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sig.IOResponse.defineSubtype('SalesforceAuthenticationResponse');
+TP.sig.AuthenticationResponse.defineSubtype('SalesforceAuthenticationResponse');
 
 //  ------------------------------------------------------------------------
 //  end
