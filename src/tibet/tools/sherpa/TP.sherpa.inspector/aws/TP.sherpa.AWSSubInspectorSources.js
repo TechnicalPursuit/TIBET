@@ -34,6 +34,13 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('$authInfoRequest');
+TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('$showAuthContent');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -93,11 +100,7 @@ function() {
      * @returns {Boolean} Whether or not we're authenticated.
      */
 
-    var isAuthenticated;
-
-    isAuthenticated = TP.aws.AWSService.isAuthenticated('AWS_PASSTHROUGH');
-
-    return isAuthenticated;
+    return TP.aws.AWSService.isAuthenticated('AWSPassthroughService');
 });
 
 //  ------------------------------------------------------------------------
@@ -179,43 +182,6 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspector',
-function(options) {
-
-    /**
-     * @method getConfigForInspector
-     * @summary Returns the source's configuration data to configure the bay
-     *     that the source's content will be hosted in.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the configuration data. This will have the following keys,
-     *     amongst others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
-     *     configuration. This could have the following keys, amongst others:
-     *          TP.ATTR + '_childtype':   The tag name of the content being
-     *                                      put into the bay
-     *          TP.ATTR + '_class':         Any additional CSS classes to put
-     *                                      onto the bay inspector item itself
-     *                                      to adjust to the content being
-     *                                      placed in it.
-     */
-
-    if (!this.checkAuthentication()) {
-        options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
-        return options;
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getContentForInspector',
 function(options) {
 
@@ -239,71 +205,32 @@ function(options) {
      *     bay.
      */
 
-    if (!this.checkAuthentication()) {
-        return this.getAuthenticationContent(options);
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getDataForInspector',
-function(options) {
-
-    /**
-     * @method getDataForInspector
-     * @summary Returns the source's data that will be supplied to the content
-     *     hosted in an inspector bay. In most cases, this data will be bound to
-     *     the content using TIBET data binding. Therefore, when this data
-     *     changes, the content will be refreshed to reflect that.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the data. This will have the following keys, amongst others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     *          'bindLoc':          The URI location where the data for the
-     *                              content can be found.
-     * @returns {Object} The data that will be supplied to the content hosted in
-     *     a bay.
-     */
+    var service,
+        handler;
 
     if (!this.checkAuthentication()) {
-        return null;
-    }
+        if (TP.isTrue(this.get('$showAuthContent'))) {
+            return this.getAuthenticationContent(options);
+        } else {
+            service = TP.core.Resource.getResourceById('AWSPassthroughService');
 
-    return this.callNextMethod();
-});
+            this.observe(
+                service,
+                'TP.sig.AWSAuthenticationInfoRequest',
+                handler = function(authInfoRequest) {
+                    var inspector;
 
-//  ------------------------------------------------------------------------
+                    this.ignore(service,
+                                'TP.sig.AWSAuthenticationInfoRequest',
+                                handler);
 
-TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getContentForToolbar',
-function(options) {
+                    this.set('$showAuthContent', true);
+                    this.set('$authInfoRequest', authInfoRequest);
 
-    /**
-     * @method getContentForToolbar
-     * @summary Returns the source's content that will be hosted in an inspector
-     *     toolbar.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the content. This will have the following keys, amongst
-     *     others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     * @returns {Element} The Element that will be used as the content for the
-     *     toolbar.
-     */
-
-    if (!this.checkAuthentication()) {
-        return null;
+                    inspector = TP.byId('SherpaInspector', TP.sys.getUIRoot());
+                    inspector.reloadCurrentBay();
+                }.bind(this));
+        }
     }
 
     return this.callNextMethod();
@@ -331,6 +258,7 @@ function() {
 
         message,
 
+        authInfoRequest,
         authRequest;
 
     //  Grab the current bay content.
@@ -347,26 +275,22 @@ function() {
     message.setRawContent(TP.sc('Attempting authentication...'));
     message.setAttribute('hidden', false);
 
-    //  Authenticate the server URI that we're using with the
-    //  AWSPassthroughService using the supplied username and password. Note that
-    //  this object will handle the request itself, such that we won't need to
-    //  fire it.
-    authRequest = TP.aws.AWSPassthroughService.authenticate(
-                        'AWS_PASSTHROUGH',
-                        username.getValue(),
-                        password.getValue());
+    authInfoRequest = this.get('$authInfoRequest');
+    authRequest = authInfoRequest.get('authRequest');
 
-    //  The authentication succeeded - repopulate the bay we were using to
-    //  display the authentication UI and size the inspector to the new content.
+    //  The authentication succeeded - reload the bay we were using to display
+    //  the authentication UI and size the inspector to the new content.
     authRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
+            this.set('$showAuthContent', false);
+            this.set('$authInfoRequest', null);
             inspector.reloadCurrentBay();
-        });
+        }.bind(this));
 
     //  The authentication failed - let the user know by setting the message
     //  output. Reset the username and password to empty values and focus the
     //  username field.
-    authRequest.defineHandler('401',
+    authRequest.defineHandler('RequestFailed',
         function(aResponse) {
             message.setRawContent('Login failed');
 
@@ -375,6 +299,10 @@ function() {
 
             username.focus();
         });
+
+    authInfoRequest.complete(
+        TP.hc('username', username.getValue(),
+                'password', password.getValue()));
 
     return this;
 });
