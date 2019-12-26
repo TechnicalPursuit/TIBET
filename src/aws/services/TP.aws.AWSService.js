@@ -239,6 +239,9 @@ function(serviceName) {
                 //  We succeeded in authenticating - complete the authenication
                 //  request.
                 authRequest.complete();
+
+                //  Return null here to silence Bluebird promise warnings.
+                return null;
             }).catch(
             function(err) {
                 //  We failed to authenticate - fail the request with the error.
