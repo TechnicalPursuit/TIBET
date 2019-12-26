@@ -241,13 +241,37 @@ function(options) {
     sfRequest.defineHandler('RequestSucceeded',
                             function(aResponse) {
 
-                                var data;
+                                var result,
 
-                                data = aResponse.get('result').records.collect(
-                                            function(aRecord) {
-                                                return TP.ac(aRecord.Id,
-                                                                aRecord.Name);
-                                            });
+                                    keys,
+                                    keyLen,
+
+                                    data;
+
+                                result = aResponse.get('result');
+
+                                if (TP.notValid(result)) {
+                                    return;
+                                }
+
+                                keys = TP.keys(result.records.first());
+                                keys.remove('attributes');
+
+                                keyLen = keys.getSize();
+
+                                data = result.records.collect(
+                                        function(aRecord) {
+
+                                            var retVal,
+                                                i;
+
+                                            retVal = TP.ac();
+                                            for (i = 0; i < keyLen; i++) {
+                                                retVal.push(aRecord[keys[i]]);
+                                            }
+
+                                            return retVal;
+                                        });
 
                                 dataURI.setResource(data);
                             });
