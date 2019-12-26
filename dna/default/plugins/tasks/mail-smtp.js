@@ -160,7 +160,7 @@
             //  In a dry run environment, just write the SMTP options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                smtpOpts.status = 'SMTP succeeded.';
+                smtpOpts.status = 'SMTP succeeded IN DRY RUN MODE.';
                 step.stdout = smtpOpts;
                 return TDS.Promise.resolve();
             }

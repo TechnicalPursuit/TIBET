@@ -128,7 +128,7 @@
             //  In a dry run environment, just write the Stripe options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                stripeOpts.status = 'Stripe charge successful in dry run.';
+                stripeOpts.status = 'Stripe charge successful IN DRY RUN MODE.';
                 step.stdout = stripeOpts;
                 return TDS.Promise.resolve();
             }

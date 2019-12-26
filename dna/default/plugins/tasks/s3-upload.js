@@ -112,7 +112,7 @@
             //  In a dry run environment, just write the upload options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                serviceOpts.status = 'S3 upload succeeded.';
+                serviceOpts.status = 'S3 upload succeeded IN DRY RUN MODE.';
                 step.stdout = serviceOpts;
                 return TDS.Promise.resolve();
             }

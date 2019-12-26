@@ -152,7 +152,7 @@
             //  In a dry run environment, just write the sendmail options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                sendmailOpts.status = 'sendmail succeeded.';
+                sendmailOpts.status = 'sendmail succeeded IN DRY RUN MODE.';
                 step.stdout = sendmailOpts;
                 return TDS.Promise.resolve();
             }

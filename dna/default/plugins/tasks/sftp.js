@@ -140,7 +140,7 @@
             //  In a dry run environment, just write the sftp options to
             //  stdout and return a resolved Promise.
             if (TDS.ifDryrun()) {
-                sftpOpts.status = 'SFTP upload successful';
+                sftpOpts.status = 'SFTP upload successful IN DRY RUN MODE.';
                 step.stdout = sftpOpts;
                 return TDS.Promise.resolve();
             }
