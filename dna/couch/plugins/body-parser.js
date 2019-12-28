@@ -55,8 +55,7 @@
 
         /**
          */
-        jsonParser = bodyParser.json(
-            {
+        jsonParser = bodyParser.json({
                 limit: bodyLimit
             });
 
