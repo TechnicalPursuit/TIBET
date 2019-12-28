@@ -26,7 +26,6 @@
             authenticate,
             logger,
             LocalStrategy,
-            Promise,
             strategy,
             TDS;
 
@@ -35,7 +34,6 @@
         logger = options.logger;
 
         LocalStrategy = require('passport-local');
-        Promise = require('bluebird').Promise;
 
         //  ---
         //  Middleware
@@ -47,7 +45,7 @@
         authenticate = function(req, username, password) {
             var promise;
 
-            promise = new Promise(function(resolve, reject) {
+            promise = new TDS.Promise(function(resolve, reject) {
                 var user,
                     pass,
                     org,
@@ -76,7 +74,8 @@
                             id: username,
                             org: org,
                             unit: unit,
-                            role: role
+                            role: role,
+                            email: username
                         });
                     }
 
