@@ -154,6 +154,7 @@ function(userInfo) {
                 '<parameters>',
                     '<type><text>work</text><text>voice</text></type>',
                 '</parameters>',
+                '<text></text>',
                 '<uri></uri>',
             '</tel>',
             '<email><text/></email>',
@@ -384,7 +385,7 @@ TP.ietf.vcard.Inst.defineAttribute('email',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('tel',
-    TP.xpc('./$def:tel/$def:uri',
+    TP.xpc('./$def:tel/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('url',
