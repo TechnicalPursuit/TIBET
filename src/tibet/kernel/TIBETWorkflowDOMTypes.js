@@ -429,7 +429,7 @@ TP.ietf.vcard.Inst.defineAttribute('username',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('password',
-    TP.xpc('./vcard-ext:x-password',
+    TP.xpc('./vcard-ext:x-password/$def:text',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
 TP.ietf.vcard.Inst.defineAttribute('auth',
