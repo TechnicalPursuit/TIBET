@@ -13,6 +13,11 @@
     <property name="boot.use_login" value="false"/>
     <property name="sherpa.enabled" value="false"/>
     <property name="uri.watch_remote_changes" value="false"/>
+
+    <!-- Because when running in headless mode the package name is 'headless',
+    we don't want the derived project name to be 'headless'. Therefore, we
+    manually set it here. -->
+    <property name="project.name" value="{{appname}}"/>
 </config>
 
 <config id="base">
