@@ -68,6 +68,10 @@ function(aSignal) {
     var popupTPElem;
 
     popupTPElem = this.getOverlayElement(aSignal);
+    if (popupTPElem.isVisible()) {
+        return this;
+    }
+
     if (TP.isTrue(aSignal.at('sticky'))) {
         popupTPElem.set('isSticky', true, false);
     } else {
