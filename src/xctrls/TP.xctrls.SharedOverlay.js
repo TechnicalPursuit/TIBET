@@ -858,6 +858,12 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         return this;
     }
 
+    //  Make sure to clean 'instance-specific' information off of the overlay
+    //  content (i.e. attributes like 'id's). This is because we're going to be
+    //  duplicating this content in the overlay and we don't want to have
+    //  multiple elements with the same id, etc.
+    TP.elementClean(content, true);
+
     //  If there were content attributes defined in the signal, then populate
     //  the content element with them.
     contentAttributes = contentInfo.at('contentAttributes');
