@@ -12420,6 +12420,7 @@ function(attributeName) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    //  This might be an access path
     attrName = TP.str(attributeName);
 
     heldVal = this.$get('value');
@@ -12464,7 +12465,9 @@ function(attributeName, attributeValue, shouldSignal) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    //  This might be an access path
     attrName = TP.str(attributeName);
+
     attrVal = attributeValue;
 
     //  If we're setting the held value and it's a POJO, then construct a

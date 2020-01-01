@@ -961,7 +961,7 @@ function(attributeName, attributeValue, shouldSignal) {
     retVal = this.callNextMethod();
 
     //  This might be an access path
-    attrName = attributeName.asString();
+    attrName = TP.str(attributeName);
 
     //  If it's a JS identifier (i.e. simple path), then we can check its
     //  facets. Note here how we filter out attribute (i.e. aspect) names that

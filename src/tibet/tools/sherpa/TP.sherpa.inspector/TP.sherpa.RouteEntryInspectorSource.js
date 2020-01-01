@@ -194,19 +194,16 @@ function(pathPrefix) {
 TP.sherpa.ConfigPropertyAdaptor.Inst.defineMethod('get',
 function(attributeName) {
 
-    var path,
-        val,
+    var attrName,
 
-        attrName;
+        path,
+        val;
+
+    //  This might be an access path
+    attrName = TP.str(attributeName);
 
     if (attributeName === 'pathPrefix') {
         return this.pathPrefix;
-    }
-
-    if (attributeName.isAccessPath()) {
-        attrName = attributeName.asString();
-    } else {
-        attrName = attributeName;
     }
 
     path = this.get('pathPrefix') + '.' + attrName;
@@ -225,11 +222,8 @@ function(attributeName, attributeValue, shouldSignal) {
 
         attrName;
 
-    if (attributeName.isAccessPath()) {
-        attrName = attributeName.asString();
-    } else {
-        attrName = attributeName;
-    }
+    //  This might be an access path
+    attrName = TP.str(attributeName);
 
     path = this.get('pathPrefix') + '.' + attrName;
 

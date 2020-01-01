@@ -45,19 +45,24 @@ function(attributeName) {
      * @returns {String|Object} The value of the desired attribute.
      */
 
-    var funcName,
+    var attrName,
+
+        funcName,
 
         tags;
 
+    //  This might be an access path
+    attrName = TP.str(attributeName);
+
     //  first try default naming of getAttributeName (typical use)
-    funcName = 'get' + TP.makeStartUpper(attributeName);
+    funcName = 'get' + TP.makeStartUpper(attrName);
     if (TP.canInvoke(this, funcName)) {
         return this[funcName]();
     }
 
     if (TP.isArray(tags = this.getType().$get('childTags'))) {
-        if (tags.containsString(attributeName)) {
-            return this.getChildTextContent(attributeName);
+        if (tags.containsString(attrName)) {
+            return this.getChildTextContent(attrName);
         }
     }
 
@@ -81,21 +86,26 @@ function(attributeName, attributeValue) {
      * @returns {TP.xmpp.Payload} The receiver.
      */
 
-    var funcName,
+    var attrName,
+
+        funcName,
 
         tags,
         elem;
 
+    //  This might be an access path
+    attrName = TP.str(attributeName);
+
     //  first try default naming of setAttributeName (typical use)
-    funcName = 'set' + TP.makeStartUpper(attributeName);
+    funcName = 'set' + TP.makeStartUpper(attrName);
     if (TP.canInvoke(this, funcName)) {
         return this[funcName](attributeValue);
     }
 
     if (TP.isArray(tags = this.getType().get('childTags'))) {
-        if (tags.containsString(attributeName)) {
+        if (tags.containsString(attrName)) {
             //  We'll create the named descendant if one can't be found.
-            elem = this.getNamedDescendant(attributeName, true);
+            elem = this.getNamedDescendant(attrName, true);
             TP.nodeSetTextContent(elem, attributeValue);
 
             return this;
