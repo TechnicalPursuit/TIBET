@@ -2146,22 +2146,22 @@ function(aRequest) {
 
     arr = [];
 
-    profile = this.getArgument(aRequest, 'tsh:profile', null, true);
+    profile = this.getArgument(aRequest, 'tsh:profile', null, false);
     if (TP.isEmpty(profile)) {
-        pkg = this.getArgument(aRequest, 'tsh:package', '~app_cfg/main', true);
-        cfg = this.getArgument(aRequest, 'tsh:config', 'base', true);
+        pkg = this.getArgument(aRequest, 'tsh:package', '~app_cfg/main', false);
+        cfg = this.getArgument(aRequest, 'tsh:config', 'base', false);
         profile = pkg + '@' + cfg;
     }
 
-    context = this.getArgument(aRequest, 'tsh:context', 'app', true);
+    context = this.getArgument(aRequest, 'tsh:context', 'app', false);
     if (context === 'app') {
         phase = TP.PHASE_TWO;
     } else if (context === 'lib') {
         phase = TP.PHASE_ONE;
     }
 
-    raw = this.getArgument(aRequest, 'tsh:raw', null, true);
-    tname = this.getArgument(aRequest, 'tsh:type', null, true);
+    raw = this.getArgument(aRequest, 'tsh:raw', null, false);
+    tname = this.getArgument(aRequest, 'tsh:type', null, false);
     if (TP.notEmpty(tname)) {
         type = this.resolveObjectReference(tname, aRequest);
         if (TP.isType(type)) {
@@ -2328,7 +2328,7 @@ function(aRequest) {
 
     //  NB: We supply 'null' as the default value if 'tsh:ref' wasn't
     //  specified.
-    input = this.getArgument(aRequest, 'tsh:ref', null, true);
+    input = this.getArgument(aRequest, 'tsh:ref', null, false);
     if (TP.notValid(input)) {
         if (TP.isEmpty(input = aRequest.stdin())) {
             return aRequest.fail(
@@ -2507,7 +2507,7 @@ function(aRequest) {
     ms = this.getArgument(aRequest,
                             'tsh:ms',
                             TP.sys.cfg('tsh.default_sleep', 1000),
-                            true);
+                            false);
 
     ms = Math.max(ms, TP.sys.cfg('tsh.max_sleep', 30000));
 
