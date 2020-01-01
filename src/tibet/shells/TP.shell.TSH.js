@@ -2176,9 +2176,9 @@ function(aRequest) {
 
         //  Get the list of paths from the defined profile.
         paths = TP.sys.getAllScriptPaths(profile, phase).collect(
-        function(path) {
-            return TP.uriInTIBETFormat(path);
-        }).unique();
+                function(path) {
+                    return TP.uriInTIBETFormat(path);
+                }).unique();
 
         //  Filter types by the package paths we're provided. If it's part of
         //  the overall package we retain it.
@@ -2263,16 +2263,17 @@ function(aRequest) {
     if (TP.sys.cfg('boot.context') === 'headless') {
 
         //  Reprocess paths to void ~Type/* format. That won't resolve in CLI.
-        arr.forEach(function(result) {
-            var parts,
-                res;
+        arr.forEach(
+            function(result) {
+                var parts,
+                    res;
 
-            parts = result.split(TP.JOIN);
-            parts[0] = TP.uriInTIBETFormat(TP.uriExpandPath(parts[0]));
-            res = parts.join(TP.JOIN);
+                parts = result.split(TP.JOIN);
+                parts[0] = TP.uriInTIBETFormat(TP.uriExpandPath(parts[0]));
+                res = parts.join(TP.JOIN);
 
-            aRequest.stdout(res);
-        });
+                aRequest.stdout(res);
+            });
 
         return aRequest.complete();
     }

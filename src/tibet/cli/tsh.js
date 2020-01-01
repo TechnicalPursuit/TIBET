@@ -483,7 +483,10 @@ Cmd.prototype.execute = function() {
         //  execute for this process.
         if (!cmd.options.silent) {
             cmd.log('# ' + // (cmd.options.tap ? '# ' : '') +
-                'TIBET reflection suite loaded and active in ' + (end - start) + 'ms', 'dim');
+                    'TIBET reflection suite loaded and active in ' +
+                    (end - start) +
+                    'ms',
+                    'dim');
         }
 
         return puppetPage.mainFrame().executionContext();
