@@ -1845,17 +1845,20 @@ function(anElement, stopAncestor) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementClean',
-function(anElement) {
+function(anElement, cleanDescendants) {
 
     /**
      * @method elementClean
      * @summary Cleans off all of the TIBET-specific or other
      *     'instance-specific' information from the supplied Element and any
-     *     Element descendants.
+     *     Element descendants, if the flag is supplied.
      * @description This method cleans off the following attributes and
      *     properties from the supplied element and any Element descendants:
      *         - The 'id' attribute.
      * @param {Element} anElement The target element.
+     * @param {Element} [cleanDescendants=false] Whether or not
+     *     instance-specific information should be cleaned off of the supplied
+     *     Element's descendants.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      */
@@ -1869,14 +1872,15 @@ function(anElement) {
 
     TP.elementRemoveAttribute(anElement, 'id', true);
 
-    //  Get all descendants, as long as they're Elements.
-    allElems = TP.nodeGetDescendantElements(anElement);
+    if (TP.isTrue(cleanDescendants)) {
+        //  Get all descendants, as long as they're Elements.
+        allElems = TP.nodeGetDescendantElements(anElement);
 
-    allElems.forEach(
-        function(anElem) {
-            //  TODO: Figure out what really needs to be removed here.
-            //  TP.elementRemoveAttribute(anElem, 'id', true);
-        });
+        allElems.forEach(
+            function(anElem) {
+                TP.elementRemoveAttribute(anElem, 'id', true);
+            });
+    }
 
     return;
 });
