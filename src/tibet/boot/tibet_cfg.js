@@ -813,6 +813,11 @@
     //  The default location for TIBET's service vcard data.
     TP.sys.setcfg('path.lib_vcards', '~lib_dat/vcards.xml');
 
+    //  If logins are configured and we're running in headless mode, what (JWT)
+    //  token should be used in the 'tibet_token' session storage data if one
+    //  cannot be found
+    TP.sys.setcfg('headless.tibet_token', '');
+
     //  ---
     //  ui page initialization files
     //  ---

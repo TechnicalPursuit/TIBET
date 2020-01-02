@@ -213,7 +213,9 @@ function() {
 
     (function() {
         var uri,
-            req;
+            req,
+
+            tibetToken;
 
         msg = 'Initializing user...';
 
@@ -264,6 +266,27 @@ function() {
                                     TP.sys.getEffectiveUser().get('vcard'));
         TP.uc('urn:tibet:hosturi').setResource(
                                     TP.uc('~').getConcreteURI());
+
+        //  If we're running in headless mode, then we need to check to see if
+        //  we have a valid 'tibet_token' in the sessionStorage. If not, see if
+        //  the cfg has a 'headless.tibet_token' configured. If so, set it's
+        //  value into the session storage.
+        //  This helps when running tests or builds with apps that want to load
+        //  resources on login. Note that we do *not* check to see if the
+        //  application is configured to require login here. When in a headless
+        //  mode, the 'boot.use_login' cfg parameter will always be false.
+        if (TP.sys.cfg('boot.context') === 'headless') {
+
+            tibetToken = top.sessionStorage.getItem('tibet_token');
+
+            if (TP.isEmpty(tibetToken)) {
+                tibetToken = TP.sys.getcfg('headless.tibet_token');
+
+                if (TP.notEmpty(tibetToken)) {
+                    top.sessionStorage.setItem('tibet_token', tibetToken);
+                }
+            }
+        }
 
     }).queueAfterNextRepaint(rootWindow);
 
