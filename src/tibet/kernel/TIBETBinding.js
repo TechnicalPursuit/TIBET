@@ -6124,7 +6124,7 @@ function(aValue, ignoreBidiInfo) {
     //  If we're part of a chain that started with refreshing the bind machinery
     //  (i.e. the bind machinery called setValue(), which is calling us), then
     //  just bail out here.
-    if (TP.isTrue(TP.$$settingValueFromBindMachinery)) {
+    if (TP.isTrue(TP.$$settingFromBindMachinery)) {
         return this;
     }
 
@@ -6681,11 +6681,13 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
     //  is null or undefined. This way we can let the receiver decide how to
     //  manage those values.
     if (aspect === 'value' && facet === 'value') {
-        TP.$$settingValueFromBindMachinery = true;
+        TP.$$settingFromBindMachinery = true;
         didRefresh = this.setValue(finalVal);
-        TP.$$settingValueFromBindMachinery = false;
+        TP.$$settingFromBindMachinery = false;
     } else {
+        TP.$$settingFromBindMachinery = true;
         this.setFacet(aspect, facet, finalVal);
+        TP.$$settingFromBindMachinery = false;
         didRefresh = true;
     }
 
