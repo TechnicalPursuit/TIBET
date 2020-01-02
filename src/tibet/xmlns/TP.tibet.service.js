@@ -698,6 +698,59 @@ function(anHref) {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.service.Inst.defineMethod('setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @method setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
+     *     value provided.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {TP.tibet.service} The receiver.
+     */
+
+    if (TP.isTrue(TP.$$settingFromBindMachinery)) {
+        if (aspectName !== 'watched' &&
+            aspectName !== 'href') {
+            this.activate();
+            return this;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For this node type
+     *     this method triggers this tag to activate, thereby fetching data from
+     *     the service.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
+     */
+
+    if (TP.isTrue(TP.$$settingFromBindMachinery)) {
+        this.activate();
+    }
+
+    //  This node type never changes its 'value'.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.service.Inst.defineMethod('updateResultURI',
 function(aResult) {
 
