@@ -597,12 +597,13 @@ function(name, classDefFunction) {
             return subclassTIBETType[propName];
         },
 
-        construct: function(target, args) {
+        construct: function(target, args, newTarget) {
 
-            var newinst,
+            var previousProto,
+
+                newinst,
                 optinst,
-
-                previousProto;
+                finalinst;
 
             //  Check to see if the proxy (the actual Proxy that we're defining
             //  above) is initialized, according to a slot that we keep on the
@@ -651,10 +652,20 @@ function(name, classDefFunction) {
             //  If init() returns a non-null object that's our return value.
             //  This lets init() cheat and return an object of its choice.
             if (TP.isValid(optinst)) {
-                return optinst;
+                finalinst = optinst;
             } else {
-                return newinst;
+                finalinst = newinst;
             }
+
+            //  If the new target is *not* a Proxy, then we're running because
+            //  instance of *an ECMA subclass* of this class is being created.
+            //  In that case, we need to wire in the __proto__ of the new
+            //  instance to the prototype of that object.
+            if (!TP.isProxy(newTarget)) {
+                Object.setPrototypeOf(finalinst, newTarget.prototype);
+            }
+
+            return finalinst;
         }
     };
 
