@@ -443,6 +443,7 @@ function(name, classDefFunction) {
         subtypeName,
 
         copyTIBETProps,
+        constructMethod,
 
         proxyConfig,
 
@@ -551,6 +552,86 @@ function(name, classDefFunction) {
             });
     };
 
+    //  This is a stand in for TIBET's 'construct' method. It is returned when
+    //  the proxy is asked for the 'construct' method so that it can execute to
+    //  construct the proper instance. Note that this logic is similar to the
+    //  logic using in the Proxy 'construct' trap defined below (the trap is
+    //  different than TIBET's 'construct' method - just the same name), but it
+    //  the trap is different from this method in slight ways. The main
+    //  difference is that this method handles when an instance of a native
+    //  ECMAScript class that is a subclass of the class that is represented by
+    //  the Proxy is being constructed.
+    constructMethod = function() {
+
+        var previousProto,
+            newinst,
+            optinst,
+            finalinst;
+
+        //  If the current 'this' object is not a Proxy (which means its not the
+        //  standin itself), then it must be an ECMAScript class that is a
+        //  subclass of the Proxy. In this case, we need to construct the
+        //  instance in the standard way. Note that we use this '__nonProxy__'
+        //  flag to mark the constructor because, otherwise, we will loop
+        //  endlessly as this calls back on itself during the construction
+        //  process.
+        if (!TP.isProxy(this) && !TP.owns(this, '__nonProxy__')) {
+            this.__nonProxy__ = true;
+            newinst = Reflect.construct(this, arguments);
+            delete this.__nonProxy__;
+
+            //  NB: We don't have to worry about running the 'init' machinery
+            //  like we do below when constructing instances of since this is a
+            //  native ECMAScript class and will have no notion of that.
+
+            return newinst;
+        }
+
+        //  Create an instance of the class by executing the target Function
+        //  (which will execute the constructor as defined by class description
+        //  Function) with the supplied args, but supply an optional constructor
+        //  to use as the prototype of the resultant object. This mechanism is
+        //  key to allowing the constructor function to run, but to getting the
+        //  prototype chain set up properly for the created instance.
+
+        //  First, swap the __proto__ of the class definition function with
+        //  it's original proto so that the system won't complain.
+        previousProto = Object.getPrototypeOf(classDefFunction);
+        Object.setPrototypeOf(classDefFunction, originalProto);
+
+        newinst = Reflect.construct(
+                    classDefFunction, arguments, subclassTIBETType[TP.INSTC]);
+
+        //  Put the __proto__ of the class definition function back.
+        Object.setPrototypeOf(classDefFunction, previousProto);
+
+        //  Now we replicate the logic that is in the standard 'construct'
+        //  method *after* that method's invocation of '$alloc' (which is
+        //  what the logic above is equivalent to).
+        newinst[TP.TYPE] = subclassTIBETType[TP.TYPE];
+
+        newinst = newinst.$init.apply(newinst, arguments);
+        optinst = newinst.init.apply(newinst, arguments);
+
+        //  If init() returns a non-null object that's our return value.
+        //  This lets init() cheat and return an object of its choice.
+        if (TP.isValid(optinst)) {
+            finalinst = optinst;
+        } else {
+            finalinst = newinst;
+        }
+
+        //  If the new target is *not* a Proxy, then we're running because
+        //  instance of *an ECMA subclass* of this class is being created.
+        //  In that case, we need to wire in the __proto__ of the new
+        //  instance to the prototype of that object.
+        if (!TP.isProxy(this)) {
+            Object.setPrototypeOf(finalinst, this.prototype);
+        }
+
+        return finalinst;
+    };
+
     //  Create an ECMAScript Proxy object that will wrap an anonymous Function
     //  (we *must* use a Function here, because according to the ECMAScript
     //  spec, to trap accesses to 'construct', it must be a [[Callable]])
@@ -568,6 +649,10 @@ function(name, classDefFunction) {
             if (propName === 'constructor' ||
                 propName === 'prototype') {
                 return target[propName];
+            }
+
+            if (propName === 'construct') {
+                return constructMethod;
             }
 
             //  Check to see if the proxy (the actual Proxy that we're defining
