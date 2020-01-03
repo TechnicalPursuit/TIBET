@@ -8788,9 +8788,7 @@ function(anObj) {
      *     object.
      */
 
-    /* eslint-disable no-extra-parens */
-    return (TP.isValid(anObj) && anObj.__isProxy__ !== undefined);
-    /* eslint-enable no-extra-parens */
+    return TP.isValid(anObj) && TP.owns(anObj, '__isProxy__');
 });
 
 //  ------------------------------------------------------------------------
