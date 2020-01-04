@@ -12284,6 +12284,8 @@ function(fullName) {
      * @returns {TP.lang.Namespace} The receiver.
      */
 
+    var parts;
+
     this.callNextMethod();
 
     this.$set('$$isNamespace', true, false);
@@ -12291,8 +12293,10 @@ function(fullName) {
     this.$set(TP.NAME, fullName, false);
     this.$set(TP.ID, fullName, false);
 
-    this.$set('nsRoot', fullName.split(':')[0], false);
-    this.$set('nsPrefix', fullName.split(':')[1], false);
+    parts = fullName.split(/[.:]/);
+
+    this.$set('nsRoot', parts[0], false);
+    this.$set('nsPrefix', parts[1], false);
 
     return this;
 });
