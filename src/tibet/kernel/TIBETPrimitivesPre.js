@@ -3065,7 +3065,7 @@ function(anObj) {
     //  If the object is a Function, but it doesn't have an 'apply', then its an
     //  ECMAScript class. You can't 'apply' ECMAScript classes directly - you
     //  can only use them as constructor Functions with the 'new' keyword.
-    return typeof(anObj) === 'function' && !anObj.apply;
+    return typeof anObj === 'function' && !anObj.apply;
 
 }, null, 'TP.isESClass');
 
